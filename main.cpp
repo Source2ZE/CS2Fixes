@@ -1,8 +1,9 @@
 #include "appframework/IAppSystem.h"
 #include "common.h"
 #include "icvar.h"
-#include "interface.h"
-#include <MinHook.h>
+#include "tier0/interface.h"
+#include "tier0/dbg.h"
+#include "MinHook.h"
 #include <Psapi.h>
 
 #include "tier0/memdbgon.h"

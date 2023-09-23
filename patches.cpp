@@ -150,7 +150,7 @@ byte *g_pMaxPlayers = nullptr;
 
 void SetMaxPlayers(byte iMaxPlayers)
 {
-	clamp(iMaxPlayers, 1, 65);
+	clamp(iMaxPlayers, 1, 64);
 
 	WriteProcessMemory(GetCurrentProcess(), g_pMaxPlayers, &iMaxPlayers, 1, nullptr);
 }

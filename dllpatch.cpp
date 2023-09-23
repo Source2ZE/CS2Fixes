@@ -1,8 +1,7 @@
 #include "dllpatch.h"
-
 #include "common.h"
-#include "dbg.h"
-#include "strtools.h"
+#include "tier0/dbg.h"
+#include "tier1/strtools.h"
 #include <Psapi.h>
 
 #include "tier0/memdbgon.h"
@@ -19,7 +18,7 @@ void CDLLPatch::PerformPatch()
 	lib = LoadLibraryA(szModule);
 
 	if (!lib)
-		Error("Could not find %s", szModule);
+		Error("Could not find %s\n", szModule);
 
 	MODULEINFO moduleInfo;
 
@@ -32,7 +31,7 @@ void CDLLPatch::PerformPatch()
 		if (!m_pPatchAddress)
 		{
 			if (i == 0)
-				Panic("Failed to find signature for %s", m_pszName);
+				Panic("Failed to find signature for %s\n", m_pszName);
 
 			return;
 		}

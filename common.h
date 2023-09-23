@@ -1,6 +1,6 @@
 #pragma once
 
-#include "platform.h"
+#include "tier0/platform.h"
 
 // #define HOOK_CONVARS
 // #define HOOK_CONCOMMANDS

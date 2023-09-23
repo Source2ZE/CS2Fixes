@@ -1,9 +1,9 @@
-#include "detour.h"
-
-#include "MinHook.h"
 #include "common.h"
-#include "platform.h"
-#include "strtools.h"
+#include "detour.h"
+#include "MinHook.h"
+#include "tier0/platform.h"
+#include "tier0/dbg.h"
+#include "tier1/strtools.h"
 #include <Psapi.h>
 
 #include "tier0/memdbgon.h"
@@ -18,7 +18,7 @@ void CDetour::CreateDetour()
 	HMODULE lib = LoadLibraryA(szModule);
 
 	if (!lib)
-		Plat_FatalErrorFunc("Could not find %s", szModule);
+		Error("Could not find %s", szModule);
 
 	MODULEINFO moduleInfo;
 	GetModuleInformation(GetCurrentProcess(), lib, &moduleInfo, sizeof(moduleInfo));

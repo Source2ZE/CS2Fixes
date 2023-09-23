@@ -1,6 +1,6 @@
 #pragma once
 
-#include "platform.h"
+#include "tier0/platform.h"
 
 class CDetour
 {

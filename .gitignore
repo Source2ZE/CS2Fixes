@@ -12,5 +12,4 @@ bld/
 [Bb]in/
 [Oo]bj/
 .vs/
-*.vcxproj.filters
 *.vcxproj.user
