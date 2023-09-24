@@ -2,6 +2,7 @@
 #include "detour.h"
 #include "dllpatch.h"
 #include "icvar.h"
+#include "irecipientfilter.h"
 
 #include "tier0/memdbgon.h"
 
@@ -155,8 +156,29 @@ void SetMaxPlayers(byte iMaxPlayers)
 	WriteProcessMemory(GetCurrentProcess(), g_pMaxPlayers, &iMaxPlayers, 1, nullptr);
 }
 
+typedef void(__fastcall *UTIL_SayTextFilter)(IRecipientFilter &, const char *, void *, uint64);
+void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, void *, uint64);
+
+typedef void(__fastcall *UTIL_SayText2Filter)(IRecipientFilter &, CBaseEntity *, uint64, const char *, const char *, const char *, const char *, const char *);
+void __fastcall Detour_UTIL_SayText2Filter(IRecipientFilter &, CBaseEntity *, uint64, const char *, const char *, const char *, const char *, const char *);
+
 typedef void(__fastcall *Host_Say)(byte *, CCommand *, bool, uint, int64);
 void __fastcall Detour_Host_Say(byte *pEdict, CCommand *args, bool teamonly, uint unk1, int64 unk2);
+
+// both of these are called from Host_Say
+CDetour UTIL_SayTextFilter_Detour(
+	GAMEBIN "server.dll",
+	Detour_UTIL_SayTextFilter,
+	"Host_Say",
+	(uint8 *)"\x48\x89\x5C\x24\x00\x55\x56\x57\x48\x8D\x6C\x24\x00\x48\x81\xEC\x00\x00\x00\x00\x49\x8B\xD8",
+	"xxxx?xxxxxxx?xxx????xxx");
+
+CDetour UTIL_SayText2Filter_Detour(
+	GAMEBIN "server.dll",
+	Detour_UTIL_SayText2Filter,
+	"Host_Say",
+	(uint8 *)"\x48\x89\x5C\x24\x00\x55\x56\x57\x48\x8D\x6C\x24\x00\x48\x81\xEC\x00\x00\x00\x00\x41\x0F\xB6\xF8",
+	"xxxx?xxxxxxx?xxx????xxxx");
 
 // look for string "\"Console<0>\" say \"%s\"\n"
 CDetour Host_Say_Detour(
@@ -166,16 +188,24 @@ CDetour Host_Say_Detour(
 	(uint8 *)"\x44\x89\x4C\x24\x00\x44\x88\x44\x24\x00\x55\x53\x56\x57\x41\x54\x41\x55",
 	"xxxx?xxxx?xxxxxxxx");
 
+void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, void *pPlayer, uint64 eMessageType)
+{
+	if (pPlayer)
+		((UTIL_SayTextFilter)UTIL_SayTextFilter_Detour.GetOriginalFunction())(filter, pText, pPlayer, eMessageType);
+
+	char buf[256];
+	V_snprintf(buf, sizeof(buf), "%s%s", " \7CONSOLE:\4", pText + sizeof("Console:"));
+
+	((UTIL_SayTextFilter)UTIL_SayTextFilter_Detour.GetOriginalFunction())(filter, buf, pPlayer, eMessageType);
+}
+
+void __fastcall Detour_UTIL_SayText2Filter(IRecipientFilter &filter, CBaseEntity *pEntity, uint64 eMessageType, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4)
+{
+	((UTIL_SayText2Filter)UTIL_SayText2Filter_Detour.GetOriginalFunction())(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
+}
+
 void __fastcall Detour_Host_Say(byte *pEdict, CCommand *args, bool teamonly, uint unk1, int64 unk2)
 {
-	if (args->ArgC() > 1 && !pEdict)
-	{
-		char buf[256];
-		V_snprintf(buf, sizeof(buf), "%s %s", "say \x02", args->ArgS()); // 0x02 is red, maybe add a command to configure this later
-
-		args->Tokenize(buf);
-	}
-
 	((Host_Say)Host_Say_Detour.GetOriginalFunction())(pEdict, args, teamonly, unk1, unk2);
 }
 
@@ -211,6 +241,12 @@ void InitPatches()
 			g_ToolsPatches[i].PerformPatch();
 	}
 
-	Host_Say_Detour.CreateDetour();
-	Host_Say_Detour.EnableDetour();
+	UTIL_SayTextFilter_Detour.CreateDetour();
+	UTIL_SayTextFilter_Detour.EnableDetour();
+	
+	//UTIL_SayText2Filter_Detour.CreateDetour();
+	//UTIL_SayText2Filter_Detour.EnableDetour();
+
+	//Host_Say_Detour.CreateDetour();
+	//Host_Say_Detour.EnableDetour();
 }
