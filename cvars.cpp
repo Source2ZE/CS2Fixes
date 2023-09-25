@@ -24,7 +24,7 @@ void UnlockConVars()
 	{
 		pCvar = g_pCVar->GetConVar(hCvarHandle);
 
-#ifdef _DEBUG
+#ifdef USE_DEBUG_CONSOLE
 		printf("CONVAR %d: %s\n", hCvarHandle.Get(), pCvar ? pCvar->m_pszName : "---------NULL");
 #endif
 
@@ -58,7 +58,7 @@ void UnlockConCommands()
 	{
 		pConCommand = g_pCVar->GetCommand(hConCommandHandle);
 
-#ifdef _DEBUG
+#ifdef USE_DEBUG_CONSOLE
 		printf("COMMAND %d: %s\n", hConCommandHandle.Get(), pConCommand && pConCommand != pInvalidCommand ? pConCommand->GetName() : "---------NULL");
 #endif
 
@@ -79,7 +79,7 @@ void *g_pfnRegisterConvar = nullptr;
 
 void RegisterConVarHook(void *self, ConVarInfo *info, void *unk1, void *unk2, void *unk3)
 {
-#ifdef _DEBUG
+#ifdef USE_DEBUG_CONSOLE
 	printf("CONVAR : %s\n", info->name);
 #endif
 
@@ -111,7 +111,7 @@ void *g_pfnRegisterConCommand = nullptr;
 
 void *RegisterConCommandHook(void *self, void *unk1, ConCommandInfo *info, void *unk2, void *unk3)
 {
-#ifdef _DEBUG
+#ifdef USE_DEBUG_CONSOLE
 	printf("CONCOMMAND : %s\n", info->name);
 #endif
 

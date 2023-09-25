@@ -50,4 +50,4 @@ void InitLoggingDetours();
 void Message(const char *, ...);
 void Panic(const char *, ...);
 
-void *FindPattern(void *, const byte *, const char *, size_t);
+void *FindSignature(void *, const byte *, size_t);

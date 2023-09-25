@@ -164,6 +164,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="addresses.cpp" />
+    <ClCompile Include="cs2_sdk\chandle.cpp" />
+    <ClCompile Include="cs2_sdk\interfaces\cgameentitysystem.cpp" />
+    <ClCompile Include="cs2_sdk\interfaces\interfaces.cpp" />
+    <ClCompile Include="cs2_sdk\schema.cpp" />
     <ClCompile Include="cvars.cpp" />
     <ClCompile Include="detour.cpp" />
     <ClCompile Include="dllpatch.cpp" />
@@ -173,8 +178,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
+    <ClInclude Include="cs2_sdk\chandle.h" />
+    <ClInclude Include="cs2_sdk\entity\cbaseentity.h" />
+    <ClInclude Include="cs2_sdk\entity\cbaseplayercontroller.h" />
+    <ClInclude Include="cs2_sdk\entity\cbaseplayerpawn.h" />
+    <ClInclude Include="cs2_sdk\entity\ccsplayercontroller.h" />
+    <ClInclude Include="cs2_sdk\entity\ccsplayerpawn.h" />
+    <ClInclude Include="cs2_sdk\entity\services.h" />
+    <ClInclude Include="cs2_sdk\interfaces\cgameentitysystem.h" />
+    <ClInclude Include="cs2_sdk\interfaces\cgameresourceserviceserver.h" />
+    <ClInclude Include="cs2_sdk\interfaces\cschemasystem.h" />
+    <ClInclude Include="cs2_sdk\interfaces\interfaces.h" />
+    <ClInclude Include="cs2_sdk\schema.h" />
     <ClInclude Include="detour.h" />
     <ClInclude Include="dllpatch.h" />
+    <ClInclude Include="addresses.h" />
+    <ClInclude Include="utils\module.h" />
+    <ClInclude Include="utils\virtual.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

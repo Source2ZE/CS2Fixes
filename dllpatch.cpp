@@ -26,7 +26,7 @@ void CDLLPatch::PerformPatch()
 
 	for (int i = 0; i < m_iRepeat; i++)
 	{
-		m_pPatchAddress = (void *)FindPattern(moduleInfo.lpBaseOfDll, m_pSignature, m_pszPattern, moduleInfo.SizeOfImage);
+		m_pPatchAddress = (void *)FindSignature(moduleInfo.lpBaseOfDll, m_pSignature, moduleInfo.SizeOfImage);
 
 		if (!m_pPatchAddress)
 		{
@@ -41,27 +41,28 @@ void CDLLPatch::PerformPatch()
 
 	ConColorMsg(Color(255, 0, 255, 255), "[CS2Fixes] Successfully patched %s!\n", m_pszName);
 
-#ifdef _DEBUG
+#ifdef USE_DEBUG_CONSOLE
 	printf("[CS2Fixes] Successfully patched %s!\n", m_pszName);
 #endif
 }
 
-void *FindPattern(void *BaseAddr, const byte *pData, const char *pPattern, size_t MaxSize)
+void* FindSignature(void* BaseAddr, const byte* pData, size_t MaxSize)
 {
-	unsigned char *pMemory;
-	uintptr_t PatternLen = strlen(pPattern);
-	void *return_addr = nullptr;
+	unsigned char* pMemory;
+	void* return_addr = nullptr;
 
-	pMemory = (byte *)BaseAddr;
+	size_t iSigLength = V_strlen((const char*)pData);
 
-	for (uintptr_t i = 0; i < MaxSize; i++)
+	pMemory = (byte*)BaseAddr;
+
+	for (size_t i = 0; i < MaxSize; i++)
 	{
-		uintptr_t Matches = 0;
-		while (*(pMemory + i + Matches) == pData[Matches] || pPattern[Matches] != 'x')
+		size_t Matches = 0;
+		while (*(pMemory + i + Matches) == pData[Matches] || pData[Matches] == '\x2A')
 		{
 			Matches++;
-			if (Matches == PatternLen)
-				return_addr = (void *)(pMemory + i);
+			if (Matches == iSigLength)
+				return_addr = (void*)(pMemory + i);
 		}
 	}
 

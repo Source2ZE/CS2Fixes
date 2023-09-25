@@ -26,7 +26,7 @@ void CDetour::CreateDetour()
 	if (!m_pSignature)
 		m_pfnFunc = GetProcAddress(lib, m_pszName);
 	else
-		m_pfnFunc = FindPattern(moduleInfo.lpBaseOfDll, m_pSignature, m_pszPattern, moduleInfo.SizeOfImage);
+		m_pfnFunc = FindSignature(moduleInfo.lpBaseOfDll, m_pSignature, moduleInfo.SizeOfImage);
 
 	if (!m_pfnFunc)
 	{
