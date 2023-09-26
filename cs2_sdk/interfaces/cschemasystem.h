@@ -36,8 +36,11 @@ public:
 		return m_fields;
 	}
 
-	auto GetParent()
+	SchemaClassInfoData_t* GetParent()
 	{
+		if (!m_schema_parent)
+			return nullptr;
+
 		return m_schema_parent->m_class;
 	}
 

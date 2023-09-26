@@ -7,6 +7,7 @@
 #include "../addresses.h"
 #include "tier0/dbg.h"
 #include "const.h"
+#include "../../utils/virtual.h"
 #undef schema
 
 constexpr uint32_t val_32_const = 0x811c9dc5;
@@ -50,6 +51,11 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char *const str, const uint6
 		if (m_chain != 0)																						\
 		{																										\
 			addresses::NetworkStateChanged((uintptr_t)(this) + m_chain, m_offset + extra_offset, 0xFFFFFFFF);	\
+		}																										\
+		else																									\
+		{																										\
+			/* WIP: Works fine for most props, but inlined classes in the middle of a class will need to have their this pointer corrected by the offset .*/\
+			/*CALL_VIRTUAL(void, 23, this, m_offset + extra_offset, 0xFFFFFFFF, 0xFFFF); */						\
 		}																										\
 		*reinterpret_cast<std::add_pointer_t<type>>((uintptr_t)(this) + m_offset + extra_offset) = val;			\
 	}

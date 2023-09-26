@@ -1,13 +1,13 @@
 #pragma once
 
 #include <platform.h>
+#include "basehandle.h"
 
 #define INVALID_EHANDLE_INDEX 0xFFFFFFFF
-#define ENT_ENTRY_MASK		  0x7FFF
 
 class CBaseEntity;
 
-class CHandle
+class CHandle : public CEntityHandle
 {
 	CBaseEntity *GetBaseEntity() const;
 
@@ -16,13 +16,11 @@ public:
 
 	bool IsValid() const { return m_Index != INVALID_EHANDLE_INDEX; }
 
-	int GetEntryIndex() const { return m_Index & ENT_ENTRY_MASK; }
+	int GetEntryIndex() const { return m_Parts.m_EntityIndex; }
 
 	template <typename T = CBaseEntity>
 	T *Get() const
 	{
 		return reinterpret_cast<T *>(GetBaseEntity());
 	}
-
-	uint32 m_Index;
 };

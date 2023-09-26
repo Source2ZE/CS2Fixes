@@ -184,6 +184,7 @@
     <ClInclude Include="cs2_sdk\entity\ccollisionproperty.h" />
     <ClInclude Include="cs2_sdk\entity\ccsplayercontroller.h" />
     <ClInclude Include="cs2_sdk\entity\ccsplayerpawn.h" />
+    <ClInclude Include="cs2_sdk\entity\centityidentity.h" />
     <ClInclude Include="cs2_sdk\entity\services.h" />
     <ClInclude Include="cs2_sdk\interfaces\cgameentitysystem.h" />
     <ClInclude Include="cs2_sdk\interfaces\cgameresourceserviceserver.h" />

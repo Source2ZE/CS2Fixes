@@ -144,7 +144,7 @@ void SetMaxPlayers(byte iMaxPlayers)
 
 void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, void *, uint64);
 void __fastcall Detour_UTIL_SayText2Filter(IRecipientFilter &, CBaseEntity *, uint64, const char *, const char *, const char *, const char *, const char *);
-void __fastcall Detour_Host_Say(CBaseEntity *, CCommand *, bool, int, const char *);
+void __fastcall Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, const char *);
 
 // both of these are called from Host_Say
 DECLARE_DETOUR(
@@ -244,17 +244,15 @@ void SendConsoleChat(const char *msg, ...)
 	Host_Say(nullptr, &newArgs, false, 0, nullptr);
 }
 
-void ParseChatCommand(char *pCommand, CBaseEntity *pEntity)
+void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 {
-	CCSPlayerController *pController = reinterpret_cast<CCSPlayerController*>(pEntity);
-
 	if (!pController)
 		return;
 
 	char *token, *pos;
 
-	pCommand = strdup(pCommand);
-	token = strtok_s(pCommand + 1, " ", &pos);
+	char *pCommand = strdup(pMessage);
+	token = strtok_s(strdup(pCommand) + 1, " ", &pos);
 
 	if (!V_stricmp(token, "map"))
 	{
@@ -269,6 +267,30 @@ void ParseChatCommand(char *pCommand, CBaseEntity *pEntity)
 
 		int money = pController->m_pInGameMoneyServices()->m_iAccount();
 		pController->m_pInGameMoneyServices()->m_iAccount(money - atoi(token));
+	}
+	else if (!V_stricmp(token, "setcollision"))
+	{
+		uint8 colgroup = atoi(strtok_s(nullptr, " ", &pos));
+		uint8 uid = atoi(strtok_s(nullptr, " ", &pos));
+
+		CCSPlayerController *targetController = (CCSPlayerController*)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+
+		ConMsg("test %llx\n", targetController);
+
+		if (targetController)
+		{
+			ConMsg("test %llx\n", targetController->m_hPawn().Get()->m_iTeamNum());
+			ConMsg("worky %d\n", targetController->m_hPawn().Get()->m_pCollision()->m_CollisionGroup());
+			//targetController->m_hPawn().Get()->m_pCollision()->m_CollisionGroup(colgroup);
+		}
+	}
+	else if (!V_stricmp(token, "basevelocity"))
+	{
+		float x = atof(strtok_s(nullptr, " ", &pos));
+		float y = atof(strtok_s(nullptr, " ", &pos));
+		float z = atof(strtok_s(nullptr, " ", &pos));
+
+		pController->m_hPawn().Get()->m_vecBaseVelocity(Vector(x, y, z));
 	}
 	else
 	{
@@ -294,17 +316,17 @@ void ParseChatCommand(char *pCommand, CBaseEntity *pEntity)
 	free(pCommand);
 }
 
-void __fastcall Detour_Host_Say(CBaseEntity *pEntity, CCommand *args, bool teamonly, int unk1, const char *unk2)
+void __fastcall Detour_Host_Say(CCSPlayerController *pController, CCommand *args, bool teamonly, int unk1, const char *unk2)
 {
-	char *pMessage = (char*)args->Arg(1);
+	const char *pMessage = args->Arg(1);
 
 	if (*pMessage == '!' || *pMessage == '/')
-		ParseChatCommand(pMessage, pEntity);
+		ParseChatCommand(pMessage, pController);
 
 	if (*pMessage == '/')
 		return;
 
-	Host_Say(pEntity, args, teamonly, unk1, unk2);
+	Host_Say(pController, args, teamonly, unk1, unk2);
 }
 
 void InitPatches()
