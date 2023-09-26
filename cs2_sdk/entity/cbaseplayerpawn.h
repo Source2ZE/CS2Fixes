@@ -6,8 +6,9 @@
 class CBasePlayerPawn : public CBaseEntity
 {
 public:
-	SCHEMA_FIELD(m_pMovementServices, "CBasePlayerPawn", "m_pMovementServices", CPlayer_MovementServices*)
-	SCHEMA_FIELD_NEW(m_pWeaponServices, "CBasePlayerPawn", 0, uint8*)
-	SCHEMA_FIELD_NEW(m_pItemServices, "CBasePlayerPawn", 0, uint8**)
-	//SCHEMA_FIELD(m_pItemServices, "CBasePlayerPawn", "m_pItemServices", uint8**)
+	DECLARE_CLASS(CBasePlayerPawn);
+
+	SCHEMA_FIELD(CPlayer_MovementServices*, m_pMovementServices)
+	SCHEMA_FIELD(uint8*, m_pWeaponServices)
+	SCHEMA_FIELD(uint8**, m_pItemServices)
 };

@@ -9,5 +9,5 @@ namespace interfaces
 	void Initialize();
 
 	inline CGameResourceService *pGameResourceServiceServer = nullptr;
-	inline CSchemaSystem* pSchemaSystem = nullptr;
+	inline CSchemaSystem *pSchemaSystem = nullptr;
 }

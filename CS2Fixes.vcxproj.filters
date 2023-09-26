@@ -44,16 +44,13 @@
     <ClCompile Include="cvars.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="detour.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dllpatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sdk\tier1\convar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cs2_sdk\interfaces\interfaces.cpp">
+    <ClCompile Include="cs2_sdk\interfaces\cs2_interfaces.cpp">
       <Filter>Source Files\cs2_sdk\interfaces</Filter>
     </ClCompile>
     <ClCompile Include="addresses.cpp">
@@ -79,7 +76,7 @@
     <ClInclude Include="common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\interfaces\interfaces.h">
+    <ClInclude Include="cs2_sdk\interfaces\cs2_interfaces.h">
       <Filter>Header Files\cs2_sdk\interfaces</Filter>
     </ClInclude>
     <ClInclude Include="cs2_sdk\interfaces\cgameresourceserviceserver.h">
@@ -122,6 +119,9 @@
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
     <ClInclude Include="cs2_sdk\entity\ccsplayercontroller.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="cs2_sdk\entity\ccollisionproperty.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
   </ItemGroup>

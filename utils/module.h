@@ -1,14 +1,15 @@
 #pragma once
-#include <strtools.h>
-#include <interface.h>
-#include <dbg.h>
-#include <Psapi.h>
 #include "../common.h"
+#include "dbg.h"
+#include "interface.h"
+#include "strtools.h"
+#include <Psapi.h>
 
-
-class CModule {
+class CModule
+{
 public:
-	CModule(const char* module) : m_pModule(module)
+	CModule(const char *module) :
+		m_pModule(module)
 	{
 		char szModule[MAX_PATH];
 
@@ -23,14 +24,14 @@ public:
 		GetModuleInformation(GetCurrentProcess(), m_hModule, &m_hModuleInfo, sizeof(m_hModuleInfo));
 	}
 
-	void* FindSignature(const byte *pData)
+	void *FindSignature(const byte *pData)
 	{
-		unsigned char* pMemory;
-		void* return_addr = nullptr;
+		unsigned char *pMemory;
+		void *return_addr = nullptr;
 
-		size_t iSigLength = V_strlen((const char*)pData);
+		size_t iSigLength = V_strlen((const char *)pData);
 
-		pMemory = (byte*)m_hModuleInfo.lpBaseOfDll;
+		pMemory = (byte *)m_hModuleInfo.lpBaseOfDll;
 
 		for (size_t i = 0; i < m_hModuleInfo.SizeOfImage; i++)
 		{
@@ -39,21 +40,21 @@ public:
 			{
 				Matches++;
 				if (Matches == iSigLength)
-					return_addr = (void*)(pMemory + i);
+					return_addr = (void *)(pMemory + i);
 			}
 		}
 
 		return return_addr;
 	}
 
-	void* FindInterface(const char* name)
+	void *FindInterface(const char *name)
 	{
 		CreateInterfaceFn fn = (CreateInterfaceFn)GetProcAddress(m_hModule, "CreateInterface");
 
 		if (!fn)
 			Error("Could not find CreateInterface in %s\n", m_pModule);
 
-		void* pInterface = fn(name, nullptr);
+		void *pInterface = fn(name, nullptr);
 
 		if (!pInterface)
 			Error("Could not find %s in %s\n", name, m_pModule);
@@ -63,7 +64,7 @@ public:
 		return pInterface;
 	}
 
-	const char* m_pModule;
+	const char *m_pModule;
 	HMODULE m_hModule;
 	MODULEINFO m_hModuleInfo;
 };

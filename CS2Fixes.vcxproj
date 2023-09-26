@@ -73,15 +73,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>server</TargetName>
-    <IncludePath>sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>cs2_sdk;sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>sdk\lib\public\win64;minhook/lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
-    <OutDir>$(SolutionDir)/package/addons/cs2fixes/bin/win64</OutDir>
+    <OutDir>$(SolutionDir)/package/addons/cs2fixes/bin/win64/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>server</TargetName>
-    <IncludePath>sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>cs2_sdk;sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>sdk\lib\public\win64;minhook/lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
-    <OutDir>$(SolutionDir)/package/addons/cs2fixes/bin/win64</OutDir>
+    <OutDir>$(SolutionDir)/package/addons/cs2fixes/bin/win64/</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -121,12 +121,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;COMPILER_MSVC;COMPILER_MSVC64;_CRT_NO_VA_START_VALIDATION;_DEBUG;CS2Fixes_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__STDC_LIMIT_MACROS;X64BITS;WIN32;COMPILER_MSVC;COMPILER_MSVC64;_CRT_NO_VA_START_VALIDATION;_DEBUG;CS2Fixes_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cs2_sdk;sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -144,12 +144,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;COMPILER_MSVC;COMPILER_MSVC64;_CRT_NO_VA_START_VALIDATION;NDEBUG;_WINDOWS;CS2Fixes_EXPORTS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__STDC_LIMIT_MACROS;X64BITS;WIN32;COMPILER_MSVC;COMPILER_MSVC64;_CRT_NO_VA_START_VALIDATION;NDEBUG;_WINDOWS;CS2Fixes_EXPORTS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>Default</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cs2_sdk;sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -167,10 +167,9 @@
     <ClCompile Include="addresses.cpp" />
     <ClCompile Include="cs2_sdk\chandle.cpp" />
     <ClCompile Include="cs2_sdk\interfaces\cgameentitysystem.cpp" />
-    <ClCompile Include="cs2_sdk\interfaces\interfaces.cpp" />
+    <ClCompile Include="cs2_sdk\interfaces\cs2_interfaces.cpp" />
     <ClCompile Include="cs2_sdk\schema.cpp" />
     <ClCompile Include="cvars.cpp" />
-    <ClCompile Include="detour.cpp" />
     <ClCompile Include="dllpatch.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="patches.cpp" />
@@ -182,13 +181,14 @@
     <ClInclude Include="cs2_sdk\entity\cbaseentity.h" />
     <ClInclude Include="cs2_sdk\entity\cbaseplayercontroller.h" />
     <ClInclude Include="cs2_sdk\entity\cbaseplayerpawn.h" />
+    <ClInclude Include="cs2_sdk\entity\ccollisionproperty.h" />
     <ClInclude Include="cs2_sdk\entity\ccsplayercontroller.h" />
     <ClInclude Include="cs2_sdk\entity\ccsplayerpawn.h" />
     <ClInclude Include="cs2_sdk\entity\services.h" />
     <ClInclude Include="cs2_sdk\interfaces\cgameentitysystem.h" />
     <ClInclude Include="cs2_sdk\interfaces\cgameresourceserviceserver.h" />
     <ClInclude Include="cs2_sdk\interfaces\cschemasystem.h" />
-    <ClInclude Include="cs2_sdk\interfaces\interfaces.h" />
+    <ClInclude Include="cs2_sdk\interfaces\cs2_interfaces.h" />
     <ClInclude Include="cs2_sdk\schema.h" />
     <ClInclude Include="detour.h" />
     <ClInclude Include="dllpatch.h" />

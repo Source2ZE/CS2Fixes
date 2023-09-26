@@ -1,10 +1,13 @@
 #pragma once
 
-#include "cbaseentity.h"
 #include "../chandle.h"
+#include "cbaseentity.h"
 
-class CBasePlayerController : public CBaseEntity {
+class CBasePlayerController : public CBaseEntity
+{
 public:
-    SCHEMA_FIELD(m_steamID, "CBasePlayerController", "m_steamID", uint64_t);
-    SCHEMA_FIELD(m_hPawn, "CBasePlayerController", "m_hPawn", CHandle);
+	DECLARE_CLASS(CBasePlayerController);
+
+	SCHEMA_FIELD(uint64, m_steamID)
+	SCHEMA_FIELD(CHandle, m_hPawn)
 };

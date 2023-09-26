@@ -1,11 +1,14 @@
 #pragma once
 #include <platform.h>
+#include "interfaces/interfaces.h"
 
 class CGameEntitySystem;
 
-class CGameResourceService {
+class CGameResourceService
+{
 public:
-    CGameEntitySystem* GetGameEntitySystem() {
-        return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(this) + 0x58);
-    }
+	CGameEntitySystem *GetGameEntitySystem()
+	{
+		return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(this) + 0x58);
+	}
 };

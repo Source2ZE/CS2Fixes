@@ -1,6 +1,11 @@
-#include "interfaces.h"
+#include "cs2_interfaces.h"
 
-CGameEntitySystem* CGameEntitySystem::GetInstance() {
-    if (!interfaces::pGameResourceServiceServer) return nullptr;
-    return interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+#include "tier0/memdbgon.h"
+
+CGameEntitySystem *CGameEntitySystem::GetInstance()
+{
+	if (!interfaces::pGameResourceServiceServer)
+		return nullptr;
+
+	return interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 }

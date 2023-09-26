@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tier0/platform.h"
+#include "platform.h"
 
 class CDLLPatch
 {

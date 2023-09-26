@@ -1,7 +1,9 @@
+#include "../common.h"
 #include <unordered_map>
 #include "schema.h"
-#include "interfaces/interfaces.h"
-#include "../common.h"
+#include "interfaces/cs2_interfaces.h"
+
+#include "tier0/memdbgon.h"
 
 using SchemaKeyValueMap_t = std::unordered_map<uint32_t, int16_t>;
 using SchemaTableMap_t = std::unordered_map<uint32_t, SchemaKeyValueMap_t>;
@@ -16,7 +18,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap,
     if (!pClassInfo) {
         tableMap.emplace(classKey, SchemaKeyValueMap_t{});
 
-        Message("InitSchemaFieldsForClass(): '%s' was not found!\n", className);
+        Warning("InitSchemaFieldsForClass(): '%s' was not found!\n", className);
         return false;
     }
 
@@ -29,7 +31,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap,
     for (int i = 0; i < fieldsSize; ++i) {
         SchemaClassFieldData_t& field = pFields[i];
 
-#ifndef CS2_SDK_ENABLE_SCHEMA_FIELD_OFFSET_LOGGING
+#ifdef CS2_SDK_ENABLE_SCHEMA_FIELD_OFFSET_LOGGING
         Message("%s::%s found at -> 0x%X\n", className, field.m_name,
             field.m_offset);
 #endif
@@ -37,7 +39,6 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap,
         keyValueMap.emplace(hash_32_fnv1a_const(field.m_name), field.m_offset);
     }
 
-    Message("schemaTableMap[%s] has %llu fields.\n", className, keyValueMap.size());
     return true;
 }
 
@@ -80,7 +81,7 @@ int16_t schema::GetOffset(const char* className, uint32_t classKey,
 
     const SchemaKeyValueMap_t& tableMap = tableMapIt->second;
     if (tableMap.find(memberKey) == tableMap.cend()) {
-        Message("schema::GetOffset(): '%s' was not found in '%s'!\n", memberName,
+        Warning("schema::GetOffset(): '%s' was not found in '%s'!\n", memberName,
             className);
         return 0;
     }

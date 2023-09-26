@@ -5,7 +5,7 @@
 #include "tier0/dbg.h"
 #include "MinHook.h"
 #include <Psapi.h>
-#include "cs2_sdk/interfaces/interfaces.h"
+#include "interfaces/cs2_interfaces.h"
 
 #include "tier0/memdbgon.h"
 
@@ -127,9 +127,6 @@ float GetTickIntervalHook()
 }
 #endif
 
-typedef void* CreateInterface_t(const char* name, int* ret);
-CreateInterface_t* g_pfnCreateInterface = nullptr;
-
 DLL_EXPORT void *CreateInterface(const char *pName, int *pReturnCode)
 {
 	Init();
@@ -138,26 +135,28 @@ DLL_EXPORT void *CreateInterface(const char *pName, int *pReturnCode)
 	printf("CreateInterface: %s %i\n", pName, *pReturnCode);
 #endif
 
-	if (!g_pfnCreateInterface)
+	static CreateInterfaceFn pfnCreateInterface;
+
+	if (!pfnCreateInterface)
 	{
 		char szServerDLLPath[MAX_PATH];
 		V_strncpy(szServerDLLPath, Plat_GetGameDirectory(), MAX_PATH);
 		V_strcat(szServerDLLPath, GAMEBIN "server.dll", MAX_PATH);
 
-		g_pfnCreateInterface = (CreateInterface_t*)Plat_GetProcAddress(szServerDLLPath, "CreateInterface");
+		pfnCreateInterface = (CreateInterfaceFn)Plat_GetProcAddress(szServerDLLPath, "CreateInterface");
 	}
 
-	void *pInterface = g_pfnCreateInterface(pName, pReturnCode);
+	void *pInterface = pfnCreateInterface(pName, pReturnCode);
 
+#ifdef USE_TICKRATE
 	if (!V_stricmp(pName, SOURCE2SERVERCONFIG_INTERFACE_VERSION))
 	{
 		void** vtable = *(void***)pInterface;
 
-#ifdef USE_TICKRATE
 		MH_CreateHook(vtable[13], GetTickIntervalHook, &g_pfnGetTickInterval);
 		MH_EnableHook(vtable[13]);
-#endif
 	}
+#endif
 
 	return pInterface;
 }

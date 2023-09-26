@@ -1,10 +1,11 @@
 #pragma once
 
-#include "tier0/platform.h"
+#include "platform.h"
 
 // #define HOOK_CONVARS
 // #define HOOK_CONCOMMANDS
 // #define USE_TICKRATE
+// #define USE_DEBUG_CONSOLE
 
 #define ROOTBIN "/bin/win64/"
 #define GAMEBIN "/csgo/bin/win64/"
@@ -38,6 +39,13 @@ typedef void *(*RegisterConCommand)(void *, void *, ConCommandInfo *, void *, vo
 
 void HookConCommands();
 #endif
+
+struct WeaponMapEntry_t
+{
+	const char *command;
+	const char *szWeaponName;
+	int iPrice;
+};
 
 void UnlockConVars();
 void UnlockConCommands();

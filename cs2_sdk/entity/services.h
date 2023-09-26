@@ -5,15 +5,14 @@
 
 class CPlayer_MovementServices
 {
-
+public:
+	DECLARE_CLASS(CPlayer_MovementServices);
 };
 
 class CCSPlayerController_InGameMoneyServices
 {
 public:
-    //SCHEMA_FIELD(m_iAccount, "CCSPlayerController_InGameMoneyServices", "m_iAccount", int32)
+	DECLARE_CLASS(CCSPlayerController_InGameMoneyServices);
 
-
-
-	SCHEMA_FIELD_NEW(m_iAccount, "CCSPlayerController_InGameMoneyServices", 0, int32)
+    SCHEMA_FIELD(int, m_iAccount)
 };
