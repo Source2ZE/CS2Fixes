@@ -5,5 +5,5 @@
 class CCSPlayerPawn : public CBasePlayerPawn
 {
 public:
-	DECLARE_CLASS(CCSPlayerPawn);
+	DECLARE_SCHEMA_CLASS(CCSPlayerPawn);
 };

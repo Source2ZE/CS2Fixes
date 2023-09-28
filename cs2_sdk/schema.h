@@ -50,18 +50,22 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char *const str, const uint6
 																												\
 		if (m_chain != 0)																						\
 		{																										\
+			ConMsg("Found chain offset %d for %s::%s\n", m_chain, ThisClass, #varName);							\
 			addresses::NetworkStateChanged((uintptr_t)(this) + m_chain, m_offset + extra_offset, 0xFFFFFFFF);	\
 		}																										\
 		else																									\
 		{																										\
-			/* WIP: Works fine for most props, but inlined classes in the middle of a class will need to have their this pointer corrected by the offset .*/\
-			/*CALL_VIRTUAL(void, 23, this, m_offset + extra_offset, 0xFFFFFFFF, 0xFFFF); */						\
+			/* WIP: Works fine for most props, but inlined classes in the middle of a class will
+				need to have their this pointer corrected by the offset .*/										\
+			ConMsg("Attempting to call update on on %s::%s\n", ThisClass, #varName);							\
+			CALL_VIRTUAL(void, IsStruct ? 1 : 21, this, m_offset + extra_offset, 0xFFFFFFFF, 0xFFFF);			\
 		}																										\
 		*reinterpret_cast<std::add_pointer_t<type>>((uintptr_t)(this) + m_offset + extra_offset) = val;			\
 	}
 
 #define SCHEMA_FIELD(type, varName) \
 	SCHEMA_FIELD_OFFSET(type, varName, 0)
+
 
 #define PSCHEMA_FIELD_OFFSET(type, varName, extra_offset) \
 	auto varName()																\
@@ -85,4 +89,11 @@ namespace schema
 	int16_t GetOffset(const char *className, uint32_t classKey, const char *memberName, uint32_t memberKey);
 }
 
-#define DECLARE_CLASS(className) static constexpr auto ThisClass = #className;
+#define DECLARE_SCHEMA_CLASS_BASE(className, isStruct) \
+	static constexpr inline const char *ThisClass = #className;      \
+	static constexpr inline bool IsStruct = isStruct;
+
+#define DECLARE_SCHEMA_CLASS(className) DECLARE_SCHEMA_CLASS_BASE(className, false)
+
+// Use this for classes that can be wholly included within other classes (like CCollisionProperty within CBaseModelEntity)
+#define DECLARE_SCHEMA_CLASS_INLINE(className) DECLARE_SCHEMA_CLASS_BASE(className, true)

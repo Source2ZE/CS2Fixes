@@ -1,6 +1,7 @@
 #pragma once
 
 #include "platform.h"
+#include "irecipientfilter.h"
 
 // #define HOOK_CONVARS
 // #define HOOK_CONCOMMANDS
@@ -59,3 +60,28 @@ void Message(const char *, ...);
 void Panic(const char *, ...);
 
 void *FindSignature(void *, const byte *, size_t);
+
+
+class CRecipientFilter : public IRecipientFilter
+{
+public:
+	CRecipientFilter() { Reset(); }
+
+	~CRecipientFilter() override {}
+
+	bool IsReliable(void) const override;
+	bool IsInitMessage(void) const override;
+
+	int GetRecipientCount(void) const override;
+	CEntityIndex *GetRecipientIndex(CEntityIndex *pEntIndex, int slot) const override;
+
+public:
+	void Reset();
+	void MakeReliable();
+	void AddRecipient(int entindex);
+
+private:
+	bool m_bReliable;
+	bool m_bInitMessage;
+	CUtlVectorFixedGrowable<int, 64> m_Recipients;
+};

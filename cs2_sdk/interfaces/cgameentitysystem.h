@@ -54,10 +54,7 @@ public:
 		if (!m_pEntityList[listToUse])
 			return nullptr;
 
-		if (m_pEntityList[listToUse]->m_pIdentities[index % MAX_ENTITIES_IN_LIST].entity)
-			return m_pEntityList[listToUse]->m_pIdentities[index % MAX_ENTITIES_IN_LIST].entity;
-		else
-			return nullptr;
+		return m_pEntityList[listToUse]->m_pIdentities[index % MAX_ENTITIES_IN_LIST].entity;
 	}
 
 	static CGameEntitySystem *GetInstance();

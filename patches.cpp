@@ -6,6 +6,7 @@
 #include "interfaces/cs2_interfaces.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
+#include "entity/cbasemodelentity.h"
 #include "addresses.h"
 
 #include "tier0/memdbgon.h"
@@ -57,15 +58,6 @@ CDLLPatch g_ClientPatches[] =
 		(byte*)"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x4F\x44\x0F\x28\xC2",
 		(byte*)"\xEB",
 		"ClientMovementUnlock",
-		1
-	),
-	// Remove client steam check
-	// Look for "Failed to connect to local..."
-	CDLLPatch(
-		GAMEBIN"client.dll",
-		(byte*)"\x75\x73\xFF\x15\x2A\x2A\x2A\x2A\x48\x8D\x15",
-		(byte*)"\xEB",
-		"ClientSteamCheck",
 		1
 	),
 };
@@ -142,8 +134,8 @@ void SetMaxPlayers(byte iMaxPlayers)
 	WriteProcessMemory(GetCurrentProcess(), g_pMaxPlayers, &iMaxPlayers, 1, nullptr);
 }
 
-void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, void *, uint64);
-void __fastcall Detour_UTIL_SayText2Filter(IRecipientFilter &, CBaseEntity *, uint64, const char *, const char *, const char *, const char *, const char *);
+void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CBasePlayerController *, uint64);
+void __fastcall Detour_UTIL_SayText2Filter(IRecipientFilter &, CBasePlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
 void __fastcall Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, const char *);
 
 // both of these are called from Host_Say
@@ -164,20 +156,29 @@ DECLARE_DETOUR(Host_Say,
 	GAMEBIN "server.dll",
 	"\x44\x89\x4C\x24\x2A\x44\x88\x44\x24\x2A\x55\x53\x56\x57\x41\x54\x41\x55");
 
-void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, void *pPlayer, uint64 eMessageType)
+void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CBasePlayerController *pPlayer, uint64 eMessageType)
 {
+#ifdef _DEBUG
+	CEntityIndex slot(-1);
+	int entindex = filter.GetRecipientIndex(&slot, 0)->Get();
+	CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(entindex);
+
+	if (target)
+		Message("[CS2Fixes] Chat from %s to %s: %s\n", pPlayer ? &pPlayer->m_iszPlayerName() : "console", target->m_iszPlayerName(), pText);
+#endif
+
 	if (pPlayer)
 		UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
 
 	char buf[256];
-	V_snprintf(buf, sizeof(buf), "%s%s", " \7CONSOLE:\4", pText + sizeof("Console:"));
+	V_snprintf(buf, sizeof(buf), "%s%s", " \7CONSOLE:\4", pText + sizeof("Console: "));
 
 	UTIL_SayTextFilter(filter, buf, pPlayer, eMessageType);
 }
 
 void __fastcall Detour_UTIL_SayText2Filter(
 	IRecipientFilter &filter, 
-	CBaseEntity *pEntity, 
+	CBasePlayerController *pEntity, 
 	uint64 eMessageType, 
 	const char *msg_name,
 	const char *param1, 
@@ -185,6 +186,15 @@ void __fastcall Detour_UTIL_SayText2Filter(
 	const char *param3, 
 	const char *param4)
 {
+#ifdef _DEBUG
+	CEntityIndex slot(-1);
+	int entindex = filter.GetRecipientIndex(&slot, 0)->Get() + 1;
+	CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(entindex);
+
+	if (target)	
+		Message("[CS2Fixes] Chat from %s to %s: %s\n", param1, &target->m_iszPlayerName(), param2);
+#endif
+
 	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
 }
 
@@ -270,27 +280,84 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 	}
 	else if (!V_stricmp(token, "setcollision"))
 	{
-		uint8 colgroup = atoi(strtok_s(nullptr, " ", &pos));
-		uint8 uid = atoi(strtok_s(nullptr, " ", &pos));
+		Collision_Group_t colgroup = (Collision_Group_t)atoi(strtok_s(nullptr, " ", &pos));
+		int uid = atoi(strtok_s(nullptr, " ", &pos));
 
-		CCSPlayerController *targetController = (CCSPlayerController*)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		CBaseEntity *target = CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		if (target)
+			target->m_pCollision()->m_CollisionGroup(colgroup);
+	}
+	else if (!V_stricmp(token, "setcollisionplayer"))
+	{
+		Collision_Group_t colgroup = (Collision_Group_t)atoi(strtok_s(nullptr, " ", &pos));
+		int uid = atoi(strtok_s(nullptr, " ", &pos));
 
-		ConMsg("test %llx\n", targetController);
+		CCSPlayerController *targetController = (CCSPlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
 
 		if (targetController)
+			targetController->m_hPawn().Get()->m_pCollision()->m_CollisionGroup(colgroup);
+	}
+	else if (!V_stricmp(token, "message"))
+	{
+		// Note that the engine will treat this as a player slot number, not an entity index
+		int uid = atoi(strtok_s(nullptr, " ", &pos));
+
+		CBasePlayerController *player = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(uid + 1);
+
+		if (!player)
+			return;
+
+		char message[256];
+		V_snprintf(message, sizeof(message), " \7[CS2Fixes]\1 Private message to %s: \5%s", &player->m_iszPlayerName(), pos);
+
+		CRecipientFilter filter;
+
+		filter.AddRecipient(uid);
+		filter.MakeReliable();
+
+		UTIL_SayTextFilter(filter, message, nullptr, 0);
+	}
+	else if (!V_stricmp(token, "setsolid"))
+	{
+		SolidType_t colgroup = (SolidType_t)atoi(strtok_s(nullptr, " ", &pos));
+		int uid = atoi(strtok_s(nullptr, " ", &pos));
+
+		CBaseEntity *target = CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		if (target)
+			target->m_pCollision()->m_nSolidType(colgroup);
+	}
+	else if (!V_stricmp(token, "setglow"))
+	{
+		int uid = atoi(strtok_s(nullptr, " ", &pos));
+
+		CBaseModelEntity *target = (CBaseModelEntity*)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		if (target)
 		{
-			ConMsg("test %llx\n", targetController->m_hPawn().Get()->m_iTeamNum());
-			ConMsg("worky %d\n", targetController->m_hPawn().Get()->m_pCollision()->m_CollisionGroup());
-			//targetController->m_hPawn().Get()->m_pCollision()->m_CollisionGroup(colgroup);
+			target->m_Glow().m_bGlowing(true);
+			target->m_Glow().m_fGlowColor(Vector(255, 255, 0));
+			target->m_Glow().m_iGlowType(1);
+			target->m_Glow().m_nGlowRange(1000);
 		}
 	}
 	else if (!V_stricmp(token, "basevelocity"))
 	{
+		int uid = atoi(strtok_s(nullptr, " ", &pos));
 		float x = atof(strtok_s(nullptr, " ", &pos));
 		float y = atof(strtok_s(nullptr, " ", &pos));
 		float z = atof(strtok_s(nullptr, " ", &pos));
 
-		pController->m_hPawn().Get()->m_vecBaseVelocity(Vector(x, y, z));
+		CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		if (target)
+			target->m_hPawn().Get()->m_vecBaseVelocity(Vector(x, y, z));
+	}
+	else if (!V_stricmp(token, "sethealth"))
+	{
+		int uid = atoi(strtok_s(nullptr, " ", &pos));
+		int health = atoi(strtok_s(nullptr, " ", &pos));
+
+		CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		if (target)
+			target->m_hPawn().Get()->m_iHealth(health);
 	}
 	else
 	{
@@ -368,4 +435,49 @@ void InitPatches()
 
 	Host_Say.CreateDetour();
 	Host_Say.EnableDetour();
+}
+
+void CRecipientFilter::Reset(void)
+{
+	m_bReliable = false;
+	m_bInitMessage = false;
+}
+
+void CRecipientFilter::MakeReliable(void)
+{
+	m_bReliable = true;
+}
+
+bool CRecipientFilter::IsReliable(void) const
+{
+	return m_bReliable;
+}
+
+bool CRecipientFilter::IsInitMessage(void) const
+{
+	return m_bInitMessage;
+}
+
+int CRecipientFilter::GetRecipientCount(void) const
+{
+	return m_Recipients.Count();
+}
+
+CEntityIndex *CRecipientFilter::GetRecipientIndex(CEntityIndex *pEntIndex, int slot) const
+{
+	if (slot < 0 || slot >= GetRecipientCount())
+		pEntIndex->_index = -1;
+	else
+		pEntIndex->_index = m_Recipients[slot];
+
+	return pEntIndex;
+}
+
+void CRecipientFilter::AddRecipient(int entindex)
+{
+	// Already in list
+	if (m_Recipients.Find(entindex) != m_Recipients.InvalidIndex())
+		return;
+
+	m_Recipients.AddToTail(entindex);
 }

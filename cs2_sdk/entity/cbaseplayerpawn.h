@@ -6,7 +6,7 @@
 class CBasePlayerPawn : public CBaseEntity
 {
 public:
-	DECLARE_CLASS(CBasePlayerPawn);
+	DECLARE_SCHEMA_CLASS(CBasePlayerPawn);
 
 	SCHEMA_FIELD(CPlayer_MovementServices*, m_pMovementServices)
 	SCHEMA_FIELD(uint8*, m_pWeaponServices)

@@ -7,7 +7,7 @@
 class CBaseEntity
 {
 public:
-	DECLARE_CLASS(CBaseEntity);
+	DECLARE_SCHEMA_CLASS(CBaseEntity)
 
 	SCHEMA_FIELD(int, m_iHealth)
 	SCHEMA_FIELD(int, m_iTeamNum)
