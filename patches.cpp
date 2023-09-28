@@ -17,7 +17,7 @@ CDLLPatch g_CommonPatches[] =
 	// Refer to vauff's pin in #scripting
 	CDLLPatch(
 		GAMEBIN"server.dll",
-		(byte*)"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x4F\x44\x0F\x28\xC2",
+		(byte*)"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x2A\x2A\x0F\x28\xCA\xF3\x0F\x59\xC0",
 		(byte*)"\xEB",
 		"ServerMovementUnlock",
 		1
@@ -55,7 +55,7 @@ CDLLPatch g_ClientPatches[] =
 	// Identical to the server since it's shared code
 	CDLLPatch(
 		GAMEBIN"client.dll",
-		(byte*)"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x4F\x44\x0F\x28\xC2",
+		(byte*)"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x2A\x2A\x0F\x28\xCA\xF3\x0F\x59\xC0",
 		(byte*)"\xEB",
 		"ClientMovementUnlock",
 		1
@@ -168,7 +168,7 @@ void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *
 #endif
 
 	if (pPlayer)
-		UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
+		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
 
 	char buf[256];
 	V_snprintf(buf, sizeof(buf), "%s%s", " \7CONSOLE:\4", pText + sizeof("Console: "));
