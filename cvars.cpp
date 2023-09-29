@@ -1,10 +1,11 @@
+#include <array>
 #include "common.h"
 #include "icvar.h"
-#include <Psapi.h>
+//#include <Psapi.h>
 
 #include "tier0/memdbgon.h"
 
-extern MODULEINFO g_Tier0Info;
+//extern MODULEINFO g_Tier0Info;
 
 static uint64 g_iFlagsToRemove = (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY | FCVAR_MISSING0 | FCVAR_MISSING1 | FCVAR_MISSING2 | FCVAR_MISSING3);
 

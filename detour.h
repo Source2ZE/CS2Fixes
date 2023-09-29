@@ -1,60 +1,63 @@
-#pragma once
-
-#include "MinHook.h"
+#pragma once 
+#include "subhook.h"
+#include "module.h"
 #include "tier0/dbg.h"
-#include <Psapi.h>
-#include <array>
+#include "utlvector.h"
+#include "plat.h"
 
-template <typename T>
-class CDetour
+class CDetourBase
 {
 public:
-	CDetour(const char *pszModule, T *pfnDetour, const char *pszName, byte *pSignature = nullptr, const char *pszPattern = nullptr) :
-		m_pszModule(pszModule), m_pfnDetour(pfnDetour), m_pszName(pszName), m_pSignature(pSignature), m_pszPattern(pszPattern)
+	virtual const char *GetName() = 0;
+	virtual void FreeDetour() = 0;
+};
+
+template <typename T>
+class CDetour : public CDetourBase
+{
+public:
+	CDetour(CModule *pModule, T *pfnDetour, const char *pszName, byte *pSignature = nullptr) :
+		m_pModule(pModule), m_pfnDetour(pfnDetour), m_pszName(pszName), m_pSignature(pSignature)
 	{
 	}
 
 	void CreateDetour();
 	void EnableDetour();
 	void DisableDetour();
-
-	// Shorthand for calling original.
-	template <typename... Args>
-	auto operator()(Args &&...args)
+	void FreeDetour() override;
+	const char* GetName() override
 	{
-		return std::invoke(m_pfnOrigFunc, std::forward<Args>(args)...);
+		return m_pszName;
 	}
 
+	T *GetOriginal();
+
+	// Shorthand for calling original.
+	//template <typename... Args>
+	//auto operator()(Args &&...args)
+	//{
+	//	return std::invoke(m_pfnOrigFunc, std::forward<Args>(args)...);
+	//}
+
 private:
-	const char *m_pszModule;
-	const char *m_pszName;
-	byte *m_pSignature;
-	const char *m_pszPattern;
+	CModule *m_pModule;
+	T *m_pfnDetour;
+	const char* m_pszName;
+	byte* m_pSignature;
 	void *m_pfnFunc;
 	T *m_pfnOrigFunc;
-	T *m_pfnDetour;
+	subhook_t m_hook;
 };
+
+static CUtlVector<CDetourBase*> g_vecDetours;
 
 template <typename T>
 void CDetour<T>::CreateDetour()
 {
-	char szModule[MAX_PATH];
-
-	V_strcpy(szModule, Plat_GetGameDirectory());
-	V_strcat(szModule, m_pszModule, MAX_PATH);
-
-	HMODULE lib = LoadLibraryA(szModule);
-
-	if (!lib)
-		Error("Could not find %s", szModule);
-
-	MODULEINFO moduleInfo;
-	GetModuleInformation(GetCurrentProcess(), lib, &moduleInfo, sizeof(moduleInfo));
-
 	if (!m_pSignature)
-		m_pfnFunc = GetProcAddress(lib, m_pszName);
+		m_pfnFunc = dlsym(m_pModule->m_hModule, m_pszName);
 	else
-		m_pfnFunc = FindSignature(moduleInfo.lpBaseOfDll, m_pSignature, moduleInfo.SizeOfImage);
+		m_pfnFunc = m_pModule->FindSignature(m_pSignature);
 
 	if (!m_pfnFunc)
 	{
@@ -62,20 +65,37 @@ void CDetour<T>::CreateDetour()
 		return;
 	}
 
-	MH_CreateHook(m_pfnFunc, m_pfnDetour, (void **)&m_pfnOrigFunc);
+	m_hook = subhook_new((void*)m_pfnFunc, (void*)m_pfnDetour, (subhook_flags_t)0);
+
+	g_vecDetours.AddToTail(this);
 }
 
 template <typename T>
 void CDetour<T>::EnableDetour()
 {
-	MH_EnableHook(m_pfnFunc);
+	subhook_install(m_hook);
 }
 
 template <typename T>
 void CDetour<T>::DisableDetour()
 {
-	MH_DisableHook(m_pfnFunc);
+	subhook_remove(m_hook);
+}
+
+template <typename T>
+void CDetour<T>::FreeDetour()
+{
+	DisableDetour();
+	subhook_free(m_hook);
+}
+
+template <typename T>
+T* CDetour<T>::GetOriginal()
+{
+	return m_pfnOrigFunc;
 }
 
 #define DECLARE_DETOUR(name, detour, modulepath, signature) \
 	CDetour<decltype(detour)> name(modulepath, detour, #name, (byte*)signature)
+
+void FlushAllDetours();

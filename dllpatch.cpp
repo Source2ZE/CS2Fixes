@@ -1,3 +1,5 @@
+#ifdef _WIN32
+
 #include "dllpatch.h"
 #include "common.h"
 #include "tier0/dbg.h"
@@ -68,3 +70,5 @@ void* FindSignature(void* BaseAddr, const byte* pData, size_t MaxSize)
 
 	return return_addr;
 }
+
+#endif

@@ -1,6 +1,8 @@
 #include "common.h"
 #include "detour.h"
+#ifdef _WIN32
 #include "dllpatch.h"
+#endif
 #include "icvar.h"
 #include "irecipientfilter.h"
 #include "interfaces/cs2_interfaces.h"
@@ -10,6 +12,10 @@
 #include "addresses.h"
 
 #include "tier0/memdbgon.h"
+
+#include "subhook.h"
+
+#ifdef _WIN32
 
 CDLLPatch g_CommonPatches[] =
 {
@@ -74,31 +80,32 @@ CDLLPatch g_ToolsPatches[] =
 		4
 	),
 };
+#endif
 
 void Detour_Log()
 {
 	return;
 }
 
-bool __fastcall Detour_IsChannelEnabled(LoggingChannelID_t channelID, LoggingSeverity_t severity)
+bool FASTCALL Detour_IsChannelEnabled(LoggingChannelID_t channelID, LoggingSeverity_t severity)
 {
 	return false;
 }
 
-CDetour<void> g_LoggingDetours[] =
+CDetour<decltype(Detour_Log)> g_LoggingDetours[] =
 {
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_Log, "Msg" ),
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_Log, "?ConMsg@@YAXPEBDZZ" ),
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_Log, "?ConColorMsg@@YAXAEBVColor@@PEBDZZ" ),
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_Log, "ConDMsg" ),
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_Log, "DevMsg" ),
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_Log, "Warning" ),
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_Log, "DevWarning" ),
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_Log, "?DevWarning@@YAXPEBDZZ" ),
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_Log, "LoggingSystem_Log" ),
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_Log, "LoggingSystem_LogDirect" ),
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_Log, "LoggingSystem_LogAssert" ),
-	CDetour<void>( ROOTBIN"tier0.dll", Detour_IsChannelEnabled, "LoggingSystem_IsChannelEnabled" ),
+	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "Msg" ),
+	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?ConMsg@@YAXPEBDZZ" ),
+	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?ConColorMsg@@YAXAEBVColor@@PEBDZZ" ),
+	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "ConDMsg" ),
+	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "DevMsg" ),
+	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "Warning" ),
+	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "DevWarning" ),
+	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?DevWarning@@YAXPEBDZZ" ),
+	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "LoggingSystem_Log" ),
+	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "LoggingSystem_LogDirect" ),
+	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "LoggingSystem_LogAssert" ),
+	//CDetour<decltype(Detour_Log)>( modules::tier0, Detour_IsChannelEnabled, "LoggingSystem_IsChannelEnabled" ),
 };
 
 void InitLoggingDetours()
@@ -131,32 +138,32 @@ void SetMaxPlayers(byte iMaxPlayers)
 {
 	clamp(iMaxPlayers, 1, 64);
 
-	WriteProcessMemory(GetCurrentProcess(), g_pMaxPlayers, &iMaxPlayers, 1, nullptr);
+	//WriteProcessMemory(GetCurrentProcess(), g_pMaxPlayers, &iMaxPlayers, 1, nullptr);
 }
 
-void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CBasePlayerController *, uint64);
-void __fastcall Detour_UTIL_SayText2Filter(IRecipientFilter &, CBasePlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
-void __fastcall Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, const char *);
+void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CBasePlayerController *, uint64);
+void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CBasePlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
+void FASTCALL Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, const char *);
 
 // both of these are called from Host_Say
 DECLARE_DETOUR(
 	UTIL_SayTextFilter,
 	Detour_UTIL_SayTextFilter,
-	GAMEBIN "server.dll",
+	modules::server,
 	"\x48\x89\x5C\x24\x2A\x55\x56\x57\x48\x8D\x6C\x24\x2A\x48\x81\xEC\x2A\x2A\x2A\x2A\x49\x8B\xD8");
 DECLARE_DETOUR(
 	UTIL_SayText2Filter,
 	Detour_UTIL_SayText2Filter,
-	GAMEBIN "server.dll",
+	modules::server,
 	"\x48\x89\x5C\x24\x2A\x55\x56\x57\x48\x8D\x6C\x24\x2A\x48\x81\xEC\x2A\x2A\x2A\x2A\x41\x0F\xB6\xF8");
 
 // look for string "\"Console<0>\" say \"%s\"\n"
 DECLARE_DETOUR(Host_Say,
 	Detour_Host_Say,
-	GAMEBIN "server.dll",
+	modules::server,
 	"\x44\x89\x4C\x24\x2A\x44\x88\x44\x24\x2A\x55\x53\x56\x57\x41\x54\x41\x55");
 
-void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CBasePlayerController *pPlayer, uint64 eMessageType)
+void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CBasePlayerController *pPlayer, uint64 eMessageType)
 {
 #ifdef _DEBUG
 	int entindex = filter.GetRecipientIndex(0).Get();
@@ -167,15 +174,15 @@ void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *
 #endif
 
 	if (pPlayer)
-		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
+		return UTIL_SayTextFilter.GetOriginal()(filter, pText, pPlayer, eMessageType);
 
 	char buf[256];
 	V_snprintf(buf, sizeof(buf), "%s%s", " \7CONSOLE:\4", pText + sizeof("Console: "));
 
-	UTIL_SayTextFilter(filter, buf, pPlayer, eMessageType);
+	UTIL_SayTextFilter.GetOriginal()(filter, buf, pPlayer, eMessageType);
 }
 
-void __fastcall Detour_UTIL_SayText2Filter(
+void FASTCALL Detour_UTIL_SayText2Filter(
 	IRecipientFilter &filter, 
 	CBasePlayerController *pEntity, 
 	uint64 eMessageType, 
@@ -193,7 +200,7 @@ void __fastcall Detour_UTIL_SayText2Filter(
 		Message("[CS2Fixes] Chat from %s to %s: %s\n", param1, &target->m_iszPlayerName(), param2);
 #endif
 
-	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
+	UTIL_SayText2Filter.GetOriginal()(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
 }
 
 WeaponMapEntry_t WeaponMap[] = {
@@ -249,7 +256,7 @@ void SendConsoleChat(const char *msg, ...)
 
 	CCommand newArgs;
 	newArgs.Tokenize(buf);
-	Host_Say(nullptr, &newArgs, false, 0, nullptr);
+	Host_Say.GetOriginal()(nullptr, &newArgs, false, 0, nullptr);
 }
 
 void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
@@ -313,7 +320,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		filter.AddRecipient(uid);
 		filter.MakeReliable();
 
-		UTIL_SayTextFilter(filter, message, nullptr, 0);
+		UTIL_SayTextFilter.GetOriginal()(filter, message, nullptr, 0);
 	}
 	else if (!V_stricmp(token, "setsolid"))
 	{
@@ -381,7 +388,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 	free(pCommand);
 }
 
-void __fastcall Detour_Host_Say(CCSPlayerController *pController, CCommand *args, bool teamonly, int unk1, const char *unk2)
+void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand *args, bool teamonly, int unk1, const char *unk2)
 {
 	const char *pMessage = args->Arg(1);
 
@@ -391,11 +398,12 @@ void __fastcall Detour_Host_Say(CCSPlayerController *pController, CCommand *args
 	if (*pMessage == '/')
 		return;
 
-	Host_Say(pController, args, teamonly, unk1, unk2);
+	Host_Say.GetOriginal()(pController, args, teamonly, unk1, unk2);
 }
 
 void InitPatches()
 {
+#ifdef _WIN32
 	for (int i = 0; i < sizeof(g_CommonPatches) / sizeof(*g_CommonPatches); i++)
 		g_CommonPatches[i].PerformPatch();
 
@@ -424,6 +432,7 @@ void InitPatches()
 		for (int i = 0; i < sizeof(g_ToolsPatches) / sizeof(*g_ToolsPatches); i++)
 			g_ToolsPatches[i].PerformPatch();
 	}
+#endif
 
 	UTIL_SayTextFilter.CreateDetour();
 	UTIL_SayTextFilter.EnableDetour();
@@ -433,6 +442,7 @@ void InitPatches()
 
 	Host_Say.CreateDetour();
 	Host_Say.EnableDetour();
+	
 }
 
 void CRecipientFilter::Reset(void)

@@ -8,8 +8,14 @@
 // #define USE_TICKRATE
 // #define USE_DEBUG_CONSOLE
 
+#ifdef _WIN32
 #define ROOTBIN "/bin/win64/"
 #define GAMEBIN "/csgo/bin/win64/"
+#else
+#define ROOTBIN "/bin/linuxsteamrt64/"
+#define GAMEBIN "/csgo/bin/linuxsteamrt64/"
+#endif
+
 
 #define SOURCE2SERVERCONFIG_INTERFACE_VERSION "Source2ServerConfig001"
 

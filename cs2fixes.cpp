@@ -19,9 +19,13 @@
 #include "icvar.h"
 #include "interface.h"
 #include "tier0/dbg.h"
-#include "MinHook.h"
-#include <Psapi.h>
+#ifdef _WIN32
+//#include "MinHook.h"
+//#include <Psapi.h>
+#endif
 #include "interfaces/cs2_interfaces.h"
+#include "plat.h"
+#include "detour.h"
 
 void Message(const char *msg, ...)
 {
@@ -31,7 +35,7 @@ void Message(const char *msg, ...)
 	char buf[1024] = {};
 	V_vsnprintf(buf, sizeof(buf) - 1, msg, args);
 
-	ConColorMsg(Color(255, 0, 255, 255), buf);
+	ConColorMsg(Color(255, 0, 255, 255), "%s", buf);
 
 #ifdef USE_DEBUG_CONSOLE
 	if (!CommandLine()->HasParm("-dedicated"))
@@ -50,9 +54,9 @@ void Panic(const char *msg, ...)
 	V_vsnprintf(buf, sizeof(buf) - 1, msg, args);
 
 	if (CommandLine()->HasParm("-dedicated"))
-		Warning(buf);
-	else
-		MessageBoxA(nullptr, buf, "Warning", 0);
+		Warning("%s", buf);
+	/*else
+		MessageBoxA(nullptr, buf, "Warning", 0);*/
 
 	va_end(args);
 }
@@ -69,11 +73,6 @@ SH_DECL_HOOK2(IGameEventManager2, FireEvent, SH_NOATTRIB, 0, bool, IGameEvent *,
 SH_DECL_HOOK2_void( IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand & );
 
 CS2Fixes g_CS2Fixes;
-IServerGameDLL *server = NULL;
-IServerGameClients *gameclients = NULL;
-IVEngineServer *engine = NULL;
-IGameEventManager2 *gameevents = NULL;
-ICvar *icvar = NULL;
 
 // Should only be called within the active game loop (i e map should be loaded and active)
 // otherwise that'll be nullptr!
@@ -107,9 +106,10 @@ CON_COMMAND_F(unlock_commands, "Unlock all commands", FCVAR_NONE)
 	UnlockConCommands();
 }
 
+
 CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_NONE)
 {
-	ToggleLogs();
+	//ToggleLogs();
 }
 
 CON_COMMAND_F(set_max_players, "Set max players through a patch", FCVAR_NONE)
@@ -120,11 +120,8 @@ CON_COMMAND_F(set_max_players, "Set max players through a patch", FCVAR_NONE)
 		return;
 	}
 
-	SetMaxPlayers(atoi(args.Arg(1)));
+	//SetMaxPlayers(atoi(args.Arg(1)));
 }
-
-HMODULE g_hTier0 = nullptr;
-MODULEINFO g_Tier0Info;
 
 void Init()
 {
@@ -140,19 +137,7 @@ void Init()
 	freopen("CONOUT$", "w", stdout);
 #endif
 
-	HANDLE hProcess = GetCurrentProcess();
-
-	// Find tier0
-	g_hTier0 = LoadLibraryA("tier0");
-	if (!g_hTier0)
-	{
-		Plat_FatalErrorFunc("Failed to get tier0.dll's address");
-		return;
-	}
-
-	GetModuleInformation(GetCurrentProcess(), g_hTier0, &g_Tier0Info, sizeof(g_Tier0Info));
-
-	MH_Initialize();
+	//MH_Initialize();
 
 #ifdef HOOK_CONVARS
 	HookConVars();
@@ -168,8 +153,8 @@ void Init()
 	g_pCVar->RegisterConCommand(&toggle_logs_command);
 	g_pCVar->RegisterConCommand(&set_max_players_command);
 
-	InitPatches();
-	InitLoggingDetours();
+	//InitPatches();
+	//InitLoggingDetours();
 }
 
 #ifdef USE_TICKRATE
@@ -186,10 +171,10 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 {
 	PLUGIN_SAVEVARS();
 
-	GET_V_IFACE_CURRENT(GetEngineFactory, engine, IVEngineServer, INTERFACEVERSION_VENGINESERVER);
-	GET_V_IFACE_CURRENT(GetEngineFactory, icvar, ICvar, CVAR_INTERFACE_VERSION);
-	GET_V_IFACE_ANY(GetServerFactory, server, IServerGameDLL, INTERFACEVERSION_SERVERGAMEDLL);
-	GET_V_IFACE_ANY(GetServerFactory, gameclients, IServerGameClients, INTERFACEVERSION_SERVERGAMECLIENTS);
+	GET_V_IFACE_CURRENT(GetEngineFactory, g_pSource2EngineToServer, ISource2EngineToServer, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
+	GET_V_IFACE_CURRENT(GetEngineFactory, g_pCVar, ICvar, CVAR_INTERFACE_VERSION);
+	GET_V_IFACE_ANY(GetServerFactory, g_pSource2Server, ISource2Server, SOURCE2SERVER_INTERFACE_VERSION);
+	GET_V_IFACE_ANY(GetServerFactory, g_pSource2GameClients, IServerGameClients, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 
 	// Currently doesn't work from within mm side, use GetGameGlobals() in the mean time instead
@@ -197,18 +182,17 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	META_CONPRINTF( "Starting plugin.\n" );
 
-	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameFrame, server, this, &CS2Fixes::Hook_GameFrame, true);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientActive, gameclients, this, &CS2Fixes::Hook_ClientActive, true);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientDisconnect, gameclients, this, &CS2Fixes::Hook_ClientDisconnect, true);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientPutInServer, gameclients, this, &CS2Fixes::Hook_ClientPutInServer, true);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientSettingsChanged, gameclients, this, &CS2Fixes::Hook_ClientSettingsChanged, false);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, OnClientConnected, gameclients, this, &CS2Fixes::Hook_OnClientConnected, false);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientConnect, gameclients, this, &CS2Fixes::Hook_ClientConnect, false );
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientCommand, gameclients, this, &CS2Fixes::Hook_ClientCommand, false);
+	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameFrame, g_pSource2Server, this, &CS2Fixes::Hook_GameFrame, true);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientActive, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientActive, true);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientDisconnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientDisconnect, true);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientPutInServer, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientPutInServer, true);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientSettingsChanged, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientSettingsChanged, false);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, OnClientConnected, g_pSource2GameClients, this, &CS2Fixes::Hook_OnClientConnected, false);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientConnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientConnect, false );
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientCommand, false);
 
 	META_CONPRINTF( "All hooks started!\n" );
 
-	g_pCVar = icvar;
 	ConVar_Register( FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL );
 	
 	Init();
@@ -216,16 +200,29 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	return true;
 }
 
+void FlushAllDetours()
+{
+	FOR_EACH_VEC(g_vecDetours, i)
+	{
+		ConMsg("Nuking detour %s", g_vecDetours[i]->GetName());
+		g_vecDetours[i]->FreeDetour();
+	}
+
+	g_vecDetours.RemoveAll();
+}
+
 bool CS2Fixes::Unload(char *error, size_t maxlen)
 {
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameDLL, GameFrame, server, this, &CS2Fixes::Hook_GameFrame, true);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientActive, gameclients, this, &CS2Fixes::Hook_ClientActive, true);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientDisconnect, gameclients, this, &CS2Fixes::Hook_ClientDisconnect, true);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientPutInServer, gameclients, this, &CS2Fixes::Hook_ClientPutInServer, true);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientSettingsChanged, gameclients, this, &CS2Fixes::Hook_ClientSettingsChanged, false);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, OnClientConnected, gameclients, this, &CS2Fixes::Hook_OnClientConnected, false);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientConnect, gameclients, this, &CS2Fixes::Hook_ClientConnect, false);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientCommand, gameclients, this, &CS2Fixes::Hook_ClientCommand, false);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameDLL, GameFrame, g_pSource2Server, this, &CS2Fixes::Hook_GameFrame, true);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientActive, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientActive, true);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientDisconnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientDisconnect, true);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientPutInServer, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientPutInServer, true);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientSettingsChanged, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientSettingsChanged, false);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, OnClientConnected, g_pSource2GameClients, this, &CS2Fixes::Hook_OnClientConnected, false);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientConnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientConnect, false);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientCommand, false);
+
+	FlushAllDetours();
 
 	return true;
 }

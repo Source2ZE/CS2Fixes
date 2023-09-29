@@ -111,7 +111,7 @@ def ResolveEnvPath(env, folder):
       head, tail = os.path.split(head)
   return None
 
-def Normalize(path):	
+def Normalize(path):
   return os.path.abspath(os.path.normpath(path))
 
 class MMSPluginConfig(object):
@@ -181,23 +181,23 @@ class MMSPluginConfig(object):
 
     if len(self.sdks) < 1 and len(sdk_list):
       raise Exception('No SDKs were found, nothing to build.')
-    
+
     if len(self.sdks) > 1:
       raise Exception('Only one sdk at a time is supported, for multi-sdk approach use loader based solution.')
-	
-    if builder.options.mms_path:	
-      self.mms_root = builder.options.mms_path	
-    else:	
+
+    if builder.options.mms_path:
+      self.mms_root = builder.options.mms_path
+    else:
       self.mms_root = ResolveEnvPath('MMSOURCE112', 'mmsource-1.12')
-      if not self.mms_root:	
+      if not self.mms_root:
         self.mms_root = ResolveEnvPath('MMSOURCE111', 'mmsource-1.11')
-      if not self.mms_root:	
+      if not self.mms_root:
         self.mms_root = ResolveEnvPath('MMSOURCE110', 'mmsource-1.10')
-      if not self.mms_root:	
+      if not self.mms_root:
         self.mms_root = ResolveEnvPath('MMSOURCE_DEV', 'metamod-source')
-      if not self.mms_root:	
+      if not self.mms_root:
         self.mms_root = ResolveEnvPath('MMSOURCE_DEV', 'mmsource-central')
-    if not self.mms_root or not os.path.isdir(self.mms_root):	
+    if not self.mms_root or not os.path.isdir(self.mms_root):
       raise Exception('Could not find a source copy of Metamod:Source')
     self.mms_root = Normalize(self.mms_root)
 
@@ -237,7 +237,7 @@ class MMSPluginConfig(object):
       if cxx.version == 'apple-clang-6.0' or cxx.version == 'clang-3.4':
         cxx.cxxflags += ['-std=c++1y']
       else:
-        cxx.cxxflags += ['-std=c++14']
+        cxx.cxxflags += ['--std=c++2a', '-Wno-error']
       if (cxx.version >= 'gcc-4.0') or cxx.family == 'clang':
         cxx.cflags += ['-fvisibility=hidden']
         cxx.cxxflags += ['-fvisibility-inlines-hidden']
@@ -246,10 +246,10 @@ class MMSPluginConfig(object):
         '-fno-rtti',
         '-fno-threadsafe-statics',
         '-Wno-non-virtual-dtor',
-        '-Wno-overloaded-virtual',
+        '-Wno-overloaded-virtual'
       ]
       if (cxx.version >= 'gcc-4.7' or cxx.family == 'clang'):
-        cxx.cxxflags += ['-Wno-delete-non-virtual-dtor']
+        cxx.cxxflags += ['-Wno-delete-non-virtual-dtor', '-std=c++2a']
       if cxx.family == 'gcc':
         cxx.cflags += ['-mfpmath=sse']
       if cxx.family == 'clang':
@@ -262,7 +262,7 @@ class MMSPluginConfig(object):
           cxx.cxxflags += ['-Wno-deprecated-register']
         else:
           cxx.cxxflags += ['-Wno-deprecated']
-      
+
       # Work around SDK warnings.
       if cxx.version >= 'clang-10.0' or cxx.version >= 'apple-clang-12.0':
         cxx.cflags += [
@@ -286,7 +286,7 @@ class MMSPluginConfig(object):
         '/Zi',
       ]
       cxx.cxxflags += ['/TP']
-      
+
       cxx.linkflags += [
         '/SUBSYSTEM:WINDOWS',
         'kernel32.lib',
@@ -352,7 +352,7 @@ class MMSPluginConfig(object):
         '-lc++',
       ]
     elif cxx.target.platform == 'windows':
-      cxx.defines += ['WIN32', '_WINDOWS']
+      cxx.defines += ['WIN32', '_WINDOWS', 'SUBHOOK_STATIC']
 
     # Finish up.
     # Custom defines here
@@ -364,7 +364,7 @@ class MMSPluginConfig(object):
     compiler = cxx.clone()
     mms_core_path = os.path.join(self.mms_root, 'core')
     compiler.cxxincludes += [
-      os.path.join(mms_core_path),	
+      os.path.join(mms_core_path),
       os.path.join(mms_core_path, 'sourcehook'),
       os.path.join(context.currentSourcePath),
     ]
@@ -398,12 +398,12 @@ class MMSPluginConfig(object):
         compiler.defines += ['COMPILER_MSVC32']
       elif compiler.target.arch == 'x86_64':
         compiler.defines += ['COMPILER_MSVC64']
-      
+
       if compiler.version >= 1900:
         compiler.linkflags += ['legacy_stdio_definitions.lib']
     else:
       compiler.defines += ['COMPILER_GCC']
-      
+
     if compiler.target.arch == 'x86_64':
       compiler.defines += ['X64BITS', 'PLATFORM_64BITS']
 
@@ -432,7 +432,7 @@ class MMSPluginConfig(object):
 
   def HL2Library(self, context, compiler, name, sdk):
     compiler = self.HL2Compiler(context, compiler, sdk)
-    
+
     if compiler.target.platform == 'linux':
       if sdk.name == 'episode1':
         lib_folder = os.path.join(sdk.path, 'linux_sdk')
@@ -464,7 +464,7 @@ class MMSPluginConfig(object):
           compiler.postlink += [os.path.join(lib_folder, 'interfaces.a')]
         else:
           compiler.postlink += [os.path.join(lib_folder, 'interfaces_i486.a')]
-      
+
       if sdk.name == 'bms':
         compiler.postlink += [os.path.join(lib_folder, 'mathlib.a')]
 
