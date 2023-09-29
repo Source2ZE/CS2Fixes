@@ -7,7 +7,8 @@
 #include "../addresses.h"
 #include "tier0/dbg.h"
 #include "const.h"
-#include "../../utils/virtual.h"
+#include "virtual.h"
+#include "stdint.h"
 #undef schema
 
 constexpr uint32_t val_32_const = 0x811c9dc5;
@@ -90,8 +91,8 @@ namespace schema
 }
 
 #define DECLARE_SCHEMA_CLASS_BASE(className, isStruct) \
-	static constexpr inline const char *ThisClass = #className;      \
-	static constexpr inline bool IsStruct = isStruct;
+	static constexpr const char *ThisClass = #className;      \
+	static constexpr bool IsStruct = isStruct;
 
 #define DECLARE_SCHEMA_CLASS(className) DECLARE_SCHEMA_CLASS_BASE(className, false)
 

@@ -1,0 +1,59 @@
+# vim: set sts=2 ts=8 sw=2 tw=99 et ft=python: 
+import os
+
+MMSPlugin.plugin_name = 'cs2fixes'
+
+for sdk_name in MMSPlugin.sdks:
+  for cxx in MMSPlugin.all_targets:
+    sdk = MMSPlugin.sdks[sdk_name]
+
+    if not cxx.target.arch in sdk.platformSpec[cxx.target.platform]:
+      continue
+
+    binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
+	
+    if binary.compiler.family == 'gcc' or binary.compiler.family == 'clang':
+      binary.compiler.cxxflags += ['']
+    elif binary.compiler.family == 'msvc':
+      binary.compiler.cxxflags += ['/std:c++20']
+
+    binary.compiler.cxxincludes += [
+      os.path.join(builder.sourcePath, 'cs2_sdk'),
+      os.path.join(builder.sourcePath, 'utils'),
+      os.path.join(builder.sourcePath, 'minhook', 'include'),
+    ]
+	
+    if binary.compiler.target.platform == 'linux':
+      binary.compiler.postlink += [
+        
+      ]
+    elif binary.compiler.target.platform == 'windows':
+      binary.compiler.postlink += [
+        os.path.join(builder.sourcePath, 'minhook', 'lib', 'libMinHook-x64-v141-mtd.lib'),
+      ]
+
+    binary.sources += [
+      'cs2fixes.cpp',
+      'dllpatch.cpp',
+      'patches.cpp',
+      'cvars.cpp',
+      'addresses.cpp',
+      'cs2_sdk/chandle.cpp',
+      'cs2_sdk/schema.cpp',
+      'cs2_sdk/interfaces/cs2_interfaces.cpp',
+      'cs2_sdk/interfaces/cgameentitysystem.cpp',
+    ]
+
+    if sdk_name in ['dota', 'cs2']:
+      binary.sources += [
+      os.path.join(sdk.path, 'tier1', 'convar.cpp'),
+      os.path.join(sdk.path, 'public', 'tier0', 'memoverride.cpp'),
+    ]
+
+    if cxx.target.arch == 'x86':
+      binary.sources += ['sourcehook/sourcehook_hookmangen.cpp']
+    nodes = builder.Add(binary)
+    MMSPlugin.binaries += [nodes]
+
+    
+  break

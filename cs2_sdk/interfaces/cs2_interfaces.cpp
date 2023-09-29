@@ -8,9 +8,6 @@
 
 #include "tier0/memdbgon.h"
 
-ICvar *g_pCVar = nullptr;
-ISource2GameEntities *g_pSource2GameEntities = nullptr;
-
 void interfaces::Initialize()
 {
 	CModule engine(ROOTBIN "engine2.dll");

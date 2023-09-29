@@ -51,13 +51,13 @@ private:
 	char *m_module;								// 0x0010
 
 	int m_size;									// 0x0018
-	std::int16_t m_align;						// 0x001C
+	int16_t m_align;							// 0x001C
 
-	std::int16_t m_static_size;					// 0x001E
-	std::int16_t m_metadata_size;				// 0x0020
-	std::int16_t m_i_unk1;						// 0x0022
-	std::int16_t m_i_unk2;						// 0x0024
-	std::int16_t m_i_unk3;						// 0x0026
+	int16_t m_static_size;						// 0x001E
+	int16_t m_metadata_size;					// 0x0020
+	int16_t m_i_unk1;							// 0x0022
+	int16_t m_i_unk2;							// 0x0024
+	int16_t m_i_unk3;							// 0x0026
 
 	SchemaClassFieldData_t *m_fields;			// 0x0028
 

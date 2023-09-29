@@ -159,7 +159,6 @@ DECLARE_DETOUR(Host_Say,
 void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CBasePlayerController *pPlayer, uint64 eMessageType)
 {
 #ifdef _DEBUG
-	CEntityIndex slot(-1);
 	int entindex = filter.GetRecipientIndex(0).Get();
 	CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(entindex);
 
