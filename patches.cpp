@@ -160,7 +160,7 @@ void __fastcall Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *
 {
 #ifdef _DEBUG
 	CEntityIndex slot(-1);
-	int entindex = filter.GetRecipientIndex(&slot, 0)->Get();
+	int entindex = filter.GetRecipientIndex(0).Get();
 	CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(entindex);
 
 	if (target)
@@ -187,8 +187,7 @@ void __fastcall Detour_UTIL_SayText2Filter(
 	const char *param4)
 {
 #ifdef _DEBUG
-	CEntityIndex slot(-1);
-	int entindex = filter.GetRecipientIndex(&slot, 0)->Get() + 1;
+	int entindex = filter.GetRecipientIndex(0).Get() + 1;
 	CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(entindex);
 
 	if (target)	
@@ -463,14 +462,12 @@ int CRecipientFilter::GetRecipientCount(void) const
 	return m_Recipients.Count();
 }
 
-CEntityIndex *CRecipientFilter::GetRecipientIndex(CEntityIndex *pEntIndex, int slot) const
+CEntityIndex CRecipientFilter::GetRecipientIndex(int slot) const
 {
 	if (slot < 0 || slot >= GetRecipientCount())
-		pEntIndex->_index = -1;
-	else
-		pEntIndex->_index = m_Recipients[slot];
+		CEntityIndex(-1);
 
-	return pEntIndex;
+	return CEntityIndex(m_Recipients[slot]);
 }
 
 void CRecipientFilter::AddRecipient(int entindex)

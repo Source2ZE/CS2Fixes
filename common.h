@@ -73,7 +73,7 @@ public:
 	bool IsInitMessage(void) const override;
 
 	int GetRecipientCount(void) const override;
-	CEntityIndex *GetRecipientIndex(CEntityIndex *pEntIndex, int slot) const override;
+	CEntityIndex GetRecipientIndex(int slot) const override;
 
 public:
 	void Reset();
