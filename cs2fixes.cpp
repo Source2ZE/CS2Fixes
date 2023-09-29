@@ -10,6 +10,7 @@
  * the use of this software.
  */
 
+#include "detour.h"
 #include <stdio.h>
 #include "cs2fixes.h"
 #include "iserver.h"
@@ -25,7 +26,6 @@
 #endif
 #include "interfaces/cs2_interfaces.h"
 #include "plat.h"
-#include "detour.h"
 
 void Message(const char *msg, ...)
 {

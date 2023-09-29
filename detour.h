@@ -1,4 +1,5 @@
 #pragma once 
+#include <functional>
 #include "subhook.h"
 #include "module.h"
 #include "tier0/dbg.h"
@@ -30,14 +31,12 @@ public:
 		return m_pszName;
 	}
 
-	T *GetOriginal();
-
 	// Shorthand for calling original.
-	//template <typename... Args>
-	//auto operator()(Args &&...args)
-	//{
-	//	return std::invoke(m_pfnOrigFunc, std::forward<Args>(args)...);
-	//}
+	template <typename... Args>
+	auto operator()(Args &&...args)
+	{
+		return std::invoke(m_pfnOrigFunc, std::forward<Args>(args)...);
+	}
 
 private:
 	CModule *m_pModule;
@@ -87,12 +86,6 @@ void CDetour<T>::FreeDetour()
 {
 	DisableDetour();
 	subhook_free(m_hook);
-}
-
-template <typename T>
-T* CDetour<T>::GetOriginal()
-{
-	return m_pfnOrigFunc;
 }
 
 #define DECLARE_DETOUR(name, detour, modulepath, signature) \

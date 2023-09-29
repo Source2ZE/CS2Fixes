@@ -1,4 +1,3 @@
-#include <array>
 #include "common.h"
 #include "icvar.h"
 //#include <Psapi.h>

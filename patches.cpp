@@ -1,5 +1,5 @@
-#include "common.h"
 #include "detour.h"
+#include "common.h"
 #ifdef _WIN32
 #include "dllpatch.h"
 #endif
@@ -174,12 +174,12 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pT
 #endif
 
 	if (pPlayer)
-		return UTIL_SayTextFilter.GetOriginal()(filter, pText, pPlayer, eMessageType);
+		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
 
 	char buf[256];
 	V_snprintf(buf, sizeof(buf), "%s%s", " \7CONSOLE:\4", pText + sizeof("Console: "));
 
-	UTIL_SayTextFilter.GetOriginal()(filter, buf, pPlayer, eMessageType);
+	UTIL_SayTextFilter(filter, buf, pPlayer, eMessageType);
 }
 
 void FASTCALL Detour_UTIL_SayText2Filter(
@@ -200,7 +200,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 		Message("[CS2Fixes] Chat from %s to %s: %s\n", param1, &target->m_iszPlayerName(), param2);
 #endif
 
-	UTIL_SayText2Filter.GetOriginal()(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
+	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
 }
 
 WeaponMapEntry_t WeaponMap[] = {
@@ -256,7 +256,7 @@ void SendConsoleChat(const char *msg, ...)
 
 	CCommand newArgs;
 	newArgs.Tokenize(buf);
-	Host_Say.GetOriginal()(nullptr, &newArgs, false, 0, nullptr);
+	Host_Say(nullptr, &newArgs, false, 0, nullptr);
 }
 
 void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
@@ -320,7 +320,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		filter.AddRecipient(uid);
 		filter.MakeReliable();
 
-		UTIL_SayTextFilter.GetOriginal()(filter, message, nullptr, 0);
+		UTIL_SayTextFilter(filter, message, nullptr, 0);
 	}
 	else if (!V_stricmp(token, "setsolid"))
 	{
@@ -398,7 +398,7 @@ void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand *args, 
 	if (*pMessage == '/')
 		return;
 
-	Host_Say.GetOriginal()(pController, args, teamonly, unk1, unk2);
+	Host_Say(pController, args, teamonly, unk1, unk2);
 }
 
 void InitPatches()
