@@ -94,17 +94,17 @@ bool FASTCALL Detour_IsChannelEnabled(LoggingChannelID_t channelID, LoggingSever
 
 CDetour<decltype(Detour_Log)> g_LoggingDetours[] =
 {
-	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "Msg" ),
-	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?ConMsg@@YAXPEBDZZ" ),
-	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?ConColorMsg@@YAXAEBVColor@@PEBDZZ" ),
-	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "ConDMsg" ),
-	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "DevMsg" ),
-	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "Warning" ),
-	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "DevWarning" ),
-	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?DevWarning@@YAXPEBDZZ" ),
-	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "LoggingSystem_Log" ),
-	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "LoggingSystem_LogDirect" ),
-	CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "LoggingSystem_LogAssert" ),
+	CDetour<decltype(Detour_Log)>(&modules::tier0, Detour_Log, "Msg" ),
+	//CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?ConMsg@@YAXPEBDZZ" ),
+	//CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?ConColorMsg@@YAXAEBVColor@@PEBDZZ" ),
+	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "ConDMsg" ),
+	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "DevMsg" ),
+	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "Warning" ),
+	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "DevWarning" ),
+	//CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?DevWarning@@YAXPEBDZZ" ),
+	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "LoggingSystem_Log" ),
+	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "LoggingSystem_LogDirect" ),
+	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "LoggingSystem_LogAssert" ),
 	//CDetour<decltype(Detour_Log)>( modules::tier0, Detour_IsChannelEnabled, "LoggingSystem_IsChannelEnabled" ),
 };
 
@@ -149,18 +149,18 @@ void FASTCALL Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, cons
 DECLARE_DETOUR(
 	UTIL_SayTextFilter,
 	Detour_UTIL_SayTextFilter,
-	modules::server,
+	&modules::server,
 	"\x48\x89\x5C\x24\x2A\x55\x56\x57\x48\x8D\x6C\x24\x2A\x48\x81\xEC\x2A\x2A\x2A\x2A\x49\x8B\xD8");
 DECLARE_DETOUR(
 	UTIL_SayText2Filter,
 	Detour_UTIL_SayText2Filter,
-	modules::server,
+	&modules::server,
 	"\x48\x89\x5C\x24\x2A\x55\x56\x57\x48\x8D\x6C\x24\x2A\x48\x81\xEC\x2A\x2A\x2A\x2A\x41\x0F\xB6\xF8");
 
 // look for string "\"Console<0>\" say \"%s\"\n"
 DECLARE_DETOUR(Host_Say,
 	Detour_Host_Say,
-	modules::server,
+	&modules::server,
 	"\x44\x89\x4C\x24\x2A\x44\x88\x44\x24\x2A\x55\x53\x56\x57\x41\x54\x41\x55");
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CBasePlayerController *pPlayer, uint64 eMessageType)

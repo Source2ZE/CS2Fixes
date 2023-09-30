@@ -137,8 +137,6 @@ void Init()
 	freopen("CONOUT$", "w", stdout);
 #endif
 
-	//MH_Initialize();
-
 #ifdef HOOK_CONVARS
 	HookConVars();
 #endif
@@ -153,7 +151,7 @@ void Init()
 	g_pCVar->RegisterConCommand(&toggle_logs_command);
 	g_pCVar->RegisterConCommand(&set_max_players_command);
 
-	//InitPatches();
+	InitPatches();
 	//InitLoggingDetours();
 }
 
