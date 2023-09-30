@@ -11,20 +11,21 @@
 using SchemaKeyValueMap_t = CUtlMap<uint32_t, SchemaKey>;
 using SchemaTableMap_t = CUtlMap<uint32_t, SchemaKeyValueMap_t*>;
 
+
 static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 {
     for (int i = 0; i < field.m_metadata_size; i++)
     {
-        static auto networkEnabled = hash_32_fnv1a_const("MNetworkEnable");
+		static auto networkEnabled = hash_32_fnv1a_const("MNetworkEnable");
         if (networkEnabled == hash_32_fnv1a_const(field.m_metadata[i].m_name))
         {
-            ConMsg("Is networked\n");
-            return true;
-        }
-    }
+			ConMsg("Is networked\n");
+			return true;
+		}
+	}
 
-    return false;
-}
+	return false;
+}   
 
 static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* className, uint32_t classKey)
 {
@@ -48,8 +49,8 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* cla
     SchemaClassFieldData_t* pFields = pClassInfo->GetFields();
 
     SchemaKeyValueMap_t *keyValueMap = new SchemaKeyValueMap_t(0, 0, DefLessFunc(uint32_t));
-	keyValueMap->EnsureCapacity(fieldsSize);
-	tableMap->Insert(classKey, keyValueMap);
+    keyValueMap->EnsureCapacity(fieldsSize);
+    tableMap->Insert(classKey, keyValueMap);
 
     for (int i = 0; i < fieldsSize; ++i)
     {
