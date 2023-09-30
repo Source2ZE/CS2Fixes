@@ -126,6 +126,8 @@ CON_COMMAND_F(set_max_players, "Set max players through a patch", FCVAR_NONE)
 	//SetMaxPlayers(atoi(args.Arg(1)));
 }
 
+CUtlVector<CDetourBase*> g_vecDetours;
+
 void Init()
 {
 	static bool attached = false;
@@ -153,6 +155,8 @@ void Init()
 	g_pCVar->RegisterConCommand(&unlock_commands_command);
 	g_pCVar->RegisterConCommand(&toggle_logs_command);
 	g_pCVar->RegisterConCommand(&set_max_players_command);
+
+	g_vecDetours.RemoveAll();
 
 	InitPatches();
 	//InitLoggingDetours();
@@ -203,10 +207,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 void FlushAllDetours()
 {
-	META_CONPRINTF("Flush");
 	FOR_EACH_VEC(g_vecDetours, i)
 	{
-		ConMsg("Nuking detour %s", g_vecDetours[i]->GetName());
+		ConMsg("Removing detour %s\n", g_vecDetours[i]->GetName());
 		g_vecDetours[i]->FreeDetour();
 	}
 
@@ -224,8 +227,8 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientConnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientConnect, false);
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientCommand, false);
 
-	ConMsg("Unload");
 	FlushAllDetours();
+	UndoPatches();
 
 	return true;
 }

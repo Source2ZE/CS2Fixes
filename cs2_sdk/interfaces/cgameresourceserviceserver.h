@@ -1,6 +1,7 @@
 #pragma once
 #include <platform.h>
 #include "interfaces/interfaces.h"
+#include "../../addresses.h"
 
 class CGameEntitySystem;
 

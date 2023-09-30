@@ -5,6 +5,7 @@
 #include "tier0/dbg.h"
 #include "interfaces/interfaces.h"
 #include "../../utils/module.h"
+#include "../addresses.h"
 
 #include "tier0/memdbgon.h"
 

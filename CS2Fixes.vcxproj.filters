@@ -56,12 +56,6 @@
     <ClCompile Include="cs2_sdk\schema.cpp">
       <Filter>Source Files\cs2_sdk</Filter>
     </ClCompile>
-    <ClCompile Include="cs2_sdk\chandle.cpp">
-      <Filter>Source Files\cs2_sdk</Filter>
-    </ClCompile>
-    <ClCompile Include="cs2_sdk\interfaces\cgameentitysystem.cpp">
-      <Filter>Source Files\cs2_sdk\interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="cs2fixes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,9 +85,6 @@
     <ClInclude Include="cs2_sdk\interfaces\cgameresourceserviceserver.h">
       <Filter>Header Files\cs2_sdk\interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\interfaces\cgameentitysystem.h">
-      <Filter>Header Files\cs2_sdk\interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="cs2_sdk\entity\cbaseentity.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
@@ -114,9 +105,6 @@
     </ClInclude>
     <ClInclude Include="cs2_sdk\entity\cbaseplayercontroller.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
-    </ClInclude>
-    <ClInclude Include="cs2_sdk\chandle.h">
-      <Filter>Header Files\cs2_sdk</Filter>
     </ClInclude>
     <ClInclude Include="cs2_sdk\entity\cbaseplayerpawn.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
@@ -147,9 +135,6 @@
     </ClInclude>
     <ClInclude Include="utils\plat.h">
       <Filter>Header Files\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="interfaces\centitysystem.h">
-      <Filter>Header Files\cs2_sdk\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

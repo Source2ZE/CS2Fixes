@@ -60,6 +60,7 @@ void ToggleLogs();
 void SetMaxPlayers(byte);
 
 void InitPatches();
+void UndoPatches();
 void InitLoggingDetours();
 
 void Message(const char *, ...);

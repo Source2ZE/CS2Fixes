@@ -81,5 +81,4 @@ public:
 	HINSTANCE m_hModule;
 	void* m_base;
 	size_t m_size;
-	//MODULEINFO m_hModuleInfo;
 };

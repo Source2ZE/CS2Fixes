@@ -432,6 +432,42 @@ void InitPatches()
 	Host_Say.EnableDetour();
 }
 
+void UndoPatches()
+{
+#ifdef _WIN32
+	for (int i = 0; i < sizeof(g_CommonPatches) / sizeof(*g_CommonPatches); i++)
+		g_CommonPatches[i].UndoPatch();
+#endif
+
+	// Same location as the above 2 patches for maxplayers
+	//CMemPatch MaxPlayerPatch(
+	//	&modules::engine,
+	//	(byte *)"\x41\x3B\x87\x2A\x2A\x2A\x2A\x0F\x8E\x2A\x2A\x2A\x2A\x8B\x0D\x2A\x2A\x2A\x2A",
+	//	(byte *)"\x83\xF8\x40\x90\x90\x90\x90",
+	//	"EngineMaxPlayers3",
+	//	1);
+	//
+	//MaxPlayerPatch.PerformPatch();
+
+	//g_pMaxPlayers = (byte *)MaxPlayerPatch.GetPatchAddress() + 2;
+
+	// Dedicated servers don't load client.dll
+#ifdef _WIN32
+	if (!CommandLine()->HasParm("-dedicated"))
+	{
+		for (int i = 0; i < sizeof(g_ClientPatches) / sizeof(*g_ClientPatches); i++)
+			g_ClientPatches[i].UndoPatch();
+	}
+
+	// None of the tools are loaded without, well, -tools
+	if (CommandLine()->HasParm("-tools"))
+	{
+		for (int i = 0; i < sizeof(g_ToolsPatches) / sizeof(*g_ToolsPatches); i++)
+			g_ToolsPatches[i].UndoPatch();
+	}
+#endif
+}
+
 void CRecipientFilter::Reset(void)
 {
 	m_bReliable = false;

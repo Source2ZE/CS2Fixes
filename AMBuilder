@@ -45,10 +45,8 @@ for sdk_name in MMSPlugin.sdks:
       'patches.cpp',
       'cvars.cpp',
       'addresses.cpp',
-      'cs2_sdk/chandle.cpp',
       'cs2_sdk/schema.cpp',
       'cs2_sdk/interfaces/cs2_interfaces.cpp',
-      'cs2_sdk/interfaces/cgameentitysystem.cpp',
       'cs2_sdk/interfaces/centitysystem.cpp'
     ]
 

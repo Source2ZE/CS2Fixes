@@ -6,6 +6,7 @@
 #include "tier1/utlmap.h"
 #include "tier0/memdbgon.h"
 #include "plat.h"
+#include "entity/cbaseentity.h"
 
 using SchemaKeyValueMap_t = CUtlMap<uint32_t, SchemaKey>;
 using SchemaTableMap_t = CUtlMap<uint32_t, SchemaKeyValueMap_t*>;

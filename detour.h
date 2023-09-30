@@ -47,7 +47,7 @@ private:
 	funchook_t* m_hook;
 };
 
-static CUtlVector<CDetourBase*> g_vecDetours;
+extern CUtlVector<CDetourBase*> g_vecDetours;
 
 template <typename T>
 void CDetour<T>::CreateDetour()
@@ -73,6 +73,8 @@ void CDetour<T>::CreateDetour()
 	funchook_prepare(m_hook, (void**)&m_pfnFunc, (void*)m_pfnDetour);
 
 	g_vecDetours.AddToTail(this);
+
+	ConMsg("shit %i", g_vecDetours.Count());
 
 	Message("Successfully initialized detour for %s!\n", m_pszName);
 }
