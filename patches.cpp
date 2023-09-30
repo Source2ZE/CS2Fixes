@@ -1,8 +1,6 @@
 #include "detour.h"
 #include "common.h"
-#ifdef _WIN32
 #include "dllpatch.h"
-#endif
 #include "icvar.h"
 #include "irecipientfilter.h"
 #include "interfaces/cs2_interfaces.h"
@@ -12,7 +10,6 @@
 #include "addresses.h"
 #include "tier0/memdbgon.h"
 
-#ifdef _WIN32
 
 extern CEntitySystem *g_pEntitySystem;
 
@@ -43,6 +40,7 @@ CMemPatch g_CommonPatches[] =
 	//),
 };
 
+#ifdef _WIN32
 CMemPatch g_ClientPatches[] =
 {
 	// Client-side movement unlocker
@@ -132,19 +130,36 @@ void SetMaxPlayers(byte iMaxPlayers)
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CBasePlayerController *, uint64);
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CBasePlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
 void FASTCALL Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, const char *);
+bool FASTCALL Detour_VoiceShouldHear(CCSPlayerController* a, CCSPlayerController* b, bool a3, bool voice);
 
 DECLARE_DETOUR(Host_Say, Detour_Host_Say, &modules::server);
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter, &modules::server);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter, &modules::server);
+DECLARE_DETOUR(VoiceShouldHear, Detour_VoiceShouldHear, &modules::server);
+
+bool FASTCALL Detour_VoiceShouldHear(CCSPlayerController* a, CCSPlayerController* b, bool a3, bool voice)
+{
+	if (voice)
+	{
+		ConMsg("block");
+		return 0;
+	}
+
+	ConMsg("a: %s, b: %s\n", &a->m_iszPlayerName(), &b->m_iszPlayerName());
+	ConMsg("VoiceShouldHear: %llx %llx %i %i\n", a, b, a3, voice);
+	//Detour_VoiceShouldHear(a, b, a3, a4);
+
+	return VoiceShouldHear(a, b, a3, voice);
+}
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CBasePlayerController *pPlayer, uint64 eMessageType)
 {
-#if 0
+#if 1
 	int entindex = filter.GetRecipientIndex(0).Get();
-	CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(entindex);
+	CBasePlayerController* target = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
 
 	if (target)
-		Message("[CS2Fixes] Chat from %s to %s: %s\n", pPlayer ? &pPlayer->m_iszPlayerName() : "console", target->m_iszPlayerName(), pText);
+		Message("[CS2Fixes] Chat from %s to %s: %s\n", pPlayer ? &pPlayer->m_iszPlayerName() : "console", &target->m_iszPlayerName(), pText);
 #endif
 
 	if (pPlayer)
@@ -166,9 +181,9 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	const char *param3, 
 	const char *param4)
 {
-#if 0
+#if 1
 	int entindex = filter.GetRecipientIndex(0).Get() + 1;
-	CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(entindex);
+	CBasePlayerController* target = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
 
 	if (target)	
 		Message("[CS2Fixes] Chat from %s to %s: %s\n", param1, &target->m_iszPlayerName(), param2);
@@ -359,7 +374,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 				if (money >= weaponEntry.iPrice)
 				{
 					pController->m_pInGameMoneyServices()->m_iAccount(money - weaponEntry.iPrice);
-					addresses::GiveNamedItem(pItemServices, weaponEntry.szWeaponName, 0, 0, 0, 0);
+					addresses::GiveNamedItem(pItemServices, weaponEntry.szWeaponName, 0, 0, 0, 1);
 				}
 
 				break;
@@ -388,10 +403,8 @@ void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand *args, 
 
 void InitPatches()
 {
-#ifdef _WIN32
 	for (int i = 0; i < sizeof(g_CommonPatches) / sizeof(*g_CommonPatches); i++)
 		g_CommonPatches[i].PerformPatch();
-#endif
 
 	// Same location as the above 2 patches for maxplayers
 	//CMemPatch MaxPlayerPatch(
@@ -430,6 +443,9 @@ void InitPatches()
 
 	Host_Say.CreateDetour();
 	Host_Say.EnableDetour();
+
+	VoiceShouldHear.CreateDetour();
+	VoiceShouldHear.EnableDetour();
 }
 
 void UndoPatches()

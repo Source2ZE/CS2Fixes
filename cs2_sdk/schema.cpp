@@ -16,15 +16,15 @@ static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 {
     for (int i = 0; i < field.m_metadata_size; i++)
     {
-		static auto networkEnabled = hash_32_fnv1a_const("MNetworkEnable");
+        static auto networkEnabled = hash_32_fnv1a_const("MNetworkEnable");
         if (networkEnabled == hash_32_fnv1a_const(field.m_metadata[i].m_name))
         {
-			ConMsg("Is networked\n");
-			return true;
-		}
-	}
+            ConMsg("Is networked\n");
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }   
 
 static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* className, uint32_t classKey)

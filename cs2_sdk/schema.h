@@ -80,7 +80,7 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char *const str, const uint6
 			if (!IsStruct)																						\
 				SetStateChanged((Z_CBaseEntity*)this, m_key.offset + extra_offset);													\
 			else 																								\
-				CALL_VIRTUAL(void, IsStruct, this, m_key.offset + extra_offset, 0xFFFFFFFF, 0xFFFF);		\
+				CALL_VIRTUAL(void, 1, this, m_key.offset + extra_offset, 0xFFFFFFFF, 0xFFFF);		\
 																												\
 		}																										\
 		*reinterpret_cast<std::add_pointer_t<type>>((uintptr_t)(this) + m_key.offset + extra_offset) = val;		\
