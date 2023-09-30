@@ -33,12 +33,6 @@
     <Filter Include="Header Files\utils">
       <UniqueIdentifier>{4e7c9b65-faee-46b5-b610-9717f232a17c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\vendor">
-      <UniqueIdentifier>{72098dd5-c297-4a6e-9d2e-c120d1d653e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\vendor\subhook">
-      <UniqueIdentifier>{35dae373-99b4-4852-aebc-cba26da628d8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="patches.cpp">
@@ -77,8 +71,8 @@
     <ClCompile Include="utils\plat_unix.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="vendor\subhook\subhook.c">
-      <Filter>Source Files\vendor\subhook</Filter>
+    <ClCompile Include="cs2_sdk\interfaces\centitysystem.cpp">
+      <Filter>Source Files\cs2_sdk\interfaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +147,9 @@
     </ClInclude>
     <ClInclude Include="utils\plat.h">
       <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\centitysystem.h">
+      <Filter>Header Files\cs2_sdk\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

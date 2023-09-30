@@ -243,7 +243,7 @@ class MMSPluginConfig(object):
         cxx.cxxflags += ['-fvisibility-inlines-hidden']
       cxx.cxxflags += [
         '-fno-exceptions',
-        '-fno-rtti',
+        #'-fno-rtti',
         '-fno-threadsafe-statics',
         '-Wno-non-virtual-dtor',
         '-Wno-overloaded-virtual'
@@ -384,6 +384,8 @@ class MMSPluginConfig(object):
       paths.append(['public', 'game', 'server'])
       paths.append(['game', 'shared'])
       paths.append(['common'])
+      paths.append(['public', 'entity2'])
+      paths.append(['game', 'server'])
     compiler.defines += ['SOURCE_ENGINE=' + sdk.code]
 
     if sdk.name in ['sdk2013', 'bms', 'pvkii'] and compiler.like('gcc'):

@@ -3,7 +3,7 @@
 #include "cbaseentity.h"
 #include "services.h"
 
-class CBasePlayerPawn : public CBaseEntity
+class CBasePlayerPawn : public Z_CBaseEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerPawn);

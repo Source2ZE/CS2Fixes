@@ -49,7 +49,7 @@ for sdk_name in MMSPlugin.sdks:
       'cs2_sdk/schema.cpp',
       'cs2_sdk/interfaces/cs2_interfaces.cpp',
       'cs2_sdk/interfaces/cgameentitysystem.cpp',
-      'vendor/subhook/subhook.c'
+      'cs2_sdk/interfaces/centitysystem.cpp'
     ]
 
     if sdk_name in ['dota', 'cs2']:

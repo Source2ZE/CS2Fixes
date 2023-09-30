@@ -26,6 +26,9 @@
 #endif
 #include "interfaces/cs2_interfaces.h"
 #include "plat.h"
+#include "entitysystem.h"
+
+CEntitySystem* g_pEntitySystem = nullptr;
 
 void Message(const char *msg, ...)
 {
@@ -80,7 +83,7 @@ CGlobalVars *GetGameGlobals()
 {
 	INetworkGameServer *server = g_pNetworkServerService->GetIGameServer();
 
-	if(!server)
+	if (!server)
 		return nullptr;
 
 	return g_pNetworkServerService->GetIGameServer()->GetGlobals();
@@ -279,6 +282,9 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 	 * true  | game is ticking
 	 * false | game is not ticking
 	 */
+
+	if(!g_pEntitySystem)
+		g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 }
 
 // Potentially might not work

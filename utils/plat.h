@@ -31,3 +31,5 @@ int GetModuleInformation(const char* name, void** base, size_t* length);
 #define MODULE_PREFIX "lib"
 #define MODULE_EXT ".so"
 #endif
+
+void Plat_WriteMemory(void* pPatchAddress, uint8_t *pPatch, int iPatchSize);

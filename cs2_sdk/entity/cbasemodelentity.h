@@ -3,7 +3,7 @@
 #include "cbaseentity.h"
 #include "cglowproperty.h"
 
-class CBaseModelEntity : public CBaseEntity
+class CBaseModelEntity : public Z_CBaseEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CBaseModelEntity);

@@ -2,6 +2,7 @@
 #include "utils/module.h"
 
 #include "tier0/memdbgon.h"
+#include <interfaces/cs2_interfaces.h>
 
 #define RESOLVE_SIG(module, sig, variable) variable = (decltype(variable))module->FindSignature((uint8*)sig)
 
@@ -11,7 +12,17 @@ void addresses::Initialize()
 	modules::tier0 = new CModule(ROOTBIN, "tier0");
 	modules::server = new CModule(GAMEBIN, "server");
 	modules::schemasystem = new CModule(ROOTBIN, "schemasystem");
+	modules::vscript = new CModule(ROOTBIN, "vscript");
+	modules::client = nullptr;
+	modules::hammer = nullptr;
 
-	RESOLVE_SIG(modules::server, "\x4C\x8B\xC9\x48\x8B\x09\x48\x85\xC9\x74\x2A\x48\x8B\x41\x10", addresses::NetworkStateChanged);
-	RESOLVE_SIG(modules::server, "\x48\x89\x5C\x24\x18\x48\x89\x74\x24\x20\x55\x57\x41\x54\x41\x56\x41\x57\x48\x8D\x6C\x24\xD9", addresses::GiveNamedItem);
+	if (!CommandLine()->HasParm("-dedicated"))
+		modules::client = new CModule(GAMEBIN, "client");
+
+	if (CommandLine()->HasParm("-tools"))
+		modules::hammer = new CModule(ROOTBIN, "tools/hammer");
+
+	RESOLVE_SIG(modules::server, sigs::NetworkStateChanged, addresses::NetworkStateChanged);
+	RESOLVE_SIG(modules::server, sigs::StateChanged, addresses::StateChanged);
+	RESOLVE_SIG(modules::server, sigs::GiveNamedItem, addresses::GiveNamedItem);
 }

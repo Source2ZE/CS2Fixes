@@ -1,15 +1,15 @@
 #pragma once
 
 #include <platform.h>
-#include "basehandle.h"
+#include "entityhandle.h"
 
 #define INVALID_EHANDLE_INDEX 0xFFFFFFFF
 
-class CBaseEntity;
+class Z_CBaseEntity;
 
 class CHandle : public CEntityHandle
 {
-	CBaseEntity *GetBaseEntity() const;
+	Z_CBaseEntity *GetBaseEntity() const;
 
 public:
 	bool operator==(CHandle rhs) const { return m_Index == rhs.m_Index; }
@@ -18,7 +18,7 @@ public:
 
 	int GetEntryIndex() const { return m_Parts.m_EntityIndex; }
 
-	template <typename T = CBaseEntity>
+	template <typename T = Z_CBaseEntity>
 	T *Get() const
 	{
 		return reinterpret_cast<T *>(GetBaseEntity());

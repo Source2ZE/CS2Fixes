@@ -2,12 +2,28 @@
 #include "../../utils/virtual.h"
 #include <platform.h>
 
+struct CSchemaNetworkValue {
+	union {
+		const char* m_sz_value;
+		int m_n_value;
+		float m_f_value;
+		std::uintptr_t m_p_value;
+	};
+};
+
+struct SchemaMetadataEntryData_t {
+	const char *m_name;
+	CSchemaNetworkValue* m_value;
+};
+
+
 struct SchemaClassFieldData_t
 {
 	const char *m_name;
 	char pad0[0x8];
 	short m_offset;
-	char pad1[0xE];
+	int32_t m_metadata_size;
+	SchemaMetadataEntryData_t* m_metadata;
 };
 
 class SchemaClassInfoData_t;
@@ -70,11 +86,15 @@ private:
 class CSchemaSystemTypeScope
 {
 public:
-	auto FindDeclaredClass(const char *pClass)
+	SchemaClassInfoData_t* FindDeclaredClass(const char *pClass)
 	{
+#ifdef _WIN32
 		SchemaClassInfoData_t *rv = nullptr;
 		CALL_VIRTUAL(void, 2, this, &rv, pClass);
 		return rv;
+#else
+		return CALL_VIRTUAL(SchemaClassInfoData_t*, 2, this, pClass);
+#endif
 	}
 };
 

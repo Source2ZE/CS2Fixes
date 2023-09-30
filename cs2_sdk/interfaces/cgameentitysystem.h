@@ -1,15 +1,18 @@
 #pragma once
+
 #include "entity/cbaseentity.h"
 #include "platform.h"
+#include "entityidentity.h"
 
+/*
 #define MAX_ENTITIES_IN_LIST 512
 #define MAX_ENTITY_LISTS	 64
 #define MAX_TOTAL_ENTITIES	 MAX_ENTITIES_IN_LIST *MAX_ENTITY_LISTS
 
-class CEntityIdentity
+class Z_CEntityIdentity
 {
 public:
-	CBaseEntity *entity;
+	Z_CBaseEntity *entity;
 	void *dunno;
 	int64 unk0;
 	int64 unk1;
@@ -45,7 +48,7 @@ public:
 	void *unk;
 	CEntityIdentities *m_pEntityList[MAX_ENTITY_LISTS];
 
-	CBaseEntity *GetBaseEntity(int index)
+	Z_CBaseEntity *GetBaseEntity(int index)
 	{
 		if (index <= -1 || index >= MAX_TOTAL_ENTITIES)
 			return nullptr;
@@ -59,3 +62,4 @@ public:
 
 	static CGameEntitySystem *GetInstance();
 };
+*/

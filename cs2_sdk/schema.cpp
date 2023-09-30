@@ -7,20 +7,33 @@
 #include "tier0/memdbgon.h"
 #include "plat.h"
 
-using SchemaKeyValueMap_t = CUtlMap<uint32_t, int16_t>;
+using SchemaKeyValueMap_t = CUtlMap<uint32_t, SchemaKey>;
 using SchemaTableMap_t = CUtlMap<uint32_t, SchemaKeyValueMap_t*>;
+
+static bool IsFieldNetworked(SchemaClassFieldData_t& field)
+{
+    for (int i = 0; i < field.m_metadata_size; i++)
+    {
+        static auto networkEnabled = hash_32_fnv1a_const("MNetworkEnable");
+        if (networkEnabled == hash_32_fnv1a_const(field.m_metadata[i].m_name))
+        {
+            ConMsg("Is networked\n");
+            return true;
+        }
+    }
+
+    return false;
+}
 
 static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* className, uint32_t classKey)
 {
-    CSchemaSystemTypeScope* pType = interfaces::pSchemaSystem->FindTypeScopeForModule("server.dll");
-
-    ConMsg("pType: %llx", pType);
+    CSchemaSystemTypeScope* pType = interfaces::pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
 
     if (!pType)
         return false;
 
-    SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className);
-    ConMsg("pClassInfo: %llx", pClassInfo);
+    SchemaClassInfoData_t *pClassInfo = pType->FindDeclaredClass(className);
+
     if (!pClassInfo)
     {
         SchemaKeyValueMap_t *map = new SchemaKeyValueMap_t(0, 0, DefLessFunc(uint32_t));
@@ -45,7 +58,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* cla
         Message("%s::%s found at -> 0x%X - %llx\n", className, field.m_name, field.m_offset, &field);
 #endif
 
-        keyValueMap->Insert(hash_32_fnv1a_const(field.m_name), field.m_offset);
+        keyValueMap->Insert(hash_32_fnv1a_const(field.m_name), { field.m_offset, IsFieldNetworked(field) });
     }
 
     return true;
@@ -78,7 +91,7 @@ int16_t schema::FindChainOffset(const char* className)
     return 0;
 }
 
-int16_t schema::GetOffset(const char* className, uint32_t classKey, const char* memberName, uint32_t memberKey)
+SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char* memberName, uint32_t memberKey)
 {
 	static SchemaTableMap_t schemaTableMap(0, 0, DefLessFunc(uint32_t));
 	int16_t tableMapIndex = schemaTableMap.Find(classKey);
@@ -87,7 +100,7 @@ int16_t schema::GetOffset(const char* className, uint32_t classKey, const char* 
         if (InitSchemaFieldsForClass(&schemaTableMap, className, classKey))
             return GetOffset(className, classKey, memberName, memberKey);
 
-        return 0;
+        return { 0, 0 };
     }
 
     SchemaKeyValueMap_t *tableMap = schemaTableMap[tableMapIndex];
@@ -95,8 +108,19 @@ int16_t schema::GetOffset(const char* className, uint32_t classKey, const char* 
     if (!tableMap->IsValidIndex(memberIndex))
     {
         Warning("schema::GetOffset(): '%s' was not found in '%s'!\n", memberName, className);
-        return 0;
+        return { 0, 0 };
     }
 
     return tableMap->Element(memberIndex);
 }
+
+void SetStateChanged(Z_CBaseEntity* pEntity, int offset)
+{
+	addresses::StateChanged(pEntity->m_NetworkTransmitComponent(), pEntity, offset, -1, -1);
+	auto vars = GetGameGlobals();
+
+    if (vars)
+	    pEntity->m_lastNetworkChange(vars->curtime);
+
+	pEntity->m_isSteadyState(0);
+};

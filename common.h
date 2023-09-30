@@ -2,6 +2,9 @@
 
 #include "platform.h"
 #include "irecipientfilter.h"
+#include "entitysystem.h"
+
+extern CEntitySystem* g_pEntitySystem;
 
 // #define HOOK_CONVARS
 // #define HOOK_CONCOMMANDS
@@ -15,9 +18,6 @@
 #define ROOTBIN "/bin/linuxsteamrt64/"
 #define GAMEBIN "/csgo/bin/linuxsteamrt64/"
 #endif
-
-
-#define SOURCE2SERVERCONFIG_INTERFACE_VERSION "Source2ServerConfig001"
 
 #ifdef HOOK_CONVARS
 struct ConVarInfo

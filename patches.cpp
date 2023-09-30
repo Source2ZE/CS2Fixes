@@ -10,57 +10,45 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
 #include "addresses.h"
-
 #include "tier0/memdbgon.h"
-
-#include "subhook.h"
 
 #ifdef _WIN32
 
-CDLLPatch g_CommonPatches[] =
+extern CEntitySystem *g_pEntitySystem;
+
+CMemPatch g_CommonPatches[] =
 {
 	// Movement Unlocker
 	// Refer to vauff's pin in #scripting
-	CDLLPatch(
-		GAMEBIN"server.dll",
-		(byte*)"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x2A\x2A\x0F\x28\xCA\xF3\x0F\x59\xC0",
-		(byte*)"\xEB",
-		"ServerMovementUnlock",
-		1
-	),
-	// Force the server to reject players at a given number which is configured below with set_max_players
-	// Look for "NETWORK_DISCONNECT_REJECT_SERVERFULL to %s"
-	CDLLPatch(
-		ROOTBIN"engine2.dll",
-		(byte*)"\x0F\x84\x2A\x2A\x2A\x2A\x49\x8B\xCF\xE8\x2A\x2A\x2A\x2A\x44\x8B\x54\x24\x2A",
-		(byte*)"\x90\x90\x90\x90\x90\x90",
-		"EngineMaxPlayers1",
-		1
-	),
-	CDLLPatch(
-		ROOTBIN"engine2.dll",
-		(byte*)"\x41\x8B\xB7\x2A\x2A\x2A\x2A\x49\x8B\xCF\xE8\x2A\x2A\x2A\x2A",
-		(byte*)"\xBE\x1C\x00\x00\x00\x90\x90",
-		"EngineMaxPlayers2",
-		1
-	),
+	CMemPatch(&modules::server, sigs::MovementUnlock, sigs::Patch_MovementUnlock, "ServerMovementUnlock", 1),
 	// Re-enable vscript
 	// Refer to tilgep's pin in #scripting
-	CDLLPatch(
-		ROOTBIN"vscript.dll",
-		(byte*)"\xBE\x01\x2A\x2A\x2A\x2B\xD6\x74\x61\x3B\xD6",
-		(byte*)"\xBE\x02",
-		"VScriptEnable",
-		1
-	),
+	CMemPatch(&modules::vscript, sigs::VScriptEnable, sigs::Patch_VScriptEnable, "VScriptEnable", 1),
+
+	// Force the server to reject players at a given number which is configured below with set_max_players
+	// Look for "NETWORK_DISCONNECT_REJECT_SERVERFULL to %s"
+	//CMemPatch(
+	//	&modules::engine,
+	//	(byte*)"\x0F\x84\x2A\x2A\x2A\x2A\x49\x8B\xCF\xE8\x2A\x2A\x2A\x2A\x44\x8B\x54\x24\x2A",
+	//	(byte*)"\x90\x90\x90\x90\x90\x90",
+	//	"EngineMaxPlayers1",
+	//	1
+	//),
+	//CMemPatch(
+	//	&modules::engine,
+	//	(byte*)"\x41\x8B\xB7\x2A\x2A\x2A\x2A\x49\x8B\xCF\xE8\x2A\x2A\x2A\x2A",
+	//	(byte*)"\xBE\x1C\x00\x00\x00\x90\x90",
+	//	"EngineMaxPlayers2",
+	//	1
+	//),
 };
 
-CDLLPatch g_ClientPatches[] =
+CMemPatch g_ClientPatches[] =
 {
 	// Client-side movement unlocker
 	// Identical to the server since it's shared code
-	CDLLPatch(
-		GAMEBIN"client.dll",
+	CMemPatch(
+		&modules::client,
 		(byte*)"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x2A\x2A\x0F\x28\xCA\xF3\x0F\x59\xC0",
 		(byte*)"\xEB",
 		"ClientMovementUnlock",
@@ -68,12 +56,12 @@ CDLLPatch g_ClientPatches[] =
 	),
 };
 
-CDLLPatch g_ToolsPatches[] =
+CMemPatch g_ToolsPatches[] =
 {
 	// Remove some -nocustomermachine checks without needing -nocustomermachine itself as it can break stuff, mainly to enable device selection in compiles
 	// Find "Noise removal", there should be 3 customermachine checks
-	CDLLPatch(
-		ROOTBIN"tools/hammer.dll",
+	CMemPatch(
+		&modules::hammer,
 		(byte*)"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9",
 		(byte*)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90",
 		"HammerNoCustomerMachine",
@@ -145,11 +133,9 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CBaseP
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CBasePlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
 void FASTCALL Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, const char *);
 
-// look for string "\"Console<0>\" say \"%s\"\n"
-DECLARE_DETOUR(Host_Say, Detour_Host_Say, &modules::server, sigs::Host_Say);
-// both of these are called from Host_Say
-DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter, &modules::server, sigs::UTIL_SayTextFilter);
-DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter, &modules::server, sigs::UTIL_SayText2Filter);
+DECLARE_DETOUR(Host_Say, Detour_Host_Say, &modules::server);
+DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter, &modules::server);
+DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter, &modules::server);
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CBasePlayerController *pPlayer, uint64 eMessageType)
 {
@@ -180,7 +166,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	const char *param3, 
 	const char *param4)
 {
-#ifdef _DEBUG
+#if 0
 	int entindex = filter.GetRecipientIndex(0).Get() + 1;
 	CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(entindex);
 
@@ -276,7 +262,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		Collision_Group_t colgroup = (Collision_Group_t)atoi(strtok_s(nullptr, " ", &pos));
 		int uid = atoi(strtok_s(nullptr, " ", &pos));
 
-		CBaseEntity *target = CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		Z_CBaseEntity *target = (Z_CBaseEntity*)g_pEntitySystem->GetBaseEntity((CEntityIndex)uid);
 		if (target)
 			target->m_pCollision()->m_CollisionGroup(colgroup);
 	}
@@ -285,7 +271,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		Collision_Group_t colgroup = (Collision_Group_t)atoi(strtok_s(nullptr, " ", &pos));
 		int uid = atoi(strtok_s(nullptr, " ", &pos));
 
-		CCSPlayerController *targetController = (CCSPlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		CCSPlayerController *targetController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)uid);
 
 		if (targetController)
 			targetController->m_hPawn().Get()->m_pCollision()->m_CollisionGroup(colgroup);
@@ -295,7 +281,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		// Note that the engine will treat this as a player slot number, not an entity index
 		int uid = atoi(strtok_s(nullptr, " ", &pos));
 
-		CBasePlayerController *player = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(uid + 1);
+		CBasePlayerController *player = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(uid + 1));
 
 		if (!player)
 			return;
@@ -315,7 +301,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		SolidType_t colgroup = (SolidType_t)atoi(strtok_s(nullptr, " ", &pos));
 		int uid = atoi(strtok_s(nullptr, " ", &pos));
 
-		CBaseEntity *target = CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		Z_CBaseEntity *target = (Z_CBaseEntity*)g_pEntitySystem->GetBaseEntity((CEntityIndex)uid);
 		if (target)
 			target->m_pCollision()->m_nSolidType(colgroup);
 	}
@@ -323,7 +309,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 	{
 		int uid = atoi(strtok_s(nullptr, " ", &pos));
 
-		CBaseModelEntity *target = (CBaseModelEntity*)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		CBaseModelEntity *target = (CBaseModelEntity*)g_pEntitySystem->GetBaseEntity((CEntityIndex)uid);
 		if (target)
 		{
 			target->m_Glow().m_bGlowing(true);
@@ -339,7 +325,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		float y = atof(strtok_s(nullptr, " ", &pos));
 		float z = atof(strtok_s(nullptr, " ", &pos));
 
-		CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		CBasePlayerController *target = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)uid);
 		if (target)
 			target->m_hPawn().Get()->m_vecBaseVelocity(Vector(x, y, z));
 	}
@@ -348,7 +334,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		int uid = atoi(strtok_s(nullptr, " ", &pos));
 		int health = atoi(strtok_s(nullptr, " ", &pos));
 
-		CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		CBasePlayerController *target = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)uid);
 		if (target)
 			target->m_hPawn().Get()->m_iHealth(health);
 	}
@@ -356,13 +342,9 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 	{
 		int uid = atoi(strtok_s(nullptr, " ", &pos));
 
-		ConMsg("sdfds\n");
-
-		ConMsg("1 %llx\n", CGameEntitySystem::GetInstance());
-		CBasePlayerController* target = (CBasePlayerController*)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
-		ConMsg("2\n");
+		CBasePlayerController* target = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)uid);
 		if (target)
-			ConMsg("Health: %llx", target->m_hPawn());
+			ConMsg("Health: %llx\n", target->m_hPawn().Get()->m_iHealth());
 	}
 	else
 	{
@@ -372,7 +354,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 
 			if (!V_stricmp(token, weaponEntry.command))
 			{
-				uintptr_t pItemServices = (uintptr_t)pController->m_hPawn().Get<CCSPlayerPawn>()->m_pItemServices();
+				uintptr_t pItemServices = (uintptr_t)pController->m_hPawn().Get()->m_pItemServices();
 				int money = pController->m_pInGameMoneyServices()->m_iAccount();
 				if (money >= weaponEntry.iPrice)
 				{
@@ -390,6 +372,9 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 
 void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand *args, bool teamonly, int unk1, const char *unk2)
 {
+	if(g_pEntitySystem == nullptr)
+		g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+
 	const char *pMessage = args->Arg(1);
 
 	if (*pMessage == '!' || *pMessage == '/')
@@ -406,20 +391,22 @@ void InitPatches()
 #ifdef _WIN32
 	for (int i = 0; i < sizeof(g_CommonPatches) / sizeof(*g_CommonPatches); i++)
 		g_CommonPatches[i].PerformPatch();
+#endif
 
 	// Same location as the above 2 patches for maxplayers
-	CDLLPatch MaxPlayerPatch(
-		ROOTBIN "engine2.dll",
-		(byte *)"\x41\x3B\x87\x2A\x2A\x2A\x2A\x0F\x8E\x2A\x2A\x2A\x2A\x8B\x0D\x2A\x2A\x2A\x2A",
-		(byte *)"\x83\xF8\x40\x90\x90\x90\x90",
-		"EngineMaxPlayers3",
-		1);
+	//CMemPatch MaxPlayerPatch(
+	//	&modules::engine,
+	//	(byte *)"\x41\x3B\x87\x2A\x2A\x2A\x2A\x0F\x8E\x2A\x2A\x2A\x2A\x8B\x0D\x2A\x2A\x2A\x2A",
+	//	(byte *)"\x83\xF8\x40\x90\x90\x90\x90",
+	//	"EngineMaxPlayers3",
+	//	1);
+	//
+	//MaxPlayerPatch.PerformPatch();
 
-	MaxPlayerPatch.PerformPatch();
-
-	g_pMaxPlayers = (byte *)MaxPlayerPatch.GetPatchAddress() + 2;
+	//g_pMaxPlayers = (byte *)MaxPlayerPatch.GetPatchAddress() + 2;
 
 	// Dedicated servers don't load client.dll
+#ifdef _WIN32
 	if (!CommandLine()->HasParm("-dedicated"))
 	{
 		for (int i = 0; i < sizeof(g_ClientPatches) / sizeof(*g_ClientPatches); i++)

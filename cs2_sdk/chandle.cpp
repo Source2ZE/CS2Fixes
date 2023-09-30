@@ -1,8 +1,10 @@
-#include "chandle.h"
+#include "tier1/utlstring.h"
+#include "ehandle.h"
 #include "interfaces/cs2_interfaces.h"
 
 #include "tier0/memdbgon.h"
 
+/*
 CBaseEntity *CHandle::GetBaseEntity() const
 {
 	CGameEntitySystem *pEntitySystem = CGameEntitySystem::GetInstance();
@@ -11,3 +13,4 @@ CBaseEntity *CHandle::GetBaseEntity() const
 
 	return pEntitySystem->GetBaseEntity(GetEntryIndex());
 }
+*/

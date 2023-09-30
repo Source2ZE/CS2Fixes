@@ -1,74 +1,40 @@
-#ifdef _WIN32
-
 #include "dllpatch.h"
 #include "common.h"
+#include "utils/module.h"
 #include "tier0/dbg.h"
 #include "tier1/strtools.h"
-#include <Psapi.h>
 
 #include "tier0/memdbgon.h"
 
-void CDLLPatch::PerformPatch()
+void CMemPatch::PerformPatch()
 {
-	HMODULE lib = 0;
+	if (!m_pModule)
+		return;
 
-	char szModule[MAX_PATH];
+	m_pPatchAddress = (*m_pModule)->FindSignature(m_pSignature);
 
-	V_strcpy(szModule, Plat_GetGameDirectory());
-	V_strcat(szModule, m_pszModule, MAX_PATH);
-
-	lib = LoadLibraryA(szModule);
-
-	if (!lib)
-		Error("Could not find %s\n", szModule);
-
-	MODULEINFO moduleInfo;
-
-	GetModuleInformation(GetCurrentProcess(), lib, &moduleInfo, sizeof(moduleInfo));
-
-	for (int i = 0; i < m_iRepeat; i++)
+	if (!m_pPatchAddress)
 	{
-		m_pPatchAddress = (void *)FindSignature(moduleInfo.lpBaseOfDll, m_pSignature, moduleInfo.SizeOfImage);
-
-		if (!m_pPatchAddress)
-		{
-			if (i == 0)
-				Panic("Failed to find signature for %s\n", m_pszName);
-
-			return;
-		}
-
-		WriteProcessMemory(GetCurrentProcess(), m_pPatchAddress, m_pPatch, V_strlen((char *)m_pPatch), nullptr);
+		Panic("Failed to find signature for %s\n", m_pszName);
+		return;
 	}
 
-	ConColorMsg(Color(255, 0, 255, 255), "[CS2Fixes] Successfully patched %s!\n", m_pszName);
+	m_pOriginalBytes = new byte[m_iPatchLength];
+	V_strncpy((char*)m_pOriginalBytes, (char*)m_pPatchAddress, m_iPatchLength);
+
+	Plat_WriteMemory(m_pPatchAddress, (byte*)m_pPatch, m_iPatchLength);
+
+	Message("[CS2Fixes] Successfully patched %s!\n", m_pszName);
 
 #ifdef USE_DEBUG_CONSOLE
 	printf("[CS2Fixes] Successfully patched %s!\n", m_pszName);
 #endif
 }
 
-void* FindSignature(void* BaseAddr, const byte* pData, size_t MaxSize)
+void CMemPatch::UndoPatch()
 {
-	unsigned char* pMemory;
-	void* return_addr = nullptr;
+	if (!m_pPatchAddress)
+		return;
 
-	size_t iSigLength = V_strlen((const char*)pData);
-
-	pMemory = (byte*)BaseAddr;
-
-	for (size_t i = 0; i < MaxSize; i++)
-	{
-		size_t Matches = 0;
-		while (*(pMemory + i + Matches) == pData[Matches] || pData[Matches] == '\x2A')
-		{
-			Matches++;
-			if (Matches == iSigLength)
-				return_addr = (void*)(pMemory + i);
-		}
-	}
-
-	return return_addr;
+	Plat_WriteMemory(m_pPatchAddress, m_pOriginalBytes, m_iPatchLength);
 }
-
-#endif

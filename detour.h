@@ -96,7 +96,7 @@ void CDetour<T>::FreeDetour()
 	funchook_destroy(m_hook);
 }
 
-#define DECLARE_DETOUR(name, detour, modulepath, signature) \
-	CDetour<decltype(detour)> name(modulepath, detour, #name, (byte*)signature)
+#define DECLARE_DETOUR(name, detour, modulepath) \
+	CDetour<decltype(detour)> name(modulepath, detour, #name, (byte*)sigs::name)
 
 void FlushAllDetours();

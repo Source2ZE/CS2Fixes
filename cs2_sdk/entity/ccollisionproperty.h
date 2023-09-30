@@ -4,7 +4,7 @@
 
 struct VPhysicsCollisionAttribute_t
 {
-	DECLARE_SCHEMA_CLASS(VPhysicsCollisionAttribute_t)
+	DECLARE_SCHEMA_CLASS_INLINE(VPhysicsCollisionAttribute_t)
 
 	SCHEMA_FIELD(uint8, m_nCollisionGroup)
 };
