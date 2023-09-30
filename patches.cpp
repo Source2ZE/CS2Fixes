@@ -145,27 +145,15 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CBaseP
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CBasePlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
 void FASTCALL Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, const char *);
 
-// both of these are called from Host_Say
-DECLARE_DETOUR(
-	UTIL_SayTextFilter,
-	Detour_UTIL_SayTextFilter,
-	&modules::server,
-	"\x48\x89\x5C\x24\x2A\x55\x56\x57\x48\x8D\x6C\x24\x2A\x48\x81\xEC\x2A\x2A\x2A\x2A\x49\x8B\xD8");
-DECLARE_DETOUR(
-	UTIL_SayText2Filter,
-	Detour_UTIL_SayText2Filter,
-	&modules::server,
-	"\x48\x89\x5C\x24\x2A\x55\x56\x57\x48\x8D\x6C\x24\x2A\x48\x81\xEC\x2A\x2A\x2A\x2A\x41\x0F\xB6\xF8");
-
 // look for string "\"Console<0>\" say \"%s\"\n"
-DECLARE_DETOUR(Host_Say,
-	Detour_Host_Say,
-	&modules::server,
-	"\x44\x89\x4C\x24\x2A\x44\x88\x44\x24\x2A\x55\x53\x56\x57\x41\x54\x41\x55");
+DECLARE_DETOUR(Host_Say, Detour_Host_Say, &modules::server, sigs::Host_Say);
+// both of these are called from Host_Say
+DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter, &modules::server, sigs::UTIL_SayTextFilter);
+DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter, &modules::server, sigs::UTIL_SayText2Filter);
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CBasePlayerController *pPlayer, uint64 eMessageType)
 {
-#ifdef _DEBUG
+#if 0
 	int entindex = filter.GetRecipientIndex(0).Get();
 	CBasePlayerController *target = (CBasePlayerController *)CGameEntitySystem::GetInstance()->GetBaseEntity(entindex);
 
@@ -364,6 +352,18 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		if (target)
 			target->m_hPawn().Get()->m_iHealth(health);
 	}
+	else if (!V_stricmp(token, "gethealth"))
+	{
+		int uid = atoi(strtok_s(nullptr, " ", &pos));
+
+		ConMsg("sdfds\n");
+
+		ConMsg("1 %llx\n", CGameEntitySystem::GetInstance());
+		CBasePlayerController* target = (CBasePlayerController*)CGameEntitySystem::GetInstance()->GetBaseEntity(uid);
+		ConMsg("2\n");
+		if (target)
+			ConMsg("Health: %llx", target->m_hPawn());
+	}
 	else
 	{
 		for (int i = 0; i < sizeof(WeaponMap) / sizeof(*WeaponMap); i++)
@@ -433,7 +433,8 @@ void InitPatches()
 			g_ToolsPatches[i].PerformPatch();
 	}
 #endif
-
+	
+	
 	UTIL_SayTextFilter.CreateDetour();
 	UTIL_SayTextFilter.EnableDetour();
 
@@ -442,7 +443,6 @@ void InitPatches()
 
 	Host_Say.CreateDetour();
 	Host_Say.EnableDetour();
-	
 }
 
 void CRecipientFilter::Reset(void)

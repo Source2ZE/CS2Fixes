@@ -1,6 +1,6 @@
 #pragma once 
 #include <functional>
-#include "subhook.h"
+#include "funchook.h"
 #include "module.h"
 #include "tier0/dbg.h"
 #include "utlvector.h"
@@ -35,7 +35,7 @@ public:
 	template <typename... Args>
 	auto operator()(Args &&...args)
 	{
-		return std::invoke((T*)subhook_get_trampoline(m_hook), std::forward<Args>(args)...);
+		return std::invoke(m_pfnFunc, std::forward<Args>(args)...);
 	}
 
 private:
@@ -43,9 +43,8 @@ private:
 	T* m_pfnDetour;
 	const char* m_pszName;
 	byte* m_pSignature;
-	void* m_pfnFunc;
-	T* m_pfnOrigFunc;
-	subhook_t m_hook;
+	T* m_pfnFunc;
+	funchook_t* m_hook;
 };
 
 static CUtlVector<CDetourBase*> g_vecDetours;
@@ -60,9 +59,9 @@ void CDetour<T>::CreateDetour()
 	}
 
 	if (!m_pSignature)
-		m_pfnFunc = dlsym((*m_pModule)->m_hModule, m_pszName);
+		m_pfnFunc = (T*)dlsym((*m_pModule)->m_hModule, m_pszName);
 	else
-		m_pfnFunc = (*m_pModule)->FindSignature(m_pSignature);
+		m_pfnFunc = (T*)(*m_pModule)->FindSignature(m_pSignature);
 
 	if (!m_pfnFunc)
 	{
@@ -70,7 +69,8 @@ void CDetour<T>::CreateDetour()
 		return;
 	}
 
-	m_hook = subhook_new((void*)m_pfnFunc, (void*)m_pfnDetour, (subhook_flags_t)(SUBHOOK_TRAMPOLINE | SUBHOOK_64BIT_OFFSET | SUBHOOK_TRAMPOLINE_ALLOC_NEARBY));
+	m_hook = funchook_create();
+	funchook_prepare(m_hook, (void**)&m_pfnFunc, (void*)m_pfnDetour);
 
 	g_vecDetours.AddToTail(this);
 
@@ -80,20 +80,20 @@ void CDetour<T>::CreateDetour()
 template <typename T>
 void CDetour<T>::EnableDetour()
 {
-	subhook_install(m_hook);
+	funchook_install(m_hook, 0);
 }
 
 template <typename T>
 void CDetour<T>::DisableDetour()
 {
-	subhook_remove(m_hook);
+	funchook_uninstall(m_hook, 0);
 }
 
 template <typename T>
 void CDetour<T>::FreeDetour()
 {
 	DisableDetour();
-	subhook_free(m_hook);
+	funchook_destroy(m_hook);
 }
 
 #define DECLARE_DETOUR(name, detour, modulepath, signature) \

@@ -8,6 +8,7 @@
 x64/
 x86/
 build/
+winbuild/
 bld/
 [Bb]in/
 [Oo]bj/

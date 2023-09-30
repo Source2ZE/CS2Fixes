@@ -200,6 +200,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 void FlushAllDetours()
 {
+	META_CONPRINTF("Flush");
 	FOR_EACH_VEC(g_vecDetours, i)
 	{
 		ConMsg("Nuking detour %s", g_vecDetours[i]->GetName());
@@ -220,6 +221,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientConnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientConnect, false);
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientCommand, false);
 
+	ConMsg("Unload");
 	FlushAllDetours();
 
 	return true;
