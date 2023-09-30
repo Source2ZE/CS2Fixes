@@ -35,7 +35,7 @@ public:
 	template <typename... Args>
 	auto operator()(Args &&...args)
 	{
-		return std::invoke(m_pfnOrigFunc, std::forward<Args>(args)...);
+		return std::invoke((T*)subhook_get_trampoline(m_hook), std::forward<Args>(args)...);
 	}
 
 private:
@@ -70,7 +70,7 @@ void CDetour<T>::CreateDetour()
 		return;
 	}
 
-	m_hook = subhook_new((void*)m_pfnFunc, (void*)m_pfnDetour, (subhook_flags_t)0);
+	m_hook = subhook_new((void*)m_pfnFunc, (void*)m_pfnDetour, (subhook_flags_t)(SUBHOOK_TRAMPOLINE | SUBHOOK_64BIT_OFFSET | SUBHOOK_TRAMPOLINE_ALLOC_NEARBY));
 
 	g_vecDetours.AddToTail(this);
 
