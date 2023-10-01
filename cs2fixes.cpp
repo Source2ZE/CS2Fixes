@@ -27,6 +27,7 @@
 #include "interfaces/cs2_interfaces.h"
 #include "plat.h"
 #include "entitysystem.h"
+#include "engine/igameeventsystem.h"
 
 CEntitySystem* g_pEntitySystem = nullptr;
 
@@ -68,8 +69,11 @@ SH_DECL_HOOK4_void(IServerGameClients, ClientPutInServer, SH_NOATTRIB, 0, CPlaye
 SH_DECL_HOOK1_void(IServerGameClients, ClientSettingsChanged, SH_NOATTRIB, 0, CPlayerSlot );
 SH_DECL_HOOK6_void(IServerGameClients, OnClientConnected, SH_NOATTRIB, 0, CPlayerSlot, const char*, uint64, const char *, const char *, bool);
 SH_DECL_HOOK6(IServerGameClients, ClientConnect, SH_NOATTRIB, 0, bool, CPlayerSlot, const char*, uint64, const char *, bool, CBufferString *);
-SH_DECL_HOOK2(IGameEventManager2, FireEvent, SH_NOATTRIB, 0, bool, IGameEvent *, bool);
+SH_DECL_HOOK6_void(IGameEventSystem, PostEventAbstract, SH_NOATTRIB, 0, CSplitScreenSlot, bool, IRecipientFilter*,
+	INetworkSerializable*, const void*, unsigned long)
 
+
+// , bool, IRecipientFilter*, INetworkSerializable*, void* data, unsigned long nSize
 SH_DECL_HOOK2_void( IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand & );
 
 CS2Fixes g_CS2Fixes;
@@ -114,6 +118,8 @@ CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_NONE)
 
 CUtlVector<CDetourBase*> g_vecDetours;
 
+IGameEventSystem* g_gameEventSystem;
+IGameEventManager2* g_gameEventManager;
 PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
 bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
 {
@@ -124,6 +130,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2Server, ISource2Server, SOURCE2SERVER_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2GameClients, IServerGameClients, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
+	GET_V_IFACE_ANY(GetEngineFactory, g_gameEventSystem, IGameEventSystem, GAMEEVENTSYSTEM_INTERFACE_VERSION);
 
 	// Currently doesn't work from within mm side, use GetGameGlobals() in the mean time instead
 	// gpGlobals = ismm->GetCGlobals();
@@ -138,6 +145,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	SH_ADD_HOOK_MEMFUNC(IServerGameClients, OnClientConnected, g_pSource2GameClients, this, &CS2Fixes::Hook_OnClientConnected, false);
 	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientConnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientConnect, false );
 	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientCommand, false);
+	SH_ADD_HOOK_MEMFUNC(IGameEventSystem, PostEventAbstract, g_gameEventSystem, this, &CS2Fixes::Hook_PostEvent, false);
 
 	META_CONPRINTF( "All hooks started!\n" );
 
@@ -155,6 +163,10 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	InitPatches();
 	InitLoggingDetours();
 
+	g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);
+
+	ConMsg("g_gameEventManager - %p\n", g_gameEventManager);
+
 	return true;
 }
 
@@ -169,6 +181,7 @@ void FlushAllDetours()
 	g_vecDetours.RemoveAll();
 }
 
+
 bool CS2Fixes::Unload(char *error, size_t maxlen)
 {
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameDLL, GameFrame, g_pSource2Server, this, &CS2Fixes::Hook_GameFrame, true);
@@ -179,6 +192,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, OnClientConnected, g_pSource2GameClients, this, &CS2Fixes::Hook_OnClientConnected, false);
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientConnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientConnect, false);
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientCommand, false);
+	SH_REMOVE_HOOK_MEMFUNC(IGameEventSystem, PostEventAbstract, g_gameEventSystem, this, &CS2Fixes::Hook_PostEvent, false);
 
 	unlock_cvars_command.Shutdown();
 	unlock_commands_command.Shutdown();
@@ -188,6 +202,19 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	UndoPatches();
 
 	return true;
+}
+
+void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, IRecipientFilter* pFilter,
+	INetworkSerializable* pEvent, const void* pData, unsigned long nSize)
+{
+	META_CONPRINTF("Hook_PostEvent(%d, %d, %p, %p, %p, %d)\n", nSlot, bLocalOnly, pFilter, pEvent, pData, nSize);
+
+	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
+	/*if (info->m_MessageId == CS_UM_SayText2)
+	{
+		// cast pData to proto message
+		ConMsg("yip");
+	}*/
 }
 
 void CS2Fixes::AllPluginsLoaded()

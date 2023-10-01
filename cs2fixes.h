@@ -16,11 +16,13 @@
 #include <igameevents.h>
 #include <iplayerinfo.h>
 #include <sh_vector.h>
+#include "networksystem/inetworkserializer.h"
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
 {
 public:
 	bool Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late);
+	void Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, IRecipientFilter* pFilter, INetworkSerializable* pEvent, const void* pData, unsigned long nSize);
 	bool Unload(char *error, size_t maxlen);
 	bool Pause(char *error, size_t maxlen);
 	bool Unpause(char *error, size_t maxlen);
