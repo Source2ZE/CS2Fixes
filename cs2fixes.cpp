@@ -40,11 +40,6 @@ void Message(const char *msg, ...)
 
 	ConColorMsg(Color(255, 0, 255, 255), "%s", buf);
 
-#ifdef USE_DEBUG_CONSOLE
-	if (!CommandLine()->HasParm("-dedicated"))
-		printf(buf);
-#endif
-
 	va_end(args);
 }
 
@@ -58,8 +53,10 @@ void Panic(const char *msg, ...)
 
 	if (CommandLine()->HasParm("-dedicated"))
 		Warning("%s", buf);
-	/*else
-		MessageBoxA(nullptr, buf, "Warning", 0);*/
+#ifdef _WIN32
+	else
+		MessageBoxA(nullptr, buf, "Warning", 0);
+#endif
 
 	va_end(args);
 }
@@ -112,64 +109,10 @@ CON_COMMAND_F(unlock_commands, "Unlock all commands", FCVAR_NONE)
 
 CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_NONE)
 {
-	//ToggleLogs();
-}
-
-CON_COMMAND_F(set_max_players, "Set max players through a patch", FCVAR_NONE)
-{
-	if (args.ArgC() < 2)
-	{
-		Msg("Usage: set_max_players <maxplayers>\n");
-		return;
-	}
-
-	//SetMaxPlayers(atoi(args.Arg(1)));
+	ToggleLogs();
 }
 
 CUtlVector<CDetourBase*> g_vecDetours;
-
-void Init()
-{
-	static bool attached = false;
-
-	if (attached)
-		return;
-	
-	attached = true;
-
-#ifdef USE_DEBUG_CONSOLE
-	AllocConsole();
-	freopen("CONOUT$", "w", stdout);
-#endif
-
-#ifdef HOOK_CONVARS
-	HookConVars();
-#endif
-#ifdef HOOK_CONCOMMANDS
-	HookConCommands();
-#endif
-	addresses::Initialize();
-	interfaces::Initialize();
-
-	g_pCVar->RegisterConCommand(&unlock_cvars_command);
-	g_pCVar->RegisterConCommand(&unlock_commands_command);
-	g_pCVar->RegisterConCommand(&toggle_logs_command);
-	g_pCVar->RegisterConCommand(&set_max_players_command);
-
-	g_vecDetours.RemoveAll();
-
-	InitPatches();
-	//InitLoggingDetours();
-}
-
-#ifdef USE_TICKRATE
-void *g_pfnGetTickInterval = nullptr;
-
-float GetTickIntervalHook()
-{
-	return 1.0f / CommandLine()->ParmValue("-tickrate", 64.0f);
-}
-#endif
 
 PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
 bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
@@ -200,7 +143,17 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	ConVar_Register( FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL );
 	
-	Init();
+	addresses::Initialize();
+	interfaces::Initialize();
+
+	g_pCVar->RegisterConCommand(&unlock_cvars_command);
+	g_pCVar->RegisterConCommand(&unlock_commands_command);
+	g_pCVar->RegisterConCommand(&toggle_logs_command);
+
+	g_vecDetours.RemoveAll();
+
+	InitPatches();
+	InitLoggingDetours();
 
 	return true;
 }
@@ -226,6 +179,10 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, OnClientConnected, g_pSource2GameClients, this, &CS2Fixes::Hook_OnClientConnected, false);
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientConnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientConnect, false);
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientCommand, false);
+
+	unlock_cvars_command.Shutdown();
+	unlock_commands_command.Shutdown();
+	toggle_logs_command.Shutdown();
 
 	FlushAllDetours();
 	UndoPatches();

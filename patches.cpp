@@ -1,6 +1,6 @@
 #include "detour.h"
 #include "common.h"
-#include "dllpatch.h"
+#include "mempatch.h"
 #include "icvar.h"
 #include "irecipientfilter.h"
 #include "interfaces/cs2_interfaces.h"
@@ -10,54 +10,23 @@
 #include "addresses.h"
 #include "tier0/memdbgon.h"
 
-
 extern CEntitySystem *g_pEntitySystem;
 
 CMemPatch g_CommonPatches[] =
 {
-	// Movement Unlocker
-	// Refer to vauff's pin in #scripting
 	CMemPatch(&modules::server, sigs::MovementUnlock, sigs::Patch_MovementUnlock, "ServerMovementUnlock", 1),
-	// Re-enable vscript
-	// Refer to tilgep's pin in #scripting
 	CMemPatch(&modules::vscript, sigs::VScriptEnable, sigs::Patch_VScriptEnable, "VScriptEnable", 1),
+};
 
-	// Force the server to reject players at a given number which is configured below with set_max_players
-	// Look for "NETWORK_DISCONNECT_REJECT_SERVERFULL to %s"
-	//CMemPatch(
-	//	&modules::engine,
-	//	(byte*)"\x0F\x84\x2A\x2A\x2A\x2A\x49\x8B\xCF\xE8\x2A\x2A\x2A\x2A\x44\x8B\x54\x24\x2A",
-	//	(byte*)"\x90\x90\x90\x90\x90\x90",
-	//	"EngineMaxPlayers1",
-	//	1
-	//),
-	//CMemPatch(
-	//	&modules::engine,
-	//	(byte*)"\x41\x8B\xB7\x2A\x2A\x2A\x2A\x49\x8B\xCF\xE8\x2A\x2A\x2A\x2A",
-	//	(byte*)"\xBE\x1C\x00\x00\x00\x90\x90",
-	//	"EngineMaxPlayers2",
-	//	1
-	//),
+CMemPatch g_ClientPatches[] =
+{
+	CMemPatch(&modules::client, sigs::MovementUnlock, sigs::Patch_MovementUnlock, "ClientMovementUnlock", 1),
 };
 
 #ifdef _WIN32
-CMemPatch g_ClientPatches[] =
-{
-	// Client-side movement unlocker
-	// Identical to the server since it's shared code
-	CMemPatch(
-		&modules::client,
-		(byte*)"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x2A\x2A\x0F\x28\xCA\xF3\x0F\x59\xC0",
-		(byte*)"\xEB",
-		"ClientMovementUnlock",
-		1
-	),
-};
-
 CMemPatch g_ToolsPatches[] =
 {
 	// Remove some -nocustomermachine checks without needing -nocustomermachine itself as it can break stuff, mainly to enable device selection in compiles
-	// Find "Noise removal", there should be 3 customermachine checks
 	CMemPatch(
 		&modules::hammer,
 		(byte*)"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9",
@@ -118,19 +87,10 @@ void ToggleLogs()
 	bBlock = !bBlock;
 }
 
-byte *g_pMaxPlayers = nullptr;
-
-void SetMaxPlayers(byte iMaxPlayers)
-{
-	clamp(iMaxPlayers, 1, 64);
-
-	//WriteProcessMemory(GetCurrentProcess(), g_pMaxPlayers, &iMaxPlayers, 1, nullptr);
-}
-
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CBasePlayerController *, uint64);
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CBasePlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
 void FASTCALL Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, const char *);
-bool FASTCALL Detour_VoiceShouldHear(CCSPlayerController* a, CCSPlayerController* b, bool a3, bool voice);
+bool FASTCALL Detour_VoiceShouldHear(CCSPlayerController *a, CCSPlayerController *b, bool a3, bool voice);
 
 DECLARE_DETOUR(Host_Say, Detour_Host_Say, &modules::server);
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter, &modules::server);
@@ -154,13 +114,11 @@ bool FASTCALL Detour_VoiceShouldHear(CCSPlayerController* a, CCSPlayerController
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CBasePlayerController *pPlayer, uint64 eMessageType)
 {
-#if 1
 	int entindex = filter.GetRecipientIndex(0).Get();
-	CBasePlayerController* target = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
+	CBasePlayerController *target = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
 
 	if (target)
 		Message("[CS2Fixes] Chat from %s to %s: %s\n", pPlayer ? &pPlayer->m_iszPlayerName() : "console", &target->m_iszPlayerName(), pText);
-#endif
 
 	if (pPlayer)
 		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
@@ -181,13 +139,11 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	const char *param3, 
 	const char *param4)
 {
-#if 1
 	int entindex = filter.GetRecipientIndex(0).Get() + 1;
-	CBasePlayerController* target = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
+	CBasePlayerController *target = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
 
 	if (target)	
 		Message("[CS2Fixes] Chat from %s to %s: %s\n", param1, &target->m_iszPlayerName(), param2);
-#endif
 
 	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
 }
@@ -304,10 +260,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		char message[256];
 		V_snprintf(message, sizeof(message), " \7[CS2Fixes]\1 Private message to %s: \5%s", &player->m_iszPlayerName(), pos);
 
-		CRecipientFilter filter;
-
-		filter.AddRecipient(uid);
-		filter.MakeReliable();
+		CSingleRecipientFilter filter(uid);
 
 		UTIL_SayTextFilter(filter, message, nullptr, 0);
 	}
@@ -406,26 +359,14 @@ void InitPatches()
 	for (int i = 0; i < sizeof(g_CommonPatches) / sizeof(*g_CommonPatches); i++)
 		g_CommonPatches[i].PerformPatch();
 
-	// Same location as the above 2 patches for maxplayers
-	//CMemPatch MaxPlayerPatch(
-	//	&modules::engine,
-	//	(byte *)"\x41\x3B\x87\x2A\x2A\x2A\x2A\x0F\x8E\x2A\x2A\x2A\x2A\x8B\x0D\x2A\x2A\x2A\x2A",
-	//	(byte *)"\x83\xF8\x40\x90\x90\x90\x90",
-	//	"EngineMaxPlayers3",
-	//	1);
-	//
-	//MaxPlayerPatch.PerformPatch();
-
-	//g_pMaxPlayers = (byte *)MaxPlayerPatch.GetPatchAddress() + 2;
-
-	// Dedicated servers don't load client.dll
-#ifdef _WIN32
+	// Dedicated servers don't load client
 	if (!CommandLine()->HasParm("-dedicated"))
 	{
 		for (int i = 0; i < sizeof(g_ClientPatches) / sizeof(*g_ClientPatches); i++)
 			g_ClientPatches[i].PerformPatch();
 	}
 
+#ifdef _WIN32
 	// None of the tools are loaded without, well, -tools
 	if (CommandLine()->HasParm("-tools"))
 	{
@@ -433,7 +374,6 @@ void InitPatches()
 			g_ToolsPatches[i].PerformPatch();
 	}
 #endif
-	
 	
 	UTIL_SayTextFilter.CreateDetour();
 	UTIL_SayTextFilter.EnableDetour();
@@ -450,79 +390,20 @@ void InitPatches()
 
 void UndoPatches()
 {
-#ifdef _WIN32
 	for (int i = 0; i < sizeof(g_CommonPatches) / sizeof(*g_CommonPatches); i++)
 		g_CommonPatches[i].UndoPatch();
-#endif
 
-	// Same location as the above 2 patches for maxplayers
-	//CMemPatch MaxPlayerPatch(
-	//	&modules::engine,
-	//	(byte *)"\x41\x3B\x87\x2A\x2A\x2A\x2A\x0F\x8E\x2A\x2A\x2A\x2A\x8B\x0D\x2A\x2A\x2A\x2A",
-	//	(byte *)"\x83\xF8\x40\x90\x90\x90\x90",
-	//	"EngineMaxPlayers3",
-	//	1);
-	//
-	//MaxPlayerPatch.PerformPatch();
-
-	//g_pMaxPlayers = (byte *)MaxPlayerPatch.GetPatchAddress() + 2;
-
-	// Dedicated servers don't load client.dll
-#ifdef _WIN32
 	if (!CommandLine()->HasParm("-dedicated"))
 	{
 		for (int i = 0; i < sizeof(g_ClientPatches) / sizeof(*g_ClientPatches); i++)
 			g_ClientPatches[i].UndoPatch();
 	}
 
-	// None of the tools are loaded without, well, -tools
+#ifdef _WIN32
 	if (CommandLine()->HasParm("-tools"))
 	{
 		for (int i = 0; i < sizeof(g_ToolsPatches) / sizeof(*g_ToolsPatches); i++)
 			g_ToolsPatches[i].UndoPatch();
 	}
 #endif
-}
-
-void CRecipientFilter::Reset(void)
-{
-	m_bReliable = false;
-	m_bInitMessage = false;
-}
-
-void CRecipientFilter::MakeReliable(void)
-{
-	m_bReliable = true;
-}
-
-bool CRecipientFilter::IsReliable(void) const
-{
-	return m_bReliable;
-}
-
-bool CRecipientFilter::IsInitMessage(void) const
-{
-	return m_bInitMessage;
-}
-
-int CRecipientFilter::GetRecipientCount(void) const
-{
-	return m_Recipients.Count();
-}
-
-CEntityIndex CRecipientFilter::GetRecipientIndex(int slot) const
-{
-	if (slot < 0 || slot >= GetRecipientCount())
-		CEntityIndex(-1);
-
-	return CEntityIndex(m_Recipients[slot]);
-}
-
-void CRecipientFilter::AddRecipient(int entindex)
-{
-	// Already in list
-	if (m_Recipients.Find(entindex) != m_Recipients.InvalidIndex())
-		return;
-
-	m_Recipients.AddToTail(entindex);
 }

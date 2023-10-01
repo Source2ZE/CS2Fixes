@@ -41,7 +41,7 @@
     <ClCompile Include="cvars.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dllpatch.cpp">
+    <ClCompile Include="mempatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sdk\tier1\convar.cpp">
@@ -73,7 +73,7 @@
     <ClInclude Include="detour.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dllpatch.h">
+    <ClInclude Include="mempatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="common.h">

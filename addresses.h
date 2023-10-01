@@ -60,6 +60,10 @@ namespace sigs
 	// Check tilgep's pin in #scripting
 	inline const byte* VScriptEnable = (byte*)"\xBE\x01\x00\x00\x00\x2B\xD6\x74\x2A\x3B\xD6";
 	inline const byte* Patch_VScriptEnable = (byte*)"\xBE\x02";
+
+	// Find "Noise removal", there should be 3 customermachine checks
+	inline const byte *HammerNoCustomerMachine = (byte *)"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9";
+	inline const byte *PatchHammerNoCustomerMachine = (byte *)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90";
 #else
 // Functions
 	// look for string "\"Console<0>\" say \"%s\"\n"

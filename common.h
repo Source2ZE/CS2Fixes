@@ -19,34 +19,6 @@ extern CEntitySystem* g_pEntitySystem;
 #define GAMEBIN "/csgo/bin/linuxsteamrt64/"
 #endif
 
-#ifdef HOOK_CONVARS
-struct ConVarInfo
-{
-	char *name;		  // 0x00
-	char *desc;		  // 0x08
-	uint64 flags;	  // 0x10
-	char pad18[0x40]; // 0x18
-	uint64 type;	  // 0x58
-};
-
-typedef void (*RegisterConVar)(void *, ConVarInfo *, void *, void *, void *);
-
-void HookConVars();
-#endif
-
-#ifdef HOOK_CONCOMMANDS
-struct ConCommandInfo
-{
-	char *name;	  // 0x00
-	char *desc;	  // 0x08
-	uint64 flags; // 0x10
-};
-
-typedef void *(*RegisterConCommand)(void *, void *, ConCommandInfo *, void *, void *);
-
-void HookConCommands();
-#endif
-
 struct WeaponMapEntry_t
 {
 	const char *command;
@@ -69,26 +41,21 @@ void Panic(const char *, ...);
 void *FindSignature(void *, const byte *, size_t);
 
 
-class CRecipientFilter : public IRecipientFilter
+class CSingleRecipientFilter : public IRecipientFilter
 {
 public:
-	CRecipientFilter() { Reset(); }
+	CSingleRecipientFilter(int iRecipient, bool bReliable = true, bool bInitMessage = false) :
+		m_iRecipient(iRecipient), m_bReliable(bReliable), m_bInitMessage(bInitMessage) {}
 
-	~CRecipientFilter() override {}
+	~CSingleRecipientFilter() override {}
 
-	bool IsReliable(void) const override;
-	bool IsInitMessage(void) const override;
-
-	int GetRecipientCount(void) const override;
-	CEntityIndex GetRecipientIndex(int slot) const override;
-
-public:
-	void Reset();
-	void MakeReliable();
-	void AddRecipient(int entindex);
+	bool IsReliable(void) const override { return m_bReliable; }
+	bool IsInitMessage(void) const override { return m_bInitMessage; }
+	int GetRecipientCount(void) const override { return 1; }
+	CEntityIndex GetRecipientIndex(int slot) const override { return CEntityIndex(m_iRecipient); }
 
 private:
 	bool m_bReliable;
 	bool m_bInitMessage;
-	CUtlVectorFixedGrowable<int, 64> m_Recipients;
+	int m_iRecipient;
 };

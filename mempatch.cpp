@@ -1,4 +1,4 @@
-#include "dllpatch.h"
+#include "mempatch.h"
 #include "common.h"
 #include "utils/module.h"
 #include "tier0/dbg.h"
@@ -25,10 +25,6 @@ void CMemPatch::PerformPatch()
 	Plat_WriteMemory(m_pPatchAddress, (byte*)m_pPatch, m_iPatchLength);
 
 	Message("[CS2Fixes] Successfully patched %s!\n", m_pszName);
-
-#ifdef USE_DEBUG_CONSOLE
-	printf("[CS2Fixes] Successfully patched %s!\n", m_pszName);
-#endif
 }
 
 void CMemPatch::UndoPatch()

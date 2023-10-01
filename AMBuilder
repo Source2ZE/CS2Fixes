@@ -41,7 +41,7 @@ for sdk_name in MMSPlugin.sdks:
 
     binary.sources += [
       'cs2fixes.cpp',
-      'dllpatch.cpp',
+      'mempatch.cpp',
       'patches.cpp',
       'cvars.cpp',
       'addresses.cpp',

@@ -74,13 +74,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>server</TargetName>
     <IncludePath>utils;cs2_sdk;sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>sdk\lib\public\win64;minhook/lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>sdk\lib\public\win64;vendor/funchook/lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)/package/addons/cs2fixes/bin/win64/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>server</TargetName>
     <IncludePath>utils;cs2_sdk;sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>sdk\lib\public\win64;minhook/lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>sdk\lib\public\win64;vendor/funchook/lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)/package/addons/cs2fixes/bin/win64/</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -126,13 +126,13 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>utils;cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/public/game/server;sdk/public/tier1;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/public/entity2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>utils;cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/public/entity2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>interfaces.lib;tier0.lib;tier1.lib;libMinHook-x64-v141-mtd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>interfaces.lib;tier0.lib;tier1.lib;psapi.lib;funchook.lib;distorm.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>sdk/lib/public/win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ShowProgress>
       </ShowProgress>
@@ -149,7 +149,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>utils;cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/public/game/server;sdk/public/tier1;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/game/server;sdk/public/entity2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>utils;cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/game/server;sdk/public/entity2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -158,7 +158,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>interfaces.lib;tier0.lib;tier1.lib;psapi.lib;distorm.lib;funchook.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>interfaces.lib;tier0.lib;tier1.lib;psapi.lib;funchook.lib;distorm.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>sdk/lib/public/win64;vendor/funchook/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ShowProgress>
       </ShowProgress>
@@ -171,7 +171,7 @@
     <ClCompile Include="cs2_sdk\interfaces\cs2_interfaces.cpp" />
     <ClCompile Include="cs2_sdk\schema.cpp" />
     <ClCompile Include="cvars.cpp" />
-    <ClCompile Include="dllpatch.cpp" />
+    <ClCompile Include="mempatch.cpp" />
     <ClCompile Include="patches.cpp" />
     <ClCompile Include="sdk\tier1\convar.cpp" />
     <ClCompile Include="utils\plat_unix.cpp" />
@@ -195,7 +195,7 @@
     <ClInclude Include="cs2_sdk\interfaces\cs2_interfaces.h" />
     <ClInclude Include="cs2_sdk\schema.h" />
     <ClInclude Include="detour.h" />
-    <ClInclude Include="dllpatch.h" />
+    <ClInclude Include="mempatch.h" />
     <ClInclude Include="addresses.h" />
     <ClInclude Include="utils\module.h" />
     <ClInclude Include="utils\plat.h" />
