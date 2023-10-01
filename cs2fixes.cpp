@@ -14,24 +14,22 @@
 #include "protobuf/generated/usermessages.pb.h"
 #include "protobuf/generated/cs_gameevents.pb.h"
 
-#include "detour.h"
-#include <stdio.h>
 #include "cs2fixes.h"
 #include "iserver.h"
 
 #include "appframework/IAppSystem.h"
 #include "common.h"
+#include "commands.h"
+#include "detours.h"
 #include "icvar.h"
 #include "interface.h"
 #include "tier0/dbg.h"
-#ifdef _WIN32
-//#include "MinHook.h"
-//#include <Psapi.h>
-#endif
 #include "interfaces/cs2_interfaces.h"
 #include "plat.h"
 #include "entitysystem.h"
 #include "engine/igameeventsystem.h"
+
+#include "tier0/memdbgon.h"
 
 CEntitySystem* g_pEntitySystem = nullptr;
 
@@ -43,7 +41,7 @@ void Message(const char *msg, ...)
 	char buf[1024] = {};
 	V_vsnprintf(buf, sizeof(buf) - 1, msg, args);
 
-	ConColorMsg(Color(255, 0, 255, 255), "%s", buf);
+	ConColorMsg(Color(255, 0, 255, 255), "[CS2Fixes] %s", buf);
 
 	va_end(args);
 }
@@ -57,7 +55,7 @@ void Panic(const char *msg, ...)
 	V_vsnprintf(buf, sizeof(buf) - 1, msg, args);
 
 	if (CommandLine()->HasParm("-dedicated"))
-		Warning("%s", buf);
+		Warning("[CS2Fixes] %s", buf);
 #ifdef _WIN32
 	else
 		MessageBoxA(nullptr, buf, "Warning", 0);
@@ -117,13 +115,10 @@ CON_COMMAND_F(unlock_commands, "Unlock all commands", FCVAR_NONE)
 	UnlockConCommands();
 }
 
-
 CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_NONE)
 {
 	ToggleLogs();
 }
-
-CUtlVector<CDetourBase*> g_vecDetours;
 
 IGameEventSystem* g_gameEventSystem;
 IGameEventManager2* g_gameEventManager;
@@ -159,39 +154,27 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	SH_ADD_HOOK_MEMFUNC(INetworkServerService, StartupServer, g_pNetworkServerService, this, &CS2Fixes::Hook_StartupServer, true);
 
 	META_CONPRINTF( "All hooks started!\n" );
-
-	ConVar_Register( FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL );
 	
 	addresses::Initialize();
 	interfaces::Initialize();
 
-	g_pCVar->RegisterConCommand(&unlock_cvars_command);
-	g_pCVar->RegisterConCommand(&unlock_commands_command);
-	g_pCVar->RegisterConCommand(&toggle_logs_command);
+	//g_pCVar->RegisterConCommand(&unlock_cvars_command);
+	//g_pCVar->RegisterConCommand(&unlock_commands_command);
+	//g_pCVar->RegisterConCommand(&toggle_logs_command);
 
-	g_vecDetours.RemoveAll();
+	RegisterChatCommands();
+
+	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
 	InitPatches();
-	InitLoggingDetours();
+	InitDetours();
 
 	g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);
 
-	ConMsg("g_gameEventManager - %p\n", g_gameEventManager);
+	Message("g_gameEventManager - %p\n", g_gameEventManager);
 
 	return true;
 }
-
-void FlushAllDetours()
-{
-	FOR_EACH_VEC(g_vecDetours, i)
-	{
-		ConMsg("Removing detour %s\n", g_vecDetours[i]->GetName());
-		g_vecDetours[i]->FreeDetour();
-	}
-
-	g_vecDetours.RemoveAll();
-}
-
 
 bool CS2Fixes::Unload(char *error, size_t maxlen)
 {
@@ -206,9 +189,9 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK_MEMFUNC(IGameEventSystem, PostEventAbstract, g_gameEventSystem, this, &CS2Fixes::Hook_PostEvent, false);
 	SH_REMOVE_HOOK_MEMFUNC(INetworkServerService, StartupServer, g_pNetworkServerService, this, &CS2Fixes::Hook_StartupServer, true);
 
-	unlock_cvars_command.Shutdown();
-	unlock_commands_command.Shutdown();
-	toggle_logs_command.Shutdown();
+	//unlock_cvars_command.Shutdown();
+	//unlock_commands_command.Shutdown();
+	//toggle_logs_command.Shutdown();
 
 	FlushAllDetours();
 	UndoPatches();
@@ -218,7 +201,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*)
 {
-	ConMsg("startup server\n");
+	Message("startup server\n");
 
 	gpGlobals = GetGameGlobals();
 
@@ -234,13 +217,12 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
 	INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
-
 	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
 
 	//CMsgTEFireBullets
 	if (info->m_MessageId == GE_FireBulletsId)
 	{
-		ConMsg("Block fire bullets");
+		Message("Block fire bullets");
 		RETURN_META(MRES_SUPERCEDE);
 	}
 
@@ -255,7 +237,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 	if (info->m_MessageId == CS_UM_SayText2 || info->m_MessageId == UM_SayText2)
 	{
 		auto test = (CUserMessageSayText2*)pData;
-		ConMsg("Message Name: %s\n", test->messagename().c_str());
+		Message("Message Name: %s\n", test->messagename().c_str());
 	}
 	
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -168,11 +168,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="addresses.cpp" />
+    <ClCompile Include="commands.cpp" />
     <ClCompile Include="cs2fixes.cpp" />
     <ClCompile Include="cs2_sdk\interfaces\centitysystem.cpp" />
     <ClCompile Include="cs2_sdk\interfaces\cs2_interfaces.cpp" />
     <ClCompile Include="cs2_sdk\schema.cpp" />
     <ClCompile Include="cvars.cpp" />
+    <ClCompile Include="detours.cpp" />
     <ClCompile Include="mempatch.cpp" />
     <ClCompile Include="patches.cpp" />
     <ClCompile Include="sdk\tier1\convar.cpp" />
@@ -180,6 +182,7 @@
     <ClCompile Include="utils\plat_win.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="commands.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="cs2fixes.h" />
     <ClInclude Include="cs2_sdk\entity\cbaseentity.h" />
@@ -196,9 +199,11 @@
     <ClInclude Include="cs2_sdk\interfaces\cschemasystem.h" />
     <ClInclude Include="cs2_sdk\interfaces\cs2_interfaces.h" />
     <ClInclude Include="cs2_sdk\schema.h" />
-    <ClInclude Include="detour.h" />
+    <ClInclude Include="cdetour.h" />
+    <ClInclude Include="detours.h" />
     <ClInclude Include="mempatch.h" />
     <ClInclude Include="addresses.h" />
+    <ClInclude Include="recipientfilters.h" />
     <ClInclude Include="utils\module.h" />
     <ClInclude Include="utils\plat.h" />
     <ClInclude Include="utils\virtual.h" />

@@ -1,8 +1,9 @@
 #include "addresses.h"
 #include "utils/module.h"
+#include <interfaces/cs2_interfaces.h>
 
 #include "tier0/memdbgon.h"
-#include <interfaces/cs2_interfaces.h>
+
 
 #define RESOLVE_SIG(module, sig, variable) variable = (decltype(variable))module->FindSignature((uint8*)sig)
 

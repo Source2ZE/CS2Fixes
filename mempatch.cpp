@@ -24,7 +24,7 @@ void CMemPatch::PerformPatch()
 
 	Plat_WriteMemory(m_pPatchAddress, (byte*)m_pPatch, m_iPatchLength);
 
-	Message("[CS2Fixes] Successfully patched %s!\n", m_pszName);
+	Message("Successfully patched %s!\n", m_pszName);
 }
 
 void CMemPatch::UndoPatch()

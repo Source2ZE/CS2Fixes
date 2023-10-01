@@ -2,6 +2,8 @@
 #include "tier1/utlstring.h"
 #include "entity2/entitysystem.h"
 
+#include "tier0/memdbgon.h"
+
 CBaseEntity* CEntitySystem::GetBaseEntity(CEntityIndex entnum)
 {
 	if (entnum.Get() <= -1 || entnum.Get() >= (MAX_TOTAL_ENTITIES - 1))

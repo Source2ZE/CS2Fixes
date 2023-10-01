@@ -17,6 +17,9 @@ for sdk_name in MMSPlugin.sdks:
     elif binary.compiler.family == 'msvc':
       binary.compiler.cxxflags += ['/std:c++20']
 
+    if binary.compiler.family == 'clang':
+      binary.compiler.cxxflags += ['-Wno-register']
+
     binary.compiler.cxxincludes += [
       os.path.join(builder.sourcePath, 'cs2_sdk'),
       os.path.join(builder.sourcePath, 'utils'),
@@ -47,7 +50,9 @@ for sdk_name in MMSPlugin.sdks:
       'mempatch.cpp',
       'patches.cpp',
       'cvars.cpp',
+      'commands.cpp',
       'addresses.cpp',
+      'detours.cpp',
       'cs2_sdk/schema.cpp',
       'cs2_sdk/interfaces/cs2_interfaces.cpp',
       'cs2_sdk/interfaces/centitysystem.cpp'

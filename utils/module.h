@@ -71,7 +71,7 @@ public:
 		if (!pInterface)
 			Error("Could not find %s in %s\n", name, m_pszModule);
 
-		Message("[CS2Fixes] Found %s in %s!\n", name, m_pszModule);
+		Message("Found %s in %s!\n", name, m_pszModule);
 
 		return pInterface;
 	}

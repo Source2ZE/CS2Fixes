@@ -18,10 +18,7 @@ static bool IsFieldNetworked(SchemaClassFieldData_t& field)
     {
         static auto networkEnabled = hash_32_fnv1a_const("MNetworkEnable");
         if (networkEnabled == hash_32_fnv1a_const(field.m_metadata[i].m_name))
-        {
-            ConMsg("Is networked\n");
             return true;
-        }
     }
 
     return false;

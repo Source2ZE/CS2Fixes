@@ -1,10 +1,7 @@
 #include "common.h"
 #include "icvar.h"
-//#include <Psapi.h>
 
 #include "tier0/memdbgon.h"
-
-//extern MODULEINFO g_Tier0Info;
 
 static uint64 g_iFlagsToRemove = (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY | FCVAR_MISSING0 | FCVAR_MISSING1 | FCVAR_MISSING2 | FCVAR_MISSING3);
 
@@ -33,7 +30,7 @@ void UnlockConVars()
 		iUnhiddenConVars++;
 	} while (pCvar);
 
-	Message("[CS2Fixes] Removed hidden flags from %d convars\n", iUnhiddenConVars);
+	Message("Removed hidden flags from %d convars\n", iUnhiddenConVars);
 }
 
 void UnlockConCommands()
@@ -63,5 +60,5 @@ void UnlockConCommands()
 		iUnhiddenConCommands++;
 	} while (pConCommand && pConCommand != pInvalidCommand);
 
-	Message("[CS2Fixes] Removed hidden flags from %d commands\n", iUnhiddenConCommands);
+	Message("Removed hidden flags from %d commands\n", iUnhiddenConCommands);
 }

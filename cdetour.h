@@ -2,7 +2,6 @@
 #include <functional>
 #include "funchook.h"
 #include "module.h"
-#include "tier0/dbg.h"
 #include "utlvector.h"
 #include "plat.h"
 
@@ -26,10 +25,8 @@ public:
 	void EnableDetour();
 	void DisableDetour();
 	void FreeDetour() override;
-	const char* GetName() override
-	{
-		return m_pszName;
-	}
+	const char* GetName() override { return m_pszName; }
+	T *GetFunc() { return m_pfnFunc; }
 
 	// Shorthand for calling original.
 	template <typename... Args>
@@ -54,7 +51,7 @@ void CDetour<T>::CreateDetour()
 {
 	if (!m_pModule || !(*m_pModule))
 	{
-		Panic("[CS2Fixes] Invalid Module\n", m_pszName);
+		Panic("Invalid Module\n", m_pszName);
 		return;
 	}
 
@@ -65,7 +62,7 @@ void CDetour<T>::CreateDetour()
 
 	if (!m_pfnFunc)
 	{
-		Panic("[CS2Fixes] Could not find the address for %s to detour\n", m_pszName);
+		Panic("Could not find the address for %s to detour\n", m_pszName);
 		return;
 	}
 
@@ -73,8 +70,6 @@ void CDetour<T>::CreateDetour()
 	funchook_prepare(m_hook, (void**)&m_pfnFunc, (void*)m_pfnDetour);
 
 	g_vecDetours.AddToTail(this);
-
-	ConMsg("shit %i", g_vecDetours.Count());
 
 	Message("Successfully initialized detour for %s!\n", m_pszName);
 }

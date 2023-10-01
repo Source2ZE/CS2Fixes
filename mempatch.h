@@ -6,7 +6,7 @@
 class CMemPatch
 {
 public:
-    CMemPatch(CModule **pModule, const byte *pSignature, const byte *pPatch, const char *pszName, int iRepeat) :
+    CMemPatch(CModule **pModule, const byte *pSignature, const byte *pPatch, const char *pszName, int iRepeat = 1) :
 		m_pModule(pModule), m_pSignature(pSignature), m_pPatch(pPatch), m_pszName(pszName), m_iRepeat(iRepeat)
 	{
 		m_pPatchAddress = nullptr;

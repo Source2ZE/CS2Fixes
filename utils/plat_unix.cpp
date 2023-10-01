@@ -7,6 +7,8 @@
 #include "sys/mman.h"
 #include <locale>
 
+#include "tier0/memdbgon.h"
+
 //returns 0 if successful
 int GetModuleInformation(const char *name, void **base, size_t *length)
 {

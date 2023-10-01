@@ -22,14 +22,9 @@ extern CEntitySystem* g_pEntitySystem;
 void UnlockConVars();
 void UnlockConCommands();
 void ToggleLogs();
-void SetMaxPlayers(byte);
 
 void InitPatches();
 void UndoPatches();
-void InitLoggingDetours();
 
 void Message(const char *, ...);
 void Panic(const char *, ...);
-
-void *FindSignature(void *, const byte *, size_t);
-
