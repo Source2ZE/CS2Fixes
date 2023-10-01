@@ -344,7 +344,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 				if (money >= weaponEntry.iPrice)
 				{
 					pController->m_pInGameMoneyServices()->m_iAccount(money - weaponEntry.iPrice);
-					addresses::GiveNamedItem(pItemServices, weaponEntry.szWeaponName, 0, 0, 0, 1);
+					addresses::GiveNamedItem(pItemServices, weaponEntry.szWeaponName, 0, 0, 0, 0);
 				}
 
 				break;

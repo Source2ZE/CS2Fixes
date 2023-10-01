@@ -21,7 +21,7 @@ namespace addresses
 {
 	void Initialize();
 
-	inline void(FASTCALL *GiveNamedItem)(uintptr_t itemService, const char *pchName, int64 iSubType, int64 pScriptItem, int a5, int64 bForce);
+	inline void(FASTCALL *GiveNamedItem)(uintptr_t itemService, const char *pchName, int64 iSubType, int64 pScriptItem, bool force, int64 a6);
 	inline void(FASTCALL *NetworkStateChanged)(int64 chainEntity, int64 offset, int64 a3);
 	inline void(FASTCALL* StateChanged)(void* networkTransmitComponent, CEntityInstance* ent, int64 offset, int16 a4, int16 a5);
 }
