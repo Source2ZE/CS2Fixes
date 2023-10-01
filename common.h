@@ -59,3 +59,39 @@ private:
 	bool m_bInitMessage;
 	int m_iRecipient;
 };
+
+class CCopyRecipientFilter : public IRecipientFilter
+{
+public:
+	CCopyRecipientFilter(IRecipientFilter *source, int iExcept)
+	{
+		m_bReliable = source->IsReliable();
+		m_bInitMessage = source->IsInitMessage();
+		m_Recipients.RemoveAll();
+
+		for (int i = 0; i < source->GetRecipientCount(); i++)
+		{
+			if (source->GetRecipientIndex(i).Get() != iExcept)
+				m_Recipients.AddToTail(source->GetRecipientIndex(i));
+		}
+	}
+
+	~CCopyRecipientFilter() override {}
+
+	bool IsReliable(void) const override { return m_bReliable; }
+	bool IsInitMessage(void) const override { return m_bInitMessage; }
+	int GetRecipientCount(void) const override { return m_Recipients.Count(); }
+
+	CEntityIndex GetRecipientIndex(int slot) const override
+	{
+		if (slot < 0 || slot >= GetRecipientCount())
+			return CEntityIndex(-1);
+
+		return m_Recipients[slot];
+	}
+
+private:
+	bool m_bReliable;
+	bool m_bInitMessage;
+	CUtlVectorFixed<CEntityIndex, 64> m_Recipients;
+};
