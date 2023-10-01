@@ -17,6 +17,7 @@
 #include <iplayerinfo.h>
 #include <sh_vector.h>
 #include "networksystem/inetworkserializer.h"
+#include <iserver.h>
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
 {
@@ -25,6 +26,7 @@ public:
 	void Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
 		INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType);
 	bool Unload(char *error, size_t maxlen);
+	void Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
 	bool Pause(char *error, size_t maxlen);
 	bool Unpause(char *error, size_t maxlen);
 	void AllPluginsLoaded();
