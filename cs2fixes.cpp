@@ -315,13 +315,6 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 
 	if(!g_pEntitySystem)
 		g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
-
-	ConMsg("game frame\n");
-
-	if (gpGlobals)
-	{
-		ConMsg("%f\n", gpGlobals->curtime);
-	}
 }
 
 // Potentially might not work
