@@ -22,12 +22,14 @@ for sdk_name in MMSPlugin.sdks:
       os.path.join(builder.sourcePath, 'utils'),
       os.path.join(builder.sourcePath, 'vendor', 'subhook'),
       os.path.join(builder.sourcePath, 'vendor', 'funchook', 'include'),
+      os.path.join(builder.sourcePath, 'vendor', 'protobuf-3.21.8', 'src'),
     ]
 
     if binary.compiler.target.platform == 'linux':
       binary.compiler.postlink += [
         os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'libfunchook.a'),
         os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'libdistorm.a'),
+        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', 'libprotobuf.a'),
       ]
       binary.sources += ['utils/plat_unix.cpp']
     elif binary.compiler.target.platform == 'windows':
@@ -35,6 +37,7 @@ for sdk_name in MMSPlugin.sdks:
         os.path.join('psapi.lib'),
         os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'funchook.lib'),
         os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'distorm.lib'),
+        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', 'libprotobuf.lib'),
       ]
       binary.sources += ['utils/plat_win.cpp']
 

@@ -10,6 +10,9 @@
  * the use of this software.
  */
 
+#include "protobuf/generated/cstrike15_usermessages.pb.h"
+#include "protobuf/generated/usermessages.pb.h"
+
 #include "detour.h"
 #include <stdio.h>
 #include "cs2fixes.h"
@@ -69,8 +72,8 @@ SH_DECL_HOOK4_void(IServerGameClients, ClientPutInServer, SH_NOATTRIB, 0, CPlaye
 SH_DECL_HOOK1_void(IServerGameClients, ClientSettingsChanged, SH_NOATTRIB, 0, CPlayerSlot );
 SH_DECL_HOOK6_void(IServerGameClients, OnClientConnected, SH_NOATTRIB, 0, CPlayerSlot, const char*, uint64, const char *, const char *, bool);
 SH_DECL_HOOK6(IServerGameClients, ClientConnect, SH_NOATTRIB, 0, bool, CPlayerSlot, const char*, uint64, const char *, bool, CBufferString *);
-SH_DECL_HOOK6_void(IGameEventSystem, PostEventAbstract, SH_NOATTRIB, 0, CSplitScreenSlot, bool, IRecipientFilter*,
-	INetworkSerializable*, const void*, unsigned long)
+SH_DECL_HOOK8_void(IGameEventSystem, PostEventAbstract, SH_NOATTRIB, 0, CSplitScreenSlot, bool, int, const uint64*,
+	INetworkSerializable*, const void*, unsigned long, NetChannelBufType_t)
 
 
 // , bool, IRecipientFilter*, INetworkSerializable*, void* data, unsigned long nSize
@@ -204,17 +207,21 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	return true;
 }
 
-void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, IRecipientFilter* pFilter,
-	INetworkSerializable* pEvent, const void* pData, unsigned long nSize)
+void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
+	INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
-	META_CONPRINTF("Hook_PostEvent(%d, %d, %p, %p, %p, %d)\n", nSlot, bLocalOnly, pFilter, pEvent, pData, nSize);
-
 	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
-	/*if (info->m_MessageId == CS_UM_SayText2)
+	if (info->m_MessageId == CS_UM_SayText2 || info->m_MessageId == UM_SayText2)
 	{
-		// cast pData to proto message
-		ConMsg("yip");
-	}*/
+		CUtlString str;
+		info->m_pBinding->ToString(pData, str);
+
+		ConMsg("%s\n", str.Get());
+
+		auto test = (CUserMessageSayText2*)pData;
+		ConMsg("Message Name: %s\n", test->messagename().c_str());
+	}
+	
 }
 
 void CS2Fixes::AllPluginsLoaded()

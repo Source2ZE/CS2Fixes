@@ -315,7 +315,7 @@ class MMSPluginConfig(object):
 
     # Debugging
     if builder.options.debug == '1':
-      cxx.defines += ['DEBUG', '_DEBUG']
+      cxx.defines += ['DEBUG', '_DEBUG', '_ITERATOR_DEBUG_LEVEL=0']
       if cxx.behavior == 'gcc':
         cxx.cflags += ['-g3']
       elif cxx.behavior == 'msvc':
