@@ -91,11 +91,24 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CBaseP
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CBasePlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
 void FASTCALL Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, const char *);
 bool FASTCALL Detour_VoiceShouldHear(CCSPlayerController *a, CCSPlayerController *b, bool a3, bool voice);
+void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *, CEntityIndex *, IRecipientFilter &, uint32, void *);
 
 DECLARE_DETOUR(Host_Say, Detour_Host_Say, &modules::server);
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter, &modules::server);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter, &modules::server);
 DECLARE_DETOUR(VoiceShouldHear, Detour_VoiceShouldHear, &modules::server);
+DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSound, &modules::server);
+
+int g_iBlockSoundIndex = -1;
+
+void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *pSoundEmitterSystem, CEntityIndex *a2, IRecipientFilter &filter, uint32 a4, void *a5)
+{
+	if (g_iBlockSoundIndex == -1)
+		return CSoundEmitterSystem_EmitSound(pSoundEmitterSystem, a2, filter, a4, a5);
+
+	CCopyRecipientFilter copyFilter(&filter, g_iBlockSoundIndex);
+	CSoundEmitterSystem_EmitSound(pSoundEmitterSystem, a2, copyFilter, a4, a5);
+}
 
 bool FASTCALL Detour_VoiceShouldHear(CCSPlayerController* a, CCSPlayerController* b, bool a3, bool voice)
 {
@@ -314,6 +327,10 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		if (target)
 			ConMsg("Health: %llx\n", target->m_hPawn().Get()->m_iHealth());
 	}
+	else if (!V_stricmp(token, "stopsound"))
+	{
+		g_iBlockSoundIndex = atoi(strtok_s(nullptr, " ", &pos));
+	}
 	else
 	{
 		for (int i = 0; i < sizeof(WeaponMap) / sizeof(*WeaponMap); i++)
@@ -386,6 +403,9 @@ void InitPatches()
 
 	VoiceShouldHear.CreateDetour();
 	VoiceShouldHear.EnableDetour();
+
+	CSoundEmitterSystem_EmitSound.CreateDetour();
+	CSoundEmitterSystem_EmitSound.EnableDetour();
 }
 
 void UndoPatches()
