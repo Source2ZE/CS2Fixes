@@ -21,7 +21,7 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
   - [ ] Storing players
   - [ ] Player authorization
   - [ ] Admin system
-- [ ] Timers
+- [x] Timers
 - [ ] Blocking weapon sounds/decals (in progress)
   - [x] Hooking fire bullets tempent
   - [ ] Implement stopsound (awaits player manager)
