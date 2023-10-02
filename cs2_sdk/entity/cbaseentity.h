@@ -19,4 +19,6 @@ public:
 	SCHEMA_FIELD(int, m_iTeamNum)
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
 	SCHEMA_FIELD(CCollisionProperty*, m_pCollision)
+
+	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 };

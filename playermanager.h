@@ -12,6 +12,7 @@ public:
 	ZEPlayer()
 	{ 
 		m_bAuthenticated = false;
+		m_bStopSound = false;
 	}
 
 	bool IsAuthenticated() { return m_bAuthenticated; }
@@ -20,9 +21,13 @@ public:
 	const CSteamID* GetSteamId() { return m_SteamID; }
 	void SetSteamId(const CSteamID* steamID) { m_SteamID = steamID; }
 
+	void ToggleStopSound() { m_bStopSound = !m_bStopSound; }
+	bool IsUsingStopSound() { return m_bStopSound; }
+
 private:
 	bool m_bAuthenticated;
 	const CSteamID* m_SteamID;
+	bool m_bStopSound;
 };
 
 class CPlayerManager
@@ -36,7 +41,10 @@ public:
 	void OnClientConnected(CPlayerSlot slot);
 	void OnClientDisconnect(CPlayerSlot slot);
 	void TryAuthenticate();
+	ZEPlayer *GetPlayer(CPlayerSlot slot) { return m_vecPlayers[slot.Get()]; };
 
 private:
 	ZEPlayer* m_vecPlayers[64];
 };
+
+extern CPlayerManager *g_playerManager;

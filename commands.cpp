@@ -5,6 +5,7 @@
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
+#include "playermanager.h"
 
 #include "tier0/memdbgon.h"
 
@@ -102,6 +103,24 @@ void SentChatToClient(int index, const char *msg, ...)
 	UTIL_SayTextFilter(filter, buf, nullptr, 0);
 }
 
+CON_COMMAND_CHAT(stopsound, "stop weapon sounds")
+{
+	int iPlayer = player->entindex() - 1;
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iPlayer);
+
+	// Something has to really go wrong for this to happen
+	if (!pPlayer)
+	{
+		Warning("%d Tried to access a null ZEPlayer!!\n", iPlayer);
+		return;
+	}
+
+	SentChatToClient(iPlayer, " \7[CS2Fixes]\1 You have toggled weapon effects.");
+
+	pPlayer->ToggleStopSound();
+}
+
 CON_COMMAND_CHAT(say, "say something using console")
 {
 	SendConsoleChat("%s", args.ArgS());
@@ -164,8 +183,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 
 	if (g_CommandList.IsValidIndex(index))
 	{
-		CCommandContext context(CT_NO_TARGET, 0);
-		g_CommandList[index](context, args, pController);
+		g_CommandList[index](args, pController);
 	}
 	else
 	{

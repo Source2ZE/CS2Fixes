@@ -27,7 +27,7 @@ bool FASTCALL Detour_VoiceShouldHear(CCSPlayerController *a, CCSPlayerController
 	if (voice)
 	{
 		// Message("block");
-		return 0;
+		return false;
 	}
 
 	// Message("a: %s, b: %s\n", &a->m_iszPlayerName(), &b->m_iszPlayerName());
@@ -41,8 +41,10 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pT
 	int entindex = filter.GetRecipientIndex(0).Get();
 	CCSPlayerController *target = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
 
+#ifdef _DEBUG
 	if (target)
 		Message("Chat from %s to %s: %s\n", pPlayer ? &pPlayer->m_iszPlayerName() : "console", &target->m_iszPlayerName(), pText);
+#endif
 
 	if (pPlayer)
 		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
@@ -66,14 +68,18 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	int entindex = filter.GetRecipientIndex(0).Get() + 1;
 	CCSPlayerController *target = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
 
+#ifdef _DEBUG
 	if (target)
 		Message("Chat from %s to %s: %s\n", param1, &target->m_iszPlayerName(), param2);
+#endif
 
 	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
 }
 
 void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand *args, bool teamonly, int unk1, const char *unk2)
 {
+	Host_Say(pController, args, teamonly, unk1, unk2);
+
 	if (g_pEntitySystem == nullptr)
 		g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 
@@ -84,8 +90,6 @@ void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand *args, 
 
 	if (*pMessage == '/')
 		return;
-
-	Host_Say(pController, args, teamonly, unk1, unk2);
 }
 
 void Detour_Log()
@@ -166,14 +170,4 @@ void FlushAllDetours()
 	}
 
 	g_vecDetours.RemoveAll();
-}
-
-void _Host_Say(CCSPlayerController *pController, CCommand *args, bool teamonly, int unk1, const char *unk2)
-{
-	Host_Say(pController, args, teamonly, unk1, unk2);
-}
-
-void _UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CCSPlayerController *pPlayer, uint64 eMessageType)
-{
-	UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
 }
