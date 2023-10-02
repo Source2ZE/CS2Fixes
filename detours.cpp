@@ -48,7 +48,7 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pT
 		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
 
 	char buf[256];
-	V_snprintf(buf, sizeof(buf), "%s%s", " \7CONSOLE:\4", pText + sizeof("Console:"));
+	V_snprintf(buf, sizeof(buf), "%s %s", " \7CONSOLE:\4", pText + sizeof("Console:"));
 
 	UTIL_SayTextFilter(filter, buf, pPlayer, eMessageType);
 }

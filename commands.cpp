@@ -70,12 +70,7 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 	}
 }
 
-typedef void (*FnChatCommandCallback_t)(const CCommand &args, CCSPlayerController *player);
-
-CUtlMap<const char *, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(const char *));
-
-#define CON_COMMAND_CHAT(name, callback) \
-	g_CommandList.Insert(#name, &callback);
+CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(uint32));
 
 void SendConsoleChat(const char *msg, ...)
 {
@@ -107,58 +102,54 @@ void SentChatToClient(int index, const char *msg, ...)
 	UTIL_SayTextFilter(filter, buf, nullptr, 0);
 }
 
-void say_chat_callback(const CCommand &args, CCSPlayerController *player)
+CON_COMMAND_CHAT(say, "say something using console")
 {
-	SendConsoleChat(" \1%s", args.GetCommandString());
+	SendConsoleChat("%s", args.ArgS());
 }
 
-void takemoney_chat_callback(const CCommand &args, CCSPlayerController *player)
+CON_COMMAND_CHAT(takemoney, "take your money")
 {
 	if (!player)
 		return;
 
-	int amount = atoi(args[0]);
+	int amount = atoi(args[1]);
 	int money = player->m_pInGameMoneyServices()->m_iAccount();
 
 	player->m_pInGameMoneyServices()->m_iAccount(money - amount);
 }
 
-void message_chat_callback(const CCommand &args, CCSPlayerController *player)
+CON_COMMAND_CHAT(message, "message someone")
 {
+	if (!player)
+		return;
+
 	// Note that the engine will treat this as a player slot number, not an entity index
-	int uid = atoi(args[0]);
+	int uid = atoi(args[1]);
 
 	CBasePlayerController *target = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(uid + 1));
 
 	if (!target)
 		return;
 
-	char message[256];
-	V_snprintf(message, sizeof(message), " \7[CS2Fixes]\1 Private message to %s: \5%s", &player->m_iszPlayerName(), args[1]);
+	// skipping the id and space, it's dumb but w/e
+	const char *pMessage = args.ArgS() + V_strlen(args[1]) + 1;
+
+	char buf[256];
+	V_snprintf(buf, sizeof(buf), " \7[CS2Fixes]\1 Private message from %s to %s: \5%s", &player->m_iszPlayerName(), &target->m_iszPlayerName(), pMessage);
 
 	CSingleRecipientFilter filter(uid);
 
-	UTIL_SayTextFilter(filter, message, nullptr, 0);
+	UTIL_SayTextFilter(filter, buf, nullptr, 0);
 }
 
-void sethealth_chat_callback(const CCommand &args, CCSPlayerController *player)
+CON_COMMAND_CHAT(sethealth, "set your health")
 {
 	if (!player)
 		return;
 
-	int health = atoi(args[0]);
+	int health = atoi(args[1]);
 
 	player->m_hPawn().Get()->m_iHealth(health);
-}
-
-void RegisterChatCommands()
-{
-	g_CommandList.RemoveAll();
-
-	CON_COMMAND_CHAT(say, say_chat_callback);
-	CON_COMMAND_CHAT(takemoney, takemoney_chat_callback);
-	CON_COMMAND_CHAT(message, message_chat_callback);
-	CON_COMMAND_CHAT(sethealth, sethealth_chat_callback);
 }
 
 void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
@@ -166,24 +157,18 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 	if (!pController)
 		return;
 
-	char *token, *next;
+	CCommand args;
+	args.Tokenize(pMessage + 1);
 
-	char *pCommand = strdup(pMessage);
-	token = strtok_s(strdup(pCommand) + 1, " ", &next);
+	uint16 index = g_CommandList.Find(hash_32_fnv1a_const(args[0]));
 
-	auto p = g_CommandList.Find(token);
-
-	if (g_CommandList.IsValidIndex(p))
+	if (g_CommandList.IsValidIndex(index))
 	{
 		CCommandContext context(CT_NO_TARGET, 0);
-		CCommand args;
-		args.Tokenize(next);
-		g_CommandList[p](args, pController);
+		g_CommandList[index](context, args, pController);
 	}
 	else
 	{
-		ParseWeaponCommand(pController, token);
+		ParseWeaponCommand(pController, args[0]);
 	}
-
-	free(pCommand);
 }
