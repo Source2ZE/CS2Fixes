@@ -105,22 +105,22 @@ CGlobalVars *GetGameGlobals()
 ConVar sample_cvar("sample_cvar", "42", 0);
 #endif
 
-CON_COMMAND_F(sample_command, "Sample command", FCVAR_NONE)
+CON_COMMAND_F(sample_command, "Sample command", FCVAR_SPONLY)
 {
 	META_CONPRINTF( "Sample command called by %d. Command: %s\n", context.GetPlayerSlot(), args.GetCommandString() );
 }
 
-CON_COMMAND_F(unlock_cvars, "Unlock all cvars", FCVAR_NONE)
+CON_COMMAND_F(unlock_cvars, "Unlock all cvars", FCVAR_SPONLY)
 {
 	UnlockConVars();
 }
 
-CON_COMMAND_F(unlock_commands, "Unlock all commands", FCVAR_NONE)
+CON_COMMAND_F(unlock_commands, "Unlock all commands", FCVAR_SPONLY)
 {
 	UnlockConCommands();
 }
 
-CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_NONE)
+CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONLY)
 {
 	ToggleLogs();
 }
@@ -163,12 +163,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	addresses::Initialize();
 	interfaces::Initialize();
 
-	//g_pCVar->RegisterConCommand(&unlock_cvars_command);
-	//g_pCVar->RegisterConCommand(&unlock_commands_command);
-	//g_pCVar->RegisterConCommand(&toggle_logs_command);
-
-	RegisterChatCommands();
-
 	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
 	InitPatches();
@@ -202,9 +196,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK_MEMFUNC(IGameEventSystem, PostEventAbstract, g_gameEventSystem, this, &CS2Fixes::Hook_PostEvent, false);
 	SH_REMOVE_HOOK_MEMFUNC(INetworkServerService, StartupServer, g_pNetworkServerService, this, &CS2Fixes::Hook_StartupServer, true);
 
-	//unlock_cvars_command.Shutdown();
-	//unlock_commands_command.Shutdown();
-	//toggle_logs_command.Shutdown();
+	g_CommandList.Purge();
 
 	FlushAllDetours();
 	UndoPatches();
