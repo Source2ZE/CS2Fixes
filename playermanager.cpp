@@ -2,6 +2,8 @@
 
 void CPlayerManager::OnClientConnected(CPlayerSlot slot)
 {
+	Assert(m_vecPlayers[slot.Get()] == nullptr);
+
 	Message("%d connected\n", slot.Get());
 	m_vecPlayers[slot.Get()] = new ZEPlayer();
 }
@@ -26,7 +28,7 @@ void CPlayerManager::TryAuthenticate()
 		{
 			m_vecPlayers[i]->SetAuthenticated();
 			m_vecPlayers[i]->SetSteamId(g_pEngineServer2->GetClientSteamID(i));
-			Message("%lli authenticated %d\n", m_vecPlayers[i]->GetSteamId(), i);
+			Message("%lli authenticated %d\n", m_vecPlayers[i]->GetSteamId()->ConvertToUint64(), i);
 		}
 	}
 }
