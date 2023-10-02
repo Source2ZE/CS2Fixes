@@ -25,7 +25,7 @@ void CPlayerManager::TryAuthenticate()
 		if (g_pEngineServer2->IsClientFullyAuthenticated(i))
 		{
 			m_vecPlayers[i]->SetAuthenticated();
-			m_vecPlayers[i]->SetSteamId(g_pEngineServer2->GetClientSteamID(i)->ConvertToUint64());
+			m_vecPlayers[i]->SetSteamId(g_pEngineServer2->GetClientSteamID(i));
 			Message("%lli authenticated %d\n", m_vecPlayers[i]->GetSteamId(), i);
 		}
 	}

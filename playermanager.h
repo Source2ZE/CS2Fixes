@@ -16,12 +16,13 @@ public:
 
 	bool IsAuthenticated() { return m_bAuthenticated; }
 	void SetAuthenticated() { m_bAuthenticated = true; }
-	uint64 GetSteamId() { return m_iSteamID; }
-	void SetSteamId(uint64 iSteamID) { m_iSteamID = iSteamID; }
+	uint64 GetSteamId64() { return m_SteamID->ConvertToUint64(); }
+	const CSteamID* GetSteamId() { return m_SteamID; }
+	void SetSteamId(const CSteamID* steamID) { m_SteamID = steamID; }
 
 private:
 	bool m_bAuthenticated;
-	uint64 m_iSteamID;
+	const CSteamID* m_SteamID;
 };
 
 class CPlayerManager
