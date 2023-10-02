@@ -6,7 +6,7 @@
 class CCSPlayerController : public CBasePlayerController
 {
 public:
-	DECLARE_CLASS(CCSPlayerController);
+	DECLARE_SCHEMA_CLASS(CCSPlayerController);
 
 	SCHEMA_FIELD(CCSPlayerController_InGameMoneyServices*, m_pInGameMoneyServices)
 };

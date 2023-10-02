@@ -3,10 +3,10 @@
 #include "cbaseentity.h"
 #include "services.h"
 
-class CBasePlayerPawn : public CBaseEntity
+class CBasePlayerPawn : public Z_CBaseEntity
 {
 public:
-	DECLARE_CLASS(CBasePlayerPawn);
+	DECLARE_SCHEMA_CLASS(CBasePlayerPawn);
 
 	SCHEMA_FIELD(CPlayer_MovementServices*, m_pMovementServices)
 	SCHEMA_FIELD(uint8*, m_pWeaponServices)

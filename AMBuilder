@@ -1,0 +1,75 @@
+# vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
+import os
+
+MMSPlugin.plugin_name = 'cs2fixes'
+
+for sdk_name in MMSPlugin.sdks:
+  for cxx in MMSPlugin.all_targets:
+    sdk = MMSPlugin.sdks[sdk_name]
+
+    if not cxx.target.arch in sdk.platformSpec[cxx.target.platform]:
+      continue
+
+    binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
+
+    if binary.compiler.family == 'gcc' or binary.compiler.family == 'clang':
+      binary.compiler.cxxflags += ['--std=c++17']
+    elif binary.compiler.family == 'msvc':
+      binary.compiler.cxxflags += ['/std:c++20']
+
+    if binary.compiler.family == 'clang':
+      binary.compiler.cxxflags += ['-Wno-register']
+
+    binary.compiler.cxxincludes += [
+      os.path.join(builder.sourcePath, 'cs2_sdk'),
+      os.path.join(builder.sourcePath, 'utils'),
+      os.path.join(builder.sourcePath, 'vendor', 'subhook'),
+      os.path.join(builder.sourcePath, 'vendor', 'funchook', 'include'),
+      os.path.join(builder.sourcePath, 'vendor', 'protobuf-3.21.8', 'src'),
+    ]
+
+    if binary.compiler.target.platform == 'linux':
+      binary.compiler.postlink += [
+        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'libfunchook.a'),
+        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'libdistorm.a'),
+        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', 'libprotobuf.a'),
+      ]
+      binary.sources += ['utils/plat_unix.cpp']
+    elif binary.compiler.target.platform == 'windows':
+      binary.compiler.postlink += [
+        os.path.join('psapi.lib'),
+        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'funchook.lib'),
+        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'distorm.lib'),
+        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', 'libprotobuf.lib'),
+      ]
+      binary.sources += ['utils/plat_win.cpp']
+
+
+    binary.sources += [
+      'cs2fixes.cpp',
+      'mempatch.cpp',
+      'patches.cpp',
+      'cvars.cpp',
+      'commands.cpp',
+      'addresses.cpp',
+      'detours.cpp',
+      'cs2_sdk/schema.cpp',
+      'cs2_sdk/interfaces/cs2_interfaces.cpp',
+      'cs2_sdk/interfaces/centitysystem.cpp',
+      'ctimer.cpp',
+      'playermanager.cpp'
+    ]
+
+    if sdk_name in ['dota', 'cs2']:
+      binary.sources += [
+      os.path.join(sdk.path, 'tier1', 'convar.cpp'),
+      os.path.join(sdk.path, 'public', 'tier0', 'memoverride.cpp'),
+    ]
+
+    if cxx.target.arch == 'x86':
+      binary.sources += ['sourcehook/sourcehook_hookmangen.cpp']
+    nodes = builder.Add(binary)
+    MMSPlugin.binaries += [nodes]
+
+
+  break

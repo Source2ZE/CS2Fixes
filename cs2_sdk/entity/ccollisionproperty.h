@@ -4,7 +4,7 @@
 
 struct VPhysicsCollisionAttribute_t
 {
-	DECLARE_CLASS(VPhysicsCollisionAttribute_t)
+	DECLARE_SCHEMA_CLASS_INLINE(VPhysicsCollisionAttribute_t)
 
 	SCHEMA_FIELD(uint8, m_nCollisionGroup)
 };
@@ -12,7 +12,7 @@ struct VPhysicsCollisionAttribute_t
 class CCollisionProperty
 {
 public:
-	DECLARE_CLASS(CCollisionProperty)
+	DECLARE_SCHEMA_CLASS_INLINE(CCollisionProperty)
 
 	SCHEMA_FIELD(VPhysicsCollisionAttribute_t, m_collisionAttribute)
 	SCHEMA_FIELD(SolidType_t, m_nSolidType)

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "cgameentitysystem.h"
 #include "cgameresourceserviceserver.h"
 #include "cschemasystem.h"
 
