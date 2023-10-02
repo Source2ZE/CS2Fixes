@@ -31,6 +31,7 @@
 
 #include "tier0/memdbgon.h"
 #include "ctimer.h"
+#include "playermanager.h"
 
 CEntitySystem* g_pEntitySystem = nullptr;
 
@@ -129,13 +130,15 @@ IGameEventSystem* g_gameEventSystem;
 IGameEventManager2* g_gameEventManager;
 INetworkGameServer* g_networkGameServer;
 CGlobalVars* gpGlobals = nullptr;
+CPlayerManager* g_playerManager;
+IVEngineServer2* g_pEngineServer2;
 
 PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
 bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
 {
 	PLUGIN_SAVEVARS();
 
-	GET_V_IFACE_CURRENT(GetEngineFactory, g_pSource2EngineToServer, ISource2EngineToServer, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
+	GET_V_IFACE_CURRENT(GetEngineFactory, g_pEngineServer2, IVEngineServer2, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pCVar, ICvar, CVAR_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2Server, ISource2Server, SOURCE2SERVER_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2GameClients, IServerGameClients, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
@@ -174,13 +177,12 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	InitPatches();
 	InitDetours();
 
-	/*
-	Example of a timer:
-	new CTimer(2.0, true, true, []() {
-		Message("Test timer2\n");
+	g_playerManager = new CPlayerManager();
+	
+	// Steam authentication
+	new CTimer(1.0, true, true, []() {
+		g_playerManager->TryAuthenticate();
 	});
-	*/
-
 
 	g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);
 
@@ -289,6 +291,7 @@ void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, ui
 
 bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason )
 {
+	g_playerManager->OnClientConnected(slot);
 	META_CONPRINTF( "Hook_ClientConnect(%d, \"%s\", %d, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
 
 	RETURN_META_VALUE(MRES_IGNORED, true);

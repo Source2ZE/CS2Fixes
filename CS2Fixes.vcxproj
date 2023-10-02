@@ -178,6 +178,7 @@
     <ClCompile Include="detours.cpp" />
     <ClCompile Include="mempatch.cpp" />
     <ClCompile Include="patches.cpp" />
+    <ClCompile Include="playermanager.cpp" />
     <ClCompile Include="sdk\tier1\convar.cpp" />
     <ClCompile Include="utils\plat_unix.cpp" />
     <ClCompile Include="utils\plat_win.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="detours.h" />
     <ClInclude Include="mempatch.h" />
     <ClInclude Include="addresses.h" />
+    <ClInclude Include="playermanager.h" />
     <ClInclude Include="recipientfilters.h" />
     <ClInclude Include="utils\module.h" />
     <ClInclude Include="utils\plat.h" />
