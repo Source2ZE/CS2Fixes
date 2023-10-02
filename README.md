@@ -17,9 +17,9 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
 - [x] Unlocking commands and convars
 - [x] Memory patching system
 - [x] Detour system
-- [ ] Player Manager
-  - [ ] Storing players
-  - [ ] Player authorization
+- [x] Player Manager
+  - [x] Storing players
+  - [x] Player authorization
   - [ ] Admin system
 - [x] Timers
 - [ ] Blocking weapon sounds/decals (in progress)
