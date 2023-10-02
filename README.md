@@ -25,6 +25,7 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
 - [ ] Blocking weapon sounds/decals (in progress)
   - [x] Hooking fire bullets tempent
   - [ ] Implement stopsound (awaits player manager)
+ - [ ] Weapon pickup crash fix
 
 ## Compilation
 
