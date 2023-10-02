@@ -173,6 +173,7 @@
     <ClCompile Include="cs2_sdk\interfaces\centitysystem.cpp" />
     <ClCompile Include="cs2_sdk\interfaces\cs2_interfaces.cpp" />
     <ClCompile Include="cs2_sdk\schema.cpp" />
+    <ClCompile Include="ctimer.cpp" />
     <ClCompile Include="cvars.cpp" />
     <ClCompile Include="detours.cpp" />
     <ClCompile Include="mempatch.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="cs2_sdk\interfaces\cs2_interfaces.h" />
     <ClInclude Include="cs2_sdk\schema.h" />
     <ClInclude Include="cdetour.h" />
+    <ClInclude Include="ctimer.h" />
     <ClInclude Include="detours.h" />
     <ClInclude Include="mempatch.h" />
     <ClInclude Include="addresses.h" />

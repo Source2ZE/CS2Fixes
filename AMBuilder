@@ -55,7 +55,8 @@ for sdk_name in MMSPlugin.sdks:
       'detours.cpp',
       'cs2_sdk/schema.cpp',
       'cs2_sdk/interfaces/cs2_interfaces.cpp',
-      'cs2_sdk/interfaces/centitysystem.cpp'
+      'cs2_sdk/interfaces/centitysystem.cpp',
+      'ctimer.cpp'
     ]
 
     if sdk_name in ['dota', 'cs2']:

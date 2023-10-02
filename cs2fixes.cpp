@@ -30,8 +30,13 @@
 #include "engine/igameeventsystem.h"
 
 #include "tier0/memdbgon.h"
+#include "ctimer.h"
 
 CEntitySystem* g_pEntitySystem = nullptr;
+
+float g_flUniversalTime;
+float g_flLastTickedTime;
+bool g_bHasTicked;
 
 void Message(const char *msg, ...)
 {
@@ -169,6 +174,14 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	InitPatches();
 	InitDetours();
 
+	/*
+	Example of a timer:
+	new CTimer(2.0, true, true, []() {
+		Message("Test timer2\n");
+	});
+	*/
+
+
 	g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);
 
 	Message("g_gameEventManager - %p\n", g_gameEventManager);
@@ -195,6 +208,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 	FlushAllDetours();
 	UndoPatches();
+	RemoveTimers();
 
 	return true;
 }
@@ -203,6 +217,10 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 {
 	Message("startup server\n");
 
+	if(g_bHasTicked)
+		RemoveMapTimers();
+
+	g_bHasTicked = false;
 	gpGlobals = GetGameGlobals();
 
 	if (gpGlobals == nullptr)
@@ -295,8 +313,46 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 	 * false | game is not ticking
 	 */
 
+	if (simulating && g_bHasTicked)
+	{
+		g_flUniversalTime += gpGlobals->curtime - g_flLastTickedTime;
+	}
+	else
+	{
+		g_flUniversalTime += gpGlobals->interval_per_tick;
+	}
+
+	g_flLastTickedTime = gpGlobals->curtime;
+	g_bHasTicked = true;
+
 	if(!g_pEntitySystem)
 		g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+
+
+	for (int i = g_timers.Tail(); i != g_timers.InvalidIndex();)
+	{
+		auto timer = g_timers[i];
+
+		int prevIndex = i;
+		i = g_timers.Previous(i);
+
+		if (timer->m_flLastExecute == -1)
+			timer->m_flLastExecute = g_flUniversalTime;
+
+		// Timer execute 
+		if (timer->m_flLastExecute + timer->m_flTime <= g_flUniversalTime)
+		{
+			timer->Execute();
+
+			if (!timer->m_bRepeat)
+			{
+				delete timer;
+				g_timers.Remove(prevIndex);
+			}
+			else
+				timer->m_flLastExecute = g_flUniversalTime;
+		}
+	}
 }
 
 // Potentially might not work
