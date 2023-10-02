@@ -234,8 +234,18 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 	//CMsgTEFireBullets
 	if (info->m_MessageId == GE_FireBulletsId)
 	{
-		Message("Block fire bullets");
-		RETURN_META(MRES_SUPERCEDE);
+		// Can later do a bit mask for players using stopsound but this will do for now
+		for (uint64 i = 0; i < 64; i++)
+		{
+			ZEPlayer *pPlayer = g_playerManager->GetPlayer(i);
+
+			if (pPlayer && pPlayer->IsUsingStopSound())
+			{
+				*(uint64*)clients &= ~((uint64)1 << i);
+				nClientCount--;
+				//Message("Blocking fire bullets for %d\n", i);
+			}
+		}
 	}
 
 	if (info->m_MessageId != UM_ServerFrameTime)
@@ -243,13 +253,13 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 		CUtlString str;
 		info->m_pBinding->ToString(pData, str);
 
-		//ConMsg("%s\n", str.Get());
+		//Message("%s\n", str.Get());
 	}
 
 	if (info->m_MessageId == CS_UM_SayText2 || info->m_MessageId == UM_SayText2)
 	{
 		auto test = (CUserMessageSayText2*)pData;
-		Message("Message Name: %s\n", test->messagename().c_str());
+		//Message("Message Name: %s\n", test->messagename().c_str());
 	}
 	
 }
