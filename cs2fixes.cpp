@@ -293,6 +293,9 @@ void CS2Fixes::Hook_ClientSettingsChanged( CPlayerSlot slot )
 
 void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, const char *pszAddress, bool bFakePlayer )
 {
+	if(bFakePlayer)
+		g_playerManager->OnBotConnected(slot);
+
 	META_CONPRINTF( "Hook_OnClientConnected(%d, \"%s\", %d, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer );
 }
 

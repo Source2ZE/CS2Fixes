@@ -171,6 +171,29 @@ CON_COMMAND_CHAT(sethealth, "set your health")
 	player->m_hPawn().Get()->m_iHealth(health);
 }
 
+CON_COMMAND_CHAT(test_target, "test string targetting")
+{
+	if (!player)
+		return;
+
+	int iNumClients = 0;
+	CPlayerSlot* pSlot = (CPlayerSlot *)(new int[64]);
+
+	g_playerManager->TargetPlayerString(args[1], iNumClients, pSlot);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i].Get() + 1));
+
+		if (!pTarget)
+			continue;
+
+		Message("Targetting %s\n", &pTarget->m_iszPlayerName());
+	}
+
+	delete[] pSlot;
+}
+
 void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 {
 	if (!pController)
