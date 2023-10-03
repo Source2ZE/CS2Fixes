@@ -58,12 +58,12 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 
 		if (!V_stricmp(pszWeaponName, weaponEntry.command))
 		{
-			void *pItemServices = (void*)pController->m_hPawn().Get()->m_pItemServices();
+			CCSPlayer_ItemServices *pItemServices = pController->m_hPawn()->m_pItemServices();
 			int money = pController->m_pInGameMoneyServices()->m_iAccount();
 			if (money >= weaponEntry.iPrice)
 			{
 				pController->m_pInGameMoneyServices()->m_iAccount(money - weaponEntry.iPrice);
-				addresses::GiveNamedItem(pItemServices, weaponEntry.szWeaponName, nullptr, nullptr, nullptr, nullptr);
+				pItemServices->GiveNamedItem(weaponEntry.szWeaponName);
 			}
 
 			break;

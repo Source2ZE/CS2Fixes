@@ -21,7 +21,6 @@ namespace addresses
 {
 	void Initialize();
 
-	inline void(FASTCALL *GiveNamedItem)(void *itemService, const char *pchName, void *iSubType, void *pScriptItem, void *a5, void *a6);
 	inline void(FASTCALL *NetworkStateChanged)(int64 chainEntity, int64 offset, int64 a3);
 	inline void(FASTCALL *StateChanged)(void *networkTransmitComponent, CEntityInstance *ent, int64 offset, int16 a4, int16 a5);
 }
@@ -50,7 +49,6 @@ namespace sigs
 	inline const byte *StateChanged = (byte *)"\x48\x89\x54\x24\x10\x55\x53\x57\x41\x55";
 	inline const byte *GiveNamedItem = (byte *)"\x48\x89\x5C\x24\x18\x48\x89\x74\x24\x20\x55\x57\x41\x54\x41\x56\x41\x57\x48\x8D\x6C\x24\xD9";
 
-	inline const byte *VoiceShouldHear = (byte *)"\x48\x89\x5C\x24\x10\x44\x88\x4C\x24\x20\x44\x88\x44\x24\x18";
 	inline const byte *CSoundEmitterSystem_EmitSound = (byte *)"\x48\x8B\xC4\x4C\x89\x40\x18\x55\x57";
 
 // Patches
@@ -78,7 +76,6 @@ namespace sigs
 	inline const byte *StateChanged = (byte *)"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x41\x54\x53\x89\xD3";
 	inline const byte *GiveNamedItem = (byte *)"\x55\x48\x89\xE5\x41\x57\x41\x56\x49\x89\xCE\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xD4";
 
-	inline const byte *VoiceShouldHear = (byte *)"\x55\x48\x89\xE5\x41\x57\x41\x89\xD7\x41\x56\x49\x89\xF6\x41\x55\x41\x54\x49\x89\xFC\x53\x48\x83\xEC\x28";
 	inline const byte *CSoundEmitterSystem_EmitSound = (byte *)"\x48\xB8\x00\x00\x00\x00\xFF\xFF\xFF\xFF\x55\x48\x89\xE5\x41\x57\x41\x89\xF7";
 	// Patches
 	// Check vauff's pin in #scripting
