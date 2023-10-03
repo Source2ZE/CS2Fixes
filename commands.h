@@ -35,5 +35,6 @@ void ParseChatCommand(const char *, CCSPlayerController *);
 	}																																				\
 	static CChatCommand name##_chat_command(#name, name##_callback);																				\
 	static ConCommandRefAbstract name##_ref;																										\
-	static ConCommand name##_command(&name##_ref, COMMAND_PREFIX #name, name##_con_callback, description, FCVAR_CLIENT_CAN_EXECUTE);				\
+	static ConCommand name##_command(&name##_ref, COMMAND_PREFIX #name, name##_con_callback,														\
+									description, FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);												\
 	void name##_callback(const CCommand &args, CCSPlayerController *player)

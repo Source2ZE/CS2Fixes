@@ -98,7 +98,7 @@ CGlobalVars *GetGameGlobals()
 	if (!server)
 		return nullptr;
 
-	return g_pNetworkServerService->GetIGameServer()->GetGlobals();
+	return server->GetGlobals();
 }
 
 #if 0
@@ -106,22 +106,22 @@ CGlobalVars *GetGameGlobals()
 ConVar sample_cvar("sample_cvar", "42", 0);
 #endif
 
-CON_COMMAND_F(sample_command, "Sample command", FCVAR_SPONLY)
+CON_COMMAND_F(sample_command, "Sample command", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	META_CONPRINTF( "Sample command called by %d. Command: %s\n", context.GetPlayerSlot(), args.GetCommandString() );
 }
 
-CON_COMMAND_F(unlock_cvars, "Unlock all cvars", FCVAR_SPONLY)
+CON_COMMAND_F(unlock_cvars, "Unlock all cvars", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	UnlockConVars();
 }
 
-CON_COMMAND_F(unlock_commands, "Unlock all commands", FCVAR_SPONLY)
+CON_COMMAND_F(unlock_commands, "Unlock all commands", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	UnlockConCommands();
 }
 
-CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONLY)
+CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	ToggleLogs();
 }
@@ -146,7 +146,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	GET_V_IFACE_ANY(GetEngineFactory, g_gameEventSystem, IGameEventSystem, GAMEEVENTSYSTEM_INTERFACE_VERSION);
 
 	// Currently doesn't work from within mm side, use GetGameGlobals() in the mean time instead
-	// gpGlobals = ismm->GetCGlobals();
+	// this needs to run in case of a late load
+	gpGlobals = GetGameGlobals();
 
 	META_CONPRINTF( "Starting plugin.\n" );
 
@@ -165,6 +166,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	
 	addresses::Initialize();
 	interfaces::Initialize();
+
+	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 
 	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
@@ -197,6 +200,8 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientCommand, false);
 	SH_REMOVE_HOOK_MEMFUNC(IGameEventSystem, PostEventAbstract, g_gameEventSystem, this, &CS2Fixes::Hook_PostEvent, false);
 	SH_REMOVE_HOOK_MEMFUNC(INetworkServerService, StartupServer, g_pNetworkServerService, this, &CS2Fixes::Hook_StartupServer, true);
+
+	ConVar_Unregister();
 
 	g_CommandList.Purge();
 
