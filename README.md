@@ -22,6 +22,7 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
 - [x] Player Manager
   - [x] Storing players
   - [x] Player authorization
+  - [ ] Userid Target lookup
   - [ ] Admin system
     - [ ] Admin commands
 - [x] Timers
