@@ -213,36 +213,6 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 	}
 }
 
-CON_COMMAND_CHAT(test_target_admin, "test string targetting")
-{
-	if (!player)
-		return;
-
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
-	{
-		SentChatToClient(player->entindex() - 1, " \7[CS2Fixes]\1 You don't have access to this command.");
-		return;
-	}
-
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
-
-	g_playerManager->TargetPlayerString(args[1], iNumClients, pSlots);
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
-
-		if (!pTarget)
-			continue;
-
-		SentChatToClient(player->entindex() - 1, " \7[CS2Fixes]\1 Targeting %s", &pTarget->m_iszPlayerName());
-		Message("Targeting %s\n", &pTarget->m_iszPlayerName());
-	}
-}
-
 CON_COMMAND_CHAT(getorigin, "get your origin")
 {
 	if (!player)

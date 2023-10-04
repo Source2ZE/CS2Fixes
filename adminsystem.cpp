@@ -221,6 +221,84 @@ CON_COMMAND_CHAT(kick, "kick a player")
 	}
 }
 
+CON_COMMAND_CHAT(slay, "slay a player")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->entindex() - 1;
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Usage: !slay <name>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Target not found.");
+		return;
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		// CBasePlayerPawn::CommitSuicide(bool bExplode, bool bForce)
+		CALL_VIRTUAL(void, 354, pTarget->m_hPawn().Get(), false, true);
+
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Slayed %s.", &pTarget->m_iszPlayerName());
+	}
+}
+
+CON_COMMAND_CHAT(map, "change map")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->entindex() - 1;
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_CHANGEMAP))
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Usage: !map <mapname>");
+		return;
+	}
+
+	if (!g_pEngineServer2->IsMapValid(args[1]))
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Invalid map specified");
+		return;
+	}
+
+	char buf[MAX_PATH];
+	V_snprintf(buf, sizeof(buf), "changelevel %s", args[1]);
+	g_pEngineServer2->ServerCommand(buf);
+}
+
 void CAdminSystem::LoadAdmins()
 {
 	m_vecAdmins.Purge();
