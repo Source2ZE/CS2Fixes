@@ -10,6 +10,7 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
 #include "entity/ccsweaponbase.h"
+#include "playermanager.h"
 
 #include "tier0/memdbgon.h"
 
@@ -18,7 +19,7 @@ extern CGlobalVars *gpGlobals;
 DECLARE_DETOUR(Host_Say, Detour_Host_Say, &modules::server);
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter, &modules::server);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter, &modules::server);
-DECLARE_DETOUR(VoiceShouldHear, Detour_VoiceShouldHear, &modules::server);
+DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient, &modules::engine);
 DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSound, &modules::server);
 DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn, &modules::server);
 
@@ -39,18 +40,12 @@ void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *pSou
 	CSoundEmitterSystem_EmitSound(pSoundEmitterSystem, a2, filter, a4, a5);
 }
 
-bool FASTCALL Detour_VoiceShouldHear(CCSPlayerController *a, CCSPlayerController *b, bool a3, bool voice)
+bool FASTCALL Detour_IsHearingClient(void* serverClient, int index)
 {
-	//if (!voice)
-	//{
-	//	Message("block");
-	//	return false;
-	//}
+	if (g_playerManager->GetPlayer(index)->IsMuted())
+		return false;
 
-	// Message("a: %s, b: %s\n", &a->m_iszPlayerName(), &b->m_iszPlayerName());
-	// Message("VoiceShouldHear: %llx %llx %i %i\n", a, b, a3, voice);
-
-	return VoiceShouldHear(a, b, a3, voice);
+	return IsHearingClient(serverClient, index);
 }
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CCSPlayerController *pPlayer, uint64 eMessageType)
@@ -171,8 +166,8 @@ void InitDetours()
 	Host_Say.CreateDetour();
 	Host_Say.EnableDetour();
 
-	VoiceShouldHear.CreateDetour();
-	VoiceShouldHear.EnableDetour();
+	IsHearingClient.CreateDetour();
+	IsHearingClient.EnableDetour();
 
 	CSoundEmitterSystem_EmitSound.CreateDetour();
 	CSoundEmitterSystem_EmitSound.EnableDetour();

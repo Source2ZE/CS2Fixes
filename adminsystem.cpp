@@ -105,6 +105,116 @@ CON_COMMAND_CHAT(ban, "ban a player")
 	}
 }
 
+CON_COMMAND_CHAT(mute, "mutes a player")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->entindex() - 1;
+
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 3)
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Usage: !mute <name> <duration/0 (permanent)>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlot[MAXPLAYERS];
+
+	if (g_playerManager->TargetPlayerString(args[1], iNumClients, pSlot) != ETargetType::PLAYER || iNumClients > 1)
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Target too ambiguous.");
+		return;
+	}
+
+	if (!iNumClients)
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Target not found.");
+		return;
+	}
+
+	char* end;
+	int iDuration = strtol(args[2], &end, 10);
+
+	if (*end)
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Invalid duration.");
+		return;
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+		CInfractionBase* infraction = new CMuteInfraction(iDuration ? std::time(0) + iDuration : 0, pTargetPlayer->GetSteamId64());
+
+		g_pAdminSystem->AddInfraction(infraction);
+		infraction->ApplyInfraction(pTargetPlayer);
+		g_pAdminSystem->SaveInfractions();
+
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 You have muted %s for %i mins.", &pTarget->m_iszPlayerName(), iDuration);
+	}
+}
+
+CON_COMMAND_CHAT(kick, "kick a player")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->entindex() - 1;
+
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_KICK))
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Usage: !kick <name>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlot[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(args[1], iNumClients, pSlot);
+
+	if (!iNumClients)
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Target not found.");
+		return;
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+		
+		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot().Get(), NETWORK_DISCONNECT_KICKED);
+
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 You have kicked %s.", &pTarget->m_iszPlayerName());
+	}
+}
+
 void CAdminSystem::LoadAdmins()
 {
 	m_vecAdmins.Purge();
@@ -225,6 +335,8 @@ void CAdminSystem::AddInfraction(CInfractionBase* infraction)
 
 void CAdminSystem::ApplyInfractions(ZEPlayer *player)
 {
+	player->SetMuted(false);
+
 	FOR_EACH_VEC(m_vecInfractions, i)
 	{
 		int timestamp = m_vecInfractions[i]->GetTimestamp();
@@ -277,5 +389,5 @@ void CBanInfraction::ApplyInfraction(ZEPlayer *player)
 
 void CMuteInfraction::ApplyInfraction(ZEPlayer* player)
 {
-	// TODO: impelment this
+	player->SetMuted(true);
 }
