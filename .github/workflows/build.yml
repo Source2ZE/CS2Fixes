@@ -1,0 +1,130 @@
+name: Plugin build
+
+on:
+  push:
+    paths-ignore:
+    - LICENSE
+    - README.md
+  pull_request:
+    paths-ignore:
+    - LICENSE
+    - README.md
+
+jobs:
+  linux:
+    name: linux build
+    runs-on: ubuntu-latest
+    container:
+      image: idk1703/build-img:11
+    steps:
+      - name: Prepare env
+        shell: bash
+        run: echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Checking out MM:Source
+        uses: actions/checkout@v3
+        with:
+          repository: alliedmodders/metamod-source
+          ref: master
+          path: metamod-source
+
+      - name: Checking out hl2sdk
+        uses: actions/checkout@v3
+        with:
+          repository: alliedmodders/hl2sdk
+          ref: cs2
+          path: hl2sdk-cs2
+
+      - name: Checking out own repository
+        uses: actions/checkout@v3
+        with:
+          path: cs2fixes
+          submodules: recursive
+
+      - name: Compiling files
+        working-directory: cs2fixes
+        run: |
+          python3 configure.py --enable-optimize --symbol-files --sdks cs2
+          ambuild objdir
+          
+      - name: Uploading package
+        uses: actions/upload-artifact@v3
+        with:
+          name: cs2fixes-linux-${{ env.GITHUB_SHA_SHORT }}
+          path: cs2fixes/objdir/package
+
+  windows:
+    name: windows build
+    runs-on: windows-latest
+    steps:
+      - name: Prepare env
+        shell: bash
+        run: |
+          echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Setting up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --upgrade pip setuptools wheel
+          pip install git+https://github.com/alliedmodders/ambuild
+
+      - name: Checking out MM:Source
+        uses: actions/checkout@v3
+        with:
+          repository: alliedmodders/metamod-source
+          ref: master
+          path: metamod-source
+
+      - name: Checking out hl2sdk
+        uses: actions/checkout@v3
+        with:
+          repository: alliedmodders/hl2sdk
+          ref: cs2
+          path: hl2sdk-cs2
+          
+      - name: Checking out own repository
+        uses: actions/checkout@v3
+        with:
+          path: cs2fixes
+          submodules: recursive
+
+      - name: Compiling files
+        working-directory: cs2fixes
+        run: |
+          python3 configure.py --enable-optimize --symbol-files --sdks cs2
+          ambuild objdir
+          
+      - name: Uploading package
+        uses: actions/upload-artifact@v3
+        with:
+          name: cs2fixes-windows-${{ env.GITHUB_SHA_SHORT }}
+          path: cs2fixes/objdir/package
+          
+  release:
+    name: Release
+    if: github.ref_type == 'tag'
+    needs: [ 'linux', 'windows']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Arhive Assets
+        shell: bash
+        run: find * -maxdepth 0 -type d -exec zip -r {}.zip {} \;
+
+      - name: Create Release
+        shell: bash
+        run: gh release create ${{ github.ref_name }} --title ${{ github.ref_name }} --latest -R ${{ github.repository }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload assets
+        shell: bash
+        run: gh release upload ${{ github.ref_name }} *.zip -R ${{ github.repository }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
