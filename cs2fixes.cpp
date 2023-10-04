@@ -31,7 +31,6 @@
 #include "ctimer.h"
 #include "playermanager.h"
 #include <entity.h>
-#include "entity/ccsweaponbase.h"
 
 #include "tier0/memdbgon.h"
 
