@@ -35,9 +35,11 @@ public:
 	void SetSteamId(const CSteamID* steamID) { m_SteamID = steamID; }
 	void SetAdminFlags(uint64 iAdminFlags) { m_iAdminFlags = iAdminFlags; }
 	void SetPlayerSlot(CPlayerSlot slot) { m_slot = slot; }
+	void SetMuted(bool muted) { m_bMuted = muted; }
 
 	void ToggleStopSound() { m_bStopSound = !m_bStopSound; }
 	bool IsUsingStopSound() { return m_bStopSound; }
+	bool IsMuted() { return m_bMuted; }
 	CPlayerSlot GetPlayerSlot() { return m_slot; }
 	
 	void OnAuthenticated();
@@ -49,6 +51,7 @@ private:
 	const CSteamID* m_SteamID;
 	bool m_bStopSound;
 	bool m_bFakeClient;
+	bool m_bMuted;
 	CPlayerSlot m_slot;
 	uint64 m_iAdminFlags;
 };

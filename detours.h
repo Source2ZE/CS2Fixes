@@ -8,7 +8,7 @@ void FlushAllDetours();
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CCSPlayerController *, uint64);
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CCSPlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
 void FASTCALL Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, const char *);
-bool FASTCALL Detour_VoiceShouldHear(CCSPlayerController *a, CCSPlayerController *b, bool a3, bool voice);
+bool FASTCALL Detour_IsHearingClient(void*, int);
 void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *, CEntityIndex *, IRecipientFilter &, uint32, void *);
 //void FASTCALL Detour_CBaseEntity_Spawn(CBaseEntity *, void *);
 void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *, void *);
