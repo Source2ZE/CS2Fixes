@@ -49,6 +49,7 @@ WeaponMapEntry_t WeaponMap[] = {
 	{"revolver",		 "weapon_revolver",		 600 , 64},
 	{"he",			"weapon_hegrenade",			 300 , 44},
 	{"molotov",		"weapon_molotov",			 850 , 46},
+	{"knife",		"weapon_knife",				 0	 , 42},	// default CT knife
 	{"kevlar",		   "item_kevlar",			 600 , 50},
 };
 
@@ -215,14 +216,14 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 	delete[] pSlot;
 }
 
-// Lookup a weapon classname in the weapon map and set its m_iItemDefinitionIndex appropriately
-// this is needed so the guns behave as they should
+// Lookup a weapon classname in the weapon map and "initialize" it.
+// Both m_bInitialized and m_iItemDefinitionIndex need to be set for a weapon to be pickable and not crash clients,
+// and m_iItemDefinitionIndex needs to be the correct ID from weapons.vdata so the gun behaves as it should.
 void FixWeapon(CCSWeaponBase *pWeapon)
 {
-	if (!pWeapon)
+	// Weapon could be already initialized with the correct data from GiveNamedItem, in that case we don't need to do anything
+	if (!pWeapon || pWeapon->m_AttributeManager().m_Item().m_bInitialized())
 		return;
-
-	pWeapon->m_AttributeManager().m_Item().m_bInitialized(true);
 
 	const char *pszClassName = pWeapon->m_pEntity->m_designerName.String();
 
@@ -230,9 +231,11 @@ void FixWeapon(CCSWeaponBase *pWeapon)
 	{
 		if (!V_stricmp(WeaponMap[i].szWeaponName, pszClassName))
 		{
-			//Message("Fixing a %s with index = %d and initialized = %d\n", pszClassName, pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex(),
-			//	pWeapon->m_AttributeManager().m_Item().m_bInitialized());
+			Message("Fixing a %s with index = %d and initialized = %d\n", pszClassName,
+				pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex(),
+				pWeapon->m_AttributeManager().m_Item().m_bInitialized());
 
+			pWeapon->m_AttributeManager().m_Item().m_bInitialized(true);
 			pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex(WeaponMap[i].iItemDefIndex);
 		}
 	}
