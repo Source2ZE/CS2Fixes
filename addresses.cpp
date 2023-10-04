@@ -25,5 +25,4 @@ void addresses::Initialize()
 
 	RESOLVE_SIG(modules::server, sigs::NetworkStateChanged, addresses::NetworkStateChanged);
 	RESOLVE_SIG(modules::server, sigs::StateChanged, addresses::StateChanged);
-	RESOLVE_SIG(modules::server, sigs::GiveNamedItem, addresses::GiveNamedItem);
 }
