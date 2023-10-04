@@ -19,6 +19,13 @@ public:
 	CDetour(CModule** pModule, T* pfnDetour, const char* pszName, byte* pSignature = nullptr) :
 		m_pModule(pModule), m_pfnDetour(pfnDetour), m_pszName(pszName), m_pSignature(pSignature)
 	{
+		m_hook = nullptr;
+		m_bInstalled = false;
+	}
+
+	~CDetour()
+	{
+		FreeDetour();
 	}
 
 	void CreateDetour();
@@ -42,6 +49,7 @@ private:
 	byte* m_pSignature;
 	T* m_pfnFunc;
 	funchook_t* m_hook;
+	bool m_bInstalled;
 };
 
 extern CUtlVector<CDetourBase*> g_vecDetours;
@@ -77,20 +85,44 @@ void CDetour<T>::CreateDetour()
 template <typename T>
 void CDetour<T>::EnableDetour()
 {
-	funchook_install(m_hook, 0);
+	if (!m_hook)
+		return;
+
+	int error = funchook_install(m_hook, 0);
+
+	if (!error)
+		m_bInstalled = true;
+	else
+		Warning("funchook_install error for %s: %d %s\n", m_pszName, error, funchook_error_message(m_hook));
 }
 
 template <typename T>
 void CDetour<T>::DisableDetour()
 {
-	funchook_uninstall(m_hook, 0);
+	if (!m_hook )
+		return;
+
+	int error = funchook_uninstall(m_hook, 0);
+	
+	if (!error)
+		m_bInstalled = false;
+	else
+		Warning("funchook_uninstall error for %s: %d %s\n", m_pszName, error, funchook_error_message(m_hook));
 }
 
 template <typename T>
 void CDetour<T>::FreeDetour()
 {
-	DisableDetour();
-	funchook_destroy(m_hook);
+	if (!m_hook)
+		return;
+
+	if (m_bInstalled)
+		DisableDetour();
+
+	int error = funchook_destroy(m_hook);
+
+	if (error != 0)
+		Warning("funchook_destroy error for %s: %d %s\n", m_pszName, error, funchook_error_message(m_hook));
 }
 
 #define DECLARE_DETOUR(name, detour, modulepath) \

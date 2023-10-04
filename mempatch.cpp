@@ -20,11 +20,11 @@ void CMemPatch::PerformPatch()
 	}
 
 	m_pOriginalBytes = new byte[m_iPatchLength];
-	V_strncpy((char*)m_pOriginalBytes, (char*)m_pPatchAddress, m_iPatchLength);
+	V_memcpy(m_pOriginalBytes, m_pPatchAddress, m_iPatchLength);
 
 	Plat_WriteMemory(m_pPatchAddress, (byte*)m_pPatch, m_iPatchLength);
 
-	Message("Successfully patched %s!\n", m_pszName);
+	Message("Successfully patched %s at %p\n", m_pszName, m_pPatchAddress);
 }
 
 void CMemPatch::UndoPatch()
@@ -32,5 +32,9 @@ void CMemPatch::UndoPatch()
 	if (!m_pPatchAddress)
 		return;
 
+	Message("Undoing patch %s at %p\n", m_pszName, m_pPatchAddress);
+
 	Plat_WriteMemory(m_pPatchAddress, m_pOriginalBytes, m_iPatchLength);
+
+	delete[] m_pOriginalBytes;
 }

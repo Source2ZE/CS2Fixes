@@ -10,6 +10,8 @@
 
 CAdminSystem* g_pAdminSystem;
 
+CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(uint32));
+
 CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	g_pAdminSystem->LoadAdmins();
@@ -102,6 +104,53 @@ CON_COMMAND_CHAT(ban, "ban a player")
 		g_pAdminSystem->SaveInfractions();
 
 		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 You have banned %s for %i mins.", &pTarget->m_iszPlayerName(), iDuration);
+	}
+}
+
+CON_COMMAND_CHAT(kick, "kick a player")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->entindex() - 1;
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_KICK))
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Usage: !kick <name>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlot[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(args[1], iNumClients, pSlot);
+
+	if (!iNumClients)
+	{
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Target not found.");
+		return;
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot().Get(), NETWORK_DISCONNECT_KICKED);
+
+		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 You have kicked %s.", &pTarget->m_iszPlayerName());
 	}
 }
 
