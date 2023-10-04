@@ -65,7 +65,7 @@ namespace sigs
 	inline const byte *Patch_MovementUnlock = (byte *)"\xEB";
 
 	// Check tilgep's pin in #scripting
-	inline const byte *VScriptEnable = (byte *)"\xBE\x01\x00\x00\x00\x2B\xD6\x74\x2A\x3B\xD6";
+	inline const byte *VScriptEnable = (byte *)"\xBE\x01\x2A\x2A\x2A\x2B\xD6\x74\x2A\x3B\xD6";
 	inline const byte *Patch_VScriptEnable = (byte *)"\xBE\x02";
 
 	// Find "Noise removal", there should be 3 customermachine checks
