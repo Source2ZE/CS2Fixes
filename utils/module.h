@@ -34,6 +34,8 @@ public:
 		if (int e = GetModuleInformation(szModule, &m_base, &m_size))
 			Error("Failed to get module info for %s, error %d\n", szModule, e);
 #endif
+
+		Message("Initialized module %s base: %p | size: %d\n", m_pszModule, m_base, m_size);
 	}
 
 	void *FindSignature(const byte *pData)

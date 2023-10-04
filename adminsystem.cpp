@@ -10,6 +10,8 @@
 
 CAdminSystem* g_pAdminSystem;
 
+CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(uint32));
+
 CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	g_pAdminSystem->LoadAdmins();

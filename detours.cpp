@@ -178,11 +178,5 @@ void InitDetours()
 
 void FlushAllDetours()
 {
-	FOR_EACH_VEC(g_vecDetours, i)
-	{
-		Message("Removing detour %s\n", g_vecDetours[i]->GetName());
-		g_vecDetours[i]->FreeDetour();
-	}
-
-	g_vecDetours.PurgeAndDeleteElements();
+	g_vecDetours.Purge();
 }

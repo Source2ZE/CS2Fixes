@@ -12,8 +12,6 @@
 
 #include "tier0/memdbgon.h"
 
-CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(uint32));
-
 WeaponMapEntry_t WeaponMap[] = {
 	{"bizon",		  "weapon_bizon",			 1400, 26},
 	{"mac10",		  "weapon_mac10",			 1400, 27},
@@ -245,7 +243,14 @@ CON_COMMAND_CHAT(test_target_admin, "test string targetting")
 	}
 }
 
-	delete[] pSlot;
+CON_COMMAND_CHAT(getorigin, "get your origin")
+{
+	if (!player)
+		return;
+
+	Vector vecAbsOrigin = player->m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin();
+
+	SentChatToClient(player->entindex() - 1, " \7[CS2Fixes]\1 Your origin is %f %f %f", vecAbsOrigin.x, vecAbsOrigin.y, vecAbsOrigin.z);
 }
 
 // Lookup a weapon classname in the weapon map and "initialize" it.
