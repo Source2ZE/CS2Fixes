@@ -1,0 +1,106 @@
+name: Build
+
+on:
+  push:
+    paths-ignore:
+      - LICENSE
+      - README.md
+
+  pull_request:
+    paths-ignore:
+      - LICENSE
+      - README.md
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os_short }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: 
+          - ubuntu-20.04
+        include:
+          - os: ubuntu-20.04
+            os_short: linux
+    steps:
+      # Setup Python for AMBuild.
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # Install dependencies
+      - name: Install AMBuild
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install git+https://github.com/alliedmodders/ambuild
+      - name: Install dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y clang g++-multilib
+      - name: Select clang compiler
+        if: runner.os == 'Linux'
+        run: |
+          echo "CC=clang" >> $GITHUB_ENV
+          echo "CXX=clang++" >> $GITHUB_ENV
+          clang --version
+          clang++ --version
+      # Checkout repos
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          path: project
+
+      - name: Checkout hl2sdk-cs2
+        uses: actions/checkout@v4
+        with:
+          repository: alliedmodders/hl2sdk
+          ref: cs2
+          path: hl2sdk-cs2
+
+      - name: Checkout Metamod:Source
+        uses: actions/checkout@v4
+        with:
+          repository: alliedmodders/metamod-source
+          ref: master
+          path: metamod-source
+
+      # Build
+      - name: Build
+        shell: bash
+        run: |
+          cd project && mkdir build && cd build
+          python ../configure.py -s cs2
+          ambuild
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ runner.os }}
+          path: project/build/package
+
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Package
+        run: |
+          7z a -mx9 linux.zip ./Linux/*
+      - name: Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.D }}
+          file: '*.zip'
+          tag: ${{ github.ref }}
+          file_glob: true
