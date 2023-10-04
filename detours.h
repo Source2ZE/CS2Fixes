@@ -10,6 +10,8 @@ void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CCSPlayerController
 void FASTCALL Detour_Host_Say(CCSPlayerController *, CCommand *, bool, int, const char *);
 bool FASTCALL Detour_VoiceShouldHear(CCSPlayerController *a, CCSPlayerController *b, bool a3, bool voice);
 void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *, CEntityIndex *, IRecipientFilter &, uint32, void *);
+//void FASTCALL Detour_CBaseEntity_Spawn(CBaseEntity *, void *);
+void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *, void *);
 
 extern CDetour<decltype(Detour_Host_Say)> Host_Say;
 extern CDetour<decltype(Detour_UTIL_SayTextFilter)> UTIL_SayTextFilter;

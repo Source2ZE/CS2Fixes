@@ -7,7 +7,7 @@ CEntityInstance* UTIL_FindEntityByClassname(CEntityInstance* pStart, const char*
 
 	for (; pEntity; pEntity = pEntity->m_pNext)
 	{
-		if (!strcmp(pEntity->m_designerName.String(), name))
+		if (!V_strnicmp(pEntity->m_designerName.String(), name, V_strlen(name)))
 			return pEntity->m_pInstance;
 	};
 

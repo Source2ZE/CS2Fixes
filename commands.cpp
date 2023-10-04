@@ -2,6 +2,8 @@
 #include "common.h"
 #include "recipientfilters.h"
 #include "commands.h"
+#include "utils/entity.h"
+#include "entity/CCSWeaponBase.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
@@ -9,45 +11,45 @@
 
 #include "tier0/memdbgon.h"
 
+CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(uint32));
+
 WeaponMapEntry_t WeaponMap[] = {
-	{"bizon",		  "weapon_bizon",		  1400},
-	{"mac10",		  "weapon_mac10",		  1400},
-	{"mp7",			"weapon_mp7",			  1700},
-	{"mp9",			"weapon_mp9",			  1250},
-	{"p90",			"weapon_p90",			  2350},
-	{"ump45",		  "weapon_ump45",		  1700},
-	{"ak47",			 "weapon_ak47",			2500},
-	{"aug",			"weapon_aug",			  3500},
-	{"famas",		  "weapon_famas",		  2250},
-	{"galilar",		"weapon_galilar",		  2000},
-	{"m4a4",			 "weapon_m4a4",			3100},
-	{"m4a1_silencer", "weapon_m4a1_silencer", 3100},
-	{"m4a1",			 "weapon_m4a1_silencer", 3100},
-	{"a1",			"weapon_m4a1_silencer", 3100},
-	{"sg556",		  "weapon_sg556",		  3500},
-	{"awp",			"weapon_awp",			  4750},
-	{"g3sg1",		  "weapon_g3sg1",		  5000},
-	{"scar20",		   "weapon_scar20",		5000},
-	{"ssg08",		  "weapon_ssg08",		  2500},
-	{"mag7",			 "weapon_mag7",			2000},
-	{"nova",			 "weapon_nova",			1500},
-	{"sawedoff",		 "weapon_sawedoff",		1500},
-	{"xm1014",		   "weapon_xm1014",		3000},
-	{"m249",			 "weapon_m249",			5750},
-	{"negev",		  "weapon_negev",		  5750},
-	{"deagle",		   "weapon_deagle",		700 },
-	{"elite",		  "weapon_elite",		  800 },
-	{"fiveseven",	  "weapon_fiveseven",	  500 },
-	{"glock",		  "weapon_glock",		  200 },
-	{"hkp2000",		"weapon_hkp2000",		  200 },
-	{"p250",			 "weapon_p250",			300 },
-	{"tec9",			 "weapon_tec9",			500 },
-	{"usp_silencer",	 "weapon_usp_silencer",	200 },
-	{"cz75a",		  "weapon_cz75a",		  500 },
-	{"revolver",		 "weapon_revolver",		600 },
-	{"kevlar",		   "item_kevlar",		  600 },
-	{"he",			"weapon_hegrenade",	   300 },
-	{"molotov",		"weapon_hegrenade",		850 },
+	{"bizon",		  "weapon_bizon",			 1400, 26},
+	{"mac10",		  "weapon_mac10",			 1400, 27},
+	{"mp7",			"weapon_mp7",				 1700, 23},
+	{"mp9",			"weapon_mp9",				 1250, 34},
+	{"p90",			"weapon_p90",				 2350, 19},
+	{"ump45",		  "weapon_ump45",			 1700, 24},
+	{"ak47",			 "weapon_ak47",			 2500, 7},
+	{"aug",			"weapon_aug",				 3500, 8},
+	{"famas",		  "weapon_famas",			 2250, 10},
+	{"galilar",		"weapon_galilar",			 2000, 13},
+	{"m4a4",			 "weapon_m4a1",			 3100, 16},
+	{"m4a1",			 "weapon_m4a1_silencer", 3100, 60},
+	{"sg556",		  "weapon_sg556",			 3500, 39},
+	{"awp",			"weapon_awp",				 4750, 9},
+	{"g3sg1",		  "weapon_g3sg1",			 5000, 11},
+	{"scar20",		   "weapon_scar20",			 5000, 38},
+	{"ssg08",		  "weapon_ssg08",			 2500, 40},
+	{"mag7",			 "weapon_mag7",			 2000, 29},
+	{"nova",			 "weapon_nova",			 1500, 35},
+	{"sawedoff",		 "weapon_sawedoff",		 1500, 29},
+	{"xm1014",		   "weapon_xm1014",			 3000, 25},
+	{"m249",			 "weapon_m249",			 5750, 14},
+	{"negev",		  "weapon_negev",			 5750, 28},
+	{"deagle",		   "weapon_deagle",			 700 , 1},
+	{"elite",		  "weapon_elite",			 800 , 2},
+	{"fiveseven",	  "weapon_fiveseven",		 500 , 3},
+	{"glock",		  "weapon_glock",			 200 , 4},
+	{"hkp2000",		"weapon_hkp2000",			 200 , 32},
+	{"p250",			 "weapon_p250",			 300 , 36},
+	{"tec9",			 "weapon_tec9",			 500 , 30},
+	{"usp_silencer",	 "weapon_usp_silencer",	 200 , 61},
+	{"cz75a",		  "weapon_cz75a",			 500 , 63},
+	{"revolver",		 "weapon_revolver",		 600 , 64},
+	{"he",			"weapon_hegrenade",			 300 , 44},
+	{"molotov",		"weapon_molotov",			 850 , 46},
+	{"kevlar",		   "item_kevlar",			 600 , 50},
 };
 
 void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponName)
@@ -71,7 +73,25 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 	}
 }
 
-CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(uint32));
+void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
+{
+	if (!pController)
+		return;
+
+	CCommand args;
+	args.Tokenize(pMessage + 1);
+
+	uint16 index = g_CommandList.Find(hash_32_fnv1a_const(args[0]));
+
+	if (g_CommandList.IsValidIndex(index))
+	{
+		g_CommandList[index](args, pController);
+	}
+	else
+	{
+		ParseWeaponCommand(pController, args[0]);
+	}
+}
 
 void SendConsoleChat(const char *msg, ...)
 {
@@ -188,28 +208,32 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 		if (!pTarget)
 			continue;
 
-		Message("Targetting %s\n", &pTarget->m_iszPlayerName());
+		SentChatToClient(player->entindex() - 1, " \7[CS2Fixes]\1 Targeting %s", &pTarget->m_iszPlayerName());
+		Message("Targeting %s\n", &pTarget->m_iszPlayerName());
 	}
 
 	delete[] pSlot;
 }
 
-void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
+// Lookup a weapon classname in the weapon map and set its m_iItemDefinitionIndex appropriately
+// this is needed so the guns behave as they should
+void FixWeapon(CCSWeaponBase *pWeapon)
 {
-	if (!pController)
+	if (!pWeapon)
 		return;
 
-	CCommand args;
-	args.Tokenize(pMessage + 1);
+	pWeapon->m_AttributeManager().m_Item().m_bInitialized(true);
 
-	uint16 index = g_CommandList.Find(hash_32_fnv1a_const(args[0]));
+	const char *pszClassName = pWeapon->m_pEntity->m_designerName.String();
 
-	if (g_CommandList.IsValidIndex(index))
+	for (int i = 0; i < sizeof(WeaponMap) / sizeof(*WeaponMap); i++)
 	{
-		g_CommandList[index](args, pController);
-	}
-	else
-	{
-		ParseWeaponCommand(pController, args[0]);
+		if (!V_stricmp(WeaponMap[i].szWeaponName, pszClassName))
+		{
+			//Message("Fixing a %s with index = %d and initialized = %d\n", pszClassName, pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex(),
+			//	pWeapon->m_AttributeManager().m_Item().m_bInitialized());
+
+			pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex(WeaponMap[i].iItemDefIndex);
+		}
 	}
 }

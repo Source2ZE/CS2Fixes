@@ -79,7 +79,7 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char *const str, const uint6
 			Message("Attempting to call SetStateChanged on on %s::%s\n", ThisClass, #varName);						\
 			if (!IsStruct)																							\
 				SetStateChanged((Z_CBaseEntity*)this, m_key.offset + extra_offset);									\
-			else 																									\
+			else if (IsPlatformPosix()) /* This is currently broken on windows */									\
 				CALL_VIRTUAL(void, 1, this, m_key.offset + extra_offset, 0xFFFFFFFF, 0xFFFF);						\
 																													\
 		}																											\

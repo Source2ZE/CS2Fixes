@@ -180,6 +180,7 @@
     <ClCompile Include="patches.cpp" />
     <ClCompile Include="playermanager.cpp" />
     <ClCompile Include="sdk\tier1\convar.cpp" />
+    <ClCompile Include="utils\entity.cpp" />
     <ClCompile Include="utils\plat_unix.cpp" />
     <ClCompile Include="utils\plat_win.cpp" />
   </ItemGroup>
@@ -196,6 +197,7 @@
     <ClInclude Include="cs2_sdk\entity\ccsplayerpawn.h" />
     <ClInclude Include="cs2_sdk\entity\centityidentity.h" />
     <ClInclude Include="cs2_sdk\entity\cglowproperty.h" />
+    <ClInclude Include="cs2_sdk\entity\ccsweaponbase.h" />
     <ClInclude Include="cs2_sdk\entity\services.h" />
     <ClInclude Include="cs2_sdk\interfaces\cgameresourceserviceserver.h" />
     <ClInclude Include="cs2_sdk\interfaces\cschemasystem.h" />
@@ -208,6 +210,7 @@
     <ClInclude Include="addresses.h" />
     <ClInclude Include="playermanager.h" />
     <ClInclude Include="recipientfilters.h" />
+    <ClInclude Include="utils\entity.h" />
     <ClInclude Include="utils\module.h" />
     <ClInclude Include="utils\plat.h" />
     <ClInclude Include="utils\virtual.h" />

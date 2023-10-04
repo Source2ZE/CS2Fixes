@@ -53,6 +53,7 @@ for sdk_name in MMSPlugin.sdks:
       'commands.cpp',
       'addresses.cpp',
       'detours.cpp',
+      'utils/entity.cpp',
       'cs2_sdk/schema.cpp',
       'cs2_sdk/interfaces/cs2_interfaces.cpp',
       'cs2_sdk/interfaces/centitysystem.cpp',

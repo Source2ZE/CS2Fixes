@@ -28,10 +28,12 @@
 #include "plat.h"
 #include "entitysystem.h"
 #include "engine/igameeventsystem.h"
-
-#include "tier0/memdbgon.h"
 #include "ctimer.h"
 #include "playermanager.h"
+#include <entity.h>
+#include "entity/ccsweaponbase.h"
+
+#include "tier0/memdbgon.h"
 
 CEntitySystem* g_pEntitySystem = nullptr;
 
@@ -244,29 +246,17 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 		{
 			ZEPlayer *pPlayer = g_playerManager->GetPlayer(i);
 
+			// A client might be already excluded from the event possibly due to being too far away, so ignore them
+			if (!(*(uint64 *)clients & ((uint64)1 << i)))
+				continue;
+
 			if (pPlayer && pPlayer->IsUsingStopSound())
 			{
 				*(uint64*)clients &= ~((uint64)1 << i);
 				nClientCount--;
-				//Message("Blocking fire bullets for %d\n", i);
 			}
 		}
 	}
-
-	if (info->m_MessageId != UM_ServerFrameTime)
-	{
-		CUtlString str;
-		info->m_pBinding->ToString(pData, str);
-
-		//Message("%s\n", str.Get());
-	}
-
-	if (info->m_MessageId == CS_UM_SayText2 || info->m_MessageId == UM_SayText2)
-	{
-		auto test = (CUserMessageSayText2*)pData;
-		//Message("Message Name: %s\n", test->messagename().c_str());
-	}
-	
 }
 
 void CS2Fixes::AllPluginsLoaded()

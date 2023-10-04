@@ -23,6 +23,7 @@ struct WeaponMapEntry_t
 	const char *command;
 	const char *szWeaponName;
 	int iPrice;
+	uint16 iItemDefIndex;
 };
 
 void ParseChatCommand(const char *, CCSPlayerController *);
