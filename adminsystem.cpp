@@ -97,6 +97,10 @@ CON_COMMAND_CHAT(ban, "ban a player")
 			continue;
 
 		ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+		if (pTargetPlayer->IsFakeClient())
+			continue;
+
 		CInfractionBase *infraction = new CBanInfraction(iDuration ? std::time(0) + iDuration : 0, pTargetPlayer->GetSteamId64());
 
 		g_pAdminSystem->AddInfraction(infraction);
@@ -131,11 +135,7 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 	int iNumClients = 0;
 	int pSlot[MAXPLAYERS];
 
-	if (g_playerManager->TargetPlayerString(args[1], iNumClients, pSlot) != ETargetType::PLAYER || iNumClients > 1)
-	{
-		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Target too ambiguous.");
-		return;
-	}
+	g_playerManager->TargetPlayerString(args[1], iNumClients, pSlot);
 
 	if (!iNumClients)
 	{
@@ -160,6 +160,10 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 			continue;
 
 		ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+		if (pTargetPlayer->IsFakeClient())
+			continue;
+
 		CInfractionBase* infraction = new CMuteInfraction(iDuration ? std::time(0) + iDuration : 0, pTargetPlayer->GetSteamId64());
 
 		g_pAdminSystem->AddInfraction(infraction);
