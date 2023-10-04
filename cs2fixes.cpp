@@ -302,6 +302,7 @@ void CS2Fixes::Hook_ClientPutInServer( CPlayerSlot slot, char const *pszName, in
 
 void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, int reason, const char *pszName, uint64 xuid, const char *pszNetworkID )
 {
+	g_playerManager->OnClientDisconnect(slot);
 	META_CONPRINTF( "Hook_ClientDisconnect(%d, %d, \"%s\", %d, \"%s\")\n", slot, reason, pszName, xuid, pszNetworkID );
 }
 
