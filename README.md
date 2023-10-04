@@ -1,3 +1,5 @@
+## DISCLAIMER: This plugin is *not* meant to be used on a server yet, it is very much a work in progress and thus we are *not* responsible for any issues or breakages caused by the plugin. In addition, we will *not* provide support for building or usage unless you plan on contributing to the project yourself.
+
 # CS2Fixes
 
 CS2Fixes is a collection of experimental fixes and features aimed but not limited to zombie escape. This project is not production ready and serves as a proof of concept and help for source2mod and other developers.
@@ -21,11 +23,12 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
   - [x] Storing players
   - [x] Player authorization
   - [ ] Admin system
+    - [ ] Admin commands
 - [x] Timers
-- [ ] Blocking weapon sounds/decals (in progress)
+- [x] Blocking weapon sounds/decals
   - [x] Hooking fire bullets tempent
-  - [ ] Implement stopsound (awaits player manager)
- - [ ] Weapon pickup crash fix
+  - [x] Implement stopsound
+- [x] Weapon pickup crash fix
 
 ## Compilation
 
