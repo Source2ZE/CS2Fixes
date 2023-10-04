@@ -31,6 +31,7 @@
 #include "ctimer.h"
 #include "playermanager.h"
 #include <entity.h>
+#include "adminsystem.h"
 
 #include "tier0/memdbgon.h"
 
@@ -112,16 +113,6 @@ CON_COMMAND_F(sample_command, "Sample command", FCVAR_SPONLY | FCVAR_LINKED_CONC
 	META_CONPRINTF( "Sample command called by %d. Command: %s\n", context.GetPlayerSlot(), args.GetCommandString() );
 }
 
-CON_COMMAND_F(unlock_cvars, "Unlock all cvars", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	UnlockConVars();
-}
-
-CON_COMMAND_F(unlock_commands, "Unlock all commands", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	UnlockConCommands();
-}
-
 CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	ToggleLogs();
@@ -145,6 +136,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2GameClients, IServerGameClients, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_gameEventSystem, IGameEventSystem, GAMEEVENTSYSTEM_INTERFACE_VERSION);
+	GET_V_IFACE_ANY(GetFileSystemFactory, g_pFullFileSystem, IFileSystem, FILESYSTEM_INTERFACE_VERSION);
 
 	// Currently doesn't work from within mm side, use GetGameGlobals() in the mean time instead
 	// this needs to run in case of a late load
@@ -168,6 +160,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	addresses::Initialize();
 	interfaces::Initialize();
 
+	UnlockConVars();
+	UnlockConCommands();
+
 	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 
 	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
@@ -176,7 +171,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	InitDetours();
 
 	g_playerManager = new CPlayerManager();
-	
+	g_pAdminSystem = new CAdminSystem();
+
 	// Steam authentication
 	new CTimer(1.0, true, true, []() {
 		g_playerManager->TryAuthenticate();
@@ -210,6 +206,9 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	UndoPatches();
 	RemoveTimers();
 
+	delete g_playerManager;
+	delete g_pAdminSystem;
+
 	return true;
 }
 
@@ -241,7 +240,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 	if (info->m_MessageId == GE_FireBulletsId)
 	{
 		// Can later do a bit mask for players using stopsound but this will do for now
-		for (uint64 i = 0; i < 64; i++)
+		for (uint64 i = 0; i < MAXPLAYERS; i++)
 		{
 			ZEPlayer *pPlayer = g_playerManager->GetPlayer(i);
 

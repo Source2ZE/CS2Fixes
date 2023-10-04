@@ -168,6 +168,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="addresses.cpp" />
+    <ClCompile Include="adminsystem.cpp" />
     <ClCompile Include="commands.cpp" />
     <ClCompile Include="cs2fixes.cpp" />
     <ClCompile Include="cs2_sdk\interfaces\centitysystem.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="utils\plat_win.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="adminsystem.h" />
     <ClInclude Include="commands.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="cs2fixes.h" />

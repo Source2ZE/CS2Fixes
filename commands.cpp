@@ -8,6 +8,7 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
 #include "playermanager.h"
+#include "adminsystem.h"
 
 #include "tier0/memdbgon.h"
 
@@ -198,13 +199,13 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 		return;
 
 	int iNumClients = 0;
-	CPlayerSlot* pSlot = (CPlayerSlot *)(new int[64]);
+	int pSlots[MAXPLAYERS];
 
-	g_playerManager->TargetPlayerString(args[1], iNumClients, pSlot);
+	g_playerManager->TargetPlayerString(args[1], iNumClients, pSlots);
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i].Get() + 1));
+		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
 
 		if (!pTarget)
 			continue;
@@ -212,6 +213,37 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 		SentChatToClient(player->entindex() - 1, " \7[CS2Fixes]\1 Targeting %s", &pTarget->m_iszPlayerName());
 		Message("Targeting %s\n", &pTarget->m_iszPlayerName());
 	}
+}
+
+CON_COMMAND_CHAT(test_target_admin, "test string targetting")
+{
+	if (!player)
+		return;
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+	{
+		SentChatToClient(player->entindex() - 1, " \7[CS2Fixes]\1 You don't have access to this command.");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(args[1], iNumClients, pSlots);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		SentChatToClient(player->entindex() - 1, " \7[CS2Fixes]\1 Targeting %s", &pTarget->m_iszPlayerName());
+		Message("Targeting %s\n", &pTarget->m_iszPlayerName());
+	}
+}
 
 	delete[] pSlot;
 }

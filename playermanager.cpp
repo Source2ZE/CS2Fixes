@@ -1,9 +1,43 @@
 #include "playermanager.h"
+#include "adminsystem.h"
 #include "entity/ccsplayercontroller.h"
+
+void ZEPlayer::OnAuthenticated()
+{
+	CheckAdmin();
+	CheckInfractions();
+}
+
+void ZEPlayer::CheckInfractions()
+{
+	g_pAdminSystem->ApplyInfractions(this);
+}
+
+void ZEPlayer::CheckAdmin()
+{
+	if (IsFakeClient())
+		return;
+
+	auto admin = g_pAdminSystem->FindAdmin(GetSteamId64());
+	if (!admin)
+	{
+		SetAdminFlags(0);
+		return;
+	}
+
+	SetAdminFlags(admin->GetFlags());
+
+	Message("%lli authenticated as an admin\n", GetSteamId64());
+}
+
+bool ZEPlayer::IsAdminFlagSet(uint64 iFlag)
+{
+	return m_iAdminFlags & iFlag;
+}
 
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 {
-	m_vecPlayers[slot.Get()] = new ZEPlayer(true);
+	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);
 }
 
 void CPlayerManager::OnClientConnected(CPlayerSlot slot)
@@ -11,7 +45,7 @@ void CPlayerManager::OnClientConnected(CPlayerSlot slot)
 	Assert(m_vecPlayers[slot.Get()] == nullptr);
 
 	Message("%d connected\n", slot.Get());
-	m_vecPlayers[slot.Get()] = new ZEPlayer();
+	m_vecPlayers[slot.Get()] = new ZEPlayer(slot);
 }
 
 void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
@@ -22,7 +56,7 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 
 void CPlayerManager::TryAuthenticate()
 {
-	for (size_t i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
+	for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
 	{
 		if (m_vecPlayers[i] == nullptr)
 			continue;
@@ -35,12 +69,12 @@ void CPlayerManager::TryAuthenticate()
 			m_vecPlayers[i]->SetAuthenticated();
 			m_vecPlayers[i]->SetSteamId(g_pEngineServer2->GetClientSteamID(i));
 			Message("%lli authenticated %d\n", m_vecPlayers[i]->GetSteamId()->ConvertToUint64(), i);
+			m_vecPlayers[i]->OnAuthenticated();
 		}
 	}
 }
 
-
-ETargetType CPlayerManager::TargetPlayerString(const char* target, int& iNumClients, CPlayerSlot* clients)
+ETargetType CPlayerManager::TargetPlayerString(const char* target, int& iNumClients, int *clients)
 {
 	ETargetType targetType = ETargetType::NONE;
 	if (!V_stricmp(target, "@all"))
@@ -52,7 +86,7 @@ ETargetType CPlayerManager::TargetPlayerString(const char* target, int& iNumClie
 	
 	if (targetType == ETargetType::ALL)
 	{
-		for (size_t i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
+		for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;
@@ -62,7 +96,7 @@ ETargetType CPlayerManager::TargetPlayerString(const char* target, int& iNumClie
 	}
 	else if (targetType == ETargetType::T || targetType == ETargetType::CT)
 	{
-		for (size_t i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
+		for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;
@@ -80,7 +114,7 @@ ETargetType CPlayerManager::TargetPlayerString(const char* target, int& iNumClie
 	}
 	else
 	{
-		for (size_t i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
+		for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;

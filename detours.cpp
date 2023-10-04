@@ -157,7 +157,7 @@ CUtlVector<CDetourBase *> g_vecDetours;
 
 void InitDetours()
 {
-	g_vecDetours.RemoveAll();
+	g_vecDetours.PurgeAndDeleteElements();
 
 	for (int i = 0; i < sizeof(g_LoggingDetours) / sizeof(*g_LoggingDetours); i++)
 		g_LoggingDetours[i].CreateDetour();
@@ -189,5 +189,5 @@ void FlushAllDetours()
 		g_vecDetours[i]->FreeDetour();
 	}
 
-	g_vecDetours.RemoveAll();
+	g_vecDetours.PurgeAndDeleteElements();
 }

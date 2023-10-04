@@ -16,6 +16,8 @@ extern CEntitySystem* g_pEntitySystem;
 #define CS_TEAM_T           2
 #define CS_TEAM_CT          3
 
+#define MAXPLAYERS 64
+
 #ifdef _WIN32
 #define ROOTBIN "/bin/win64/"
 #define GAMEBIN "/csgo/bin/win64/"
