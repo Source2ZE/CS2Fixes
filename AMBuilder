@@ -21,8 +21,8 @@ for sdk_name in MMSPlugin.sdks:
       binary.compiler.cxxflags += ['-Wno-register']
 
     binary.compiler.cxxincludes += [
-      os.path.join(builder.sourcePath, 'cs2_sdk'),
-      os.path.join(builder.sourcePath, 'utils'),
+      os.path.join(builder.sourcePath, 'src', 'cs2_sdk'),
+      os.path.join(builder.sourcePath, 'src', 'utils'),
       os.path.join(builder.sourcePath, 'vendor', 'subhook'),
       os.path.join(builder.sourcePath, 'vendor', 'funchook', 'include'),
       os.path.join(builder.sourcePath, 'vendor', 'protobuf-3.21.8', 'src'),
@@ -34,7 +34,7 @@ for sdk_name in MMSPlugin.sdks:
         os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'libdistorm.a'),
         os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', 'libprotobuf.a'),
       ]
-      binary.sources += ['utils/plat_unix.cpp']
+      binary.sources += ['src/utils/plat_unix.cpp']
     elif binary.compiler.target.platform == 'windows':
       binary.compiler.postlink += [
         os.path.join('psapi.lib'),
@@ -42,24 +42,24 @@ for sdk_name in MMSPlugin.sdks:
         os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'distorm.lib'),
         os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', 'libprotobuf.lib'),
       ]
-      binary.sources += ['utils/plat_win.cpp']
+      binary.sources += ['src/utils/plat_win.cpp']
 
 
     binary.sources += [
-      'cs2fixes.cpp',
-      'mempatch.cpp',
-      'patches.cpp',
-      'cvars.cpp',
-	  'adminsystem.cpp',
-      'commands.cpp',
-      'addresses.cpp',
-      'detours.cpp',
-      'utils/entity.cpp',
-      'cs2_sdk/schema.cpp',
-      'cs2_sdk/interfaces/cs2_interfaces.cpp',
-      'cs2_sdk/interfaces/centitysystem.cpp',
-      'ctimer.cpp',
-      'playermanager.cpp'
+      'src/cs2fixes.cpp',
+      'src/mempatch.cpp',
+      'src/patches.cpp',
+      'src/cvars.cpp',
+	  'src/adminsystem.cpp',
+      'src/commands.cpp',
+      'src/addresses.cpp',
+      'src/detours.cpp',
+      'src/utils/entity.cpp',
+      'src/cs2_sdk/schema.cpp',
+      'src/cs2_sdk/interfaces/cs2_interfaces.cpp',
+      'src/cs2_sdk/interfaces/centitysystem.cpp',
+      'src/ctimer.cpp',
+      'src/playermanager.cpp'
     ]
 
     if sdk_name in ['dota', 'cs2']:

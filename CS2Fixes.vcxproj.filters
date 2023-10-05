@@ -35,147 +35,147 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="patches.cpp">
+    <ClCompile Include="src\patches.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cvars.cpp">
+    <ClCompile Include="src\cvars.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mempatch.cpp">
+    <ClCompile Include="src\mempatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sdk\tier1\convar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cs2_sdk\interfaces\cs2_interfaces.cpp">
+    <ClCompile Include="src\cs2_sdk\interfaces\cs2_interfaces.cpp">
       <Filter>Source Files\cs2_sdk\interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="addresses.cpp">
+    <ClCompile Include="src\addresses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cs2_sdk\schema.cpp">
+    <ClCompile Include="src\cs2_sdk\schema.cpp">
       <Filter>Source Files\cs2_sdk</Filter>
     </ClCompile>
-    <ClCompile Include="cs2fixes.cpp">
+    <ClCompile Include="src\cs2fixes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utils\plat_win.cpp">
+    <ClCompile Include="src\utils\plat_win.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="utils\plat_unix.cpp">
+    <ClCompile Include="src\utils\plat_unix.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="cs2_sdk\interfaces\centitysystem.cpp">
+    <ClCompile Include="src\cs2_sdk\interfaces\centitysystem.cpp">
       <Filter>Source Files\cs2_sdk\interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="commands.cpp">
+    <ClCompile Include="src\commands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ctimer.cpp">
+    <ClCompile Include="src\ctimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="detours.cpp">
+    <ClCompile Include="src\detours.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="playermanager.cpp">
+    <ClCompile Include="src\playermanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utils\entity.cpp">
+    <ClCompile Include="src\utils\entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="adminsystem.cpp">
+    <ClCompile Include="src\adminsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mempatch.h">
+    <ClInclude Include="src\mempatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="common.h">
+    <ClInclude Include="src\common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\interfaces\cs2_interfaces.h">
+    <ClInclude Include="src\cs2_sdk\interfaces\cs2_interfaces.h">
       <Filter>Header Files\cs2_sdk\interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\interfaces\cgameresourceserviceserver.h">
+    <ClInclude Include="src\cs2_sdk\interfaces\cgameresourceserviceserver.h">
       <Filter>Header Files\cs2_sdk\interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\entity\cbaseentity.h">
+    <ClInclude Include="src\cs2_sdk\entity\cbaseentity.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="addresses.h">
+    <ClInclude Include="src\addresses.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\module.h">
+    <ClInclude Include="src\utils\module.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\interfaces\cschemasystem.h">
+    <ClInclude Include="src\cs2_sdk\interfaces\cschemasystem.h">
       <Filter>Header Files\cs2_sdk\interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="utils\virtual.h">
+    <ClInclude Include="src\utils\virtual.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\schema.h">
+    <ClInclude Include="src\cs2_sdk\schema.h">
       <Filter>Header Files\cs2_sdk</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\entity\cbaseplayercontroller.h">
+    <ClInclude Include="src\cs2_sdk\entity\cbaseplayercontroller.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\entity\cbaseplayerpawn.h">
+    <ClInclude Include="src\cs2_sdk\entity\cbaseplayerpawn.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\entity\services.h">
+    <ClInclude Include="src\cs2_sdk\entity\services.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\entity\ccsplayerpawn.h">
+    <ClInclude Include="src\cs2_sdk\entity\ccsplayerpawn.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\entity\ccsplayercontroller.h">
+    <ClInclude Include="src\cs2_sdk\entity\ccsplayercontroller.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\entity\ccollisionproperty.h">
+    <ClInclude Include="src\cs2_sdk\entity\ccollisionproperty.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\entity\centityidentity.h">
+    <ClInclude Include="src\cs2_sdk\entity\centityidentity.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\entity\cglowproperty.h">
+    <ClInclude Include="src\cs2_sdk\entity\cglowproperty.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\entity\cbasemodelentity.h">
+    <ClInclude Include="src\cs2_sdk\entity\cbasemodelentity.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="cs2fixes.h">
+    <ClInclude Include="src\cs2fixes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\plat.h">
+    <ClInclude Include="src\utils\plat.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="commands.h">
+    <ClInclude Include="src\commands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cs2_sdk\entity\ccsweaponbase.h">
+    <ClInclude Include="src\cs2_sdk\entity\ccsweaponbase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cdetour.h">
+    <ClInclude Include="src\cdetour.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ctimer.h">
+    <ClInclude Include="src\ctimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="detours.h">
+    <ClInclude Include="src\detours.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="playermanager.h">
+    <ClInclude Include="src\playermanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="recipientfilters.h">
+    <ClInclude Include="src\recipientfilters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\entity.h">
+    <ClInclude Include="src\utils\entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="adminsystem.h">
+    <ClInclude Include="src\adminsystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
