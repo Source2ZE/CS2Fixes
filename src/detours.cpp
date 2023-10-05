@@ -44,7 +44,8 @@ void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *pSou
 
 bool FASTCALL Detour_IsHearingClient(void* serverClient, int index)
 {
-	if (g_playerManager->GetPlayer(index)->IsMuted())
+	ZEPlayer* player = g_playerManager->GetPlayer(index);
+	if (player && player->IsMuted())
 		return false;
 
 	return IsHearingClient(serverClient, index);
