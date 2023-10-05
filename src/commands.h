@@ -8,7 +8,8 @@ typedef void (*FnChatCommandCallback_t)(const CCommand &args, CCSPlayerControlle
 
 extern CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList;
 
-void SentChatToClient(int index, const char* msg, ...);
+void ClientPrintAll(int destination, const char *msg, ...);
+void ClientPrint(CBasePlayerController *player, int destination, const char *msg, ...);
 
 // Just a wrapper class so we're able to insert the callback
 class CChatCommand

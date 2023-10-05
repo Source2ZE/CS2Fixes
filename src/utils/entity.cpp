@@ -1,5 +1,8 @@
 #include "entity.h"
 #include "../common.h"
+#include "entitysystem.h"
+
+extern CEntitySystem *g_pEntitySystem;
 
 CEntityInstance* UTIL_FindEntityByClassname(CEntityInstance* pStart, const char* name)
 {

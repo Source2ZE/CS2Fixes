@@ -1,5 +1,4 @@
-#include "const.h"
-#include "tier1/utlstring.h"
+#include "utlstring.h"
 #include "entity2/entitysystem.h"
 
 #include "tier0/memdbgon.h"

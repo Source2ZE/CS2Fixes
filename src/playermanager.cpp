@@ -1,6 +1,10 @@
+#include "utlstring.h"
 #include "playermanager.h"
 #include "adminsystem.h"
 #include "entity/ccsplayercontroller.h"
+
+extern IVEngineServer2 *g_pEngineServer2;
+extern CEntitySystem *g_pEntitySystem;
 
 void ZEPlayer::OnAuthenticated()
 {
