@@ -10,8 +10,6 @@
 
 #include "tier0/memdbgon.h"
 
-extern CEntitySystem *g_pEntitySystem;
-
 CMemPatch g_CommonPatches[] =
 {
 	CMemPatch(&modules::server, sigs::MovementUnlock, sigs::Patch_MovementUnlock, "ServerMovementUnlock"),

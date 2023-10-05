@@ -1,10 +1,9 @@
 #pragma once
 
-#include "utlvector.h"
-#include <playerslot.h>
 #include "common.h"
-
-extern IVEngineServer2* g_pEngineServer2;
+#include "utlvector.h"
+#include "steam/steamclientpublic.h"
+#include <playerslot.h>
 
 enum class ETargetType {
 	NONE,

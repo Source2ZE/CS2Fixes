@@ -5,6 +5,31 @@
 
 class CBaseEntity;
 
+struct CSPerRoundStats_t
+{
+public:
+	DECLARE_SCHEMA_CLASS_INLINE(CSPerRoundStats_t)
+
+	SCHEMA_FIELD(int, m_iKills)
+	SCHEMA_FIELD(int, m_iDeaths)
+	SCHEMA_FIELD(int, m_iAssists)
+	SCHEMA_FIELD(int, m_iDamage)
+};
+
+struct CSMatchStats_t : public CSPerRoundStats_t
+{
+public:
+	DECLARE_SCHEMA_CLASS_INLINE(CSMatchStats_t)
+};
+
+class CCSPlayerController_ActionTrackingServices
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayerController_ActionTrackingServices)
+
+	SCHEMA_FIELD(CSMatchStats_t, m_matchStats)
+};
+
 class CPlayer_MovementServices
 {
 public:
