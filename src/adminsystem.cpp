@@ -261,7 +261,7 @@ CON_COMMAND_CHAT(slay, "slay a player")
 			continue;
 
 		// CBasePlayerPawn::CommitSuicide(bool bExplode, bool bForce)
-		CALL_VIRTUAL(void, 354, pTarget->m_hPawn().Get(), false, true);
+		CALL_VIRTUAL(void, 354, pTarget->GetPawn(), false, true);
 
 		SentChatToClient(iCommandPlayer, " \7[CS2Fixes]\1 Slayed %s.", &pTarget->m_iszPlayerName());
 	}

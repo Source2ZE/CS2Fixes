@@ -73,13 +73,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>cs2fixes</TargetName>
-    <IncludePath>utils;cs2_sdk;sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>sdk\lib\public\win64;vendor/funchook/lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)/package/addons/cs2fixes/bin/win64/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>cs2fixes</TargetName>
-    <IncludePath>utils;cs2_sdk;sdk/public;sdk/public/tier0;sdk/public/tier1;minhook/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>sdk\lib\public\win64;vendor/funchook/lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)/package/addons/cs2fixes/bin/win64/</OutDir>
   </PropertyGroup>
@@ -126,7 +124,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>utils;cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/public/entity2;sdk/public/game/server;vendor/protobuf-3.21.8/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/public/entity2;sdk/public/game/server;vendor/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -150,8 +148,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>utils;cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/public/entity2;sdk/public/game/server;vendor/protobuf-3.21.8/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/public/entity2;sdk/public/game/server;vendor/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -167,55 +165,55 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="addresses.cpp" />
-    <ClCompile Include="adminsystem.cpp" />
-    <ClCompile Include="commands.cpp" />
-    <ClCompile Include="cs2fixes.cpp" />
-    <ClCompile Include="cs2_sdk\interfaces\centitysystem.cpp" />
-    <ClCompile Include="cs2_sdk\interfaces\cs2_interfaces.cpp" />
-    <ClCompile Include="cs2_sdk\schema.cpp" />
-    <ClCompile Include="ctimer.cpp" />
-    <ClCompile Include="cvars.cpp" />
-    <ClCompile Include="detours.cpp" />
-    <ClCompile Include="mempatch.cpp" />
-    <ClCompile Include="patches.cpp" />
-    <ClCompile Include="playermanager.cpp" />
+    <ClCompile Include="src\addresses.cpp" />
+    <ClCompile Include="src\adminsystem.cpp" />
+    <ClCompile Include="src\commands.cpp" />
+    <ClCompile Include="src\cs2fixes.cpp" />
+    <ClCompile Include="src\cs2_sdk\interfaces\centitysystem.cpp" />
+    <ClCompile Include="src\cs2_sdk\interfaces\cs2_interfaces.cpp" />
+    <ClCompile Include="src\cs2_sdk\schema.cpp" />
+    <ClCompile Include="src\ctimer.cpp" />
+    <ClCompile Include="src\cvars.cpp" />
+    <ClCompile Include="src\detours.cpp" />
+    <ClCompile Include="src\mempatch.cpp" />
+    <ClCompile Include="src\patches.cpp" />
+    <ClCompile Include="src\playermanager.cpp" />
     <ClCompile Include="sdk\tier1\convar.cpp" />
-    <ClCompile Include="utils\entity.cpp" />
-    <ClCompile Include="utils\plat_unix.cpp" />
-    <ClCompile Include="utils\plat_win.cpp" />
+    <ClCompile Include="src\utils\entity.cpp" />
+    <ClCompile Include="src\utils\plat_unix.cpp" />
+    <ClCompile Include="src\utils\plat_win.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="adminsystem.h" />
-    <ClInclude Include="commands.h" />
-    <ClInclude Include="common.h" />
-    <ClInclude Include="cs2fixes.h" />
-    <ClInclude Include="cs2_sdk\entity\cbaseentity.h" />
-    <ClInclude Include="cs2_sdk\entity\cbasemodelentity.h" />
-    <ClInclude Include="cs2_sdk\entity\cbaseplayercontroller.h" />
-    <ClInclude Include="cs2_sdk\entity\cbaseplayerpawn.h" />
-    <ClInclude Include="cs2_sdk\entity\ccollisionproperty.h" />
-    <ClInclude Include="cs2_sdk\entity\ccsplayercontroller.h" />
-    <ClInclude Include="cs2_sdk\entity\ccsplayerpawn.h" />
-    <ClInclude Include="cs2_sdk\entity\centityidentity.h" />
-    <ClInclude Include="cs2_sdk\entity\cglowproperty.h" />
-    <ClInclude Include="cs2_sdk\entity\ccsweaponbase.h" />
-    <ClInclude Include="cs2_sdk\entity\services.h" />
-    <ClInclude Include="cs2_sdk\interfaces\cgameresourceserviceserver.h" />
-    <ClInclude Include="cs2_sdk\interfaces\cschemasystem.h" />
-    <ClInclude Include="cs2_sdk\interfaces\cs2_interfaces.h" />
-    <ClInclude Include="cs2_sdk\schema.h" />
-    <ClInclude Include="cdetour.h" />
-    <ClInclude Include="ctimer.h" />
-    <ClInclude Include="detours.h" />
-    <ClInclude Include="mempatch.h" />
-    <ClInclude Include="addresses.h" />
-    <ClInclude Include="playermanager.h" />
-    <ClInclude Include="recipientfilters.h" />
-    <ClInclude Include="utils\entity.h" />
-    <ClInclude Include="utils\module.h" />
-    <ClInclude Include="utils\plat.h" />
-    <ClInclude Include="utils\virtual.h" />
+    <ClInclude Include="src\adminsystem.h" />
+    <ClInclude Include="src\commands.h" />
+    <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\cs2fixes.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cbaseentity.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cbasemodelentity.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cbaseplayercontroller.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cbaseplayerpawn.h" />
+    <ClInclude Include="src\cs2_sdk\entity\ccollisionproperty.h" />
+    <ClInclude Include="src\cs2_sdk\entity\ccsplayercontroller.h" />
+    <ClInclude Include="src\cs2_sdk\entity\ccsplayerpawn.h" />
+    <ClInclude Include="src\cs2_sdk\entity\centityidentity.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cglowproperty.h" />
+    <ClInclude Include="src\cs2_sdk\entity\ccsweaponbase.h" />
+    <ClInclude Include="src\cs2_sdk\entity\services.h" />
+    <ClInclude Include="src\cs2_sdk\interfaces\cgameresourceserviceserver.h" />
+    <ClInclude Include="src\cs2_sdk\interfaces\cschemasystem.h" />
+    <ClInclude Include="src\cs2_sdk\interfaces\cs2_interfaces.h" />
+    <ClInclude Include="src\cs2_sdk\schema.h" />
+    <ClInclude Include="src\cdetour.h" />
+    <ClInclude Include="src\ctimer.h" />
+    <ClInclude Include="src\detours.h" />
+    <ClInclude Include="src\mempatch.h" />
+    <ClInclude Include="src\addresses.h" />
+    <ClInclude Include="src\playermanager.h" />
+    <ClInclude Include="src\recipientfilters.h" />
+    <ClInclude Include="src\utils\entity.h" />
+    <ClInclude Include="src\utils\module.h" />
+    <ClInclude Include="src\utils\plat.h" />
+    <ClInclude Include="src\utils\virtual.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

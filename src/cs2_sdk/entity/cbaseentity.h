@@ -63,4 +63,8 @@ public:
 	SCHEMA_FIELD(CCollisionProperty*, m_pCollision)
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
+
+	Vector GetAbsOrigin() { return m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin(); }
+
+	void SetAbsOrigin(Vector vecOrigin) { m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin(vecOrigin); }
 };
