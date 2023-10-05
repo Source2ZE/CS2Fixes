@@ -240,6 +240,29 @@ CON_COMMAND_CHAT(setorigin, "set your origin")
 	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Your origin is now %f %f %f", vecNewOrigin.x, vecNewOrigin.y, vecNewOrigin.z);
 }
 
+CON_COMMAND_CHAT(getstats, "get your stats")
+{
+	if (!player)
+		return;
+
+	CSMatchStats_t stats = player->m_pActionTrackingServices()->m_matchStats();
+
+	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Kills: %d", stats.m_iKills());
+	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Deaths: %d", stats.m_iDeaths());
+	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Assists: %d", stats.m_iAssists());
+	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Damage: %d", stats.m_iDamage());
+}
+
+CON_COMMAND_CHAT(setkills, "set your kills")
+{
+	if (!player)
+		return;
+
+	player->m_pActionTrackingServices()->m_matchStats().m_iKills(atoi(args[1]));
+
+	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have set your kills to %d.", atoi(args[1]));
+}
+
 // Lookup a weapon classname in the weapon map and "initialize" it.
 // Both m_bInitialized and m_iItemDefinitionIndex need to be set for a weapon to be pickable and not crash clients,
 // and m_iItemDefinitionIndex needs to be the correct ID from weapons.vdata so the gun behaves as it should.
