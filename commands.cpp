@@ -188,7 +188,7 @@ CON_COMMAND_CHAT(sethealth, "set your health")
 
 	int health = atoi(args[1]);
 
-	player->m_hPawn().Get()->m_iHealth(health);
+	player->m_hPawn()->m_iHealth(health);
 }
 
 CON_COMMAND_CHAT(test_target, "test string targetting")
@@ -218,9 +218,24 @@ CON_COMMAND_CHAT(getorigin, "get your origin")
 	if (!player)
 		return;
 
-	Vector vecAbsOrigin = player->m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin();
+	Vector vecAbsOrigin = player->m_hPawn()->GetAbsOrigin();
 
 	SentChatToClient(player->entindex() - 1, " \7[CS2Fixes]\1 Your origin is %f %f %f", vecAbsOrigin.x, vecAbsOrigin.y, vecAbsOrigin.z);
+}
+
+CON_COMMAND_CHAT(setorigin, "set your origin")
+{
+	if (!player)
+		return;
+
+	CBasePlayerPawn *pPawn = player->m_hPawn();
+
+	Vector vecNewOrigin;
+	V_StringToVector(args.ArgS(), vecNewOrigin);
+
+	pPawn->SetAbsOrigin(vecNewOrigin);
+
+	SentChatToClient(player->entindex() - 1, " \7[CS2Fixes]\1 Your origin is now %f %f %f", vecNewOrigin.x, vecNewOrigin.y, vecNewOrigin.z);
 }
 
 // Lookup a weapon classname in the weapon map and "initialize" it.
