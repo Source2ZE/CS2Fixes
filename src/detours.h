@@ -4,9 +4,11 @@
 class IRecipientFilter;
 class ISoundEmitterSystemBase;
 class CBaseEntity;
+class Z_CBaseEntity;
 class CCSPlayerController;
 class CEntityIndex;
 class CCommand;
+class CTriggerPush;
 
 void InitDetours();
 void FlushAllDetours();
@@ -18,6 +20,7 @@ bool FASTCALL Detour_IsHearingClient(void*, int);
 void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *, CEntityIndex *, IRecipientFilter &, uint32, void *);
 //void FASTCALL Detour_CBaseEntity_Spawn(CBaseEntity *, void *);
 void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *, void *);
+void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther);
 
 extern CDetour<decltype(Detour_Host_Say)> Host_Say;
 extern CDetour<decltype(Detour_UTIL_SayTextFilter)> UTIL_SayTextFilter;

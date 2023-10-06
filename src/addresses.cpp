@@ -29,4 +29,5 @@ void addresses::Initialize()
 	RESOLVE_SIG(modules::server, sigs::StateChanged, addresses::StateChanged);
 	RESOLVE_SIG(modules::server, sigs::UTIL_ClientPrintAll, addresses::UTIL_ClientPrintAll);
 	RESOLVE_SIG(modules::server, sigs::ClientPrint, addresses::ClientPrint);
+	RESOLVE_SIG(modules::server, sigs::SetGroundEntity, addresses::SetGroundEntity);
 }
