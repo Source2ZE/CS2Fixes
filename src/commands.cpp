@@ -87,11 +87,11 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 
 		if (!V_stricmp(pszWeaponName, weaponEntry.command))
 		{
-			CCSPlayer_ItemServices *pItemServices = pController->m_hPawn()->m_pItemServices();
-			int money = pController->m_pInGameMoneyServices()->m_iAccount();
+			CCSPlayer_ItemServices *pItemServices = pController->GetPawn()->m_pItemServices;
+			int money = pController->m_pInGameMoneyServices->m_iAccount;
 			if (money >= weaponEntry.iPrice)
 			{
-				pController->m_pInGameMoneyServices()->m_iAccount(money - weaponEntry.iPrice);
+				pController->m_pInGameMoneyServices->m_iAccount = money - weaponEntry.iPrice;
 				pItemServices->GiveNamedItem(weaponEntry.szWeaponName);
 			}
 
@@ -178,9 +178,9 @@ CON_COMMAND_CHAT(takemoney, "take your money")
 		return;
 
 	int amount = atoi(args[1]);
-	int money = player->m_pInGameMoneyServices()->m_iAccount();
+	int money = player->m_pInGameMoneyServices->m_iAccount;
 
-	player->m_pInGameMoneyServices()->m_iAccount(money - amount);
+	player->m_pInGameMoneyServices->m_iAccount = money - amount;
 }
 
 CON_COMMAND_CHAT(message, "message someone")
@@ -214,7 +214,11 @@ CON_COMMAND_CHAT(sethealth, "set your health")
 
 	int health = atoi(args[1]);
 
-	player->m_hPawn()->m_iHealth(health);
+	Z_CBaseEntity *pEnt = (Z_CBaseEntity *)player->GetPawn();
+
+	pEnt->m_iHealth = health;
+
+	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Your health is now %d", health);
 }
 
 CON_COMMAND_CHAT(test_target, "test string targetting")
@@ -245,7 +249,7 @@ CON_COMMAND_CHAT(getorigin, "get your origin")
 	if (!player)
 		return;
 
-	Vector vecAbsOrigin = player->m_hPawn()->GetAbsOrigin();
+	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
 
 	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Your origin is %f %f %f", vecAbsOrigin.x, vecAbsOrigin.y, vecAbsOrigin.z);
 }
@@ -255,8 +259,7 @@ CON_COMMAND_CHAT(setorigin, "set your origin")
 	if (!player)
 		return;
 
-	CBasePlayerPawn *pPawn = player->m_hPawn();
-
+	CBasePlayerPawn *pPawn = player->GetPawn();
 	Vector vecNewOrigin;
 	V_StringToVector(args.ArgS(), vecNewOrigin);
 
@@ -270,7 +273,7 @@ CON_COMMAND_CHAT(getstats, "get your stats")
 	if (!player)
 		return;
 
-	CSMatchStats_t stats = player->m_pActionTrackingServices()->m_matchStats();
+	CSMatchStats_t stats = player->m_pActionTrackingServices->m_matchStats;
 
 	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Kills: %d", stats.m_iKills());
 	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Deaths: %d", stats.m_iDeaths());
@@ -283,7 +286,7 @@ CON_COMMAND_CHAT(setkills, "set your kills")
 	if (!player)
 		return;
 
-	player->m_pActionTrackingServices()->m_matchStats().m_iKills(atoi(args[1]));
+	player->m_pActionTrackingServices->m_matchStats.Get().m_iKills = atoi(args[1]);
 
 	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have set your kills to %d.", atoi(args[1]));
 }
@@ -307,8 +310,8 @@ void FixWeapon(CCSWeaponBase *pWeapon)
 				pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex(),
 				pWeapon->m_AttributeManager().m_Item().m_bInitialized());
 
-			pWeapon->m_AttributeManager().m_Item().m_bInitialized(true);
-			pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex(WeaponMap[i].iItemDefIndex);
+			pWeapon->m_AttributeManager().m_Item().m_bInitialized = true;
+			pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex = WeaponMap[i].iItemDefIndex;
 		}
 	}
 }

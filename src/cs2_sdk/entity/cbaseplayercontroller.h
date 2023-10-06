@@ -32,5 +32,5 @@ public:
 	SCHEMA_FIELD(CHandle<CBasePlayerPawn>, m_hPawn)
 	SCHEMA_FIELD(char, m_iszPlayerName)
 
-	CBasePlayerPawn *GetPawn() { return m_hPawn().Get(); }
+	CBasePlayerPawn *GetPawn() { return m_hPawn.Get(); }
 };
