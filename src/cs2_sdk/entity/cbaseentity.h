@@ -106,7 +106,10 @@ public:
 class Z_CBaseEntity : public CBaseEntity
 {
 public:
-	DECLARE_SCHEMA_CLASS(CBaseEntity)
+	// This is a unique case as CBaseEntity is already defined in the sdk
+	typedef Z_CBaseEntity ThisClass;
+	static constexpr const char *ThisClassName = "CBaseEntity";
+	static constexpr bool IsStruct = false;
 
 	SCHEMA_FIELD(CBodyComponent *, m_CBodyComponent)
 	SCHEMA_FIELD(CBitVec<64>, m_isSteadyState)
@@ -122,9 +125,9 @@ public:
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 
-	Vector GetAbsOrigin() { return m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin(); }
+	Vector GetAbsOrigin() { return m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin; }
 
-	void SetAbsOrigin(Vector vecOrigin) { m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin(vecOrigin); }
+	void SetAbsOrigin(Vector vecOrigin) { m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin = vecOrigin; }
 
 	void Teleport(Vector *position, QAngle *angles, Vector *velocity) { CALL_VIRTUAL(void, 148, this, position, angles, velocity); }
 };
