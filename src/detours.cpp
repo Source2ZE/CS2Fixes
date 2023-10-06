@@ -41,7 +41,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 	Z_CBaseEntity* pPushEnt = (Z_CBaseEntity*)pPush;
 
 	// SF_TRIG_PUSH_ONCE is handled fine already
-	if (pPushEnt->m_spawnflags() & 0x80)
+	if (pPushEnt->m_spawnflags() & SF_TRIG_PUSH_ONCE)
 	{
 		TriggerPush_Touch(pPush, pOther);
 		return;
@@ -75,26 +75,23 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 
 	uint32 flags = pOther->m_fFlags();
 
-	if (flags & (0x800000))
+	if (flags & (FL_BASEVELOCITY))
 	{
 		vecPush = vecPush + pOther->m_vecBaseVelocity();
 	}
 
-	// if push up and FL_ONGROUND
-	if (vecPush.z > 0 && (flags & 1))
+	if (vecPush.z > 0 && (flags & FL_ONGROUND))
 	{
 		addresses::SetGroundEntity(pOther, nullptr);
 		Vector origin = pOther->GetAbsOrigin();
 		origin.z += 1.0f;
 
-		//CBaseEntity::Teleport
-		CALL_VIRTUAL(void, 148, pOther, origin, nullptr, nullptr);
+		pOther->Teleport(&origin, nullptr, nullptr);
 	}
 
 	pOther->m_vecBaseVelocity(vecPush);
 
-	// Add FL_BASEVELOCITY flag
-	flags |= (0x800000);
+	flags |= (FL_BASEVELOCITY);
 	pOther->m_fFlags(flags);
 }
 
