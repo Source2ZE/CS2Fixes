@@ -21,6 +21,7 @@
 #include "playermanager.h"
 #include "adminsystem.h"
 #include "entity/ccsplayercontroller.h"
+#include "ctime"
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CEntitySystem *g_pEntitySystem;
@@ -97,17 +98,29 @@ void CPlayerManager::TryAuthenticate()
 	}
 }
 
-ETargetType CPlayerManager::TargetPlayerString(const char* target, int& iNumClients, int *clients)
+ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* target, int& iNumClients, int *clients)
 {
 	ETargetType targetType = ETargetType::NONE;
-	if (!V_stricmp(target, "@all"))
+	if (!V_stricmp(target, "@me"))
+		targetType = ETargetType::SELF;
+	else if (!V_stricmp(target, "@all"))
 		targetType = ETargetType::ALL;
 	else if (!V_stricmp(target, "@t"))
 		targetType = ETargetType::T;
 	else if (!V_stricmp(target, "@ct"))
 		targetType = ETargetType::CT;
+	else if (!V_stricmp(target, "@random"))
+		targetType = ETargetType::RANDOM;
+	else if (!V_stricmp(target, "@randomt"))
+		targetType = ETargetType::RANDOM_T;
+	else if (!V_stricmp(target, "@randomct"))
+		targetType = ETargetType::RANDOM_CT;
 	
-	if (targetType == ETargetType::ALL)
+	if (targetType == ETargetType::SELF)
+	{
+		clients[iNumClients++] = iCommandClient;
+	}
+	else if (targetType == ETargetType::ALL)
 	{
 		for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
 		{
@@ -133,6 +146,38 @@ ETargetType CPlayerManager::TargetPlayerString(const char* target, int& iNumClie
 				continue;
 
 			clients[iNumClients++] = i;
+		}
+	}
+	else if (targetType >= ETargetType::RANDOM)
+	{
+		static bool seeded = false;
+		int attempts = 0;
+
+		if (!seeded)
+		{
+			srand(time(0));
+			seeded = true;
+		}
+
+		while (iNumClients == 0 && attempts < 10000)
+		{
+			int slot = rand() % ((sizeof(m_vecPlayers) / sizeof(*m_vecPlayers)) - 1);
+
+			// Prevent infinite loop
+			attempts++;
+
+			if (m_vecPlayers[slot] == nullptr)
+				continue;
+
+			CBasePlayerController* player = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(slot + 1));
+
+			if (!player)
+				continue;
+
+			if (targetType >= ETargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == ETargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
+				continue;
+
+			clients[iNumClients++] = slot;
 		}
 	}
 	else
