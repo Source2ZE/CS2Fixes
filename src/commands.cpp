@@ -198,10 +198,11 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 	if (!player)
 		return;
 
+	int iCommandPlayer = player->entindex() - 1;
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 
-	g_playerManager->TargetPlayerString(args[1], iNumClients, pSlots);
+	g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
 
 	for (int i = 0; i < iNumClients; i++)
 	{

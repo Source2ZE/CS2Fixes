@@ -7,10 +7,14 @@
 
 enum class ETargetType {
 	NONE,
+	SELF,
 	ALL,
 	T,
 	CT,
-	PLAYER
+	PLAYER,
+	RANDOM,
+	RANDOM_T,
+	RANDOM_CT
 };
 
 class ZEPlayer
@@ -67,7 +71,7 @@ public:
 	void OnClientDisconnect(CPlayerSlot slot);
 	void OnBotConnected(CPlayerSlot slot);
 	void TryAuthenticate();
-	ETargetType TargetPlayerString(const char* target, int &iNumClients, int *clients);
+	ETargetType TargetPlayerString(int iCommandClient, const char* target, int &iNumClients, int *clients);
 	ZEPlayer *GetPlayer(CPlayerSlot slot) { return m_vecPlayers[slot.Get()]; };
 
 private:
