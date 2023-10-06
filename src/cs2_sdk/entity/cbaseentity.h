@@ -55,8 +55,44 @@ public:
 	SCHEMA_FIELD(float, m_flScale)
 	SCHEMA_FIELD(float, m_flAbsScale)
 	SCHEMA_FIELD(Vector, m_vecAbsOrigin)
-	SCHEMA_FIELD(QAngle, m_vecAbsRotation)
+	SCHEMA_FIELD(QAngle, m_angAbsRotation)
 	SCHEMA_FIELD(Vector, m_vRenderOrigin)
+
+	matrix3x4_t EntityToWorldTransform()
+	{
+		matrix3x4_t mat;
+
+		// issues with this and im tired so hardcoded it
+		//AngleMatrix(this->m_angAbsRotation(), this->m_vecAbsOrigin(), mat);
+
+		QAngle angles = this->m_angAbsRotation();
+		float sr, sp, sy, cr, cp, cy;
+		SinCos(DEG2RAD(angles[YAW]), &sy, &cy);
+		SinCos(DEG2RAD(angles[PITCH]), &sp, &cp);
+		SinCos(DEG2RAD(angles[ROLL]), &sr, &cr);
+		mat[0][0] = cp * cy;
+		mat[1][0] = cp * sy;
+		mat[2][0] = -sp;
+
+		float crcy = cr * cy;
+		float crsy = cr * sy;
+		float srcy = sr * cy;
+		float srsy = sr * sy;
+		mat[0][1] = sp * srcy - crsy;
+		mat[1][1] = sp * srsy + crcy;
+		mat[2][1] = sr * cp;
+
+		mat[0][2] = (sp * crcy + srsy);
+		mat[1][2] = (sp * crsy - srcy);
+		mat[2][2] = cr * cp;
+
+		Vector pos = this->m_vecAbsOrigin();
+		mat[0][3] = pos.x;
+		mat[1][3] = pos.y;
+		mat[2][3] = pos.z;
+
+		return mat;
+	}
 };
 
 class CBodyComponent
@@ -80,6 +116,9 @@ public:
 	SCHEMA_FIELD(int, m_iTeamNum)
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
 	SCHEMA_FIELD(CCollisionProperty*, m_pCollision)
+	SCHEMA_FIELD(MoveType_t, m_MoveType)
+	SCHEMA_FIELD(uint32, m_spawnflags)
+	SCHEMA_FIELD(uint32, m_fFlags)
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 
