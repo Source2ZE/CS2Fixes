@@ -378,6 +378,102 @@ CON_COMMAND_CHAT(setkills, "set your kills")
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have set your kills to %d.", atoi(args[1]));
 }
+
+CON_COMMAND_CHAT(setcollisiongroup, "set a player's collision group")
+{
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		uint8 group = atoi(args[2]);
+		uint8 oldgroup = pTarget->m_hPawn->m_pCollision->m_CollisionGroup;
+
+		pTarget->m_hPawn->m_pCollision->m_CollisionGroup = group;
+		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nCollisionGroup = group;
+		pTarget->GetPawn()->CollisionRulesChanged();
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting collision group on %s from %d to %d.", pTarget->GetPlayerName(), oldgroup, group);
+	}
+}
+
+CON_COMMAND_CHAT(setsolidtype, "set a player's solid type")
+{
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		uint8 type = atoi(args[2]);
+		uint8 oldtype = pTarget->m_hPawn->m_pCollision->m_nSolidType;
+
+		pTarget->m_hPawn->m_pCollision->m_nSolidType = (SolidType_t)type;
+		pTarget->GetPawn()->CollisionRulesChanged();
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting solid type on %s from %d to %d.", pTarget->GetPlayerName(), oldtype, type);
+	}
+}
+
+CON_COMMAND_CHAT(setinteraction, "set a player's interaction flags")
+{
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		uint64 oldInteractAs = pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nInteractsAs;
+		uint64 newInteract = oldInteractAs | ((uint64)1 << 53);
+
+		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nInteractsAs = newInteract;
+		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nInteractsExclude = newInteract;
+		pTarget->GetPawn()->CollisionRulesChanged();
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting interaction flags on %s from %lli to %lli.", pTarget->GetPlayerName(), oldInteractAs, newInteract);
+	}
+}
+
+CON_COMMAND_CHAT(setnoblock, "give someone noblock")
+{
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		pTarget->GetPawn()->m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
+		pTarget->GetPawn()->m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
+		pTarget->GetPawn()->CollisionRulesChanged();
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Giving %s noblock.", pTarget->GetPlayerName());
+	}
+}
 #endif // _DEBUG
 
 // Lookup a weapon classname in the weapon map and "initialize" it.
