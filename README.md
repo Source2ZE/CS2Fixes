@@ -38,7 +38,7 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
 - [x] Legacy event listener
 - [x] Weapon pickup crash fix
 - [x] trigger_push fix
-- [] Remove player collisions
+- [ ] Remove player collisions
 
 ## Compilation
 
