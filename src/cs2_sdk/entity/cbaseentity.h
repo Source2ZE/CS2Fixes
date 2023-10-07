@@ -23,6 +23,7 @@
 #include "ccollisionproperty.h"
 #include "mathlib/vector.h"
 #include "baseentity.h"
+#include "ehandle.h"
 
 CGlobalVars* GetGameGlobals();
 
@@ -135,4 +136,20 @@ public:
 	void SetAbsOrigin(Vector vecOrigin) { m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin = vecOrigin; }
 
 	void Teleport(Vector *position, QAngle *angles, Vector *velocity) { CALL_VIRTUAL(void, 148, this, position, angles, velocity); }
+
+	void CollisionRulesChanged() { CALL_VIRTUAL(void, offsets::CollisionRulesChanged, this); }
+
+	CHandle<CBaseEntity> GetHandle() { return m_pEntity->m_EHandle; }
+
+	static Z_CBaseEntity* EntityFromHandle(CHandle<CBaseEntity> handle) {
+		if (!handle.IsValid())
+			return nullptr;
+
+		auto entity = handle.Get();
+
+		if (entity && entity->m_pEntity->m_EHandle == handle)
+			return (Z_CBaseEntity*) entity;
+
+		return nullptr;
+	}
 };

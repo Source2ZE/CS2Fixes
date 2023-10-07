@@ -30,4 +30,5 @@ public:
 	SCHEMA_FIELD(CPlayer_MovementServices*, m_pMovementServices)
 	SCHEMA_FIELD(uint8*, m_pWeaponServices)
 	SCHEMA_FIELD(CCSPlayer_ItemServices*, m_pItemServices)
+	SCHEMA_FIELD(CHandle<CBasePlayerController>, m_hController)
 };
