@@ -76,6 +76,11 @@ WeaponMapEntry_t WeaponMap[] = {
 
 void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponName)
 {
+	if (!pController || !pController->m_hPawn() || pController->m_hPawn()->m_iHealth() <= 0)
+	{
+		ClientPrint(pController, HUD_PRINTTALK, " \7[CS2Fixes]\1 You can only buy weapons when alive.");
+		return;
+	}
 	for (int i = 0; i < sizeof(WeaponMap) / sizeof(*WeaponMap); i++)
 	{
 		WeaponMapEntry_t weaponEntry = WeaponMap[i];
