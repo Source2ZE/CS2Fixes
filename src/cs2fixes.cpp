@@ -428,5 +428,5 @@ const char *CS2Fixes::GetName()
 
 const char *CS2Fixes::GetURL()
 {
-	return "https://github.com/Source2ZE";
+	return "https://github.com/Source2ZE/CS2Fixes";
 }
