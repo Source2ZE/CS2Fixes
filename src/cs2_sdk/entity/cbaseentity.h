@@ -26,6 +26,12 @@
 
 CGlobalVars* GetGameGlobals();
 
+class CNetworkTransmitComponent
+{
+public:
+	DECLARE_SCHEMA_CLASS_INLINE(CNetworkTransmitComponent)
+};
+
 class CNetworkOriginCellCoordQuantizedVector
 {
 public:
@@ -114,7 +120,7 @@ public:
 	SCHEMA_FIELD(CBodyComponent *, m_CBodyComponent)
 	SCHEMA_FIELD(CBitVec<64>, m_isSteadyState)
 	SCHEMA_FIELD(float, m_lastNetworkChange)
-	PSCHEMA_FIELD(void*, m_NetworkTransmitComponent)
+	SCHEMA_FIELD_POINTER(CNetworkTransmitComponent, m_NetworkTransmitComponent)
 	SCHEMA_FIELD(int, m_iHealth)
 	SCHEMA_FIELD(int, m_iTeamNum)
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
@@ -126,7 +132,6 @@ public:
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 
 	Vector GetAbsOrigin() { return m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin; }
-
 	void SetAbsOrigin(Vector vecOrigin) { m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin = vecOrigin; }
 
 	void Teleport(Vector *position, QAngle *angles, Vector *velocity) { CALL_VIRTUAL(void, 148, this, position, angles, velocity); }

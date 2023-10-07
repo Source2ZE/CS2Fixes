@@ -146,14 +146,14 @@ CON_COMMAND_CHAT(stopsound, "stop weapon sounds")
 	if (!player)
 		return;
 
-	int iPlayer = player->entindex() - 1;
+	int iPlayer = player->GetPlayerSlot();
 
 	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(iPlayer);
 
 	// Something has to really go wrong for this to happen
 	if (!pZEPlayer)
 	{
-		Warning("%s Tried to access a null ZEPlayer!!\n", player->m_iszPlayerName());
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
 		return;
 	}
 
@@ -195,7 +195,7 @@ CON_COMMAND_CHAT(message, "message someone")
 	const char *pMessage = args.ArgS() + V_strlen(args[1]) + 1;
 
 	char buf[256];
-	V_snprintf(buf, sizeof(buf), CHAT_PREFIX"Private message from %s to %s: \5%s", &player->m_iszPlayerName(), &target->m_iszPlayerName(), pMessage);
+	V_snprintf(buf, sizeof(buf), CHAT_PREFIX"Private message from %s to %s: \5%s", player->GetPlayerName(), target->GetPlayerName(), pMessage);
 
 	CSingleRecipientFilter filter(uid);
 
@@ -221,7 +221,7 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 	if (!player)
 		return;
 
-	int iCommandPlayer = player->entindex() - 1;
+	int iCommandPlayer = player->GetPlayerSlot();
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 
@@ -234,8 +234,8 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 		if (!pTarget)
 			continue;
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Targeting %s", &pTarget->m_iszPlayerName());
-		Message("Targeting %s\n", &pTarget->m_iszPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Targeting %s", pTarget->GetPlayerName());
+		Message("Targeting %s\n", pTarget->GetPlayerName());
 	}
 }
 
@@ -288,7 +288,7 @@ CON_COMMAND_CHAT(setkills, "set your kills")
 	if (!player)
 		return;
 
-	player->m_pActionTrackingServices->m_matchStats.Get().m_iKills = atoi(args[1]);
+	player->m_pActionTrackingServices->m_matchStats().m_iKills = atoi(args[1]);
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have set your kills to %d.", atoi(args[1]));
 }
