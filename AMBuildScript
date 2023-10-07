@@ -125,12 +125,12 @@ class MMSPluginConfig(object):
     if builder.options.plugin_name is not None:
       self.plugin_name = builder.options.plugin_name
     else:
-      self.plugin_name = 'sample_mm'
+      self.plugin_name = 'cs2fixes_mm'
 
     if builder.options.plugin_alias is not None:
       self.plugin_alias = builder.options.plugin_alias
     else:
-      self.plugin_alias = 'sample'
+      self.plugin_alias = 'cs2fixes'
 
     if builder.options.targets:
       target_archs = builder.options.targets.split(',')
