@@ -164,7 +164,7 @@ CON_COMMAND_CHAT(stopsound, "stop weapon sounds")
 
 	pZEPlayer->ToggleStopSound();
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have toggled weapon effects.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have toggled weapon effects.");
 }
 
 CON_COMMAND_CHAT(say, "say something using console")
@@ -200,7 +200,7 @@ CON_COMMAND_CHAT(message, "message someone")
 	const char *pMessage = args.ArgS() + V_strlen(args[1]) + 1;
 
 	char buf[256];
-	V_snprintf(buf, sizeof(buf), " \7[CS2Fixes]\1 Private message from %s to %s: \5%s", &player->m_iszPlayerName(), &target->m_iszPlayerName(), pMessage);
+	V_snprintf(buf, sizeof(buf), CHAT_PREFIX"Private message from %s to %s: \5%s", &player->m_iszPlayerName(), &target->m_iszPlayerName(), pMessage);
 
 	CSingleRecipientFilter filter(uid);
 
@@ -218,7 +218,7 @@ CON_COMMAND_CHAT(sethealth, "set your health")
 
 	pEnt->m_iHealth = health;
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Your health is now %d", health);
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your health is now %d", health);
 }
 
 CON_COMMAND_CHAT(test_target, "test string targetting")
@@ -239,7 +239,7 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 		if (!pTarget)
 			continue;
 
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Targeting %s", &pTarget->m_iszPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Targeting %s", &pTarget->m_iszPlayerName());
 		Message("Targeting %s\n", &pTarget->m_iszPlayerName());
 	}
 }
@@ -251,7 +251,7 @@ CON_COMMAND_CHAT(getorigin, "get your origin")
 
 	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Your origin is %f %f %f", vecAbsOrigin.x, vecAbsOrigin.y, vecAbsOrigin.z);
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your origin is %f %f %f", vecAbsOrigin.x, vecAbsOrigin.y, vecAbsOrigin.z);
 }
 
 CON_COMMAND_CHAT(setorigin, "set your origin")
@@ -265,7 +265,7 @@ CON_COMMAND_CHAT(setorigin, "set your origin")
 
 	pPawn->SetAbsOrigin(vecNewOrigin);
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Your origin is now %f %f %f", vecNewOrigin.x, vecNewOrigin.y, vecNewOrigin.z);
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your origin is now %f %f %f", vecNewOrigin.x, vecNewOrigin.y, vecNewOrigin.z);
 }
 
 CON_COMMAND_CHAT(getstats, "get your stats")
@@ -273,12 +273,19 @@ CON_COMMAND_CHAT(getstats, "get your stats")
 	if (!player)
 		return;
 
-	CSMatchStats_t stats = player->m_pActionTrackingServices->m_matchStats;
+	CSMatchStats_t *stats = &player->m_pActionTrackingServices->m_matchStats();
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Kills: %d", stats.m_iKills());
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Deaths: %d", stats.m_iDeaths());
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Assists: %d", stats.m_iAssists());
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Damage: %d", stats.m_iDamage());
+	ClientPrint(player, HUD_PRINTCENTER, 
+		"Kills: %i\n"
+		"Deaths: %i\n"
+		"Assists: %i\n"
+		"Damage: %i"
+		, stats->m_iKills.Get(), stats->m_iDeaths.Get(), stats->m_iAssists.Get(), stats->m_iDamage.Get());
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Kills: %d", stats->m_iKills.Get());
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Deaths: %d", stats->m_iDeaths.Get());
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Assists: %d", stats->m_iAssists.Get());
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Damage: %d", stats->m_iDamage.Get());
 }
 
 CON_COMMAND_CHAT(setkills, "set your kills")
@@ -288,7 +295,7 @@ CON_COMMAND_CHAT(setkills, "set your kills")
 
 	player->m_pActionTrackingServices->m_matchStats.Get().m_iKills = atoi(args[1]);
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have set your kills to %d.", atoi(args[1]));
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have set your kills to %d.", atoi(args[1]));
 }
 
 // Lookup a weapon classname in the weapon map and "initialize" it.
@@ -306,7 +313,7 @@ void FixWeapon(CCSWeaponBase *pWeapon)
 	{
 		if (!V_stricmp(WeaponMap[i].szWeaponName, pszClassName))
 		{
-			Message("Fixing a %s with index = %d and initialized = %d\n", pszClassName,
+			DevMsg("Fixing a %s with index = %d and initialized = %d\n", pszClassName,
 				pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex(),
 				pWeapon->m_AttributeManager().m_Item().m_bInitialized());
 
