@@ -155,7 +155,6 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 		if (!seeded)
 		{
-			srand(time(0));
 			seeded = true;
 		}
 

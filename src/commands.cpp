@@ -30,10 +30,10 @@
 #include "entity/cbasemodelentity.h"
 #include "playermanager.h"
 #include "adminsystem.h"
+#include "ctimer.h"
 
 #include "tier0/memdbgon.h"
-#include <ISmmPlugin.h>
-#include "ctimer.h"
+
 
 extern CEntitySystem *g_pEntitySystem;
 
@@ -192,65 +192,59 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 
 	//Here's where the mess starts
 	CBasePlayerPawn* pPawn = player->m_hPawn();
-	if (pPawn)
-	{
-		if (pPawn->m_iHealth() > 0)
-		{
-			//Get initial player position so we can do distance check
-			Vector initialpos = pPawn->GetAbsOrigin();
-
-			ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Teleporting to spawn in 5 seconds.");
-
-			//Convert into handle so we can safely pass it into the Timer
-			auto handle = player->GetHandle();
-			new CTimer(5.0f, false, false, [spawnpos, handle, initialpos]()
-				{
-					//Convert handle into controller so we can use it again, and check it isn't invalid
-					CCSPlayerController* controller = (CCSPlayerController*)Z_CBaseEntity::EntityFromHandle(handle);
-					if (!controller)
-					{
-						ConMsg("Couldn't resolve entity handle\n");
-						return;
-					}
-					if (controller->m_iConnected() != PlayerConnectedState::PlayerConnected)
-					{
-						ConMsg("Controller is not connected\n");
-						return;
-					}
-
-					//Get pawn (again) so we can do shit
-					CBasePlayerPawn* pPawn2 = controller->m_hPawn();
-
-					//Get player origin after 5secs
-					Vector endpos = pPawn2->GetAbsOrigin();
-
-					//Get distance between initial and end positions
-					float dist = initialpos.DistTo(endpos);
-
-					//Check le dist
-					//ConMsg("Distance was %f \n", dist);
-					if (dist < 150.0f)
-					{
-						pPawn2->SetAbsOrigin(spawnpos);
-						ClientPrint(controller, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have been teleported to spawn.");
-					}
-					else
-					{
-						ClientPrint(controller, HUD_PRINTTALK, " \7[CS2Fixes]\1 Teleport failed! You moved too far.");
-						return;
-					}
-				});
-		}
-		else
-		{
-			ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You cannot teleport when dead!");
-			return;
-		}
-	}
-	else
+	if (!pPawn)
 	{
 		return;
 	}
+	if (pPawn->m_iHealth() <= 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You cannot teleport when dead!");
+		return;
+	}
+	//Get initial player position so we can do distance check
+	Vector initialpos = pPawn->GetAbsOrigin();
+
+	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Teleporting to spawn in 5 seconds.");
+
+	//Convert into handle so we can safely pass it into the Timer
+	auto handle = player->GetHandle();
+	new CTimer(5.0f, false, false, [spawnpos, handle, initialpos]()
+		{
+			//Convert handle into controller so we can use it again, and check it isn't invalid
+			CCSPlayerController* controller = (CCSPlayerController*)Z_CBaseEntity::EntityFromHandle(handle);
+			if (!controller)
+			{
+				ConMsg("Couldn't resolve entity handle\n");
+				return;
+			}
+			if (controller->m_iConnected() != PlayerConnectedState::PlayerConnected)
+			{
+				ConMsg("Controller is not connected\n");
+				return;
+			}
+
+			//Get pawn (again) so we can do shit
+			CBasePlayerPawn* pPawn2 = controller->m_hPawn();
+
+			//Get player origin after 5secs
+			Vector endpos = pPawn2->GetAbsOrigin();
+
+			//Get distance between initial and end positions
+			float dist = initialpos.DistTo(endpos);
+
+			//Check le dist
+			//ConMsg("Distance was %f \n", dist);
+			if (dist < 150.0f)
+			{
+				pPawn2->SetAbsOrigin(spawnpos);
+				ClientPrint(controller, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have been teleported to spawn.");
+			}
+			else
+			{
+				ClientPrint(controller, HUD_PRINTTALK, " \7[CS2Fixes]\1 Teleport failed! You moved too far.");
+				return;
+			}
+		});
 }
 
 CON_COMMAND_CHAT(say, "say something using console")
