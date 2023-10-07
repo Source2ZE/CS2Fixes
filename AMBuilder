@@ -54,6 +54,7 @@ for sdk_name in MMSPlugin.sdks:
       'src/commands.cpp',
       'src/addresses.cpp',
       'src/detours.cpp',
+      'src/events.cpp',
       'src/utils/entity.cpp',
       'src/cs2_sdk/schema.cpp',
       'src/cs2_sdk/interfaces/cs2_interfaces.cpp',
@@ -65,6 +66,7 @@ for sdk_name in MMSPlugin.sdks:
     if sdk_name in ['dota', 'cs2']:
       binary.sources += [
       os.path.join(sdk.path, 'tier1', 'convar.cpp'),
+      os.path.join(sdk.path, 'tier1', 'generichash.cpp'),
       os.path.join(sdk.path, 'public', 'tier0', 'memoverride.cpp'),
     ]
 

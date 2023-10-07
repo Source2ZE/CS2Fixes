@@ -39,6 +39,7 @@
 #include "playermanager.h"
 #include <entity.h>
 #include "adminsystem.h"
+#include "eventlistener.h"
 
 #include "tier0/memdbgon.h"
 
@@ -221,6 +222,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	FlushAllDetours();
 	UndoPatches();
 	RemoveTimers();
+	UnregisterEventListeners();
 
 	delete g_playerManager;
 	delete g_pAdminSystem;
@@ -242,6 +244,8 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	{
 		Error("Failed to lookup gpGlobals\n");
 	}
+
+	RegisterEventListeners();
 
 	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 }
