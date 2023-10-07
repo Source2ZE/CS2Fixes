@@ -50,7 +50,7 @@ public:
 		m_base = (void *)m_hModuleInfo.lpBaseOfDll;
 		m_size = m_hModuleInfo.SizeOfImage;
 #else
-		if (int e = GetModuleInformation(szModule, &m_base, &m_size))
+		if (int e = GetModuleInformation(m_hModule, &m_base, &m_size))
 			Error("Failed to get module info for %s, error %d\n", szModule, e);
 #endif
 
