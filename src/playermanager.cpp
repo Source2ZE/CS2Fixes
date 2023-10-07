@@ -192,7 +192,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (!player)
 				continue;
 
-			if (V_stristr((char*)&player->m_iszPlayerName(), target))
+			if (V_stristr(player->GetPlayerName(), target))
 			{
 				targetType = ETargetType::PLAYER;
 				clients[iNumClients++] = i;

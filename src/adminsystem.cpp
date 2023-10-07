@@ -71,9 +71,9 @@ CON_COMMAND_CHAT(ban, "ban a player")
 	if (!player)
 		return;
 
-	int iCommandPlayer = player->entindex() - 1;
+	int iCommandPlayer = player->GetPlayerSlot();
 
-	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 
 	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
 	{
@@ -129,7 +129,7 @@ CON_COMMAND_CHAT(ban, "ban a player")
 		infraction->ApplyInfraction(pTargetPlayer);
 		g_pAdminSystem->SaveInfractions();
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have banned %s for %i minutes.", pTarget->m_iszPlayerName(), iDuration);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have banned %s for %i minutes.", pTarget->GetPlayerName(), iDuration);
 	}
 }
 
@@ -192,7 +192,7 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 		infraction->ApplyInfraction(pTargetPlayer);
 		g_pAdminSystem->SaveInfractions();
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have muted %s for %i mins.", pTarget->m_iszPlayerName(), iDuration);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have muted %s for %i mins.", pTarget->GetPlayerName(), iDuration);
 	}
 }
 
@@ -201,9 +201,9 @@ CON_COMMAND_CHAT(kick, "kick a player")
 	if (!player)
 		return;
 
-	int iCommandPlayer = player->entindex() - 1;
+	int iCommandPlayer = player->GetPlayerSlot();
 
-	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 
 	if (!pPlayer->IsAdminFlagSet(ADMFLAG_KICK))
 	{
@@ -239,7 +239,7 @@ CON_COMMAND_CHAT(kick, "kick a player")
 		
 		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot().Get(), NETWORK_DISCONNECT_KICKED);
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have kicked %s.", pTarget->m_iszPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have kicked %s.", pTarget->GetPlayerName());
 	}
 }
 
@@ -248,9 +248,9 @@ CON_COMMAND_CHAT(slay, "slay a player")
 	if (!player)
 		return;
 
-	int iCommandPlayer = player->entindex() - 1;
+	int iCommandPlayer = player->GetPlayerSlot();
 
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 
 	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
 	{
@@ -285,7 +285,7 @@ CON_COMMAND_CHAT(slay, "slay a player")
 		// CBasePlayerPawn::CommitSuicide(bool bExplode, bool bForce)
 		CALL_VIRTUAL(void, 354, pTarget->GetPawn(), false, true);
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Brought %s.", pTarget->m_iszPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Brought %s.", pTarget->GetPlayerName());
 	}
 }
 
@@ -294,7 +294,7 @@ CON_COMMAND_CHAT(map, "change map")
 	if (!player)
 		return;
 
-	int iCommandPlayer = player->entindex() - 1;
+	int iCommandPlayer = player->GetPlayerSlot();
 
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 
