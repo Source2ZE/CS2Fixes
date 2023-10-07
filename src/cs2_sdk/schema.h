@@ -94,8 +94,8 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char *const str, const uint6
 		else if(m_key.networked)																					\
 		{																											\
 			/* WIP: Works fine for most props, but inlined classes in the middle of a class will
-				need to have their this pointer corrected by the offset .*/											\
-			Message("Attempting to call SetStateChanged on on %s::%s\n", ThisClass, #varName);						\
+				need to have their this pointer corrected by the offset .											
+			Message("Attempting to call SetStateChanged on on %s::%s\n", ThisClass, #varName);*/				    \
 			if (!IsStruct)																							\
 				SetStateChanged((Z_CBaseEntity*)this, m_key.offset + extra_offset);									\
 			else if (IsPlatformPosix()) /* This is currently broken on windows */									\

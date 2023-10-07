@@ -38,6 +38,7 @@ namespace modules
 
 class CEntityInstance;
 class CBasePlayerController;
+class Z_CBaseEntity;
 
 namespace addresses
 {
@@ -47,6 +48,7 @@ namespace addresses
 	inline void(FASTCALL *StateChanged)(void *networkTransmitComponent, CEntityInstance *ent, int64 offset, int16 a4, int16 a5);
 	inline void(FASTCALL *UTIL_ClientPrintAll)(int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4);
 	inline void(FASTCALL *ClientPrint)(CBasePlayerController *player, int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4);
+	inline void(FASTCALL* SetGroundEntity)(Z_CBaseEntity* ent, Z_CBaseEntity* ground);
 }
 
 namespace offsets
@@ -90,6 +92,12 @@ namespace sigs
 	// Is the 4th function in the CCSWeaponBase vtable
 	inline const byte *CCSWeaponBase_Spawn = (byte *)"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x18\x48\x89\x74\x24\x20\x57\x48\x83\xEC\x30\x48\x8B\xDA\x48\x8B\xE9\xE8\x2A\x2A\x2A\x2A";
 
+	// idk a good way to find this again, i just brute forced the vtable. offset is 133 on CTriggerPush
+	inline const byte* TriggerPush_Touch = (byte*)"\x48\x89\x5C\x24\x10\x48\x89\x7C\x24\x18\x55\x48\x8D\xAC\x24\x60\xE0\xFF\xFF";
+
+	// this is called in CTriggerPush::Touch, using IDA pseudocode look in an `if ( ( v & 0x80 ) != 0 )` and then `if ( v > 0.0 ) SetGroundEntity()`
+	inline const byte* SetGroundEntity = (byte*)"\x48\x89\x5C\x24\x10\x48\x89\x6C\x24\x18\x48\x89\x7C\x24\x20\x41\x56\x48\x83\xEC\x20\x0F\xB6\x81\xC0\x02\x2A\x2A\x48";
+
 // Patches
 	// Check vauff's pin in #scripting
 	inline const byte *MovementUnlock = (byte *)"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x2A\x2A\x0F\x28\xCA\xF3\x0F\x59\xC0";
@@ -102,6 +110,7 @@ namespace sigs
 	// Find "Noise removal", there should be 3 customermachine checks
 	inline const byte *HammerNoCustomerMachine = (byte *)"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9";
 	inline const byte *Patch_HammerNoCustomerMachine = (byte *)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90";
+
 #else
 // Functions
 	// look for string "\"Console<0>\" say \"%s\"\n"
@@ -131,6 +140,12 @@ namespace sigs
 
 	// Is the 4th function in the CCSWeaponBase vtable
 	inline const byte *CCSWeaponBase_Spawn = (byte *)"\x55\x48\x89\xE5\x41\x57\x41\x56\x4C\x8D\x75\xC0\x41\x55\x49\x89\xFD\x41\x54\x49\x89\xF4";
+
+	// idk a good way to find this again, i just brute forced the vtable. offset is 133 on CTriggerPush
+	inline const byte* TriggerPush_Touch = (byte*)"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x81\xEC\x28\x20\x2A\x2A\xE8";
+
+	// this is called in CTriggerPush::Touch, using IDA pseudocode look in an `if ( ( v & 0x80 ) != 0 )` and then `if ( v > 0.0 ) SetGroundEntity()`
+	inline const byte* SetGroundEntity = (byte*)"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x83\xEC\x08\x0F\xB6\x87\xA8\x05\x2A\x2A\x83";
 
 // Patches
 	// Check vauff's pin in #scripting
