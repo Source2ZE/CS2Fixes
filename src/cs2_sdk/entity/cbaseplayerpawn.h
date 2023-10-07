@@ -20,9 +20,10 @@
 #pragma once
 
 #include "cbaseentity.h"
+#include "cbasemodelentity.h"
 #include "services.h"
 
-class CBasePlayerPawn : public Z_CBaseEntity
+class CBasePlayerPawn : public CBaseModelEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerPawn);
