@@ -40,7 +40,7 @@ struct Module
 };
 
 #ifndef _WIN32
-int GetModuleInformation(const char* name, void** base, size_t* length);
+int GetModuleInformation(HINSTANCE module, void** base, size_t* length);
 #endif
 
 #ifdef _WIN32
