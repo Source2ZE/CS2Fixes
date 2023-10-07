@@ -138,7 +138,7 @@ void SetStateChanged(Z_CBaseEntity* pEntity, int offset)
 	auto vars = GetGameGlobals();
 
     if (vars)
-	    pEntity->m_lastNetworkChange(vars->curtime);
+	    pEntity->m_lastNetworkChange = vars->curtime;
 
-	pEntity->m_isSteadyState(0);
+	pEntity->m_isSteadyState().ClearAll();
 };

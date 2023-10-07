@@ -71,19 +71,19 @@ CON_COMMAND_CHAT(ban, "ban a player")
 	if (!player)
 		return;
 
-	int iCommandPlayer = player->entindex() - 1;
+	int iCommandPlayer = player->GetPlayerSlot();
 
-	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 
 	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You don't have access to this command.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
 		return;
 	}
 
 	if (args.ArgC() < 3)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Usage: !ban <name> <duration/0 (permanent)>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Usage: !ban <name> <duration/0 (permanent)>");
 		return;
 	}
 
@@ -92,13 +92,13 @@ CON_COMMAND_CHAT(ban, "ban a player")
 
 	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) != ETargetType::PLAYER || iNumClients > 1)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Target too ambiguous.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target too ambiguous.");
 		return;
 	}
 
 	if (!iNumClients)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Target not found.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
 		return;
 	}
 
@@ -107,7 +107,7 @@ CON_COMMAND_CHAT(ban, "ban a player")
 
 	if (*end)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Invalid duration.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid duration.");
 		return;
 	}
 
@@ -129,7 +129,7 @@ CON_COMMAND_CHAT(ban, "ban a player")
 		infraction->ApplyInfraction(pTargetPlayer);
 		g_pAdminSystem->SaveInfractions();
 
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have banned %s for %i mins.", &pTarget->m_iszPlayerName(), iDuration);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have banned %s for %i minutes.", pTarget->GetPlayerName(), iDuration);
 	}
 }
 
@@ -138,19 +138,19 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 	if (!player)
 		return;
 
-	int iCommandPlayer = player->entindex() - 1;
+	int iCommandPlayer = player->GetPlayerSlot();
 
-	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 
 	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You don't have access to this command.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
 		return;
 	}
 
 	if (args.ArgC() < 3)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Usage: !mute <name> <duration/0 (permanent)>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Usage: !mute <name> <duration/0 (permanent)>");
 		return;
 	}
 
@@ -161,7 +161,7 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 
 	if (!iNumClients)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Target not found.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
 		return;
 	}
 
@@ -170,7 +170,7 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 
 	if (*end)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Invalid duration.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid duration.");
 		return;
 	}
 
@@ -192,7 +192,7 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 		infraction->ApplyInfraction(pTargetPlayer);
 		g_pAdminSystem->SaveInfractions();
 
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have muted %s for %i mins.", &pTarget->m_iszPlayerName(), iDuration);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have muted %s for %i mins.", pTarget->GetPlayerName(), iDuration);
 	}
 }
 
@@ -201,19 +201,19 @@ CON_COMMAND_CHAT(kick, "kick a player")
 	if (!player)
 		return;
 
-	int iCommandPlayer = player->entindex() - 1;
+	int iCommandPlayer = player->GetPlayerSlot();
 
-	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 
 	if (!pPlayer->IsAdminFlagSet(ADMFLAG_KICK))
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You don't have access to this command.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
 		return;
 	}
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Usage: !kick <name>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Usage: !kick <name>");
 		return;
 	}
 
@@ -224,7 +224,7 @@ CON_COMMAND_CHAT(kick, "kick a player")
 
 	if (!iNumClients)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Target not found.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
 		return;
 	}
 
@@ -239,7 +239,7 @@ CON_COMMAND_CHAT(kick, "kick a player")
 		
 		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot().Get(), NETWORK_DISCONNECT_KICKED);
 
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have kicked %s.", &pTarget->m_iszPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have kicked %s.", pTarget->GetPlayerName());
 	}
 }
 
@@ -248,19 +248,19 @@ CON_COMMAND_CHAT(slay, "slay a player")
 	if (!player)
 		return;
 
-	int iCommandPlayer = player->entindex() - 1;
+	int iCommandPlayer = player->GetPlayerSlot();
 
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->entindex() - 1);
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 
 	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You don't have access to this command.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 		return;
 	}
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Usage: !slay <name>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !bring <name>");
 		return;
 	}
 
@@ -271,7 +271,7 @@ CON_COMMAND_CHAT(slay, "slay a player")
 
 	if (!iNumClients)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Target not found.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
 		return;
 	}
 
@@ -285,7 +285,7 @@ CON_COMMAND_CHAT(slay, "slay a player")
 		// CBasePlayerPawn::CommitSuicide(bool bExplode, bool bForce)
 		CALL_VIRTUAL(void, 354, pTarget->GetPawn(), false, true);
 
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Slayed %s.", &pTarget->m_iszPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Brought %s.", pTarget->GetPlayerName());
 	}
 }
 
@@ -294,25 +294,25 @@ CON_COMMAND_CHAT(map, "change map")
 	if (!player)
 		return;
 
-	int iCommandPlayer = player->entindex() - 1;
+	int iCommandPlayer = player->GetPlayerSlot();
 
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 
 	if (!pPlayer->IsAdminFlagSet(ADMFLAG_CHANGEMAP))
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You don't have access to this command.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
 		return;
 	}
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Usage: !map <mapname>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Usage: !map <mapname>");
 		return;
 	}
 
 	if (!g_pEngineServer2->IsMapValid(args[1]))
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Invalid map specified");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid map specified.");
 		return;
 	}
 

@@ -30,7 +30,9 @@ public:
 
 	SCHEMA_FIELD(uint64, m_steamID)
 	SCHEMA_FIELD(CHandle<CBasePlayerPawn>, m_hPawn)
-	SCHEMA_FIELD(char, m_iszPlayerName)
+	SCHEMA_FIELD_POINTER(char, m_iszPlayerName)
 
-	CBasePlayerPawn *GetPawn() { return m_hPawn().Get(); }
+	CBasePlayerPawn *GetPawn() { return m_hPawn.Get(); }
+	const char *GetPlayerName() { return m_iszPlayerName(); }
+	int GetPlayerSlot() { return entindex() - 1; }
 };

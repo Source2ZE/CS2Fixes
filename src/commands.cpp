@@ -87,11 +87,11 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 
 		if (!V_stricmp(pszWeaponName, weaponEntry.command))
 		{
-			CCSPlayer_ItemServices *pItemServices = pController->m_hPawn()->m_pItemServices();
-			int money = pController->m_pInGameMoneyServices()->m_iAccount();
+			CCSPlayer_ItemServices *pItemServices = pController->GetPawn()->m_pItemServices;
+			int money = pController->m_pInGameMoneyServices->m_iAccount;
 			if (money >= weaponEntry.iPrice)
 			{
-				pController->m_pInGameMoneyServices()->m_iAccount(money - weaponEntry.iPrice);
+				pController->m_pInGameMoneyServices->m_iAccount = money - weaponEntry.iPrice;
 				pItemServices->GiveNamedItem(weaponEntry.szWeaponName);
 			}
 
@@ -151,20 +151,20 @@ CON_COMMAND_CHAT(stopsound, "stop weapon sounds")
 	if (!player)
 		return;
 
-	int iPlayer = player->entindex() - 1;
+	int iPlayer = player->GetPlayerSlot();
 
 	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(iPlayer);
 
 	// Something has to really go wrong for this to happen
 	if (!pZEPlayer)
 	{
-		Warning("%s Tried to access a null ZEPlayer!!\n", player->m_iszPlayerName());
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
 		return;
 	}
 
 	pZEPlayer->ToggleStopSound();
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have toggled weapon effects.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have toggled weapon effects.");
 }
 
 CON_COMMAND_CHAT(say, "say something using console")
@@ -178,9 +178,9 @@ CON_COMMAND_CHAT(takemoney, "take your money")
 		return;
 
 	int amount = atoi(args[1]);
-	int money = player->m_pInGameMoneyServices()->m_iAccount();
+	int money = player->m_pInGameMoneyServices->m_iAccount;
 
-	player->m_pInGameMoneyServices()->m_iAccount(money - amount);
+	player->m_pInGameMoneyServices->m_iAccount = money - amount;
 }
 
 CON_COMMAND_CHAT(message, "message someone")
@@ -200,7 +200,7 @@ CON_COMMAND_CHAT(message, "message someone")
 	const char *pMessage = args.ArgS() + V_strlen(args[1]) + 1;
 
 	char buf[256];
-	V_snprintf(buf, sizeof(buf), " \7[CS2Fixes]\1 Private message from %s to %s: \5%s", &player->m_iszPlayerName(), &target->m_iszPlayerName(), pMessage);
+	V_snprintf(buf, sizeof(buf), CHAT_PREFIX"Private message from %s to %s: \5%s", player->GetPlayerName(), target->GetPlayerName(), pMessage);
 
 	CSingleRecipientFilter filter(uid);
 
@@ -214,7 +214,11 @@ CON_COMMAND_CHAT(sethealth, "set your health")
 
 	int health = atoi(args[1]);
 
-	player->m_hPawn()->m_iHealth(health);
+	Z_CBaseEntity *pEnt = (Z_CBaseEntity *)player->GetPawn();
+
+	pEnt->m_iHealth = health;
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your health is now %d", health);
 }
 
 CON_COMMAND_CHAT(test_target, "test string targetting")
@@ -222,7 +226,7 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 	if (!player)
 		return;
 
-	int iCommandPlayer = player->entindex() - 1;
+	int iCommandPlayer = player->GetPlayerSlot();
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 
@@ -235,8 +239,8 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 		if (!pTarget)
 			continue;
 
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Targeting %s", &pTarget->m_iszPlayerName());
-		Message("Targeting %s\n", &pTarget->m_iszPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Targeting %s", pTarget->GetPlayerName());
+		Message("Targeting %s\n", pTarget->GetPlayerName());
 	}
 }
 
@@ -245,9 +249,9 @@ CON_COMMAND_CHAT(getorigin, "get your origin")
 	if (!player)
 		return;
 
-	Vector vecAbsOrigin = player->m_hPawn()->GetAbsOrigin();
+	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Your origin is %f %f %f", vecAbsOrigin.x, vecAbsOrigin.y, vecAbsOrigin.z);
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your origin is %f %f %f", vecAbsOrigin.x, vecAbsOrigin.y, vecAbsOrigin.z);
 }
 
 CON_COMMAND_CHAT(setorigin, "set your origin")
@@ -255,14 +259,13 @@ CON_COMMAND_CHAT(setorigin, "set your origin")
 	if (!player)
 		return;
 
-	CBasePlayerPawn *pPawn = player->m_hPawn();
-
+	CBasePlayerPawn *pPawn = player->GetPawn();
 	Vector vecNewOrigin;
 	V_StringToVector(args.ArgS(), vecNewOrigin);
 
 	pPawn->SetAbsOrigin(vecNewOrigin);
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Your origin is now %f %f %f", vecNewOrigin.x, vecNewOrigin.y, vecNewOrigin.z);
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your origin is now %f %f %f", vecNewOrigin.x, vecNewOrigin.y, vecNewOrigin.z);
 }
 
 CON_COMMAND_CHAT(getstats, "get your stats")
@@ -270,12 +273,19 @@ CON_COMMAND_CHAT(getstats, "get your stats")
 	if (!player)
 		return;
 
-	CSMatchStats_t stats = player->m_pActionTrackingServices()->m_matchStats();
+	CSMatchStats_t *stats = &player->m_pActionTrackingServices->m_matchStats();
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Kills: %d", stats.m_iKills());
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Deaths: %d", stats.m_iDeaths());
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Assists: %d", stats.m_iAssists());
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Damage: %d", stats.m_iDamage());
+	ClientPrint(player, HUD_PRINTCENTER, 
+		"Kills: %i\n"
+		"Deaths: %i\n"
+		"Assists: %i\n"
+		"Damage: %i"
+		, stats->m_iKills.Get(), stats->m_iDeaths.Get(), stats->m_iAssists.Get(), stats->m_iDamage.Get());
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Kills: %d", stats->m_iKills.Get());
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Deaths: %d", stats->m_iDeaths.Get());
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Assists: %d", stats->m_iAssists.Get());
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Damage: %d", stats->m_iDamage.Get());
 }
 
 CON_COMMAND_CHAT(setkills, "set your kills")
@@ -283,9 +293,9 @@ CON_COMMAND_CHAT(setkills, "set your kills")
 	if (!player)
 		return;
 
-	player->m_pActionTrackingServices()->m_matchStats().m_iKills(atoi(args[1]));
+	player->m_pActionTrackingServices->m_matchStats().m_iKills = atoi(args[1]);
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have set your kills to %d.", atoi(args[1]));
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have set your kills to %d.", atoi(args[1]));
 }
 
 // Lookup a weapon classname in the weapon map and "initialize" it.
@@ -303,12 +313,12 @@ void FixWeapon(CCSWeaponBase *pWeapon)
 	{
 		if (!V_stricmp(WeaponMap[i].szWeaponName, pszClassName))
 		{
-			Message("Fixing a %s with index = %d and initialized = %d\n", pszClassName,
+			DevMsg("Fixing a %s with index = %d and initialized = %d\n", pszClassName,
 				pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex(),
 				pWeapon->m_AttributeManager().m_Item().m_bInitialized());
 
-			pWeapon->m_AttributeManager().m_Item().m_bInitialized(true);
-			pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex(WeaponMap[i].iItemDefIndex);
+			pWeapon->m_AttributeManager().m_Item().m_bInitialized = true;
+			pWeapon->m_AttributeManager().m_Item().m_iItemDefinitionIndex = WeaponMap[i].iItemDefIndex;
 		}
 	}
 }

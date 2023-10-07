@@ -169,7 +169,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 
 #ifdef _DEBUG
 	if (target)
-		Message("Chat from %s to %s: %s\n", param1, &target->m_iszPlayerName(), param2);
+		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName(), param2);
 #endif
 
 	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
