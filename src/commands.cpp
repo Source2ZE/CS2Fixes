@@ -23,14 +23,17 @@
 #include "recipientfilters.h"
 #include "commands.h"
 #include "utils/entity.h"
+#include "entity/cbaseentity.h"
 #include "entity/ccsweaponbase.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
 #include "playermanager.h"
 #include "adminsystem.h"
+#include "ctimer.h"
 
 #include "tier0/memdbgon.h"
+
 
 extern CEntitySystem *g_pEntitySystem;
 
@@ -165,6 +168,83 @@ CON_COMMAND_CHAT(stopsound, "stop weapon sounds")
 	pZEPlayer->ToggleStopSound();
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have toggled weapon effects.");
+}
+
+CON_COMMAND_CHAT(ztele, "teleport to spawn")
+{
+	if (!player)
+		return;
+
+	//Count spawnpoints (info_player_counterterrorist & info_player_terrorist)
+	SpawnPoint* spawn = nullptr;
+	CUtlVector<SpawnPoint*> spawns;
+	while (nullptr != (spawn = (SpawnPoint*)UTIL_FindEntityByClassname(spawn, "info_player_")))
+	{
+		if (spawn->m_bEnabled())
+		{
+			spawns.AddToTail(spawn);
+		}
+	}
+
+	//Pick and get position of random spawnpoint
+	int randomindex = rand() % spawns.Count()+1;
+	Vector spawnpos = spawns[randomindex]->GetAbsOrigin();
+
+	//Here's where the mess starts
+	CBasePlayerPawn* pPawn = player->m_hPawn();
+	if (!pPawn)
+	{
+		return;
+	}
+	if (pPawn->m_iHealth() <= 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You cannot teleport when dead!");
+		return;
+	}
+	//Get initial player position so we can do distance check
+	Vector initialpos = pPawn->GetAbsOrigin();
+
+	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Teleporting to spawn in 5 seconds.");
+
+	//Convert into handle so we can safely pass it into the Timer
+	auto handle = player->GetHandle();
+	new CTimer(5.0f, false, false, [spawnpos, handle, initialpos]()
+		{
+			//Convert handle into controller so we can use it again, and check it isn't invalid
+			CCSPlayerController* controller = (CCSPlayerController*)Z_CBaseEntity::EntityFromHandle(handle);
+			if (!controller)
+			{
+				ConMsg("Couldn't resolve entity handle\n");
+				return;
+			}
+			if (controller->m_iConnected() != PlayerConnectedState::PlayerConnected)
+			{
+				ConMsg("Controller is not connected\n");
+				return;
+			}
+
+			//Get pawn (again) so we can do shit
+			CBasePlayerPawn* pPawn2 = controller->m_hPawn();
+
+			//Get player origin after 5secs
+			Vector endpos = pPawn2->GetAbsOrigin();
+
+			//Get distance between initial and end positions
+			float dist = initialpos.DistTo(endpos);
+
+			//Check le dist
+			//ConMsg("Distance was %f \n", dist);
+			if (dist < 150.0f)
+			{
+				pPawn2->SetAbsOrigin(spawnpos);
+				ClientPrint(controller, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have been teleported to spawn.");
+			}
+			else
+			{
+				ClientPrint(controller, HUD_PRINTTALK, " \7[CS2Fixes]\1 Teleport failed! You moved too far.");
+				return;
+			}
+		});
 }
 
 CON_COMMAND_CHAT(say, "say something using console")

@@ -150,14 +150,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 	}
 	else if (targetType >= ETargetType::RANDOM)
 	{
-		static bool seeded = false;
 		int attempts = 0;
-
-		if (!seeded)
-		{
-			srand(time(0));
-			seeded = true;
-		}
 
 		while (iNumClients == 0 && attempts < 10000)
 		{

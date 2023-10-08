@@ -189,6 +189,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	Message("g_gameEventManager - %p\n", g_gameEventManager);
 
+	srand(time(0));
+
 	return true;
 }
 
@@ -428,5 +430,5 @@ const char *CS2Fixes::GetName()
 
 const char *CS2Fixes::GetURL()
 {
-	return "https://github.com/Source2ZE";
+	return "https://github.com/Source2ZE/CS2Fixes";
 }
