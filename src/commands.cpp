@@ -449,29 +449,7 @@ CON_COMMAND_CHAT(setinteraction, "set a player's interaction flags")
 		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nInteractsExclude = newInteract;
 		pTarget->GetPawn()->CollisionRulesChanged();
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting interaction flags on %s from %lli to %lli.", pTarget->GetPlayerName(), oldInteractAs, newInteract);
-	}
-}
-
-CON_COMMAND_CHAT(setnoblock, "give someone noblock")
-{
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
-
-	g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
-
-		if (!pTarget)
-			continue;
-
-		pTarget->GetPawn()->m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
-		pTarget->GetPawn()->m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
-		pTarget->GetPawn()->CollisionRulesChanged();
-
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Giving %s noblock.", pTarget->GetPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting interaction flags on %s from %llx to %llx.", pTarget->GetPlayerName(), oldInteractAs, newInteract);
 	}
 }
 #endif // _DEBUG
