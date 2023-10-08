@@ -39,6 +39,7 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
 - [x] Weapon pickup crash fix
 - [x] trigger_push fix
 - [ ] Remove player collisions
+- [ ] Ztele
 
 ## Compilation
 
