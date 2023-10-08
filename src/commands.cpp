@@ -97,32 +97,35 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 			int money = pController->m_pInGameMoneyServices->m_iAccount;
 			if (money >= weaponEntry.iPrice)
 			{
-				CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
-				bool found = false;
-				FOR_EACH_VEC(*weaponPurchases, i)
+				if (weaponEntry.maxAmount)
 				{
-					WeaponPurchaseCount_t &purchase = (*weaponPurchases)[i];
-					if (purchase.m_nItemDefIndex == weaponEntry.iItemDefIndex)
+					CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
+					bool found = false;
+					FOR_EACH_VEC(*weaponPurchases, i)
 					{
-						if (purchase.m_nCount >= weaponEntry.maxAmount)
+						WeaponPurchaseCount_t& purchase = (*weaponPurchases)[i];
+						if (purchase.m_nItemDefIndex == weaponEntry.iItemDefIndex)
 						{
-							ClientPrint(pController, HUD_PRINTTALK, " \7[CS2Fixes]\1 You cannot use !%s anymore (Max %i)", weaponEntry.command, weaponEntry.maxAmount);
-							return;
+							if (purchase.m_nCount >= weaponEntry.maxAmount)
+							{
+								ClientPrint(pController, HUD_PRINTTALK, " \7[CS2Fixes]\1 You cannot use !%s anymore (Max %i)", weaponEntry.command, weaponEntry.maxAmount);
+								return;
+							}
+							purchase.m_nCount += 1;
+							found = true;
+							break;
 						}
-						purchase.m_nCount += 1;
-						found = true;
-						break;
 					}
-				}
 
-				if (!found)
-				{
-					WeaponPurchaseCount_t purchase = {};
+					if (!found)
+					{
+						WeaponPurchaseCount_t purchase = {};
 
-					purchase.m_nCount = 1;
-					purchase.m_nItemDefIndex = weaponEntry.iItemDefIndex;
+						purchase.m_nCount = 1;
+						purchase.m_nItemDefIndex = weaponEntry.iItemDefIndex;
 
-					weaponPurchases->AddToTail(purchase);
+						weaponPurchases->AddToTail(purchase);
+					}
 				}
 
 				pController->m_pInGameMoneyServices->m_iAccount = money - weaponEntry.iPrice;
