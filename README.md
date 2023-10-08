@@ -6,7 +6,7 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
 
 ## Roadmap
 - [x] Metamod implementation
-- [x] Linux support
+- [x] Windows and Linux support
 - [x] Schema system
   - [x] Property access
   - [x] Property updating
@@ -23,13 +23,23 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
   - [x] Storing players
   - [x] Player authorization
   - [ ] Userid Target lookup
-  - [ ] Admin system
-    - [ ] Admin commands
+  - [x] Admin system
+    - [x] Admin commands
+    - [ ] Infractions
+      - [x] Kick
+      - [x] Ban
+      - [x] Mute
+      - [ ] Gag
+      - [ ] Removing infractions
 - [x] Timers
 - [x] Blocking weapon sounds/decals
   - [x] Hooking fire bullets tempent
   - [x] Implement stopsound
+- [x] Legacy event listener
 - [x] Weapon pickup crash fix
+- [x] trigger_push fix
+- [ ] Remove player collisions
+- [ ] Ztele
 
 ## Compilation
 

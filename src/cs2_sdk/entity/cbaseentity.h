@@ -153,3 +153,11 @@ public:
 		return nullptr;
 	}
 };
+
+class SpawnPoint : public Z_CBaseEntity
+{
+public:
+	DECLARE_SCHEMA_CLASS(SpawnPoint);
+
+	SCHEMA_FIELD(bool, m_bEnabled);
+};
