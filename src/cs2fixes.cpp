@@ -181,8 +181,15 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pAdminSystem = new CAdminSystem();
 
 	// Steam authentication
-	new CTimer(1.0, true, true, []() {
+	new CTimer(1.0f, true, true, []()
+	{
 		g_playerManager->TryAuthenticate();
+	});
+
+	// Check for the expiration of infractions like mutes or gags
+	new CTimer(30.0f, true, true, []()
+	{
+		g_playerManager->CheckInfractions();
 	});
 
 	g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);
