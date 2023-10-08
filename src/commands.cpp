@@ -97,7 +97,6 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 			int money = pController->m_pInGameMoneyServices->m_iAccount;
 			if (money >= weaponEntry.iPrice)
 			{
-
 				CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
 				bool found = false;
 				FOR_EACH_VEC(*weaponPurchases, i)
@@ -107,7 +106,7 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 					{
 						if (purchase.m_nCount >= weaponEntry.maxAmount)
 						{
-							ClientPrint(pController, HUD_PRINTTALK, " \7[CS2Fixes]\1 You cannot buy more %s (Max %i)", weaponEntry.command, weaponEntry.maxAmount);
+							ClientPrint(pController, HUD_PRINTTALK, " \7[CS2Fixes]\1 You cannot use !%s anymore (Max %i)", weaponEntry.command, weaponEntry.maxAmount);
 							return;
 						}
 						purchase.m_nCount += 1;
@@ -118,18 +117,10 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 
 				if (!found)
 				{
-					// This shit might fucking explode any second
-					ConMsg("Explosive code running\n");
-
-					// game can't grow after we insert our shit and just crashes
-					//weaponPurchases->EnsureCapacity(128);
-
 					WeaponPurchaseCount_t purchase = {};
 
 					purchase.m_nCount = 1;
 					purchase.m_nItemDefIndex = weaponEntry.iItemDefIndex;
-
-					ConMsg("Allocated: %i\n", weaponPurchases->NumAllocated());
 
 					weaponPurchases->AddToTail(purchase);
 				}
