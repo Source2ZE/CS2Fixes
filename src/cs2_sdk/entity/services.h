@@ -93,8 +93,6 @@ public:
 // We need an exactly sized class to be able to iterate the vector, our schema system implementation can't do this
 class WeaponPurchaseCount_t
 {
-	//WeaponPurchaseCount_t(uint16_t itemDefIndex, uint16_t count) : m_nItemDefIndex(itemDefIndex), m_nCount(count) {};
-
 private:
 	virtual void unk01() {};
 	uint64_t unk1 = 0; // 0x8
