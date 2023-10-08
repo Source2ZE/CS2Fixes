@@ -92,6 +92,7 @@ public:
 	void OnClientDisconnect(CPlayerSlot slot);
 	void OnBotConnected(CPlayerSlot slot);
 	void TryAuthenticate();
+	void CheckInfractions();
 	ETargetType TargetPlayerString(int iCommandClient, const char* target, int &iNumClients, int *clients);
 	ZEPlayer *GetPlayer(CPlayerSlot slot) { return m_vecPlayers[slot.Get()]; };
 

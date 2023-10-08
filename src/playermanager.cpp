@@ -98,6 +98,17 @@ void CPlayerManager::TryAuthenticate()
 	}
 }
 
+void CPlayerManager::CheckInfractions()
+{
+	for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
+	{
+		if (m_vecPlayers[i] == nullptr || m_vecPlayers[i]->IsFakeClient())
+			continue;
+
+		m_vecPlayers[i]->CheckInfractions();
+	}
+}
+
 ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* target, int& iNumClients, int *clients)
 {
 	ETargetType targetType = ETargetType::NONE;

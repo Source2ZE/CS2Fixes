@@ -58,6 +58,7 @@ public:
 
 	virtual EInfractionType GetType() = 0;
 	virtual void ApplyInfraction(ZEPlayer*) = 0;
+	virtual void UndoInfraction(ZEPlayer *) = 0;
 	int GetTimestamp() { return m_iTimestamp; }
 	uint64 GetSteamId64() { return m_iSteamID; }
 
@@ -73,6 +74,9 @@ public:
 	
 	EInfractionType GetType() override { return Ban; }
 	void ApplyInfraction(ZEPlayer*) override;
+
+	// This isn't needed as we'll just not kick the player when checking infractions upon joining
+	void UndoInfraction(ZEPlayer *) override {}
 };
 
 class CMuteInfraction :public CInfractionBase
@@ -82,6 +86,7 @@ public:
 	
 	EInfractionType GetType() override { return Mute; }
 	void ApplyInfraction(ZEPlayer*) override;
+	void UndoInfraction(ZEPlayer *) override;
 };
 
 class CGagInfraction : public CInfractionBase
@@ -90,15 +95,16 @@ public:
 	using CInfractionBase::CInfractionBase;
 
 	EInfractionType GetType() override { return Gag; }
-
 	void ApplyInfraction(ZEPlayer *) override;
+	void UndoInfraction(ZEPlayer *) override;
 };
 
 class CAdmin
 {
 public:
-	CAdmin(const char* pszName, uint64 iSteamID, uint64 iFlags) : m_pszName(pszName), m_iSteamID(iSteamID), m_iFlags(iFlags)
-	{};
+	CAdmin(const char* pszName, uint64 iSteamID, uint64 iFlags) : 
+		m_pszName(pszName), m_iSteamID(iSteamID), m_iFlags(iFlags)
+	{}
 
 	const char* GetName() { return m_pszName; };
 	uint64 GetSteamID() { return m_iSteamID; };
@@ -123,6 +129,7 @@ public:
 	void AddInfraction(CInfractionBase*);
 	void SaveInfractions();
 	void ApplyInfractions(ZEPlayer *player);
+	bool FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type);
 	CAdmin *FindAdmin(uint64 iSteamID);
 
 private:

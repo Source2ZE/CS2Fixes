@@ -189,11 +189,69 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 
 		CInfractionBase* infraction = new CMuteInfraction(iDuration ? std::time(0) + iDuration : 0, pTargetPlayer->GetSteamId64());
 
+		// We're overwriting the infraction, so remove the previous one first
+		g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute);
 		g_pAdminSystem->AddInfraction(infraction);
 		infraction->ApplyInfraction(pTargetPlayer);
 		g_pAdminSystem->SaveInfractions();
 
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have muted %s for %i mins.", pTarget->GetPlayerName(), iDuration);
+	}
+}
+
+CON_COMMAND_CHAT(unmute, "unmutes a player")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->GetPlayerSlot();
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unmute <name>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlot[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+		if (pTargetPlayer->IsFakeClient())
+			continue;
+
+		if (!g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not muted.", pTarget->GetPlayerName());
+			return;
+		}
+
+		g_pAdminSystem->SaveInfractions();
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have unmuted %s.", pTarget->GetPlayerName());
 	}
 }
 
@@ -252,11 +310,69 @@ CON_COMMAND_CHAT(gag, "gag a player")
 
 		CInfractionBase *infraction = new CGagInfraction(iDuration ? std::time(0) + iDuration : 0, pTargetPlayer->GetSteamId64());
 
+		// We're overwriting the infraction, so remove the previous one first
+		g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Gag);
 		g_pAdminSystem->AddInfraction(infraction);
 		infraction->ApplyInfraction(pTargetPlayer);
 		g_pAdminSystem->SaveInfractions();
 
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have gagged %s for %i mins.", pTarget->GetPlayerName(), iDuration);
+	}
+}
+
+CON_COMMAND_CHAT(ungag, "ungags a player")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->GetPlayerSlot();
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ungag <name>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlot[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+		if (pTargetPlayer->IsFakeClient())
+			continue;
+
+		if (!g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Gag))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not gagged.", pTarget->GetPlayerName());
+			return;
+		}
+
+		g_pAdminSystem->SaveInfractions();
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have ungagged %s.", pTarget->GetPlayerName());
 	}
 }
 
@@ -613,10 +729,12 @@ void CAdminSystem::AddInfraction(CInfractionBase* infraction)
 
 void CAdminSystem::ApplyInfractions(ZEPlayer *player)
 {
-	player->SetMuted(false);
-
 	FOR_EACH_VEC(m_vecInfractions, i)
 	{
+		// Undo the infraction just briefly while checking if it ran out
+		if (m_vecInfractions[i]->GetSteamId64() == player->GetSteamId64())
+			m_vecInfractions[i]->UndoInfraction(player);
+
 		int timestamp = m_vecInfractions[i]->GetTimestamp();
 		if (timestamp != 0 && timestamp <= std::time(0))
 		{
@@ -627,6 +745,22 @@ void CAdminSystem::ApplyInfractions(ZEPlayer *player)
 		if (m_vecInfractions[i]->GetSteamId64() == player->GetSteamId64())
 			m_vecInfractions[i]->ApplyInfraction(player);
 	}
+}
+
+bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type)
+{
+	FOR_EACH_VEC(m_vecInfractions, i)
+	{
+		if (m_vecInfractions[i]->GetSteamId64() == player->GetSteamId64() && m_vecInfractions[i]->GetType() == type)
+		{
+			m_vecInfractions[i]->UndoInfraction(player);
+			m_vecInfractions.Remove(i);
+			
+			return true;
+		}
+	}
+
+	return false;
 }
 
 CAdmin *CAdminSystem::FindAdmin(uint64 iSteamID)
@@ -670,7 +804,17 @@ void CMuteInfraction::ApplyInfraction(ZEPlayer* player)
 	player->SetMuted(true);
 }
 
+void CMuteInfraction::UndoInfraction(ZEPlayer *player)
+{
+	player->SetMuted(false);
+}
+
 void CGagInfraction::ApplyInfraction(ZEPlayer *player)
 {
 	player->SetGagged(true);
+}
+
+void CGagInfraction::UndoInfraction(ZEPlayer *player)
+{
+	player->SetGagged(false);
 }
