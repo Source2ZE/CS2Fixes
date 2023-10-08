@@ -318,6 +318,102 @@ CON_COMMAND_CHAT(slay, "slay a player")
 
 	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
 	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Usage: !slay <name>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
+		return;
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		pTarget->GetPawn()->CommitSuicide(false, true);
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Slayed %s.", pTarget->GetPlayerName());
+	}
+}
+
+CON_COMMAND_CHAT(goto, "teleport to a player")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->GetPlayerSlot();
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !goto <name>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots) != ETargetType::PLAYER || iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target too ambiguous.");
+		return;
+	}
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		Vector newOrigin = pTarget->GetPawn()->GetAbsOrigin();
+
+		player->GetPawn()->Teleport(&newOrigin, nullptr, nullptr);
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Teleported to %s.", pTarget->GetPlayerName());
+	}
+}
+
+CON_COMMAND_CHAT(bring, "bring a player")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->GetPlayerSlot();
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
+	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 		return;
 	}
@@ -346,8 +442,9 @@ CON_COMMAND_CHAT(slay, "slay a player")
 		if (!pTarget)
 			continue;
 
-		// CBasePlayerPawn::CommitSuicide(bool bExplode, bool bForce)
-		CALL_VIRTUAL(void, 354, pTarget->GetPawn(), false, true);
+		Vector newOrigin = player->GetPawn()->GetAbsOrigin();
+
+		pTarget->GetPawn()->Teleport(&newOrigin, nullptr, nullptr);
 
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Brought %s.", pTarget->GetPlayerName());
 	}

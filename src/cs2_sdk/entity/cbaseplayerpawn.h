@@ -31,4 +31,6 @@ public:
 	SCHEMA_FIELD(uint8*, m_pWeaponServices)
 	SCHEMA_FIELD(CCSPlayer_ItemServices*, m_pItemServices)
 	SCHEMA_FIELD(CHandle<CBasePlayerController>, m_hController)
+
+	void CommitSuicide(bool bExplode, bool bForce) { CALL_VIRTUAL(void, 354, this, bExplode, bForce); }
 };
