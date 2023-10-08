@@ -81,7 +81,7 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 {
 	if (!pController || !pController->m_hPawn() || pController->m_hPawn()->m_iHealth() <= 0)
 	{
-		ClientPrint(pController, HUD_PRINTTALK, " \7[CS2Fixes]\1 You can only buy weapons when alive.");
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX"You can only buy weapons when alive.");
 		return;
 	}
 	for (int i = 0; i < sizeof(WeaponMap) / sizeof(*WeaponMap); i++)
@@ -198,13 +198,13 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 	}
 	if (pPawn->m_iHealth() <= 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You cannot teleport when dead!");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot teleport when dead!");
 		return;
 	}
 	//Get initial player position so we can do distance check
 	Vector initialpos = pPawn->GetAbsOrigin();
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Teleporting to spawn in 5 seconds.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Teleporting to spawn in 5 seconds.");
 
 	//Convert into handle so we can safely pass it into the Timer
 	auto handle = player->GetHandle();
@@ -237,11 +237,11 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 			if (dist < 150.0f)
 			{
 				pPawn2->SetAbsOrigin(spawnpos);
-				ClientPrint(controller, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have been teleported to spawn.");
+				ClientPrint(controller, HUD_PRINTTALK, CHAT_PREFIX"You have been teleported to spawn.");
 			}
 			else
 			{
-				ClientPrint(controller, HUD_PRINTTALK, " \7[CS2Fixes]\1 Teleport failed! You moved too far.");
+				ClientPrint(controller, HUD_PRINTTALK, CHAT_PREFIX"Teleport failed! You moved too far.");
 				return;
 			}
 		});
