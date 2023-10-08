@@ -36,7 +36,8 @@ CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(uint32)
 
 CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	g_pAdminSystem->LoadAdmins();
+	if (!g_pAdminSystem->LoadAdmins())
+		return;
 
 	for (int i = 0; i < MAXPLAYERS; i++)
 	{
@@ -47,11 +48,14 @@ CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKE
 
 		pPlayer->CheckAdmin();
 	}
+
+	Message("Admins reloaded\n");
 }
 
-CON_COMMAND_F(c_reload_infractions, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	g_pAdminSystem->LoadInfractions();
+	if (!g_pAdminSystem->LoadInfractions())
+		return;
 
 	for (int i = 0; i < MAXPLAYERS; i++)
 	{
@@ -603,33 +607,35 @@ CON_COMMAND_CHAT(map, "change map")
 	});
 }
 
-void CAdminSystem::LoadAdmins()
+bool CAdminSystem::LoadAdmins()
 {
 	m_vecAdmins.Purge();
 	KeyValues* pKV = new KeyValues("admins");
 	KeyValues::AutoDelete autoDelete(pKV);
 
-	if (!pKV->LoadFromFile(g_pFullFileSystem, "addons/cs2fixes/configs/admins.cfg"))
+	const char *pszPath = "addons/cs2fixes/configs/admins.cfg";
+
+	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
 	{
-		Warning("Failed to load addons/cs2fixes/configs/admins.cfg\n");
-		return;
+		Warning("Failed to load %s\n", pszPath);
+		return false;
 	}
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
 		const char *pszName = pKey->GetName();
-		const char *pszSteamID = pKey->GetString("steam", nullptr);
+		const char *pszSteamID = pKey->GetString("steamid", nullptr);
 		const char *pszFlags = pKey->GetString("flags", nullptr);
 
 		if (!pszSteamID)
 		{
 			Warning("Admin entry %s is missing 'steam' key\n", pszName);
-			return;
+			return false;
 		}
 
 		if (!pszFlags)
 		{
 			Warning("Admin entry %s is missing 'flags' key\n", pszName);
-			return;
+			return false;
 		}
 
 		ConMsg("Loaded admin %s\n", pszName);
@@ -641,42 +647,46 @@ void CAdminSystem::LoadAdmins()
 		// Let's just use steamID64 for now
 		m_vecAdmins.AddToTail(CAdmin(pszName, atoll(pszSteamID), iFlags));
 	}
+
+	return true;
 }
 
-void CAdminSystem::LoadInfractions()
+bool CAdminSystem::LoadInfractions()
 {
 	m_vecInfractions.PurgeAndDeleteElements();
 	KeyValues* pKV = new KeyValues("infractions");
 	KeyValues::AutoDelete autoDelete(pKV);
 
-	if (!pKV->LoadFromFile(g_pFullFileSystem, "addons/cs2fixes/data/infractions.txt"))
+	const char *pszPath = "addons/cs2fixes/data/infractions.txt";
+
+	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
 	{
-		Warning("Failed to load addons/cs2fixes/data/infractions.txt\n");
-		return;
+		Warning("Failed to load %s\n", pszPath);
+		return false;
 	}
 
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
-		uint64 iSteamId = pKey->GetUint64("steam", -1);
+		uint64 iSteamId = pKey->GetUint64("steamid", -1);
 		int iEndTime = pKey->GetInt("endtime", -1);
 		int iType = pKey->GetInt("type", -1);
 
 		if (iSteamId == -1)
 		{
 			Warning("Infraction entry is missing 'steam' key\n");
-			return;
+			return false;
 		}
 
 		if (iEndTime == -1)
 		{
 			Warning("Infraction entry is missing 'endtime' key\n");
-			return;
+			return false;
 		}
 
 		if (iType == -1)
 		{
 			Warning("Infraction entry is missing 'type' key\n");
-			return;
+			return false;
 		}
 
 		switch (iType)
@@ -694,6 +704,8 @@ void CAdminSystem::LoadInfractions()
 			Warning("Invalid infraction type %d\n", iType);
 		}
 	}
+
+	return true;
 }
 
 void CAdminSystem::SaveInfractions()
@@ -718,7 +730,10 @@ void CAdminSystem::SaveInfractions()
 		pKV->AddSubKey(pSubKey);
 	}
 
-	pKV->SaveToFile(g_pFullFileSystem, "addons/cs2fixes/data/infractions.txt");
+	const char *pszPath = "addons/cs2fixes/data/infractions.txt";
+
+	if (!pKV->SaveToFile(g_pFullFileSystem, pszPath))
+		Warning("Failed to save infractions to %s", pszPath);
 }
 
 void CAdminSystem::AddInfraction(CInfractionBase* infraction)
