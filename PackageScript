@@ -47,3 +47,8 @@ builder.AddCopy(os.path.join(builder.buildPath, MMSPlugin.plugin_name + '.vdf'),
 with open(os.path.join(builder.buildPath, 'pdblog.txt'), 'wt') as fp:
   for line in pdb_list:
     fp.write(line.path + '\n')
+
+# Add CS2Fixes-specific files
+builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'data'))
+configs_folder = builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'configs'))
+builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'admins.cfg'), configs_folder)
