@@ -26,7 +26,6 @@
 #include "playermanager.h"
 #include "commands.h"
 #include "ctimer.h"
-#include <ctime>
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CEntitySystem *g_pEntitySystem;
@@ -124,7 +123,7 @@ CON_COMMAND_CHAT(ban, "ban a player")
 		if (pTargetPlayer->IsFakeClient())
 			continue;
 
-		CInfractionBase *infraction = new CBanInfraction(iDuration ? std::time(0) + iDuration : 0, pTargetPlayer->GetSteamId64());
+		CInfractionBase *infraction = new CBanInfraction(iDuration, pTargetPlayer->GetSteamId64());
 
 		g_pAdminSystem->AddInfraction(infraction);
 		infraction->ApplyInfraction(pTargetPlayer);
@@ -187,7 +186,7 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 		if (pTargetPlayer->IsFakeClient())
 			continue;
 
-		CInfractionBase* infraction = new CMuteInfraction(iDuration ? std::time(0) + iDuration : 0, pTargetPlayer->GetSteamId64());
+		CInfractionBase* infraction = new CMuteInfraction(iDuration, pTargetPlayer->GetSteamId64());
 
 		// We're overwriting the infraction, so remove the previous one first
 		g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute);
@@ -308,7 +307,7 @@ CON_COMMAND_CHAT(gag, "gag a player")
 		if (pTargetPlayer->IsFakeClient())
 			continue;
 
-		CInfractionBase *infraction = new CGagInfraction(iDuration ? std::time(0) + iDuration : 0, pTargetPlayer->GetSteamId64());
+		CInfractionBase *infraction = new CGagInfraction(iDuration, pTargetPlayer->GetSteamId64());
 
 		// We're overwriting the infraction, so remove the previous one first
 		g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Gag);

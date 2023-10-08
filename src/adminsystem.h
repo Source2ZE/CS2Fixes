@@ -21,6 +21,7 @@
 #include "platform.h"
 #include "utlvector.h"
 #include "playermanager.h"
+#include <ctime>
 
 #define ADMFLAG_RESERVATION			(1<<0)		/**< Convenience macro for Admin_Reservation as a FlagBit */
 #define ADMFLAG_GENERIC				(1<<1)		/**< Convenience macro for Admin_Generic as a FlagBit */
@@ -48,7 +49,11 @@
 class CInfractionBase
 {
 public:
-	CInfractionBase(int timestamp, uint64 steamId) : m_iTimestamp(timestamp), m_iSteamID(steamId) {};
+	CInfractionBase(int duration, uint64 steamId) : m_iSteamID(steamId)
+	{
+		// The duration is in minutes here
+		m_iTimestamp = duration != 0 ? std::time(nullptr) + (duration * 60) : 0;
+	}
 	enum EInfractionType
 	{
 		Ban,
