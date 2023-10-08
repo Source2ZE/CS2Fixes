@@ -57,10 +57,12 @@ public:
 	void SetAdminFlags(uint64 iAdminFlags) { m_iAdminFlags = iAdminFlags; }
 	void SetPlayerSlot(CPlayerSlot slot) { m_slot = slot; }
 	void SetMuted(bool muted) { m_bMuted = muted; }
+	void SetGagged(bool gagged) { m_bGagged = gagged; }
 
 	void ToggleStopSound() { m_bStopSound = !m_bStopSound; }
 	bool IsUsingStopSound() { return m_bStopSound; }
 	bool IsMuted() { return m_bMuted; }
+	bool IsGagged() { return m_bGagged; }
 	CPlayerSlot GetPlayerSlot() { return m_slot; }
 	
 	void OnAuthenticated();
@@ -73,6 +75,7 @@ private:
 	bool m_bStopSound;
 	bool m_bFakeClient;
 	bool m_bMuted;
+	bool m_bGagged;
 	CPlayerSlot m_slot;
 	uint64 m_iAdminFlags;
 };
