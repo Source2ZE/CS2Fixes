@@ -71,8 +71,8 @@ WeaponMapEntry_t WeaponMap[] = {
 	{"usp_silencer",	 "weapon_usp_silencer",	 200 , 61},
 	{"cz75a",		  "weapon_cz75a",			 500 , 63},
 	{"revolver",		 "weapon_revolver",		 600 , 64},
-	{"he",			"weapon_hegrenade",			 300 , 44},
-	{"molotov",		"weapon_molotov",			 850 , 46},
+	{"he",			"weapon_hegrenade",			 300 , 44, 1},
+	{"molotov",		"weapon_molotov",			 850 , 46, 1},
 	{"knife",		"weapon_knife",				 0	 , 42},	// default CT knife
 	{"kevlar",		   "item_kevlar",			 600 , 50},
 };
@@ -84,16 +84,56 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 		ClientPrint(pController, HUD_PRINTTALK, " \7[CS2Fixes]\1 You can only buy weapons when alive.");
 		return;
 	}
+
+	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
+
 	for (int i = 0; i < sizeof(WeaponMap) / sizeof(*WeaponMap); i++)
 	{
 		WeaponMapEntry_t weaponEntry = WeaponMap[i];
 
 		if (!V_stricmp(pszWeaponName, weaponEntry.command))
 		{
-			CCSPlayer_ItemServices *pItemServices = pController->GetPawn()->m_pItemServices;
+			CCSPlayer_ItemServices *pItemServices = pPawn->m_pItemServices;
 			int money = pController->m_pInGameMoneyServices->m_iAccount;
 			if (money >= weaponEntry.iPrice)
 			{
+
+				CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
+				bool found = false;
+				FOR_EACH_VEC(*weaponPurchases, i)
+				{
+					WeaponPurchaseCount_t &purchase = (*weaponPurchases)[i];
+					if (purchase.m_nItemDefIndex == weaponEntry.iItemDefIndex)
+					{
+						if (purchase.m_nCount >= weaponEntry.maxAmount)
+						{
+							ClientPrint(pController, HUD_PRINTTALK, " \7[CS2Fixes]\1 You cannot buy more %s (Max %i)", weaponEntry.command, weaponEntry.maxAmount);
+							return;
+						}
+						purchase.m_nCount += 1;
+						found = true;
+						break;
+					}
+				}
+
+				if (!found)
+				{
+					// This shit might fucking explode any second
+					ConMsg("Explosive code running\n");
+
+					// game can't grow after we insert our shit and just crashes
+					//weaponPurchases->EnsureCapacity(128);
+
+					WeaponPurchaseCount_t purchase = {};
+
+					purchase.m_nCount = 1;
+					purchase.m_nItemDefIndex = weaponEntry.iItemDefIndex;
+
+					ConMsg("Allocated: %i\n", weaponPurchases->NumAllocated());
+
+					weaponPurchases->AddToTail(purchase);
+				}
+
 				pController->m_pInGameMoneyServices->m_iAccount = money - weaponEntry.iPrice;
 				pItemServices->GiveNamedItem(weaponEntry.szWeaponName);
 			}
