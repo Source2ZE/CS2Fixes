@@ -47,6 +47,7 @@ struct WeaponMapEntry_t
 	const char *szWeaponName;
 	int iPrice;
 	uint16 iItemDefIndex;
+	int maxAmount = 0;
 };
 
 void ParseChatCommand(const char *, CCSPlayerController *);
