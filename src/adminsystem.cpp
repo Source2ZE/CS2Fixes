@@ -25,6 +25,7 @@
 #include "icvar.h"
 #include "playermanager.h"
 #include "commands.h"
+#include "ctimer.h"
 #include <ctime>
 
 extern IVEngineServer2 *g_pEngineServer2;
@@ -379,9 +380,15 @@ CON_COMMAND_CHAT(map, "change map")
 		return;
 	}
 
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX"Changing map to %s...", args[1]);
+
 	char buf[MAX_PATH];
 	V_snprintf(buf, sizeof(buf), "changelevel %s", args[1]);
-	g_pEngineServer2->ServerCommand(buf);
+
+	new CTimer(5.0f, false, false, [buf]()
+	{
+		g_pEngineServer2->ServerCommand(buf);
+	});
 }
 
 void CAdminSystem::LoadAdmins()
