@@ -52,7 +52,8 @@ public:
 	enum EInfractionType
 	{
 		Ban,
-		Mute
+		Mute,
+		Gag
 	};
 
 	virtual EInfractionType GetType() = 0;
@@ -81,6 +82,16 @@ public:
 	
 	EInfractionType GetType() override { return Mute; }
 	void ApplyInfraction(ZEPlayer*) override;
+};
+
+class CGagInfraction : public CInfractionBase
+{
+public:
+	using CInfractionBase::CInfractionBase;
+
+	EInfractionType GetType() override { return Gag; }
+
+	void ApplyInfraction(ZEPlayer *) override;
 };
 
 class CAdmin

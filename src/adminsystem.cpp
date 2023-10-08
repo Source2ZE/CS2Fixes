@@ -196,6 +196,69 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 	}
 }
 
+CON_COMMAND_CHAT(gag, "gag a player")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->GetPlayerSlot();
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !gag <name> <duration/0 (permanent)>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlot[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	char *end;
+	int iDuration = strtol(args[2], &end, 10);
+
+	if (*end)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid duration.");
+		return;
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+		if (pTargetPlayer->IsFakeClient())
+			continue;
+
+		CInfractionBase *infraction = new CGagInfraction(iDuration ? std::time(0) + iDuration : 0, pTargetPlayer->GetSteamId64());
+
+		g_pAdminSystem->AddInfraction(infraction);
+		infraction->ApplyInfraction(pTargetPlayer);
+		g_pAdminSystem->SaveInfractions();
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have gagged %s for %i mins.", pTarget->GetPlayerName(), iDuration);
+	}
+}
+
 CON_COMMAND_CHAT(kick, "kick a player")
 {
 	if (!player)
@@ -397,15 +460,20 @@ void CAdminSystem::LoadInfractions()
 			return;
 		}
 
-		if (iType == CInfractionBase::Ban)
+		switch (iType)
 		{
+		case CInfractionBase::Ban:
 			AddInfraction(new CBanInfraction(iEndTime, iSteamId));
-		}
-		else if (iType == CInfractionBase::Mute)
-		{
+			break;
+		case CInfractionBase::Mute:
 			AddInfraction(new CMuteInfraction(iEndTime, iSteamId));
+			break;
+		case CInfractionBase::Gag:
+			AddInfraction(new CGagInfraction(iEndTime, iSteamId));
+			break;
+		default:
+			Warning("Invalid infraction type %d\n", iType);
 		}
-		return;
 	}
 }
 
@@ -496,4 +564,9 @@ void CBanInfraction::ApplyInfraction(ZEPlayer *player)
 void CMuteInfraction::ApplyInfraction(ZEPlayer* player)
 {
 	player->SetMuted(true);
+}
+
+void CGagInfraction::ApplyInfraction(ZEPlayer *player)
+{
+	player->SetGagged(true);
 }
