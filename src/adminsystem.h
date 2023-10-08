@@ -129,8 +129,8 @@ public:
 		LoadAdmins();
 		LoadInfractions();
 	}
-	void LoadAdmins();
-	void LoadInfractions();
+	bool LoadAdmins();
+	bool LoadInfractions();
 	void AddInfraction(CInfractionBase*);
 	void SaveInfractions();
 	void ApplyInfractions(ZEPlayer *player);
