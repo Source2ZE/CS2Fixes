@@ -693,6 +693,30 @@ CON_COMMAND_CHAT(map, "change map")
 	});
 }
 
+CON_COMMAND_CHAT(hsay, "say something as a hud hint")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->GetPlayerSlot();
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_CHAT))
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !hsay <message>");
+		return;
+	}
+
+	ClientPrintAll(HUD_PRINTCENTER, "%s", args.ArgS());
+}
+
 bool CAdminSystem::LoadAdmins()
 {
 	m_vecAdmins.Purge();
