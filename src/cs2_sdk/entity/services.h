@@ -89,3 +89,36 @@ public:
 	virtual bool GiveNamedItemBool(const char* pchName) = 0;
 	virtual CBaseEntity* GiveNamedItem(const char* pchName) = 0;
 };
+
+// We need an exactly sized class to be able to iterate the vector, our schema system implementation can't do this
+class WeaponPurchaseCount_t
+{
+private:
+	virtual void unk01() {};
+	uint64_t unk1 = 0; // 0x8
+	uint64_t unk2 = 0; // 0x10
+	uint64_t unk3 = 0; // 0x18
+	uint64_t unk4 = 0; // 0x20
+	uint64_t unk5 = -1; // 0x28
+public:
+	uint16_t m_nItemDefIndex; // 0x30	
+	uint16_t m_nCount; // 0x32
+private:
+	uint32_t unk6 = 0;
+};
+
+struct WeaponPurchaseTracker_t
+{
+public:
+	DECLARE_SCHEMA_CLASS_INLINE(WeaponPurchaseTracker_t)
+
+	SCHEMA_FIELD_POINTER(CUtlVector<WeaponPurchaseCount_t>, m_weaponPurchases)
+};
+
+class CCSPlayer_ActionTrackingServices
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayer_ActionTrackingServices)
+
+	SCHEMA_FIELD(WeaponPurchaseTracker_t, m_weaponPurchasesThisRound)
+};
