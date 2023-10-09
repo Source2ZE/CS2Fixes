@@ -81,7 +81,7 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 {
 	if (!pController || !pController->m_hPawn() || pController->m_hPawn()->m_iHealth() <= 0)
 	{
-		ClientPrint(pController, HUD_PRINTTALK, " \7[CS2Fixes]\1 You can only buy weapons when alive.");
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX"You can only buy weapons when alive.");
 		return;
 	}
 
@@ -108,7 +108,7 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 						{
 							if (purchase.m_nCount >= weaponEntry.maxAmount)
 							{
-								ClientPrint(pController, HUD_PRINTTALK, " \7[CS2Fixes]\1 You cannot use !%s anymore (Max %i)", weaponEntry.command, weaponEntry.maxAmount);
+								ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX"You cannot use !% s anymore(Max % i)", weaponEntry.command, weaponEntry.maxAmount);
 								return;
 							}
 							purchase.m_nCount += 1;
