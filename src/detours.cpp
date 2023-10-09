@@ -118,7 +118,7 @@ void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *pThis, void *a2)
 {
 	const char *pszClassName = pThis->m_pEntity->m_designerName.String();
 
-	Message("Weapon spawn: %s\n", pszClassName);
+	//Message("Weapon spawn: %s\n", pszClassName);
 
 	CCSWeaponBase_Spawn(pThis, a2);
 
