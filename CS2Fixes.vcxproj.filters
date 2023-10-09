@@ -80,10 +80,13 @@
     <ClCompile Include="src\playermanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\entity.cpp">
+    <ClCompile Include="src\adminsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\adminsystem.cpp">
+    <ClCompile Include="src\utils\entity.cpp">
+      <Filter>Source Files\cs2_sdk\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\events.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -177,6 +180,9 @@
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\ccsweaponbase.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\eventlistener.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

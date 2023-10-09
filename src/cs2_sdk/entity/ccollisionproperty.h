@@ -26,6 +26,9 @@ struct VPhysicsCollisionAttribute_t
 	DECLARE_SCHEMA_CLASS_INLINE(VPhysicsCollisionAttribute_t)
 
 	SCHEMA_FIELD(uint8, m_nCollisionGroup)
+	SCHEMA_FIELD(uint64_t, m_nInteractsAs)
+	SCHEMA_FIELD(uint64_t, m_nInteractsWith)
+	SCHEMA_FIELD(uint64_t, m_nInteractsExclude)
 };
 
 class CCollisionProperty

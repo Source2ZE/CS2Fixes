@@ -81,7 +81,7 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 {
 	if (!pController || !pController->m_hPawn() || pController->m_hPawn()->m_iHealth() <= 0)
 	{
-		ClientPrint(pController, HUD_PRINTTALK, " \7[CS2Fixes]\1 You can only buy weapons when alive.");
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX"You can only buy weapons when alive.");
 		return;
 	}
 	for (int i = 0; i < sizeof(WeaponMap) / sizeof(*WeaponMap); i++)
@@ -198,13 +198,13 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 	}
 	if (pPawn->m_iHealth() <= 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 You cannot teleport when dead!");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot teleport when dead!");
 		return;
 	}
 	//Get initial player position so we can do distance check
 	Vector initialpos = pPawn->GetAbsOrigin();
 
-	ClientPrint(player, HUD_PRINTTALK, " \7[CS2Fixes]\1 Teleporting to spawn in 5 seconds.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Teleporting to spawn in 5 seconds.");
 
 	//Convert into handle so we can safely pass it into the Timer
 	auto handle = player->GetHandle();
@@ -237,32 +237,17 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 			if (dist < 150.0f)
 			{
 				pPawn2->SetAbsOrigin(spawnpos);
-				ClientPrint(controller, HUD_PRINTTALK, " \7[CS2Fixes]\1 You have been teleported to spawn.");
+				ClientPrint(controller, HUD_PRINTTALK, CHAT_PREFIX"You have been teleported to spawn.");
 			}
 			else
 			{
-				ClientPrint(controller, HUD_PRINTTALK, " \7[CS2Fixes]\1 Teleport failed! You moved too far.");
+				ClientPrint(controller, HUD_PRINTTALK, CHAT_PREFIX"Teleport failed! You moved too far.");
 				return;
 			}
 		});
 }
 
-CON_COMMAND_CHAT(say, "say something using console")
-{
-	ClientPrintAll(HUD_PRINTTALK, "%s", args.ArgS());
-}
-
-CON_COMMAND_CHAT(takemoney, "take your money")
-{
-	if (!player)
-		return;
-
-	int amount = atoi(args[1]);
-	int money = player->m_pInGameMoneyServices->m_iAccount;
-
-	player->m_pInGameMoneyServices->m_iAccount = money - amount;
-}
-
+#ifdef _DEBUG
 CON_COMMAND_CHAT(message, "message someone")
 {
 	if (!player)
@@ -285,6 +270,22 @@ CON_COMMAND_CHAT(message, "message someone")
 	CSingleRecipientFilter filter(uid);
 
 	UTIL_SayTextFilter(filter, buf, nullptr, 0);
+}
+
+CON_COMMAND_CHAT(say, "say something using console")
+{
+	ClientPrintAll(HUD_PRINTTALK, "%s", args.ArgS());
+}
+
+CON_COMMAND_CHAT(takemoney, "take your money")
+{
+	if (!player)
+		return;
+
+	int amount = atoi(args[1]);
+	int money = player->m_pInGameMoneyServices->m_iAccount;
+
+	player->m_pInGameMoneyServices->m_iAccount = money - amount;
 }
 
 CON_COMMAND_CHAT(sethealth, "set your health")
@@ -377,6 +378,81 @@ CON_COMMAND_CHAT(setkills, "set your kills")
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have set your kills to %d.", atoi(args[1]));
 }
+
+CON_COMMAND_CHAT(setcollisiongroup, "set a player's collision group")
+{
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		uint8 group = atoi(args[2]);
+		uint8 oldgroup = pTarget->m_hPawn->m_pCollision->m_CollisionGroup;
+
+		pTarget->m_hPawn->m_pCollision->m_CollisionGroup = group;
+		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nCollisionGroup = group;
+		pTarget->GetPawn()->CollisionRulesChanged();
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting collision group on %s from %d to %d.", pTarget->GetPlayerName(), oldgroup, group);
+	}
+}
+
+CON_COMMAND_CHAT(setsolidtype, "set a player's solid type")
+{
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		uint8 type = atoi(args[2]);
+		uint8 oldtype = pTarget->m_hPawn->m_pCollision->m_nSolidType;
+
+		pTarget->m_hPawn->m_pCollision->m_nSolidType = (SolidType_t)type;
+		pTarget->GetPawn()->CollisionRulesChanged();
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting solid type on %s from %d to %d.", pTarget->GetPlayerName(), oldtype, type);
+	}
+}
+
+CON_COMMAND_CHAT(setinteraction, "set a player's interaction flags")
+{
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		uint64 oldInteractAs = pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nInteractsAs;
+		uint64 newInteract = oldInteractAs | ((uint64)1 << 53);
+
+		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nInteractsAs = newInteract;
+		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nInteractsExclude = newInteract;
+		pTarget->GetPawn()->CollisionRulesChanged();
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting interaction flags on %s from %llx to %llx.", pTarget->GetPlayerName(), oldInteractAs, newInteract);
+	}
+}
+#endif // _DEBUG
 
 // Lookup a weapon classname in the weapon map and "initialize" it.
 // Both m_bInitialized and m_iItemDefinitionIndex need to be set for a weapon to be pickable and not crash clients,

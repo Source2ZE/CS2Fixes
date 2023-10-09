@@ -21,6 +21,7 @@
 #include "platform.h"
 #include "utlvector.h"
 #include "playermanager.h"
+#include <ctime>
 
 #define ADMFLAG_RESERVATION			(1<<0)		/**< Convenience macro for Admin_Reservation as a FlagBit */
 #define ADMFLAG_GENERIC				(1<<1)		/**< Convenience macro for Admin_Generic as a FlagBit */
@@ -48,15 +49,21 @@
 class CInfractionBase
 {
 public:
-	CInfractionBase(int timestamp, uint64 steamId) : m_iTimestamp(timestamp), m_iSteamID(steamId) {};
+	CInfractionBase(int duration, uint64 steamId) : m_iSteamID(steamId)
+	{
+		// The duration is in minutes here
+		m_iTimestamp = duration != 0 ? std::time(nullptr) + (duration * 60) : 0;
+	}
 	enum EInfractionType
 	{
 		Ban,
-		Mute
+		Mute,
+		Gag
 	};
 
 	virtual EInfractionType GetType() = 0;
 	virtual void ApplyInfraction(ZEPlayer*) = 0;
+	virtual void UndoInfraction(ZEPlayer *) = 0;
 	int GetTimestamp() { return m_iTimestamp; }
 	uint64 GetSteamId64() { return m_iSteamID; }
 
@@ -72,6 +79,9 @@ public:
 	
 	EInfractionType GetType() override { return Ban; }
 	void ApplyInfraction(ZEPlayer*) override;
+
+	// This isn't needed as we'll just not kick the player when checking infractions upon joining
+	void UndoInfraction(ZEPlayer *) override {}
 };
 
 class CMuteInfraction :public CInfractionBase
@@ -81,13 +91,25 @@ public:
 	
 	EInfractionType GetType() override { return Mute; }
 	void ApplyInfraction(ZEPlayer*) override;
+	void UndoInfraction(ZEPlayer *) override;
+};
+
+class CGagInfraction : public CInfractionBase
+{
+public:
+	using CInfractionBase::CInfractionBase;
+
+	EInfractionType GetType() override { return Gag; }
+	void ApplyInfraction(ZEPlayer *) override;
+	void UndoInfraction(ZEPlayer *) override;
 };
 
 class CAdmin
 {
 public:
-	CAdmin(const char* pszName, uint64 iSteamID, uint64 iFlags) : m_pszName(pszName), m_iSteamID(iSteamID), m_iFlags(iFlags)
-	{};
+	CAdmin(const char* pszName, uint64 iSteamID, uint64 iFlags) : 
+		m_pszName(pszName), m_iSteamID(iSteamID), m_iFlags(iFlags)
+	{}
 
 	const char* GetName() { return m_pszName; };
 	uint64 GetSteamID() { return m_iSteamID; };
@@ -107,11 +129,12 @@ public:
 		LoadAdmins();
 		LoadInfractions();
 	}
-	void LoadAdmins();
-	void LoadInfractions();
+	bool LoadAdmins();
+	bool LoadInfractions();
 	void AddInfraction(CInfractionBase*);
 	void SaveInfractions();
 	void ApplyInfractions(ZEPlayer *player);
+	bool FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type);
 	CAdmin *FindAdmin(uint64 iSteamID);
 
 private:

@@ -20,9 +20,10 @@
 #pragma once
 
 #include "cbaseentity.h"
+#include "cbasemodelentity.h"
 #include "services.h"
 
-class CBasePlayerPawn : public Z_CBaseEntity
+class CBasePlayerPawn : public CBaseModelEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerPawn);
@@ -31,4 +32,6 @@ public:
 	SCHEMA_FIELD(uint8*, m_pWeaponServices)
 	SCHEMA_FIELD(CCSPlayer_ItemServices*, m_pItemServices)
 	SCHEMA_FIELD(CHandle<CBasePlayerController>, m_hController)
+
+	void CommitSuicide(bool bExplode, bool bForce) { CALL_VIRTUAL(void, 354, this, bExplode, bForce); }
 };

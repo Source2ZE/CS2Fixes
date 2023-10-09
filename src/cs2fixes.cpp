@@ -39,6 +39,7 @@
 #include "playermanager.h"
 #include <entity.h>
 #include "adminsystem.h"
+#include "eventlistener.h"
 
 #include "tier0/memdbgon.h"
 
@@ -181,8 +182,15 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pAdminSystem = new CAdminSystem();
 
 	// Steam authentication
-	new CTimer(1.0, true, true, []() {
+	new CTimer(1.0f, true, true, []()
+	{
 		g_playerManager->TryAuthenticate();
+	});
+
+	// Check for the expiration of infractions like mutes or gags
+	new CTimer(30.0f, true, true, []()
+	{
+		g_playerManager->CheckInfractions();
 	});
 
 	g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);
@@ -214,6 +222,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	FlushAllDetours();
 	UndoPatches();
 	RemoveTimers();
+	UnregisterEventListeners();
 
 	delete g_playerManager;
 	delete g_pAdminSystem;
@@ -235,6 +244,8 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	{
 		Error("Failed to lookup gpGlobals\n");
 	}
+
+	RegisterEventListeners();
 
 	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 }

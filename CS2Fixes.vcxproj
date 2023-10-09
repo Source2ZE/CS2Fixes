@@ -165,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="sdk\tier1\generichash.cpp" />
     <ClCompile Include="src\addresses.cpp" />
     <ClCompile Include="src\adminsystem.cpp" />
     <ClCompile Include="src\commands.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="src\ctimer.cpp" />
     <ClCompile Include="src\cvars.cpp" />
     <ClCompile Include="src\detours.cpp" />
+    <ClCompile Include="src\events.cpp" />
     <ClCompile Include="src\mempatch.cpp" />
     <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\playermanager.cpp" />
@@ -206,6 +208,7 @@
     <ClInclude Include="src\cdetour.h" />
     <ClInclude Include="src\ctimer.h" />
     <ClInclude Include="src\detours.h" />
+    <ClInclude Include="src\eventlistener.h" />
     <ClInclude Include="src\mempatch.h" />
     <ClInclude Include="src\addresses.h" />
     <ClInclude Include="src\playermanager.h" />
