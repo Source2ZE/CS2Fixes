@@ -150,7 +150,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	// this needs to run in case of a late load
 	gpGlobals = GetGameGlobals();
 
-	META_CONPRINTF( "Starting plugin.\n" );
+	//META_CONPRINTF( "Starting plugin.\n" );
 
 	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameFrame, g_pSource2Server, this, &CS2Fixes::Hook_GameFrame, true);
 	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientActive, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientActive, true);
@@ -163,7 +163,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	SH_ADD_HOOK_MEMFUNC(IGameEventSystem, PostEventAbstract, g_gameEventSystem, this, &CS2Fixes::Hook_PostEvent, false);
 	SH_ADD_HOOK_MEMFUNC(INetworkServerService, StartupServer, g_pNetworkServerService, this, &CS2Fixes::Hook_StartupServer, true);
 
-	META_CONPRINTF( "All hooks started!\n" );
+	//META_CONPRINTF( "All hooks started!\n" );
 	
 	addresses::Initialize();
 	interfaces::Initialize();
@@ -286,17 +286,17 @@ void CS2Fixes::AllPluginsLoaded()
 
 void CS2Fixes::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *pszName, uint64 xuid )
 {
-	META_CONPRINTF( "Hook_ClientActive(%d, %d, \"%s\", %lli)\n", slot, bLoadGame, pszName, xuid );
+	//META_CONPRINTF( "Hook_ClientActive(%d, %d, \"%s\", %lli)\n", slot, bLoadGame, pszName, xuid );
 }
 
 void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 {
-	META_CONPRINTF( "Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString() );
+	//META_CONPRINTF( "Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString() );
 }
 
 void CS2Fixes::Hook_ClientSettingsChanged( CPlayerSlot slot )
 {
-	META_CONPRINTF( "Hook_ClientSettingsChanged(%d)\n", slot );
+	//META_CONPRINTF( "Hook_ClientSettingsChanged(%d)\n", slot );
 }
 
 void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, const char *pszAddress, bool bFakePlayer )
@@ -304,26 +304,26 @@ void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, ui
 	if(bFakePlayer)
 		g_playerManager->OnBotConnected(slot);
 
-	META_CONPRINTF( "Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer );
+	//META_CONPRINTF( "Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer );
 }
 
 bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason )
 {
 	g_playerManager->OnClientConnected(slot);
-	META_CONPRINTF( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
+	//META_CONPRINTF( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
 
 void CS2Fixes::Hook_ClientPutInServer( CPlayerSlot slot, char const *pszName, int type, uint64 xuid )
 {
-	META_CONPRINTF( "Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, type, xuid );
+	//META_CONPRINTF( "Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, type, xuid );
 }
 
 void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, int reason, const char *pszName, uint64 xuid, const char *pszNetworkID )
 {
 	g_playerManager->OnClientDisconnect(slot);
-	META_CONPRINTF( "Hook_ClientDisconnect(%d, %d, \"%s\", %lli, \"%s\")\n", slot, reason, pszName, xuid, pszNetworkID );
+	//META_CONPRINTF( "Hook_ClientDisconnect(%d, %d, \"%s\", %lli, \"%s\")\n", slot, reason, pszName, xuid, pszNetworkID );
 }
 
 void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick )
