@@ -247,22 +247,7 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 		});
 }
 
-CON_COMMAND_CHAT(say, "say something using console")
-{
-	ClientPrintAll(HUD_PRINTTALK, "%s", args.ArgS());
-}
-
-CON_COMMAND_CHAT(takemoney, "take your money")
-{
-	if (!player)
-		return;
-
-	int amount = atoi(args[1]);
-	int money = player->m_pInGameMoneyServices->m_iAccount;
-
-	player->m_pInGameMoneyServices->m_iAccount = money - amount;
-}
-
+#ifdef _DEBUG
 CON_COMMAND_CHAT(message, "message someone")
 {
 	if (!player)
@@ -285,6 +270,22 @@ CON_COMMAND_CHAT(message, "message someone")
 	CSingleRecipientFilter filter(uid);
 
 	UTIL_SayTextFilter(filter, buf, nullptr, 0);
+}
+
+CON_COMMAND_CHAT(say, "say something using console")
+{
+	ClientPrintAll(HUD_PRINTTALK, "%s", args.ArgS());
+}
+
+CON_COMMAND_CHAT(takemoney, "take your money")
+{
+	if (!player)
+		return;
+
+	int amount = atoi(args[1]);
+	int money = player->m_pInGameMoneyServices->m_iAccount;
+
+	player->m_pInGameMoneyServices->m_iAccount = money - amount;
 }
 
 CON_COMMAND_CHAT(sethealth, "set your health")
@@ -377,6 +378,7 @@ CON_COMMAND_CHAT(setkills, "set your kills")
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have set your kills to %d.", atoi(args[1]));
 }
+#endif // _DEBUG
 
 // Lookup a weapon classname in the weapon map and "initialize" it.
 // Both m_bInitialized and m_iItemDefinitionIndex need to be set for a weapon to be pickable and not crash clients,
