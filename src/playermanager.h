@@ -25,14 +25,14 @@
 
 enum class ETargetType {
 	NONE,
+	PLAYER,
 	SELF,
+	RANDOM,
+	RANDOM_T,
+	RANDOM_CT,
 	ALL,
 	T,
 	CT,
-	PLAYER,
-	RANDOM,
-	RANDOM_T,
-	RANDOM_CT
 };
 
 class ZEPlayer
