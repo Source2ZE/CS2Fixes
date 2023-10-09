@@ -108,7 +108,7 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 						{
 							if (purchase.m_nCount >= weaponEntry.maxAmount)
 							{
-								ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX"You cannot use !% s anymore(Max % i)", weaponEntry.command, weaponEntry.maxAmount);
+								ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX"You cannot use !%s anymore(Max %i)", weaponEntry.command, weaponEntry.maxAmount);
 								return;
 							}
 							purchase.m_nCount += 1;
