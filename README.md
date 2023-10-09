@@ -4,7 +4,7 @@
 
 CS2Fixes is a collection of experimental fixes and features aimed but not limited to zombie escape. This project is not production ready and serves as a proof of concept and help for source2mod and other developers.
 
-## Roadmap
+## Features
 - [x] Metamod implementation
 - [x] Windows and Linux support
 - [x] Schema system
@@ -16,6 +16,7 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
 - [x] VScript unlocker
 - [x] Preventing console logs
 - [x] Buying weapons through chat
+  - [x] Limit weapon buy count
 - [x] Unlocking commands and convars
 - [x] Memory patching system
 - [x] Detour system
@@ -29,7 +30,7 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
       - [x] Kick
       - [x] Ban
       - [x] Mute
-      - [ ] Gag
+      - [x] Gag
       - [ ] Removing infractions
 - [x] Timers
 - [x] Blocking weapon sounds/decals
@@ -38,7 +39,7 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
 - [x] Legacy event listener
 - [x] Weapon pickup crash fix
 - [x] trigger_push fix
-- [ ] Remove player collisions
+- [x] Remove player collisions
 - [x] Ztele
 
 ## Compilation

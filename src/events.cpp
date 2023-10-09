@@ -18,7 +18,7 @@
  */
 
 #include "common.h"
-#include "keyvalues.h"
+#include "KeyValues.h"
 #include "commands.h"
 #include "ctimer.h"
 #include "eventlistener.h"
