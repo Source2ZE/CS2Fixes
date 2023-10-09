@@ -369,7 +369,7 @@ void CAdminSystem::LoadInfractions()
 
 	if (!pKV->LoadFromFile(g_pFullFileSystem, "addons/cs2fixes/data/infractions.txt"))
 	{
-		Warning("Failed to load addons/cs2fixes/configs/infractions.txt\n");
+		Warning("Failed to load addons/cs2fixes/data/infractions.txt\n");
 		return;
 	}
 
