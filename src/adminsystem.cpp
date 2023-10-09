@@ -226,7 +226,7 @@ CON_COMMAND_CHAT(unmute, "unmutes a player")
 
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_UNBAN))
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 		return;
@@ -376,7 +376,7 @@ CON_COMMAND_CHAT(ungag, "ungags a player")
 
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_UNBAN))
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 		return;
