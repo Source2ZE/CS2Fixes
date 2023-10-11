@@ -51,10 +51,6 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 	{
 		g_CommandList[index](args, pController);
 	}
-	else
-	{
-		ParseWeaponCommand(pController, args[0]);
-	}
 }
 
 void ClientPrintAll(int hud_dest, const char *msg, ...)
