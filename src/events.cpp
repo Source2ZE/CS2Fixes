@@ -49,6 +49,12 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
+GAME_EVENT_F(player_team)
+{
+	// Remove chat message for team changes
+	pEvent->SetBool("silent", true);
+}
+
 GAME_EVENT_F(player_spawn)
 {
 	CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
