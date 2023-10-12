@@ -135,7 +135,7 @@ public:
 	Vector GetAbsOrigin() { return m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin; }
 	void SetAbsOrigin(Vector vecOrigin) { m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin = vecOrigin; }
 
-	void Teleport(Vector *position, QAngle *angles, Vector *velocity) { CALL_VIRTUAL(void, 148, this, position, angles, velocity); }
+	void Teleport(Vector *position, QAngle *angles, Vector *velocity) { CALL_VIRTUAL(void, offsets::Teleport, this, position, angles, velocity); }
 
 	void CollisionRulesChanged() { CALL_VIRTUAL(void, offsets::CollisionRulesChanged, this); }
 

@@ -55,10 +55,12 @@ namespace offsets
 {
 #ifdef _WIN32
 	inline constexpr int GameEntitySystem = 0x58;
+	inline constexpr int Teleport = 148;
 	// PhysDisableEntityCollisions called on entities in two different scene
 	inline constexpr int CollisionRulesChanged = 173;
 #else
 	inline constexpr int GameEntitySystem = 0x50;
+	inline constexpr int Teleport = 147;
 	// PhysDisableEntityCollisions called on entities in two different scene
 	inline constexpr int CollisionRulesChanged = 172;
 #endif
