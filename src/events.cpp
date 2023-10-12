@@ -28,6 +28,7 @@
 
 extern IGameEventManager2 *g_gameEventManager;
 extern IServerGameClients *g_pSource2GameClients;
+extern CEntitySystem *g_pEntitySystem;
 
 CUtlVector<CGameEventListener *> g_vecEventListeners;
 
@@ -49,10 +50,46 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
+bool g_bForceCT = false;
+
+CON_COMMAND_F(c_toggle_team_switching, "toggle forcing CTs on every round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	g_bForceCT = !g_bForceCT;
+}
+
+GAME_EVENT_F(round_start)
+{
+	if (!g_bForceCT)
+		return;
+
+	for (int i = 1; i <= MAXPLAYERS; i++)
+	{
+		CBasePlayerController *pController = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity(CEntityIndex(i));
+
+		if (!pController || pController->m_iTeamNum < CS_TEAM_T)
+			continue;
+
+		CBasePlayerPawn *pPawn = pController->GetPawn();
+
+		if (!pPawn || pPawn->m_iTeamNum < CS_TEAM_T)
+			continue;
+
+		pController->m_iTeamNum = CS_TEAM_CT;
+		pPawn->m_iTeamNum = CS_TEAM_CT;
+	}
+}
+
+bool g_bBlockTeamMessages = true;
+
+CON_COMMAND_F(c_toggle_team_messages, "toggle team messages", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	g_bBlockTeamMessages = !g_bBlockTeamMessages;
+}
 GAME_EVENT_F(player_team)
 {
 	// Remove chat message for team changes
-	pEvent->SetBool("silent", true);
+	if (g_bBlockTeamMessages)
+		pEvent->SetBool("silent", true);
 }
 
 GAME_EVENT_F(player_spawn)
@@ -82,6 +119,4 @@ GAME_EVENT_F(player_spawn)
 		pPawn->m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
 		pPawn->CollisionRulesChanged();
 	});
-
-	Message("EVENT FIRED: %s %s\n", pEvent->GetName(), pController->GetPlayerName());
 }
