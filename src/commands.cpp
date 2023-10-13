@@ -201,7 +201,7 @@ CON_COMMAND_CHAT(stopsound, "stop weapon sounds")
 
 	pZEPlayer->ToggleStopSound();
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have % weapon effects", pZEPlayer->IsUsingStopSound() ? "disabled" : "enabled");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s weapon effects", pZEPlayer->IsUsingStopSound() ? "disabled" : "enabled");
 }
 
 CON_COMMAND_CHAT(ztele, "teleport to spawn")
