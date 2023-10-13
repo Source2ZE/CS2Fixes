@@ -52,9 +52,11 @@ void UnregisterEventListeners()
 
 bool g_bForceCT = false;
 
-CON_COMMAND_F(c_toggle_team_switching, "toggle forcing CTs on every round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+CON_COMMAND_F(c_force_ct, "toggle forcing CTs on every round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	g_bForceCT = !g_bForceCT;
+
+	Message("Forcing CTs on every round is now %s.\n", g_bForceCT ? "ON" : "OFF");
 }
 
 GAME_EVENT_F(round_start)
