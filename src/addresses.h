@@ -58,11 +58,13 @@ namespace offsets
 	inline constexpr int Teleport = 148;
 	// PhysDisableEntityCollisions called on entities in two different scene
 	inline constexpr int CollisionRulesChanged = 173;
+	inline constexpr int SetTransmit = 86;
 #else
 	inline constexpr int GameEntitySystem = 0x50;
 	inline constexpr int Teleport = 147;
 	// PhysDisableEntityCollisions called on entities in two different scene
 	inline constexpr int CollisionRulesChanged = 172;
+	inline constexpr int SetTransmit = 85;
 #endif
 }
 

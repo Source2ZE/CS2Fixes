@@ -281,7 +281,7 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 		});
 }
 
-#ifdef _DEBUG
+#if 1
 CON_COMMAND_CHAT(message, "message someone")
 {
 	if (!player)
@@ -411,6 +411,25 @@ CON_COMMAND_CHAT(setkills, "set your kills")
 	player->m_pActionTrackingServices->m_matchStats().m_iKills = atoi(args[1]);
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have set your kills to %d.", atoi(args[1]));
+}
+
+CON_COMMAND_CHAT(sethooks, "set your kills")
+{
+	if (!player)
+		return;
+
+	int iPlayer = player->GetPlayerSlot();
+
+	ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
+
+	// Something has to really go wrong for this to happen
+	if (!pZEPlayer)
+	{
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
+		return;
+	}
+
+	pZEPlayer->SetupHooks(atoi(args[1]));
 }
 
 CON_COMMAND_CHAT(setcollisiongroup, "set a player's collision group")

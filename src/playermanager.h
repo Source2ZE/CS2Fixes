@@ -22,6 +22,7 @@
 #include "utlvector.h"
 #include "steam/steamclientpublic.h"
 #include <playerslot.h>
+#include "iservernetworkable.h"
 
 enum class ETargetType {
 	NONE,
@@ -68,6 +69,10 @@ public:
 	void OnAuthenticated();
 	void CheckAdmin();
 	void CheckInfractions();
+
+	void SetupHooks(int slot);
+
+	void Hook_SetTransmit(CCheckTransmitInfo* pInfo, bool bAlways);
 
 private:
 	bool m_bAuthenticated;
