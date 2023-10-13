@@ -17,14 +17,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <../cs2fixes.h>
 #include "utlstring.h"
 #include "playermanager.h"
 #include "adminsystem.h"
 #include "entity/ccsplayercontroller.h"
 #include "ctime"
 
+
 extern IVEngineServer2 *g_pEngineServer2;
 extern CEntitySystem *g_pEntitySystem;
+
+SH_DECL_MANUALHOOK2_void(SetTransmit, offsets::SetTransmit, 0, 0, CCheckTransmitInfo*, bool);
 
 void ZEPlayer::OnAuthenticated()
 {
@@ -57,6 +61,35 @@ void ZEPlayer::CheckAdmin()
 bool ZEPlayer::IsAdminFlagSet(uint64 iFlag)
 {
 	return m_iAdminFlags & iFlag;
+}
+
+void ZEPlayer::Hook_SetTransmit(CCheckTransmitInfo *pInfo, bool bAlways)
+{
+	int test = (int)*((uint8*)pInfo + 560);
+
+	if (test > 0)
+	{
+		RETURN_META(MRES_SUPERCEDE);
+	}
+
+	//ConMsg("transmit %i\n", test);
+}
+
+void ZEPlayer::SetupHooks(int slot)
+{
+	CCSPlayerController* pPlayer = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(slot + 1));
+	auto pawn = pPlayer->GetPawn();
+
+	if (!pawn)
+	{
+		ConMsg("NO PAWN\n");
+		return;
+	}
+
+	ConMsg("HOOKED SHIT %p %p %s\n", pawn, pPlayer, pPlayer->GetPlayerName());
+
+	SH_ADD_MANUALVPHOOK(SetTransmit, pPlayer, SH_MEMBER(this, &ZEPlayer::Hook_SetTransmit), false);
+	//SH_ADD_MANUALVPHOOK(SetTransmit, pawn, SH_MEMBER(this, &ZEPlayer::Hook_SetTransmit), false);
 }
 
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
