@@ -20,6 +20,8 @@
 #include "protobuf/generated/cstrike15_usermessages.pb.h"
 #include "protobuf/generated/usermessages.pb.h"
 #include "protobuf/generated/cs_gameevents.pb.h"
+#include "protobuf/generated/gameevents.pb.h"
+#include "protobuf/generated/te.pb.h"
 
 #include "cs2fixes.h"
 #include "iserver.h"
@@ -257,7 +259,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
 
 	//CMsgTEFireBullets
-	if (info->m_MessageId == GE_FireBulletsId)
+	if (info->m_MessageId == GE_FireBulletsId || info->m_MessageId == TE_WorldDecalId)
 	{
 		// Can later do a bit mask for players using stopsound but this will do for now
 		for (uint64 i = 0; i < MAXPLAYERS; i++)
@@ -268,7 +270,11 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 			if (!(*(uint64 *)clients & ((uint64)1 << i)))
 				continue;
 
-			if (pPlayer && pPlayer->IsUsingStopSound())
+			if (!pPlayer)
+				continue;
+
+			if ((info->m_MessageId == GE_FireBulletsId && pPlayer->IsUsingStopSound()) || 
+				(info->m_MessageId == TE_WorldDecalId && pPlayer->IsUsingStopDecals()))
 			{
 				*(uint64*)clients &= ~((uint64)1 << i);
 				nClientCount--;
