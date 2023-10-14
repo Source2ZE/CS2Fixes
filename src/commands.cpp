@@ -204,7 +204,7 @@ CON_COMMAND_CHAT(stopsound, "stop weapon sounds")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s weapon effects", pZEPlayer->IsUsingStopSound() ? "disabled" : "enabled");
 }
 
-CON_COMMAND_CHAT(stopdecals, "stop world decals")
+CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fps in ZE")
 {
 	if (!player)
 		return;

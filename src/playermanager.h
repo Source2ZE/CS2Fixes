@@ -42,7 +42,7 @@ public:
 	{ 
 		m_bAuthenticated = false;
 		m_bStopSound = false;
-		m_bStopDecals = false;
+		m_bStopDecals = true;
 		m_iAdminFlags = 0;
 		m_SteamID = nullptr;
 		m_bGagged = false;
