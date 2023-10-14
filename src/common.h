@@ -47,8 +47,5 @@ void UnlockConVars();
 void UnlockConCommands();
 void ToggleLogs();
 
-void InitPatches();
-void UndoPatches();
-
 void Message(const char *, ...);
 void Panic(const char *, ...);

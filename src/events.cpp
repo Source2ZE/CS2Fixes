@@ -34,6 +34,9 @@ CUtlVector<CGameEventListener *> g_vecEventListeners;
 
 void RegisterEventListeners()
 {
+	if (!g_gameEventManager)
+		return;
+
 	FOR_EACH_VEC(g_vecEventListeners, i)
 	{
 		g_gameEventManager->AddListener(g_vecEventListeners[i], g_vecEventListeners[i]->GetEventName(), true);
@@ -42,6 +45,9 @@ void RegisterEventListeners()
 
 void UnregisterEventListeners()
 {
+	if (!g_gameEventManager)
+		return;
+
 	FOR_EACH_VEC(g_vecEventListeners, i)
 	{
 		g_gameEventManager->RemoveListener(g_vecEventListeners[i]);

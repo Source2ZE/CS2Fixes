@@ -24,9 +24,10 @@
 #include "tier0/memdbgon.h"
 
 
-#define RESOLVE_SIG(module, sig, variable) variable = (decltype(variable))module->FindSignature((uint8*)sig)
+#define RESOLVE_SIG(gameConfig, name, variable) \
+	variable = (decltype(variable))gameConfig->ResolveSignature(name)
 
-void addresses::Initialize()
+void addresses::Initialize(CGameConfig *g_GameConfig)
 {
 	modules::engine = new CModule(ROOTBIN, "engine2");
 	modules::tier0 = new CModule(ROOTBIN, "tier0");
@@ -44,10 +45,10 @@ void addresses::Initialize()
 		modules::hammer = new CModule(ROOTBIN, "tools/hammer");
 #endif
 
-	RESOLVE_SIG(modules::server, sigs::NetworkStateChanged, addresses::NetworkStateChanged);
-	RESOLVE_SIG(modules::server, sigs::StateChanged, addresses::StateChanged);
-	RESOLVE_SIG(modules::server, sigs::UTIL_ClientPrintAll, addresses::UTIL_ClientPrintAll);
-	RESOLVE_SIG(modules::server, sigs::ClientPrint, addresses::ClientPrint);
-	RESOLVE_SIG(modules::server, sigs::SetGroundEntity, addresses::SetGroundEntity);
-	RESOLVE_SIG(modules::server, sigs::CCSPlayerController_SwitchTeam, addresses::CCSPlayerController_SwitchTeam);
+	RESOLVE_SIG(g_GameConfig, "NetworkStateChanged", addresses::NetworkStateChanged);
+	RESOLVE_SIG(g_GameConfig, "StateChanged", addresses::StateChanged);
+	RESOLVE_SIG(g_GameConfig, "UTIL_ClientPrintAll", addresses::UTIL_ClientPrintAll);
+	RESOLVE_SIG(g_GameConfig, "ClientPrint", addresses::ClientPrint);
+	RESOLVE_SIG(g_GameConfig, "SetGroundEntity", addresses::SetGroundEntity);
+	RESOLVE_SIG(g_GameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
 }

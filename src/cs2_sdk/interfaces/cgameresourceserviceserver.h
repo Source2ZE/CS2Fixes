@@ -20,15 +20,18 @@
 #pragma once
 #include <platform.h>
 #include "interfaces/interfaces.h"
-#include "../../addresses.h"
+#include "../../gameconfig.h"
 
 class CGameEntitySystem;
+
+extern CGameConfig *g_GameConfig;
 
 class CGameResourceService
 {
 public:
 	CGameEntitySystem *GetGameEntitySystem()
 	{
-		return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(this) + offsets::GameEntitySystem);
+		static int offset = g_GameConfig->GetOffset("GameEntitySystem");
+		return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(this) + offset);
 	}
 };

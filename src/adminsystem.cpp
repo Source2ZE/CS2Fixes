@@ -30,7 +30,7 @@
 extern IVEngineServer2 *g_pEngineServer2;
 extern CEntitySystem *g_pEntitySystem;
 
-CAdminSystem* g_pAdminSystem;
+CAdminSystem* g_pAdminSystem = nullptr;
 
 CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(uint32));
 

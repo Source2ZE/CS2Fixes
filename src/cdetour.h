@@ -23,6 +23,8 @@
 #include "module.h"
 #include "utlvector.h"
 #include "plat.h"
+#include "gameconfig.h"
+#include "addresses.h"
 
 class CDetourBase
 {
@@ -35,11 +37,14 @@ template <typename T>
 class CDetour : public CDetourBase
 {
 public:
-	CDetour(CModule** pModule, T* pfnDetour, const char* pszName, byte* pSignature = nullptr) :
-		m_pModule(pModule), m_pfnDetour(pfnDetour), m_pszName(pszName), m_pSignature(pSignature)
+	CDetour(T* pfnDetour, const char* pszName) :
+		m_pfnDetour(pfnDetour), m_pszName(pszName)
 	{
 		m_hook = nullptr;
 		m_bInstalled = false;
+		m_pSignature = nullptr;
+		m_pSymbol = nullptr;
+		m_pModule = nullptr;
 	}
 
 	~CDetour()
@@ -47,7 +52,7 @@ public:
 		FreeDetour();
 	}
 
-	void CreateDetour();
+	bool CreateDetour(CGameConfig *gameConfig);
 	void EnableDetour();
 	void DisableDetour();
 	void FreeDetour() override;
@@ -66,6 +71,7 @@ private:
 	T* m_pfnDetour;
 	const char* m_pszName;
 	byte* m_pSignature;
+	const char* m_pSymbol;
 	T* m_pfnFunc;
 	funchook_t* m_hook;
 	bool m_bInstalled;
@@ -74,24 +80,11 @@ private:
 extern CUtlVector<CDetourBase*> g_vecDetours;
 
 template <typename T>
-void CDetour<T>::CreateDetour()
+bool CDetour<T>::CreateDetour(CGameConfig *gameConfig)
 {
-	if (!m_pModule || !(*m_pModule))
-	{
-		Panic("Invalid Module\n", m_pszName);
-		return;
-	}
-
-	if (!m_pSignature)
-		m_pfnFunc = (T*)dlsym((*m_pModule)->m_hModule, m_pszName);
-	else
-		m_pfnFunc = (T*)(*m_pModule)->FindSignature(m_pSignature);
-
+	m_pfnFunc = (T*)gameConfig->ResolveSignature(m_pszName);
 	if (!m_pfnFunc)
-	{
-		Panic("Could not find the address for %s to detour\n", m_pszName);
-		return;
-	}
+		return false;
 
 	m_hook = funchook_create();
 	funchook_prepare(m_hook, (void**)&m_pfnFunc, (void*)m_pfnDetour);
@@ -99,6 +92,7 @@ void CDetour<T>::CreateDetour()
 	g_vecDetours.AddToTail(this);
 
 	Message("Successfully initialized detour for %s!\n", m_pszName);
+	return true;
 }
 
 template <typename T>
@@ -144,7 +138,7 @@ void CDetour<T>::FreeDetour()
 		Warning("funchook_destroy error for %s: %d %s\n", m_pszName, error, funchook_error_message(m_hook));
 }
 
-#define DECLARE_DETOUR(name, detour, modulepath) \
-	CDetour<decltype(detour)> name(modulepath, detour, #name, (byte*)sigs::name)
+#define DECLARE_DETOUR(name, detour) \
+	CDetour<decltype(detour)> name(detour, #name)
 
 void FlushAllDetours();
