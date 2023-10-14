@@ -217,6 +217,16 @@
                 "windows"   "173"
                 "linux"     "172"
             }
+			"IsEntityPawn"
+            {
+                "windows"   "152"
+                "linux"     "151"
+            }
+			"IsEntityController"
+            {
+                "windows"   "153"
+                "linux"     "152"
+            }
         }
         "Patches"
         {

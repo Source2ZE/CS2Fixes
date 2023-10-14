@@ -52,36 +52,44 @@ DECLARE_DETOUR(CheckTransmit, Detour_CheckTransmit);
 
 void FASTCALL Detour_CheckTransmit(void* _this, CCheckTransmitInfo** ppInfoList, int infoCount, void* unionTransmitEdicts, void* ppNetworkables, uint16* pEntityIndices, int nEntityIndices)
 {
-	/*uint16* test = new uint16[nEntityIndices];
-
-	int newEntityIndices = 0;
-	for (int i = 0; i < nEntityIndices; i++)
-	{
-		auto a = pEntityIndices[i];
-		if (a != g_targetPawn && a != g_targetController)
-			test[newEntityIndices++] = a;
-		else
-			ConMsg("blocking %i %i\n", g_targetPawn, g_targetController);
-	}*/
-
 	CheckTransmit(_this, ppInfoList, infoCount, unionTransmitEdicts, ppNetworkables, pEntityIndices, nEntityIndices);
 
-
-	if (g_targetController != -1 && g_targetPawn != -1)
+	for (int i = 0; i < infoCount; i++)
 	{
-		for (int i = 0; i < infoCount; i++)
-		{
-			auto& pInfo = ppInfoList[i];
-			if (pInfo->m_pTransmitEdict->IsBitSet(g_targetPawn))
-			{
-				ConMsg("hide pawn\n");
-				pInfo->m_pTransmitEdict->Clear(g_targetPawn);
-			}
+		auto& pInfo = ppInfoList[i];
+		int userid = (int)*((uint8*)pInfo + 560);
 
-			if (pInfo->m_pTransmitEdict->IsBitSet(g_targetController))
+		auto pPlayer = g_playerManager->GetPlayerFromUserId(userid);
+
+		if (!pPlayer)
+			continue;
+
+		auto pSelfController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
+
+		if (!pSelfController)
+			continue;
+
+		auto pSelfPawn = pSelfController->GetPawn();
+
+		if (!pSelfPawn || !pSelfPawn->IsAlive())
+			continue;
+
+		for (int i = 1; i < MAXPLAYERS+1; i++)
+		{
+			if (pPlayer->ShouldBlockTransmit(i - 1))
 			{
-				ConMsg("hide controller\n");
-				pInfo->m_pTransmitEdict->Clear(g_targetController);
+				auto pController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)i);
+
+				if (!pController)
+					continue;
+
+				auto pPawn = pController->GetPawn();
+
+				if (!pPawn)
+					continue;
+
+				//pInfo->m_pTransmitEdict->Clear(i);
+				pInfo->m_pTransmitEdict->Clear(pPawn->entindex());
 			}
 		}
 	}
