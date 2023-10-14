@@ -20,6 +20,8 @@
 #pragma once
 #include "cdetour.h"
 
+
+class CCheckTransmitInfo;
 class IRecipientFilter;
 class ISoundEmitterSystemBase;
 class CBaseEntity;
@@ -40,6 +42,7 @@ void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *, CE
 //void FASTCALL Detour_CBaseEntity_Spawn(CBaseEntity *, void *);
 void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *, void *);
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther);
+void FASTCALL Detour_CheckTransmit(void* _this, CCheckTransmitInfo** ppInfoList, int infoCount, void* unionTransmitEdicts, void* ppNetworkables, uint16* pEntityIndices, int nEntityIndices);
 
 extern CDetour<decltype(Detour_Host_Say)> Host_Say;
 extern CDetour<decltype(Detour_UTIL_SayTextFilter)> UTIL_SayTextFilter;

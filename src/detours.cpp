@@ -38,6 +38,9 @@
 extern CGlobalVars *gpGlobals;
 extern CEntitySystem *g_pEntitySystem;
 
+int g_targetPawn = -1;
+int g_targetController = -1;
+
 DECLARE_DETOUR(Host_Say, Detour_Host_Say, &modules::server);
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter, &modules::server);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter, &modules::server);
@@ -45,6 +48,44 @@ DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient, &modules::engine);
 DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSound, &modules::server);
 DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn, &modules::server);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch, &modules::server);
+DECLARE_DETOUR(CheckTransmit, Detour_CheckTransmit, &modules::server);
+
+void FASTCALL Detour_CheckTransmit(void* _this, CCheckTransmitInfo** ppInfoList, int infoCount, void* unionTransmitEdicts, void* ppNetworkables, uint16* pEntityIndices, int nEntityIndices)
+{
+	/*uint16* test = new uint16[nEntityIndices];
+
+	int newEntityIndices = 0;
+	for (int i = 0; i < nEntityIndices; i++)
+	{
+		auto a = pEntityIndices[i];
+		if (a != g_targetPawn && a != g_targetController)
+			test[newEntityIndices++] = a;
+		else
+			ConMsg("blocking %i %i\n", g_targetPawn, g_targetController);
+	}*/
+
+	CheckTransmit(_this, ppInfoList, infoCount, unionTransmitEdicts, ppNetworkables, pEntityIndices, nEntityIndices);
+
+
+	if (g_targetController != -1 && g_targetPawn != -1)
+	{
+		for (int i = 0; i < infoCount; i++)
+		{
+			auto& pInfo = ppInfoList[i];
+			if (pInfo->m_pTransmitEdict->IsBitSet(g_targetPawn))
+			{
+				ConMsg("hide pawn\n");
+				pInfo->m_pTransmitEdict->Clear(g_targetPawn);
+			}
+
+			if (pInfo->m_pTransmitEdict->IsBitSet(g_targetController))
+			{
+				ConMsg("hide controller\n");
+				pInfo->m_pTransmitEdict->Clear(g_targetController);
+			}
+		}
+	}
+}
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
@@ -259,6 +300,9 @@ void InitDetours()
 
 	TriggerPush_Touch.CreateDetour();
 	TriggerPush_Touch.EnableDetour();
+
+	CheckTransmit.CreateDetour();
+	CheckTransmit.EnableDetour();
 }
 
 void FlushAllDetours()

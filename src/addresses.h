@@ -119,6 +119,8 @@ namespace sigs
 	inline const byte *HammerNoCustomerMachine = (byte *)"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9";
 	inline const byte *Patch_HammerNoCustomerMachine = (byte *)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90";
 
+	inline const byte* CheckTransmit = (byte*)"\x55\x48\x8D\x05\xD8\xE8\xFC\xFF";
+
 #else
 // Functions
 	// look for string "\"Console<0>\" say \"%s\"\n"
@@ -163,5 +165,7 @@ namespace sigs
 	// Check tilgep's pin in #scripting
 	inline const byte *VScriptEnable = (byte *)"\x83\xFE\x01\x0F\x84\x2A\x2A\x2A\x2A\x83";
 	inline const byte *Patch_VScriptEnable = (byte *)"\x83\xFE\x02";
+
+	inline const byte* CheckTransmit = (byte*)"\x55\x48\x8D\x05\xD8\xE8\xFC\xFF";
 #endif
 }
