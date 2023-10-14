@@ -49,4 +49,5 @@ void addresses::Initialize()
 	RESOLVE_SIG(modules::server, sigs::UTIL_ClientPrintAll, addresses::UTIL_ClientPrintAll);
 	RESOLVE_SIG(modules::server, sigs::ClientPrint, addresses::ClientPrint);
 	RESOLVE_SIG(modules::server, sigs::SetGroundEntity, addresses::SetGroundEntity);
+	RESOLVE_SIG(modules::server, sigs::CCSPlayerController_SwitchTeam, addresses::CCSPlayerController_SwitchTeam);
 }

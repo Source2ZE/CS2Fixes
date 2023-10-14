@@ -59,25 +59,20 @@ CON_COMMAND_F(c_force_ct, "toggle forcing CTs on every round", FCVAR_SPONLY | FC
 	Message("Forcing CTs on every round is now %s.\n", g_bForceCT ? "ON" : "OFF");
 }
 
-GAME_EVENT_F(round_start)
+GAME_EVENT_F(round_prestart)
 {
 	if (!g_bForceCT)
 		return;
 
 	for (int i = 1; i <= MAXPLAYERS; i++)
 	{
-		CBasePlayerController *pController = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity(CEntityIndex(i));
+		CCSPlayerController *pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity(CEntityIndex(i));
 
-		if (!pController || pController->m_iTeamNum < CS_TEAM_T)
+		// Only do this for Ts, ignore CTs and specs
+		if (!pController || pController->m_iTeamNum() != CS_TEAM_T)
 			continue;
 
-		CBasePlayerPawn *pPawn = pController->GetPawn();
-
-		if (!pPawn || pPawn->m_iTeamNum < CS_TEAM_T)
-			continue;
-
-		pController->m_iTeamNum = CS_TEAM_CT;
-		pPawn->m_iTeamNum = CS_TEAM_CT;
+		addresses::CCSPlayerController_SwitchTeam(pController, CS_TEAM_CT);
 	}
 }
 
