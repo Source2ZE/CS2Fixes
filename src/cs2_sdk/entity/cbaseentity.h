@@ -129,6 +129,7 @@ public:
 	SCHEMA_FIELD(MoveType_t, m_MoveType)
 	SCHEMA_FIELD(uint32, m_spawnflags)
 	SCHEMA_FIELD(uint32, m_fFlags)
+	SCHEMA_FIELD(LifeState_t, m_lifeState)
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 
@@ -138,6 +139,10 @@ public:
 	void Teleport(Vector *position, QAngle *angles, Vector *velocity) { CALL_VIRTUAL(void, offsets::Teleport, this, position, angles, velocity); }
 
 	void CollisionRulesChanged() { CALL_VIRTUAL(void, offsets::CollisionRulesChanged, this); }
+
+	bool IsPawn() { CALL_VIRTUAL(bool, offsets::IsEntityPawn, this); }
+	bool IsController() { CALL_VIRTUAL(bool, offsets::IsEntityController, this); }
+	bool IsAlive() { return m_lifeState == LifeState_t::LIFE_ALIVE; }
 
 	CHandle<CBaseEntity> GetHandle() { return m_pEntity->m_EHandle; }
 

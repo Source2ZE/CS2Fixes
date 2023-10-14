@@ -283,6 +283,29 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 		});
 }
 
+CON_COMMAND_CHAT(hide, "hides nearby teammates")
+{
+	if (!player)
+		return;
+
+	int iPlayer = player->GetPlayerSlot();
+
+	ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
+
+	// Something has to really go wrong for this to happen
+	if (!pZEPlayer)
+	{
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
+		return;
+	}
+
+	auto distance = V_StringToInt32(args[1], 0);
+	pZEPlayer->SetHideDistance(distance);
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have set hide to %i units.", distance);
+}
+
+
 #if 1
 CON_COMMAND_CHAT(message, "message someone")
 {

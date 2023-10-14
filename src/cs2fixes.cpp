@@ -187,6 +187,58 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		g_playerManager->TryAuthenticate();
 	});
 
+	// Check hide distance
+	new CTimer(1.0f, true, true, []()
+	{
+		if (!g_pEntitySystem)
+			return;
+
+		for (int i = 0; i < MAXPLAYERS; i++)
+		{
+			auto player = g_playerManager->GetPlayer(i);
+
+			if (!player)
+				continue;
+
+			player->ClearTransmit();
+			auto hideDistance = player->GetHideDistance();
+
+			if (!hideDistance)
+				continue;
+
+			auto pController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
+
+			if (!pController)
+				continue;
+
+			auto pPawn = pController->GetPawn();
+
+			if (!pPawn || !pPawn->IsAlive())
+				continue;
+
+			auto vecPosition = pPawn->GetAbsOrigin();
+			int team = pController->m_iTeamNum;
+
+			for (int j = 1; j < MAXPLAYERS + 1; j++)
+			{
+				if (j - 1 == i)
+					continue;
+
+				auto pTargetController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)j);
+
+				if (pTargetController)
+				{
+					auto pTargetPawn = pTargetController->GetPawn();
+
+					if (pTargetPawn && pTargetPawn->IsAlive() && pTargetController->m_iTeamNum == team)
+					{
+						player->SetTransmit(j-1, pTargetPawn->GetAbsOrigin().DistToSqr(vecPosition) <= hideDistance * hideDistance);
+					}
+				}
+			}
+		}
+	});
+
 	// Check for the expiration of infractions like mutes or gags
 	new CTimer(30.0f, true, true, []()
 	{

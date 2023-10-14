@@ -59,12 +59,16 @@ namespace offsets
 	// PhysDisableEntityCollisions called on entities in two different scene
 	inline constexpr int CollisionRulesChanged = 173;
 	inline constexpr int SetTransmit = 86;
+	inline constexpr int IsEntityPawn = 152;
+	inline constexpr int IsEntityController = 153;
 #else
 	inline constexpr int GameEntitySystem = 0x50;
 	inline constexpr int Teleport = 147;
 	// PhysDisableEntityCollisions called on entities in two different scene
 	inline constexpr int CollisionRulesChanged = 172;
 	inline constexpr int SetTransmit = 85;
+	inline constexpr int IsEntityPawn = 151;
+	inline constexpr int IsEntityController = 152;
 #endif
 }
 
@@ -119,7 +123,7 @@ namespace sigs
 	inline const byte *HammerNoCustomerMachine = (byte *)"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9";
 	inline const byte *Patch_HammerNoCustomerMachine = (byte *)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90";
 
-	inline const byte* CheckTransmit = (byte*)"\x55\x48\x8D\x05\xD8\xE8\xFC\xFF";
+	inline const byte* CheckTransmit = (byte*)"\x48\x8B\xC4\x4C\x89\x48\x20\x44\x89\x40\x18\x48\x89\x50\x10\x48\x89\x48\x08";
 
 #else
 // Functions
