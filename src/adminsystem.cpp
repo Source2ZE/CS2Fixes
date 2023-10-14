@@ -723,6 +723,44 @@ CON_COMMAND_CHAT(setteam, "set a player's team")
 	}
 }
 
+CON_COMMAND_CHAT(noclip, "toggle noclip on yourself")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->GetPlayerSlot();
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+	
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+		return;
+	}
+
+	CBasePlayerPawn *pPawn = player->m_hPawn();
+
+	if (!pPawn)
+		return;
+
+	if (pPawn->m_iHealth() <= 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot noclip while dead!");
+		return;
+	}
+
+	if (pPawn->m_MoveType() == MOVETYPE_NOCLIP)
+	{
+		pPawn->m_MoveType = MOVETYPE_WALK;
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "exited noclip.", player->GetPlayerName());
+	}
+	else
+	{
+		pPawn->m_MoveType = MOVETYPE_NOCLIP;
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "entered noclip.", player->GetPlayerName());
+	}
+}
+
 CON_COMMAND_CHAT(map, "change map")
 {
 	if (!player)
