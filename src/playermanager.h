@@ -45,6 +45,8 @@ public:
 		m_bStopDecals = false;
 		m_iAdminFlags = 0;
 		m_SteamID = nullptr;
+		m_bGagged = false;
+		m_bMuted = false;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
