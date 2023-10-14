@@ -36,6 +36,8 @@
 
 
 extern CEntitySystem *g_pEntitySystem;
+extern int g_targetPawn;
+extern int g_targetController;
 
 WeaponMapEntry_t WeaponMap[] = {
 	{"bizon",		  "weapon_bizon",			 1400, 26},
@@ -451,7 +453,19 @@ CON_COMMAND_CHAT(sethooks, "set your kills")
 		return;
 	}
 
-	pZEPlayer->SetupHooks(atoi(args[1]));
+	if (!atoi(args[1]))
+	{
+		g_targetPawn = -1;
+		g_targetController = -1;
+		return;
+	}
+
+	CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(atoi(args[1]) + 1));
+
+	g_targetPawn = atoi(args[1]) + 1;
+	g_targetController = pTarget->GetPawn()->entindex();
+
+	//pZEPlayer->SetupHooks(atoi(args[1]));
 }
 
 CON_COMMAND_CHAT(setcollisiongroup, "set a player's collision group")

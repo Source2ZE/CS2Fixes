@@ -48,6 +48,44 @@ DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
 DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSound);
 DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
+DECLARE_DETOUR(CheckTransmit, Detour_CheckTransmit);
+
+void FASTCALL Detour_CheckTransmit(void* _this, CCheckTransmitInfo** ppInfoList, int infoCount, void* unionTransmitEdicts, void* ppNetworkables, uint16* pEntityIndices, int nEntityIndices)
+{
+	/*uint16* test = new uint16[nEntityIndices];
+
+	int newEntityIndices = 0;
+	for (int i = 0; i < nEntityIndices; i++)
+	{
+		auto a = pEntityIndices[i];
+		if (a != g_targetPawn && a != g_targetController)
+			test[newEntityIndices++] = a;
+		else
+			ConMsg("blocking %i %i\n", g_targetPawn, g_targetController);
+	}*/
+
+	CheckTransmit(_this, ppInfoList, infoCount, unionTransmitEdicts, ppNetworkables, pEntityIndices, nEntityIndices);
+
+
+	if (g_targetController != -1 && g_targetPawn != -1)
+	{
+		for (int i = 0; i < infoCount; i++)
+		{
+			auto& pInfo = ppInfoList[i];
+			if (pInfo->m_pTransmitEdict->IsBitSet(g_targetPawn))
+			{
+				ConMsg("hide pawn\n");
+				pInfo->m_pTransmitEdict->Clear(g_targetPawn);
+			}
+
+			if (pInfo->m_pTransmitEdict->IsBitSet(g_targetController))
+			{
+				ConMsg("hide controller\n");
+				pInfo->m_pTransmitEdict->Clear(g_targetController);
+			}
+		}
+	}
+}
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
@@ -290,6 +328,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!TriggerPush_Touch.CreateDetour(gameConfig))
 		success = false;
 	TriggerPush_Touch.EnableDetour();
+
+	if (!CheckTransmit.CreateDetour(gameConfig))
+		success = false;
+	CheckTransmit.EnableDetour();
 
 	return success;
 }
