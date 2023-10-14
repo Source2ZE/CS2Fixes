@@ -33,6 +33,7 @@ CMemPatch g_CommonPatches[] =
 {
 	CMemPatch(&modules::server, sigs::MovementUnlock, sigs::Patch_MovementUnlock, "ServerMovementUnlock"),
 	CMemPatch(&modules::vscript, sigs::VScriptEnable, sigs::Patch_VScriptEnable, "VScriptEnable"),
+	CMemPatch(&modules::server, sigs::CheckJumpButtonWater, sigs::Patch_CheckJumpButton, "FixWaterFloorJump"),
 };
 
 CMemPatch g_ClientPatches[] =

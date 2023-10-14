@@ -117,6 +117,9 @@ namespace sigs
 	inline const byte *HammerNoCustomerMachine = (byte *)"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9";
 	inline const byte *Patch_HammerNoCustomerMachine = (byte *)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90";
 
+	// Find "player_jump", then find 42C80000h or in pseudocode "*(a2 + 68) = 1120403456;", changing from 100 to 145
+	inline const byte* CheckJumpButtonWater = (byte*)"\xC8\x42\xEB\x2A\x48\x8B\x4B\x30";
+	inline const byte* Patch_CheckJumpButton = (byte*)"\x11\x43";
 #else
 // Functions
 	// look for string "\"Console<0>\" say \"%s\"\n"
@@ -161,5 +164,9 @@ namespace sigs
 	// Check tilgep's pin in #scripting
 	inline const byte *VScriptEnable = (byte *)"\x83\xFE\x01\x0F\x84\x2A\x2A\x2A\x2A\x83";
 	inline const byte *Patch_VScriptEnable = (byte *)"\x83\xFE\x02";
+
+	// Find "player_jump", then find 42C80000h or in pseudocode "*(a2 + 68) = 1120403456;", changing from 100 to 145
+	inline const byte* CheckJumpButtonWater = (byte*)"\xC8\x42\x66\x0F\xEF\xE4\x41\x0F\x2F\x65";
+	inline const byte* Patch_CheckJumpButton = (byte*)"\x11\x43";
 #endif
 }
