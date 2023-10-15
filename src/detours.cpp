@@ -54,6 +54,9 @@ void FASTCALL Detour_CheckTransmit(void* _this, CCheckTransmitInfo** ppInfoList,
 {
 	CheckTransmit(_this, ppInfoList, infoCount, unionTransmitEdicts, ppNetworkables, pEntityIndices, nEntityIndices);
 
+	if (!g_pEntitySystem)
+		return;
+
 	for (int i = 0; i < infoCount; i++)
 	{
 		auto& pInfo = ppInfoList[i];
@@ -64,7 +67,7 @@ void FASTCALL Detour_CheckTransmit(void* _this, CCheckTransmitInfo** ppInfoList,
 		if (!pPlayer)
 			continue;
 
-		auto pSelfController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
+		auto pSelfController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pPlayer->GetPlayerSlot().Get() + 1));
 
 		if (!pSelfController)
 			continue;
