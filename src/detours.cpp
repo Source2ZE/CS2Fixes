@@ -48,58 +48,6 @@ DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
 DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSound);
 DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
-DECLARE_DETOUR(CheckTransmit, Detour_CheckTransmit);
-
-void FASTCALL Detour_CheckTransmit(void* _this, CCheckTransmitInfo** ppInfoList, int infoCount, void* unionTransmitEdicts, void* ppNetworkables, uint16* pEntityIndices, int nEntityIndices)
-{
-	CheckTransmit(_this, ppInfoList, infoCount, unionTransmitEdicts, ppNetworkables, pEntityIndices, nEntityIndices);
-
-	if (!g_pEntitySystem)
-		return;
-
-	for (int i = 0; i < infoCount; i++)
-	{
-		auto& pInfo = ppInfoList[i];
-
-		// offset 560 happens to have a player index here,
-		// though this is probably part of the client class that contains the CCheckTransmitInfo
-		int iPlayerSlot = (int)*((uint8*)pInfo + 560);
-
-		auto pPlayer = g_playerManager->GetPlayer(iPlayerSlot);
-
-		if (!pPlayer)
-			continue;
-
-		auto pSelfController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pPlayer->GetPlayerSlot().Get() + 1));
-
-		if (!pSelfController)
-			continue;
-
-		auto pSelfPawn = pSelfController->GetPawn();
-
-		if (!pSelfPawn || !pSelfPawn->IsAlive())
-			continue;
-
-		for (int i = 1; i < MAXPLAYERS+1; i++)
-		{
-			if (pPlayer->ShouldBlockTransmit(i - 1))
-			{
-				auto pController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)i);
-
-				if (!pController)
-					continue;
-
-				auto pPawn = pController->GetPawn();
-
-				if (!pPawn)
-					continue;
-
-				//pInfo->m_pTransmitEdict->Clear(i);
-				pInfo->m_pTransmitEdict->Clear(pPawn->entindex());
-			}
-		}
-	}
-}
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
@@ -348,10 +296,6 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!TriggerPush_Touch.CreateDetour(gameConfig))
 		success = false;
 	TriggerPush_Touch.EnableDetour();
-
-	if (!CheckTransmit.CreateDetour(gameConfig))
-		success = false;
-	CheckTransmit.EnableDetour();
 
 	return success;
 }
