@@ -38,6 +38,7 @@ namespace modules
 
 class CEntityInstance;
 class CBasePlayerController;
+class CCSPlayerController;
 class Z_CBaseEntity;
 
 namespace addresses
@@ -48,7 +49,8 @@ namespace addresses
 	inline void(FASTCALL *StateChanged)(void *networkTransmitComponent, CEntityInstance *ent, int64 offset, int16 a4, int16 a5);
 	inline void(FASTCALL *UTIL_ClientPrintAll)(int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4);
 	inline void(FASTCALL *ClientPrint)(CBasePlayerController *player, int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4);
-	inline void(FASTCALL* SetGroundEntity)(Z_CBaseEntity* ent, Z_CBaseEntity* ground);
+	inline void(FASTCALL *SetGroundEntity)(Z_CBaseEntity *ent, Z_CBaseEntity *ground);
+	inline void(FASTCALL *CCSPlayerController_SwitchTeam)(CCSPlayerController *pController, uint32 team);
 }
 
 namespace offsets
@@ -86,7 +88,7 @@ namespace sigs
 	// "<unconnected>" is given as a parameter to this
 	inline const byte *UTIL_ClientPrintAll = (byte *)"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x81\xEC\x70\x01\x2A\x2A\x8B\xE9";
 
-	// "Console command too long" is given as a paramterer to this
+	// "Console command too long" is given as a parameter to this
 	inline const byte *ClientPrint = (byte *)"\x48\x85\xC9\x0F\x84\x2A\x2A\x2A\x2A\x48\x8B\xC4\x48\x89\x58\x18";
 
 	inline const byte *NetworkStateChanged = (byte *)"\x4C\x8B\xC9\x48\x8B\x09\x48\x85\xC9\x74\x2A\x48\x8B\x41\x10";
@@ -105,10 +107,13 @@ namespace sigs
 	inline const byte *CCSWeaponBase_Spawn = (byte *)"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x18\x48\x89\x74\x24\x20\x57\x48\x83\xEC\x30\x48\x8B\xDA\x48\x8B\xE9\xE8\x2A\x2A\x2A\x2A";
 
 	// idk a good way to find this again, i just brute forced the vtable. offset is 133 on CTriggerPush
-	inline const byte* TriggerPush_Touch = (byte*)"\x48\x89\x5C\x24\x10\x48\x89\x7C\x24\x18\x55\x48\x8D\xAC\x24\x60\xE0\xFF\xFF";
+	inline const byte *TriggerPush_Touch = (byte *)"\x48\x89\x5C\x24\x10\x48\x89\x7C\x24\x18\x55\x48\x8D\xAC\x24\x60\xE0\xFF\xFF";
 
 	// this is called in CTriggerPush::Touch, using IDA pseudocode look in an `if ( ( v & 0x80 ) != 0 )` and then `if ( v > 0.0 ) SetGroundEntity()`
-	inline const byte* SetGroundEntity = (byte*)"\x48\x89\x5C\x24\x10\x48\x89\x6C\x24\x18\x48\x89\x7C\x24\x20\x41\x56\x48\x83\xEC\x20\x0F\xB6\x81\xC0\x02\x2A\x2A\x48";
+	inline const byte *SetGroundEntity = (byte *)"\x48\x89\x5C\x24\x10\x48\x89\x6C\x24\x18\x48\x89\x7C\x24\x20\x41\x56\x48\x83\xEC\x20\x0F\xB6\x81\xC0\x02\x2A\x2A\x48";
+
+	// literally just look for "CCSPlayerPawnBase::SwitchTeam", just keep in mind this is actually CCSPlayerController::SwitchTeam
+	inline const byte *CCSPlayerController_SwitchTeam = (byte *)"\x40\x56\x57\x48\x81\xEC\x2A\x2A\x2A\x2A\x48\x8B\xF9\x8B\xF2\x8B\xCA";
 
 // Patches
 	// Check vauff's pin in #scripting
@@ -123,8 +128,11 @@ namespace sigs
 	inline const byte *HammerNoCustomerMachine = (byte *)"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9";
 	inline const byte *Patch_HammerNoCustomerMachine = (byte *)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90";
 
+	// Find "player_jump", then find 42C80000h or in pseudocode "*(a2 + 68) = 1120403456;", changing from 100 to 145
+	inline const byte* CheckJumpButtonWater = (byte*)"\xC8\x42\xEB\x2A\x48\x8B\x4B\x30";
+	inline const byte* Patch_CheckJumpButton = (byte*)"\x11\x43";
+    
 	inline const byte* CheckTransmit = (byte*)"\x48\x8B\xC4\x4C\x89\x48\x20\x44\x89\x40\x18\x48\x89\x50\x10\x48\x89\x48\x08";
-
 #else
 // Functions
 	// look for string "\"Console<0>\" say \"%s\"\n"
@@ -156,10 +164,13 @@ namespace sigs
 	inline const byte *CCSWeaponBase_Spawn = (byte *)"\x55\x48\x89\xE5\x41\x57\x41\x56\x4C\x8D\x75\xC0\x41\x55\x49\x89\xFD\x41\x54\x49\x89\xF4";
 
 	// idk a good way to find this again, i just brute forced the vtable. offset is 133 on CTriggerPush
-	inline const byte* TriggerPush_Touch = (byte*)"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x81\xEC\x28\x20\x2A\x2A\xE8";
+	inline const byte *TriggerPush_Touch = (byte *)"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x81\xEC\x28\x20\x2A\x2A\xE8";
 
 	// this is called in CTriggerPush::Touch, using IDA pseudocode look in an `if ( ( v & 0x80 ) != 0 )` and then `if ( v > 0.0 ) SetGroundEntity()`
-	inline const byte* SetGroundEntity = (byte*)"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x83\xEC\x08\x0F\xB6\x87\xA8\x05\x2A\x2A\x83";
+	inline const byte *SetGroundEntity = (byte *)"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x83\xEC\x08\x0F\xB6\x87\xA8\x05\x2A\x2A\x83";
+
+	// literally just look for "CCSPlayerPawnBase::SwitchTeam", just keep in mind this is actually CCSPlayerController::SwitchTeam
+	inline const byte *CCSPlayerController_SwitchTeam = (byte *)"\x55\x48\x89\xE5\x41\x55\x49\x89\xFD\x89\xF7";
 
 // Patches
 	// Check vauff's pin in #scripting
@@ -170,6 +181,10 @@ namespace sigs
 	inline const byte *VScriptEnable = (byte *)"\x83\xFE\x01\x0F\x84\x2A\x2A\x2A\x2A\x83";
 	inline const byte *Patch_VScriptEnable = (byte *)"\x83\xFE\x02";
 
+	// Find "player_jump", then find 42C80000h or in pseudocode "*(a2 + 68) = 1120403456;", changing from 100 to 145
+	inline const byte* CheckJumpButtonWater = (byte*)"\xC8\x42\x66\x0F\xEF\xE4\x41\x0F\x2F\x65";
+	inline const byte* Patch_CheckJumpButton = (byte*)"\x11\x43";
+    
 	inline const byte* CheckTransmit = (byte*)"\x55\x48\x8D\x05\xD8\xE8\xFC\xFF";
 #endif
 }

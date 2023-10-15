@@ -203,7 +203,28 @@ CON_COMMAND_CHAT(stopsound, "stop weapon sounds")
 
 	pZEPlayer->ToggleStopSound();
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have toggled weapon effects.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s weapon effects", pZEPlayer->IsUsingStopSound() ? "disabled" : "enabled");
+}
+
+CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fps in ZE")
+{
+	if (!player)
+		return;
+
+	int iPlayer = player->GetPlayerSlot();
+
+	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(iPlayer);
+
+	// Something has to really go wrong for this to happen
+	if (!pZEPlayer)
+	{
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
+		return;
+	}
+
+	pZEPlayer->ToggleStopDecals();
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s world decals", pZEPlayer->IsUsingStopDecals() ? "disabled" : "enabled");
 }
 
 CON_COMMAND_CHAT(ztele, "teleport to spawn")

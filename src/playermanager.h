@@ -43,9 +43,12 @@ public:
 	{ 
 		m_bAuthenticated = false;
 		m_bStopSound = false;
+		m_bStopDecals = true;
 		m_iAdminFlags = 0;
 		m_SteamID = nullptr;
 		m_iHideDistance = 0;
+		m_bGagged = false;
+		m_bMuted = false;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -65,7 +68,9 @@ public:
 	void SetHideDistance(int distance) { m_iHideDistance = distance; }
 
 	void ToggleStopSound() { m_bStopSound = !m_bStopSound; }
+	void ToggleStopDecals() { m_bStopDecals = !m_bStopDecals; }
 	bool IsUsingStopSound() { return m_bStopSound; }
+	bool IsUsingStopDecals() { return m_bStopDecals; }
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
 	bool ShouldBlockTransmit(int index) { return m_shouldTransmit.Get(index); }
@@ -84,6 +89,7 @@ private:
 	bool m_bAuthenticated;
 	const CSteamID* m_SteamID;
 	bool m_bStopSound;
+	bool m_bStopDecals;
 	bool m_bFakeClient;
 	bool m_bMuted;
 	bool m_bGagged;
