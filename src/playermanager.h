@@ -81,10 +81,6 @@ public:
 	void CheckAdmin();
 	void CheckInfractions();
 
-	void SetupHooks(int slot);
-
-	void Hook_SetTransmit(CCheckTransmitInfo* pInfo, bool bAlways);
-
 private:
 	bool m_bAuthenticated;
 	const CSteamID* m_SteamID;

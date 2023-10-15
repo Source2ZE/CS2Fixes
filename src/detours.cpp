@@ -170,7 +170,9 @@ void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *pThis, void *a2)
 {
 	const char *pszClassName = pThis->m_pEntity->m_designerName.String();
 
+#ifdef _DEBUG
 	Message("Weapon spawn: %s\n", pszClassName);
+#endif
 
 	CCSWeaponBase_Spawn(pThis, a2);
 
@@ -286,11 +288,15 @@ void ToggleLogs()
 
 	if (!bBlock)
 	{
+		Message("Logging is now OFF.\n");
+
 		for (int i = 0; i < sizeof(g_LoggingDetours) / sizeof(*g_LoggingDetours); i++)
 			g_LoggingDetours[i].EnableDetour();
 	}
 	else
 	{
+		Message("Logging is now ON.\n");
+
 		for (int i = 0; i < sizeof(g_LoggingDetours) / sizeof(*g_LoggingDetours); i++)
 			g_LoggingDetours[i].DisableDetour();
 	}

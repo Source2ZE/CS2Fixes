@@ -122,7 +122,7 @@ ConVar sample_cvar("sample_cvar", "42", 0);
 
 CON_COMMAND_F(sample_command, "Sample command", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	META_CONPRINTF( "Sample command called by %d. Command: %s\n", context.GetPlayerSlot(), args.GetCommandString() );
+	Message( "Sample command called by %d. Command: %s\n", context.GetPlayerSlot(), args.GetCommandString() );
 }
 
 CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
@@ -155,7 +155,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	// this needs to run in case of a late load
 	gpGlobals = GetGameGlobals();
 
-	META_CONPRINTF( "Starting plugin.\n" );
+	Message( "Starting plugin.\n" );
 
 	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameFrame, g_pSource2Server, this, &CS2Fixes::Hook_GameFrame, true);
 	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientActive, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientActive, true);
@@ -189,6 +189,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	addresses::Initialize(g_GameConfig);
 	interfaces::Initialize();
+
+	Message( "All hooks started!\n" );
 
 	UnlockConVars();
 	UnlockConCommands();
@@ -382,22 +384,26 @@ void CS2Fixes::AllPluginsLoaded()
 
 void CS2Fixes::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *pszName, uint64 xuid )
 {
-	META_CONPRINTF( "Hook_ClientActive(%d, %d, \"%s\", %lli)\n", slot, bLoadGame, pszName, xuid );
+	Message( "Hook_ClientActive(%d, %d, \"%s\", %lli)\n", slot, bLoadGame, pszName, xuid );
 }
 
 void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 {
-	META_CONPRINTF( "Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString() );
+#ifdef _DEBUG
+	Message( "Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString() );
+#endif
 }
 
 void CS2Fixes::Hook_ClientSettingsChanged( CPlayerSlot slot )
 {
-	META_CONPRINTF( "Hook_ClientSettingsChanged(%d)\n", slot );
+#ifdef _DEBUG
+	Message( "Hook_ClientSettingsChanged(%d)\n", slot );
+#endif
 }
 
 void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, const char *pszAddress, bool bFakePlayer )
 {
-	META_CONPRINTF( "Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer );
+	Message( "Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer );
 
 	if(bFakePlayer)
 		g_playerManager->OnBotConnected(slot);
@@ -405,7 +411,7 @@ void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, ui
 
 bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason )
 {
-	META_CONPRINTF( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
+	Message( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
 
 	g_playerManager->OnClientConnected(slot);
 
@@ -414,12 +420,12 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 
 void CS2Fixes::Hook_ClientPutInServer( CPlayerSlot slot, char const *pszName, int type, uint64 xuid )
 {
-	META_CONPRINTF( "Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, type, xuid );
+	Message( "Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, type, xuid );
 }
 
 void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, int reason, const char *pszName, uint64 xuid, const char *pszNetworkID )
 {
-	META_CONPRINTF( "Hook_ClientDisconnect(%d, %d, \"%s\", %lli, \"%s\")\n", slot, reason, pszName, xuid, pszNetworkID );
+	Message( "Hook_ClientDisconnect(%d, %d, \"%s\", %lli, \"%s\")\n", slot, reason, pszName, xuid, pszNetworkID );
 
 	g_playerManager->OnClientDisconnect(slot);
 }
@@ -483,13 +489,13 @@ void CS2Fixes::OnLevelInit( char const *pMapName,
 									 bool loadGame,
 									 bool background )
 {
-	META_CONPRINTF("OnLevelInit(%s)\n", pMapName);
+	Message("OnLevelInit(%s)\n", pMapName);
 }
 
 // Potentially might not work
 void CS2Fixes::OnLevelShutdown()
 {
-	META_CONPRINTF("OnLevelShutdown()\n");
+	Message("OnLevelShutdown()\n");
 }
 
 bool CS2Fixes::Pause(char *error, size_t maxlen)
@@ -504,7 +510,7 @@ bool CS2Fixes::Unpause(char *error, size_t maxlen)
 
 const char *CS2Fixes::GetLicense()
 {
-	return "MIT License";
+	return "GPL v3 License";
 }
 
 const char *CS2Fixes::GetVersion()

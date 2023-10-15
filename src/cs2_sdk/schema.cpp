@@ -21,7 +21,6 @@
 
 #include "../common.h"
 #include "interfaces/cs2_interfaces.h"
-//#include <unordered_map>
 #include "tier1/utlmap.h"
 #include "tier0/memdbgon.h"
 #include "plat.h"
@@ -72,7 +71,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* cla
     {
         SchemaClassFieldData_t& field = pFields[i];
 
-#ifndef CS2_SDK_ENABLE_SCHEMA_FIELD_OFFSET_LOGGING
+#ifdef _DEBUG
         Message("%s::%s found at -> 0x%X - %llx\n", className, field.m_name, field.m_offset, &field);
 #endif
 
