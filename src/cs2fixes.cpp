@@ -226,6 +226,14 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 				if (j - 1 == i)
 					continue;
 
+				auto targetPlayer = g_playerManager->GetPlayer(j-1);
+
+				if (!targetPlayer)
+					continue;
+
+				if (targetPlayer->IsFakeClient())
+					continue;
+
 				auto pTargetController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)j);
 
 				if (pTargetController)
