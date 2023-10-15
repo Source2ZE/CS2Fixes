@@ -95,7 +95,7 @@ void ZEPlayer::SetupHooks(int slot)
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 {
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);
-	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get()] = slot.Get();
+	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get() & 0xFF] = slot.Get();
 }
 
 void CPlayerManager::OnClientConnected(CPlayerSlot slot)
@@ -104,14 +104,14 @@ void CPlayerManager::OnClientConnected(CPlayerSlot slot)
 
 	Message("%d connected\n", slot.Get());
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot);
-	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get()] = slot.Get();
+	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get() & 0xFF] = slot.Get();
 }
 
 void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 {
 	Message("%d disconnected\n", slot.Get());
 	m_vecPlayers[slot.Get()] = nullptr;
-	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get()] = -1;
+	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get() & 0xFF] = -1;
 }
 
 void CPlayerManager::TryAuthenticate()
@@ -261,5 +261,8 @@ CPlayerSlot CPlayerManager::GetSlotFromUserId(int userid)
 
 ZEPlayer *CPlayerManager::GetPlayerFromUserId(int userid)
 {
+	if (m_UserIdLookup[userid] == -1)
+		return nullptr;
+
 	return m_vecPlayers[m_UserIdLookup[userid]];
 }

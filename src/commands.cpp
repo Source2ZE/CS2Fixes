@@ -36,6 +36,7 @@
 
 
 extern CEntitySystem *g_pEntitySystem;
+extern IVEngineServer2* g_pEngineServer2;
 extern int g_targetPawn;
 extern int g_targetController;
 
@@ -226,6 +227,16 @@ CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fp
 	pZEPlayer->ToggleStopDecals();
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s world decals", pZEPlayer->IsUsingStopDecals() ? "disabled" : "enabled");
+}
+
+CON_COMMAND_CHAT(myuid, "test")
+{
+	if (!player)
+		return;
+
+	int iPlayer = player->GetPlayerSlot();
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your userid is %i, slot: %i, retrieved slot: %i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get(), iPlayer, g_playerManager->GetSlotFromUserId(g_pEngineServer2->GetPlayerUserId(iPlayer).Get()));
 }
 
 CON_COMMAND_CHAT(ztele, "teleport to spawn")
