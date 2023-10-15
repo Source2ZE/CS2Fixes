@@ -116,7 +116,7 @@ public:
 
 private:
 	ZEPlayer* m_vecPlayers[MAXPLAYERS];
-	int m_UserIdLookup[USHRT_MAX+1];
+	uint16 m_UserIdLookup[USHRT_MAX+1];
 };
 
 extern CPlayerManager *g_playerManager;

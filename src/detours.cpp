@@ -60,9 +60,12 @@ void FASTCALL Detour_CheckTransmit(void* _this, CCheckTransmitInfo** ppInfoList,
 	for (int i = 0; i < infoCount; i++)
 	{
 		auto& pInfo = ppInfoList[i];
-		int userid = (int)*((uint8*)pInfo + 560);
 
-		auto pPlayer = g_playerManager->GetPlayerFromUserId(userid);
+		// offset 560 happens to have a player index here,
+		// though this is probably part of the client class that contains the CCheckTransmitInfo
+		int iPlayerSlot = (int)*((uint8*)pInfo + 560);
+
+		auto pPlayer = g_playerManager->GetPlayer(iPlayerSlot);
 
 		if (!pPlayer)
 			continue;
