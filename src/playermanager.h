@@ -109,6 +109,7 @@ public:
 	void OnBotConnected(CPlayerSlot slot);
 	void TryAuthenticate();
 	void CheckInfractions();
+	void CheckHideDistances();
 	CPlayerSlot GetSlotFromUserId(int userid);
 	ZEPlayer *GetPlayerFromUserId(int userid);
 	ETargetType TargetPlayerString(int iCommandClient, const char* target, int &iNumClients, int *clients);
