@@ -73,14 +73,14 @@ void CPlayerManager::OnClientConnected(CPlayerSlot slot)
 
 	Message("%d connected\n", slot.Get());
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot);
-	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get() & 0xFF] = slot.Get();
+	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get()] = slot.Get();
 }
 
 void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 {
 	Message("%d disconnected\n", slot.Get());
 	m_vecPlayers[slot.Get()] = nullptr;
-	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get() & 0xFF] = -1;
+	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get()] = -1;
 }
 
 void CPlayerManager::TryAuthenticate()
@@ -191,7 +191,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 	}
 	else if (*target == '#')
 	{
-		int userid = V_StringToInt32(target + 1, -1);
+		int userid = V_StringToUint16(target + 1, -1);
 
 		if (userid != -1)
 		{
