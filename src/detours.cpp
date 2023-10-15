@@ -32,11 +32,13 @@
 #include "entity/ccsweaponbase.h"
 #include "entity/ctriggerpush.h"
 #include "playermanager.h"
+#include "igameevents.h"
 
 #include "tier0/memdbgon.h"
 
 extern CGlobalVars *gpGlobals;
 extern CEntitySystem *g_pEntitySystem;
+extern IGameEventManager2 *g_gameEventManager;
 
 DECLARE_DETOUR(Host_Say, Detour_Host_Say, &modules::server);
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter, &modules::server);
@@ -180,7 +182,23 @@ void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, 
 	bool bGagged = pController && g_playerManager->GetPlayer(pController->GetPlayerSlot())->IsGagged();
 
 	if (!bGagged && *args[1] != '/')
+	{
 		Host_Say(pController, args, teamonly, unk1, unk2);
+
+		if (pController)
+		{
+			IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_chat");
+
+			if (pEvent)
+			{
+				pEvent->SetBool("teamonly", teamonly);
+				pEvent->SetInt("userid", pController->entindex());
+				pEvent->SetString("text", args[1]);
+
+				g_gameEventManager->FireEvent(pEvent, true);
+			}
+		}
+	}
 
 	if (*args[1] == '!' || *args[1] == '/')
 		ParseChatCommand(args[1], pController);
