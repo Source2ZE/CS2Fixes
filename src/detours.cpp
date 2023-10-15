@@ -192,7 +192,7 @@ void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, 
 			if (pEvent)
 			{
 				pEvent->SetBool("teamonly", teamonly);
-				pEvent->SetInt("userid", pController->GetPlayerSlot());
+				pEvent->SetInt("userid", pController->entindex());
 				pEvent->SetString("text", args[1]);
 
 				g_gameEventManager->FireEvent(pEvent, true);
