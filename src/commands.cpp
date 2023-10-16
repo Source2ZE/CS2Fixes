@@ -79,11 +79,8 @@ WeaponMapEntry_t WeaponMap[] = {
 
 void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponName)
 {
-	if (!pController || !pController->m_hPawn() || pController->m_hPawn()->m_iHealth() <= 0)
-	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX"You can only buy weapons when alive.");
+	if (!pController || !pController->m_hPawn())
 		return;
-	}
 
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
 
@@ -93,6 +90,10 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 
 		if (!V_stricmp(pszWeaponName, weaponEntry.command))
 		{
+			if (pController->m_hPawn()->m_iHealth() <= 0) {
+				ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX"You can only buy weapons when alive.");
+				return;
+			}
 			CCSPlayer_ItemServices *pItemServices = pPawn->m_pItemServices;
 			int money = pController->m_pInGameMoneyServices->m_iAccount;
 			if (money >= weaponEntry.iPrice)
