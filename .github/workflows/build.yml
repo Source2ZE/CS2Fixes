@@ -1,0 +1,84 @@
+name: Plugin build
+
+on:
+  push:
+    paths-ignore:
+    - LICENSE
+    - README.md
+  pull_request:
+    paths-ignore:
+    - LICENSE
+    - README.md
+
+jobs:
+  linux:
+    name: linux build
+    runs-on: ubuntu-latest
+    container:
+      image: idk1703/build-img:11
+    steps:
+      - name: Checking out MM:Source
+        uses: actions/checkout@v3
+        with:
+          repository: alliedmodders/metamod-source
+          ref: master
+          path: metamod-source
+
+      - name: Checking out hl2sdk
+        uses: actions/checkout@v3
+        with:
+          repository: alliedmodders/hl2sdk
+          ref: cs2
+          path: hl2sdk-cs2
+
+      - name: Checking out own repository
+        uses: actions/checkout@v3
+        with:
+          path: cs2fixes
+          submodules: recursive
+
+      - name: Compiling files
+        working-directory: cs2fixes
+        run: |
+          python3 configure.py --enable-optimize --symbol-files --sdks cs2
+          ambuild objdir
+
+  windows:
+    name: windows build
+    runs-on: windows-latest
+    steps:
+      - name: Setting up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --upgrade pip setuptools wheel
+          pip install git+https://github.com/alliedmodders/ambuild
+
+      - name: Checking out MM:Source
+        uses: actions/checkout@v3
+        with:
+          repository: alliedmodders/metamod-source
+          ref: master
+          path: metamod-source
+
+      - name: Checking out hl2sdk
+        uses: actions/checkout@v3
+        with:
+          repository: alliedmodders/hl2sdk
+          ref: cs2
+          path: hl2sdk-cs2
+          
+      - name: Checking out own repository
+        uses: actions/checkout@v3
+        with:
+          path: cs2fixes
+          submodules: recursive
+
+      - name: Compiling files
+        working-directory: cs2fixes
+        run: |
+          python3 configure.py --enable-optimize --symbol-files --sdks cs2
+          ambuild objdir
