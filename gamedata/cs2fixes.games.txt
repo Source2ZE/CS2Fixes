@@ -190,6 +190,14 @@
                 "windows"       "\x40\x56\x57\x48\x81\xEC\x2A\x2A\x2A\x2A\x48\x8B\xF9\x8B\xF2\x8B\xCA"
                 "linux"         "\x55\x48\x89\xE5\x41\x55\x49\x89\xFD\x89\xF7"
             }
+
+            // String: "StartGravity", a function call in the function with startgravity in ends with "return (sub_XXX( a1 + 48) > 1);", change the 1 to 2
+            "WaterLevelGravity"
+            {
+                "library"       "server"
+                "windows"       "\x3C\x01\x49\x8B\x5B\x10\x49\x8B\x7B\x18\x0F\x97\xC0\x41\x0F\x28"
+                "linux"         "\x3C\x01\x0F\x97\xC0\x48\x81\xC4\x50\x01"
+            }
         }
         "Offsets"
         {
@@ -226,6 +234,11 @@
             {
                 "windows"		"\x11\x43"
                 "linux"			"\x11\x43"
+            }
+            "WaterLevelGravity"
+            {
+                "windows"               "\x3C\x02"
+                "linux"                 "\x3C\x02"
             }
 
             // Client

@@ -35,6 +35,7 @@ CMemPatch g_CommonPatches[] =
 	CMemPatch("ServerMovementUnlock", "ServerMovementUnlock"),
 	CMemPatch("VScriptEnable", "VScriptEnable"),
 	CMemPatch("CheckJumpButtonWater", "FixWaterFloorJump"),
+	CMemPatch("WaterLevelGravity", "WaterLevelGravity"),
 };
 
 CMemPatch g_ClientPatches[] =
