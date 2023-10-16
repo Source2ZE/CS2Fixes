@@ -479,7 +479,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 				if (!pPawn)
 					continue;
 
-				pInfo->m_pTransmitEdict->Clear(pPawn->entindex());
+				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 			}
 		}
 	}
