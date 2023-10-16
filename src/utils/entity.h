@@ -18,6 +18,7 @@
  */
 
 #pragma once
-#include <baseentity.h>
+
+class CEntityInstance;
 
 CEntityInstance* UTIL_FindEntityByClassname(CEntityInstance* pStart, const char* name);

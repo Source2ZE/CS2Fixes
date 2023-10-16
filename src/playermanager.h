@@ -22,7 +22,7 @@
 #include "utlvector.h"
 #include "steam/steamclientpublic.h"
 #include <playerslot.h>
-#include "iservernetworkable.h"
+#include "bitvec.h"
 
 enum class ETargetType {
 	NONE,
