@@ -30,6 +30,7 @@
 #include "common.h"
 #include "commands.h"
 #include "detours.h"
+#include "patches.h"
 #include "icvar.h"
 #include "interface.h"
 #include "tier0/dbg.h"
@@ -42,6 +43,7 @@
 #include <entity.h>
 #include "adminsystem.h"
 #include "eventlistener.h"
+#include "gameconfig.h"
 
 #include "tier0/memdbgon.h"
 
@@ -129,11 +131,12 @@ CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONL
 }
 
 IGameEventSystem* g_gameEventSystem;
-IGameEventManager2* g_gameEventManager;
+IGameEventManager2* g_gameEventManager = nullptr;
 INetworkGameServer* g_networkGameServer;
 CGlobalVars* gpGlobals = nullptr;
-CPlayerManager* g_playerManager;
+CPlayerManager* g_playerManager = nullptr;
 IVEngineServer2* g_pEngineServer2;
+CGameConfig *g_GameConfig = nullptr;
 
 PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
 bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
@@ -166,8 +169,25 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	SH_ADD_HOOK_MEMFUNC(INetworkServerService, StartupServer, g_pNetworkServerService, this, &CS2Fixes::Hook_StartupServer, true);
 
 	META_CONPRINTF( "All hooks started!\n" );
-	
-	addresses::Initialize();
+
+	CBufferStringGrowable<256> gamedirpath;
+	g_pEngineServer2->GetGameDir(gamedirpath);
+
+	std::string gamedirname = CGameConfig::GetDirectoryName(gamedirpath.Get());
+
+	const char *gamedataPath = "addons/cs2fixes/gamedata/cs2fixes.games.txt";
+	Message("Loading %s for game: %s\n", gamedataPath, gamedirname.c_str());
+
+	g_GameConfig = new CGameConfig(gamedirname, gamedataPath);
+	char conf_error[255] = "";
+	if (!g_GameConfig->Init(g_pFullFileSystem, conf_error, sizeof(conf_error)))
+	{
+		snprintf(error, maxlen, "Could not read %s: %s", g_GameConfig->GetPath().c_str(), conf_error);
+		Panic("%s\n", error);
+		return false;
+	}
+
+	addresses::Initialize(g_GameConfig);
 	interfaces::Initialize();
 
 	UnlockConVars();
@@ -177,8 +197,16 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
-	InitPatches();
-	InitDetours();
+	bool requiredInitLoaded = true;
+
+	if (!InitPatches(g_GameConfig))
+		requiredInitLoaded = false;
+
+	if (!InitDetours(g_GameConfig))
+		requiredInitLoaded = false;
+
+	if (!requiredInitLoaded)
+		return false;
 
 	g_playerManager = new CPlayerManager();
 	g_pAdminSystem = new CAdminSystem();
@@ -226,8 +254,14 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	RemoveTimers();
 	UnregisterEventListeners();
 
-	delete g_playerManager;
-	delete g_pAdminSystem;
+	if (g_playerManager != NULL)
+		delete g_playerManager;
+
+	if (g_pAdminSystem != NULL)
+		delete g_pAdminSystem;
+
+	if (g_GameConfig != NULL)
+		delete g_GameConfig;
 
 	return true;
 }
@@ -256,6 +290,8 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
 	INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
+	// Message( "Hook_PostEvent(%d, %d, %d, %lli)\n", nSlot, bLocalOnly, nClientCount, clients );
+
 	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
 
 	//CMsgTEFireBullets
@@ -288,6 +324,8 @@ void CS2Fixes::AllPluginsLoaded()
 	/* This is where we'd do stuff that relies on the mod or other plugins 
 	 * being initialized (for example, cvars added and events registered).
 	 */
+
+	Message( "AllPluginsLoaded\n" );
 }
 
 void CS2Fixes::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *pszName, uint64 xuid )
@@ -307,16 +345,17 @@ void CS2Fixes::Hook_ClientSettingsChanged( CPlayerSlot slot )
 
 void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, const char *pszAddress, bool bFakePlayer )
 {
+	META_CONPRINTF( "Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer );
+
 	if(bFakePlayer)
 		g_playerManager->OnBotConnected(slot);
-
-	META_CONPRINTF( "Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer );
 }
 
 bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason )
 {
-	g_playerManager->OnClientConnected(slot);
 	META_CONPRINTF( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
+
+	g_playerManager->OnClientConnected(slot);
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
@@ -328,8 +367,9 @@ void CS2Fixes::Hook_ClientPutInServer( CPlayerSlot slot, char const *pszName, in
 
 void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, int reason, const char *pszName, uint64 xuid, const char *pszNetworkID )
 {
-	g_playerManager->OnClientDisconnect(slot);
 	META_CONPRINTF( "Hook_ClientDisconnect(%d, %d, \"%s\", %lli, \"%s\")\n", slot, reason, pszName, xuid, pszNetworkID );
+
+	g_playerManager->OnClientDisconnect(slot);
 }
 
 void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick )

@@ -14,3 +14,4 @@ bld/
 [Oo]bj/
 .vs/
 *.vcxproj.user
+.vscode

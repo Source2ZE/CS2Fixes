@@ -51,4 +51,6 @@ with open(os.path.join(builder.buildPath, 'pdblog.txt'), 'wt') as fp:
 # Add CS2Fixes-specific files
 builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'data'))
 configs_folder = builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'configs'))
+gamedata_folder = builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'gamedata'))
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'admins.cfg'), configs_folder)
+builder.AddCopy(os.path.join('gamedata', 'cs2fixes.games.txt'), gamedata_folder)

@@ -25,18 +25,22 @@
 
 #include "tier0/memdbgon.h"
 
-void CMemPatch::PerformPatch()
+bool CMemPatch::PerformPatch(CGameConfig *gameConfig)
 {
-	if (!m_pModule)
-		return;
+	m_pPatchAddress = gameConfig->ResolveSignature(m_pSignatureName);
+	if (m_pPatchAddress == NULL)
+		return false;
 
-	m_pPatchAddress = (*m_pModule)->FindSignature(m_pSignature);
-
-	if (!m_pPatchAddress)
+	const char *patch = gameConfig->GetPatch(m_pszName);
+	if (patch == NULL)
 	{
-		Panic("Failed to find signature for %s\n", m_pszName);
-		return;
+		Panic("Failed to find patch for %s\n", m_pszName);
+		return false;
 	}
+	m_pPatch = gameConfig->HexToByte(patch);
+	if (m_pPatch == NULL)
+		return false;
+	m_iPatchLength = V_strlen((char*)m_pPatch);
 
 	m_pOriginalBytes = new byte[m_iPatchLength];
 	V_memcpy(m_pOriginalBytes, m_pPatchAddress, m_iPatchLength);
@@ -44,6 +48,7 @@ void CMemPatch::PerformPatch()
 	Plat_WriteMemory(m_pPatchAddress, (byte*)m_pPatch, m_iPatchLength);
 
 	Message("Successfully patched %s at %p\n", m_pszName, m_pPatchAddress);
+	return true;
 }
 
 void CMemPatch::UndoPatch()
