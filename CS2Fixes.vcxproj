@@ -177,6 +177,7 @@
     <ClCompile Include="src\cvars.cpp" />
     <ClCompile Include="src\detours.cpp" />
     <ClCompile Include="src\events.cpp" />
+    <ClCompile Include="src\gameconfig.cpp" />
     <ClCompile Include="src\mempatch.cpp" />
     <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\playermanager.cpp" />

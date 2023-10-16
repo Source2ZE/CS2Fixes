@@ -33,6 +33,7 @@
 #include "entity/ctriggerpush.h"
 #include "playermanager.h"
 #include "igameevents.h"
+#include "gameconfig.h"
 
 #include "tier0/memdbgon.h"
 
@@ -40,13 +41,13 @@ extern CGlobalVars *gpGlobals;
 extern CEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
 
-DECLARE_DETOUR(Host_Say, Detour_Host_Say, &modules::server);
-DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter, &modules::server);
-DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter, &modules::server);
-DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient, &modules::engine);
-DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSound, &modules::server);
-DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn, &modules::server);
-DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch, &modules::server);
+DECLARE_DETOUR(Host_Say, Detour_Host_Say);
+DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
+DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
+DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
+DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSound);
+DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
+DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
@@ -216,18 +217,18 @@ bool FASTCALL Detour_IsChannelEnabled(LoggingChannelID_t channelID, LoggingSever
 
 CDetour<decltype(Detour_Log)> g_LoggingDetours[] =
 {
-	CDetour<decltype(Detour_Log)>(&modules::tier0, Detour_Log, "Msg" ),
-	//CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?ConMsg@@YAXPEBDZZ" ),
-	//CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?ConColorMsg@@YAXAEBVColor@@PEBDZZ" ),
-	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "ConDMsg" ),
-	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "DevMsg" ),
-	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "Warning" ),
-	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "DevWarning" ),
-	//CDetour<decltype(Detour_Log)>( modules::tier0, Detour_Log, "?DevWarning@@YAXPEBDZZ" ),
-	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "LoggingSystem_Log" ),
-	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "LoggingSystem_LogDirect" ),
-	CDetour<decltype(Detour_Log)>( &modules::tier0, Detour_Log, "LoggingSystem_LogAssert" ),
-	//CDetour<decltype(Detour_Log)>( modules::tier0, Detour_IsChannelEnabled, "LoggingSystem_IsChannelEnabled" ),
+	CDetour<decltype(Detour_Log)>( Detour_Log, "Msg" ),
+	//CDetour<decltype(Detour_Log)>( Detour_Log, "?ConMsg@@YAXPEBDZZ" ),
+	//CDetour<decltype(Detour_Log)>( Detour_Log, "?ConColorMsg@@YAXAEBVColor@@PEBDZZ" ),
+	CDetour<decltype(Detour_Log)>( Detour_Log, "ConDMsg" ),
+	CDetour<decltype(Detour_Log)>( Detour_Log, "DevMsg" ),
+	CDetour<decltype(Detour_Log)>( Detour_Log, "Warning" ),
+	CDetour<decltype(Detour_Log)>( Detour_Log, "DevWarning" ),
+	//CDetour<decltype(Detour_Log)>( Detour_Log, "?DevWarning@@YAXPEBDZZ" ),
+	CDetour<decltype(Detour_Log)>( Detour_Log, "LoggingSystem_Log" ),
+	CDetour<decltype(Detour_Log)>( Detour_Log, "LoggingSystem_LogDirect" ),
+	CDetour<decltype(Detour_Log)>( Detour_Log, "LoggingSystem_LogAssert" ),
+	//CDetour<decltype(Detour_Log)>( Detour_IsChannelEnabled, "LoggingSystem_IsChannelEnabled" ),
 };
 
 void ToggleLogs()
@@ -250,33 +251,47 @@ void ToggleLogs()
 
 CUtlVector<CDetourBase *> g_vecDetours;
 
-void InitDetours()
+bool InitDetours(CGameConfig *gameConfig)
 {
+	bool success = true;
+
 	g_vecDetours.PurgeAndDeleteElements();
 
 	for (int i = 0; i < sizeof(g_LoggingDetours) / sizeof(*g_LoggingDetours); i++)
-		g_LoggingDetours[i].CreateDetour();
+	{
+		if (!g_LoggingDetours[i].CreateDetour(gameConfig))
+			success = false;
+	}
 
-	UTIL_SayTextFilter.CreateDetour();
+	if (!UTIL_SayTextFilter.CreateDetour(gameConfig))
+		success = false;
 	UTIL_SayTextFilter.EnableDetour();
 
-	UTIL_SayText2Filter.CreateDetour();
+	if (!UTIL_SayText2Filter.CreateDetour(gameConfig))
+		success = false;
 	UTIL_SayText2Filter.EnableDetour();
 
-	Host_Say.CreateDetour();
+	if (!Host_Say.CreateDetour(gameConfig))
+		success = false;
 	Host_Say.EnableDetour();
 
-	IsHearingClient.CreateDetour();
+	if (!IsHearingClient.CreateDetour(gameConfig))
+		success = false;
 	IsHearingClient.EnableDetour();
 
-	CSoundEmitterSystem_EmitSound.CreateDetour();
+	if (!CSoundEmitterSystem_EmitSound.CreateDetour(gameConfig))
+		success = false;
 	CSoundEmitterSystem_EmitSound.EnableDetour();
 
-	CCSWeaponBase_Spawn.CreateDetour();
+	if (!CCSWeaponBase_Spawn.CreateDetour(gameConfig))
+		success = false;
 	CCSWeaponBase_Spawn.EnableDetour();
 
-	TriggerPush_Touch.CreateDetour();
+	if (!TriggerPush_Touch.CreateDetour(gameConfig))
+		success = false;
 	TriggerPush_Touch.EnableDetour();
+
+	return success;
 }
 
 void FlushAllDetours()

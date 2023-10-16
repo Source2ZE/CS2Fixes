@@ -26,39 +26,47 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
 #include "addresses.h"
+#include "patches.h"
 
 #include "tier0/memdbgon.h"
 
 CMemPatch g_CommonPatches[] =
 {
-	CMemPatch(&modules::server, sigs::MovementUnlock, sigs::Patch_MovementUnlock, "ServerMovementUnlock"),
-	CMemPatch(&modules::vscript, sigs::VScriptEnable, sigs::Patch_VScriptEnable, "VScriptEnable"),
-	CMemPatch(&modules::server, sigs::CheckJumpButtonWater, sigs::Patch_CheckJumpButton, "FixWaterFloorJump"),
+	CMemPatch("ServerMovementUnlock", "ServerMovementUnlock"),
+	CMemPatch("VScriptEnable", "VScriptEnable"),
+	CMemPatch("CheckJumpButtonWater", "FixWaterFloorJump"),
 };
 
 CMemPatch g_ClientPatches[] =
 {
-	CMemPatch(&modules::client, sigs::MovementUnlock, sigs::Patch_MovementUnlock, "ClientMovementUnlock"),
+	CMemPatch("ClientMovementUnlock", "ClientMovementUnlock"),
 };
 
 #ifdef _WIN32
 CMemPatch g_ToolsPatches[] =
 {
 	// Remove some -nocustomermachine checks without needing -nocustomermachine itself as it can break stuff, mainly to enable device selection in compiles
-	CMemPatch(&modules::hammer, sigs::HammerNoCustomerMachine, sigs::Patch_HammerNoCustomerMachine, "HammerNoCustomerMachine", 4),
+	CMemPatch("HammerNoCustomerMachine", "HammerNoCustomerMachine", 4),
 };
 #endif
 
-void InitPatches()
+bool InitPatches(CGameConfig *g_GameConfig)
 {
+	bool success = true;
 	for (int i = 0; i < sizeof(g_CommonPatches) / sizeof(*g_CommonPatches); i++)
-		g_CommonPatches[i].PerformPatch();
+	{
+		if (!g_CommonPatches[i].PerformPatch(g_GameConfig))
+			success = false;
+	}
 
 	// Dedicated servers don't load client
 	if (!CommandLine()->HasParm("-dedicated"))
 	{
 		for (int i = 0; i < sizeof(g_ClientPatches) / sizeof(*g_ClientPatches); i++)
-			g_ClientPatches[i].PerformPatch();
+		{
+			if (!g_ClientPatches[i].PerformPatch(g_GameConfig))
+				success = false;
+		}
 	}
 
 #ifdef _WIN32
@@ -66,9 +74,13 @@ void InitPatches()
 	if (CommandLine()->HasParm("-tools"))
 	{
 		for (int i = 0; i < sizeof(g_ToolsPatches) / sizeof(*g_ToolsPatches); i++)
-			g_ToolsPatches[i].PerformPatch();
+		{
+			if (!g_ToolsPatches[i].PerformPatch(g_GameConfig))
+				success = false;
+		}
 	}
 #endif
+	return success;
 }
 
 void UndoPatches()

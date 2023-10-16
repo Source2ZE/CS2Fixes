@@ -28,8 +28,9 @@ class CCSPlayerController;
 class CEntityIndex;
 class CCommand;
 class CTriggerPush;
+class CGameConfig;
 
-void InitDetours();
+bool InitDetours(CGameConfig *gameConfig);
 void FlushAllDetours();
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CCSPlayerController *, uint64);
