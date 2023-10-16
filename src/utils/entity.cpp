@@ -19,7 +19,10 @@
 
 #include "entity.h"
 #include "../common.h"
+#include "platform.h"
 #include "entitysystem.h"
+
+#include "tier0/memdbgon.h"
 
 extern CEntitySystem *g_pEntitySystem;
 

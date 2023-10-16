@@ -22,7 +22,6 @@
 #include "../schema.h"
 #include "ccollisionproperty.h"
 #include "mathlib/vector.h"
-#include "baseentity.h"
 #include "ehandle.h"
 #include "../../gameconfig.h"
 
