@@ -176,13 +176,6 @@
                 "windows"		"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9"
                 "linux"			""
             }
-            // String: "player_jump", then find 42C80000h or in pseudocode "*(a2 + 68) = 1120403456;", changing from 100 to 145
-            "CheckJumpButtonWater"
-            {
-                "library"		"server"
-                "windows"		"\xC8\x42\xEB\x2A\x48\x8B\x4B\x30"
-                "linux"			"\xC8\x42\x66\x0F\xEF\xE4\x41\x0F\x2F\x65"
-            }
             // String: "CCSPlayerPawnBase::SwitchTeam", just keep in mind this is actually CCSPlayerController::SwitchTeam
             "CCSPlayerController_SwitchTeam"
             {
@@ -197,6 +190,14 @@
                 "library"       "server"
                 "windows"       "\x3C\x01\x49\x8B\x5B\x10\x49\x8B\x7B\x18\x0F\x97\xC0\x41\x0F\x28"
                 "linux"         "\x3C\x01\x0F\x97\xC0\x48\x81\xC4\x50\x01"
+            }
+            
+			// String: "PlayerMove_PostMove", generally function called before the postmove func is CategorizePosition, find the == 1.0 check in CategorizePosition
+            "CategorizeUnderwater"
+            {
+                "library"       "server"
+                "windows"       "\x75\x2A\xB3\x01\xEB\x2A\x32\xDB\x45\x32\xED"
+                "linux"         "\x0F\x45\xC1\x4D\x85\xC0\x0F\x95\xC1\x20\xC8"
             }
         }
         "Offsets"
@@ -230,15 +231,15 @@
                 "windows"		"\xBE\x02"
                 "linux"			"\x83\xFE\x02"
             }
-            "FixWaterFloorJump"
-            {
-                "windows"		"\x11\x43"
-                "linux"			"\x11\x43"
-            }
             "WaterLevelGravity"
             {
                 "windows"               "\x3C\x02"
                 "linux"                 "\x3C\x02"
+            }
+            "CategorizeUnderwater"
+            {
+                "windows"               "\x73"
+                "linux"                 "\x0F\x42"
             }
 
             // Client
