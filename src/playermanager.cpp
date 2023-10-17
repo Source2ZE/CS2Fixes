@@ -67,18 +67,33 @@ void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get()] = slot.Get();
 }
 
-void CPlayerManager::OnClientConnected(CPlayerSlot slot)
+bool CPlayerManager::OnClientConnected(CPlayerSlot slot)
 {
 	Assert(m_vecPlayers[slot.Get()] == nullptr);
 
 	Message("%d connected\n", slot.Get());
-	m_vecPlayers[slot.Get()] = new ZEPlayer(slot);
+
+	ZEPlayer *pPlayer = new ZEPlayer(slot);
+
+	if (!g_pAdminSystem->ApplyInfractions(pPlayer))
+	{
+		// Player is banned
+		delete pPlayer;
+		return false;
+	}
+
+	pPlayer->SetConnected();
+	m_vecPlayers[slot.Get()] = pPlayer;
 	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get()] = slot.Get();
+	
+	return true;
 }
 
 void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 {
 	Message("%d disconnected\n", slot.Get());
+
+	delete m_vecPlayers[slot.Get()];
 	m_vecPlayers[slot.Get()] = nullptr;
 	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get()] = -1;
 }
@@ -112,6 +127,8 @@ void CPlayerManager::CheckInfractions()
 
 		m_vecPlayers[i]->CheckInfractions();
 	}
+
+	g_pAdminSystem->SaveInfractions();
 }
 
 void CPlayerManager::CheckHideDistances()
