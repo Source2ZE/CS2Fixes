@@ -309,14 +309,31 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 		});
 }
 
+// TODO: Make this a convar when it's possible to do so
+static constexpr int g_iMaxHideDistance = 2000;
+
 CON_COMMAND_CHAT(hide, "hides nearby teammates")
 {
 	if (!player)
 		return;
 
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !hide <distance> (0 to disable)");
+		return;
+	}
+
+	int distance = V_StringToInt32(args[1], -1);
+
+	if (distance > g_iMaxHideDistance || distance < 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only hide players between 0 and %i units away.", g_iMaxHideDistance);
+		return;
+	}
+
 	int iPlayer = player->GetPlayerSlot();
 
-	ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
+	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(iPlayer);
 
 	// Something has to really go wrong for this to happen
 	if (!pZEPlayer)
@@ -325,10 +342,12 @@ CON_COMMAND_CHAT(hide, "hides nearby teammates")
 		return;
 	}
 
-	auto distance = V_StringToInt32(args[1], 0);
 	pZEPlayer->SetHideDistance(distance);
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have set hide to %i units.", distance);
+	if (distance == 0)
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding teammates is now disabled.", distance);
+	else
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding teammates within %i units.", distance);
 }
 
 
