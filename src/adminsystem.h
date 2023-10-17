@@ -49,10 +49,13 @@
 class CInfractionBase
 {
 public:
-	CInfractionBase(int duration, uint64 steamId) : m_iSteamID(steamId)
+	CInfractionBase(time_t duration, uint64 steamId, bool bEndTime = false) : m_iSteamID(steamId)
 	{
 		// The duration is in minutes here
-		m_iTimestamp = duration != 0 ? std::time(nullptr) + (duration * 60) : 0;
+		if (!bEndTime)
+			m_iTimestamp = duration != 0 ? std::time(nullptr) + (duration * 60) : 0;
+		else
+			m_iTimestamp = duration;
 	}
 	enum EInfractionType
 	{
@@ -64,11 +67,11 @@ public:
 	virtual EInfractionType GetType() = 0;
 	virtual void ApplyInfraction(ZEPlayer*) = 0;
 	virtual void UndoInfraction(ZEPlayer *) = 0;
-	int GetTimestamp() { return m_iTimestamp; }
+	time_t GetTimestamp() { return m_iTimestamp; }
 	uint64 GetSteamId64() { return m_iSteamID; }
 
 private:
-	int m_iTimestamp;
+	time_t m_iTimestamp;
 	uint64 m_iSteamID;
 };
 

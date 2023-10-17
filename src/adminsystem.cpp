@@ -884,7 +884,7 @@ bool CAdminSystem::LoadInfractions()
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
 		uint64 iSteamId = pKey->GetUint64("steamid", -1);
-		int iEndTime = pKey->GetInt("endtime", -1);
+		time_t iEndTime = pKey->GetUint64("endtime", -1);
 		int iType = pKey->GetInt("type", -1);
 
 		if (iSteamId == -1)
@@ -908,13 +908,13 @@ bool CAdminSystem::LoadInfractions()
 		switch (iType)
 		{
 		case CInfractionBase::Ban:
-			AddInfraction(new CBanInfraction(iEndTime, iSteamId));
+			AddInfraction(new CBanInfraction(iEndTime, iSteamId, true));
 			break;
 		case CInfractionBase::Mute:
-			AddInfraction(new CMuteInfraction(iEndTime, iSteamId));
+			AddInfraction(new CMuteInfraction(iEndTime, iSteamId, true));
 			break;
 		case CInfractionBase::Gag:
-			AddInfraction(new CGagInfraction(iEndTime, iSteamId));
+			AddInfraction(new CGagInfraction(iEndTime, iSteamId, true));
 			break;
 		default:
 			Warning("Invalid infraction type %d\n", iType);
@@ -932,7 +932,7 @@ void CAdminSystem::SaveInfractions()
 
 	FOR_EACH_VEC(m_vecInfractions, i)
 	{
-		int timestamp = m_vecInfractions[i]->GetTimestamp();
+		time_t timestamp = m_vecInfractions[i]->GetTimestamp();
 		if (timestamp != 0 && timestamp < std::time(0))
 			continue;
 
@@ -940,7 +940,7 @@ void CAdminSystem::SaveInfractions()
 		V_snprintf(buf, sizeof(buf), "%d", i);
 		pSubKey = new KeyValues(buf);
 		pSubKey->AddUint64("steamid", m_vecInfractions[i]->GetSteamId64());
-		pSubKey->AddInt("endtime", m_vecInfractions[i]->GetTimestamp());
+		pSubKey->AddUint64("endtime", m_vecInfractions[i]->GetTimestamp());
 		pSubKey->AddInt("type", m_vecInfractions[i]->GetType());
 
 		pKV->AddSubKey(pSubKey);
@@ -977,7 +977,7 @@ bool CAdminSystem::ApplyInfractions(ZEPlayer *player)
 		// Undo the infraction just briefly while checking if it ran out
 		m_vecInfractions[i]->UndoInfraction(player);
 
-		int timestamp = m_vecInfractions[i]->GetTimestamp();
+		time_t timestamp = m_vecInfractions[i]->GetTimestamp();
 		if (timestamp != 0 && timestamp <= std::time(0))
 		{
 			m_vecInfractions.Remove(i);
