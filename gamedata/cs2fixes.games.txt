@@ -199,6 +199,14 @@
                 "windows"       "\x75\x2A\xB3\x01\xEB\x2A\x32\xDB\x45\x32\xED"
                 "linux"         "\x0F\x45\xC1\x4D\x85\xC0\x0F\x95\xC1\x20\xC8"
             }
+
+			// Called right after "Removed %s(%s)\n"
+			"UTIL_Remove"
+            {
+                "library"       "server"
+                "windows"       "\x48\x85\xC9\x74\x2A\x48\x8B\xD1\x48\x8B\x0D\x01\xC1\xDE\x2A"
+                "linux"         "\x48\x89\xFE\x48\x85\xFF\x74\x2A\x48\x8D\x05\x91\xDF\xC4\x2A"
+            }
         }
         "Offsets"
         {
