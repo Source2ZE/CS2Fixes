@@ -957,12 +957,21 @@ void CAdminSystem::AddInfraction(CInfractionBase* infraction)
 	m_vecInfractions.AddToTail(infraction);
 }
 
+
+// This function can run at least twice when a player connects: Immediately upon getting authenticated by steam,
+// and upon fully joining if the former didn't happen or was delayed for any reason.
+// It's also run when we're periodically checking for infraction expiry.
 void CAdminSystem::ApplyInfractions(ZEPlayer *player)
 {
 	FOR_EACH_VEC(m_vecInfractions, i)
 	{
+		// Because this can run without the player being authenticated, and the fact that we're applying a ban/mute here,
+		// we can immediately just use the steamid we got from the connecting player.
+		uint64 iSteamID = player->IsAuthenticated() ? 
+			player->GetSteamId64() : g_pEngineServer2->GetClientSteamID(player->GetPlayerSlot())->ConvertToUint64();
+
 		// Undo the infraction just briefly while checking if it ran out
-		if (m_vecInfractions[i]->GetSteamId64() == player->GetSteamId64())
+		if (m_vecInfractions[i]->GetSteamId64() == iSteamID)
 			m_vecInfractions[i]->UndoInfraction(player);
 
 		int timestamp = m_vecInfractions[i]->GetTimestamp();
@@ -972,7 +981,7 @@ void CAdminSystem::ApplyInfractions(ZEPlayer *player)
 			continue;
 		}
 
-		if (m_vecInfractions[i]->GetSteamId64() == player->GetSteamId64())
+		if (m_vecInfractions[i]->GetSteamId64() == iSteamID)
 			m_vecInfractions[i]->ApplyInfraction(player);
 	}
 }
@@ -1026,7 +1035,7 @@ uint64 CAdminSystem::ParseFlags(const char* pszFlags)
 
 void CBanInfraction::ApplyInfraction(ZEPlayer *player)
 {
-	g_pEngineServer2->DisconnectClient(player->GetPlayerSlot().Get(), NETWORK_DISCONNECT_REJECT_BANNED); // "Kicked and banned"
+	g_pEngineServer2->DisconnectClient(player->GetPlayerSlot(), NETWORK_DISCONNECT_KICKBANADDED); // "Kicked and banned"
 }
 
 void CMuteInfraction::ApplyInfraction(ZEPlayer* player)
