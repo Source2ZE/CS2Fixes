@@ -958,10 +958,10 @@ void CAdminSystem::AddInfraction(CInfractionBase* infraction)
 }
 
 
-// This function can run at least twice when a player connects: Immediately upon getting authenticated by steam,
-// and upon fully joining if the former didn't happen or was delayed for any reason.
-// It's also run when we're periodically checking for infraction expiry.
-void CAdminSystem::ApplyInfractions(ZEPlayer *player)
+// This function can run at least twice when a player connects: Immediately upon client connection, and also upon getting authenticated by steam.
+// It's also run when we're periodically checking for infraction expiry in the case of mutes/gags.
+// This returns false only when called from ClientConnect and the player is banned in order to reject them.
+bool CAdminSystem::ApplyInfractions(ZEPlayer *player)
 {
 	FOR_EACH_VEC(m_vecInfractions, i)
 	{
@@ -970,9 +970,12 @@ void CAdminSystem::ApplyInfractions(ZEPlayer *player)
 		uint64 iSteamID = player->IsAuthenticated() ? 
 			player->GetSteamId64() : g_pEngineServer2->GetClientSteamID(player->GetPlayerSlot())->ConvertToUint64();
 
+		// We're only interested in infractions concerning this player
+		if (m_vecInfractions[i]->GetSteamId64() != iSteamID)
+			continue;
+
 		// Undo the infraction just briefly while checking if it ran out
-		if (m_vecInfractions[i]->GetSteamId64() == iSteamID)
-			m_vecInfractions[i]->UndoInfraction(player);
+		m_vecInfractions[i]->UndoInfraction(player);
 
 		int timestamp = m_vecInfractions[i]->GetTimestamp();
 		if (timestamp != 0 && timestamp <= std::time(0))
@@ -981,9 +984,14 @@ void CAdminSystem::ApplyInfractions(ZEPlayer *player)
 			continue;
 		}
 
-		if (m_vecInfractions[i]->GetSteamId64() == iSteamID)
-			m_vecInfractions[i]->ApplyInfraction(player);
+		// We are called from ClientConnect and the player is banned, immediately reject them
+		if (!player->IsConnected() && m_vecInfractions[i]->GetType() == CInfractionBase::EInfractionType::Ban)
+			return false;
+		
+		m_vecInfractions[i]->ApplyInfraction(player);
 	}
+
+	return true;
 }
 
 bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type)

@@ -133,7 +133,7 @@ public:
 	bool LoadInfractions();
 	void AddInfraction(CInfractionBase*);
 	void SaveInfractions();
-	void ApplyInfractions(ZEPlayer *player);
+	bool ApplyInfractions(ZEPlayer *player);
 	bool FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type);
 	CAdmin *FindAdmin(uint64 iSteamID);
 

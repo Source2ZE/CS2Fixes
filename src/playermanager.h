@@ -49,15 +49,18 @@ public:
 		m_bGagged = false;
 		m_bMuted = false;
 		m_iHideDistance = 0;
+		m_bConnected = false;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
 	bool IsAuthenticated() { return m_bAuthenticated; }
+	bool IsConnected() { return m_bConnected; }
 	uint64 GetSteamId64() { return m_SteamID->ConvertToUint64(); }
 	const CSteamID* GetSteamId() { return m_SteamID; }
 	bool IsAdminFlagSet(uint64 iFlag);
 	
 	void SetAuthenticated() { m_bAuthenticated = true; }
+	void SetConnected() { m_bConnected = true; }
 	void SetSteamId(const CSteamID* steamID) { m_SteamID = steamID; }
 	void SetAdminFlags(uint64 iAdminFlags) { m_iAdminFlags = iAdminFlags; }
 	void SetPlayerSlot(CPlayerSlot slot) { m_slot = slot; }
@@ -83,6 +86,7 @@ public:
 
 private:
 	bool m_bAuthenticated;
+	bool m_bConnected;
 	const CSteamID* m_SteamID;
 	bool m_bStopSound;
 	bool m_bStopDecals;
@@ -104,7 +108,7 @@ public:
 		V_memset(m_UserIdLookup, -1, sizeof(m_UserIdLookup));
 	}
 
-	void OnClientConnected(CPlayerSlot slot);
+	bool OnClientConnected(CPlayerSlot slot);
 	void OnClientDisconnect(CPlayerSlot slot);
 	void OnBotConnected(CPlayerSlot slot);
 	void TryAuthenticate();
