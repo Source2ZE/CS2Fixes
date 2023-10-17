@@ -465,22 +465,22 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 		if (!pSelfPawn || !pSelfPawn->IsAlive())
 			continue;
 
-		for (int i = 1; i < MAXPLAYERS + 1; i++)
+		for (int i = 1; i <= MAXPLAYERS; i++)
 		{
-			if (pPlayer->ShouldBlockTransmit(i - 1))
-			{
-				auto pController = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)i);
+			if (!pPlayer->ShouldBlockTransmit(i - 1))
+				continue;
 
-				if (!pController)
-					continue;
+			auto pController = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)i);
 
-				auto pPawn = pController->GetPawn();
+			if (!pController)
+				continue;
 
-				if (!pPawn)
-					continue;
+			auto pPawn = pController->GetPawn();
 
-				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
-			}
+			if (!pPawn)
+				continue;
+
+			pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 		}
 	}
 }
