@@ -437,6 +437,92 @@ CON_COMMAND_CHAT(ungag, "ungags a player")
 	}
 }
 
+//******************TEST FOR SILENT********************************************************************
+
+CON_COMMAND_CHAT(silent, "silent a player")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->GetPlayerSlot();
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !silent <name> <duration/0 (permanent)>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlot[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	char *end;
+	int iDuration = strtol(args[2], &end, 10);
+
+	if (*end)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid duration.");
+		return;
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+		if (pTargetPlayer->IsFakeClient())
+			continue;
+
+		CInfractionBase *infraction = new CGagInfraction(iDuration, pTargetPlayer->GetSteamId64());
+
+		// We're overwriting the infraction, so remove the previous one first
+		g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Gag);
+		g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute);
+		g_pAdminSystem->AddInfraction(infraction);
+		infraction->ApplyInfraction(pTargetPlayer);
+		g_pAdminSystem->SaveInfractions();
+
+		if (nType < ETargetType::ALL)
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "Silenced %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
+	}
+
+	g_pAdminSystem->SaveInfractions();
+
+	switch (nType)
+	{
+	case ETargetType::ALL:
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "Silenced everyone for %i minutes.", player->GetPlayerName(), iDuration);
+		break;
+	case ETargetType::T:
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "Silenced terrorists for %i minutes.", player->GetPlayerName(), iDuration);
+		break;
+	case ETargetType::CT:
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "Silenced counter-terrorists for %i minutes.", player->GetPlayerName(), iDuration);
+		break;
+	}
+}
+
+//******************END OF TEST SILENT*****************************************************************
+
 CON_COMMAND_CHAT(kick, "kick a player")
 {
 	if (!player)
