@@ -170,7 +170,13 @@ GAME_EVENT_F(round_end)
 		if (!pPlayer)
 			continue;
 
-		sortedPlayers.AddToTail(pPlayer);
+		CCSPlayerController* pController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity(CEntityIndex(pPlayer->GetPlayerSlot().Get() + 1));
+
+		if(!pController)
+			continue;
+
+		if (pController->m_iTeamNum == CS_TEAM_CT)
+			sortedPlayers.AddToTail(pPlayer);
 	}
 
 	sortedPlayers.Sort(SortPlayerDamage);
