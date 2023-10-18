@@ -496,6 +496,25 @@ CON_COMMAND_CHAT(silent, "silent a player")
 
 		// We're overwriting the infraction, so remove the previous one first
 		g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Gag);
+		g_pAdminSystem->AddInfraction(infraction);
+		infraction->ApplyInfraction(pTargetPlayer);
+		g_pAdminSystem->SaveInfractions();
+
+		//if (nType < ETargetType::ALL)
+
+				CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+		if (pTargetPlayer->IsFakeClient())
+			continue;
+
+		CInfractionBase *infraction = new CMuteInfraction(iDuration, pTargetPlayer->GetSteamId64());
+
+		// We're overwriting the infraction, so remove the previous one first
 		g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute);
 		g_pAdminSystem->AddInfraction(infraction);
 		infraction->ApplyInfraction(pTargetPlayer);
@@ -520,7 +539,6 @@ CON_COMMAND_CHAT(silent, "silent a player")
 		break;
 	}
 }
-
 //******************END OF TEST SILENT*****************************************************************
 
 CON_COMMAND_CHAT(kick, "kick a player")
