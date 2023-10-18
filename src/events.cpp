@@ -25,6 +25,7 @@
 #include "entity/cbaseplayercontroller.h"
 
 #include "tier0/memdbgon.h"
+#include "playermanager.h"
 
 extern IGameEventManager2 *g_gameEventManager;
 extern IServerGameClients *g_pSource2GameClients;
@@ -88,6 +89,7 @@ CON_COMMAND_F(c_toggle_team_messages, "toggle team messages", FCVAR_SPONLY | FCV
 {
 	g_bBlockTeamMessages = !g_bBlockTeamMessages;
 }
+
 GAME_EVENT_F(player_team)
 {
 	// Remove chat message for team changes
@@ -122,4 +124,67 @@ GAME_EVENT_F(player_spawn)
 		pPawn->m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
 		pPawn->CollisionRulesChanged();
 	});
+}
+
+GAME_EVENT_F(player_hurt)
+{
+	CBasePlayerController* pController = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
+
+	if (!pController)
+		return;
+
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+
+	if (!pPlayer)
+		return;
+
+	pPlayer->SetTotalDamage(pPlayer->GetTotalDamage() + pEvent->GetInt("dmg_health"));
+}
+
+GAME_EVENT_F(round_start)
+{
+	for (int i = 0; i < MAXPLAYERS; i++)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+		if (!pPlayer)
+			continue;
+
+		pPlayer->SetTotalDamage(0);
+	}
+}
+
+int SortPlayerDamage(ZEPlayer* const* a, ZEPlayer* const* b)
+{
+	return (*a)->GetTotalDamage() < (*b)->GetTotalDamage();
+}
+
+GAME_EVENT_F(round_end)
+{
+	CUtlVector<ZEPlayer*> sortedPlayers;
+
+	for (int i = 0; i < MAXPLAYERS; i++)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+		if (!pPlayer)
+			continue;
+
+		sortedPlayers.AddToTail(pPlayer);
+	}
+
+	sortedPlayers.Sort(SortPlayerDamage);
+
+	ClientPrintAll(HUD_PRINTTALK, " \x09TOP DEFENDERS");
+
+	char colorMap[] = { '\x10', '\x08', '\x09', '\x0B'};
+
+	for (int i = 0; i < MIN(sortedPlayers.Count(), 5); i++)
+	{
+		ZEPlayer* pPlayer = sortedPlayers[i];
+		CCSPlayerController* pController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity(CEntityIndex(pPlayer->GetPlayerSlot().Get() + 1));
+
+		ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
+		pPlayer->SetTotalDamage(0);
+	}
 }
