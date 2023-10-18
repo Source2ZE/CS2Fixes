@@ -322,6 +322,9 @@ class MMSPluginConfig(object):
         cxx.cflags += ['-g3']
       elif cxx.behavior == 'msvc':
         cxx.cflags += ['/Od', '/RTC1']
+    elif builder.options.reldwarf == '1':
+      if cxx.behavior == 'gcc':
+        cxx.cflags += ['-g3']
 
     # Don't omit the frame pointer.
     # This needs to be after our optimization flags which could otherwise disable it.
