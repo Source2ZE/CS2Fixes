@@ -52,14 +52,22 @@ struct WeaponMapEntry_t
 
 void ParseChatCommand(const char *, CCSPlayerController *);
 
-#define CON_COMMAND_CHAT(name, description)																											\
-	void name##_callback(const CCommand &args, CCSPlayerController *player);																		\
-	static void name##_con_callback(const CCommandContext &context, const CCommand &args)															\
-	{																																				\
-		name##_callback(args, (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(context.GetPlayerSlot().Get() + 1)));			\
-	}																																				\
-	static CChatCommand name##_chat_command(#name, name##_callback);																				\
-	static ConCommandRefAbstract name##_ref;																										\
-	static ConCommand name##_command(&name##_ref, COMMAND_PREFIX #name, name##_con_callback,														\
-									description, FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);												\
+#define CON_COMMAND_CHAT(name, description)																												\
+	void name##_callback(const CCommand &args, CCSPlayerController *player);																			\
+	static void name##_con_callback(const CCommandContext &context, const CCommand &args)																\
+	{																																					\
+		CCSPlayerController *pController = nullptr;																										\
+		if (context.GetPlayerSlot().Get() != -1)																										\
+			pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(context.GetPlayerSlot().Get() + 1));						\
+																																						\
+		/*Only allow connected players to run chat commands*/																							\
+		if (pController && !pController->IsConnected())																									\
+			return;																																		\
+																																						\
+		name##_callback(args, pController);																												\
+	}																																					\
+	static CChatCommand name##_chat_command(#name, name##_callback);																					\
+	static ConCommandRefAbstract name##_ref;																											\
+	static ConCommand name##_command(&name##_ref, COMMAND_PREFIX #name, name##_con_callback,															\
+									description, FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);													\
 	void name##_callback(const CCommand &args, CCSPlayerController *player)

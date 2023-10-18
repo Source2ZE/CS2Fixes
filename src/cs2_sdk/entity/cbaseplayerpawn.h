@@ -34,4 +34,6 @@ public:
 	SCHEMA_FIELD(CHandle<CBasePlayerController>, m_hController)
 
 	void CommitSuicide(bool bExplode, bool bForce) { CALL_VIRTUAL(void, 354, this, bExplode, bForce); }
+
+	CBasePlayerController *GetController() { return m_hController.Get(); }
 };

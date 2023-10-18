@@ -143,7 +143,7 @@ void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponN
 
 void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 {
-	if (!pController)
+	if (!pController || !pController->IsConnected())
 		return;
 
 	CCommand args;
@@ -172,6 +172,7 @@ void ClientPrintAll(int hud_dest, const char *msg, ...)
 	va_end(args);
 
 	addresses::UTIL_ClientPrintAll(hud_dest, buf, nullptr, nullptr, nullptr, nullptr);
+	ConMsg("%s\n", buf);
 }
 
 void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, ...)
@@ -184,7 +185,10 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 
 	va_end(args);
 
-	addresses::ClientPrint(player, hud_dest, buf, nullptr, nullptr, nullptr, nullptr);
+	if (player)
+		addresses::ClientPrint(player, hud_dest, buf, nullptr, nullptr, nullptr, nullptr);
+	else
+		ConMsg("%s\n", buf);
 }
 
 CON_COMMAND_CHAT(stopsound, "toggle weapon sounds")
@@ -236,9 +240,7 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 	while (nullptr != (spawn = (SpawnPoint*)UTIL_FindEntityByClassname(spawn, "info_player_")))
 	{
 		if (spawn->m_bEnabled())
-		{
 			spawns.AddToTail(spawn);
-		}
 	}
 
 	//Pick and get position of random spawnpoint
@@ -246,53 +248,45 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 	Vector spawnpos = spawns[randomindex]->GetAbsOrigin();
 
 	//Here's where the mess starts
-	CBasePlayerPawn* pPawn = player->m_hPawn();
+	CBasePlayerPawn* pPawn = player->GetPawn();
+
 	if (!pPawn)
-	{
 		return;
-	}
-	if (pPawn->m_iHealth() <= 0)
+
+	if (!pPawn->IsAlive())
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot teleport when dead!");
 		return;
 	}
+
 	//Get initial player position so we can do distance check
 	Vector initialpos = pPawn->GetAbsOrigin();
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Teleporting to spawn in 5 seconds.");
 
-	//Convert into handle so we can safely pass it into the Timer
-	auto handle = player->GetHandle();
+	CHandle<CBasePlayerPawn> handle = pPawn->GetHandle();
+
 	new CTimer(5.0f, false, false, [spawnpos, handle, initialpos]()
+	{
+		if (!handle.Get())
+			return;
+
+		CBasePlayerPawn *pPawn = handle.Get();
+
+		Vector endpos = pPawn->GetAbsOrigin();
+
+		// TODO: Make this a convar
+		if (initialpos.DistTo(endpos) < 150.0f)
 		{
-			//Convert handle into controller so we can use it again, and check it isn't invalid
-			CCSPlayerController* controller = (CCSPlayerController*)Z_CBaseEntity::EntityFromHandle(handle);
-
-			if (!controller || controller->m_iConnected() != PlayerConnectedState::PlayerConnected)
-				return;
-
-			//Get pawn (again) so we can do shit
-			CBasePlayerPawn* pPawn2 = controller->m_hPawn();
-
-			//Get player origin after 5secs
-			Vector endpos = pPawn2->GetAbsOrigin();
-
-			//Get distance between initial and end positions
-			float dist = initialpos.DistTo(endpos);
-
-			//Check le dist
-			//ConMsg("Distance was %f \n", dist);
-			if (dist < 150.0f)
-			{
-				pPawn2->SetAbsOrigin(spawnpos);
-				ClientPrint(controller, HUD_PRINTTALK, CHAT_PREFIX"You have been teleported to spawn.");
-			}
-			else
-			{
-				ClientPrint(controller, HUD_PRINTTALK, CHAT_PREFIX"Teleport failed! You moved too far.");
-				return;
-			}
-		});
+			pPawn->SetAbsOrigin(spawnpos);
+			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, CHAT_PREFIX "You have been teleported to spawn.");
+		}
+		else
+		{
+			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, CHAT_PREFIX "Teleport failed! You moved too far.");
+			return;
+		}
+	});
 }
 
 // TODO: Make this a convar when it's possible to do so
@@ -331,7 +325,7 @@ CON_COMMAND_CHAT(hide, "hides nearby teammates")
 	pZEPlayer->SetHideDistance(distance);
 
 	if (distance == 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding teammates is now disabled.", distance);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding teammates is now disabled.");
 	else
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding teammates within %i units.", distance);
 }
