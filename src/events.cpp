@@ -56,7 +56,7 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
-bool g_bForceCT = false;
+bool g_bForceCT = true;
 
 CON_COMMAND_F(c_force_ct, "toggle forcing CTs on every round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
