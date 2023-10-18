@@ -543,119 +543,8 @@ CON_COMMAND_CHAT(slay, "slay a player")
 	}
 }
 
-CON_COMMAND_CHAT(goto, "teleport to a player")
-{
-	if (!player)
-		return;
 
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
-		return;
-	}
-
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !goto <name>");
-		return;
-	}
-
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
-
-	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots) != ETargetType::PLAYER || iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target too ambiguous.");
-		return;
-	}
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
-
-		if (!pTarget)
-			continue;
-
-		Vector newOrigin = pTarget->GetPawn()->GetAbsOrigin();
-
-		player->GetPawn()->Teleport(&newOrigin, nullptr, nullptr);
-
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "Teleported to %s.", pTarget->GetPlayerName());
-	}
-}
-
-CON_COMMAND_CHAT(bring, "bring a player")
-{
-	if (!player)
-		return;
-
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
-		return;
-	}
-
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !bring <name>");
-		return;
-	}
-
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
-
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
-
-		if (!pTarget)
-			continue;
-
-		Vector newOrigin = player->GetPawn()->GetAbsOrigin();
-
-		pTarget->GetPawn()->Teleport(&newOrigin, nullptr, nullptr);
-
-		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "brought %s.", player->GetPlayerName(), pTarget->GetPlayerName());
-	}
-
-	switch (nType)
-	{
-	case ETargetType::ALL:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "brought everyone.", player->GetPlayerName());
-		break;
-	case ETargetType::T:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "brought terrorists.", player->GetPlayerName());
-		break;
-	case ETargetType::CT:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "brought counter-terrorists.", player->GetPlayerName());
-		break;
-	}
-}
-
-CON_COMMAND_CHAT(setteam, "set a player's team")
+CON_COMMAND_CHAT(move, "set a player's team")
 {
 	if (!player)
 		return;
@@ -732,7 +621,7 @@ CON_COMMAND_CHAT(noclip, "toggle noclip on yourself")
 
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 	
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_ROOT))
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 		return;

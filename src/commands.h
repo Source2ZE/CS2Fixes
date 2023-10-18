@@ -22,7 +22,10 @@
 #include "convar.h"
 
 #define COMMAND_PREFIX "c_"
-#define CHAT_PREFIX	" \7[CS2Fixes]\1 "
+#define CHAT_PREFIX		" \6[Admin]\1 "
+#define CHAT_PREFIXS	" \20[Server]\1 "
+#define CHAT_PREFIXM	" \7[Medkit]\1 "
+#define CHAT_PREFIXV	" \3[VIP]\1 "
 
 typedef void (*FnChatCommandCallback_t)(const CCommand &args, CCSPlayerController *player);
 
@@ -30,7 +33,7 @@ extern CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList;
 
 void ClientPrintAll(int destination, const char *msg, ...);
 void ClientPrint(CBasePlayerController *player, int destination, const char *msg, ...);
-
+//void SetClanTag(CBasePlayerController *player, const char* tag);
 // Just a wrapper class so we're able to insert the callback
 class CChatCommand
 {

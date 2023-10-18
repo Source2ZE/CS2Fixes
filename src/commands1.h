@@ -34,7 +34,6 @@ extern CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList;
 void ClientPrintAll(int destination, const char *msg, ...);
 void ClientPrint(CBasePlayerController *player, int destination, const char *msg, ...);
 //void SetClanTag(CBasePlayerController *player, const char* tag);
-
 // Just a wrapper class so we're able to insert the callback
 class CChatCommand
 {

@@ -23,6 +23,7 @@
 #include "ctimer.h"
 #include "eventlistener.h"
 #include "entity/cbaseplayercontroller.h"
+#include "playermanager.h"
 
 #include "tier0/memdbgon.h"
 
@@ -111,7 +112,13 @@ GAME_EVENT_F(player_spawn)
 
 		if (!pController)
 			return;
+		int iPlayer = pController->GetPlayerSlot();
+		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
 
+		if (pZEPlayer)
+		{
+			pZEPlayer->SetUsedMedkit(false);
+		}
 		CBasePlayerPawn *pPawn = pController->GetPawn();
 
 		// Just in case somehow there's health but the player is, say, an observer

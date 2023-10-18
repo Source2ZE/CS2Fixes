@@ -48,12 +48,9 @@ public:
 		m_SteamID = nullptr;
 		m_bGagged = false;
 		m_bMuted = false;
-<<<<<<< HEAD
 		m_bUsedMedkit = false;
-=======
 		m_iHideDistance = 0;
 		m_bConnected = false;
->>>>>>> 4d2b59329a8ea02881854a09fcfe2bbb068c55c5
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }

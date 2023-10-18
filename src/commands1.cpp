@@ -187,7 +187,6 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 
 	addresses::ClientPrint(player, hud_dest, buf, nullptr, nullptr, nullptr, nullptr);
 }
-
 CON_COMMAND_CHAT(medic, "medic")
 {
 	if (!player)
@@ -320,34 +319,18 @@ CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fp
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s world decals", pZEPlayer->IsUsingStopDecals() ? "disabled" : "enabled");
 }
-
-<<<<<<< HEAD
 CON_COMMAND_CHAT(say, "say something using console")
 {
 	ClientPrintAll(HUD_PRINTTALK, "%s", args.ArgS());
 }
 
 CON_COMMAND_CHAT(stats, "get your stats")
-=======
-CON_COMMAND_CHAT(myuid, "test")
-{
-	if (!player)
-		return;
-
-	int iPlayer = player->GetPlayerSlot();
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your userid is %i, slot: %i, retrieved slot: %i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get(), iPlayer, g_playerManager->GetSlotFromUserId(g_pEngineServer2->GetPlayerUserId(iPlayer).Get()));
-}
-
-CON_COMMAND_CHAT(ztele, "teleport to spawn")
->>>>>>> 4d2b59329a8ea02881854a09fcfe2bbb068c55c5
 {
 	if (!player)
 		return;
 
 	CSMatchStats_t *stats = &player->m_pActionTrackingServices->m_matchStats();
 
-<<<<<<< HEAD
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXS"Kills: %d", stats->m_iKills.Get());
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXS"Deaths: %d", stats->m_iDeaths.Get());
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXS"Assists: %d", stats->m_iAssists.Get());
@@ -355,71 +338,10 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 }
 
 CON_COMMAND_CHAT(vip, "vip info")
-=======
-	//Pick and get position of random spawnpoint
-	int randomindex = rand() % spawns.Count()+1;
-	Vector spawnpos = spawns[randomindex]->GetAbsOrigin();
-
-	//Here's where the mess starts
-	CBasePlayerPawn* pPawn = player->m_hPawn();
-	if (!pPawn)
-	{
-		return;
-	}
-	if (pPawn->m_iHealth() <= 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot teleport when dead!");
-		return;
-	}
-	//Get initial player position so we can do distance check
-	Vector initialpos = pPawn->GetAbsOrigin();
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Teleporting to spawn in 5 seconds.");
-
-	//Convert into handle so we can safely pass it into the Timer
-	auto handle = player->GetHandle();
-	new CTimer(5.0f, false, false, [spawnpos, handle, initialpos]()
-		{
-			//Convert handle into controller so we can use it again, and check it isn't invalid
-			CCSPlayerController* controller = (CCSPlayerController*)Z_CBaseEntity::EntityFromHandle(handle);
-
-			if (!controller || controller->m_iConnected() != PlayerConnectedState::PlayerConnected)
-				return;
-
-			//Get pawn (again) so we can do shit
-			CBasePlayerPawn* pPawn2 = controller->m_hPawn();
-
-			//Get player origin after 5secs
-			Vector endpos = pPawn2->GetAbsOrigin();
-
-			//Get distance between initial and end positions
-			float dist = initialpos.DistTo(endpos);
-
-			//Check le dist
-			//ConMsg("Distance was %f \n", dist);
-			if (dist < 150.0f)
-			{
-				pPawn2->SetAbsOrigin(spawnpos);
-				ClientPrint(controller, HUD_PRINTTALK, CHAT_PREFIX"You have been teleported to spawn.");
-			}
-			else
-			{
-				ClientPrint(controller, HUD_PRINTTALK, CHAT_PREFIX"Teleport failed! You moved too far.");
-				return;
-			}
-		});
-}
-
-// TODO: Make this a convar when it's possible to do so
-static constexpr int g_iMaxHideDistance = 2000;
-
-CON_COMMAND_CHAT(hide, "hides nearby teammates")
->>>>>>> 4d2b59329a8ea02881854a09fcfe2bbb068c55c5
 {
 	if (!player)
 		return;
 
-<<<<<<< HEAD
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXV"\1Starting health: \5 100-115.");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXV"\1Starting armor: \5 110-200.");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXV"\1Money add every round: \5 1000-5000.");
@@ -507,43 +429,6 @@ CON_COMMAND_CHAT(tag, "testtag")
 */
 
 #ifdef _DEBUG
-=======
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !hide <distance> (0 to disable)");
-		return;
-	}
-
-	int distance = V_StringToInt32(args[1], -1);
-
-	if (distance > g_iMaxHideDistance || distance < 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only hide players between 0 and %i units away.", g_iMaxHideDistance);
-		return;
-	}
-
-	int iPlayer = player->GetPlayerSlot();
-
-	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(iPlayer);
-
-	// Something has to really go wrong for this to happen
-	if (!pZEPlayer)
-	{
-		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
-		return;
-	}
-
-	pZEPlayer->SetHideDistance(distance);
-
-	if (distance == 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding teammates is now disabled.", distance);
-	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding teammates within %i units.", distance);
-}
-
-
-#if _DEBUG
->>>>>>> 4d2b59329a8ea02881854a09fcfe2bbb068c55c5
 CON_COMMAND_CHAT(message, "message someone")
 {
 	if (!player)
