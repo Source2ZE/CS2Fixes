@@ -36,6 +36,27 @@ CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(uint32)
 
 #define ADMIN_PREFIX "Admin %s has "
 
+void PrintSingleAdminAction(const char *pszAdminName, const char *pszTargetName, const char *pszAction, const char *pszAction2 = "")
+{
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "%s %s%s.", pszAdminName, pszAction, pszTargetName, pszAction2);
+}
+
+void PrintMultiAdminAction(ETargetType nType, const char *pszAdminName, const char *pszAction, const char *pszAction2 = "")
+{
+	switch (nType)
+	{
+	case ETargetType::ALL:
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "%s everyone%s.", pszAdminName, pszAction, pszAction2);
+		break;
+	case ETargetType::T:
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "%s terrorists%s.", pszAdminName, pszAction, pszAction2);
+		break;
+	case ETargetType::CT:
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "%s counter-terrorists%s.", pszAdminName, pszAction, pszAction2);
+		break;
+	}
+}
+
 CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	if (!g_pAdminSystem->LoadAdmins())
@@ -138,23 +159,25 @@ CON_COMMAND_CHAT(ban, "ban a player")
 
 CON_COMMAND_CHAT(mute, "mutes a player")
 {
-	if (!player)
-		return;
+	int iCommandPlayer = -1;
 
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+	if (player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
-		return;
-	}
+		iCommandPlayer = player->GetPlayerSlot();
 
-	if (args.ArgC() < 3)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Usage: !mute <name> <duration/0 (permanent)>");
-		return;
+		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+			return;
+		}
+
+		if (args.ArgC() < 3)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !mute <name> <duration/0 (permanent)>");
+			return;
+		}
 	}
 
 	int iNumClients = 0;
@@ -164,18 +187,28 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 
 	if (!iNumClients)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
 		return;
 	}
 
-	char* end;
-	int iDuration = strtol(args[2], &end, 10);
+	int iDuration = V_StringToInt32(args[2], -1);
 
-	if (*end)
+	if (iDuration < 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid duration.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid duration.");
 		return;
 	}
+
+	if (iDuration == 0 && nType >= ETargetType::ALL)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You may only permanently mute individuals.");
+		return;
+	}
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	char szAction[64];
+	V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -197,45 +230,38 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 		infraction->ApplyInfraction(pTargetPlayer);
 		g_pAdminSystem->SaveInfractions();
 
-		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "muted %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
+		if (iDuration > 0)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "muted", szAction);
+		else
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently muted");
 	}
 
 	g_pAdminSystem->SaveInfractions();
 
-	switch (nType)
-	{
-	case ETargetType::ALL:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "muted everyone for %i minutes.", player->GetPlayerName(), iDuration);
-		break;
-	case ETargetType::T:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "muted terrorists for %i minutes.", player->GetPlayerName(), iDuration);
-		break;
-	case ETargetType::CT:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "muted counter-terrorists for %i minutes.", player->GetPlayerName(), iDuration);
-		break;
-	}
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "muted", szAction);
 }
 
 CON_COMMAND_CHAT(unmute, "unmutes a player")
 {
-	if (!player)
-		return;
+	int iCommandPlayer = -1;
 
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_UNBAN))
+	if (player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
-		return;
-	}
+		iCommandPlayer = player->GetPlayerSlot();
 
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unmute <name>");
-		return;
+		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_UNBAN))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+			return;
+		}
+
+		if (args.ArgC() < 2)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unmute <name>");
+			return;
+		}
 	}
 
 	int iNumClients = 0;
@@ -248,6 +274,8 @@ CON_COMMAND_CHAT(unmute, "unmutes a player")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
 		return;
 	}
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -268,44 +296,35 @@ CON_COMMAND_CHAT(unmute, "unmutes a player")
 		}
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "unmuted %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "unmuted");
 	}
 
 	g_pAdminSystem->SaveInfractions();
 
-	switch (nType)
-	{
-	case ETargetType::ALL:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "unmuted everyone.", player->GetPlayerName());
-		break;
-	case ETargetType::T:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "unmuted terrorists.", player->GetPlayerName());
-		break;
-	case ETargetType::CT:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "unmuted counter-terrorists.", player->GetPlayerName());
-		break;
-	}
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "unmuted");
 }
 
 CON_COMMAND_CHAT(gag, "gag a player")
 {
-	if (!player)
-		return;
+	int iCommandPlayer = -1;
 
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+	if (player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
-		return;
-	}
+		iCommandPlayer = player->GetPlayerSlot();
 
-	if (args.ArgC() < 3)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !gag <name> <duration/0 (permanent)>");
-		return;
+		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+			return;
+		}
+
+		if (args.ArgC() < 3)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !gag <name> <duration/0 (permanent)>");
+			return;
+		}
 	}
 
 	int iNumClients = 0;
@@ -319,14 +338,24 @@ CON_COMMAND_CHAT(gag, "gag a player")
 		return;
 	}
 
-	char *end;
-	int iDuration = strtol(args[2], &end, 10);
+	int iDuration = V_StringToInt32(args[2], -1);
 
-	if (*end)
+	if (iDuration < 0)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid duration.");
 		return;
 	}
+
+	if (iDuration == 0 && nType >= ETargetType::ALL)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You may only permanently gag individuals.");
+		return;
+	}
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	char szAction[64];
+	V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -347,45 +376,41 @@ CON_COMMAND_CHAT(gag, "gag a player")
 		g_pAdminSystem->AddInfraction(infraction);
 		infraction->ApplyInfraction(pTargetPlayer);
 
-		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "gagged %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
+		if (nType >= ETargetType::ALL)
+			continue;
+
+		if (iDuration > 0)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "gagged", szAction);
+		else
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently gagged");
 	}
 
 	g_pAdminSystem->SaveInfractions();
 
-	switch (nType)
-	{
-	case ETargetType::ALL:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "gagged everyone for %i minutes.", player->GetPlayerName(), iDuration);
-		break;
-	case ETargetType::T:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "gagged terrorists for %i minutes.", player->GetPlayerName(), iDuration);
-		break;
-	case ETargetType::CT:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "gagged counter-terrorists for %i minutes.", player->GetPlayerName(), iDuration);
-		break;
-	}
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "gagged", szAction);
 }
 
 CON_COMMAND_CHAT(ungag, "ungags a player")
 {
-	if (!player)
-		return;
+	int iCommandPlayer = -1;
 
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_UNBAN))
+	if (player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
-		return;
-	}
+		iCommandPlayer = player->GetPlayerSlot();
 
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ungag <name>");
-		return;
+		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_UNBAN))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+			return;
+		}
+
+		if (args.ArgC() < 2)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ungag <name>");
+			return;
+		}
 	}
 
 	int iNumClients = 0;
@@ -398,6 +423,8 @@ CON_COMMAND_CHAT(ungag, "ungags a player")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
 		return;
 	}
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -418,44 +445,35 @@ CON_COMMAND_CHAT(ungag, "ungags a player")
 		}
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "ungagged %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "ungagged");
 	}
 
 	g_pAdminSystem->SaveInfractions();
 
-	switch (nType)
-	{
-	case ETargetType::ALL:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "ungagged everyone.", player->GetPlayerName());
-		break;
-	case ETargetType::T:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "ungagged terrorists.", player->GetPlayerName());
-		break;
-	case ETargetType::CT:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "ungagged counter-terrorists.", player->GetPlayerName());
-		break;
-	}
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "ungagged");
 }
 
 CON_COMMAND_CHAT(kick, "kick a player")
 {
-	if (!player)
-		return;
+	int iCommandPlayer = -1;
 
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_KICK))
+	if (player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
-		return;
-	}
+		iCommandPlayer = player->GetPlayerSlot();
 
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Usage: !kick <name>");
-		return;
+		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_KICK))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+			return;
+		}
+
+		if (args.ArgC() < 2)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !kick <name>");
+			return;
+		}
 	}
 
 	int iNumClients = 0;
@@ -469,6 +487,8 @@ CON_COMMAND_CHAT(kick, "kick a player")
 		return;
 	}
 
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
 	for (int i = 0; i < iNumClients; i++)
 	{
 		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
@@ -480,29 +500,31 @@ CON_COMMAND_CHAT(kick, "kick a player")
 		
 		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot(), NETWORK_DISCONNECT_KICKED);
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "kicked %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "kicked");
 	}
 }
 
 CON_COMMAND_CHAT(slay, "slay a player")
 {
-	if (!player)
-		return;
+	int iCommandPlayer = -1;
 
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
+	if (player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
-		return;
-	}
+		iCommandPlayer = player->GetPlayerSlot();
 
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Usage: !slay <name>");
-		return;
+		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+			return;
+		}
+
+		if (args.ArgC() < 2)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !slay <name>");
+			return;
+		}
 	}
 
 	int iNumClients = 0;
@@ -516,6 +538,8 @@ CON_COMMAND_CHAT(slay, "slay a player")
 		return;
 	}
 
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
 	for (int i = 0; i < iNumClients; i++)
 	{
 		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
@@ -526,21 +550,10 @@ CON_COMMAND_CHAT(slay, "slay a player")
 		pTarget->GetPawn()->CommitSuicide(false, true);
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "slayed %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slayed");
 	}
 
-	switch (nType)
-	{
-	case ETargetType::ALL:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "slayed everyone.", player->GetPlayerName());
-		break;
-	case ETargetType::T:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "slayed terrorists.", player->GetPlayerName());
-		break;
-	case ETargetType::CT:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "slayed counter-terrorists.", player->GetPlayerName());
-		break;
-	}
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
 }
 
 CON_COMMAND_CHAT(goto, "teleport to a player")
@@ -550,7 +563,7 @@ CON_COMMAND_CHAT(goto, "teleport to a player")
 
 	int iCommandPlayer = player->GetPlayerSlot();
 
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 
 	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
 	{
@@ -590,7 +603,7 @@ CON_COMMAND_CHAT(goto, "teleport to a player")
 
 		player->GetPawn()->Teleport(&newOrigin, nullptr, nullptr);
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "Teleported to %s.", pTarget->GetPlayerName());
+		PrintSingleAdminAction(player->GetPlayerName(), pTarget->GetPlayerName(), "teleported to");
 	}
 }
 
@@ -638,42 +651,33 @@ CON_COMMAND_CHAT(bring, "bring a player")
 		pTarget->GetPawn()->Teleport(&newOrigin, nullptr, nullptr);
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "brought %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+			PrintSingleAdminAction(player->GetPlayerName(), pTarget->GetPlayerName(), "brought");
 	}
 
-	switch (nType)
-	{
-	case ETargetType::ALL:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "brought everyone.", player->GetPlayerName());
-		break;
-	case ETargetType::T:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "brought terrorists.", player->GetPlayerName());
-		break;
-	case ETargetType::CT:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "brought counter-terrorists.", player->GetPlayerName());
-		break;
-	}
+	PrintMultiAdminAction(nType, player->GetPlayerName(), "brought");
 }
 
 CON_COMMAND_CHAT(setteam, "set a player's team")
 {
-	if (!player)
-		return;
+	int iCommandPlayer = -1;
 
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
+	if (player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
-		return;
-	}
+		iCommandPlayer = player->GetPlayerSlot();
 
-	if (args.ArgC() < 3)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !setteam <name> <team (0-3)>");
-		return;
+		ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+			return;
+		}
+
+		if (args.ArgC() < 3)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !setteam <name> <team (0-3)>");
+			return;
+		}
 	}
 
 	int iNumClients = 0;
@@ -695,32 +699,27 @@ CON_COMMAND_CHAT(setteam, "set a player's team")
 		return;
 	}
 
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	constexpr const char *teams[] = {"none", "spectators", "terrorists", "counter-terrorists"};
+
+	char szAction[64];
+	V_snprintf(szAction, sizeof(szAction), " to %s.", teams[iTeam]);
+
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+		CCSPlayerController *pTarget = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
 
 		if (!pTarget)
 			continue;
 
-		pTarget->m_iTeamNum = iTeam;
-		pTarget->GetPawn()->m_iTeamNum = iTeam;
+		addresses::CCSPlayerController_SwitchTeam(pTarget, iTeam);
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved %s to team %i.", player->GetPlayerName(), pTarget->GetPlayerName(), iTeam);
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "moved", szAction);
 	}
 
-	switch (nType)
-	{
-	case ETargetType::ALL:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved everyone to team %i.", iTeam);
-		break;
-	case ETargetType::T:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved terrorists to team %i.", iTeam);
-		break;
-	case ETargetType::CT:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved counter-terrorists to team %i.", iTeam);
-		break;
-	}
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
 }
 
 CON_COMMAND_CHAT(noclip, "toggle noclip on yourself")
@@ -801,23 +800,23 @@ CON_COMMAND_CHAT(map, "change map")
 
 CON_COMMAND_CHAT(hsay, "say something as a hud hint")
 {
-	if (!player)
-		return;
-
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_CHAT))
+	if (player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
-		return;
-	}
+		int iCommandPlayer = player->GetPlayerSlot();
 
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !hsay <message>");
-		return;
+		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_CHAT))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+			return;
+		}
+
+		if (args.ArgC() < 2)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !hsay <message>");
+			return;
+		}
 	}
 
 	ClientPrintAll(HUD_PRINTCENTER, "%s", args.ArgS());

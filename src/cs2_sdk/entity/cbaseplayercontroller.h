@@ -47,4 +47,5 @@ public:
 	CBasePlayerPawn *GetPawn() { return m_hPawn.Get(); }
 	const char *GetPlayerName() { return m_iszPlayerName(); }
 	int GetPlayerSlot() { return entindex() - 1; }
+	bool IsConnected() { return m_iConnected() == PlayerConnectedState::PlayerConnected; }
 };
