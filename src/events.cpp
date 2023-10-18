@@ -175,7 +175,7 @@ GAME_EVENT_F(round_end)
 		if(!pController)
 			continue;
 
-		if (pController->m_iTeamNum == CS_TEAM_CT)
+		if (pController->m_iTeamNum == CS_TEAM_CT && pController->m_bPawnIsAlive)
 			sortedPlayers.AddToTail(pPlayer);
 	}
 
