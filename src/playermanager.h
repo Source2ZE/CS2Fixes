@@ -50,6 +50,7 @@ public:
 		m_bMuted = false;
 		m_iHideDistance = 0;
 		m_bConnected = false;
+		m_iTotalDamage = 0;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -69,9 +70,10 @@ public:
 	void SetTransmit(int index, bool shouldTransmit) { shouldTransmit ? m_shouldTransmit.Set(index) : m_shouldTransmit.Clear(index); }
 	void ClearTransmit() { m_shouldTransmit.ClearAll(); }
 	void SetHideDistance(int distance) { m_iHideDistance = distance; }
-
 	void ToggleStopSound() { m_bStopSound = !m_bStopSound; }
 	void ToggleStopDecals() { m_bStopDecals = !m_bStopDecals; }
+	void SetTotalDamage(int damage) { m_iTotalDamage = damage; }
+
 	bool IsUsingStopSound() { return m_bStopSound; }
 	bool IsUsingStopDecals() { return m_bStopDecals; }
 	bool IsMuted() { return m_bMuted; }
@@ -79,6 +81,7 @@ public:
 	bool ShouldBlockTransmit(int index) { return m_shouldTransmit.Get(index); }
 	int GetHideDistance() { return m_iHideDistance; }
 	CPlayerSlot GetPlayerSlot() { return m_slot; }
+	int GetTotalDamage() { return m_iTotalDamage; }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
@@ -97,6 +100,7 @@ private:
 	uint64 m_iAdminFlags;
 	int m_iHideDistance;
 	CBitVec<MAXPLAYERS> m_shouldTransmit;
+	int m_iTotalDamage;
 };
 
 class CPlayerManager
