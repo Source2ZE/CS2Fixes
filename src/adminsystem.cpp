@@ -525,6 +525,7 @@ for (int i = 0; i < iNumClients; i++)
 
 		if (nType < ETargetType::ALL)
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "gagged %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "Silenced %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
 	}
 
 
@@ -546,6 +547,100 @@ for (int i = 0; i < iNumClients; i++)
 }
 //******************END OF TEST SILENT*****************************************************************
 
+CON_COMMAND_CHAT(unsilent, "unsilent a player")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->GetPlayerSlot();
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_UNBAN))
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unsilent <name>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlot[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+		if (pTargetPlayer->IsFakeClient())
+			continue;
+
+		if (!g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Gag) && nType < ETargetType::ALL)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not gagged.", pTarget->GetPlayerName());
+			continue;
+		}
+
+		if (nType < ETargetType::ALL)
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "ungagged %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+	}
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+		if (pTargetPlayer->IsFakeClient())
+			continue;
+
+		if (!g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute) && nType < ETargetType::ALL)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not muted.", pTarget->GetPlayerName());
+			continue;
+		}
+
+		if (nType < ETargetType::ALL)
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "unmuted %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "UnSilenced %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+	}
+
+	g_pAdminSystem->SaveInfractions();
+
+	g_pAdminSystem->SaveInfractions();
+
+	switch (nType)
+	{
+	case ETargetType::ALL:
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "UnSilenced everyone.", player->GetPlayerName());
+		break;
+	case ETargetType::T:
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "UnSilenced terrorists.", player->GetPlayerName());
+		break;
+	case ETargetType::CT:
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "UnSilenced counter-terrorists.", player->GetPlayerName());
+		break;
+	}
+}
+//**************************************END UNSILENCE*****************************************************
 CON_COMMAND_CHAT(kick, "kick a player")
 {
 	if (!player)
