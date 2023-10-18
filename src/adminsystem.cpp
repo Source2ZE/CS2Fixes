@@ -133,7 +133,7 @@ CON_COMMAND_CHAT(ban, "ban a player")
 	infraction->ApplyInfraction(pTargetPlayer);
 	g_pAdminSystem->SaveInfractions();
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "banned %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "banned \7%s\1 for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
 }
 
 CON_COMMAND_CHAT(mute, "mutes a player")
@@ -198,7 +198,7 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 		g_pAdminSystem->SaveInfractions();
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "muted %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "muted \7%s\1 for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
 	}
 
 	g_pAdminSystem->SaveInfractions();
@@ -263,12 +263,12 @@ CON_COMMAND_CHAT(unmute, "unmutes a player")
 
 		if (!g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute) && nType < ETargetType::ALL)
 		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not muted.", pTarget->GetPlayerName());
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\7%s\1 is not muted.", pTarget->GetPlayerName());
 			continue;
 		}
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "unmuted %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "unmuted \7%s\1.", player->GetPlayerName(), pTarget->GetPlayerName());
 	}
 
 	g_pAdminSystem->SaveInfractions();
@@ -348,7 +348,7 @@ CON_COMMAND_CHAT(gag, "gag a player")
 		infraction->ApplyInfraction(pTargetPlayer);
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "gagged %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "gagged \7%s\1 for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
 	}
 
 	g_pAdminSystem->SaveInfractions();
@@ -413,12 +413,12 @@ CON_COMMAND_CHAT(ungag, "ungags a player")
 
 		if (!g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Gag) && nType < ETargetType::ALL)
 		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not gagged.", pTarget->GetPlayerName());
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\7%s\1 is not gagged.", pTarget->GetPlayerName());
 			continue;
 		}
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "ungagged %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "ungagged \7%s\1.", player->GetPlayerName(), pTarget->GetPlayerName());
 	}
 
 	g_pAdminSystem->SaveInfractions();
@@ -501,7 +501,7 @@ for (int i = 0; i < iNumClients; i++)
 		g_pAdminSystem->SaveInfractions();
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "muted %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "muted \7%s\1 for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
 	}
 
 	for (int i = 0; i < iNumClients; i++)
@@ -524,8 +524,8 @@ for (int i = 0; i < iNumClients; i++)
 		infraction->ApplyInfraction(pTargetPlayer);
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "gagged %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "Silenced %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "gagged \7%s\1 for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "Silenced \7%s\1 for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
 	}
 
 
@@ -593,12 +593,12 @@ CON_COMMAND_CHAT(unsilent, "unsilent a player")
 
 		if (!g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Gag) && nType < ETargetType::ALL)
 		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not gagged.", pTarget->GetPlayerName());
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\7%s\1 is not gagged.", pTarget->GetPlayerName());
 			continue;
 		}
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "ungagged %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "ungagged \7%s\1.", player->GetPlayerName(), pTarget->GetPlayerName());
 	}
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -614,13 +614,13 @@ CON_COMMAND_CHAT(unsilent, "unsilent a player")
 
 		if (!g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute) && nType < ETargetType::ALL)
 		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not muted.", pTarget->GetPlayerName());
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\7%s\1 is not muted.", pTarget->GetPlayerName());
 			continue;
 		}
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "unmuted %s.", player->GetPlayerName(), pTarget->GetPlayerName());
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "UnSilenced %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "unmuted \7%s\1.", player->GetPlayerName(), pTarget->GetPlayerName());
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "UnSilenced \7%s\1.", player->GetPlayerName(), pTarget->GetPlayerName());
 	}
 
 	g_pAdminSystem->SaveInfractions();
@@ -684,7 +684,7 @@ CON_COMMAND_CHAT(kick, "kick a player")
 		
 		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot(), NETWORK_DISCONNECT_KICKED);
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "kicked %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "kicked \7%s\1.", player->GetPlayerName(), pTarget->GetPlayerName());
 	}
 }
 
@@ -730,7 +730,7 @@ CON_COMMAND_CHAT(slay, "slay a player")
 		pTarget->GetPawn()->CommitSuicide(false, true);
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "slayed %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "slayed \7%s\1.", player->GetPlayerName(), pTarget->GetPlayerName());
 	}
 
 	switch (nType)
@@ -799,7 +799,7 @@ CON_COMMAND_CHAT(move, "set a player's team")
 		pTarget->GetPawn()->m_iTeamNum = iTeam;
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved %s to team %i.", player->GetPlayerName(), pTarget->GetPlayerName(), iTeam);
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved \7%s\1 to team %i.", player->GetPlayerName(), pTarget->GetPlayerName(), iTeam);
 	}
 
 	switch (nType)
