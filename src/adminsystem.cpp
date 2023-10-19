@@ -794,13 +794,13 @@ CON_COMMAND_CHAT(move, "set a player's team")
 	const char* cTeam;
 if ( caseInsensitiveStringCompare(args[2], "T" )) {
    iTeam = 2;
-   cTeam = "\2T";
+   cTeam = "T";
 } else if ( caseInsensitiveStringCompare(args[2], "CT" )) {
    iTeam = 3;
-   cTeam = "\2CT";
+   cTeam = "CT";
 } else if ( caseInsensitiveStringCompare(args[2], "SPEC" )) {
    iTeam = 1;
-   cTeam = "\2SPEC";
+   cTeam = "SPEC";
 }
 
 	if (iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
