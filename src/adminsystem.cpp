@@ -791,7 +791,7 @@ CON_COMMAND_CHAT(move, "set a player's team")
 	//int iTeam = V_StringToInt32(args[2], -1);
 
 	int iTeam = -1;
-	const char* cTeam;
+	char cTeam[] = "SPEC"
 if ( caseInsensitiveStringCompare(args[2], "T" )) {
    iTeam = 2;
    cTeam = "T";
@@ -820,7 +820,7 @@ if ( caseInsensitiveStringCompare(args[2], "T" )) {
 		pTarget->GetPawn()->m_iTeamNum = iTeam;
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved \7%s\1 to team %i.", player->GetPlayerName(), pTarget->GetPlayerName(), cTeam);
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved \7%s\1 to team \5%s.", player->GetPlayerName(), pTarget->GetPlayerName(), cTeam);
 	}
 
 	for (int i = 0; i < iNumClients; i++)
