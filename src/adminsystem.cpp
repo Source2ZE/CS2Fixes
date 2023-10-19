@@ -765,7 +765,11 @@ CON_COMMAND_CHAT(move, "set a player's team")
 
 	if (args.ArgC() < 3)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !setteam <name> <team (0-3)>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Usage: !move <name> <team (0-3)>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 0\1 for Out of teams);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 1\1 for spec team);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 2\1 for t teams);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 3\1 for ct team);
 		return;
 	}
 
