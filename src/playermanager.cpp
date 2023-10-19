@@ -85,6 +85,8 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot)
 	pPlayer->SetConnected();
 	m_vecPlayers[slot.Get()] = pPlayer;
 	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get()] = slot.Get();
+
+	ResetPlayerFlags(slot.Get());
 	
 	return true;
 }
@@ -96,6 +98,8 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	delete m_vecPlayers[slot.Get()];
 	m_vecPlayers[slot.Get()] = nullptr;
 	m_UserIdLookup[g_pEngineServer2->GetPlayerUserId(slot).Get()] = -1;
+
+	ResetPlayerFlags(slot.Get());
 }
 
 void CPlayerManager::TryAuthenticate()
@@ -302,4 +306,35 @@ ZEPlayer *CPlayerManager::GetPlayerFromUserId(int userid)
 		return nullptr;
 
 	return m_vecPlayers[m_UserIdLookup[userid]];
+}
+
+void CPlayerManager::SetPlayerStopSound(int slot, bool set)
+{
+	if (set)
+		m_nUsingStopSound |= ((uint64)1 << slot);
+	else
+		m_nUsingStopSound &= ~((uint64)1 << slot);
+}
+
+void CPlayerManager::SetPlayerSilenceSound(int slot, bool set)
+{
+	if (set)
+		m_nUsingSilenceSound |= ((uint64)1 << slot);
+	else
+		m_nUsingSilenceSound &= ~((uint64)1 << slot);
+}
+
+void CPlayerManager::SetPlayerStopDecals(int slot, bool set)
+{
+	if (set)
+		m_nUsingStopDecals |= ((uint64)1 << slot);
+	else
+		m_nUsingStopDecals &= ~((uint64)1 << slot);
+}
+
+void CPlayerManager::ResetPlayerFlags(int slot)
+{
+	SetPlayerStopSound(slot, false);
+	SetPlayerSilenceSound(slot, false);
+	SetPlayerStopDecals(slot, true);
 }

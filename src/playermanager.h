@@ -42,8 +42,6 @@ public:
 	ZEPlayer(CPlayerSlot slot, bool m_bFakeClient = false): m_slot(slot), m_bFakeClient(m_bFakeClient)
 	{ 
 		m_bAuthenticated = false;
-		m_bStopSound = false;
-		m_bStopDecals = true;
 		m_iAdminFlags = 0;
 		m_SteamID = nullptr;
 		m_bGagged = false;
@@ -70,12 +68,8 @@ public:
 	void SetTransmit(int index, bool shouldTransmit) { shouldTransmit ? m_shouldTransmit.Set(index) : m_shouldTransmit.Clear(index); }
 	void ClearTransmit() { m_shouldTransmit.ClearAll(); }
 	void SetHideDistance(int distance) { m_iHideDistance = distance; }
-	void ToggleStopSound() { m_bStopSound = !m_bStopSound; }
-	void ToggleStopDecals() { m_bStopDecals = !m_bStopDecals; }
 	void SetTotalDamage(int damage) { m_iTotalDamage = damage; }
 
-	bool IsUsingStopSound() { return m_bStopSound; }
-	bool IsUsingStopDecals() { return m_bStopDecals; }
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
 	bool ShouldBlockTransmit(int index) { return m_shouldTransmit.Get(index); }
@@ -91,8 +85,6 @@ private:
 	bool m_bAuthenticated;
 	bool m_bConnected;
 	const CSteamID* m_SteamID;
-	bool m_bStopSound;
-	bool m_bStopDecals;
 	bool m_bFakeClient;
 	bool m_bMuted;
 	bool m_bGagged;
@@ -110,6 +102,9 @@ public:
 	{
 		V_memset(m_vecPlayers, 0, sizeof(m_vecPlayers));
 		V_memset(m_UserIdLookup, -1, sizeof(m_UserIdLookup));
+		m_nUsingStopSound = 0;
+		m_nUsingSilenceSound = 0;
+		m_nUsingStopDecals = -1; // On by default
 	}
 
 	bool OnClientConnected(CPlayerSlot slot);
@@ -123,9 +118,27 @@ public:
 	ETargetType TargetPlayerString(int iCommandClient, const char* target, int &iNumClients, int *clients);
 	ZEPlayer *GetPlayer(CPlayerSlot slot) { return m_vecPlayers[slot.Get()]; };
 
+	uint64 GetStopSoundMask() { return m_nUsingStopSound; }
+	uint64 GetSilenceSoundMask() { return m_nUsingSilenceSound; }
+	uint64 GetStopDecalsMask() { return m_nUsingStopDecals; }
+	
+	void SetPlayerStopSound(int slot, bool set);
+	void SetPlayerSilenceSound(int slot, bool set);
+	void SetPlayerStopDecals(int slot, bool set);
+
+	void ResetPlayerFlags(int slot);
+
+	bool IsPlayerUsingStopSound(int slot) { return m_nUsingStopSound & ((uint64)1 << slot); }
+	bool IsPlayerUsingSilenceSound(int slot) { return m_nUsingSilenceSound & ((uint64)1 << slot); }
+	bool IsPlayerUsingStopDecals(int slot) { return m_nUsingStopDecals & ((uint64)1 << slot); }
+
 private:
 	ZEPlayer* m_vecPlayers[MAXPLAYERS];
 	uint16 m_UserIdLookup[USHRT_MAX+1];
+
+	uint64 m_nUsingStopSound;
+	uint64 m_nUsingSilenceSound;
+	uint64 m_nUsingStopDecals;
 };
 
 extern CPlayerManager *g_playerManager;
