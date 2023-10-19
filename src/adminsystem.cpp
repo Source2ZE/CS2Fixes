@@ -832,7 +832,7 @@ if ( caseInsensitiveStringCompare(args[2], "T" )) {
 
 		pTarget->GetPawn()->CommitSuicide(false, true);
 
-		if (nType < ETargetType::ALL)
+		//if (nType < ETargetType::ALL)
 			//ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "slayed \7%s\1.", player->GetPlayerName(), pTarget->GetPlayerName());
 	}
 
