@@ -300,42 +300,47 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 	INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
 	// Message( "Hook_PostEvent(%d, %d, %d, %lli)\n", nSlot, bLocalOnly, nClientCount, clients );
+	// Need to explicitly get a pointer to the right function as it's overloaded and SH_CALL can't resolve that
+	static void (IGameEventSystem::*PostEventAbstract)(CSplitScreenSlot, bool, int, const uint64 *,
+							INetworkSerializable *, const void *, unsigned long, NetChannelBufType_t) = &IGameEventSystem::PostEventAbstract;
 
-	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
+	NetMessageInfo_t *info = pEvent->GetNetMessageInfo();
 
-	// Default silenced weapon sounds
-	// Ideally this would be toggleable betwen default/silenced, but does not seem possible to send new protobuf msgs currently
 	if (info->m_MessageId == GE_FireBulletsId)
 	{
-		CMsgTEFireBullets* msg = (CMsgTEFireBullets*)pData;
-
-		// original weapon_id will override new settings if not removed
-		msg->set_weapon_id(0);
-		msg->set_sound_type(10);
-		msg->set_item_def_index(60); // weapon_m4a1_silencer
-	}
-
-	if (info->m_MessageId == GE_FireBulletsId || info->m_MessageId == TE_WorldDecalId)
-	{
-		// Can later do a bit mask for players using stopsound but this will do for now
-		for (uint64 i = 0; i < MAXPLAYERS; i++)
+		if (g_playerManager->GetSilenceSoundMask())
 		{
-			ZEPlayer *pPlayer = g_playerManager->GetPlayer(i);
+			// Post the silenced sound to those who use silencesound
+			// Creating a new event object requires us to include the protobuf c files which I didn't feel like doing yet
+			// So instead just edit the event in place and reset later
+			CMsgTEFireBullets *msg = (CMsgTEFireBullets *)pData;
 
-			// A client might be already excluded from the event possibly due to being too far away, so ignore them
-			if (!(*(uint64 *)clients & ((uint64)1 << i)))
-				continue;
+			int32_t weapon_id = msg->weapon_id();
+			int32_t sound_type = msg->sound_type();
+			int32_t item_def_index = msg->item_def_index();
 
-			if (!pPlayer)
-				continue;
+			// original weapon_id will override new settings if not removed
+			msg->set_weapon_id(0);
+			msg->set_sound_type(10);
+			msg->set_item_def_index(60); // weapon_m4a1_silencer
 
-			if ((info->m_MessageId == GE_FireBulletsId && pPlayer->IsUsingStopSound()) || 
-				(info->m_MessageId == TE_WorldDecalId && pPlayer->IsUsingStopDecals()))
-			{
-				*(uint64*)clients &= ~((uint64)1 << i);
-				nClientCount--;
-			}
+			uint64 clientMask = *(uint64 *)clients & g_playerManager->GetSilenceSoundMask();
+
+			SH_CALL(g_gameEventSystem, PostEventAbstract)
+			(nSlot, bLocalOnly, nClientCount, &clientMask, pEvent, msg, nSize, bufType);
+
+			msg->set_weapon_id(weapon_id);
+			msg->set_sound_type(sound_type);
+			msg->set_item_def_index(item_def_index);
 		}
+
+		// Filter out people using stop/silence sound from the original event
+		*(uint64 *)clients &= ~g_playerManager->GetStopSoundMask();
+		*(uint64 *)clients &= ~g_playerManager->GetSilenceSoundMask();
+	}
+	else if (info->m_MessageId == TE_WorldDecalId)
+	{
+		*(uint64 *)clients &= ~g_playerManager->GetStopDecalsMask();
 	}
 }
 
