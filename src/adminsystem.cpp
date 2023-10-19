@@ -766,10 +766,10 @@ CON_COMMAND_CHAT(move, "set a player's team")
 	if (args.ArgC() < 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Usage: !move <name> <team (0-3)>");
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 0\1 for Out of teams);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 1\1 for spec team);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 2\1 for t teams);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 3\1 for ct team);
+	//	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 0\1 for Out of teams");
+	//	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 1\1 for spec team");
+	//	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 2\1 for t team");
+	//	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 3\1 for ct team");
 		return;
 	}
 
@@ -784,7 +784,16 @@ CON_COMMAND_CHAT(move, "set a player's team")
 		return;
 	}
 
-	int iTeam = V_StringToInt32(args[2], -1);
+	//int iTeam = V_StringToInt32(args[2], -1);
+
+	int iTeam = -1
+if ( caseInsensitiveStringCompare(args[2], 'CT' ) {
+   iTeam = 2
+} else if ( caseInsensitiveStringCompare(args[2], 'T' ) {
+   iTeam = 3
+} else if ( caseInsensitiveStringCompare(args[2], 'SPEC' ) {
+   iTeam = 1
+}
 
 	if (iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
 	{
