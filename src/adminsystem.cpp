@@ -794,13 +794,13 @@ CON_COMMAND_CHAT(move, "set a player's team")
 	char cTeam[] = "SPEC";
 if ( caseInsensitiveStringCompare(args[2], "T" )) {
    iTeam = 2;
-   cTeam = "T";
+   strcpy(cTeam, "T");
 } else if ( caseInsensitiveStringCompare(args[2], "CT" )) {
    iTeam = 3;
-   cTeam = "CT";
+   strcpy(cTeam, "CT");
 } else if ( caseInsensitiveStringCompare(args[2], "SPEC" )) {
    iTeam = 1;
-   cTeam = "SPEC";
+   strcpy(cTeam, "SPEC");
 }
 
 	if (iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
