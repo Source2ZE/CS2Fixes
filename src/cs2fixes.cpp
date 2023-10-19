@@ -303,7 +303,18 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 
 	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
 
-	//CMsgTEFireBullets
+	// Default silenced weapon sounds
+	// Ideally this would be toggleable betwen default/silenced, but does not seem possible to send new protobuf msgs currently
+	if (info->m_MessageId == GE_FireBulletsId)
+	{
+		CMsgTEFireBullets* msg = (CMsgTEFireBullets*)pData;
+
+		// original weapon_id will override new settings if not removed
+		msg->set_weapon_id(0);
+		msg->set_sound_type(10);
+		msg->set_item_def_index(60); // weapon_m4a1_silencer
+	}
+
 	if (info->m_MessageId == GE_FireBulletsId || info->m_MessageId == TE_WorldDecalId)
 	{
 		// Can later do a bit mask for players using stopsound but this will do for now
