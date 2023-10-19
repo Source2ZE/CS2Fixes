@@ -791,7 +791,7 @@ CON_COMMAND_CHAT(move, "set a player's team")
 	//int iTeam = V_StringToInt32(args[2], -1);
 
 	int iTeam = -1;
-	char cTeam[] = "SPEC"
+	char cTeam[] = "SPEC";
 if ( caseInsensitiveStringCompare(args[2], "T" )) {
    iTeam = 2;
    cTeam = "T";
@@ -833,7 +833,7 @@ if ( caseInsensitiveStringCompare(args[2], "T" )) {
 		pTarget->GetPawn()->CommitSuicide(false, true);
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "slayed \7%s\1.", player->GetPlayerName(), pTarget->GetPlayerName());
+			//ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "slayed \7%s\1.", player->GetPlayerName(), pTarget->GetPlayerName());
 	}
 
 	switch (nType)
