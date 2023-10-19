@@ -183,6 +183,14 @@
                 "windows"       "\x40\x56\x57\x48\x81\xEC\x2A\x2A\x2A\x2A\x48\x8B\xF9\x8B\xF2\x8B\xCA"
                 "linux"         "\x55\x48\x89\xE5\x41\x55\x49\x89\xFD\x89\xF7"
             }
+			
+			// String: "player_jump", then find 42C80000h or in pseudocode "*(a2 + 68) = 1120403456;", changing from 100 to 145
+            "CheckJumpButtonWater"
+            {
+                "library"		"server"
+                "windows"		"\xC8\x42\xEB\x2A\x48\x8B\x4B\x30"
+                "linux"			"\xC8\x42\x66\x0F\xEF\xE4\x41\x0F\x2F\x65"
+            }
 
             // String: "StartGravity", a function call in the function with startgravity in ends with "return (sub_XXX( a1 + 48) > 1);", change the 1 to 2
             "WaterLevelGravity"
@@ -248,6 +256,11 @@
             {
                 "windows"		"\xBE\x02"
                 "linux"			"\x83\xFE\x02"
+            }
+			"FixWaterFloorJump"
+            {
+                "windows"		"\x11\x43"
+                "linux"			"\x11\x43"
             }
             "WaterLevelGravity"
             {
