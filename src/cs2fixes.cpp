@@ -187,28 +187,42 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		return false;
 	}
 
-	addresses::Initialize(g_GameConfig);
+	bool bRequiredInitLoaded = true;
+
+	if (!addresses::Initialize(g_GameConfig))
+		bRequiredInitLoaded = false;
+
 	interfaces::Initialize();
+
+	if (!InitPatches(g_GameConfig))
+		bRequiredInitLoaded = false;
+
+	if (!InitDetours(g_GameConfig))
+		bRequiredInitLoaded = false;
+
+	g_gameEventManager = (IGameEventManager2 *)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);
+
+	if (!g_gameEventManager)
+	{
+		Panic("Failed to find GameEventManager\n");
+		bRequiredInitLoaded = false;
+	}
+
+	if (!bRequiredInitLoaded)
+		return false;
 
 	Message( "All hooks started!\n" );
 
 	UnlockConVars();
 	UnlockConCommands();
 
-	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+	if (late)
+	{
+		RegisterEventListeners();
+		g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+	}
 
 	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
-
-	bool requiredInitLoaded = true;
-
-	if (!InitPatches(g_GameConfig))
-		requiredInitLoaded = false;
-
-	if (!InitDetours(g_GameConfig))
-		requiredInitLoaded = false;
-
-	if (!requiredInitLoaded)
-		return false;
 
 	g_playerManager = new CPlayerManager();
 	g_pAdminSystem = new CAdminSystem();
@@ -230,10 +244,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	{
 		g_playerManager->CheckInfractions();
 	});
-
-	g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);
-
-	Message("g_gameEventManager - %p\n", g_gameEventManager);
 
 	srand(time(0));
 
@@ -422,10 +432,6 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 
 	g_flLastTickedTime = gpGlobals->curtime;
 	g_bHasTicked = true;
-
-	if(!g_pEntitySystem)
-		g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
-
 
 	for (int i = g_timers.Tail(); i != g_timers.InvalidIndex();)
 	{

@@ -54,7 +54,7 @@ public:
 			Error("Failed to get module info for %s, error %d\n", szModule, e);
 #endif
 
-		Message("Initialized module %s base: %p | size: %d\n", m_pszModule, m_base, m_size);
+		Message("Initialized module %s base: 0x%p | size: %d\n", m_pszModule, m_base, m_size);
 	}
 
 	void *FindSignature(const byte *pData)
@@ -92,7 +92,7 @@ public:
 		if (!pInterface)
 			Error("Could not find %s in %s\n", name, m_pszModule);
 
-		Message("Found %s in %s!\n", name, m_pszModule);
+		Message("Found interface %s in %s\n", name, m_pszModule);
 
 		return pInterface;
 	}

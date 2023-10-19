@@ -25,9 +25,12 @@
 
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
-	variable = (decltype(variable))gameConfig->ResolveSignature(name)
+	variable = (decltype(variable))gameConfig->ResolveSignature(name);	\
+	if (!variable)														\
+		return false;													\
+	Message("Found %s at 0x%p\n", name, variable);
 
-void addresses::Initialize(CGameConfig *g_GameConfig)
+bool addresses::Initialize(CGameConfig *g_GameConfig)
 {
 	modules::engine = new CModule(ROOTBIN, "engine2");
 	modules::tier0 = new CModule(ROOTBIN, "tier0");
@@ -52,4 +55,6 @@ void addresses::Initialize(CGameConfig *g_GameConfig)
 	RESOLVE_SIG(g_GameConfig, "SetGroundEntity", addresses::SetGroundEntity);
 	RESOLVE_SIG(g_GameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
 	RESOLVE_SIG(g_GameConfig, "UTIL_Remove", addresses::UTIL_Remove);
+
+	return true;
 }

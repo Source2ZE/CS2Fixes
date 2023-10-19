@@ -47,7 +47,7 @@ bool CMemPatch::PerformPatch(CGameConfig *gameConfig)
 
 	Plat_WriteMemory(m_pPatchAddress, (byte*)m_pPatch, m_iPatchLength);
 
-	Message("Successfully patched %s at %p\n", m_pszName, m_pPatchAddress);
+	Message("Patched %s at %p\n", m_pszName, m_pPatchAddress);
 	return true;
 }
 

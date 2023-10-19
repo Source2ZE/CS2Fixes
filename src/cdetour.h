@@ -86,12 +86,14 @@ bool CDetour<T>::CreateDetour(CGameConfig *gameConfig)
 	if (!m_pfnFunc)
 		return false;
 
+	T *pFunc = m_pfnFunc;
+
 	m_hook = funchook_create();
 	funchook_prepare(m_hook, (void**)&m_pfnFunc, (void*)m_pfnDetour);
 
 	g_vecDetours.AddToTail(this);
 
-	Message("Successfully initialized detour for %s!\n", m_pszName);
+	Message("Detoured %s at 0x%p\n", m_pszName, pFunc);
 	return true;
 }
 

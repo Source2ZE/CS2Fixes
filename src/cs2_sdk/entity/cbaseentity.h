@@ -138,7 +138,11 @@ public:
 	Vector GetAbsOrigin() { return m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin; }
 	void SetAbsOrigin(Vector vecOrigin) { m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin = vecOrigin; }
 
-	void Teleport(Vector *position, QAngle *angles, Vector *velocity) { static int offset = g_GameConfig->GetOffset("Teleport"); CALL_VIRTUAL(void, offset, this, position, angles, velocity); }
+	void Teleport(Vector *position, QAngle *angles, Vector *velocity)
+	{
+		static int offset = g_GameConfig->GetOffset("Teleport");
+		CALL_VIRTUAL(void, offset, this, position, angles, velocity);
+	}
 
 	void CollisionRulesChanged()
 	{
@@ -149,13 +153,13 @@ public:
 	bool IsPawn()
 	{
 		static int offset = g_GameConfig->GetOffset("IsEntityPawn");
-		CALL_VIRTUAL(bool, offset, this);
+		return CALL_VIRTUAL(bool, offset, this);
 	}
 
 	bool IsController()
 	{
 		static int offset = g_GameConfig->GetOffset("IsEntityController");
-		CALL_VIRTUAL(bool, offset, this);
+		return CALL_VIRTUAL(bool, offset, this);
 	}
 
 	bool IsAlive() { return m_lifeState == LifeState_t::LIFE_ALIVE; }
