@@ -791,12 +791,16 @@ CON_COMMAND_CHAT(move, "set a player's team")
 	//int iTeam = V_StringToInt32(args[2], -1);
 
 	int iTeam = -1;
+	const char* cTeam;
 if ( caseInsensitiveStringCompare(args[2], "T" )) {
    iTeam = 2;
+   cTeam = "\2T";
 } else if ( caseInsensitiveStringCompare(args[2], "CT" )) {
    iTeam = 3;
+   cTeam = "\2CT";
 } else if ( caseInsensitiveStringCompare(args[2], "SPEC" )) {
    iTeam = 1;
+   cTeam = "\2SPEC";
 }
 
 	if (iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
@@ -816,19 +820,32 @@ if ( caseInsensitiveStringCompare(args[2], "T" )) {
 		pTarget->GetPawn()->m_iTeamNum = iTeam;
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved \7%s\1 to team %i.", player->GetPlayerName(), pTarget->GetPlayerName(), args[2]);
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved \7%s\1 to team %i.", player->GetPlayerName(), pTarget->GetPlayerName(), cTeam);
+	}
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		pTarget->GetPawn()->CommitSuicide(false, true);
+
+		if (nType < ETargetType::ALL)
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "slayed \7%s\1.", player->GetPlayerName(), pTarget->GetPlayerName());
 	}
 
 	switch (nType)
 	{
 	case ETargetType::ALL:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved everyone to team %i.", args[2]);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved everyone to team %i.", cTeam);
 		break;
 	case ETargetType::T:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved terrorists to team %i.", args[2]);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved terrorists to team %i.", cTeam);
 		break;
 	case ETargetType::CT:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved counter-terrorists to team %i.", args[2]);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved counter-terrorists to team %i.", cTeam);
 		break;
 	}
 }
