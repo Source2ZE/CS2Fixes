@@ -772,11 +772,8 @@ CON_COMMAND_CHAT(move, "set a player's team")
 
 	if (args.ArgC() < 3)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Usage: !move <name> <team (0-3)>");
-	//	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 0\1 for Out of teams");
-	//	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 1\1 for spec team");
-	//	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 2\1 for t team");
-	//	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Use\6 3\1 for ct team");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" Usage: !move <name> <team (t,ct,spec)>");
+
 		return;
 	}
 
@@ -794,9 +791,9 @@ CON_COMMAND_CHAT(move, "set a player's team")
 	//int iTeam = V_StringToInt32(args[2], -1);
 
 	int iTeam = -1;
-if ( caseInsensitiveStringCompare(args[2], "CT" )) {
+if ( caseInsensitiveStringCompare(args[2], "T" )) {
    iTeam = 2;
-} else if ( caseInsensitiveStringCompare(args[2], "T" )) {
+} else if ( caseInsensitiveStringCompare(args[2], "CT" )) {
    iTeam = 3;
 } else if ( caseInsensitiveStringCompare(args[2], "SPEC" )) {
    iTeam = 1;
@@ -804,7 +801,7 @@ if ( caseInsensitiveStringCompare(args[2], "CT" )) {
 
 	if (iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid team specified, range is 0-3.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid team specified, use t,ct,spec");
 		return;
 	}
 
@@ -819,19 +816,19 @@ if ( caseInsensitiveStringCompare(args[2], "CT" )) {
 		pTarget->GetPawn()->m_iTeamNum = iTeam;
 
 		if (nType < ETargetType::ALL)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved \7%s\1 to team %i.", player->GetPlayerName(), pTarget->GetPlayerName(), iTeam);
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved \7%s\1 to team %i.", player->GetPlayerName(), pTarget->GetPlayerName(), args[2]);
 	}
 
 	switch (nType)
 	{
 	case ETargetType::ALL:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved everyone to team %i.", iTeam);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved everyone to team %i.", args[2]);
 		break;
 	case ETargetType::T:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved terrorists to team %i.", iTeam);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved terrorists to team %i.", args[2]);
 		break;
 	case ETargetType::CT:
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved counter-terrorists to team %i.", iTeam);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "moved counter-terrorists to team %i.", args[2]);
 		break;
 	}
 }
