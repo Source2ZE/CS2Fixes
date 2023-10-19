@@ -22,6 +22,7 @@
 #include "utlvector.h"
 #include "playermanager.h"
 #include <ctime>
+#include <string>
 
 #define ADMFLAG_RESERVATION			(1<<0)		/**< Convenience macro for Admin_Reservation as a FlagBit */
 #define ADMFLAG_GENERIC				(1<<1)		/**< Convenience macro for Admin_Generic as a FlagBit */
