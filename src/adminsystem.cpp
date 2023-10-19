@@ -788,11 +788,11 @@ CON_COMMAND_CHAT(move, "set a player's team")
 
 	int iTeam = -1;
 if ( caseInsensitiveStringCompare(args[2], "CT" )) {
-   iTeam = 2
+   iTeam = 2;
 } else if ( caseInsensitiveStringCompare(args[2], "T" )) {
-   iTeam = 3
+   iTeam = 3;
 } else if ( caseInsensitiveStringCompare(args[2], "SPEC" )) {
-   iTeam = 1
+   iTeam = 1;
 }
 
 	if (iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
