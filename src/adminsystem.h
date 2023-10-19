@@ -23,6 +23,7 @@
 #include "playermanager.h"
 #include <ctime>
 #include <string>
+#include <algorithm>
 
 #define ADMFLAG_RESERVATION			(1<<0)		/**< Convenience macro for Admin_Reservation as a FlagBit */
 #define ADMFLAG_GENERIC				(1<<1)		/**< Convenience macro for Admin_Generic as a FlagBit */
