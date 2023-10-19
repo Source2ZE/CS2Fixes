@@ -787,11 +787,11 @@ CON_COMMAND_CHAT(move, "set a player's team")
 	//int iTeam = V_StringToInt32(args[2], -1);
 
 	int iTeam = -1;
-if ( caseInsensitiveStringCompare(args[2], 'CT' ) {
+if ( caseInsensitiveStringCompare(args[2], "CT" ) {
    iTeam = 2
-} else if ( caseInsensitiveStringCompare(args[2], 'T' ) {
+} else if ( caseInsensitiveStringCompare(args[2], "T" ) {
    iTeam = 3
-} else if ( caseInsensitiveStringCompare(args[2], 'SPEC' ) {
+} else if ( caseInsensitiveStringCompare(args[2], "SPEC" ) {
    iTeam = 1
 }
 
