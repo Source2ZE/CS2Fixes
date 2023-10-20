@@ -279,20 +279,19 @@ CON_COMMAND_CHAT(u, "admins chat")
 	int iCommandPlayer = player->GetPlayerSlot();
 
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+	if (args.ArgC() < 2)
+	{
+		
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: /u <message> to admins");
+		return;
+	}
 
 	if (pPlayer->IsAdminFlagSet(ADMFLAG_CHAT))
-	{
-	if (args.ArgC() < 2)
 		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: /u <message> to admins");
-			return;
-		}
 		ClientPrintAll(HUD_PRINTTALK, " \3*************\14Admins Chat\3*************");
 		ClientPrintAll(HUD_PRINTTALK, " \7[Admins]\4 %s \1from \7%s ", args.ArgS(), player->GetPlayerName());
 		ClientPrintAll(HUD_PRINTTALK, " \3**************************************");
-	}
-
-
+		}
 }
 
 CON_COMMAND_CHAT(sound, "stop weapon sounds")
