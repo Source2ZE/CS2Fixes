@@ -520,7 +520,7 @@ const char *CS2Fixes::GetLicense()
 
 const char *CS2Fixes::GetVersion()
 {
-	return "1.7.4";
+	return "1.7.5";
 }
 
 const char *CS2Fixes::GetDate()
