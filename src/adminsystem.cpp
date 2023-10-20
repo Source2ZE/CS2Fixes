@@ -439,7 +439,7 @@ CON_COMMAND_CHAT(ungag, "ungags a player")
 
 //******************TEST FOR SILENT********************************************************************
 
-CON_COMMAND_CHAT(silent, "silent a player")
+CON_COMMAND_CHAT(silece, "silenced a player")
 {
 	if (!player)
 		return;
@@ -456,7 +456,7 @@ CON_COMMAND_CHAT(silent, "silent a player")
 
 	if (args.ArgC() < 3)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !silent <name> <duration/0 (permanent)>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !silece <name> <duration/0 (permanent)>");
 		return;
 	}
 
@@ -545,9 +545,9 @@ for (int i = 0; i < iNumClients; i++)
 	}
 	
 }
-//******************END OF TEST SILENT*****************************************************************
+//******************END OF TEST SILECE*****************************************************************
 
-CON_COMMAND_CHAT(unsilent, "unsilent a player")
+CON_COMMAND_CHAT(unsilence, "unsilenced a player")
 {
 	if (!player)
 		return;
@@ -564,7 +564,7 @@ CON_COMMAND_CHAT(unsilent, "unsilent a player")
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unsilent <name>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unsilence <name>");
 		return;
 	}
 
