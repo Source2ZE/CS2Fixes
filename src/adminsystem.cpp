@@ -437,9 +437,9 @@ CON_COMMAND_CHAT(ungag, "ungags a player")
 	}
 }
 
-//******************TEST FOR SILENT********************************************************************
+//*********************** SILENT********************************************************************
 
-CON_COMMAND_CHAT(silece, "silenced a player")
+CON_COMMAND_CHAT(silence, "silenced a player")
 {
 	if (!player)
 		return;
@@ -545,7 +545,7 @@ for (int i = 0; i < iNumClients; i++)
 	}
 	
 }
-//******************END OF TEST SILECE*****************************************************************
+//******************END OF SILECE**********************************************************************
 
 CON_COMMAND_CHAT(unsilence, "unsilenced a player")
 {

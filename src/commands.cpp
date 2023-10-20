@@ -271,11 +271,14 @@ CON_COMMAND_CHAT(RS, "reset your score")
 //************************************end reset**************************************************************
 //************************************Admins chat**************************************************************
 
-CON_COMMAND_CHAT(u, "admins chat")
+cppCON_COMMAND_CHAT(u, "admins chat")
 {
     if (!player)
         return;
 
+    int iCommandPlayer = player->GetPlayerSlot();
+
+    ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
     if (args.ArgC() < 2)
     {
         
@@ -283,9 +286,9 @@ CON_COMMAND_CHAT(u, "admins chat")
         return;
     }
 
-for (int i = 1; i < MAXPLAYERS; i++)
+for (int i = 0; i < MAXPLAYERS; i++)
 {
-     ZEPlayer* pAdmin = g_playerManager->GetPlayer(i);
+    ZEPlayer* pAdmin = g_playerManager->GetPlayer(i);
     CBasePlayerController* cPlayer = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
 
     if (!cPlayer || !pAdmin || pAdmin->IsFakeClient() || !pAdmin->IsAdminFlagSet(ADMFLAG_SLAY))
@@ -295,7 +298,6 @@ for (int i = 1; i < MAXPLAYERS; i++)
         ClientPrint(cPlayer, HUD_PRINTTALK, " \3**************************************");
 }
 }
-
 CON_COMMAND_CHAT(sound, "stop weapon sounds")
 {
 	if (!player)
