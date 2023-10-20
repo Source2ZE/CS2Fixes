@@ -288,7 +288,7 @@ CON_COMMAND_CHAT(u, "admins chat")
 			return;
 		}
 		ClientPrintAll(HUD_PRINTTALK, " \3*************\14Admins Chat\3*************");
-		ClientPrintAll(HUD_PRINTTALK, " \7[Admins]\4 %s \1from \7%s ", args.ArgS(), player->getplayername());
+		ClientPrintAll(HUD_PRINTTALK, " \7[Admins]\4 %s \1from \7%s ", args.ArgS(), player->GetPlayerName());
 		ClientPrintAll(HUD_PRINTTALK, " \3**************************************");
 	}
 
