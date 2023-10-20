@@ -275,7 +275,7 @@ CON_COMMAND_CHAT(u, "admins chat")
 {
 	if (!player)
 		return;
-/*
+
 	int iCommandPlayer = player->GetPlayerSlot();
 
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
@@ -286,13 +286,6 @@ CON_COMMAND_CHAT(u, "admins chat")
 		return;
 	}
 
-	if (pPlayer->IsAdminFlagSet(ADMFLAG_CHAT))
-		{
-		ClientPrintAll(HUD_PRINTTALK, " \3*************\14Admins Chat\3*************");
-		ClientPrintAll(HUD_PRINTTALK, " \7[Admins]\4 %s \1from \7%s ", args.ArgS(), player->GetPlayerName());
-		ClientPrintAll(HUD_PRINTTALK, " \3**************************************");
-		}
-		*/
 for (int i = 0; i < MAXPLAYERS; i++)
 {
     ZEPlayer* pAdmin = g_playerManager->GetPlayer(i);
