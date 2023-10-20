@@ -271,7 +271,7 @@ CON_COMMAND_CHAT(RS, "reset your score")
 //************************************end reset**************************************************************
 //************************************Admins chat**************************************************************
 
-cppCON_COMMAND_CHAT(u, "admins chat")
+CON_COMMAND_CHAT(u, "admins chat")
 {
     if (!player)
         return;
