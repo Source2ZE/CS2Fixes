@@ -287,9 +287,9 @@ CON_COMMAND_CHAT(u, "admins chat")
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !u <message>");
 			return;
 		}
-
-		ClientPrintAll(HUD_PRINTTALK, "%s", args.ArgS());
-
+		ClientPrintAll(HUD_PRINTTALK, "\3***********\14Admins Chat\3***********");
+		ClientPrintAll(HUD_PRINTTALK, "\7[Admins]\4 %s", args.ArgS());
+		ClientPrintAll(HUD_PRINTTALK, "\3**************************************");
 	}
 
 
