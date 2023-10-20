@@ -187,36 +187,19 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 	addresses::ClientPrint(player, hud_dest, buf, nullptr, nullptr, nullptr, nullptr);
 }
 
-CON_COMMAND_CHAT(stopsound, "stop weapon sounds")
+CON_COMMAND_CHAT(stopsound, "toggle weapon sounds")
 {
 	if (!player)
 		return;
 
 	int iPlayer = player->GetPlayerSlot();
-	bool bSet = !g_playerManager->IsPlayerUsingStopSound(iPlayer);
+	bool bStopSet = g_playerManager->IsPlayerUsingStopSound(iPlayer);
+	bool bSilencedSet = g_playerManager->IsPlayerUsingSilenceSound(iPlayer);
 
-	g_playerManager->SetPlayerStopSound(iPlayer, bSet);
+	g_playerManager->SetPlayerStopSound(iPlayer, bSilencedSet);
+	g_playerManager->SetPlayerSilenceSound(iPlayer, !bSilencedSet && !bStopSet);
 
-	if (bSet)
-		g_playerManager->SetPlayerSilenceSound(iPlayer, false);
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s weapon effects.", bSet ? "disabled" : "enabled");
-}
-
-CON_COMMAND_CHAT(silencesound, "silence weapon sounds")
-{
-	if (!player)
-		return;
-
-	int iPlayer = player->GetPlayerSlot();
-	bool bSet = !g_playerManager->IsPlayerUsingSilenceSound(iPlayer);
-
-	g_playerManager->SetPlayerSilenceSound(iPlayer, bSet);
-
-	if (bSet)
-		g_playerManager->SetPlayerStopSound(iPlayer, false);
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s weapon sounds.", bSet ? "silenced" : "unsilenced");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s weapon sounds.", bSilencedSet ? "disabled" : !bSilencedSet && !bStopSet ? "silenced" : "enabled");
 }
 
 CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fps in ZE")
