@@ -625,7 +625,7 @@ CON_COMMAND_CHAT(unsilent, "unsilent a player")
 
 	g_pAdminSystem->SaveInfractions();
 
-	g_pAdminSystem->SaveInfractions();
+	//g_pAdminSystem->SaveInfractions();
 
 	switch (nType)
 	{

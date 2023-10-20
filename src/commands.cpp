@@ -269,7 +269,31 @@ CON_COMMAND_CHAT(RS, "reset your score")
 	ClientPrint(player, HUD_PRINTTALK, " \7[Reset Score]\1 You successfully reset your score.");
 }
 //************************************end reset**************************************************************
+//************************************Admins chat**************************************************************
 
+CON_COMMAND_CHAT(u, "admins chat")
+{
+	if (!player)
+		return;
+
+	int iCommandPlayer = player->GetPlayerSlot();
+
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+	if (pPlayer->IsAdminFlagSet(ADMFLAG_CHAT))
+	{
+	if (args.ArgC() < 2)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !u <message>");
+			return;
+		}
+
+		ClientPrintAll(HUD_PRINTTALK, "%s", args.ArgS());
+
+	}
+
+
+}
 
 CON_COMMAND_CHAT(sound, "stop weapon sounds")
 {
@@ -296,7 +320,7 @@ CON_COMMAND_CHAT(help, "help")
 {
 		if (!player)
 		return;
-ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXS "Use commands: !medic, !rs,!RS, !sound, !stats");
+ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXS "Use commands: !medic, !rs,!RS, !sound, !stats, !vip");
 }
 
 CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fps in ZE")
