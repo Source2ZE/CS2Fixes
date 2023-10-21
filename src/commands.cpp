@@ -285,7 +285,7 @@ CON_COMMAND_CHAT(u, "admins chat")
         ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: /u <message> to admins");
         return;
     }
-
+	ClientPrint(cPlayer, HUD_PRINTTALK, " \7[To Admins]\4 %s \1 ,message sent to \7Admins ", args.ArgS());
 for (int i = 0; i < MAXPLAYERS; i++)
 {
     ZEPlayer* pAdmin = g_playerManager->GetPlayer(i);
