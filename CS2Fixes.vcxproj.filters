@@ -33,6 +33,9 @@
     <Filter Include="Header Files\utils">
       <UniqueIdentifier>{4e7c9b65-faee-46b5-b610-9717f232a17c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\sdk">
+      <UniqueIdentifier>{e1906f3f-9ee2-40df-a4d2-00ee0358b050}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\patches.cpp">
@@ -42,9 +45,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mempatch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="sdk\tier1\convar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\cs2_sdk\interfaces\cs2_interfaces.cpp">
@@ -64,9 +64,6 @@
     </ClCompile>
     <ClCompile Include="src\utils\plat_unix.cpp">
       <Filter>Source Files\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cs2_sdk\interfaces\centitysystem.cpp">
-      <Filter>Source Files\cs2_sdk\interfaces</Filter>
     </ClCompile>
     <ClCompile Include="src\commands.cpp">
       <Filter>Source Files</Filter>
@@ -92,8 +89,11 @@
     <ClCompile Include="src\gameconfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\tier1\generichash.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="sdk\entity2\entitysystem.cpp">
+      <Filter>Source Files\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="sdk\tier1\convar.cpp">
+      <Filter>Source Files\sdk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

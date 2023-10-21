@@ -165,12 +165,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="sdk\tier1\generichash.cpp" />
+    <ClCompile Include="sdk\entity2\entitysystem.cpp" />
     <ClCompile Include="src\addresses.cpp" />
     <ClCompile Include="src\adminsystem.cpp" />
     <ClCompile Include="src\commands.cpp" />
     <ClCompile Include="src\cs2fixes.cpp" />
-    <ClCompile Include="src\cs2_sdk\interfaces\centitysystem.cpp" />
     <ClCompile Include="src\cs2_sdk\interfaces\cs2_interfaces.cpp" />
     <ClCompile Include="src\cs2_sdk\schema.cpp" />
     <ClCompile Include="src\ctimer.cpp" />

@@ -58,7 +58,6 @@ for sdk_name in MMSPlugin.sdks:
       'src/utils/entity.cpp',
       'src/cs2_sdk/schema.cpp',
       'src/cs2_sdk/interfaces/cs2_interfaces.cpp',
-      'src/cs2_sdk/interfaces/centitysystem.cpp',
       'src/ctimer.cpp',
       'src/playermanager.cpp',
       'src/gameconfig.cpp',
@@ -66,8 +65,8 @@ for sdk_name in MMSPlugin.sdks:
 
     if sdk_name in ['dota', 'cs2']:
       binary.sources += [
+      os.path.join(sdk.path, 'entity2', 'entitysystem.cpp'),
       os.path.join(sdk.path, 'tier1', 'convar.cpp'),
-      os.path.join(sdk.path, 'tier1', 'generichash.cpp'),
       os.path.join(sdk.path, 'public', 'tier0', 'memoverride.cpp'),
     ]
 
