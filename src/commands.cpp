@@ -323,7 +323,7 @@ CON_COMMAND_CHAT(help, "help")
 {
 		if (!player)
 		return;
-ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXS "Use commands: !medic, !rs,!RS, !sound, !stats, !vip");
+ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXS "Use commands: !medic, !rs,!RS, !sound, !stats, !vip, !stats, /u(admins chat)");
 }
 
 CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fps in ZE")
