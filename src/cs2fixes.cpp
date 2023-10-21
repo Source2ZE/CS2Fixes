@@ -224,7 +224,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
-	g_playerManager = new CPlayerManager();
+	g_playerManager = new CPlayerManager(late);
 	g_pAdminSystem = new CAdminSystem();
 
 	// Steam authentication
