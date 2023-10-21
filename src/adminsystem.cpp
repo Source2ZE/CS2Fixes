@@ -95,22 +95,24 @@ CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FC
 
 CON_COMMAND_CHAT(ban, "ban a player")
 {
-	if (!player)
-		return;
+	int iCommandPlayer = -1;
 
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+	if (player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
-		return;
+		iCommandPlayer = player->GetPlayerSlot();
+
+		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+			return;
+		}
 	}
 
 	if (args.ArgC() < 3)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Usage: !ban <name> <duration/0 (permanent)>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ban <name> <duration/0 (permanent)>");
 		return;
 	}
 
@@ -129,10 +131,9 @@ CON_COMMAND_CHAT(ban, "ban a player")
 		return;
 	}
 
-	char* end;
-	int iDuration = strtol(args[2], &end, 10);
+	int iDuration = V_StringToInt32(args[2], -1);
 
-	if (*end)
+	if (iDuration == -1)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid duration.");
 		return;
@@ -154,7 +155,20 @@ CON_COMMAND_CHAT(ban, "ban a player")
 	infraction->ApplyInfraction(pTargetPlayer);
 	g_pAdminSystem->SaveInfractions();
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "banned %s for %i minutes.", player->GetPlayerName(), pTarget->GetPlayerName(), iDuration);
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "banned %s for %i minutes.", pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
+
+	if (iDuration > 0)
+	{
+		char szAction[64];
+		V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
+		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", szAction);
+	}
+	else
+	{
+		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently banned");
+	}
 }
 
 CON_COMMAND_CHAT(mute, "mutes a player")
@@ -172,12 +186,12 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 			return;
 		}
+	}
 
-		if (args.ArgC() < 3)
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !mute <name> <duration/0 (permanent)>");
-			return;
-		}
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !mute <name> <duration/0 (permanent)>");
+		return;
 	}
 
 	int iNumClients = 0;
@@ -256,12 +270,12 @@ CON_COMMAND_CHAT(unmute, "unmutes a player")
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 			return;
 		}
+	}
 
-		if (args.ArgC() < 2)
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unmute <name>");
-			return;
-		}
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unmute <name>");
+		return;
 	}
 
 	int iNumClients = 0;
@@ -319,12 +333,12 @@ CON_COMMAND_CHAT(gag, "gag a player")
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 			return;
 		}
+	}
 
-		if (args.ArgC() < 3)
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !gag <name> <duration/0 (permanent)>");
-			return;
-		}
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !gag <name> <duration/0 (permanent)>");
+		return;
 	}
 
 	int iNumClients = 0;
@@ -405,12 +419,12 @@ CON_COMMAND_CHAT(ungag, "ungags a player")
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 			return;
 		}
+	}
 
-		if (args.ArgC() < 2)
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ungag <name>");
-			return;
-		}
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ungag <name>");
+		return;
 	}
 
 	int iNumClients = 0;
@@ -468,12 +482,12 @@ CON_COMMAND_CHAT(kick, "kick a player")
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 			return;
 		}
+	}
 
-		if (args.ArgC() < 2)
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !kick <name>");
-			return;
-		}
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !kick <name>");
+		return;
 	}
 
 	int iNumClients = 0;
@@ -519,12 +533,12 @@ CON_COMMAND_CHAT(slay, "slay a player")
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 			return;
 		}
+	}
 
-		if (args.ArgC() < 2)
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !slay <name>");
-			return;
-		}
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !slay <name>");
+		return;
 	}
 
 	int iNumClients = 0;
@@ -558,8 +572,12 @@ CON_COMMAND_CHAT(slay, "slay a player")
 
 CON_COMMAND_CHAT(goto, "teleport to a player")
 {
+	// Only players can use this command at all
 	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
 		return;
+	}
 
 	int iCommandPlayer = player->GetPlayerSlot();
 
@@ -610,7 +628,10 @@ CON_COMMAND_CHAT(goto, "teleport to a player")
 CON_COMMAND_CHAT(bring, "bring a player")
 {
 	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
 		return;
+	}
 
 	int iCommandPlayer = player->GetPlayerSlot();
 
@@ -725,7 +746,10 @@ CON_COMMAND_CHAT(setteam, "set a player's team")
 CON_COMMAND_CHAT(noclip, "toggle noclip on yourself")
 {
 	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
 		return;
+	}
 
 	int iCommandPlayer = player->GetPlayerSlot();
 
@@ -762,17 +786,19 @@ CON_COMMAND_CHAT(noclip, "toggle noclip on yourself")
 
 CON_COMMAND_CHAT(map, "change map")
 {
-	if (!player)
-		return;
+	int iCommandPlayer = -1;
 
-	int iCommandPlayer = player->GetPlayerSlot();
-
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
-
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_CHANGEMAP))
+	if (player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
-		return;
+		iCommandPlayer = player->GetPlayerSlot();
+
+		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_CHANGEMAP))
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+			return;
+		}
 	}
 
 	if (args.ArgC() < 2)
@@ -825,7 +851,10 @@ CON_COMMAND_CHAT(hsay, "say something as a hud hint")
 CON_COMMAND_CHAT(rcon, "send a command to server console")
 {
 	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You are already on the server console.");
 		return;
+	}
 
 	int iCommandPlayer = player->GetPlayerSlot();
 

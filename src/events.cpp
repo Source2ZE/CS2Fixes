@@ -57,6 +57,7 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
+// CONVAR_TODO
 bool g_bForceCT = true;
 
 CON_COMMAND_F(c_force_ct, "toggle forcing CTs on every round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
@@ -97,6 +98,8 @@ GAME_EVENT_F(player_team)
 		pEvent->SetBool("silent", true);
 }
 
+// CONVAR_TODO: have a convar for forcing debris collision
+
 GAME_EVENT_F(player_spawn)
 {
 	CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
@@ -104,12 +107,12 @@ GAME_EVENT_F(player_spawn)
 	if (!pController)
 		return;
 
-	CEntityHandle hController = pController->GetHandle();
+	CHandle<CBasePlayerController> hController = pController->GetHandle();
 
 	// Gotta do this on the next frame...
 	new CTimer(0.0f, false, false, [hController]()
 	{
-		CBasePlayerController *pController = (CBasePlayerController*)Z_CBaseEntity::EntityFromHandle(hController);
+		CBasePlayerController *pController = hController.Get();
 
 		if (!pController)
 			return;

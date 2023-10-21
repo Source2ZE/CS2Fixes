@@ -165,18 +165,6 @@ public:
 	bool IsAlive() { return m_lifeState == LifeState_t::LIFE_ALIVE; }
 
 	CHandle<CBaseEntity> GetHandle() { return m_pEntity->m_EHandle; }
-
-	static Z_CBaseEntity* EntityFromHandle(CHandle<CBaseEntity> handle) {
-		if (!handle.IsValid())
-			return nullptr;
-
-		auto entity = handle.Get();
-
-		if (entity && entity->m_pEntity->m_EHandle == handle)
-			return (Z_CBaseEntity*) entity;
-
-		return nullptr;
-	}
 };
 
 class SpawnPoint : public Z_CBaseEntity

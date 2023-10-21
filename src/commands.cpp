@@ -229,10 +229,16 @@ CON_COMMAND_CHAT(myuid, "test")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your userid is %i, slot: %i, retrieved slot: %i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get(), iPlayer, g_playerManager->GetSlotFromUserId(g_pEngineServer2->GetPlayerUserId(iPlayer).Get()));
 }
 
+// CONVAR_TODO
+static constexpr float g_flMaxZteleDistance = 150.0f;
+
 CON_COMMAND_CHAT(ztele, "teleport to spawn")
 {
 	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
 		return;
+	}
 
 	//Count spawnpoints (info_player_counterterrorist & info_player_terrorist)
 	SpawnPoint* spawn = nullptr;
@@ -268,15 +274,14 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 
 	new CTimer(5.0f, false, false, [spawnpos, handle, initialpos]()
 	{
-		if (!handle.Get())
-			return;
-
 		CBasePlayerPawn *pPawn = handle.Get();
+
+		if (!pPawn)
+			return;
 
 		Vector endpos = pPawn->GetAbsOrigin();
 
-		// TODO: Make this a convar
-		if (initialpos.DistTo(endpos) < 150.0f)
+		if (initialpos.DistTo(endpos) < g_flMaxZteleDistance)
 		{
 			pPawn->SetAbsOrigin(spawnpos);
 			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, CHAT_PREFIX "You have been teleported to spawn.");
@@ -289,13 +294,16 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 	});
 }
 
-// TODO: Make this a convar when it's possible to do so
+// CONVAR_TODO
 static constexpr int g_iMaxHideDistance = 2000;
 
 CON_COMMAND_CHAT(hide, "hides nearby teammates")
 {
 	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
 		return;
+	}
 
 	if (args.ArgC() < 2)
 	{
