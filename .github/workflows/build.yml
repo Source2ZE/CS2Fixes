@@ -1,4 +1,4 @@
-name: Plugin build
+name: CI
 
 on:
   push:
@@ -7,72 +7,62 @@ on:
     paths-ignore:
     - LICENSE
     - README.md
+    - 'configs**'
+    - '**.sln'
+    - '**.vcxproj**'
   pull_request:
     paths-ignore:
     - LICENSE
     - README.md
+    - 'configs**'
+    - '**.sln'
+    - '**.vcxproj**'
 
 jobs:
-  linux:
-    name: linux build
-    runs-on: ubuntu-latest
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
     env:
-      HL2SDKCS2: ${{ github.workspace }}/cs2fixes/sdk
-      CC: clang
-      CXX: clang++
-    container:
-      image: idk1703/build-img:11
+        HL2SDKCS2: ${{ github.workspace }}/CS2Fixes/sdk
+    container: ${{ matrix.container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: windows-latest
+          - os: ubuntu-latest
+            container: registry.gitlab.steamos.cloud/steamrt/sniper/sdk
     steps:
-      - name: Checking out MM:Source
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: CS2Fixes
+          submodules: recursive
+
+      - name: Checkout Metamod
+        uses: actions/checkout@v4
         with:
           repository: alliedmodders/metamod-source
           ref: master
-          path: metamod-source
-
-      - name: Checking out own repository
-        uses: actions/checkout@v3
-        with:
-          path: cs2fixes
+          path: mmsource-2.0
           submodules: recursive
 
-      - name: Compiling files
-        working-directory: cs2fixes
-        run: |
-          python3 configure.py --enable-optimize --symbol-files --sdks cs2
-          ambuild objdir
-
-  windows:
-    name: windows build
-    runs-on: windows-latest
-    env:
-      HL2SDKCS2: ${{ github.workspace }}/cs2fixes/sdk
-    steps:
-      - name: Setting up Python
-        uses: actions/setup-python@v4
+      - name: Checkout AMBuild
+        uses: actions/checkout@v4
         with:
-          python-version: '3.10' 
+          repository: alliedmodders/ambuild
+          path: ambuild
 
-      - name: Install Python dependencies
+      - name: Install AMBuild
         run: |
-          python3 -m pip install --upgrade pip setuptools wheel
-          pip install git+https://github.com/alliedmodders/ambuild
+          cd ambuild && python setup.py install && cd ..
 
-      - name: Checking out MM:Source
-        uses: actions/checkout@v3
-        with:
-          repository: alliedmodders/metamod-source
-          ref: master
-          path: metamod-source
-          
-      - name: Checking out own repository
-        uses: actions/checkout@v3
-        with:
-          path: cs2fixes
-          submodules: recursive
-
-      - name: Compiling files
-        working-directory: cs2fixes
+      - name: Build
+        working-directory: CS2Fixes
+        shell: bash
         run: |
-          python3 configure.py --enable-optimize --symbol-files --sdks cs2
-          ambuild objdir
+          mkdir build && cd build
+          python ../configure.py --enable-optimize --symbol-files --sdks cs2
+          ambuild
+  
