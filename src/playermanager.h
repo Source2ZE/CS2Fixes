@@ -98,17 +98,21 @@ private:
 class CPlayerManager
 {
 public:
-	CPlayerManager()
+	CPlayerManager(bool late = false)
 	{
 		V_memset(m_vecPlayers, 0, sizeof(m_vecPlayers));
 		m_nUsingStopSound = 0;
 		m_nUsingSilenceSound = -1; // On by default
 		m_nUsingStopDecals = -1; // On by default
+
+		if (late)
+			OnLateLoad();
 	}
 
 	bool OnClientConnected(CPlayerSlot slot);
 	void OnClientDisconnect(CPlayerSlot slot);
 	void OnBotConnected(CPlayerSlot slot);
+	void OnLateLoad();
 	void TryAuthenticate();
 	void CheckInfractions();
 	void CheckHideDistances();

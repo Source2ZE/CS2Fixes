@@ -99,6 +99,19 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	ResetPlayerFlags(slot.Get());
 }
 
+void CPlayerManager::OnLateLoad()
+{
+	for (int i = 0; i < MAXPLAYERS; i++)
+	{
+		CCSPlayerController *pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity(CEntityIndex(i + 1));
+
+		if (!pController || !pController->IsConnected())
+			continue;
+
+		OnClientConnected(i);
+	}
+}
+
 void CPlayerManager::TryAuthenticate()
 {
 	for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
