@@ -298,7 +298,7 @@ for (int i = 0; i < MAXPLAYERS; i++)
         ClientPrint(cPlayer, HUD_PRINTTALK, " \3**************************************");
 }
 	//ClientPrint(cPlayer, HUD_PRINTTALK, " \7[To Admins] \4%s \1, message sent to \7Admins", args.ArgS());
-	//ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXS"Kills: %d", stats->m_iKills.Get());
+	ClientPrint(player, HUD_PRINTTALK, " \7[To Admins] \4%s \1, message sent to \7Admins", args.ArgS());
 }
 CON_COMMAND_CHAT(sound, "stop weapon sounds")
 {
