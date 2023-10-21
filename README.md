@@ -26,7 +26,7 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
   - [x] Userid Target lookup
   - [x] Admin system
     - [x] Admin commands
-    - [ ] Infractions
+    - [x] Infractions
       - [x] Kick
       - [x] Ban
       - [x] Mute
@@ -36,6 +36,7 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
 - [x] Blocking weapon sounds/decals
   - [x] Hooking fire bullets tempent
   - [x] Implement stopsound
+  - [x] Implement silenced sounds
   - [x] Implement toggledecals
 - [x] Legacy event listener
 - [x] Weapon pickup crash fix
@@ -43,9 +44,10 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
 - [x] Remove player collisions
 - [x] Ztele
 - [x] Water fix
-- [ ] Hide command
+- [x] Hide command
   - [x] Transmit hook
-  - [] Rewrite detour hook into sourcehook (Interface definition available)
+  - [x] Rewrite detour hook into sourcehook (Interface definition available)
+- [x] Rcon
 
 ## Compilation
 
