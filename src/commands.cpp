@@ -328,14 +328,18 @@ CON_COMMAND_CHAT(hide, "hides nearby teammates")
 	{
 		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
 		return;
-	}
+	}	
 
-	pZEPlayer->SetHideDistance(distance);
-
-	if (distance == 0)
+	if (pZEPlayer->GetHideDistance() == distance || distance == 0)
+	{
+		pZEPlayer->SetHideDistance(0);
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding teammates is now disabled.");
+	}
 	else
+	{
+		pZEPlayer->SetHideDistance(distance);
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding teammates within %i units.", distance);
+	}
 }
 
 
