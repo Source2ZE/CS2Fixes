@@ -647,12 +647,6 @@ CON_COMMAND_CHAT_FLAGS(noclip, "toggle noclip on yourself", ADMFLAG_SLAY | ADMFL
 
 CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 {
-	if (!player)
-	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
-		return;
-	}
-
 	if (args.ArgC() < 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !entfire <name> <input> <optional parameter>");
@@ -665,7 +659,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 
 	CEntityInstance *pTarget = nullptr;
 
-	// The idea here is to only use one of the targeting modes at once, prioritizing !picker then !target
+	// The idea here is to only use one of the targeting modes at once, prioritizing !picker then targetname/!self then classname
 	// Try picker first, FindEntityByName can also take !picker but it always uses player 0 so we have to do this ourselves
 	if (!V_strcmp("!picker", args[1]))
 	{
@@ -680,7 +674,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 	
 	if (!iFoundEnts)
 	{
-		while (pTarget = UTIL_FindEntityByName(pTarget, args[1]), player)
+		while (pTarget = UTIL_FindEntityByName(pTarget, args[1], player))
 		{
 			UTIL_AddEntityIOEvent(pTarget, args[2], player, player, value);
 			iFoundEnts++;
