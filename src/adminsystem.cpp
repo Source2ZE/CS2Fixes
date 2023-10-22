@@ -26,10 +26,13 @@
 #include "playermanager.h"
 #include "commands.h"
 #include "ctimer.h"
+#include "detours.h"
+#include "utils/entity.h"
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
+extern CGameRules *g_pGameRules;
 
 CAdminSystem* g_pAdminSystem = nullptr;
 
@@ -640,6 +643,63 @@ CON_COMMAND_CHAT_FLAGS(noclip, "toggle noclip on yourself", ADMFLAG_SLAY | ADMFL
 		pPawn->m_MoveType = MOVETYPE_NOCLIP;
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "entered noclip.", player->GetPlayerName());
 	}
+}
+
+CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
+{
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !entfire <name> <input> <optional parameter>");
+		return;
+	}
+
+	variant_string_t value(args[3]);
+
+	int iFoundEnts = 0;
+
+	CEntityInstance *pTarget = nullptr;
+
+	// The idea here is to only use one of the targeting modes at once, prioritizing !picker then !target
+	// Try picker first, FindEntityByName can also take !picker but it always uses player 0 so we have to do this ourselves
+	if (!V_strcmp("!picker", args[1]))
+	{
+		pTarget = UTIL_FindPickerEntity(player);
+
+		if (pTarget)
+		{
+			UTIL_AddEntityIOEvent(pTarget, args[2], player, player, value);
+			iFoundEnts++;
+		}
+	}
+	
+	if (!iFoundEnts)
+	{
+		while (pTarget = UTIL_FindEntityByName(pTarget, args[1]), player)
+		{
+			UTIL_AddEntityIOEvent(pTarget, args[2], player, player, value);
+			iFoundEnts++;
+		}
+	}
+
+	if (!iFoundEnts)
+	{
+		while (pTarget = UTIL_FindEntityByClassname(pTarget, args[1]))
+		{
+			UTIL_AddEntityIOEvent(pTarget, args[2], player, player, value);
+			iFoundEnts++;
+		}
+	}
+
+	if (!iFoundEnts)
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+	else
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i entities.", iFoundEnts);
 }
 
 CON_COMMAND_CHAT_FLAGS(map, "change map", ADMFLAG_CHANGEMAP)
