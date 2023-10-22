@@ -72,7 +72,7 @@ GAME_EVENT_F(round_prestart)
 	if (!g_bForceCT)
 		return;
 
-	for (int i = 1; i <= MAXPLAYERS; i++)
+	for (int i = 1; i <= g_playerManager->GetMaxPlayers(); i++)
 	{
 		CCSPlayerController *pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity(CEntityIndex(i));
 
@@ -146,7 +146,7 @@ GAME_EVENT_F(player_hurt)
 
 GAME_EVENT_F(round_start)
 {
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < g_playerManager->GetMaxPlayers(); i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -166,7 +166,7 @@ GAME_EVENT_F(round_end)
 {
 	CUtlVector<ZEPlayer*> sortedPlayers;
 
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < g_playerManager->GetMaxPlayers(); i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 

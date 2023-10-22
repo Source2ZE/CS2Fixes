@@ -62,7 +62,7 @@ CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKE
 	if (!g_pAdminSystem->LoadAdmins())
 		return;
 
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < g_playerManager->GetMaxPlayers(); i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -80,7 +80,7 @@ CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FC
 	if (!g_pAdminSystem->LoadInfractions())
 		return;
 
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < g_playerManager->GetMaxPlayers(); i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 

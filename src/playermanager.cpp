@@ -101,7 +101,7 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 
 void CPlayerManager::OnLateLoad()
 {
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < GetMaxPlayers(); i++)
 	{
 		CCSPlayerController *pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity(CEntityIndex(i + 1));
 
@@ -150,7 +150,7 @@ void CPlayerManager::CheckHideDistances()
 	if (!g_pEntitySystem)
 		return;
 
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < GetMaxPlayers(); i++)
 	{
 		auto player = GetPlayer(i);
 
@@ -176,7 +176,7 @@ void CPlayerManager::CheckHideDistances()
 		auto vecPosition = pPawn->GetAbsOrigin();
 		int team = pController->m_iTeamNum;
 
-		for (int j = 1; j < MAXPLAYERS + 1; j++)
+		for (int j = 1; j < GetMaxPlayers() + 1; j++)
 		{
 			if (j - 1 == i)
 				continue;
@@ -315,10 +315,18 @@ ZEPlayer *CPlayerManager::GetPlayerFromUserId(uint16 userid)
 {
 	uint8 index = userid & 0xFF;
 
-	if (index >= MAXPLAYERS)
+	if (index >= GetMaxPlayers())
 		return nullptr;
 
 	return m_vecPlayers[index];
+}
+
+int CPlayerManager::GetMaxPlayers()
+{
+	// quick and dirty fix for now until we can get maxplayers properly
+	static int iMaxPlayers = CommandLine()->ParmValue("-maxplayers", 64);
+
+	return iMaxPlayers;
 }
 
 void CPlayerManager::SetPlayerStopSound(int slot, bool set)

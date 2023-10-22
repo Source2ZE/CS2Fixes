@@ -488,7 +488,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 		if (!pSelfZEPlayer)
 			continue;
 
-		for (int i = 1; i <= MAXPLAYERS; i++)
+		for (int i = 1; i <= g_playerManager->GetMaxPlayers(); i++)
 		{
 			if (!pSelfZEPlayer->ShouldBlockTransmit(i - 1))
 				continue;

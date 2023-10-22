@@ -122,7 +122,7 @@ public:
 
 	ZEPlayer *GetPlayer(CPlayerSlot slot)
 	{
-		if (slot.Get() < 0 || slot.Get() >= MAXPLAYERS)
+		if (slot.Get() < 0 || slot.Get() >= GetMaxPlayers())
 			return nullptr;
 
 		return m_vecPlayers[slot.Get()];
@@ -131,6 +131,8 @@ public:
 	uint64 GetStopSoundMask() { return m_nUsingStopSound; }
 	uint64 GetSilenceSoundMask() { return m_nUsingSilenceSound; }
 	uint64 GetStopDecalsMask() { return m_nUsingStopDecals; }
+
+	int GetMaxPlayers();
 	
 	void SetPlayerStopSound(int slot, bool set);
 	void SetPlayerSilenceSound(int slot, bool set);
