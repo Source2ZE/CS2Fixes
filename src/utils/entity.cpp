@@ -18,23 +18,46 @@
  */
 
 #include "entity.h"
+
+#include "../addresses.h"
 #include "../common.h"
-#include "platform.h"
+#include "../gameconfig.h"
+#include "../utils/virtual.h"
 #include "entitysystem.h"
+#include "platform.h"
 
 #include "tier0/memdbgon.h"
 
 extern CEntitySystem *g_pEntitySystem;
+extern CGameConfig *g_GameConfig;
+extern CGameRules *g_pGameRules;
 
-CEntityInstance* UTIL_FindEntityByClassname(CEntityInstance* pStart, const char* name)
+CEntityInstance* UTIL_FindPickerEntity(CBasePlayerController* pPlayer)
 {
-	CEntityIdentity* pEntity = pStart ? pStart->m_pEntity->m_pNext : g_pEntitySystem->m_EntityList.m_pFirstActiveEntity;
+	static int offset = g_GameConfig->GetOffset("CGameRules_FindPickerEntity");
 
-	for (; pEntity; pEntity = pEntity->m_pNext)
+	if (offset < 0)
 	{
-		if (!V_strnicmp(pEntity->m_designerName.String(), name, V_strlen(name)))
-			return pEntity->m_pInstance;
-	};
+		Panic("Missing offset for CGameRules_FindPickerEntity!\n");
+		return nullptr;
+	}
 
-	return nullptr;
+	return CALL_VIRTUAL(CEntityInstance *, offset, g_pGameRules, pPlayer);
+}
+
+CEntityInstance *UTIL_FindEntityByClassname(CEntityInstance *pStartEntity, const char *szName)
+{
+	return addresses::CGameEntitySystem_FindEntityByClassName(g_pEntitySystem, pStartEntity, szName);
+}
+
+CEntityInstance *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
+									   CEntityInstance *pSearchingEntity, CEntityInstance *pActivator, CEntityInstance *pCaller, IEntityFindFilter *pFilter)
+{
+	return addresses::CGameEntitySystem_FindEntityByName(g_pEntitySystem, pStartEntity, szName, pSearchingEntity, pActivator, pCaller, pFilter);
+}
+
+void UTIL_AddEntityIOEvent(CEntityInstance *pTarget, const char *pszInput,
+						   CEntityInstance *pActivator, CEntityInstance *pCaller, variant_string_t value, float flDelay)
+{
+	addresses::CEntitySystem_AddEntityIOEvent(g_pEntitySystem, pTarget, pszInput, pActivator, pCaller, value, flDelay, 0);
 }
