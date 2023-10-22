@@ -19,6 +19,32 @@
 
 #pragma once
 
-class CEntityInstance;
+#include "platform.h"
+#include "datamap.h"
+#include "string_t.h"
 
-CEntityInstance* UTIL_FindEntityByClassname(CEntityInstance* pStart, const char* name);
+class CGameRules;
+class CEntityInstance;
+class CBasePlayerController;
+class IEntityFindFilter;
+
+// Quick and dirty definition to avoid having to include variant.h for now
+struct variant_string_t
+{
+	variant_string_t(const char *pszValue)
+	{
+		m_value = MAKE_STRING(pszValue);
+	}
+
+	string_t m_value;
+	uint16 m_type = FIELD_STRING;
+	uint16 m_flags = 0;
+};
+
+CEntityInstance *UTIL_FindPickerEntity(CBasePlayerController *pPlayer);
+	CEntityInstance *UTIL_FindEntityByClassname(CEntityInstance* pStart, const char* name);
+CEntityInstance *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
+	CEntityInstance *pSearchingEntity = nullptr, CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr, IEntityFindFilter *pFilter = nullptr);
+
+void UTIL_AddEntityIOEvent(CEntityInstance *pTarget, const char *pszInput,
+					  CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr, variant_string_t value = variant_string_t(""), float flDelay = 0.0f);

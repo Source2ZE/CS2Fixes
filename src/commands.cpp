@@ -260,10 +260,19 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 	//Count spawnpoints (info_player_counterterrorist & info_player_terrorist)
 	SpawnPoint* spawn = nullptr;
 	CUtlVector<SpawnPoint*> spawns;
-	while (nullptr != (spawn = (SpawnPoint*)UTIL_FindEntityByClassname(spawn, "info_player_")))
+	while (nullptr != (spawn = (SpawnPoint*)UTIL_FindEntityByClassname(spawn, "info_player_*")))
 	{
 		if (spawn->m_bEnabled())
 			spawns.AddToTail(spawn);
+	}
+
+	// Let's be real here, this should NEVER happen
+	// But I ran into this when I switched to the real FindEntityByClassname and forgot to insert a *
+	if (spawns.Count() == 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"There are no spawns!");
+		Panic("ztele used while there are no spawns!\n");
+		return;
 	}
 
 	//Pick and get position of random spawnpoint
