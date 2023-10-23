@@ -101,18 +101,6 @@ SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlo
 
 CS2Fixes g_CS2Fixes;
 
-// Should only be called within the active game loop (i e map should be loaded and active)
-// otherwise that'll be nullptr!
-CGlobalVars *GetGameGlobals()
-{
-	INetworkGameServer *server = g_pNetworkServerService->GetIGameServer();
-
-	if (!server)
-		return nullptr;
-
-	return server->GetGlobals();
-}
-
 #if 0
 // Currently unavailable, requires hl2sdk work!
 ConVar sample_cvar("sample_cvar", "42", 0);
@@ -130,7 +118,7 @@ CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONL
 
 IGameEventSystem* g_gameEventSystem;
 IGameEventManager2* g_gameEventManager = nullptr;
-INetworkGameServer* g_networkGameServer;
+INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGlobalVars* gpGlobals = nullptr;
 CPlayerManager* g_playerManager = nullptr;
 IVEngineServer2* g_pEngineServer2;
@@ -144,15 +132,12 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pEngineServer2, IVEngineServer2, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pCVar, ICvar, CVAR_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2Server, ISource2Server, SOURCE2SERVER_INTERFACE_VERSION);
+	GET_V_IFACE_ANY(GetServerFactory, g_pSource2ServerConfig, ISource2ServerConfig, SOURCE2SERVERCONFIG_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2GameEntities, ISource2GameEntities, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2GameClients, IServerGameClients, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_gameEventSystem, IGameEventSystem, GAMEEVENTSYSTEM_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetFileSystemFactory, g_pFullFileSystem, IFileSystem, FILESYSTEM_INTERFACE_VERSION);
-
-	// Currently doesn't work from within mm side, use GetGameGlobals() in the mean time instead
-	// this needs to run in case of a late load
-	gpGlobals = GetGameGlobals();
 
 	Message( "Starting plugin.\n" );
 
@@ -220,12 +205,14 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	{
 		RegisterEventListeners();
 		g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
+		gpGlobals = g_pNetworkGameServer->GetGlobals();
 	}
 
 	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
-	g_playerManager = new CPlayerManager(late);
 	g_pAdminSystem = new CAdminSystem();
+	g_playerManager = new CPlayerManager(late);
 
 	// Steam authentication
 	new CTimer(1.0f, true, []()
@@ -276,13 +263,13 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	RemoveTimers();
 	UnregisterEventListeners();
 
-	if (g_playerManager != NULL)
+	if (g_playerManager)
 		delete g_playerManager;
 
-	if (g_pAdminSystem != NULL)
+	if (g_pAdminSystem)
 		delete g_pAdminSystem;
 
-	if (g_GameConfig != NULL)
+	if (g_GameConfig)
 		delete g_GameConfig;
 
 	return true;
@@ -292,20 +279,17 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 {
 	Message("startup server\n");
 
+	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
+	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+	gpGlobals = g_pNetworkGameServer->GetGlobals();
+
 	if(g_bHasTicked)
 		RemoveMapTimers();
 
 	g_bHasTicked = false;
-	gpGlobals = GetGameGlobals();
 
-	if (gpGlobals == nullptr)
-	{
-		Error("Failed to lookup gpGlobals\n");
-	}
-
-	RegisterEventListeners();
-
-	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+	// This has to be done here and not on plugin init, but at the same time it has to be only once
+	ExecuteOnce(RegisterEventListeners());
 }
 
 

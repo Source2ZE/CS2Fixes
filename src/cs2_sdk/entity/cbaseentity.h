@@ -25,8 +25,6 @@
 #include "ehandle.h"
 #include "../../gameconfig.h"
 
-CGlobalVars* GetGameGlobals();
-
 extern CGameConfig *g_GameConfig;
 
 class CNetworkTransmitComponent
