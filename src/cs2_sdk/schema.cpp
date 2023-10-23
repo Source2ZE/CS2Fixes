@@ -26,6 +26,8 @@
 #include "plat.h"
 #include "entity/cbaseentity.h"
 
+extern CGlobalVars *gpGlobals;
+
 using SchemaKeyValueMap_t = CUtlMap<uint32_t, SchemaKey>;
 using SchemaTableMap_t = CUtlMap<uint32_t, SchemaKeyValueMap_t*>;
 
@@ -133,11 +135,8 @@ SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char
 
 void SetStateChanged(Z_CBaseEntity* pEntity, int offset)
 {
-	addresses::StateChanged(pEntity->m_NetworkTransmitComponent(), pEntity, offset, -1, -1);
-	auto vars = GetGameGlobals();
-
-    if (vars)
-	    pEntity->m_lastNetworkChange = vars->curtime;
-
-	pEntity->m_isSteadyState().ClearAll();
+    addresses::StateChanged(pEntity->m_NetworkTransmitComponent(), pEntity, offset, -1, -1);
+	
+    pEntity->m_lastNetworkChange = gpGlobals->curtime;
+    pEntity->m_isSteadyState().ClearAll();
 };
