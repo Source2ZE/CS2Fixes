@@ -81,7 +81,7 @@ GAME_EVENT_F(round_prestart)
 		if (!pController || pController->m_iTeamNum() != CS_TEAM_T)
 			continue;
 
-		addresses::CCSPlayerController_SwitchTeam(pController, CS_TEAM_CT);
+		pController->SwitchTeam(CS_TEAM_CT);
 	}
 }
 

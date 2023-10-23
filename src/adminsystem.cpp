@@ -703,7 +703,7 @@ CON_COMMAND_CHAT(setteam, "set a player's team")
 		if (!pTarget)
 			continue;
 
-		addresses::CCSPlayerController_SwitchTeam(pTarget, iTeam);
+		pTarget->SwitchTeam(iTeam);
 
 		if (nType < ETargetType::ALL)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "moved", szAction);
