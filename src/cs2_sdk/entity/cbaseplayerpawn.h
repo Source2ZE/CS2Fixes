@@ -23,6 +23,10 @@
 #include "cbasemodelentity.h"
 #include "services.h"
 
+#include "../../gameconfig.h"
+
+extern CGameConfig *g_GameConfig;
+
 class CBasePlayerPawn : public CBaseModelEntity
 {
 public:
@@ -33,7 +37,11 @@ public:
 	SCHEMA_FIELD(CCSPlayer_ItemServices*, m_pItemServices)
 	SCHEMA_FIELD(CHandle<CBasePlayerController>, m_hController)
 
-	void CommitSuicide(bool bExplode, bool bForce) { CALL_VIRTUAL(void, 354, this, bExplode, bForce); }
+	void CommitSuicide(bool bExplode, bool bForce)
+	{
+		static int offset = g_GameConfig->GetOffset("CommitSuicide");
+		CALL_VIRTUAL(void, offset, this, bExplode, bForce);
+	}
 
 	CBasePlayerController *GetController() { return m_hController.Get(); }
 };
