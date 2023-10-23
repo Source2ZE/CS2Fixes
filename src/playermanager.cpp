@@ -27,6 +27,7 @@
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CEntitySystem *g_pEntitySystem;
+extern CGlobalVars *gpGlobals;
 
 void ZEPlayer::OnAuthenticated()
 {
@@ -101,11 +102,11 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 
 void CPlayerManager::OnLateLoad()
 {
-	for (int i = 0; i < GetMaxPlayers(); i++)
+	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		CCSPlayerController *pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity(CEntityIndex(i + 1));
 
-		if (!pController || !pController->IsConnected())
+		if (!pController || !pController->IsController() || !pController->IsConnected())
 			continue;
 
 		OnClientConnected(i);
@@ -114,7 +115,7 @@ void CPlayerManager::OnLateLoad()
 
 void CPlayerManager::TryAuthenticate()
 {
-	for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
+	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		if (m_vecPlayers[i] == nullptr)
 			continue;
@@ -134,7 +135,7 @@ void CPlayerManager::TryAuthenticate()
 
 void CPlayerManager::CheckInfractions()
 {
-	for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
+	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		if (m_vecPlayers[i] == nullptr || m_vecPlayers[i]->IsFakeClient())
 			continue;
@@ -150,7 +151,7 @@ void CPlayerManager::CheckHideDistances()
 	if (!g_pEntitySystem)
 		return;
 
-	for (int i = 0; i < GetMaxPlayers(); i++)
+	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		auto player = GetPlayer(i);
 
@@ -176,12 +177,12 @@ void CPlayerManager::CheckHideDistances()
 		auto vecPosition = pPawn->GetAbsOrigin();
 		int team = pController->m_iTeamNum;
 
-		for (int j = 1; j < GetMaxPlayers() + 1; j++)
+		for (int j = 0; j < gpGlobals->maxClients; j++)
 		{
-			if (j - 1 == i)
+			if (j == i)
 				continue;
 
-			auto pTargetController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)j);
+			auto pTargetController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(j + 1));
 
 			if (pTargetController)
 			{
@@ -189,7 +190,7 @@ void CPlayerManager::CheckHideDistances()
 
 				if (pTargetPawn && pTargetPawn->IsAlive() && pTargetController->m_iTeamNum == team)
 				{
-					player->SetTransmit(j - 1, pTargetPawn->GetAbsOrigin().DistToSqr(vecPosition) <= hideDistance * hideDistance);
+					player->SetTransmit(j, pTargetPawn->GetAbsOrigin().DistToSqr(vecPosition) <= hideDistance * hideDistance);
 				}
 			}
 		}
@@ -220,7 +221,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 	}
 	else if (targetType == ETargetType::ALL)
 	{
-		for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
+		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;
@@ -230,14 +231,14 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 	}
 	else if (targetType == ETargetType::T || targetType == ETargetType::CT)
 	{
-		for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
+		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;
 
 			CBasePlayerController* player = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
 
-			if (!player)
+			if (!player || !player->IsController())
 				continue;
 
 			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : CS_TEAM_CT))
@@ -252,7 +253,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 		while (iNumClients == 0 && attempts < 10000)
 		{
-			int slot = rand() % ((sizeof(m_vecPlayers) / sizeof(*m_vecPlayers)) - 1);
+			int slot = rand() % (gpGlobals->maxClients - 1);
 
 			// Prevent infinite loop
 			attempts++;
@@ -283,14 +284,14 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 	}
 	else
 	{
-		for (int i = 0; i < sizeof(m_vecPlayers) / sizeof(*m_vecPlayers); i++)
+		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;
 
 			CBasePlayerController* player = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
 
-			if (!player)
+			if (!player || !player->IsController())
 				continue;
 
 			if (V_stristr(player->GetPlayerName(), target))
@@ -305,6 +306,14 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 	return targetType;
 }
 
+ZEPlayer *CPlayerManager::GetPlayer(CPlayerSlot slot)
+{
+	if (slot.Get() < 0 || slot.Get() >= gpGlobals->maxClients)
+		return nullptr;
+
+	return m_vecPlayers[slot.Get()];
+};
+
 // In userids, the lower byte is always the player slot
 CPlayerSlot CPlayerManager::GetSlotFromUserId(uint16 userid)
 {
@@ -315,18 +324,10 @@ ZEPlayer *CPlayerManager::GetPlayerFromUserId(uint16 userid)
 {
 	uint8 index = userid & 0xFF;
 
-	if (index >= GetMaxPlayers())
+	if (index >= gpGlobals->maxClients)
 		return nullptr;
 
 	return m_vecPlayers[index];
-}
-
-int CPlayerManager::GetMaxPlayers()
-{
-	// quick and dirty fix for now until we can get maxplayers properly
-	static int iMaxPlayers = CommandLine()->ParmValue("-maxplayers", 64);
-
-	return iMaxPlayers;
 }
 
 void CPlayerManager::SetPlayerStopSound(int slot, bool set)

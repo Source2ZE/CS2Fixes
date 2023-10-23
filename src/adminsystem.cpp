@@ -29,6 +29,7 @@
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CEntitySystem *g_pEntitySystem;
+extern CGlobalVars *gpGlobals;
 
 CAdminSystem* g_pAdminSystem = nullptr;
 
@@ -80,7 +81,7 @@ CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKE
 	if (!g_pAdminSystem->LoadAdmins())
 		return;
 
-	for (int i = 0; i < g_playerManager->GetMaxPlayers(); i++)
+	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -98,7 +99,7 @@ CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FC
 	if (!g_pAdminSystem->LoadInfractions())
 		return;
 
-	for (int i = 0; i < g_playerManager->GetMaxPlayers(); i++)
+	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
