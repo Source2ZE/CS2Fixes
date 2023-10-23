@@ -768,10 +768,10 @@ CON_COMMAND_CHAT(map, "change map")
 	char buf[MAX_PATH];
 	V_snprintf(buf, sizeof(buf), "changelevel %s", args[1]);
 
-	new CTimer(5.0f, false, false, [buf]()
+	new CTimer(5.0f, false, [buf]()
 	{
 		g_pEngineServer2->ServerCommand(buf);
-		return true;
+		return -1.0f;
 	});
 }
 

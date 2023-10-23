@@ -272,12 +272,12 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 
 	CHandle<CBasePlayerPawn> handle = pPawn->GetHandle();
 
-	new CTimer(5.0f, false, false, [spawnpos, handle, initialpos]()
+	new CTimer(5.0f, false, [spawnpos, handle, initialpos]()
 	{
 		CBasePlayerPawn *pPawn = handle.Get();
 
 		if (!pPawn)
-			return;
+			return -1.0f;
 
 		Vector endpos = pPawn->GetAbsOrigin();
 
@@ -289,8 +289,10 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 		else
 		{
 			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, CHAT_PREFIX "Teleport failed! You moved too far.");
-			return;
+			return -1.0f;
 		}
+		
+		return -1.0f;
 	});
 }
 

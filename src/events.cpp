@@ -103,30 +103,32 @@ GAME_EVENT_F(player_team)
 
 GAME_EVENT_F(player_spawn)
 {
-	CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
+	CCSPlayerController *pController = (CCSPlayerController *)pEvent->GetPlayerController("userid");
 
 	if (!pController)
 		return;
 
-	CHandle<CBasePlayerController> hController = pController->GetHandle();
+	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
 	// Gotta do this on the next frame...
-	new CTimer(0.0f, false, false, [hController]()
+	new CTimer(0.0f, false, [hController]()
 	{
-		CBasePlayerController *pController = hController.Get();
+		CCSPlayerController *pController = hController.Get();
 
-		if (!pController)
-			return;
+		if (!pController || !pController->m_bPawnIsAlive())
+			return -1.0f;
 
 		CBasePlayerPawn *pPawn = pController->GetPawn();
 
 		// Just in case somehow there's health but the player is, say, an observer
-		if (!pPawn || pPawn->m_iHealth() <= 0 || !g_pSource2GameClients->IsPlayerAlive(pController->GetPlayerSlot()))
-			return;
+		if (!pPawn || !pPawn->IsAlive())
+			return -1.0f;
 
 		pPawn->m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
 		pPawn->m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
 		pPawn->CollisionRulesChanged();
+
+		return -1.0f;
 	});
 }
 

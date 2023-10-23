@@ -23,14 +23,8 @@ CUtlLinkedList<CTimerBase*> g_timers;
 
 void RemoveTimers()
 {
-    FOR_EACH_LL(g_timers, i)
-    {
-        delete g_timers[i];
-    }
-
-    g_timers.RemoveAll();
+	g_timers.PurgeAndDeleteElements();
 }
-
 
 void RemoveMapTimers()
 {
