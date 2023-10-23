@@ -32,4 +32,12 @@ public:
 	SCHEMA_FIELD(bool, m_bPawnIsAlive);
 
 	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn) { return (CCSPlayerController*)pawn->m_hController().Get(); }
+
+	void SwitchTeam(int iTeam)
+	{
+		if (!IsController() || iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
+			return;
+
+		addresses::CCSPlayerController_SwitchTeam(this, iTeam);
+	}
 };
