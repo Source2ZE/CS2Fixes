@@ -120,19 +120,11 @@ public:
 	ZEPlayer *GetPlayerFromUserId(uint16 userid);
 	ETargetType TargetPlayerString(int iCommandClient, const char* target, int &iNumClients, int *clients);
 
-	ZEPlayer *GetPlayer(CPlayerSlot slot)
-	{
-		if (slot.Get() < 0 || slot.Get() >= GetMaxPlayers())
-			return nullptr;
-
-		return m_vecPlayers[slot.Get()];
-	};
+	ZEPlayer *GetPlayer(CPlayerSlot slot);
 
 	uint64 GetStopSoundMask() { return m_nUsingStopSound; }
 	uint64 GetSilenceSoundMask() { return m_nUsingSilenceSound; }
 	uint64 GetStopDecalsMask() { return m_nUsingStopDecals; }
-
-	int GetMaxPlayers();
 	
 	void SetPlayerStopSound(int slot, bool set);
 	void SetPlayerSilenceSound(int slot, bool set);
