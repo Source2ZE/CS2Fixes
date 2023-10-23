@@ -228,21 +228,24 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pAdminSystem = new CAdminSystem();
 
 	// Steam authentication
-	new CTimer(1.0f, true, true, []()
+	new CTimer(1.0f, true, []()
 	{
 		g_playerManager->TryAuthenticate();
+		return 1.0f;
 	});
 
 	// Check hide distance
-	new CTimer(0.5f, true, true, []()
+	new CTimer(0.5f, true, []()
 	{
 		g_playerManager->CheckHideDistances();
+		return 0.5f;
 	});
 
 	// Check for the expiration of infractions like mutes or gags
-	new CTimer(30.0f, true, true, []()
+	new CTimer(30.0f, true, []()
 	{
 		g_playerManager->CheckInfractions();
+		return 30.0f;
 	});
 
 	srand(time(0));
@@ -444,17 +447,17 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 			timer->m_flLastExecute = g_flUniversalTime;
 
 		// Timer execute 
-		if (timer->m_flLastExecute + timer->m_flTime <= g_flUniversalTime)
+		if (timer->m_flLastExecute + timer->m_flInterval <= g_flUniversalTime)
 		{
-			timer->Execute();
-
-			if (!timer->m_bRepeat)
+			if (!timer->Execute())
 			{
 				delete timer;
 				g_timers.Remove(prevIndex);
 			}
 			else
+			{
 				timer->m_flLastExecute = g_flUniversalTime;
+			}
 		}
 	}
 }
