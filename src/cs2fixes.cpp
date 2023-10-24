@@ -42,6 +42,7 @@
 #include "playermanager.h"
 #include <entity.h>
 #include "adminsystem.h"
+#include "commands.h"
 #include "eventlistener.h"
 #include "gameconfig.h"
 
