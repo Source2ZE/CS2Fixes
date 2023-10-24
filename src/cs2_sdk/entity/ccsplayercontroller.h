@@ -21,6 +21,9 @@
 
 #include "cbaseplayercontroller.h"
 #include "services.h"
+#include "../playermanager.h"
+
+extern CEntitySystem* g_pEntitySystem;
 
 class CCSPlayerController : public CBasePlayerController
 {
@@ -31,5 +34,17 @@ public:
 	SCHEMA_FIELD(CCSPlayerController_ActionTrackingServices*, m_pActionTrackingServices)
 	SCHEMA_FIELD(bool, m_bPawnIsAlive);
 
-	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn) { return (CCSPlayerController*)pawn->m_hController().Get(); }
+	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn) {
+		return (CCSPlayerController*)pawn->m_hController().Get();
+	}
+
+	static CCSPlayerController* FromSlot(CPlayerSlot slot)
+	{
+		return (CCSPlayerController*)g_pEntitySystem->GetBaseEntity(CEntityIndex(slot.Get() + 1));
+	}
+
+	ZEPlayer* GetZEPlayer()
+	{
+		return g_playerManager->GetPlayer(GetPlayerSlot());
+	}
 };

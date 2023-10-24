@@ -103,7 +103,7 @@ void CPlayerManager::OnLateLoad()
 {
 	for (int i = 0; i < GetMaxPlayers(); i++)
 	{
-		CCSPlayerController *pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity(CEntityIndex(i + 1));
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
 		if (!pController || !pController->IsConnected())
 			continue;
@@ -163,7 +163,7 @@ void CPlayerManager::CheckHideDistances()
 		if (!hideDistance)
 			continue;
 
-		auto pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
 		if (!pController)
 			continue;
@@ -176,12 +176,12 @@ void CPlayerManager::CheckHideDistances()
 		auto vecPosition = pPawn->GetAbsOrigin();
 		int team = pController->m_iTeamNum;
 
-		for (int j = 1; j < GetMaxPlayers() + 1; j++)
+		for (int j = 0; j < GetMaxPlayers(); j++)
 		{
-			if (j - 1 == i)
+			if (j == i)
 				continue;
 
-			auto pTargetController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)j);
+			CCSPlayerController* pTargetController = CCSPlayerController::FromSlot(j);
 
 			if (pTargetController)
 			{
@@ -235,7 +235,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (m_vecPlayers[i] == nullptr)
 				continue;
 
-			CBasePlayerController* player = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
+			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
 			if (!player)
 				continue;
@@ -260,7 +260,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (m_vecPlayers[slot] == nullptr)
 				continue;
 
-			CBasePlayerController* player = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(slot + 1));
+			CCSPlayerController* player = CCSPlayerController::FromSlot(slot);
 
 			if (!player)
 				continue;
@@ -288,7 +288,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (m_vecPlayers[i] == nullptr)
 				continue;
 
-			CBasePlayerController* player = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
+			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
 			if (!player)
 				continue;

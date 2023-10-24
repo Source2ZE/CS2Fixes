@@ -138,8 +138,7 @@ CON_COMMAND_CHAT(ban, "ban a player")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid duration.");
 		return;
 	}
-
-	CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[0] + 1));
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
 
 	if (!pTarget)
 		return;
@@ -226,7 +225,7 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
 
 		if (!pTarget)
 			continue;
@@ -293,7 +292,7 @@ CON_COMMAND_CHAT(unmute, "unmutes a player")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
 
 		if (!pTarget)
 			continue;
@@ -373,7 +372,7 @@ CON_COMMAND_CHAT(gag, "gag a player")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
 
 		if (!pTarget)
 			continue;
@@ -442,7 +441,7 @@ CON_COMMAND_CHAT(ungag, "ungags a player")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
 
 		if (!pTarget)
 			continue;
@@ -505,7 +504,7 @@ CON_COMMAND_CHAT(kick, "kick a player")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlot[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
 
 		if (!pTarget)
 			continue;
@@ -556,7 +555,7 @@ CON_COMMAND_CHAT(slay, "slay a player")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
 		if (!pTarget)
 			continue;
@@ -612,7 +611,7 @@ CON_COMMAND_CHAT(goto, "teleport to a player")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
 		if (!pTarget)
 			continue;
@@ -662,7 +661,7 @@ CON_COMMAND_CHAT(bring, "bring a player")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
 		if (!pTarget)
 			continue;
@@ -729,7 +728,7 @@ CON_COMMAND_CHAT(setteam, "set a player's team")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CCSPlayerController *pTarget = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
 		if (!pTarget)
 			continue;
