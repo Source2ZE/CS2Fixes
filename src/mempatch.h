@@ -26,8 +26,8 @@
 class CMemPatch
 {
 public:
-	CMemPatch(const char *pSignatureName, const char *pszName, int iRepeat = 1) :
-		m_pSignatureName(pSignatureName), m_pszName(pszName), m_iRepeat(iRepeat)
+	CMemPatch(const char *pSignatureName, const char *pszName) :
+		m_pSignatureName(pSignatureName), m_pszName(pszName)
 	{
 		m_pModule = nullptr;
 		m_pPatchAddress = nullptr;
@@ -49,7 +49,6 @@ private:
 	byte *m_pOriginalBytes;
 	const char *m_pSignatureName;
 	const char *m_pszName;
-	int m_iRepeat;
-	int m_iPatchLength;
+	size_t m_iPatchLength;
 	void *m_pPatchAddress;
 };

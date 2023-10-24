@@ -37,10 +37,9 @@ bool CMemPatch::PerformPatch(CGameConfig *gameConfig)
 		Panic("Failed to find patch for %s\n", m_pszName);
 		return false;
 	}
-	m_pPatch = gameConfig->HexToByte(patch);
+	m_pPatch = gameConfig->HexToByte(patch, m_iPatchLength);
 	if (!m_pPatch)
 		return false;
-	m_iPatchLength = V_strlen((char*)m_pPatch);
 
 	m_pOriginalBytes = new byte[m_iPatchLength];
 	V_memcpy(m_pOriginalBytes, m_pPatchAddress, m_iPatchLength);

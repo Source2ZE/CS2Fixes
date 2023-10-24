@@ -57,12 +57,10 @@ public:
 		Message("Initialized module %s base: 0x%p | size: %d\n", m_pszModule, m_base, m_size);
 	}
 
-	void *FindSignature(const byte *pData)
+	void *FindSignature(const byte *pData, size_t iSigLength)
 	{
 		unsigned char *pMemory;
 		void *return_addr = nullptr;
-
-		size_t iSigLength = V_strlen((const char *)pData);
 
 		pMemory = (byte*)m_base;
 
