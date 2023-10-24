@@ -245,7 +245,7 @@
             }
             "CommitSuicide"
             {
-                "windows"   "355"
+                "windows"   "354"
                 "linux"     "354"
             }
         }
