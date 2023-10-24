@@ -186,10 +186,11 @@ void *CGameConfig::ResolveSignature(const char *name)
 			return nullptr;
 		}
 
-		byte *pSignature = CGameConfig::HexToByte(signature);
-		address = (*module)->FindSignature(pSignature);
+		size_t iLength = 0;
+		byte *pSignature = HexToByte(signature, iLength);
 		if (!pSignature)
 			return nullptr;
+		address = (*module)->FindSignature(pSignature, iLength);
 	}
 
 	if (!address)
@@ -240,7 +241,7 @@ int CGameConfig::HexStringToUint8Array(const char* hexString, uint8_t* byteArray
     return byteCount; // Return the number of bytes successfully converted.
 }
 
-byte *CGameConfig::HexToByte(const char *src)
+byte *CGameConfig::HexToByte(const char *src, size_t &length)
 {
 	if (!src || strlen(src) <= 0)
 	{
@@ -248,9 +249,9 @@ byte *CGameConfig::HexToByte(const char *src)
 		return nullptr;
 	}
 
-	size_t maxBytes = strlen(src) / 4;
-	uint8_t *dest = new uint8_t[maxBytes];
-	int byteCount = CGameConfig::HexStringToUint8Array(src, dest, maxBytes);
+	length = strlen(src) / 4;
+	uint8_t *dest = new uint8_t[length];
+	int byteCount = HexStringToUint8Array(src, dest, length);
 	if (byteCount <= 0)
 	{
 		Panic("Invalid hex format %s\n", src);
