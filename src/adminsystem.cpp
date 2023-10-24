@@ -634,7 +634,7 @@ CON_COMMAND_CHAT(bring, "bring a player")
 
 	int iCommandPlayer = player->GetPlayerSlot();
 
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+	ZEPlayer* pPlayer = player->GetZEPlayer();
 
 	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
 	{
@@ -685,7 +685,7 @@ CON_COMMAND_CHAT(setteam, "set a player's team")
 	{
 		iCommandPlayer = player->GetPlayerSlot();
 
-		ZEPlayer *pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+		ZEPlayer* pPlayer = player->GetZEPlayer();
 
 		if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
 		{

@@ -182,7 +182,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 
 void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, bool teamonly, int unk1, const char *unk2)
 {
-	bool bGagged = pController && g_playerManager->GetPlayer(pController->GetPlayerSlot())->IsGagged();
+	bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
 
 	if (!bGagged && *args[1] != '/')
 	{

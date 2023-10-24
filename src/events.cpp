@@ -131,12 +131,12 @@ GAME_EVENT_F(player_spawn)
 
 GAME_EVENT_F(player_hurt)
 {
-	CBasePlayerController* pController = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
+	CCSPlayerController* pController = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
 
 	if (!pController)
 		return;
 
-	ZEPlayer* pPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+	ZEPlayer* pPlayer = pController->GetZEPlayer();
 
 	if (!pPlayer)
 		return;
