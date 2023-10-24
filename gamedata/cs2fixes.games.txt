@@ -233,15 +233,20 @@
                 "windows"   "173"
                 "linux"     "172"
             }
-			"IsEntityPawn"
+            "IsEntityPawn"
             {
                 "windows"   "152"
                 "linux"     "151"
             }
-			"IsEntityController"
+            "IsEntityController"
             {
                 "windows"   "153"
                 "linux"     "152"
+            }
+            "CommitSuicide"
+            {
+                "windows"   "354"
+                "linux"     "354"
             }
         }
         "Patches"
