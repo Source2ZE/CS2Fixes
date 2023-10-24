@@ -23,6 +23,7 @@
 #include "playermanager.h"
 #include <ctime>
 
+#define ADMFLAG_NONE				0
 #define ADMFLAG_RESERVATION			(1<<0)		/**< Convenience macro for Admin_Reservation as a FlagBit */
 #define ADMFLAG_GENERIC				(1<<1)		/**< Convenience macro for Admin_Generic as a FlagBit */
 #define ADMFLAG_KICK				(1<<2)		/**< Convenience macro for Admin_Kick as a FlagBit */
@@ -147,4 +148,4 @@ private:
 	CUtlVector<CInfractionBase*> m_vecInfractions;
 };
 
-extern CAdminSystem* g_pAdminSystem;
+extern CAdminSystem *g_pAdminSystem;

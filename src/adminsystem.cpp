@@ -33,7 +33,7 @@ extern CGlobalVars *gpGlobals;
 
 CAdminSystem* g_pAdminSystem = nullptr;
 
-CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(uint32));
+CUtlMap<uint32, CChatCommand *> g_CommandList(0, 0, DefLessFunc(uint32));
 
 #define ADMIN_PREFIX "Admin %s has "
 
@@ -56,24 +56,6 @@ void PrintMultiAdminAction(ETargetType nType, const char *pszAdminName, const ch
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "%s counter-terrorists%s.", pszAdminName, pszAction, pszAction2);
 		break;
 	}
-}
-
-bool CheckCommandAccess(CBasePlayerController *pPlayer, uint64 flags)
-{
-	if (!pPlayer)
-		return false;
-
-	int slot = pPlayer->GetPlayerSlot();
-
-	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(slot);
-
-	if (!pZEPlayer->IsAdminFlagSet(ADMFLAG_RCON))
-	{
-		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
-		return false;
-	}
-
-	return true;
 }
 
 CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
@@ -112,24 +94,15 @@ CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FC
 	Message("Infractions reloaded\n");
 }
 
-CON_COMMAND_CHAT(ban, "ban a player")
+CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 {
-	int iCommandPlayer = -1;
-
-	if (player)
-	{
-		if (!CheckCommandAccess(player, ADMFLAG_BAN))
-			return;
-
-		iCommandPlayer = player->GetPlayerSlot();
-	}
-
 	if (args.ArgC() < 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ban <name> <duration/0 (permanent)>");
 		return;
 	}
 
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlot[MAXPLAYERS];
 
@@ -185,24 +158,15 @@ CON_COMMAND_CHAT(ban, "ban a player")
 	}
 }
 
-CON_COMMAND_CHAT(mute, "mutes a player")
+CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_BAN)
 {
-	int iCommandPlayer = -1;
-
-	if (player)
-	{
-		if (!CheckCommandAccess(player, ADMFLAG_BAN))
-			return;
-
-		iCommandPlayer = player->GetPlayerSlot();
-	}
-
 	if (args.ArgC() < 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !mute <name> <duration/0 (permanent)>");
 		return;
 	}
 
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlot[MAXPLAYERS];
 
@@ -264,24 +228,15 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "muted", szAction);
 }
 
-CON_COMMAND_CHAT(unmute, "unmutes a player")
+CON_COMMAND_CHAT_FLAGS(unmute, "unmutes a player", ADMFLAG_UNBAN)
 {
-	int iCommandPlayer = -1;
-
-	if (player)
-	{
-		if (!CheckCommandAccess(player, ADMFLAG_UNBAN))
-			return;
-
-		iCommandPlayer = player->GetPlayerSlot();
-	}
-
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unmute <name>");
 		return;
 	}
 
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlot[MAXPLAYERS];
 
@@ -322,24 +277,15 @@ CON_COMMAND_CHAT(unmute, "unmutes a player")
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "unmuted");
 }
 
-CON_COMMAND_CHAT(gag, "gag a player")
+CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_BAN)
 {
-	int iCommandPlayer = -1;
-
-	if (player)
-	{
-		if (!CheckCommandAccess(player, ADMFLAG_BAN))
-			return;
-
-		iCommandPlayer = player->GetPlayerSlot();
-	}
-
 	if (args.ArgC() < 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !gag <name> <duration/0 (permanent)>");
 		return;
 	}
 
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlot[MAXPLAYERS];
 
@@ -403,24 +349,15 @@ CON_COMMAND_CHAT(gag, "gag a player")
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "gagged", szAction);
 }
 
-CON_COMMAND_CHAT(ungag, "ungags a player")
+CON_COMMAND_CHAT_FLAGS(ungag, "ungags a player", ADMFLAG_UNBAN)
 {
-	int iCommandPlayer = -1;
-
-	if (player)
-	{
-		if (!CheckCommandAccess(player, ADMFLAG_UNBAN))
-			return;
-
-		iCommandPlayer = player->GetPlayerSlot();
-	}
-
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ungag <name>");
 		return;
 	}
 
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlot[MAXPLAYERS];
 
@@ -461,24 +398,15 @@ CON_COMMAND_CHAT(ungag, "ungags a player")
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "ungagged");
 }
 
-CON_COMMAND_CHAT(kick, "kick a player")
+CON_COMMAND_CHAT_FLAGS(kick, "kick a player", ADMFLAG_KICK)
 {
-	int iCommandPlayer = -1;
-
-	if (player)
-	{
-		if (!CheckCommandAccess(player, ADMFLAG_KICK))
-			return;
-
-		iCommandPlayer = player->GetPlayerSlot();
-	}
-
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !kick <name>");
 		return;
 	}
 
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlot[MAXPLAYERS];
 
@@ -507,24 +435,15 @@ CON_COMMAND_CHAT(kick, "kick a player")
 	}
 }
 
-CON_COMMAND_CHAT(slay, "slay a player")
+CON_COMMAND_CHAT_FLAGS(slay, "slay a player", ADMFLAG_SLAY)
 {
-	int iCommandPlayer = -1;
-
-	if (player)
-	{
-		if (!CheckCommandAccess(player, ADMFLAG_SLAY))
-			return;
-
-		iCommandPlayer = player->GetPlayerSlot();
-	}
-
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !slay <name>");
 		return;
 	}
 
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 
@@ -554,7 +473,7 @@ CON_COMMAND_CHAT(slay, "slay a player")
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
 }
 
-CON_COMMAND_CHAT(goto, "teleport to a player")
+CON_COMMAND_CHAT_FLAGS(goto, "teleport to a player", ADMFLAG_SLAY)
 {
 	// Only players can use this command at all
 	if (!player)
@@ -563,17 +482,13 @@ CON_COMMAND_CHAT(goto, "teleport to a player")
 		return;
 	}
 
-	if (!CheckCommandAccess(player, ADMFLAG_SLAY))
-		return;
-
-	int iCommandPlayer = player->GetPlayerSlot();
-
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !goto <name>");
 		return;
 	}
 
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 
@@ -604,7 +519,7 @@ CON_COMMAND_CHAT(goto, "teleport to a player")
 	}
 }
 
-CON_COMMAND_CHAT(bring, "bring a player")
+CON_COMMAND_CHAT_FLAGS(bring, "bring a player", ADMFLAG_SLAY)
 {
 	if (!player)
 	{
@@ -612,17 +527,13 @@ CON_COMMAND_CHAT(bring, "bring a player")
 		return;
 	}
 
-	if (!CheckCommandAccess(player, ADMFLAG_SLAY))
-		return;
-
-	int iCommandPlayer = player->GetPlayerSlot();
-
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !bring <name>");
 		return;
 	}
 
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 
@@ -652,24 +563,15 @@ CON_COMMAND_CHAT(bring, "bring a player")
 	PrintMultiAdminAction(nType, player->GetPlayerName(), "brought");
 }
 
-CON_COMMAND_CHAT(setteam, "set a player's team")
+CON_COMMAND_CHAT_FLAGS(setteam, "set a player's team", ADMFLAG_SLAY)
 {
-	int iCommandPlayer = -1;
-
-	if (player)
-	{
-		if (!CheckCommandAccess(player, ADMFLAG_SLAY))
-			return;
-
-		iCommandPlayer = player->GetPlayerSlot();
-	}
-
 	if (args.ArgC() < 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !setteam <name> <team (0-3)>");
 		return;
 	}
 
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 
@@ -694,7 +596,7 @@ CON_COMMAND_CHAT(setteam, "set a player's team")
 	constexpr const char *teams[] = {"none", "spectators", "terrorists", "counter-terrorists"};
 
 	char szAction[64];
-	V_snprintf(szAction, sizeof(szAction), " to %s.", teams[iTeam]);
+	V_snprintf(szAction, sizeof(szAction), " to %s", teams[iTeam]);
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -712,16 +614,13 @@ CON_COMMAND_CHAT(setteam, "set a player's team")
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
 }
 
-CON_COMMAND_CHAT(noclip, "toggle noclip on yourself")
+CON_COMMAND_CHAT_FLAGS(noclip, "toggle noclip on yourself", ADMFLAG_SLAY)
 {
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
 		return;
 	}
-
-	if (!CheckCommandAccess(player, ADMFLAG_SLAY))
-		return;
 
 	CBasePlayerPawn *pPawn = player->m_hPawn();
 
@@ -746,40 +645,34 @@ CON_COMMAND_CHAT(noclip, "toggle noclip on yourself")
 	}
 }
 
-CON_COMMAND_CHAT(map, "change map")
+CON_COMMAND_CHAT_FLAGS(map, "change map", ADMFLAG_CHANGEMAP)
 {
-	if (player && !CheckCommandAccess(player, ADMFLAG_CHANGEMAP))
-		return;
-
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Usage: !map <mapname>");
 		return;
 	}
 
-	if (!g_pEngineServer2->IsMapValid(args[1]))
+	char szMapName[MAX_PATH];
+	V_strncpy(szMapName, args[1], sizeof(szMapName));
+
+	if (!g_pEngineServer2->IsMapValid(szMapName))
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid map specified.");
 		return;
 	}
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX"Changing map to %s...", args[1]);
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", szMapName);
 
-	char buf[MAX_PATH];
-	V_snprintf(buf, sizeof(buf), "changelevel %s", args[1]);
-
-	new CTimer(5.0f, false, [buf]()
+	new CTimer(5.0f, false, [szMapName]()
 	{
-		g_pEngineServer2->ServerCommand(buf);
+		g_pEngineServer2->ChangeLevel(szMapName, nullptr);
 		return -1.0f;
 	});
 }
 
-CON_COMMAND_CHAT(hsay, "say something as a hud hint")
+CON_COMMAND_CHAT_FLAGS(hsay, "say something as a hud hint", ADMFLAG_CHAT)
 {
-	if (player && !CheckCommandAccess(player, ADMFLAG_CHAT))
-		return;
-
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !hsay <message>");
@@ -789,16 +682,13 @@ CON_COMMAND_CHAT(hsay, "say something as a hud hint")
 	ClientPrintAll(HUD_PRINTCENTER, "%s", args.ArgS());
 }
 
-CON_COMMAND_CHAT(rcon, "send a command to server console")
+CON_COMMAND_CHAT_FLAGS(rcon, "send a command to server console", ADMFLAG_RCON)
 {
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You are already on the server console.");
 		return;
 	}
-
-	if (!CheckCommandAccess(player, ADMFLAG_RCON))
-		return;
 
 	if (args.ArgC() < 2)
 	{
