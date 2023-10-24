@@ -243,6 +243,12 @@
                 "windows"   "153"
                 "linux"     "152"
             }
+			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
+            "CCSPlayerController_ChangeTeam"
+			{
+				"windows"	"90"
+				"linux"		"91"
+			}
         }
         "Patches"
         {

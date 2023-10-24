@@ -33,11 +33,24 @@ public:
 
 	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn) { return (CCSPlayerController*)pawn->m_hController().Get(); }
 
+	void ChangeTeam(int iTeam)
+	{
+		static int offset = g_GameConfig->GetOffset("CCSPlayerController_ChangeTeam");
+		CALL_VIRTUAL(void, offset, this, iTeam);
+	}
+
 	void SwitchTeam(int iTeam)
 	{
-		if (!IsController() || iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
+		if (!IsController())
 			return;
 
-		addresses::CCSPlayerController_SwitchTeam(this, iTeam);
+		if (iTeam == CS_TEAM_SPECTATOR)
+		{
+			ChangeTeam(iTeam);
+		}
+		else
+		{
+			addresses::CCSPlayerController_SwitchTeam(this, iTeam);
+		}
 	}
 };
