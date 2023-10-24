@@ -28,17 +28,17 @@
 bool CMemPatch::PerformPatch(CGameConfig *gameConfig)
 {
 	m_pPatchAddress = gameConfig->ResolveSignature(m_pSignatureName);
-	if (m_pPatchAddress == NULL)
+	if (!m_pPatchAddress)
 		return false;
 
 	const char *patch = gameConfig->GetPatch(m_pszName);
-	if (patch == NULL)
+	if (!patch)
 	{
 		Panic("Failed to find patch for %s\n", m_pszName);
 		return false;
 	}
 	m_pPatch = gameConfig->HexToByte(patch);
-	if (m_pPatch == NULL)
+	if (!m_pPatch)
 		return false;
 	m_iPatchLength = V_strlen((char*)m_pPatch);
 
