@@ -187,8 +187,8 @@ static int get_prot(void* pAddr, size_t nSize)
 			*dst++ = *src++;
 		*dst = 0;
 
-		uintptr_t nStart = (uintptr_t)strtoul(start, NULL, 16);
-		uintptr_t nEnd = (uintptr_t)strtoul(end, NULL, 16);
+		uintptr_t nStart = (uintptr_t)strtoul(start, nullptr, 16);
+		uintptr_t nEnd = (uintptr_t)strtoul(end, nullptr, 16);
 
 		if (nStart < nAddr && nEnd >(nAddr + nSize))
 		{
