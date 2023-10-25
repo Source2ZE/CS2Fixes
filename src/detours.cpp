@@ -150,9 +150,6 @@ bool FASTCALL Detour_IsHearingClient(void* serverClient, int index)
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CCSPlayerController *pPlayer, uint64 eMessageType)
 {
-	int entindex = filter.GetRecipientIndex(0).Get();
-	CCSPlayerController *target = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
-
 	if (pPlayer)
 		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
 
@@ -172,10 +169,10 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	const char *param3,
 	const char *param4)
 {
+#ifdef _DEBUG
 	int entindex = filter.GetRecipientIndex(0).Get() + 1;
 	CCSPlayerController *target = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
 
-#ifdef _DEBUG
 	if (target)
 		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName(), param2);
 #endif
