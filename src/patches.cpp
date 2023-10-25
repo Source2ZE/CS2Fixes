@@ -47,8 +47,13 @@ CMemPatch g_ClientPatches[] =
 #ifdef _WIN32
 CMemPatch g_ToolsPatches[] =
 {
-	// Remove some -nocustomermachine checks without needing -nocustomermachine itself as it can break stuff, mainly to enable device selection in compiles
-	CMemPatch("HammerNoCustomerMachine", "HammerNoCustomerMachine", 4),
+	// Remove some -nocustomermachine checks without needing -nocustomermachine itself
+	// as it can break stuff like the asset browser. This is mainly to enable device selection in compiles
+	// And yes, it's the exact same signature appearing 4 times, each unhides a certain hammer compile option
+	CMemPatch("HammerNoCustomerMachine", "HammerNoCustomerMachine1"),
+	CMemPatch("HammerNoCustomerMachine", "HammerNoCustomerMachine2"),
+	CMemPatch("HammerNoCustomerMachine", "HammerNoCustomerMachine3"),
+	CMemPatch("HammerNoCustomerMachine", "HammerNoCustomerMachine4"),
 };
 #endif
 
