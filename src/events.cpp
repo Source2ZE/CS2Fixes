@@ -63,7 +63,8 @@ bool g_bForceCT = true;
 
 CON_COMMAND_F(c_force_ct, "toggle forcing CTs on every round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	g_bForceCT = !g_bForceCT;
+	if (args.ArgC() > 1)
+		g_bForceCT = V_StringToBool(args[1], true);
 
 	Message("Forcing CTs on every round is now %s.\n", g_bForceCT ? "ON" : "OFF");
 }
@@ -87,9 +88,10 @@ GAME_EVENT_F(round_prestart)
 
 bool g_bBlockTeamMessages = true;
 
-CON_COMMAND_F(c_toggle_team_messages, "toggle team messages", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+CON_COMMAND_F(c_block_team_messages, "toggle team messages", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	g_bBlockTeamMessages = !g_bBlockTeamMessages;
+	if (args.ArgC() > 1)
+		g_bBlockTeamMessages = V_StringToBool(args[1], true);
 }
 
 GAME_EVENT_F(player_team)
@@ -134,12 +136,14 @@ GAME_EVENT_F(player_spawn)
 
 GAME_EVENT_F(player_hurt)
 {
-	CBasePlayerController* pController = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
+	CBasePlayerController *pAttacker = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
+	CBasePlayerController *pVictim = (CBasePlayerController*)pEvent->GetPlayerController("userid");
 
-	if (!pController)
+	// Ignore Ts/zombies and CTs hurting themselves
+	if (!pAttacker || pAttacker->m_iTeamNum() != CS_TEAM_CT || pAttacker == pVictim)
 		return;
 
-	ZEPlayer* pPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(pAttacker->GetPlayerSlot());
 
 	if (!pPlayer)
 		return;
@@ -173,7 +177,7 @@ GAME_EVENT_F(round_end)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
-		if (!pPlayer)
+		if (!pPlayer || pPlayer->GetTotalDamage() == 0)
 			continue;
 
 		CCSPlayerController* pController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity(CEntityIndex(pPlayer->GetPlayerSlot().Get() + 1));
@@ -181,9 +185,11 @@ GAME_EVENT_F(round_end)
 		if(!pController)
 			continue;
 
-		if (pController->m_iTeamNum == CS_TEAM_CT && pController->m_bPawnIsAlive)
-			sortedPlayers.AddToTail(pPlayer);
+		sortedPlayers.AddToTail(pPlayer);
 	}
+
+	if (sortedPlayers.Count() == 0)
+		return;
 
 	sortedPlayers.Sort(SortPlayerDamage);
 
