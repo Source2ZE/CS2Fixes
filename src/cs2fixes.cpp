@@ -46,6 +46,9 @@
 #include "eventlistener.h"
 #include "gameconfig.h"
 
+#define VPROF_ENABLED
+#include "tier0/vprof.h"
+
 #include "tier0/memdbgon.h"
 
 CEntitySystem* g_pEntitySystem = nullptr;
@@ -402,6 +405,7 @@ void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, int reason, const char *
 
 void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick )
 {
+	VPROF_ENTER_SCOPE(__FUNCTION__);
 	/**
 	 * simulating:
 	 * ***********
@@ -445,6 +449,8 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 			}
 		}
 	}
+
+	VPROF_EXIT_SCOPE();
 }
 
 void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount, CBitVec<16384> &unionTransmitEdicts,
@@ -452,6 +458,8 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 {
 	if (!g_pEntitySystem)
 		return;
+
+	VPROF_ENTER_SCOPE(__FUNCTION__);
 
 	for (int i = 0; i < infoCount; i++)
 	{
@@ -494,6 +502,8 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 		}
 	}
+
+	VPROF_EXIT_SCOPE();
 }
 
 // Potentially might not work
