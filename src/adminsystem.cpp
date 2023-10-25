@@ -158,7 +158,7 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_BAN)
+CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 3)
 	{
@@ -228,7 +228,7 @@ CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_BAN)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "muted", szAction);
 }
 
-CON_COMMAND_CHAT_FLAGS(unmute, "unmutes a player", ADMFLAG_UNBAN)
+CON_COMMAND_CHAT_FLAGS(unmute, "unmutes a player", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 2)
 	{
@@ -277,7 +277,7 @@ CON_COMMAND_CHAT_FLAGS(unmute, "unmutes a player", ADMFLAG_UNBAN)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "unmuted");
 }
 
-CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_BAN)
+CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 3)
 	{
@@ -349,7 +349,7 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_BAN)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "gagged", szAction);
 }
 
-CON_COMMAND_CHAT_FLAGS(ungag, "ungags a player", ADMFLAG_UNBAN)
+CON_COMMAND_CHAT_FLAGS(ungag, "ungags a player", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 2)
 	{
@@ -614,7 +614,7 @@ CON_COMMAND_CHAT_FLAGS(setteam, "set a player's team", ADMFLAG_SLAY)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
 }
 
-CON_COMMAND_CHAT_FLAGS(noclip, "toggle noclip on yourself", ADMFLAG_SLAY)
+CON_COMMAND_CHAT_FLAGS(noclip, "toggle noclip on yourself", ADMFLAG_SLAY | ADMFLAG_CHEATS)
 {
 	if (!player)
 	{
