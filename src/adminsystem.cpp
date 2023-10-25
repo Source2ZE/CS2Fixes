@@ -181,7 +181,7 @@ CON_COMMAND_CHAT(mute, "mutes a player")
 
 		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 
-		if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_CHAT))
 		{
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 			return;
@@ -265,7 +265,7 @@ CON_COMMAND_CHAT(unmute, "unmutes a player")
 
 		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 
-		if (!pPlayer->IsAdminFlagSet(ADMFLAG_UNBAN))
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_CHAT))
 		{
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 			return;
@@ -328,7 +328,7 @@ CON_COMMAND_CHAT(gag, "gag a player")
 
 		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 
-		if (!pPlayer->IsAdminFlagSet(ADMFLAG_BAN))
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_CHAT))
 		{
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 			return;
@@ -414,7 +414,7 @@ CON_COMMAND_CHAT(ungag, "ungags a player")
 
 		ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 
-		if (!pPlayer->IsAdminFlagSet(ADMFLAG_UNBAN))
+		if (!pPlayer->IsAdminFlagSet(ADMFLAG_CHAT))
 		{
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 			return;
@@ -755,7 +755,7 @@ CON_COMMAND_CHAT(noclip, "toggle noclip on yourself")
 
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 	
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY))
+	if (!pPlayer->IsAdminFlagSet(ADMFLAG_SLAY|ADMFLAG_CHEATS))
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 		return;
