@@ -164,11 +164,6 @@ GAME_EVENT_F(round_start)
 	}
 }
 
-int SortPlayerDamage(ZEPlayer* const* a, ZEPlayer* const* b)
-{
-	return (*a)->GetTotalDamage() < (*b)->GetTotalDamage();
-}
-
 GAME_EVENT_F(round_end)
 {
 	CUtlVector<ZEPlayer*> sortedPlayers;
@@ -191,7 +186,10 @@ GAME_EVENT_F(round_end)
 	if (sortedPlayers.Count() == 0)
 		return;
 
-	sortedPlayers.Sort(SortPlayerDamage);
+	sortedPlayers.Sort([](ZEPlayer *const *a, ZEPlayer *const *b) -> int
+	{
+		return (*a)->GetTotalDamage() < (*b)->GetTotalDamage();
+	});
 
 	ClientPrintAll(HUD_PRINTTALK, " \x09TOP DEFENDERS");
 
