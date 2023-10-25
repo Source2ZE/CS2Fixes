@@ -247,7 +247,7 @@
             "CCSPlayerController_ChangeTeam"
 			{
 				"windows"	"90"
-				"linux"		"91"
+				"linux"		"89"
 			}
         }
         "Patches"
