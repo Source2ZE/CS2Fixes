@@ -24,6 +24,11 @@
 #include "entity/ccsplayercontroller.h"
 #include "ctime"
 
+#define VPROF_ENABLED
+#include "tier0/vprof.h"
+
+#include "tier0/memdbgon.h"
+
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CEntitySystem *g_pEntitySystem;
@@ -151,6 +156,8 @@ void CPlayerManager::CheckHideDistances()
 	if (!g_pEntitySystem)
 		return;
 
+	VPROF_ENTER_SCOPE(__FUNCTION__);
+
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		auto player = GetPlayer(i);
@@ -195,6 +202,8 @@ void CPlayerManager::CheckHideDistances()
 			}
 		}
 	}
+
+	VPROF_EXIT_SCOPE();
 }
 
 ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* target, int& iNumClients, int *clients)
