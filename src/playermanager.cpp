@@ -109,7 +109,7 @@ void CPlayerManager::OnLateLoad()
 {
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
-		CCSPlayerController *pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity(CEntityIndex(i + 1));
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
 		if (!pController || !pController->IsController() || !pController->IsConnected())
 			continue;
@@ -171,7 +171,7 @@ void CPlayerManager::CheckHideDistances()
 		if (!hideDistance)
 			continue;
 
-		auto pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
 		if (!pController)
 			continue;
@@ -189,7 +189,7 @@ void CPlayerManager::CheckHideDistances()
 			if (j == i)
 				continue;
 
-			auto pTargetController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(j + 1));
+			CCSPlayerController* pTargetController = CCSPlayerController::FromSlot(j);
 
 			if (pTargetController)
 			{
@@ -245,7 +245,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (m_vecPlayers[i] == nullptr)
 				continue;
 
-			CBasePlayerController* player = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
+			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
 			if (!player || !player->IsController())
 				continue;
@@ -270,7 +270,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (m_vecPlayers[slot] == nullptr)
 				continue;
 
-			CBasePlayerController* player = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(slot + 1));
+			CCSPlayerController* player = CCSPlayerController::FromSlot(slot);
 
 			if (!player)
 				continue;
@@ -298,7 +298,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (m_vecPlayers[i] == nullptr)
 				continue;
 
-			CBasePlayerController* player = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
+			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
 			if (!player || !player->IsController())
 				continue;

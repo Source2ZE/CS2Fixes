@@ -78,9 +78,9 @@ GAME_EVENT_F(round_prestart)
 	if (!g_bForceCT)
 		return;
 
-	for (int i = 1; i <= gpGlobals->maxClients; i++)
+	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
-		CCSPlayerController *pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity(CEntityIndex(i));
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
 		// Only do this for Ts, ignore CTs and specs
 		if (!pController || pController->m_iTeamNum() != CS_TEAM_T)
@@ -140,14 +140,14 @@ GAME_EVENT_F(player_spawn)
 
 GAME_EVENT_F(player_hurt)
 {
-	CBasePlayerController *pAttacker = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
-	CBasePlayerController *pVictim = (CBasePlayerController*)pEvent->GetPlayerController("userid");
+	CCSPlayerController *pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
+	CCSPlayerController *pVictim = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 
 	// Ignore Ts/zombies and CTs hurting themselves
 	if (!pAttacker || pAttacker->m_iTeamNum() != CS_TEAM_CT || pAttacker == pVictim)
 		return;
 
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(pAttacker->GetPlayerSlot());
+	ZEPlayer* pPlayer = pAttacker->GetZEPlayer();
 
 	if (!pPlayer)
 		return;
@@ -179,7 +179,7 @@ GAME_EVENT_F(round_end)
 		if (!pPlayer || pPlayer->GetTotalDamage() == 0)
 			continue;
 
-		CCSPlayerController* pController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity(CEntityIndex(pPlayer->GetPlayerSlot().Get() + 1));
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 
 		if(!pController)
 			continue;
@@ -202,7 +202,7 @@ GAME_EVENT_F(round_end)
 	for (int i = 0; i < MIN(sortedPlayers.Count(), 5); i++)
 	{
 		ZEPlayer* pPlayer = sortedPlayers[i];
-		CCSPlayerController* pController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity(CEntityIndex(pPlayer->GetPlayerSlot().Get() + 1));
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 
 		ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
 		pPlayer->SetTotalDamage(0);

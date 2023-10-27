@@ -170,8 +170,8 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	const char *param4)
 {
 #ifdef _DEBUG
-	int entindex = filter.GetRecipientIndex(0).Get() + 1;
-	CCSPlayerController *target = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
+    CPlayerSlot slot = filter.GetRecipientIndex(0);
+	CCSPlayerController* target = CCSPlayerController::FromSlot(slot);
 
 	if (target)
 		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName(), param2);
@@ -182,7 +182,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 
 void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, bool teamonly, int unk1, const char *unk2)
 {
-	bool bGagged = pController && g_playerManager->GetPlayer(pController->GetPlayerSlot())->IsGagged();
+	bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
 
 	if (!bGagged && *args[1] != '/')
 	{

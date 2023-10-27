@@ -369,16 +369,16 @@ CON_COMMAND_CHAT(message, "message someone")
 	// Note that the engine will treat this as a player slot number, not an entity index
 	int uid = atoi(args[1]);
 
-	CBasePlayerController *target = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(uid + 1));
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(uid);
 
-	if (!target)
+	if (!pTarget)
 		return;
 
 	// skipping the id and space, it's dumb but w/e
 	const char *pMessage = args.ArgS() + V_strlen(args[1]) + 1;
 
 	char buf[256];
-	V_snprintf(buf, sizeof(buf), CHAT_PREFIX"Private message from %s to %s: \5%s", player->GetPlayerName(), target->GetPlayerName(), pMessage);
+	V_snprintf(buf, sizeof(buf), CHAT_PREFIX"Private message from %s to %s: \5%s", player->GetPlayerName(), pTarget->GetPlayerName(), pMessage);
 
 	CSingleRecipientFilter filter(uid);
 
@@ -428,7 +428,7 @@ CON_COMMAND_CHAT(test_target, "test string targetting")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
 		if (!pTarget)
 			continue;
@@ -501,7 +501,7 @@ CON_COMMAND_CHAT(setcollisiongroup, "set a player's collision group")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
 		if (!pTarget)
 			continue;
@@ -526,7 +526,7 @@ CON_COMMAND_CHAT(setsolidtype, "set a player's solid type")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
 		if (!pTarget)
 			continue;
@@ -550,7 +550,7 @@ CON_COMMAND_CHAT(setinteraction, "set a player's interaction flags")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
 		if (!pTarget)
 			continue;

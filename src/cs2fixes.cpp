@@ -468,7 +468,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 		// though this is probably part of the client class that contains the CCheckTransmitInfo
 		int iPlayerSlot = (int)*((uint8 *)pInfo + 560);
 
-		auto pSelfController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(iPlayerSlot + 1));
+		CCSPlayerController* pSelfController = CCSPlayerController::FromSlot(iPlayerSlot);
 
 		if (!pSelfController || !pSelfController->IsConnected() || !pSelfController->m_bPawnIsAlive)
 			continue;
@@ -483,12 +483,12 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 		if (!pSelfZEPlayer)
 			continue;
 
-		for (int i = 1; i <= gpGlobals->maxClients; i++)
+		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
-			if (!pSelfZEPlayer->ShouldBlockTransmit(i - 1))
+			if (!pSelfZEPlayer->ShouldBlockTransmit(i))
 				continue;
 
-			auto pController = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)i);
+			CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
 			if (!pController)
 				continue;
