@@ -584,7 +584,7 @@ CON_COMMAND_CHAT(http, "test an HTTP request")
 
 		return;
 	}
-	if (args.ArgC() < 4)
+	if (args.ArgC() < 3)
 	{
 		if (player)
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !http <get/post> <url> [content]");
