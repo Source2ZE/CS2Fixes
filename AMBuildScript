@@ -274,7 +274,7 @@ class MMSPluginConfig(object):
 
     elif cxx.like('msvc'):
       if builder.options.debug == '1':
-        cxx.cflags += ['/MTd']
+        cxx.cflags += ['/MDd']
         cxx.linkflags += ['/NODEFAULTLIB:libcmt']
       else:
         cxx.cflags += ['/MT']

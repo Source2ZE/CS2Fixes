@@ -41,6 +41,7 @@ for sdk_name in MMSPlugin.sdks:
         os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'funchook.lib'),
         os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'distorm.lib'),
         os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', 'libprotobuf.lib'),
+		os.path.join(builder.sourcePath, 'sdk', 'lib', 'public', 'win64', 'steam_api64.lib')
       ]
       binary.sources += ['src/utils/plat_win.cpp']
 
@@ -67,8 +68,12 @@ for sdk_name in MMSPlugin.sdks:
     if sdk_name in ['dota', 'cs2']:
       binary.sources += [
       os.path.join(sdk.path, 'entity2', 'entitysystem.cpp'),
-      os.path.join(sdk.path, 'tier1', 'convar.cpp'),
-      os.path.join(sdk.path, 'public', 'tier0', 'memoverride.cpp'),
+      os.path.join(sdk.path, 'tier1', 'convar.cpp')
+    ]
+
+    if sdk_name in ['dota', 'cs2'] and (binary.compiler.target.platform == 'windows' and builder.options.debug != '1') or binary.compiler.target.platform == 'linux':
+      binary.sources += [
+      os.path.join(sdk.path, 'public', 'tier0', 'memoverride.cpp')
     ]
 
     if cxx.target.arch == 'x86':
