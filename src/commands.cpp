@@ -31,11 +31,13 @@
 #include "playermanager.h"
 #include "adminsystem.h"
 #include "ctimer.h"
+#include "httpmanager.h"
 
 #include "tier0/memdbgon.h"
 
 extern CEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
+extern ISteamHTTP* g_http;
 
 WeaponMapEntry_t WeaponMap[] = {
 	{"bizon",		  "weapon_bizon",			 1400, 26},
@@ -564,6 +566,38 @@ CON_COMMAND_CHAT(setinteraction, "set a player's interaction flags")
 
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting interaction flags on %s from %llx to %llx.", pTarget->GetPlayerName(), oldInteractAs, newInteract);
 	}
+}
+
+void HttpCallback(HTTPRequestHandle request, char* response)
+{
+	ClientPrintAll(HUD_PRINTTALK, response);
+}
+
+CON_COMMAND_CHAT(http, "test an HTTP request")
+{
+	if (!g_http)
+	{
+		if (player)
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Steam HTTP interface is not available!");
+		else
+			Message(CHAT_PREFIX "Steam HTTP interface is not available!\n");
+
+		return;
+	}
+	if (args.ArgC() < 4)
+	{
+		if (player)
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !http <get/post> <url> [content]");
+		else
+			Message(CHAT_PREFIX "Usage: !http <get/post> <url> [content]\n");
+
+		return;
+	}
+
+	if (strcmp(args[1], "get") == 0)
+		g_HTTPManager.GET(args[2], &HttpCallback);
+	else if (strcmp(args[1], "post") == 0)
+		g_HTTPManager.POST(args[2], args[3], &HttpCallback);
 }
 #endif // _DEBUG
 

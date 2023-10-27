@@ -95,6 +95,9 @@
     <ClCompile Include="sdk\tier1\convar.cpp">
       <Filter>Source Files\sdk</Filter>
     </ClCompile>
+    <ClCompile Include="src\httpmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -188,6 +191,9 @@
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\eventlistener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\httpmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

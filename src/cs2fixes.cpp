@@ -45,6 +45,7 @@
 #include "commands.h"
 #include "eventlistener.h"
 #include "gameconfig.h"
+#include "httpmanager.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -91,6 +92,8 @@ void Panic(const char *msg, ...)
 class GameSessionConfiguration_t { };
 
 SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
+SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIActivated, SH_NOATTRIB, 0);
+SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIDeactivated, SH_NOATTRIB, 0);
 SH_DECL_HOOK4_void(IServerGameClients, ClientActive, SH_NOATTRIB, 0, CPlayerSlot, bool, const char *, uint64);
 SH_DECL_HOOK5_void(IServerGameClients, ClientDisconnect, SH_NOATTRIB, 0, CPlayerSlot, int, const char *, uint64, const char *);
 SH_DECL_HOOK4_void(IServerGameClients, ClientPutInServer, SH_NOATTRIB, 0, CPlayerSlot, char const *, int, uint64);
@@ -127,6 +130,8 @@ CGlobalVars* gpGlobals = nullptr;
 CPlayerManager* g_playerManager = nullptr;
 IVEngineServer2* g_pEngineServer2;
 CGameConfig *g_GameConfig = nullptr;
+ISteamHTTP* g_http = nullptr;
+CSteamGameServerAPIContext g_steamAPI;
 
 PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
 bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
@@ -146,6 +151,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	Message( "Starting plugin.\n" );
 
 	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameFrame, g_pSource2Server, this, &CS2Fixes::Hook_GameFrame, true);
+	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIActivated, g_pSource2Server, this, &CS2Fixes::Hook_GameServerSteamAPIActivated, false);
+	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIDeactivated, g_pSource2Server, this, &CS2Fixes::Hook_GameServerSteamAPIDeactivated, false);
 	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientActive, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientActive, true);
 	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientDisconnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientDisconnect, true);
 	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientPutInServer, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientPutInServer, true);
@@ -295,6 +302,20 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	RegisterEventListeners();
 }
 
+void CS2Fixes::Hook_GameServerSteamAPIActivated()
+{
+	g_steamAPI.Init();
+	g_http = g_steamAPI.SteamHTTP();
+
+	RETURN_META(MRES_IGNORED);
+}
+
+void CS2Fixes::Hook_GameServerSteamAPIDeactivated()
+{
+	g_http = nullptr;
+
+	RETURN_META(MRES_IGNORED);
+}
 
 void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
 	INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType)
