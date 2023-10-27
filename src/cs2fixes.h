@@ -38,6 +38,8 @@ public:
 	bool Unpause(char *error, size_t maxlen);
 	void AllPluginsLoaded();
 public: //hooks
+	void Hook_GameServerSteamAPIActivated();
+	void Hook_GameServerSteamAPIDeactivated();
 	void OnLevelInit( char const *pMapName,
 				 char const *pMapEntities,
 				 char const *pOldLevel,

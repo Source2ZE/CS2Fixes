@@ -50,7 +50,7 @@ for sdk_name in MMSPlugin.sdks:
       'src/mempatch.cpp',
       'src/patches.cpp',
       'src/cvars.cpp',
-	  'src/adminsystem.cpp',
+      'src/adminsystem.cpp',
       'src/commands.cpp',
       'src/addresses.cpp',
       'src/detours.cpp',
@@ -61,6 +61,7 @@ for sdk_name in MMSPlugin.sdks:
       'src/ctimer.cpp',
       'src/playermanager.cpp',
       'src/gameconfig.cpp',
+      'src/httpmanager.cpp',
     ]
 
     if sdk_name in ['dota', 'cs2']:
