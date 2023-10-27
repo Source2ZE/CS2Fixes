@@ -169,7 +169,7 @@ bool CChatCommand::CheckCommandAccess(CBasePlayerController *pPlayer, uint64 fla
 
 	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(slot);
 
-	if (!pZEPlayer->IsAdminFlagSet(ADMFLAG_RCON))
+	if (!pZEPlayer->IsAdminFlagSet(flags))
 	{
 		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 		return false;
