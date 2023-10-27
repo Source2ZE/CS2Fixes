@@ -36,13 +36,17 @@ CUtlVector<CGameEventListener *> g_vecEventListeners;
 
 void RegisterEventListeners()
 {
-	if (!g_gameEventManager)
+	static bool bRegistered = false;
+
+	if (bRegistered || !g_gameEventManager)
 		return;
 
 	FOR_EACH_VEC(g_vecEventListeners, i)
 	{
 		g_gameEventManager->AddListener(g_vecEventListeners[i], g_vecEventListeners[i]->GetEventName(), true);
 	}
+
+	bRegistered = true;
 }
 
 void UnregisterEventListeners()

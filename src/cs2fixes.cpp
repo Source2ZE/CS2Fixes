@@ -292,8 +292,7 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 
 	g_bHasTicked = false;
 
-	// This has to be done here and not on plugin init, but at the same time it has to be only once
-	ExecuteOnce(RegisterEventListeners());
+	RegisterEventListeners();
 }
 
 
