@@ -47,4 +47,25 @@ public:
 	{
 		return g_playerManager->GetPlayer(GetPlayerSlot());
 	}
+
+	void ChangeTeam(int iTeam)
+	{
+		static int offset = g_GameConfig->GetOffset("CCSPlayerController_ChangeTeam");
+		CALL_VIRTUAL(void, offset, this, iTeam);
+	}
+
+	void SwitchTeam(int iTeam)
+	{
+		if (!IsController())
+			return;
+
+		if (iTeam == CS_TEAM_SPECTATOR)
+		{
+			ChangeTeam(iTeam);
+		}
+		else
+		{
+			addresses::CCSPlayerController_SwitchTeam(this, iTeam);
+		}
+	}
 };

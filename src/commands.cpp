@@ -34,11 +34,8 @@
 
 #include "tier0/memdbgon.h"
 
-
 extern CEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
-extern int g_targetPawn;
-extern int g_targetController;
 
 WeaponMapEntry_t WeaponMap[] = {
 	{"bizon",		  "weapon_bizon",			 1400, 26},
@@ -153,12 +150,30 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 
 	if (g_CommandList.IsValidIndex(index))
 	{
-		g_CommandList[index](args, pController);
+		(*g_CommandList[index])(args, pController);
 	}
 	else
 	{
 		ParseWeaponCommand(pController, args[0]);
 	}
+}
+
+bool CChatCommand::CheckCommandAccess(CBasePlayerController *pPlayer, uint64 flags)
+{
+	if (!pPlayer)
+		return false;
+
+	int slot = pPlayer->GetPlayerSlot();
+
+	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(slot);
+
+	if (!pZEPlayer->IsAdminFlagSet(ADMFLAG_RCON))
+	{
+		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+		return false;
+	}
+
+	return true;
 }
 
 void ClientPrintAll(int hud_dest, const char *msg, ...)
@@ -272,12 +287,12 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 
 	CHandle<CBasePlayerPawn> handle = pPawn->GetHandle();
 
-	new CTimer(5.0f, false, false, [spawnpos, handle, initialpos]()
+	new CTimer(5.0f, false, [spawnpos, handle, initialpos]()
 	{
 		CBasePlayerPawn *pPawn = handle.Get();
 
 		if (!pPawn)
-			return;
+			return -1.0f;
 
 		Vector endpos = pPawn->GetAbsOrigin();
 
@@ -289,8 +304,10 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 		else
 		{
 			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, CHAT_PREFIX "Teleport failed! You moved too far.");
-			return;
+			return -1.0f;
 		}
+		
+		return -1.0f;
 	});
 }
 

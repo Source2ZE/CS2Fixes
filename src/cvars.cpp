@@ -57,8 +57,6 @@ void UnlockConCommands()
 	if (!g_pCVar)
 		return;
 
-	ConCommand *say = g_pCVar->GetCommand(g_pCVar->FindCommand("say"));
-
 	int iUnhiddenConCommands = 0;
 
 	ConCommand *pConCommand = nullptr;

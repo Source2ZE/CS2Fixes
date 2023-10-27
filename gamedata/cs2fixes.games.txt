@@ -243,6 +243,20 @@
                 "windows"   "153"
                 "linux"     "152"
             }
+			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
+            "CCSPlayerController_ChangeTeam"
+			{
+				"windows"	"90"
+				"linux"		"89"
+			}
+			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
+			// return (*(*v9 + 2832LL))(v9, v27, 0LL);
+			// 2832 (354 * 8) is the offset
+			"CBasePlayerPawn_CommitSuicide"
+			{
+				"windows"	"354"
+				"linux"		"354"
+			}
         }
         "Patches"
         {
@@ -264,13 +278,13 @@
             }
             "WaterLevelGravity"
             {
-                "windows"               "\x3C\x02"
-                "linux"                 "\x3C\x02"
+                "windows"		"\x3C\x02"
+                "linux"			"\x3C\x02"
             }
             "CategorizeUnderwater"
             {
-                "windows"               "\x73"
-                "linux"                 "\x0F\x42"
+                "windows"		"\x73"
+                "linux"			"\x0F\x42"
             }
 
             // Client

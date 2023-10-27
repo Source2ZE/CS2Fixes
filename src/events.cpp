@@ -30,18 +30,23 @@
 extern IGameEventManager2 *g_gameEventManager;
 extern IServerGameClients *g_pSource2GameClients;
 extern CEntitySystem *g_pEntitySystem;
+extern CGlobalVars *gpGlobals;
 
 CUtlVector<CGameEventListener *> g_vecEventListeners;
 
 void RegisterEventListeners()
 {
-	if (!g_gameEventManager)
+	static bool bRegistered = false;
+
+	if (bRegistered || !g_gameEventManager)
 		return;
 
 	FOR_EACH_VEC(g_vecEventListeners, i)
 	{
 		g_gameEventManager->AddListener(g_vecEventListeners[i], g_vecEventListeners[i]->GetEventName(), true);
 	}
+
+	bRegistered = true;
 }
 
 void UnregisterEventListeners()
@@ -62,7 +67,8 @@ bool g_bForceCT = true;
 
 CON_COMMAND_F(c_force_ct, "toggle forcing CTs on every round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	g_bForceCT = !g_bForceCT;
+	if (args.ArgC() > 1)
+		g_bForceCT = V_StringToBool(args[1], true);
 
 	Message("Forcing CTs on every round is now %s.\n", g_bForceCT ? "ON" : "OFF");
 }
@@ -72,7 +78,7 @@ GAME_EVENT_F(round_prestart)
 	if (!g_bForceCT)
 		return;
 
-	for (int i = 0; i < g_playerManager->GetMaxPlayers(); i++)
+	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
@@ -80,15 +86,16 @@ GAME_EVENT_F(round_prestart)
 		if (!pController || pController->m_iTeamNum() != CS_TEAM_T)
 			continue;
 
-		addresses::CCSPlayerController_SwitchTeam(pController, CS_TEAM_CT);
+		pController->SwitchTeam(CS_TEAM_CT);
 	}
 }
 
 bool g_bBlockTeamMessages = true;
 
-CON_COMMAND_F(c_toggle_team_messages, "toggle team messages", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+CON_COMMAND_F(c_block_team_messages, "toggle team messages", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	g_bBlockTeamMessages = !g_bBlockTeamMessages;
+	if (args.ArgC() > 1)
+		g_bBlockTeamMessages = V_StringToBool(args[1], true);
 }
 
 GAME_EVENT_F(player_team)
@@ -102,41 +109,45 @@ GAME_EVENT_F(player_team)
 
 GAME_EVENT_F(player_spawn)
 {
-	CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
+	CCSPlayerController *pController = (CCSPlayerController *)pEvent->GetPlayerController("userid");
 
 	if (!pController)
 		return;
 
-	CHandle<CBasePlayerController> hController = pController->GetHandle();
+	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
 	// Gotta do this on the next frame...
-	new CTimer(0.0f, false, false, [hController]()
+	new CTimer(0.0f, false, [hController]()
 	{
-		CBasePlayerController *pController = hController.Get();
+		CCSPlayerController *pController = hController.Get();
 
-		if (!pController)
-			return;
+		if (!pController || !pController->m_bPawnIsAlive())
+			return -1.0f;
 
 		CBasePlayerPawn *pPawn = pController->GetPawn();
 
 		// Just in case somehow there's health but the player is, say, an observer
-		if (!pPawn || pPawn->m_iHealth() <= 0 || !g_pSource2GameClients->IsPlayerAlive(pController->GetPlayerSlot()))
-			return;
+		if (!pPawn || !pPawn->IsAlive())
+			return -1.0f;
 
 		pPawn->m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
 		pPawn->m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
 		pPawn->CollisionRulesChanged();
+
+		return -1.0f;
 	});
 }
 
 GAME_EVENT_F(player_hurt)
 {
-	CCSPlayerController* pController = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
+	CBasePlayerController *pAttacker = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
+	CBasePlayerController *pVictim = (CBasePlayerController*)pEvent->GetPlayerController("userid");
 
-	if (!pController)
+	// Ignore Ts/zombies and CTs hurting themselves
+	if (!pAttacker || pAttacker->m_iTeamNum() != CS_TEAM_CT || pAttacker == pVictim)
 		return;
 
-	ZEPlayer* pPlayer = pController->GetZEPlayer();
+	ZEPlayer* pPlayer = pAttacker->GetZEPlayer();
 
 	if (!pPlayer)
 		return;
@@ -146,7 +157,7 @@ GAME_EVENT_F(player_hurt)
 
 GAME_EVENT_F(round_start)
 {
-	for (int i = 0; i < g_playerManager->GetMaxPlayers(); i++)
+	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -157,20 +168,15 @@ GAME_EVENT_F(round_start)
 	}
 }
 
-int SortPlayerDamage(ZEPlayer* const* a, ZEPlayer* const* b)
-{
-	return (*a)->GetTotalDamage() < (*b)->GetTotalDamage();
-}
-
 GAME_EVENT_F(round_end)
 {
 	CUtlVector<ZEPlayer*> sortedPlayers;
 
-	for (int i = 0; i < g_playerManager->GetMaxPlayers(); i++)
+	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
-		if (!pPlayer)
+		if (!pPlayer || pPlayer->GetTotalDamage() == 0)
 			continue;
 
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
@@ -178,11 +184,16 @@ GAME_EVENT_F(round_end)
 		if(!pController)
 			continue;
 
-		if (pController->m_iTeamNum == CS_TEAM_CT && pController->m_bPawnIsAlive)
-			sortedPlayers.AddToTail(pPlayer);
+		sortedPlayers.AddToTail(pPlayer);
 	}
 
-	sortedPlayers.Sort(SortPlayerDamage);
+	if (sortedPlayers.Count() == 0)
+		return;
+
+	sortedPlayers.Sort([](ZEPlayer *const *a, ZEPlayer *const *b) -> int
+	{
+		return (*a)->GetTotalDamage() < (*b)->GetTotalDamage();
+	});
 
 	ClientPrintAll(HUD_PRINTTALK, " \x09TOP DEFENDERS");
 

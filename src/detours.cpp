@@ -35,6 +35,9 @@
 #include "igameevents.h"
 #include "gameconfig.h"
 
+#define VPROF_ENABLED
+#include "tier0/vprof.h"
+
 #include "tier0/memdbgon.h"
 
 extern CGlobalVars *gpGlobals;
@@ -147,9 +150,6 @@ bool FASTCALL Detour_IsHearingClient(void* serverClient, int index)
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CCSPlayerController *pPlayer, uint64 eMessageType)
 {
-	CPlayerSlot slot = filter.GetRecipientIndex(0);
-	CCSPlayerController* target = CCSPlayerController::FromSlot(slot);
-
 	if (pPlayer)
 		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
 
@@ -169,10 +169,10 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	const char *param3,
 	const char *param4)
 {
-	CPlayerSlot slot = filter.GetRecipientIndex(0);
+#ifdef _DEBUG
+    CPlayerSlot slot = filter.GetRecipientIndex(0);
 	CCSPlayerController* target = CCSPlayerController::FromSlot(slot);
 
-#ifdef _DEBUG
 	if (target)
 		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName(), param2);
 #endif

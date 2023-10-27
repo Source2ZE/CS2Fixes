@@ -23,35 +23,37 @@
 
 class CTimerBase {
 public:
-    CTimerBase(float time, bool repeat, bool preserveMapChange) :
-        m_flTime(time), m_bRepeat(repeat), m_bPreserveMapChange(preserveMapChange) {};
+	CTimerBase(float flInitialInterval, bool bPreserveMapChange) :
+		m_flInterval(flInitialInterval), m_bPreserveMapChange(bPreserveMapChange) {};
 
-    virtual void Execute() = 0;
+    virtual bool Execute() = 0;
 
-    float m_flTime;
+    float m_flInterval;
     float m_flLastExecute = -1;
-    bool m_bRepeat;
     bool m_bPreserveMapChange;
 };
 
 extern CUtlLinkedList<CTimerBase*> g_timers;
 
-
+// Timer functions should return the time until next execution, or a negative value like -1.0f to stop
+// Having an interval of 0 is fine, in this case it will run on every game frame
 class CTimer : public CTimerBase
 {
 public:
-    CTimer(float time, bool repeat, bool preserveMapChange, std::function<void()> func) :
-		CTimerBase(time, repeat, preserveMapChange), m_func(func)
+    CTimer(float flInitialInterval, bool bPreserveMapChange, std::function<float()> func) :
+		CTimerBase(flInitialInterval, bPreserveMapChange), m_func(func)
     {
         g_timers.AddToTail(this);
     };
 
-    virtual void Execute() override
+    inline bool Execute() override
     {
-	    m_func();
+	    m_flInterval = m_func();
+
+        return m_flInterval >= 0;
 	}
 
-    std::function<void()> m_func;
+    std::function<float()> m_func;
 };
 
 

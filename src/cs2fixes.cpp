@@ -42,8 +42,12 @@
 #include "playermanager.h"
 #include <entity.h>
 #include "adminsystem.h"
+#include "commands.h"
 #include "eventlistener.h"
 #include "gameconfig.h"
+
+#define VPROF_ENABLED
+#include "tier0/vprof.h"
 
 #include "tier0/memdbgon.h"
 
@@ -101,18 +105,6 @@ SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlo
 
 CS2Fixes g_CS2Fixes;
 
-// Should only be called within the active game loop (i e map should be loaded and active)
-// otherwise that'll be nullptr!
-CGlobalVars *GetGameGlobals()
-{
-	INetworkGameServer *server = g_pNetworkServerService->GetIGameServer();
-
-	if (!server)
-		return nullptr;
-
-	return server->GetGlobals();
-}
-
 #if 0
 // Currently unavailable, requires hl2sdk work!
 ConVar sample_cvar("sample_cvar", "42", 0);
@@ -130,7 +122,7 @@ CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONL
 
 IGameEventSystem* g_gameEventSystem;
 IGameEventManager2* g_gameEventManager = nullptr;
-INetworkGameServer* g_networkGameServer;
+INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGlobalVars* gpGlobals = nullptr;
 CPlayerManager* g_playerManager = nullptr;
 IVEngineServer2* g_pEngineServer2;
@@ -144,15 +136,12 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pEngineServer2, IVEngineServer2, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pCVar, ICvar, CVAR_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2Server, ISource2Server, SOURCE2SERVER_INTERFACE_VERSION);
+	GET_V_IFACE_ANY(GetServerFactory, g_pSource2ServerConfig, ISource2ServerConfig, SOURCE2SERVERCONFIG_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2GameEntities, ISource2GameEntities, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2GameClients, IServerGameClients, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_gameEventSystem, IGameEventSystem, GAMEEVENTSYSTEM_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetFileSystemFactory, g_pFullFileSystem, IFileSystem, FILESYSTEM_INTERFACE_VERSION);
-
-	// Currently doesn't work from within mm side, use GetGameGlobals() in the mean time instead
-	// this needs to run in case of a late load
-	gpGlobals = GetGameGlobals();
 
 	Message( "Starting plugin.\n" );
 
@@ -220,29 +209,34 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	{
 		RegisterEventListeners();
 		g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
+		gpGlobals = g_pNetworkGameServer->GetGlobals();
 	}
 
 	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
-	g_playerManager = new CPlayerManager(late);
 	g_pAdminSystem = new CAdminSystem();
+	g_playerManager = new CPlayerManager(late);
 
 	// Steam authentication
-	new CTimer(1.0f, true, true, []()
+	new CTimer(1.0f, true, []()
 	{
 		g_playerManager->TryAuthenticate();
+		return 1.0f;
 	});
 
 	// Check hide distance
-	new CTimer(0.5f, true, true, []()
+	new CTimer(0.5f, true, []()
 	{
 		g_playerManager->CheckHideDistances();
+		return 0.5f;
 	});
 
 	// Check for the expiration of infractions like mutes or gags
-	new CTimer(30.0f, true, true, []()
+	new CTimer(30.0f, true, []()
 	{
 		g_playerManager->CheckInfractions();
+		return 30.0f;
 	});
 
 	srand(time(0));
@@ -273,13 +267,13 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	RemoveTimers();
 	UnregisterEventListeners();
 
-	if (g_playerManager != NULL)
+	if (g_playerManager)
 		delete g_playerManager;
 
-	if (g_pAdminSystem != NULL)
+	if (g_pAdminSystem)
 		delete g_pAdminSystem;
 
-	if (g_GameConfig != NULL)
+	if (g_GameConfig)
 		delete g_GameConfig;
 
 	return true;
@@ -289,20 +283,16 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 {
 	Message("startup server\n");
 
+	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
+	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+	gpGlobals = g_pNetworkGameServer->GetGlobals();
+
 	if(g_bHasTicked)
 		RemoveMapTimers();
 
 	g_bHasTicked = false;
-	gpGlobals = GetGameGlobals();
-
-	if (gpGlobals == nullptr)
-	{
-		Error("Failed to lookup gpGlobals\n");
-	}
 
 	RegisterEventListeners();
-
-	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 }
 
 
@@ -414,6 +404,7 @@ void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, int reason, const char *
 
 void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick )
 {
+	VPROF_ENTER_SCOPE(__FUNCTION__);
 	/**
 	 * simulating:
 	 * ***********
@@ -444,19 +435,21 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 			timer->m_flLastExecute = g_flUniversalTime;
 
 		// Timer execute 
-		if (timer->m_flLastExecute + timer->m_flTime <= g_flUniversalTime)
+		if (timer->m_flLastExecute + timer->m_flInterval <= g_flUniversalTime)
 		{
-			timer->Execute();
-
-			if (!timer->m_bRepeat)
+			if (!timer->Execute())
 			{
 				delete timer;
 				g_timers.Remove(prevIndex);
 			}
 			else
+			{
 				timer->m_flLastExecute = g_flUniversalTime;
+			}
 		}
 	}
+
+	VPROF_EXIT_SCOPE();
 }
 
 void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount, CBitVec<16384> &unionTransmitEdicts,
@@ -464,6 +457,8 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 {
 	if (!g_pEntitySystem)
 		return;
+
+	VPROF_ENTER_SCOPE(__FUNCTION__);
 
 	for (int i = 0; i < infoCount; i++)
 	{
@@ -488,7 +483,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 		if (!pSelfZEPlayer)
 			continue;
 
-		for (int i = 0; i < g_playerManager->GetMaxPlayers(); i++)
+		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
 			if (!pSelfZEPlayer->ShouldBlockTransmit(i))
 				continue;
@@ -506,6 +501,8 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 		}
 	}
+
+	VPROF_EXIT_SCOPE();
 }
 
 // Potentially might not work

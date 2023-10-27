@@ -114,8 +114,8 @@ const char *CGameConfig::GetLibrary(const std::string& name)
 CModule **CGameConfig::GetModule(const char *name)
 {
 	const char *library = this->GetLibrary(name);
-	if (library == NULL)
-		return NULL;
+	if (!library)
+		return nullptr;
 
 	if (strcmp(library, "engine") == 0)
 		return &modules::engine;
@@ -131,13 +131,13 @@ CModule **CGameConfig::GetModule(const char *name)
 	else if (strcmp(library, "hammer") == 0)
 		return &modules::hammer;
 #endif
-	return NULL;
+	return nullptr;
 }
 
 bool CGameConfig::IsSymbol(const char *name)
 {
 	const char *sigOrSymbol = this->GetSignature(name);
-	if (sigOrSymbol == NULL || strlen(sigOrSymbol) <= 0)
+	if (!sigOrSymbol || strlen(sigOrSymbol) <= 0)
 	{
 		Panic("Missing signature or symbol\n", name);
 		return false;
@@ -149,10 +149,10 @@ const char* CGameConfig::GetSymbol(const char *name)
 {
 	const char *symbol = this->GetSignature(name);
 
-	if (symbol == NULL || strlen(symbol) <= 1)
+	if (!symbol || strlen(symbol) <= 1)
 	{
 		Panic("Missing symbol\n", name);
-		return NULL;
+		return nullptr;
 	}
 	return symbol + 1;
 }
@@ -163,39 +163,40 @@ void *CGameConfig::ResolveSignature(const char *name)
 	if (!module || !(*module))
 	{
 		Panic("Invalid Module %s\n", name);
-		return NULL;
+		return nullptr;
 	}
 
 	void *address = nullptr;
 	if (this->IsSymbol(name))
 	{
 		const char *symbol = this->GetSymbol(name);
-		if (symbol == NULL)
+		if (!symbol)
 		{
 			Panic("Invalid symbol for %s\n", name);
-			return NULL;
+			return nullptr;
 		}
 		address = dlsym((*module)->m_hModule, symbol);
 	}
 	else
 	{
 		const char *signature = this->GetSignature(name);
-		if (signature == NULL)
+		if (!signature)
 		{
 			Panic("Failed to find signature for %s\n", name);
-			return NULL;
+			return nullptr;
 		}
 
-		byte *pSignature = CGameConfig::HexToByte(signature);
-		if (pSignature == NULL)
-			return NULL;
-		address = (*module)->FindSignature(pSignature);
+		size_t iLength = 0;
+		byte *pSignature = HexToByte(signature, iLength);
+		if (!pSignature)
+			return nullptr;
+		address = (*module)->FindSignature(pSignature, iLength);
 	}
 
-	if (address == NULL)
+	if (!address)
 	{
 		Panic("Failed to find address for %s\n", name);
-		return NULL;
+		return nullptr;
 	}
 	return address;
 }
@@ -215,7 +216,7 @@ std::string CGameConfig::GetDirectoryName(const std::string &directoryPathInput)
 
 int CGameConfig::HexStringToUint8Array(const char* hexString, uint8_t* byteArray, size_t maxBytes)
 {
-    if (hexString == NULL) {
+    if (!hexString) {
         printf("Invalid hex string.\n");
 		return -1;
 	}
@@ -240,21 +241,21 @@ int CGameConfig::HexStringToUint8Array(const char* hexString, uint8_t* byteArray
     return byteCount; // Return the number of bytes successfully converted.
 }
 
-byte *CGameConfig::HexToByte(const char *src)
+byte *CGameConfig::HexToByte(const char *src, size_t &length)
 {
-	if (src == NULL || strlen(src) <= 0)
+	if (!src || strlen(src) <= 0)
 	{
 		Panic("Invalid hex string\n");
-		return NULL;
+		return nullptr;
 	}
 
-	size_t maxBytes = strlen(src) / 4;
-	uint8_t *dest = new uint8_t[maxBytes];
-	int byteCount = CGameConfig::HexStringToUint8Array(src, dest, maxBytes);
+	length = strlen(src) / 4;
+	uint8_t *dest = new uint8_t[length];
+	int byteCount = HexStringToUint8Array(src, dest, length);
 	if (byteCount <= 0)
 	{
 		Panic("Invalid hex format %s\n", src);
-		return NULL;
+		return nullptr;
 	}
 	return (byte *)dest;
 }
