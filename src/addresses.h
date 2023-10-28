@@ -58,10 +58,14 @@ namespace addresses
 	inline void(FASTCALL *UTIL_Remove)(CEntityInstance*);
 
 	inline void(FASTCALL *CEntitySystem_AddEntityIOEvent)(CEntitySystem *pEntitySystem, CEntityInstance *pTarget, const char *pszInput,
-		CEntityInstance *pActivator, CEntityInstance *pCaller, variant_string_t &value, float flDelay, int outputID);
+														CEntityInstance *pActivator, CEntityInstance *pCaller, variant_string_t *value, float flDelay, int outputID);
 
-	inline CEntityInstance *(FASTCALL *CGameEntitySystem_FindEntityByClassName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName);
+	inline void(FASTCALL *CEntityInstance_AcceptInput)(CEntityInstance *pThis, const char *pInputName,
+													CEntityInstance *pActivator, CEntityInstance *pCaller, variant_string_t *value, int nOutputID);
 
-	inline CEntityInstance *(FASTCALL *CGameEntitySystem_FindEntityByName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName, 
-		CEntityInstance *pSearchingEntity, CEntityInstance *pActivator, CEntityInstance *pCaller, IEntityFindFilter *pFilter);
+	inline Z_CBaseEntity *(FASTCALL *CGameEntitySystem_FindEntityByClassName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName);
+
+	inline Z_CBaseEntity *(FASTCALL *CGameEntitySystem_FindEntityByName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName, 
+																		CEntityInstance *pSearchingEntity, CEntityInstance *pActivator, CEntityInstance *pCaller,
+																		IEntityFindFilter *pFilter);
 }

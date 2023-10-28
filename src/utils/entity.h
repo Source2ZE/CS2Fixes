@@ -25,6 +25,7 @@
 
 class CGameRules;
 class CEntityInstance;
+class Z_CBaseEntity;
 class CBasePlayerController;
 class IEntityFindFilter;
 
@@ -41,10 +42,12 @@ struct variant_string_t
 	uint16 m_flags = 0;
 };
 
-CEntityInstance *UTIL_FindPickerEntity(CBasePlayerController *pPlayer);
-	CEntityInstance *UTIL_FindEntityByClassname(CEntityInstance* pStart, const char* name);
-CEntityInstance *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
-	CEntityInstance *pSearchingEntity = nullptr, CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr, IEntityFindFilter *pFilter = nullptr);
+Z_CBaseEntity *UTIL_FindPickerEntity(CBasePlayerController *pPlayer);
+Z_CBaseEntity *UTIL_FindEntityByClassname(CEntityInstance *pStart, const char *name);
+Z_CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
+									CEntityInstance *pSearchingEntity = nullptr, CEntityInstance *pActivator = nullptr,
+									CEntityInstance *pCaller = nullptr, IEntityFindFilter *pFilter = nullptr);
 
 void UTIL_AddEntityIOEvent(CEntityInstance *pTarget, const char *pszInput,
-					  CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr, variant_string_t value = variant_string_t(""), float flDelay = 0.0f);
+							CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr,
+							variant_string_t *value = nullptr, float flDelay = 0.0f);

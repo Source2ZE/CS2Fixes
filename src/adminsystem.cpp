@@ -657,7 +657,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 
 	int iFoundEnts = 0;
 
-	CEntityInstance *pTarget = nullptr;
+	Z_CBaseEntity *pTarget = nullptr;
 
 	// The idea here is to only use one of the targeting modes at once, prioritizing !picker then targetname/!self then classname
 	// Try picker first, FindEntityByName can also take !picker but it always uses player 0 so we have to do this ourselves
@@ -667,7 +667,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 
 		if (pTarget)
 		{
-			UTIL_AddEntityIOEvent(pTarget, args[2], player, player, value);
+			pTarget->AcceptInput(args[2], player, player, &value);
 			iFoundEnts++;
 		}
 	}
@@ -676,7 +676,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 	{
 		while (pTarget = UTIL_FindEntityByName(pTarget, args[1], player))
 		{
-			UTIL_AddEntityIOEvent(pTarget, args[2], player, player, value);
+			pTarget->AcceptInput(args[2], player, player, &value);
 			iFoundEnts++;
 		}
 	}
@@ -685,7 +685,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 	{
 		while (pTarget = UTIL_FindEntityByClassname(pTarget, args[1]))
 		{
-			UTIL_AddEntityIOEvent(pTarget, args[2], player, player, value);
+			pTarget->AcceptInput(args[2], player, player, &value);
 			iFoundEnts++;
 		}
 	}

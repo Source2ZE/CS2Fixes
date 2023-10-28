@@ -160,6 +160,11 @@ public:
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
+	void AcceptInput(const char *pInputName, CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr, variant_string_t *value = nullptr)
+	{
+		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, value, 0);
+	}
+
 	bool IsAlive() { return m_lifeState == LifeState_t::LIFE_ALIVE; }
 
 	CHandle<CBaseEntity> GetHandle() { return m_pEntity->m_EHandle; }
