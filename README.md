@@ -48,6 +48,8 @@ CS2Fixes is a collection of experimental fixes and features aimed but not limite
   - [x] Transmit hook
   - [x] Rewrite detour hook into sourcehook (Interface definition available)
 - [x] Rcon
+- [x] Basic HTTP request
+- [x] EntFire
 
 ## Compilation
 
