@@ -18,15 +18,32 @@
  */
 
 #pragma once
-#include <chandle.h>
+#include <platform.h>
+#include "globaltypes.h"
+#include "cbaseentity.h"
 
-class IHandleEntity;
-class CEntityClass;
-
-class CEntityIdentity
+class CGameRules
 {
 public:
-    IHandleEntity* m_pInstance;
-    CEntityClass* m_pClass;
-    CHandle m_EHandle;
+	DECLARE_SCHEMA_CLASS(CGameRules)
+};
+
+class CCSGameRules : public CGameRules
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSGameRules)
+
+	SCHEMA_FIELD(float, m_fMatchStartTime)
+	SCHEMA_FIELD(float, m_flGameStartTime)
+	SCHEMA_FIELD(int, m_totalRoundsPlayed)
+	SCHEMA_FIELD(GameTime_t, m_fRoundStartTime)
+	SCHEMA_FIELD(GameTime_t, m_flRestartRoundTime)
+};
+
+class CCSGameRulesProxy : public Z_CBaseEntity
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSGameRulesProxy)
+
+	SCHEMA_FIELD(CCSGameRules*, m_pGameRules)
 };

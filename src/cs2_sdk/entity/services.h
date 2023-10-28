@@ -19,8 +19,7 @@
 
 #pragma once
 #include <platform.h>
-
-#include "../schema.h"
+#include "globaltypes.h"
 
 class CBaseEntity;
 
@@ -53,6 +52,29 @@ class CPlayer_MovementServices
 {
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices);
+
+	SCHEMA_FIELD(CInButtonState, m_nButtons)
+	SCHEMA_FIELD(uint64_t, m_nQueuedButtonDownMask)
+	SCHEMA_FIELD(uint64_t, m_nQueuedButtonChangeMask)
+	SCHEMA_FIELD(uint64_t, m_nButtonDoublePressed)
+
+	// m_pButtonPressedCmdNumber[64]
+	SCHEMA_FIELD_POINTER(uint32_t, m_pButtonPressedCmdNumber)
+	SCHEMA_FIELD(uint32_t, m_nLastCommandNumberProcessed)
+	SCHEMA_FIELD(uint64_t, m_nToggleButtonDownMask)
+	SCHEMA_FIELD(float, m_flMaxspeed)
+};
+
+class CPlayer_MovementServices_Humanoid : CPlayer_MovementServices
+{
+public:
+	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices_Humanoid);
+};
+
+class CCSPlayer_MovementServices : CPlayer_MovementServices_Humanoid
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayer_MovementServices);
 };
 
 class CCSPlayerController_InGameMoneyServices

@@ -28,11 +28,12 @@
 #include "ctimer.h"
 #include "detours.h"
 #include "utils/entity.h"
+#include "entity/cgamerules.h"
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
-extern CGameRules *g_pGameRules;
+extern CCSGameRules *g_pGameRules;
 
 CAdminSystem* g_pAdminSystem = nullptr;
 
