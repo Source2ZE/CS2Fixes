@@ -46,6 +46,7 @@
 #include "eventlistener.h"
 #include "gameconfig.h"
 #include "httpmanager.h"
+#include "entity/cgamerules.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -132,7 +133,7 @@ IVEngineServer2* g_pEngineServer2;
 CGameConfig *g_GameConfig = nullptr;
 ISteamHTTP* g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
-CGameRules *g_pGameRules = nullptr;
+CCSGameRules *g_pGameRules = nullptr;
 
 PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
 bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)

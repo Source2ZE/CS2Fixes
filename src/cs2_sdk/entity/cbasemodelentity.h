@@ -20,7 +20,7 @@
 #pragma once
 
 #include "cbaseentity.h"
-#include "cglowproperty.h"
+#include "globaltypes.h"
 
 class CBaseModelEntity : public Z_CBaseEntity
 {

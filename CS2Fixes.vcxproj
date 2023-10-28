@@ -198,9 +198,9 @@
     <ClInclude Include="src\cs2_sdk\entity\ccollisionproperty.h" />
     <ClInclude Include="src\cs2_sdk\entity\ccsplayercontroller.h" />
     <ClInclude Include="src\cs2_sdk\entity\ccsplayerpawn.h" />
-    <ClInclude Include="src\cs2_sdk\entity\centityidentity.h" />
-    <ClInclude Include="src\cs2_sdk\entity\cglowproperty.h" />
     <ClInclude Include="src\cs2_sdk\entity\ccsweaponbase.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cgamerules.h" />
+    <ClInclude Include="src\cs2_sdk\entity\globaltypes.h" />
     <ClInclude Include="src\cs2_sdk\entity\services.h" />
     <ClInclude Include="src\cs2_sdk\interfaces\cgameresourceserviceserver.h" />
     <ClInclude Include="src\cs2_sdk\interfaces\cschemasystem.h" />

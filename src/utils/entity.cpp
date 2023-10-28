@@ -25,12 +25,13 @@
 #include "../utils/virtual.h"
 #include "entitysystem.h"
 #include "platform.h"
+#include "entity/cgamerules.h"
 
 #include "tier0/memdbgon.h"
 
 extern CEntitySystem *g_pEntitySystem;
 extern CGameConfig *g_GameConfig;
-extern CGameRules *g_pGameRules;
+extern CCSGameRules *g_pGameRules;
 
 class Z_CBaseEntity;
 

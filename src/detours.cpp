@@ -31,6 +31,7 @@
 #include "entity/cbasemodelentity.h"
 #include "entity/ccsweaponbase.h"
 #include "entity/ctriggerpush.h"
+#include "entity/cgamerules.h"
 #include "playermanager.h"
 #include "igameevents.h"
 #include "gameconfig.h"
@@ -43,7 +44,7 @@
 extern CGlobalVars *gpGlobals;
 extern CEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
-extern CGameRules *g_pGameRules;
+extern CCSGameRules *g_pGameRules;
 
 DECLARE_DETOUR(Host_Say, Detour_Host_Say);
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
@@ -56,7 +57,7 @@ DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
-	g_pGameRules = pThis;
+	g_pGameRules = (CCSGameRules*)pThis;
 	CGameRules_Constructor(pThis);
 }
 

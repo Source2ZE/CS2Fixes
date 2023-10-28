@@ -23,7 +23,6 @@
 #include "datamap.h"
 #include "string_t.h"
 
-class CGameRules;
 class CEntityInstance;
 class Z_CBaseEntity;
 class CBasePlayerController;

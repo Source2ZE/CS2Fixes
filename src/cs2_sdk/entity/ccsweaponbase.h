@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "schema.h"
+#include "cbaseentity.h"
 
 class CEconItemView
 {

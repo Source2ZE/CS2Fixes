@@ -18,7 +18,57 @@
  */
 
 #pragma once
-#include "cbaseentity.h"
+#include <platform.h>
+#include "schema.h"
+
+struct GameTime_t
+{
+public:
+	DECLARE_SCHEMA_CLASS_INLINE(GameTime_t)
+
+	SCHEMA_FIELD(float, m_Value)
+};
+
+class CNetworkTransmitComponent
+{
+public:
+	DECLARE_SCHEMA_CLASS_INLINE(CNetworkTransmitComponent)
+};
+
+class CNetworkVelocityVector
+{
+public:
+	DECLARE_SCHEMA_CLASS_INLINE(CNetworkVelocityVector)
+
+	SCHEMA_FIELD(float, m_vecX)
+	SCHEMA_FIELD(float, m_vecY)
+	SCHEMA_FIELD(float, m_vecZ)
+};
+
+class CNetworkOriginCellCoordQuantizedVector
+{
+public:
+	DECLARE_SCHEMA_CLASS_INLINE(CNetworkOriginCellCoordQuantizedVector)
+
+	SCHEMA_FIELD(uint16, m_cellX)
+	SCHEMA_FIELD(uint16, m_cellY)
+	SCHEMA_FIELD(uint16, m_cellZ)
+	SCHEMA_FIELD(uint16, m_nOutsideWorld)
+
+	// These are actually CNetworkedQuantizedFloat but we don't have the definition for it...
+	SCHEMA_FIELD(float, m_vecX)
+	SCHEMA_FIELD(float, m_vecY)
+	SCHEMA_FIELD(float, m_vecZ)
+};
+
+class CInButtonState
+{
+public:
+	DECLARE_SCHEMA_CLASS_INLINE(CInButtonState)
+
+	// m_pButtonStates[3]
+	SCHEMA_FIELD_POINTER(uint64_t, m_pButtonStates)
+};
 
 class CGlowProperty
 {
