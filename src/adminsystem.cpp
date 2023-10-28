@@ -728,8 +728,6 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "fire outputs at player pawns", ADMFLAG_RCON
 		return;
 	}
 
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-
 	variant_string_t value(args[3]);
 
 	int iFoundEnts = 0;
@@ -766,8 +764,6 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "fire outputs at player controllers", 
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
 		return;
 	}
-
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
 	variant_string_t value(args[3]);
 
