@@ -41,6 +41,9 @@ class CBasePlayerController;
 class CCSPlayerController;
 class Z_CBaseEntity;
 class CGameConfig;
+class CEntitySystem;
+class IEntityFindFilter;
+struct variant_string_t;
 
 namespace addresses
 {
@@ -53,4 +56,16 @@ namespace addresses
 	inline void(FASTCALL *SetGroundEntity)(Z_CBaseEntity *ent, Z_CBaseEntity *ground);
 	inline void(FASTCALL *CCSPlayerController_SwitchTeam)(CCSPlayerController *pController, uint32 team);
 	inline void(FASTCALL *UTIL_Remove)(CEntityInstance*);
+
+	inline void(FASTCALL *CEntitySystem_AddEntityIOEvent)(CEntitySystem *pEntitySystem, CEntityInstance *pTarget, const char *pszInput,
+														CEntityInstance *pActivator, CEntityInstance *pCaller, variant_string_t *value, float flDelay, int outputID);
+
+	inline void(FASTCALL *CEntityInstance_AcceptInput)(CEntityInstance *pThis, const char *pInputName,
+													CEntityInstance *pActivator, CEntityInstance *pCaller, variant_string_t *value, int nOutputID);
+
+	inline Z_CBaseEntity *(FASTCALL *CGameEntitySystem_FindEntityByClassName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName);
+
+	inline Z_CBaseEntity *(FASTCALL *CGameEntitySystem_FindEntityByName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName, 
+																		CEntityInstance *pSearchingEntity, CEntityInstance *pActivator, CEntityInstance *pCaller,
+																		IEntityFindFilter *pFilter);
 }

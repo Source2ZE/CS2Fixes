@@ -43,6 +43,7 @@
 extern CGlobalVars *gpGlobals;
 extern CEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
+extern CGameRules *g_pGameRules;
 
 DECLARE_DETOUR(Host_Say, Detour_Host_Say);
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
@@ -51,6 +52,13 @@ DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
 DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSound);
 DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
+DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
+
+void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
+{
+	g_pGameRules = pThis;
+	CGameRules_Constructor(pThis);
+}
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
@@ -204,7 +212,7 @@ void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, 
 	}
 
 	if (*args[1] == '!' || *args[1] == '/')
-		ParseChatCommand(args[1], pController);
+		ParseChatCommand(args.ArgS() + 1, pController); // The string returned by ArgS() starts with a \, so skip it
 }
 
 void Detour_Log()
@@ -296,6 +304,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!TriggerPush_Touch.CreateDetour(gameConfig))
 		success = false;
 	TriggerPush_Touch.EnableDetour();
+
+	if (!CGameRules_Constructor.CreateDetour(gameConfig))
+		success = false;
+	CGameRules_Constructor.EnableDetour();
 
 	return success;
 }
