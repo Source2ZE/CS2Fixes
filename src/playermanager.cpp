@@ -64,7 +64,7 @@ void ZEPlayer::CheckAdmin()
 
 bool ZEPlayer::IsAdminFlagSet(uint64 iFlag)
 {
-	return m_iAdminFlags & iFlag;
+	return !iFlag || (m_iAdminFlags & iFlag);
 }
 
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
