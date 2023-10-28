@@ -661,9 +661,21 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 
 	// The idea here is to only use one of the targeting modes at once, prioritizing !picker then targetname/!self then classname
 	// Try picker first, FindEntityByName can also take !picker but it always uses player 0 so we have to do this ourselves
-	if (!V_strcmp("!picker", args[1]))
+	if (player && !V_strcmp("!picker", args[1]))
 	{
 		pTarget = UTIL_FindPickerEntity(player);
+
+		if (pTarget)
+		{
+			pTarget->AcceptInput(args[2], player, player, &value);
+			iFoundEnts++;
+		}
+	}
+
+	// !self would resolve to the player controller, so here's a convenient alias to get the pawn instead
+	if (player && !V_strcmp("!selfpawn", args[1]))
+	{
+		pTarget = player->GetPawn();
 
 		if (pTarget)
 		{
@@ -694,6 +706,85 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
 	else
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i entities.", iFoundEnts);
+}
+
+CON_COMMAND_CHAT_FLAGS(entfirepawn, "fire outputs at player pawns", ADMFLAG_RCON)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !entfirepawn <name> <input> <optional parameter>");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	variant_string_t value(args[3]);
+
+	int iFoundEnts = 0;
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController *pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget || !pTarget->GetPawn())
+			continue;
+
+		pTarget->GetPawn()->AcceptInput(args[2], player, player, &value);
+	}
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i player pawns.", iFoundEnts);
+}
+
+CON_COMMAND_CHAT_FLAGS(entfirecontroller, "fire outputs at player controllers", ADMFLAG_RCON)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !entfirecontroller <name> <input> <optional parameter>");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	variant_string_t value(args[3]);
+
+	int iFoundEnts = 0;
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController *pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		pTarget->AcceptInput(args[2], player, player, &value);
+		iFoundEnts++;
+	}
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i player controllers.", iFoundEnts);
 }
 
 CON_COMMAND_CHAT_FLAGS(map, "change map", ADMFLAG_CHANGEMAP)
