@@ -212,7 +212,7 @@ void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, 
 	}
 
 	if (*args[1] == '!' || *args[1] == '/')
-		ParseChatCommand(args[1], pController);
+		ParseChatCommand(args.ArgS() + 1, pController); // The string returned by ArgS() starts with a \, so skip it
 }
 
 void Detour_Log()
