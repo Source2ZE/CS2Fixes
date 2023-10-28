@@ -45,6 +45,7 @@
 #include "commands.h"
 #include "eventlistener.h"
 #include "gameconfig.h"
+#include "rockthevote.h"
 #include "httpmanager.h"
 
 #define VPROF_ENABLED
@@ -300,6 +301,24 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	g_bHasTicked = false;
 
 	RegisterEventListeners();
+
+	// Disable RTV and Extend votes after map has just started
+	g_RTVState = ERTVState::MAP_START;
+	g_ExtendState = EExtendState::MAP_START;
+
+	// Allow RTV and Extend votes after 2 minutes post map start
+	new CTimer(120.0f, false, []()
+	{
+		if (g_RTVState != ERTVState::BLOCKED_BY_ADMIN)
+			g_RTVState = ERTVState::RTV_ALLOWED;
+
+		if (g_ExtendState != EExtendState::NO_EXTENDS)
+			g_ExtendState = EExtendState::EXTEND_ALLOWED;
+		return -1.0f;
+	});
+
+	// Set amount of Extends left based on the current map
+	SetExtendsLeft();
 }
 
 void CS2Fixes::Hook_GameServerSteamAPIActivated()
