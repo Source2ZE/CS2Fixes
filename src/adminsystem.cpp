@@ -740,6 +740,7 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "fire outputs at player pawns", ADMFLAG_RCON
 			continue;
 
 		pTarget->GetPawn()->AcceptInput(args[2], player, player, &value);
+		iFoundEnts++;
 	}
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i player pawns.", iFoundEnts);
