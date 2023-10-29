@@ -62,6 +62,7 @@ for sdk_name in MMSPlugin.sdks:
       'src/ctimer.cpp',
       'src/playermanager.cpp',
       'src/gameconfig.cpp',
+      'src/votemanager.cpp',
       'src/httpmanager.cpp',
     ]
 

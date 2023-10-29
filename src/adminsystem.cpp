@@ -39,8 +39,6 @@ CAdminSystem* g_pAdminSystem = nullptr;
 
 CUtlMap<uint32, CChatCommand *> g_CommandList(0, 0, DefLessFunc(uint32));
 
-#define ADMIN_PREFIX "Admin %s has "
-
 void PrintSingleAdminAction(const char *pszAdminName, const char *pszTargetName, const char *pszAction, const char *pszAction2 = "")
 {
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "%s %s%s.", pszAdminName, pszAction, pszTargetName, pszAction2);
@@ -837,6 +835,41 @@ CON_COMMAND_CHAT_FLAGS(rcon, "send a command to server console", ADMFLAG_RCON)
 	}
 
 	g_pEngineServer2->ServerCommand(args.ArgS());
+}
+
+CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map duration)", ADMFLAG_CHANGEMAP)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !extend <minutes>");
+		return;
+	}
+
+	int iExtendTime = V_StringToInt32(args[1], 0);
+
+	// CONVAR_TODO
+	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
+
+	float flTimelimit;
+	memcpy(&flTimelimit, &cvar->values, sizeof(flTimelimit));
+
+	if (gpGlobals->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
+		flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime) / 60.0f + iExtendTime;
+	else
+	{
+		if (flTimelimit == 1)
+			flTimelimit = 0;
+		flTimelimit += iExtendTime;
+	}
+
+	if (flTimelimit <= 0)
+		flTimelimit = 1;
+
+	char buf[32];
+	V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit);
+
+	// CONVAR_TODO
+	g_pEngineServer2->ServerCommand(buf);
 }
 
 bool CAdminSystem::LoadAdmins()
