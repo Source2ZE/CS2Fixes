@@ -17,11 +17,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "rockthevote.h"
 #include "commands.h"
 #include "playermanager.h"
-#include "adminsystem.h"
 #include "ctimer.h"
-#include "rockthevote.h"
 #include "entity/cgamerules.h"
 
 #include "tier0/memdbgon.h"
@@ -140,7 +139,7 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV vote already succeeded.");
 		return;
 	case ERTVState::POST_LAST_ROUND_END:
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can't RTV the map during next map selection.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is closed during next map selection.");
 		return;
 	case ERTVState::BLOCKED_BY_ADMIN:
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV has been blocked by an Admin.");
@@ -255,15 +254,27 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 
 	if (iCurrentExtendCount + 1 >= iNeededExtendCount)
 	{
-		// Extend vote succeeded
+		// mimic behaviour of !extend
 		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
 
 		float flTimelimit;
-		// le funny type punning
+		// type punning
 		memcpy(&flTimelimit, &cvar->values, sizeof(flTimelimit));
 
+		if (gpGlobals->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
+			flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime / 60.0f) + g_ExtendTimeToAdd;
+		else
+		{
+			if (flTimelimit == 1)
+				flTimelimit = 0;
+			flTimelimit += g_ExtendTimeToAdd;
+		}
+
+		if (flTimelimit <= 0)
+			flTimelimit = 1;
+		
 		char buf[32];
-		V_snprintf(buf, sizeof(buf), "mp_timelimit %.4f", flTimelimit + g_ExtendTimeToAdd);
+		V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit + g_ExtendTimeToAdd);
 
 		g_pEngineServer2->ServerCommand(buf);
 
@@ -278,7 +289,8 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 			// Allow another extend vote after 2 minutes
 			new CTimer(120.0f, false, []()
 			{
-				g_ExtendState = EExtendState::EXTEND_ALLOWED;
+				if (g_ExtendState == EExtendState::POST_EXTEND_COOLDOWN)
+					g_ExtendState = EExtendState::EXTEND_ALLOWED;
 				return -1.0f;
 			});
 		}
@@ -297,7 +309,7 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 	}
 
 	pPlayer->SetExtendVote(true);
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to extend current map (%i voted, %i required).", player->GetPlayerName(), iCurrentExtendCount+1, iNeededExtendCount);
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to extend the map (%i voted, %i required).", player->GetPlayerName(), iCurrentExtendCount+1, iNeededExtendCount);
 }
 
 CON_COMMAND_CHAT(unve, "Remove your vote to extend current map.")
@@ -331,6 +343,15 @@ CON_COMMAND_CHAT(unve, "Remove your vote to extend current map.")
 
 CON_COMMAND_CHAT_FLAGS(blockrtv, "Block the ability for players to vote to end current map sooner.", ADMFLAG_CHANGEMAP)
 {
+	if (g_RTVState == ERTVState::BLOCKED_BY_ADMIN)
+	{
+		if (player)
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is already blocked.");
+		else
+			ConMsg("RTV is already blocked.");
+		return;
+	}
+
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
 	g_RTVState = ERTVState::BLOCKED_BY_ADMIN;
@@ -340,6 +361,15 @@ CON_COMMAND_CHAT_FLAGS(blockrtv, "Block the ability for players to vote to end c
 
 CON_COMMAND_CHAT_FLAGS(unblockrtv, "Restore the ability for players to vote to end current map sooner.", ADMFLAG_CHANGEMAP)
 {
+	if (g_RTVState == ERTVState::RTV_ALLOWED)
+	{
+		if (player)
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is not blocked.");
+		else
+			ConMsg("RTV is not blocked.");
+		return;
+	}
+
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
 	g_RTVState = ERTVState::RTV_ALLOWED;

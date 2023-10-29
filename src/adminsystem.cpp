@@ -866,8 +866,8 @@ CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map d
 	if (flTimelimit <= 0)
 		flTimelimit = 1;
 
-	char buf[64];
-	V_snprintf(buf, sizeof(buf), "mp_timelimit %f", flTimelimit);
+	char buf[32];
+	V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit);
 
 	g_pEngineServer2->ServerCommand(buf);
 }
