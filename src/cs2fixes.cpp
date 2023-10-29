@@ -54,8 +54,6 @@
 
 #include "tier0/memdbgon.h"
 
-CEntitySystem* g_pEntitySystem = nullptr;
-
 float g_flUniversalTime;
 float g_flLastTickedTime;
 bool g_bHasTicked;
@@ -125,14 +123,15 @@ CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONL
 	ToggleLogs();
 }
 
-IGameEventSystem* g_gameEventSystem;
-IGameEventManager2* g_gameEventManager = nullptr;
-INetworkGameServer* g_pNetworkGameServer = nullptr;
-CGlobalVars* gpGlobals = nullptr;
-CPlayerManager* g_playerManager = nullptr;
-IVEngineServer2* g_pEngineServer2;
+IGameEventSystem *g_gameEventSystem = nullptr;
+IGameEventManager2 *g_gameEventManager = nullptr;
+INetworkGameServer *g_pNetworkGameServer = nullptr;
+CEntitySystem *g_pEntitySystem = nullptr;
+CGlobalVars *gpGlobals = nullptr;
+CPlayerManager *g_playerManager = nullptr;
+IVEngineServer2 *g_pEngineServer2 = nullptr;
 CGameConfig *g_GameConfig = nullptr;
-ISteamHTTP* g_http = nullptr;
+ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
 

@@ -19,9 +19,10 @@
 
 #pragma once
 
-#include "../schema.h"
+#include "schema.h"
 #include "ccollisionproperty.h"
 #include "globaltypes.h"
+#include "ctakedamageinfo.h"
 #include "mathlib/vector.h"
 #include "ehandle.h"
 #include "../../gameconfig.h"

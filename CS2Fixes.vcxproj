@@ -201,6 +201,7 @@
     <ClInclude Include="src\cs2_sdk\entity\ccsplayerpawn.h" />
     <ClInclude Include="src\cs2_sdk\entity\ccsweaponbase.h" />
     <ClInclude Include="src\cs2_sdk\entity\cgamerules.h" />
+    <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h" />
     <ClInclude Include="src\cs2_sdk\entity\globaltypes.h" />
     <ClInclude Include="src\cs2_sdk\entity\services.h" />
     <ClInclude Include="src\cs2_sdk\interfaces\cgameresourceserviceserver.h" />
