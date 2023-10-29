@@ -22,12 +22,14 @@
 #include "adminsystem.h"
 #include "ctimer.h"
 #include "rockthevote.h"
+#include "entity/cgamerules.h"
 
 #include "tier0/memdbgon.h"
 
-extern CEntitySystem* g_pEntitySystem;
-extern IVEngineServer2* g_pEngineServer2;
-extern CGlobalVars* gpGlobals;
+extern CEntitySystem *g_pEntitySystem;
+extern IVEngineServer2 *g_pEngineServer2;
+extern CGlobalVars *gpGlobals;
+extern CCSGameRules *g_pGameRules;
 
 ERTVState g_RTVState = ERTVState::MAP_START;
 EExtendState g_ExtendState = EExtendState::MAP_START;
@@ -256,12 +258,12 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 		// Extend vote succeeded
 		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
 
-		float pflTimelimit;
+		float flTimelimit;
 		// le funny type punning
-		memcpy(&pflTimelimit, &cvar->values, sizeof(pflTimelimit));
+		memcpy(&flTimelimit, &cvar->values, sizeof(flTimelimit));
 
 		char buf[32];
-		V_snprintf(buf, sizeof(buf), "mp_timelimit %.4f", pflTimelimit + g_ExtendTimeToAdd);
+		V_snprintf(buf, sizeof(buf), "mp_timelimit %.4f", flTimelimit + g_ExtendTimeToAdd);
 
 		g_pEngineServer2->ServerCommand(buf);
 
@@ -380,8 +382,6 @@ CON_COMMAND_CHAT(extendsleft, "Display amount of extends left for the current ma
 		ConMsg("%s", message);
 }
 
-// TODO POST ENTFIRE BRANCH MERGE
-#if 0
 CON_COMMAND_CHAT(timeleft, "Display time left to end of current map.")
 {
 	if (!player)
@@ -390,18 +390,33 @@ CON_COMMAND_CHAT(timeleft, "Display time left to end of current map.")
 		return;
 	}
 
-	int iPlayer = player->GetPlayerSlot();
-	float flTimeLeft;
-
 	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
 
-	float pflTimelimit;
-	// le funny type punning
-	memcpy(&pflTimelimit, &cvar->values, sizeof(pflTimelimit));
+	float flTimelimit;
+	memcpy(&flTimelimit, &cvar->values, sizeof(flTimelimit));
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There's %f time left", gpGlobals->curtime);
+	int iTimeleft = (int) ((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - gpGlobals->curtime);
+
+	if (iTimeleft == 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No time limit");
+		return;
+	}
+	else if (iTimeleft < 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Last round!");
+		return;
+	}
+
+	div_t div = std::div(iTimeleft, 60);
+	int iMinutesLeft = div.quot;
+	int iSecondsLeft = div.rem;
+	
+	if (iMinutesLeft > 0)
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Timeleft: %i minutes %i seconds", iMinutesLeft, iSecondsLeft);
+	else
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Timeleft: %i seconds", iSecondsLeft);
 }
-#endif
 
 // Set amount of extends for the current map based on the 'maps' config file
 void SetExtendsLeft()

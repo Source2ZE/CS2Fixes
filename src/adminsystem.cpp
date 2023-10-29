@@ -839,6 +839,39 @@ CON_COMMAND_CHAT_FLAGS(rcon, "send a command to server console", ADMFLAG_RCON)
 	g_pEngineServer2->ServerCommand(args.ArgS());
 }
 
+CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map duration)", ADMFLAG_CHANGEMAP)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !extend <minutes>");
+		return;
+	}
+
+	int iExtendTime = V_StringToInt32(args[1], 0);
+
+	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
+
+	float flTimelimit;
+	memcpy(&flTimelimit, &cvar->values, sizeof(flTimelimit));
+
+	if (gpGlobals->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
+		flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime / 60.0f) + iExtendTime;
+	else
+	{
+		if (flTimelimit == 1)
+			flTimelimit = 0;
+		flTimelimit += iExtendTime;
+	}
+
+	if (flTimelimit <= 0)
+		flTimelimit = 1;
+
+	char buf[64];
+	V_snprintf(buf, sizeof(buf), "mp_timelimit %f", flTimelimit);
+
+	g_pEngineServer2->ServerCommand(buf);
+}
+
 bool CAdminSystem::LoadAdmins()
 {
 	m_vecAdmins.Purge();
