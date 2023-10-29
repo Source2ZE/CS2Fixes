@@ -81,7 +81,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\entity.cpp">
-      <Filter>Source Files\cs2_sdk\entity</Filter>
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="src\events.cpp">
       <Filter>Source Files</Filter>
@@ -151,12 +151,6 @@
     <ClInclude Include="src\cs2_sdk\entity\ccollisionproperty.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\cs2_sdk\entity\centityidentity.h">
-      <Filter>Header Files\cs2_sdk\entity</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cs2_sdk\entity\cglowproperty.h">
-      <Filter>Header Files\cs2_sdk\entity</Filter>
-    </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cbasemodelentity.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
@@ -184,9 +178,6 @@
     <ClInclude Include="src\recipientfilters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\adminsystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -199,8 +190,20 @@
     <ClInclude Include="src\httpmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-	<ClInclude Include="src\votemanager.h">
-		<Filter>Header Files</Filter>
-	</ClInclude>
+	  <ClInclude Include="src\votemanager.h">
+		  <Filter>Header Files</Filter>
+	  </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\globaltypes.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\cgamerules.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\entity.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

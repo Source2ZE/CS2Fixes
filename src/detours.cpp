@@ -32,6 +32,7 @@
 #include "entity/ccsweaponbase.h"
 #include "entity/ctriggerpush.h"
 #include "entity/cgamerules.h"
+#include "entity/ctakedamageinfo.h"
 #include "playermanager.h"
 #include "igameevents.h"
 #include "gameconfig.h"
@@ -54,11 +55,40 @@ DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSou
 DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
+DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
 	g_pGameRules = (CCSGameRules*)pThis;
 	CGameRules_Constructor(pThis);
+}
+
+void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
+{
+#ifdef _DEBUG
+	Message("\n--------------------------------\n"
+			"TakeDamage on %s\n"
+			"Attacker: %s\n"
+			"Inflictor: %s\n"
+			"Ability: %s\n"
+			"Damage: %.2f\n"
+			"Damage Type: %i\n"
+			"--------------------------------\n",
+			pThis->GetClassname(),
+			inputInfo->m_hAttacker.Get() ? inputInfo->m_hAttacker.Get()->GetClassname() : "NULL",
+			inputInfo->m_hInflictor.Get() ? inputInfo->m_hInflictor.Get()->GetClassname() : "NULL",
+			inputInfo->m_hAbility.Get() ? inputInfo->m_hAbility.Get()->GetClassname() : "NULL",
+			inputInfo->m_flDamage,
+			inputInfo->m_bitsDamageType);
+#endif
+	CBaseEntity *pInflictor = inputInfo->m_hInflictor.Get();
+	const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
+
+	// Prevent everything but nades from inflicting blast damage
+	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
+		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
+
+	CBaseEntity_TakeDamageOld(pThis, inputInfo);
 }
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
@@ -309,6 +339,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CGameRules_Constructor.CreateDetour(gameConfig))
 		success = false;
 	CGameRules_Constructor.EnableDetour();
+
+	if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
+		success = false;
+	CBaseEntity_TakeDamageOld.EnableDetour();
 
 	return success;
 }
