@@ -35,8 +35,8 @@ EExtendState g_ExtendState = EExtendState::MAP_START;
 int g_ExtendsLeft = 1;
 
 //TODO POSSIBLE CONVARS
-float g_RTVSucceedRatio = 0.5f;
-float g_ExtendSucceedRatio = 0.7f;
+float g_RTVSucceedRatio = 0.6f;
+float g_ExtendSucceedRatio = 0.5f;
 int g_ExtendTimeToAdd = 20;
 
 #define ADMIN_PREFIX "Admin %s has "
