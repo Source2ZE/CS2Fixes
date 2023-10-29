@@ -319,8 +319,8 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 		return -1.0f;
 	});
 
-	// Set amount of Extends left based on the current map
-	SetExtendsLeft();
+	// Set amount of Extends left
+	g_ExtendsLeft = 1;
 }
 
 void CS2Fixes::Hook_GameServerSteamAPIActivated()

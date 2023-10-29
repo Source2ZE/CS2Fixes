@@ -34,12 +34,10 @@ ERTVState g_RTVState = ERTVState::MAP_START;
 EExtendState g_ExtendState = EExtendState::MAP_START;
 int g_ExtendsLeft = 1;
 
-//TODO POSSIBLE CONVARS
+// CONVAR_TODO
 float g_RTVSucceedRatio = 0.6f;
 float g_ExtendSucceedRatio = 0.5f;
 int g_ExtendTimeToAdd = 20;
-
-#define ADMIN_PREFIX "Admin %s has "
 
 int GetCurrentRTVCount()
 {
@@ -133,7 +131,7 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 	switch (g_RTVState)
 	{
 	case ERTVState::MAP_START:
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV it not open yet.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is not open yet.");
 		return;
 	case ERTVState::POST_RTV_SUCCESSFULL:
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV vote already succeeded.");
@@ -159,6 +157,7 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 	{
 		g_RTVState = ERTVState::POST_RTV_SUCCESSFULL;
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! This is the last round of the map!");
+		// CONVAR_TODO
 		g_pEngineServer2->ServerCommand("mp_timelimit 1");
 
 		for (int i = 0; i < gpGlobals->maxClients; i++)
@@ -255,6 +254,7 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 	if (iCurrentExtendCount + 1 >= iNeededExtendCount)
 	{
 		// mimic behaviour of !extend
+		// CONVAR_TODO
 		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
 
 		float flTimelimit;
@@ -276,6 +276,7 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 		char buf[32];
 		V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit + g_ExtendTimeToAdd);
 
+		// CONVAR_TODO
 		g_pEngineServer2->ServerCommand(buf);
 
 		if (g_ExtendsLeft == 1)
@@ -420,6 +421,7 @@ CON_COMMAND_CHAT(timeleft, "Display time left to end of current map.")
 		return;
 	}
 
+	// CONVAR_TODO
 	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
 
 	float flTimelimit;
@@ -447,48 +449,4 @@ CON_COMMAND_CHAT(timeleft, "Display time left to end of current map.")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Timeleft: %i minutes %i seconds", iMinutesLeft, iSecondsLeft);
 	else
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Timeleft: %i seconds", iSecondsLeft);
-}
-
-// Set amount of extends for the current map based on the 'maps' config file
-void SetExtendsLeft()
-{
-	KeyValues* pKV = new KeyValues("maps");
-	KeyValues::AutoDelete autoDelete(pKV);
-
-	const char* pszPath = "addons/cs2fixes/configs/maps.cfg";
-
-	const char* pszMapname = gpGlobals->mapname.ToCStr();
-
-	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
-	{
-		Warning("Failed to load %s, defaulting to 1 extend for current map.\n", pszPath);
-		g_ExtendsLeft = 1;
-		return;
-	}
-	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
-	{
-		const char* pszName = pKey->GetName();
-		
-		if (strcmp(pszName, pszMapname) != 0)
-			continue;
-		
-		int iExtendsLeft = pKey->GetInt("extends", -1);
-
-		if (iExtendsLeft == -1)
-		{
-			ConMsg("Map entry %s is missing 'extends' key, defaulting to 1 extend\n", pszMapname);
-			g_ExtendsLeft = 1;
-			return;
-		}
-
-		if (iExtendsLeft == 0)
-			g_ExtendState = EExtendState::NO_EXTENDS;
-
-		ConMsg("Setting %i extend(s) for map: %s\n", iExtendsLeft, pszMapname);
-		g_ExtendsLeft = iExtendsLeft;
-		return;
-	}
-
-	ConMsg("Could not find map \"%s\" in %s, defaulting to 1 extend\n", pszMapname, pszPath);
-	g_ExtendsLeft = 1;
 }
