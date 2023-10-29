@@ -17,7 +17,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "rockthevote.h"
+#include "votemanager.h"
 #include "commands.h"
 #include "playermanager.h"
 #include "ctimer.h"
@@ -262,7 +262,7 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 		memcpy(&flTimelimit, &cvar->values, sizeof(flTimelimit));
 
 		if (gpGlobals->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
-			flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime / 60.0f) + g_ExtendTimeToAdd;
+			flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime) / 60.0f + g_ExtendTimeToAdd;
 		else
 		{
 			if (flTimelimit == 1)

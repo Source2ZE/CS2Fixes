@@ -45,7 +45,7 @@
 #include "commands.h"
 #include "eventlistener.h"
 #include "gameconfig.h"
-#include "rockthevote.h"
+#include "votemanager.h"
 #include "httpmanager.h"
 #include "entity/cgamerules.h"
 

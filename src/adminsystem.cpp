@@ -855,7 +855,7 @@ CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map d
 	memcpy(&flTimelimit, &cvar->values, sizeof(flTimelimit));
 
 	if (gpGlobals->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
-		flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime / 60.0f) + iExtendTime;
+		flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime) / 60.0f + iExtendTime;
 	else
 	{
 		if (flTimelimit == 1)
@@ -868,6 +868,7 @@ CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map d
 
 	char buf[32];
 	V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit);
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "flTimelimit = %f", flTimelimit);
 
 	g_pEngineServer2->ServerCommand(buf);
 }
