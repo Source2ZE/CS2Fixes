@@ -134,16 +134,16 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 	switch (g_RTVState)
 	{
 	case ERTVState::MAP_START:
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The vote to RTV the map has not started yet.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV it not open yet.");
 		return;
 	case ERTVState::POST_RTV_SUCCESSFULL:
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV has already been voted.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV vote already succeeded.");
 		return;
 	case ERTVState::POST_LAST_ROUND_END:
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can't vote to RTV the map during next map selection.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can't RTV the map during next map selection.");
 		return;
 	case ERTVState::BLOCKED_BY_ADMIN:
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The vote to RTV has been blocked by an Admin.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV has been blocked by an Admin.");
 		return;
 	}
 
@@ -152,19 +152,19 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 
 	if (pPlayer->GetRTVVote())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already Rocked The Vote (%i voted, %i required).", iCurrentRTVCount, iNeededRTVCount);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already rocked the vote (%i voted, %i needed).", iCurrentRTVCount, iNeededRTVCount);
 		return;
 	}
 
 	if (iCurrentRTVCount + 1 >= iNeededRTVCount)
 	{
 		g_RTVState = ERTVState::POST_RTV_SUCCESSFULL;
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV vote succeeded! This is the last round of the map!");
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! This is the last round of the map!");
 		g_pEngineServer2->ServerCommand("mp_timelimit 1");
 
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
-			ZEPlayer* pPlayer2 = g_playerManager->GetPlayer(iPlayer);
+			ZEPlayer* pPlayer2 = g_playerManager->GetPlayer(i);
 			if (pPlayer2)
 				pPlayer2->SetRTVVote(false);
 		}
@@ -173,7 +173,7 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 	}
 
 	pPlayer->SetRTVVote(true);
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to RTV current map (%i voted, %i required).", player->GetPlayerName(), iCurrentRTVCount+1, iNeededRTVCount);
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i required).", player->GetPlayerName(), iCurrentRTVCount+1, iNeededRTVCount);
 }
 
 CON_COMMAND_CHAT(unrtv, "Remove your vote to end the current map sooner.")
@@ -228,19 +228,19 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 	switch (g_ExtendState)
 	{
 	case EExtendState::MAP_START:
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The vote to extend the map has not started yet.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is not open yet.");
 		return;
 	case EExtendState::POST_EXTEND_COOLDOWN:
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can't vote to extend the map yet.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is not open yet.");
 		return;
 	case EExtendState::POST_EXTEND_NO_EXTENDS_LEFT:
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no more extends left for the current map.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no extends left for the current map.");
 		return;
 	case EExtendState::POST_LAST_ROUND_END:
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can't vote to extend the map during next map selection.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is closed during next map selection.");
 		return;
 	case EExtendState::NO_EXTENDS:
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is not allowed for the current map.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is not allowed for current map.");
 		return;
 	}
 
@@ -249,7 +249,7 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 
 	if (pPlayer->GetExtendVote())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already voted to extend the map (%i voted, %i required).", iCurrentExtendCount, iNeededExtendCount);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already voted to extend the map (%i voted, %i needed).", iCurrentExtendCount, iNeededExtendCount);
 		return;
 	}
 
@@ -285,7 +285,7 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
-			ZEPlayer* pPlayer2 = g_playerManager->GetPlayer(iPlayer);
+			ZEPlayer* pPlayer2 = g_playerManager->GetPlayer(i);
 			if (pPlayer2)
 				pPlayer2->SetExtendVote(false);
 		}
