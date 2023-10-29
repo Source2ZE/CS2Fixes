@@ -172,7 +172,7 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 	}
 
 	pPlayer->SetRTVVote(true);
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i required).", player->GetPlayerName(), iCurrentRTVCount+1, iNeededRTVCount);
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i needed).", player->GetPlayerName(), iCurrentRTVCount+1, iNeededRTVCount);
 }
 
 CON_COMMAND_CHAT(unrtv, "Remove your vote to end the current map sooner.")
@@ -309,7 +309,7 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 	}
 
 	pPlayer->SetExtendVote(true);
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to extend the map (%i voted, %i required).", player->GetPlayerName(), iCurrentExtendCount+1, iNeededExtendCount);
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to extend the map (%i voted, %i needed).", player->GetPlayerName(), iCurrentExtendCount+1, iNeededExtendCount);
 }
 
 CON_COMMAND_CHAT(unve, "Remove your vote to extend current map.")
