@@ -290,11 +290,16 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*)
 {
-	Message("startup server\n");
-
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 	gpGlobals = g_pNetworkGameServer->GetGlobals();
+
+	// exec a map cfg
+	Message("Hook_StartupServer: Running map config for %s\n", gpGlobals->mapname);
+
+	char cmd[MAX_PATH];
+	V_snprintf(cmd, sizeof(cmd), "exec maps/%s", gpGlobals->mapname);
+	g_pEngineServer2->ServerCommand(cmd);
 
 	if(g_bHasTicked)
 		RemoveMapTimers();
