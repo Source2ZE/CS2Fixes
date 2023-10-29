@@ -474,6 +474,59 @@ CON_COMMAND_CHAT_FLAGS(slay, "slay a player", ADMFLAG_SLAY)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
 }
 
+CON_COMMAND_CHAT_FLAGS(slap, "slap a player", ADMFLAG_SLAY)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !slap <name> <optional damage>");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		CBasePlayerPawn *pPawn = pTarget->m_hPawn();
+
+		if (!pPawn)
+			continue;
+
+		// Taken directly from sourcemod
+		Vector velocity = pPawn->m_vecAbsVelocity;
+		velocity.x += ((rand() % 180) + 50) * (((rand() % 2) == 1) ? -1 : 1);
+		velocity.y += ((rand() % 180) + 50) * (((rand() % 2) == 1) ? -1 : 1);
+		velocity.z += rand() % 200 + 100;
+		pPawn->SetAbsVelocity(velocity);
+
+		int iDamage = V_StringToInt32(args[2], 0);
+			
+		if (iDamage > 0)
+			pPawn->TakeDamage(iDamage);
+
+		if (nType < ETargetType::ALL)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slapped");
+	}
+
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "slapped");
+}
+
 CON_COMMAND_CHAT_FLAGS(goto, "teleport to a player", ADMFLAG_SLAY)
 {
 	// Only players can use this command at all
