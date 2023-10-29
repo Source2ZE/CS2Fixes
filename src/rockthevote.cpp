@@ -395,14 +395,15 @@ CON_COMMAND_CHAT(timeleft, "Display time left to end of current map.")
 	float flTimelimit;
 	memcpy(&flTimelimit, &cvar->values, sizeof(flTimelimit));
 
-	int iTimeleft = (int) ((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - gpGlobals->curtime);
-
-	if (iTimeleft == 0)
+	if (flTimelimit == 0)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No time limit");
 		return;
 	}
-	else if (iTimeleft < 0)
+
+	int iTimeleft = (int) ((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - gpGlobals->curtime);
+
+	if (iTimeleft < 0)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Last round!");
 		return;
