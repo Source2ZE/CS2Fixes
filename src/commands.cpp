@@ -276,7 +276,7 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 	}
 
 	//Pick and get position of random spawnpoint
-	int randomindex = rand() % spawns.Count()+1;
+	int randomindex = rand() % spawns.Count();
 	Vector spawnpos = spawns[randomindex]->GetAbsOrigin();
 
 	//Here's where the mess starts
