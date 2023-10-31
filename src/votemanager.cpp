@@ -153,6 +153,12 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 		return;
 	}
 
+	if (pPlayer->GetRTVVoteTime() + 60.0f > gpGlobals->curtime)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait before you can RTV again.");
+		return;
+	}
+
 	if (iCurrentRTVCount + 1 >= iNeededRTVCount)
 	{
 		g_RTVState = ERTVState::POST_RTV_SUCCESSFULL;
@@ -171,6 +177,7 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 	}
 
 	pPlayer->SetRTVVote(true);
+	pPlayer->SetRTVVoteTime(gpGlobals->curtime);
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i needed).", player->GetPlayerName(), iCurrentRTVCount+1, iNeededRTVCount);
 }
 
@@ -251,6 +258,12 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 		return;
 	}
 
+	if (pPlayer->GetExtendVoteTime() + 60.0f > gpGlobals->curtime)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait before you can vote extend again.");
+		return;
+	}
+
 	if (iCurrentExtendCount + 1 >= iNeededExtendCount)
 	{
 		// mimic behaviour of !extend
@@ -310,6 +323,7 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 	}
 
 	pPlayer->SetExtendVote(true);
+	pPlayer->SetExtendVoteTime(gpGlobals->curtime);
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to extend the map (%i voted, %i needed).", player->GetPlayerName(), iCurrentExtendCount+1, iNeededExtendCount);
 }
 

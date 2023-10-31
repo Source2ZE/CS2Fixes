@@ -51,6 +51,8 @@ public:
 		m_iTotalDamage = 0;
 		m_bVotedRTV = false;
 		m_bVotedExtend = false;
+		m_flRTVVoteTime = 0;
+		m_flExtendVoteTime = 0;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -72,7 +74,9 @@ public:
 	void SetHideDistance(int distance) { m_iHideDistance = distance; }
 	void SetTotalDamage(int damage) { m_iTotalDamage = damage; }
 	void SetRTVVote(bool bRTVVote) { m_bVotedRTV = bRTVVote; }
+	void SetRTVVoteTime(float flCurtime) { m_flRTVVoteTime = flCurtime; }
 	void SetExtendVote(bool bExtendVote) { m_bVotedExtend = bExtendVote; }
+	void SetExtendVoteTime(float flCurtime) { m_flExtendVoteTime = flCurtime; }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -81,7 +85,9 @@ public:
 	CPlayerSlot GetPlayerSlot() { return m_slot; }
 	int GetTotalDamage() { return m_iTotalDamage; }
 	bool GetRTVVote() { return m_bVotedRTV; }
+	float GetRTVVoteTime() { return m_flRTVVoteTime; }
 	bool GetExtendVote() { return m_bVotedExtend; }
+	float GetExtendVoteTime() { return m_flExtendVoteTime; }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
@@ -100,7 +106,9 @@ private:
 	CBitVec<MAXPLAYERS> m_shouldTransmit;
 	int m_iTotalDamage;
 	bool m_bVotedRTV;
+	float m_flRTVVoteTime;
 	bool m_bVotedExtend;
+	float m_flExtendVoteTime;
 };
 
 class CPlayerManager
