@@ -47,7 +47,7 @@ int GetCurrentRTVCount()
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
-		if (pPlayer && pPlayer->GetRTVVote())
+		if (pPlayer && pPlayer->GetRTVVote() && !pPlayer->IsFakeClient())
 			iVoteCount++;
 	}
 
@@ -63,7 +63,7 @@ int GetNeededRTVCount()
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
-		if (pPlayer)
+		if (pPlayer && !pPlayer->IsFakeClient())
 		{
 			iOnlinePlayers++;
 			if (pPlayer->GetRTVVote())
@@ -82,7 +82,7 @@ int GetCurrentExtendCount()
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
-		if (pPlayer && pPlayer->GetExtendVote())
+		if (pPlayer && pPlayer->GetExtendVote() && !pPlayer->IsFakeClient())
 			iVoteCount++;
 	}
 
@@ -98,7 +98,7 @@ int GetNeededExtendCount()
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
-		if (pPlayer)
+		if (pPlayer && !pPlayer->IsFakeClient())
 		{
 			iOnlinePlayers++;
 			if (pPlayer->GetExtendVote())
