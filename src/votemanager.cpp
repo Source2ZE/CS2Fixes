@@ -155,7 +155,8 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 
 	if (pPlayer->GetRTVVoteTime() + 60.0f > gpGlobals->curtime)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait before you can RTV again.");
+		int iRemainingTime = (int)(pPlayer->GetRTVVoteTime() + 60.0f - gpGlobals->curtime);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can RTV again.", iRemainingTime);
 		return;
 	}
 
@@ -260,7 +261,8 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 
 	if (pPlayer->GetExtendVoteTime() + 60.0f > gpGlobals->curtime)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait before you can vote extend again.");
+		int iRemainingTime = (int)(pPlayer->GetExtendVoteTime() + 60.0f - gpGlobals->curtime);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can vote extend again.", iRemainingTime);
 		return;
 	}
 
