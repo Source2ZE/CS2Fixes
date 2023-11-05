@@ -892,7 +892,7 @@ CON_COMMAND_CHAT_FLAGS(rcon, "send a command to server console", ADMFLAG_RCON)
 
 CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map duration)", ADMFLAG_CHANGEMAP)
 {
-	if (args.ArgC() < 3)
+	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !extend <minutes>");
 		return;
