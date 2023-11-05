@@ -23,6 +23,9 @@
 #include "ctimer.h"
 #include "eventlistener.h"
 #include "entity/cbaseplayercontroller.h"
+#ifdef _ZOMBIEREBORN
+#include "zombiereborn.h"
+#endif //_ZOMBIEREBORN
 
 #include "tier0/memdbgon.h"
 #include "playermanager.h"
@@ -75,6 +78,10 @@ CON_COMMAND_F(c_force_ct, "toggle forcing CTs on every round", FCVAR_SPONLY | FC
 
 GAME_EVENT_F(round_prestart)
 {
+#ifdef _ZOMBIEREBORN
+	ZR_OnRoundPrestart(pEvent);
+#endif //_ZOMBIEREBORN
+
 	if (!g_bForceCT)
 		return;
 
@@ -114,6 +121,10 @@ GAME_EVENT_F(player_spawn)
 	if (!pController)
 		return;
 
+#ifdef _ZOMBIEREBORN
+	ZR_OnPlayerSpawn(pEvent);
+#endif //_ZOMBIEREBORN
+
 	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
 	// Gotta do this on the next frame...
@@ -140,6 +151,10 @@ GAME_EVENT_F(player_spawn)
 
 GAME_EVENT_F(player_hurt)
 {
+#ifdef _ZOMBIEREBORN
+	//ZR_OnPlayerHurt(pEvent);
+#endif //_ZOMBIEREBORN
+
 	CCSPlayerController *pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
 	CCSPlayerController *pVictim = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 
@@ -166,6 +181,10 @@ GAME_EVENT_F(round_start)
 
 		pPlayer->SetTotalDamage(0);
 	}
+
+#ifdef _ZOMBIEREBORN
+	ZR_OnRoundStart(pEvent);
+#endif //_ZOMBIEREBORN
 }
 
 GAME_EVENT_F(round_end)

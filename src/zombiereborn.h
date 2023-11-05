@@ -18,7 +18,24 @@
  */
 
 #pragma once
+#ifdef _ZOMBIEREBORN
 
-extern bool g_ZR_ZOMBIE_SPAWN_READY;
+//extern bool g_ZR_ZOMBIE_SPAWN_READY;
+
+enum class EZRRoundState
+{
+    ROUND_START,
+    POST_INFECTION,
+    ROUND_END,
+};
+
+extern EZRRoundState g_ZRRoundState;
 
 void ZR_OnStartupServer();
+void ZR_OnRoundPrestart(IGameEvent* pEvent);
+void ZR_OnRoundStart(IGameEvent* pEvent);
+void ZR_OnPlayerSpawn(IGameEvent* pEvent);
+void ZR_OnPlayerHurt(IGameEvent* pEvent);
+void ZR_OnPlayerDeath(IGameEvent* pEvent);
+
+#endif //_ZOMBIEREBORN

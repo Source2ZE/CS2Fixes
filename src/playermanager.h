@@ -51,6 +51,7 @@ public:
 		m_iTotalDamage = 0;
 		m_bVotedRTV = false;
 		m_bVotedExtend = false;
+		m_bIsInfected = false;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -73,6 +74,7 @@ public:
 	void SetTotalDamage(int damage) { m_iTotalDamage = damage; }
 	void SetRTVVote(bool bRTVVote) { m_bVotedRTV = bRTVVote; }
 	void SetExtendVote(bool bExtendVote) { m_bVotedExtend = bExtendVote; }
+	void SetInfectState(bool bInfectState) { m_bIsInfected = bInfectState; }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -82,6 +84,7 @@ public:
 	int GetTotalDamage() { return m_iTotalDamage; }
 	bool GetRTVVote() { return m_bVotedRTV; }
 	bool GetExtendVote() { return m_bVotedExtend; }
+	bool IsInfected() { return m_bIsInfected; }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
@@ -101,6 +104,7 @@ private:
 	int m_iTotalDamage;
 	bool m_bVotedRTV;
 	bool m_bVotedExtend;
+	bool m_bIsInfected;
 };
 
 class CPlayerManager
