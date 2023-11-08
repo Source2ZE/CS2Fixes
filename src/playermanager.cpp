@@ -100,8 +100,7 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot)
 	}
 
 	// CONVAR_TODO - g_iReservedSlots
-	// CHANGE MAGIC NUMBER HERE FOR A DEFINED VALUE OF MAX PLAYERS
-	if (iPlayersConnected + g_iReservedSlots >= 64 && !pPlayer->IsAdminFlagSet(ADMFLAG_RESERVATION))
+	if (iPlayersConnected + g_iReservedSlots >= gpGlobals->maxClients && !pPlayer->IsAdminFlagSet(ADMFLAG_RESERVATION))
 	{
 		// player tried to join with only reserved slot(s) available and doesn't have slot reservation
 		delete pPlayer;
