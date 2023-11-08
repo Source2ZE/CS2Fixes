@@ -35,7 +35,7 @@ extern CEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 
 // CONVAR_TODO
-int g_iReservedSlots = 64;
+int g_iReservedSlots = 2;
 
 void ZEPlayer::OnAuthenticated()
 {
@@ -102,17 +102,17 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot)
 	uint64 iSteamID = g_pEngineServer2->GetClientSteamID(slot)->ConvertToUint64();
 	auto admin = g_pAdminSystem->FindAdmin(iSteamID);
 
-    // CONVAR_TODO - g_iReservedSlots
-    // 1st condition comes from player also "connecting" when in main menu, where gpGlobals->maxClients == 1. Without it, things get messy
+	// CONVAR_TODO - g_iReservedSlots
+	// 1st condition comes from player also "connecting" when in main menu, where gpGlobals->maxClients == 1. Without it, things get messy
 	bool bNotInMainMenu = gpGlobals->maxClients != 1;
 	bool bConnectingToReservedSlot = iPlayersConnected + g_iReservedSlots >= gpGlobals->maxClients;
 	bool bClientHasReservation = admin && (admin->GetFlags() & (ADMFLAG_RESERVATION | ADMFLAG_ROOT));
-    if (bNotInMainMenu && bConnectingToReservedSlot && !bClientHasReservation)
-    {
-        // player tried to connect to reserved slot and doesn't have slot reservation
-        delete pPlayer;
-        return false;
-    }
+	if (bNotInMainMenu && bConnectingToReservedSlot && !bClientHasReservation)
+	{
+		// player tried to connect to reserved slot and doesn't have slot reservation
+		delete pPlayer;
+		return false;
+	}
 
 	pPlayer->SetConnected();
 	m_vecPlayers[slot.Get()] = pPlayer;
