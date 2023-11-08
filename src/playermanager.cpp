@@ -104,8 +104,8 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot)
 
 	// CONVAR_TODO - g_iReservedSlots
 	// 1st condition comes from player also "connecting" when in main menu, where gpGlobals->maxClients == 1. Without it, things get messy
-	if (gpGlobals->maxClients != 1 && iPlayersConnected + g_iReservedSlots >= gpGlobals->maxClients
-		&& admin && !admin->GetFlags() & ADMFLAG_RESERVATION)
+	if ((gpGlobals->maxClients) != 1 && (iPlayersConnected + g_iReservedSlots >= gpGlobals->maxClients)
+		&& (admin) && !(admin->GetFlags() & ADMFLAG_RESERVATION))
 	{
 		// player tried to join with only reserved slot(s) available and doesn't have slot reservation
 		delete pPlayer;
