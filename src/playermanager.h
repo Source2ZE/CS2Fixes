@@ -65,6 +65,7 @@ public:
 	void SetAuthenticated() { m_bAuthenticated = true; }
 	void SetConnected() { m_bConnected = true; }
 	void SetSteamId(const CSteamID* steamID) { m_SteamID = steamID; }
+	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	void SetAdminFlags(uint64 iAdminFlags) { m_iAdminFlags = iAdminFlags; }
 	void SetPlayerSlot(CPlayerSlot slot) { m_slot = slot; }
 	void SetMuted(bool muted) { m_bMuted = muted; }
@@ -134,6 +135,7 @@ public:
 	void CheckHideDistances();
 	CPlayerSlot GetSlotFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromUserId(uint16 userid);
+	ZEPlayer *GetPlayerFromSteamId(uint64 steamid);
 	ETargetType TargetPlayerString(int iCommandClient, const char* target, int &iNumClients, int *clients);
 
 	ZEPlayer *GetPlayer(CPlayerSlot slot);
