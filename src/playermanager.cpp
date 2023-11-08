@@ -34,6 +34,9 @@ extern IVEngineServer2 *g_pEngineServer2;
 extern CEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 
+// CONVAR_TODO
+int g_iReservedSlots = 1;
+
 void ZEPlayer::OnAuthenticated()
 {
 	CheckAdmin();
@@ -83,6 +86,24 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot)
 	if (!g_pAdminSystem->ApplyInfractions(pPlayer))
 	{
 		// Player is banned
+		delete pPlayer;
+		return false;
+	}
+
+	int iPlayersConnected = 0;
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(i);
+
+		if (pZEPlayer && pZEPlayer->IsConnected())
+			iPlayersConnected++;
+	}
+
+	// CONVAR_TODO - g_iReservedSlots
+	// CHANGE MAGIC NUMBER HERE FOR A DEFINED VALUE OF MAX PLAYERS
+	if (iPlayersConnected + g_iReservedSlots >= 64 && !pPlayer->IsAdminFlagSet(ADMFLAG_RESERVATION))
+	{
+		// player tried to join with only reserved slot(s) available and doesn't have slot reservation
 		delete pPlayer;
 		return false;
 	}
