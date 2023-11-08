@@ -38,11 +38,26 @@ extern HTTPManager g_HTTPManager;
 
 #define CompletedCallback std::function<void(HTTPRequestHandle, char*)>
 
+class HTTPHeader
+{
+public:
+	HTTPHeader(const char* pszName, const char* pszValue)
+	{
+		m_pszName = pszName;
+		m_pszValue = pszValue;
+	}
+	const char* GetName() { return m_pszName; }
+	const char* GetValue() { return m_pszValue; }
+private:
+	const char* m_pszName;
+	const char* m_pszValue;
+};
+
 class HTTPManager
 {
 public:
-	void GET(const char* pszUrl, CompletedCallback callback);
-	void POST(const char* pszUrl, const char* pszText, CompletedCallback callback);
+	void GET(const char* pszUrl, CompletedCallback callback, std::vector<HTTPHeader>* headers = nullptr);
+	void POST(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers = nullptr);
 	bool HasAnyPendingRequests() const { return m_PendingRequests.size() > 0; }
 
 private:
@@ -63,5 +78,5 @@ private:
 	};
 private:
 	std::vector<HTTPManager::TrackedRequest*> m_PendingRequests;
-	void GenerateRequest(EHTTPMethod method, const char* pszUrl, const char* pszText, CompletedCallback callback);
+	void GenerateRequest(EHTTPMethod method, const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers);
 };

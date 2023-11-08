@@ -32,8 +32,11 @@
 #include "adminsystem.h"
 #include "ctimer.h"
 #include "httpmanager.h"
+#include "vendor/nlohmann/json.hpp"
 
 #include "tier0/memdbgon.h"
+
+using json = nlohmann::json;
 
 extern CEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
@@ -579,7 +582,16 @@ CON_COMMAND_CHAT(setinteraction, "set a player's interaction flags")
 
 void HttpCallback(HTTPRequestHandle request, char* response)
 {
-	ClientPrintAll(HUD_PRINTTALK, response);
+	// Test serializing to JSON
+	json data = json::parse(response, nullptr, false);
+
+	if (data.is_discarded())
+	{
+		Message("Failed parsing JSON!\n");
+		return;
+	}
+
+	ClientPrintAll(HUD_PRINTTALK, data.dump().c_str());
 }
 
 CON_COMMAND_CHAT(http, "test an HTTP request")
@@ -589,7 +601,7 @@ CON_COMMAND_CHAT(http, "test an HTTP request")
 		if (player)
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Steam HTTP interface is not available!");
 		else
-			Message(CHAT_PREFIX "Steam HTTP interface is not available!\n");
+			Message("Steam HTTP interface is not available!\n");
 
 		return;
 	}
@@ -598,7 +610,7 @@ CON_COMMAND_CHAT(http, "test an HTTP request")
 		if (player)
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !http <get/post> <url> [content]");
 		else
-			Message(CHAT_PREFIX "Usage: !http <get/post> <url> [content]\n");
+			Message("Usage: !http <get/post> <url> [content]\n");
 
 		return;
 	}

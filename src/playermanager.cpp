@@ -339,6 +339,17 @@ ZEPlayer *CPlayerManager::GetPlayerFromUserId(uint16 userid)
 	return m_vecPlayers[index];
 }
 
+ZEPlayer* CPlayerManager::GetPlayerFromSteamId(uint64 steamid)
+{
+	for (ZEPlayer* player : m_vecPlayers)
+	{
+		if (player->GetSteamId64() == steamid)
+			return player;
+	}
+
+	return nullptr;
+}
+
 void CPlayerManager::SetPlayerStopSound(int slot, bool set)
 {
 	if (set)
