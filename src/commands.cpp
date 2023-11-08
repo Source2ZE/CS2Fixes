@@ -32,6 +32,7 @@
 #include "adminsystem.h"
 #include "ctimer.h"
 #include "httpmanager.h"
+#undef snprintf
 #include "vendor/nlohmann/json.hpp"
 
 #include "tier0/memdbgon.h"
