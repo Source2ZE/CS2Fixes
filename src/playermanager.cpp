@@ -35,7 +35,7 @@ extern CEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 
 // CONVAR_TODO
-int g_iReservedSlots = 1;
+int g_iReservedSlots = 64;
 
 void ZEPlayer::OnAuthenticated()
 {
@@ -102,15 +102,16 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot)
 	uint64 iSteamID = g_pEngineServer2->GetClientSteamID(slot)->ConvertToUint64();
 	auto admin = g_pAdminSystem->FindAdmin(iSteamID);
 
-	// CONVAR_TODO - g_iReservedSlots
-	// 1st condition comes from player also "connecting" when in main menu, where gpGlobals->maxClients == 1. Without it, things get messy
-	if ((gpGlobals->maxClients) != 1 && (iPlayersConnected + g_iReservedSlots >= gpGlobals->maxClients)
-		&& (admin) && !(admin->GetFlags() & ADMFLAG_RESERVATION))
-	{
-		// player tried to join with only reserved slot(s) available and doesn't have slot reservation
-		delete pPlayer;
-		return false;
-	}
+    // CONVAR_TODO - g_iReservedSlots
+    // 1st condition comes from player also "connecting" when in main menu, where gpGlobals->maxClients == 1. Without it, things get messy
+    if ((gpGlobals->maxClients) != 1 && (iPlayersConnected + g_iReservedSlots >= gpGlobals->maxClients)
+        && !(admin && (admin->GetFlags() & ADMFLAG_RESERVATION & ADMFLAG_ROOT)))
+    {
+        // player tried to join with only reserved slot(s) available and doesn't have slot reservation
+        Message("%d dropped due to slot reservation\n", slot.Get());
+        delete pPlayer;
+        return false;
+    }
 
 	pPlayer->SetConnected();
 	m_vecPlayers[slot.Get()] = pPlayer;
