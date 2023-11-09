@@ -343,7 +343,7 @@ ZEPlayer* CPlayerManager::GetPlayerFromSteamId(uint64 steamid)
 {
 	for (ZEPlayer* player : m_vecPlayers)
 	{
-		if (player->GetSteamId64() == steamid)
+		if (player && player->IsAuthenticated() && player->GetSteamId64() == steamid)
 			return player;
 	}
 
