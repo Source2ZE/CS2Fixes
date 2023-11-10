@@ -53,6 +53,8 @@ public:
 		m_bVotedExtend = false;
 		m_flRTVVoteTime = 0;
 		m_flExtendVoteTime = 0;
+		m_iFloodTokens = 0;
+		m_flLastTalkTime = 0;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -61,6 +63,7 @@ public:
 	uint64 GetSteamId64() { return m_SteamID->ConvertToUint64(); }
 	const CSteamID* GetSteamId() { return m_SteamID; }
 	bool IsAdminFlagSet(uint64 iFlag);
+	bool IsFlooding();
 	
 	void SetAuthenticated() { m_bAuthenticated = true; }
 	void SetConnected() { m_bConnected = true; }
@@ -110,6 +113,8 @@ private:
 	float m_flRTVVoteTime;
 	bool m_bVotedExtend;
 	float m_flExtendVoteTime;
+	int m_iFloodTokens;
+	float m_flLastTalkTime;
 };
 
 class CPlayerManager

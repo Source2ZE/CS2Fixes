@@ -67,6 +67,40 @@ bool ZEPlayer::IsAdminFlagSet(uint64 iFlag)
 	return !iFlag || (m_iAdminFlags & iFlag);
 }
 
+// CONVAR_TODO
+float flFloodInterval = 0.75; // Amount of time allowed between chat messages acquiring flood tokens
+int iMaxFloodTokens = 3; // Maximum number of flood tokens allowed before chat messages are blocked
+float flFloodCooldown = 3.0; // Amount of time to block messages for when a player floods
+
+bool ZEPlayer::IsFlooding()
+{
+	if (m_bGagged) return false;
+
+	float time = gpGlobals->curtime;
+	float newTime = time + flFloodInterval;
+
+	if (m_flLastTalkTime >= time)
+	{
+		if (m_iFloodTokens >= iMaxFloodTokens)
+		{
+			m_flLastTalkTime = newTime + flFloodCooldown;
+			return true;
+		}
+		else
+		{
+			m_iFloodTokens++;
+		}
+	}
+	else if(m_iFloodTokens > 0)
+	{
+		// Remove one flood token when player chats within time limit (slow decay)
+		m_iFloodTokens--;
+	}
+
+	m_flLastTalkTime = newTime;
+	return false;
+}
+
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 {
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);
