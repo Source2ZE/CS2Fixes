@@ -222,8 +222,9 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, bool teamonly, int unk1, const char *unk2)
 {
 	bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
+	bool bFlooding = pController && pController->GetZEPlayer()->IsFlooding();
 
-	if (!bGagged && *args[1] != '/')
+	if (!bGagged && *args[1] != '/' && !bFlooding)
 	{
 		Host_Say(pController, args, teamonly, unk1, unk2);
 
@@ -240,6 +241,11 @@ void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, 
 				g_gameEventManager->FireEvent(pEvent, true);
 			}
 		}
+	}
+	else if (bFlooding)
+	{
+		if (pController)
+			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "You are flooding the server!");
 	}
 
 	if (*args[1] == '!' || *args[1] == '/')
