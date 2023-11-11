@@ -292,41 +292,72 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 
 	auto slot = ctx.GetPlayerSlot();
 
-	bool isSay = V_strcmp(args.Arg(0), "say");
-	bool isTeamSay = V_strcmp(args.Arg(0), "say_team");
+	bool isSay = !V_strcmp(args.Arg(0), "say");
+	bool isTeamSay = !V_strcmp(args.Arg(0), "say_team");
 
 	if (slot != -1 && (isSay || isTeamSay))
 	{
 		auto pController = CCSPlayerController::FromSlot(slot);
 		bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
 		bool bFlooding = pController && pController->GetZEPlayer()->IsFlooding();
+		bool bAdminChat = isTeamSay && *args[1] == '@';
+		bool bSilent = *args[1] == '/' || (isTeamSay && *args[1] == '@');
+		bool bCommand = *args[1] == '!' || *args[1] == '/';
 
-		if (!bGagged && *args[1] != '/' && !bFlooding)
+		// Chat messages should generate events regardless
+		if (pController)
+		{
+			IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_chat");
+
+			if (pEvent)
+			{
+				pEvent->SetBool("teamonly", isTeamSay);
+				pEvent->SetInt("userid", pController->entindex());
+				pEvent->SetString("text", args[1]);
+
+				g_gameEventManager->FireEvent(pEvent, true);
+			}
+		}
+
+		if (!bGagged && !bSilent && !bFlooding)
 		{
 			SH_CALL(g_pCVar, &ICvar::DispatchConCommand)(cmdHandle, ctx, args);
-
-			if (pController)
-			{
-				IGameEvent* pEvent = g_gameEventManager->CreateEvent("player_chat");
-
-				if (pEvent)
-				{
-					pEvent->SetBool("teamonly", isTeamSay);
-					pEvent->SetInt("userid", pController->entindex());
-					pEvent->SetString("text", args[1]);
-
-					g_gameEventManager->FireEvent(pEvent, true);
-				}
-			}
 		}
 		else if (bFlooding)
 		{
 			if (pController)
 				ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "You are flooding the server!");
 		}
+		else if (bAdminChat) // Admin chat can be sent by anyone but only seen by admins, use flood protection here too
+		{
+			// HACK: At this point, we can safely modify the arg buffer as it won't be passed anywhere else
+			// The string here is originally ("@foo bar"), trim it to be (foo bar)
+			char *pszMessage = (char*)(args.ArgS() + 2);
+			pszMessage[V_strlen(pszMessage) - 1] = 0;
 
-		if (*args[1] == '!' || *args[1] == '/')
-			ParseChatCommand(args.ArgS() + 1, pController); // The string returned by ArgS() starts with a \, so skip it
+			for (int i = 0; i < gpGlobals->maxClients; i++)
+			{
+				ZEPlayer *pPlayer = g_playerManager->GetPlayer(i);
+
+				if (!pPlayer || !pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC))
+					continue;
+
+				ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, " \4(ADMINS) %s:\1 %s", pController->GetPlayerName(), pszMessage);
+			}
+		}
+
+		// Finally, run the chat command if it is one, so anything will print after the player's message
+		if (bCommand)
+		{
+			// Do the same trimming as with admin chat
+			char *pszMessage = (char *)(args.ArgS() + 2);
+
+			// Host_Say at some point removes the trailing " for whatever reason, so we only remove if it was never called
+			if (bSilent)
+				pszMessage[V_strlen(pszMessage) - 1] = 0;
+
+			ParseChatCommand(pszMessage, pController);
+		}
 
 		RETURN_META(MRES_SUPERCEDE);
 	}
