@@ -312,7 +312,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 			if (pEvent)
 			{
 				pEvent->SetBool("teamonly", isTeamSay);
-				pEvent->SetInt("userid", pController->entindex());
+				pEvent->SetInt("userid", pController->GetPlayerSlot());
 				pEvent->SetString("text", args[1]);
 
 				g_gameEventManager->FireEvent(pEvent, true);
