@@ -87,6 +87,12 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
 		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
 
+	// Prevent molly on self
+	int tookDamageEntIndex = pThis->GetEntityIndex().Get();
+	int attackerEntIndex = inputInfo->m_hAttacker.Get() ? inputInfo->m_hAttacker.Get()->GetEntityIndex().Get() : 0;
+	if (tookDamageEntIndex == attackerEntIndex && V_strncmp(pszInflictorClass, "inferno", 7) == 0)
+		inputInfo->m_flDamage = 0.0;
+
 	CBaseEntity_TakeDamageOld(pThis, inputInfo);
 }
 
