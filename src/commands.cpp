@@ -252,12 +252,20 @@ CON_COMMAND_CHAT(myuid, "test")
 
 // CONVAR_TODO
 static constexpr float g_flMaxZteleDistance = 150.0f;
+static constexpr bool g_bZteleHuman = false;
 
 CON_COMMAND_CHAT(ztele, "teleport to spawn")
 {
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	// Check if command is enabled for humans
+	if (!g_bZteleHuman)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command as a human.");
 		return;
 	}
 
