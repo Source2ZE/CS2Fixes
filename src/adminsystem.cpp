@@ -27,6 +27,7 @@
 #include "commands.h"
 #include "ctimer.h"
 #include "detours.h"
+#include "discord.h"
 #include "utils/entity.h"
 #include "entity/cgamerules.h"
 
@@ -695,6 +696,12 @@ CON_COMMAND_CHAT_FLAGS(noclip, "toggle noclip on yourself", ADMFLAG_SLAY | ADMFL
 		pPawn->m_MoveType = MOVETYPE_NOCLIP;
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "entered noclip.", player->GetPlayerName());
 	}
+}
+
+CON_COMMAND_CHAT_FLAGS(reload_discord_bots, "Reload discord bot config", ADMFLAG_ROOT)
+{
+	g_pDiscordBotManager->LoadDiscordBotsConfig();
+	Message("Discord bot config reloaded\n");
 }
 
 CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)

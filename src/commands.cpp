@@ -32,6 +32,7 @@
 #include "adminsystem.h"
 #include "ctimer.h"
 #include "httpmanager.h"
+#include "discord.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
 
@@ -708,5 +709,16 @@ CON_COMMAND_CHAT(http, "test an HTTP request")
 		g_HTTPManager.GET(args[2], &HttpCallback);
 	else if (strcmp(args[1], "post") == 0)
 		g_HTTPManager.POST(args[2], args[3], &HttpCallback);
+}
+
+CON_COMMAND_CHAT(discordbot, "send a message to a discord webhook")
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !discord <bot> <message>");
+		return;
+	}
+
+	g_pDiscordBotManager->PostDiscordMessage(args[1], args[2]);
 }
 #endif // _DEBUG
