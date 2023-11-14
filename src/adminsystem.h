@@ -145,6 +145,7 @@ public:
 	void SaveInfractions();
 	bool ApplyInfractions(ZEPlayer *player);
 	bool FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type);
+	bool FindAndRemoveInfraction(uint64 iSteamID, CInfractionBase::EInfractionType type);
 	CAdmin *FindAdmin(uint64 iSteamID);
 
 private:

@@ -159,6 +159,26 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 	}
 }
 
+CON_COMMAND_CHAT_FLAGS(unban, "unbans a player", ADMFLAG_CHAT)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unban <SteamID64>");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	uint64 targetSteamID =  V_StringToUint64(args[1], -1);;
+
+	if(g_pAdminSystem->FindAndRemoveInfraction(targetSteamID, CInfractionBase::Ban)){
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "SeeamID %llu unbanned.", targetSteamID);
+	}else{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "SeeamID %llu is not banned.", targetSteamID);
+	}
+	
+	return;
+}
+
 CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 3)
@@ -1105,6 +1125,22 @@ bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EI
 			m_vecInfractions[i]->UndoInfraction(player);
 			m_vecInfractions.Remove(i);
 			
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+bool CAdminSystem::FindAndRemoveInfraction(uint64 iSteamID, CInfractionBase::EInfractionType type)
+{
+	FOR_EACH_VEC(m_vecInfractions, i)
+	{
+		if (m_vecInfractions[i]->GetSteamId64() == iSteamID && m_vecInfractions[i]->GetType() == type)
+		{
+			m_vecInfractions.Remove(i);
+
 			return true;
 		}
 	}
