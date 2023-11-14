@@ -32,12 +32,41 @@ extern CCSGameRules *g_pGameRules;
 
 ERTVState g_RTVState = ERTVState::MAP_START;
 EExtendState g_ExtendState = EExtendState::MAP_START;
-int g_ExtendsLeft = 1;
 
 // CONVAR_TODO
-float g_RTVSucceedRatio = 0.6f;
-float g_ExtendSucceedRatio = 0.5f;
-int g_ExtendTimeToAdd = 20;
+int g_iExtendsLeft = 1;
+float g_flRTVSucceedRatio = 0.6f;
+float g_flExtendSucceedRatio = 0.5f;
+int g_iExtendTimeToAdd = 20;
+
+CON_COMMAND_F(cs2f_extends, "Maximum extends per map", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_iExtendsLeft);
+	else
+		g_iExtendsLeft = V_StringToInt32(args[1], 1);
+}
+CON_COMMAND_F(cs2f_rtv_success_ratio, "Ratio needed to pass RTV", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %.2f\n", args[0], g_flRTVSucceedRatio);
+	else
+		g_flRTVSucceedRatio = V_StringToFloat32(args[1], 0.6f);
+}
+CON_COMMAND_F(cs2f_extend_success_ratio, "Ratio needed to pass an extend", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %.2f\n", args[0], g_flExtendSucceedRatio);
+	else
+		g_flExtendSucceedRatio = V_StringToFloat32(args[1], 0.5f);
+}
+CON_COMMAND_F(cs2f_extend_time, "Time to add per extend", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_iExtendTimeToAdd);
+	else
+		g_iExtendTimeToAdd = V_StringToInt32(args[1], 20);
+}
 
 int GetCurrentRTVCount()
 {
@@ -71,7 +100,7 @@ int GetNeededRTVCount()
 		}
 	}
 
-	return (int)(iOnlinePlayers * g_RTVSucceedRatio) + 1;
+	return (int)(iOnlinePlayers * g_flRTVSucceedRatio) + 1;
 }
 
 int GetCurrentExtendCount()
@@ -106,7 +135,7 @@ int GetNeededExtendCount()
 		}
 	}
 
-	return (int)(iOnlinePlayers * g_ExtendSucceedRatio) + 1;
+	return (int)(iOnlinePlayers * g_flExtendSucceedRatio) + 1;
 }
 
 CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
@@ -272,29 +301,29 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 		// CONVAR_TODO
 		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
 
-		float flTimelimit;
-		// type punning
-		memcpy(&flTimelimit, &cvar->values, sizeof(flTimelimit));
+		// CONVAR_TODO
+		// HACK: values is actually the cvar value itself, hence this ugly cast.
+		float flTimelimit = *(float *)&cvar->values;
 
 		if (gpGlobals->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
-			flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime) / 60.0f + g_ExtendTimeToAdd;
+			flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime) / 60.0f + g_iExtendTimeToAdd;
 		else
 		{
 			if (flTimelimit == 1)
 				flTimelimit = 0;
-			flTimelimit += g_ExtendTimeToAdd;
+			flTimelimit += g_iExtendTimeToAdd;
 		}
 
 		if (flTimelimit <= 0)
 			flTimelimit = 1;
 		
 		char buf[32];
-		V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit + g_ExtendTimeToAdd);
+		V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit + g_iExtendTimeToAdd);
 
 		// CONVAR_TODO
 		g_pEngineServer2->ServerCommand(buf);
 
-		if (g_ExtendsLeft == 1)
+		if (g_iExtendsLeft == 1)
 			// there are no extends left after a successfull extend vote
 			g_ExtendState = EExtendState::POST_EXTEND_NO_EXTENDS_LEFT;
 		else
@@ -318,8 +347,8 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 				pPlayer2->SetExtendVote(false);
 		}
 
-		g_ExtendsLeft--;
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote succeeded! Current map has been extended by %i minutes.", g_ExtendTimeToAdd);
+		g_iExtendsLeft--;
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote succeeded! Current map has been extended by %i minutes.", g_iExtendTimeToAdd);
 
 		return;
 	}
@@ -401,7 +430,7 @@ CON_COMMAND_CHAT_FLAGS(addextend, "Add another extend to the current map for pla
 	if (g_ExtendState == EExtendState::POST_EXTEND_NO_EXTENDS_LEFT || g_ExtendState == EExtendState::NO_EXTENDS)
 		g_ExtendState = EExtendState::EXTEND_ALLOWED;
 	
-	g_ExtendsLeft += 1;
+	g_iExtendsLeft += 1;
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "allowed for an additional extend.", pszCommandPlayerName);
 }
@@ -410,7 +439,7 @@ CON_COMMAND_CHAT(extendsleft, "Display amount of extends left for the current ma
 {
 	char message[64];
 
-	switch (g_ExtendsLeft)
+	switch (g_iExtendsLeft)
 	{
 	case 0:
 		strcpy(message, "There are no extends left.");
@@ -419,7 +448,7 @@ CON_COMMAND_CHAT(extendsleft, "Display amount of extends left for the current ma
 		strcpy(message, "There's 1 extend left");
 		break;
 	default:
-		V_snprintf(message, sizeof(message), "There are %i extends left.", g_ExtendsLeft);
+		V_snprintf(message, sizeof(message), "There are %i extends left.", g_iExtendsLeft);
 		break;
 	}
 
@@ -437,13 +466,13 @@ CON_COMMAND_CHAT(timeleft, "Display time left to end of current map.")
 		return;
 	}
 
-	// CONVAR_TODO
 	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
 
-	float flTimelimit;
-	memcpy(&flTimelimit, &cvar->values, sizeof(flTimelimit));
+	// CONVAR_TODO
+	// HACK: values is actually the cvar value itself, hence this ugly cast.
+	float flTimelimit = *(float *)&cvar->values;
 
-	if (flTimelimit == 0)
+	if (flTimelimit == 0.0f)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No time limit");
 		return;

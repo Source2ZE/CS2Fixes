@@ -62,6 +62,17 @@ void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 	CGameRules_Constructor(pThis);
 }
 
+// CONVAR_TODO
+static bool g_bBlockMolotoveSelfDmg = false;
+
+CON_COMMAND_F(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bBlockMolotoveSelfDmg);
+	else
+		g_bBlockMolotoveSelfDmg = V_StringToBool(args[1], false);
+}
+
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
 {
 #ifdef _DEBUG
@@ -88,14 +99,31 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
 
 	// Prevent molly on self
-	if (inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
+	if (g_bBlockMolotoveSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
 		return;
 
 	CBaseEntity_TakeDamageOld(pThis, inputInfo);
 }
 
+// CONVAR_TODO
+static bool g_bUseOldPush = false;
+
+CON_COMMAND_F(cs2f_use_old_push, "Whether to use the old CSGO trigger_push behavior", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bUseOldPush);
+	else
+		g_bUseOldPush = V_StringToBool(args[1], false);
+}
+
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
+	if (!g_bUseOldPush)
+	{
+		TriggerPush_Touch(pPush, pOther);
+		return;
+	}
+
 	MoveType_t movetype = pOther->m_MoveType();
 
 	// VPhysics handling doesn't need any changes
@@ -164,9 +192,8 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 
 void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *pThis, void *a2)
 {
-	const char *pszClassName = pThis->m_pEntity->m_designerName.String();
-
 #ifdef _DEBUG
+	const char *pszClassName = pThis->m_pEntity->m_designerName.String();
 	Message("Weapon spawn: %s\n", pszClassName);
 #endif
 
@@ -246,7 +273,7 @@ CDetour<decltype(Detour_Log)> g_LoggingDetours[] =
 	//CDetour<decltype(Detour_Log)>( Detour_IsChannelEnabled, "LoggingSystem_IsChannelEnabled" ),
 };
 
-void ToggleLogs()
+CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	static bool bBlock = false;
 
