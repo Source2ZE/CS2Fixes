@@ -242,6 +242,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		return 30.0f;
 	});
 
+	// run our cfg
+	g_pEngineServer2->ServerCommand("exec cs2fixes/cs2fixes");
+
 	srand(time(0));
 
 	return true;
@@ -367,7 +370,6 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
 	gpGlobals = g_pNetworkGameServer->GetGlobals();
 
-	// exec a map cfg
 	Message("Hook_StartupServer: %s\n", gpGlobals->mapname);
 
 	if(g_bHasTicked)
