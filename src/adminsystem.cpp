@@ -923,6 +923,11 @@ CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map d
 
 	// CONVAR_TODO
 	g_pEngineServer2->ServerCommand(buf);
+
+	if (iExtendTime < 0)
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "shortened map time %i minutes.", player->GetPlayerName(), iExtendTime * -1);
+	else
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "extended map time %i minutes.", player->GetPlayerName(), iExtendTime);
 }
 
 bool CAdminSystem::LoadAdmins()
