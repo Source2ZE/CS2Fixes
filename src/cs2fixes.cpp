@@ -203,7 +203,10 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	}
 
 	if (!bRequiredInitLoaded)
+	{
+		snprintf(error, maxlen, "One or more address lookups, patches or detours failed, please refer to startup logs for more information");
 		return false;
+	}
 
 	Message( "All hooks started!\n" );
 
