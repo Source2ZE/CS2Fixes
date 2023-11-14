@@ -51,5 +51,3 @@ class CCSWeaponBase : public CEconEntity
 public:
 	DECLARE_SCHEMA_CLASS(CCSWeaponBase)
 };
-
-void FixWeapon(CCSWeaponBase *pWeapon);
