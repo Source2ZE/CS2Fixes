@@ -31,6 +31,9 @@ class CChatCommand;
 
 extern CUtlMap<uint32, CChatCommand*> g_CommandList;
 
+extern bool g_bEnableHide;
+extern bool g_bEnableStopSound;
+
 void ClientPrintAll(int destination, const char *msg, ...);
 void ClientPrint(CBasePlayerController *player, int destination, const char *msg, ...);
 

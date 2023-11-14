@@ -41,6 +41,6 @@ enum class EExtendState
 
 extern ERTVState g_RTVState;
 extern EExtendState g_ExtendState;
-extern int g_ExtendsLeft;
+extern int g_iExtendsLeft;
 
 void SetExtendsLeft();

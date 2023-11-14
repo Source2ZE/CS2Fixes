@@ -83,9 +83,20 @@ WeaponMapEntry_t WeaponMap[] = {
 	{"kevlar",		   "item_kevlar",			 600 , 50},
 };
 
+// CONVAR_TODO
+bool g_bEnableWeapons = false;
+
+CON_COMMAND_F(cs2f_weapons_enable, "Whether to enable weapon commands", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bEnableWeapons);
+	else
+		g_bEnableWeapons = V_StringToBool(args[1], false);
+}
+
 void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponName)
 {
-	if (!pController || !pController->m_hPawn())
+	if (!g_bEnableWeapons || !pController || !pController->m_hPawn())
 		return;
 
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
@@ -212,10 +223,27 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 		ConMsg("%s\n", buf);
 }
 
+// CONVAR_TODO
+bool g_bEnableStopSound = false;
+
+CON_COMMAND_F(cs2f_stopsound_enable, "Whether to enable stopsound", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bEnableStopSound);
+	else
+		g_bEnableStopSound = V_StringToBool(args[1], false);
+}
+
 CON_COMMAND_CHAT(stopsound, "toggle weapon sounds")
 {
-	if (!player)
+	if (!g_bEnableStopSound)
 		return;
+
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
 
 	int iPlayer = player->GetPlayerSlot();
 	bool bStopSet = g_playerManager->IsPlayerUsingStopSound(iPlayer);
@@ -230,7 +258,10 @@ CON_COMMAND_CHAT(stopsound, "toggle weapon sounds")
 CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fps in ZE")
 {
 	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
 		return;
+	}
 
 	int iPlayer = player->GetPlayerSlot();
 	bool bSet = !g_playerManager->IsPlayerUsingStopDecals(iPlayer);
@@ -240,22 +271,39 @@ CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fp
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s world decals.", bSet ? "disabled" : "enabled");
 }
 
-CON_COMMAND_CHAT(myuid, "test")
-{
-	if (!player)
-		return;
-
-	int iPlayer = player->GetPlayerSlot();
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your userid is %i, slot: %i, retrieved slot: %i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get(), iPlayer, g_playerManager->GetSlotFromUserId(g_pEngineServer2->GetPlayerUserId(iPlayer).Get()));
-}
-
 // CONVAR_TODO
-static constexpr float g_flMaxZteleDistance = 150.0f;
-static constexpr bool g_bZteleHuman = false;
+static bool g_bEnableZtele = false;
+static float g_flMaxZteleDistance = 150.0f;
+static bool g_bZteleHuman = false;
+
+CON_COMMAND_F(zr_ztele_enable, "Whether to enable ztele", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bEnableZtele);
+	else
+		g_bEnableZtele = V_StringToBool(args[1], false);
+}
+CON_COMMAND_F(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %f\n", args[0], g_flMaxZteleDistance);
+	else
+		g_flMaxZteleDistance = V_StringToFloat32(args[1], 150.0f);
+}
+CON_COMMAND_F(zr_ztele_allow_humans, "Whether to allow humans to use ztele", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bZteleHuman);
+	else
+		g_bZteleHuman = V_StringToBool(args[1], false);
+}
 
 CON_COMMAND_CHAT(ztele, "teleport to spawn")
 {
+	// Silently return so the command is completely hidden
+	if (!g_bEnableZtele)
+		return;
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
@@ -335,11 +383,38 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 }
 
 // CONVAR_TODO
-static constexpr int g_iDefaultHideDistance = 250;
-static constexpr int g_iMaxHideDistance = 2000;
+bool g_bEnableHide = false;
+static int g_iDefaultHideDistance = 250;
+static int g_iMaxHideDistance = 2000;
+
+CON_COMMAND_F(cs2f_hide_enable, "Whether to enable hide", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bEnableHide);
+	else
+		g_bEnableHide = V_StringToBool(args[1], false);
+}
+CON_COMMAND_F(cs2f_hide_distance_default, "The default distance for hide", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_iDefaultHideDistance);
+	else
+		g_iDefaultHideDistance = V_StringToInt32(args[1], 250);
+}
+CON_COMMAND_F(cs2f_hide_distance_max, "The max distance for hide", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_iMaxHideDistance);
+	else
+		g_iMaxHideDistance = V_StringToInt32(args[1], 2000);
+}
 
 CON_COMMAND_CHAT(hide, "hides nearby teammates")
 {
+	// Silently return so the command is completely hidden
+	if (!g_bEnableHide)
+		return;
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
@@ -384,6 +459,16 @@ CON_COMMAND_CHAT(hide, "hides nearby teammates")
 
 
 #if _DEBUG
+CON_COMMAND_CHAT(myuid, "test")
+{
+	if (!player)
+		return;
+
+	int iPlayer = player->GetPlayerSlot();
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your userid is %i, slot: %i, retrieved slot: %i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get(), iPlayer, g_playerManager->GetSlotFromUserId(g_pEngineServer2->GetPlayerUserId(iPlayer).Get()));
+}
+
 CON_COMMAND_CHAT(message, "message someone")
 {
 	if (!player)

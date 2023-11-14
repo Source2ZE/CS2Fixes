@@ -68,22 +68,44 @@ bool ZEPlayer::IsAdminFlagSet(uint64 iFlag)
 }
 
 // CONVAR_TODO
-float flFloodInterval = 0.75; // Amount of time allowed between chat messages acquiring flood tokens
-int iMaxFloodTokens = 3; // Maximum number of flood tokens allowed before chat messages are blocked
-float flFloodCooldown = 3.0; // Amount of time to block messages for when a player floods
+static float g_flFloodInterval = 0.75;
+static int g_iMaxFloodTokens = 3;
+static float g_flFloodCooldown = 3.0;
+
+CON_COMMAND_F(cs2f_flood_interval, "Amount of time allowed between chat messages acquiring flood tokens", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %.2f\n", args[0], g_flFloodInterval);
+	else
+		g_flFloodInterval = V_StringToFloat32(args[1], 0.75f);
+}
+CON_COMMAND_F(cs2f_max_flood_tokens, "Maximum number of flood tokens allowed before chat messages are blocked", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_iMaxFloodTokens);
+	else
+		g_iMaxFloodTokens = V_StringToInt32(args[1], 3);
+}
+CON_COMMAND_F(cs2f_flood_cooldown, "Amount of time to block messages for when a player floods", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %.2f\n", args[0], g_flFloodCooldown);
+	else
+		g_flFloodCooldown = V_StringToFloat32(args[1], 3.0f);
+}
 
 bool ZEPlayer::IsFlooding()
 {
 	if (m_bGagged) return false;
 
 	float time = gpGlobals->curtime;
-	float newTime = time + flFloodInterval;
+	float newTime = time + g_flFloodInterval;
 
 	if (m_flLastTalkTime >= time)
 	{
-		if (m_iFloodTokens >= iMaxFloodTokens)
+		if (m_iFloodTokens >= g_iMaxFloodTokens)
 		{
-			m_flLastTalkTime = newTime + flFloodCooldown;
+			m_flLastTalkTime = newTime + g_flFloodCooldown;
 			return true;
 		}
 		else

@@ -45,7 +45,6 @@
 
 void UnlockConVars();
 void UnlockConCommands();
-void ToggleLogs();
 
 void Message(const char *, ...);
 void Panic(const char *, ...);
