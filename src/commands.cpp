@@ -150,7 +150,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 		return;
 
 	CCommand args;
-	args.Tokenize(pMessage + 1);
+	args.Tokenize(pMessage);
 
 	uint16 index = g_CommandList.Find(hash_32_fnv1a_const(args[0]));
 
@@ -252,12 +252,20 @@ CON_COMMAND_CHAT(myuid, "test")
 
 // CONVAR_TODO
 static constexpr float g_flMaxZteleDistance = 150.0f;
+static constexpr bool g_bZteleHuman = false;
 
 CON_COMMAND_CHAT(ztele, "teleport to spawn")
 {
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	// Check if command is enabled for humans
+	if (!g_bZteleHuman && player->m_iTeamNum() == CS_TEAM_CT)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command as a human.");
 		return;
 	}
 
@@ -392,12 +400,7 @@ CON_COMMAND_CHAT(message, "message someone")
 	// skipping the id and space, it's dumb but w/e
 	const char *pMessage = args.ArgS() + V_strlen(args[1]) + 1;
 
-	char buf[256];
-	V_snprintf(buf, sizeof(buf), CHAT_PREFIX"Private message from %s to %s: \5%s", player->GetPlayerName(), pTarget->GetPlayerName(), pMessage);
-
-	CSingleRecipientFilter filter(uid);
-
-	UTIL_SayTextFilter(filter, buf, nullptr, 0);
+	ClientPrint(pTarget, HUD_PRINTTALK, CHAT_PREFIX "Private message from %s to %s: \5%s", player->GetPlayerName(), pTarget->GetPlayerName(), pMessage);
 }
 
 CON_COMMAND_CHAT(say, "say something using console")

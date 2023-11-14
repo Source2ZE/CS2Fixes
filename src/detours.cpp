@@ -47,7 +47,6 @@ extern CEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
 extern CCSGameRules *g_pGameRules;
 
-DECLARE_DETOUR(Host_Say, Detour_Host_Say);
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
 DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
@@ -87,6 +86,10 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 	// Prevent everything but nades from inflicting blast damage
 	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
 		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
+
+	// Prevent molly on self
+	if (inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
+		return;
 
 	CBaseEntity_TakeDamageOld(pThis, inputInfo);
 }
@@ -219,39 +222,6 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
 }
 
-void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, bool teamonly, int unk1, const char *unk2)
-{
-	bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
-	bool bFlooding = pController && pController->GetZEPlayer()->IsFlooding();
-
-	if (!bGagged && *args[1] != '/' && !bFlooding)
-	{
-		Host_Say(pController, args, teamonly, unk1, unk2);
-
-		if (pController)
-		{
-			IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_chat");
-
-			if (pEvent)
-			{
-				pEvent->SetBool("teamonly", teamonly);
-				pEvent->SetInt("userid", pController->entindex());
-				pEvent->SetString("text", args[1]);
-
-				g_gameEventManager->FireEvent(pEvent, true);
-			}
-		}
-	}
-	else if (bFlooding)
-	{
-		if (pController)
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "You are flooding the server!");
-	}
-
-	if (*args[1] == '!' || *args[1] == '/')
-		ParseChatCommand(args.ArgS() + 1, pController); // The string returned by ArgS() starts with a \, so skip it
-}
-
 void Detour_Log()
 {
 	return;
@@ -321,10 +291,6 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!UTIL_SayText2Filter.CreateDetour(gameConfig))
 		success = false;
 	UTIL_SayText2Filter.EnableDetour();
-
-	if (!Host_Say.CreateDetour(gameConfig))
-		success = false;
-	Host_Say.EnableDetour();
 
 	if (!IsHearingClient.CreateDetour(gameConfig))
 		success = false;
