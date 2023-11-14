@@ -2,6 +2,13 @@
 
 CS2Fixes is a Metamod plugin with fixes and features aimed but not limited to zombie escape. This project also serves as a good example and help for source2mod and other developers.
 
+## Installation
+
+- Install [Metamod](https://www.sourcemm.net/downloads.php?branch=dev)
+- Download the [latest release package](https://github.com/Source2ZE/CS2Fixes/releases/latest) for your OS
+- Extract the package contents into `game/csgo` on your server
+- Configure the plugin cvars as desired in `cfg/cs2fixes/cs2fixes.cfg`, many features are disabled by default
+
 ## Features
 - Windows and Linux support
 - Schema system
