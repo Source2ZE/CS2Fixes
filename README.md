@@ -1,55 +1,64 @@
-## DISCLAIMER: This plugin is *not* meant to be used on a server yet, it is very much a work in progress and thus we are *not* responsible for any issues or breakages caused by the plugin. In addition, we will *not* provide support for building or usage unless you plan on contributing to the project yourself.
-
 # CS2Fixes
 
-CS2Fixes is a collection of experimental fixes and features aimed but not limited to zombie escape. This project is not production ready and serves as a proof of concept and help for source2mod and other developers.
+CS2Fixes is a Metamod plugin with fixes and features aimed but not limited to zombie escape. This project also serves as a good example and help for source2mod and other developers.
 
 ## Features
-- [x] Metamod implementation
-- [x] Windows and Linux support
-- [x] Schema system
-  - [x] Property access
-  - [x] Property updating
-- [x] Event hooking
-- [x] Coloring console chat messages
-- [x] Movement unlocker
-- [x] VScript unlocker
-- [x] Preventing console logs
-- [x] Buying weapons through chat
-  - [x] Limit weapon buy count
-- [x] Unlocking commands and convars
-- [x] Memory patching system
-- [x] Detour system
-- [x] Player Manager
-  - [x] Storing players
-  - [x] Player authorization
-  - [x] Userid Target lookup
-  - [x] Admin system
-    - [x] Admin commands
-    - [x] Infractions
-      - [x] Kick
-      - [x] Ban
-      - [x] Mute
-      - [x] Gag
-      - [x] Removing infractions
-- [x] Timers
-- [x] Blocking weapon sounds/decals
-  - [x] Hooking fire bullets tempent
-  - [x] Implement stopsound
-  - [x] Implement silenced sounds
-  - [x] Implement toggledecals
-- [x] Legacy event listener
-- [x] Weapon pickup crash fix
-- [x] trigger_push fix
-- [x] Remove player collisions
-- [x] Ztele
-- [x] Water fix
-- [x] Hide command
-  - [x] Transmit hook
-  - [x] Rewrite detour hook into sourcehook (Interface definition available)
-- [x] Rcon
-- [x] Basic HTTP request
-- [x] EntFire
+- Windows and Linux support
+- Schema system
+  - Property access
+  - Property updating
+- Event hooking
+- Coloring console chat messages
+- Movement unlocker
+- VScript unlocker
+- Preventing console logs
+- Buying weapons through chat
+  - Limit weapon buy count
+- Unlocking commands and convars
+- Dumping all convar values
+- Memory patching system
+- Detour system
+- Player Manager
+  - Storing players
+  - Player authorization
+  - Userid Target lookup
+  - Admin system
+    - Admin commands
+    - Admin chat
+    - Infractions
+      - Kick
+      - Ban
+      - Mute
+      - Gag
+      - Removing infractions
+- Timers
+- Blocking weapon sounds/decals
+  - Hooking fire bullets tempent
+  - Stopsound
+  - Silenced sounds
+  - Toggledecals
+- Legacy event listener
+- trigger_push fix
+- Remove player collisions
+- Ztele
+- Water fix
+- Hide command
+  - Transmit hook
+- Rcon
+- HTTP REST API
+- EntFire
+- Fix blast damage crashes
+- Block self molotov damage
+- Anti chat flood
+- Rock the vote
+- Vote extends
+- Top defenders
+
+## Why is this all one plugin? Why "CS2Fixes"?
+
+Reimplementing all these features as standalone plugins would duplicate quite a lot of code between each. Metamod is not much more than a loader & hook manager, so many common modding features need a fair bit of boilerplate to work with. And since our primary goal is developing CS2Fixes for all zombie escape servers, there is not necessarily a drawback to distributing our work in this form at the moment.
+
+The CS2Fixes name comes from the CSSFixes and CSGOFixes projects, which were primarily aimed at low-level bug fixes and improvements for their respective games. Long term, we see this plugin slimming down and becoming more similar to them. Since as the CS2 modding scene matures, common things like an admin system and RTV become more feasible in source2mod or a similar modding platform.
 
 ## Compilation
 
@@ -70,7 +79,7 @@ export MMSOURCE112=/path/to/metamod/
 export HL2SDKCS2=/path/to/sdk/submodule
 
 mkdir build && cd build
-CC=gcc CXX=g++ python3 ../configure.py -s cs2
+python3 ../configure.py --enable-optimize --symbol-files --sdks cs2
 ambuild
 ```
 
