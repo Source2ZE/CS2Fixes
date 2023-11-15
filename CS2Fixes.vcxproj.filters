@@ -12,14 +12,8 @@
     <Filter Include="Source Files\cs2_sdk">
       <UniqueIdentifier>{65f1f5a2-6411-4f21-9255-37d1b9e5b449}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\cs2_sdk\interfaces">
-      <UniqueIdentifier>{904ca200-d5b9-430e-9eff-66ebfe1cdccc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\cs2_sdk">
       <UniqueIdentifier>{70b0b6c3-5a23-41ae-a865-ed4a40a45e1a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\cs2_sdk\interfaces">
-      <UniqueIdentifier>{b61ccd3e-b790-406a-ac1f-f4bb89286896}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\cs2_sdk\entity">
       <UniqueIdentifier>{184daee7-8d1e-48eb-9b2c-159792ecff61}</UniqueIdentifier>
@@ -46,9 +40,6 @@
     </ClCompile>
     <ClCompile Include="src\mempatch.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cs2_sdk\interfaces\cs2_interfaces.cpp">
-      <Filter>Source Files\cs2_sdk\interfaces</Filter>
     </ClCompile>
     <ClCompile Include="src\addresses.cpp">
       <Filter>Source Files</Filter>
@@ -98,9 +89,9 @@
     <ClCompile Include="src\httpmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-	<ClCompile Include="src\votemanager.cpp">
-		<Filter>Source Files</Filter>
-	</ClCompile>
+    <ClCompile Include="src\votemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -108,12 +99,6 @@
     </ClInclude>
     <ClInclude Include="src\common.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cs2_sdk\interfaces\cs2_interfaces.h">
-      <Filter>Header Files\cs2_sdk\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cs2_sdk\interfaces\cgameresourceserviceserver.h">
-      <Filter>Header Files\cs2_sdk\interfaces</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cbaseentity.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
@@ -123,9 +108,6 @@
     </ClInclude>
     <ClInclude Include="src\utils\module.h">
       <Filter>Header Files\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cs2_sdk\interfaces\cschemasystem.h">
-      <Filter>Header Files\cs2_sdk\interfaces</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\virtual.h">
       <Filter>Header Files\utils</Filter>
@@ -190,9 +172,9 @@
     <ClInclude Include="src\httpmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-	  <ClInclude Include="src\votemanager.h">
-		  <Filter>Header Files</Filter>
-	  </ClInclude>
+    <ClInclude Include="src\votemanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\globaltypes.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>

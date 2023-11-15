@@ -22,7 +22,6 @@
 #include "module.h"
 #include "addresses.h"
 #include "commands.h"
-#include "interfaces/cs2_interfaces.h"
 #include "detours.h"
 #include "ctimer.h"
 #include "irecipientfilter.h"
