@@ -666,7 +666,7 @@ const char *CS2Fixes::GetLicense()
 
 const char *CS2Fixes::GetVersion()
 {
-	return "1.0.0.0";
+	return "1.0";
 }
 
 const char *CS2Fixes::GetDate()
@@ -681,7 +681,7 @@ const char *CS2Fixes::GetLogTag()
 
 const char *CS2Fixes::GetAuthor()
 {
-	return "xen & poggu";
+	return "xen, Poggu, and the Source2ZE community";
 }
 
 const char *CS2Fixes::GetDescription()

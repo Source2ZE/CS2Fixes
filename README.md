@@ -92,7 +92,3 @@ ambuild
 ```
 
 Copy the contents of package/ to your server's csgo/ directory.
-
-## Authors
-- [@xen-000](https://github.com/xen-000)
-- [@poggicek](https://github.com/poggicek)
