@@ -1,0 +1,31 @@
+//---------------------
+// Permission flags
+//---------------------
+// a : Reserved slots
+// b : Generic admin, required for admins
+// c : Kick other players
+// d : Banning other players
+// e : Removing bans
+// f : Slaying other players
+// g : Changing the map
+// h : Changing cvars
+// i : Changing configs
+// j : Special chat privileges
+// k : Voting
+// l : Password the server
+// m : Remote console
+// n : Change sv_cheats and related commands
+// z : Root. It grants ALL flags so use with caution!
+
+// Flags 'o' to 'y' are custom flags (currently unused)
+
+Admins
+{
+	// Admin entries should follow this format
+	
+    //"name" // Unused, can be anything
+    //{
+    //    "steamid" "1234567890" // SteamID64
+    //    "flags" "abcdefg" // Permission flags as described above
+    //}
+}
