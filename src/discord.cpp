@@ -32,7 +32,16 @@ using json = nlohmann::json;
 CDiscordBotManager* g_pDiscordBotManager = nullptr;
 
 // TODO: CVAR
-bool g_bDebugDiscordRequests = false;
+static bool g_bDebugDiscordRequests = false;
+
+CON_COMMAND_F(cs2f_debug_discord_messages, "Whether to include debug information for Discord requests.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bDebugDiscordRequests);
+	else
+		g_bDebugDiscordRequests = V_StringToBool(args[1], false);
+}
+
 void DiscordHttpCallback(HTTPRequestHandle request, char* response)
 {
 	if (g_bDebugDiscordRequests) {
@@ -48,7 +57,7 @@ void CDiscordBotManager::PostDiscordMessage(const char* sDiscordBotName, const c
 		if (g_bDebugDiscordRequests) {
 			Message("The bot at %i is %s with %s webhook and %s avatar.\n", i, bot.GetName(), bot.GetWebhookUrl(), bot.GetAvatarUrl());
 		}
-		
+
 		if (!V_stricmp(sDiscordBotName, bot.GetName())) {
 			bot.PostMessage(sMessage);
 		}
