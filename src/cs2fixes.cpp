@@ -298,18 +298,18 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 	if (!g_pEntitySystem)
 		return;
 
-	auto slot = ctx.GetPlayerSlot();
+	auto iCommandPlayerSlot = ctx.GetPlayerSlot();
 
-	bool isSay = !V_strcmp(args.Arg(0), "say");
-	bool isTeamSay = !V_strcmp(args.Arg(0), "say_team");
+	bool bSay = !V_strcmp(args.Arg(0), "say");
+	bool bTeamSay = !V_strcmp(args.Arg(0), "say_team");
 
-	if (slot != -1 && (isSay || isTeamSay))
+	if (iCommandPlayerSlot != -1 && (bSay || bTeamSay))
 	{
-		auto pController = CCSPlayerController::FromSlot(slot);
+		auto pController = CCSPlayerController::FromSlot(iCommandPlayerSlot);
 		bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
 		bool bFlooding = pController && pController->GetZEPlayer()->IsFlooding();
-		bool bAdminChat = isTeamSay && *args[1] == '@';
-		bool bSilent = *args[1] == '/' || (isTeamSay && *args[1] == '@');
+		bool bAdminChat = bTeamSay && *args[1] == '@';
+		bool bSilent = *args[1] == '/' || bAdminChat;
 		bool bCommand = *args[1] == '!' || *args[1] == '/';
 
 		// Chat messages should generate events regardless
@@ -319,7 +319,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 
 			if (pEvent)
 			{
-				pEvent->SetBool("teamonly", isTeamSay);
+				pEvent->SetBool("teamonly", bTeamSay);
 				pEvent->SetInt("userid", pController->GetPlayerSlot());
 				pEvent->SetString("text", args[1]);
 
@@ -347,10 +347,13 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 			{
 				ZEPlayer *pPlayer = g_playerManager->GetPlayer(i);
 
-				if (!pPlayer || !pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC))
+				if (!pPlayer)
 					continue;
 
-				ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, " \4(ADMINS) %s:\1 %s", pController->GetPlayerName(), pszMessage);
+				if (pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC))
+					ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, " \4(ADMINS) %s:\1 %s", pController->GetPlayerName(), pszMessage);
+				else if (i == iCommandPlayerSlot.Get()) // Sender is not an admin
+					ClientPrint(pController, HUD_PRINTTALK, " \4(TO ADMINS) %s:\1 %s", pController->GetPlayerName(), pszMessage);
 			}
 		}
 
