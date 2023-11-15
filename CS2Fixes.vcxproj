@@ -170,7 +170,6 @@
     <ClCompile Include="src\adminsystem.cpp" />
     <ClCompile Include="src\commands.cpp" />
     <ClCompile Include="src\cs2fixes.cpp" />
-    <ClCompile Include="src\cs2_sdk\interfaces\cs2_interfaces.cpp" />
     <ClCompile Include="src\cs2_sdk\schema.cpp" />
     <ClCompile Include="src\ctimer.cpp" />
     <ClCompile Include="src\cvars.cpp" />
@@ -181,7 +180,7 @@
     <ClCompile Include="src\mempatch.cpp" />
     <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\playermanager.cpp" />
-	<ClCompile Include="src\votemanager.cpp" />
+    <ClCompile Include="src\votemanager.cpp" />
     <ClCompile Include="sdk\tier1\convar.cpp" />
     <ClCompile Include="src\utils\entity.cpp" />
     <ClCompile Include="src\utils\plat_unix.cpp" />
@@ -204,9 +203,6 @@
     <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h" />
     <ClInclude Include="src\cs2_sdk\entity\globaltypes.h" />
     <ClInclude Include="src\cs2_sdk\entity\services.h" />
-    <ClInclude Include="src\cs2_sdk\interfaces\cgameresourceserviceserver.h" />
-    <ClInclude Include="src\cs2_sdk\interfaces\cschemasystem.h" />
-    <ClInclude Include="src\cs2_sdk\interfaces\cs2_interfaces.h" />
     <ClInclude Include="src\cs2_sdk\schema.h" />
     <ClInclude Include="src\cdetour.h" />
     <ClInclude Include="src\ctimer.h" />
@@ -217,7 +213,7 @@
     <ClInclude Include="src\addresses.h" />
     <ClInclude Include="src\playermanager.h" />
     <ClInclude Include="src\recipientfilters.h" />
-	<ClInclude Include="src\votemanager.h" />
+    <ClInclude Include="src\votemanager.h" />
     <ClInclude Include="src\utils\entity.h" />
     <ClInclude Include="src\utils\module.h" />
     <ClInclude Include="src\utils\plat.h" />

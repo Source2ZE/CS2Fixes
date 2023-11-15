@@ -20,12 +20,13 @@
 #include "schema.h"
 
 #include "../common.h"
-#include "interfaces/cs2_interfaces.h"
+#include "interfaces/cschemasystem.h"
 #include "tier1/utlmap.h"
 #include "tier0/memdbgon.h"
 #include "plat.h"
 #include "entity/cbaseentity.h"
 
+extern CSchemaSystem *g_pSchemaSystem2;
 extern CGlobalVars *gpGlobals;
 
 using SchemaKeyValueMap_t = CUtlMap<uint32_t, SchemaKey>;
@@ -46,7 +47,7 @@ static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 
 static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* className, uint32_t classKey)
 {
-    CSchemaSystemTypeScope* pType = interfaces::pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
+    CSchemaSystemTypeScope* pType = g_pSchemaSystem2->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
 
     if (!pType)
         return false;
@@ -85,7 +86,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* cla
 
 int16_t schema::FindChainOffset(const char* className)
 {
-    CSchemaSystemTypeScope* pType = interfaces::pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
+    CSchemaSystemTypeScope* pType = g_pSchemaSystem2->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
 
     if (!pType)
         return false;

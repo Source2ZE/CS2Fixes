@@ -34,7 +34,7 @@
 #include "icvar.h"
 #include "interface.h"
 #include "tier0/dbg.h"
-#include "interfaces/cs2_interfaces.h"
+#include "interfaces/cschemasystem.h"
 #include "plat.h"
 #include "entitysystem.h"
 #include "engine/igameeventsystem.h"
@@ -113,6 +113,7 @@ IGameEventSystem *g_gameEventSystem = nullptr;
 IGameEventManager2 *g_gameEventManager = nullptr;
 INetworkGameServer *g_pNetworkGameServer = nullptr;
 CEntitySystem *g_pEntitySystem = nullptr;
+CSchemaSystem *g_pSchemaSystem2 = nullptr;
 CGlobalVars *gpGlobals = nullptr;
 CPlayerManager *g_playerManager = nullptr;
 IVEngineServer2 *g_pEngineServer2 = nullptr;
@@ -121,13 +122,21 @@ ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
 
+CEntitySystem *GetEntitySystem()
+{
+	static int offset = g_GameConfig->GetOffset("GameEntitySystem");
+	return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(g_pGameResourceServiceServer) + offset);
+}
+
 PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
 bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
 {
 	PLUGIN_SAVEVARS();
 
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pEngineServer2, IVEngineServer2, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
+	GET_V_IFACE_CURRENT(GetEngineFactory, g_pGameResourceServiceServer, IGameResourceServiceServer, GAMERESOURCESERVICESERVER_INTERFACE_VERSION);
 	GET_V_IFACE_CURRENT(GetEngineFactory, g_pCVar, ICvar, CVAR_INTERFACE_VERSION);
+	GET_V_IFACE_CURRENT(GetEngineFactory, g_pSchemaSystem2, CSchemaSystem, SCHEMASYSTEM_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2Server, ISource2Server, SOURCE2SERVER_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2ServerConfig, ISource2ServerConfig, SOURCE2SERVERCONFIG_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2GameEntities, ISource2GameEntities, SOURCE2GAMEENTITIES_INTERFACE_VERSION);
@@ -180,8 +189,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	if (!addresses::Initialize(g_GameConfig))
 		bRequiredInitLoaded = false;
 
-	interfaces::Initialize();
-
 	if (!InitPatches(g_GameConfig))
 		bRequiredInitLoaded = false;
 
@@ -211,7 +218,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	if (late)
 	{
 		RegisterEventListeners();
-		g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+		g_pEntitySystem = GetEntitySystem();
 		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 		gpGlobals = g_pNetworkGameServer->GetGlobals();
 	}
@@ -367,7 +374,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*)
 {
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
-	g_pEntitySystem = interfaces::pGameResourceServiceServer->GetGameEntitySystem();
+	g_pEntitySystem = GetEntitySystem();
 	gpGlobals = g_pNetworkGameServer->GetGlobals();
 
 	Message("Hook_StartupServer: %s\n", gpGlobals->mapname);
