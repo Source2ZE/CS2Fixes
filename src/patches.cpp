@@ -21,7 +21,6 @@
 #include "mempatch.h"
 #include "icvar.h"
 #include "irecipientfilter.h"
-#include "interfaces/cs2_interfaces.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"

@@ -19,10 +19,11 @@
 
 #include "addresses.h"
 #include "utils/module.h"
-#include <interfaces/cs2_interfaces.h>
+#include "gameconfig.h"
 
 #include "tier0/memdbgon.h"
 
+extern CGameConfig *g_GameConfig;
 
 #define RESOLVE_SIG(gameConfig, name, variable) \
 	variable = (decltype(variable))gameConfig->ResolveSignature(name);	\
