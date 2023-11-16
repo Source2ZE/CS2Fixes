@@ -199,12 +199,16 @@ GAME_EVENT_F(round_end)
 
 	char colorMap[] = { '\x10', '\x08', '\x09', '\x0B'};
 
-	for (int i = 0; i < MIN(sortedPlayers.Count(), 5); i++)
+	for (int i = 0; i < sortedPlayers.Count(); i++)
 	{
 		ZEPlayer* pPlayer = sortedPlayers[i];
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 
-		ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
+		if (i < 5)
+			ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
+		else
+			ClientPrint(pController, HUD_PRINTTALK, " \x0C%i. %s \x01- \x07%i DMG", i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
+		
 		pPlayer->SetTotalDamage(0);
 	}
 }
