@@ -90,12 +90,12 @@ jobs:
           ls -Rall
           if [ -d "./Linux/" ]; then
             cd ./Linux/
-            tar -czf ../${{ github.event.repository.name }}-${version}-linux.tar.gz .
+            tar -czf ../${{ github.event.repository.name }}-${version}-linux.tar.gz *
             cd -
           fi
           if [ -d "./Windows/" ]; then
             cd ./Windows/
-            zip -r ../${{ github.event.repository.name }}-${version}-windows.zip .
+            zip -r ../${{ github.event.repository.name }}-${version}-windows.zip *
             cd -
           fi
 
