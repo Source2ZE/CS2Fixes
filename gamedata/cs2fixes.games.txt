@@ -300,8 +300,8 @@
 			// 2832 (354 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"	"355"
-				"linux"		"355"
+				"windows"	"356"
+				"linux"		"356"
 			}
 			// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 			"CGameRules_FindPickerEntity"
