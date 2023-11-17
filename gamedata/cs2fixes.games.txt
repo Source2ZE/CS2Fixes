@@ -197,7 +197,7 @@
             "CategorizeUnderwater"
             {
                 "library"       "server"
-                "windows"       "\x75\x2A\xB3\x01\xEB\x2A\x32\xDB\x45\x32\xE4"
+                "windows"       "\x75\x2A\xB3\x01\xEB\x2A\x32\xDB\x45\x32\x2A"
                 "linux"         "\x0F\x45\xC1\x4D\x85\xC0\x0F\x95\xC1\x20\xC1"
             }
 
