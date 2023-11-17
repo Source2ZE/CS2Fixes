@@ -1041,9 +1041,6 @@ bool CAdminSystem::LoadInfractions()
 
 void CAdminSystem::SaveInfractions()
 {
-	if (m_vecInfractions.Count() == 0)
-		return;
-
 	KeyValues* pKV = new KeyValues("infractions");
 	KeyValues* pSubKey;
 	KeyValues::AutoDelete autoDelete(pKV);
