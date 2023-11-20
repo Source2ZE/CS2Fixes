@@ -851,14 +851,22 @@ CON_COMMAND_CHAT_FLAGS(map, "change map", ADMFLAG_CHANGEMAP)
 		return;
 	}
 
-	char szMapName[MAX_PATH];
-	V_strncpy(szMapName, args[1], sizeof(szMapName));
-
-	if (!g_pEngineServer2->IsMapValid(szMapName))
+	if (!g_pEngineServer2->IsMapValid(args[1]))
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid map specified.");
+		// This might be a workshop map, and right now there's no easy way to get the list from a collection
+		// So blindly attempt the change immediately for now, the command does nothing if the map isn't found
+		std::string sCommand = "ds_workshop_changelevel ";
+		sCommand.append(args[1]);
+		g_pEngineServer2->ServerCommand(sCommand.c_str());
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Attempting to change to %s from the workshop collection.", args[1]);
+
 		return;
 	}
+
+	// Copy the string, since we're passing this into a timer
+	char szMapName[MAX_PATH];
+	V_strncpy(szMapName, args[1], sizeof(szMapName));
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", szMapName);
 
