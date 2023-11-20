@@ -410,7 +410,7 @@ CON_COMMAND_F(cs2f_hide_distance_max, "The max distance for hide", FCVAR_LINKED_
 		g_iMaxHideDistance = V_StringToInt32(args[1], 2000);
 }
 
-CON_COMMAND_CHAT(hide, "hides nearby teammates")
+CON_COMMAND_CHAT(hide, "hides nearby players")
 {
 	// Silently return so the command is completely hidden
 	if (!g_bEnableHide)
@@ -453,9 +453,9 @@ CON_COMMAND_CHAT(hide, "hides nearby teammates")
 	pZEPlayer->SetHideDistance(distance);
 
 	if (distance == 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding teammates is now disabled.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding players is now disabled.");
 	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding teammates within %i units.", distance);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding players within %i units.", distance);
 }
 
 
