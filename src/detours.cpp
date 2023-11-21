@@ -63,6 +63,7 @@ void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 
 // CONVAR_TODO
 static bool g_bBlockMolotoveSelfDmg = false;
+static bool g_bBlockAllDamage = false;
 
 CON_COMMAND_F(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
@@ -70,6 +71,13 @@ CON_COMMAND_F(cs2f_block_molotov_self_dmg, "Whether to block self-damage from mo
 		Msg("%s %i\n", args[0], g_bBlockMolotoveSelfDmg);
 	else
 		g_bBlockMolotoveSelfDmg = V_StringToBool(args[1], false);
+}
+CON_COMMAND_F(cs2f_block_all_dmg, "Whether to block all damage to players", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bBlockAllDamage);
+	else
+		g_bBlockAllDamage = V_StringToBool(args[1], false);
 }
 
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
@@ -90,6 +98,11 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 			inputInfo->m_flDamage,
 			inputInfo->m_bitsDamageType);
 #endif
+	
+	// Block all player damage if desired
+	if (g_bBlockAllDamage && pThis->IsPawn())
+		return;
+
 	CBaseEntity *pInflictor = inputInfo->m_hInflictor.Get();
 	const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 
