@@ -111,6 +111,40 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
 		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
 
+#ifdef _ZOMBIEREBORN
+	CCSPlayerController* pInflictorController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pInflictor);
+
+	if (pInflictorController && pThis->IsPawn() && pInflictorController->m_iTeamNum == CS_TEAM_T && pThis->m_iTeamNum == CS_TEAM_CT)
+	{
+		Message("Infection!\n");
+		CCSPlayerController* pVictimController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pThis);
+		
+		Vector vecPosition = pThis->GetAbsOrigin();
+		QAngle angRotation = pThis->GetAbsRotation();
+
+		inputInfo->m_flDamage = 1000.0f;
+		CBaseEntity_TakeDamageOld(pThis, inputInfo);
+
+		// using ChangeTeam here to also immediately respawn the player
+		pVictimController->ChangeTeam(CS_TEAM_T);
+
+		CHandle<Z_CBaseEntity> handle = pThis->GetHandle();
+		new CTimer(1.0f, false, [handle, vecPosition, angRotation]
+			{
+				Z_CBaseEntity* pPawn = handle.Get();
+
+				if (!pPawn || !pPawn->IsAlive())
+					return -1.0f;
+
+				pPawn->SetAbsOrigin(vecPosition);
+				pPawn->SetAbsRotation(angRotation);
+
+				return -1.0f;
+			});
+
+		return;
+	}
+#endif //_ZOMBIEREBORN
 	// Prevent molly on self
 	if (g_bBlockMolotoveSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
 		return;
