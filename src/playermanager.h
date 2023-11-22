@@ -53,6 +53,7 @@ public:
 		m_iTotalKills = 0;
 		m_bVotedRTV = false;
 		m_bVotedExtend = false;
+		m_bIsInfected = false;
 		m_flRTVVoteTime = 0;
 		m_flExtendVoteTime = 0;
 		m_iFloodTokens = 0;
@@ -84,6 +85,7 @@ public:
 	void SetRTVVote(bool bRTVVote) { m_bVotedRTV = bRTVVote; }
 	void SetRTVVoteTime(float flCurtime) { m_flRTVVoteTime = flCurtime; }
 	void SetExtendVote(bool bExtendVote) { m_bVotedExtend = bExtendVote; }
+	void SetInfectState(bool bInfectState) { m_bIsInfected = bInfectState; }
 	void SetExtendVoteTime(float flCurtime) { m_flExtendVoteTime = flCurtime; }
 
 	bool IsMuted() { return m_bMuted; }
@@ -97,6 +99,7 @@ public:
 	bool GetRTVVote() { return m_bVotedRTV; }
 	float GetRTVVoteTime() { return m_flRTVVoteTime; }
 	bool GetExtendVote() { return m_bVotedExtend; }
+	bool IsInfected() { return m_bIsInfected; }
 	float GetExtendVoteTime() { return m_flExtendVoteTime; }
 	
 	void OnAuthenticated();
@@ -120,6 +123,7 @@ private:
 	bool m_bVotedRTV;
 	float m_flRTVVoteTime;
 	bool m_bVotedExtend;
+	bool m_bIsInfected;
 	float m_flExtendVoteTime;
 	int m_iFloodTokens;
 	float m_flLastTalkTime;

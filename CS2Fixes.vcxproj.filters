@@ -95,6 +95,9 @@
     <ClCompile Include="src\discord.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\zombiereborn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -176,6 +179,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\votemanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zombiereborn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\globaltypes.h">
