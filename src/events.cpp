@@ -66,14 +66,14 @@ void UnregisterEventListeners()
 }
 
 // CONVAR_TODO
-bool g_bForceCT = true;
+static bool g_bForceCT = false;
 
-CON_COMMAND_F(c_force_ct, "toggle forcing CTs on every round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+CON_COMMAND_F(cs2f_force_ct, "Whether to force everyone to CTs on every new round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	if (args.ArgC() > 1)
-		g_bForceCT = V_StringToBool(args[1], true);
-
-	Message("Forcing CTs on every round is now %s.\n", g_bForceCT ? "ON" : "OFF");
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bForceCT);
+	else
+		g_bForceCT = V_StringToBool(args[1], false);
 }
 
 GAME_EVENT_F(round_prestart)
@@ -82,6 +82,7 @@ GAME_EVENT_F(round_prestart)
 	ZR_OnRoundPrestart(pEvent);
 #endif //_ZOMBIEREBORN
 
+	// Right now we're only using this event to move everyone to CTs
 	if (!g_bForceCT)
 		return;
 
@@ -97,12 +98,15 @@ GAME_EVENT_F(round_prestart)
 	}
 }
 
-bool g_bBlockTeamMessages = true;
+// CONVAR_TODO
+static bool g_bBlockTeamMessages = false;
 
-CON_COMMAND_F(c_block_team_messages, "toggle team messages", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+CON_COMMAND_F(cs2f_block_team_messages, "Whether to block team join messages", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	if (args.ArgC() > 1)
-		g_bBlockTeamMessages = V_StringToBool(args[1], true);
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bBlockTeamMessages);
+	else
+		g_bBlockTeamMessages = V_StringToBool(args[1], false);
 }
 
 GAME_EVENT_F(player_team)
@@ -112,10 +116,23 @@ GAME_EVENT_F(player_team)
 		pEvent->SetBool("silent", true);
 }
 
-// CONVAR_TODO: have a convar for forcing debris collision
+// CONVAR_TODO
+static bool g_bNoblock = false;
+
+CON_COMMAND_F(cs2f_noblock_enable, "Whether to use noblock, which sets debris collision on every player", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bNoblock);
+	else
+		g_bNoblock = V_StringToBool(args[1], false);
+}
 
 GAME_EVENT_F(player_spawn)
 {
+	// Right now we're only using this event to set debris collisions
+	if (!g_bNoblock)
+		return;
+
 	CCSPlayerController *pController = (CCSPlayerController *)pEvent->GetPlayerController("userid");
 
 	if (!pController)
@@ -149,11 +166,24 @@ GAME_EVENT_F(player_spawn)
 	});
 }
 
+// CONVAR_TODO
+static bool g_bEnableTopDefender = false;
+
+CON_COMMAND_F(cs2f_topdefender_enable, "Whether to use TopDefender", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bEnableTopDefender);
+	else
+		g_bEnableTopDefender = V_StringToBool(args[1], false);
+}
+
 GAME_EVENT_F(player_hurt)
 {
 #ifdef _ZOMBIEREBORN
 	//ZR_OnPlayerHurt(pEvent);
 #endif //_ZOMBIEREBORN
+	if (!g_bEnableTopDefender)
+		return;
 
 	CCSPlayerController *pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
 	CCSPlayerController *pVictim = (CCSPlayerController*)pEvent->GetPlayerController("userid");
@@ -172,6 +202,9 @@ GAME_EVENT_F(player_hurt)
 
 GAME_EVENT_F(round_start)
 {
+	if (!g_bEnableTopDefender)
+		return;
+
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
@@ -189,7 +222,10 @@ GAME_EVENT_F(round_start)
 
 GAME_EVENT_F(round_end)
 {
-	CUtlVector<ZEPlayer*> sortedPlayers;
+	if (!g_bEnableTopDefender)
+		return;
+
+	CUtlVector<ZEPlayer *> sortedPlayers;
 
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
@@ -218,12 +254,16 @@ GAME_EVENT_F(round_end)
 
 	char colorMap[] = { '\x10', '\x08', '\x09', '\x0B'};
 
-	for (int i = 0; i < MIN(sortedPlayers.Count(), 5); i++)
+	for (int i = 0; i < sortedPlayers.Count(); i++)
 	{
 		ZEPlayer* pPlayer = sortedPlayers[i];
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 
-		ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
+		if (i < 5)
+			ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
+		else
+			ClientPrint(pController, HUD_PRINTTALK, " \x0C%i. %s \x01- \x07%i DMG", i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
+		
 		pPlayer->SetTotalDamage(0);
 	}
 }

@@ -892,7 +892,7 @@ CON_COMMAND_CHAT_FLAGS(rcon, "send a command to server console", ADMFLAG_RCON)
 
 CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map duration)", ADMFLAG_CHANGEMAP)
 {
-	if (args.ArgC() < 3)
+	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !extend <minutes>");
 		return;
@@ -900,11 +900,11 @@ CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map d
 
 	int iExtendTime = V_StringToInt32(args[1], 0);
 
-	// CONVAR_TODO
 	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
 
-	float flTimelimit;
-	memcpy(&flTimelimit, &cvar->values, sizeof(flTimelimit));
+	// CONVAR_TODO
+	// HACK: values is actually the cvar value itself, hence this ugly cast.
+	float flTimelimit = *(float *)&cvar->values;
 
 	if (gpGlobals->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
 		flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime) / 60.0f + iExtendTime;
@@ -918,11 +918,17 @@ CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map d
 	if (flTimelimit <= 0)
 		flTimelimit = 1;
 
+	// CONVAR_TODO
 	char buf[32];
 	V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit);
-
-	// CONVAR_TODO
 	g_pEngineServer2->ServerCommand(buf);
+
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	if (iExtendTime < 0)
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "shortened map time %i minutes.", pszCommandPlayerName, iExtendTime * -1);
+	else
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "extended map time %i minutes.", pszCommandPlayerName, iExtendTime);
 }
 
 bool CAdminSystem::LoadAdmins()
@@ -1028,6 +1034,9 @@ bool CAdminSystem::LoadInfractions()
 
 void CAdminSystem::SaveInfractions()
 {
+	if (m_vecInfractions.Count() == 0)
+		return;
+
 	KeyValues* pKV = new KeyValues("infractions");
 	KeyValues* pSubKey;
 	KeyValues::AutoDelete autoDelete(pKV);

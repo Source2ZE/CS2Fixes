@@ -22,7 +22,6 @@
 #include "module.h"
 #include "addresses.h"
 #include "commands.h"
-#include "interfaces/cs2_interfaces.h"
 #include "detours.h"
 #include "ctimer.h"
 #include "irecipientfilter.h"
@@ -47,7 +46,6 @@ extern CEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
 extern CCSGameRules *g_pGameRules;
 
-DECLARE_DETOUR(Host_Say, Detour_Host_Say);
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
 DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
@@ -61,6 +59,17 @@ void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
 	g_pGameRules = (CCSGameRules*)pThis;
 	CGameRules_Constructor(pThis);
+}
+
+// CONVAR_TODO
+static bool g_bBlockMolotoveSelfDmg = false;
+
+CON_COMMAND_F(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bBlockMolotoveSelfDmg);
+	else
+		g_bBlockMolotoveSelfDmg = V_StringToBool(args[1], false);
 }
 
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
@@ -122,11 +131,32 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 		return;
 	}
 #endif //_ZOMBIEREBORN
+	// Prevent molly on self
+	if (g_bBlockMolotoveSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
+		return;
+
 	CBaseEntity_TakeDamageOld(pThis, inputInfo);
+}
+
+// CONVAR_TODO
+static bool g_bUseOldPush = false;
+
+CON_COMMAND_F(cs2f_use_old_push, "Whether to use the old CSGO trigger_push behavior", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bUseOldPush);
+	else
+		g_bUseOldPush = V_StringToBool(args[1], false);
 }
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
+	if (!g_bUseOldPush)
+	{
+		TriggerPush_Touch(pPush, pOther);
+		return;
+	}
+
 	MoveType_t movetype = pOther->m_MoveType();
 
 	// VPhysics handling doesn't need any changes
@@ -195,15 +225,12 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 
 void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *pThis, void *a2)
 {
-	const char *pszClassName = pThis->m_pEntity->m_designerName.String();
-
 #ifdef _DEBUG
+	const char *pszClassName = pThis->m_pEntity->m_designerName.String();
 	Message("Weapon spawn: %s\n", pszClassName);
 #endif
 
 	CCSWeaponBase_Spawn(pThis, a2);
-
-	FixWeapon((CCSWeaponBase *)pThis);
 }
 
 void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *pSoundEmitterSystem, CEntityIndex *a2, IRecipientFilter &filter, uint32 a4, void *a5)
@@ -253,33 +280,6 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
 }
 
-void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, bool teamonly, int unk1, const char *unk2)
-{
-	bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
-
-	if (!bGagged && *args[1] != '/')
-	{
-		Host_Say(pController, args, teamonly, unk1, unk2);
-
-		if (pController)
-		{
-			IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_chat");
-
-			if (pEvent)
-			{
-				pEvent->SetBool("teamonly", teamonly);
-				pEvent->SetInt("userid", pController->entindex());
-				pEvent->SetString("text", args[1]);
-
-				g_gameEventManager->FireEvent(pEvent, true);
-			}
-		}
-	}
-
-	if (*args[1] == '!' || *args[1] == '/')
-		ParseChatCommand(args.ArgS() + 1, pController); // The string returned by ArgS() starts with a \, so skip it
-}
-
 void Detour_Log()
 {
 	return;
@@ -306,7 +306,7 @@ CDetour<decltype(Detour_Log)> g_LoggingDetours[] =
 	//CDetour<decltype(Detour_Log)>( Detour_IsChannelEnabled, "LoggingSystem_IsChannelEnabled" ),
 };
 
-void ToggleLogs()
+CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	static bool bBlock = false;
 
@@ -349,10 +349,6 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!UTIL_SayText2Filter.CreateDetour(gameConfig))
 		success = false;
 	UTIL_SayText2Filter.EnableDetour();
-
-	if (!Host_Say.CreateDetour(gameConfig))
-		success = false;
-	Host_Say.EnableDetour();
 
 	if (!IsHearingClient.CreateDetour(gameConfig))
 		success = false;
