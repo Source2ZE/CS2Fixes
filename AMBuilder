@@ -64,6 +64,10 @@ for sdk_name in MMSPlugin.sdks:
       'src/votemanager.cpp',
       'src/httpmanager.cpp',
     ]
+    
+    # ZombieReborn
+    if builder.options.zombiereborn == '1':
+      binary.sources += ['src/zombiereborn.cpp']
 
     if sdk_name in ['dota', 'cs2']:
       binary.sources += [
