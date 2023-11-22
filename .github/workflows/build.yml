@@ -2,6 +2,8 @@ name: CI
 
 on:
   push:
+    tags:
+      - '*'
     branches:
       - main
     paths-ignore:
@@ -88,12 +90,12 @@ jobs:
           ls -Rall
           if [ -d "./Linux/" ]; then
             cd ./Linux/
-            tar -czf ../${{ github.event.repository.name }}-${version}-linux.tar.gz addons
+            tar -czf ../${{ github.event.repository.name }}-${version}-linux.tar.gz .
             cd -
           fi
           if [ -d "./Windows/" ]; then
             cd ./Windows/
-            zip -r ../${{ github.event.repository.name }}-${version}-windows.zip addons
+            zip -r ../${{ github.event.repository.name }}-${version}-windows.zip .
             cd -
           fi
 
