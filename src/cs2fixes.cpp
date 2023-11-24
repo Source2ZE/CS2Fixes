@@ -48,7 +48,9 @@
 #include "votemanager.h"
 #include "httpmanager.h"
 #include "discord.h"
+#include "map_votes.h"
 #include "entity/cgamerules.h"
+#include "entity/ccsplayercontroller.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -229,6 +231,11 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pAdminSystem = new CAdminSystem();
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
+<<<<<<< HEAD
+=======
+	g_pChatAnnouncements = new CChatAnnouncementSystem();
+	g_pMapVoteSystem = new CMapVoteSystem();
+>>>>>>> 49eba25 (Initial map-vote and nominations)
 
 	RegisterWeaponCommands();
 
@@ -497,6 +504,9 @@ void CS2Fixes::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *
 
 void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 {
+	if ((V_stricmp(args[0], "endmatch_votenextmap") == 0) && args.ArgC() == 2) {
+		g_pMapVoteSystem->RegisterPlayerVote(slot, atoi(args[1]));
+	}
 #ifdef _DEBUG
 	Message( "Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString() );
 #endif
