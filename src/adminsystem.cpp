@@ -854,12 +854,17 @@ CON_COMMAND_CHAT_FLAGS(map, "change map", ADMFLAG_CHANGEMAP)
 	if (!g_pEngineServer2->IsMapValid(args[1]))
 	{
 		// This might be a workshop map, and right now there's no easy way to get the list from a collection
-		// So blindly attempt the change immediately for now, the command does nothing if the map isn't found
-		std::string sCommand = "ds_workshop_changelevel ";
-		sCommand.append(args[1]);
-		g_pEngineServer2->ServerCommand(sCommand.c_str());
+		// So blindly attempt the change for now, as the command does nothing if the map isn't found
+		std::string sCommand = "ds_workshop_changelevel " + std::string(args[1]);
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Attempting to change to %s from the workshop collection.", args[1]);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Attempting a map change to %s from the workshop collection...", args[1]);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", args[1]);
+
+		new CTimer(5.0f, false, [sCommand]()
+		{
+			g_pEngineServer2->ServerCommand(sCommand.c_str());
+			return -1.0f;
+		});
 
 		return;
 	}
