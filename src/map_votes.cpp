@@ -270,7 +270,8 @@ int CMapVoteSystem::WinningMapIndex()
 	// Count the votes of every player
 	int arrMapVotes[10];
 	for (int i = 0; i < gpGlobals->maxClients; i++) {
-		if (CCSPlayerController::FromSlot(i) && m_arrPlayerVotes[i] >= 0) {
+		auto pController = CCSPlayerController::FromSlot(i);
+		if (pController && pController->IsConnected() && m_arrPlayerVotes[i] >= 0) {
 			arrMapVotes[m_arrPlayerVotes[i]]++;
 		}
 	}
