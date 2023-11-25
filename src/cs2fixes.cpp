@@ -50,6 +50,7 @@
 #include "zombiereborn.h"
 #endif //_ZOMBIEREBORN
 #include "httpmanager.h"
+#include "discord.h"
 #include "entity/cgamerules.h"
 
 #define VPROF_ENABLED
@@ -230,6 +231,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	g_pAdminSystem = new CAdminSystem();
 	g_playerManager = new CPlayerManager(late);
+	g_pDiscordBotManager = new CDiscordBotManager();
 
 	// Steam authentication
 	new CTimer(1.0f, true, []()
@@ -289,6 +291,9 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 	if (g_pAdminSystem)
 		delete g_pAdminSystem;
+
+	if (g_pDiscordBotManager)
+		delete g_pDiscordBotManager;
 
 	if (g_GameConfig)
 		delete g_GameConfig;

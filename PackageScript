@@ -54,5 +54,6 @@ configs_folder = builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name,
 cfg_folder = builder.AddFolder(os.path.join('cfg', MMSPlugin.plugin_name))
 gamedata_folder = builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'gamedata'))
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'admins.cfg.example'), configs_folder)
+builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'discordbots.cfg.example'), configs_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'cfg', MMSPlugin.plugin_name, 'cs2fixes.cfg'), cfg_folder)
 builder.AddCopy(os.path.join('gamedata', 'cs2fixes.games.txt'), gamedata_folder)

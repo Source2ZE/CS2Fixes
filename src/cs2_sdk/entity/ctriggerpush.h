@@ -1,17 +1,18 @@
 #pragma once
 
-#include "cbaseentity.h"
+#include "cbasemodelentity.h"
 #include"../schema.h"
 
 #define SF_TRIG_PUSH_ONCE 0x80
 
-class CTriggerPush
+class CTriggerPush : public CBaseModelEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CTriggerPush);
 
 	SCHEMA_FIELD(Vector, m_vecPushDirEntitySpace)
 	SCHEMA_FIELD(float, m_flPushSpeed)
+	SCHEMA_FIELD(bool, m_bTriggerOnStartTouch)
 
 	virtual ~CTriggerPush() = 0;
 

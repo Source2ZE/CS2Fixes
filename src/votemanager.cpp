@@ -21,6 +21,7 @@
 #include "commands.h"
 #include "playermanager.h"
 #include "ctimer.h"
+#include "icvar.h"
 #include "entity/cgamerules.h"
 
 #include "tier0/memdbgon.h"
@@ -35,9 +36,10 @@ EExtendState g_ExtendState = EExtendState::MAP_START;
 
 // CONVAR_TODO
 int g_iExtendsLeft = 1;
-float g_flRTVSucceedRatio = 0.6f;
 float g_flExtendSucceedRatio = 0.5f;
 int g_iExtendTimeToAdd = 20;
+float g_flRTVSucceedRatio = 0.6f;
+bool g_bRTVEndRound = false;
 
 CON_COMMAND_F(cs2f_extends, "Maximum extends per map", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
@@ -45,13 +47,6 @@ CON_COMMAND_F(cs2f_extends, "Maximum extends per map", FCVAR_SPONLY | FCVAR_LINK
 		Msg("%s %i\n", args[0], g_iExtendsLeft);
 	else
 		g_iExtendsLeft = V_StringToInt32(args[1], 1);
-}
-CON_COMMAND_F(cs2f_rtv_success_ratio, "Ratio needed to pass RTV", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %.2f\n", args[0], g_flRTVSucceedRatio);
-	else
-		g_flRTVSucceedRatio = V_StringToFloat32(args[1], 0.6f);
 }
 CON_COMMAND_F(cs2f_extend_success_ratio, "Ratio needed to pass an extend", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
@@ -66,6 +61,20 @@ CON_COMMAND_F(cs2f_extend_time, "Time to add per extend", FCVAR_SPONLY | FCVAR_L
 		Msg("%s %i\n", args[0], g_iExtendTimeToAdd);
 	else
 		g_iExtendTimeToAdd = V_StringToInt32(args[1], 20);
+}
+CON_COMMAND_F(cs2f_rtv_success_ratio, "Ratio needed to pass RTV", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %.2f\n", args[0], g_flRTVSucceedRatio);
+	else
+		g_flRTVSucceedRatio = V_StringToFloat32(args[1], 0.6f);
+}
+CON_COMMAND_F(cs2f_rtv_endround, "Whether to immediately end the round when RTV succeeds", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bRTVEndRound);
+	else
+		g_bRTVEndRound = V_StringToBool(args[1], false);
 }
 
 int GetCurrentRTVCount()
@@ -192,9 +201,33 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 	if (iCurrentRTVCount + 1 >= iNeededRTVCount)
 	{
 		g_RTVState = ERTVState::POST_RTV_SUCCESSFULL;
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! This is the last round of the map!");
 		// CONVAR_TODO
 		g_pEngineServer2->ServerCommand("mp_timelimit 1");
+
+		if (g_bRTVEndRound)
+		{
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! Ending the map now...");
+
+			new CTimer(3.0f, false, []()
+			{
+				// CONVAR_TODO
+				// disgusting hack but it's the easiest way to call TerminateRound without using an offset
+				ConVar *sv_cheats = g_pCVar->GetConVar(g_pCVar->FindConVar("sv_cheats"));
+				bool bCheats = (bool)sv_cheats->values;
+
+				g_pEngineServer2->ServerCommand("sv_cheats 1; endround");
+
+				// only disable cheats if it was previously off
+				if (!bCheats)
+					g_pEngineServer2->ServerCommand("sv_cheats 0");
+
+				return -1.0f;
+			});
+		}
+		else
+		{
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! This is the last round of the map!");
+		}
 
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{

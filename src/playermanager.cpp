@@ -207,6 +207,17 @@ void CPlayerManager::CheckInfractions()
 	g_pAdminSystem->SaveInfractions();
 }
 
+// CONVAR_TODO
+static bool g_bHideTeammatesOnly = false;
+
+CON_COMMAND_F(cs2f_hide_teammates_only, "Whether to hide teammates only", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bHideTeammatesOnly);
+	else
+		g_bHideTeammatesOnly = V_StringToBool(args[1], false);
+}
+
 void CPlayerManager::CheckHideDistances()
 {
 	if (!g_pEntitySystem)
@@ -251,7 +262,7 @@ void CPlayerManager::CheckHideDistances()
 			{
 				auto pTargetPawn = pTargetController->GetPawn();
 
-				if (pTargetPawn && pTargetPawn->IsAlive() && pTargetController->m_iTeamNum == team)
+				if (pTargetPawn && pTargetPawn->IsAlive() && (!g_bHideTeammatesOnly || pTargetController->m_iTeamNum == team))
 				{
 					player->SetTransmit(j, pTargetPawn->GetAbsOrigin().DistToSqr(vecPosition) <= hideDistance * hideDistance);
 				}

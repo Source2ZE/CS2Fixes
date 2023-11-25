@@ -63,6 +63,7 @@ void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 
 // CONVAR_TODO
 static bool g_bBlockMolotoveSelfDmg = false;
+static bool g_bBlockAllDamage = false;
 
 CON_COMMAND_F(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
@@ -70,6 +71,13 @@ CON_COMMAND_F(cs2f_block_molotov_self_dmg, "Whether to block self-damage from mo
 		Msg("%s %i\n", args[0], g_bBlockMolotoveSelfDmg);
 	else
 		g_bBlockMolotoveSelfDmg = V_StringToBool(args[1], false);
+}
+CON_COMMAND_F(cs2f_block_all_dmg, "Whether to block all damage to players", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bBlockAllDamage);
+	else
+		g_bBlockAllDamage = V_StringToBool(args[1], false);
 }
 
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
@@ -90,6 +98,11 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 			inputInfo->m_flDamage,
 			inputInfo->m_bitsDamageType);
 #endif
+	
+	// Block all player damage if desired
+	if (g_bBlockAllDamage && pThis->IsPawn())
+		return;
+
 	CBaseEntity *pInflictor = inputInfo->m_hInflictor.Get();
 	const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 
@@ -151,7 +164,8 @@ CON_COMMAND_F(cs2f_use_old_push, "Whether to use the old CSGO trigger_push behav
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
-	if (!g_bUseOldPush)
+	// This trigger pushes only once (and kills itself) or pushes only on StartTouch, both of which are fine already
+	if (!g_bUseOldPush || pPush->m_spawnflags() & SF_TRIG_PUSH_ONCE || pPush->m_bTriggerOnStartTouch())
 	{
 		TriggerPush_Touch(pPush, pOther);
 		return;
@@ -161,15 +175,6 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 
 	// VPhysics handling doesn't need any changes
 	if (movetype == MOVETYPE_VPHYSICS)
-	{
-		TriggerPush_Touch(pPush, pOther);
-		return;
-	}
-
-	Z_CBaseEntity* pPushEnt = (Z_CBaseEntity*)pPush;
-
-	// SF_TRIG_PUSH_ONCE is handled fine already
-	if (pPushEnt->m_spawnflags() & SF_TRIG_PUSH_ONCE)
 	{
 		TriggerPush_Touch(pPush, pOther);
 		return;
@@ -190,7 +195,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 
 	Vector vecAbsDir;
 
-	matrix3x4_t mat = pPushEnt->m_CBodyComponent()->m_pSceneNode()->EntityToWorldTransform();
+	matrix3x4_t mat = pPush->m_CBodyComponent()->m_pSceneNode()->EntityToWorldTransform();
 	
 	Vector pushDir = pPush->m_vecPushDirEntitySpace();
 

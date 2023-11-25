@@ -27,6 +27,7 @@
 #include "commands.h"
 #include "ctimer.h"
 #include "detours.h"
+#include "discord.h"
 #include "utils/entity.h"
 #include "entity/cgamerules.h"
 
@@ -697,6 +698,12 @@ CON_COMMAND_CHAT_FLAGS(noclip, "toggle noclip on yourself", ADMFLAG_SLAY | ADMFL
 	}
 }
 
+CON_COMMAND_CHAT_FLAGS(reload_discord_bots, "Reload discord bot config", ADMFLAG_ROOT)
+{
+	g_pDiscordBotManager->LoadDiscordBotsConfig();
+	Message("Discord bot config reloaded\n");
+}
+
 CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 {
 	if (args.ArgC() < 3)
@@ -844,14 +851,27 @@ CON_COMMAND_CHAT_FLAGS(map, "change map", ADMFLAG_CHANGEMAP)
 		return;
 	}
 
-	char szMapName[MAX_PATH];
-	V_strncpy(szMapName, args[1], sizeof(szMapName));
-
-	if (!g_pEngineServer2->IsMapValid(szMapName))
+	if (!g_pEngineServer2->IsMapValid(args[1]))
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid map specified.");
+		// This might be a workshop map, and right now there's no easy way to get the list from a collection
+		// So blindly attempt the change for now, as the command does nothing if the map isn't found
+		std::string sCommand = "ds_workshop_changelevel " + std::string(args[1]);
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Attempting a map change to %s from the workshop collection...", args[1]);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", args[1]);
+
+		new CTimer(5.0f, false, [sCommand]()
+		{
+			g_pEngineServer2->ServerCommand(sCommand.c_str());
+			return -1.0f;
+		});
+
 		return;
 	}
+
+	// Copy the string, since we're passing this into a timer
+	char szMapName[MAX_PATH];
+	V_strncpy(szMapName, args[1], sizeof(szMapName));
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", szMapName);
 
@@ -1034,9 +1054,6 @@ bool CAdminSystem::LoadInfractions()
 
 void CAdminSystem::SaveInfractions()
 {
-	if (m_vecInfractions.Count() == 0)
-		return;
-
 	KeyValues* pKV = new KeyValues("infractions");
 	KeyValues* pSubKey;
 	KeyValues::AutoDelete autoDelete(pKV);
