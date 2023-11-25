@@ -180,7 +180,7 @@ CON_COMMAND_F(cs2f_topdefender_enable, "Whether to use TopDefender", FCVAR_SPONL
 GAME_EVENT_F(player_hurt)
 {
 #ifdef _ZOMBIEREBORN
-	//ZR_OnPlayerHurt(pEvent);
+	ZR_OnPlayerHurt(pEvent);
 #endif //_ZOMBIEREBORN
 	if (!g_bEnableTopDefender)
 		return;

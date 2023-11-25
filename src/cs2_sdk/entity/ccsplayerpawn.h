@@ -21,7 +21,14 @@
 
 #include "cbaseplayerpawn.h"
 
-class CCSPlayerPawn : public CBasePlayerPawn
+class CCSPlayerPawnBase : public CBasePlayerPawn
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayerPawnBase);
+	SCHEMA_FIELD(QAngle, m_angEyeAngles)
+};
+
+class CCSPlayerPawn : public CCSPlayerPawnBase
 {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerPawn);

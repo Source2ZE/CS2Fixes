@@ -70,7 +70,7 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 
 void ZR_OnRoundStart(IGameEvent* pEvent)
 {
-    ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
+    ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
 
     new CTimer(1.0f, false, []()
         {
@@ -95,18 +95,47 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
         pController->SwitchTeam(CS_TEAM_T);
 }
 
+// CONVAR_TODO
+float g_flKnockbackScale = 5.0f;
+CON_COMMAND_F(zr_knockback_scale, "Global knockback scale", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %f\n", args[0], g_flKnockbackScale);
+	else
+		g_flKnockbackScale = V_StringToFloat32(args[1], 5.0f);
+}
+
+// Still need to implement weapon config
+void ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon)
+{
+    Vector vecKnockback;
+    AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
+    vecKnockback *= (iDamage * g_flKnockbackScale);
+    //Message("%f %f %f\n",vecKnockback.x, vecKnockback.y, vecKnockback.z);
+    pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
+}
+
+void ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage)
+{
+    Vector vecDisplacement = pVictim->GetAbsOrigin() - pProjectile->GetAbsOrigin();
+	vecDisplacement.z += 36;
+	VectorNormalize(vecDisplacement);
+    Vector vecKnockback = vecDisplacement;
+    vecKnockback *= (iDamage * g_flKnockbackScale);
+	pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
+}
+
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
 {
-    // Infection/Knockback to be done in TakeDamageOld detour
-
-    //CCSPlayerController* pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
-    //CCSPlayerController* pVictim = (CCSPlayerController*)pEvent->GetPlayerController("userid");
-    //const char* szWeapon = pEvent->GetString("weapon");
-    //int iDmgHealth = pEvent->GetInt("dmg_health");
-    //int iHealth = pEvent->GetInt("health");
-
-    //if (szWeapon == "" || !pAttacker || !pVictim)
-    //    return;
+    CCSPlayerController *pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
+    CCSPlayerController *pVictim = (CCSPlayerController*)pEvent->GetPlayerController("userid");
+    const char* szWeapon = pEvent->GetString("weapon");
+    int iDmgHealth = pEvent->GetInt("dmg_health");
+    //grenade and molotov knockbacks are handled by TakeDamage detours
+    if (!pAttacker || !pVictim || strcmp(szWeapon, "") == 0 || strcmp(szWeapon, "inferno") == 0 || strcmp(szWeapon, "hegrenade") == 0)
+        return;
+    if (pAttacker->m_iTeamNum() == CS_TEAM_CT && pVictim->m_iTeamNum() == CS_TEAM_T)
+        ApplyKnockback((CCSPlayerPawn*)pAttacker->GetPawn(), (CCSPlayerPawn*)pVictim->GetPawn(), iDmgHealth, szWeapon);
 
     //if (pAttacker->m_iTeamNum == CS_TEAM_CT && pVictim->m_iTeamNum == CS_TEAM_T)
     //    Message("lol");
