@@ -56,6 +56,7 @@ public:
     int GetMaxNominatedMaps() { return m_iMaxNominatedMaps; };
     int AddMapNomination(CPlayerSlot iPlayerSlot, const char* sMapSubstring);
     bool IsMapIndexEnabled(int iMapIndex);
+    int GetTotalNominations(int iMapIndex);
     int ForceNextMap(const char* sMapSubstring);
     int GetMapListSize() { return m_vecMapList.Count(); };
     const char* GetMapName(int iMapIndex) { return m_vecMapList[iMapIndex].GetName(); };
