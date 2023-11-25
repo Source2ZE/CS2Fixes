@@ -19,6 +19,7 @@
 
 #pragma once
 #ifdef _ZOMBIEREBORN
+#define ZR_PREFIX   " \4[Zombie:Reborn]\1 "
 
 //extern bool g_ZR_ZOMBIE_SPAWN_READY;
 
@@ -30,6 +31,7 @@ enum class EZRRoundState
 };
 
 extern EZRRoundState g_ZRRoundState;
+extern float g_flKnockbackScale;
 
 void ZR_OnStartupServer();
 void ZR_OnRoundPrestart(IGameEvent* pEvent);
@@ -37,5 +39,6 @@ void ZR_OnRoundStart(IGameEvent* pEvent);
 void ZR_OnPlayerSpawn(IGameEvent* pEvent);
 void ZR_OnPlayerHurt(IGameEvent* pEvent);
 void ZR_OnPlayerDeath(IGameEvent* pEvent);
+void ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage);
 
 #endif //_ZOMBIEREBORN

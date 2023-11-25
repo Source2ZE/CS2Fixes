@@ -35,6 +35,9 @@
 #include "playermanager.h"
 #include "igameevents.h"
 #include "gameconfig.h"
+#ifdef _ZOMBIEREBORN
+#include "zombiereborn.h"
+#endif //_ZOMBIEREBORN
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -144,6 +147,16 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 
 		return;
 	}
+	
+	//grenade and molotov knockback
+	CBaseEntity *pAttacker = inputInfo->m_hAttacker.Get();
+	CCSPlayerController* pAttackerController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pAttacker);
+	if (pAttackerController && pThis->IsPawn() && pAttackerController->m_iTeamNum == CS_TEAM_CT && pThis->m_iTeamNum == CS_TEAM_T)
+	{
+		if (V_strncmp(pszInflictorClass, "hegrenade", 9) || V_strncmp(pszInflictorClass, "inferno", 7))
+			ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pThis, (int)inputInfo->m_flDamage);
+	}
+
 #endif //_ZOMBIEREBORN
 	// Prevent molly on self
 	if (g_bBlockMolotoveSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
