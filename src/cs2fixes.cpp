@@ -52,6 +52,7 @@
 #include "discord.h"
 #include "map_votes.h"
 #include "entity/cgamerules.h"
+#include "ccomponent.h"
 #include "entity/ccsplayercontroller.h"
 
 #define VPROF_ENABLED
@@ -266,6 +267,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	srand(time(0));
 
+	DISPATCH_COMPONENT_METHOD(Load);
+
 	return true;
 }
 
@@ -283,6 +286,8 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK_MEMFUNC(INetworkServerService, StartupServer, g_pNetworkServerService, this, &CS2Fixes::Hook_StartupServer, true);
 	SH_REMOVE_HOOK_MEMFUNC(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, this, &CS2Fixes::Hook_CheckTransmit, true);
 	SH_REMOVE_HOOK_MEMFUNC(ICvar, DispatchConCommand, g_pCVar, this, &CS2Fixes::Hook_DispatchConCommand, false);
+
+	DISPATCH_COMPONENT_METHOD(Unload);
 
 	ConVar_Unregister();
 

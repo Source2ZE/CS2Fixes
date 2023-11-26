@@ -194,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\adminsystem.h" />
+    <ClInclude Include="src\ccomponent.h" />
     <ClInclude Include="src\commands.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\cs2fixes.h" />
