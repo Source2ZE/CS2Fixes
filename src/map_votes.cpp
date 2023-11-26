@@ -186,13 +186,12 @@ void CMapVoteSystem::StartVote()
 		vecPossibleMaps.AddToTail(i);
 	}
 
-	#ifdef _DEBUG
+	// Print all available maps out to console
 	FOR_EACH_VEC(vecPossibleMaps, i)
 	{
 		int iPossibleMapIndex = vecPossibleMaps[i];
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX"The %d-th possible map index %d is %s\n", i, iPossibleMapIndex, m_vecMapList[iPossibleMapIndex].GetName());
+		Msg("The %d-th possible map index %d is %s\n", i, iPossibleMapIndex, m_vecMapList[iPossibleMapIndex].GetName());
 	}
-	#endif
 
 	// Set the maps in the vote: merge nominated and possible maps, then randomly sort
 	int iNumMapsInVote = vecPossibleMaps.Count() + vecIncludedMaps.Count();
@@ -214,12 +213,12 @@ void CMapVoteSystem::StartVote()
 		}
 	}
 
-	#ifdef _DEBUG
-	for (int i = 0; i < iNumMapsInVote; i++) {
+	// Print the maps chosen in the vote to console
+	for (int i = 0; i < iNumMapsInVote; i++)
+	{
 		int iMapIndex = g_pGameRules->m_nEndMatchMapGroupVoteOptions[i];
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX"The %d-th chosen map index %d is %s\n", i, iMapIndex, m_vecMapList[iMapIndex].GetName());
+		Msg("The %d-th chosen map index %d is %s\n", i, iMapIndex, m_vecMapList[iMapIndex].GetName());
 	}
-	#endif
 
 	// Start the end-of-vote timer to finish the vote
 	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_endmatch_votenextleveltime"));
@@ -261,13 +260,15 @@ void CMapVoteSystem::FinishVote()
 	}
 
 	// Print out the winning map
-	int iWinningMapIndex = g_pGameRules->m_nEndMatchMapVoteWinner;
+	int iWinningMapIndex = WinningMapIndex();
+	if (iWinningMapIndex < 0) iWinningMapIndex = -1;
+	g_pGameRules->m_nEndMatchMapVoteWinner = iWinningMapIndex;
 	int iWinningMap = g_pGameRules->m_nEndMatchMapGroupVoteOptions[iWinningMapIndex];
 	if (m_iForcedNextMapIndex == -1) {
-		ClientPrintAll(HUD_PRINTTALK, "The vote has ended. \x06%s \x01will be the next map!\n", m_vecMapList[iWinningMap].GetName());
+		ClientPrintAll(HUD_PRINTTALK, "The vote has ended. \x06%s\x01 will be the next map!\n", m_vecMapList[iWinningMap].GetName());
 	}
 	else {
-		ClientPrintAll(HUD_PRINTTALK, "The vote was overriden. \x06%s \x01will be the next map!\n", m_vecMapList[m_iForcedNextMapIndex].GetName());
+		ClientPrintAll(HUD_PRINTTALK, "The vote was overriden. \x06%s\x01 will be the next map!\n", m_vecMapList[m_iForcedNextMapIndex].GetName());
 	}
 
 	// Store the winning map in the vector of played maps and pop until desired cooldown
@@ -276,14 +277,12 @@ void CMapVoteSystem::FinishVote()
 		m_vecLastPlayedMapIndexes.Remove(0);
 	}
 
-#ifdef _DEBUG
-	ClientPrintAll(HUD_PRINTTALK, "The current cooldown list is:\n");
+	Msg("The current cooldown list is:\n");
 	FOR_EACH_VEC(m_vecLastPlayedMapIndexes, i)
 	{
 		int iMapCooldownIndex = m_vecLastPlayedMapIndexes[i];
-		ClientPrintAll(HUD_PRINTTALK, "- %d: %s (%d)\n", i, GetMapName(iMapCooldownIndex), iMapCooldownIndex);
+		Msg("- %d: %s (%d)\n", i, GetMapName(iMapCooldownIndex), iMapCooldownIndex);
 	}
-#endif
 }
 
 void CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption)
@@ -299,10 +298,10 @@ void CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption
 	// Set the vote for the player
 	int iSlot = pController->GetPlayerSlot();
 	m_arrPlayerVotes[iSlot] = iVoteOption;
-	
-	#ifdef _DEBUG
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX"Adding vote to map %i for player slot %i.", iVoteOption, iSlot);
-	#endif
+
+	// Log vote to console
+	const char* sMapName = g_pMapVoteSystem->GetMapName(iMapIndexToVote);
+	Msg("Adding vote to map %i (%s) for player %s (slot %i).", iVoteOption, sMapName, pController->GetPlayerName(), iSlot);
 
 	// Update the winning map for every player vote
 	UpdateWinningMap();
@@ -332,11 +331,8 @@ int CMapVoteSystem::WinningMapIndex()
 	// Identify the max. number of votes
 	int iMaxVotes = 0;
 	for (int i = 0; i < 10; i++) {
-		iMaxVotes = (arrMapVotes[i] > iMaxVotes)? arrMapVotes[i] : iMaxVotes;
+		iMaxVotes = (arrMapVotes[i] > iMaxVotes) ? arrMapVotes[i] : iMaxVotes;
 	}
-
-	// If there are no votes, return -1
-	if (iMaxVotes == 0) return -1;
 
 	// Identify how many maps are tied with the max number of votes    
 	int iMapsWithMaxVotes = 0;
