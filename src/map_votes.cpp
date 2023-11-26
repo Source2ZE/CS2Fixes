@@ -125,6 +125,18 @@ CON_COMMAND_CHAT_FLAGS(nomlist, "List the list of nominations", ADMFLAG_NONE)
 	}
 }
 
+CON_COMMAND_CHAT_FLAGS(mapcooldowns, "List the maps currently in cooldown", ADMFLAG_NONE)
+{
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of maps in cooldown will be shown in console.");
+	ClientPrint(player, HUD_PRINTCONSOLE, "The list of maps in cooldown is:");
+	int iMapsInCooldown = g_pMapVoteSystem->GetMapsInCooldown();
+	for (int i = iMapsInCooldown - 1; i >= 0; i--) {
+		int iMapIndex = g_pMapVoteSystem->GetCooldownMap(i);
+		const char* sMapName = g_pMapVoteSystem->GetMapName(iMapIndex);
+		ClientPrint(player, HUD_PRINTCONSOLE, "- %s (%d maps ago)", sMapName, iMapsInCooldown - i);
+	}
+}
+
 GAME_EVENT_F(cs_win_panel_match)
 {
 	g_pMapVoteSystem->StartVote();
@@ -157,6 +169,7 @@ void CMapVoteSystem::StartVote()
 	// Seed the randomness for the event
 	int iRandomSeed = (int)gpGlobals->curtime;
 	srand(iRandomSeed);
+	m_iRandomWinnerShift = rand();
 
 	// Reset the player vote counts as the vote just started
 	for (int i = 0; i < gpGlobals->maxClients; i++) {
@@ -332,7 +345,7 @@ int CMapVoteSystem::WinningMapIndex()
 	}
 
 	// Break ties: 'random' map with the most votes
-	int iWinningMapTieBreak = ((int)gpGlobals->curtime) % iMapsWithMaxVotes;
+	int iWinningMapTieBreak = m_iRandomWinnerShift % iMapsWithMaxVotes;
 	int iWinningMapCount = 0;
 	for (int i = 0; i < 10; i++) {
 		if (arrMapVotes[i] == iMaxVotes) {
