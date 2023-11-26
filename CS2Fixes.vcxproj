@@ -174,6 +174,8 @@
     <ClCompile Include="src\ctimer.cpp" />
     <ClCompile Include="src\cvars.cpp" />
     <ClCompile Include="src\detours.cpp" />
+    <ClCompile Include="src\discord.cpp" />
+    <ClCompile Include="src\entityio.cpp" />
     <ClCompile Include="src\events.cpp" />
     <ClCompile Include="src\gameconfig.cpp" />
     <ClCompile Include="src\httpmanager.cpp" />
@@ -207,6 +209,8 @@
     <ClInclude Include="src\cdetour.h" />
     <ClInclude Include="src\ctimer.h" />
     <ClInclude Include="src\detours.h" />
+    <ClInclude Include="src\discord.h" />
+    <ClInclude Include="src\entityio.h" />
     <ClInclude Include="src\eventlistener.h" />
     <ClInclude Include="src\httpmanager.h" />
     <ClInclude Include="src\mempatch.h" />

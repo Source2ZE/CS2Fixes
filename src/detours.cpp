@@ -54,6 +54,7 @@ DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
+DECLARE_DETOUR(CEntityIOOutput_FireOutputInternal, Detour_CEntityIOOutput_FireOutputInternal);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -344,6 +345,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
 		success = false;
 	CBaseEntity_TakeDamageOld.EnableDetour();
+
+	if (!CEntityIOOutput_FireOutputInternal.CreateDetour(gameConfig))
+		success = false;
+	CEntityIOOutput_FireOutputInternal.EnableDetour();
 
 	return success;
 }

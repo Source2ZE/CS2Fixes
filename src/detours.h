@@ -20,6 +20,11 @@
 #pragma once
 #include "cdetour.h"
 
+// variant.h depends on ivscript.h
+DECLARE_POINTER_HANDLE(HSCRIPT);
+
+#include "eiface.h"
+#include <variant.h>
 
 class CCheckTransmitInfo;
 class IRecipientFilter;
@@ -33,6 +38,7 @@ class CTriggerPush;
 class CGameConfig;
 class CGameRules;
 class CTakeDamageInfo;
+class CEntityIOOutput;
 
 bool InitDetours(CGameConfig *gameConfig);
 void FlushAllDetours();
@@ -46,3 +52,4 @@ void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *, void *);
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther);
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis);
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo);
+void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* const pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* const value, float flDelay);
