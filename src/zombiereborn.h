@@ -19,15 +19,15 @@
 
 #pragma once
 #ifdef _ZOMBIEREBORN
-#define ZR_PREFIX   " \4[Zombie:Reborn]\1 "
+#define ZR_PREFIX " \4[Zombie:Reborn]\1 "
 
 //extern bool g_ZR_ZOMBIE_SPAWN_READY;
 
 enum class EZRRoundState
 {
-    ROUND_START,
-    POST_INFECTION,
-    ROUND_END,
+	ROUND_START,
+	POST_INFECTION,
+	ROUND_END,
 };
 
 extern EZRRoundState g_ZRRoundState;
