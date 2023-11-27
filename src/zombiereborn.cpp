@@ -133,26 +133,6 @@ CON_COMMAND_F(zr_knockback_scale, "Global knockback scale", FCVAR_LINKED_CONCOMM
 		g_flKnockbackScale = V_StringToFloat32(args[1], 5.0f);
 }
 
-// Still need to implement weapon config
-void ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon)
-{
-    Vector vecKnockback;
-    AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
-    vecKnockback *= (iDamage * g_flKnockbackScale);
-    //Message("%f %f %f\n",vecKnockback.x, vecKnockback.y, vecKnockback.z);
-    pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
-}
-
-void ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage)
-{
-    Vector vecDisplacement = pVictim->GetAbsOrigin() - pProjectile->GetAbsOrigin();
-	vecDisplacement.z += 36;
-	VectorNormalize(vecDisplacement);
-    Vector vecKnockback = vecDisplacement;
-    vecKnockback *= (iDamage * g_flKnockbackScale);
-	pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
-}
-
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
 {
 	CCSPlayerController *pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
