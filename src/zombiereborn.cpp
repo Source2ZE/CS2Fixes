@@ -17,8 +17,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef _ZOMBIEREBORN
-
 #include "commands.h"
 #include "playermanager.h"
 #include "ctimer.h"
@@ -34,6 +32,15 @@ extern CGlobalVars* gpGlobals;
 extern CCSGameRules* g_pGameRules;
 
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
+bool g_bEnableZR = false;
+
+CON_COMMAND_F(zr_enable, "Whether to enable ZR features", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bEnableZR);
+	else
+		g_bEnableZR = V_StringToBool(args[1], false);
+}
 
 void SetUpAllHumanClasses()
 {
@@ -155,5 +162,3 @@ void ZR_OnPlayerDeath(IGameEvent* pEvent)
 		pController->SwitchTeam(CS_TEAM_T);
 	}*/
 }
-
-#endif //_ZOMBIEREBORN

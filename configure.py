@@ -36,6 +36,4 @@ parser.options.add_argument('-s', '--sdks', default='all', dest='sdks',
                             'comma-delimited list of engine names (default: "all")')
 parser.options.add_argument('--targets', type=str, dest='targets', default=None,
                             help="Override the target architecture (use commas to separate multiple targets).")
-parser.options.add_argument('--enable-zr', action='store_const', const='1', dest='zombiereborn',
-                       help='Enable ZombieReborn')
 parser.Configure()

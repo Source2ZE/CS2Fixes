@@ -35,9 +35,7 @@
 #include "playermanager.h"
 #include "igameevents.h"
 #include "gameconfig.h"
-#ifdef _ZOMBIEREBORN
 #include "zombiereborn.h"
-#endif //_ZOMBIEREBORN
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -113,50 +111,51 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
 		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
 
-#ifdef _ZOMBIEREBORN
-	CCSPlayerController* pInflictorController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pInflictor);
-
-	if (pInflictorController && pThis->IsPawn() && pInflictorController->m_iTeamNum == CS_TEAM_T && pThis->m_iTeamNum == CS_TEAM_CT)
+	if (g_bEnableZR)
 	{
-		Message("Infection!\n");
-		CCSPlayerController* pVictimController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pThis);
-		
-		Vector vecPosition = pThis->GetAbsOrigin();
-		QAngle angRotation = pThis->GetAbsRotation();
+		CCSPlayerController* pInflictorController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pInflictor);
 
-		inputInfo->m_flDamage = 1000.0f;
-		CBaseEntity_TakeDamageOld(pThis, inputInfo);
+		if (pInflictorController && pThis->IsPawn() && pInflictorController->m_iTeamNum == CS_TEAM_T && pThis->m_iTeamNum == CS_TEAM_CT)
+		{
+			Message("Infection!\n");
+			CCSPlayerController* pVictimController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pThis);
 
-		// using ChangeTeam here to also immediately respawn the player
-		pVictimController->ChangeTeam(CS_TEAM_T);
+			Vector vecPosition = pThis->GetAbsOrigin();
+			QAngle angRotation = pThis->GetAbsRotation();
 
-		CHandle<Z_CBaseEntity> handle = pThis->GetHandle();
-		new CTimer(1.0f, false, [handle, vecPosition, angRotation]
-			{
-				Z_CBaseEntity* pPawn = handle.Get();
+			inputInfo->m_flDamage = 1000.0f;
+			CBaseEntity_TakeDamageOld(pThis, inputInfo);
 
-				if (!pPawn || !pPawn->IsAlive())
+			// using ChangeTeam here to also immediately respawn the player
+			pVictimController->ChangeTeam(CS_TEAM_T);
+
+			CHandle<Z_CBaseEntity> handle = pThis->GetHandle();
+			new CTimer(1.0f, false, [handle, vecPosition, angRotation]
+				{
+					Z_CBaseEntity* pPawn = handle.Get();
+
+					if (!pPawn || !pPawn->IsAlive())
+						return -1.0f;
+
+					pPawn->SetAbsOrigin(vecPosition);
+					pPawn->SetAbsRotation(angRotation);
+
 					return -1.0f;
+				});
 
-				pPawn->SetAbsOrigin(vecPosition);
-				pPawn->SetAbsRotation(angRotation);
+			return;
+		}
 
-				return -1.0f;
-			});
-
-		return;
-	}
-	
-	//grenade and molotov knockback
-	CBaseEntity *pAttacker = inputInfo->m_hAttacker.Get();
-	CCSPlayerController* pAttackerController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pAttacker);
-	if (pAttackerController && pThis->IsPawn() && pAttackerController->m_iTeamNum == CS_TEAM_CT && pThis->m_iTeamNum == CS_TEAM_T)
-	{
-		if (V_strncmp(pszInflictorClass, "hegrenade", 9) || V_strncmp(pszInflictorClass, "inferno", 7))
-			ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pThis, (int)inputInfo->m_flDamage);
+		//grenade and molotov knockback
+		CBaseEntity* pAttacker = inputInfo->m_hAttacker.Get();
+		CCSPlayerController* pAttackerController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pAttacker);
+		if (pAttackerController && pThis->IsPawn() && pAttackerController->m_iTeamNum == CS_TEAM_CT && pThis->m_iTeamNum == CS_TEAM_T)
+		{
+			if (V_strncmp(pszInflictorClass, "hegrenade", 9) || V_strncmp(pszInflictorClass, "inferno", 7))
+				ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pThis, (int)inputInfo->m_flDamage);
+		}
 	}
 
-#endif //_ZOMBIEREBORN
 	// Prevent molly on self
 	if (g_bBlockMolotoveSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
 		return;
