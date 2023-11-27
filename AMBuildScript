@@ -357,10 +357,6 @@ class MMSPluginConfig(object):
     elif cxx.target.platform == 'windows':
       cxx.defines += ['WIN32', '_WINDOWS', 'SUBHOOK_STATIC']
 
-    # ZombieReborn
-    if builder.options.zombiereborn == '1':
-      cxx.defines += ['_ZOMBIEREBORN']
-
     # Finish up.
     # Custom defines here
     cxx.defines += [ ]
