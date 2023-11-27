@@ -230,6 +230,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
 
+	RegisterWeaponCommands();
+
 	// Steam authentication
 	new CTimer(1.0f, true, []()
 	{
