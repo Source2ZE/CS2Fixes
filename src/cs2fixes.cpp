@@ -46,9 +46,7 @@
 #include "eventlistener.h"
 #include "gameconfig.h"
 #include "votemanager.h"
-#ifdef _ZOMBIEREBORN
 #include "zombiereborn.h"
-#endif //_ZOMBIEREBORN
 #include "httpmanager.h"
 #include "discord.h"
 #include "entity/cgamerules.h"
@@ -420,9 +418,8 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	// Set amount of Extends left
 	g_iExtendsLeft = 1;
 
-#ifdef _ZOMBIEREBORN
-	ZR_OnStartupServer();
-#endif //_ZOMBIEREBORN
+	if (g_bEnableZR)
+		ZR_OnStartupServer();
 }
 
 void CS2Fixes::Hook_GameServerSteamAPIActivated()
