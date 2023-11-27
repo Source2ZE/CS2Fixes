@@ -123,16 +123,6 @@ void ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim,
 	pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
 }
 
-// CONVAR_TODO
-float g_flKnockbackScale = 5.0f;
-CON_COMMAND_F(zr_knockback_scale, "Global knockback scale", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %f\n", args[0], g_flKnockbackScale);
-	else
-		g_flKnockbackScale = V_StringToFloat32(args[1], 5.0f);
-}
-
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
 {
 	CCSPlayerController *pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
