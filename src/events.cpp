@@ -23,10 +23,7 @@
 #include "ctimer.h"
 #include "eventlistener.h"
 #include "entity/cbaseplayercontroller.h"
-#include "playermanager.h"
-#ifdef _ZOMBIEREBORN
 #include "zombiereborn.h"
-#endif //_ZOMBIEREBORN
 
 #include "tier0/memdbgon.h"
 
@@ -78,9 +75,8 @@ CON_COMMAND_F(cs2f_force_ct, "Whether to force everyone to CTs on every new roun
 
 GAME_EVENT_F(round_prestart)
 {
-#ifdef _ZOMBIEREBORN
-	ZR_OnRoundPrestart(pEvent);
-#endif //_ZOMBIEREBORN
+	if (g_bEnableZR)
+		ZR_OnRoundPrestart(pEvent);
 
 	// Right now we're only using this event to move everyone to CTs
 	if (!g_bForceCT)
@@ -138,9 +134,9 @@ GAME_EVENT_F(player_spawn)
 	if (!pController)
 		return;
 
-#ifdef _ZOMBIEREBORN
-	ZR_OnPlayerSpawn(pEvent);
-#endif //_ZOMBIEREBORN
+	if (g_bEnableZR)
+		ZR_OnPlayerSpawn(pEvent);
+
 
 	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
@@ -179,9 +175,9 @@ CON_COMMAND_F(cs2f_topdefender_enable, "Whether to use TopDefender", FCVAR_SPONL
 
 GAME_EVENT_F(player_hurt)
 {
-#ifdef _ZOMBIEREBORN
-	ZR_OnPlayerHurt(pEvent);
-#endif //_ZOMBIEREBORN
+	if (g_bEnableZR)
+		ZR_OnPlayerHurt(pEvent);
+
 	if (!g_bEnableTopDefender)
 		return;
 
@@ -238,9 +234,8 @@ GAME_EVENT_F(round_start)
 		pPlayer->SetTotalKills(0);
 	}
 
-#ifdef _ZOMBIEREBORN
-	ZR_OnRoundStart(pEvent);
-#endif //_ZOMBIEREBORN
+	if (g_bEnableZR)
+		ZR_OnRoundStart(pEvent);
 }
 
 GAME_EVENT_F(round_end)

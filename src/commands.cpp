@@ -34,6 +34,7 @@
 #include "ctimer.h"
 #include "httpmanager.h"
 #include "discord.h"
+#include "zombiereborn.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
 
@@ -351,17 +352,9 @@ CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fp
 }
 
 // CONVAR_TODO
-static bool g_bEnableZtele = false;
 static float g_flMaxZteleDistance = 150.0f;
 static bool g_bZteleHuman = false;
 
-CON_COMMAND_F(zr_ztele_enable, "Whether to enable ztele", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bEnableZtele);
-	else
-		g_bEnableZtele = V_StringToBool(args[1], false);
-}
 CON_COMMAND_F(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
 	if (args.ArgC() < 2)
@@ -380,7 +373,7 @@ CON_COMMAND_F(zr_ztele_allow_humans, "Whether to allow humans to use ztele", FCV
 CON_COMMAND_CHAT(ztele, "teleport to spawn")
 {
 	// Silently return so the command is completely hidden
-	if (!g_bEnableZtele)
+	if (!g_bEnableZR)
 		return;
 
 	if (!player)
