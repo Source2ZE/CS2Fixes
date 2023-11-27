@@ -57,17 +57,18 @@ void ZR_OnStartupServer()
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
 	// CONVAR_TODO
-	// --Here we force some cvars that are essential for the scripts to work
+	// Here we force some cvars that are essential for the scripts to work
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_pistols 3");
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_smgs 3");
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_heavy 3");
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_rifles 3");
 	g_pEngineServer2->ServerCommand("mp_give_player_c4 0");
 	g_pEngineServer2->ServerCommand("mp_friendlyfire 0");
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 3");
-	g_pEngineServer2->ServerCommand("bot_quota_mode fill");
-	//--Convars : SetInt('mp_ignore_round_win_conditions', 1)
+	// Legacy Lua respawn stuff, do not use these, we should handle respawning ourselves now that we can
+	//g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
+	//g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 1");
+	//g_pEngineServer2->ServerCommand("bot_quota_mode fill");
+	//g_pEngineServer2->ServerCommand("mp_ignore_round_win_conditions 1");
 }
 
 void ZR_OnRoundPrestart(IGameEvent* pEvent)
