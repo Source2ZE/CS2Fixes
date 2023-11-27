@@ -126,7 +126,10 @@ CON_COMMAND_F(cs2f_noblock_enable, "Whether to use noblock, which sets debris co
 
 GAME_EVENT_F(player_spawn)
 {
-	// Right now we're only using this event to set debris collisions
+	if (g_bEnableZR)
+		ZR_OnPlayerSpawn(pEvent);
+
+	// Rest of the code is to set debris collisions
 	if (!g_bNoblock)
 		return;
 
@@ -134,10 +137,6 @@ GAME_EVENT_F(player_spawn)
 
 	if (!pController)
 		return;
-
-	if (g_bEnableZR)
-		ZR_OnPlayerSpawn(pEvent);
-
 
 	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
@@ -220,6 +219,9 @@ GAME_EVENT_F(player_death)
 
 GAME_EVENT_F(round_start)
 {
+	if (g_bEnableZR)
+		ZR_OnRoundStart(pEvent);
+
 	if (!g_bEnableTopDefender)
 		return;
 
@@ -234,9 +236,6 @@ GAME_EVENT_F(round_start)
 		pPlayer->SetTotalHits(0);
 		pPlayer->SetTotalKills(0);
 	}
-
-	if (g_bEnableZR)
-		ZR_OnRoundStart(pEvent);
 }
 
 GAME_EVENT_F(round_end)
