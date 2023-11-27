@@ -30,6 +30,7 @@ extern CEntitySystem* g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern CGlobalVars* gpGlobals;
 extern CCSGameRules* g_pGameRules;
+extern IGameEventManager2* g_gameEventManager;
 
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
 bool g_bEnableZR = false;
@@ -130,15 +131,93 @@ void ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim,
 	pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
 }
 
+void FakePlayerDeath(CCSPlayerController *pAttacker, CCSPlayerController *pVictim, const char *szWeapon)
+{
+	IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_death");
+
+	if (!pEvent)
+		return;
+	//SetPlayer functions are swapped, need to remove the cast once fixed
+	pEvent->SetPlayer("userid", (CEntityInstance*)pVictim->GetPlayerSlot());
+	pEvent->SetPlayer("attacker", (CEntityInstance*)pAttacker->GetPlayerSlot());
+	pEvent->SetString("weapon", szWeapon);
+
+	Message("\n--------------------------------\n"
+		"userid: %i\n"
+		"userid_pawn: %i\n"
+		"attacker: %i\n"
+		"attacker_pawn: %i\n"
+		"weapon: %s\n"
+		"--------------------------------\n",
+		pEvent->GetInt("userid"),
+		pEvent->GetInt("userid_pawn"),
+		pEvent->GetInt("attacker"),
+		pEvent->GetInt("attacker_pawn"),
+		pEvent->GetString("weapon"));
+
+	g_gameEventManager->FireEvent(pEvent, false);
+
+}
+
+void Infect(CCSPlayerController *pAttacker, CCSPlayerController *pVictim)
+{
+	FakePlayerDeath(pAttacker, pVictim, "knife");
+	pVictim->SwitchTeam(CS_TEAM_T);
+}
+
+
+void InfectMotherZombie(CCSPlayerController *pVictim)
+{
+	FakePlayerDeath(pVictim, pVictim, "prop_exploding_barrel");
+	pVictim->SwitchTeam(CS_TEAM_T);
+}
+
+CON_COMMAND_CHAT(infect, "infect a player")
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !infect <name>");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
+		return;
+	}
+
+	if (!player)
+		return;
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		Infect(player, pTarget);
+	}
+}
+
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
 {
 	CCSPlayerController *pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
 	CCSPlayerController *pVictim = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 	const char* szWeapon = pEvent->GetString("weapon");
 	int iDmgHealth = pEvent->GetInt("dmg_health");
+
+
 	//grenade and molotov knockbacks are handled by TakeDamage detours
 	if (!pAttacker || !pVictim || strcmp(szWeapon, "") == 0 || strcmp(szWeapon, "inferno") == 0 || strcmp(szWeapon, "hegrenade") == 0)
 		return;
+
 	if (pAttacker->m_iTeamNum() == CS_TEAM_CT && pVictim->m_iTeamNum() == CS_TEAM_T)
 		ApplyKnockback((CCSPlayerPawn*)pAttacker->GetPawn(), (CCSPlayerPawn*)pVictim->GetPawn(), iDmgHealth, szWeapon);
 
