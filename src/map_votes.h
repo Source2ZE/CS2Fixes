@@ -70,9 +70,11 @@ public:
     void FinishVote();
     void RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
     void SetMapCooldown(int iMapCooldown) { m_iMapCooldown = iMapCooldown; };
+    int GetMapIndexFromSubstring(const char* sMapSubstring);
     int GetMapCooldown() { return m_iMapCooldown; };
     int GetMapsInCooldown() { return m_vecLastPlayedMapIndexes.Count(); }
     int GetCooldownMap(int iCooldownIndex) { return m_vecLastPlayedMapIndexes[iCooldownIndex]; };
+    void PushMapIndexInCooldown(int iMapIndex) { m_vecLastPlayedMapIndexes.AddToTail(iMapIndex); };
     void SetMaxNominatedMaps(int iMaxNominatedMaps) { m_iMaxNominatedMaps = iMaxNominatedMaps; };
     int GetMaxNominatedMaps() { return m_iMaxNominatedMaps; };
     int AddMapNomination(CPlayerSlot iPlayerSlot, const char* sMapSubstring);
@@ -86,7 +88,6 @@ public:
 private:
     int WinningMapIndex();
     bool UpdateWinningMap();
-    int GetMapIndexFromSubstring(const char* sMapSubstring);
     void GetNominatedMapsForVote(CUtlVector<int>& vecChosenNominatedMaps);
 
     CUtlVector<CMapInfo> m_vecMapList;

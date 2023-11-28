@@ -291,7 +291,7 @@ void CMapVoteSystem::FinishVote()
 	}
 
 	// Store the winning map in the vector of played maps and pop until desired cooldown
-	m_vecLastPlayedMapIndexes.AddToTail(iWinningMap);
+	PushMapIndexInCooldown(iWinningMap);
 	while (m_vecLastPlayedMapIndexes.Count() > m_iMapCooldown) {
 		m_vecLastPlayedMapIndexes.Remove(0);
 	}
