@@ -68,4 +68,10 @@ public:
 			addresses::CCSPlayerController_SwitchTeam(this, iTeam);
 		}
 	}
+
+	void Respawn()
+	{
+		static int offset = g_GameConfig->GetOffset("CCSPlayerController_Respawn");
+		CALL_VIRTUAL(void, offset, this);
+	}
 };
