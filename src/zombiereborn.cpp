@@ -132,15 +132,15 @@ void ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim,
 	pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
 }
 
-void FakePlayerDeath(CCSPlayerController *pAttacker, CCSPlayerController *pVictim, const char *szWeapon)
+void FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, const char *szWeapon)
 {
 	IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_death");
 
 	if (!pEvent)
 		return;
 	//SetPlayer functions are swapped, need to remove the cast once fixed
-	pEvent->SetPlayer("userid", (CEntityInstance*)pVictim->GetPlayerSlot());
-	pEvent->SetPlayer("attacker", (CEntityInstance*)pAttacker->GetPlayerSlot());
+	pEvent->SetPlayer("userid", (CEntityInstance*)pVictimController->GetPlayerSlot());
+	pEvent->SetPlayer("attacker", (CEntityInstance*)pAttackerController->GetPlayerSlot());
 	pEvent->SetString("weapon", szWeapon);
 
 	Message("\n--------------------------------\n"
@@ -160,17 +160,40 @@ void FakePlayerDeath(CCSPlayerController *pAttacker, CCSPlayerController *pVicti
 
 }
 
-void Infect(CCSPlayerController *pAttacker, CCSPlayerController *pVictim)
+void Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController)
 {
 	FakePlayerDeath(pAttacker, pVictim, "knife");
 	pVictim->SwitchTeam(CS_TEAM_T);
 }
 
 
-void InfectMotherZombie(CCSPlayerController *pVictim)
+void InfectMotherZombie(CCSPlayerController *pVictimController)
 {
 	FakePlayerDeath(pVictim, pVictim, "prop_exploding_barrel");
 	pVictim->SwitchTeam(CS_TEAM_T);
+}
+
+
+bool ZR_OnTakeDamageDetour(CCSPlayerPawn *pAttackerPawn, CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
+{
+	CCSPlayerController *pAttackerController = CCSPlayerController::FromPawn(pAttackerPawn);
+	CCSPlayerController *pVictimController = CCSPlayerController::FromPawn(pVictimPawn);
+
+	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_T && pVictimPawn->m_iTeamNum() == CS_TEAM_CT)
+	{
+		Infect(pAttackerController, pVictimController);
+		return true; // nullify the damage
+	}
+
+	//grenade and molotov knockback
+	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
+	{
+		CBaseEntity *pInflictor = inputInfo->m_hInflictor.Get();
+		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
+		if (V_strncmp(pszInflictorClass, "hegrenade", 9) || V_strncmp(pszInflictorClass, "inferno", 7))
+			ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)inputInfo->m_flDamage);
+	}
+	return false;
 }
 
 CON_COMMAND_CHAT(infect, "infect a player")
@@ -198,7 +221,7 @@ CON_COMMAND_CHAT(infect, "infect a player")
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+		CCSPlayerController *pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
 		if (!pTarget)
 			continue;
@@ -209,18 +232,18 @@ CON_COMMAND_CHAT(infect, "infect a player")
 
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
 {
-	CCSPlayerController *pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
-	CCSPlayerController *pVictim = (CCSPlayerController*)pEvent->GetPlayerController("userid");
+	CCSPlayerController *pAttackerController = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
+	CCSPlayerController *pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 	const char* szWeapon = pEvent->GetString("weapon");
 	int iDmgHealth = pEvent->GetInt("dmg_health");
 
 
 	//grenade and molotov knockbacks are handled by TakeDamage detours
-	if (!pAttacker || !pVictim || strcmp(szWeapon, "") == 0 || strcmp(szWeapon, "inferno") == 0 || strcmp(szWeapon, "hegrenade") == 0)
+	if (!pAttackerController || !pVictimController || strcmp(szWeapon, "") == 0 || strcmp(szWeapon, "inferno") == 0 || strcmp(szWeapon, "hegrenade") == 0)
 		return;
 
-	if (pAttacker->m_iTeamNum() == CS_TEAM_CT && pVictim->m_iTeamNum() == CS_TEAM_T)
-		ApplyKnockback((CCSPlayerPawn*)pAttacker->GetPawn(), (CCSPlayerPawn*)pVictim->GetPawn(), iDmgHealth, szWeapon);
+	if (pAttackerController->m_iTeamNum() == CS_TEAM_CT && pVictimController->m_iTeamNum() == CS_TEAM_T)
+		ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon);
 
 	//if (pAttacker->m_iTeamNum == CS_TEAM_CT && pVictim->m_iTeamNum == CS_TEAM_T)
 	//	Message("lol");
