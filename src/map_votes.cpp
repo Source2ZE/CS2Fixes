@@ -290,6 +290,22 @@ void CMapVoteSystem::FinishVote()
 		ClientPrintAll(HUD_PRINTTALK, "The vote was overriden. \x06%s\x01 will be the next map!\n", m_vecMapList[m_iForcedNextMapIndex].GetName());
 	}
 
+	// Print vote result information: how many votes did each map get?
+	int arrMapVotes[10];
+	ClientPrintAll(HUD_PRINTCONSOLE, "Map vote result --- total votes per map:\n");
+	for (int i = 0; i < gpGlobals->maxClients; i++) {
+		auto pController = CCSPlayerController::FromSlot(i);
+		int iPlayerVotedIndex = m_arrPlayerVotes[i];
+		if (pController && pController->IsConnected() && iPlayerVotedIndex >= 0) {
+			arrMapVotes[iPlayerVotedIndex]++;
+		}
+	}
+	for (int i = 0; i < 10; i++) {
+		int iMapIndex = g_pGameRules->m_nEndMatchMapGroupVoteOptions[i];
+		const char* sIsWinner = (i == iWinningMapIndex) ? "(WINNER)" : "";
+		ClientPrintAll(HUD_PRINTCONSOLE, "- %s got %d votes %s\n", GetMapName(iMapIndex), arrMapVotes[i]);
+	}
+
 	// Store the winning map in the vector of played maps and pop until desired cooldown
 	PushMapIndexInCooldown(iWinningMap);
 	while (m_vecLastPlayedMapIndexes.Count() > m_iMapCooldown) {
