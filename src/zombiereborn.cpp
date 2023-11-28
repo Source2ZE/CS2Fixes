@@ -32,6 +32,8 @@ extern CGlobalVars* gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IGameEventManager2* g_gameEventManager;
 
+void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast);
+
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
 bool g_bEnableZR = false;
 
@@ -98,8 +100,8 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 {
 	CCSPlayerController* pController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 
-	if (g_ZRRoundState == EZRRoundState::POST_INFECTION && pController->m_iTeamNum == CS_TEAM_CT)
-		pController->SwitchTeam(CS_TEAM_T);
+	if (pController && g_ZRRoundState == EZRRoundState::POST_INFECTION && pController->m_iTeamNum == CS_TEAM_CT)
+		ZR_Infect(pController, pController, false); //set health and probably model doesn't work here
 }
 
 // CONVAR_TODO
@@ -113,7 +115,7 @@ CON_COMMAND_F(zr_knockback_scale, "Global knockback scale", FCVAR_LINKED_CONCOMM
 }
 
 // Still need to implement weapon config
-void ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon)
+void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon)
 {
 	Vector vecKnockback;
 	AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
@@ -122,7 +124,7 @@ void ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, 
 	pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
 }
 
-void ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage)
+void ZR_ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage)
 {
 	Vector vecDisplacement = pVictim->GetAbsOrigin() - pProjectile->GetAbsOrigin();
 	vecDisplacement.z += 36;
@@ -132,7 +134,7 @@ void ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim,
 	pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
 }
 
-void FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, const char *szWeapon)
+void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, const char *szWeapon)
 {
 	IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_death");
 
@@ -160,17 +162,28 @@ void FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerControll
 
 }
 
-void Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController)
+void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast)
 {
-	FakePlayerDeath(pAttacker, pVictim, "knife");
-	pVictim->SwitchTeam(CS_TEAM_T);
+	if (bBroadcast)
+		ZR_FakePlayerDeath(pAttackerController, pVictimController, "knife"); // or any other killicon
+	pVictimController->SwitchTeam(CS_TEAM_T);
+
+	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
+	if (!pVictimPawn)
+		return;
+	//set model/health/etc here
+	
+	pVictimPawn->m_iMaxHealth = 10000;
+	pVictimPawn->m_iHealth = 10000;
 }
 
 
-void InfectMotherZombie(CCSPlayerController *pVictimController)
+void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 {
-	FakePlayerDeath(pVictim, pVictim, "prop_exploding_barrel");
-	pVictim->SwitchTeam(CS_TEAM_T);
+	ZR_FakePlayerDeath(pVictimController, pVictimController, "prop_exploding_barrel"); // or any other killicon
+	pVictimController->SwitchTeam(CS_TEAM_T);
+
+	//set model/health/etc here
 }
 
 
@@ -181,53 +194,19 @@ bool ZR_OnTakeDamageDetour(CCSPlayerPawn *pAttackerPawn, CCSPlayerPawn *pVictimP
 
 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_T && pVictimPawn->m_iTeamNum() == CS_TEAM_CT)
 	{
-		Infect(pAttackerController, pVictimController);
+		ZR_Infect(pAttackerController, pVictimController, true);
 		return true; // nullify the damage
 	}
 
 	//grenade and molotov knockback
 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
 	{
-		CBaseEntity *pInflictor = inputInfo->m_hInflictor.Get();
+		CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
 		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 		if (V_strncmp(pszInflictorClass, "hegrenade", 9) || V_strncmp(pszInflictorClass, "inferno", 7))
-			ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)inputInfo->m_flDamage);
+			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage);
 	}
 	return false;
-}
-
-CON_COMMAND_CHAT(infect, "infect a player")
-{
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !infect <name>");
-		return;
-	}
-
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
-
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
-		return;
-	}
-
-	if (!player)
-		return;
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController *pTarget = CCSPlayerController::FromSlot(pSlots[i]);
-
-		if (!pTarget)
-			continue;
-
-		Infect(player, pTarget);
-	}
 }
 
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
@@ -243,7 +222,7 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent)
 		return;
 
 	if (pAttackerController->m_iTeamNum() == CS_TEAM_CT && pVictimController->m_iTeamNum() == CS_TEAM_T)
-		ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon);
+		ZR_ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon);
 
 	//if (pAttacker->m_iTeamNum == CS_TEAM_CT && pVictim->m_iTeamNum == CS_TEAM_T)
 	//	Message("lol");

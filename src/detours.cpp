@@ -112,7 +112,8 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
 
 	if (g_bEnableZR)
-		CBaseEntity* pAttacker = inputInfo->m_hAttacker.Get();
+	{
+		Z_CBaseEntity *pAttacker = (Z_CBaseEntity*)inputInfo->m_hAttacker.Get();
 		if (pAttacker && pThis && pAttacker->IsPawn() && pThis->IsPawn())
 		{
 			if (ZR_OnTakeDamageDetour((CCSPlayerPawn*)pAttacker, (CCSPlayerPawn*)pThis, inputInfo))

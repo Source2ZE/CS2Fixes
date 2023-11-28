@@ -103,6 +103,7 @@ public:
 	SCHEMA_FIELD(float, m_lastNetworkChange)
 	SCHEMA_FIELD_POINTER(CNetworkTransmitComponent, m_NetworkTransmitComponent)
 	SCHEMA_FIELD(int, m_iHealth)
+	SCHEMA_FIELD(int, m_iMaxHealth)
 	SCHEMA_FIELD(int, m_iTeamNum)
 	SCHEMA_FIELD(Vector, m_vecAbsVelocity)
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
