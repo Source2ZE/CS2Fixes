@@ -184,6 +184,7 @@ GAME_EVENT_F(player_hurt)
 		return;
 
 	pPlayer->SetTotalDamage(pPlayer->GetTotalDamage() + pEvent->GetInt("dmg_health"));
+	pPlayer->SetTotalHits(pPlayer->GetTotalHits() + 1);
 }
 
 GAME_EVENT_F(round_start)
@@ -199,6 +200,7 @@ GAME_EVENT_F(round_start)
 			continue;
 
 		pPlayer->SetTotalDamage(0);
+		pPlayer->SetTotalHits(0);
 	}
 }
 
@@ -242,10 +244,11 @@ GAME_EVENT_F(round_end)
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 
 		if (i < 5)
-			ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
+			ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG \x05(%i HITS)", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits());
 		else
-			ClientPrint(pController, HUD_PRINTTALK, " \x0C%i. %s \x01- \x07%i DMG", i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
+			ClientPrint(pController, HUD_PRINTTALK, " \x0C%i. %s \x01- \x07%i DMG \x05(%i HITS)", i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits());
 		
 		pPlayer->SetTotalDamage(0);
+		pPlayer->SetTotalHits(0);
 	}
 }
