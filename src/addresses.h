@@ -39,6 +39,7 @@ namespace modules
 class CEntityInstance;
 class CBasePlayerController;
 class CCSPlayerController;
+class CCSPlayerPawn;
 class Z_CBaseEntity;
 class CGameConfig;
 class CEntitySystem;
