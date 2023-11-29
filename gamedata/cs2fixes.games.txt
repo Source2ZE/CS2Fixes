@@ -309,6 +309,12 @@
 				"windows"	"27"
 				"linux"		"28"
 			}
+			//
+			"PassesTriggerFilters"
+			{
+				"windows"	"244"
+				"linux"		"245"
+			}
         }
         "Patches"
         {
