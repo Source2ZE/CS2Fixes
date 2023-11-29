@@ -303,7 +303,7 @@ void CMapVoteSystem::FinishVote()
 	for (int i = 0; i < 10; i++) {
 		int iMapIndex = g_pGameRules->m_nEndMatchMapGroupVoteOptions[i];
 		const char* sIsWinner = (i == iWinningMapIndex) ? "(WINNER)" : "";
-		ClientPrintAll(HUD_PRINTCONSOLE, "- %s got %d votes %s\n", GetMapName(iMapIndex), arrMapVotes[i]);
+		ClientPrintAll(HUD_PRINTCONSOLE, "- %s got %d votes %s\n", GetMapName(iMapIndex), arrMapVotes[i], sIsWinner);
 	}
 
 	// Store the winning map in the vector of played maps and pop until desired cooldown
