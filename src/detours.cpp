@@ -114,46 +114,11 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 
 	if (g_bEnableZR)
 	{
-		CCSPlayerController* pInflictorController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pInflictor);
-
-		if (pInflictorController && pThis->IsPawn() && pInflictorController->m_iTeamNum == CS_TEAM_T && pThis->m_iTeamNum == CS_TEAM_CT)
+		Z_CBaseEntity *pAttacker = (Z_CBaseEntity*)inputInfo->m_hAttacker.Get();
+		if (pAttacker && pThis && pAttacker->IsPawn() && pThis->IsPawn())
 		{
-			Message("Infection!\n");
-			CCSPlayerController* pVictimController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pThis);
-
-			Vector vecPosition = pThis->GetAbsOrigin();
-			QAngle angRotation = pThis->GetAbsRotation();
-
-			inputInfo->m_flDamage = 1000.0f;
-			CBaseEntity_TakeDamageOld(pThis, inputInfo);
-
-			// using ChangeTeam here to also immediately respawn the player
-			pVictimController->ChangeTeam(CS_TEAM_T);
-
-			CHandle<Z_CBaseEntity> handle = pThis->GetHandle();
-			new CTimer(1.0f, false, [handle, vecPosition, angRotation]
-				{
-					Z_CBaseEntity* pPawn = handle.Get();
-
-					if (!pPawn || !pPawn->IsAlive())
-						return -1.0f;
-
-					pPawn->SetAbsOrigin(vecPosition);
-					pPawn->SetAbsRotation(angRotation);
-
-					return -1.0f;
-				});
-
-			return;
-		}
-
-		//grenade and molotov knockback
-		CBaseEntity* pAttacker = inputInfo->m_hAttacker.Get();
-		CCSPlayerController* pAttackerController = CCSPlayerController::FromPawn((CCSPlayerPawn*)pAttacker);
-		if (pAttackerController && pThis->IsPawn() && pAttackerController->m_iTeamNum == CS_TEAM_CT && pThis->m_iTeamNum == CS_TEAM_T)
-		{
-			if (V_strncmp(pszInflictorClass, "hegrenade", 9) || V_strncmp(pszInflictorClass, "inferno", 7))
-				ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pThis, (int)inputInfo->m_flDamage);
+			if (ZR_OnTakeDamageDetour((CCSPlayerPawn*)pAttacker, (CCSPlayerPawn*)pThis, inputInfo))
+				return;
 		}
 	}
 
