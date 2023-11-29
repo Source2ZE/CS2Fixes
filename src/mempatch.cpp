@@ -27,9 +27,14 @@
 
 bool CMemPatch::PerformPatch(CGameConfig *gameConfig)
 {
-	m_pPatchAddress = gameConfig->ResolveSignature(m_pSignatureName);
+	// If we already have an address, no need to look for it again
 	if (!m_pPatchAddress)
-		return false;
+	{
+		m_pPatchAddress = gameConfig->ResolveSignature(m_pSignatureName);
+
+		if (!m_pPatchAddress)
+			return false;
+	}
 
 	const char *patch = gameConfig->GetPatch(m_pszName);
 	if (!patch)
