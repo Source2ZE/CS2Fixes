@@ -291,7 +291,7 @@ void CMapVoteSystem::FinishVote()
 	}
 
 	// Print vote result information: how many votes did each map get?
-	int arrMapVotes[10];
+	int arrMapVotes[10] = {0};
 	ClientPrintAll(HUD_PRINTCONSOLE, "Map vote result --- total votes per map:\n");
 	for (int i = 0; i < gpGlobals->maxClients; i++) {
 		auto pController = CCSPlayerController::FromSlot(i);
@@ -355,7 +355,7 @@ bool CMapVoteSystem::UpdateWinningMap()
 int CMapVoteSystem::WinningMapIndex()
 {
 	// Count the votes of every player
-	int arrMapVotes[10];
+	int arrMapVotes[10] = {0};
 	for (int i = 0; i < gpGlobals->maxClients; i++) {
 		auto pController = CCSPlayerController::FromSlot(i);
 		if (pController && pController->IsConnected() && m_arrPlayerVotes[i] >= 0) {
