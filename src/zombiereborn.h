@@ -39,4 +39,4 @@ void ZR_OnRoundStart(IGameEvent* pEvent);
 void ZR_OnPlayerSpawn(IGameEvent* pEvent);
 void ZR_OnPlayerHurt(IGameEvent* pEvent);
 void ZR_OnPlayerDeath(IGameEvent* pEvent);
-void ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage);
+bool ZR_OnTakeDamageDetour(CCSPlayerPawn *pAttackerPawn, CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo);
