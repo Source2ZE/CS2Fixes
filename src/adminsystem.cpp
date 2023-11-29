@@ -38,7 +38,7 @@ extern CCSGameRules *g_pGameRules;
 
 CAdminSystem* g_pAdminSystem = nullptr;
 
-CUtlMap<uint32, CChatCommand *> g_CommandList(0, 0, DefLessFunc(uint32));
+CUtlMap<uint32, Command *> g_CommandList(0, 0, DefLessFunc(uint32));
 
 void PrintSingleAdminAction(const char *pszAdminName, const char *pszTargetName, const char *pszAction, const char *pszAction2 = "")
 {

@@ -276,6 +276,17 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 	ConVar_Unregister();
 
+	FOR_EACH_MAP(g_CommandList, i)
+	{
+		Command& command = *g_CommandList[i];
+		Message("command: %p\n", &command);
+		ConCommand conCommand = command.GetConCommand();
+		Message("conCommand: %p\n", &conCommand);
+
+		conCommand.Shutdown();
+		g_pCVar->UnregisterConCommand(conCommand.GetRef()->handle);
+	}
+
 	g_CommandList.Purge();
 
 	FlushAllDetours();

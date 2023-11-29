@@ -168,7 +168,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 
 	if (g_CommandList.IsValidIndex(index))
 	{
-		(*g_CommandList[index])(args, pController);
+		((Command&)*g_CommandList[index]).GetChatCommand()(args, pController);
 	}
 	else
 	{
