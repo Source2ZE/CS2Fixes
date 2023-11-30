@@ -45,6 +45,35 @@ CON_COMMAND_F(zr_enable, "Whether to enable ZR features", FCVAR_LINKED_CONCOMMAN
 		g_bEnableZR = V_StringToBool(args[1], false);
 }
 
+CON_COMMAND_CHAT(zspawn, "respawn yourself")
+{
+	// Silently return so the command is completely hidden
+	if (!g_bEnableZR)
+		return;
+
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	CCSPlayerPawn *pPawn = (CCSPlayerPawn*)player->GetPawn();
+	if (!pPawn)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Invalid Pawn.");
+		return;
+	}
+	ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Classname: %s", pPawn->GetClassname());
+	if (pPawn->IsAlive())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You must be dead to respawn!");
+		return;
+	}
+
+	player->Respawn();
+	pPawn->Respawn();
+}
+
 void SetUpAllHumanClasses()
 {
 	for (int i = 0; i < gpGlobals->maxClients; i++)
