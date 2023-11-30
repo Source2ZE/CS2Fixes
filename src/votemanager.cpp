@@ -35,12 +35,20 @@ ERTVState g_RTVState = ERTVState::MAP_START;
 EExtendState g_ExtendState = EExtendState::MAP_START;
 
 // CONVAR_TODO
+bool g_bVoteManagerEnable = false;
 int g_iExtendsLeft = 1;
 float g_flExtendSucceedRatio = 0.5f;
 int g_iExtendTimeToAdd = 20;
 float g_flRTVSucceedRatio = 0.6f;
 bool g_bRTVEndRound = false;
 
+CON_COMMAND_F(cs2f_votemanager_enable, "Whether to enable votemanager features such as RTV and extends", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bVoteManagerEnable);
+	else
+		g_bVoteManagerEnable = V_StringToBool(args[1], false);
+}
 CON_COMMAND_F(cs2f_extends, "Maximum extends per map", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	if (args.ArgC() < 2)
@@ -149,6 +157,9 @@ int GetNeededExtendCount()
 
 CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
@@ -246,6 +257,9 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 
 CON_COMMAND_CHAT(unrtv, "Remove your vote to end the current map sooner.")
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
@@ -273,9 +287,11 @@ CON_COMMAND_CHAT(unrtv, "Remove your vote to end the current map sooner.")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You no longer want to RTV current map.");
 }
 
-
 CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
@@ -393,6 +409,9 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 
 CON_COMMAND_CHAT(unve, "Remove your vote to extend current map.")
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
@@ -422,6 +441,9 @@ CON_COMMAND_CHAT(unve, "Remove your vote to extend current map.")
 
 CON_COMMAND_CHAT_FLAGS(blockrtv, "Block the ability for players to vote to end current map sooner.", ADMFLAG_CHANGEMAP)
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	if (g_RTVState == ERTVState::BLOCKED_BY_ADMIN)
 	{
 		if (player)
@@ -440,6 +462,9 @@ CON_COMMAND_CHAT_FLAGS(blockrtv, "Block the ability for players to vote to end c
 
 CON_COMMAND_CHAT_FLAGS(unblockrtv, "Restore the ability for players to vote to end current map sooner.", ADMFLAG_CHANGEMAP)
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	if (g_RTVState == ERTVState::RTV_ALLOWED)
 	{
 		if (player)
@@ -458,6 +483,9 @@ CON_COMMAND_CHAT_FLAGS(unblockrtv, "Restore the ability for players to vote to e
 
 CON_COMMAND_CHAT_FLAGS(addextend, "Add another extend to the current map for players to vote.", ADMFLAG_CHANGEMAP)
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
 	if (g_ExtendState == EExtendState::POST_EXTEND_NO_EXTENDS_LEFT || g_ExtendState == EExtendState::NO_EXTENDS)
@@ -470,6 +498,9 @@ CON_COMMAND_CHAT_FLAGS(addextend, "Add another extend to the current map for pla
 
 CON_COMMAND_CHAT(extendsleft, "Display amount of extends left for the current map")
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	char message[64];
 
 	switch (g_iExtendsLeft)
