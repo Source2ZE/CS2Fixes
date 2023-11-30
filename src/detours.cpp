@@ -303,7 +303,7 @@ CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONL
 void FASTCALL Detour_CChicken_Precache(CChicken* pThis, void* pContext)
 {
 	// Do precache here
-	// addresses::PrecacheResource("soundevents/zr.vsndevts");
+	// addresses::PrecacheResource("soundevents/zr.vsndevts", pContext);
 }
 
 CUtlVector<CDetourBase *> g_vecDetours;
