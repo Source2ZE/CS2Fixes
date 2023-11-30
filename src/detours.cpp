@@ -112,15 +112,8 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
 		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
 
-	if (g_bEnableZR)
-	{
-		Z_CBaseEntity *pAttacker = (Z_CBaseEntity*)inputInfo->m_hAttacker.Get();
-		if (pAttacker && pThis && pAttacker->IsPawn() && pThis->IsPawn())
-		{
-			if (ZR_OnTakeDamageDetour((CCSPlayerPawn*)pAttacker, (CCSPlayerPawn*)pThis, inputInfo))
-				return;
-		}
-	}
+	if (g_bEnableZR && ZR_Detour_TakeDamageOld((CCSPlayerPawn*)pThis, inputInfo))
+		return;
 
 	// Prevent molly on self
 	if (g_bBlockMolotoveSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
