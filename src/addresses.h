@@ -68,4 +68,5 @@ namespace addresses
 	inline Z_CBaseEntity *(FASTCALL *CGameEntitySystem_FindEntityByName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName, 
 																		CEntityInstance *pSearchingEntity, CEntityInstance *pActivator, CEntityInstance *pCaller,
 																		IEntityFindFilter *pFilter);
+	inline void(FASTCALL *PrecacheResource)(const char* szResource, void* pContext);
 }

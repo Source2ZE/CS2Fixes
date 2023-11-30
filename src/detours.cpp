@@ -54,6 +54,7 @@ DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
+DECLARE_DETOUR(CChicken_Precache, Detour_CChicken_Precache);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -299,6 +300,12 @@ CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONL
 	bBlock = !bBlock;
 }
 
+void FASTCALL Detour_CChicken_Precache(CChicken* pThis, void* pContext)
+{
+	// Do precache here
+	// addresses::PrecacheResource("soundevents/zr.vsndevts");
+}
+
 CUtlVector<CDetourBase *> g_vecDetours;
 
 bool InitDetours(CGameConfig *gameConfig)
@@ -344,6 +351,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
 		success = false;
 	CBaseEntity_TakeDamageOld.EnableDetour();
+
+	if (!CChicken_Precache.CreateDetour(gameConfig))
+		success = false;
+	CChicken_Precache.EnableDetour();
 
 	return success;
 }

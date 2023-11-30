@@ -33,6 +33,7 @@ class CTriggerPush;
 class CGameConfig;
 class CGameRules;
 class CTakeDamageInfo;
+class CChicken;
 
 bool InitDetours(CGameConfig *gameConfig);
 void FlushAllDetours();
@@ -46,3 +47,4 @@ void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *, void *);
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther);
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis);
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo);
+void FASTCALL Detour_CChicken_Precache(CChicken* pThis, void* pContext);
