@@ -268,30 +268,35 @@ void CMapVoteSystem::FinishVote()
 	// Clean up the ongoing voting state and variables
 	m_bIsVoteOngoing = false;
 	m_iForcedNextMapIndex = -1;
-	UpdateWinningMap();
-	for (int i = 0; i < gpGlobals->maxClients; i++)
-		ClearPlayerInfo(i);
+
+	// Get the winning map
+	bool bIsNextMapVoted = UpdateWinningMap();
+	int iNextMapVoteIndex = WinningMapIndex();
 
 	// If we are forcing the map, show different text
-	if (m_iForcedNextMapIndex != -1) {
+	bool bIsNextMapForced = m_iForcedNextMapIndex != -1;
+	if (bIsNextMapForced) {
+		iNextMapVoteIndex = 0;
 		g_pGameRules->m_nEndMatchMapGroupVoteOptions[0] = m_iForcedNextMapIndex;
-		g_pGameRules->m_nEndMatchMapVoteWinner = 0;
+		g_pGameRules->m_nEndMatchMapVoteWinner = iNextMapVoteIndex;
 	}
 
 	// Print out the winning map
-	int iWinningMapIndex = WinningMapIndex();
-	if (iWinningMapIndex < 0) iWinningMapIndex = -1;
-	g_pGameRules->m_nEndMatchMapVoteWinner = iWinningMapIndex;
-	int iWinningMap = g_pGameRules->m_nEndMatchMapGroupVoteOptions[iWinningMapIndex];
-	if (m_iForcedNextMapIndex == -1) {
-		ClientPrintAll(HUD_PRINTTALK, "The vote has ended. \x06%s\x01 will be the next map!\n", m_vecMapList[iWinningMap].GetName());
+	if (iNextMapVoteIndex < 0) iNextMapVoteIndex = -1;
+	g_pGameRules->m_nEndMatchMapVoteWinner = iNextMapVoteIndex;
+	int iWinningMap = g_pGameRules->m_nEndMatchMapGroupVoteOptions[iNextMapVoteIndex];
+	if (bIsNextMapVoted) {
+		ClientPrintAll(HUD_PRINTTALK, "The vote has ended. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
+	}
+	else if (bIsNextMapForced) {
+		ClientPrintAll(HUD_PRINTTALK, "The vote was overriden. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
 	}
 	else {
-		ClientPrintAll(HUD_PRINTTALK, "The vote was overriden. \x06%s\x01 will be the next map!\n", m_vecMapList[m_iForcedNextMapIndex].GetName());
+		ClientPrintAll(HUD_PRINTTALK, "No map was chosen. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
 	}
 
 	// Print vote result information: how many votes did each map get?
-	int arrMapVotes[10] = {0};
+	int arrMapVotes[10] = { 0 };
 	ClientPrintAll(HUD_PRINTCONSOLE, "Map vote result --- total votes per map:\n");
 	for (int i = 0; i < gpGlobals->maxClients; i++) {
 		auto pController = CCSPlayerController::FromSlot(i);
@@ -302,8 +307,8 @@ void CMapVoteSystem::FinishVote()
 	}
 	for (int i = 0; i < 10; i++) {
 		int iMapIndex = g_pGameRules->m_nEndMatchMapGroupVoteOptions[i];
-		const char* sIsWinner = (i == iWinningMapIndex) ? "(WINNER)" : "";
-		ClientPrintAll(HUD_PRINTCONSOLE, "- %s got %d votes %s\n", GetMapName(iMapIndex), arrMapVotes[i], sIsWinner);
+		const char* sIsWinner = (i == iNextMapVoteIndex) ? "(WINNER)" : "";
+		ClientPrintAll(HUD_PRINTCONSOLE, "- %s got %d votes\n", GetMapName(iMapIndex), arrMapVotes[i]);
 	}
 
 	// Store the winning map in the vector of played maps and pop until desired cooldown
@@ -312,12 +317,9 @@ void CMapVoteSystem::FinishVote()
 		m_vecLastPlayedMapIndexes.Remove(0);
 	}
 
-	Msg("The current cooldown list is:\n");
-	FOR_EACH_VEC(m_vecLastPlayedMapIndexes, i)
-	{
-		int iMapCooldownIndex = m_vecLastPlayedMapIndexes[i];
-		Msg("- %d: %s (%d)\n", i, GetMapName(iMapCooldownIndex), iMapCooldownIndex);
-	}
+	// Do the final clean-up
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+		ClearPlayerInfo(i);
 }
 
 void CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption)
@@ -336,7 +338,7 @@ void CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption
 
 	// Log vote to console
 	const char* sMapName = g_pMapVoteSystem->GetMapName(iMapIndexToVote);
-	Msg("Adding vote to map %i (%s) for player %s (slot %i).", iVoteOption, sMapName, pController->GetPlayerName(), iSlot);
+	Msg("Adding vote to map %i (%s) for player %s (slot %i).\n", iVoteOption, sMapName, pController->GetPlayerName(), iSlot);
 
 	// Update the winning map for every player vote
 	UpdateWinningMap();

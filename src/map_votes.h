@@ -64,6 +64,12 @@ public:
     CMapVoteSystem()
     {
         LoadMapList();
+
+        // Initialize the nomination / vote arrays to -1
+        for (int i = 0; i < MAXPLAYERS; i++) {
+            m_arrPlayerNominations[i] = -1;
+            m_arrPlayerVotes[i] = -1;
+        }
     }
     bool LoadMapList();
     void StartVote();
