@@ -26,6 +26,11 @@ class CGameRules
 {
 public:
 	DECLARE_SCHEMA_CLASS(CGameRules)
+
+	void TerminateRound(float delay, unsigned int reason)
+	{
+		addresses::CGameRules_TerminateRound(this, delay, reason, 0, 0);
+	}
 };
 
 class CCSGameRules : public CGameRules

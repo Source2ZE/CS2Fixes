@@ -38,6 +38,7 @@ namespace modules
 
 class CEntityInstance;
 class CBasePlayerController;
+class CBasePlayerPawn;
 class CCSPlayerController;
 class CCSPlayerPawn;
 class Z_CBaseEntity;
@@ -45,6 +46,7 @@ class CGameConfig;
 class CEntitySystem;
 class IEntityFindFilter;
 struct variant_string_t;
+class CGameRules;
 
 namespace addresses
 {
@@ -57,6 +59,7 @@ namespace addresses
 	inline void(FASTCALL *SetGroundEntity)(Z_CBaseEntity *ent, Z_CBaseEntity *ground);
 	inline void(FASTCALL *CCSPlayerController_SwitchTeam)(CCSPlayerController *pController, uint32 team);
 	inline void(FASTCALL *CCSPlayerPawn_Respawn)(CCSPlayerPawn *pPawn);
+	inline void(FASTCALL *CBasePlayerPawn_SetModel)(CBasePlayerPawn *pPawn, const char *szModel);
 	inline void(FASTCALL *UTIL_Remove)(CEntityInstance*);
 
 	inline void(FASTCALL *CEntitySystem_AddEntityIOEvent)(CEntitySystem *pEntitySystem, CEntityInstance *pTarget, const char *pszInput,
@@ -70,4 +73,5 @@ namespace addresses
 	inline Z_CBaseEntity *(FASTCALL *CGameEntitySystem_FindEntityByName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName, 
 																		CEntityInstance *pSearchingEntity, CEntityInstance *pActivator, CEntityInstance *pCaller,
 																		IEntityFindFilter *pFilter);
+	inline void(FASTCALL *CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4, unsigned int a5);
 }

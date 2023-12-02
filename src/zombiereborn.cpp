@@ -35,6 +35,7 @@ extern CCSGameRules* g_pGameRules;
 extern IGameEventManager2* g_gameEventManager;
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast);
+void ZR_CheckWinConditions(bool bCheckCT);
 
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
 static int g_iRoundNum = 0;
@@ -90,6 +91,35 @@ CON_COMMAND_CHAT(zspawn, "respawn yourself")
 	pPawn->Respawn();
 }
 
+CON_COMMAND_CHAT(setmodel, "set your model")
+{
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	CCSPlayerPawn *pPawn = (CCSPlayerPawn*)player->GetPawn();
+	if (!pPawn)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Invalid Pawn.");
+		return;
+	}
+	ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Classname: %s", pPawn->GetClassname());
+	if (!pPawn->IsAlive())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You must be alive to change model!");
+		return;
+	}
+
+	pPawn->SetModel(args[1]);
+}
+
+CON_COMMAND_CHAT(endround, "end the round")
+{
+	g_pGameRules->TerminateRound(V_StringToFloat32(args[1], 5.0f), V_StringToUint32(args[2], 10u));
+}
+
 void SetUpAllHumanClasses()
 {
 	for (int i = 0; i < gpGlobals->maxClients; i++)
@@ -113,8 +143,8 @@ void ZR_OnStartupServer()
 	g_pEngineServer2->ServerCommand("mp_give_player_c4 0");
 	g_pEngineServer2->ServerCommand("mp_friendlyfire 0");
 	// Legacy Lua respawn stuff, do not use these, we should handle respawning ourselves now that we can
-	//g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
-	//g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 1");
+	g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
+	g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 1");
 	//g_pEngineServer2->ServerCommand("bot_quota_mode fill");
 	//g_pEngineServer2->ServerCommand("mp_ignore_round_win_conditions 1");
 }
@@ -140,9 +170,9 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 {
 	CCSPlayerController* pController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 
-	if (pController && g_ZRRoundState == EZRRoundState::POST_INFECTION && pController->m_iTeamNum == CS_TEAM_CT)
+	if (pController && g_ZRRoundState == EZRRoundState::POST_INFECTION)
 	{
-		// infect player on the next frame
+		// delay infection a bit
 		int iRoundNum = g_iRoundNum;
 		CHandle<CCSPlayerController> handle = pController->GetHandle();
 		new CTimer(0.05f, false, [iRoundNum, handle]()
@@ -151,7 +181,7 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 			if (iRoundNum != g_iRoundNum || !pController)
 				return -1.0f;
 
-			ZR_Infect(pController, pController, false);
+			ZR_Infect(pController, pController, true);
 
 			return -1.0f;
 		});
@@ -178,7 +208,7 @@ void ZR_ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVict
 	pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
 }
 
-void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, const char *szWeapon)
+void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, const char *szWeapon, bool bDontBroadcast)
 {
 	IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_death");
 
@@ -202,23 +232,29 @@ void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerContr
 		pEvent->GetInt("attacker_pawn"),
 		pEvent->GetString("weapon"));
 
-	g_gameEventManager->FireEvent(pEvent, false);
+	g_gameEventManager->FireEvent(pEvent, bDontBroadcast);
 
 }
 
-void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast)
+void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bDontBroadcast)
 {
-	if (bBroadcast)
-		ZR_FakePlayerDeath(pAttackerController, pVictimController, "knife"); // or any other killicon
-	pVictimController->SwitchTeam(CS_TEAM_T);
+	if (pVictimController->m_iTeamNum() == CS_TEAM_CT)
+		pVictimController->SwitchTeam(CS_TEAM_T);
+
+	ZR_FakePlayerDeath(pAttackerController, pVictimController, "knife", bDontBroadcast); // or any other killicon
+
+	ZR_CheckWinConditions(true);
 
 	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
 	if (!pVictimPawn)
 		return;
 	// set model/health/etc here
 	
+	//hardcode everything for now
 	pVictimPawn->m_iMaxHealth = 10000;
 	pVictimPawn->m_iHealth = 10000;
+
+	pVictimPawn->SetModel("characters/models/tm_phoenix/tm_phoenix.vmdl");
 }
 
 
@@ -229,12 +265,13 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
 	if (!pVictimPawn)
 		return;
-	//set model/health/etc here
-
 	// set model/health/etc here
 	
+	//hardcode everything for now
 	pVictimPawn->m_iMaxHealth = 10000;
 	pVictimPawn->m_iHealth = 10000;
+
+	pVictimPawn->SetModel("characters/models/tm_phoenix/tm_phoenix.vmdl");
 }
 
 void ZR_InitialInfection()
@@ -334,7 +371,7 @@ bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 
 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_T && pVictimPawn->m_iTeamNum() == CS_TEAM_CT)
 	{
-		ZR_Infect(pAttackerController, pVictimController, true);
+		ZR_Infect(pAttackerController, pVictimController, false);
 		return true; // nullify the damage
 	}
 
@@ -367,20 +404,42 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent)
 
 void ZR_OnPlayerDeath(IGameEvent* pEvent)
 {
-	// To T TeamSwitch happening in ZR_OnPlayerSpawn
+	if (g_ZRRoundState == EZRRoundState::ROUND_START)
+		return;
 
-	/*ZEPlayer* pPlayer = g_playerManager->GetPlayerFromUserId(pEvent->GetInt("userid"));
-
-	if (pPlayer && !pPlayer->IsInfected())
-	{
-		CCSPlayerController* pController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
-		pController->SwitchTeam(CS_TEAM_T);
-	}*/
+	CCSPlayerController *pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
+	if (!pVictimController)
+		return;
+	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
+	if (!pVictimPawn)
+		return;
+	
+	ZR_CheckWinConditions(pVictimPawn->m_iTeamNum() == CS_TEAM_CT);
 }
 
 void ZR_OnRoundFreezeEnd(IGameEvent* pEvent)
 {
 	ZR_StartInitialCountdown();
+}
+
+void ZR_CheckWinConditions(bool bCheckCT)
+{
+	int iTeamNum = bCheckCT ? CS_TEAM_CT : CS_TEAM_T;
+
+	// loop through each player, return early if both team has alive player
+	CCSPlayerPawn* pPawn = nullptr;
+	while (nullptr != (pPawn = (CCSPlayerPawn*)UTIL_FindEntityByClassname(pPawn, "player")))
+	{
+		if (!pPawn->IsAlive())
+			continue;
+		
+		if (pPawn->m_iTeamNum() == iTeamNum)
+			return;
+	}
+
+	// didn't return early, all players on one or both teams are dead.
+	// 8: CT win; 9: T wins; 10: draw
+	g_pGameRules->TerminateRound(5.0, bCheckCT ? 9u : 8u);
 }
 
 CON_COMMAND_CHAT(ztele, "teleport to spawn")

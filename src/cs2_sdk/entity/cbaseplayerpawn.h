@@ -46,6 +46,10 @@ public:
 		static int offset = g_GameConfig->GetOffset("CBasePlayerPawn_CommitSuicide");
 		CALL_VIRTUAL(void, offset, this, bExplode, bForce);
 	}
+	void SetModel(const char *szModel)
+	{
+		addresses::CBasePlayerPawn_SetModel(this, szModel);
+	}
 
 	CBasePlayerController *GetController() { return m_hController.Get(); }
 };
