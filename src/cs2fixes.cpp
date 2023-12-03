@@ -231,6 +231,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
 
+	RegisterWeaponCommands();
+
 	// Steam authentication
 	new CTimer(1.0f, true, []()
 	{
@@ -675,7 +677,7 @@ const char *CS2Fixes::GetLicense()
 
 const char *CS2Fixes::GetVersion()
 {
-	return "1.0";
+	return "1.1";
 }
 
 const char *CS2Fixes::GetDate()
