@@ -29,4 +29,9 @@ public:
 
 	SCHEMA_FIELD(CCollisionProperty , m_Collision)
 	SCHEMA_FIELD(CGlowProperty, m_Glow)
+	
+	void SetModel(const char *szModel)
+	{
+		addresses::CBaseModelEntity_SetModel(this, szModel);
+	}
 };
