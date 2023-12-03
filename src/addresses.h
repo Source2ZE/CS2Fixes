@@ -38,9 +38,9 @@ namespace modules
 
 class CEntityInstance;
 class CBasePlayerController;
-class CBasePlayerPawn;
 class CCSPlayerController;
 class CCSPlayerPawn;
+class CBaseModelEntity;
 class Z_CBaseEntity;
 class CGameConfig;
 class CEntitySystem;
@@ -59,7 +59,7 @@ namespace addresses
 	inline void(FASTCALL *SetGroundEntity)(Z_CBaseEntity *ent, Z_CBaseEntity *ground);
 	inline void(FASTCALL *CCSPlayerController_SwitchTeam)(CCSPlayerController *pController, uint32 team);
 	inline void(FASTCALL *CCSPlayerPawn_Respawn)(CCSPlayerPawn *pPawn);
-	inline void(FASTCALL *CBasePlayerPawn_SetModel)(CBasePlayerPawn *pPawn, const char *szModel);
+	inline void(FASTCALL *CBaseModelEntity_SetModel)(CBaseModelEntity *pModel, const char *szModel);
 	inline void(FASTCALL *UTIL_Remove)(CEntityInstance*);
 
 	inline void(FASTCALL *CEntitySystem_AddEntityIOEvent)(CEntitySystem *pEntitySystem, CEntityInstance *pTarget, const char *pszInput,

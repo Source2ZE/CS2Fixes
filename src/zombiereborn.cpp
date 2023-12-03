@@ -278,14 +278,10 @@ void ZR_InitialInfection()
 {
 	// grab player count and mz infection candidates
 	CUtlVector<CCSPlayerController*> pCandidateControllers;
-	int iPlayerCount = 0;
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
-		if (!pController)
-			continue;
-		iPlayerCount++;
-		if (pController->m_iTeamNum() != CS_TEAM_CT)
+		if (!pController || pController->m_iTeamNum() != CS_TEAM_CT)
 			continue;
 
 		CCSPlayerController* pPawn = (CCSPlayerController*)pController->GetPawn();
@@ -296,7 +292,7 @@ void ZR_InitialInfection()
 	}
 
 	// calculate the num of mz to infect
-	int iMZToInfect = iPlayerCount / g_flInfectSpawnMZRatio;
+	int iMZToInfect = pCandidateControllers.Count() / g_flInfectSpawnMZRatio;
 	iMZToInfect = g_flInfectSpawnMinCount > iMZToInfect ? g_flInfectSpawnMinCount : iMZToInfect;
 
 	// get spawn points
@@ -347,7 +343,7 @@ void ZR_StartInitialCountdown()
 			return -1.0f;
 		}
 
-		if (g_iInfectionCountDown <= 15)
+		if (g_iInfectionCountDown <= 60)
 		{
 			ClientPrintAll(HUD_PRINTCENTER, "First infection in \7%i second(s)\1!", g_iInfectionCountDown);
 			if (g_iInfectionCountDown % 5 == 0)
@@ -368,8 +364,8 @@ bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 
 	CCSPlayerController *pAttackerController = CCSPlayerController::FromPawn(pAttackerPawn);
 	CCSPlayerController *pVictimController = CCSPlayerController::FromPawn(pVictimPawn);
-
-	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_T && pVictimPawn->m_iTeamNum() == CS_TEAM_CT)
+	const char *pszAbilityClass = pInfo->m_hAbility.Get() ? pInfo->m_hAbility.Get()->GetClassname() : "";
+	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_T && pVictimPawn->m_iTeamNum() == CS_TEAM_CT && !V_strncmp(pszAbilityClass, "weapon_knife", 12))
 	{
 		ZR_Infect(pAttackerController, pVictimController, false);
 		return true; // nullify the damage
@@ -380,7 +376,7 @@ bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 	{
 		CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
 		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
-		if (V_strncmp(pszInflictorClass, "hegrenade", 9) || V_strncmp(pszInflictorClass, "inferno", 7))
+		if (!V_strncmp(pszInflictorClass, "hegrenade_projectile", 9) || !V_strncmp(pszInflictorClass, "inferno", 7))
 			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage);
 	}
 	return false;
@@ -395,7 +391,7 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent)
 
 
 	// grenade and molotov knockbacks are handled by TakeDamage detours
-	if (!pAttackerController || !pVictimController || strcmp(szWeapon, "") == 0 || strcmp(szWeapon, "inferno") == 0 || strcmp(szWeapon, "hegrenade") == 0)
+	if (!pAttackerController || !pVictimController || !V_strncmp(szWeapon, "inferno", 7) || !V_strncmp(szWeapon, "hegrenade", 9))
 		return;
 
 	if (pAttackerController->m_iTeamNum() == CS_TEAM_CT && pVictimController->m_iTeamNum() == CS_TEAM_T)
@@ -422,8 +418,12 @@ void ZR_OnRoundFreezeEnd(IGameEvent* pEvent)
 	ZR_StartInitialCountdown();
 }
 
+// check whether players on a team are all dead
 void ZR_CheckWinConditions(bool bCheckCT)
 {
+	if (g_ZRRoundState == EZRRoundState::ROUND_END)
+		return;
+		
 	int iTeamNum = bCheckCT ? CS_TEAM_CT : CS_TEAM_T;
 
 	// loop through each player, return early if both team has alive player
@@ -439,7 +439,8 @@ void ZR_CheckWinConditions(bool bCheckCT)
 
 	// didn't return early, all players on one or both teams are dead.
 	// 8: CT win; 9: T wins; 10: draw
-	g_pGameRules->TerminateRound(5.0, bCheckCT ? 9u : 8u);
+	g_pGameRules->TerminateRound(5.0, bCheckCT ? CSRoundEndReason::TerroristWin : CSRoundEndReason::CTWin);
+	g_ZRRoundState = EZRRoundState::ROUND_END;
 }
 
 CON_COMMAND_CHAT(ztele, "teleport to spawn")

@@ -263,7 +263,7 @@
 				"linux"			"\x8B\x8F\x40\x0E\x00\x00\x83\xF9\xFF\x0F\x84\xD9\x01"
 			}
 			// Search "Changes's player's model", look for a function containing 'models/%s.vmdl'. Below V_snprintf is the one
-			"CBasePlayerPawn_SetModel"
+			"CBaseModelEntity_SetModel"
 			{
 				"library"		"server"
 				"windows"		"\x48\x89\x5C\x24\x2A\x48\x89\x7C\x24\x2A\x55\x48\x8B\xEC\x48\x83\xEC\x50\x48\x8B\xF9"
