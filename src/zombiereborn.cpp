@@ -18,6 +18,7 @@
  */
 
 #include "commands.h"
+#include "utils/entity.h"
 #include "playermanager.h"
 #include "ctimer.h"
 #include "eventlistener.h"
@@ -34,35 +35,89 @@ extern CCSGameRules* g_pGameRules;
 extern IGameEventManager2* g_gameEventManager;
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast);
+void ZR_CheckWinConditions(bool bCheckCT);
 
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
+static int g_iRoundNum = 0;
+static int g_iInfectionCountDown = 0;
 
 // CONVAR_TODO
 bool g_bEnableZR = false;
 static float g_flMaxZteleDistance = 150.0f;
 static bool g_bZteleHuman = false;
+static float g_flKnockbackScale = 5.0f;
+static int g_flInfectSpawnType = EZRSpawnType::RESPAWN;
+static int g_flInfectSpawnTimeMin = 15;
+static int g_flInfectSpawnTimeMax = 15;
+static int g_flInfectSpawnMZRatio = 7;
+static int g_flInfectSpawnMinCount = 2;
 
-CON_COMMAND_F(zr_enable, "Whether to enable ZR features", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+CON_ZR_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, Bool, false)
+CON_ZR_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, Float32, 150.0f)
+CON_ZR_CVAR(zr_ztele_allow_humans, "Whether to allow humans to use ztele", g_bZteleHuman, Bool, false)
+CON_ZR_CVAR(zr_knockback_scale, "Global knockback scale", g_flKnockbackScale, Float32, 5.0f)
+CON_ZR_CVAR(zr_infect_spawn_type, "Type of Mother Zombies Spawn [0 = MZ spawn where they stand, 1 = MZ get teleported back to spawn on being picked]", g_flInfectSpawnType, Int32, EZRSpawnType::RESPAWN)
+CON_ZR_CVAR(zr_infect_spawn_time_min, "Minimum time in which Mother Zombies should be picked, after round start", g_flInfectSpawnTimeMin, Int32, 15)
+CON_ZR_CVAR(zr_infect_spawn_time_max, "Maximum time in which Mother Zombies should be picked, after round start", g_flInfectSpawnTimeMax, Int32, 15)
+CON_ZR_CVAR(zr_infect_spawn_mz_ratio, "Ratio of all Players to Mother Zombies to be spawned at round start", g_flInfectSpawnMZRatio, Int32, 7)
+CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to be spawned at round start", g_flInfectSpawnMinCount, Int32, 2)
+
+CON_COMMAND_CHAT(zspawn, "respawn yourself")
 {
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bEnableZR);
-	else
-		g_bEnableZR = V_StringToBool(args[1], false);
+	// Silently return so the command is completely hidden
+	if (!g_bEnableZR)
+		return;
+
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	CCSPlayerPawn *pPawn = (CCSPlayerPawn*)player->GetPawn();
+	if (!pPawn)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Invalid Pawn.");
+		return;
+	}
+	ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Classname: %s", pPawn->GetClassname());
+	if (pPawn->IsAlive())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You must be dead to respawn!");
+		return;
+	}
+
+	player->Respawn();
+	pPawn->Respawn();
 }
 
-CON_COMMAND_F(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+CON_COMMAND_CHAT(setmodel, "set your model")
 {
-	if (args.ArgC() < 2)
-		Msg("%s %f\n", args[0], g_flMaxZteleDistance);
-	else
-		g_flMaxZteleDistance = V_StringToFloat32(args[1], 150.0f);
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	CCSPlayerPawn *pPawn = (CCSPlayerPawn*)player->GetPawn();
+	if (!pPawn)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Invalid Pawn.");
+		return;
+	}
+	ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Classname: %s", pPawn->GetClassname());
+	if (!pPawn->IsAlive())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You must be alive to change model!");
+		return;
+	}
+
+	pPawn->SetModel(args[1]);
 }
-CON_COMMAND_F(zr_ztele_allow_humans, "Whether to allow humans to use ztele", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+
+CON_COMMAND_CHAT(endround, "end the round")
 {
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bZteleHuman);
-	else
-		g_bZteleHuman = V_StringToBool(args[1], false);
+	g_pGameRules->TerminateRound(V_StringToFloat32(args[1], 5.0f), V_StringToUint32(args[2], 10u));
 }
 
 void SetUpAllHumanClasses()
@@ -88,8 +143,8 @@ void ZR_OnStartupServer()
 	g_pEngineServer2->ServerCommand("mp_give_player_c4 0");
 	g_pEngineServer2->ServerCommand("mp_friendlyfire 0");
 	// Legacy Lua respawn stuff, do not use these, we should handle respawning ourselves now that we can
-	//g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
-	//g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 1");
+	g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
+	g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 1");
 	//g_pEngineServer2->ServerCommand("bot_quota_mode fill");
 	//g_pEngineServer2->ServerCommand("mp_ignore_round_win_conditions 1");
 }
@@ -97,17 +152,12 @@ void ZR_OnStartupServer()
 void ZR_OnRoundPrestart(IGameEvent* pEvent)
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
+	g_iRoundNum++;
 }
 
 void ZR_OnRoundStart(IGameEvent* pEvent)
 {
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
-
-	new CTimer(1.0f, false, []()
-	{
-		g_ZRRoundState = EZRRoundState::POST_INFECTION;
-		return 1.0f;
-	});
 
 	// SetUpAllHumanClasses();
 	// SetupRespawnToggler();
@@ -120,18 +170,22 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 {
 	CCSPlayerController* pController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 
-	if (pController && g_ZRRoundState == EZRRoundState::POST_INFECTION && pController->m_iTeamNum == CS_TEAM_CT)
-		ZR_Infect(pController, pController, false); //set health and probably model doesn't work here
-}
+	if (pController && g_ZRRoundState == EZRRoundState::POST_INFECTION)
+	{
+		// delay infection a bit
+		int iRoundNum = g_iRoundNum;
+		CHandle<CCSPlayerController> handle = pController->GetHandle();
+		new CTimer(0.05f, false, [iRoundNum, handle]()
+		{
+			CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
+			if (iRoundNum != g_iRoundNum || !pController)
+				return -1.0f;
 
-// CONVAR_TODO
-float g_flKnockbackScale = 5.0f;
-CON_COMMAND_F(zr_knockback_scale, "Global knockback scale", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %f\n", args[0], g_flKnockbackScale);
-	else
-		g_flKnockbackScale = V_StringToFloat32(args[1], 5.0f);
+			ZR_Infect(pController, pController, true);
+
+			return -1.0f;
+		});
+	}
 }
 
 // Still need to implement weapon config
@@ -154,13 +208,13 @@ void ZR_ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVict
 	pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
 }
 
-void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, const char *szWeapon)
+void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, const char *szWeapon, bool bDontBroadcast)
 {
 	IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_death");
 
 	if (!pEvent)
 		return;
-	//SetPlayer functions are swapped, need to remove the cast once fixed
+	// SetPlayer functions are swapped, need to remove the cast once fixed
 	pEvent->SetPlayer("userid", (CEntityInstance*)pVictimController->GetPlayerSlot());
 	pEvent->SetPlayer("attacker", (CEntityInstance*)pAttackerController->GetPlayerSlot());
 	pEvent->SetString("weapon", szWeapon);
@@ -178,34 +232,128 @@ void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerContr
 		pEvent->GetInt("attacker_pawn"),
 		pEvent->GetString("weapon"));
 
-	g_gameEventManager->FireEvent(pEvent, false);
+	g_gameEventManager->FireEvent(pEvent, bDontBroadcast);
 
 }
 
-void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast)
+void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bDontBroadcast)
 {
-	if (bBroadcast)
-		ZR_FakePlayerDeath(pAttackerController, pVictimController, "knife"); // or any other killicon
-	pVictimController->SwitchTeam(CS_TEAM_T);
+	if (pVictimController->m_iTeamNum() == CS_TEAM_CT)
+		pVictimController->SwitchTeam(CS_TEAM_T);
+
+	ZR_FakePlayerDeath(pAttackerController, pVictimController, "knife", bDontBroadcast); // or any other killicon
+
+	ZR_CheckWinConditions(true);
 
 	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
 	if (!pVictimPawn)
 		return;
-	//set model/health/etc here
+	// set model/health/etc here
 	
+	//hardcode everything for now
 	pVictimPawn->m_iMaxHealth = 10000;
 	pVictimPawn->m_iHealth = 10000;
+
+	pVictimPawn->SetModel("characters/models/tm_phoenix/tm_phoenix.vmdl");
 }
 
 
 void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 {
-	ZR_FakePlayerDeath(pVictimController, pVictimController, "prop_exploding_barrel"); // or any other killicon
 	pVictimController->SwitchTeam(CS_TEAM_T);
 
-	//set model/health/etc here
+	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
+	if (!pVictimPawn)
+		return;
+	// set model/health/etc here
+	
+	//hardcode everything for now
+	pVictimPawn->m_iMaxHealth = 10000;
+	pVictimPawn->m_iHealth = 10000;
+
+	pVictimPawn->SetModel("characters/models/tm_phoenix/tm_phoenix.vmdl");
 }
 
+void ZR_InitialInfection()
+{
+	// grab player count and mz infection candidates
+	CUtlVector<CCSPlayerController*> pCandidateControllers;
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
+		if (!pController || pController->m_iTeamNum() != CS_TEAM_CT)
+			continue;
+
+		CCSPlayerController* pPawn = (CCSPlayerController*)pController->GetPawn();
+		if (!pPawn || !pPawn->IsAlive())
+			continue;
+
+		pCandidateControllers.AddToTail(pController);
+	}
+
+	// calculate the num of mz to infect
+	int iMZToInfect = pCandidateControllers.Count() / g_flInfectSpawnMZRatio;
+	iMZToInfect = g_flInfectSpawnMinCount > iMZToInfect ? g_flInfectSpawnMinCount : iMZToInfect;
+
+	// get spawn points
+	CUtlVector<SpawnPoint*> spawns;
+	if (g_flInfectSpawnType == EZRSpawnType::RESPAWN)
+	{
+		SpawnPoint* spawn = nullptr;
+		while (nullptr != (spawn = (SpawnPoint*)UTIL_FindEntityByClassname(spawn, "info_player_*")))
+		{
+			if (spawn->m_bEnabled())
+				spawns.AddToTail(spawn);
+		}
+	}
+
+	// infect
+	while (pCandidateControllers.Count() > 0 && iMZToInfect > 0)
+	{
+		int randomindex = rand() % pCandidateControllers.Count();
+		ZR_InfectMotherZombie(pCandidateControllers[randomindex]);
+
+		CCSPlayerController* pPawn = (CCSPlayerController*)pCandidateControllers[randomindex]->GetPawn();
+		if (pPawn && spawns.Count())
+		{
+			int randomindex = rand() % spawns.Count();
+			pPawn->SetAbsOrigin(spawns[randomindex]->GetAbsOrigin());
+			pPawn->SetAbsRotation(spawns[randomindex]->GetAbsRotation());
+		}
+
+		pCandidateControllers.FastRemove(randomindex);
+		iMZToInfect--;
+	}
+	ClientPrintAll(HUD_PRINTCENTER, "First infection has started!");
+	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "First infection has started! Good luck, survivors!");
+	g_ZRRoundState = EZRRoundState::POST_INFECTION;
+}
+
+void ZR_StartInitialCountdown()
+{
+	int iRoundNum = g_iRoundNum;
+	g_iInfectionCountDown = g_flInfectSpawnTimeMin + (rand() % (g_flInfectSpawnTimeMax - g_flInfectSpawnTimeMin + 1));
+	new CTimer(1.0f, false, [iRoundNum]()
+	{
+		if (iRoundNum != g_iRoundNum)
+			return -1.0f;
+		if (g_iInfectionCountDown <= 0)
+		{
+			ZR_InitialInfection();
+			return -1.0f;
+		}
+
+		if (g_iInfectionCountDown <= 60)
+		{
+			ClientPrintAll(HUD_PRINTCENTER, "First infection in \7%i second(s)\1!", g_iInfectionCountDown);
+			if (g_iInfectionCountDown % 5 == 0)
+				ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "First infection in \7%i second\1!", g_iInfectionCountDown);
+		}
+		g_iInfectionCountDown--;
+
+		return 1.0f;
+	});
+}
 
 bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 {
@@ -216,19 +364,19 @@ bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 
 	CCSPlayerController *pAttackerController = CCSPlayerController::FromPawn(pAttackerPawn);
 	CCSPlayerController *pVictimController = CCSPlayerController::FromPawn(pVictimPawn);
-
-	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_T && pVictimPawn->m_iTeamNum() == CS_TEAM_CT)
+	const char *pszAbilityClass = pInfo->m_hAbility.Get() ? pInfo->m_hAbility.Get()->GetClassname() : "";
+	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_T && pVictimPawn->m_iTeamNum() == CS_TEAM_CT && !V_strncmp(pszAbilityClass, "weapon_knife", 12))
 	{
-		ZR_Infect(pAttackerController, pVictimController, true);
+		ZR_Infect(pAttackerController, pVictimController, false);
 		return true; // nullify the damage
 	}
 
-	//grenade and molotov knockback
+	// grenade and molotov knockback
 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
 	{
 		CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
 		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
-		if (V_strncmp(pszInflictorClass, "hegrenade", 9) || V_strncmp(pszInflictorClass, "inferno", 7))
+		if (!V_strncmp(pszInflictorClass, "hegrenade_projectile", 9) || !V_strncmp(pszInflictorClass, "inferno", 7))
 			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage);
 	}
 	return false;
@@ -242,32 +390,57 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent)
 	int iDmgHealth = pEvent->GetInt("dmg_health");
 
 
-	//grenade and molotov knockbacks are handled by TakeDamage detours
-	if (!pAttackerController || !pVictimController || strcmp(szWeapon, "") == 0 || strcmp(szWeapon, "inferno") == 0 || strcmp(szWeapon, "hegrenade") == 0)
+	// grenade and molotov knockbacks are handled by TakeDamage detours
+	if (!pAttackerController || !pVictimController || !V_strncmp(szWeapon, "inferno", 7) || !V_strncmp(szWeapon, "hegrenade", 9))
 		return;
 
 	if (pAttackerController->m_iTeamNum() == CS_TEAM_CT && pVictimController->m_iTeamNum() == CS_TEAM_T)
 		ZR_ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon);
-
-	//if (pAttacker->m_iTeamNum == CS_TEAM_CT && pVictim->m_iTeamNum == CS_TEAM_T)
-	//	Message("lol");
-	//	//Knockback_Apply(pAttacker, pVictim, iDmgHealth, szWeapon);
-	//else if (szWeapon == "knife" && pAttacker->m_iTeamNum == CS_TEAM_T && pVictim->m_iTeamNum == CS_TEAM_CT)
-	//	Message("lol");
-	//	//Infect(pAttacker, pVictim, true, iHealth == 0);
 }
 
 void ZR_OnPlayerDeath(IGameEvent* pEvent)
 {
-	// To T TeamSwitch happening in ZR_OnPlayerSpawn
+	if (g_ZRRoundState == EZRRoundState::ROUND_START)
+		return;
 
-	/*ZEPlayer* pPlayer = g_playerManager->GetPlayerFromUserId(pEvent->GetInt("userid"));
+	CCSPlayerController *pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
+	if (!pVictimController)
+		return;
+	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
+	if (!pVictimPawn)
+		return;
+	
+	ZR_CheckWinConditions(pVictimPawn->m_iTeamNum() == CS_TEAM_CT);
+}
 
-	if (pPlayer && !pPlayer->IsInfected())
+void ZR_OnRoundFreezeEnd(IGameEvent* pEvent)
+{
+	ZR_StartInitialCountdown();
+}
+
+// check whether players on a team are all dead
+void ZR_CheckWinConditions(bool bCheckCT)
+{
+	if (g_ZRRoundState == EZRRoundState::ROUND_END)
+		return;
+		
+	int iTeamNum = bCheckCT ? CS_TEAM_CT : CS_TEAM_T;
+
+	// loop through each player, return early if both team has alive player
+	CCSPlayerPawn* pPawn = nullptr;
+	while (nullptr != (pPawn = (CCSPlayerPawn*)UTIL_FindEntityByClassname(pPawn, "player")))
 	{
-		CCSPlayerController* pController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
-		pController->SwitchTeam(CS_TEAM_T);
-	}*/
+		if (!pPawn->IsAlive())
+			continue;
+		
+		if (pPawn->m_iTeamNum() == iTeamNum)
+			return;
+	}
+
+	// didn't return early, all players on one or both teams are dead.
+	// 8: CT win; 9: T wins; 10: draw
+	g_pGameRules->TerminateRound(5.0, bCheckCT ? CSRoundEndReason::TerroristWin : CSRoundEndReason::CTWin);
+	g_ZRRoundState = EZRRoundState::ROUND_END;
 }
 
 CON_COMMAND_CHAT(ztele, "teleport to spawn")

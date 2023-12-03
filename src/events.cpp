@@ -287,3 +287,15 @@ GAME_EVENT_F(round_end)
 		pPlayer->SetTotalKills(0);
 	}
 }
+
+GAME_EVENT_F(round_freeze_end)
+{
+	if (g_bEnableZR)
+		ZR_OnRoundFreezeEnd(pEvent);
+}
+
+GAME_EVENT_F(player_death)
+{
+	if (g_bEnableZR)
+		ZR_OnPlayerDeath(pEvent);
+}
