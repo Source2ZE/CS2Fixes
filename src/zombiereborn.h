@@ -29,9 +29,14 @@ enum class EZRRoundState
 	ROUND_END,
 };
 
+enum EZRSpawnType
+{
+	IN_PLACE,
+	RESPAWN,
+};
+
 extern bool g_bEnableZR;
 extern EZRRoundState g_ZRRoundState;
-extern float g_flKnockbackScale;
 
 void ZR_OnStartupServer();
 void ZR_OnRoundPrestart(IGameEvent* pEvent);
@@ -39,4 +44,15 @@ void ZR_OnRoundStart(IGameEvent* pEvent);
 void ZR_OnPlayerSpawn(IGameEvent* pEvent);
 void ZR_OnPlayerHurt(IGameEvent* pEvent);
 void ZR_OnPlayerDeath(IGameEvent* pEvent);
+void ZR_OnRoundFreezeEnd(IGameEvent* pEvent);
 bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo);
+
+// need to replace with actual cvar someday
+#define CON_ZR_CVAR(name, description, variable_name, variable_type, variable_default)					\
+	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)							\
+	{																									\
+		if (args.ArgC() < 2)																			\
+			Msg("%s %i\n", args[0], variable_name);														\
+		else																							\
+			variable_name = V_StringTo##variable_type(args[1], variable_default);						\
+	}
