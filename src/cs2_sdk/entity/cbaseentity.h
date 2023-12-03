@@ -90,6 +90,12 @@ public:
 	SCHEMA_FIELD(CGameSceneNode *, m_pSceneNode)
 };
 
+class CEntitySubclassVDataBase
+{
+public:
+	DECLARE_SCHEMA_CLASS(CEntitySubclassVDataBase)
+};
+
 class Z_CBaseEntity : public CBaseEntity
 {
 public:
@@ -111,6 +117,7 @@ public:
 	SCHEMA_FIELD(uint32, m_spawnflags)
 	SCHEMA_FIELD(uint32, m_fFlags)
 	SCHEMA_FIELD(LifeState_t, m_lifeState)
+	SCHEMA_FIELD_POINTER(CUtlStringToken, m_nSubclassID)
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 
@@ -157,6 +164,9 @@ public:
 	bool IsAlive() { return m_lifeState == LifeState_t::LIFE_ALIVE; }
 
 	CHandle<CBaseEntity> GetHandle() { return m_pEntity->m_EHandle; }
+
+	// A double pointer to entity VData is available 8 bytes past m_nSubclassID, if applicable
+	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 8); }
 };
 
 class SpawnPoint : public Z_CBaseEntity

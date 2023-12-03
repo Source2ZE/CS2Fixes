@@ -28,6 +28,7 @@
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
+#include "entity/ccsweaponbase.h"
 #include "playermanager.h"
 #include "adminsystem.h"
 #include "ctimer.h"
@@ -45,43 +46,43 @@ extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
 
 WeaponMapEntry_t WeaponMap[] = {
-	{"bizon",		  "weapon_bizon",			 1400, 26},
-	{"mac10",		  "weapon_mac10",			 1400, 27},
-	{"mp7",			"weapon_mp7",				 1700, 23},
-	{"mp9",			"weapon_mp9",				 1250, 34},
-	{"p90",			"weapon_p90",				 2350, 19},
-	{"ump45",		  "weapon_ump45",			 1700, 24},
-	{"ak47",			 "weapon_ak47",			 2500, 7},
-	{"aug",			"weapon_aug",				 3500, 8},
-	{"famas",		  "weapon_famas",			 2250, 10},
-	{"galilar",		"weapon_galilar",			 2000, 13},
-	{"m4a4",			 "weapon_m4a1",			 3100, 16},
-	{"m4a1",			 "weapon_m4a1_silencer", 3100, 60},
-	{"sg556",		  "weapon_sg556",			 3500, 39},
-	{"awp",			"weapon_awp",				 4750, 9},
-	{"g3sg1",		  "weapon_g3sg1",			 5000, 11},
-	{"scar20",		   "weapon_scar20",			 5000, 38},
-	{"ssg08",		  "weapon_ssg08",			 2500, 40},
-	{"mag7",			 "weapon_mag7",			 2000, 29},
-	{"nova",			 "weapon_nova",			 1500, 35},
-	{"sawedoff",		 "weapon_sawedoff",		 1500, 29},
-	{"xm1014",		   "weapon_xm1014",			 3000, 25},
-	{"m249",			 "weapon_m249",			 5750, 14},
-	{"negev",		  "weapon_negev",			 5750, 28},
-	{"deagle",		   "weapon_deagle",			 700 , 1},
-	{"elite",		  "weapon_elite",			 800 , 2},
-	{"fiveseven",	  "weapon_fiveseven",		 500 , 3},
-	{"glock",		  "weapon_glock",			 200 , 4},
-	{"hkp2000",		"weapon_hkp2000",			 200 , 32},
-	{"p250",			 "weapon_p250",			 300 , 36},
-	{"tec9",			 "weapon_tec9",			 500 , 30},
-	{"usp_silencer",	 "weapon_usp_silencer",	 200 , 61},
-	{"cz75a",		  "weapon_cz75a",			 500 , 63},
-	{"revolver",		 "weapon_revolver",		 600 , 64},
-	{"he",			"weapon_hegrenade",			 300 , 44, 1},
-	{"molotov",		"weapon_molotov",			 850 , 46, 1},
-	{"knife",		"weapon_knife",				 0	 , 42},	// default CT knife
-	{"kevlar",		   "item_kevlar",			 600 , 50},
+	{{"bizon"},							"weapon_bizon",			"PP-Bizon",			1400, 26, GEAR_SLOT_RIFLE},
+	{{"mac10", "mac"},					"weapon_mac10",			"MAC-10",			1050, 27, GEAR_SLOT_RIFLE},
+	{{"mp5sd", "mp5"},					"weapon_mp5sd",			"MP5-SD",			1500, 23, GEAR_SLOT_RIFLE},
+	{{"mp7"},							"weapon_mp7",			"MP7",				1500, 23, GEAR_SLOT_RIFLE},
+	{{"mp9"},							"weapon_mp9",			"MP9",				1250, 34, GEAR_SLOT_RIFLE},
+	{{"p90"},							"weapon_p90",			"P90",				2350, 19, GEAR_SLOT_RIFLE},
+	{{"ump45", "ump"},					"weapon_ump45",			"UMP-45",			1200, 24, GEAR_SLOT_RIFLE},
+	{{"ak47", "ak"},					"weapon_ak47",			"AK-47",			2700, 7, GEAR_SLOT_RIFLE},
+	{{"aug"},							"weapon_aug",			"AUG",				3300, 8, GEAR_SLOT_RIFLE},
+	{{"famas"},							"weapon_famas",			"FAMAS",			2050, 10, GEAR_SLOT_RIFLE},
+	{{"galilar", "galil"},				"weapon_galilar",		"Galil AR",			1800, 13, GEAR_SLOT_RIFLE},
+	{{"m4a4"},							"weapon_m4a1",			"M4A4",				3100, 16, GEAR_SLOT_RIFLE},
+	{{"m4a1-s", "m4a1"},				"weapon_m4a1_silencer",	"M4A1-S",			2900, 60, GEAR_SLOT_RIFLE},
+	{{"sg553"},							"weapon_sg556",			"SG 553",			3000, 39, GEAR_SLOT_RIFLE},
+	{{"awp"},							"weapon_awp",			"AWP",				4750, 9, GEAR_SLOT_RIFLE},
+	{{"g3sg1"},							"weapon_g3sg1",			"G3SG1",			5000, 11, GEAR_SLOT_RIFLE},
+	{{"scar20", "scar"},				"weapon_scar20",		"SCAR-20",			5000, 38, GEAR_SLOT_RIFLE},
+	{{"ssg08", "ssg"},					"weapon_ssg08",			"SSG 08",			1700, 40, GEAR_SLOT_RIFLE},
+	{{"mag7", "mag"},					"weapon_mag7",			"MAG-7",			1300, 29, GEAR_SLOT_RIFLE},
+	{{"nova"},							"weapon_nova",			"Nova",				1050, 35, GEAR_SLOT_RIFLE},
+	{{"sawedoff"},						"weapon_sawedoff",		"Sawed-Off",		1100, 29, GEAR_SLOT_RIFLE},
+	{{"xm1014", "xm"},					"weapon_xm1014",		"XM1014",			2000, 25, GEAR_SLOT_RIFLE},
+	{{"m249"},							"weapon_m249",			"M249",				5200, 14, GEAR_SLOT_RIFLE},
+	{{"negev"},							"weapon_negev",			"Negev",			1700, 28, GEAR_SLOT_RIFLE},
+	{{"deagle"},						"weapon_deagle",		"Desert Eagle",		700, 1, GEAR_SLOT_PISTOL},
+	{{"dualberettas", "elite"},			"weapon_elite",			"Dual Berettas",	300, 2, GEAR_SLOT_PISTOL},
+	{{"fiveseven"},						"weapon_fiveseven",		"Five-SeveN",		500, 3, GEAR_SLOT_PISTOL},
+	{{"glock18", "glock"},				"weapon_glock",			"Glock-18",			200, 4, GEAR_SLOT_PISTOL},
+	{{"p2000"},							"weapon_hkp2000",		"P2000",			200, 32, GEAR_SLOT_PISTOL},
+	{{"p250"},							"weapon_p250",			"P250",				300, 36, GEAR_SLOT_PISTOL},
+	{{"tec9"},							"weapon_tec9",			"Tec-9",			500, 30, GEAR_SLOT_PISTOL},
+	{{"usp-s", "usp"},					"weapon_usp_silencer",	"USP-S",			200, 61, GEAR_SLOT_PISTOL},
+	{{"cz75-auto", "cs75a", "cz"},		"weapon_cz75a",			"CZ75-Auto",		500, 63, GEAR_SLOT_PISTOL},
+	{{"r8revolver", "revolver", "r8"},	"weapon_revolver",		"R8 Revolver",		600, 64, GEAR_SLOT_PISTOL},
+	{{"hegrenade", "he"},				"weapon_hegrenade",		"HE Grenade",		300, 44, GEAR_SLOT_GRENADES, 1},
+	{{"molotov"},						"weapon_molotov",		"Molotov",			400, 46, GEAR_SLOT_GRENADES, 1},
+	{{"kevlar"},						"item_kevlar",			"Kevlar Vest",		650, 50, GEAR_SLOT_UTILITY},
 };
 
 // CONVAR_TODO
@@ -95,63 +96,144 @@ CON_COMMAND_F(cs2f_weapons_enable, "Whether to enable weapon commands", FCVAR_LI
 		g_bEnableWeapons = V_StringToBool(args[1], false);
 }
 
-void ParseWeaponCommand(CCSPlayerController *pController, const char *pszWeaponName)
+void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 {
-	if (!g_bEnableWeapons || !pController || !pController->m_hPawn())
+	if (!g_bEnableWeapons || !player || !player->m_hPawn())
 		return;
 
-	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
+	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)player->GetPawn();
+	WeaponMapEntry_t weaponEntry;
+	bool foundWeapon = false;
 
+	for (int i = 0; i < sizeof(WeaponMap) / sizeof(*WeaponMap); i++)
+	{
+		if (foundWeapon)
+			break;
+
+		weaponEntry = WeaponMap[i];
+		const char* command = args[0];
+
+		if (!V_strncmp("c_", command, 2))
+			command = command + 2;
+
+		for (std::string alias : weaponEntry.aliases)
+		{
+			if (!V_stricmp(command, alias.c_str()))
+			{
+				foundWeapon = true;
+				break;
+			}
+		}
+	}
+
+	if (!foundWeapon)
+		return;
+
+	if (pPawn->m_iHealth() <= 0 || pPawn->m_iTeamNum != CS_TEAM_CT)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You can only buy weapons when human.");
+		return;
+	}
+
+	CCSPlayer_ItemServices* pItemServices = pPawn->m_pItemServices;
+	int money = player->m_pInGameMoneyServices->m_iAccount;
+
+	if (money < weaponEntry.iPrice)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You can't afford %s! It costs $%i, you only have $%i", weaponEntry.szWeaponName, weaponEntry.iPrice, money);
+		return;
+	}
+
+	if (weaponEntry.maxAmount)
+	{
+		CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
+		bool found = false;
+		FOR_EACH_VEC(*weaponPurchases, i)
+		{
+			WeaponPurchaseCount_t& purchase = (*weaponPurchases)[i];
+			if (purchase.m_nItemDefIndex == weaponEntry.iItemDefIndex)
+			{
+				if (purchase.m_nCount >= weaponEntry.maxAmount)
+				{
+					ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot buy any more %s (Max %i)", weaponEntry.szWeaponName, weaponEntry.maxAmount);
+					return;
+				}
+				purchase.m_nCount += 1;
+				found = true;
+				break;
+			}
+		}
+
+		if (!found)
+		{
+			WeaponPurchaseCount_t purchase = {};
+
+			purchase.m_nCount = 1;
+			purchase.m_nItemDefIndex = weaponEntry.iItemDefIndex;
+
+			weaponPurchases->AddToTail(purchase);
+		}
+	}
+
+	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pPawn->m_pWeaponServices->m_hMyWeapons();
+
+	FOR_EACH_VEC(*weapons, i)
+	{
+		CHandle<CBasePlayerWeapon>& weaponHandle = (*weapons)[i];
+
+		if (!weaponHandle.IsValid())
+			continue;
+
+		CBasePlayerWeapon* weapon = weaponHandle.Get();
+
+		// This should usually not be possible
+		// However, Lua ZR is stripping weapons in a really dirty way that leaves stray null entries in m_hMyWeapons
+		if (!weapon)
+			continue;
+
+		if (weapon->GetWeaponVData()->m_GearSlot() == weaponEntry.iGearSlot && (weaponEntry.iGearSlot == GEAR_SLOT_RIFLE || weaponEntry.iGearSlot == GEAR_SLOT_PISTOL))
+		{
+			// Despite having to pass a weapon into DropPlayerWeapon, it only drops the weapon if it's also the players active weapon
+			pPawn->m_pWeaponServices->m_hActiveWeapon = weaponHandle;
+			pItemServices->DropPlayerWeapon(weapon);
+
+			break;
+		}
+	}
+
+	player->m_pInGameMoneyServices->m_iAccount = money - weaponEntry.iPrice;
+	pItemServices->GiveNamedItem(weaponEntry.szClassName);
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have purchased %s for $%i", weaponEntry.szWeaponName, weaponEntry.iPrice);
+}
+
+void WeaponCommandCallback(const CCommandContext& context, const CCommand& args)
+{
+	CCSPlayerController* pController = nullptr;
+	if (context.GetPlayerSlot().Get() != -1)
+		pController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(context.GetPlayerSlot().Get() + 1));
+
+	// Only allow connected players to run chat commands
+	if (pController && !pController->IsConnected())
+		return;
+
+	ParseWeaponCommand(args, pController);
+}
+
+void RegisterWeaponCommands()
+{
 	for (int i = 0; i < sizeof(WeaponMap) / sizeof(*WeaponMap); i++)
 	{
 		WeaponMapEntry_t weaponEntry = WeaponMap[i];
 
-		if (!V_stricmp(pszWeaponName, weaponEntry.command))
+		for (std::string alias : weaponEntry.aliases)
 		{
-			if (pController->m_hPawn()->m_iHealth() <= 0) {
-				ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX"You can only buy weapons when alive.");
-				return;
-			}
-			CCSPlayer_ItemServices *pItemServices = pPawn->m_pItemServices;
-			int money = pController->m_pInGameMoneyServices->m_iAccount;
-			if (money >= weaponEntry.iPrice)
-			{
-				if (weaponEntry.maxAmount)
-				{
-					CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
-					bool found = false;
-					FOR_EACH_VEC(*weaponPurchases, i)
-					{
-						WeaponPurchaseCount_t& purchase = (*weaponPurchases)[i];
-						if (purchase.m_nItemDefIndex == weaponEntry.iItemDefIndex)
-						{
-							if (purchase.m_nCount >= weaponEntry.maxAmount)
-							{
-								ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX"You cannot use !%s anymore(Max %i)", weaponEntry.command, weaponEntry.maxAmount);
-								return;
-							}
-							purchase.m_nCount += 1;
-							found = true;
-							break;
-						}
-					}
+			new CChatCommand(alias.c_str(), ParseWeaponCommand, ADMFLAG_NONE);
+			ConCommandRefAbstract ref;
 
-					if (!found)
-					{
-						WeaponPurchaseCount_t purchase = {};
+			char cmdName[64];
+			V_snprintf(cmdName, sizeof(cmdName), "%s%s", COMMAND_PREFIX, alias.c_str());
 
-						purchase.m_nCount = 1;
-						purchase.m_nItemDefIndex = weaponEntry.iItemDefIndex;
-
-						weaponPurchases->AddToTail(purchase);
-					}
-				}
-
-				pController->m_pInGameMoneyServices->m_iAccount = money - weaponEntry.iPrice;
-				pItemServices->GiveNamedItem(weaponEntry.szWeaponName);
-			}
-
-			break;
+			ConCommand command(&ref, cmdName, WeaponCommandCallback, "Buys this weapon", FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);
 		}
 	}
 }
@@ -169,10 +251,6 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 	if (g_CommandList.IsValidIndex(index))
 	{
 		(*g_CommandList[index])(args, pController);
-	}
-	else
-	{
-		ParseWeaponCommand(pController, args[0]);
 	}
 }
 
