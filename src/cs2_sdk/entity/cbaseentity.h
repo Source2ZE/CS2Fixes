@@ -165,6 +165,7 @@ public:
 
 	CHandle<CBaseEntity> GetHandle() { return m_pEntity->m_EHandle; }
 
+	// A double pointer to entity VData is available 8 bytes past m_nSubclassID, if applicable
 	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 8); }
 };
 

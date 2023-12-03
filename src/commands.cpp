@@ -107,6 +107,9 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 	for (int i = 0; i < sizeof(WeaponMap) / sizeof(*WeaponMap); i++)
 	{
+		if (foundWeapon)
+			break;
+
 		weaponEntry = WeaponMap[i];
 		const char* command = args[0];
 
@@ -118,12 +121,11 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 			if (!V_stricmp(command, alias.c_str()))
 			{
 				foundWeapon = true;
-				goto endOfLoop;
+				break;
 			}
 		}
 	}
 
-endOfLoop:
 	if (!foundWeapon)
 		return;
 
