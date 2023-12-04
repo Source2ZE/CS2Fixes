@@ -91,35 +91,6 @@ CON_COMMAND_CHAT(zspawn, "respawn yourself")
 	pPawn->Respawn();
 }
 
-CON_COMMAND_CHAT(setmodel, "set your model")
-{
-	if (!player)
-	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
-		return;
-	}
-
-	CCSPlayerPawn *pPawn = (CCSPlayerPawn*)player->GetPawn();
-	if (!pPawn)
-	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Invalid Pawn.");
-		return;
-	}
-	ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Classname: %s", pPawn->GetClassname());
-	if (!pPawn->IsAlive())
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You must be alive to change model!");
-		return;
-	}
-
-	pPawn->SetModel(args[1]);
-}
-
-CON_COMMAND_CHAT(endround, "end the round")
-{
-	g_pGameRules->TerminateRound(V_StringToFloat32(args[1], 5.0f), V_StringToUint32(args[2], 10u));
-}
-
 void SetUpAllHumanClasses()
 {
 	for (int i = 0; i < gpGlobals->maxClients; i++)
@@ -217,6 +188,8 @@ void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerContr
 	// SetPlayer functions are swapped, need to remove the cast once fixed
 	pEvent->SetPlayer("userid", (CEntityInstance*)pVictimController->GetPlayerSlot());
 	pEvent->SetPlayer("attacker", (CEntityInstance*)pAttackerController->GetPlayerSlot());
+	pEvent->SetInt("assister", 65535);
+	pEvent->SetInt("assister_pawn", -1);
 	pEvent->SetString("weapon", szWeapon);
 
 	Message("\n--------------------------------\n"
@@ -236,6 +209,16 @@ void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerContr
 
 }
 
+void ZR_StripAndGiveKnife(CCSPlayerPawn *pPawn)
+{
+	CCSPlayer_ItemServices *pItemServices = pPawn->m_pItemServices();
+	// need to add a check for map item and drop them here
+
+
+	pItemServices->StripPlayerWeapons();
+	pItemServices->GiveNamedItem("weapon_knife");
+}
+
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bDontBroadcast)
 {
 	if (pVictimController->m_iTeamNum() == CS_TEAM_CT)
@@ -248,6 +231,8 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
 	if (!pVictimPawn)
 		return;
+
+	ZR_StripAndGiveKnife(pVictimPawn);
 	// set model/health/etc here
 	
 	//hardcode everything for now
@@ -265,6 +250,8 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
 	if (!pVictimPawn)
 		return;
+
+	ZR_StripAndGiveKnife(pVictimPawn);
 	// set model/health/etc here
 	
 	//hardcode everything for now
@@ -439,7 +426,7 @@ void ZR_CheckWinConditions(bool bCheckCT)
 
 	// didn't return early, all players on one or both teams are dead.
 	// 8: CT win; 9: T wins; 10: draw
-	g_pGameRules->TerminateRound(5.0, bCheckCT ? CSRoundEndReason::TerroristWin : CSRoundEndReason::CTWin);
+	g_pGameRules->TerminateRound(5.0f, bCheckCT ? CSRoundEndReason::TerroristWin : CSRoundEndReason::CTWin);
 	g_ZRRoundState = EZRRoundState::ROUND_END;
 }
 
