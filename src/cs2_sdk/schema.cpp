@@ -20,7 +20,7 @@
 #include "schema.h"
 
 #include "../common.h"
-#include "interfaces/cschemasystem.h"
+#include "cschemasystem.h"
 #include "tier1/utlmap.h"
 #include "tier0/memdbgon.h"
 #include "plat.h"

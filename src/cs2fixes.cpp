@@ -34,7 +34,7 @@
 #include "icvar.h"
 #include "interface.h"
 #include "tier0/dbg.h"
-#include "interfaces/cschemasystem.h"
+#include "cschemasystem.h"
 #include "plat.h"
 #include "entitysystem.h"
 #include "engine/igameeventsystem.h"
