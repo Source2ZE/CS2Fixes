@@ -389,6 +389,9 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 
 	Message("Hook_StartupServer: %s\n", gpGlobals->mapname);
 
+	// run our cfg
+	g_pEngineServer2->ServerCommand("exec cs2fixes/cs2fixes");
+
 	if(g_bHasTicked)
 		RemoveMapTimers();
 
