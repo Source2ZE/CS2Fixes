@@ -49,6 +49,8 @@ public:
 		m_iHideDistance = 0;
 		m_bConnected = false;
 		m_iTotalDamage = 0;
+		m_iTotalHits = 0;
+		m_iTotalKills = 0;
 		m_bVotedRTV = false;
 		m_bVotedExtend = false;
 		m_flRTVVoteTime = 0;
@@ -77,6 +79,8 @@ public:
 	void ClearTransmit() { m_shouldTransmit.ClearAll(); }
 	void SetHideDistance(int distance) { m_iHideDistance = distance; }
 	void SetTotalDamage(int damage) { m_iTotalDamage = damage; }
+	void SetTotalHits(int hits) { m_iTotalHits = hits; }
+	void SetTotalKills(int kills) { m_iTotalKills = kills; }
 	void SetRTVVote(bool bRTVVote) { m_bVotedRTV = bRTVVote; }
 	void SetRTVVoteTime(float flCurtime) { m_flRTVVoteTime = flCurtime; }
 	void SetExtendVote(bool bExtendVote) { m_bVotedExtend = bExtendVote; }
@@ -88,6 +92,8 @@ public:
 	int GetHideDistance() { return m_iHideDistance; }
 	CPlayerSlot GetPlayerSlot() { return m_slot; }
 	int GetTotalDamage() { return m_iTotalDamage; }
+	int GetTotalHits() { return m_iTotalHits; }
+	int GetTotalKills() { return m_iTotalKills; }
 	bool GetRTVVote() { return m_bVotedRTV; }
 	float GetRTVVoteTime() { return m_flRTVVoteTime; }
 	bool GetExtendVote() { return m_bVotedExtend; }
@@ -109,6 +115,8 @@ private:
 	int m_iHideDistance;
 	CBitVec<MAXPLAYERS> m_shouldTransmit;
 	int m_iTotalDamage;
+	int m_iTotalHits;
+	int m_iTotalKills;
 	bool m_bVotedRTV;
 	float m_flRTVVoteTime;
 	bool m_bVotedExtend;

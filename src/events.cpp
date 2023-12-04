@@ -184,6 +184,27 @@ GAME_EVENT_F(player_hurt)
 		return;
 
 	pPlayer->SetTotalDamage(pPlayer->GetTotalDamage() + pEvent->GetInt("dmg_health"));
+	pPlayer->SetTotalHits(pPlayer->GetTotalHits() + 1);
+}
+
+GAME_EVENT_F(player_death)
+{
+	if (!g_bEnableTopDefender)
+		return;
+
+	CCSPlayerController *pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
+	CCSPlayerController *pVictim = (CCSPlayerController*)pEvent->GetPlayerController("userid");
+	
+	//Ignore Ts/zombie kills and ignore CT teamkilling or suicide
+	if (!pAttacker || !pVictim || pAttacker->m_iTeamNum != CS_TEAM_CT || pAttacker->m_iTeamNum == pVictim->m_iTeamNum)
+		return;
+
+	ZEPlayer* pPlayer = pAttacker->GetZEPlayer();
+
+	if (!pPlayer)
+		return;
+
+	pPlayer->SetTotalKills(pPlayer->GetTotalKills() + 1);
 }
 
 GAME_EVENT_F(round_start)
@@ -199,6 +220,8 @@ GAME_EVENT_F(round_start)
 			continue;
 
 		pPlayer->SetTotalDamage(0);
+		pPlayer->SetTotalHits(0);
+		pPlayer->SetTotalKills(0);
 	}
 }
 
@@ -242,10 +265,12 @@ GAME_EVENT_F(round_end)
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 
 		if (i < 5)
-			ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
+			ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG \x05(%i HITS & %i KILLS)", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), pPlayer->GetTotalKills());
 		else
-			ClientPrint(pController, HUD_PRINTTALK, " \x0C%i. %s \x01- \x07%i DMG", i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
+			ClientPrint(pController, HUD_PRINTTALK, " \x0C%i. %s \x01- \x07%i DMG \x05(%i HITS & %i KILLS)", i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), pPlayer->GetTotalKills());
 		
 		pPlayer->SetTotalDamage(0);
+		pPlayer->SetTotalHits(0);
+		pPlayer->SetTotalKills(0);
 	}
 }
