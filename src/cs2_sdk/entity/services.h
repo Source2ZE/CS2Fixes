@@ -20,6 +20,7 @@
 #pragma once
 #include <platform.h>
 #include "globaltypes.h"
+#include <entity/ccsweaponbase.h>
 
 class CBaseEntity;
 
@@ -63,6 +64,15 @@ public:
 	SCHEMA_FIELD(uint32_t, m_nLastCommandNumberProcessed)
 	SCHEMA_FIELD(uint64_t, m_nToggleButtonDownMask)
 	SCHEMA_FIELD(float, m_flMaxspeed)
+};
+
+class CPlayer_WeaponServices
+{
+public:
+	DECLARE_SCHEMA_CLASS(CPlayer_WeaponServices);
+
+	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBasePlayerWeapon>>, m_hMyWeapons)
+	SCHEMA_FIELD(CHandle<CBasePlayerWeapon>, m_hActiveWeapon)
 };
 
 class CPlayer_MovementServices_Humanoid : CPlayer_MovementServices
@@ -110,6 +120,8 @@ private:
 public:
 	virtual bool GiveNamedItemBool(const char* pchName) = 0;
 	virtual CBaseEntity* GiveNamedItem(const char* pchName) = 0;
+	virtual void DropPlayerWeapon(CBasePlayerWeapon* weapon) = 0;
+	virtual void StripPlayerWeapons() = 0;
 };
 
 // We need an exactly sized class to be able to iterate the vector, our schema system implementation can't do this
