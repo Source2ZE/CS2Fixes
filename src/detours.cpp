@@ -32,6 +32,7 @@
 #include "entity/ctriggerpush.h"
 #include "entity/cgamerules.h"
 #include "entity/ctakedamageinfo.h"
+#include "entity/services.h"
 #include "playermanager.h"
 #include "igameevents.h"
 #include "gameconfig.h"
@@ -306,7 +307,13 @@ CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONL
 
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
+	if (g_bEnableZR)
+		if (!ZR_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
+		{
+			return false;
+		}
 
+	return CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon);
 }
 
 CUtlVector<CDetourBase *> g_vecDetours;
@@ -355,6 +362,9 @@ bool InitDetours(CGameConfig *gameConfig)
 		success = false;
 	CBaseEntity_TakeDamageOld.EnableDetour();
 
+	if (!CCSPlayer_WeaponServices_CanUse.CreateDetour(gameConfig))
+		success = false;
+	CCSPlayer_WeaponServices_CanUse.EnableDetour();
 	return success;
 }
 

@@ -46,6 +46,7 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent);
 void ZR_OnPlayerDeath(IGameEvent* pEvent);
 void ZR_OnRoundFreezeEnd(IGameEvent* pEvent);
 bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo);
+bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
 
 // need to replace with actual cvar someday
 #define CON_ZR_CVAR(name, description, variable_name, variable_type, variable_default)					\

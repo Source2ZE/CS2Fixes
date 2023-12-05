@@ -21,6 +21,7 @@
 #include <platform.h>
 #include "globaltypes.h"
 #include <entity/ccsweaponbase.h>
+#include <entity/ccsplayerpawn.h>
 
 class CBaseEntity;
 
@@ -39,6 +40,8 @@ struct CSMatchStats_t : public CSPerRoundStats_t
 {
 public:
 	DECLARE_SCHEMA_CLASS_INLINE(CSMatchStats_t)
+
+	SCHEMA_FIELD(int32_t, m_iEntryWins);
 };
 
 class CCSPlayerController_ActionTrackingServices
@@ -66,7 +69,15 @@ public:
 	SCHEMA_FIELD(float, m_flMaxspeed)
 };
 
-class CPlayer_WeaponServices
+class CPlayerPawnComponent
+{
+public:
+	DECLARE_SCHEMA_CLASS(CPlayerPawnComponent);
+
+	SCHEMA_FIELD(CCSPlayerPawn*, __m_pChainEntity)
+};
+
+class CPlayer_WeaponServices : public CPlayerPawnComponent
 {
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_WeaponServices);
@@ -75,7 +86,7 @@ public:
 	SCHEMA_FIELD(CHandle<CBasePlayerWeapon>, m_hActiveWeapon)
 };
 
-class CCSPlayer_WeaponServices : CPlayer_WeaponServices
+class CCSPlayer_WeaponServices : public CPlayer_WeaponServices
 {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_WeaponServices);
