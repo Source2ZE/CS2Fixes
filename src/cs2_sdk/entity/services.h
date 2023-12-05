@@ -75,6 +75,25 @@ public:
 	SCHEMA_FIELD(CHandle<CBasePlayerWeapon>, m_hActiveWeapon)
 };
 
+class CCSPlayer_WeaponServices : CPlayer_WeaponServices
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayer_WeaponServices);
+
+	SCHEMA_FIELD(GameTime_t, m_flNextAttack)
+	SCHEMA_FIELD(bool, m_bIsLookingAtWeapon)
+	SCHEMA_FIELD(bool, m_bIsHoldingLookAtWeapon)
+
+	SCHEMA_FIELD(CHandle<CBasePlayerWeapon>, m_hSavedWeapon)
+	SCHEMA_FIELD(int32_t, m_nTimeToMelee)
+	SCHEMA_FIELD(int32_t, m_nTimeToSecondary)
+	SCHEMA_FIELD(int32_t, m_nTimeToPrimary)
+	SCHEMA_FIELD(int32_t, m_nTimeToSniperRifle)
+	SCHEMA_FIELD(bool, m_bIsBeingGivenItem)
+	SCHEMA_FIELD(bool, m_bIsPickingUpItemWithUse)
+	SCHEMA_FIELD(bool, m_bPickedUpWeapon)
+};
+
 class CPlayer_MovementServices_Humanoid : CPlayer_MovementServices
 {
 public:

@@ -55,6 +55,7 @@ DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
+DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -301,6 +302,11 @@ CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONL
 	}
 
 	bBlock = !bBlock;
+}
+
+bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
+{
+
 }
 
 CUtlVector<CDetourBase *> g_vecDetours;
