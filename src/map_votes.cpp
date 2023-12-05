@@ -1,4 +1,4 @@
-/**
+ /**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023 Source2ZE
@@ -33,10 +33,7 @@
 
 extern CGlobalVars *gpGlobals;
 extern CCSGameRules* g_pGameRules;
-<<<<<<< HEAD
 extern IVEngineServer2* g_pEngineServer2;
-=======
->>>>>>> 792b7dcafe025a2538046994f54362b107882ce5
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
@@ -324,7 +321,6 @@ void CMapVoteSystem::FinishVote()
 	// Do the final clean-up
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 		ClearPlayerInfo(i);
-<<<<<<< HEAD
 
 	// Wait a second and force-change the map
 	new CTimer(1.0, false, [iWinningMap]()
@@ -335,8 +331,6 @@ void CMapVoteSystem::FinishVote()
 			g_pEngineServer2->ServerCommand(sChangeMapCmd);
 			return -1.0;
 		});
-=======
->>>>>>> 792b7dcafe025a2538046994f54362b107882ce5
 }
 
 void CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption)
