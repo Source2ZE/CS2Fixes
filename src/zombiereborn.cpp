@@ -222,8 +222,13 @@ void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerContr
 void ZR_StripAndGiveKnife(CCSPlayerPawn *pPawn)
 {
 	CCSPlayer_ItemServices *pItemServices = pPawn->m_pItemServices();
-	// need to add a check for map item and drop them here
 
+	// it can sometimes be null when player joined on the very first round? 
+	if (!pItemServices)
+		return;
+
+	// need to add a check for map item and drop them here
+	// In csgo, map-spawned weapons have hammerid, whereas purchased weapons don't
 
 	pItemServices->StripPlayerWeapons();
 	pItemServices->GiveNamedItem("weapon_knife");
