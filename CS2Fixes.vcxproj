@@ -124,7 +124,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;sdk/public/mathlib;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/public/entity2;sdk/public/game/server;vendor/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>protobuf/generated;src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;sdk/public/mathlib;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/public/entity2;sdk/public/game/server;vendor/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -148,7 +148,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/public/entity2;sdk/public/game/server;vendor/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>protobuf/generated;src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/core/sourcehook;vendor/subhook;vendor/funchook/include;sdk/public/entity2;sdk/public/game/server;vendor/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -174,6 +174,7 @@
     <ClCompile Include="src\ctimer.cpp" />
     <ClCompile Include="src\cvars.cpp" />
     <ClCompile Include="src\detours.cpp" />
+    <ClCompile Include="src\discord.cpp" />
     <ClCompile Include="src\events.cpp" />
     <ClCompile Include="src\gameconfig.cpp" />
     <ClCompile Include="src\httpmanager.cpp" />
@@ -207,6 +208,7 @@
     <ClInclude Include="src\cdetour.h" />
     <ClInclude Include="src\ctimer.h" />
     <ClInclude Include="src\detours.h" />
+    <ClInclude Include="src\discord.h" />
     <ClInclude Include="src\eventlistener.h" />
     <ClInclude Include="src\httpmanager.h" />
     <ClInclude Include="src\mempatch.h" />

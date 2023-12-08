@@ -92,6 +92,9 @@
     <ClCompile Include="src\votemanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\discord.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -186,6 +189,9 @@
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\discord.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
