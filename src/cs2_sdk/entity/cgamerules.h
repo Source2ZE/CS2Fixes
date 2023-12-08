@@ -22,45 +22,11 @@
 #include "globaltypes.h"
 #include "cbaseentity.h"
 
-class CGameRules
-{
-public:
-	DECLARE_SCHEMA_CLASS(CGameRules)
-
-};
-
-class CCSGameRules : public CGameRules
-{
-public:
-	DECLARE_SCHEMA_CLASS(CCSGameRules)
-
-	SCHEMA_FIELD(float, m_fMatchStartTime)
-	SCHEMA_FIELD(float, m_flGameStartTime)
-	SCHEMA_FIELD(int, m_totalRoundsPlayed)
-	SCHEMA_FIELD(GameTime_t, m_fRoundStartTime)
-	SCHEMA_FIELD(GameTime_t, m_flRestartRoundTime)
-
-	void TerminateRound(float delay, unsigned int reason)
-	{
-		addresses::CGameRules_TerminateRound(this, delay, reason, 0, 0);
-	}
-};
-
-class CCSGameRulesProxy : public Z_CBaseEntity
-{
-public:
-	DECLARE_SCHEMA_CLASS(CCSGameRulesProxy)
-
-	SCHEMA_FIELD(CCSGameRules *, m_pGameRules)
-};
-
 enum CSRoundEndReason
 {
 	TargetBombed = 1,	  /**< Target Successfully Bombed! */
-
 	VIPEscaped,			  /**< The VIP has escaped! - Doesn't exist on CS:GO */
 	VIPKilled,			  /**< VIP has been assassinated! - Doesn't exist on CS:GO */
-
 	TerroristsEscaped,	  /**< The terrorists have escaped! */
 	CTStoppedEscape,	  /**< The CTs have prevented most of the terrorists from escaping! */
 	TerroristsStopped,	  /**< Escaping terrorists have all been neutralized! */
@@ -80,4 +46,36 @@ enum CSRoundEndReason
 	CTsReachedHostage,	 /**< CTs Reached the hostage */
 	SurvivalWin,
 	SurvivalDraw
+};
+
+class CGameRules
+{
+public:
+	DECLARE_SCHEMA_CLASS(CGameRules)
+
+};
+
+class CCSGameRules : public CGameRules
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSGameRules)
+
+	SCHEMA_FIELD(float, m_fMatchStartTime)
+	SCHEMA_FIELD(float, m_flGameStartTime)
+	SCHEMA_FIELD(int, m_totalRoundsPlayed)
+	SCHEMA_FIELD(GameTime_t, m_fRoundStartTime)
+	SCHEMA_FIELD(GameTime_t, m_flRestartRoundTime)
+
+	void TerminateRound(float flDelay, CSRoundEndReason reason)
+	{
+		addresses::CGameRules_TerminateRound(this, flDelay, reason, 0, 0);
+	}
+};
+
+class CCSGameRulesProxy : public Z_CBaseEntity
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSGameRulesProxy)
+
+	SCHEMA_FIELD(CCSGameRules *, m_pGameRules)
 };
