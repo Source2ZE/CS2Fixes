@@ -62,36 +62,10 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
-// CONVAR_TODO
-static bool g_bForceCT = false;
-
-CON_COMMAND_F(cs2f_force_ct, "Whether to force everyone to CTs on every new round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bForceCT);
-	else
-		g_bForceCT = V_StringToBool(args[1], false);
-}
-
 GAME_EVENT_F(round_prestart)
 {
 	if (g_bEnableZR)
 		ZR_OnRoundPrestart(pEvent);
-
-	// Right now we're only using this event to move everyone to CTs
-	if (!g_bForceCT)
-		return;
-
-	for (int i = 0; i < gpGlobals->maxClients; i++)
-	{
-		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
-
-		// Only do this for Ts, ignore CTs and specs
-		if (!pController || pController->m_iTeamNum() != CS_TEAM_T)
-			continue;
-
-		pController->SwitchTeam(CS_TEAM_CT);
-	}
 }
 
 // CONVAR_TODO
