@@ -439,7 +439,7 @@ CON_COMMAND_CHAT(unve, "Remove your vote to extend current map.")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You no longer want to extend current map.");
 }
 
-CON_COMMAND_CHAT_FLAGS(blockrtv, "Block the ability for players to vote to end current map sooner.", ADMFLAG_CHANGEMAP)
+CON_COMMAND_CHAT_FLAGS(disablertv, "Disable the ability for players to vote to end current map sooner.", ADMFLAG_CHANGEMAP)
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -447,9 +447,9 @@ CON_COMMAND_CHAT_FLAGS(blockrtv, "Block the ability for players to vote to end c
 	if (g_RTVState == ERTVState::BLOCKED_BY_ADMIN)
 	{
 		if (player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is already blocked.");
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is already disabled.");
 		else
-			ConMsg("RTV is already blocked.");
+			ConMsg("RTV is already disabled.");
 		return;
 	}
 
@@ -457,10 +457,10 @@ CON_COMMAND_CHAT_FLAGS(blockrtv, "Block the ability for players to vote to end c
 
 	g_RTVState = ERTVState::BLOCKED_BY_ADMIN;
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "blocked vote for RTV.", pszCommandPlayerName);
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "disabled vote for RTV.", pszCommandPlayerName);
 }
 
-CON_COMMAND_CHAT_FLAGS(unblockrtv, "Restore the ability for players to vote to end current map sooner.", ADMFLAG_CHANGEMAP)
+CON_COMMAND_CHAT_FLAGS(enablertv, "Restore the ability for players to vote to end current map sooner.", ADMFLAG_CHANGEMAP)
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -468,9 +468,9 @@ CON_COMMAND_CHAT_FLAGS(unblockrtv, "Restore the ability for players to vote to e
 	if (g_RTVState == ERTVState::RTV_ALLOWED)
 	{
 		if (player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is not blocked.");
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is not disabled.");
 		else
-			ConMsg("RTV is not blocked.");
+			ConMsg("RTV is not disabled.");
 		return;
 	}
 
@@ -478,7 +478,7 @@ CON_COMMAND_CHAT_FLAGS(unblockrtv, "Restore the ability for players to vote to e
 
 	g_RTVState = ERTVState::RTV_ALLOWED;
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "restored vote for RTV.", pszCommandPlayerName);
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "enabled vote for RTV.", pszCommandPlayerName);
 }
 
 CON_COMMAND_CHAT_FLAGS(addextend, "Add another extend to the current map for players to vote.", ADMFLAG_CHANGEMAP)
