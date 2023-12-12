@@ -248,3 +248,9 @@ GAME_EVENT_F(player_death)
 	if (g_bEnableZR)
 		ZR_OnPlayerDeath(pEvent);
 }
+
+GAME_EVENT_F(round_time_warning)
+{
+	if (g_bEnableZR)
+		ZR_OnRoundTimeWarning(pEvent);
+}

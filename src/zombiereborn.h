@@ -47,6 +47,7 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent);
 void ZR_OnPlayerHurt(IGameEvent* pEvent);
 void ZR_OnPlayerDeath(IGameEvent* pEvent);
 void ZR_OnRoundFreezeEnd(IGameEvent* pEvent);
+void ZR_OnRoundTimeWarning(IGameEvent* pEvent);
 bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo);
 bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
 void ZR_Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* const pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* const value, float flDelay);
