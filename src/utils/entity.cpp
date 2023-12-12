@@ -59,6 +59,11 @@ Z_CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *
 	return addresses::CGameEntitySystem_FindEntityByName(g_pEntitySystem, pStartEntity, szName, pSearchingEntity, pActivator, pCaller, pFilter);
 }
 
+Z_CBaseEntity* CreateEntityByName(const char* className)
+{
+	return addresses::CreateEntityByName(className, -1);
+}
+
 void UTIL_AddEntityIOEvent(CEntityInstance *pTarget, const char *pszInput,
 						   CEntityInstance *pActivator, CEntityInstance *pCaller, variant_string_t *value, float flDelay)
 {

@@ -46,6 +46,7 @@ Z_CBaseEntity *UTIL_FindEntityByClassname(CEntityInstance *pStart, const char *n
 Z_CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
 									CEntityInstance *pSearchingEntity = nullptr, CEntityInstance *pActivator = nullptr,
 									CEntityInstance *pCaller = nullptr, IEntityFindFilter *pFilter = nullptr);
+Z_CBaseEntity* CreateEntityByName(const char* className);
 
 void UTIL_AddEntityIOEvent(CEntityInstance *pTarget, const char *pszInput,
 							CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr,
