@@ -170,6 +170,11 @@ public:
 
 	// A double pointer to entity VData is available 8 bytes past m_nSubclassID, if applicable
 	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 8); }
+
+	void DispatchSpawn()
+	{
+		addresses::DispatchSpawn(this, 0);
+	}
 };
 
 class SpawnPoint : public Z_CBaseEntity
