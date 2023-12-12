@@ -74,4 +74,6 @@ namespace addresses
 																		CEntityInstance *pSearchingEntity, CEntityInstance *pActivator, CEntityInstance *pCaller,
 																		IEntityFindFilter *pFilter);
 	inline void(FASTCALL *CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4, unsigned int a5);
+	inline Z_CBaseEntity *(FASTCALL* CreateEntityByName)(const char* className, int iForceEdictIndex);
+	inline void(FASTCALL* DispatchSpawn)(Z_CBaseEntity* pEntity, uintptr_t unknown); // unknown is not bool bRunVScripts
 }

@@ -43,6 +43,8 @@ void ZR_Cure(CCSPlayerController *pTargetController);
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
 static int g_iRoundNum = 0;
 static int g_iInfectionCountDown = 0;
+static bool g_bRespawnEnabled = false;
+static CHandle<Z_CBaseEntity> g_hRespawnToggler;
 
 // CONVAR_TODO
 bool g_bEnableZR = false;
@@ -113,8 +115,6 @@ void ZR_OnStartupServer()
 	// Here we force some cvars that are necessary for the gamemode
 	g_pEngineServer2->ServerCommand("mp_give_player_c4 0");
 	g_pEngineServer2->ServerCommand("mp_friendlyfire 0");
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 1");
 	g_pEngineServer2->ServerCommand("bot_quota_mode fill"); // Necessary to fix bots kicked/joining infinitely when forced to CT https://github.com/Source2ZE/ZombieReborn/issues/64
 	// These disable most of the buy menu for zombies
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_pistols 3");
@@ -123,13 +123,27 @@ void ZR_OnStartupServer()
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_rifles 3");
 }
 
+void ToggleRespawn(bool force = false, bool value = false)
+{
+	if ((!force && !g_bRespawnEnabled) || (force && value))
+	{
+		g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
+		g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 1");
+		g_bRespawnEnabled = true;
+	}
+	else
+	{
+		g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 0");
+		g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 0");
+		g_bRespawnEnabled = false;
+	}
+}
+
 void ZR_OnRoundPrestart(IGameEvent* pEvent)
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
 	g_iRoundNum++;
-
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 1");
+	ToggleRespawn(true, true);
 
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
@@ -143,15 +157,22 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 	}
 }
 
+void SetupRespawnToggler()
+{
+	Z_CBaseEntity* relay = CreateEntityByName("logic_relay");
+
+	relay->m_pEntity->m_name = "zr_toggle_respawn";
+	relay->DispatchSpawn();
+	g_hRespawnToggler = relay->GetHandle();
+}
+
 void ZR_OnRoundStart(IGameEvent* pEvent)
 {
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
 
 	// SetUpAllHumanClasses();
-	// SetupRespawnToggler();
+	SetupRespawnToggler();
 	// SetupAmmoReplenish();
-
-	// g_ZR_ROUND_STARTED = true;
 }
 
 void ZR_OnPlayerSpawn(IGameEvent* pEvent)
@@ -420,13 +441,27 @@ bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeapon
 	return true;
 }
 
+void ZR_Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* const pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* const value, float flDelay)
+{
+	if (!g_hRespawnToggler.IsValid())
+		return;
+
+	Z_CBaseEntity* relay = g_hRespawnToggler.Get();
+
+	// Must be an OnTrigger output from our zr_toggle_respawn relay
+	if (!relay || pCaller != relay || V_strcmp(pThis->m_pDesc->m_pName, "OnTrigger"))
+		return;
+
+	ToggleRespawn();
+	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Respawning is %s!", g_bRespawnEnabled ? "enabled" : "disabled");
+}
+
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
 {
 	CCSPlayerController *pAttackerController = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
 	CCSPlayerController *pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 	const char* szWeapon = pEvent->GetString("weapon");
 	int iDmgHealth = pEvent->GetInt("dmg_health");
-
 
 	// grenade and molotov knockbacks are handled by TakeDamage detours
 	if (!pAttackerController || !pVictimController || !V_strncmp(szWeapon, "inferno", 7) || !V_strncmp(szWeapon, "hegrenade", 9))
@@ -476,12 +511,9 @@ void ZR_CheckWinConditions(bool bCheckCT)
 	}
 
 	// didn't return early, all players on one or both teams are dead.
-	// 8: CT win; 9: T wins; 10: draw
 	g_pGameRules->TerminateRound(5.0f, bCheckCT ? CSRoundEndReason::TerroristWin : CSRoundEndReason::CTWin);
 	g_ZRRoundState = EZRRoundState::ROUND_END;
-
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 0");
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 0");
+	ToggleRespawn(true, false);
 
 	// increment team score
 	iTeamNum = bCheckCT ? CS_TEAM_T : CS_TEAM_CT; //?????

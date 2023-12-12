@@ -63,6 +63,8 @@ bool addresses::Initialize(CGameConfig *g_GameConfig)
 	RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByClassName", addresses::CGameEntitySystem_FindEntityByClassName);
 	RESOLVE_SIG(g_GameConfig, "CGameEntitySystem_FindEntityByName", addresses::CGameEntitySystem_FindEntityByName);
 	RESOLVE_SIG(g_GameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
+	RESOLVE_SIG(g_GameConfig, "CreateEntityByName", addresses::CreateEntityByName);
+	RESOLVE_SIG(g_GameConfig, "DispatchSpawn", addresses::DispatchSpawn);
 
 	return true;
 }
