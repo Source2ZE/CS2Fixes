@@ -43,7 +43,8 @@ void ZR_Cure(CCSPlayerController *pTargetController);
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
 static int g_iRoundNum = 0;
 static int g_iInfectionCountDown = 0;
-
+static bool g_bRespawnEnabled = false;
+static CHandle<Z_CBaseEntity> g_hRespawnToggler;
 
 // CONVAR_TODO
 bool g_bEnableZR = false;
@@ -66,6 +67,7 @@ CON_ZR_CVAR(zr_infect_spawn_time_max, "Maximum time in which Mother Zombies shou
 CON_ZR_CVAR(zr_infect_spawn_mz_ratio, "Ratio of all Players to Mother Zombies to be spawned at round start", g_flInfectSpawnMZRatio, Int32, 7)
 CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to be spawned at round start", g_flInfectSpawnMinCount, Int32, 2)
 
+// Debug command, #if _DEBUG or remove it later
 CON_COMMAND_CHAT(zspawn, "respawn yourself")
 {
 	// Silently return so the command is completely hidden
@@ -109,28 +111,59 @@ void SetUpAllHumanClasses()
 void ZR_OnStartupServer()
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
-	// CONVAR_TODO
-	// Here we force some cvars that are essential for the scripts to work
-	// g_pEngineServer2->ServerCommand("mp_weapons_allow_pistols 3");
-	// g_pEngineServer2->ServerCommand("mp_weapons_allow_smgs 3");
-	// g_pEngineServer2->ServerCommand("mp_weapons_allow_heavy 3");
-	// g_pEngineServer2->ServerCommand("mp_weapons_allow_rifles 3");
+
+	// Here we force some cvars that are necessary for the gamemode
 	g_pEngineServer2->ServerCommand("mp_give_player_c4 0");
 	g_pEngineServer2->ServerCommand("mp_friendlyfire 0");
-	// Legacy Lua respawn stuff, do not use these, we should handle respawning ourselves now that we can
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 1");
-	//g_pEngineServer2->ServerCommand("bot_quota_mode fill");
-	//g_pEngineServer2->ServerCommand("mp_ignore_round_win_conditions 1");
+	g_pEngineServer2->ServerCommand("bot_quota_mode fill"); // Necessary to fix bots kicked/joining infinitely when forced to CT https://github.com/Source2ZE/ZombieReborn/issues/64
+	// These disable most of the buy menu for zombies
+	g_pEngineServer2->ServerCommand("mp_weapons_allow_pistols 3");
+	g_pEngineServer2->ServerCommand("mp_weapons_allow_smgs 3");
+	g_pEngineServer2->ServerCommand("mp_weapons_allow_heavy 3");
+	g_pEngineServer2->ServerCommand("mp_weapons_allow_rifles 3");
+}
+
+void ToggleRespawn(bool force = false, bool value = false)
+{
+	if ((!force && !g_bRespawnEnabled) || (force && value))
+	{
+		g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
+		g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 1");
+		g_bRespawnEnabled = true;
+	}
+	else
+	{
+		g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 0");
+		g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 0");
+		g_bRespawnEnabled = false;
+	}
 }
 
 void ZR_OnRoundPrestart(IGameEvent* pEvent)
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
 	g_iRoundNum++;
+	ToggleRespawn(true, true);
 
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 1");
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 1");
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
+
+		// Only do this for Ts, ignore CTs and specs
+		if (!pController || pController->m_iTeamNum() != CS_TEAM_T)
+			continue;
+
+		pController->SwitchTeam(CS_TEAM_CT);
+	}
+}
+
+void SetupRespawnToggler()
+{
+	Z_CBaseEntity* relay = CreateEntityByName("logic_relay");
+
+	relay->m_pEntity->m_name = "zr_toggle_respawn";
+	relay->DispatchSpawn();
+	g_hRespawnToggler = relay->GetHandle();
 }
 
 void ZR_OnRoundStart(IGameEvent* pEvent)
@@ -138,10 +171,8 @@ void ZR_OnRoundStart(IGameEvent* pEvent)
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
 
 	// SetUpAllHumanClasses();
-	// SetupRespawnToggler();
+	SetupRespawnToggler();
 	// SetupAmmoReplenish();
-
-	// g_ZR_ROUND_STARTED = true;
 }
 
 void ZR_OnPlayerSpawn(IGameEvent* pEvent)
@@ -410,13 +441,27 @@ bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeapon
 	return true;
 }
 
+void ZR_Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* const pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* const value, float flDelay)
+{
+	if (!g_hRespawnToggler.IsValid())
+		return;
+
+	Z_CBaseEntity* relay = g_hRespawnToggler.Get();
+
+	// Must be an OnTrigger output from our zr_toggle_respawn relay
+	if (!relay || pCaller != relay || V_strcmp(pThis->m_pDesc->m_pName, "OnTrigger"))
+		return;
+
+	ToggleRespawn();
+	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Respawning is %s!", g_bRespawnEnabled ? "enabled" : "disabled");
+}
+
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
 {
 	CCSPlayerController *pAttackerController = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
 	CCSPlayerController *pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 	const char* szWeapon = pEvent->GetString("weapon");
 	int iDmgHealth = pEvent->GetInt("dmg_health");
-
 
 	// grenade and molotov knockbacks are handled by TakeDamage detours
 	if (!pAttackerController || !pVictimController || !V_strncmp(szWeapon, "inferno", 7) || !V_strncmp(szWeapon, "hegrenade", 9))
@@ -466,12 +511,9 @@ void ZR_CheckWinConditions(bool bCheckCT)
 	}
 
 	// didn't return early, all players on one or both teams are dead.
-	// 8: CT win; 9: T wins; 10: draw
 	g_pGameRules->TerminateRound(5.0f, bCheckCT ? CSRoundEndReason::TerroristWin : CSRoundEndReason::CTWin);
 	g_ZRRoundState = EZRRoundState::ROUND_END;
-
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_t 0");
-	g_pEngineServer2->ServerCommand("mp_respawn_on_death_ct 0");
+	ToggleRespawn(true, false);
 
 	// increment team score
 	iTeamNum = bCheckCT ? CS_TEAM_T : CS_TEAM_CT; //?????
@@ -497,14 +539,14 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrint(player, HUD_PRINTCONSOLE, ZR_PREFIX "You cannot use this command from the server console.");
 		return;
 	}
 
 	// Check if command is enabled for humans
 	if (!g_bZteleHuman && player->m_iTeamNum() == CS_TEAM_CT)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command as a human.");
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "You cannot use this command as a human.");
 		return;
 	}
 
@@ -521,7 +563,7 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 	// But I ran into this when I switched to the real FindEntityByClassname and forgot to insert a *
 	if (spawns.Count() == 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"There are no spawns!");
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX"There are no spawns!");
 		Panic("ztele used while there are no spawns!\n");
 		return;
 	}
@@ -538,37 +580,37 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 
 	if (!pPawn->IsAlive())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot teleport when dead!");
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX"You cannot teleport when dead!");
 		return;
 	}
 
 	//Get initial player position so we can do distance check
 	Vector initialpos = pPawn->GetAbsOrigin();
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Teleporting to spawn in 5 seconds.");
+	ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX"Teleporting to spawn in 5 seconds.");
 
 	CHandle<CBasePlayerPawn> handle = pPawn->GetHandle();
 
 	new CTimer(5.0f, false, [spawnpos, handle, initialpos]()
-		{
-			CBasePlayerPawn* pPawn = handle.Get();
+	{
+		CBasePlayerPawn* pPawn = handle.Get();
 
-			if (!pPawn)
-				return -1.0f;
-
-			Vector endpos = pPawn->GetAbsOrigin();
-
-			if (initialpos.DistTo(endpos) < g_flMaxZteleDistance)
-			{
-				pPawn->SetAbsOrigin(spawnpos);
-				ClientPrint(pPawn->GetController(), HUD_PRINTTALK, CHAT_PREFIX "You have been teleported to spawn.");
-			}
-			else
-			{
-				ClientPrint(pPawn->GetController(), HUD_PRINTTALK, CHAT_PREFIX "Teleport failed! You moved too far.");
-				return -1.0f;
-			}
-
+		if (!pPawn)
 			return -1.0f;
-		});
+
+		Vector endpos = pPawn->GetAbsOrigin();
+
+		if (initialpos.DistTo(endpos) < g_flMaxZteleDistance)
+		{
+			pPawn->SetAbsOrigin(spawnpos);
+			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, ZR_PREFIX "You have been teleported to spawn.");
+		}
+		else
+		{
+			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, ZR_PREFIX "Teleport failed! You moved too far.");
+			return -1.0f;
+		}
+
+		return -1.0f;
+	});
 }
