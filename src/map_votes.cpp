@@ -118,13 +118,11 @@ static int __cdecl OrderStringsLexicographically(const char* const* a, const cha
 
 CON_COMMAND_CHAT_FLAGS(maplist, "List the maps in the server", ADMFLAG_NONE)
 {
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all available maps will be shown in console.");
-	ClientPrint(player, HUD_PRINTCONSOLE, "The list of all available maps is:");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
+	ClientPrint(player, HUD_PRINTCONSOLE, "The list of all maps is:");
 	CUtlVector<const char*> vecMapNames;
 	for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++) {
-		if (g_pMapVoteSystem->IsMapIndexEnabled(i)) {
-			vecMapNames.AddToTail(g_pMapVoteSystem->GetMapName(i));
-		}
+		vecMapNames.AddToTail(g_pMapVoteSystem->GetMapName(i));
 	}
 	vecMapNames.Sort(OrderStringsLexicographically);
 	FOR_EACH_VEC(vecMapNames, i)
