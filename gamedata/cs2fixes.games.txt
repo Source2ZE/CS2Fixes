@@ -271,23 +271,23 @@
             }
             "Teleport"
             {
-                "windows"   "148"
-                "linux"     "147"
+                "windows"   "149"
+                "linux"     "148"
             }
             "CollisionRulesChanged"
             {
-                "windows"   "173"
-                "linux"     "172"
+                "windows"   "174"
+                "linux"     "173"
             }
 			"IsEntityPawn"
             {
-                "windows"   "152"
-                "linux"     "151"
+                "windows"   "153"
+                "linux"     "152"
             }
 			"IsEntityController"
             {
-                "windows"   "153"
-                "linux"     "152"
+                "windows"   "154"
+                "linux"     "153"
             }
 			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
             "CCSPlayerController_ChangeTeam"
@@ -300,8 +300,8 @@
 			// 2832 (354 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"	"356"
-				"linux"		"356"
+				"windows"	"357"
+				"linux"		"357"
 			}
 			// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 			"CGameRules_FindPickerEntity"
@@ -312,8 +312,8 @@
 			//
 			"PassesTriggerFilters"
 			{
-				"windows"	"244"
-				"linux"		"245"
+				"windows"	"245"
+				"linux"		"246"
 			}
         }
         "Patches"
