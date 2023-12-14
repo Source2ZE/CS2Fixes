@@ -173,6 +173,9 @@ GAME_EVENT_F(player_hurt)
 
 GAME_EVENT_F(player_death)
 {
+	if (g_bEnableZR)
+		ZR_OnPlayerDeath(pEvent);
+
 	if (!g_bEnableTopDefender)
 		return;
 
@@ -266,10 +269,4 @@ GAME_EVENT_F(round_freeze_end)
 {
 	if (g_bEnableZR)
 		ZR_OnRoundFreezeEnd(pEvent);
-}
-
-GAME_EVENT_F(player_death)
-{
-	if (g_bEnableZR)
-		ZR_OnPlayerDeath(pEvent);
 }
