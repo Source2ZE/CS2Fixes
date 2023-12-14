@@ -20,7 +20,7 @@
 #include "schema.h"
 
 #include "../common.h"
-#include "interfaces/cschemasystem.h"
+#include "cschemasystem.h"
 #include "tier1/utlmap.h"
 #include "tier0/memdbgon.h"
 #include "plat.h"
@@ -75,10 +75,10 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* cla
         SchemaClassFieldData_t& field = pFields[i];
 
 #ifdef _DEBUG
-        Message("%s::%s found at -> 0x%X - %llx\n", className, field.m_name, field.m_offset, &field);
+		Message("%s::%s found at -> 0x%X - %llx\n", className, field.m_name, field.m_single_inheritance_offset, &field);
 #endif
 
-        keyValueMap->Insert(hash_32_fnv1a_const(field.m_name), { field.m_offset, IsFieldNetworked(field) });
+        keyValueMap->Insert(hash_32_fnv1a_const(field.m_name), {field.m_single_inheritance_offset, IsFieldNetworked(field)});
     }
 
     return true;
@@ -103,7 +103,7 @@ int16_t schema::FindChainOffset(const char* className)
 
             if (V_strcmp(field.m_name, "__m_pChainEntity") == 0)
             {
-                return field.m_offset;
+                return field.m_single_inheritance_offset;
             }
         }
     } while ((pClassInfo = pClassInfo->GetParent()) != nullptr);

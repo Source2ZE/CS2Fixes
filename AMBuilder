@@ -26,6 +26,7 @@ for sdk_name in MMSPlugin.sdks:
       os.path.join(builder.sourcePath, 'vendor', 'subhook'),
       os.path.join(builder.sourcePath, 'vendor', 'funchook', 'include'),
       os.path.join(builder.sourcePath, 'vendor', 'protobuf-3.21.8', 'src'),
+      os.path.join(builder.sourcePath, 'protobuf', 'generated'),
     ]
 
     if binary.compiler.target.platform == 'linux':

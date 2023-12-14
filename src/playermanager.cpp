@@ -178,7 +178,7 @@ void CPlayerManager::TryAuthenticate()
 {
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
-		if (m_vecPlayers[i] == nullptr)
+		if (m_vecPlayers[i] == nullptr || !m_vecPlayers[i]->IsConnected())
 			continue;
 
 		if (m_vecPlayers[i]->IsAuthenticated() || m_vecPlayers[i]->IsFakeClient())

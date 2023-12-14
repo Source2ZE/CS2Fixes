@@ -92,10 +92,10 @@
     <ClCompile Include="src\votemanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\zombiereborn.cpp">
+    <ClCompile Include="src\discord.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\discord.cpp">
+    <ClCompile Include="src\zombiereborn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\entityio.cpp">
@@ -199,10 +199,10 @@
     <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\ccomponent.h">
+    <ClInclude Include="src\discord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\discord.h">
+    <ClInclude Include="src\ccomponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\entityio.h">
