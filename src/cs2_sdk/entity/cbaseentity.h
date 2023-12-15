@@ -175,6 +175,11 @@ public:
 	{
 		addresses::DispatchSpawn(this, 0);
 	}
+
+	void SetEntityName(const char *pName)
+	{
+		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
+	}
 };
 
 class SpawnPoint : public Z_CBaseEntity
