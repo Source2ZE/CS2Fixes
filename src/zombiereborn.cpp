@@ -40,12 +40,15 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 void ZR_CheckWinConditions(int iTeamNum);
 void ZR_Cure(CCSPlayerController *pTargetController);
 void ZR_EndRoundAndAddTeamScore(int iTeamNum);
+void SetupCTeams();
 
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
 static int g_iRoundNum = 0;
 static int g_iInfectionCountDown = 0;
 static bool g_bRespawnEnabled = false;
 static CHandle<Z_CBaseEntity> g_hRespawnToggler;
+static CHandle<CTeam> g_hTeamCT;
+static CHandle<CTeam> g_hTeamT;
 
 // CONVAR_TODO
 bool g_bEnableZR = false;
@@ -97,6 +100,8 @@ void ZR_OnStartupServer()
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_smgs 3");
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_heavy 3");
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_rifles 3");
+
+	SetupCTeams();
 }
 
 void ZR_RespawnAll()
@@ -151,6 +156,22 @@ void SetupRespawnToggler()
 	relay->m_pEntity->m_name = "zr_toggle_respawn";
 	relay->DispatchSpawn();
 	g_hRespawnToggler = relay->GetHandle();
+}
+
+void SetupCTeams()
+{
+	CTeam* pTeam = nullptr;
+	while (nullptr != (pTeam = (CTeam*)UTIL_FindEntityByClassname(pTeam, "cs_team_manager")))
+	{
+		if (pTeam->m_iTeamNum() == CS_TEAM_CT)
+		{
+			g_hTeamCT = pTeam->GetHandle();
+		}
+		else if (pTeam->m_iTeamNum() == CS_TEAM_T)
+		{
+			g_hTeamT = pTeam->GetHandle();
+		}
+	}
 }
 
 void ZR_OnRoundStart(IGameEvent* pEvent)
@@ -533,21 +554,10 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 	g_ZRRoundState = EZRRoundState::ROUND_END;
 	ToggleRespawn(true, false);
 
-	// don't change team score if draw
-	if (iTeamNum != CS_TEAM_T && iTeamNum != CS_TEAM_CT)
-		return;
-
-	// so uhh.. I don't know how to get cteam the proper way..
-	CTeam* pTeam = nullptr;
-	while (nullptr != (pTeam = (CTeam*)UTIL_FindEntityByClassname(pTeam, "cs_team_manager")))
-	{
-		if (pTeam->m_iTeamNum() == iTeamNum)
-		{
-			pTeam->m_iScore = pTeam->m_iScore() + 1;
-			//Msg("%d, %d\n", pTeam->m_iTeamNum(), pTeam->m_iScore());
-			return;
-		}
-	}
+	if (iTeamNum == CS_TEAM_CT)
+		g_hTeamCT->m_iScore = g_hTeamCT->m_iScore() + 1;
+	else if (iTeamNum == CS_TEAM_T)
+		g_hTeamT->m_iScore = g_hTeamT->m_iScore() + 1;
 }
 
 CON_COMMAND_CHAT(ztele, "teleport to spawn")
