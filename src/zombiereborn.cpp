@@ -161,7 +161,7 @@ void SetupRespawnToggler()
 {
 	Z_CBaseEntity* relay = CreateEntityByName("logic_relay");
 
-	relay->m_pEntity->m_name = "zr_toggle_respawn";
+	relay->SetEntityName("zr_toggle_respawn");
 	relay->DispatchSpawn();
 	g_hRespawnToggler = relay->GetHandle();
 }
