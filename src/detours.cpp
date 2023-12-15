@@ -58,6 +58,7 @@ DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
 DECLARE_DETOUR(CEntityIOOutput_FireOutputInternal, Detour_CEntityIOOutput_FireOutputInternal);
+DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -316,6 +317,14 @@ bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *p
 	return CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon);
 }
 
+void FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_string_t* value, int nOutputID)
+{
+	if (g_bEnableZR)
+		ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+
+	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+}
+
 CUtlVector<CDetourBase *> g_vecDetours;
 
 bool InitDetours(CGameConfig *gameConfig)
@@ -369,6 +378,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CEntityIOOutput_FireOutputInternal.CreateDetour(gameConfig))
 		success = false;
 	CEntityIOOutput_FireOutputInternal.EnableDetour();
+
+	if (!CEntityIdentity_AcceptInput.CreateDetour(gameConfig))
+		success = false;
+	CEntityIdentity_AcceptInput.EnableDetour();
 
 	return success;
 }
