@@ -15,8 +15,5 @@ void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* const p
 		ConMsg("Output %s fired with no caller\n", pThis->m_pDesc->m_pName);
 #endif
 
-	if (g_bEnableZR)
-		ZR_Detour_CEntityIOOutput_FireOutputInternal(pThis, pActivator, pCaller, value, flDelay);
-
 	CEntityIOOutput_FireOutputInternal(pThis, pActivator, pCaller, value, flDelay);
 }
