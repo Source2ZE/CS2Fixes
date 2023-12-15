@@ -365,8 +365,8 @@
 			}
 			"CCSPlayerController_Respawn"
 			{
-				"windows"	"241"
-				"linux"		"243"
+				"windows"	"242"
+				"linux"		"244"
 			}
         }
         "Patches"
