@@ -441,15 +441,19 @@ bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeapon
 	return true;
 }
 
-void ZR_Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* const pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* const value, float flDelay)
+void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_string_t* value, int nOutputID)
 {
 	if (!g_hRespawnToggler.IsValid())
 		return;
 
 	Z_CBaseEntity* relay = g_hRespawnToggler.Get();
+	const char* inputName = pInputName->String();
 
-	// Must be an OnTrigger output from our zr_toggle_respawn relay
-	if (!relay || pCaller != relay || V_strcmp(pThis->m_pDesc->m_pName, "OnTrigger"))
+	Message("pThis: %s\n", pThis->m_designerName.String());
+	Message("pInputName: %s\n", inputName);
+
+	// Must be a Trigger input into our zr_toggle_respawn relay
+	if (!relay || pThis != relay->m_pEntity || V_strcasecmp(inputName, "Trigger"))
 		return;
 
 	ToggleRespawn();
