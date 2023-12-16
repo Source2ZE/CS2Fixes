@@ -57,7 +57,6 @@ DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
-DECLARE_DETOUR(CEntityIOOutput_FireOutputInternal, Detour_CEntityIOOutput_FireOutputInternal);
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
@@ -374,10 +373,6 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CCSPlayer_WeaponServices_CanUse.CreateDetour(gameConfig))
 		success = false;
 	CCSPlayer_WeaponServices_CanUse.EnableDetour();
-
-	if (!CEntityIOOutput_FireOutputInternal.CreateDetour(gameConfig))
-		success = false;
-	CEntityIOOutput_FireOutputInternal.EnableDetour();
 
 	if (!CEntityIdentity_AcceptInput.CreateDetour(gameConfig))
 		success = false;
