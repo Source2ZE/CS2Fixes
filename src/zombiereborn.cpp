@@ -24,7 +24,6 @@
 #include "eventlistener.h"
 #include "zombiereborn.h"
 #include "entity/cgamerules.h"
-#include "utils/entity.h"
 #include "entity/services.h"
 #include "entity/cteam.h"
 

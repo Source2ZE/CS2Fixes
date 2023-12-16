@@ -19,9 +19,6 @@
 
 #pragma once
 
-#include "entityio.h"
-#include "detours.h"
-
 #define ZR_PREFIX " \4[Zombie:Reborn]\1 "
 
 enum class EZRRoundState
