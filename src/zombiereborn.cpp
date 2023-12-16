@@ -340,7 +340,6 @@ void ZR_InitialInfection()
 	while (pCandidateControllers.Count() > 0 && iMZToInfect > 0)
 	{
 		int randomindex = rand() % pCandidateControllers.Count();
-		ZR_InfectMotherZombie(pCandidateControllers[randomindex]);
 
 		CCSPlayerController* pPawn = (CCSPlayerController*)pCandidateControllers[randomindex]->GetPawn();
 		if (pPawn && spawns.Count())
@@ -349,6 +348,7 @@ void ZR_InitialInfection()
 			pPawn->SetAbsOrigin(spawns[randomindex]->GetAbsOrigin());
 			pPawn->SetAbsRotation(spawns[randomindex]->GetAbsRotation());
 		}
+		ZR_InfectMotherZombie(pCandidateControllers[randomindex]);
 
 		pCandidateControllers.FastRemove(randomindex);
 		iMZToInfect--;
