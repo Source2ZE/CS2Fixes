@@ -99,7 +99,7 @@ void ZR_RespawnAll()
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
-		if (!pController ||  pController->m_iTeamNum() != CS_TEAM_CT || pController->m_iTeamNum() != CS_TEAM_T)
+		if (!pController ||  (pController->m_iTeamNum() != CS_TEAM_CT && pController->m_iTeamNum() != CS_TEAM_T))
 			continue;
 		pController->Respawn();
 	}
@@ -439,6 +439,17 @@ void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLar
 
 	ToggleRespawn();
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Respawning is %s!", g_bRespawnEnabled ? "enabled" : "disabled");
+}
+
+void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, uint64 xuid)
+{
+	CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
+	if (!pController)
+		return;
+	
+	pController->ChangeTeam(g_ZRRoundState == EZRRoundState::POST_INFECTION ? CS_TEAM_T : CS_TEAM_CT);
+	if (g_bRespawnEnabled)
+		pController->Respawn();
 }
 
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
