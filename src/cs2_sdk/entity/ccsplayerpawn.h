@@ -34,10 +34,4 @@ public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerPawn);
 
 	SCHEMA_FIELD(CCSPlayer_ActionTrackingServices*, m_pActionTrackingServices)
-	
-	
-	void Respawn()
-	{
-		addresses::CCSPlayerPawn_Respawn(this);
-	}
 };
