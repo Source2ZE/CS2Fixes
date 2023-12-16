@@ -73,18 +73,7 @@ CON_ZR_CVAR(zr_infect_spawn_time_max, "Maximum time in which Mother Zombies shou
 CON_ZR_CVAR(zr_infect_spawn_mz_ratio, "Ratio of all Players to Mother Zombies to be spawned at round start", g_iInfectSpawnMZRatio, Int32, 7)
 CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to be spawned at round start", g_iInfectSpawnMinCount, Int32, 2)
 CON_ZR_CVAR(zr_respawn_delay, "Time before a zombie is respawned", g_flRespawnDelay, Float32, 5.0)
-CON_ZR_CVAR(zr_default_winner_team, "Which team wins when time ran out, use 1 for draw", g_iDefaultWinnerTeam, Int32, CS_TEAM_SPECTATOR)
-
-void SetUpAllHumanClasses()
-{
-	for (int i = 0; i < gpGlobals->maxClients; i++)
-	{
-		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
-
-		//if (pPlayer)
-		//	InjectPlayerClass(PickRandomHumanDefaultClass(), pPlayer);
-	}
-}
+CON_ZR_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, Int32, CS_TEAM_SPECTATOR)
 
 void ZR_OnStartupServer()
 {
@@ -110,8 +99,7 @@ void ZR_RespawnAll()
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
-		// Only do this for Ts, ignore CTs and specs
-		if (!pController)
+		if (!pController ||  pController->m_iTeamNum() != CS_TEAM_CT || pController->m_iTeamNum() != CS_TEAM_T)
 			continue;
 		pController->Respawn();
 	}
@@ -178,11 +166,8 @@ void ZR_OnRoundStart(IGameEvent* pEvent)
 {
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
 
-	// SetUpAllHumanClasses();
 	SetupRespawnToggler();
 	// SetupAmmoReplenish();
-
-	// g_ZR_ROUND_STARTED = true;
 }
 
 void ZR_OnPlayerSpawn(IGameEvent* pEvent)
@@ -559,9 +544,23 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 	ToggleRespawn(true, false);
 
 	if (iTeamNum == CS_TEAM_CT)
-		g_hTeamCT->m_iScore = g_hTeamCT->m_iScore() + 1;
+	{
+		if (!g_hTeamCT.IsValid())
+		{
+			Panic("Cannot find CTeam for CT!\n");
+			return;
+		}
+			g_hTeamCT->m_iScore = g_hTeamCT->m_iScore() + 1;
+	}
 	else if (iTeamNum == CS_TEAM_T)
+	{	
+		if (!g_hTeamT.IsValid())
+		{
+			Panic("Cannot find CTeam for T!\n");
+			return;
+		}
 		g_hTeamT->m_iScore = g_hTeamT->m_iScore() + 1;
+	}
 }
 
 CON_COMMAND_CHAT(ztele, "teleport to spawn")
