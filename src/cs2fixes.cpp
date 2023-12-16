@@ -231,11 +231,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pAdminSystem = new CAdminSystem();
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
-<<<<<<< HEAD
-=======
-	g_pChatAnnouncements = new CChatAnnouncementSystem();
 	g_pMapVoteSystem = new CMapVoteSystem();
->>>>>>> 49eba25 (Initial map-vote and nominations)
 
 	RegisterWeaponCommands();
 
