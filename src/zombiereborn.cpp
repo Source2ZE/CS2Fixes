@@ -429,14 +429,19 @@ void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLar
 	Z_CBaseEntity* relay = g_hRespawnToggler.Get();
 	const char* inputName = pInputName->String();
 
-	Message("pThis: %s\n", pThis->m_designerName.String());
-	Message("pInputName: %s\n", inputName);
-
-	// Must be a Trigger input into our zr_toggle_respawn relay
-	if (!relay || pThis != relay->m_pEntity || V_strcasecmp(inputName, "Trigger"))
+	// Must be an input into our zr_toggle_respawn relay
+	if (!relay || pThis != relay->m_pEntity)
 		return;
 
-	ToggleRespawn();
+	if (!V_strcasecmp(inputName, "Trigger"))
+		ToggleRespawn();
+	else if (!V_strcasecmp(inputName, "Enable") && !g_bRespawnEnabled)
+		ToggleRespawn(true, true);
+	else if (!V_strcasecmp(inputName, "Disable") && g_bRespawnEnabled)
+		ToggleRespawn(true, false);
+	else
+		return;
+
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Respawning is %s!", g_bRespawnEnabled ? "enabled" : "disabled");
 }
 
