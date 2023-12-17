@@ -1095,8 +1095,7 @@ bool CAdminSystem::ApplyInfractions(ZEPlayer *player)
 	{
 		// Because this can run without the player being authenticated, and the fact that we're applying a ban/mute here,
 		// we can immediately just use the steamid we got from the connecting player.
-		uint64 iSteamID = player->IsAuthenticated() ? 
-			player->GetSteamId64() : g_pEngineServer2->GetClientSteamID(player->GetPlayerSlot())->ConvertToUint64();
+		uint64 iSteamID = player->IsAuthenticated() ? player->GetSteamId64() : player->GetUnauthenticatedSteamId64();
 
 		// We're only interested in infractions concerning this player
 		if (m_vecInfractions[i]->GetSteamId64() != iSteamID)
