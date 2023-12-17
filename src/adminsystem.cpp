@@ -138,6 +138,12 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 	if (pTargetPlayer->IsFakeClient())
 		return;
 
+	if (!pTargetPlayer->IsAuthenticated())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not yet authenticated, consider kicking instead or please wait a moment and try again.", pTarget->GetPlayerName());
+		return;
+	}
+
 	CInfractionBase *infraction = new CBanInfraction(iDuration, pTargetPlayer->GetSteamId64());
 
 	g_pAdminSystem->AddInfraction(infraction);
@@ -210,6 +216,12 @@ CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
 
 		if (pTargetPlayer->IsFakeClient())
 			continue;
+
+		if (!pTargetPlayer->IsAuthenticated())
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not yet authenticated, please wait a moment and try again.", pTarget->GetPlayerName());
+			continue;
+		}
 
 		CInfractionBase* infraction = new CMuteInfraction(iDuration, pTargetPlayer->GetSteamId64());
 
@@ -329,6 +341,12 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 
 		if (pTargetPlayer->IsFakeClient())
 			continue;
+
+		if (!pTargetPlayer->IsAuthenticated())
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not yet authenticated, please wait a moment and try again.", pTarget->GetPlayerName());
+			continue;
+		}
 
 		CInfractionBase *infraction = new CGagInfraction(iDuration, pTargetPlayer->GetSteamId64());
 
