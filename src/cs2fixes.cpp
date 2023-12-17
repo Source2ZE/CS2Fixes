@@ -504,6 +504,21 @@ void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 #ifdef _DEBUG
 	Message( "Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString() );
 #endif
+	if (g_bEnableZR)
+	{
+		if (slot != -1 && !V_strncmp(args.Arg(0), "jointeam", 8))
+		{
+			const char *szTeam = g_ZRRoundState == EZRRoundState::ROUND_START ? "3" : "2";
+			// update args if player are trying to join team != szTeam
+			if (args.ArgC() < 2 || V_strncmp(args.Arg(1), szTeam, 1))
+			{
+				const char *ppArgV[] = {"jointeam", szTeam};
+				CCommand newArgs(2, ppArgV);
+				SH_CALL(g_pSource2GameClients, &IServerGameClients::ClientCommand)(slot, newArgs);
+				RETURN_META(MRES_SUPERCEDE);
+			}
+		}
+	}
 }
 
 void CS2Fixes::Hook_ClientSettingsChanged( CPlayerSlot slot )
@@ -614,12 +629,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 
 		CCSPlayerController* pSelfController = CCSPlayerController::FromSlot(iPlayerSlot);
 
-		if (!pSelfController || !pSelfController->IsConnected() || !pSelfController->m_bPawnIsAlive)
-			continue;
-
-		auto pSelfPawn = pSelfController->GetPawn();
-
-		if (!pSelfPawn || !pSelfPawn->IsAlive())
+		if (!pSelfController || !pSelfController->IsConnected())
 			continue;
 
 		auto pSelfZEPlayer = g_playerManager->GetPlayer(iPlayerSlot);
@@ -627,14 +637,12 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 		if (!pSelfZEPlayer)
 			continue;
 
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		for (int j = 0; j < gpGlobals->maxClients; j++)
 		{
-			if (!pSelfZEPlayer->ShouldBlockTransmit(i))
-				continue;
+			CCSPlayerController* pController = CCSPlayerController::FromSlot(j);
 
-			CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
-
-			if (!pController)
+			// Always transmit to themselves
+			if (!pController || j == iPlayerSlot)
 				continue;
 
 			auto pPawn = pController->GetPawn();
@@ -642,7 +650,10 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			if (!pPawn)
 				continue;
 
-			pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
+			// Hide players marked as hidden or ANY dead player, it seems that a ragdoll of a previously hidden player can crash?
+			// TODO: Revert this if/when valve fixes the issue?
+			if (pSelfZEPlayer->ShouldBlockTransmit(j) || pPawn->m_lifeState != LIFE_ALIVE)
+				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 		}
 	}
 

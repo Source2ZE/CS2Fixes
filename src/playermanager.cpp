@@ -262,7 +262,8 @@ void CPlayerManager::CheckHideDistances()
 			{
 				auto pTargetPawn = pTargetController->GetPawn();
 
-				if (pTargetPawn && pTargetPawn->IsAlive() && (!g_bHideTeammatesOnly || pTargetController->m_iTeamNum == team))
+				// TODO: Unhide dead pawns if/when valve fixes the crash
+				if (pTargetPawn && (!g_bHideTeammatesOnly || pTargetController->m_iTeamNum == team))
 				{
 					player->SetTransmit(j, pTargetPawn->GetAbsOrigin().DistToSqr(vecPosition) <= hideDistance * hideDistance);
 				}

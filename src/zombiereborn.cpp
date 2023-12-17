@@ -220,9 +220,9 @@ void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerContr
 
 	if (!pEvent)
 		return;
-	// SetPlayer functions are swapped, need to remove the cast once fixed
-	pEvent->SetPlayer("userid", (CEntityInstance*)pVictimController->GetPlayerSlot());
-	pEvent->SetPlayer("attacker", (CEntityInstance*)pAttackerController->GetPlayerSlot());
+
+	pEvent->SetPlayer("userid", pVictimController->GetPlayerSlot());
+	pEvent->SetPlayer("attacker", pAttackerController->GetPlayerSlot());
 	pEvent->SetInt("assister", 65535);
 	pEvent->SetInt("assister_pawn", -1);
 	pEvent->SetString("weapon", szWeapon);

@@ -363,7 +363,6 @@
 				"windows"	"27"
 				"linux"		"28"
 			}
-			//
 			"PassesTriggerFilters"
 			{
 				"windows"	"245"
