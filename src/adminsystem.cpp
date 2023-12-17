@@ -70,7 +70,7 @@ CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKE
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
-		if (!pPlayer || pPlayer->IsFakeClient())
+		if (!pPlayer || pPlayer->IsFakeClient() || !pPlayer->IsAuthenticated())
 			continue;
 
 		pPlayer->CheckAdmin();
