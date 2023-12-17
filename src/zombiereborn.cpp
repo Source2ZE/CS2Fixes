@@ -466,6 +466,19 @@ void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, 
 	});
 }
 
+void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand &args)
+{
+	CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
+	if (!pController)
+		return;
+	if (args.ArgC() < 2 || !V_strncmp(args.Arg(1), "3", 1) || !V_strncmp(args.Arg(1), "2", 1))
+	{
+		CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
+		if (pPawn && pPawn->IsAlive())
+			pPawn->CommitSuicide(false, true);
+	}
+}
+
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
 {
 	CCSPlayerController *pAttackerController = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
