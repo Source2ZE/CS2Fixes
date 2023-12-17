@@ -44,7 +44,7 @@ void SetupCTeams();
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
 static int g_iRoundNum = 0;
 static int g_iInfectionCountDown = 0;
-static bool g_bRespawnEnabled = false;
+static bool g_bRespawnEnabled = true;
 static CHandle<Z_CBaseEntity> g_hRespawnToggler;
 static CHandle<CTeam> g_hTeamCT;
 static CHandle<CTeam> g_hTeamT;
@@ -452,8 +452,18 @@ void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, 
 		return;
 	
 	pController->ChangeTeam(g_ZRRoundState == EZRRoundState::POST_INFECTION ? CS_TEAM_T : CS_TEAM_CT);
-	if (g_bRespawnEnabled)
+
+
+	CHandle<CCSPlayerController> handle = pController->GetHandle();
+	int iRoundNum = g_iRoundNum;
+	new CTimer(2.0f, false, [iRoundNum, handle]()
+	{
+		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
+		if (iRoundNum != g_iRoundNum || !pController || !g_bRespawnEnabled)
+			return -1.0f;
 		pController->Respawn();
+		return -1.0f;
+	});
 }
 
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
@@ -560,7 +570,7 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 
 	if (iTeamNum == CS_TEAM_CT)
 	{
-		if (!g_hTeamCT.IsValid())
+		if (!g_hTeamCT.Get())
 		{
 			Panic("Cannot find CTeam for CT!\n");
 			return;
@@ -569,7 +579,7 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 	}
 	else if (iTeamNum == CS_TEAM_T)
 	{	
-		if (!g_hTeamT.IsValid())
+		if (!g_hTeamT.Get())
 		{
 			Panic("Cannot find CTeam for T!\n");
 			return;
