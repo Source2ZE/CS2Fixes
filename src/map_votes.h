@@ -72,6 +72,7 @@ public:
         }
     }
     bool LoadMapList();
+    void OnLevelInit(const char* pMapName);
     void StartVote();
     void FinishVote();
     void RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);

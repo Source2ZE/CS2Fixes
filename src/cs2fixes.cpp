@@ -654,11 +654,7 @@ void CS2Fixes::OnLevelInit( char const *pMapName,
 {
 	Message("OnLevelInit(%s)\n", pMapName);
 
-	int iLastCooldownIndex = g_pMapVoteSystem->GetMapsInCooldown() - 1;
-	int iInitMapIndex = g_pMapVoteSystem->GetMapIndexFromSubstring(pMapName);
-	if (iLastCooldownIndex >= 0 && iInitMapIndex >= 0 && g_pMapVoteSystem->GetCooldownMap(iLastCooldownIndex) != iInitMapIndex) {
-		g_pMapVoteSystem->PushMapIndexInCooldown(iInitMapIndex);
-	}
+	g_pMapVoteSystem->OnLevelInit(pMapName);
 }
 
 // Potentially might not work
