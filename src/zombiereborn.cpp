@@ -49,6 +49,8 @@ static CHandle<Z_CBaseEntity> g_hRespawnToggler;
 static CHandle<CTeam> g_hTeamCT;
 static CHandle<CTeam> g_hTeamT;
 
+ZRWeaponConfig *g_pZRWeaponConfig = nullptr;
+
 // CONVAR_TODO
 bool g_bEnableZR = false;
 static float g_flMaxZteleDistance = 150.0f;
@@ -89,7 +91,48 @@ void ZR_OnStartupServer()
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_heavy 3");
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_rifles 3");
 
+	g_pZRWeaponConfig->LoadWeaponConfig();
 	SetupCTeams();
+}
+
+void ZRWeaponConfig::LoadWeaponConfig()
+{
+	m_WeaponMap.Purge();
+	KeyValues* pKV = new KeyValues("Weapons");
+	KeyValues::AutoDelete autoDelete(pKV);
+
+	const char *pszPath = "addons/cs2fixes/configs/zr/weapons.cfg";
+
+	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
+	{
+		Warning("Failed to load %s\n", pszPath);
+		return;
+	}
+	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+	{
+		const char *pszWeaponName = pKey->GetName();
+		bool bEnabled = pKey->GetBool("enabled", false);
+		float flKnockback= pKey->GetFloat("knockback", 0.0f);
+		Message("%s knockback: %f\n", pszWeaponName, flKnockback);
+		ZRWeapon *weapon = new ZRWeapon;
+		if (!bEnabled)
+			continue;
+
+		weapon->flKnockback = flKnockback;
+
+		m_WeaponMap.Insert(hash_32_fnv1a_const(pszWeaponName), weapon);
+	}
+
+	return;
+}
+
+ZRWeapon* ZRWeaponConfig::FindWeapon(const char *pszWeaponName)
+{
+	uint16 index = m_WeaponMap.Find(hash_32_fnv1a_const(pszWeaponName));
+	if (m_WeaponMap.IsValidIndex(index))
+		return m_WeaponMap[index];
+
+	return nullptr;
 }
 
 void ZR_RespawnAll()
@@ -197,21 +240,31 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 // Still need to implement weapon config
 void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon)
 {
+	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
+	// player shouldn't be able to pick up that weapon in the first place, but just in case
+	if (!pWeapon) 
+		return;
+	float flWeaponKnockbackScale = pWeapon->flKnockback;
+	
 	Vector vecKnockback;
 	AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
-	vecKnockback *= (iDamage * g_flKnockbackScale);
-	//Message("%f %f %f\n",vecKnockback.x, vecKnockback.y, vecKnockback.z);
-	pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
+	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale);
+	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
 void ZR_ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage)
 {
+	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(pProjectile->GetClassname());
+	if (!pWeapon) 
+		return;
+	float flWeaponKnockbackScale = pWeapon->flKnockback;
+
 	Vector vecDisplacement = pVictim->GetAbsOrigin() - pProjectile->GetAbsOrigin();
 	vecDisplacement.z += 36;
 	VectorNormalize(vecDisplacement);
 	Vector vecKnockback = vecDisplacement;
-	vecKnockback *= (iDamage * g_flKnockbackScale);
-	pVictim->m_vecBaseVelocity = pVictim->m_vecBaseVelocity() + vecKnockback;
+	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale);
+	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
 void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, const char *szWeapon, bool bDontBroadcast)
@@ -404,7 +457,8 @@ bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 	{
 		CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
 		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
-		if (!V_strncmp(pszInflictorClass, "hegrenade_projectile", 9) || !V_strncmp(pszInflictorClass, "inferno", 7))
+		// inflictor class from grenade damage is actually hegrenade_projectile
+		if (!V_strncmp(pszInflictorClass, "hegrenade", 9) || !V_strncmp(pszInflictorClass, "inferno", 7))
 			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage);
 	}
 	return false;
@@ -414,9 +468,13 @@ bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
 	CCSPlayerPawn *pPawn = pWeaponServices->__m_pChainEntity();
-	if (pPawn && pPawn->m_iTeamNum() == CS_TEAM_T && V_strncmp(pPlayerWeapon->GetClassname(), "weapon_knife", 12))
+	if (!pPawn)
 		return false;
-
+	const char *pszWeaponClassname = pPlayerWeapon->GetClassname();
+	if (pPawn->m_iTeamNum() == CS_TEAM_T && V_strncmp(pszWeaponClassname, "weapon_knife", 12))
+		return false;
+	if (pPawn->m_iTeamNum() == CS_TEAM_CT && V_strlen(pszWeaponClassname) > 7 && !g_pZRWeaponConfig->FindWeapon(pszWeaponClassname + 7))
+		return false;
 	// doesn't guarantee the player will pick the weapon up, it just allows the main detour to continue to run
 	return true;
 }

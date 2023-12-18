@@ -230,6 +230,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pAdminSystem = new CAdminSystem();
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
+	g_pZRWeaponConfig = new ZRWeaponConfig();
 
 	RegisterWeaponCommands();
 
@@ -297,6 +298,9 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 	if (g_GameConfig)
 		delete g_GameConfig;
+
+	if (g_pZRWeaponConfig)
+		delete g_pZRWeaponConfig;
 
 	return true;
 }
