@@ -1,6 +1,12 @@
 // CSGO Weapons
 "Weapons" 
 {
+	//"weapon classname w/o weapon_"
+	//{
+	//	"enabled"		"0" 	//whether this weapon can be used by human
+	//	"knockback"		"0.0" 	//knockback scale for when humans shoot a zombie using this weapon
+	//}
+
 	// Gear
 	"c4"
 	{
