@@ -261,7 +261,7 @@ void CPlayerManager::CheckHideDistances()
 
 			if (pTargetController)
 			{
-				auto pTargetPawn = pTargetController->GetPawn();
+				auto pTargetPawn = pTargetController->GetPlayerPawn();
 
 				// TODO: Unhide dead pawns if/when valve fixes the crash
 				if (pTargetPawn && (!g_bHideTeammatesOnly || pTargetController->m_iTeamNum == team))

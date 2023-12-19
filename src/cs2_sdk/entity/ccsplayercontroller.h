@@ -32,6 +32,7 @@ public:
 
 	SCHEMA_FIELD(CCSPlayerController_InGameMoneyServices*, m_pInGameMoneyServices)
 	SCHEMA_FIELD(CCSPlayerController_ActionTrackingServices*, m_pActionTrackingServices)
+	SCHEMA_FIELD(CHandle<CCSPlayerPawn>, m_hPlayerPawn)
 	SCHEMA_FIELD(bool, m_bPawnIsAlive);
 
 	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn) {
@@ -43,7 +44,9 @@ public:
 		return (CCSPlayerController*)g_pEntitySystem->GetBaseEntity(CEntityIndex(slot.Get() + 1));
 	}
 
-	ZEPlayer* GetZEPlayer()
+	CCSPlayerPawn *GetPlayerPawn() { return m_hPlayerPawn.Get(); }
+
+	ZEPlayer *GetZEPlayer()
 	{
 		return g_playerManager->GetPlayer(GetPlayerSlot());
 	}

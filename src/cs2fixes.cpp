@@ -605,7 +605,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 		// though this is probably part of the client class that contains the CCheckTransmitInfo
 		int iPlayerSlot = (int)*((uint8 *)pInfo + 560);
 
-		CCSPlayerController* pSelfController = CCSPlayerController::FromSlot(iPlayerSlot);
+		CCSPlayerController *pSelfController = CCSPlayerController::FromSlot(iPlayerSlot);
 
 		if (!pSelfController || !pSelfController->IsConnected())
 			continue;
@@ -623,14 +623,16 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			if (!pController || j == iPlayerSlot)
 				continue;
 
-			auto pPawn = pController->GetPawn();
+			// It's important that we get PlayerPawn here, as players end up being observers after death (without respawn),
+			// thus causing m_hPawn to point to an observer, which then gets transmitted and crashes clients
+			auto pPawn = pController->GetPlayerPawn();
 
 			if (!pPawn)
 				continue;
 
 			// Hide players marked as hidden or ANY dead player, it seems that a ragdoll of a previously hidden player can crash?
 			// TODO: Revert this if/when valve fixes the issue?
-			if (pSelfZEPlayer->ShouldBlockTransmit(j) || pPawn->m_lifeState != LIFE_ALIVE)
+			if (pSelfZEPlayer->ShouldBlockTransmit(j) || !pPawn->IsAlive())
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 		}
 	}
