@@ -38,6 +38,8 @@ public:
 	SCHEMA_FIELD(int, m_totalRoundsPlayed)
 	SCHEMA_FIELD(GameTime_t, m_fRoundStartTime)
 	SCHEMA_FIELD(GameTime_t, m_flRestartRoundTime)
+	SCHEMA_FIELD_POINTER(int, m_nEndMatchMapGroupVoteOptions)
+	SCHEMA_FIELD(int, m_nEndMatchMapVoteWinner)
 };
 
 class CCSGameRulesProxy : public Z_CBaseEntity

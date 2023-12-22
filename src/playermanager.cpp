@@ -21,6 +21,7 @@
 #include "utlstring.h"
 #include "playermanager.h"
 #include "adminsystem.h"
+#include "map_votes.h"
 #include "entity/ccsplayercontroller.h"
 #include "ctime"
 
@@ -148,6 +149,8 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid)
 	m_vecPlayers[slot.Get()] = pPlayer;
 
 	ResetPlayerFlags(slot.Get());
+
+	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
 	
 	return true;
 }
@@ -160,6 +163,8 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	m_vecPlayers[slot.Get()] = nullptr;
 
 	ResetPlayerFlags(slot.Get());
+
+	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
 }
 
 void CPlayerManager::OnLateLoad()
