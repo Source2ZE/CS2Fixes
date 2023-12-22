@@ -125,7 +125,7 @@ ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
 
-CEntitySystem *GetEntitySystem()
+CGameEntitySystem *GameEntitySystem()
 {
 	static int offset = g_GameConfig->GetOffset("GameEntitySystem");
 	return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(g_pGameResourceServiceServer) + offset);
@@ -221,7 +221,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	if (late)
 	{
 		RegisterEventListeners();
-		g_pEntitySystem = GetEntitySystem();
+		g_pEntitySystem = GameEntitySystem();
 		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 		gpGlobals = g_pNetworkGameServer->GetGlobals();
 	}
@@ -387,7 +387,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*)
 {
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
-	g_pEntitySystem = GetEntitySystem();
+	g_pEntitySystem = GameEntitySystem();
 	gpGlobals = g_pNetworkGameServer->GetGlobals();
 
 	Message("Hook_StartupServer: %s\n", gpGlobals->mapname);

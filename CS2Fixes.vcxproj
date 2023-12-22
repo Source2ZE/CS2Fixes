@@ -165,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="sdk\entity2\entityidentity.cpp" />
     <ClCompile Include="sdk\entity2\entitysystem.cpp" />
     <ClCompile Include="src\addresses.cpp" />
     <ClCompile Include="src\adminsystem.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="src\events.cpp" />
     <ClCompile Include="src\gameconfig.cpp" />
     <ClCompile Include="src\httpmanager.cpp" />
+    <ClCompile Include="src\map_votes.cpp" />
     <ClCompile Include="src\mempatch.cpp" />
     <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\playermanager.cpp" />
