@@ -34,6 +34,26 @@ enum EZRSpawnType
 	RESPAWN,
 };
 
+struct ZRWeapon
+{
+	float flKnockback;
+};
+
+class ZRWeaponConfig
+{
+public:
+
+	ZRWeaponConfig() {
+		m_WeaponMap.SetLessFunc(DefLessFunc(uint32));
+	};
+	void LoadWeaponConfig();
+	ZRWeapon* FindWeapon(const char *pszWeaponName);
+private:
+	CUtlMap<uint32, ZRWeapon*> m_WeaponMap;
+};
+
+extern ZRWeaponConfig *g_pZRWeaponConfig;
+
 extern bool g_bEnableZR;
 extern EZRRoundState g_ZRRoundState;
 
