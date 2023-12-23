@@ -38,6 +38,7 @@
 #include "plat.h"
 #include "entitysystem.h"
 #include "engine/igameeventsystem.h"
+#include "gamesystem.h"
 #include "ctimer.h"
 #include "playermanager.h"
 #include <entity.h>
@@ -206,6 +207,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		Panic("Failed to find GameEventManager\n");
 		bRequiredInitLoaded = false;
 	}
+
+	if (!InitGameSystems())
+		bRequiredInitLoaded = false;
 
 	if (!bRequiredInitLoaded)
 	{

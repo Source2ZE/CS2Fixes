@@ -43,6 +43,7 @@ class Z_CBaseEntity;
 class CGameConfig;
 class CEntitySystem;
 class IEntityFindFilter;
+class IEntityResourceManifest;
 struct variant_string_t;
 
 namespace addresses
@@ -56,6 +57,7 @@ namespace addresses
 	inline void(FASTCALL *SetGroundEntity)(Z_CBaseEntity *ent, Z_CBaseEntity *ground);
 	inline void(FASTCALL *CCSPlayerController_SwitchTeam)(CCSPlayerController *pController, uint32 team);
 	inline void(FASTCALL *UTIL_Remove)(CEntityInstance*);
+	inline void(FASTCALL *PrecacheResource)(const char *pName, IEntityResourceManifest *pResourceManifest);
 
 	inline void(FASTCALL *CEntitySystem_AddEntityIOEvent)(CEntitySystem *pEntitySystem, CEntityInstance *pTarget, const char *pszInput,
 														CEntityInstance *pActivator, CEntityInstance *pCaller, variant_string_t *value, float flDelay, int outputID);

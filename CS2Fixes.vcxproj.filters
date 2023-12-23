@@ -101,6 +101,9 @@
     <ClCompile Include="sdk\entity2\entityidentity.cpp">
       <Filter>Source Files\sdk</Filter>
     </ClCompile>
+    <ClCompile Include="src\gamesystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -197,6 +200,9 @@
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\discord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gamesystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
