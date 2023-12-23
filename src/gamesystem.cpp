@@ -63,5 +63,5 @@ void CResourcePrecacheSystem::BuildGameSessionManifest(const EventBuildGameSessi
 	IEntityResourceManifest *pResourceManifest = *(IEntityResourceManifest**)ppManifest;
 
 	// This takes any resource type, model or not
-	// addresses::PrecacheResource("characters/models/my_character_model.vmdl", pResourceManifest);
+	// pResourceManifest->AddResource("characters/models/my_character_model.vmdl");
 }
