@@ -230,6 +230,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pAdminSystem = new CAdminSystem();
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
+	g_pPlayerClassManager = new CZRPlayerClassManager();
 
 	RegisterWeaponCommands();
 
@@ -297,6 +298,9 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 	if (g_GameConfig)
 		delete g_GameConfig;
+
+	if (g_pPlayerClassManager)
+		delete g_pPlayerClassManager;
 
 	return true;
 }
@@ -607,6 +611,9 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 			}
 		}
 	}
+
+	if (g_bEnableZR)
+		CZRRegenTimer::Tick();
 
 	VPROF_EXIT_SCOPE();
 }

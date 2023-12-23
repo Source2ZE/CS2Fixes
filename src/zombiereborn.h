@@ -34,6 +34,65 @@ enum EZRSpawnType
 	RESPAWN,
 };
 
+struct ZRHumanClass
+{
+	int iHealth;
+	std::string szModelPath;
+};
+
+struct ZRZombieClass
+{
+	int iHealth;
+	std::string szModelPath;
+
+	int iHealthRegenCount;
+	float flHealthRegenInterval;
+};
+
+class CZRPlayerClassManager
+{
+public:
+	CZRPlayerClassManager() {
+		m_ZombieClassMap.SetLessFunc(DefLessFunc(uint32));
+		m_HumanClassMap.SetLessFunc(DefLessFunc(uint32));
+	};
+	void LoadPlayerClass();
+	ZRHumanClass* GetHumanClass(const char *pszClassName);
+	void ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn *pPawn);
+	void ApplyDefaultHumanClass(CCSPlayerPawn *pPawn);
+	ZRZombieClass* GetZombieClass(const char*pszClassName);
+	void ApplyZombieClass(ZRZombieClass *pClass, CCSPlayerPawn *pPawn);
+	void ApplyDefaultZombieClass(CCSPlayerPawn *pPawn);
+private:
+	CUtlVector<ZRZombieClass*> m_vecZombieDefaultClass;
+	CUtlVector<ZRHumanClass*> m_vecHumanDefaultClass;
+	CUtlMap<uint32, ZRZombieClass*> m_ZombieClassMap;
+	CUtlMap<uint32, ZRHumanClass*> m_HumanClassMap;
+};
+
+class CZRRegenTimer : public CTimerBase
+{
+public:
+    CZRRegenTimer(float flRegenInterval, int iRegenAmount, CHandle<CCSPlayerPawn> hPawnHandle) :
+		CTimerBase(flRegenInterval, false), m_iRegenAmount(iRegenAmount), m_hPawnHandle(hPawnHandle) {};
+
+    bool Execute();
+	static void StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController *pController);
+	static void StopRegen(CCSPlayerController *pController);
+	static int GetIndex(CPlayerSlot slot);
+	static void Tick();
+	static void RemoveAllTimers();
+
+private:
+	static int s_iRegenTimerCount;
+	static int s_vecRegenTimersIndex[MAXPLAYERS];
+	static CZRRegenTimer *s_vecRegenTimers[MAXPLAYERS];
+	int m_iRegenAmount;
+    CHandle<CCSPlayerPawn> m_hPawnHandle;
+};
+
+extern CZRPlayerClassManager* g_pPlayerClassManager;
+
 extern bool g_bEnableZR;
 extern EZRRoundState g_ZRRoundState;
 

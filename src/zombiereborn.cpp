@@ -34,6 +34,7 @@ extern IVEngineServer2* g_pEngineServer2;
 extern CGlobalVars* gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IGameEventManager2* g_gameEventManager;
+extern float g_flUniversalTime;
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast);
 void ZR_CheckWinConditions(int iTeamNum);
@@ -48,6 +49,8 @@ static bool g_bRespawnEnabled = false;
 static CHandle<Z_CBaseEntity> g_hRespawnToggler;
 static CHandle<CTeam> g_hTeamCT;
 static CHandle<CTeam> g_hTeamT;
+
+CZRPlayerClassManager* g_pPlayerClassManager = nullptr;
 
 // CONVAR_TODO
 bool g_bEnableZR = false;
@@ -74,6 +77,233 @@ CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to b
 CON_ZR_CVAR(zr_respawn_delay, "Time before a zombie is respawned", g_flRespawnDelay, Float32, 5.0)
 CON_ZR_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, Int32, CS_TEAM_SPECTATOR)
 
+
+void CZRPlayerClassManager::LoadPlayerClass()
+{
+	Message("Loading PlayerClass...\n");
+	m_ZombieClassMap.Purge();
+	m_HumanClassMap.Purge();
+	m_vecZombieDefaultClass.Purge();
+	m_vecHumanDefaultClass.Purge();
+
+	KeyValues* pKV = new KeyValues("PlayerClass");
+	KeyValues::AutoDelete autoDelete(pKV);
+
+	const char *pszPath = "addons/cs2fixes/configs/zr/playerclass.cfg";
+
+	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
+	{
+		Warning("Failed to load %s\n", pszPath);
+		return;
+	}
+	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+	{
+		if (!V_strncmp(pKey->GetName(), "Human", 5))
+		{
+			for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
+			{
+				Message("%s:\n\
+					enabled: %d\n\
+					team_default: %d\n\
+					health: %d\n\
+					model: %s\n", 
+					pSubKey->GetName(), 
+					pSubKey->GetBool("enabled", false),
+					pSubKey->GetBool("team_default", false),
+					pSubKey->GetInt("health", 100),
+					pSubKey->GetString("model", ""));
+
+				if (!pSubKey->GetBool("enabled", false))
+					continue;
+
+				ZRHumanClass *pClass = new ZRHumanClass;
+				pClass->iHealth = pSubKey->GetInt("health", 100);
+				pClass->szModelPath = std::string(pSubKey->GetString("model", ""));
+
+				m_HumanClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pClass);
+
+				if (pSubKey->GetBool("team_default", false))
+					m_vecHumanDefaultClass.AddToTail(pClass);
+			}
+		}
+		else
+		{
+			for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
+			{
+				Message("%s:\n\
+					enabled: %d\n\
+					team_default: %d\n\
+					health: %d\n\
+					health_regen_count: %d\n\
+					health_regen_interval: %f\n\
+					model: %s\n", 
+					pSubKey->GetName(), 
+					pSubKey->GetBool("enabled", false),
+					pSubKey->GetBool("team_default", false),
+					pSubKey->GetInt("health", 100),
+					pSubKey->GetInt("health_regen_count", 100),
+					pSubKey->GetFloat("health_regen_interval", 5.0f),
+					pSubKey->GetString("model", ""));
+
+				if (!pSubKey->GetBool("enabled", false))
+					continue;
+
+				ZRZombieClass *pClass = new ZRZombieClass;
+				pClass->iHealth = pSubKey->GetInt("health", 100);
+				pClass->szModelPath = std::string(pSubKey->GetString("model", ""));
+
+				pClass->iHealthRegenCount = pSubKey->GetInt("health_regen_count", 10000);
+				pClass->flHealthRegenInterval = pSubKey->GetFloat("health_regen_interval", 5.0f);
+
+				m_ZombieClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pClass);
+
+				if (pSubKey->GetBool("team_default", false))
+					m_vecZombieDefaultClass.AddToTail(pClass);
+			}
+		}
+	}
+}
+
+ZRHumanClass* CZRPlayerClassManager::GetHumanClass(const char *pszClassName)
+{
+	uint16 index = m_HumanClassMap.Find(hash_32_fnv1a_const(pszClassName));
+	if (!m_HumanClassMap.IsValidIndex(index))
+		return nullptr;
+	return m_HumanClassMap[index];
+}
+
+void CZRPlayerClassManager::ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn *pPawn)
+{
+	pPawn->m_iMaxHealth = pClass->iHealth;
+	pPawn->m_iHealth = pClass->iHealth;
+
+	pPawn->SetModel(pClass->szModelPath.c_str());
+
+	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
+	if (pController)
+		CZRRegenTimer::StopRegen(pController);
+}
+
+void CZRPlayerClassManager::ApplyDefaultHumanClass(CCSPlayerPawn *pPawn)
+{
+	if (m_vecHumanDefaultClass.Count() == 0)
+	{
+		Warning("Missing default zombie class!!!");
+		return;
+	}
+	ApplyHumanClass(m_vecHumanDefaultClass[rand() % m_vecHumanDefaultClass.Count()], pPawn);
+}
+
+ZRZombieClass* CZRPlayerClassManager::GetZombieClass(const char *pszClassName)
+{
+	uint16 index = m_ZombieClassMap.Find(hash_32_fnv1a_const(pszClassName));
+	if (!m_ZombieClassMap.IsValidIndex(index))
+		return nullptr;
+	return m_ZombieClassMap[index];
+}
+
+void CZRPlayerClassManager::ApplyZombieClass(ZRZombieClass *pClass, CCSPlayerPawn *pPawn)
+{
+	pPawn->m_iMaxHealth = pClass->iHealth;
+	pPawn->m_iHealth = pClass->iHealth;
+
+	pPawn->SetModel(pClass->szModelPath.c_str());
+
+	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
+	if (pController)
+		CZRRegenTimer::StartRegen(pClass->flHealthRegenInterval, pClass->iHealthRegenCount, pController);
+}
+
+void CZRPlayerClassManager::ApplyDefaultZombieClass(CCSPlayerPawn *pPawn)
+{
+	if (m_vecZombieDefaultClass.Count() == 0)
+	{
+		Warning("Missing default zombie class!!!");
+		return;
+	}
+	ApplyZombieClass(m_vecZombieDefaultClass[rand() % m_vecZombieDefaultClass.Count()], pPawn);
+}
+
+int CZRRegenTimer::s_iRegenTimerCount = 0;
+int CZRRegenTimer::s_vecRegenTimersIndex[MAXPLAYERS];
+CZRRegenTimer *CZRRegenTimer::s_vecRegenTimers[MAXPLAYERS];
+
+bool CZRRegenTimer::Execute()
+{
+	CCSPlayerPawn *pPawn = m_hPawnHandle.Get();
+	if (!pPawn || !pPawn->IsAlive())
+		return false;
+
+	int iHealth = pPawn->m_iHealth() + m_iRegenAmount;
+	pPawn->m_iHealth = pPawn->m_iMaxHealth() < iHealth ? pPawn->m_iMaxHealth() : iHealth;
+	return true;
+}
+
+void CZRRegenTimer::StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController *pController)
+{
+	int slot = pController->GetPlayerSlot();
+	int iTimerIndex = GetIndex(slot);
+	if (iTimerIndex != -1)
+	{
+		s_vecRegenTimers[iTimerIndex]->m_flInterval = flRegenInterval;
+		s_vecRegenTimers[iTimerIndex]->m_iRegenAmount = iRegenAmount;
+		return;
+	}
+	iTimerIndex = s_iRegenTimerCount++;
+	s_vecRegenTimersIndex[slot] = iTimerIndex;
+	s_vecRegenTimers[iTimerIndex] = new CZRRegenTimer(flRegenInterval, iRegenAmount, pController->m_hPlayerPawn());
+}
+
+void CZRRegenTimer::StopRegen(CCSPlayerController *pController)
+{
+	int slot = pController->GetPlayerSlot();
+	int iTimerIndex = GetIndex(slot);
+	if (iTimerIndex == -1)
+		return;
+	s_iRegenTimerCount--;
+
+	delete s_vecRegenTimers[iTimerIndex];
+	s_vecRegenTimers[iTimerIndex] = s_vecRegenTimers[s_iRegenTimerCount];
+	s_vecRegenTimers[s_iRegenTimerCount] = nullptr;
+	s_vecRegenTimersIndex[slot] = -1;
+}
+
+int CZRRegenTimer::GetIndex(CPlayerSlot slot)
+{
+	return s_vecRegenTimersIndex[slot.Get()];
+}
+
+void CZRRegenTimer::Tick()
+{
+	for (int i = s_iRegenTimerCount - 1; i >= 0; i--)
+	{
+		CZRRegenTimer *pTimer = s_vecRegenTimers[i];
+
+		if (pTimer->m_flLastExecute == -1)
+			pTimer->m_flLastExecute = g_flUniversalTime;
+
+		// Timer execute 
+		if (pTimer->m_flLastExecute + pTimer->m_flInterval <= g_flUniversalTime)
+		{
+			pTimer->Execute();
+			pTimer->m_flLastExecute = g_flUniversalTime;
+		}
+	}
+}
+
+void CZRRegenTimer::RemoveAllTimers()
+{
+	for (int i = s_iRegenTimerCount - 1; i >= 0; i--)
+	{
+		delete s_vecRegenTimers[i];
+	}
+	for (int i = 0; i < MAXPLAYERS; i++)
+	{
+		s_vecRegenTimersIndex[i] = -1;
+	}
+	s_iRegenTimerCount = 0;
+}
+
 void ZR_OnStartupServer()
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
@@ -89,6 +319,7 @@ void ZR_OnStartupServer()
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_heavy 3");
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_rifles 3");
 
+	g_pPlayerClassManager->LoadPlayerClass();
 	SetupCTeams();
 }
 
@@ -167,6 +398,8 @@ void ZR_OnRoundStart(IGameEvent* pEvent)
 
 	SetupRespawnToggler();
 	// SetupAmmoReplenish();
+
+	CZRRegenTimer::RemoveAllTimers();
 }
 
 void ZR_OnPlayerSpawn(IGameEvent* pEvent)
@@ -256,12 +489,7 @@ void ZR_Cure(CCSPlayerController *pTargetController)
 	if (!pTargetPawn)
 		return;
 
-	// set model/health/etc here
-	//hardcode everything for now
-	pTargetPawn->m_iMaxHealth = 100;
-	pTargetPawn->m_iHealth = 100;
-
-	pTargetPawn->SetModel("characters/models/ctm_sas/ctm_sas.vmdl");
+	g_pPlayerClassManager->ApplyDefaultHumanClass(pTargetPawn);
 }
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bDontBroadcast)
@@ -276,12 +504,8 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 		return;
 
 	ZR_StripAndGiveKnife(pVictimPawn);
-	// set model/health/etc here
-	//hardcode everything for now
-	pVictimPawn->m_iMaxHealth = 10000;
-	pVictimPawn->m_iHealth = 10000;
-
-	pVictimPawn->SetModel("characters/models/tm_phoenix/tm_phoenix.vmdl");
+	
+	g_pPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
 }
 
 
@@ -294,12 +518,14 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 		return;
 
 	ZR_StripAndGiveKnife(pVictimPawn);
-	// set model/health/etc here
-	//hardcode everything for now
-	pVictimPawn->m_iMaxHealth = 10000;
-	pVictimPawn->m_iHealth = 10000;
-
-	pVictimPawn->SetModel("characters/models/tm_phoenix/tm_phoenix.vmdl");
+	ZRZombieClass *pClass = g_pPlayerClassManager->GetZombieClass("MotherZombie");
+	if (pClass)
+		g_pPlayerClassManager->ApplyZombieClass(pClass, pVictimPawn);
+	else
+	{
+		Warning("Missing mother zombie class!!!");
+		g_pPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
+	}
 }
 
 void ZR_InitialInfection()
