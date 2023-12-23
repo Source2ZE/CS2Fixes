@@ -373,7 +373,7 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CCSPlayer_WeaponServices_CanUse.CreateDetour(gameConfig))
 		success = false;
 	CCSPlayer_WeaponServices_CanUse.EnableDetour();
-	
+  
 	if (!CEntityIdentity_AcceptInput.CreateDetour(gameConfig))
 		success = false;
 	CEntityIdentity_AcceptInput.EnableDetour();
