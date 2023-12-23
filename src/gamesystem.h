@@ -23,8 +23,27 @@
 
 bool InitGameSystems();
 
-class CResourcePrecacheSystem : public CAutoGameSystem
+class CResourcePrecacheSystem : public CBaseGameSystem
 {
 public:
 	void BuildGameSessionManifest(const EventBuildGameSessionManifest_t *const ppManifest) override;
+	
+	void Shutdown() override
+	{
+		Message("CResourcePrecacheSystem::Shutdown\n");
+		delete sm_Factory;
+	}
+
+	void SetGameSystemGlobalPtrs(void *pValue) override
+	{
+		if (sm_Factory)
+			sm_Factory->SetGlobalPtr(pValue);
+	}
+
+	bool DoesGameSystemReallocate() override
+	{
+		return sm_Factory->ShouldAutoAdd();
+	}
+
+	static IGameSystemFactory *sm_Factory;
 };

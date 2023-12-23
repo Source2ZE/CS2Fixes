@@ -21,28 +21,28 @@
 #include "gameconfig.h"
 #include "addresses.h"
 #include "gamesystem.h"
-#include "igamesystemfactory.h"
 
 extern CGameConfig *g_GameConfig;
 
 CBaseGameSystemFactory **CBaseGameSystemFactory::sm_pFirst = nullptr;
 
 CResourcePrecacheSystem g_ResourcePrecacheSystem;
+IGameSystemFactory *CResourcePrecacheSystem::sm_Factory = nullptr;
 
 // This mess is needed to get the pointer to sm_pFirst so we can insert game systems
 bool InitGameSystems()
 {
-	// Here we go to the 12th byte in IGameSystem::InitAllSystems, which is the start of a 32-bit relative address to sm_pFirst
-	uint8 *ptr = (uint8*)g_GameConfig->ResolveSignature("IGameSystem_InitAllSystems") + 11;
+	// This signature directly points to the instruction referencing sm_pFirst, and the opcode is 3 bytes so we skip those
+	uint8 *ptr = (uint8*)g_GameConfig->ResolveSignature("IGameSystem_InitAllSystems_pFirst") + 3;
 
 	if (!ptr)
 	{
-		Panic("Failed to init ResourcePrecacheSystem\n");
+		Panic("Failed to InitGameSystems, see warnings above.\n");
 		return false;
 	}
 
-	// Grab the offset
-	uint32 offset = *(uint32 *)ptr;
+	// Grab the offset as 4 bytes
+	uint32 offset = *(uint32*)ptr;
 
 	// Go to the next instruction, which is the starting point of the relative jump
 	ptr += 4;
@@ -51,7 +51,7 @@ bool InitGameSystems()
 	CBaseGameSystemFactory::sm_pFirst = (CBaseGameSystemFactory **)(ptr + offset);
 
 	// And insert the game system(s)
-	new CGameSystemStaticFactory<CResourcePrecacheSystem>("ResourcePrecacheSystem", &g_ResourcePrecacheSystem);
+	CResourcePrecacheSystem::sm_Factory = new CGameSystemStaticFactory<CResourcePrecacheSystem>("ResourcePrecacheSystem", &g_ResourcePrecacheSystem);
 
 	return true;
 }
