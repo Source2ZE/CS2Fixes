@@ -26,7 +26,7 @@ bool InitGameSystems();
 class CResourcePrecacheSystem : public CBaseGameSystem
 {
 public:
-	void BuildGameSessionManifest(const EventBuildGameSessionManifest_t *const ppManifest) override;
+	GS_EVENT(BuildGameSessionManifest);
 	
 	void Shutdown() override
 	{
