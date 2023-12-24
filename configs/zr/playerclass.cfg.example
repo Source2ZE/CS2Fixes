@@ -4,28 +4,31 @@
 	{
 		"HumanClass1"
 		{
+			// class behavior, values will not be inherited from base class
 			"enabled"					"1"
 			"team_default"				"1"
-			
-			"health"					"100"
 
+			// player behavior
+			"health"					"100"
 			"model"						"characters/models/ctm_fbi/ctm_fbi.vmdl"
+			"speed"						"1.0"
+			"gravity"					"1.0"
 		}
 		"HumanClass2"
 		{
 			"enabled"					"1"
 			"team_default"				"1"
-			
-			"health"					"100"
 
-			"model"						"characters/models/ctm_sas/ctm_sas.vmdl"
+			"base"						"HumanClass1" // optional
+
+			"model"						"characters/models/ctm_sas/ctm_sas.vmdl" // overrides HumanClass1 model
 		}
 		"HumanClass3"
 		{
 			"enabled"					"1"
 			"team_default"				"1"
-			
-			"health"					"100"
+
+			"base"						"HumanClass1"
 
 			"model"						"characters/models/ctm_swat/ctm_swat_variante.vmdl"
 		}
@@ -37,11 +40,13 @@
 			"enabled"					"1"
 			"team_default"				"1"
 			
-			"health"					"10000"
-			"health_regen_count"		"250"
-			"health_regen_interval"		"5.0"
-			
+			"health"					"10000"	
 			"model"						"characters/models/tm_jumpsuit/tm_jumpsuit_varianta.vmdl"
+			"speed"						"1.0"
+			"gravity"					"1.0"
+			
+			"health_regen_count"		"250"
+			"health_regen_interval"		"5.0"		
 		}
 		//special class that the first batch of zombie will be assigned to
 		"MotherZombie"
@@ -50,10 +55,12 @@
 			"team_default"				"0"
 			
 			"health"					"40000"
+			"model"						"characters/models/tm_phoenix_heavy/tm_phoenix_heavy.vmdl"
+			"speed"						"1.0"
+			"gravity"					"1.0"
+
 			"health_regen_count"		"500"
 			"health_regen_interval"		"5.0"
-			
-			"model"						"characters/models/tm_phoenix_heavy/tm_phoenix_heavy.vmdl"
 		}
 	}
 }

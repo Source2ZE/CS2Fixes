@@ -34,25 +34,107 @@ enum EZRSpawnType
 	RESPAWN,
 };
 
-struct ZRHumanClass
+//everything that human and zombie share
+struct ZRClass
 {
+	std::string szClassName;
 	int iHealth;
 	std::string szModelPath;
+	float flSpeed;
+	float flGravity;
+	ZRClass(ZRClass *pClass) : 
+		szClassName(pClass->szClassName), 
+		iHealth(pClass->iHealth), 
+		szModelPath(pClass->szModelPath), 
+		flSpeed(pClass->flSpeed), 
+		flGravity(pClass->flGravity){};
+
+	ZRClass(KeyValues *pKeys) : 
+		szClassName(std::string(pKeys->GetName())), 
+		iHealth(pKeys->GetInt("health", 0)), 
+		szModelPath(std::string(pKeys->GetString("model", ""))), 
+		flSpeed(pKeys->GetFloat("speed", 0)), 
+		flGravity(pKeys->GetFloat("gravity", 0)){};
+	void PrintInfo()
+	{
+		Message(
+			"%s:\n"
+			"\thealth: %d\n"
+			"\tmodel: %s\n"
+			"\tspeed: %f\n"
+			"\tgravity: %f\n",
+			szClassName.c_str(),
+			iHealth,
+			szModelPath.c_str(),
+			flSpeed,
+			flGravity);
+	};
+	void Override(KeyValues *pKeys)
+	{
+		szClassName = std::string(pKeys->GetName());
+		if (pKeys->FindKey("health"))
+			iHealth = pKeys->GetInt("health", 0);
+		if (pKeys->FindKey("model"))
+			szModelPath = std::string(pKeys->GetString("model", ""));
+		if (pKeys->FindKey("speed"))
+			flSpeed = pKeys->GetFloat("speed", 0);
+		if (pKeys->FindKey("gravity"))
+			flGravity = pKeys->GetFloat("gravity", 0);
+	};
 };
 
-struct ZRZombieClass
-{
-	int iHealth;
-	std::string szModelPath;
 
+struct ZRHumanClass : ZRClass
+{
+	ZRHumanClass(ZRHumanClass *pClass) : ZRClass(pClass){};
+	ZRHumanClass(KeyValues *pKeys) : ZRClass(pKeys){};
+};
+
+struct ZRZombieClass : ZRClass
+{
 	int iHealthRegenCount;
 	float flHealthRegenInterval;
+	ZRZombieClass(ZRZombieClass *pClass) : 
+		ZRClass(pClass), 
+		iHealthRegenCount(pClass->iHealthRegenCount), 
+		flHealthRegenInterval(pClass->flHealthRegenInterval){};
+	ZRZombieClass(KeyValues *pKeys) : 
+		ZRClass(pKeys), 
+		iHealthRegenCount(pKeys->GetInt("health_regen_count", 0)), 
+		flHealthRegenInterval(pKeys->GetFloat("health_regen_interval", 0)){};
+	void PrintInfo()
+	{
+		Message(
+			"%s:\n"
+			"\thealth: %d\n"
+			"\tmodel: %s\n"
+			"\tspeed: %f\n"
+			"\tgravity: %f\n"
+			"\thealth_regen_count: %d\n"
+			"\thealth_regen_interval: %f\n",
+			szClassName.c_str(),
+			iHealth,
+			szModelPath.c_str(),
+			flSpeed,
+			flGravity,
+			iHealthRegenCount,
+			flHealthRegenInterval);
+	};
+	void Override(KeyValues *pKeys)
+	{
+		ZRClass::Override(pKeys);
+		if (pKeys->FindKey("health_regen_count"))
+			flSpeed = pKeys->GetInt("health_regen_count", 0);
+		if (pKeys->FindKey("health_regen_interval"))
+			flGravity = pKeys->GetFloat("health_regen_interval", 0);
+	};
 };
 
 class CZRPlayerClassManager
 {
 public:
-	CZRPlayerClassManager() {
+	CZRPlayerClassManager() 
+	{
 		m_ZombieClassMap.SetLessFunc(DefLessFunc(uint32));
 		m_HumanClassMap.SetLessFunc(DefLessFunc(uint32));
 	};
@@ -64,6 +146,7 @@ public:
 	void ApplyZombieClass(ZRZombieClass *pClass, CCSPlayerPawn *pPawn);
 	void ApplyDefaultZombieClass(CCSPlayerPawn *pPawn);
 private:
+	void ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn);
 	CUtlVector<ZRZombieClass*> m_vecZombieDefaultClass;
 	CUtlVector<ZRHumanClass*> m_vecHumanDefaultClass;
 	CUtlMap<uint32, ZRZombieClass*> m_ZombieClassMap;
@@ -100,7 +183,8 @@ class ZRWeaponConfig
 {
 public:
 
-	ZRWeaponConfig() {
+	ZRWeaponConfig() 
+	{
 		m_WeaponMap.SetLessFunc(DefLessFunc(uint32));
 	};
 	void LoadWeaponConfig();

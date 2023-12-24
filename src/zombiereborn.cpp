@@ -98,72 +98,130 @@ void CZRPlayerClassManager::LoadPlayerClass()
 		Warning("Failed to load %s\n", pszPath);
 		return;
 	}
+
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
-		if (!V_strncmp(pKey->GetName(), "Human", 5))
-		{
-			for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
-			{
-				Message("%s:\n\
-					enabled: %d\n\
-					team_default: %d\n\
-					health: %d\n\
-					model: %s\n", 
-					pSubKey->GetName(), 
-					pSubKey->GetBool("enabled", false),
-					pSubKey->GetBool("team_default", false),
-					pSubKey->GetInt("health", 100),
-					pSubKey->GetString("model", ""));
-
-				if (!pSubKey->GetBool("enabled", false))
-					continue;
-
-				ZRHumanClass *pClass = new ZRHumanClass;
-				pClass->iHealth = pSubKey->GetInt("health", 100);
-				pClass->szModelPath = std::string(pSubKey->GetString("model", ""));
-
-				m_HumanClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pClass);
-
-				if (pSubKey->GetBool("team_default", false))
-					m_vecHumanDefaultClass.AddToTail(pClass);
-			}
-		}
+		bool bHuman = !V_strncmp(pKey->GetName(), "Human", 5);
+		if (bHuman)
+			Message("Human Classes:\n");
 		else
-		{
-			for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
-			{
-				Message("%s:\n\
-					enabled: %d\n\
-					team_default: %d\n\
-					health: %d\n\
-					health_regen_count: %d\n\
-					health_regen_interval: %f\n\
-					model: %s\n", 
-					pSubKey->GetName(), 
-					pSubKey->GetBool("enabled", false),
-					pSubKey->GetBool("team_default", false),
-					pSubKey->GetInt("health", 100),
-					pSubKey->GetInt("health_regen_count", 100),
-					pSubKey->GetFloat("health_regen_interval", 5.0f),
-					pSubKey->GetString("model", ""));
+			Message("Zombie Classes:\n");
+		
+		for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
+		{	
+			bool bEnabled = pSubKey->GetBool("enabled", false);
+			bool bTeamDefault= pSubKey->GetBool("team_default", false);
 
-				if (!pSubKey->GetBool("enabled", false))
+			const char *pszBase = pSubKey->GetString("base", nullptr);
+			const char *pszClassName = pSubKey->GetName();
+
+			bool bMissingKey = false;
+			if (!pSubKey->FindKey("enabled"))
+			{
+				Warning("%s has unspecified keyvalue: enabled\n", pszClassName);
+				bMissingKey = true;
+			}
+
+			if (!bEnabled)
+				continue;
+				
+			if (!pSubKey->FindKey("team_default"))
+			{
+				Warning("%s has unspecified keyvalue: team_default\n", pszClassName);
+				bMissingKey = true;
+			}
+
+			// check everything if no base class
+			if (!pszBase)
+			{
+				if (!pSubKey->FindKey("health"))
+				{
+					Warning("%s has unspecified keyvalue: health\n", pszClassName);
+					bMissingKey = true;
+				}
+				if (!pSubKey->FindKey("model"))
+				{
+					Warning("%s has unspecified keyvalue: model\n", pszClassName);
+					bMissingKey = true;
+				}
+				if (!pSubKey->FindKey("speed"))
+				{
+					Warning("%s has unspecified keyvalue: speed\n", pszClassName);
+					bMissingKey = true;
+				}
+				if (!pSubKey->FindKey("gravity"))
+				{
+					Warning("%s has unspecified keyvalue: gravity\n", pszClassName);
+					bMissingKey = true;
+				}
+			}
+			if (bMissingKey)
 					continue;
 
-				ZRZombieClass *pClass = new ZRZombieClass;
-				pClass->iHealth = pSubKey->GetInt("health", 100);
-				pClass->szModelPath = std::string(pSubKey->GetString("model", ""));
+			if (bHuman)
+			{
+				ZRHumanClass *pHumanClass;
+				if (pszBase)
+				{
+					ZRHumanClass *pBaseHumanClass = GetHumanClass(pszBase);
+					if (pBaseHumanClass)
+					{
+						pHumanClass = new ZRHumanClass(pBaseHumanClass);
+						pHumanClass->Override(pSubKey);
+					}
+					else
+					{
+						Warning("Could not find specified base \"%s\" for %s!!!", pszBase, pszClassName);
+						continue;
+					}
+				}
+				else
+					pHumanClass = new ZRHumanClass(pSubKey);
+					
 
-				pClass->iHealthRegenCount = pSubKey->GetInt("health_regen_count", 10000);
-				pClass->flHealthRegenInterval = pSubKey->GetFloat("health_regen_interval", 5.0f);
+				m_HumanClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pHumanClass);
 
-				m_ZombieClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pClass);
+				if (bTeamDefault)
+					m_vecHumanDefaultClass.AddToTail(pHumanClass);
+				
+				pHumanClass->PrintInfo();
+			}
+			else 
+			{
+				ZRZombieClass *pZombieClass;
+				if (pszBase)
+				{
+					ZRZombieClass *pBaseZombieClass = GetZombieClass(pszBase);
+					if (pBaseZombieClass)
+					{
+						pZombieClass = new ZRZombieClass(pBaseZombieClass);
+						pZombieClass->Override(pSubKey);
+					}
+					else
+					{
+						Warning("Could not find specified base \"%s\" for %s!!!", pszBase, pszClassName);
+						continue;
+					}
+				}
+				else
+					pZombieClass = new ZRZombieClass(pSubKey);
 
+				m_ZombieClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pZombieClass);
 				if (pSubKey->GetBool("team_default", false))
-					m_vecZombieDefaultClass.AddToTail(pClass);
+					m_vecZombieDefaultClass.AddToTail(pZombieClass);
+				
+				pZombieClass->PrintInfo();
 			}
 		}
 	}
+}
+void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn)
+{
+	pPawn->m_iMaxHealth = pClass->iHealth;
+	pPawn->m_iHealth = pClass->iHealth;
+	pPawn->SetModel(pClass->szModelPath.c_str());
+	pPawn->m_flVelocityModifier = pClass->flSpeed;
+	pPawn->m_flGravityScale = pClass->flGravity;
 }
 
 ZRHumanClass* CZRPlayerClassManager::GetHumanClass(const char *pszClassName)
@@ -176,11 +234,7 @@ ZRHumanClass* CZRPlayerClassManager::GetHumanClass(const char *pszClassName)
 
 void CZRPlayerClassManager::ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn *pPawn)
 {
-	pPawn->m_iMaxHealth = pClass->iHealth;
-	pPawn->m_iHealth = pClass->iHealth;
-
-	pPawn->SetModel(pClass->szModelPath.c_str());
-
+	ApplyBaseClass(pClass, pPawn);
 	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
 	if (pController)
 		CZRRegenTimer::StopRegen(pController);
@@ -206,11 +260,7 @@ ZRZombieClass* CZRPlayerClassManager::GetZombieClass(const char *pszClassName)
 
 void CZRPlayerClassManager::ApplyZombieClass(ZRZombieClass *pClass, CCSPlayerPawn *pPawn)
 {
-	pPawn->m_iMaxHealth = pClass->iHealth;
-	pPawn->m_iHealth = pClass->iHealth;
-
-	pPawn->SetModel(pClass->szModelPath.c_str());
-
+	ApplyBaseClass(pClass, pPawn);
 	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
 	if (pController)
 		CZRRegenTimer::StartRegen(pClass->flHealthRegenInterval, pClass->iHealthRegenCount, pController);
