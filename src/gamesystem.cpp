@@ -56,12 +56,13 @@ bool InitGameSystems()
 	return true;
 }
 
-void CResourcePrecacheSystem::BuildGameSessionManifest(const EventBuildGameSessionManifest_t *const ppManifest)
+GS_EVENT_MEMBER(CResourcePrecacheSystem, BuildGameSessionManifest)
 {
 	Message("CResourcePrecacheSystem::BuildGameSessionManifest\n");
 
-	IEntityResourceManifest *pResourceManifest = *(IEntityResourceManifest**)ppManifest;
+	IEntityResourceManifest *pResourceManifest = msg->m_pResourceManifest;
 
 	// This takes any resource type, model or not
+	// Any resource adding MUST be done here, the resource manifest is not long-lived
 	// pResourceManifest->AddResource("characters/models/my_character_model.vmdl");
 }
