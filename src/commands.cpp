@@ -748,18 +748,9 @@ CON_COMMAND_CHAT(setinteraction, "set a player's interaction flags")
 	}
 }
 
-void HttpCallback(HTTPRequestHandle request, char* response)
+void HttpCallback(HTTPRequestHandle request, json response)
 {
-	// Test serializing to JSON
-	json data = json::parse(response, nullptr, false);
-
-	if (data.is_discarded())
-	{
-		Message("Failed parsing JSON!\n");
-		return;
-	}
-
-	ClientPrintAll(HUD_PRINTTALK, data.dump().c_str());
+	ClientPrintAll(HUD_PRINTTALK, response.dump().c_str());
 }
 
 CON_COMMAND_CHAT(http, "test an HTTP request")
