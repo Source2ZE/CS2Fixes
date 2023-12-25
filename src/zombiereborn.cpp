@@ -244,7 +244,7 @@ void CZRPlayerClassManager::ApplyDefaultHumanClass(CCSPlayerPawn *pPawn)
 {
 	if (m_vecHumanDefaultClass.Count() == 0)
 	{
-		Warning("Missing default zombie class!!!");
+		Warning("Missing default human class!!!");
 		return;
 	}
 	ApplyHumanClass(m_vecHumanDefaultClass[rand() % m_vecHumanDefaultClass.Count()], pPawn);
