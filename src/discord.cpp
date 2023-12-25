@@ -42,10 +42,10 @@ CON_COMMAND_F(cs2f_debug_discord_messages, "Whether to include debug information
 		g_bDebugDiscordRequests = V_StringToBool(args[1], false);
 }
 
-void DiscordHttpCallback(HTTPRequestHandle request, char* response)
+void DiscordHttpCallback(HTTPRequestHandle request, json response)
 {
 	if (g_bDebugDiscordRequests) {
-		Message("Discord post received response: %s\n", response);
+		Message("Discord post received response: %s\n", response.dump().c_str());
 	}
 }
 
