@@ -23,9 +23,9 @@ Admins
 {
 	// Admin entries should follow this format
 	
-    //"name" // Unused, can be anything
-    //{
-    //    "steamid" "1234567890" // SteamID64
-    //    "flags" "abcdefg" // Permission flags as described above
-    //}
+	//"name" // Unused, can be anything
+	//{
+	//	"steamid" "1234567890" // SteamID64
+	//	"flags" "abcdefg" // Permission flags as described above
+	//}
 }

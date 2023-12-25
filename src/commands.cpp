@@ -757,26 +757,18 @@ CON_COMMAND_CHAT(http, "test an HTTP request")
 {
 	if (!g_http)
 	{
-		if (player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Steam HTTP interface is not available!");
-		else
-			Message("Steam HTTP interface is not available!\n");
-
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Steam HTTP interface is not available!");
 		return;
 	}
 	if (args.ArgC() < 3)
 	{
-		if (player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !http <get/post> <url> [content]");
-		else
-			Message("Usage: !http <get/post> <url> [content]\n");
-
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !http <get/post> <url> [content]");
 		return;
 	}
 
-	if (strcmp(args[1], "get") == 0)
+	if (!V_strcmp(args[1], "get"))
 		g_HTTPManager.GET(args[2], &HttpCallback);
-	else if (strcmp(args[1], "post") == 0)
+	else if (!V_strcmp(args[1], "post"))
 		g_HTTPManager.POST(args[2], args[3], &HttpCallback);
 }
 
