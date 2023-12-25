@@ -214,12 +214,14 @@
     <ClInclude Include="src\discord.h" />
     <ClInclude Include="src\eventlistener.h" />
     <ClInclude Include="src\gamesystem.h" />
+    <ClInclude Include="src\gameconfig.h" />
     <ClInclude Include="src\httpmanager.h" />
     <ClInclude Include="src\mempatch.h" />
     <ClInclude Include="src\addresses.h" />
     <ClInclude Include="src\playermanager.h" />
     <ClInclude Include="src\recipientfilters.h" />
     <ClInclude Include="src\votemanager.h" />
+    <ClInclude Include="src\map_votes.h" />
     <ClInclude Include="src\utils\entity.h" />
     <ClInclude Include="src\utils\module.h" />
     <ClInclude Include="src\utils\plat.h" />

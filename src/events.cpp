@@ -23,9 +23,9 @@
 #include "ctimer.h"
 #include "eventlistener.h"
 #include "entity/cbaseplayercontroller.h"
+#include "playermanager.h"
 
 #include "tier0/memdbgon.h"
-#include "playermanager.h"
 
 extern IGameEventManager2 *g_gameEventManager;
 extern IServerGameClients *g_pSource2GameClients;

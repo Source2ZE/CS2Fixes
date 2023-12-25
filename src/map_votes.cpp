@@ -73,7 +73,7 @@ CON_COMMAND_F(cs2f_vote_max_nominations, "Number of nominations to include per v
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(setnextmap, "Force next map", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(setnextmap, "Force next map", ADMFLAG_CHANGEMAP)
 {
 	bool bIsClearingForceNextMap = args.ArgC() < 2;
 	int iResponse = g_pMapVoteSystem->ForceNextMap(bIsClearingForceNextMap ? "" : args[1]);
@@ -123,7 +123,7 @@ static int __cdecl OrderStringsLexicographically(const char* const* a, const cha
 	return V_strcasecmp(*a, *b);
 }
 
-CON_COMMAND_CHAT_FLAGS(maplist, "List the maps in the server", ADMFLAG_NONE)
+CON_COMMAND_CHAT(maplist, "List the maps in the server")
 {
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
 	ClientPrint(player, HUD_PRINTCONSOLE, "The list of all maps is:");
@@ -137,7 +137,7 @@ CON_COMMAND_CHAT_FLAGS(maplist, "List the maps in the server", ADMFLAG_NONE)
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(nomlist, "List the list of nominations", ADMFLAG_NONE)
+CON_COMMAND_CHAT(nomlist, "List the list of nominations")
 {
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Current nominations:");
 	for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++) {
@@ -149,7 +149,7 @@ CON_COMMAND_CHAT_FLAGS(nomlist, "List the list of nominations", ADMFLAG_NONE)
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(mapcooldowns, "List the maps currently in cooldown", ADMFLAG_NONE)
+CON_COMMAND_CHAT(mapcooldowns, "List the maps currently in cooldown")
 {
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of maps in cooldown will be shown in console.");
 	ClientPrint(player, HUD_PRINTCONSOLE, "The list of maps in cooldown is:");
