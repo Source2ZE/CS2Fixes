@@ -129,7 +129,7 @@ void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);
 }
 
-bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid)
+bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid, const char* pszNetworkID)
 {
 	Assert(m_vecPlayers[slot.Get()] == nullptr);
 
@@ -137,6 +137,20 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid)
 
 	ZEPlayer *pPlayer = new ZEPlayer(slot);
 	pPlayer->SetUnauthenticatedSteamId(new CSteamID(xuid));
+
+	std::string ip(pszNetworkID);
+
+	// Remove port
+	for (int i = 0; i < ip.length(); i++)
+	{
+		if (ip[i] == ':')
+		{
+			ip = ip.substr(0, i);
+			break;
+		}
+	}
+
+	pPlayer->SetIpAddress(ip);
 
 	if (!g_pAdminSystem->ApplyInfractions(pPlayer))
 	{
@@ -176,7 +190,7 @@ void CPlayerManager::OnLateLoad()
 		if (!pController || !pController->IsController() || !pController->IsConnected())
 			continue;
 
-		OnClientConnected(i, pController->m_steamID());
+		OnClientConnected(i, pController->m_steamID(), "0.0.0.0:0");
 	}
 }
 

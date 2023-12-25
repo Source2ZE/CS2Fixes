@@ -531,7 +531,7 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 {
 	Message( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
 		
-	if (!g_playerManager->OnClientConnected(slot, xuid))
+	if (!g_playerManager->OnClientConnected(slot, xuid, pszNetworkID))
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
