@@ -88,6 +88,7 @@ public:
 	void SetRTVVoteTime(float flCurtime) { m_flRTVVoteTime = flCurtime; }
 	void SetExtendVote(bool bExtendVote) { m_bVotedExtend = bExtendVote; }
 	void SetExtendVoteTime(float flCurtime) { m_flExtendVoteTime = flCurtime; }
+	void SetIpAddress(std::string strIp) { m_strIp = strIp; }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -101,6 +102,7 @@ public:
 	float GetRTVVoteTime() { return m_flRTVVoteTime; }
 	bool GetExtendVote() { return m_bVotedExtend; }
 	float GetExtendVoteTime() { return m_flExtendVoteTime; }
+	const char* GetIpAddress() { return m_strIp.c_str(); }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
@@ -127,6 +129,7 @@ private:
 	float m_flExtendVoteTime;
 	int m_iFloodTokens;
 	float m_flLastTalkTime;
+	std::string m_strIp;
 };
 
 class CPlayerManager
@@ -143,7 +146,7 @@ public:
 			OnLateLoad();
 	}
 
-	bool OnClientConnected(CPlayerSlot slot, uint64 xuid);
+	bool OnClientConnected(CPlayerSlot slot, uint64 xuid, const char* pszNetworkID);
 	void OnClientDisconnect(CPlayerSlot slot);
 	void OnBotConnected(CPlayerSlot slot);
 	void OnLateLoad();
