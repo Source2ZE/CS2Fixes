@@ -367,7 +367,7 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 			flTimelimit = 1;
 		
 		char buf[32];
-		V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit + g_iExtendTimeToAdd);
+		V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit);
 
 		// CONVAR_TODO
 		g_pEngineServer2->ServerCommand(buf);
@@ -380,8 +380,8 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 			// there's an extend left after a successfull extend vote
 			g_ExtendState = EExtendState::POST_EXTEND_COOLDOWN;
 
-			// Allow another extend vote after 2 minutes
-			new CTimer(120.0f, false, []()
+			// Allow another extend vote after added time lapses
+			new CTimer(g_iExtendTimeToAdd * 60.0f, false, []()
 			{
 				if (g_ExtendState == EExtendState::POST_EXTEND_COOLDOWN)
 					g_ExtendState = EExtendState::EXTEND_ALLOWED;
