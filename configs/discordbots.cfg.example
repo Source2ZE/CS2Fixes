@@ -3,11 +3,12 @@
 	"YourFirstBot"
 	{
 		"webhook" "DISCORD_WEBHOOK_1"
-		"avatar" "AVATAR_IMAGE_1"
+		"override_name" "false"
 	}
 	"YourSecondBot"
 	{
 		"webhook" "DISCORD_WEBHOOK_2"
 		"avatar" "AVATAR_IMAGE_2"
+		"override_name" "true"
 	}
 }
