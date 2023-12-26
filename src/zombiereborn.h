@@ -194,7 +194,7 @@ private:
 };
 
 extern ZRWeaponConfig *g_pZRWeaponConfig;
-extern CZRPlayerClassManager* g_pPlayerClassManager;
+extern CZRPlayerClassManager* g_pZRPlayerClassManager;
 
 extern bool g_bEnableZR;
 extern EZRRoundState g_ZRRoundState;

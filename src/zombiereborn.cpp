@@ -51,7 +51,7 @@ static CHandle<CTeam> g_hTeamCT;
 static CHandle<CTeam> g_hTeamT;
 
 
-CZRPlayerClassManager* g_pPlayerClassManager = nullptr;
+CZRPlayerClassManager* g_pZRPlayerClassManager = nullptr;
 ZRWeaponConfig *g_pZRWeaponConfig = nullptr;
 
 // CONVAR_TODO
@@ -371,7 +371,7 @@ void ZR_OnStartupServer()
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_heavy 3");
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_rifles 3");
 
-	g_pPlayerClassManager->LoadPlayerClass();
+	g_pZRPlayerClassManager->LoadPlayerClass();
 	g_pZRWeaponConfig->LoadWeaponConfig();
 	SetupCTeams();
 }
@@ -592,7 +592,7 @@ void ZR_Cure(CCSPlayerController *pTargetController)
 	if (!pTargetPawn)
 		return;
 
-	g_pPlayerClassManager->ApplyDefaultHumanClass(pTargetPawn);
+	g_pZRPlayerClassManager->ApplyDefaultHumanClass(pTargetPawn);
 }
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bDontBroadcast)
@@ -608,7 +608,7 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 
 	ZR_StripAndGiveKnife(pVictimPawn);
 	
-	g_pPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
+	g_pZRPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
 }
 
 
@@ -621,13 +621,13 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 		return;
 
 	ZR_StripAndGiveKnife(pVictimPawn);
-	ZRZombieClass *pClass = g_pPlayerClassManager->GetZombieClass("MotherZombie");
+	ZRZombieClass *pClass = g_pZRPlayerClassManager->GetZombieClass("MotherZombie");
 	if (pClass)
-		g_pPlayerClassManager->ApplyZombieClass(pClass, pVictimPawn);
+		g_pZRPlayerClassManager->ApplyZombieClass(pClass, pVictimPawn);
 	else
 	{
 		Warning("Missing mother zombie class!!!");
-		g_pPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
+		g_pZRPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
 	}
 }
 
