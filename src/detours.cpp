@@ -209,6 +209,14 @@ void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *pThis, void *a2)
 #endif
 
 	CCSWeaponBase_Spawn(pThis, a2);
+
+	if (g_bEnableZR)
+	{
+		// as far as I can tell, it shouldn't work on throwable
+		CBasePlayerWeapon *pWeapon = (CBasePlayerWeapon*)pThis;
+		CCSWeaponBaseVData *pData = pWeapon->GetWeaponVData();
+		pData->m_nPrimaryReserveAmmoMax = 9999;
+	}
 }
 
 void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *pSoundEmitterSystem, CEntityIndex *a2, IRecipientFilter &filter, uint32 a4, void *a5)
