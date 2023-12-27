@@ -70,7 +70,7 @@ CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKE
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
-		if (!pPlayer || pPlayer->IsFakeClient())
+		if (!pPlayer || pPlayer->IsFakeClient() || !pPlayer->IsAuthenticated())
 			continue;
 
 		pPlayer->CheckAdmin();
@@ -137,6 +137,12 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 
 	if (pTargetPlayer->IsFakeClient())
 		return;
+
+	if (!pTargetPlayer->IsAuthenticated())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not yet authenticated, consider kicking instead or please wait a moment and try again.", pTarget->GetPlayerName());
+		return;
+	}
 
 	CInfractionBase *infraction = new CBanInfraction(iDuration, pTargetPlayer->GetSteamId64());
 
@@ -210,6 +216,12 @@ CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
 
 		if (pTargetPlayer->IsFakeClient())
 			continue;
+
+		if (!pTargetPlayer->IsAuthenticated())
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not yet authenticated, please wait a moment and try again.", pTarget->GetPlayerName());
+			continue;
+		}
 
 		CInfractionBase* infraction = new CMuteInfraction(iDuration, pTargetPlayer->GetSteamId64());
 
@@ -329,6 +341,12 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 
 		if (pTargetPlayer->IsFakeClient())
 			continue;
+
+		if (!pTargetPlayer->IsAuthenticated())
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not yet authenticated, please wait a moment and try again.", pTarget->GetPlayerName());
+			continue;
+		}
 
 		CInfractionBase *infraction = new CGagInfraction(iDuration, pTargetPlayer->GetSteamId64());
 
@@ -1095,8 +1113,7 @@ bool CAdminSystem::ApplyInfractions(ZEPlayer *player)
 	{
 		// Because this can run without the player being authenticated, and the fact that we're applying a ban/mute here,
 		// we can immediately just use the steamid we got from the connecting player.
-		uint64 iSteamID = player->IsAuthenticated() ? 
-			player->GetSteamId64() : g_pEngineServer2->GetClientSteamID(player->GetPlayerSlot())->ConvertToUint64();
+		uint64 iSteamID = player->IsAuthenticated() ? player->GetSteamId64() : player->GetUnauthenticatedSteamId64();
 
 		// We're only interested in infractions concerning this player
 		if (m_vecInfractions[i]->GetSteamId64() != iSteamID)

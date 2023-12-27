@@ -23,11 +23,12 @@
 class CDiscordBot
 {
 public:
-	CDiscordBot(const char* pszName, const char* pszWebhookUrl, const char* pszAvatarUrl)
+	CDiscordBot(const char* pszName, const char* pszWebhookUrl, const char* pszAvatarUrl, bool bOverrideName)
 	{
 		V_strcpy(m_pszName, pszName);
 		V_strcpy(m_pszWebhookUrl, pszWebhookUrl);
 		V_strcpy(m_pszAvatarUrl, pszAvatarUrl);
+		m_bOverrideName = bOverrideName;
 	}
 
 	const char* GetName() { return (const char*)m_pszName; };
@@ -39,6 +40,7 @@ private:
 	char m_pszName[32];
 	char m_pszWebhookUrl[256];
 	char m_pszAvatarUrl[256];
+	bool m_bOverrideName;
 };
 
 

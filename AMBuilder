@@ -62,15 +62,18 @@ for sdk_name in MMSPlugin.sdks:
       'src/ctimer.cpp',
       'src/playermanager.cpp',
       'src/gameconfig.cpp',
+      'src/gamesystem.cpp',
       'src/votemanager.cpp',
       'src/httpmanager.cpp',
       'src/discord.cpp',
+      'src/map_votes.cpp',
       'src/zombiereborn.cpp',
     ]
 
     if sdk_name in ['dota', 'cs2']:
       binary.sources += [
       os.path.join(sdk.path, 'entity2', 'entitysystem.cpp'),
+      os.path.join(sdk.path, 'entity2', 'entityidentity.cpp'),
       os.path.join(sdk.path, 'tier1', 'convar.cpp')
     ]
 

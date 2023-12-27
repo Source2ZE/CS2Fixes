@@ -21,6 +21,7 @@
 #include "utlstring.h"
 #include "playermanager.h"
 #include "adminsystem.h"
+#include "map_votes.h"
 #include "entity/ccsplayercontroller.h"
 #include "ctime"
 
@@ -128,13 +129,28 @@ void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);
 }
 
-bool CPlayerManager::OnClientConnected(CPlayerSlot slot)
+bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid, const char* pszNetworkID)
 {
 	Assert(m_vecPlayers[slot.Get()] == nullptr);
 
 	Message("%d connected\n", slot.Get());
 
 	ZEPlayer *pPlayer = new ZEPlayer(slot);
+	pPlayer->SetUnauthenticatedSteamId(new CSteamID(xuid));
+
+	std::string ip(pszNetworkID);
+
+	// Remove port
+	for (int i = 0; i < ip.length(); i++)
+	{
+		if (ip[i] == ':')
+		{
+			ip = ip.substr(0, i);
+			break;
+		}
+	}
+
+	pPlayer->SetIpAddress(ip);
 
 	if (!g_pAdminSystem->ApplyInfractions(pPlayer))
 	{
@@ -147,6 +163,8 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot)
 	m_vecPlayers[slot.Get()] = pPlayer;
 
 	ResetPlayerFlags(slot.Get());
+
+	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
 	
 	return true;
 }
@@ -159,6 +177,8 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	m_vecPlayers[slot.Get()] = nullptr;
 
 	ResetPlayerFlags(slot.Get());
+
+	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
 }
 
 void CPlayerManager::OnLateLoad()
@@ -170,7 +190,7 @@ void CPlayerManager::OnLateLoad()
 		if (!pController || !pController->IsController() || !pController->IsConnected())
 			continue;
 
-		OnClientConnected(i);
+		OnClientConnected(i, pController->m_steamID(), "0.0.0.0:0");
 	}
 }
 
@@ -187,8 +207,8 @@ void CPlayerManager::TryAuthenticate()
 		if (g_pEngineServer2->IsClientFullyAuthenticated(i))
 		{
 			m_vecPlayers[i]->SetAuthenticated();
-			m_vecPlayers[i]->SetSteamId(g_pEngineServer2->GetClientSteamID(i));
-			Message("%lli authenticated %d\n", m_vecPlayers[i]->GetSteamId()->ConvertToUint64(), i);
+			m_vecPlayers[i]->SetSteamId(m_vecPlayers[i]->GetUnauthenticatedSteamId());
+			Message("%lli authenticated %d\n", m_vecPlayers[i]->GetSteamId64(), i);
 			m_vecPlayers[i]->OnAuthenticated();
 		}
 	}

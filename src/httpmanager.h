@@ -28,29 +28,33 @@
 #pragma once
 
 #include "cs2fixes.h"
+#undef snprintf
+#include "vendor/nlohmann/json.hpp"
 #include <steam/steam_gameserver.h>
 
 #include <vector>
 #include <functional>
 
+using json = nlohmann::json;
+
 class HTTPManager;
 extern HTTPManager g_HTTPManager;
 
-#define CompletedCallback std::function<void(HTTPRequestHandle, char*)>
+#define CompletedCallback std::function<void(HTTPRequestHandle, json)>
 
 class HTTPHeader
 {
 public:
-	HTTPHeader(const char* pszName, const char* pszValue)
+	HTTPHeader(std::string strName, std::string strValue)
 	{
-		m_pszName = pszName;
-		m_pszValue = pszValue;
+		m_strName = strName;
+		m_strValue = strValue;
 	}
-	const char* GetName() { return m_pszName; }
-	const char* GetValue() { return m_pszValue; }
+	const char* GetName() { return m_strName.c_str(); }
+	const char* GetValue() { return m_strValue.c_str(); }
 private:
-	const char* m_pszName;
-	const char* m_pszValue;
+	std::string m_strName;
+	std::string m_strValue;
 };
 
 class HTTPManager
@@ -65,15 +69,15 @@ private:
 	{
 	public:
 		TrackedRequest(const TrackedRequest& req) = delete;
-		TrackedRequest(HTTPRequestHandle hndl, SteamAPICall_t hCall, const char* pszUrl, const char* pszText, CompletedCallback callback);
+		TrackedRequest(HTTPRequestHandle hndl, SteamAPICall_t hCall, std::string strUrl, std::string strText, CompletedCallback callback);
 		~TrackedRequest();
 	private:
 		void OnHTTPRequestCompleted(HTTPRequestCompleted_t* arg, bool bFailed);
 
 		HTTPRequestHandle m_hHTTPReq;
 		CCallResult<TrackedRequest, HTTPRequestCompleted_t> m_CallResult;
-		char* m_pszUrl;
-		char* m_pszText;
+		std::string m_strUrl;
+		std::string m_strText;
 		CompletedCallback m_callback;
 	};
 private:
