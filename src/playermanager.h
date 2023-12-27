@@ -63,6 +63,8 @@ public:
 	bool IsFakeClient() { return m_bFakeClient; }
 	bool IsAuthenticated() { return m_bAuthenticated; }
 	bool IsConnected() { return m_bConnected; }
+	uint64 GetUnauthenticatedSteamId64() { return m_UnauthenticatedSteamID->ConvertToUint64(); }
+	const CSteamID* GetUnauthenticatedSteamId() { return m_UnauthenticatedSteamID; }
 	uint64 GetSteamId64() { return m_SteamID->ConvertToUint64(); }
 	const CSteamID* GetSteamId() { return m_SteamID; }
 	bool IsAdminFlagSet(uint64 iFlag);
@@ -70,6 +72,7 @@ public:
 	
 	void SetAuthenticated() { m_bAuthenticated = true; }
 	void SetConnected() { m_bConnected = true; }
+	void SetUnauthenticatedSteamId(const CSteamID* steamID) { m_UnauthenticatedSteamID = steamID; }
 	void SetSteamId(const CSteamID* steamID) { m_SteamID = steamID; }
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	void SetAdminFlags(uint64 iAdminFlags) { m_iAdminFlags = iAdminFlags; }
@@ -87,6 +90,7 @@ public:
 	void SetExtendVote(bool bExtendVote) { m_bVotedExtend = bExtendVote; }
 	void SetInfectState(bool bInfectState) { m_bIsInfected = bInfectState; }
 	void SetExtendVoteTime(float flCurtime) { m_flExtendVoteTime = flCurtime; }
+	void SetIpAddress(std::string strIp) { m_strIp = strIp; }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -101,6 +105,7 @@ public:
 	bool GetExtendVote() { return m_bVotedExtend; }
 	bool IsInfected() { return m_bIsInfected; }
 	float GetExtendVoteTime() { return m_flExtendVoteTime; }
+	const char* GetIpAddress() { return m_strIp.c_str(); }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
@@ -109,6 +114,7 @@ public:
 private:
 	bool m_bAuthenticated;
 	bool m_bConnected;
+	const CSteamID* m_UnauthenticatedSteamID;
 	const CSteamID* m_SteamID;
 	bool m_bFakeClient;
 	bool m_bMuted;
@@ -127,6 +133,7 @@ private:
 	float m_flExtendVoteTime;
 	int m_iFloodTokens;
 	float m_flLastTalkTime;
+	std::string m_strIp;
 };
 
 class CPlayerManager
@@ -143,7 +150,7 @@ public:
 			OnLateLoad();
 	}
 
-	bool OnClientConnected(CPlayerSlot slot);
+	bool OnClientConnected(CPlayerSlot slot, uint64 xuid, const char* pszNetworkID);
 	void OnClientDisconnect(CPlayerSlot slot);
 	void OnBotConnected(CPlayerSlot slot);
 	void OnLateLoad();

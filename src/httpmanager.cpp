@@ -35,14 +35,14 @@ HTTPManager g_HTTPManager;
 
 #undef strdup
 
-HTTPManager::TrackedRequest::TrackedRequest(HTTPRequestHandle hndl, SteamAPICall_t hCall, const char* pszUrl, const char* pszText, CompletedCallback callback)
+HTTPManager::TrackedRequest::TrackedRequest(HTTPRequestHandle hndl, SteamAPICall_t hCall, std::string strUrl, std::string strText, CompletedCallback callback)
 {
 	m_hHTTPReq = hndl;
 	m_CallResult.SetGameserverFlag();
 	m_CallResult.Set(hCall, this, &TrackedRequest::OnHTTPRequestCompleted);
 
-	m_pszUrl = strdup(pszUrl);
-	m_pszText = strdup(pszText);
+	m_strUrl = strUrl;
+	m_strText = strText;
 	m_callback = callback;
 
 	g_HTTPManager.m_PendingRequests.push_back(this);
@@ -58,16 +58,13 @@ HTTPManager::TrackedRequest::~TrackedRequest()
 			break;
 		}
 	}
-
-	free(m_pszUrl);
-	free(m_pszText);
 }
 
 void HTTPManager::TrackedRequest::OnHTTPRequestCompleted(HTTPRequestCompleted_t* arg, bool bFailed)
 {
 	if (bFailed || arg->m_eStatusCode < 200 || arg->m_eStatusCode > 299)
 	{
-		Message("HTTP request to %s failed with status code %i\n", m_pszUrl, arg->m_eStatusCode);
+		Message("HTTP request to %s failed with status code %i\n", m_strUrl.c_str(), arg->m_eStatusCode);
 	}
 	else
 	{
@@ -78,8 +75,24 @@ void HTTPManager::TrackedRequest::OnHTTPRequestCompleted(HTTPRequestCompleted_t*
 		g_http->GetHTTPResponseBodyData(arg->m_hRequest, response, size);
 		response[size] = 0; // Add null terminator
 
+		json jsonResponse;
+
 		// Pass on response to the custom callback
-		m_callback(arg->m_hRequest, (char*)response);
+		if (V_strcmp((char*)response, ""))
+		{
+			jsonResponse = json::parse((char*)response, nullptr, false);
+
+			if (jsonResponse.is_discarded())
+				Message("Failed parsing JSON from HTTP response: %s\n", (char*)response);
+			else
+				m_callback(arg->m_hRequest, jsonResponse);
+		}
+		else
+		{
+			// If empty response (Discord..), just treat it as a successful empty JSON object
+			m_callback(arg->m_hRequest, jsonResponse);
+		}
+
 		delete[] response;
 	}
 
@@ -118,9 +131,7 @@ void HTTPManager::GenerateRequest(EHTTPMethod method, const char* pszUrl, const 
 	if (headers != nullptr)
 	{
 		for (HTTPHeader header : *headers)
-		{
 			g_http->SetHTTPRequestHeaderValue(hReq, header.GetName(), header.GetValue());
-		}
 	}
 
 	SteamAPICall_t hCall;

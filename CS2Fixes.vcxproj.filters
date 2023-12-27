@@ -80,9 +80,6 @@
     <ClCompile Include="src\gameconfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\entity2\entitysystem.cpp">
-      <Filter>Source Files\sdk</Filter>
-    </ClCompile>
     <ClCompile Include="sdk\tier1\convar.cpp">
       <Filter>Source Files\sdk</Filter>
     </ClCompile>
@@ -93,6 +90,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\discord.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\map_votes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sdk\entity2\entitysystem.cpp">
+      <Filter>Source Files\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="sdk\entity2\entityidentity.cpp">
+      <Filter>Source Files\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gamesystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\zombiereborn.cpp">
@@ -200,6 +209,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\discord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gamesystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\map_votes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

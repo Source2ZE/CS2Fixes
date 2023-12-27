@@ -42,10 +42,10 @@ CON_COMMAND_F(cs2f_debug_discord_messages, "Whether to include debug information
 		g_bDebugDiscordRequests = V_StringToBool(args[1], false);
 }
 
-void DiscordHttpCallback(HTTPRequestHandle request, char* response)
+void DiscordHttpCallback(HTTPRequestHandle request, json response)
 {
 	if (g_bDebugDiscordRequests) {
-		Message("Discord post received response: %s\n", response);
+		Message("Discord post received response: %s\n", response.dump().c_str());
 	}
 }
 
@@ -69,8 +69,12 @@ void CDiscordBot::PostMessage(const char* sMessage) {
 
 	// Fill up the Json fields
 	jRequestBody["content"] = sMessage;
-	jRequestBody["username"] = m_pszName;
-	jRequestBody["avatar_url"] = m_pszAvatarUrl;
+
+	if (m_bOverrideName)
+		jRequestBody["username"] = m_pszName;
+
+	if (V_strcmp(m_pszAvatarUrl, ""))
+		jRequestBody["avatar_url"] = m_pszAvatarUrl;
 
 	// Send the request
 	const char* sRequestBody = jRequestBody.dump().c_str();
@@ -97,6 +101,7 @@ bool CDiscordBotManager::LoadDiscordBotsConfig()
 		const char* pszName = pKey->GetName();
 		const char* pszWebhookUrl = pKey->GetString("webhook", nullptr);
 		const char* pszAvatarUrl = pKey->GetString("avatar", nullptr);
+		bool bOverrideName = pKey->GetBool("override_name", false);
 
 		if (!pszWebhookUrl)
 		{
@@ -105,13 +110,10 @@ bool CDiscordBotManager::LoadDiscordBotsConfig()
 		}
 
 		if (!pszAvatarUrl)
-		{
-			Warning("Discord bot entry %s is missing 'avatar' key\n", pszName);
-			return false;
-		}
+			pszAvatarUrl = "";
 
 		// We just append the bots as-is
-		CDiscordBot bot = CDiscordBot(pszName, pszWebhookUrl, pszAvatarUrl);
+		CDiscordBot bot = CDiscordBot(pszName, pszWebhookUrl, pszAvatarUrl, bOverrideName);
 		ConMsg("Loaded DiscordBot config %s\n", bot.GetName());
 		ConMsg(" - Webhook URL: %s\n", bot.GetWebhookUrl());
 		ConMsg(" - Avatar URL: %s\n", bot.GetAvatarUrl());

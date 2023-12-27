@@ -165,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="sdk\entity2\entityidentity.cpp" />
     <ClCompile Include="sdk\entity2\entitysystem.cpp" />
     <ClCompile Include="src\addresses.cpp" />
     <ClCompile Include="src\adminsystem.cpp" />
@@ -177,7 +178,9 @@
     <ClCompile Include="src\discord.cpp" />
     <ClCompile Include="src\events.cpp" />
     <ClCompile Include="src\gameconfig.cpp" />
+    <ClCompile Include="src\gamesystem.cpp" />
     <ClCompile Include="src\httpmanager.cpp" />
+    <ClCompile Include="src\map_votes.cpp" />
     <ClCompile Include="src\mempatch.cpp" />
     <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\playermanager.cpp" />
@@ -211,12 +214,15 @@
     <ClInclude Include="src\detours.h" />
     <ClInclude Include="src\discord.h" />
     <ClInclude Include="src\eventlistener.h" />
+    <ClInclude Include="src\gamesystem.h" />
+    <ClInclude Include="src\gameconfig.h" />
     <ClInclude Include="src\httpmanager.h" />
     <ClInclude Include="src\mempatch.h" />
     <ClInclude Include="src\addresses.h" />
     <ClInclude Include="src\playermanager.h" />
     <ClInclude Include="src\recipientfilters.h" />
     <ClInclude Include="src\votemanager.h" />
+    <ClInclude Include="src\map_votes.h" />
     <ClInclude Include="src\zombiereborn.h" />
     <ClInclude Include="src\utils\entity.h" />
     <ClInclude Include="src\utils\module.h" />

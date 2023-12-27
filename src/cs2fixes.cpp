@@ -38,6 +38,7 @@
 #include "plat.h"
 #include "entitysystem.h"
 #include "engine/igameeventsystem.h"
+#include "gamesystem.h"
 #include "ctimer.h"
 #include "playermanager.h"
 #include <entity.h>
@@ -49,7 +50,9 @@
 #include "zombiereborn.h"
 #include "httpmanager.h"
 #include "discord.h"
+#include "map_votes.h"
 #include "entity/cgamerules.h"
+#include "entity/ccsplayercontroller.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -124,7 +127,7 @@ ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
 
-CEntitySystem *GetEntitySystem()
+CGameEntitySystem *GameEntitySystem()
 {
 	static int offset = g_GameConfig->GetOffset("GameEntitySystem");
 	return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(g_pGameResourceServiceServer) + offset);
@@ -206,6 +209,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 
+	if (!InitGameSystems())
+		bRequiredInitLoaded = false;
+
 	if (!bRequiredInitLoaded)
 	{
 		snprintf(error, maxlen, "One or more address lookups, patches or detours failed, please refer to startup logs for more information");
@@ -220,7 +226,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	if (late)
 	{
 		RegisterEventListeners();
-		g_pEntitySystem = GetEntitySystem();
+		g_pEntitySystem = GameEntitySystem();
 		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 		gpGlobals = g_pNetworkGameServer->GetGlobals();
 	}
@@ -230,6 +236,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pAdminSystem = new CAdminSystem();
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
+	g_pMapVoteSystem = new CMapVoteSystem();
 	g_pZRWeaponConfig = new ZRWeaponConfig();
 
 	RegisterWeaponCommands();
@@ -389,7 +396,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*)
 {
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
-	g_pEntitySystem = GetEntitySystem();
+	g_pEntitySystem = GameEntitySystem();
 	gpGlobals = g_pNetworkGameServer->GetGlobals();
 
 	Message("Hook_StartupServer: %s\n", gpGlobals->mapname);
@@ -505,6 +512,9 @@ void CS2Fixes::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *
 
 void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 {
+	if ((V_stricmp(args[0], "endmatch_votenextmap") == 0) && args.ArgC() == 2) {
+		g_pMapVoteSystem->RegisterPlayerVote(slot, atoi(args[1]));
+	}
 #ifdef _DEBUG
 	Message( "Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString() );
 #endif
@@ -534,7 +544,7 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 {
 	Message( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
 		
-	if (!g_playerManager->OnClientConnected(slot))
+	if (!g_playerManager->OnClientConnected(slot, xuid, pszNetworkID))
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
@@ -663,6 +673,8 @@ void CS2Fixes::OnLevelInit( char const *pMapName,
 									 bool background )
 {
 	Message("OnLevelInit(%s)\n", pMapName);
+
+	g_pMapVoteSystem->OnLevelInit(pMapName);
 }
 
 // Potentially might not work
