@@ -79,7 +79,22 @@ CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to b
 CON_ZR_CVAR(zr_respawn_delay, "Time before a zombie is respawned", g_flRespawnDelay, Float32, 5.0)
 CON_ZR_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, Int32, CS_TEAM_SPECTATOR)
 
+void ZR_Precache(IEntityResourceManifest* pResourceManifest)
+{
+	g_pZRPlayerClassManager->PrecacheModels(pResourceManifest);
+}
 
+void CZRPlayerClassManager::PrecacheModels(IEntityResourceManifest* pResourceManifest)
+{
+	FOR_EACH_MAP_FAST(m_ZombieClassMap, i)
+	{
+		pResourceManifest->AddResource(m_ZombieClassMap[i]->szModelPath.c_str());
+	}
+	FOR_EACH_MAP_FAST(m_HumanClassMap, i)
+	{
+		pResourceManifest->AddResource(m_HumanClassMap[i]->szModelPath.c_str());
+	}
+}
 void CZRPlayerClassManager::LoadPlayerClass()
 {
 	Message("Loading PlayerClass...\n");

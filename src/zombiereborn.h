@@ -19,6 +19,12 @@
 
 #pragma once
 
+#include "eventlistener.h"
+#include "ctimer.h"
+#include "gamesystem.h"
+#include "entity/ccsplayercontroller.h"
+#include "entity/ccsplayerpawn.h"
+
 #define ZR_PREFIX " \4[Zombie:Reborn]\1 "
 
 enum class EZRRoundState
@@ -145,6 +151,7 @@ public:
 	ZRZombieClass* GetZombieClass(const char*pszClassName);
 	void ApplyZombieClass(ZRZombieClass *pClass, CCSPlayerPawn *pPawn);
 	void ApplyDefaultZombieClass(CCSPlayerPawn *pPawn);
+	void PrecacheModels(IEntityResourceManifest* pResourceManifest);
 private:
 	void ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn);
 	CUtlVector<ZRZombieClass*> m_vecZombieDefaultClass;
@@ -212,6 +219,7 @@ bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeapon
 void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_string_t* value, int nOutputID);
 void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, uint64 xuid);
 void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand &args);
+void ZR_Precache(IEntityResourceManifest* pResourceManifest);
 
 // need to replace with actual cvar someday
 #define CON_ZR_CVAR(name, description, variable_name, variable_type, variable_default)					\
