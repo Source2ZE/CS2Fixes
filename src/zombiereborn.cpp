@@ -125,20 +125,20 @@ void CZRPlayerClassManager::LoadPlayerClass()
 		for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
 		{	
 			bool bEnabled = pSubKey->GetBool("enabled", false);
-			bool bTeamDefault= pSubKey->GetBool("team_default", false);
+			bool bTeamDefault = pSubKey->GetBool("team_default", false);
 
 			const char *pszBase = pSubKey->GetString("base", nullptr);
 			const char *pszClassName = pSubKey->GetName();
 
 			bool bMissingKey = false;
-			if (!pSubKey->FindKey("enabled"))
-			{
-				Warning("%s has unspecified keyvalue: enabled\n", pszClassName);
-				bMissingKey = true;
-			}
+			// if (!pSubKey->FindKey("enabled"))
+			// {
+			// 	Warning("%s has unspecified keyvalue: enabled\n", pszClassName);
+			// 	bMissingKey = true;
+			// }
 
-			if (!bEnabled)
-				continue;
+			// if (!bEnabled)
+			// 	continue;
 				
 			if (!pSubKey->FindKey("team_default"))
 			{

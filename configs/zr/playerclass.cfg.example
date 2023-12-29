@@ -5,10 +5,11 @@
 		"HumanClass1"
 		{
 			// class behavior, values will not be inherited from base class
-			"enabled"					"1"
+			"enabled"					"1" // does nothing atm, it will be reimplemented with !zclass as an indicator of pickable class
 			"team_default"				"1"
 
 			// player behavior
+			// all player attributes are required if it doesn't have a base class
 			"health"					"100"
 			"model"						"characters/models/ctm_fbi/ctm_fbi.vmdl"
 			"speed"						"1.0"
