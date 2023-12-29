@@ -186,7 +186,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					}
 					else
 					{
-						Warning("Could not find specified base \"%s\" for %s!!!", pszBase, pszClassName);
+						Warning("Could not find specified base \"%s\" for %s!!!\n", pszBase, pszClassName);
 						continue;
 					}
 				}
@@ -214,7 +214,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					}
 					else
 					{
-						Warning("Could not find specified base \"%s\" for %s!!!", pszBase, pszClassName);
+						Warning("Could not find specified base \"%s\" for %s!!!\n", pszBase, pszClassName);
 						continue;
 					}
 				}
@@ -259,7 +259,7 @@ void CZRPlayerClassManager::ApplyDefaultHumanClass(CCSPlayerPawn *pPawn)
 {
 	if (m_vecHumanDefaultClass.Count() == 0)
 	{
-		Warning("Missing default human class!!!");
+		Warning("Missing default human class!!!\n");
 		return;
 	}
 	ApplyHumanClass(m_vecHumanDefaultClass[rand() % m_vecHumanDefaultClass.Count()], pPawn);
@@ -285,7 +285,7 @@ void CZRPlayerClassManager::ApplyDefaultZombieClass(CCSPlayerPawn *pPawn)
 {
 	if (m_vecZombieDefaultClass.Count() == 0)
 	{
-		Warning("Missing default zombie class!!!");
+		Warning("Missing default zombie class!!!\n");
 		return;
 	}
 	ApplyZombieClass(m_vecZombieDefaultClass[rand() % m_vecZombieDefaultClass.Count()], pPawn);
@@ -641,7 +641,7 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 		g_pZRPlayerClassManager->ApplyZombieClass(pClass, pVictimPawn);
 	else
 	{
-		Warning("Missing mother zombie class!!!");
+		//Warning("Missing mother zombie class!!!\n");
 		g_pZRPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
 	}
 }
