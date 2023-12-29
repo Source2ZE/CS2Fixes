@@ -174,8 +174,7 @@ public:
 	static void RemoveAllTimers();
 
 private:
-	static int s_iRegenTimerCount;
-	static int s_vecRegenTimersIndex[MAXPLAYERS];
+	static float s_flNextExecution;
 	static CZRRegenTimer *s_vecRegenTimers[MAXPLAYERS];
 	int m_iRegenAmount;
     CHandle<CCSPlayerPawn> m_hPawnHandle;

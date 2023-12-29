@@ -116,7 +116,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
-		bool bHuman = !V_strncmp(pKey->GetName(), "Human", 5);
+		bool bHuman = !V_strcmp(pKey->GetName(), "Human");
 		if (bHuman)
 			Message("Human Classes:\n");
 		else
@@ -291,8 +291,7 @@ void CZRPlayerClassManager::ApplyDefaultZombieClass(CCSPlayerPawn *pPawn)
 	ApplyZombieClass(m_vecZombieDefaultClass[rand() % m_vecZombieDefaultClass.Count()], pPawn);
 }
 
-int CZRRegenTimer::s_iRegenTimerCount = 0;
-int CZRRegenTimer::s_vecRegenTimersIndex[MAXPLAYERS];
+float CZRRegenTimer::s_flNextExecution;
 CZRRegenTimer *CZRRegenTimer::s_vecRegenTimers[MAXPLAYERS];
 
 bool CZRRegenTimer::Execute()
@@ -309,43 +308,40 @@ bool CZRRegenTimer::Execute()
 void CZRRegenTimer::StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController *pController)
 {
 	int slot = pController->GetPlayerSlot();
-	int iTimerIndex = GetIndex(slot);
-	if (iTimerIndex != -1)
+	CZRRegenTimer *pTimer = s_vecRegenTimers[slot];
+	if (pTimer != nullptr)
 	{
-		s_vecRegenTimers[iTimerIndex]->m_flInterval = flRegenInterval;
-		s_vecRegenTimers[iTimerIndex]->m_iRegenAmount = iRegenAmount;
+		pTimer->m_flInterval = flRegenInterval;
+		pTimer->m_iRegenAmount = iRegenAmount;
 		return;
 	}
-	iTimerIndex = s_iRegenTimerCount++;
-	s_vecRegenTimersIndex[slot] = iTimerIndex;
-	s_vecRegenTimers[iTimerIndex] = new CZRRegenTimer(flRegenInterval, iRegenAmount, pController->m_hPlayerPawn());
+	s_vecRegenTimers[slot] = new CZRRegenTimer(flRegenInterval, iRegenAmount, pController->m_hPlayerPawn());
 }
 
 void CZRRegenTimer::StopRegen(CCSPlayerController *pController)
 {
 	int slot = pController->GetPlayerSlot();
-	int iTimerIndex = GetIndex(slot);
-	if (iTimerIndex == -1)
+	if (!s_vecRegenTimers[slot])
 		return;
-	s_iRegenTimerCount--;
 
-	delete s_vecRegenTimers[iTimerIndex];
-	s_vecRegenTimers[iTimerIndex] = s_vecRegenTimers[s_iRegenTimerCount];
-	s_vecRegenTimers[s_iRegenTimerCount] = nullptr;
-	s_vecRegenTimersIndex[slot] = -1;
-}
-
-int CZRRegenTimer::GetIndex(CPlayerSlot slot)
-{
-	return s_vecRegenTimersIndex[slot.Get()];
+	delete s_vecRegenTimers[slot];
+	s_vecRegenTimers[slot] = nullptr;
 }
 
 void CZRRegenTimer::Tick()
 {
-	for (int i = s_iRegenTimerCount - 1; i >= 0; i--)
+	// check every timer every 0.1
+	if (s_flNextExecution > g_flUniversalTime)
+		return;
+	s_flNextExecution = g_flUniversalTime + 0.1f;
+	for (int i = MAXPLAYERS - 1; i >= 0; i--)
 	{
 		CZRRegenTimer *pTimer = s_vecRegenTimers[i];
-
+		if (!pTimer)
+		{
+			continue;
+		}
+		
 		if (pTimer->m_flLastExecute == -1)
 			pTimer->m_flLastExecute = g_flUniversalTime;
 
@@ -360,15 +356,15 @@ void CZRRegenTimer::Tick()
 
 void CZRRegenTimer::RemoveAllTimers()
 {
-	for (int i = s_iRegenTimerCount - 1; i >= 0; i--)
+	for (int i = MAXPLAYERS - 1; i >= 0; i--)
 	{
+		if (!s_vecRegenTimers[i])
+		{
+			continue;
+		}
 		delete s_vecRegenTimers[i];
+		s_vecRegenTimers[i] = nullptr;
 	}
-	for (int i = 0; i < MAXPLAYERS; i++)
-	{
-		s_vecRegenTimersIndex[i] = -1;
-	}
-	s_iRegenTimerCount = 0;
 }
 
 void ZR_OnStartupServer()
