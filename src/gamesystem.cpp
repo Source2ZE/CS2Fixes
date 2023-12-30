@@ -21,6 +21,7 @@
 #include "gameconfig.h"
 #include "addresses.h"
 #include "gamesystem.h"
+#include "zombiereborn.h"
 
 extern CGameConfig *g_GameConfig;
 
@@ -65,4 +66,6 @@ GS_EVENT_MEMBER(CResourcePrecacheSystem, BuildGameSessionManifest)
 	// This takes any resource type, model or not
 	// Any resource adding MUST be done here, the resource manifest is not long-lived
 	// pResourceManifest->AddResource("characters/models/my_character_model.vmdl");
+
+	ZR_Precache(pResourceManifest);
 }
