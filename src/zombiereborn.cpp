@@ -171,7 +171,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				}
 			}
 			if (bMissingKey)
-					continue;
+				continue;
 
 			if (bHuman)
 			{
@@ -531,7 +531,6 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 	}
 }
 
-// Still need to implement weapon config
 void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon)
 {
 	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
