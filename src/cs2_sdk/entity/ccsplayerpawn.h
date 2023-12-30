@@ -26,6 +26,7 @@ class CCSPlayerPawnBase : public CBasePlayerPawn
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerPawnBase);
 	SCHEMA_FIELD(QAngle, m_angEyeAngles)
+	SCHEMA_FIELD(float, m_flVelocityModifier)
 };
 
 class CCSPlayerPawn : public CCSPlayerPawnBase

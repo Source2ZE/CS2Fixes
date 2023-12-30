@@ -34,6 +34,7 @@ extern IVEngineServer2* g_pEngineServer2;
 extern CGlobalVars* gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IGameEventManager2* g_gameEventManager;
+extern float g_flUniversalTime;
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast);
 void ZR_CheckWinConditions(int iTeamNum);
@@ -49,6 +50,8 @@ static CHandle<Z_CBaseEntity> g_hRespawnToggler;
 static CHandle<CTeam> g_hTeamCT;
 static CHandle<CTeam> g_hTeamT;
 
+
+CZRPlayerClassManager* g_pZRPlayerClassManager = nullptr;
 ZRWeaponConfig *g_pZRWeaponConfig = nullptr;
 
 // CONVAR_TODO
@@ -76,6 +79,294 @@ CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to b
 CON_ZR_CVAR(zr_respawn_delay, "Time before a zombie is respawned", g_flRespawnDelay, Float32, 5.0)
 CON_ZR_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, Int32, CS_TEAM_SPECTATOR)
 
+void ZR_Precache(IEntityResourceManifest* pResourceManifest)
+{
+	g_pZRPlayerClassManager->PrecacheModels(pResourceManifest);
+}
+
+void CZRPlayerClassManager::PrecacheModels(IEntityResourceManifest* pResourceManifest)
+{
+	FOR_EACH_MAP_FAST(m_ZombieClassMap, i)
+	{
+		pResourceManifest->AddResource(m_ZombieClassMap[i]->szModelPath.c_str());
+	}
+	FOR_EACH_MAP_FAST(m_HumanClassMap, i)
+	{
+		pResourceManifest->AddResource(m_HumanClassMap[i]->szModelPath.c_str());
+	}
+}
+void CZRPlayerClassManager::LoadPlayerClass()
+{
+	Message("Loading PlayerClass...\n");
+	m_ZombieClassMap.Purge();
+	m_HumanClassMap.Purge();
+	m_vecZombieDefaultClass.Purge();
+	m_vecHumanDefaultClass.Purge();
+
+	KeyValues* pKV = new KeyValues("PlayerClass");
+	KeyValues::AutoDelete autoDelete(pKV);
+
+	const char *pszPath = "addons/cs2fixes/configs/zr/playerclass.cfg";
+
+	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
+	{
+		Warning("Failed to load %s\n", pszPath);
+		return;
+	}
+
+	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+	{
+		bool bHuman = !V_strcmp(pKey->GetName(), "Human");
+		if (bHuman)
+			Message("Human Classes:\n");
+		else
+			Message("Zombie Classes:\n");
+		
+		for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
+		{	
+			bool bEnabled = pSubKey->GetBool("enabled", false);
+			bool bTeamDefault = pSubKey->GetBool("team_default", false);
+
+			const char *pszBase = pSubKey->GetString("base", nullptr);
+			const char *pszClassName = pSubKey->GetName();
+
+			bool bMissingKey = false;
+			// if (!pSubKey->FindKey("enabled"))
+			// {
+			// 	Warning("%s has unspecified keyvalue: enabled\n", pszClassName);
+			// 	bMissingKey = true;
+			// }
+
+			// if (!bEnabled)
+			// 	continue;
+				
+			if (!pSubKey->FindKey("team_default"))
+			{
+				Warning("%s has unspecified keyvalue: team_default\n", pszClassName);
+				bMissingKey = true;
+			}
+
+			// check everything if no base class
+			if (!pszBase)
+			{
+				if (!pSubKey->FindKey("health"))
+				{
+					Warning("%s has unspecified keyvalue: health\n", pszClassName);
+					bMissingKey = true;
+				}
+				if (!pSubKey->FindKey("model"))
+				{
+					Warning("%s has unspecified keyvalue: model\n", pszClassName);
+					bMissingKey = true;
+				}
+				if (!pSubKey->FindKey("speed"))
+				{
+					Warning("%s has unspecified keyvalue: speed\n", pszClassName);
+					bMissingKey = true;
+				}
+				if (!pSubKey->FindKey("gravity"))
+				{
+					Warning("%s has unspecified keyvalue: gravity\n", pszClassName);
+					bMissingKey = true;
+				}
+			}
+			if (bMissingKey)
+					continue;
+
+			if (bHuman)
+			{
+				ZRHumanClass *pHumanClass;
+				if (pszBase)
+				{
+					ZRHumanClass *pBaseHumanClass = GetHumanClass(pszBase);
+					if (pBaseHumanClass)
+					{
+						pHumanClass = new ZRHumanClass(pBaseHumanClass);
+						pHumanClass->Override(pSubKey);
+					}
+					else
+					{
+						Warning("Could not find specified base \"%s\" for %s!!!\n", pszBase, pszClassName);
+						continue;
+					}
+				}
+				else
+					pHumanClass = new ZRHumanClass(pSubKey);
+					
+
+				m_HumanClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pHumanClass);
+
+				if (bTeamDefault)
+					m_vecHumanDefaultClass.AddToTail(pHumanClass);
+				
+				pHumanClass->PrintInfo();
+			}
+			else 
+			{
+				ZRZombieClass *pZombieClass;
+				if (pszBase)
+				{
+					ZRZombieClass *pBaseZombieClass = GetZombieClass(pszBase);
+					if (pBaseZombieClass)
+					{
+						pZombieClass = new ZRZombieClass(pBaseZombieClass);
+						pZombieClass->Override(pSubKey);
+					}
+					else
+					{
+						Warning("Could not find specified base \"%s\" for %s!!!\n", pszBase, pszClassName);
+						continue;
+					}
+				}
+				else
+					pZombieClass = new ZRZombieClass(pSubKey);
+
+				m_ZombieClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pZombieClass);
+				if (pSubKey->GetBool("team_default", false))
+					m_vecZombieDefaultClass.AddToTail(pZombieClass);
+				
+				pZombieClass->PrintInfo();
+			}
+		}
+	}
+}
+void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn)
+{
+	pPawn->m_iMaxHealth = pClass->iHealth;
+	pPawn->m_iHealth = pClass->iHealth;
+	pPawn->SetModel(pClass->szModelPath.c_str());
+	pPawn->m_flVelocityModifier = pClass->flSpeed;
+	pPawn->m_flGravityScale = pClass->flGravity;
+}
+
+ZRHumanClass* CZRPlayerClassManager::GetHumanClass(const char *pszClassName)
+{
+	uint16 index = m_HumanClassMap.Find(hash_32_fnv1a_const(pszClassName));
+	if (!m_HumanClassMap.IsValidIndex(index))
+		return nullptr;
+	return m_HumanClassMap[index];
+}
+
+void CZRPlayerClassManager::ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn *pPawn)
+{
+	ApplyBaseClass(pClass, pPawn);
+	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
+	if (pController)
+		CZRRegenTimer::StopRegen(pController);
+}
+
+void CZRPlayerClassManager::ApplyDefaultHumanClass(CCSPlayerPawn *pPawn)
+{
+	if (m_vecHumanDefaultClass.Count() == 0)
+	{
+		Warning("Missing default human class!!!\n");
+		return;
+	}
+	ApplyHumanClass(m_vecHumanDefaultClass[rand() % m_vecHumanDefaultClass.Count()], pPawn);
+}
+
+ZRZombieClass* CZRPlayerClassManager::GetZombieClass(const char *pszClassName)
+{
+	uint16 index = m_ZombieClassMap.Find(hash_32_fnv1a_const(pszClassName));
+	if (!m_ZombieClassMap.IsValidIndex(index))
+		return nullptr;
+	return m_ZombieClassMap[index];
+}
+
+void CZRPlayerClassManager::ApplyZombieClass(ZRZombieClass *pClass, CCSPlayerPawn *pPawn)
+{
+	ApplyBaseClass(pClass, pPawn);
+	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
+	if (pController)
+		CZRRegenTimer::StartRegen(pClass->flHealthRegenInterval, pClass->iHealthRegenCount, pController);
+}
+
+void CZRPlayerClassManager::ApplyDefaultZombieClass(CCSPlayerPawn *pPawn)
+{
+	if (m_vecZombieDefaultClass.Count() == 0)
+	{
+		Warning("Missing default zombie class!!!\n");
+		return;
+	}
+	ApplyZombieClass(m_vecZombieDefaultClass[rand() % m_vecZombieDefaultClass.Count()], pPawn);
+}
+
+float CZRRegenTimer::s_flNextExecution;
+CZRRegenTimer *CZRRegenTimer::s_vecRegenTimers[MAXPLAYERS];
+
+bool CZRRegenTimer::Execute()
+{
+	CCSPlayerPawn *pPawn = m_hPawnHandle.Get();
+	if (!pPawn || !pPawn->IsAlive())
+		return false;
+
+	int iHealth = pPawn->m_iHealth() + m_iRegenAmount;
+	pPawn->m_iHealth = pPawn->m_iMaxHealth() < iHealth ? pPawn->m_iMaxHealth() : iHealth;
+	return true;
+}
+
+void CZRRegenTimer::StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController *pController)
+{
+	int slot = pController->GetPlayerSlot();
+	CZRRegenTimer *pTimer = s_vecRegenTimers[slot];
+	if (pTimer != nullptr)
+	{
+		pTimer->m_flInterval = flRegenInterval;
+		pTimer->m_iRegenAmount = iRegenAmount;
+		return;
+	}
+	s_vecRegenTimers[slot] = new CZRRegenTimer(flRegenInterval, iRegenAmount, pController->m_hPlayerPawn());
+}
+
+void CZRRegenTimer::StopRegen(CCSPlayerController *pController)
+{
+	int slot = pController->GetPlayerSlot();
+	if (!s_vecRegenTimers[slot])
+		return;
+
+	delete s_vecRegenTimers[slot];
+	s_vecRegenTimers[slot] = nullptr;
+}
+
+void CZRRegenTimer::Tick()
+{
+	// check every timer every 0.1
+	if (s_flNextExecution > g_flUniversalTime)
+		return;
+	s_flNextExecution = g_flUniversalTime + 0.1f;
+	for (int i = MAXPLAYERS - 1; i >= 0; i--)
+	{
+		CZRRegenTimer *pTimer = s_vecRegenTimers[i];
+		if (!pTimer)
+		{
+			continue;
+		}
+		
+		if (pTimer->m_flLastExecute == -1)
+			pTimer->m_flLastExecute = g_flUniversalTime;
+
+		// Timer execute 
+		if (pTimer->m_flLastExecute + pTimer->m_flInterval <= g_flUniversalTime)
+		{
+			pTimer->Execute();
+			pTimer->m_flLastExecute = g_flUniversalTime;
+		}
+	}
+}
+
+void CZRRegenTimer::RemoveAllTimers()
+{
+	for (int i = MAXPLAYERS - 1; i >= 0; i--)
+	{
+		if (!s_vecRegenTimers[i])
+		{
+			continue;
+		}
+		delete s_vecRegenTimers[i];
+		s_vecRegenTimers[i] = nullptr;
+	}
+}
+
 void ZR_OnStartupServer()
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
@@ -91,6 +382,7 @@ void ZR_OnStartupServer()
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_heavy 3");
 	g_pEngineServer2->ServerCommand("mp_weapons_allow_rifles 3");
 
+	g_pZRPlayerClassManager->LoadPlayerClass();
 	g_pZRWeaponConfig->LoadWeaponConfig();
 	SetupCTeams();
 }
@@ -210,6 +502,8 @@ void ZR_OnRoundStart(IGameEvent* pEvent)
 
 	SetupRespawnToggler();
 	// SetupAmmoReplenish();
+
+	CZRRegenTimer::RemoveAllTimers();
 }
 
 void ZR_OnPlayerSpawn(IGameEvent* pEvent)
@@ -309,12 +603,7 @@ void ZR_Cure(CCSPlayerController *pTargetController)
 	if (!pTargetPawn)
 		return;
 
-	// set model/health/etc here
-	//hardcode everything for now
-	pTargetPawn->m_iMaxHealth = 100;
-	pTargetPawn->m_iHealth = 100;
-
-	pTargetPawn->SetModel("characters/models/ctm_sas/ctm_sas.vmdl");
+	g_pZRPlayerClassManager->ApplyDefaultHumanClass(pTargetPawn);
 }
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bDontBroadcast)
@@ -329,12 +618,8 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 		return;
 
 	ZR_StripAndGiveKnife(pVictimPawn);
-	// set model/health/etc here
-	//hardcode everything for now
-	pVictimPawn->m_iMaxHealth = 10000;
-	pVictimPawn->m_iHealth = 10000;
-
-	pVictimPawn->SetModel("characters/models/tm_phoenix/tm_phoenix.vmdl");
+	
+	g_pZRPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
 }
 
 
@@ -347,12 +632,14 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 		return;
 
 	ZR_StripAndGiveKnife(pVictimPawn);
-	// set model/health/etc here
-	//hardcode everything for now
-	pVictimPawn->m_iMaxHealth = 10000;
-	pVictimPawn->m_iHealth = 10000;
-
-	pVictimPawn->SetModel("characters/models/tm_phoenix/tm_phoenix.vmdl");
+	ZRZombieClass *pClass = g_pZRPlayerClassManager->GetZombieClass("MotherZombie");
+	if (pClass)
+		g_pZRPlayerClassManager->ApplyZombieClass(pClass, pVictimPawn);
+	else
+	{
+		//Warning("Missing mother zombie class!!!\n");
+		g_pZRPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
+	}
 }
 
 void ZR_InitialInfection()
