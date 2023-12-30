@@ -408,6 +408,11 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	// run our cfg
 	g_pEngineServer2->ServerCommand("exec cs2fixes/cs2fixes");
 
+	// Run map cfg (if present)
+	char cmd[MAX_PATH];
+	V_snprintf(cmd, sizeof(cmd), "exec cs2fixes/maps/%s", gpGlobals->mapname);
+	g_pEngineServer2->ServerCommand(cmd);
+
 	if(g_bHasTicked)
 		RemoveMapTimers();
 
