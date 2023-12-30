@@ -66,6 +66,7 @@ static int g_iInfectSpawnMZRatio = 7;
 static int g_iInfectSpawnMinCount = 2;
 static float g_flRespawnDelay = 5.0;
 static int g_iDefaultWinnerTeam = CS_TEAM_SPECTATOR;
+static int g_bInfiniteAmmo = true;
 
 CON_ZR_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, Bool, false)
 CON_ZR_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, Float32, 150.0f)
@@ -78,6 +79,7 @@ CON_ZR_CVAR(zr_infect_spawn_mz_ratio, "Ratio of all Players to Mother Zombies to
 CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to be spawned at round start", g_iInfectSpawnMinCount, Int32, 2)
 CON_ZR_CVAR(zr_respawn_delay, "Time before a zombie is respawned", g_flRespawnDelay, Float32, 5.0)
 CON_ZR_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, Int32, CS_TEAM_SPECTATOR)
+CON_ZR_CVAR(zr_infinite_ammo, "Whether to enable infinite reserve ammo on weapons", g_bInfiniteAmmo, Bool, true)
 
 void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 {
@@ -367,6 +369,24 @@ void CZRRegenTimer::RemoveAllTimers()
 	}
 }
 
+void SetupAmmoReplenish()
+{
+	new CTimer(5.0f, false, []()
+	{
+		if (!g_bInfiniteAmmo)
+			return 5.0f;
+
+		// 999 will be automatically clamped to the weapons m_nPrimaryReserveAmmoMax
+		variant_string_t value("999");
+		Z_CBaseEntity* pTarget = nullptr;
+
+		while (pTarget = UTIL_FindEntityByClassname(pTarget, "weapon_*"))
+			pTarget->AcceptInput("SetReserveAmmoAmount", nullptr, nullptr, &value);
+
+		return 5.0f;
+	});
+}
+
 void ZR_OnStartupServer()
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
@@ -385,6 +405,7 @@ void ZR_OnStartupServer()
 	g_pZRPlayerClassManager->LoadPlayerClass();
 	g_pZRWeaponConfig->LoadWeaponConfig();
 	SetupCTeams();
+	SetupAmmoReplenish();
 }
 
 void ZRWeaponConfig::LoadWeaponConfig()
