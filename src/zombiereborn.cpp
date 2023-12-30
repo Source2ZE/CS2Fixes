@@ -713,9 +713,12 @@ void ZR_StartInitialCountdown()
 
 		if (g_iInfectionCountDown <= 60)
 		{
-			ClientPrintAll(HUD_PRINTCENTER, "First infection in \7%i second(s)\1!", g_iInfectionCountDown);
+			char message[256];
+			V_snprintf(message, sizeof(message), "First infection in \7%i %s\1!", g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
+
+			ClientPrintAll(HUD_PRINTCENTER, message);
 			if (g_iInfectionCountDown % 5 == 0)
-				ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "First infection in \7%i second\1!", g_iInfectionCountDown);
+				ClientPrintAll(HUD_PRINTTALK, "%s%s", ZR_PREFIX, message);
 		}
 		g_iInfectionCountDown--;
 
