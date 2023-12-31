@@ -97,6 +97,7 @@ void CZRPlayerClassManager::PrecacheModels(IEntityResourceManifest* pResourceMan
 		pResourceManifest->AddResource(m_HumanClassMap[i]->szModelPath.c_str());
 	}
 }
+
 void CZRPlayerClassManager::LoadPlayerClass()
 {
 	Message("Loading PlayerClass...\n");
@@ -232,6 +233,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 		}
 	}
 }
+
 void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn)
 {
 	pPawn->m_iMaxHealth = pClass->iHealth;
@@ -520,10 +522,7 @@ void SetupCTeams()
 void ZR_OnRoundStart(IGameEvent* pEvent)
 {
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
-
 	SetupRespawnToggler();
-	// SetupAmmoReplenish();
-
 	CZRRegenTimer::RemoveAllTimers();
 }
 
@@ -596,7 +595,6 @@ void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerContr
 	pEvent->SetBool("infected", true);
 
 	g_gameEventManager->FireEvent(pEvent, bDontBroadcast);
-
 }
 
 void ZR_StripAndGiveKnife(CCSPlayerPawn *pPawn)
@@ -828,7 +826,6 @@ void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, 
 
 	pController->ChangeTeam(g_ZRRoundState == EZRRoundState::POST_INFECTION ? CS_TEAM_T : CS_TEAM_CT);
 
-
 	CHandle<CCSPlayerController> handle = pController->GetHandle();
 	int iRoundNum = g_iRoundNum;
 	new CTimer(2.0f, false, [iRoundNum, handle]()
@@ -982,7 +979,7 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 			Panic("Cannot find CTeam for CT!\n");
 			return;
 		}
-			g_hTeamCT->m_iScore = g_hTeamCT->m_iScore() + 1;
+		g_hTeamCT->m_iScore = g_hTeamCT->m_iScore() + 1;
 	}
 	else if (iTeamNum == CS_TEAM_T)
 	{	

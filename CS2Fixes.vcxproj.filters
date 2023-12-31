@@ -205,9 +205,6 @@
     <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\ccomponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\discord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
