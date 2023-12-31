@@ -58,6 +58,7 @@ public:
 		m_flExtendVoteTime = 0;
 		m_iFloodTokens = 0;
 		m_flLastTalkTime = 0;
+		m_bInGame = false;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -91,6 +92,7 @@ public:
 	void SetInfectState(bool bInfectState) { m_bIsInfected = bInfectState; }
 	void SetExtendVoteTime(float flCurtime) { m_flExtendVoteTime = flCurtime; }
 	void SetIpAddress(std::string strIp) { m_strIp = strIp; }
+	void SetInGame(bool bInGame) { m_bInGame = bInGame; }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -106,6 +108,7 @@ public:
 	bool IsInfected() { return m_bIsInfected; }
 	float GetExtendVoteTime() { return m_flExtendVoteTime; }
 	const char* GetIpAddress() { return m_strIp.c_str(); }
+	bool IsInGame() { return m_bInGame; }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
@@ -134,6 +137,7 @@ private:
 	int m_iFloodTokens;
 	float m_flLastTalkTime;
 	std::string m_strIp;
+	bool m_bInGame;
 };
 
 class CPlayerManager
@@ -153,6 +157,7 @@ public:
 	bool OnClientConnected(CPlayerSlot slot, uint64 xuid, const char* pszNetworkID);
 	void OnClientDisconnect(CPlayerSlot slot);
 	void OnBotConnected(CPlayerSlot slot);
+	void OnClientPutInServer(CPlayerSlot slot);
 	void OnLateLoad();
 	void TryAuthenticate();
 	void CheckInfractions();
