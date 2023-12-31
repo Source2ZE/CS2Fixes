@@ -37,7 +37,7 @@ extern IGameEventManager2* g_gameEventManager;
 extern float g_flUniversalTime;
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast);
-void ZR_CheckWinConditions(int iTeamNum);
+bool ZR_CheckWinConditions(int iTeamNum);
 void ZR_Cure(CCSPlayerController *pTargetController);
 void ZR_EndRoundAndAddTeamScore(int iTeamNum);
 void SetupCTeams();
@@ -818,7 +818,14 @@ void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, 
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
 	if (!pController)
 		return;
-	
+
+	// Make sure the round ends if joining an empty server
+	if (ZR_CheckWinConditions(CS_TEAM_CT));
+	{
+		pController->ChangeTeam(CS_TEAM_T);
+		return;
+	}
+
 	pController->ChangeTeam(g_ZRRoundState == EZRRoundState::POST_INFECTION ? CS_TEAM_T : CS_TEAM_CT);
 
 
@@ -914,10 +921,10 @@ void ZR_OnRoundTimeWarning(IGameEvent* pEvent)
 }
 
 // check whether players on a team are all dead
-void ZR_CheckWinConditions(int iTeamNum)
+bool ZR_CheckWinConditions(int iTeamNum)
 {
 	if (g_ZRRoundState == EZRRoundState::ROUND_END || (iTeamNum == CS_TEAM_T && g_bRespawnEnabled) || (iTeamNum != CS_TEAM_T && iTeamNum != CS_TEAM_CT))
-		return;
+		return false;
 
 	// loop through each player, return early if both team has alive player
 	CCSPlayerPawn* pPawn = nullptr;
@@ -927,17 +934,36 @@ void ZR_CheckWinConditions(int iTeamNum)
 			continue;
 		
 		if (pPawn->m_iTeamNum() == iTeamNum)
-			return;
+			return false;
 	}
 
 	// didn't return early, all players on one or both teams are dead.
 	// allow the opposite team to win
 	iTeamNum = iTeamNum == CS_TEAM_CT ? CS_TEAM_T : CS_TEAM_CT;
 	ZR_EndRoundAndAddTeamScore(iTeamNum);
+
+	return true;
 }
 
 void ZR_EndRoundAndAddTeamScore(int iTeamNum)
-{	
+{
+	bool bServerIdle = true;
+
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+		if (!pPlayer || !pPlayer->IsConnected() || !pPlayer->IsInGame() || pPlayer->IsFakeClient())
+			continue;
+
+		bServerIdle = false;
+		break;
+	}
+
+	// Don't end rounds while the server is idling
+	if (bServerIdle)
+		return;
+
 	CSRoundEndReason iReason = CSRoundEndReason::Draw;
 	if (iTeamNum == CS_TEAM_T)
 		iReason = CSRoundEndReason::TerroristWin;

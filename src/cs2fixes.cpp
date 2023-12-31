@@ -562,6 +562,7 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 void CS2Fixes::Hook_ClientPutInServer( CPlayerSlot slot, char const *pszName, int type, uint64 xuid )
 {
 	Message( "Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, type, xuid );
+	g_playerManager->OnClientPutInServer(slot);
 
 	if (g_bEnableZR)
 		ZR_Hook_ClientPutInServer(slot, pszName, type, xuid);

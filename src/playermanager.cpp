@@ -181,6 +181,13 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
 }
 
+void CPlayerManager::OnClientPutInServer(CPlayerSlot slot)
+{
+	ZEPlayer* pPlayer = m_vecPlayers[slot.Get()];
+
+	pPlayer->SetInGame(true);
+}
+
 void CPlayerManager::OnLateLoad()
 {
 	for (int i = 0; i < gpGlobals->maxClients; i++)
