@@ -46,12 +46,16 @@ struct ZRClass
 	std::string szClassName;
 	int iHealth;
 	std::string szModelPath;
+	int iSkin;
+	std::string szColor;
 	float flSpeed;
 	float flGravity;
 	ZRClass(ZRClass *pClass) : 
 		szClassName(pClass->szClassName), 
 		iHealth(pClass->iHealth), 
 		szModelPath(pClass->szModelPath), 
+		iSkin(pClass->iSkin),
+		szColor(pClass->szColor),
 		flSpeed(pClass->flSpeed), 
 		flGravity(pClass->flGravity){};
 
@@ -59,6 +63,8 @@ struct ZRClass
 		szClassName(std::string(pKeys->GetName())), 
 		iHealth(pKeys->GetInt("health", 0)), 
 		szModelPath(std::string(pKeys->GetString("model", ""))), 
+		iSkin(pKeys->GetInt("skin", 0)),
+		szColor(std::string(pKeys->GetString("color", ""))),
 		flSpeed(pKeys->GetFloat("speed", 0)), 
 		flGravity(pKeys->GetFloat("gravity", 0)){};
 	void PrintInfo()
@@ -67,11 +73,15 @@ struct ZRClass
 			"%s:\n"
 			"\thealth: %d\n"
 			"\tmodel: %s\n"
+			"\tskin: %i\n"
+			"\tcolor: %s\n"
 			"\tspeed: %f\n"
 			"\tgravity: %f\n",
 			szClassName.c_str(),
 			iHealth,
 			szModelPath.c_str(),
+			iSkin,
+			szColor.c_str(),
 			flSpeed,
 			flGravity);
 	};
@@ -82,6 +92,10 @@ struct ZRClass
 			iHealth = pKeys->GetInt("health", 0);
 		if (pKeys->FindKey("model"))
 			szModelPath = std::string(pKeys->GetString("model", ""));
+		if (pKeys->FindKey("skin"))
+			iSkin = pKeys->GetInt("skin", 0);
+		if (pKeys->FindKey("color"))
+			szColor = std::string(pKeys->GetString("color", ""));
 		if (pKeys->FindKey("speed"))
 			flSpeed = pKeys->GetFloat("speed", 0);
 		if (pKeys->FindKey("gravity"))
@@ -114,6 +128,8 @@ struct ZRZombieClass : ZRClass
 			"%s:\n"
 			"\thealth: %d\n"
 			"\tmodel: %s\n"
+			"\tskin: %i\n"
+			"\tcolor: %s\n"
 			"\tspeed: %f\n"
 			"\tgravity: %f\n"
 			"\thealth_regen_count: %d\n"
@@ -121,6 +137,8 @@ struct ZRZombieClass : ZRClass
 			szClassName.c_str(),
 			iHealth,
 			szModelPath.c_str(),
+			iSkin,
+			szColor.c_str(),
 			flSpeed,
 			flGravity,
 			iHealthRegenCount,

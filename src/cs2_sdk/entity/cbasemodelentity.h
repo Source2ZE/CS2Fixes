@@ -29,6 +29,7 @@ public:
 
 	SCHEMA_FIELD(CCollisionProperty , m_Collision)
 	SCHEMA_FIELD(CGlowProperty, m_Glow)
+	SCHEMA_FIELD(Color, m_clrRender)
 	
 	void SetModel(const char *szModel)
 	{
