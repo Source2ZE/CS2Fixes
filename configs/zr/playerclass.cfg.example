@@ -12,6 +12,8 @@
 			// all player attributes are required if it doesn't have a base class
 			"health"					"100"
 			"model"						"characters/models/ctm_fbi/ctm_fbi.vmdl"
+			"skin"						"0"
+			"color"						"255 255 255"
 			"speed"						"1.0"
 			"gravity"					"1.0"
 		}
@@ -26,12 +28,13 @@
 		}
 		"HumanClass3"
 		{
-			"enabled"					"1"
-			"team_default"				"1"
+			"enabled"					"0"
+			"team_default"				"0"
 
 			"base"						"HumanClass1"
 
-			"model"						"characters/models/ctm_swat/ctm_swat_variante.vmdl"
+			"model"						"characters/models/s2ze/isaac_clarke/isaac_clarke.vmdl" // A custom model which will be automatically precached, must be loaded onto server/client by some means (e.g. workshop reuploads)
+			"skin"						"3" // The S2ZE Isaac Clarke model has 5 skins, at indexes 0-4
 		}
 	}
 	"Zombie"
@@ -43,6 +46,8 @@
 			
 			"health"					"10000"
 			"model"						"characters/models/tm_jumpsuit/tm_jumpsuit_varianta.vmdl"
+			"skin"						"0"
+			"color"						"255 150 150"
 			"speed"						"1.0"
 			"gravity"					"1.0"
 			
@@ -57,6 +62,8 @@
 			
 			"health"					"40000"
 			"model"						"characters/models/tm_phoenix_heavy/tm_phoenix_heavy.vmdl"
+			"skin"						"0"
+			"color"						"255 100 100"
 			"speed"						"1.0"
 			"gravity"					"1.0"
 

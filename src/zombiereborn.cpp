@@ -26,6 +26,7 @@
 #include "entity/cgamerules.h"
 #include "entity/services.h"
 #include "entity/cteam.h"
+#include <sstream>
 
 #include "tier0/memdbgon.h"
 
@@ -162,6 +163,16 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					Warning("%s has unspecified keyvalue: model\n", pszClassName);
 					bMissingKey = true;
 				}
+				if (!pSubKey->FindKey("skin"))
+				{
+					Warning("%s has unspecified keyvalue: skin\n", pszClassName);
+					bMissingKey = true;
+				}
+				if (!pSubKey->FindKey("color"))
+				{
+					Warning("%s has unspecified keyvalue: color\n", pszClassName);
+					bMissingKey = true;
+				}
 				if (!pSubKey->FindKey("speed"))
 				{
 					Warning("%s has unspecified keyvalue: speed\n", pszClassName);
@@ -234,11 +245,34 @@ void CZRPlayerClassManager::LoadPlayerClass()
 	}
 }
 
+template <typename Out>
+void split(const std::string& s, char delim, Out result)
+{
+	std::istringstream iss(s);
+	std::string item;
+	while (std::getline(iss, item, delim))
+		*result++ = item;
+}
+
 void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn)
 {
+	char szSkin[4];
+	V_snprintf(szSkin, sizeof(szSkin), "%i", pClass->iSkin);
+	variant_string_t strSkin(szSkin);
+
+	int rgb[3] = { 255, 255, 255 };
+	std::vector<std::string> rgbSplit;
+
+	split(pClass->szColor, ' ', std::back_inserter(rgbSplit));
+
+	for (int i = 0; i < Min(sizeof(rgb), rgbSplit.size()); i++)
+		rgb[i] = V_StringToInt32(rgbSplit[i].c_str(), 255);
+
 	pPawn->m_iMaxHealth = pClass->iHealth;
 	pPawn->m_iHealth = pClass->iHealth;
 	pPawn->SetModel(pClass->szModelPath.c_str());
+	pPawn->m_clrRender = Color(rgb[0], rgb[1], rgb[2], 255);
+	pPawn->AcceptInput("Skin", nullptr, nullptr, &strSkin);
 	pPawn->m_flVelocityModifier = pClass->flSpeed;
 	pPawn->m_flGravityScale = pClass->flGravity;
 }
