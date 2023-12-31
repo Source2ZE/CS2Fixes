@@ -826,10 +826,7 @@ void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, 
 	// Make sure the round ends if joining an empty server
 	if (!ZR_IsTeamAlive(CS_TEAM_CT) && !ZR_IsTeamAlive(CS_TEAM_T) && g_ZRRoundState != EZRRoundState::ROUND_END)
 	{
-		
-		// CONVAR_TODO
-		// use mp_round_restart_delay here
-		g_pGameRules->TerminateRound(5.0f, CSRoundEndReason::GameStart);
+		g_pGameRules->TerminateRound(1.0f, CSRoundEndReason::GameStart);
 		g_ZRRoundState = EZRRoundState::ROUND_END;
 		return;
 	}
