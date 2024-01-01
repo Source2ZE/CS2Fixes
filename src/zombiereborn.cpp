@@ -757,7 +757,7 @@ void ZR_StartInitialCountdown()
 {
 	int iRoundNum = g_iRoundNum;
 	g_iInfectionCountDown = g_iInfectSpawnTimeMin + (rand() % (g_iInfectSpawnTimeMax - g_iInfectSpawnTimeMin + 1));
-	new CTimer(1.0f, false, [iRoundNum]()
+	new CTimer(0.0f, false, [iRoundNum]()
 	{
 		if (iRoundNum != g_iRoundNum)
 			return -1.0f;
