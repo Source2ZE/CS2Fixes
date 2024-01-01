@@ -1020,8 +1020,11 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 	}
 
 	// CONVAR_TODO
-	// use mp_round_restart_delay here
-	g_pGameRules->TerminateRound(5.0f, iReason);
+	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_round_restart_delay"));
+	// HACK: values is actually the cvar value itself, hence this ugly cast.
+	float flRestartDelay = *(float*)&cvar->values;
+
+	g_pGameRules->TerminateRound(flRestartDelay, iReason);
 	g_ZRRoundState = EZRRoundState::ROUND_END;
 	ToggleRespawn(true, false);
 
