@@ -866,7 +866,7 @@ void SpawnPlayer(CCSPlayerController* pController)
 	new CTimer(2.0f, false, [iRoundNum, handle]()
 	{
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
-		if (iRoundNum != g_iRoundNum || !pController || !g_bRespawnEnabled)
+		if (iRoundNum != g_iRoundNum || !pController || !g_bRespawnEnabled || pController->m_iTeamNum == CS_TEAM_SPECTATOR)
 			return -1.0f;
 		pController->Respawn();
 		return -1.0f;
@@ -934,7 +934,7 @@ void ZR_OnPlayerDeath(IGameEvent* pEvent)
 	new CTimer(g_flRespawnDelay, false, [iRoundNum, handle]()
 	{
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
-		if (iRoundNum != g_iRoundNum || !pController || !g_bRespawnEnabled)
+		if (iRoundNum != g_iRoundNum || !pController || !g_bRespawnEnabled || pController->m_iTeamNum == CS_TEAM_SPECTATOR)
 			return -1.0f;
 		pController->Respawn();
 		return -1.0f;
