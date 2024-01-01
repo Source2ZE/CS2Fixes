@@ -849,15 +849,11 @@ void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLar
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Respawning is %s!", g_bRespawnEnabled ? "enabled" : "disabled");
 }
 
-void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, uint64 xuid)
+void SpawnPlayer(CCSPlayerController* pController)
 {
-	CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
-	if (!pController)
-		return;
-
 	pController->ChangeTeam(g_ZRRoundState == EZRRoundState::POST_INFECTION ? CS_TEAM_T : CS_TEAM_CT);
 
-	// Make sure the round ends if joining an empty server
+	// Make sure the round ends if spawning into an empty server
 	if (!ZR_IsTeamAlive(CS_TEAM_CT) && !ZR_IsTeamAlive(CS_TEAM_T) && g_ZRRoundState != EZRRoundState::ROUND_END)
 	{
 		g_pGameRules->TerminateRound(1.0f, CSRoundEndReason::GameStart);
@@ -877,17 +873,29 @@ void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, 
 	});
 }
 
+void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, uint64 xuid)
+{
+	CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
+	if (!pController)
+		return;
+
+	SpawnPlayer(pController);
+}
+
 void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand &args)
 {
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
 	if (!pController)
 		return;
-	if (args.ArgC() < 2 || !V_strncmp(args.Arg(1), "3", 1) || !V_strncmp(args.Arg(1), "2", 1))
-	{
-		CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
-		if (pPawn && pPawn->IsAlive())
-			pPawn->CommitSuicide(false, true);
-	}
+
+	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
+	if (pPawn && pPawn->IsAlive())
+		pPawn->CommitSuicide(false, true);
+
+	if (args.ArgC() >= 2 && !V_strcmp(args.Arg(1), "1"))
+		pController->SwitchTeam(CS_TEAM_SPECTATOR);
+	else if (pController->m_iTeamNum == CS_TEAM_SPECTATOR)
+		SpawnPlayer(pController);
 }
 
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
