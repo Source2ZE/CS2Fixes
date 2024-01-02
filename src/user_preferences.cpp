@@ -33,8 +33,13 @@ using json = nlohmann::json;
 CUserPreferencesSystem* g_pUserPreferencesSystem = nullptr;
 
 
-CON_COMMAND_CHAT_FLAGS(setprefsurl, "Set the preferences API url.", ADMFLAG_ROOT)
+CON_COMMAND_F(cs2f_user_prefs_api, "API for user preferences, currently a REST API.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
+	if (!g_pUserPreferencesSystem) {
+		Message("The user preferences subsystem is not enabled.");
+		return;
+	}
+
 	if (args.ArgC() < 2)
 		Message("Usage: %s <url>. Current value: %s\n", args[0], g_pUserPreferencesSystem->GetPreferencesAPIUrl());
 	else {
@@ -222,7 +227,7 @@ void CUserPreferencesSystem::PushPreferences(int iSlot)
 	// Fetch the slot and only 'push' if the player has already loaded
 	if (!m_mPreferencesLoaded[iSlot]) return;
 	uint64 iSteamId = m_mUserSteamIds[iSlot];
-
+	
 	// Create the JSON object with all key-value pairs
 	json sJsonObject = json::object();
 	FOR_EACH_MAP(m_mPreferencesMaps[iSlot], i) {

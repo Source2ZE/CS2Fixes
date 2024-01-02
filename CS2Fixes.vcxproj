@@ -184,6 +184,7 @@
     <ClCompile Include="src\mempatch.cpp" />
     <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\playermanager.cpp" />
+    <ClCompile Include="src\user_preferences.cpp" />
     <ClCompile Include="src\votemanager.cpp" />
     <ClCompile Include="sdk\tier1\convar.cpp" />
     <ClCompile Include="src\utils\entity.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="src\addresses.h" />
     <ClInclude Include="src\playermanager.h" />
     <ClInclude Include="src\recipientfilters.h" />
+    <ClInclude Include="src\user_preferences.h" />
     <ClInclude Include="src\votemanager.h" />
     <ClInclude Include="src\map_votes.h" />
     <ClInclude Include="src\utils\entity.h" />
