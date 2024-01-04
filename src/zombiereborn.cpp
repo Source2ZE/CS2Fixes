@@ -765,7 +765,7 @@ void ZR_InitialInfection()
 	while (iMZToInfect > 0)
 	{	
 		//If we somehow don't have enough mother zombies after going through the players 5 times,
-        //set Skip Chance of everyone but already picked mother zombies to 0
+		//set Skip Chance of everyone but already picked mother zombies to 0
 		if (iFailSafeCounter >= 5)
 		{
 			FOR_EACH_VEC(pCandidateControllers, i)
