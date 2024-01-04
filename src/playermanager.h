@@ -59,6 +59,7 @@ public:
 		m_iFloodTokens = 0;
 		m_flLastTalkTime = 0;
 		m_bInGame = false;
+		m_iMZImmunity = 0; // out of 100
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -93,6 +94,7 @@ public:
 	void SetExtendVoteTime(float flCurtime) { m_flExtendVoteTime = flCurtime; }
 	void SetIpAddress(std::string strIp) { m_strIp = strIp; }
 	void SetInGame(bool bInGame) { m_bInGame = bInGame; }
+	void SetImmunity(int iMZImmunity) { m_iMZImmunity = iMZImmunity; }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -109,6 +111,7 @@ public:
 	float GetExtendVoteTime() { return m_flExtendVoteTime; }
 	const char* GetIpAddress() { return m_strIp.c_str(); }
 	bool IsInGame() { return m_bInGame; }
+	int GetImmunity() { return m_iMZImmunity; }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
@@ -138,6 +141,7 @@ private:
 	float m_flLastTalkTime;
 	std::string m_strIp;
 	bool m_bInGame;
+	int m_iMZImmunity;
 };
 
 class CPlayerManager
