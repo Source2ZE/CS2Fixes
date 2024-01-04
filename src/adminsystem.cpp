@@ -730,7 +730,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 		return;
 	}
 
-	variant_string_t value(args[3]);
+	variant_t value(args[3]);
 
 	int iFoundEnts = 0;
 
@@ -805,7 +805,7 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "fire outputs at player pawns", ADMFLAG_RCON
 		return;
 	}
 
-	variant_string_t value(args[3]);
+	variant_t value(args[3]);
 
 	int iFoundEnts = 0;
 
@@ -843,7 +843,7 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "fire outputs at player controllers", 
 		return;
 	}
 
-	variant_string_t value(args[3]);
+	variant_t value(args[3]);
 
 	int iFoundEnts = 0;
 

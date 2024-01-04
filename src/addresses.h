@@ -22,6 +22,7 @@
 #include "stdint.h"
 #include "utils/module.h"
 #include "utlstring.h"
+#include "variant.h"
 
 namespace modules
 {
@@ -46,7 +47,6 @@ class Z_CBaseEntity;
 class CGameConfig;
 class CEntitySystem;
 class IEntityFindFilter;
-struct variant_string_t;
 class CGameRules;
 
 namespace addresses
@@ -64,10 +64,10 @@ namespace addresses
 	inline void(FASTCALL *UTIL_Remove)(CEntityInstance*);
 
 	inline void(FASTCALL *CEntitySystem_AddEntityIOEvent)(CEntitySystem *pEntitySystem, CEntityInstance *pTarget, const char *pszInput,
-														CEntityInstance *pActivator, CEntityInstance *pCaller, variant_string_t *value, float flDelay, int outputID);
+														CEntityInstance *pActivator, CEntityInstance *pCaller, variant_t *value, float flDelay, int outputID);
 
 	inline void(FASTCALL *CEntityInstance_AcceptInput)(CEntityInstance *pThis, const char *pInputName,
-													CEntityInstance *pActivator, CEntityInstance *pCaller, variant_string_t *value, int nOutputID);
+													CEntityInstance *pActivator, CEntityInstance *pCaller, variant_t *value, int nOutputID);
 
 	inline Z_CBaseEntity *(FASTCALL *CGameEntitySystem_FindEntityByClassName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName);
 
