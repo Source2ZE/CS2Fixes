@@ -174,6 +174,11 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					Warning("%s has unspecified keyvalue: color\n", pszClassName);
 					bMissingKey = true;
 				}
+				if (!pSubKey->FindKey("scale"))
+				{
+					Warning("%s has unspecified keyvalue: scale\n", pszClassName);
+					bMissingKey = true;
+				}
 				if (!pSubKey->FindKey("speed"))
 				{
 					Warning("%s has unspecified keyvalue: speed\n", pszClassName);
@@ -257,10 +262,8 @@ void split(const std::string& s, char delim, Out result)
 
 void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn)
 {
-	char szSkin[4];
-	V_snprintf(szSkin, sizeof(szSkin), "%i", pClass->iSkin);
-	variant_t strSkin(szSkin);
-
+	variant_t strSkin(pClass->iSkin);
+	variant_t flScale(pClass->flScale);
 	int rgb[3] = { 255, 255, 255 };
 	std::vector<std::string> rgbSplit;
 
@@ -274,6 +277,7 @@ void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn
 	pPawn->SetModel(pClass->szModelPath.c_str());
 	pPawn->m_clrRender = Color(rgb[0], rgb[1], rgb[2], 255);
 	pPawn->AcceptInput("Skin", nullptr, nullptr, &strSkin);
+	pPawn->AcceptInput("SetScale", nullptr, nullptr, &flScale);
 	pPawn->m_flVelocityModifier = pClass->flSpeed;
 	pPawn->m_flGravityScale = pClass->flGravity;
 }

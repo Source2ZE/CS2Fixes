@@ -14,6 +14,7 @@
 			"model"						"characters/models/ctm_fbi/ctm_fbi.vmdl"
 			"skin"						"0"
 			"color"						"255 255 255"
+			"scale"						"1.0"
 			"speed"						"1.0"
 			"gravity"					"1.0"
 		}
@@ -48,6 +49,7 @@
 			"model"						"characters/models/tm_jumpsuit/tm_jumpsuit_varianta.vmdl"
 			"skin"						"0"
 			"color"						"255 150 150"
+			"scale"						"1.05"
 			"speed"						"1.0"
 			"gravity"					"1.0"
 			
@@ -64,6 +66,7 @@
 			"model"						"characters/models/tm_phoenix_heavy/tm_phoenix_heavy.vmdl"
 			"skin"						"0"
 			"color"						"255 100 100"
+			"scale"						"1.15"
 			"speed"						"1.0"
 			"gravity"					"1.0"
 
