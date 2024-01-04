@@ -113,20 +113,6 @@
                 "windows"		"\x48\x8B\xC4\x4C\x89\x40\x18\x55\x57"
                 "linux"			"\x48\xB8\x2A\x2A\x2A\x2A\xFF\xFF\xFF\xFF\x55\x48\x89\xE5\x41\x57\x41\x89\xF7"
             }
-            // String: "hammerUniqueId"
-            "CBaseEntity_Spawn"
-            {
-                "library"		"server"
-                "windows"		"\x48\x89\x5C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x30\x48\x8B\xF2"
-                "linux"			"\x55\x48\x89\xE5\x41\x56\x41\x55\x41\x54\x49\x89\xF4\x53\x48\x89\xFB\x48\x83\xEC\x10\xE8\x2A\x2A\x2A\x2A"
-            }
-            // String: "weapon_econ_item_client_only"
-            "CCSWeaponBase_Spawn"
-            {
-                "library"		"server"
-                "windows"		"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x18\x48\x89\x74\x24\x20\x57\x48\x81\xEC\xC0\x02\x00\x00"
-                "linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x4C\x8D\xB5\x50\xFD\xFF\xFF"
-            }
             // idk a good way to find this again, i just brute forced the vtable. offset is 133 on CTriggerPush
             "TriggerPush_Touch"
             {
@@ -396,6 +382,11 @@
 			{
 				"windows"	"242"
 				"linux"		"244"
+			}
+			"GetHammerUniqueId"
+			{
+				"windows"	"100"
+				"linux"		"99"
 			}
         }
         "Patches"

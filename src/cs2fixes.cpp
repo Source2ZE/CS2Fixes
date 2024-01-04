@@ -53,6 +53,7 @@
 #include "map_votes.h"
 #include "entity/cgamerules.h"
 #include "entity/ccsplayercontroller.h"
+#include "entitylistener.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -111,13 +112,16 @@ SH_DECL_HOOK3_void(INetworkServerService, StartupServer, SH_NOATTRIB, 0, const G
 SH_DECL_HOOK6_void(ISource2GameEntities, CheckTransmit, SH_NOATTRIB, 0, CCheckTransmitInfo **, int, CBitVec<16384> &, const Entity2Networkable_t **, const uint16 *, int);
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand &);
 SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, const CCommandContext&, const CCommand&);
+// Dota DWARF says it's a C string return, yet behaves like a bool in both?
+SH_DECL_MANUALHOOK1(GetHammerUniqueId, 0, 0, 0, bool, CBaseEntity*);
 
 CS2Fixes g_CS2Fixes;
 
 IGameEventSystem *g_gameEventSystem = nullptr;
 IGameEventManager2 *g_gameEventManager = nullptr;
 INetworkGameServer *g_pNetworkGameServer = nullptr;
-CEntitySystem *g_pEntitySystem = nullptr;
+CGameEntitySystem *g_pEntitySystem = nullptr;
+CEntityListener *g_pEntityListener = nullptr;
 CSchemaSystem *g_pSchemaSystem2 = nullptr;
 CGlobalVars *gpGlobals = nullptr;
 CPlayerManager *g_playerManager = nullptr;
@@ -200,8 +204,11 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	if (!InitDetours(g_GameConfig))
 		bRequiredInitLoaded = false;
 
-	static int offset = g_GameConfig->GetOffset("GameEventManager");
+	int offset = g_GameConfig->GetOffset("GameEventManager");
 	g_gameEventManager = (IGameEventManager2 *)(CALL_VIRTUAL(uintptr_t, offset, g_pSource2Server) - 8);
+
+	offset = g_GameConfig->GetOffset("GetHammerUniqueId");
+	SH_MANUALHOOK_RECONFIGURE(GetHammerUniqueId, offset, 0, 0);
 
 	if (!g_gameEventManager)
 	{
@@ -222,23 +229,24 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	UnlockConVars();
 	UnlockConCommands();
-
-	if (late)
-	{
-		RegisterEventListeners();
-		g_pEntitySystem = GameEntitySystem();
-		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
-		gpGlobals = g_pNetworkGameServer->GetGlobals();
-	}
-
 	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
 	g_pAdminSystem = new CAdminSystem();
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
 	g_pZRPlayerClassManager = new CZRPlayerClassManager();
-	g_pZRWeaponConfig = new ZRWeaponConfig();
 	g_pMapVoteSystem = new CMapVoteSystem();
+	g_pZRWeaponConfig = new ZRWeaponConfig();
+	g_pEntityListener = new CEntityListener();
+
+	if (late)
+	{
+		RegisterEventListeners();
+		g_pEntitySystem = GameEntitySystem();
+		g_pEntitySystem->AddListenerEntity(g_pEntityListener);
+		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
+		gpGlobals = g_pNetworkGameServer->GetGlobals();
+	}
 
 	RegisterWeaponCommands();
 
@@ -313,7 +321,22 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	if (g_pZRWeaponConfig)
 		delete g_pZRWeaponConfig;
 
+	if (g_pEntityListener)
+		delete g_pEntityListener;
+
 	return true;
+}
+
+bool Hook_GetHammerUniqueId(CBaseEntity* pThis)
+{
+	// Force entities to have their m_sUniqueHammerID schema field filled
+	RETURN_META_VALUE(MRES_SUPERCEDE, true);
+}
+
+void CS2Fixes::Setup_Hook_GetHammerUniqueId(CBaseEntity* pThis)
+{
+	// Create hook on CBaseEntity::GetHammerUniqueId
+	SH_ADD_MANUALVPHOOK(GetHammerUniqueId, pThis, SH_STATIC(Hook_GetHammerUniqueId), false);
 }
 
 void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CCommandContext& ctx, const CCommand& args)
@@ -401,6 +424,7 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 {
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	g_pEntitySystem = GameEntitySystem();
+	g_pEntitySystem->AddListenerEntity(g_pEntityListener);
 	gpGlobals = g_pNetworkGameServer->GetGlobals();
 
 	Message("Hook_StartupServer: %s\n", gpGlobals->mapname);

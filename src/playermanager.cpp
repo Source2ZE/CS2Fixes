@@ -32,7 +32,7 @@
 
 
 extern IVEngineServer2 *g_pEngineServer2;
-extern CEntitySystem *g_pEntitySystem;
+extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 
 void ZEPlayer::OnAuthenticated()

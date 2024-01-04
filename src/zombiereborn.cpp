@@ -30,7 +30,7 @@
 
 #include "tier0/memdbgon.h"
 
-extern CEntitySystem* g_pEntitySystem;
+extern CGameEntitySystem* g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern CGlobalVars* gpGlobals;
 extern CCSGameRules* g_pGameRules;
@@ -635,13 +635,30 @@ void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerContr
 void ZR_StripAndGiveKnife(CCSPlayerPawn *pPawn)
 {
 	CCSPlayer_ItemServices *pItemServices = pPawn->m_pItemServices();
+	CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices();
 
 	// it can sometimes be null when player joined on the very first round? 
-	if (!pItemServices)
+	if (!pItemServices || !pWeaponServices)
 		return;
 
-	// need to add a check for map item and drop them here
-	// In csgo, map-spawned weapons have hammerid, whereas purchased weapons don't
+	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
+
+	FOR_EACH_VEC(*weapons, i)
+	{
+		CHandle<CBasePlayerWeapon>& weaponHandle = (*weapons)[i];
+		CBasePlayerWeapon* pWeapon = weaponHandle.Get();
+
+		if (!pWeapon)
+			continue;
+
+		// If this is a map-spawned weapon (items), we should drop it instead
+		if (V_strcmp(pWeapon->m_sUniqueHammerID().Get(), ""))
+		{
+			// Despite having to pass a weapon into DropPlayerWeapon, it only drops the weapon if it's also the players active weapon
+			pWeaponServices->m_hActiveWeapon = weaponHandle;
+			pItemServices->DropPlayerWeapon(pWeapon);
+		}
+	}
 
 	pItemServices->StripPlayerWeapons();
 	pItemServices->GiveNamedItem("weapon_knife");

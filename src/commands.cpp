@@ -42,7 +42,7 @@
 
 using json = nlohmann::json;
 
-extern CEntitySystem *g_pEntitySystem;
+extern CGameEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
 
@@ -187,8 +187,6 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 		CBasePlayerWeapon* weapon = weaponHandle.Get();
 
-		// This should usually not be possible
-		// However, Lua ZR is stripping weapons in a really dirty way that leaves stray null entries in m_hMyWeapons
 		if (!weapon)
 			continue;
 
