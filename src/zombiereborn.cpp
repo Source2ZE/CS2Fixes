@@ -259,7 +259,7 @@ void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn
 {
 	char szSkin[4];
 	V_snprintf(szSkin, sizeof(szSkin), "%i", pClass->iSkin);
-	variant_string_t strSkin(szSkin);
+	variant_t strSkin(szSkin);
 
 	int rgb[3] = { 255, 255, 255 };
 	std::vector<std::string> rgbSplit;
@@ -414,7 +414,7 @@ void SetupAmmoReplenish()
 			return 5.0f;
 
 		// 999 will be automatically clamped to the weapons m_nPrimaryReserveAmmoMax
-		variant_string_t value("999");
+		variant_t value("999");
 		Z_CBaseEntity* pTarget = nullptr;
 
 		while (pTarget = UTIL_FindEntityByClassname(pTarget, "weapon_*"))
@@ -842,7 +842,7 @@ bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeapon
 	return true;
 }
 
-void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_string_t* value, int nOutputID)
+void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID)
 {
 	if (!g_hRespawnToggler.IsValid())
 		return;

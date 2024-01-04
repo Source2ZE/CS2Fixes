@@ -22,24 +22,12 @@
 #include "platform.h"
 #include "datamap.h"
 #include "string_t.h"
+#include "variant.h"
 
 class CEntityInstance;
 class Z_CBaseEntity;
 class CBasePlayerController;
 class IEntityFindFilter;
-
-// Quick and dirty definition to avoid having to include variant.h for now
-struct variant_string_t
-{
-	variant_string_t(const char *pszValue)
-	{
-		m_value = MAKE_STRING(pszValue);
-	}
-
-	string_t m_value;
-	uint16 m_type = FIELD_STRING;
-	uint16 m_flags = 0;
-};
 
 Z_CBaseEntity *UTIL_FindPickerEntity(CBasePlayerController *pPlayer);
 Z_CBaseEntity *UTIL_FindEntityByClassname(CEntityInstance *pStart, const char *name);
@@ -50,4 +38,4 @@ Z_CBaseEntity* CreateEntityByName(const char* className);
 
 void UTIL_AddEntityIOEvent(CEntityInstance *pTarget, const char *pszInput,
 							CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr,
-							variant_string_t *value = nullptr, float flDelay = 0.0f);
+							variant_t *value = nullptr, float flDelay = 0.0f);

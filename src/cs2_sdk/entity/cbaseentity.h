@@ -161,7 +161,7 @@ public:
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
-	void AcceptInput(const char *pInputName, CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr, variant_string_t *value = nullptr)
+	void AcceptInput(const char *pInputName, CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr, variant_t *value = nullptr)
 	{
 		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, value, 0);
 	}
