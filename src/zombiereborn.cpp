@@ -69,6 +69,7 @@ static int g_iInfectSpawnMinCount = 2;
 static float g_flRespawnDelay = 5.0;
 static int g_iDefaultWinnerTeam = CS_TEAM_SPECTATOR;
 static int g_bInfiniteAmmo = true;
+static int g_iMZImmunityReduction = 20;
 
 CON_ZR_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, Bool, false)
 CON_ZR_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, Float32, 150.0f)
@@ -82,6 +83,8 @@ CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to b
 CON_ZR_CVAR(zr_respawn_delay, "Time before a zombie is respawned", g_flRespawnDelay, Float32, 5.0)
 CON_ZR_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, Int32, CS_TEAM_SPECTATOR)
 CON_ZR_CVAR(zr_infinite_ammo, "Whether to enable infinite reserve ammo on weapons", g_bInfiniteAmmo, Bool, true)
+CON_ZR_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, Int32, 20)
+
 
 void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 {
@@ -820,7 +823,7 @@ void ZR_InitialInfection()
 		if (!pPlayer || vecIsMZ[i])
 			continue;
 		
-		pPlayer->SetImmunity(pPlayer->GetImmunity() - 20);
+		pPlayer->SetImmunity(pPlayer->GetImmunity() - g_iMZImmunityReduction);
 	}
 	ClientPrintAll(HUD_PRINTCENTER, "First infection has started!");
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "First infection has started! Good luck, survivors!");
