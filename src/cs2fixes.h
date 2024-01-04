@@ -58,6 +58,7 @@ public: //hooks
 							const Entity2Networkable_t **pNetworkables, const uint16 *pEntityIndicies, int nEntities);
 	void Hook_DispatchConCommand(ConCommandHandle cmd, const CCommandContext& ctx, const CCommand& args);
 	void Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
+	void Setup_Hook_GetHammerUniqueId(CBaseEntity* pThis);
 
 public:
 	const char *GetAuthor();

@@ -23,7 +23,7 @@
 #include "services.h"
 #include "../playermanager.h"
 
-extern CEntitySystem* g_pEntitySystem;
+extern CGameEntitySystem* g_pEntitySystem;
 
 class CCSPlayerController : public CBasePlayerController
 {

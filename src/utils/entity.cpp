@@ -29,7 +29,7 @@
 
 #include "tier0/memdbgon.h"
 
-extern CEntitySystem *g_pEntitySystem;
+extern CGameEntitySystem *g_pEntitySystem;
 extern CGameConfig *g_GameConfig;
 extern CCSGameRules *g_pGameRules;
 
