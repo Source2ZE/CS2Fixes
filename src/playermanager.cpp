@@ -376,7 +376,9 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 		if (userid != -1)
 		{
 			targetType = ETargetType::PLAYER;
-			clients[iNumClients++] = GetSlotFromUserId(userid).Get();
+			CCSPlayerController* player = CCSPlayerController::FromSlot(GetSlotFromUserId(userid).Get());
+			if(player && player->IsController() && player->IsConnected())
+				clients[iNumClients++] = GetSlotFromUserId(userid).Get();
 		}
 	}
 	else
