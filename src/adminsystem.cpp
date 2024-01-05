@@ -135,6 +135,11 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 
 	ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[0]);
 
+	if(!pTargetPlayer){
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is invalid, target is kicked from server?", pTarget->GetPlayerName());
+		return;
+	}
+
 	if (pTargetPlayer->IsFakeClient())
 		return;
 
@@ -213,6 +218,11 @@ CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
 			continue;
 
 		ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+		
+		if(!pTargetPlayer){
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is invalid, target is kicked from server?", pTarget->GetPlayerName());
+			continue;
+		}
 
 		if (pTargetPlayer->IsFakeClient())
 			continue;
@@ -272,6 +282,11 @@ CON_COMMAND_CHAT_FLAGS(unmute, "unmutes a player", ADMFLAG_CHAT)
 			continue;
 
 		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+		
+		if(!pTargetPlayer){
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is invalid, target is kicked from server?", pTarget->GetPlayerName());
+			continue;
+		}
 
 		if (pTargetPlayer->IsFakeClient())
 			continue;
@@ -339,6 +354,11 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 
 		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
 
+		if(!pTargetPlayer){
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is invalid, target is kicked from server?", pTarget->GetPlayerName());
+			continue;
+		}
+
 		if (pTargetPlayer->IsFakeClient())
 			continue;
 
@@ -399,6 +419,11 @@ CON_COMMAND_CHAT_FLAGS(ungag, "ungags a player", ADMFLAG_CHAT)
 			continue;
 
 		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+		if(!pTargetPlayer){
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is invalid, target is kicked from server?", pTarget->GetPlayerName());
+			continue;
+		}
 
 		if (pTargetPlayer->IsFakeClient())
 			continue;
