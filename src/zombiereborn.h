@@ -51,24 +51,24 @@ struct ZRClass
 	float flScale;
 	float flSpeed;
 	float flGravity;
-	ZRClass(ZRClass *pClass) : 
-		szClassName(pClass->szClassName), 
-		iHealth(pClass->iHealth), 
-		szModelPath(pClass->szModelPath), 
+	ZRClass(ZRClass *pClass) :
+		szClassName(pClass->szClassName),
+		iHealth(pClass->iHealth),
+		szModelPath(pClass->szModelPath),
 		iSkin(pClass->iSkin),
 		szColor(pClass->szColor),
 		flScale(pClass->flScale),
-		flSpeed(pClass->flSpeed), 
+		flSpeed(pClass->flSpeed),
 		flGravity(pClass->flGravity){};
 
-	ZRClass(KeyValues *pKeys) : 
-		szClassName(std::string(pKeys->GetName())), 
-		iHealth(pKeys->GetInt("health", 0)), 
-		szModelPath(std::string(pKeys->GetString("model", ""))), 
+	ZRClass(KeyValues *pKeys) :
+		szClassName(std::string(pKeys->GetName())),
+		iHealth(pKeys->GetInt("health", 0)),
+		szModelPath(std::string(pKeys->GetString("model", ""))),
 		iSkin(pKeys->GetInt("skin", 0)),
 		szColor(std::string(pKeys->GetString("color", ""))),
 		flScale(pKeys->GetFloat("scale", 0)),
-		flSpeed(pKeys->GetFloat("speed", 0)), 
+		flSpeed(pKeys->GetFloat("speed", 0)),
 		flGravity(pKeys->GetFloat("gravity", 0)){};
 	void PrintInfo()
 	{
@@ -78,7 +78,7 @@ struct ZRClass
 			"\tmodel: %s\n"
 			"\tskin: %i\n"
 			"\tcolor: %s\n"
-			"\scale: %f\n"
+			"\tscale: %f\n"
 			"\tspeed: %f\n"
 			"\tgravity: %f\n",
 			szClassName.c_str(),
@@ -121,13 +121,13 @@ struct ZRZombieClass : ZRClass
 {
 	int iHealthRegenCount;
 	float flHealthRegenInterval;
-	ZRZombieClass(ZRZombieClass *pClass) : 
+	ZRZombieClass(ZRZombieClass *pClass) :
 		ZRClass(pClass), 
-		iHealthRegenCount(pClass->iHealthRegenCount), 
+		iHealthRegenCount(pClass->iHealthRegenCount),
 		flHealthRegenInterval(pClass->flHealthRegenInterval){};
-	ZRZombieClass(KeyValues *pKeys) : 
-		ZRClass(pKeys), 
-		iHealthRegenCount(pKeys->GetInt("health_regen_count", 0)), 
+	ZRZombieClass(KeyValues *pKeys) :
+		ZRClass(pKeys),
+		iHealthRegenCount(pKeys->GetInt("health_regen_count", 0)),
 		flHealthRegenInterval(pKeys->GetFloat("health_regen_interval", 0)){};
 	void PrintInfo()
 	{
@@ -137,7 +137,7 @@ struct ZRZombieClass : ZRClass
 			"\tmodel: %s\n"
 			"\tskin: %i\n"
 			"\tcolor: %s\n"
-			"\scale: %f\n"
+			"\tscale: %f\n"
 			"\tspeed: %f\n"
 			"\tgravity: %f\n"
 			"\thealth_regen_count: %d\n"
@@ -166,7 +166,7 @@ struct ZRZombieClass : ZRClass
 class CZRPlayerClassManager
 {
 public:
-	CZRPlayerClassManager() 
+	CZRPlayerClassManager()
 	{
 		m_ZombieClassMap.SetLessFunc(DefLessFunc(uint32));
 		m_HumanClassMap.SetLessFunc(DefLessFunc(uint32));
@@ -190,10 +190,10 @@ private:
 class CZRRegenTimer : public CTimerBase
 {
 public:
-    CZRRegenTimer(float flRegenInterval, int iRegenAmount, CHandle<CCSPlayerPawn> hPawnHandle) :
+	CZRRegenTimer(float flRegenInterval, int iRegenAmount, CHandle<CCSPlayerPawn> hPawnHandle) :
 		CTimerBase(flRegenInterval, false), m_iRegenAmount(iRegenAmount), m_hPawnHandle(hPawnHandle) {};
 
-    bool Execute();
+	bool Execute();
 	static void StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController *pController);
 	static void StopRegen(CCSPlayerController *pController);
 	static int GetIndex(CPlayerSlot slot);
@@ -204,7 +204,7 @@ private:
 	static float s_flNextExecution;
 	static CZRRegenTimer *s_vecRegenTimers[MAXPLAYERS];
 	int m_iRegenAmount;
-    CHandle<CCSPlayerPawn> m_hPawnHandle;
+	CHandle<CCSPlayerPawn> m_hPawnHandle;
 };
 
 struct ZRWeapon
@@ -215,8 +215,7 @@ struct ZRWeapon
 class ZRWeaponConfig
 {
 public:
-
-	ZRWeaponConfig() 
+	ZRWeaponConfig()
 	{
 		m_WeaponMap.SetLessFunc(DefLessFunc(uint32));
 	};
