@@ -743,6 +743,12 @@ void ZR_InitialInfection()
 		pCandidateControllers.AddToTail(pController);
 	}
 
+	if (g_iInfectSpawnMZRatio <= 0)
+	{
+		Warning("Invalid Mother Zombie Ratio!!!");
+		return;
+	}
+
 	// the num of mz to infect
 	int iMZToInfect = pCandidateControllers.Count() / g_iInfectSpawnMZRatio;
 	iMZToInfect = g_iInfectSpawnMinCount > iMZToInfect ? g_iInfectSpawnMinCount : iMZToInfect;
