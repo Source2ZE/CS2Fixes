@@ -323,6 +323,11 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (m_vecPlayers[i] == nullptr)
 				continue;
 
+			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
+
+			if (!player || !player->IsController() || !player->IsConnected())
+				continue;
+
 			clients[iNumClients++] = i;
 		}
 	}
@@ -335,7 +340,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController())
+			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
 			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : CS_TEAM_CT))
@@ -360,7 +365,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(slot);
 
-			if (!player)
+			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
 			if (targetType >= ETargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == ETargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
@@ -376,7 +381,9 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 		if (userid != -1)
 		{
 			targetType = ETargetType::PLAYER;
-			clients[iNumClients++] = GetSlotFromUserId(userid).Get();
+			CCSPlayerController* player = CCSPlayerController::FromSlot(GetSlotFromUserId(userid).Get());
+			if(player && player->IsController() && player->IsConnected())
+				clients[iNumClients++] = GetSlotFromUserId(userid).Get();
 		}
 	}
 	else
@@ -388,7 +395,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController())
+			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
 			if (V_stristr(player->GetPlayerName(), target))
