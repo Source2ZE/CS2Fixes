@@ -89,6 +89,11 @@ CON_COMMAND_CHAT_FLAGS(nominate, "Nominate a map", ADMFLAG_NONE)
 {
 	bool bIsClearingNomination = args.ArgC() < 2;
 	int iResponse = g_pMapVoteSystem->AddMapNomination(player->GetPlayerSlot(), bIsClearingNomination ? "" : args[1]);
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
+
+	if (!pPlayer)
+		return;
+
 	switch (iResponse) {
 		case NominationReturnCodes::VOTE_STARTED:
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Could not nominate as the vote has already started.");
@@ -106,14 +111,23 @@ CON_COMMAND_CHAT_FLAGS(nominate, "Nominate a map", ADMFLAG_NONE)
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Nomination is currently disabled.");
 			break;
 		default:
-			if (bIsClearingNomination) {
+			if (bIsClearingNomination)
+			{
 				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your nomination was reset.");
 			}
-			else {
+			else if (pPlayer->GetNominateTime() + 60.0f > gpGlobals->curtime)
+			{
+				int iRemainingTime = (int)(pPlayer->GetNominateTime() + 60.0f - gpGlobals->curtime);
+				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can nominate again.", iRemainingTime);
+				return;
+			}
+			else
+			{
 				const char* sPlayerName = player->GetPlayerName();
 				const char* sMapName = g_pMapVoteSystem->GetMapName(iResponse);
 				int iNumNominations = g_pMapVoteSystem->GetTotalNominations(iResponse);
 				ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX " \x06%s \x01was nominated by %s. It now has %d nominations.", sMapName, sPlayerName, iNumNominations);
+				pPlayer->SetNominateTime(gpGlobals->curtime);
 			}
 	}
 }

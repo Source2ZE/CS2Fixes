@@ -60,6 +60,7 @@ public:
 		m_flLastTalkTime = 0;
 		m_bInGame = false;
 		m_iMZImmunity = 0; // out of 100
+		m_flNominateTime = -60.0f;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -95,6 +96,7 @@ public:
 	void SetIpAddress(std::string strIp) { m_strIp = strIp; }
 	void SetInGame(bool bInGame) { m_bInGame = bInGame; }
 	void SetImmunity(int iMZImmunity) { m_iMZImmunity = iMZImmunity; }
+	void SetNominateTime(float flCurtime) { m_flNominateTime = flCurtime; }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -112,6 +114,7 @@ public:
 	const char* GetIpAddress() { return m_strIp.c_str(); }
 	bool IsInGame() { return m_bInGame; }
 	int GetImmunity() { return m_iMZImmunity; }
+	float GetNominateTime() { return m_flNominateTime; }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
@@ -142,6 +145,7 @@ private:
 	std::string m_strIp;
 	bool m_bInGame;
 	int m_iMZImmunity;
+	float m_flNominateTime;
 };
 
 class CPlayerManager
