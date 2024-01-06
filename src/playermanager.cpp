@@ -335,7 +335,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController())
+			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
 			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : CS_TEAM_CT))
@@ -360,7 +360,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(slot);
 
-			if (!player)
+			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
 			if (targetType >= ETargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == ETargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
@@ -390,7 +390,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController())
+			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
 			if (V_stristr(player->GetPlayerName(), target))
