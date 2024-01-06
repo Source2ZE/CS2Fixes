@@ -323,6 +323,11 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (m_vecPlayers[i] == nullptr)
 				continue;
 
+			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
+
+			if (!player || !player->IsController() || !player->IsConnected())
+				continue;
+
 			clients[iNumClients++] = i;
 		}
 	}
