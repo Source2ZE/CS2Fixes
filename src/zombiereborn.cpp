@@ -52,7 +52,6 @@ static CHandle<Z_CBaseEntity> g_hRespawnToggler;
 static CHandle<CTeam> g_hTeamCT;
 static CHandle<CTeam> g_hTeamT;
 
-
 CZRPlayerClassManager* g_pZRPlayerClassManager = nullptr;
 ZRWeaponConfig *g_pZRWeaponConfig = nullptr;
 
@@ -84,7 +83,6 @@ CON_ZR_CVAR(zr_respawn_delay, "Time before a zombie is respawned", g_flRespawnDe
 CON_ZR_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, Int32, CS_TEAM_SPECTATOR)
 CON_ZR_CVAR(zr_infinite_ammo, "Whether to enable infinite reserve ammo on weapons", g_bInfiniteAmmo, Bool, true)
 CON_ZR_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, Int32, 20)
-
 
 void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 {
@@ -131,7 +129,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 			Message("Zombie Classes:\n");
 		
 		for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
-		{	
+		{
 			bool bEnabled = pSubKey->GetBool("enabled", false);
 			bool bTeamDefault = pSubKey->GetBool("team_default", false);
 
@@ -215,7 +213,6 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				}
 				else
 					pHumanClass = new ZRHumanClass(pSubKey);
-					
 
 				m_HumanClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pHumanClass);
 
@@ -597,7 +594,7 @@ void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamag
 {
 	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
 	// player shouldn't be able to pick up that weapon in the first place, but just in case
-	if (!pWeapon) 
+	if (!pWeapon)
 		return;
 	float flWeaponKnockbackScale = pWeapon->flKnockback;
 	
@@ -610,7 +607,7 @@ void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamag
 void ZR_ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage)
 {
 	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(pProjectile->GetClassname());
-	if (!pWeapon) 
+	if (!pWeapon)
 		return;
 	float flWeaponKnockbackScale = pWeapon->flKnockback;
 
@@ -702,7 +699,6 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 	g_pZRPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
 }
 
-
 void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 {
 	pVictimController->SwitchTeam(CS_TEAM_T);
@@ -721,6 +717,7 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 		g_pZRPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
 	}
 }
+
 // make players who've been picked as MZ recently less likely to be picked again
 // store a variable in ZEPlayer, which gets initialized with value 100 if they are picked to be a mother zombie
 // the value represents a % chance of the player being skipped next time they are picked to be a mother zombie
@@ -776,7 +773,7 @@ void ZR_InitialInfection()
 	// infect
 	int iFailSafeCounter = 0;
 	while (iMZToInfect > 0)
-	{	
+	{
 		//If we somehow don't have enough mother zombies after going through the players 5 times,
 		if (iFailSafeCounter >= 5)
 		{
