@@ -721,7 +721,11 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 		g_pZRPlayerClassManager->ApplyDefaultZombieClass(pVictimPawn);
 	}
 }
-
+// make players who've been picked as MZ recently less likely to be picked again
+// store a variable in ZEPlayer, which gets initialized with value 100 if they are picked to be a mother zombie
+// the value represents a % chance of the player being skipped next time they are picked to be a mother zombie
+// If the player is skipped, next random player is picked to be mother zombie (and same skip chance logic applies to him)
+// the variable gets decreased by 20 every round
 void ZR_InitialInfection()
 {
 	// mz infection candidates
@@ -768,13 +772,14 @@ void ZR_InitialInfection()
 	while (iMZToInfect > 0)
 	{	
 		//If we somehow don't have enough mother zombies after going through the players 5 times,
-		//set Skip Chance of everyone but already picked mother zombies to 0
 		if (iFailSafeCounter >= 5)
 		{
 			FOR_EACH_VEC(pCandidateControllers, i)
 			{
+				// at 5, reset everyone's immunity but mother zombies from this and last round
+				// at 6, reset everyone's immunity but mother zombies from this round
 				ZEPlayer* pPlayer = pCandidateControllers[i]->GetZEPlayer();
-				if (!vecIsMZ[pPlayer->GetPlayerSlot().Get()])
+				if (pPlayer->GetImmunity() < 100 || (iFailSafeCounter >= 6 && !vecIsMZ[i]))
 					pPlayer->SetImmunity(0);
 			}
 		}
@@ -788,6 +793,11 @@ void ZR_InitialInfection()
 			if (pPlayer && pPlayer->GetImmunity() < 100)
 				pSurvivorControllers.AddToTail(pCandidateControllers[i]);
 		}
+
+		// no enough human even after triggering fail safe
+		if (iFailSafeCounter >= 6 && pSurvivorControllers.Count() == 0)
+			break;
+
 		while (pSurvivorControllers.Count() > 0 && iMZToInfect > 0)
 		{
 			int randomindex = rand() % pSurvivorControllers.Count();
