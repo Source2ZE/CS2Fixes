@@ -184,6 +184,7 @@
     <ClCompile Include="src\mempatch.cpp" />
     <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\playermanager.cpp" />
+    <ClCompile Include="src\user_preferences.cpp" />
     <ClCompile Include="src\votemanager.cpp" />
     <ClCompile Include="src\zombiereborn.cpp" />
     <ClCompile Include="src\entitylistener.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="src\recipientfilters.h" />
     <ClInclude Include="src\votemanager.h" />
     <ClInclude Include="src\map_votes.h" />
+    <ClInclude Include="src\user_preferences.h" />
     <ClInclude Include="src\zombiereborn.h" />
     <ClInclude Include="src\entitylistener.h" />
     <ClInclude Include="src\utils\entity.h" />
