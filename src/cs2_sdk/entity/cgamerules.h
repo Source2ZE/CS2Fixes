@@ -67,6 +67,8 @@ public:
 	SCHEMA_FIELD(GameTime_t, m_flRestartRoundTime)
 	SCHEMA_FIELD_POINTER(int, m_nEndMatchMapGroupVoteOptions)
 	SCHEMA_FIELD(int, m_nEndMatchMapVoteWinner)
+	SCHEMA_FIELD_POINTER(CUtlVector<SpawnPoint*>, m_CTSpawnPoints)
+	SCHEMA_FIELD_POINTER(CUtlVector<SpawnPoint*>, m_TerroristSpawnPoints)
 
 	void TerminateRound(float flDelay, CSRoundEndReason reason)
 	{

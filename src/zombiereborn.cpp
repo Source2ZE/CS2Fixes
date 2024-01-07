@@ -718,6 +718,31 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 	}
 }
 
+std::vector<SpawnPoint*> ZR_GetValidSpawns()
+{
+	std::vector<SpawnPoint*> spawns;
+	CUtlVector<SpawnPoint*>* CTSpawnPoints = g_pGameRules->m_CTSpawnPoints();
+	CUtlVector<SpawnPoint*>* TerroristSpawnPoints = g_pGameRules->m_TerroristSpawnPoints();
+
+	FOR_EACH_VEC(*CTSpawnPoints, i)
+	{
+		SpawnPoint* spawn = (*CTSpawnPoints)[i];
+
+		if (spawn->m_bEnabled())
+			spawns.push_back(spawn);
+	}
+
+	FOR_EACH_VEC(*TerroristSpawnPoints, i)
+	{
+		SpawnPoint* spawn = (*TerroristSpawnPoints)[i];
+
+		if (spawn->m_bEnabled())
+			spawns.push_back(spawn);
+	}
+
+	return spawns;
+}
+
 // make players who've been picked as MZ recently less likely to be picked again
 // store a variable in ZEPlayer, which gets initialized with value 100 if they are picked to be a mother zombie
 // the value represents a % chance of the player being skipped next time they are picked to be a mother zombie
@@ -752,22 +777,17 @@ void ZR_InitialInfection()
 	bool vecIsMZ[MAXPLAYERS] = { false };
 
 	// get spawn points
-	CUtlVector<SpawnPoint*> spawns;
+	std::vector<SpawnPoint*> spawns;
 	if (g_iInfectSpawnType == EZRSpawnType::RESPAWN)
 	{
-		SpawnPoint* spawn = nullptr;
-		while (nullptr != (spawn = (SpawnPoint*)UTIL_FindEntityByClassname(spawn, "info_player_*")))
-		{
-			if (spawn->m_bEnabled())
-				spawns.AddToTail(spawn);
-		}
-	}
+		spawns = ZR_GetValidSpawns();
 
-	if (!spawns.Count())
-	{
-		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX"There are no spawns!");
-		Panic("There are no spawns!\n");
-		return;
+		if (!spawns.size())
+		{
+			ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX"There are no spawns!");
+			Panic("There are no spawns!\n");
+			return;
+		}
 	}
 
 	// infect
@@ -816,9 +836,12 @@ void ZR_InitialInfection()
 			}
 
 			// pick random spawn point
-			randomindex = rand() % spawns.Count();
-			pPawn->SetAbsOrigin(spawns[randomindex]->GetAbsOrigin());
-			pPawn->SetAbsRotation(spawns[randomindex]->GetAbsRotation());
+			if (g_iInfectSpawnType == EZRSpawnType::RESPAWN)
+			{
+				randomindex = rand() % spawns.size();
+				pPawn->SetAbsOrigin(spawns[randomindex]->GetAbsOrigin());
+				pPawn->SetAbsRotation(spawns[randomindex]->GetAbsRotation());
+			}
 
 			ZR_InfectMotherZombie(pController);
 			pPlayer->SetImmunity(100);
@@ -1165,18 +1188,11 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 		return;
 	}
 
-	//Count spawnpoints (info_player_counterterrorist & info_player_terrorist)
-	SpawnPoint* spawn = nullptr;
-	CUtlVector<SpawnPoint*> spawns;
-	while (nullptr != (spawn = (SpawnPoint*)UTIL_FindEntityByClassname(spawn, "info_player_*")))
-	{
-		if (spawn->m_bEnabled())
-			spawns.AddToTail(spawn);
-	}
+	std::vector<SpawnPoint*> spawns = ZR_GetValidSpawns();
 
 	// Let's be real here, this should NEVER happen
 	// But I ran into this when I switched to the real FindEntityByClassname and forgot to insert a *
-	if (spawns.Count() == 0)
+	if (spawns.size() == 0)
 	{
 		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX"There are no spawns!");
 		Panic("ztele used while there are no spawns!\n");
@@ -1184,7 +1200,7 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 	}
 
 	//Pick and get position of random spawnpoint
-	int randomindex = rand() % spawns.Count();
+	int randomindex = rand() % spawns.size();
 	Vector spawnpos = spawns[randomindex]->GetAbsOrigin();
 
 	//Here's where the mess starts
