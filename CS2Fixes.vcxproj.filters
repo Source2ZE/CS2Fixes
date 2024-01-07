@@ -95,6 +95,9 @@
     <ClCompile Include="src\map_votes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\user_preferences.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="sdk\entity2\entitysystem.cpp">
       <Filter>Source Files\sdk</Filter>
     </ClCompile>
@@ -218,6 +221,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\map_votes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\user_preferences.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\entitylistener.h">

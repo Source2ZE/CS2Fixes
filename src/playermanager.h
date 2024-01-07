@@ -24,6 +24,10 @@
 #include <playerslot.h>
 #include "bitvec.h"
 
+#define DECAL_PREF_KEY_NAME "hide_decals"
+#define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
+#define SOUND_STATUS_PREF_KEY_NAME "sound_status"
+
 enum class ETargetType {
 	NONE,
 	PLAYER,
@@ -84,7 +88,7 @@ public:
 	void SetGagged(bool gagged) { m_bGagged = gagged; }
 	void SetTransmit(int index, bool shouldTransmit) { shouldTransmit ? m_shouldTransmit.Set(index) : m_shouldTransmit.Clear(index); }
 	void ClearTransmit() { m_shouldTransmit.ClearAll(); }
-	void SetHideDistance(int distance) { m_iHideDistance = distance; }
+	void SetHideDistance(int distance);
 	void SetTotalDamage(int damage) { m_iTotalDamage = damage; }
 	void SetTotalHits(int hits) { m_iTotalHits = hits; }
 	void SetTotalKills(int kills) { m_iTotalKills = kills; }
@@ -101,7 +105,7 @@ public:
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
 	bool ShouldBlockTransmit(int index) { return m_shouldTransmit.Get(index); }
-	int GetHideDistance() { return m_iHideDistance; }
+	int GetHideDistance();
 	CPlayerSlot GetPlayerSlot() { return m_slot; }
 	int GetTotalDamage() { return m_iTotalDamage; }
 	int GetTotalHits() { return m_iTotalHits; }
