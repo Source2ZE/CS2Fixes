@@ -67,6 +67,7 @@ for sdk_name in MMSPlugin.sdks:
       'src/httpmanager.cpp',
       'src/discord.cpp',
       'src/map_votes.cpp',
+      'src/user_preferences.cpp',
     ]
 
     if sdk_name in ['dota', 'cs2']:

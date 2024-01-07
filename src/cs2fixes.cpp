@@ -50,6 +50,7 @@
 #include "httpmanager.h"
 #include "discord.h"
 #include "map_votes.h"
+#include "user_preferences.h"
 #include "entity/cgamerules.h"
 #include "entity/ccsplayercontroller.h"
 
@@ -236,6 +237,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
 	g_pMapVoteSystem = new CMapVoteSystem();
+	g_pUserPreferencesSystem = new CUserPreferencesSystem();
 
 	RegisterWeaponCommands();
 
@@ -303,6 +305,9 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 	if (g_GameConfig)
 		delete g_GameConfig;
+
+	if (g_pUserPreferencesSystem)
+		delete g_pUserPreferencesSystem;
 
 	return true;
 }
