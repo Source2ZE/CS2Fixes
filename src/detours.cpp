@@ -219,10 +219,118 @@ bool FASTCALL Detour_IsHearingClient(void* serverClient, int index)
 	return IsHearingClient(serverClient, index);
 }
 
+void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPlayerController *pPlayer, uint64 eMessageType)
+{
+	char buf[256];
+
+	// Filter console message - remove non-alphanumeric chars and convert to lowercase
+	uint32 uiTextLength = strlen(pText);
+	uint32 uiFilteredTextLength = 0;
+	char filteredText[256];
+
+	for (uint32 i = 0; i < uiTextLength; i++)
+	{
+		if (pText[i] >= 'A' && pText[i] <= 'Z')
+			filteredText[uiFilteredTextLength++] = pText[i] + 32;
+		if (pText[i] == ' ' || (pText[i] >= '0' && pText[i] <= '9') || (pText[i] >= 'a' && pText[i] <= 'z'))
+			filteredText[uiFilteredTextLength++] = pText[i];
+	}
+	filteredText[uiFilteredTextLength] = '\0';
+
+	// Split console message into words seperated by the space character
+	CUtlVector<char*, CUtlMemory<char*, int>> words;
+	V_SplitString(filteredText, " ", words);
+
+	//Word count includes the first word "Console:" at index 0, first relevant word is at index 1
+	int iWordCount = words.Count();
+	uint32 uiTriggerTimerLength = 0;
+
+	if (iWordCount == 2)
+		uiTriggerTimerLength = V_StringToUint32(words.Element(1), 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING);
+
+	for (int i = 1; i < iWordCount && uiTriggerTimerLength == 0; i++)
+	{
+		uint32 uiCurrentValue = V_StringToUint32(words.Element(i), 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING);
+		uint32 uiNextWordLength = 0;
+		char* pNextWord = NULL;
+
+		if (i + 1 < iWordCount)
+		{
+			pNextWord = words.Element(i + 1);
+			uiNextWordLength = strlen(pNextWord);
+		}
+
+		// Case: ... X sec(onds) ... or ... X min(utes) ...
+		if (pNextWord != NULL && uiNextWordLength > 2 && uiCurrentValue > 0)
+		{
+			if (pNextWord[0] == 's' && pNextWord[1] == 'e' && pNextWord[2] == 'c')
+				uiTriggerTimerLength = uiCurrentValue;
+			if (pNextWord[0] == 'm' && pNextWord[1] == 'i' && pNextWord[2] == 'n')
+				uiTriggerTimerLength = uiCurrentValue * 60;
+		}
+
+		// Case: ... Xs - only support up to 3 digit numbers (in seconds) for this timer parse method
+		if (uiCurrentValue == 0)
+		{
+			char* pCurrentWord = words.Element(i);
+			uint32 uiCurrentScanLength = MIN(strlen(pCurrentWord), 4);
+
+			for (uint32 j = 0; j < uiCurrentScanLength; j++)
+			{
+				if (pCurrentWord[j] >= '0' && pCurrentWord[j] <= '9')
+					continue;
+				
+				if (pCurrentWord[j] == 's')
+				{
+					pCurrentWord[j] = '\0';
+					uiTriggerTimerLength = V_StringToUint32(pCurrentWord, 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING);
+				}
+				break;
+			}
+		}
+	}
+	words.PurgeAndDeleteElements();
+
+	float fCurrentRoundClock = g_pGameRules->m_iRoundTime - (gpGlobals->curtime - g_pGameRules->m_fRoundStartTime.Get().m_Value);
+
+	// Only display trigger time if the timer is greater than 4 seconds, and time expires within the round
+	if ((uiTriggerTimerLength > 4) && (fCurrentRoundClock > uiTriggerTimerLength))
+	{
+		int iTriggerTime = fCurrentRoundClock - uiTriggerTimerLength;
+
+		// Round timer to nearest whole second
+		if ((int)(fCurrentRoundClock - 0.5f) == (int)fCurrentRoundClock)
+			iTriggerTime++;
+
+		int mins = iTriggerTime / 60;
+		int secs = iTriggerTime % 60;
+
+		V_snprintf(buf, sizeof(buf), "%s %s %s %2d:%02d", " \7CONSOLE:\4", pText + sizeof("Console:"), "\x10- @", mins, secs);
+	}
+	else
+		V_snprintf(buf, sizeof(buf), "%s %s", " \7CONSOLE:\4", pText + sizeof("Console:"));
+
+	UTIL_SayTextFilter(filter, buf, pPlayer, eMessageType);
+}
+
+// CONVAR_TODO
+bool g_bEnableTriggerTimer = false;
+
+CON_COMMAND_F(cs2f_trigger_timer_enable, "Whether to process countdown messages said by Console (e.g. Hold for 10 seconds) and append the round time where the countdown resolves", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bEnableTriggerTimer);
+	else
+		g_bEnableTriggerTimer = V_StringToBool(args[1], false);
+}
+
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CCSPlayerController *pPlayer, uint64 eMessageType)
 {
 	if (pPlayer)
 		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
+
+	if (g_bEnableTriggerTimer)
+		return SayChatMessageWithTimer(filter, pText, pPlayer, eMessageType);
 
 	char buf[256];
 	V_snprintf(buf, sizeof(buf), "%s %s", " \7CONSOLE:\4", pText + sizeof("Console:"));
