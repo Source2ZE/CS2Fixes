@@ -112,8 +112,6 @@ SH_DECL_HOOK3_void(INetworkServerService, StartupServer, SH_NOATTRIB, 0, const G
 SH_DECL_HOOK6_void(ISource2GameEntities, CheckTransmit, SH_NOATTRIB, 0, CCheckTransmitInfo **, int, CBitVec<16384> &, const Entity2Networkable_t **, const uint16 *, int);
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand &);
 SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, const CCommandContext&, const CCommand&);
-// Dota DWARF says it's a C string return, yet behaves like a bool in both?
-SH_DECL_MANUALHOOK1(GetHammerUniqueId, 0, 0, 0, bool, CBaseEntity*);
 
 CS2Fixes g_CS2Fixes;
 
@@ -206,9 +204,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	int offset = g_GameConfig->GetOffset("GameEventManager");
 	g_gameEventManager = (IGameEventManager2 *)(CALL_VIRTUAL(uintptr_t, offset, g_pSource2Server) - 8);
-
-	offset = g_GameConfig->GetOffset("GetHammerUniqueId");
-	SH_MANUALHOOK_RECONFIGURE(GetHammerUniqueId, offset, 0, 0);
 
 	if (!g_gameEventManager)
 	{
@@ -325,18 +320,6 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 		delete g_pEntityListener;
 
 	return true;
-}
-
-bool Hook_GetHammerUniqueId(CBaseEntity* pThis)
-{
-	// Force entities to have their m_sUniqueHammerID schema field filled
-	RETURN_META_VALUE(MRES_SUPERCEDE, true);
-}
-
-void CS2Fixes::Setup_Hook_GetHammerUniqueId(CBaseEntity* pThis)
-{
-	// Create hook on CBaseEntity::GetHammerUniqueId
-	SH_ADD_MANUALVPHOOK(GetHammerUniqueId, pThis, SH_STATIC(Hook_GetHammerUniqueId), false);
 }
 
 void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CCommandContext& ctx, const CCommand& args)
