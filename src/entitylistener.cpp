@@ -20,6 +20,21 @@
 #include "entitylistener.h"
 #include "common.h"
 #include "cs2fixes.h"
+#include "gameconfig.h"
+#include "cs2_sdk/entity/cbaseentity.h"
+#include "plat.h"
+
+extern CGameConfig *g_GameConfig;
+
+void Patch_GetHammerUniqueId(CEntityInstance *pEntity)
+{
+	static int offset = g_GameConfig->GetOffset("GetHammerUniqueId");
+	void **vtable = *(void ***)pEntity;
+
+	// xor al, al -> mov al, 1
+	// so it always returns true and allows hammerid to be copied into the schema prop
+	Plat_WriteMemory(vtable[offset], (uint8_t*)"\xB0\x01", 2);
+}
 
 void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 {
@@ -31,10 +46,7 @@ void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 
 void CEntityListener::OnEntityCreated(CEntityInstance* pEntity)
 {
-	CBaseEntity* pBaseEntity = g_pEntitySystem->GetBaseEntity(pEntity->GetEntityIndex());
-
-	// This needs to be in cs2fixes.cpp, due to use of SourceHook macros
-	g_CS2Fixes.Setup_Hook_GetHammerUniqueId(pBaseEntity);
+	ExecuteOnce(Patch_GetHammerUniqueId(pEntity));
 }
 
 void CEntityListener::OnEntityDeleted(CEntityInstance* pEntity)
