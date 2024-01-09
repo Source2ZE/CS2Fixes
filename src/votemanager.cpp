@@ -26,7 +26,7 @@
 
 #include "tier0/memdbgon.h"
 
-extern CEntitySystem *g_pEntitySystem;
+extern CGameEntitySystem *g_pEntitySystem;
 extern IVEngineServer2 *g_pEngineServer2;
 extern CGlobalVars *gpGlobals;
 extern CCSGameRules *g_pGameRules;
@@ -221,16 +221,7 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 
 			new CTimer(3.0f, false, []()
 			{
-				// CONVAR_TODO
-				// disgusting hack but it's the easiest way to call TerminateRound without using an offset
-				ConVar *sv_cheats = g_pCVar->GetConVar(g_pCVar->FindConVar("sv_cheats"));
-				bool bCheats = (bool)sv_cheats->values;
-
-				g_pEngineServer2->ServerCommand("sv_cheats 1; endround");
-
-				// only disable cheats if it was previously off
-				if (!bCheats)
-					g_pEngineServer2->ServerCommand("sv_cheats 0");
+				g_pGameRules->TerminateRound(5.0f, CSRoundEndReason::Draw);
 
 				return -1.0f;
 			});

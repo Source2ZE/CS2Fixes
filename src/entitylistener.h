@@ -18,21 +18,14 @@
  */
 
 #pragma once
+#include "entitysystem.h"
 
-#include "cbaseentity.h"
-#include "globaltypes.h"
+extern CGameEntitySystem* g_pEntitySystem;
 
-class CBaseModelEntity : public Z_CBaseEntity
+class CEntityListener : public IEntityListener
 {
-public:
-	DECLARE_SCHEMA_CLASS(CBaseModelEntity);
-
-	SCHEMA_FIELD(CCollisionProperty , m_Collision)
-	SCHEMA_FIELD(CGlowProperty, m_Glow)
-	SCHEMA_FIELD(Color, m_clrRender)
-	
-	void SetModel(const char *szModel)
-	{
-		addresses::CBaseModelEntity_SetModel(this, szModel);
-	}
+    void OnEntitySpawned(CEntityInstance* pEntity) override;
+    void OnEntityCreated(CEntityInstance* pEntity) override;
+    void OnEntityDeleted(CEntityInstance* pEntity) override;
+    void OnEntityParentChanged(CEntityInstance* pEntity, CEntityInstance* pNewParent) override;
 };

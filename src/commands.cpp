@@ -34,6 +34,7 @@
 #include "ctimer.h"
 #include "httpmanager.h"
 #include "discord.h"
+#include "zombiereborn.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
 
@@ -41,7 +42,7 @@
 
 using json = nlohmann::json;
 
-extern CEntitySystem *g_pEntitySystem;
+extern CGameEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
 
@@ -136,6 +137,12 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 	}
 
 	CCSPlayer_ItemServices* pItemServices = pPawn->m_pItemServices;
+	CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
+
+	// it can sometimes be null when player joined on the very first round? 
+	if (!pItemServices || !pWeaponServices)
+		return;
+
 	int money = player->m_pInGameMoneyServices->m_iAccount;
 
 	if (money < weaponEntry.iPrice)
@@ -175,7 +182,7 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 		}
 	}
 
-	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pPawn->m_pWeaponServices->m_hMyWeapons();
+	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
 	FOR_EACH_VEC(*weapons, i)
 	{
@@ -186,15 +193,13 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 		CBasePlayerWeapon* weapon = weaponHandle.Get();
 
-		// This should usually not be possible
-		// However, Lua ZR is stripping weapons in a really dirty way that leaves stray null entries in m_hMyWeapons
 		if (!weapon)
 			continue;
 
 		if (weapon->GetWeaponVData()->m_GearSlot() == weaponEntry.iGearSlot && (weaponEntry.iGearSlot == GEAR_SLOT_RIFLE || weaponEntry.iGearSlot == GEAR_SLOT_PISTOL))
 		{
 			// Despite having to pass a weapon into DropPlayerWeapon, it only drops the weapon if it's also the players active weapon
-			pPawn->m_pWeaponServices->m_hActiveWeapon = weaponHandle;
+			pWeaponServices->m_hActiveWeapon = weaponHandle;
 			pItemServices->DropPlayerWeapon(weapon);
 
 			break;
@@ -348,117 +353,6 @@ CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fp
 	g_playerManager->SetPlayerStopDecals(iPlayer, bSet);
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s world decals.", bSet ? "disabled" : "enabled");
-}
-
-// CONVAR_TODO
-static bool g_bEnableZtele = false;
-static float g_flMaxZteleDistance = 150.0f;
-static bool g_bZteleHuman = false;
-
-CON_COMMAND_F(zr_ztele_enable, "Whether to enable ztele", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bEnableZtele);
-	else
-		g_bEnableZtele = V_StringToBool(args[1], false);
-}
-CON_COMMAND_F(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %f\n", args[0], g_flMaxZteleDistance);
-	else
-		g_flMaxZteleDistance = V_StringToFloat32(args[1], 150.0f);
-}
-CON_COMMAND_F(zr_ztele_allow_humans, "Whether to allow humans to use ztele", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bZteleHuman);
-	else
-		g_bZteleHuman = V_StringToBool(args[1], false);
-}
-
-CON_COMMAND_CHAT(ztele, "teleport to spawn")
-{
-	// Silently return so the command is completely hidden
-	if (!g_bEnableZtele)
-		return;
-
-	if (!player)
-	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
-		return;
-	}
-
-	// Check if command is enabled for humans
-	if (!g_bZteleHuman && player->m_iTeamNum() == CS_TEAM_CT)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command as a human.");
-		return;
-	}
-
-	//Count spawnpoints (info_player_counterterrorist & info_player_terrorist)
-	SpawnPoint* spawn = nullptr;
-	CUtlVector<SpawnPoint*> spawns;
-	while (nullptr != (spawn = (SpawnPoint*)UTIL_FindEntityByClassname(spawn, "info_player_*")))
-	{
-		if (spawn->m_bEnabled())
-			spawns.AddToTail(spawn);
-	}
-
-	// Let's be real here, this should NEVER happen
-	// But I ran into this when I switched to the real FindEntityByClassname and forgot to insert a *
-	if (spawns.Count() == 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"There are no spawns!");
-		Panic("ztele used while there are no spawns!\n");
-		return;
-	}
-
-	//Pick and get position of random spawnpoint
-	int randomindex = rand() % spawns.Count();
-	Vector spawnpos = spawns[randomindex]->GetAbsOrigin();
-
-	//Here's where the mess starts
-	CBasePlayerPawn* pPawn = player->GetPawn();
-
-	if (!pPawn)
-		return;
-
-	if (!pPawn->IsAlive())
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot teleport when dead!");
-		return;
-	}
-
-	//Get initial player position so we can do distance check
-	Vector initialpos = pPawn->GetAbsOrigin();
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Teleporting to spawn in 5 seconds.");
-
-	CHandle<CBasePlayerPawn> handle = pPawn->GetHandle();
-
-	new CTimer(5.0f, false, [spawnpos, handle, initialpos]()
-	{
-		CBasePlayerPawn *pPawn = handle.Get();
-
-		if (!pPawn)
-			return -1.0f;
-
-		Vector endpos = pPawn->GetAbsOrigin();
-
-		if (initialpos.DistTo(endpos) < g_flMaxZteleDistance)
-		{
-			pPawn->SetAbsOrigin(spawnpos);
-			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, CHAT_PREFIX "You have been teleported to spawn.");
-		}
-		else
-		{
-			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, CHAT_PREFIX "Teleport failed! You moved too far.");
-			return -1.0f;
-		}
-		
-		return -1.0f;
-	});
 }
 
 // CONVAR_TODO

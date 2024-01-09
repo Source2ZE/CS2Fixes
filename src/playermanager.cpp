@@ -32,7 +32,7 @@
 
 
 extern IVEngineServer2 *g_pEngineServer2;
-extern CEntitySystem *g_pEntitySystem;
+extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 
 void ZEPlayer::OnAuthenticated()
@@ -179,6 +179,13 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	ResetPlayerFlags(slot.Get());
 
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
+}
+
+void CPlayerManager::OnClientPutInServer(CPlayerSlot slot)
+{
+	ZEPlayer* pPlayer = m_vecPlayers[slot.Get()];
+
+	pPlayer->SetInGame(true);
 }
 
 void CPlayerManager::OnLateLoad()

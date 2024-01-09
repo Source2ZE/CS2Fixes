@@ -23,7 +23,7 @@
 #include "services.h"
 #include "../playermanager.h"
 
-extern CEntitySystem* g_pEntitySystem;
+extern CGameEntitySystem* g_pEntitySystem;
 
 class CCSPlayerController : public CBasePlayerController
 {
@@ -33,6 +33,7 @@ public:
 	SCHEMA_FIELD(CCSPlayerController_InGameMoneyServices*, m_pInGameMoneyServices)
 	SCHEMA_FIELD(CCSPlayerController_ActionTrackingServices*, m_pActionTrackingServices)
 	SCHEMA_FIELD(bool, m_bPawnIsAlive);
+	SCHEMA_FIELD(CHandle<CCSPlayerPawn>, m_hPlayerPawn);
 
 	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn) {
 		return (CCSPlayerController*)pawn->m_hController().Get();
@@ -67,5 +68,16 @@ public:
 		{
 			addresses::CCSPlayerController_SwitchTeam(this, iTeam);
 		}
+	}
+
+	void Respawn()
+	{
+		CCSPlayerPawn *pPawn = m_hPlayerPawn.Get();
+		if (!pPawn || pPawn->IsAlive())
+			return;
+
+		SetPawn(pPawn);
+		static int offset = g_GameConfig->GetOffset("CCSPlayerController_Respawn");
+		CALL_VIRTUAL(void, offset, this);
 	}
 };

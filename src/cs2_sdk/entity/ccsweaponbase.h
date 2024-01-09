@@ -67,12 +67,21 @@ public:
 	SCHEMA_FIELD(CAttributeContainer, m_AttributeManager)
 };
 
-class CCSWeaponBaseVData : public CEntitySubclassVDataBase
+class CBasePlayerWeaponVData : public CEntitySubclassVDataBase
+{
+public:
+	DECLARE_SCHEMA_CLASS(CBasePlayerWeaponVData)
+	SCHEMA_FIELD(int, m_iMaxClip1)
+};
+
+class CCSWeaponBaseVData : public CBasePlayerWeaponVData
 {
 public:
 	DECLARE_SCHEMA_CLASS(CCSWeaponBaseVData)
 
 	SCHEMA_FIELD(gear_slot_t, m_GearSlot)
+	SCHEMA_FIELD(int, m_nPrice)
+	SCHEMA_FIELD(int, m_nPrimaryReserveAmmoMax);
 };
 
 class CBasePlayerWeapon : public CEconEntity

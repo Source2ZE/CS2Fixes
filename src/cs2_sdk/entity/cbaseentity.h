@@ -109,6 +109,7 @@ public:
 	SCHEMA_FIELD(float, m_lastNetworkChange)
 	SCHEMA_FIELD_POINTER(CNetworkTransmitComponent, m_NetworkTransmitComponent)
 	SCHEMA_FIELD(int, m_iHealth)
+	SCHEMA_FIELD(int, m_iMaxHealth)
 	SCHEMA_FIELD(int, m_iTeamNum)
 	SCHEMA_FIELD(Vector, m_vecAbsVelocity)
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
@@ -118,11 +119,15 @@ public:
 	SCHEMA_FIELD(uint32, m_fFlags)
 	SCHEMA_FIELD(LifeState_t, m_lifeState)
 	SCHEMA_FIELD_POINTER(CUtlStringToken, m_nSubclassID)
+	SCHEMA_FIELD(float, m_flGravityScale)
+	SCHEMA_FIELD(CUtlString, m_sUniqueHammerID);
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 
 	Vector GetAbsOrigin() { return m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin; }
+	QAngle GetAbsRotation() { return m_CBodyComponent->m_pSceneNode->m_angAbsRotation; }
 	void SetAbsOrigin(Vector vecOrigin) { m_CBodyComponent->m_pSceneNode->m_vecAbsOrigin = vecOrigin; }
+	void SetAbsRotation(QAngle angAbsRotation) { m_CBodyComponent->m_pSceneNode->m_angAbsRotation = angAbsRotation; }
 
 	void SetAbsVelocity(Vector vecVelocity) { m_vecAbsVelocity = vecVelocity; }
 	void SetBaseVelocity(Vector vecVelocity) { m_vecBaseVelocity = vecVelocity; }
@@ -156,7 +161,7 @@ public:
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
-	void AcceptInput(const char *pInputName, CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr, variant_string_t *value = nullptr)
+	void AcceptInput(const char *pInputName, CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr, variant_t *value = nullptr)
 	{
 		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, value, 0);
 	}
@@ -167,6 +172,16 @@ public:
 
 	// A double pointer to entity VData is available 8 bytes past m_nSubclassID, if applicable
 	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 8); }
+
+	void DispatchSpawn()
+	{
+		addresses::DispatchSpawn(this, 0);
+	}
+
+	void SetEntityName(const char *pName)
+	{
+		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
+	}
 };
 
 class SpawnPoint : public Z_CBaseEntity

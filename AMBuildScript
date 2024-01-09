@@ -470,8 +470,7 @@ class MMSPluginConfig(object):
         else:
           compiler.postlink += [os.path.join(lib_folder, 'interfaces_i486.a')]
 
-      if sdk.name == 'bms':
-        compiler.postlink += [os.path.join(lib_folder, 'mathlib.a')]
+      compiler.postlink += [os.path.join(lib_folder, 'mathlib.a')]
 
     binary = self.Library(compiler, name)
     compiler = binary.compiler
