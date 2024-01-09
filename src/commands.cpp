@@ -137,6 +137,12 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 	}
 
 	CCSPlayer_ItemServices* pItemServices = pPawn->m_pItemServices;
+	CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
+
+	// it can sometimes be null when player joined on the very first round? 
+	if (!pItemServices || !pWeaponServices)
+		return;
+
 	int money = player->m_pInGameMoneyServices->m_iAccount;
 
 	if (money < weaponEntry.iPrice)
@@ -176,7 +182,7 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 		}
 	}
 
-	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pPawn->m_pWeaponServices->m_hMyWeapons();
+	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
 	FOR_EACH_VEC(*weapons, i)
 	{
@@ -193,7 +199,7 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 		if (weapon->GetWeaponVData()->m_GearSlot() == weaponEntry.iGearSlot && (weaponEntry.iGearSlot == GEAR_SLOT_RIFLE || weaponEntry.iGearSlot == GEAR_SLOT_PISTOL))
 		{
 			// Despite having to pass a weapon into DropPlayerWeapon, it only drops the weapon if it's also the players active weapon
-			pPawn->m_pWeaponServices->m_hActiveWeapon = weaponHandle;
+			pWeaponServices->m_hActiveWeapon = weaponHandle;
 			pItemServices->DropPlayerWeapon(weapon);
 
 			break;
