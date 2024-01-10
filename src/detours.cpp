@@ -54,6 +54,7 @@ DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
+DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -407,6 +408,25 @@ CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONL
 	bBlock = !bBlock;
 }
 
+// CONVAR_TODO
+bool g_bBlockNavLookup = false;
+
+CON_COMMAND_F(cs2f_block_nav_lookup, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bBlockNavLookup);
+	else
+		g_bBlockNavLookup = V_StringToBool(args[1], false);
+}
+
+void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7, int64_t unk8)
+{
+	if (g_bBlockNavLookup)
+		return nullptr;
+
+	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7, unk8);
+}
+
 CUtlVector<CDetourBase *> g_vecDetours;
 
 bool InitDetours(CGameConfig *gameConfig)
@@ -452,6 +472,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
 		success = false;
 	CBaseEntity_TakeDamageOld.EnableDetour();
+
+	if (!CNavMesh_GetNearestNavArea.CreateDetour(gameConfig))
+		success = false;
+	CNavMesh_GetNearestNavArea.EnableDetour();
 
 	return success;
 }
