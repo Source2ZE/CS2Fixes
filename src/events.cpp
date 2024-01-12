@@ -23,13 +23,13 @@
 #include "ctimer.h"
 #include "eventlistener.h"
 #include "entity/cbaseplayercontroller.h"
-#include "playermanager.h"
+#include "zombiereborn.h"
 
 #include "tier0/memdbgon.h"
 
 extern IGameEventManager2 *g_gameEventManager;
 extern IServerGameClients *g_pSource2GameClients;
-extern CEntitySystem *g_pEntitySystem;
+extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 
 CUtlVector<CGameEventListener *> g_vecEventListeners;
@@ -62,33 +62,10 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
-// CONVAR_TODO
-static bool g_bForceCT = false;
-
-CON_COMMAND_F(cs2f_force_ct, "Whether to force everyone to CTs on every new round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bForceCT);
-	else
-		g_bForceCT = V_StringToBool(args[1], false);
-}
-
 GAME_EVENT_F(round_prestart)
 {
-	// Right now we're only using this event to move everyone to CTs
-	if (!g_bForceCT)
-		return;
-
-	for (int i = 0; i < gpGlobals->maxClients; i++)
-	{
-		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
-
-		// Only do this for Ts, ignore CTs and specs
-		if (!pController || pController->m_iTeamNum() != CS_TEAM_T)
-			continue;
-
-		pController->SwitchTeam(CS_TEAM_CT);
-	}
+	if (g_bEnableZR)
+		ZR_OnRoundPrestart(pEvent);
 }
 
 // CONVAR_TODO
@@ -122,7 +99,10 @@ CON_COMMAND_F(cs2f_noblock_enable, "Whether to use noblock, which sets debris co
 
 GAME_EVENT_F(player_spawn)
 {
-	// Right now we're only using this event to set debris collisions
+	if (g_bEnableZR)
+		ZR_OnPlayerSpawn(pEvent);
+
+	// Rest of the code is to set debris collisions
 	if (!g_bNoblock)
 		return;
 
@@ -168,6 +148,9 @@ CON_COMMAND_F(cs2f_topdefender_enable, "Whether to use TopDefender", FCVAR_SPONL
 
 GAME_EVENT_F(player_hurt)
 {
+	if (g_bEnableZR)
+		ZR_OnPlayerHurt(pEvent);
+
 	if (!g_bEnableTopDefender)
 		return;
 
@@ -189,6 +172,9 @@ GAME_EVENT_F(player_hurt)
 
 GAME_EVENT_F(player_death)
 {
+	if (g_bEnableZR)
+		ZR_OnPlayerDeath(pEvent);
+
 	if (!g_bEnableTopDefender)
 		return;
 
@@ -209,6 +195,9 @@ GAME_EVENT_F(player_death)
 
 GAME_EVENT_F(round_start)
 {
+	if (g_bEnableZR)
+		ZR_OnRoundStart(pEvent);
+
 	if (!g_bEnableTopDefender)
 		return;
 
@@ -273,4 +262,16 @@ GAME_EVENT_F(round_end)
 		pPlayer->SetTotalHits(0);
 		pPlayer->SetTotalKills(0);
 	}
+}
+
+GAME_EVENT_F(round_freeze_end)
+{
+	if (g_bEnableZR)
+		ZR_OnRoundFreezeEnd(pEvent);
+}
+
+GAME_EVENT_F(round_time_warning)
+{
+	if (g_bEnableZR)
+		ZR_OnRoundTimeWarning(pEvent);
 }

@@ -17,22 +17,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #pragma once
-
 #include "cbaseentity.h"
-#include "globaltypes.h"
+#include "cbaseplayercontroller.h"
+#include "cbaseplayerpawn.h"
 
-class CBaseModelEntity : public Z_CBaseEntity
+class CTeam : public Z_CBaseEntity
 {
 public:
-	DECLARE_SCHEMA_CLASS(CBaseModelEntity);
+	DECLARE_SCHEMA_CLASS(CTeam);
 
-	SCHEMA_FIELD(CCollisionProperty , m_Collision)
-	SCHEMA_FIELD(CGlowProperty, m_Glow)
-	SCHEMA_FIELD(Color, m_clrRender)
-	
-	void SetModel(const char *szModel)
-	{
-		addresses::CBaseModelEntity_SetModel(this, szModel);
-	}
+	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBasePlayerController>>, m_aPlayerControllers)
+	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBasePlayerPawn>>, m_aPlayers)
+
+	SCHEMA_FIELD(int32_t, m_iScore)
 };

@@ -1,214 +1,195 @@
 "Games"
 {
-    "csgo"
-    {
-        "Signatures"
-        {
-            // Logging
-            "Msg"
-            {
-                "library"		"tier0"
-                "windows"		"@Msg"
-                "linux"			"@Msg"
-            }
-            "ConDMsg"
-            {
-                "library"		"tier0"
-                "windows"		"@ConDMsg"
-                "linux"			"@ConDMsg"
-            }
-            "DevMsg"
-            {
-                "library"		"tier0"
-                "windows"		"@DevMsg"
-                "linux"			"@DevMsg"
-            }
-            "Warning"
-            {
-                "library"		"tier0"
-                "windows"		"@Warning"
-                "linux"			"@Warning"
-            }
-            "DevWarning"
-            {
-                "library"		"tier0"
-                "windows"		"@DevWarning"
-                "linux"			"@DevWarning"
-            }
-            "LoggingSystem_Log"
-            {
-                "library"		"tier0"
-                "windows"		"@LoggingSystem_Log"
-                "linux"			"@LoggingSystem_Log"
-            }
-            "LoggingSystem_LogDirect"
-            {
-                "library"		"tier0"
-                "windows"		"@LoggingSystem_LogDirect"
-                "linux"			"@LoggingSystem_LogDirect"
-            }
-            "LoggingSystem_LogAssert"
-            {
-                "library"		"tier0"
-                "windows"		"@LoggingSystem_LogAssert"
-                "linux"			"@LoggingSystem_LogAssert"
-            }
-            // Called from Host_Say
-            "UTIL_SayTextFilter"
-            {
-                "library"		"server"
-                "windows"		"\x48\x89\x5C\x24\x2A\x55\x56\x57\x48\x8D\x6C\x24\x2A\x48\x81\xEC\x2A\x2A\x2A\x2A\x49\x8B\xD8"
-                "linux"			"\x55\x48\x89\xE5\x41\x57\x49\x89\xD7\x31\xD2\x41\x56\x4C\x8D\x75\x98"
-            }
-            // Called from Host_Say
-            "UTIL_SayText2Filter"
-            {
-                "library"		"server"
-                "windows"		"\x48\x89\x5C\x24\x2A\x55\x56\x57\x48\x8D\x6C\x24\x2A\x48\x81\xEC\x2A\x2A\x2A\x2A\x41\x0F\xB6\xF8"
-                "linux"			"\x55\x48\x89\xE5\x41\x57\x4C\x8D\xBD\x2A\x2A\x2A\x2A\x41\x56\x4D\x89\xC6\x41\x55\x4D\x89\xCD"
-            }
-            // String: "<unconnected>"
-            "UTIL_ClientPrintAll"
-            {
-                "library"		"server"
-                "windows"		"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x81\xEC\x70\x01\x2A\x2A\x8B\xE9"
-                "linux"			"\x55\x48\x89\xE5\x41\x57\x49\x89\xD7\x41\x56\x49\x89\xF6\x41\x55\x41\x89\xFD"
-            }
-            // String: "Console command too long"
-            "ClientPrint"
-            {
-                "library"		"server"
-                "windows"		"\x48\x85\xC9\x0F\x84\x2A\x2A\x2A\x2A\x48\x8B\xC4\x48\x89\x58\x18"
-                "linux"			"\x55\x48\x89\xE5\x41\x57\x49\x89\xCF\x41\x56\x49\x89\xD6\x41\x55\x41\x89\xF5\x41\x54\x4C\x8D\xA5\xA0\xFE\xFF\xFF"
-            }
-            "NetworkStateChanged"
-            {
-                "library"		"server"
-                "windows"		"\x4C\x8B\xC9\x48\x8B\x09\x48\x85\xC9\x74\x2A\x48\x8B\x41\x10"
-                "linux"			"\x4C\x8B\x07\x4D\x85\xC0\x74\x2A\x49\x8B\x40\x10"
-            }
-            // String : "SV:  %d/%s ignored %d FL_FULL_EDICT_CH"
-            "StateChanged"
-            {
-                "library"		"server"
-		"windows"		"\x40\x55\x53\x56\x41\x55\x41\x57\x48\x8D\x6C\x24\xB0"
-                "linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x41\x54\x53\x89\xD3"
-            }
-            "VoiceShouldHear"
-            {
-                "library"		"engine"
-                "windows"		"\x48\x89\x5C\x24\x10\x44\x88\x4C\x24\x20\x44\x88\x44\x24\x18"
-                "linux"			"\x55\x48\x89\xE5\x41\x57\x41\x89\xD7\x41\x56\x49\x89\xF6\x41\x55\x41\x54\x49\x89\xFC\x53\x48\x83\xEC\x28"
-            }
-            "IsHearingClient"
-            {
-                "library"		"engine"
-                "windows"		"\x40\x53\x48\x83\xEC\x20\x48\x8B\xD9\x3B\x91\xB8"
-                "linux"			"\x55\x48\x89\xE5\x41\x55\x41\x54\x53\x48\x89\xFB\x48\x83\xEC\x08\x3B\xB7\xC8"
-            }
-            // String: "Playing sound on non-networked entity %s"
-            "CSoundEmitterSystem_EmitSound"
-            {
-                "library"		"server"
-                "windows"		"\x48\x8B\xC4\x4C\x89\x40\x18\x55\x57"
-                "linux"			"\x48\xB8\x2A\x2A\x2A\x2A\xFF\xFF\xFF\xFF\x55\x48\x89\xE5\x41\x57\x41\x89\xF7"
-            }
-            // String: "hammerUniqueId"
-            "CBaseEntity_Spawn"
-            {
-                "library"		"server"
-                "windows"		"\x48\x89\x5C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x30\x48\x8B\xF2"
-                "linux"			"\x55\x48\x89\xE5\x41\x56\x41\x55\x41\x54\x49\x89\xF4\x53\x48\x89\xFB\x48\x83\xEC\x10\xE8\x2A\x2A\x2A\x2A"
-            }
-            // String: "weapon_econ_item_client_only"
-            "CCSWeaponBase_Spawn"
-            {
-                "library"		"server"
-                "windows"		"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x18\x48\x89\x74\x24\x20\x57\x48\x81\xEC\xC0\x02\x00\x00"
-                "linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x4C\x8D\xB5\x50\xFD\xFF\xFF"
-            }
-            // idk a good way to find this again, i just brute forced the vtable. offset is 133 on CTriggerPush
-            "TriggerPush_Touch"
-            {
-                "library"		"server"
-                "windows"		"\x48\x89\x5C\x24\x10\x48\x89\x7C\x24\x18\x55\x48\x8D\xAC\x24\x60\xE0\xFF\xFF"
-                "linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x81\xEC\x28\x20\x2A\x2A\xE8"
-            }
-            // this is called in CTriggerPush::Touch, using IDA pseudocode look in an `if ( ( v & 0x80 ) != 0 )` and then `if ( v > 0.0 ) SetGroundEntity()`
-            "SetGroundEntity"
-            {
-                "library"		"server"
-                "windows"		"\x48\x89\x5C\x24\x10\x48\x89\x6C\x24\x18\x48\x89\x7C\x24\x20\x41\x56\x48\x83\xEC\x20\x0F\xB6\x81\xC0\x02\x2A\x2A\x48"
-                "linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x83\xEC\x08\x0F\xB6\x87\xA8\x05\x2A\x2A\x83"
-            }
-            // Check vauff's pin in #scripting
-            "ServerMovementUnlock"
-            {
-                "library"		"server"
-                "windows"		"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x2A\x2A\x0F\x28\xCA\xF3\x0F\x59\xC0"
-                "linux"			"\x0F\x87\x2A\x2A\x2A\x2A\x49\x8B\x7C\x24\x2A\xE8\x2A\x2A\x2A\x2A\x66\x0F\xEF\xED\x66\x0F\xD6\x85\x2A\x2A\x2A\x2A"
-            }
-            // Check vauff's pin in #scripting
-            "ClientMovementUnlock"
-            {
-                "library"		"client"
-                "windows"		"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x2A\x2A\x0F\x28\xCA\xF3\x0F\x59\xC0"
-                "linux"			"\x0F\x87\x2A\x2A\x2A\x2A\x49\x8B\x7C\x24\x2A\xE8\x2A\x2A\x2A\x2A\x66\x0F\xEF\xED\x66\x0F\xD6\x85\x2A\x2A\x2A\x2A"
-            }
-            // Check tilgep's pin in #scripting
-            "VScriptEnable"
-            {
-                "library"		"vscript"
-                "windows"		"\xBE\x01\x2A\x2A\x2A\x2B\xD6\x74\x2A\x3B\xD6"
-                "linux"			"\x83\xFE\x01\x0F\x84\x2A\x2A\x2A\x2A\x83"
-            }
-            // String: "Noise removal", there should be 3 customermachine checks
-            "HammerNoCustomerMachine"
-            {
-                "library"		"hammer"
-                "windows"		"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9"
-                "linux"			""
-            }
-            // String: "CCSPlayerPawnBase::SwitchTeam", just keep in mind this is actually CCSPlayerController::SwitchTeam
-            "CCSPlayerController_SwitchTeam"
-            {
-                "library"       "server"
-                "windows"       "\x40\x56\x57\x48\x81\xEC\x2A\x2A\x2A\x2A\x48\x8B\xF9\x8B\xF2\x8B\xCA"
-                "linux"         "\x55\x48\x89\xE5\x41\x55\x49\x89\xFD\x89\xF7"
-            }
-			
+	"csgo"
+	{
+		"Signatures"
+		{
+			// Logging
+			"Msg"
+			{
+				"library"		"tier0"
+				"windows"		"@Msg"
+				"linux"			"@Msg"
+			}
+			"ConDMsg"
+			{
+				"library"		"tier0"
+				"windows"		"@ConDMsg"
+				"linux"			"@ConDMsg"
+			}
+			"DevMsg"
+			{
+				"library"		"tier0"
+				"windows"		"@DevMsg"
+				"linux"			"@DevMsg"
+			}
+			"Warning"
+			{
+				"library"		"tier0"
+				"windows"		"@Warning"
+				"linux"			"@Warning"
+			}
+			"DevWarning"
+			{
+				"library"		"tier0"
+				"windows"		"@DevWarning"
+				"linux"			"@DevWarning"
+			}
+			"LoggingSystem_Log"
+			{
+				"library"		"tier0"
+				"windows"		"@LoggingSystem_Log"
+				"linux"			"@LoggingSystem_Log"
+			}
+			"LoggingSystem_LogDirect"
+			{
+				"library"		"tier0"
+				"windows"		"@LoggingSystem_LogDirect"
+				"linux"			"@LoggingSystem_LogDirect"
+			}
+			"LoggingSystem_LogAssert"
+			{
+				"library"		"tier0"
+				"windows"		"@LoggingSystem_LogAssert"
+				"linux"			"@LoggingSystem_LogAssert"
+			}
+			// Called from Host_Say
+			"UTIL_SayTextFilter"
+			{
+				"library"		"server"
+				"windows"		"\x48\x89\x5C\x24\x2A\x55\x56\x57\x48\x8D\x6C\x24\x2A\x48\x81\xEC\x2A\x2A\x2A\x2A\x49\x8B\xD8"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x49\x89\xD7\x31\xD2\x41\x56\x4C\x8D\x75\x98"
+			}
+			// Called from Host_Say
+			"UTIL_SayText2Filter"
+			{
+				"library"		"server"
+				"windows"		"\x48\x89\x5C\x24\x2A\x55\x56\x57\x48\x8D\x6C\x24\x2A\x48\x81\xEC\x2A\x2A\x2A\x2A\x41\x0F\xB6\xF8"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x4C\x8D\xBD\x2A\x2A\x2A\x2A\x41\x56\x4D\x89\xC6\x41\x55\x4D\x89\xCD"
+			}
+			// String: "<unconnected>"
+			"UTIL_ClientPrintAll"
+			{
+				"library"		"server"
+				"windows"		"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x81\xEC\x70\x01\x2A\x2A\x8B\xE9"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x49\x89\xD7\x41\x56\x49\x89\xF6\x41\x55\x41\x89\xFD"
+			}
+			// String: "Console command too long"
+			"ClientPrint"
+			{
+				"library"		"server"
+				"windows"		"\x48\x85\xC9\x0F\x84\x2A\x2A\x2A\x2A\x48\x8B\xC4\x48\x89\x58\x18"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x49\x89\xCF\x41\x56\x49\x89\xD6\x41\x55\x41\x89\xF5\x41\x54\x4C\x8D\xA5\xA0\xFE\xFF\xFF"
+			}
+			"NetworkStateChanged"
+			{
+				"library"		"server"
+				"windows"		"\x4C\x8B\xC9\x48\x8B\x09\x48\x85\xC9\x74\x2A\x48\x8B\x41\x10"
+				"linux"			"\x4C\x8B\x07\x4D\x85\xC0\x74\x2A\x49\x8B\x40\x10"
+			}
+			// String : "SV:  %d/%s ignored %d FL_FULL_EDICT_CH"
+			"StateChanged"
+			{
+				"library"		"server"
+				"windows"		"\x40\x55\x53\x56\x41\x55\x41\x57\x48\x8D\x6C\x24\xB0"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x41\x54\x53\x89\xD3"
+			}
+			"VoiceShouldHear"
+			{
+				"library"		"engine"
+				"windows"		"\x48\x89\x5C\x24\x10\x44\x88\x4C\x24\x20\x44\x88\x44\x24\x18"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x89\xD7\x41\x56\x49\x89\xF6\x41\x55\x41\x54\x49\x89\xFC\x53\x48\x83\xEC\x28"
+			}
+			"IsHearingClient"
+			{
+				"library"		"engine"
+				"windows"		"\x40\x53\x48\x83\xEC\x20\x48\x8B\xD9\x3B\x91\xB8"
+				"linux"			"\x55\x48\x89\xE5\x41\x55\x41\x54\x53\x48\x89\xFB\x48\x83\xEC\x08\x3B\xB7\xC8"
+			}
+			// String: "Playing sound on non-networked entity %s"
+			"CSoundEmitterSystem_EmitSound"
+			{
+				"library"		"server"
+				"windows"		"\x48\x8B\xC4\x4C\x89\x40\x18\x55\x57"
+				"linux"			"\x48\xB8\x2A\x2A\x2A\x2A\xFF\xFF\xFF\xFF\x55\x48\x89\xE5\x41\x57\x41\x89\xF7"
+			}
+			// idk a good way to find this again, i just brute forced the vtable. offset is 133 on CTriggerPush
+			"TriggerPush_Touch"
+			{
+				"library"		"server"
+				"windows"		"\x48\x89\x5C\x24\x10\x48\x89\x7C\x24\x18\x55\x48\x8D\xAC\x24\x60\xE0\xFF\xFF"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x81\xEC\x28\x20\x2A\x2A\xE8"
+			}
+			// this is called in CTriggerPush::Touch, using IDA pseudocode look in an `if ( ( v & 0x80 ) != 0 )` and then `if ( v > 0.0 ) SetGroundEntity()`
+			"SetGroundEntity"
+			{
+				"library"		"server"
+				"windows"		"\x48\x89\x5C\x24\x10\x48\x89\x6C\x24\x18\x48\x89\x7C\x24\x20\x41\x56\x48\x83\xEC\x20\x0F\xB6\x81\xC0\x02\x2A\x2A\x48"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x83\xEC\x08\x0F\xB6\x87\xA8\x05\x2A\x2A\x83"
+			}
+			// Check vauff's pin in #scripting
+			"ServerMovementUnlock"
+			{
+				"library"		"server"
+				"windows"		"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x2A\x2A\x0F\x28\xCA\xF3\x0F\x59\xC0"
+				"linux"			"\x0F\x87\x2A\x2A\x2A\x2A\x49\x8B\x7C\x24\x2A\xE8\x2A\x2A\x2A\x2A\x66\x0F\xEF\xED\x66\x0F\xD6\x85\x2A\x2A\x2A\x2A"
+			}
+			// Check vauff's pin in #scripting
+			"ClientMovementUnlock"
+			{
+				"library"		"client"
+				"windows"		"\x76\x2A\xF2\x0F\x10\x57\x2A\xF3\x0F\x10\x2A\x2A\x0F\x28\xCA\xF3\x0F\x59\xC0"
+				"linux"			"\x0F\x87\x2A\x2A\x2A\x2A\x49\x8B\x7C\x24\x2A\xE8\x2A\x2A\x2A\x2A\x66\x0F\xEF\xED\x66\x0F\xD6\x85\x2A\x2A\x2A\x2A"
+			}
+			// Check tilgep's pin in #scripting
+			"VScriptEnable"
+			{
+				"library"		"vscript"
+				"windows"		"\xBE\x01\x2A\x2A\x2A\x2B\xD6\x74\x2A\x3B\xD6"
+				"linux"			"\x83\xFE\x01\x0F\x84\x2A\x2A\x2A\x2A\x83"
+			}
+			// String: "Noise removal", there should be 3 customermachine checks
+			"HammerNoCustomerMachine"
+			{
+				"library"		"hammer"
+				"windows"		"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9"
+				"linux"			""
+			}
+			// String: "CCSPlayerPawnBase::SwitchTeam", just keep in mind this is actually CCSPlayerController::SwitchTeam
+			"CCSPlayerController_SwitchTeam"
+			{
+				"library"		"server"
+				"windows"		"\x40\x56\x57\x48\x81\xEC\x2A\x2A\x2A\x2A\x48\x8B\xF9\x8B\xF2\x8B\xCA"
+				"linux"			"\x55\x48\x89\xE5\x41\x55\x49\x89\xFD\x89\xF7"
+			}
 			// String: "player_jump", then find 42C80000h or in pseudocode "*(a2 + 68) = 1120403456;", changing from 100 to 145
-            "CheckJumpButtonWater"
-            {
-                "library"		"server"
-                "windows"		"\xC8\x42\xEB\x2A\x48\x8B\x4B\x30"
-                "linux"			"\xC8\x42\x66\x0F\xEF\xE4\x41\x0F\x2F\x65"
-            }
-
-            // String: "StartGravity", a function call in the function with startgravity in ends with "return (sub_XXX( a1 + 48) > 1);", change the 1 to 2
-            "WaterLevelGravity"
-            {
-                "library"       "server"
-                "windows"       "\x3C\x01\x49\x8B\x5B\x10\x49\x8B\x7B\x18\x0F\x97\xC0\x41\x0F\x28"
-                "linux"         "\x3C\x01\x0F\x97\xC0\x48\x81\xC4\x50\x01"
-            }
-            
+			"CheckJumpButtonWater"
+			{
+				"library"		"server"
+				"windows"		"\xC8\x42\xEB\x2A\x48\x8B\x4B\x30"
+				"linux"			"\xC8\x42\x66\x0F\xEF\xE4\x41\x0F\x2F\x65"
+			}
+			// String: "StartGravity", a function call in the function with startgravity in ends with "return (sub_XXX( a1 + 48) > 1);", change the 1 to 2
+			"WaterLevelGravity"
+			{
+				"library"		"server"
+				"windows"		"\x3C\x01\x49\x8B\x5B\x10\x49\x8B\x7B\x18\x0F\x97\xC0\x41\x0F\x28"
+				"linux"		 	"\x3C\x01\x0F\x97\xC0\x48\x81\xC4\x50\x01"
+			}
 			// String: "PlayerMove_PostMove", generally function called before the postmove func is CategorizePosition, find the == 1.0 check in CategorizePosition
-            "CategorizeUnderwater"
-            {
-                "library"       "server"
-                "windows"       "\x75\x2A\xB3\x01\xEB\x2A\x32\xDB\x45\x32\x2A"
-                "linux"         "\x0F\x45\xC1\x4D\x85\xC0\x0F\x95\xC1\x20\xC1"
-            }
-
+			"CategorizeUnderwater"
+			{
+				"library"		"server"
+				"windows"		"\x75\x2A\xB3\x01\xEB\x2A\x32\xDB\x45\x32\x2A"
+				"linux"			"\x0F\x45\xC1\x4D\x85\xC0\x0F\x95\xC1\x20\xC1"
+			}
 			// Called right after "Removed %s(%s)\n"
 			"UTIL_Remove"
-            {
-                "library"       "server"
-                "windows"       "\x48\x85\xC9\x74\x2A\x48\x8B\xD1\x48\x8B\x0D\x2A\x2A\x2A\x2A"
-                "linux"         "\x48\x89\xFE\x48\x85\xFF\x74\x2A\x48\x8D\x05\x2A\x2A\x2A\x2A\x48"
-            }
-			
+			{
+				"library"		"server"
+				"windows"		"\x48\x85\xC9\x74\x2A\x48\x8B\xD1\x48\x8B\x0D\x2A\x2A\x2A\x2A"
+				"linux"			"\x48\x89\xFE\x48\x85\xFF\x74\x2A\x48\x8D\x05\x2A\x2A\x2A\x2A\x48"
+			}
 			// "SetPosition" is passed to this
 			"CEntitySystem_AddEntityIOEvent"
 			{
@@ -216,7 +197,6 @@
 				"windows"		"\x48\x89\x5C\x24\x08\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x40\x49\x8B\xF1"
 				"linux"			"\x55\x41\xBA\xFF\xFF\xFF\xFF"
 			}
-			
 			// "Explode" is passed to this
 			"CEntityInstance_AcceptInput"
 			{
@@ -224,7 +204,12 @@
 				"windows"		"\x48\x89\x5C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x40\x49\x8B\xF0"
 				"linux"			"\x55\x48\x89\xE5\x41\x57\x49\x89\xFF\x41\x56\x48\x8D\x7D\xC0"
 			}
-			
+			"CEntityIdentity_AcceptInput"
+			{
+				"library"		"server"
+				"windows"		"\x48\x89\x54\x24\x10\x48\x89\x4C\x24\x08\x55\x53\x56\x57\x41\x55\x41\x56"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x4C\x8D\xBD\xD0\xFE\xFF\xFF\x49\x89\xD6\x41\x55\x49\x89\xF5"
+			}
 			// Literally has "CGameRules::CGameRules constructed" in it
 			"CGameRules_Constructor"
 			{
@@ -232,7 +217,6 @@
 				"windows"		"\x40\x53\x48\x83\xEC\x20\x48\x8D\x05\x2A\x2A\x2A\x2A\x48\x8B\xD9\x48\x89\x01\x48\x89\x0D"
 				"linux"			"\x55\x48\x8D\x05\x2A\x2A\x2A\x2A\x48\x89\xE5\x53\x48\x89\xFB\x48\x83\xEC\x08\x48\x89\x07\x48\x89\x3D"
 			}
-			
 			// "multi_manager" is passed to this
 			"CGameEntitySystem_FindEntityByClassName"
 			{
@@ -240,7 +224,6 @@
 				"windows"		"\x48\x83\xEC\x68\x45\x33\xC9"
 				"linux"			"\x55\x45\x31\xC0\x31\xC9\x48\x89\xE5\x41\x54"
 			}
-			
 			// "commentary_semaphore" is passed to this
 			"CGameEntitySystem_FindEntityByName"
 			{
@@ -248,15 +231,13 @@
 				"windows"		"\x48\x81\xEC\x88\x2A\x2A\x2A\x4D\x85\xC0"
 				"linux"			"\x48\x85\xD2\x74\x2A\x55\x48\x89\xE5\x41\x54"
 			}
-			
 			// "CBaseEntity::TakeDamageOld"
 			"CBaseEntity_TakeDamageOld"
 			{
 				"library"		"server"
 				"windows"		"\x40\x56\x57\x48\x83\xEC\x58\x48\x8B\x41\x10"
 				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x41\x54\x49\x89\xFC\x53\x48\x83\xEC\x38\x4C\x8D\x2D\x2A\x2A\x2A\x2A\x49\x8B\x7D\x00\x48\x85\xFF\x0F\x84\x2A\x2A\x2A\x2A"
-            }
-			
+			}
 			// "Game System %s is defined twice!\n"
 			// Note that this signature points to the instruction with sm_pFirst which is the first qword referenced in the function.
 			"IGameSystem_InitAllSystems_pFirst"
@@ -264,7 +245,13 @@
 				"library"		"server"
 				"windows"		"\x48\x8B\x1D\x2A\x2A\x2A\x2A\x48\x85\xDB\x0F\x84\x2A\x2A\x2A\x2A\xBE\x2A\x2A\x2A\x2A\x0F\x1F\x00\x48\x8B\x7B\x10"
 				"linux"			"\x4C\x8B\x35\x2A\x2A\x2A\x2A\x4D\x85\xF6\x75\x2D\xE9\x2A\x2A\x2A\x2A\x0F\x1F\x40\x00\x48\x8B\x05"
-            }
+			}
+			"CBasePlayerController_SetPawn"
+			{
+				"library"		"server"
+				"windows"		"\x44\x88\x4C\x24\x2A\x55\x57"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x41\x54\x49\x89\xFC\x53\x48\x89\xF3\x48\x81\xEC\xC8\x00\x00\x00"
+			}
 			// String: "CNavMesh::GetNearestNavArea"
 			"CNavMesh_GetNearestNavArea"
 			{
@@ -272,108 +259,162 @@
 				"windows"		"\x48\x89\x4C\x24\x08\x55\x53\x56\x41\x54\x48\x8D\xAC\x24\x68\x7D\xFF\xFF"
 				"linux"			"\x55\x48\x89\xE5\x41\x57\x49\x89\xFF\x41\x56\x49\x89\xF6\x41\x55\x41\x54\x41\x89\xCC\x53\x48\x81\xEC\xD8\x82\x00\x00"
 			}
-        }
-        "Offsets"
-        {
-            "GameEventManager"
-            {
-                "windows"   "91"
-                "linux"     "91"
-            }
-			"GameEntitySystem"
-            {
-                "windows"   "88"
-                "linux"     "80"
-            }
-            "Teleport"
-            {
-                "windows"   "149"
-                "linux"     "148"
-            }
-            "CollisionRulesChanged"
-            {
-                "windows"   "174"
-                "linux"     "173"
-            }
-			"IsEntityPawn"
-            {
-                "windows"   "153"
-                "linux"     "152"
-            }
-			"IsEntityController"
-            {
-                "windows"   "154"
-                "linux"     "153"
-            }
-			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
-            "CCSPlayerController_ChangeTeam"
+			"CCSPlayerPawn_Respawn"
 			{
-				"windows"	"90"
-				"linux"		"89"
+				"library"		"server"
+				"windows"		"\x40\x53\x48\x83\xEC\x20\x8B\x91\x38\x0B\x00\x00\x48\x8B\xD9"
+				"linux"			"\x8B\x8F\x40\x0E\x00\x00\x83\xF9\xFF\x0F\x84\xD9\x01"
+			}
+			// Search "Changes's player's model", look for a function containing 'models/%s.vmdl'. Below V_snprintf is the one
+			// This matches 2 functions, however they're literally identical
+			"CBaseModelEntity_SetModel"
+			{
+				"library"		"server"
+				"windows"		"\x48\x89\x5C\x24\x2A\x48\x89\x7C\x24\x2A\x55\x48\x8B\xEC\x48\x83\xEC\x50\x48\x8B\xF9"
+				"linux"			"\x55\x48\x89\xF2\x48\x89\xE5\x41\x54\x49\x89\xFC\x48\x8D\x7D\xE0\x48\x83\xEC\x18\x48\x8D\x05\x2A\x2A\x2A\x2A\x48\x8B\x30\x48\x8B\x06"
+			}
+			"CGameRules_TerminateRound"
+			{
+				"library"		"server"
+				"windows"		"\x48\x8B\xC4\x4C\x89\x48\x20\x55\x56"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xFD\x41\x54\x53\x48\x81\xEC\xE8\x01\x00\x00"
+			}
+			"CCSPlayer_WeaponServices_CanUse"
+			{
+				"library"		"server"
+				"windows"		"\x48\x89\x5C\x24\x10\x48\x89\x6C\x24\x18\x56\x57\x41\x56\x48\x83\xEC\x30\x80\xB9\xA8\x00\x00\x00\x00"
+				"linux"			"\x48\x85\xF6\x0F\x84\x2A\x2A\x2A\x2A\x55\x31\xC9\x48\x89\xE5\x41\x55\x49\x89\xFD"
+			}
+			"CreateEntityByName"
+			{
+				"library"		"server"
+				"windows"		"\x48\x83\xEC\x48\xC6\x44\x24\x30\x00"
+				"linux"			"\x48\x8D\x05\x2A\x2A\x2A\x2A\x55\x48\x89\xFA"
+			}
+			"DispatchSpawn"
+			{
+				"library"		"server"
+				"windows"		"\x48\x89\x5C\x24\x10\x57\x48\x83\xEC\x30\x48\x8B\xDA\x48\x8B\xF9\x48\x85\xC9"
+				"linux"			"\x48\x85\xFF\x74\x2A\x55\x48\x89\xE5\x41\x56"
+			}
+			// Look for "SetEntityName", that will be the vscript binding definition
+			// Scroll a bit down and you'll find something like this (note the offset): *(_QWORD *)(v453 + 64) = sub_1807B0350;
+			// that function is just a jump to the one we want
+			"CEntityIdentity_SetEntityName"
+			{
+				"library"		"server"
+				"windows"		"\x48\x89\x5C\x24\x10\x57\x48\x83\xEC\x20\x48\x8B\xD9\x4C\x8B\xC2"
+				"linux"			"\x55\x48\x89\xF2\x48\x89\xE5\x41\x54\x49\x89\xFC\x48\x8D\x7D\xE0\x48\x83\xEC\x18\x48\x8D\x05\x2A\x2A\x2A\x2A\x48\x8B\x30\xE8\x2A\x2A\x2A\x2A\x48\x8B\x45\xE0"
+			}
+		}
+		"Offsets"
+		{
+			"GameEventManager"
+			{
+				"windows"		"91"
+				"linux"			"91"
+			}
+			"GameEntitySystem"
+			{
+				"windows"		"88"
+				"linux"			"80"
+			}
+			"Teleport"
+			{
+				"windows"		"149"
+				"linux"			"148"
+			}
+			"CollisionRulesChanged"
+			{
+				"windows"		"174"
+				"linux"			"173"
+			}
+			"IsEntityPawn"
+			{
+				"windows"		"153"
+				"linux"			"152"
+			}
+			"IsEntityController"
+			{
+				"windows"		"154"
+				"linux"			"153"
+			}
+			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
+			"CCSPlayerController_ChangeTeam"
+			{
+				"windows"		"90"
+				"linux"			"89"
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
 			// return (*(*v9 + 2832LL))(v9, v27, 0LL);
 			// 2832 (354 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"	"357"
-				"linux"		"357"
+				"windows"		"357"
+				"linux"			"357"
 			}
 			// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 			"CGameRules_FindPickerEntity"
 			{
-				"windows"	"27"
-				"linux"		"28"
+				"windows"		"27"
+				"linux"			"28"
 			}
-			//
 			"PassesTriggerFilters"
 			{
-				"windows"	"245"
-				"linux"		"246"
+				"windows"		"245"
+				"linux"			"246"
 			}
-        }
-        "Patches"
-        {
-            // Server
-            "ServerMovementUnlock"
-            {
-                "windows"		"\xEB"
-                "linux"			"\x90\x90\x90\x90\x90\x90"
-            }
-            "VScriptEnable"
-            {
-                "windows"		"\xBE\x02"
-                "linux"			"\x83\xFE\x02"
-            }
+			"CCSPlayerController_Respawn"
+			{
+				"windows"		"242"
+				"linux"			"244"
+			}
+			"GetHammerUniqueId"
+			{
+				"windows"		"100"
+				"linux"			"99"
+			}
+		}
+		"Patches"
+		{
+			// Server
+			"ServerMovementUnlock"
+			{
+				"windows"		"\xEB"
+				"linux"			"\x90\x90\x90\x90\x90\x90"
+			}
+			"VScriptEnable"
+			{
+				"windows"		"\xBE\x02"
+				"linux"			"\x83\xFE\x02"
+			}
 			"FixWaterFloorJump"
-            {
-                "windows"		"\x11\x43"
-                "linux"			"\x11\x43"
-            }
-            "WaterLevelGravity"
-            {
-                "windows"		"\x3C\x02"
-                "linux"			"\x3C\x02"
-            }
-            "CategorizeUnderwater"
-            {
-                "windows"		"\x73"
-                "linux"			"\x0F\x42"
-            }
-
-            // Client
-            "ClientMovementUnlock"
-            {
-                "windows"		"\xEB"
-                "linux"			"\x90\x90\x90\x90\x90\x90"
-            }
-
-            // Hammer
-            "HammerNoCustomerMachine"
-            {
-                "windows"		"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90"
-                "linux"			""
-            }
-        }
-    }
+			{
+				"windows"		"\x11\x43"
+				"linux"			"\x11\x43"
+			}
+			"WaterLevelGravity"
+			{
+				"windows"		"\x3C\x02"
+				"linux"			"\x3C\x02"
+			}
+			"CategorizeUnderwater"
+			{
+				"windows"		"\x73"
+				"linux"			"\x0F\x42"
+			}
+			// Client
+			"ClientMovementUnlock"
+			{
+				"windows"		"\xEB"
+				"linux"			"\x90\x90\x90\x90\x90\x90"
+			}
+			// Hammer
+			"HammerNoCustomerMachine"
+			{
+				"windows"		"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90"
+				"linux"			""
+			}
+		}
+	}
 }

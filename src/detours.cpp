@@ -32,9 +32,11 @@
 #include "entity/ctriggerpush.h"
 #include "entity/cgamerules.h"
 #include "entity/ctakedamageinfo.h"
+#include "entity/services.h"
 #include "playermanager.h"
 #include "igameevents.h"
 #include "gameconfig.h"
+#include "zombiereborn.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -42,7 +44,7 @@
 #include "tier0/memdbgon.h"
 
 extern CGlobalVars *gpGlobals;
-extern CEntitySystem *g_pEntitySystem;
+extern CGameEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
 extern CCSGameRules *g_pGameRules;
 
@@ -50,10 +52,11 @@ DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
 DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
 DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSound);
-DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
+DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
+DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
@@ -110,6 +113,9 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 	// Prevent everything but nades from inflicting blast damage
 	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
 		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
+
+	if (g_bEnableZR && ZR_Detour_TakeDamageOld((CCSPlayerPawn*)pThis, inputInfo))
+		return;
 
 	// Prevent molly on self
 	if (g_bBlockMolotoveSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
@@ -193,16 +199,6 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 
 	flags |= (FL_BASEVELOCITY);
 	pOther->m_fFlags(flags);
-}
-
-void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *pThis, void *a2)
-{
-#ifdef _DEBUG
-	const char *pszClassName = pThis->m_pEntity->m_designerName.String();
-	Message("Weapon spawn: %s\n", pszClassName);
-#endif
-
-	CCSWeaponBase_Spawn(pThis, a2);
 }
 
 void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *pSoundEmitterSystem, CEntityIndex *a2, IRecipientFilter &filter, uint32 a4, void *a5)
@@ -408,6 +404,24 @@ CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONL
 	bBlock = !bBlock;
 }
 
+bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
+{
+	if (g_bEnableZR && !ZR_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
+	{
+		return false;
+	}
+
+	return CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon);
+}
+
+void FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID)
+{
+	if (g_bEnableZR)
+		ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+
+	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+}
+
 // CONVAR_TODO
 bool g_bBlockNavLookup = false;
 
@@ -457,10 +471,6 @@ bool InitDetours(CGameConfig *gameConfig)
 		success = false;
 	CSoundEmitterSystem_EmitSound.EnableDetour();
 
-	if (!CCSWeaponBase_Spawn.CreateDetour(gameConfig))
-		success = false;
-	CCSWeaponBase_Spawn.EnableDetour();
-
 	if (!TriggerPush_Touch.CreateDetour(gameConfig))
 		success = false;
 	TriggerPush_Touch.EnableDetour();
@@ -472,6 +482,14 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
 		success = false;
 	CBaseEntity_TakeDamageOld.EnableDetour();
+
+	if (!CCSPlayer_WeaponServices_CanUse.CreateDetour(gameConfig))
+		success = false;
+	CCSPlayer_WeaponServices_CanUse.EnableDetour();
+  
+	if (!CEntityIdentity_AcceptInput.CreateDetour(gameConfig))
+		success = false;
+	CEntityIdentity_AcceptInput.EnableDetour();
 
 	if (!CNavMesh_GetNearestNavArea.CreateDetour(gameConfig))
 		success = false;

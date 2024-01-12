@@ -29,7 +29,7 @@
 
 #include "tier0/memdbgon.h"
 
-extern CEntitySystem *g_pEntitySystem;
+extern CGameEntitySystem *g_pEntitySystem;
 extern CGameConfig *g_GameConfig;
 extern CCSGameRules *g_pGameRules;
 
@@ -59,8 +59,13 @@ Z_CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *
 	return addresses::CGameEntitySystem_FindEntityByName(g_pEntitySystem, pStartEntity, szName, pSearchingEntity, pActivator, pCaller, pFilter);
 }
 
+Z_CBaseEntity* CreateEntityByName(const char* className)
+{
+	return addresses::CreateEntityByName(className, -1);
+}
+
 void UTIL_AddEntityIOEvent(CEntityInstance *pTarget, const char *pszInput,
-						   CEntityInstance *pActivator, CEntityInstance *pCaller, variant_string_t *value, float flDelay)
+						   CEntityInstance *pActivator, CEntityInstance *pCaller, variant_t *value, float flDelay)
 {
 	addresses::CEntitySystem_AddEntityIOEvent(g_pEntitySystem, pTarget, pszInput, pActivator, pCaller, value, flDelay, 0);
 }
