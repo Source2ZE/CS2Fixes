@@ -264,22 +264,20 @@ void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn
 {
 	variant_t strSkin(pClass->iSkin);
 	variant_t flScale(pClass->flScale);
-	int rgb[3] = { 255, 255, 255 };
-	std::vector<std::string> rgbSplit;
 
-	split(pClass->szColor, ' ', std::back_inserter(rgbSplit));
-
-	for (int i = 0; i < Min(sizeof(rgb), rgbSplit.size()); i++)
-		rgb[i] = V_StringToInt32(rgbSplit[i].c_str(), 255);
+	Color clrRender;
+	V_StringToColor(pClass->szColor.c_str(), clrRender);
 
 	pPawn->m_iMaxHealth = pClass->iHealth;
 	pPawn->m_iHealth = pClass->iHealth;
 	pPawn->SetModel(pClass->szModelPath.c_str());
-	pPawn->m_clrRender = Color(rgb[0], rgb[1], rgb[2], 255);
+	pPawn->m_clrRender = clrRender;
 	pPawn->AcceptInput("Skin", nullptr, nullptr, &strSkin);
-	pPawn->AcceptInput("SetScale", nullptr, nullptr, &flScale);
 	pPawn->m_flVelocityModifier = pClass->flSpeed;
 	pPawn->m_flGravityScale = pClass->flGravity;
+
+	// This has to be done a bit later
+	UTIL_AddEntityIOEvent(pPawn, "SetScale", nullptr, nullptr, &flScale);
 }
 
 ZRHumanClass* CZRPlayerClassManager::GetHumanClass(const char *pszClassName)
@@ -934,7 +932,7 @@ bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeapon
 		return false;
 	if (pPawn->m_iTeamNum() == CS_TEAM_CT && V_strlen(pszWeaponClassname) > 7 && !g_pZRWeaponConfig->FindWeapon(pszWeaponClassname + 7))
 		return false;
-	// doesn't guarantee the player will pick the weapon up, it just allows the main detour to continue to run
+	// doesn't guarantee the player will pick the weapon up, it just allows the original function to run
 	return true;
 }
 
