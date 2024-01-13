@@ -42,5 +42,6 @@ enum class EExtendState
 extern ERTVState g_RTVState;
 extern EExtendState g_ExtendState;
 extern int g_iExtendsLeft;
+extern bool g_bVoteManagerEnable;
 
 void SetExtendsLeft();

@@ -29,7 +29,7 @@
 #include <playerslot.h>
 #include "utlstring.h"
 #include "utlvector.h"
-
+#include "votemanager.h"
 
 extern CGlobalVars *gpGlobals;
 extern CCSGameRules* g_pGameRules;
@@ -39,6 +39,9 @@ CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
 CON_COMMAND_CHAT_FLAGS(reload_map_list, "Reload map list", ADMFLAG_ROOT)
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	g_pMapVoteSystem->LoadMapList();
 	Message("Map list reloaded\n");
 }
@@ -75,6 +78,9 @@ CON_COMMAND_F(cs2f_vote_max_nominations, "Number of nominations to include per v
 
 CON_COMMAND_CHAT_FLAGS(setnextmap, "Force next map", ADMFLAG_CHANGEMAP)
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	bool bIsClearingForceNextMap = args.ArgC() < 2;
 	int iResponse = g_pMapVoteSystem->ForceNextMap(bIsClearingForceNextMap ? "" : args[1]);
 	if (bIsClearingForceNextMap) {
@@ -87,6 +93,9 @@ CON_COMMAND_CHAT_FLAGS(setnextmap, "Force next map", ADMFLAG_CHANGEMAP)
 
 CON_COMMAND_CHAT_FLAGS(nominate, "Nominate a map", ADMFLAG_NONE)
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	bool bIsClearingNomination = args.ArgC() < 2;
 	int iResponse = g_pMapVoteSystem->AddMapNomination(player->GetPlayerSlot(), bIsClearingNomination ? "" : args[1]);
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
@@ -139,6 +148,9 @@ static int __cdecl OrderStringsLexicographically(const char* const* a, const cha
 
 CON_COMMAND_CHAT(maplist, "List the maps in the server")
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
 	ClientPrint(player, HUD_PRINTCONSOLE, "The list of all maps is:");
 	CUtlVector<const char*> vecMapNames;
@@ -153,6 +165,9 @@ CON_COMMAND_CHAT(maplist, "List the maps in the server")
 
 CON_COMMAND_CHAT(nomlist, "List the list of nominations")
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Current nominations:");
 	for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++) {
 		if (!g_pMapVoteSystem->IsMapIndexEnabled(i)) continue;
@@ -165,6 +180,9 @@ CON_COMMAND_CHAT(nomlist, "List the list of nominations")
 
 CON_COMMAND_CHAT(mapcooldowns, "List the maps currently in cooldown")
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of maps in cooldown will be shown in console.");
 	ClientPrint(player, HUD_PRINTCONSOLE, "The list of maps in cooldown is:");
 	int iMapsInCooldown = g_pMapVoteSystem->GetMapsInCooldown();
@@ -177,12 +195,14 @@ CON_COMMAND_CHAT(mapcooldowns, "List the maps currently in cooldown")
 
 GAME_EVENT_F(cs_win_panel_match)
 {
-	g_pMapVoteSystem->StartVote();
+	if (g_bVoteManagerEnable)
+		g_pMapVoteSystem->StartVote();
 }
 
 GAME_EVENT_F(endmatch_mapvote_selecting_map)
 {
-	g_pMapVoteSystem->FinishVote();
+	if (g_bVoteManagerEnable)
+		g_pMapVoteSystem->FinishVote();
 }
 
 bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
@@ -194,6 +214,9 @@ bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
 
 void CMapVoteSystem::OnLevelInit(const char* pMapName)
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	int iLastCooldownIndex = GetMapsInCooldown() - 1;
 	int iInitMapIndex = GetMapIndexFromSubstring(pMapName);
 	if (iLastCooldownIndex >= 0 && iInitMapIndex >= 0 && GetCooldownMap(iLastCooldownIndex) != iInitMapIndex) {
@@ -356,6 +379,9 @@ void CMapVoteSystem::FinishVote()
 
 void CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption)
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(iPlayerSlot);
 	if (!pController || !m_bIsVoteOngoing) return;
 	if (iVoteOption < 0 || iVoteOption >= 10) return;
@@ -461,6 +487,9 @@ int CMapVoteSystem::GetMapIndexFromSubstring(const char* sMapSubstring)
 
 void CMapVoteSystem::ClearPlayerInfo(int iSlot)
 {
+	if (!g_bVoteManagerEnable)
+		return;
+
 	m_arrPlayerNominations[iSlot] = -1;
 	m_arrPlayerVotes[iSlot] = -1;
 }
