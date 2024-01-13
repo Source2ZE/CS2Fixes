@@ -56,7 +56,7 @@
 			"health_regen_count"		"250"
 			"health_regen_interval"		"5.0"
 		}
-		//special class that the first batch of zombie will be assigned to
+		// special class that the first batch of zombie will be assigned to
 		"MotherZombie"
 		{
 			"enabled"					"1"
