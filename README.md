@@ -16,7 +16,10 @@ CS2Fixes is a Metamod plugin with fixes and features aimed but not limited to zo
   - Property access
   - Property updating
 - Event hooking
-- Coloring console chat messages
+- Custom resource precaching system
+- Console chat message management
+  - Coloring messages
+  - Chat timer
 - Movement unlocker
 - VScript unlocker
 - Preventing console logs
@@ -54,13 +57,24 @@ CS2Fixes is a Metamod plugin with fixes and features aimed but not limited to zo
   - Transmit hook
 - Rcon
 - HTTP REST API
+  - Discord webhook API
 - EntFire
 - Fix blast damage crashes
 - Block self molotov damage
 - Anti chat flood
-- Rock the vote
-- Vote extends
+- Full map cycle system
+  - Nominations
+  - Map vote fix
+  - Rock the vote
+  - Vote extends
 - Top defenders
+- Custom map configs
+- Navmesh lookup lag fix
+- Dummy bot spawning without navmesh
+- Zombie:Reborn
+  - Full implementation of the Zombie Escape gamemode
+  - Player classes
+  - Weapon config
 
 ## Why is this all one plugin? Why "CS2Fixes"?
 

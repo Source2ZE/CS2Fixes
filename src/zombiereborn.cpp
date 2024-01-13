@@ -64,10 +64,10 @@ static int g_iInfectSpawnType = EZRSpawnType::RESPAWN;
 static int g_iInfectSpawnTimeMin = 15;
 static int g_iInfectSpawnTimeMax = 15;
 static int g_iInfectSpawnMZRatio = 7;
-static int g_iInfectSpawnMinCount = 2;
+static int g_iInfectSpawnMinCount = 1;
 static float g_flRespawnDelay = 5.0;
 static int g_iDefaultWinnerTeam = CS_TEAM_SPECTATOR;
-static int g_bInfiniteAmmo = true;
+static bool g_bInfiniteAmmo = true;
 static int g_iMZImmunityReduction = 20;
 
 CON_ZR_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, Bool, false)
@@ -78,7 +78,7 @@ CON_ZR_CVAR(zr_infect_spawn_type, "Type of Mother Zombies Spawn [0 = MZ spawn wh
 CON_ZR_CVAR(zr_infect_spawn_time_min, "Minimum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMin, Int32, 15)
 CON_ZR_CVAR(zr_infect_spawn_time_max, "Maximum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMax, Int32, 15)
 CON_ZR_CVAR(zr_infect_spawn_mz_ratio, "Ratio of all Players to Mother Zombies to be spawned at round start", g_iInfectSpawnMZRatio, Int32, 7)
-CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to be spawned at round start", g_iInfectSpawnMinCount, Int32, 2)
+CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to be spawned at round start", g_iInfectSpawnMinCount, Int32, 1)
 CON_ZR_CVAR(zr_respawn_delay, "Time before a zombie is respawned", g_flRespawnDelay, Float32, 5.0)
 CON_ZR_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, Int32, CS_TEAM_SPECTATOR)
 CON_ZR_CVAR(zr_infinite_ammo, "Whether to enable infinite reserve ammo on weapons", g_bInfiniteAmmo, Bool, true)
@@ -716,31 +716,6 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 	}
 }
 
-std::vector<SpawnPoint*> ZR_GetValidSpawns()
-{
-	std::vector<SpawnPoint*> spawns;
-	CUtlVector<SpawnPoint*>* CTSpawnPoints = g_pGameRules->m_CTSpawnPoints();
-	CUtlVector<SpawnPoint*>* TerroristSpawnPoints = g_pGameRules->m_TerroristSpawnPoints();
-
-	FOR_EACH_VEC(*CTSpawnPoints, i)
-	{
-		SpawnPoint* spawn = (*CTSpawnPoints)[i];
-
-		if (spawn->m_bEnabled())
-			spawns.push_back(spawn);
-	}
-
-	FOR_EACH_VEC(*TerroristSpawnPoints, i)
-	{
-		SpawnPoint* spawn = (*TerroristSpawnPoints)[i];
-
-		if (spawn->m_bEnabled())
-			spawns.push_back(spawn);
-	}
-
-	return spawns;
-}
-
 // make players who've been picked as MZ recently less likely to be picked again
 // store a variable in ZEPlayer, which gets initialized with value 100 if they are picked to be a mother zombie
 // the value represents a % chance of the player being skipped next time they are picked to be a mother zombie
@@ -775,12 +750,13 @@ void ZR_InitialInfection()
 	bool vecIsMZ[MAXPLAYERS] = { false };
 
 	// get spawn points
-	std::vector<SpawnPoint*> spawns;
+	CUtlVector<SpawnPoint*> spawns;
 	if (g_iInfectSpawnType == EZRSpawnType::RESPAWN)
 	{
-		spawns = ZR_GetValidSpawns();
+		spawns.AddVectorToTail(*g_pGameRules->m_CTSpawnPoints());
+		spawns.AddVectorToTail(*g_pGameRules->m_TerroristSpawnPoints());
 
-		if (!spawns.size())
+		if (!spawns.Count())
 		{
 			ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX"There are no spawns!");
 			Panic("There are no spawns!\n");
@@ -836,7 +812,7 @@ void ZR_InitialInfection()
 			// pick random spawn point
 			if (g_iInfectSpawnType == EZRSpawnType::RESPAWN)
 			{
-				randomindex = rand() % spawns.size();
+				randomindex = rand() % spawns.Count();
 				pPawn->SetAbsOrigin(spawns[randomindex]->GetAbsOrigin());
 				pPawn->SetAbsRotation(spawns[randomindex]->GetAbsRotation());
 			}
@@ -1186,11 +1162,13 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 		return;
 	}
 
-	std::vector<SpawnPoint*> spawns = ZR_GetValidSpawns();
+	CUtlVector<SpawnPoint*> spawns;
+	spawns.AddVectorToTail(*g_pGameRules->m_CTSpawnPoints());
+	spawns.AddVectorToTail(*g_pGameRules->m_TerroristSpawnPoints());
 
 	// Let's be real here, this should NEVER happen
 	// But I ran into this when I switched to the real FindEntityByClassname and forgot to insert a *
-	if (spawns.size() == 0)
+	if (spawns.Count() == 0)
 	{
 		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX"There are no spawns!");
 		Panic("ztele used while there are no spawns!\n");
@@ -1198,7 +1176,7 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 	}
 
 	//Pick and get position of random spawnpoint
-	int randomindex = rand() % spawns.size();
+	int randomindex = rand() % spawns.Count();
 	Vector spawnpos = spawns[randomindex]->GetAbsOrigin();
 
 	//Here's where the mess starts
