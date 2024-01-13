@@ -38,6 +38,12 @@ CMemPatch g_CommonPatches[] =
 	CMemPatch("CheckJumpButtonWater", "FixWaterFloorJump"),
 	CMemPatch("CategorizeUnderwater", "CategorizeUnderwater"),
 	CMemPatch("WaterLevelGravity", "WaterLevelGravity"),
+	CMemPatch("BotNavIgnore", "BotNavIgnore"),
+#ifndef _WIN32
+	// Linux checks for the nav mesh in each bot_add command, so we patch 3 times
+	CMemPatch("BotNavIgnore", "BotNavIgnore"),
+	CMemPatch("BotNavIgnore", "BotNavIgnore"),
+#endif
 };
 
 CMemPatch g_ClientPatches[] =
