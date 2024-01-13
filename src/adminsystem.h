@@ -146,10 +146,9 @@ public:
 	bool ApplyInfractions(ZEPlayer *player);
 	bool FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type);
 	CAdmin *FindAdmin(uint64 iSteamID);
-
-private:
 	uint64 ParseFlags(const char* pszFlags);
 
+private:
 	CUtlVector<CAdmin> m_vecAdmins;
 	CUtlVector<CInfractionBase*> m_vecInfractions;
 };
