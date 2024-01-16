@@ -25,6 +25,7 @@
 #include "ctakedamageinfo.h"
 #include "mathlib/vector.h"
 #include "ehandle.h"
+#include "entitykeyvalues.h"
 #include "../../gameconfig.h"
 
 extern CGameConfig *g_GameConfig;
@@ -173,9 +174,9 @@ public:
 	// A double pointer to entity VData is available 8 bytes past m_nSubclassID, if applicable
 	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 8); }
 
-	void DispatchSpawn()
+	void DispatchSpawn(CEntityKeyValues *pEntityKeyValues = nullptr)
 	{
-		addresses::DispatchSpawn(this, 0);
+		addresses::DispatchSpawn(this, pEntityKeyValues);
 	}
 
 	void SetEntityName(const char *pName)

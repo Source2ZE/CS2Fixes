@@ -29,6 +29,7 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
 #include "entity/ccsweaponbase.h"
+#include "entity/cparticlesystem.h"
 #include "playermanager.h"
 #include "adminsystem.h"
 #include "ctimer.h"
@@ -538,6 +539,48 @@ CON_COMMAND_CHAT(setorigin, "set your origin")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your origin is now %f %f %f", vecNewOrigin.x, vecNewOrigin.y, vecNewOrigin.z);
 }
 
+
+CON_COMMAND_CHAT(particle, "spawn a particle")
+{
+	if (!player)
+		return;
+
+	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
+	vecAbsOrigin.z += 64.0f;
+
+	CParticleSystem *particle = (CParticleSystem*)CreateEntityByName("info_particle_system");
+
+	particle->m_bStartActive(true);
+	particle->m_iszEffectName(args[1]);
+	particle->Teleport(&vecAbsOrigin, nullptr, nullptr);
+
+	particle->DispatchSpawn();
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have spawned a particle with effect name: %s", particle->m_iszEffectName().String());
+	Message("You have spawned a particle with effect name: %s\n", particle->m_iszEffectName().String());
+}
+
+CON_COMMAND_CHAT(particle_kv, "spawn a particle but using keyvalues to spawn")
+{
+	if (!player)
+		return;
+
+	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
+	vecAbsOrigin.z += 64.0f;
+
+	CParticleSystem *particle = (CParticleSystem *)CreateEntityByName("info_particle_system");
+
+	CEntityKeyValues *pKeyValues = new CEntityKeyValues();
+
+	pKeyValues->SetString("effect_name", args[1]);
+	pKeyValues->SetBool("start_active", true);
+	pKeyValues->SetVector("origin", vecAbsOrigin);
+
+	particle->DispatchSpawn(pKeyValues);
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have spawned a particle using keyvalues with effect name: %s", particle->m_iszEffectName().String());
+	Message("You have spawned a particle using keyvalues with effect name: %s\n", particle->m_iszEffectName().String());
+}
 CON_COMMAND_CHAT(getstats, "get your stats")
 {
 	if (!player)
