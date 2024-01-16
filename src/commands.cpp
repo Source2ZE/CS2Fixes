@@ -581,6 +581,26 @@ CON_COMMAND_CHAT(particle_kv, "spawn a particle but using keyvalues to spawn")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have spawned a particle using keyvalues with effect name: %s", particle->m_iszEffectName().String());
 	Message("You have spawned a particle using keyvalues with effect name: %s\n", particle->m_iszEffectName().String());
 }
+
+CON_COMMAND_CHAT(emitsound, "emit a sound from the entity under crosshair")
+{
+	if (!player)
+		return;
+
+	Z_CBaseEntity *pEntity = UTIL_FindPickerEntity(player);
+
+	if (!pEntity)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No entity found");
+		return;
+	}
+
+	pEntity->EmitSound(args[1]);
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Playing %s on %s", args[1], pEntity->GetClassname());
+	Message("Playing %s on %s", args[1], pEntity->GetClassname());
+}
+
 CON_COMMAND_CHAT(getstats, "get your stats")
 {
 	if (!player)

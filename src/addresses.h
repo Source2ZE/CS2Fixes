@@ -79,4 +79,5 @@ namespace addresses
 	inline Z_CBaseEntity *(FASTCALL* CreateEntityByName)(const char* className, int iForceEdictIndex);
 	inline void(FASTCALL* DispatchSpawn)(Z_CBaseEntity* pEntity, CEntityKeyValues *pEntityKeyValues);
 	inline void(FASTCALL* CEntityIdentity_SetEntityName)(CEntityIdentity *pEntity, const char *pName);
+	inline void(FASTCALL *CBaseEntity_EmitSoundParams)(Z_CBaseEntity *pEntity, const char *pszSound, int nPitch, float flVolume, float flDelay);
 }

@@ -66,6 +66,7 @@ bool addresses::Initialize(CGameConfig *g_GameConfig)
 	RESOLVE_SIG(g_GameConfig, "CreateEntityByName", addresses::CreateEntityByName);
 	RESOLVE_SIG(g_GameConfig, "DispatchSpawn", addresses::DispatchSpawn);
 	RESOLVE_SIG(g_GameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
+	RESOLVE_SIG(g_GameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
 
 	return true;
 }

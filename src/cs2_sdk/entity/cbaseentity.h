@@ -183,6 +183,12 @@ public:
 	{
 		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
 	}
+
+	// Emit a sound event
+	void EmitSound(const char *pszSound, int nPitch = 100, float flVolume = 1.0, float flDelay = 0.0)
+	{
+		addresses::CBaseEntity_EmitSoundParams(this, pszSound, nPitch, flVolume, flDelay);
+	}
 };
 
 class SpawnPoint : public Z_CBaseEntity
