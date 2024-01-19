@@ -35,7 +35,7 @@ extern IVEngineServer2* g_pEngineServer2;
 extern CGlobalVars* gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IGameEventManager2* g_gameEventManager;
-extern float g_flUniversalTime;
+extern double g_flUniversalTime;
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast);
 bool ZR_CheckTeamWinConditions(int iTeamNum);
@@ -332,7 +332,7 @@ void CZRPlayerClassManager::ApplyDefaultZombieClass(CCSPlayerPawn *pPawn)
 	ApplyZombieClass(m_vecZombieDefaultClass[rand() % m_vecZombieDefaultClass.Count()], pPawn);
 }
 
-float CZRRegenTimer::s_flNextExecution;
+double CZRRegenTimer::s_flNextExecution;
 CZRRegenTimer *CZRRegenTimer::s_vecRegenTimers[MAXPLAYERS];
 
 bool CZRRegenTimer::Execute()

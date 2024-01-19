@@ -60,7 +60,7 @@
 
 #include "tier0/memdbgon.h"
 
-float g_flUniversalTime;
+double g_flUniversalTime;
 float g_flLastTickedTime;
 bool g_bHasTicked;
 
