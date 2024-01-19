@@ -559,6 +559,8 @@ void SetupCTeams()
 void ZR_OnRoundStart(IGameEvent* pEvent)
 {
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
+	if (g_iInfectSpawnType != EZRSpawnType::RESPAWN)
+		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Warning! Zombies will be spawning between humans!");
 	SetupRespawnToggler();
 	CZRRegenTimer::RemoveAllTimers();
 }
@@ -857,7 +859,10 @@ void ZR_StartInitialCountdown()
 		if (g_iInfectionCountDown <= 60)
 		{
 			char message[256];
-			V_snprintf(message, sizeof(message), "First infection in \7%i %s\1!", g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
+			if (g_iInfectSpawnType != EZRSpawnType::RESPAWN)
+				V_snprintf(message, sizeof(message), "Warning! Zombies will be spawning between humans!\nFirst infection in \7%i %s\1!", g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
+			else
+				V_snprintf(message, sizeof(message), "First infection in \7%i %s\1!", g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
 
 			ClientPrintAll(HUD_PRINTCENTER, message);
 			if (g_iInfectionCountDown % 5 == 0)
