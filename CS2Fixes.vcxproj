@@ -211,6 +211,7 @@
     <ClInclude Include="src\cs2_sdk\entity\cparticlesystem.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h" />
     <ClInclude Include="src\cs2_sdk\entity\globaltypes.h" />
+    <ClInclude Include="src\cs2_sdk\entity\lights.h" />
     <ClInclude Include="src\cs2_sdk\entity\services.h" />
     <ClInclude Include="src\cs2_sdk\schema.h" />
     <ClInclude Include="src\cdetour.h" />

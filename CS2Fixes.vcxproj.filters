@@ -110,6 +110,12 @@
     <ClCompile Include="src\entitylistener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sdk\tier1\keyvalues3.cpp">
+      <Filter>Source Files\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="sdk\entity2\entitykeyvalues.cpp">
+      <Filter>Source Files\sdk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -222,6 +228,12 @@
     </ClInclude>
     <ClInclude Include="src\entitylistener.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\lights.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\cparticlesystem.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

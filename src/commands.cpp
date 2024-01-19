@@ -30,6 +30,7 @@
 #include "entity/cbasemodelentity.h"
 #include "entity/ccsweaponbase.h"
 #include "entity/cparticlesystem.h"
+#include "entity/lights.h"
 #include "playermanager.h"
 #include "adminsystem.h"
 #include "ctimer.h"
@@ -441,6 +442,60 @@ CON_COMMAND_CHAT(myuid, "test")
 	int iPlayer = player->GetPlayerSlot();
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your userid is %i, slot: %i, retrieved slot: %i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get(), iPlayer, g_playerManager->GetSlotFromUserId(g_pEngineServer2->GetPlayerUserId(iPlayer).Get()));
+}
+
+CON_COMMAND_CHAT(myhandle, "test")
+{
+	if (!player)
+		return;
+
+	int entry = player->GetHandle().GetEntryIndex();
+	int serial = player->GetHandle().GetSerialNumber();
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "entry index: %d    serial number: %d", entry, serial);
+}
+
+CON_COMMAND_CHAT(fl, "flashlight")
+{
+	if (!player)
+		return;
+
+	CCSPlayerPawn *pPawn = (CCSPlayerPawn *)player->GetPawn();
+
+	auto ptr = pPawn->m_pMovementServices->m_nButtons().m_pButtonStates();
+
+	Vector origin = pPawn->GetAbsOrigin();
+	Vector forward;
+	AngleVectors(pPawn->m_angEyeAngles(), &forward);
+
+	origin.z += 64.0f;
+	origin += forward * 54.0f; // The minimum distance such that an awp wouldn't block the light
+
+	CBarnLight *pLight = (CBarnLight *)CreateEntityByName("light_barn");
+
+	pLight->m_bEnabled = true;
+	pLight->m_Color->SetColor(255, 255, 255, 255);
+	pLight->m_flBrightness = 1.0f;
+	pLight->m_flRange = 2048.0f;
+	pLight->m_flSoftX = 1.0f;
+	pLight->m_flSoftY = 1.0f;
+	pLight->m_flSkirt = 0.5f;
+	pLight->m_flSkirtNear = 1.0f;
+	pLight->m_vSizeParams->Init(45.0f, 45.0f, 0.03f);
+	pLight->m_nCastShadows = 1;
+	pLight->m_nDirectLight = 3;
+	pLight->Teleport(&origin, &pPawn->m_angEyeAngles(), nullptr);
+
+	// Have to use keyvalues for this since the schema prop is a resource handle
+	CEntityKeyValues *pKeyValues = new CEntityKeyValues();
+	pKeyValues->SetString("lightcookie", "materials/effects/lightcookies/flashlight.vtex");
+
+	pLight->DispatchSpawn(pKeyValues);
+
+	variant_t val("!player");
+	pLight->AcceptInput("SetParent", &val);
+	variant_t val2("clip_limit");
+	pLight->AcceptInput("SetParentAttachmentMaintainOffset", &val2);
 }
 
 CON_COMMAND_CHAT(message, "message someone")
