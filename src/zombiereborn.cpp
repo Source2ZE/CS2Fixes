@@ -262,9 +262,6 @@ void split(const std::string& s, char delim, Out result)
 
 void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn)
 {
-	variant_t strSkin(pClass->iSkin);
-	variant_t flScale(pClass->flScale);
-
 	Color clrRender;
 	V_StringToColor(pClass->szColor.c_str(), clrRender);
 
@@ -272,12 +269,12 @@ void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn
 	pPawn->m_iHealth = pClass->iHealth;
 	pPawn->SetModel(pClass->szModelPath.c_str());
 	pPawn->m_clrRender = clrRender;
-	pPawn->AcceptInput("Skin", nullptr, nullptr, &strSkin);
+	pPawn->AcceptInput("Skin", pClass->iSkin);
 	pPawn->m_flVelocityModifier = pClass->flSpeed;
 	pPawn->m_flGravityScale = pClass->flGravity;
 
 	// This has to be done a bit later
-	UTIL_AddEntityIOEvent(pPawn, "SetScale", nullptr, nullptr, &flScale);
+	UTIL_AddEntityIOEvent(pPawn, "SetScale", nullptr, nullptr, pClass->flScale);
 }
 
 ZRHumanClass* CZRPlayerClassManager::GetHumanClass(const char *pszClassName)
@@ -414,13 +411,10 @@ void SetupAmmoReplenish()
 	{
 		if (!g_bInfiniteAmmo)
 			return 5.0f;
-
-		// 999 will be automatically clamped to the weapons m_nPrimaryReserveAmmoMax
-		variant_t value("999");
 		Z_CBaseEntity* pTarget = nullptr;
 
 		while (pTarget = UTIL_FindEntityByClassname(pTarget, "weapon_*"))
-			pTarget->AcceptInput("SetReserveAmmoAmount", nullptr, nullptr, &value);
+			pTarget->AcceptInput("SetReserveAmmoAmount", "999"); // 999 will be automatically clamped to the weapons m_nPrimaryReserveAmmoMax
 
 		return 5.0f;
 	});

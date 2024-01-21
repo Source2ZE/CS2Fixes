@@ -730,8 +730,6 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 		return;
 	}
 
-	variant_t value(args[3]);
-
 	int iFoundEnts = 0;
 
 	Z_CBaseEntity *pTarget = nullptr;
@@ -744,7 +742,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 
 		if (pTarget)
 		{
-			pTarget->AcceptInput(args[2], player, player, &value);
+			pTarget->AcceptInput(args[2], args[3], player, player);
 			iFoundEnts++;
 		}
 	}
@@ -756,7 +754,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 
 		if (pTarget)
 		{
-			pTarget->AcceptInput(args[2], player, player, &value);
+			pTarget->AcceptInput(args[2], args[3], player, player);
 			iFoundEnts++;
 		}
 	}
@@ -765,7 +763,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 	{
 		while (pTarget = UTIL_FindEntityByName(pTarget, args[1], player))
 		{
-			pTarget->AcceptInput(args[2], player, player, &value);
+			pTarget->AcceptInput(args[2], args[3], player, player);
 			iFoundEnts++;
 		}
 	}
@@ -774,7 +772,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 	{
 		while (pTarget = UTIL_FindEntityByClassname(pTarget, args[1]))
 		{
-			pTarget->AcceptInput(args[2], player, player, &value);
+			pTarget->AcceptInput(args[2], args[3], player, player);
 			iFoundEnts++;
 		}
 	}
@@ -805,8 +803,6 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "fire outputs at player pawns", ADMFLAG_RCON
 		return;
 	}
 
-	variant_t value(args[3]);
-
 	int iFoundEnts = 0;
 
 	for (int i = 0; i < iNumClients; i++)
@@ -816,7 +812,7 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "fire outputs at player pawns", ADMFLAG_RCON
 		if (!pTarget || !pTarget->GetPawn())
 			continue;
 
-		pTarget->GetPawn()->AcceptInput(args[2], player, player, &value);
+		pTarget->GetPawn()->AcceptInput(args[2], args[3], player, player);
 		iFoundEnts++;
 	}
 
@@ -843,8 +839,6 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "fire outputs at player controllers", 
 		return;
 	}
 
-	variant_t value(args[3]);
-
 	int iFoundEnts = 0;
 
 	for (int i = 0; i < iNumClients; i++)
@@ -854,7 +848,7 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "fire outputs at player controllers", 
 		if (!pTarget)
 			continue;
 
-		pTarget->AcceptInput(args[2], player, player, &value);
+		pTarget->AcceptInput(args[2], args[3], player, player);
 		iFoundEnts++;
 	}
 

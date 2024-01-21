@@ -40,4 +40,4 @@ Z_CBaseEntity* CreateEntityByName(const char* className);
 // The queue is processed after all entities are simulated every frame
 void UTIL_AddEntityIOEvent(CEntityInstance *pTarget, const char *pszInput,
 							CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr,
-							variant_t *value = nullptr, float flDelay = 0.0f);
+						   variant_t value = variant_t(""), float flDelay = 0.0f);
