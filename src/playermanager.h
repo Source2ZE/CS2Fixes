@@ -33,6 +33,7 @@ enum class ETargetType {
 	RANDOM_T,
 	RANDOM_CT,
 	ALL,
+	SPECTATOR,
 	T,
 	CT,
 };

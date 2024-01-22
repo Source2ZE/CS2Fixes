@@ -427,6 +427,8 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 		targetType = ETargetType::T;
 	else if (!V_stricmp(target, "@ct"))
 		targetType = ETargetType::CT;
+	else if (!V_stricmp(target, "@spec"))
+		targetType = ETargetType::SPECTATOR;
 	else if (!V_stricmp(target, "@random"))
 		targetType = ETargetType::RANDOM;
 	else if (!V_stricmp(target, "@randomt"))
@@ -453,7 +455,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			clients[iNumClients++] = i;
 		}
 	}
-	else if (targetType == ETargetType::T || targetType == ETargetType::CT)
+	else if (targetType >= ETargetType::SPECTATOR)
 	{
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
@@ -465,13 +467,13 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : CS_TEAM_CT))
+			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : targetType == ETargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
 				continue;
 
 			clients[iNumClients++] = i;
 		}
 	}
-	else if (targetType >= ETargetType::RANDOM)
+	else if (targetType >= ETargetType::RANDOM && targetType <= ETargetType::RANDOM_CT)
 	{
 		int attempts = 0;
 
