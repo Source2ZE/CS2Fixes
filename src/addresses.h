@@ -80,4 +80,5 @@ namespace addresses
 	inline void(FASTCALL* DispatchSpawn)(Z_CBaseEntity* pEntity, CEntityKeyValues *pEntityKeyValues);
 	inline void(FASTCALL* CEntityIdentity_SetEntityName)(CEntityIdentity *pEntity, const char *pName);
 	inline void(FASTCALL *CBaseEntity_EmitSoundParams)(Z_CBaseEntity *pEntity, const char *pszSound, int nPitch, float flVolume, float flDelay);
+	inline void(FASTCALL *CBaseEntity_SetParent)(Z_CBaseEntity *pEntity, Z_CBaseEntity *pNewParent, CUtlStringToken nBoneOrAttachName, matrix3x4a_t *pOffsetTransform);
 }

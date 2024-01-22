@@ -189,6 +189,12 @@ public:
 	{
 		addresses::CBaseEntity_EmitSoundParams(this, pszSound, nPitch, flVolume, flDelay);
 	}
+
+	// This was needed so we can parent to nameless entities using pointers
+	void SetParent(Z_CBaseEntity *pNewParent)
+	{
+		addresses::CBaseEntity_SetParent(this, pNewParent, 0, nullptr);
+	}
 };
 
 class SpawnPoint : public Z_CBaseEntity
