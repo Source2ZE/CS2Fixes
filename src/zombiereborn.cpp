@@ -596,7 +596,7 @@ void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamag
 	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
-void ZR_ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage)
+void ZR_ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage, bool bMolotov)
 {
 	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(pProjectile->GetClassname());
 	if (!pWeapon)
@@ -607,6 +607,10 @@ void ZR_ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVict
 	vecDisplacement.z += 36;
 	VectorNormalize(vecDisplacement);
 	Vector vecKnockback = vecDisplacement;
+
+	if (bMolotov)
+		vecKnockback.z = 0;
+
 	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale);
 	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
@@ -886,7 +890,7 @@ bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 		// inflictor class from grenade damage is actually hegrenade_projectile
 		if (!V_strncmp(pszInflictorClass, "hegrenade", 9) || !V_strncmp(pszInflictorClass, "inferno", 7))
-			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage);
+			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage, !V_strncmp(pszInflictorClass, "inferno", 7));
 	}
 	return false;
 }
