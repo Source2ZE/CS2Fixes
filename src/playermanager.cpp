@@ -23,6 +23,7 @@
 #include "adminsystem.h"
 #include "map_votes.h"
 #include "entity/ccsplayercontroller.h"
+#include "utils/entity.h"
 #include "ctime"
 
 #define VPROF_ENABLED
@@ -66,6 +67,82 @@ void ZEPlayer::CheckAdmin()
 bool ZEPlayer::IsAdminFlagSet(uint64 iFlag)
 {
 	return !iFlag || (m_iAdminFlags & iFlag);
+}
+
+static bool g_bFlashLightShadows = true;
+static float g_flFlashLightDistance = 54.0f; // The minimum distance such that an awp wouldn't block the light
+
+CON_COMMAND_F(cs2f_flashlight_shadows, "Whether to enable flashlight shadows", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bFlashLightShadows);
+	else
+		g_bFlashLightShadows = V_StringToBool(args[1], true);
+}
+CON_COMMAND_F(cs2f_flashlight_distance, "How far flashlights should be from the player's head", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %.2f\n", args[0], g_flFlashLightDistance);
+	else
+		g_flFlashLightDistance = V_StringToFloat32(args[1], 0.75f);
+}
+
+void ZEPlayer::SpawnFlashLight()
+{
+	if (GetFlashLight())
+		return;
+
+	CCSPlayerPawn *pPawn = (CCSPlayerPawn *)CCSPlayerController::FromSlot(GetPlayerSlot())->GetPawn();
+
+	Vector origin = pPawn->GetAbsOrigin();
+	Vector forward;
+	AngleVectors(pPawn->m_angEyeAngles(), &forward);
+
+	origin.z += 64.0f;
+	origin += forward * g_flFlashLightDistance;
+
+	CBarnLight *pLight = (CBarnLight *)CreateEntityByName("light_barn");
+
+	pLight->m_bEnabled = true;
+	pLight->m_Color->SetColor(255, 255, 255, 255);
+	pLight->m_flBrightness = 1.0f;
+	pLight->m_flRange = 2048.0f;
+	pLight->m_flSoftX = 1.0f;
+	pLight->m_flSoftY = 1.0f;
+	pLight->m_flSkirt = 0.5f;
+	pLight->m_flSkirtNear = 1.0f;
+	pLight->m_vSizeParams->Init(45.0f, 45.0f, 0.02f);
+	pLight->m_nCastShadows = g_bFlashLightShadows;
+	pLight->m_nDirectLight = 3;
+	pLight->Teleport(&origin, &pPawn->m_angEyeAngles(), nullptr);
+
+	// Have to use keyvalues for this since the schema prop is a resource handle
+	CEntityKeyValues *pKeyValues = new CEntityKeyValues();
+	pKeyValues->SetString("lightcookie", "materials/effects/lightcookies/flashlight.vtex");
+
+	pLight->DispatchSpawn(pKeyValues);
+
+	pLight->SetParent(pPawn);
+	pLight->AcceptInput("SetParentAttachmentMaintainOffset", "axis_of_intent");
+
+	SetFlashLight(pLight);
+}
+
+void ZEPlayer::ToggleFlashLight()
+{
+	CBarnLight *pLight = GetFlashLight();
+
+	// Play the "click" sound
+	g_pEngineServer2->ClientCommand(GetPlayerSlot(), "play sounds/common/talk.vsnd");
+
+	// Create a flashlight if we don't have one, and don't bother with the input since it spawns enabled
+	if (!pLight)
+	{
+		SpawnFlashLight();
+		return;
+	}
+
+	pLight->AcceptInput(pLight->m_bEnabled() ? "Disable" : "Enable");
 }
 
 // CONVAR_TODO
@@ -232,6 +309,36 @@ void CPlayerManager::CheckInfractions()
 	}
 
 	g_pAdminSystem->SaveInfractions();
+}
+
+static bool g_bFlashLightEnable = false;
+
+CON_COMMAND_F(cs2f_flashlight_enable, "Whether to enable flashlights", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bFlashLightEnable);
+	else
+		g_bFlashLightEnable = V_StringToBool(args[1], true);
+}
+
+void CPlayerManager::FlashLightThink()
+{
+	if (!g_bFlashLightEnable)
+		return;
+
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		CCSPlayerController *pPlayer = CCSPlayerController::FromSlot(i);
+
+		if (!pPlayer || !pPlayer->m_bPawnIsAlive())
+			continue;
+
+		uint64 *pButtons = pPlayer->GetPawn()->m_pMovementServices->m_nButtons().m_pButtonStates();
+
+		// Check both to make sure flashlight is only toggled when the player presses the key
+		if ((pButtons[0] & IN_LOOK_AT_WEAPON) && (pButtons[1] & IN_LOOK_AT_WEAPON))
+			pPlayer->GetZEPlayer()->ToggleFlashLight();
+	}
 }
 
 // CONVAR_TODO

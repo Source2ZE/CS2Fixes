@@ -638,7 +638,7 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount, CBitVec<16384> &unionTransmitEdicts,
 								const Entity2Networkable_t **pNetworkables, const uint16 *pEntityIndicies, int nEntities)
 {
-	if (!g_bEnableHide || !g_pEntitySystem)
+	if (!g_pEntitySystem)
 		return;
 
 	VPROF_ENTER_SCOPE(__FUNCTION__);
@@ -666,7 +666,16 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			CCSPlayerController* pController = CCSPlayerController::FromSlot(j);
 
 			// Always transmit to themselves
-			if (!pController || j == iPlayerSlot)
+			if (!pController || !pController->IsConnected() || j == iPlayerSlot)
+				continue;
+
+			CBarnLight *pFlashLight = g_playerManager->GetPlayer(j)->GetFlashLight();
+
+			// Don't transmit other players' flashlights
+			if (pFlashLight)
+				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
+
+			if (!g_bEnableHide)
 				continue;
 
 			auto pPawn = pController->GetPawn();

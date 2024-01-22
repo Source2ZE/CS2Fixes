@@ -23,6 +23,7 @@
 #include "steam/steamclientpublic.h"
 #include <playerslot.h>
 #include "bitvec.h"
+#include "entity/lights.h"
 
 enum class ETargetType {
 	NONE,
@@ -97,6 +98,7 @@ public:
 	void SetInGame(bool bInGame) { m_bInGame = bInGame; }
 	void SetImmunity(int iMZImmunity) { m_iMZImmunity = iMZImmunity; }
 	void SetNominateTime(float flCurtime) { m_flNominateTime = flCurtime; }
+	void SetFlashLight(CBarnLight *pLight) { m_hFlashLight.Set(pLight); }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -115,10 +117,13 @@ public:
 	bool IsInGame() { return m_bInGame; }
 	int GetImmunity() { return m_iMZImmunity; }
 	float GetNominateTime() { return m_flNominateTime; }
+	CBarnLight *GetFlashLight() { return m_hFlashLight.Get(); }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
 	void CheckInfractions();
+	void SpawnFlashLight();
+	void ToggleFlashLight();
 
 private:
 	bool m_bAuthenticated;
@@ -146,6 +151,7 @@ private:
 	bool m_bInGame;
 	int m_iMZImmunity;
 	float m_flNominateTime;
+	CHandle<CBarnLight> m_hFlashLight;
 };
 
 class CPlayerManager
@@ -169,6 +175,7 @@ public:
 	void OnLateLoad();
 	void TryAuthenticate();
 	void CheckInfractions();
+	void FlashLightThink();
 	void CheckHideDistances();
 	CPlayerSlot GetSlotFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromUserId(uint16 userid);

@@ -24,14 +24,15 @@
 
 bool InitGameSystems();
 
-class CResourcePrecacheSystem : public CBaseGameSystem
+class CGameSystem : public CBaseGameSystem
 {
 public:
 	GS_EVENT(BuildGameSessionManifest);
+	GS_EVENT(ServerPreEntityThink);
 	
 	void Shutdown() override
 	{
-		Message("CResourcePrecacheSystem::Shutdown\n");
+		Message("CGameSystem::Shutdown\n");
 		delete sm_Factory;
 	}
 
