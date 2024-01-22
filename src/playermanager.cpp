@@ -71,6 +71,7 @@ bool ZEPlayer::IsAdminFlagSet(uint64 iFlag)
 
 static bool g_bFlashLightShadows = true;
 static float g_flFlashLightDistance = 54.0f; // The minimum distance such that an awp wouldn't block the light
+static std::string g_sFlashLightAttachment = "axis_of_intent";
 
 CON_COMMAND_F(cs2f_flashlight_shadows, "Whether to enable flashlight shadows", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
@@ -85,6 +86,13 @@ CON_COMMAND_F(cs2f_flashlight_distance, "How far flashlights should be from the 
 		Msg("%s %.2f\n", args[0], g_flFlashLightDistance);
 	else
 		g_flFlashLightDistance = V_StringToFloat32(args[1], 0.75f);
+}
+CON_COMMAND_F(cs2f_flashlight_attachment, "Which attachment to parent a flashlight to", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %s\n", args[0], g_sFlashLightAttachment.c_str());
+	else
+		g_sFlashLightAttachment = args[1];
 }
 
 void ZEPlayer::SpawnFlashLight()
@@ -123,7 +131,7 @@ void ZEPlayer::SpawnFlashLight()
 	pLight->DispatchSpawn(pKeyValues);
 
 	pLight->SetParent(pPawn);
-	pLight->AcceptInput("SetParentAttachmentMaintainOffset", "axis_of_intent");
+	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_sFlashLightAttachment.c_str());
 
 	SetFlashLight(pLight);
 }
