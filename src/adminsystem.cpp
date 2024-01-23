@@ -29,7 +29,10 @@
 #include "detours.h"
 #include "discord.h"
 #include "utils/entity.h"
+#include "entity/cbaseentity.h"
 #include "entity/cgamerules.h"
+#include "gamesystem.h"
+#include <vector>
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
@@ -961,6 +964,138 @@ CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map d
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "shortened map time %i minutes.", pszCommandPlayerName, iExtendTime * -1);
 	else
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "extended map time %i minutes.", pszCommandPlayerName, iExtendTime);
+}
+
+// CONVAR_TODO
+// FAKECONVAR_TODO
+// possibly to be moved to a better place, too
+// or not made a cvar at all
+std::string g_sBeaconParticle = "particles/admin_beacon.vpcf";
+CON_COMMAND_F(cs2f_admin_beacon_particle, ".vpcf file to be precached and used for admin beacon", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+    if (args.ArgC() < 2)
+        Msg("%s %s\n", args[0], g_sBeaconParticle.c_str());
+    else
+        g_sBeaconParticle = args[1];
+}
+
+static int g_aiBeaconSerial[64];
+static CHandle<Z_CBaseEntity> g_ahBeaconEntities[64];
+
+void PrecacheAdminBeaconParticle(IEntityResourceManifest* pResourceManifest)
+{
+	pResourceManifest->AddResource(g_sBeaconParticle.c_str());
+}
+
+void KillBeacon(int playerSlot)
+{
+	g_aiBeaconSerial[playerSlot] = 0;
+
+	Z_CBaseEntity* particle = g_ahBeaconEntities[playerSlot].Get();
+
+	if (particle)
+		particle->AcceptInput("Kill");
+}
+
+void CreateBeacon(int playerSlot)
+{
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(playerSlot);
+
+	Vector vecAbsOrigin = pTarget->GetPawn()->GetAbsOrigin();
+
+	vecAbsOrigin.z += 10;
+
+	Z_CBaseEntity* particle = CreateEntityByName("info_particle_system");
+
+	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
+
+	pKeyValues->SetString("effect_name", "particles/admin_beacon.vpcf");
+	pKeyValues->SetVector("origin", vecAbsOrigin);
+	
+	particle->DispatchSpawn(pKeyValues);
+	particle->SetParent(pTarget->GetPawn());
+
+	g_ahBeaconEntities[playerSlot].Set(particle);
+
+	static int iSerialGen = 0;
+
+	g_aiBeaconSerial[playerSlot] = ++iSerialGen;
+	int iSerial = g_aiBeaconSerial[playerSlot];
+
+	new CTimer(0.0f, false, [playerSlot, iSerial]()
+	{
+		CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(playerSlot);
+		
+		if (!pPlayer || pPlayer->m_iTeamNum < CS_TEAM_T || !pPlayer->m_hPlayerPawn->IsAlive())
+		{
+			KillBeacon(playerSlot);
+			return -1.0f;
+		}
+
+		Z_CBaseEntity* pParticle = g_ahBeaconEntities[playerSlot].Get();
+
+		if (!pParticle || iSerial != g_aiBeaconSerial[playerSlot])
+			return -1.0f;
+
+		pParticle->AcceptInput("Start");
+		// slightly delayed Stop input so particle effect can be replayed
+		new CTimer(0.05f, false, [playerSlot]()
+		{
+			Z_CBaseEntity* particle = g_ahBeaconEntities[playerSlot].Get();
+			if (particle)
+				particle->AcceptInput("Stop");
+			return -1.0f;
+		});
+		// }
+
+		return 1.0f;
+	});
+}
+
+void PerformBeacon(int playerSlot)
+{
+	if (g_aiBeaconSerial[playerSlot] == 0)
+		CreateBeacon(playerSlot);
+	else
+		KillBeacon(playerSlot);
+}
+
+CON_COMMAND_CHAT_FLAGS(beacon, "Toggle beacon on a player", ADMFLAG_GENERIC)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !beacon <name>");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		PerformBeacon(pSlots[i]);
+
+		if (nType < ETargetType::ALL)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "toggled beacon on");
+	}
+
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "toggled beacon on");
 }
 
 bool CAdminSystem::LoadAdmins()

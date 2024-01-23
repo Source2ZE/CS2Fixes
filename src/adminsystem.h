@@ -155,3 +155,5 @@ private:
 };
 
 extern CAdminSystem *g_pAdminSystem;
+
+void PrecacheAdminBeaconParticle(IEntityResourceManifest* pResourceManifest);
