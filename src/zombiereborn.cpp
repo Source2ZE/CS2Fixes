@@ -70,19 +70,19 @@ static int g_iDefaultWinnerTeam = CS_TEAM_SPECTATOR;
 static bool g_bInfiniteAmmo = true;
 static int g_iMZImmunityReduction = 20;
 
-CON_ZR_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, Bool, false)
-CON_ZR_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, Float32, 150.0f)
-CON_ZR_CVAR(zr_ztele_allow_humans, "Whether to allow humans to use ztele", g_bZteleHuman, Bool, false)
-CON_ZR_CVAR(zr_knockback_scale, "Global knockback scale", g_flKnockbackScale, Float32, 5.0f)
-CON_ZR_CVAR(zr_infect_spawn_type, "Type of Mother Zombies Spawn [0 = MZ spawn where they stand, 1 = MZ get teleported back to spawn on being picked]", g_iInfectSpawnType, Int32, EZRSpawnType::RESPAWN)
-CON_ZR_CVAR(zr_infect_spawn_time_min, "Minimum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMin, Int32, 15)
-CON_ZR_CVAR(zr_infect_spawn_time_max, "Maximum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMax, Int32, 15)
-CON_ZR_CVAR(zr_infect_spawn_mz_ratio, "Ratio of all Players to Mother Zombies to be spawned at round start", g_iInfectSpawnMZRatio, Int32, 7)
-CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to be spawned at round start", g_iInfectSpawnMinCount, Int32, 1)
-CON_ZR_CVAR(zr_respawn_delay, "Time before a zombie is automatically respawned, negative values (e.g. -1.0) disable this, note maps can still manually respawn at any time", g_flRespawnDelay, Float32, 5.0)
-CON_ZR_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, Int32, CS_TEAM_SPECTATOR)
-CON_ZR_CVAR(zr_infinite_ammo, "Whether to enable infinite reserve ammo on weapons", g_bInfiniteAmmo, Bool, true)
-CON_ZR_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, Int32, 20)
+FAKE_BOOL_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, false)
+FAKE_FLOAT_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, 150.0f)
+FAKE_BOOL_CVAR(zr_ztele_allow_humans, "Whether to allow humans to use ztele", g_bZteleHuman, false)
+FAKE_FLOAT_CVAR(zr_knockback_scale, "Global knockback scale", g_flKnockbackScale, 5.0f)
+FAKE_INT_CVAR(zr_infect_spawn_type, "Type of Mother Zombies Spawn [0 = MZ spawn where they stand, 1 = MZ get teleported back to spawn on being picked]", g_iInfectSpawnType, EZRSpawnType::RESPAWN)
+FAKE_INT_CVAR(zr_infect_spawn_time_min, "Minimum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMin, 15)
+FAKE_INT_CVAR(zr_infect_spawn_time_max, "Maximum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMax, 15)
+FAKE_INT_CVAR(zr_infect_spawn_mz_ratio, "Ratio of all Players to Mother Zombies to be spawned at round start", g_iInfectSpawnMZRatio, 7)
+FAKE_INT_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to be spawned at round start", g_iInfectSpawnMinCount, 1)
+FAKE_FLOAT_CVAR(zr_respawn_delay, "Time before a zombie is automatically respawned, negative values (e.g. -1.0) disable this, note maps can still manually respawn at any time", g_flRespawnDelay, 5.0f)
+FAKE_INT_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, CS_TEAM_SPECTATOR)
+FAKE_BOOL_CVAR(zr_infinite_ammo, "Whether to enable infinite reserve ammo on weapons", g_bInfiniteAmmo, true)
+FAKE_INT_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, 20)
 
 void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 {

@@ -48,3 +48,22 @@ void UnlockConCommands();
 
 void Message(const char *, ...);
 void Panic(const char *, ...);
+
+// need to replace with actual cvar someday
+#define FAKE_CVAR(name, description, variable_name, variable_type, variable_type_format, variable_default)				\
+	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)											\
+	{																													\
+		if (args.ArgC() < 2)																							\
+			Msg("%s " #variable_type_format "\n", args[0], variable_name);												\
+		else																											\
+			variable_name = V_StringTo##variable_type(args[1], variable_default);										\
+	}
+
+#define FAKE_INT_CVAR(name, description, variable_name, variable_default)												\
+	FAKE_CVAR(name, description, variable_name, Int32, %i, variable_default)
+
+#define FAKE_BOOL_CVAR(name, description, variable_name, variable_default)												\
+	FAKE_CVAR(name, description, variable_name, Bool, %i, variable_default)
+
+#define FAKE_FLOAT_CVAR(name, description, variable_name, variable_default)												\
+	FAKE_CVAR(name, description, variable_name, Float32, %f, variable_default)
