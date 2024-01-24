@@ -730,7 +730,7 @@ void ZR_InitialInfection()
 		if (!pController || pController->m_iTeamNum() != CS_TEAM_CT)
 			continue;
 
-		CCSPlayerController* pPawn = (CCSPlayerController*)pController->GetPawn();
+		CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
 		if (!pPawn || !pPawn->IsAlive())
 			continue;
 
