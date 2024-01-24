@@ -442,9 +442,6 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 		return -1.0f;
 	});
 
-	// Set amount of Extends left
-	g_iExtendsLeft = 1;
-
 	if (g_bEnableZR)
 		ZR_OnStartupServer();
 }
