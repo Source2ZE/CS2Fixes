@@ -849,7 +849,7 @@ void ZR_StartInitialCountdown()
 	g_iInfectionCountDown = g_iInfectSpawnTimeMin + (rand() % (g_iInfectSpawnTimeMax - g_iInfectSpawnTimeMin + 1));
 	new CTimer(0.0f, false, [iRoundNum]()
 	{
-		if (iRoundNum != g_iRoundNum)
+		if (iRoundNum != g_iRoundNum || g_ZRRoundState != EZRRoundState::ROUND_START)
 			return -1.0f;
 		if (g_iInfectionCountDown <= 0)
 		{
@@ -1223,4 +1223,120 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 
 		return -1.0f;
 	});
+}
+
+CON_COMMAND_CHAT_FLAGS(infect, "infect a player", ADMFLAG_GENERIC)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Usage: !infect <name>");
+		return;
+	}
+
+	if (g_ZRRoundState == EZRRoundState::ROUND_END)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "The round is already over!");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Target not found.");
+		return;
+	}
+
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pTarget->GetPawn();
+
+		if (pTarget->m_iTeamNum() != CS_TEAM_CT || !pPawn || !pPawn->IsAlive())
+		{
+			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "%s is not an alive human!", pTarget->GetPlayerName());
+			continue;
+		}
+
+		if (g_ZRRoundState == EZRRoundState::ROUND_START)
+			ZR_InfectMotherZombie(pTarget);
+		else
+			ZR_Infect(pTarget, pTarget, true);
+
+		if (nType < ETargetType::ALL)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as a mother zombie" : "", ZR_PREFIX);
+	}
+
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as mother zombies" : "", ZR_PREFIX);
+
+	// Note we skip MZ immunity & spawn TP code when first infection is manually triggered
+	if (g_ZRRoundState == EZRRoundState::ROUND_START)
+	{
+		if (g_flRespawnDelay < 0.0f)
+			g_bRespawnEnabled = false;
+
+		g_ZRRoundState = EZRRoundState::POST_INFECTION;
+	}
+}
+
+CON_COMMAND_CHAT_FLAGS(revive, "revive a player", ADMFLAG_GENERIC)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Usage: !revive <name>");
+		return;
+	}
+
+	if (g_ZRRoundState != EZRRoundState::POST_INFECTION)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "A round is not ongoing!");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Target not found.");
+		return;
+	}
+
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pTarget->GetPawn();
+
+		if (pTarget->m_iTeamNum() != CS_TEAM_T || !pPawn || !pPawn->IsAlive())
+		{
+			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "%s is not an alive zombie!", pTarget->GetPlayerName());
+			continue;
+		}
+
+		ZR_Cure(pTarget);
+
+		if (nType < ETargetType::ALL)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "revived", "", ZR_PREFIX);
+	}
+
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "revived", "", ZR_PREFIX);
 }
