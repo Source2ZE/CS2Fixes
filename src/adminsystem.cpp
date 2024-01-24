@@ -30,6 +30,7 @@
 #include "discord.h"
 #include "utils/entity.h"
 #include "entity/cbaseentity.h"
+#include "entity/cparticlesystem.h"
 #include "entity/cgamerules.h"
 #include "gamesystem.h"
 #include <vector>
@@ -967,9 +968,6 @@ CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map d
 }
 
 // CONVAR_TODO
-// FAKECONVAR_TODO
-// possibly to be moved to a better place, too
-// or not made a cvar at all
 std::string g_sBeaconParticle = "particles/admin_beacon.vpcf";
 CON_COMMAND_F(cs2f_admin_beacon_particle, ".vpcf file to be precached and used for admin beacon", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
@@ -979,8 +977,8 @@ CON_COMMAND_F(cs2f_admin_beacon_particle, ".vpcf file to be precached and used f
         g_sBeaconParticle = args[1];
 }
 
-static int g_aiBeaconSerial[64];
-static CHandle<Z_CBaseEntity> g_ahBeaconEntities[64];
+static int g_aiBeaconSerial[gpGlobals->maxClients];
+static CHandle<CParticleSystem> g_ahBeaconParticles[gpGlobals->maxClients];
 
 void PrecacheAdminBeaconParticle(IEntityResourceManifest* pResourceManifest)
 {
@@ -991,10 +989,20 @@ void KillBeacon(int playerSlot)
 {
 	g_aiBeaconSerial[playerSlot] = 0;
 
-	Z_CBaseEntity* particle = g_ahBeaconEntities[playerSlot].Get();
+	CParticleSystem* particle = g_ahBeaconParticles[playerSlot].Get();
 
 	if (particle)
-		particle->AcceptInput("Kill");
+	{
+		particle->AcceptInput("DestroyImmediately");
+		// delayed Kill because default particle is being silly and remains floating if not Destroyed first
+		new CTimer(0.02f, false, [playerSlot]()
+		{
+			CParticleSystem* particle = g_ahBeaconParticles[playerSlot].Get();
+			if (particle)
+				particle->AcceptInput("Kill");
+			return -1.0f;
+		});
+	}
 }
 
 void CreateBeacon(int playerSlot)
@@ -1005,24 +1013,29 @@ void CreateBeacon(int playerSlot)
 
 	vecAbsOrigin.z += 10;
 
-	Z_CBaseEntity* particle = CreateEntityByName("info_particle_system");
+	CParticleSystem* particle = (CParticleSystem*)CreateEntityByName("info_particle_system");
 
 	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
 
-	pKeyValues->SetString("effect_name", "particles/admin_beacon.vpcf");
+	pKeyValues->SetString("effect_name", g_sBeaconParticle.c_str());
+	pKeyValues->SetInt("tint_cp", 1);
 	pKeyValues->SetVector("origin", vecAbsOrigin);
+	// ugly angle change because default particle is rotated
+	if (strcmp(g_sBeaconParticle.c_str(), "particles/testsystems/test_cross_product.vpcf") == 0)
+		pKeyValues->SetQAngle("angles", QAngle(90, 0, 0));
 	
 	particle->DispatchSpawn(pKeyValues);
 	particle->SetParent(pTarget->GetPawn());
 
-	g_ahBeaconEntities[playerSlot].Set(particle);
+	g_ahBeaconParticles[playerSlot].Set(particle);
 
 	static int iSerialGen = 0;
 
 	g_aiBeaconSerial[playerSlot] = ++iSerialGen;
 	int iSerial = g_aiBeaconSerial[playerSlot];
 
-	new CTimer(0.0f, false, [playerSlot, iSerial]()
+	// timer persists through map change so serial reset on StartupServer is not needed
+	new CTimer(0.0f, true, [playerSlot, iSerial]()
 	{
 		CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(playerSlot);
 		
@@ -1032,21 +1045,34 @@ void CreateBeacon(int playerSlot)
 			return -1.0f;
 		}
 
-		Z_CBaseEntity* pParticle = g_ahBeaconEntities[playerSlot].Get();
-
-		if (!pParticle || iSerial != g_aiBeaconSerial[playerSlot])
+		// another beacon exists (or serial == 0 so beacon doesn't exist), stop timer and don't reset serial
+		if (iSerial != g_aiBeaconSerial[playerSlot])
 			return -1.0f;
 
-		pParticle->AcceptInput("Start");
-		// slightly delayed Stop input so particle effect can be replayed
-		new CTimer(0.05f, false, [playerSlot]()
+		CParticleSystem* pParticle = g_ahBeaconParticles[playerSlot].Get();
+
+		// no beacon particle exists (killed by map or new round/map change), so we reset serial
+		if (!pParticle)
 		{
-			Z_CBaseEntity* particle = g_ahBeaconEntities[playerSlot].Get();
+			g_aiBeaconSerial[playerSlot] = 0;
+			return -1.0f;
+		}
+
+		// team-based tint of Control Point 1
+		if (pPlayer->m_iTeamNum == CS_TEAM_T)
+			pParticle->m_clrTint->SetColor(185, 93, 63, 255);
+		else
+			pParticle->m_clrTint->SetColor(40, 100, 255, 255);
+		
+		pParticle->AcceptInput("Start");
+		// delayed DestroyImmediately input so particle effect can be replayed (and default particle doesn't bug out)
+		new CTimer(0.5f, false, [playerSlot]()
+		{
+			CParticleSystem* particle = g_ahBeaconParticles[playerSlot].Get();
 			if (particle)
-				particle->AcceptInput("Stop");
+				particle->AcceptInput("DestroyImmediately");
 			return -1.0f;
 		});
-		// }
 
 		return 1.0f;
 	});
