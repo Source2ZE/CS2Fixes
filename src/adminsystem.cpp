@@ -968,7 +968,7 @@ CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map d
 }
 
 // CONVAR_TODO
-std::string g_sBeaconParticle = "particles/admin_beacon.vpcf";
+std::string g_sBeaconParticle = "particles/testsystems/test_cross_product.vpcf";
 CON_COMMAND_F(cs2f_admin_beacon_particle, ".vpcf file to be precached and used for admin beacon", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
     if (args.ArgC() < 2)
@@ -977,8 +977,8 @@ CON_COMMAND_F(cs2f_admin_beacon_particle, ".vpcf file to be precached and used f
         g_sBeaconParticle = args[1];
 }
 
-static int g_aiBeaconSerial[gpGlobals->maxClients];
-static CHandle<CParticleSystem> g_ahBeaconParticles[gpGlobals->maxClients];
+static int g_aiBeaconSerial[64];
+static CHandle<CParticleSystem> g_ahBeaconParticles[64];
 
 void PrecacheAdminBeaconParticle(IEntityResourceManifest* pResourceManifest)
 {
