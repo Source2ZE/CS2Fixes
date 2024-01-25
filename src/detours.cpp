@@ -445,7 +445,7 @@ void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsi
 // CONVAR_TODO
 bool g_bFixLagCompCrash = false;
 
-CON_COMMAND_F(cs2f_fix_lag_comp_crash, "Fix lag compensation crash with env_entity_maker", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+CON_COMMAND_F(cs2f_fix_lag_comp_crash, "Whether to fix lag compensation crash with env_entity_maker", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
 	if (args.ArgC() < 2)
 		Msg("%s %i\n", args[0], g_bFixLagCompCrash);
