@@ -33,6 +33,7 @@ enum class ETargetType {
 	RANDOM_T,
 	RANDOM_CT,
 	ALL,
+	SPECTATOR,
 	T,
 	CT,
 };
@@ -177,6 +178,7 @@ public:
 	void CheckInfractions();
 	void FlashLightThink();
 	void CheckHideDistances();
+	void SetupInfiniteAmmo();
 	CPlayerSlot GetSlotFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromSteamId(uint64 steamid);

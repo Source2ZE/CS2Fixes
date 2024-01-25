@@ -24,6 +24,7 @@
 #include "map_votes.h"
 #include "entity/ccsplayercontroller.h"
 #include "utils/entity.h"
+#include "ctimer.h"
 #include "ctime"
 
 #define VPROF_ENABLED
@@ -416,6 +417,52 @@ void CPlayerManager::CheckHideDistances()
 	VPROF_EXIT_SCOPE();
 }
 
+static bool g_bInfiniteAmmo = false;
+FAKE_BOOL_CVAR(cs2f_infinite_reserve_ammo, "Whether to enable infinite reserve ammo on weapons", g_bInfiniteAmmo, false)
+
+void CPlayerManager::SetupInfiniteAmmo()
+{
+	new CTimer(5.0f, false, []()
+	{
+		if (!g_bInfiniteAmmo)
+			return 5.0f;
+
+		for (int i = 0; i < gpGlobals->maxClients; i++)
+		{
+			CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
+
+			if (!pController)
+				continue;
+
+			auto pPawn = pController->GetPawn();
+
+			if (!pPawn)
+				continue;
+
+			CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
+
+			// it can sometimes be null when player joined on the very first round? 
+			if (!pWeaponServices)
+				continue;
+
+			CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
+
+			FOR_EACH_VEC(*weapons, i)
+			{
+				CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+
+				if (!weapon)
+					continue;
+
+				if (weapon->GetWeaponVData()->m_GearSlot() == GEAR_SLOT_RIFLE || weapon->GetWeaponVData()->m_GearSlot() == GEAR_SLOT_PISTOL)
+					weapon->AcceptInput("SetReserveAmmoAmount", "999"); // 999 will be automatically clamped to the weapons m_nPrimaryReserveAmmoMax
+			}
+		}
+
+		return 5.0f;
+	});
+}
+
 ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* target, int& iNumClients, int *clients)
 {
 	ETargetType targetType = ETargetType::NONE;
@@ -427,6 +474,8 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 		targetType = ETargetType::T;
 	else if (!V_stricmp(target, "@ct"))
 		targetType = ETargetType::CT;
+	else if (!V_stricmp(target, "@spec"))
+		targetType = ETargetType::SPECTATOR;
 	else if (!V_stricmp(target, "@random"))
 		targetType = ETargetType::RANDOM;
 	else if (!V_stricmp(target, "@randomt"))
@@ -453,7 +502,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			clients[iNumClients++] = i;
 		}
 	}
-	else if (targetType == ETargetType::T || targetType == ETargetType::CT)
+	else if (targetType >= ETargetType::SPECTATOR)
 	{
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
@@ -465,13 +514,13 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : CS_TEAM_CT))
+			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : targetType == ETargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
 				continue;
 
 			clients[iNumClients++] = i;
 		}
 	}
-	else if (targetType >= ETargetType::RANDOM)
+	else if (targetType >= ETargetType::RANDOM && targetType <= ETargetType::RANDOM_CT)
 	{
 		int attempts = 0;
 

@@ -67,22 +67,20 @@ static int g_iInfectSpawnMZRatio = 7;
 static int g_iInfectSpawnMinCount = 1;
 static float g_flRespawnDelay = 5.0;
 static int g_iDefaultWinnerTeam = CS_TEAM_SPECTATOR;
-static bool g_bInfiniteAmmo = true;
 static int g_iMZImmunityReduction = 20;
 
-CON_ZR_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, Bool, false)
-CON_ZR_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, Float32, 150.0f)
-CON_ZR_CVAR(zr_ztele_allow_humans, "Whether to allow humans to use ztele", g_bZteleHuman, Bool, false)
-CON_ZR_CVAR(zr_knockback_scale, "Global knockback scale", g_flKnockbackScale, Float32, 5.0f)
-CON_ZR_CVAR(zr_infect_spawn_type, "Type of Mother Zombies Spawn [0 = MZ spawn where they stand, 1 = MZ get teleported back to spawn on being picked]", g_iInfectSpawnType, Int32, EZRSpawnType::RESPAWN)
-CON_ZR_CVAR(zr_infect_spawn_time_min, "Minimum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMin, Int32, 15)
-CON_ZR_CVAR(zr_infect_spawn_time_max, "Maximum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMax, Int32, 15)
-CON_ZR_CVAR(zr_infect_spawn_mz_ratio, "Ratio of all Players to Mother Zombies to be spawned at round start", g_iInfectSpawnMZRatio, Int32, 7)
-CON_ZR_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to be spawned at round start", g_iInfectSpawnMinCount, Int32, 1)
-CON_ZR_CVAR(zr_respawn_delay, "Time before a zombie is respawned", g_flRespawnDelay, Float32, 5.0)
-CON_ZR_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, Int32, CS_TEAM_SPECTATOR)
-CON_ZR_CVAR(zr_infinite_ammo, "Whether to enable infinite reserve ammo on weapons", g_bInfiniteAmmo, Bool, true)
-CON_ZR_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, Int32, 20)
+FAKE_BOOL_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, false)
+FAKE_FLOAT_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, 150.0f)
+FAKE_BOOL_CVAR(zr_ztele_allow_humans, "Whether to allow humans to use ztele", g_bZteleHuman, false)
+FAKE_FLOAT_CVAR(zr_knockback_scale, "Global knockback scale", g_flKnockbackScale, 5.0f)
+FAKE_INT_CVAR(zr_infect_spawn_type, "Type of Mother Zombies Spawn [0 = MZ spawn where they stand, 1 = MZ get teleported back to spawn on being picked]", g_iInfectSpawnType, EZRSpawnType::RESPAWN)
+FAKE_INT_CVAR(zr_infect_spawn_time_min, "Minimum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMin, 15)
+FAKE_INT_CVAR(zr_infect_spawn_time_max, "Maximum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMax, 15)
+FAKE_INT_CVAR(zr_infect_spawn_mz_ratio, "Ratio of all Players to Mother Zombies to be spawned at round start", g_iInfectSpawnMZRatio, 7)
+FAKE_INT_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to be spawned at round start", g_iInfectSpawnMinCount, 1)
+FAKE_FLOAT_CVAR(zr_respawn_delay, "Time before a zombie is automatically respawned, negative values (e.g. -1.0) disable this, note maps can still manually respawn at any time", g_flRespawnDelay, 5.0f)
+FAKE_INT_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, CS_TEAM_SPECTATOR)
+FAKE_INT_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, 20)
 
 void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 {
@@ -405,21 +403,6 @@ void CZRRegenTimer::RemoveAllTimers()
 	}
 }
 
-void SetupAmmoReplenish()
-{
-	new CTimer(5.0f, false, []()
-	{
-		if (!g_bInfiniteAmmo)
-			return 5.0f;
-		Z_CBaseEntity* pTarget = nullptr;
-
-		while (pTarget = UTIL_FindEntityByClassname(pTarget, "weapon_*"))
-			pTarget->AcceptInput("SetReserveAmmoAmount", "999"); // 999 will be automatically clamped to the weapons m_nPrimaryReserveAmmoMax
-
-		return 5.0f;
-	});
-}
-
 void ZR_OnStartupServer()
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
@@ -438,7 +421,6 @@ void ZR_OnStartupServer()
 	g_pZRPlayerClassManager->LoadPlayerClass();
 	g_pZRWeaponConfig->LoadWeaponConfig();
 	SetupCTeams();
-	SetupAmmoReplenish();
 }
 
 void ZRWeaponConfig::LoadWeaponConfig()
@@ -528,9 +510,10 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 void SetupRespawnToggler()
 {
 	Z_CBaseEntity* relay = CreateEntityByName("logic_relay");
+	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
 
-	relay->SetEntityName("zr_toggle_respawn");
-	relay->DispatchSpawn();
+	pKeyValues->SetString("targetname", "zr_toggle_respawn");
+	relay->DispatchSpawn(pKeyValues);
 	g_hRespawnToggler = relay->GetHandle();
 }
 
@@ -729,7 +712,7 @@ void ZR_InitialInfection()
 		if (!pController || pController->m_iTeamNum() != CS_TEAM_CT)
 			continue;
 
-		CCSPlayerController* pPawn = (CCSPlayerController*)pController->GetPawn();
+		CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
 		if (!pPawn || !pPawn->IsAlive())
 			continue;
 
@@ -833,6 +816,10 @@ void ZR_InitialInfection()
 		
 		pPlayer->SetImmunity(pPlayer->GetImmunity() - g_iMZImmunityReduction);
 	}
+
+	if (g_flRespawnDelay < 0.0f)
+		g_bRespawnEnabled = false;
+
 	ClientPrintAll(HUD_PRINTCENTER, "First infection has started!");
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "First infection has started! Good luck, survivors!");
 	g_ZRRoundState = EZRRoundState::POST_INFECTION;
@@ -844,7 +831,7 @@ void ZR_StartInitialCountdown()
 	g_iInfectionCountDown = g_iInfectSpawnTimeMin + (rand() % (g_iInfectSpawnTimeMax - g_iInfectSpawnTimeMin + 1));
 	new CTimer(0.0f, false, [iRoundNum]()
 	{
-		if (iRoundNum != g_iRoundNum)
+		if (iRoundNum != g_iRoundNum || g_ZRRoundState != EZRRoundState::ROUND_START)
 			return -1.0f;
 		if (g_iInfectionCountDown <= 0)
 		{
@@ -1016,7 +1003,7 @@ void ZR_OnPlayerDeath(IGameEvent* pEvent)
 	// respawn player
 	CHandle<CCSPlayerController> handle = pVictimController->GetHandle();
 	int iRoundNum = g_iRoundNum;
-	new CTimer(g_flRespawnDelay, false, [iRoundNum, handle]()
+	new CTimer(g_flRespawnDelay < 0.0f ? 2.0f : g_flRespawnDelay, false, [iRoundNum, handle]()
 	{
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
 		if (iRoundNum != g_iRoundNum || !pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T)
@@ -1218,4 +1205,120 @@ CON_COMMAND_CHAT(ztele, "teleport to spawn")
 
 		return -1.0f;
 	});
+}
+
+CON_COMMAND_CHAT_FLAGS(infect, "infect a player", ADMFLAG_GENERIC)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Usage: !infect <name>");
+		return;
+	}
+
+	if (g_ZRRoundState == EZRRoundState::ROUND_END)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "The round is already over!");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Target not found.");
+		return;
+	}
+
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pTarget->GetPawn();
+
+		if (pTarget->m_iTeamNum() != CS_TEAM_CT || !pPawn || !pPawn->IsAlive())
+		{
+			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "%s is not an alive human!", pTarget->GetPlayerName());
+			continue;
+		}
+
+		if (g_ZRRoundState == EZRRoundState::ROUND_START)
+			ZR_InfectMotherZombie(pTarget);
+		else
+			ZR_Infect(pTarget, pTarget, true);
+
+		if (nType < ETargetType::ALL)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as a mother zombie" : "", ZR_PREFIX);
+	}
+
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as mother zombies" : "", ZR_PREFIX);
+
+	// Note we skip MZ immunity & spawn TP code when first infection is manually triggered
+	if (g_ZRRoundState == EZRRoundState::ROUND_START)
+	{
+		if (g_flRespawnDelay < 0.0f)
+			g_bRespawnEnabled = false;
+
+		g_ZRRoundState = EZRRoundState::POST_INFECTION;
+	}
+}
+
+CON_COMMAND_CHAT_FLAGS(revive, "revive a player", ADMFLAG_GENERIC)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Usage: !revive <name>");
+		return;
+	}
+
+	if (g_ZRRoundState != EZRRoundState::POST_INFECTION)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "A round is not ongoing!");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Target not found.");
+		return;
+	}
+
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pTarget->GetPawn();
+
+		if (pTarget->m_iTeamNum() != CS_TEAM_T || !pPawn || !pPawn->IsAlive())
+		{
+			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "%s is not an alive zombie!", pTarget->GetPlayerName());
+			continue;
+		}
+
+		ZR_Cure(pTarget);
+
+		if (nType < ETargetType::ALL)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "revived", "", ZR_PREFIX);
+	}
+
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "revived", "", ZR_PREFIX);
 }
