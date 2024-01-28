@@ -44,6 +44,11 @@ CAdminSystem* g_pAdminSystem = nullptr;
 
 CUtlMap<uint32, CChatCommand *> g_CommandList(0, 0, DefLessFunc(uint32));
 
+// CONVAR_TODO
+static std::string g_sBeaconParticle = "particles/testsystems/test_cross_product.vpcf";
+
+FAKE_STRING_CVAR(cs2f_admin_beacon_particle, ".vpcf file to be precached and used for admin beacon", g_sBeaconParticle)
+
 void PrintSingleAdminAction(const char* pszAdminName, const char* pszTargetName, const char* pszAction, const char* pszAction2 = "", const char* prefix = CHAT_PREFIX)
 {
 	ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s %s%s.", prefix, pszAdminName, pszAction, pszTargetName, pszAction2);
@@ -967,19 +972,6 @@ CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map d
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "extended map time %i minutes.", pszCommandPlayerName, iExtendTime);
 }
 
-// CONVAR_TODO
-std::string g_sBeaconParticle = "particles/testsystems/test_cross_product.vpcf";
-CON_COMMAND_F(cs2f_admin_beacon_particle, ".vpcf file to be precached and used for admin beacon", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-    if (args.ArgC() < 2)
-        Msg("%s %s\n", args[0], g_sBeaconParticle.c_str());
-    else
-        g_sBeaconParticle = args[1];
-}
-
-static int g_aiBeaconSerial[64];
-static CHandle<CParticleSystem> g_ahBeaconParticles[64];
-
 void PrecacheAdminBeaconParticle(IEntityResourceManifest* pResourceManifest)
 {
 	pResourceManifest->AddResource(g_sBeaconParticle.c_str());
@@ -987,22 +979,27 @@ void PrecacheAdminBeaconParticle(IEntityResourceManifest* pResourceManifest)
 
 void KillBeacon(int playerSlot)
 {
-	g_aiBeaconSerial[playerSlot] = 0;
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(playerSlot);
 
-	CParticleSystem* particle = g_ahBeaconParticles[playerSlot].Get();
+	if (!pPlayer)
+		return;
 
-	if (particle)
+	CParticleSystem* pParticle = pPlayer->GetBeaconParticle();
+
+	if (!pParticle)
+		return;
+
+	pParticle->AcceptInput("DestroyImmediately");
+
+	// delayed Kill because default particle is being silly and remains floating if not Destroyed first
+	CHandle<CParticleSystem> hParticle = pParticle->GetHandle();
+	new CTimer(0.02f, false, [hParticle]()
 	{
-		particle->AcceptInput("DestroyImmediately");
-		// delayed Kill because default particle is being silly and remains floating if not Destroyed first
-		new CTimer(0.02f, false, [playerSlot]()
-		{
-			CParticleSystem* particle = g_ahBeaconParticles[playerSlot].Get();
-			if (particle)
-				particle->AcceptInput("Kill");
-			return -1.0f;
-		});
-	}
+		CParticleSystem* particle = hParticle.Get();
+		if (particle)
+			particle->AcceptInput("Kill");
+		return -1.0f;
+	});
 }
 
 void CreateBeacon(int playerSlot)
@@ -1027,15 +1024,14 @@ void CreateBeacon(int playerSlot)
 	particle->DispatchSpawn(pKeyValues);
 	particle->SetParent(pTarget->GetPawn());
 
-	g_ahBeaconParticles[playerSlot].Set(particle);
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(playerSlot);
+	
+	pPlayer->SetBeaconParticle(particle);
 
-	static int iSerialGen = 0;
-
-	g_aiBeaconSerial[playerSlot] = ++iSerialGen;
-	int iSerial = g_aiBeaconSerial[playerSlot];
+	CHandle<CParticleSystem> hParticle = particle->GetHandle();
 
 	// timer persists through map change so serial reset on StartupServer is not needed
-	new CTimer(0.0f, true, [playerSlot, iSerial]()
+	new CTimer(0.0f, true, [playerSlot, hParticle]()
 	{
 		CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(playerSlot);
 		
@@ -1045,16 +1041,10 @@ void CreateBeacon(int playerSlot)
 			return -1.0f;
 		}
 
-		// another beacon exists (or serial == 0 so beacon doesn't exist), stop timer and don't reset serial
-		if (iSerial != g_aiBeaconSerial[playerSlot])
-			return -1.0f;
+		CParticleSystem* pParticle = hParticle.Get();
 
-		CParticleSystem* pParticle = g_ahBeaconParticles[playerSlot].Get();
-
-		// no beacon particle exists (killed by map or new round/map change), so we reset serial
 		if (!pParticle)
 		{
-			g_aiBeaconSerial[playerSlot] = 0;
 			return -1.0f;
 		}
 
@@ -1066,9 +1056,9 @@ void CreateBeacon(int playerSlot)
 		
 		pParticle->AcceptInput("Start");
 		// delayed DestroyImmediately input so particle effect can be replayed (and default particle doesn't bug out)
-		new CTimer(0.5f, false, [playerSlot]()
+		new CTimer(0.5f, false, [hParticle]()
 		{
-			CParticleSystem* particle = g_ahBeaconParticles[playerSlot].Get();
+			CParticleSystem* particle = hParticle.Get();
 			if (particle)
 				particle->AcceptInput("DestroyImmediately");
 			return -1.0f;
@@ -1080,7 +1070,9 @@ void CreateBeacon(int playerSlot)
 
 void PerformBeacon(int playerSlot)
 {
-	if (g_aiBeaconSerial[playerSlot] == 0)
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(playerSlot);
+
+	if (!pPlayer->GetBeaconParticle())
 		CreateBeacon(playerSlot);
 	else
 		KillBeacon(playerSlot);

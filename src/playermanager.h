@@ -24,6 +24,7 @@
 #include <playerslot.h>
 #include "bitvec.h"
 #include "entity/lights.h"
+#include "entity/cparticlesystem.h"
 
 enum class ETargetType {
 	NONE,
@@ -100,6 +101,7 @@ public:
 	void SetImmunity(int iMZImmunity) { m_iMZImmunity = iMZImmunity; }
 	void SetNominateTime(float flCurtime) { m_flNominateTime = flCurtime; }
 	void SetFlashLight(CBarnLight *pLight) { m_hFlashLight.Set(pLight); }
+	void SetBeaconParticle(CParticleSystem *pParticle) { m_hBeaconParticle.Set(pParticle); }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -119,6 +121,7 @@ public:
 	int GetImmunity() { return m_iMZImmunity; }
 	float GetNominateTime() { return m_flNominateTime; }
 	CBarnLight *GetFlashLight() { return m_hFlashLight.Get(); }
+	CParticleSystem *GetBeaconParticle() { return m_hBeaconParticle.Get(); }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
@@ -153,6 +156,7 @@ private:
 	int m_iMZImmunity;
 	float m_flNominateTime;
 	CHandle<CBarnLight> m_hFlashLight;
+	CHandle<CParticleSystem> m_hBeaconParticle;
 };
 
 class CPlayerManager
