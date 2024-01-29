@@ -67,3 +67,13 @@ void Panic(const char *, ...);
 
 #define FAKE_FLOAT_CVAR(name, description, variable_name, variable_default)												\
 	FAKE_CVAR(name, description, variable_name, Float32, %f, variable_default)
+
+// assumes std::string variable
+#define FAKE_STRING_CVAR(name, description, variable_name)																\
+	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)											\
+	{																													\
+		if (args.ArgC() < 2)																							\
+			Msg("%s %s\n", args[0], variable_name.c_str());																\
+		else																											\
+			variable_name = args[1];																					\
+	}
