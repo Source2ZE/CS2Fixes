@@ -53,28 +53,20 @@ void BaseMenuInstance::PrevPage(ZEPlayer* player)
 void BaseMenuInstance::HandleInput(ZEPlayer* player, int iInput)
 {
     if (iInput == 7 && HasPrevPage())
-    {
-		PrevPage(player);
-	}
+        PrevPage(player);
     else if (iInput == 8 && HasNextPage())
-    {
-		NextPage(player);
-	}
+        NextPage(player);
     else if (iInput == 9 && HasCloseButton())
-    {
-		player->m_pMenuInstance = nullptr;
-	}
+        player->m_pMenuInstance = nullptr;
     else if (iInput >= 1 && iInput <= GetVisibleItemCount())
     {
-		int iIndex = iInput - 1;
-		int iRealIndex = iIndex + m_iOffset;
+        int iIndex = iInput - 1;
+        int iRealIndex = iIndex + m_iOffset;
         if (iRealIndex < m_pMenu->m_vecItems.size())
         {
-			auto& item = m_pMenu->m_vecItems[iRealIndex];
+            auto& item = m_pMenu->m_vecItems[iRealIndex];
             if (item.callback)
-            {
-				item.callback();
-			}
-		}
-	}   
+                item.callback();
+        }
+    }   
 }

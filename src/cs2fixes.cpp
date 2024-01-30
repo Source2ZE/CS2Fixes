@@ -352,9 +352,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 		bool bCommand = *args[1] == '!' || *args[1] == '/';
 
 		if (player->m_pMenuInstance  && *args[1] >= '0' && *args[1] <= '9')
-		{
 			player->m_pMenuInstance->HandleInput(player, *args[1] - '0');
-		}
 
 		// Chat messages should generate events regardless
 		if (pController)

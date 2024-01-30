@@ -46,11 +46,11 @@ void ChatMenuInstance::Render(ZEPlayer* player)
 			SendChatMessage(" " CHAT_COLOR_SILVER "!" + std::to_string(visualOffset++) + " " + item.name + " (Disabled)");
 	}
 
-	SendChatMessage(" ");
+	if(HasPrevPage() || HasNextPage() || HasCloseButton())
+		SendChatMessage(" ");
 
 	if(HasPrevPage())
 		SendChatMessage(" " CHAT_COLOR_GOLD "!7 Prev");
-
 	if (HasNextPage())
 		SendChatMessage(" " CHAT_COLOR_GOLD "!8 Next");
 	if (HasCloseButton())
