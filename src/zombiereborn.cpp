@@ -1143,7 +1143,7 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 	}
 }
 
-CON_COMMAND_CHAT(ztele, "teleport to spawn")
+CON_COMMAND_CHAT(ztele, "- teleport to spawn")
 {
 	// Silently return so the command is completely hidden
 	if (!g_bEnableZR)
