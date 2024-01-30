@@ -23,6 +23,7 @@
 #include "steam/steamclientpublic.h"
 #include <playerslot.h>
 #include "bitvec.h"
+#include "menu/basemenu.h"
 
 #define DECAL_PREF_KEY_NAME "hide_decals"
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
@@ -150,6 +151,8 @@ private:
 	bool m_bInGame;
 	int m_iMZImmunity;
 	float m_flNominateTime;
+public:
+	std::unique_ptr<BaseMenuInstance> m_pMenuInstance;
 };
 
 class CPlayerManager

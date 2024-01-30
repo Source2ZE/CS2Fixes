@@ -30,6 +30,12 @@
     <Filter Include="Source Files\sdk">
       <UniqueIdentifier>{e1906f3f-9ee2-40df-a4d2-00ee0358b050}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\menu">
+      <UniqueIdentifier>{0af2e996-a8a9-4727-aff6-074b4f16780b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\menu">
+      <UniqueIdentifier>{ca45d4ea-1b6f-47de-a587-25a17a259064}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\patches.cpp">
@@ -112,6 +118,12 @@
     </ClCompile>
     <ClCompile Include="src\entitylistener.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\menu\basemenu.cpp">
+      <Filter>Source Files\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\menu\chatmenu.cpp">
+      <Filter>Source Files\menu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -228,6 +240,12 @@
     </ClInclude>
     <ClInclude Include="src\entitylistener.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\menu\basemenu.h">
+      <Filter>Header Files\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\menu\chatmenu.h">
+      <Filter>Header Files\menu</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

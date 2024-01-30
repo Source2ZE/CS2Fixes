@@ -344,11 +344,17 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 	if (iCommandPlayerSlot != -1 && (bSay || bTeamSay))
 	{
 		auto pController = CCSPlayerController::FromSlot(iCommandPlayerSlot);
-		bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
-		bool bFlooding = pController && pController->GetZEPlayer()->IsFlooding();
+		auto player = pController->GetZEPlayer();
+		bool bGagged = pController && player->IsGagged();
+		bool bFlooding = pController && player->IsFlooding();
 		bool bAdminChat = bTeamSay && *args[1] == '@';
 		bool bSilent = *args[1] == '/' || bAdminChat;
 		bool bCommand = *args[1] == '!' || *args[1] == '/';
+
+		if (player->m_pMenuInstance  && *args[1] >= '0' && *args[1] <= '9')
+		{
+			player->m_pMenuInstance->HandleInput(player, *args[1] - '0');
+		}
 
 		// Chat messages should generate events regardless
 		if (pController)

@@ -70,6 +70,8 @@ for sdk_name in MMSPlugin.sdks:
       'src/user_preferences.cpp',
       'src/zombiereborn.cpp',
       'src/entitylistener.cpp',
+      'src/menu/basemenu.cpp',
+      'src/menu/chatmenu.cpp'
     ]
 
     if sdk_name in ['dota', 'cs2']:

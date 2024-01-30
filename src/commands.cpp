@@ -39,6 +39,7 @@
 #include "vendor/nlohmann/json.hpp"
 
 #include "tier0/memdbgon.h"
+#include "menu/chatmenu.h"
 
 using json = nlohmann::json;
 
@@ -675,5 +676,50 @@ CON_COMMAND_CHAT(discordbot, "send a message to a discord webhook")
 	}
 
 	g_pDiscordBotManager->PostDiscordMessage(args[1], args[2]);
+}
+
+CON_COMMAND_CHAT(testmenu, "displays a test menu")
+{
+	std::shared_ptr<ChatMenu> menu(new ChatMenu("Title"));
+
+	menu->AddItem("test item", MenuItemDisplayType::Text , [player]() {
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item pressed");
+	});
+
+	menu->AddItem("spacer", MenuItemDisplayType::Spacer);
+
+	menu->AddItem("test item2", MenuItemDisplayType::Text, [player]() {
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item2 pressed");
+	});
+
+	menu->AddItem("test item3", MenuItemDisplayType::Text, [player]() {
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item3 pressed");
+	});
+
+	menu->AddItem("test item4", MenuItemDisplayType::Text, [player]() {
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item4 pressed");
+	});
+
+	menu->AddItem("test item5", MenuItemDisplayType::Text, [player]() {
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item5 pressed");
+	});
+
+	menu->AddItem("test item6", MenuItemDisplayType::Text, [player]() {
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item6 pressed");
+	});
+
+	menu->AddItem("test item7", MenuItemDisplayType::Text, [player]() {
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item7 pressed");
+	});
+
+	menu->AddItem("test item8", MenuItemDisplayType::Text, [player]() {
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item8 pressed");
+	});
+
+	menu->AddItem("test item9", MenuItemDisplayType::Text, [player]() {
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item9 pressed");
+	});
+
+	menu->Send(player->GetZEPlayer());
 }
 #endif // _DEBUG

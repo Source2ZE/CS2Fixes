@@ -26,6 +26,22 @@
 #define COMMAND_PREFIX "c_"
 #define CHAT_PREFIX	" \7[CS2Fixes]\1 "
 
+#define CHAT_COLOR_DEFAULT		"\x01"
+#define CHAT_COLOR_WHITE		"\x01"
+#define CHAT_COLOR_DARKRED		"\x02"
+#define CHAT_COLOR_LIGHTPURPLE	"\x03"
+#define CHAT_COLOR_GREEN		"\x04"
+#define CHAT_COLOR_OLIVE		"\x05"
+#define CHAT_COLOR_LIME			"\x06"
+#define CHAT_COLOR_RED			"\x07"
+#define CHAT_COLOR_YELLOW		"\x09"
+#define CHAT_COLOR_SILVER		"\x0A"
+#define CHAT_COLOR_BLUE			"\x0B"
+#define CHAT_COLOR_DARKBLUE		"\x0C"
+#define CHAT_COLOR_PURPLE		"\x0E"
+#define CHAT_COLOR_LIGHTRED		"\x0F"
+#define CHAT_COLOR_GOLD			"\x10"
+
 typedef void (*FnChatCommandCallback_t)(const CCommand &args, CCSPlayerController *player);
 
 class CChatCommand;
