@@ -32,5 +32,5 @@ public:
 class ChatMenuInstance : public BaseMenuInstance
 {
 public:
-	void Render(ZEPlayer* player);
+	bool Render(ZEPlayer* player);
 };

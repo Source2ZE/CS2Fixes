@@ -20,8 +20,14 @@
 #include "chatmenu.h"
 #include "../commands.h"
 
-void ChatMenuInstance::Render(ZEPlayer* player)
+bool ChatMenuInstance::Render(ZEPlayer* player)
 {
+	if (!BaseMenuInstance::Render(player))
+	{
+		player->m_pMenuInstance = nullptr;
+		return false;
+	}
+
 	auto controller = CCSPlayerController::FromSlot(player->GetPlayerSlot());
 
 	auto SendChatMessage = [controller](std::string text) -> void {
@@ -55,6 +61,8 @@ void ChatMenuInstance::Render(ZEPlayer* player)
 		SendChatMessage(" " CHAT_COLOR_GOLD "!8 Next");
 	if (HasCloseButton())
 		SendChatMessage(" " CHAT_COLOR_GOLD "!9 Close");
+
+	return true;
 }
 
 void ChatMenu::Send(ZEPlayer* player)

@@ -720,6 +720,14 @@ CON_COMMAND_CHAT(testmenu, "displays a test menu")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item9 pressed");
 	});
 
+	menu->SetCondition([](ZEPlayer* player) {
+		auto controller = CCSPlayerController::FromSlot(player->GetPlayerSlot());
+
+		ConMsg("Condition check %i\n", controller->GetPawn()->IsAlive());
+
+		return controller->GetPawn()->IsAlive();
+	});
+
 	menu->Send(player->GetZEPlayer());
 }
 #endif // _DEBUG

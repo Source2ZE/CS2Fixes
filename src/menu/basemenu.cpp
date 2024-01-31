@@ -34,6 +34,23 @@ void BaseMenu::AddItem(std::string name, MenuItemDisplayType type, MenuItemCallb
     m_vecItems.push_back(item);
 }
 
+bool BaseMenuInstance::CheckCondition(ZEPlayer* player)
+{
+    if (m_pMenu->m_funcCondition) {
+        return m_pMenu->m_funcCondition(player);
+    }
+
+    return true;
+}
+
+
+bool BaseMenuInstance::Render(ZEPlayer* player)
+{
+    ConMsg("BaseMenuInstance::Render\n");
+
+    return CheckCondition(player);
+}
+
 void BaseMenuInstance::NextPage(ZEPlayer* player)
 {
     m_iPage++;
@@ -52,6 +69,12 @@ void BaseMenuInstance::PrevPage(ZEPlayer* player)
 
 void BaseMenuInstance::HandleInput(ZEPlayer* player, int iInput)
 {
+    if (!CheckCondition(player))
+    {
+        player->m_pMenuInstance = nullptr;
+        return;
+    }
+
     if (iInput == 7 && HasPrevPage())
         PrevPage(player);
     else if (iInput == 8 && HasNextPage())

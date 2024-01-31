@@ -25,10 +25,11 @@
 #include <string>
 #include <stack>
 
-typedef std::function<void()> MenuItemCallback;
-
 class ZEPlayer;
 class ChatMenuInstance;
+
+typedef std::function<void()> MenuItemCallback;
+typedef std::function<bool(ZEPlayer*)> MenuConditionHandler;
 
 enum class MenuItemDisplayType
 {
@@ -48,17 +49,25 @@ struct MenuItem
 class BaseMenu : public std::enable_shared_from_this<BaseMenu>
 {
 public:
+    ~BaseMenu() {
+        ConMsg("BaseMenu destroyed\n");
+    }
     BaseMenu(std::string title) : m_szTitle(title) {};
     void AddItem(std::string name, MenuItemDisplayType type, MenuItemCallback callback = nullptr);
+    void SetCondition(MenuConditionHandler handler) { m_funcCondition = handler; }
 public:
     std::string m_szTitle;
     std::vector<MenuItem> m_vecItems;
+    MenuConditionHandler m_funcCondition;
 };
 
 class BaseMenuInstance
 {
 public:
-    virtual void Render(ZEPlayer* player) = 0;
+    ~BaseMenuInstance() {
+        ConMsg("BaseMenuInstance destroyed\n");
+    }
+    virtual bool Render(ZEPlayer* player);
     void NextPage(ZEPlayer* player);
     void PrevPage(ZEPlayer* player);
     int GetOffset() const { return m_iOffset; };
@@ -68,6 +77,7 @@ public:
     bool HasNextPage() const { return m_pMenu->m_vecItems.size() > GetOffset() + m_iMinItems; };
     bool HasCloseButton() const { return true; };
     void HandleInput(ZEPlayer* player, int iInput);
+    bool CheckCondition(ZEPlayer* player);
 public:
     std::shared_ptr<BaseMenu> m_pMenu;
 private:
