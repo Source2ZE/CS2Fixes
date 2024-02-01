@@ -453,20 +453,12 @@ CON_COMMAND_F(cs2f_fix_lag_comp_crash, "Whether to fix lag compensation crash wi
 		g_bFixLagCompCrash = V_StringToBool(args[1], false);
 }
 
-#if PLATFORM_WINDOWS
 void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEntity, bool a3)
-#else
-void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEntity, bool a3, double a4, double a5)
-#endif
 {
 	if (g_bFixLagCompCrash && strcmp(pEntity->GetClassname(), "env_entity_maker") == 0)
 		return;
 
-#if PLATFORM_WINDOWS
 	return FixLagCompEntityRelationship(a1, pEntity, a3);
-#else
-	return FixLagCompEntityRelationship(a1, pEntity, a3, a4, a5);
-#endif
 }
 
 CUtlVector<CDetourBase *> g_vecDetours;
