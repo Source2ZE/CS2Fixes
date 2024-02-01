@@ -37,7 +37,7 @@ extern IVEngineServer2* g_pEngineServer2;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
-CON_COMMAND_CHAT_FLAGS(reload_map_list, "Reload map list", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list", ADMFLAG_ROOT)
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -76,7 +76,7 @@ CON_COMMAND_F(cs2f_vote_max_nominations, "Number of nominations to include per v
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(setnextmap, "Force next map", ADMFLAG_CHANGEMAP)
+CON_COMMAND_CHAT_FLAGS(setnextmap, "[mapname] - Force next map (empty to clear forced next map)", ADMFLAG_CHANGEMAP)
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -91,7 +91,7 @@ CON_COMMAND_CHAT_FLAGS(setnextmap, "Force next map", ADMFLAG_CHANGEMAP)
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(nominate, "Nominate a map", ADMFLAG_NONE)
+CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nomination)", ADMFLAG_NONE)
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -146,7 +146,7 @@ static int __cdecl OrderStringsLexicographically(const char* const* a, const cha
 	return V_strcasecmp(*a, *b);
 }
 
-CON_COMMAND_CHAT(maplist, "List the maps in the server")
+CON_COMMAND_CHAT(maplist, "- List the maps in the server")
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -163,7 +163,7 @@ CON_COMMAND_CHAT(maplist, "List the maps in the server")
 	}
 }
 
-CON_COMMAND_CHAT(nomlist, "List the list of nominations")
+CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -178,7 +178,7 @@ CON_COMMAND_CHAT(nomlist, "List the list of nominations")
 	}
 }
 
-CON_COMMAND_CHAT(mapcooldowns, "List the maps currently in cooldown")
+CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 {
 	if (!g_bVoteManagerEnable)
 		return;

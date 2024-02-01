@@ -155,7 +155,7 @@ int GetNeededExtendCount()
 	return (int)(iOnlinePlayers * g_flExtendSucceedRatio) + 1;
 }
 
-CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
+CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -246,7 +246,7 @@ CON_COMMAND_CHAT(rtv, "Vote to end the current map sooner.")
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i needed).", player->GetPlayerName(), iCurrentRTVCount+1, iNeededRTVCount);
 }
 
-CON_COMMAND_CHAT(unrtv, "Remove your vote to end the current map sooner.")
+CON_COMMAND_CHAT(unrtv, "- Remove your vote to end the current map sooner")
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -278,7 +278,7 @@ CON_COMMAND_CHAT(unrtv, "Remove your vote to end the current map sooner.")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You no longer want to RTV current map.");
 }
 
-CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
+CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -398,7 +398,7 @@ CON_COMMAND_CHAT(ve, "Vote to extend the current map.")
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to extend the map (%i voted, %i needed).", player->GetPlayerName(), iCurrentExtendCount+1, iNeededExtendCount);
 }
 
-CON_COMMAND_CHAT(unve, "Remove your vote to extend current map.")
+CON_COMMAND_CHAT(unve, "- Remove your vote to extend current map")
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -430,7 +430,7 @@ CON_COMMAND_CHAT(unve, "Remove your vote to extend current map.")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You no longer want to extend current map.");
 }
 
-CON_COMMAND_CHAT_FLAGS(disablertv, "Disable the ability for players to vote to end current map sooner.", ADMFLAG_CHANGEMAP)
+CON_COMMAND_CHAT_FLAGS(disablertv, "- Disable the ability for players to vote to end current map sooner", ADMFLAG_CHANGEMAP)
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -451,7 +451,7 @@ CON_COMMAND_CHAT_FLAGS(disablertv, "Disable the ability for players to vote to e
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "disabled vote for RTV.", pszCommandPlayerName);
 }
 
-CON_COMMAND_CHAT_FLAGS(enablertv, "Restore the ability for players to vote to end current map sooner.", ADMFLAG_CHANGEMAP)
+CON_COMMAND_CHAT_FLAGS(enablertv, "- Restore the ability for players to vote to end current map sooner", ADMFLAG_CHANGEMAP)
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -472,7 +472,7 @@ CON_COMMAND_CHAT_FLAGS(enablertv, "Restore the ability for players to vote to en
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "enabled vote for RTV.", pszCommandPlayerName);
 }
 
-CON_COMMAND_CHAT_FLAGS(addextend, "Add another extend to the current map for players to vote.", ADMFLAG_CHANGEMAP)
+CON_COMMAND_CHAT_FLAGS(addextend, "- Add another extend to the current map for players to vote", ADMFLAG_CHANGEMAP)
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -487,7 +487,7 @@ CON_COMMAND_CHAT_FLAGS(addextend, "Add another extend to the current map for pla
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "allowed for an additional extend.", pszCommandPlayerName);
 }
 
-CON_COMMAND_CHAT(extendsleft, "Display amount of extends left for the current map")
+CON_COMMAND_CHAT(extendsleft, "- Display amount of extends left for the current map")
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -513,7 +513,7 @@ CON_COMMAND_CHAT(extendsleft, "Display amount of extends left for the current ma
 		ConMsg("%s", message);
 }
 
-CON_COMMAND_CHAT(timeleft, "Display time left to end of current map.")
+CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 {
 	if (!player)
 	{
