@@ -22,6 +22,7 @@
 #include "playermanager.h"
 #include "adminsystem.h"
 #include "map_votes.h"
+#include "user_preferences.h"
 #include "entity/ccsplayercontroller.h"
 #include "ctime"
 
@@ -39,6 +40,7 @@ void ZEPlayer::OnAuthenticated()
 {
 	CheckAdmin();
 	CheckInfractions();
+	g_pUserPreferencesSystem->PullPreferences(GetPlayerSlot().Get());
 }
 
 void ZEPlayer::CheckInfractions()
@@ -66,6 +68,16 @@ void ZEPlayer::CheckAdmin()
 bool ZEPlayer::IsAdminFlagSet(uint64 iFlag)
 {
 	return !iFlag || (m_iAdminFlags & iFlag);
+}
+
+int ZEPlayer::GetHideDistance()
+{
+	return g_pUserPreferencesSystem->GetPreferenceInt(m_slot.Get(), HIDE_DISTANCE_PREF_KEY_NAME, 0);
+}
+
+void ZEPlayer::SetHideDistance(int distance)
+{
+	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), HIDE_DISTANCE_PREF_KEY_NAME, distance);
 }
 
 // CONVAR_TODO
@@ -172,6 +184,9 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid, const char
 void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 {
 	Message("%d disconnected\n", slot.Get());
+
+	g_pUserPreferencesSystem->PushPreferences(slot.Get());
+	g_pUserPreferencesSystem->ClearPreferences(slot.Get());
 
 	delete m_vecPlayers[slot.Get()];
 	m_vecPlayers[slot.Get()] = nullptr;
@@ -458,6 +473,15 @@ void CPlayerManager::SetPlayerStopSound(int slot, bool set)
 		m_nUsingStopSound |= ((uint64)1 << slot);
 	else
 		m_nUsingStopSound &= ~((uint64)1 << slot);
+
+	// Set the user prefs if the player is ingame
+	ZEPlayer* pPlayer = m_vecPlayers[slot];
+	if (!pPlayer) return;
+
+	uint64 iSlotMask = (uint64)1 << slot;
+	int iStopPreferenceStatus = (m_nUsingStopSound & iSlotMask)?1:0;
+	int iSilencePreferenceStatus = (m_nUsingSilenceSound & iSlotMask)?2:0;
+	g_pUserPreferencesSystem->SetPreferenceInt(slot, SOUND_STATUS_PREF_KEY_NAME, iStopPreferenceStatus + iSilencePreferenceStatus);
 }
 
 void CPlayerManager::SetPlayerSilenceSound(int slot, bool set)
@@ -466,6 +490,15 @@ void CPlayerManager::SetPlayerSilenceSound(int slot, bool set)
 		m_nUsingSilenceSound |= ((uint64)1 << slot);
 	else
 		m_nUsingSilenceSound &= ~((uint64)1 << slot);
+
+	// Set the user prefs if the player is ingame
+	ZEPlayer* pPlayer = m_vecPlayers[slot];
+	if (!pPlayer) return;
+
+	uint64 iSlotMask = (uint64)1 << slot;
+	int iStopPreferenceStatus = (m_nUsingStopSound & iSlotMask)?1:0;
+	int iSilencePreferenceStatus = (m_nUsingSilenceSound & iSlotMask)?2:0;
+	g_pUserPreferencesSystem->SetPreferenceInt(slot, SOUND_STATUS_PREF_KEY_NAME, iStopPreferenceStatus + iSilencePreferenceStatus);
 }
 
 void CPlayerManager::SetPlayerStopDecals(int slot, bool set)
@@ -474,6 +507,14 @@ void CPlayerManager::SetPlayerStopDecals(int slot, bool set)
 		m_nUsingStopDecals |= ((uint64)1 << slot);
 	else
 		m_nUsingStopDecals &= ~((uint64)1 << slot);
+
+	// Set the user prefs if the player is ingame
+	ZEPlayer* pPlayer = m_vecPlayers[slot];
+	if (!pPlayer) return;
+
+	uint64 iSlotMask = (uint64)1 << slot;
+	int iDecalPreferenceStatus = (m_nUsingStopDecals & iSlotMask)?1:0;
+	g_pUserPreferencesSystem->SetPreferenceInt(slot, DECAL_PREF_KEY_NAME, iDecalPreferenceStatus);
 }
 
 void CPlayerManager::ResetPlayerFlags(int slot)
