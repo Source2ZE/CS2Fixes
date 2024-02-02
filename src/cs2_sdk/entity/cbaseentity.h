@@ -190,6 +190,11 @@ public:
 	{
 		addresses::CBaseEntity_SetParent(this, pNewParent, 0, nullptr);
 	}
+
+	void Remove()
+	{
+		addresses::UTIL_Remove(this);
+	}
 };
 
 class SpawnPoint : public Z_CBaseEntity

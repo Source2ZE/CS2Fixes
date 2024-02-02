@@ -66,6 +66,14 @@ public:
 		m_flNominateTime = -60.0f;
 	}
 
+	~ZEPlayer()
+	{
+		CBarnLight *pFlashLight = m_hFlashLight.Get();
+
+		if (pFlashLight)
+			pFlashLight->Remove();
+	}
+
 	bool IsFakeClient() { return m_bFakeClient; }
 	bool IsAuthenticated() { return m_bAuthenticated; }
 	bool IsConnected() { return m_bConnected; }
