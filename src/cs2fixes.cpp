@@ -333,14 +333,17 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 void HandleCSSMenuSlots(const char* arg, CPlayerSlot slot)
 {
-	int num;
-	if (sscanf_s(arg, "css_%i", &num))
+	if (!V_strncmp("css_", arg, 4))
 	{
+		int num = V_StringToInt32(arg + 4, -1);
+
 		auto player = g_playerManager->GetPlayer(slot);
 
 		if (player->m_pMenuInstance && num >= 0 && num <= 9)
 			player->m_pMenuInstance->HandleInput(player, num);
 	}
+	
+
 }
 
 void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CCommandContext& ctx, const CCommand& args)
