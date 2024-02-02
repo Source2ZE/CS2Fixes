@@ -1336,6 +1336,10 @@ CON_COMMAND_CHAT(zclass, "find and select your Z:R class")
 
 CON_COMMAND_CHAT_FLAGS(infect, "infect a player", ADMFLAG_GENERIC)
 {
+	// Silently return so the command is completely hidden
+	if (!g_bEnableZR)
+		return;
+
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Usage: !infect <name>");
@@ -1400,6 +1404,10 @@ CON_COMMAND_CHAT_FLAGS(infect, "infect a player", ADMFLAG_GENERIC)
 
 CON_COMMAND_CHAT_FLAGS(revive, "revive a player", ADMFLAG_GENERIC)
 {
+	// Silently return so the command is completely hidden
+	if (!g_bEnableZR)
+		return;
+
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Usage: !revive <name>");
