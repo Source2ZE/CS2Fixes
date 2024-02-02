@@ -234,7 +234,7 @@ void RegisterWeaponCommands()
 
 		for (std::string alias : weaponEntry.aliases)
 		{
-			new CChatCommand(alias.c_str(), ParseWeaponCommand, ADMFLAG_NONE);
+			new CChatCommand(alias.c_str(), ParseWeaponCommand, "- Buys this weapon", ADMFLAG_NONE);
 			ConCommandRefAbstract ref;
 
 			char cmdName[64];
@@ -320,7 +320,7 @@ CON_COMMAND_F(cs2f_stopsound_enable, "Whether to enable stopsound", FCVAR_LINKED
 		g_bEnableStopSound = V_StringToBool(args[1], false);
 }
 
-CON_COMMAND_CHAT(stopsound, "toggle weapon sounds")
+CON_COMMAND_CHAT(stopsound, "- toggle weapon sounds")
 {
 	if (!g_bEnableStopSound)
 		return;
@@ -341,7 +341,7 @@ CON_COMMAND_CHAT(stopsound, "toggle weapon sounds")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s weapon sounds.", bSilencedSet ? "disabled" : !bSilencedSet && !bStopSet ? "silenced" : "enabled");
 }
 
-CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fps in ZE")
+CON_COMMAND_CHAT(toggledecals, "- toggle world decals, if you're into having 10 fps in ZE")
 {
 	if (!player)
 	{
@@ -384,7 +384,7 @@ CON_COMMAND_F(cs2f_hide_distance_max, "The max distance for hide", FCVAR_LINKED_
 		g_iMaxHideDistance = V_StringToInt32(args[1], 2000);
 }
 
-CON_COMMAND_CHAT(hide, "hides nearby players")
+CON_COMMAND_CHAT(hide, "<distance> - hides nearby players")
 {
 	// Silently return so the command is completely hidden
 	if (!g_bEnableHide)
@@ -432,9 +432,41 @@ CON_COMMAND_CHAT(hide, "hides nearby players")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding players within %i units.", distance);
 }
 
+CON_COMMAND_CHAT(help, "- Display list of commands in console")
+{
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands is:");
+
+		FOR_EACH_VEC(g_CommandList, i)
+		{
+			CChatCommand *cmd = g_CommandList[i];
+			ClientPrint(player, HUD_PRINTCONSOLE, "c_%s %s", i, cmd->GetName(), cmd->GetDescription());
+		}
+
+		return;
+	}
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all available commands will be shown in console.");
+	ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands you can use is:");
+
+	int iSlot = player->GetPlayerSlot();
+
+	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(iSlot);
+
+	FOR_EACH_VEC(g_CommandList, i)
+	{
+		CChatCommand *cmd = g_CommandList[i];
+		uint64 flags = cmd->GetFlags();
+
+		if (pZEPlayer->IsAdminFlagSet(flags))
+				ClientPrint(player, HUD_PRINTCONSOLE, "c_%s %s", cmd->GetName(), cmd->GetDescription());
+	}
+}
+
 
 #if _DEBUG
-CON_COMMAND_CHAT(myuid, "test")
+CON_COMMAND_CHAT(myuid, "- test")
 {
 	if (!player)
 		return;
@@ -498,7 +530,7 @@ CON_COMMAND_CHAT(fl, "flashlight")
 	pLight->AcceptInput("SetParentAttachmentMaintainOffset", &val2);
 }
 
-CON_COMMAND_CHAT(message, "message someone")
+CON_COMMAND_CHAT(message, "<id> <message> - message someone")
 {
 	if (!player)
 		return;
@@ -517,12 +549,12 @@ CON_COMMAND_CHAT(message, "message someone")
 	ClientPrint(pTarget, HUD_PRINTTALK, CHAT_PREFIX "Private message from %s to %s: \5%s", player->GetPlayerName(), pTarget->GetPlayerName(), pMessage);
 }
 
-CON_COMMAND_CHAT(say, "say something using console")
+CON_COMMAND_CHAT(say, "<message> - say something using console")
 {
 	ClientPrintAll(HUD_PRINTTALK, "%s", args.ArgS());
 }
 
-CON_COMMAND_CHAT(takemoney, "take your money")
+CON_COMMAND_CHAT(takemoney, "<amount> - take your money")
 {
 	if (!player)
 		return;
@@ -533,7 +565,7 @@ CON_COMMAND_CHAT(takemoney, "take your money")
 	player->m_pInGameMoneyServices->m_iAccount = money - amount;
 }
 
-CON_COMMAND_CHAT(sethealth, "set your health")
+CON_COMMAND_CHAT(sethealth, "<health> - set your health")
 {
 	if (!player)
 		return;
@@ -547,7 +579,7 @@ CON_COMMAND_CHAT(sethealth, "set your health")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your health is now %d", health);
 }
 
-CON_COMMAND_CHAT(test_target, "test string targetting")
+CON_COMMAND_CHAT(test_target, "<name> - test string targetting")
 {
 	if (!player)
 		return;
@@ -580,7 +612,7 @@ CON_COMMAND_CHAT(getorigin, "get your origin")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your origin is %f %f %f", vecAbsOrigin.x, vecAbsOrigin.y, vecAbsOrigin.z);
 }
 
-CON_COMMAND_CHAT(setorigin, "set your origin")
+CON_COMMAND_CHAT(setorigin, "<vector> - set your origin")
 {
 	if (!player)
 		return;
@@ -593,7 +625,6 @@ CON_COMMAND_CHAT(setorigin, "set your origin")
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your origin is now %f %f %f", vecNewOrigin.x, vecNewOrigin.y, vecNewOrigin.z);
 }
-
 
 CON_COMMAND_CHAT(particle, "spawn a particle")
 {
@@ -656,7 +687,7 @@ CON_COMMAND_CHAT(emitsound, "emit a sound from the entity under crosshair")
 	Message("Playing %s on %s", args[1], pEntity->GetClassname());
 }
 
-CON_COMMAND_CHAT(getstats, "get your stats")
+CON_COMMAND_CHAT(getstats, "- get your stats")
 {
 	if (!player)
 		return;
@@ -676,7 +707,7 @@ CON_COMMAND_CHAT(getstats, "get your stats")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Damage: %d", stats->m_iDamage.Get());
 }
 
-CON_COMMAND_CHAT(setkills, "set your kills")
+CON_COMMAND_CHAT(setkills, "- set your kills")
 {
 	if (!player)
 		return;
@@ -686,7 +717,7 @@ CON_COMMAND_CHAT(setkills, "set your kills")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have set your kills to %d.", atoi(args[1]));
 }
 
-CON_COMMAND_CHAT(setcollisiongroup, "set a player's collision group")
+CON_COMMAND_CHAT(setcollisiongroup, "<group> - set a player's collision group")
 {
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
@@ -711,7 +742,7 @@ CON_COMMAND_CHAT(setcollisiongroup, "set a player's collision group")
 	}
 }
 
-CON_COMMAND_CHAT(setsolidtype, "set a player's solid type")
+CON_COMMAND_CHAT(setsolidtype, "<solidtype> - set a player's solid type")
 {
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
@@ -735,7 +766,7 @@ CON_COMMAND_CHAT(setsolidtype, "set a player's solid type")
 	}
 }
 
-CON_COMMAND_CHAT(setinteraction, "set a player's interaction flags")
+CON_COMMAND_CHAT(setinteraction, "<flags> - set a player's interaction flags")
 {
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
@@ -765,7 +796,7 @@ void HttpCallback(HTTPRequestHandle request, json response)
 	ClientPrintAll(HUD_PRINTTALK, response.dump().c_str());
 }
 
-CON_COMMAND_CHAT(http, "test an HTTP request")
+CON_COMMAND_CHAT(http, "<get/post> <url> [content] - test an HTTP request")
 {
 	if (!g_http)
 	{
@@ -784,7 +815,7 @@ CON_COMMAND_CHAT(http, "test an HTTP request")
 		g_HTTPManager.POST(args[2], args[3], &HttpCallback);
 }
 
-CON_COMMAND_CHAT(discordbot, "send a message to a discord webhook")
+CON_COMMAND_CHAT(discordbot, "<bot> <message> - send a message to a discord webhook")
 {
 	if (args.ArgC() < 3)
 	{

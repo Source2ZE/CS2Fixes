@@ -106,7 +106,7 @@ CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FC
 	Message("Infractions reloaded\n");
 }
 
-CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
+CON_COMMAND_CHAT_FLAGS(ban, "<name> <minutes|0 (permament)> - ban a player", ADMFLAG_BAN)
 {
 	if (args.ArgC() < 3)
 	{
@@ -175,7 +175,7 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
+CON_COMMAND_CHAT_FLAGS(mute, "<name> <duration|0 (permament)> - mutes a player", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 3)
 	{
@@ -251,7 +251,7 @@ CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "muted", szAction);
 }
 
-CON_COMMAND_CHAT_FLAGS(unmute, "unmutes a player", ADMFLAG_CHAT)
+CON_COMMAND_CHAT_FLAGS(unmute, "<name> - unmutes a player", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 2)
 	{
@@ -300,7 +300,7 @@ CON_COMMAND_CHAT_FLAGS(unmute, "unmutes a player", ADMFLAG_CHAT)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "unmuted");
 }
 
-CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
+CON_COMMAND_CHAT_FLAGS(gag, "<name> <duration|0 (permanent)> - gag a player", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 3)
 	{
@@ -378,7 +378,7 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "gagged", szAction);
 }
 
-CON_COMMAND_CHAT_FLAGS(ungag, "ungags a player", ADMFLAG_CHAT)
+CON_COMMAND_CHAT_FLAGS(ungag, "<name> - ungags a player", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 2)
 	{
@@ -427,7 +427,7 @@ CON_COMMAND_CHAT_FLAGS(ungag, "ungags a player", ADMFLAG_CHAT)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "ungagged");
 }
 
-CON_COMMAND_CHAT_FLAGS(kick, "kick a player", ADMFLAG_KICK)
+CON_COMMAND_CHAT_FLAGS(kick, "<name> - kick a player", ADMFLAG_KICK)
 {
 	if (args.ArgC() < 2)
 	{
@@ -464,7 +464,7 @@ CON_COMMAND_CHAT_FLAGS(kick, "kick a player", ADMFLAG_KICK)
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(slay, "slay a player", ADMFLAG_SLAY)
+CON_COMMAND_CHAT_FLAGS(slay, "<name> - slay a player", ADMFLAG_SLAY)
 {
 	if (args.ArgC() < 2)
 	{
@@ -502,7 +502,7 @@ CON_COMMAND_CHAT_FLAGS(slay, "slay a player", ADMFLAG_SLAY)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
 }
 
-CON_COMMAND_CHAT_FLAGS(slap, "slap a player", ADMFLAG_SLAY)
+CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - slap a player", ADMFLAG_SLAY)
 {
 	if (args.ArgC() < 2)
 	{
@@ -555,7 +555,7 @@ CON_COMMAND_CHAT_FLAGS(slap, "slap a player", ADMFLAG_SLAY)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "slapped");
 }
 
-CON_COMMAND_CHAT_FLAGS(goto, "teleport to a player", ADMFLAG_SLAY)
+CON_COMMAND_CHAT_FLAGS(goto, "<name> - teleport to a player", ADMFLAG_SLAY)
 {
 	// Only players can use this command at all
 	if (!player)
@@ -600,7 +600,7 @@ CON_COMMAND_CHAT_FLAGS(goto, "teleport to a player", ADMFLAG_SLAY)
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(bring, "bring a player", ADMFLAG_SLAY)
+CON_COMMAND_CHAT_FLAGS(bring, "<name> - bring a player", ADMFLAG_SLAY)
 {
 	if (!player)
 	{
@@ -643,7 +643,7 @@ CON_COMMAND_CHAT_FLAGS(bring, "bring a player", ADMFLAG_SLAY)
 	PrintMultiAdminAction(nType, player->GetPlayerName(), "brought");
 }
 
-CON_COMMAND_CHAT_FLAGS(setteam, "set a player's team", ADMFLAG_SLAY)
+CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - set a player's team", ADMFLAG_SLAY)
 {
 	if (args.ArgC() < 3)
 	{
@@ -694,7 +694,7 @@ CON_COMMAND_CHAT_FLAGS(setteam, "set a player's team", ADMFLAG_SLAY)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
 }
 
-CON_COMMAND_CHAT_FLAGS(noclip, "toggle noclip on yourself", ADMFLAG_SLAY | ADMFLAG_CHEATS)
+CON_COMMAND_CHAT_FLAGS(noclip, "- toggle noclip on yourself", ADMFLAG_SLAY | ADMFLAG_CHEATS)
 {
 	if (!player)
 	{
@@ -725,13 +725,13 @@ CON_COMMAND_CHAT_FLAGS(noclip, "toggle noclip on yourself", ADMFLAG_SLAY | ADMFL
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(reload_discord_bots, "Reload discord bot config", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(reload_discord_bots, "- Reload discord bot config", ADMFLAG_ROOT)
 {
 	g_pDiscordBotManager->LoadDiscordBotsConfig();
 	Message("Discord bot config reloaded\n");
 }
 
-CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
+CON_COMMAND_CHAT_FLAGS(entfire, "<name> <input> [parameter] - fire outputs at entities", ADMFLAG_RCON)
 {
 	if (args.ArgC() < 3)
 	{
@@ -792,7 +792,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "fire outputs at entities", ADMFLAG_RCON)
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i entities.", iFoundEnts);
 }
 
-CON_COMMAND_CHAT_FLAGS(entfirepawn, "fire outputs at player pawns", ADMFLAG_RCON)
+CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <inpu> [parameter] - fire outputs at player pawns", ADMFLAG_RCON)
 {
 	if (args.ArgC() < 3)
 	{
@@ -828,7 +828,7 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "fire outputs at player pawns", ADMFLAG_RCON
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i player pawns.", iFoundEnts);
 }
 
-CON_COMMAND_CHAT_FLAGS(entfirecontroller, "fire outputs at player controllers", ADMFLAG_RCON)
+CON_COMMAND_CHAT_FLAGS(entfirecontroller, "<name> <input> [parameter] - fire outputs at player controllers", ADMFLAG_RCON)
 {
 	if (args.ArgC() < 3)
 	{
@@ -864,7 +864,7 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "fire outputs at player controllers", 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i player controllers.", iFoundEnts);
 }
 
-CON_COMMAND_CHAT_FLAGS(map, "change map", ADMFLAG_CHANGEMAP)
+CON_COMMAND_CHAT_FLAGS(map, "<mapname> - change map", ADMFLAG_CHANGEMAP)
 {
 	if (args.ArgC() < 2)
 	{
@@ -903,7 +903,7 @@ CON_COMMAND_CHAT_FLAGS(map, "change map", ADMFLAG_CHANGEMAP)
 	});
 }
 
-CON_COMMAND_CHAT_FLAGS(hsay, "say something as a hud hint", ADMFLAG_CHAT)
+CON_COMMAND_CHAT_FLAGS(hsay, "<message> - say something as a hud hint", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 2)
 	{
@@ -914,7 +914,7 @@ CON_COMMAND_CHAT_FLAGS(hsay, "say something as a hud hint", ADMFLAG_CHAT)
 	ClientPrintAll(HUD_PRINTCENTER, "%s", args.ArgS());
 }
 
-CON_COMMAND_CHAT_FLAGS(rcon, "send a command to server console", ADMFLAG_RCON)
+CON_COMMAND_CHAT_FLAGS(rcon, "<command> - send a command to server console", ADMFLAG_RCON)
 {
 	if (!player)
 	{
@@ -931,7 +931,7 @@ CON_COMMAND_CHAT_FLAGS(rcon, "send a command to server console", ADMFLAG_RCON)
 	g_pEngineServer2->ServerCommand(args.ArgS());
 }
 
-CON_COMMAND_CHAT_FLAGS(extend, "extend current map (negative value reduces map duration)", ADMFLAG_CHANGEMAP)
+CON_COMMAND_CHAT_FLAGS(extend, "<minutes> - extend current map (negative value reduces map duration)", ADMFLAG_CHANGEMAP)
 {
 	if (args.ArgC() < 2)
 	{

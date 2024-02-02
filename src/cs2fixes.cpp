@@ -51,6 +51,7 @@
 #include "httpmanager.h"
 #include "discord.h"
 #include "map_votes.h"
+#include "user_preferences.h"
 #include "entity/cgamerules.h"
 #include "entity/ccsplayercontroller.h"
 #include "entitylistener.h"
@@ -231,6 +232,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pDiscordBotManager = new CDiscordBotManager();
 	g_pZRPlayerClassManager = new CZRPlayerClassManager();
 	g_pMapVoteSystem = new CMapVoteSystem();
+	g_pUserPreferencesSystem = new CUserPreferencesSystem();
+	g_pUserPreferencesStorage = new CUserPreferencesREST();
 	g_pZRWeaponConfig = new ZRWeaponConfig();
 	g_pEntityListener = new CEntityListener();
 
@@ -315,6 +318,12 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 	if (g_pZRWeaponConfig)
 		delete g_pZRWeaponConfig;
+
+	if (g_pUserPreferencesSystem)
+		delete g_pUserPreferencesSystem;
+
+	if (g_pUserPreferencesStorage)
+		delete g_pUserPreferencesStorage;
 
 	if (g_pEntityListener)
 		delete g_pEntityListener;

@@ -58,6 +58,7 @@ DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
+DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -441,6 +442,25 @@ void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsi
 	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7, unk8);
 }
 
+// CONVAR_TODO
+bool g_bFixLagCompCrash = false;
+
+CON_COMMAND_F(cs2f_fix_lag_comp_crash, "Whether to fix lag compensation crash with env_entity_maker", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+		Msg("%s %i\n", args[0], g_bFixLagCompCrash);
+	else
+		g_bFixLagCompCrash = V_StringToBool(args[1], false);
+}
+
+void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEntity, bool a3)
+{
+	if (g_bFixLagCompCrash && strcmp(pEntity->GetClassname(), "env_entity_maker") == 0)
+		return;
+
+	return FixLagCompEntityRelationship(a1, pEntity, a3);
+}
+
 CUtlVector<CDetourBase *> g_vecDetours;
 
 bool InitDetours(CGameConfig *gameConfig)
@@ -494,6 +514,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CNavMesh_GetNearestNavArea.CreateDetour(gameConfig))
 		success = false;
 	CNavMesh_GetNearestNavArea.EnableDetour();
+
+	if (!FixLagCompEntityRelationship.CreateDetour(gameConfig))
+		success = false;
+	FixLagCompEntityRelationship.EnableDetour();
 
 	return success;
 }

@@ -42,8 +42,8 @@ void ClientPrint(CBasePlayerController *player, int destination, const char *msg
 class CChatCommand
 {
 public:
-	CChatCommand(const char *cmd, FnChatCommandCallback_t callback, uint64 flags = ADMFLAG_NONE) :
-		m_pfnCallback(callback), m_nFlags(flags)
+	CChatCommand(const char *cmd, FnChatCommandCallback_t callback, const char *description, uint64 flags = ADMFLAG_NONE) :
+		m_pfnCallback(callback), m_sName(cmd), m_sDescription(description), m_nFlags(flags)
 	{
 		g_CommandList.Insert(hash_32_fnv1a_const(cmd), this);
 	}
@@ -63,9 +63,15 @@ public:
 
 	static bool CheckCommandAccess(CBasePlayerController *pPlayer, uint64 flags);
 
+	const char* GetName() { return m_sName.c_str(); }
+	const char* GetDescription() { return m_sDescription.c_str(); }
+	uint64 GetFlags() { return m_nFlags; }
+
 private:
 	FnChatCommandCallback_t m_pfnCallback;
 	uint64 m_nFlags;
+	std::string m_sName;
+	std::string m_sDescription;
 };
 
 struct WeaponMapEntry_t
@@ -82,9 +88,9 @@ struct WeaponMapEntry_t
 void RegisterWeaponCommands();
 void ParseChatCommand(const char *, CCSPlayerController *);
 
-#define CON_COMMAND_CHAT_FLAGS(name, description, flags)																								\
+#define CON_COMMAND_CHAT_FLAGS(name, description, flags)																						\
 	void name##_callback(const CCommand &args, CCSPlayerController *player);																			\
-	static CChatCommand name##_chat_command(#name, name##_callback, flags);																				\
+	static CChatCommand name##_chat_command(#name, name##_callback, description, flags);														\
 	static void name##_con_callback(const CCommandContext &context, const CCommand &args)																\
 	{																																					\
 		CCSPlayerController *pController = nullptr;																										\
