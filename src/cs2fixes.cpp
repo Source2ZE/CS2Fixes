@@ -331,6 +331,18 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	return true;
 }
 
+void HandleCSSMenuSlots(const char* arg, CPlayerSlot slot)
+{
+	int num;
+	if (sscanf_s(arg, "css_%i", &num))
+	{
+		auto player = g_playerManager->GetPlayer(slot);
+
+		if (player->m_pMenuInstance && num >= 0 && num <= 9)
+			player->m_pMenuInstance->HandleInput(player, num);
+	}
+}
+
 void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CCommandContext& ctx, const CCommand& args)
 {
 	if (!g_pEntitySystem)
@@ -350,9 +362,6 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 		bool bAdminChat = bTeamSay && *args[1] == '@';
 		bool bSilent = *args[1] == '/' || bAdminChat;
 		bool bCommand = *args[1] == '!' || *args[1] == '/';
-
-		if (player->m_pMenuInstance  && *args[1] >= '0' && *args[1] <= '9')
-			player->m_pMenuInstance->HandleInput(player, *args[1] - '0');
 
 		// Chat messages should generate events regardless
 		if (pController)
@@ -399,6 +408,9 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 			}
 		}
 
+		if (player->m_pMenuInstance && !args[1][1] && *args[1] >= '0' && *args[1] <= '9')
+			player->m_pMenuInstance->HandleInput(player, *args[1] - '0');
+
 		// Finally, run the chat command if it is one, so anything will print after the player's message
 		if (bCommand)
 		{
@@ -413,6 +425,11 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 		}
 
 		RETURN_META(MRES_SUPERCEDE);
+	}
+	else if (iCommandPlayerSlot != -1)
+	{
+		// support cs# menu binds when cs# is loaded.
+		HandleCSSMenuSlots(args.Arg(0), iCommandPlayerSlot);
 	}
 }
 
@@ -549,6 +566,9 @@ void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 		ZR_Hook_ClientCommand_JoinTeam(slot, args);
 		RETURN_META(MRES_SUPERCEDE);
 	}
+
+	// support cs# menu binds when cs# is not loaded.
+	HandleCSSMenuSlots(args.Arg(0), slot);
 }
 
 void CS2Fixes::Hook_ClientSettingsChanged( CPlayerSlot slot )

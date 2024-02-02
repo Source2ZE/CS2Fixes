@@ -432,6 +432,30 @@ CON_COMMAND_CHAT(hide, "hides nearby players")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding players within %i units.", distance);
 }
 
+void HandleMenuSlotCommand(CCSPlayerController* controller, int num)
+{
+	if (!controller)
+		return;
+
+	auto player = controller->GetZEPlayer();
+
+	if (!player)
+		return;
+	
+	if(player->m_pMenuInstance)
+		player->m_pMenuInstance->HandleInput(player, num);
+}
+
+CON_COMMAND_CHAT(0, "Menu slot command") { HandleMenuSlotCommand(player, 0); }
+CON_COMMAND_CHAT(1, "Menu slot command") { HandleMenuSlotCommand(player, 1); }
+CON_COMMAND_CHAT(2, "Menu slot command") { HandleMenuSlotCommand(player, 2); }
+CON_COMMAND_CHAT(3, "Menu slot command") { HandleMenuSlotCommand(player, 3); }
+CON_COMMAND_CHAT(4, "Menu slot command") { HandleMenuSlotCommand(player, 4); }
+CON_COMMAND_CHAT(5, "Menu slot command") { HandleMenuSlotCommand(player, 5); }
+CON_COMMAND_CHAT(6, "Menu slot command") { HandleMenuSlotCommand(player, 6); }
+CON_COMMAND_CHAT(7, "Menu slot command") { HandleMenuSlotCommand(player, 7); }
+CON_COMMAND_CHAT(8, "Menu slot command") { HandleMenuSlotCommand(player, 8); }
+CON_COMMAND_CHAT(9, "Menu slot command") { HandleMenuSlotCommand(player, 9); }
 
 #if _DEBUG
 CON_COMMAND_CHAT(myuid, "test")
