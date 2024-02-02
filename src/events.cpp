@@ -68,16 +68,9 @@ GAME_EVENT_F(round_prestart)
 		ZR_OnRoundPrestart(pEvent);
 }
 
-// CONVAR_TODO
 static bool g_bBlockTeamMessages = false;
 
-CON_COMMAND_F(cs2f_block_team_messages, "Whether to block team join messages", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bBlockTeamMessages);
-	else
-		g_bBlockTeamMessages = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_block_team_messages, "Whether to block team join messages", g_bBlockTeamMessages, false, false)
 
 GAME_EVENT_F(player_team)
 {
@@ -86,16 +79,9 @@ GAME_EVENT_F(player_team)
 		pEvent->SetBool("silent", true);
 }
 
-// CONVAR_TODO
 static bool g_bNoblock = false;
 
-CON_COMMAND_F(cs2f_noblock_enable, "Whether to use noblock, which sets debris collision on every player", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bNoblock);
-	else
-		g_bNoblock = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_noblock_enable, "Whether to use noblock, which sets debris collision on every player", g_bNoblock, false, false)
 
 GAME_EVENT_F(player_spawn)
 {
@@ -135,16 +121,9 @@ GAME_EVENT_F(player_spawn)
 	});
 }
 
-// CONVAR_TODO
 static bool g_bEnableTopDefender = false;
 
-CON_COMMAND_F(cs2f_topdefender_enable, "Whether to use TopDefender", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bEnableTopDefender);
-	else
-		g_bEnableTopDefender = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_topdefender_enable, "Whether to use TopDefender", g_bEnableTopDefender, false, false)
 
 GAME_EVENT_F(player_hurt)
 {

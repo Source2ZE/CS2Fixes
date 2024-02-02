@@ -86,27 +86,9 @@ static bool g_bFlashLightShadows = true;
 static float g_flFlashLightDistance = 54.0f; // The minimum distance such that an awp wouldn't block the light
 static std::string g_sFlashLightAttachment = "axis_of_intent";
 
-CON_COMMAND_F(cs2f_flashlight_shadows, "Whether to enable flashlight shadows", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bFlashLightShadows);
-	else
-		g_bFlashLightShadows = V_StringToBool(args[1], true);
-}
-CON_COMMAND_F(cs2f_flashlight_distance, "How far flashlights should be from the player's head", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %.2f\n", args[0], g_flFlashLightDistance);
-	else
-		g_flFlashLightDistance = V_StringToFloat32(args[1], 0.75f);
-}
-CON_COMMAND_F(cs2f_flashlight_attachment, "Which attachment to parent a flashlight to", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %s\n", args[0], g_sFlashLightAttachment.c_str());
-	else
-		g_sFlashLightAttachment = args[1];
-}
+FAKE_BOOL_CVAR(cs2f_flashlight_shadows, "Whether to enable flashlight shadows", g_bFlashLightShadows, true, false)
+FAKE_FLOAT_CVAR(cs2f_flashlight_distance, "How far flashlights should be from the player's head", g_flFlashLightDistance, 54.0f, false)
+FAKE_STRING_CVAR(cs2f_flashlight_attachment, "Which attachment to parent a flashlight to", g_sFlashLightAttachment, false)
 
 void ZEPlayer::SpawnFlashLight()
 {
@@ -166,32 +148,13 @@ void ZEPlayer::ToggleFlashLight()
 	pLight->AcceptInput(pLight->m_bEnabled() ? "Disable" : "Enable");
 }
 
-// CONVAR_TODO
-static float g_flFloodInterval = 0.75;
+static float g_flFloodInterval = 0.75f;
 static int g_iMaxFloodTokens = 3;
-static float g_flFloodCooldown = 3.0;
+static float g_flFloodCooldown = 3.0f;
 
-CON_COMMAND_F(cs2f_flood_interval, "Amount of time allowed between chat messages acquiring flood tokens", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %.2f\n", args[0], g_flFloodInterval);
-	else
-		g_flFloodInterval = V_StringToFloat32(args[1], 0.75f);
-}
-CON_COMMAND_F(cs2f_max_flood_tokens, "Maximum number of flood tokens allowed before chat messages are blocked", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_iMaxFloodTokens);
-	else
-		g_iMaxFloodTokens = V_StringToInt32(args[1], 3);
-}
-CON_COMMAND_F(cs2f_flood_cooldown, "Amount of time to block messages for when a player floods", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %.2f\n", args[0], g_flFloodCooldown);
-	else
-		g_flFloodCooldown = V_StringToFloat32(args[1], 3.0f);
-}
+FAKE_FLOAT_CVAR(cs2f_flood_interval, "Amount of time allowed between chat messages acquiring flood tokens", g_flFloodInterval, 0.75f, false)
+FAKE_INT_CVAR(cs2f_max_flood_tokens, "Maximum number of flood tokens allowed before chat messages are blocked", g_iMaxFloodTokens, 3, false)
+FAKE_FLOAT_CVAR(cs2f_flood_cooldown, "Amount of time to block messages for when a player floods", g_flFloodCooldown, 3.0f, false)
 
 bool ZEPlayer::IsFlooding()
 {
@@ -337,13 +300,7 @@ void CPlayerManager::CheckInfractions()
 
 static bool g_bFlashLightEnable = false;
 
-CON_COMMAND_F(cs2f_flashlight_enable, "Whether to enable flashlights", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bFlashLightEnable);
-	else
-		g_bFlashLightEnable = V_StringToBool(args[1], true);
-}
+FAKE_BOOL_CVAR(cs2f_flashlight_enable, "Whether to enable flashlights", g_bFlashLightEnable, false, false)
 
 void CPlayerManager::FlashLightThink()
 {
@@ -365,16 +322,9 @@ void CPlayerManager::FlashLightThink()
 	}
 }
 
-// CONVAR_TODO
 static bool g_bHideTeammatesOnly = false;
 
-CON_COMMAND_F(cs2f_hide_teammates_only, "Whether to hide teammates only", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bHideTeammatesOnly);
-	else
-		g_bHideTeammatesOnly = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_hide_teammates_only, "Whether to hide teammates only", g_bHideTeammatesOnly, false, false)
 
 void CPlayerManager::CheckHideDistances()
 {
@@ -433,7 +383,7 @@ void CPlayerManager::CheckHideDistances()
 }
 
 static bool g_bInfiniteAmmo = false;
-FAKE_BOOL_CVAR(cs2f_infinite_reserve_ammo, "Whether to enable infinite reserve ammo on weapons", g_bInfiniteAmmo, false)
+FAKE_BOOL_CVAR(cs2f_infinite_reserve_ammo, "Whether to enable infinite reserve ammo on weapons", g_bInfiniteAmmo, false, false)
 
 void CPlayerManager::SetupInfiniteAmmo()
 {

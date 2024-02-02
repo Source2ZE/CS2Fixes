@@ -49,9 +49,10 @@ void UnlockConCommands();
 void Message(const char *, ...);
 void Panic(const char *, ...);
 
-// need to replace with actual cvar someday
-#define FAKE_CVAR(name, description, variable_name, variable_type, variable_type_format, variable_default)				\
-	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)											\
+// CONVAR_TODO
+// Need to replace with actual cvars once available in SDK
+#define FAKE_CVAR(name, description, variable_name, variable_type, variable_type_format, variable_default, protect)		\
+	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | (protect ? FCVAR_PROTECTED : FCVAR_NONE))	\
 	{																													\
 		if (args.ArgC() < 2)																							\
 			Msg("%s " #variable_type_format "\n", args[0], variable_name);												\
@@ -59,18 +60,18 @@ void Panic(const char *, ...);
 			variable_name = V_StringTo##variable_type(args[1], variable_default);										\
 	}
 
-#define FAKE_INT_CVAR(name, description, variable_name, variable_default)												\
-	FAKE_CVAR(name, description, variable_name, Int32, %i, variable_default)
+#define FAKE_INT_CVAR(name, description, variable_name, variable_default, protect)										\
+	FAKE_CVAR(name, description, variable_name, Int32, %i, variable_default, protect)
 
-#define FAKE_BOOL_CVAR(name, description, variable_name, variable_default)												\
-	FAKE_CVAR(name, description, variable_name, Bool, %i, variable_default)
+#define FAKE_BOOL_CVAR(name, description, variable_name, variable_default, protect)										\
+	FAKE_CVAR(name, description, variable_name, Bool, %i, variable_default, protect)
 
-#define FAKE_FLOAT_CVAR(name, description, variable_name, variable_default)												\
-	FAKE_CVAR(name, description, variable_name, Float32, %f, variable_default)
+#define FAKE_FLOAT_CVAR(name, description, variable_name, variable_default, protect)									\
+	FAKE_CVAR(name, description, variable_name, Float32, %f, variable_default, protect)
 
 // assumes std::string variable
-#define FAKE_STRING_CVAR(name, description, variable_name)																\
-	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)											\
+#define FAKE_STRING_CVAR(name, description, variable_name, protect)														\
+	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | protect ? FCVAR_PROTECTED : FCVAR_NONE)	\
 	{																													\
 		if (args.ArgC() < 2)																							\
 			Msg("%s %s\n", args[0], variable_name.c_str());																\

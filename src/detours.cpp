@@ -66,24 +66,11 @@ void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 	CGameRules_Constructor(pThis);
 }
 
-// CONVAR_TODO
-static bool g_bBlockMolotoveSelfDmg = false;
+static bool g_bBlockMolotovSelfDmg = false;
 static bool g_bBlockAllDamage = false;
 
-CON_COMMAND_F(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bBlockMolotoveSelfDmg);
-	else
-		g_bBlockMolotoveSelfDmg = V_StringToBool(args[1], false);
-}
-CON_COMMAND_F(cs2f_block_all_dmg, "Whether to block all damage to players", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bBlockAllDamage);
-	else
-		g_bBlockAllDamage = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", g_bBlockMolotovSelfDmg, false, false)
+FAKE_BOOL_CVAR(cs2f_block_all_dmg, "Whether to block all damage to players", g_bBlockAllDamage, false, false)
 
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
 {
@@ -119,22 +106,15 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 		return;
 
 	// Prevent molly on self
-	if (g_bBlockMolotoveSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
+	if (g_bBlockMolotovSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
 		return;
 
 	CBaseEntity_TakeDamageOld(pThis, inputInfo);
 }
 
-// CONVAR_TODO
 static bool g_bUseOldPush = false;
 
-CON_COMMAND_F(cs2f_use_old_push, "Whether to use the old CSGO trigger_push behavior", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bUseOldPush);
-	else
-		g_bUseOldPush = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_use_old_push, "Whether to use the old CSGO trigger_push behavior", g_bUseOldPush, false, false)
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
@@ -311,16 +291,9 @@ void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPla
 	UTIL_SayTextFilter(filter, buf, pPlayer, eMessageType);
 }
 
-// CONVAR_TODO
 bool g_bEnableTriggerTimer = false;
 
-CON_COMMAND_F(cs2f_trigger_timer_enable, "Whether to process countdown messages said by Console (e.g. Hold for 10 seconds) and append the round time where the countdown resolves", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bEnableTriggerTimer);
-	else
-		g_bEnableTriggerTimer = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_trigger_timer_enable, "Whether to process countdown messages said by Console (e.g. Hold for 10 seconds) and append the round time where the countdown resolves", g_bEnableTriggerTimer, false, false)
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CCSPlayerController *pPlayer, uint64 eMessageType)
 {
@@ -423,16 +396,9 @@ void FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
 
-// CONVAR_TODO
 bool g_bBlockNavLookup = false;
 
-CON_COMMAND_F(cs2f_block_nav_lookup, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bBlockNavLookup);
-	else
-		g_bBlockNavLookup = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_block_nav_lookup, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", g_bBlockNavLookup, false, false)
 
 void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7, int64_t unk8)
 {
@@ -442,16 +408,9 @@ void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsi
 	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7, unk8);
 }
 
-// CONVAR_TODO
 bool g_bFixLagCompCrash = false;
 
-CON_COMMAND_F(cs2f_fix_lag_comp_crash, "Whether to fix lag compensation crash with env_entity_maker", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bFixLagCompCrash);
-	else
-		g_bFixLagCompCrash = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_fix_lag_comp_crash, "Whether to fix lag compensation crash with env_entity_maker", g_bFixLagCompCrash, false, false)
 
 void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEntity, bool a3)
 {
