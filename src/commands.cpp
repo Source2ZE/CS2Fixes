@@ -46,6 +46,7 @@ using json = nlohmann::json;
 extern CGameEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
+extern CGlobalVars* gpGlobals;
 
 WeaponMapEntry_t WeaponMap[] = {
 	{{"bizon"},							"weapon_bizon",			"PP-Bizon",			1400, 26, GEAR_SLOT_RIFLE},
@@ -680,53 +681,51 @@ CON_COMMAND_CHAT(discordbot, "send a message to a discord webhook")
 
 CON_COMMAND_CHAT(testmenu, "displays a test menu")
 {
-	std::shared_ptr<ChatMenu> menu(new ChatMenu("Title"));
+	auto menu = std::make_shared<ChatMenu>("Title");
 
-	menu->AddItem("test item", MenuItemDisplayType::Text , [player]() {
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item pressed");
+	menu->AddItem("test item", MenuItemDisplayType::Text , [](ZEPlayer* player) {
+		ClientPrint(CCSPlayerController::FromSlot(player->GetPlayerSlot()), HUD_PRINTTALK, CHAT_PREFIX "Test item pressed");
 	});
 
 	menu->AddItem("spacer", MenuItemDisplayType::Spacer);
 
-	menu->AddItem("test item2", MenuItemDisplayType::Text, [player]() {
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item2 pressed");
-	});
-
-	menu->AddItem("test item3", MenuItemDisplayType::Text, [player]() {
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item3 pressed");
-	});
-
-	menu->AddItem("test item4", MenuItemDisplayType::Text, [player]() {
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item4 pressed");
-	});
-
-	menu->AddItem("test item5", MenuItemDisplayType::Text, [player]() {
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item5 pressed");
-	});
-
-	menu->AddItem("test item6", MenuItemDisplayType::Text, [player]() {
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item6 pressed");
-	});
-
-	menu->AddItem("test item7", MenuItemDisplayType::Text, [player]() {
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item7 pressed");
-	});
-
-	menu->AddItem("test item8", MenuItemDisplayType::Text, [player]() {
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item8 pressed");
-	});
-
-	menu->AddItem("test item9", MenuItemDisplayType::Text, [player]() {
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Test item9 pressed");
+	menu->AddItem("test item2", MenuItemDisplayType::Text, [](ZEPlayer* player) {
+		ClientPrint(CCSPlayerController::FromSlot(player->GetPlayerSlot()), HUD_PRINTTALK, CHAT_PREFIX "Test item2 pressed");
 	});
 
 	menu->SetCondition([](ZEPlayer* player) {
 		auto controller = CCSPlayerController::FromSlot(player->GetPlayerSlot());
-
-		ConMsg("Condition check %i\n", controller->GetPawn()->IsAlive());
-
 		return controller->GetPawn()->IsAlive();
 	});
+
+	menu->Send(player->GetZEPlayer());
+}
+
+CON_COMMAND_CHAT(testmenu_target, "displays a test menu with player targetting")
+{
+	auto menu = std::make_shared<ChatMenu>("Title");
+
+	auto subMenuHandler = [](ZEPlayer* player, CHandle<CCSPlayerController> hController) {
+		ClientPrint(CCSPlayerController::FromSlot(player->GetPlayerSlot()), HUD_PRINTTALK, CHAT_PREFIX "Player selected");
+
+		auto menu = std::make_shared<ChatMenu>("Submenu");
+
+		menu->AddItem("Kill player", MenuItemDisplayType::Text, [hController](ZEPlayer* player) {
+			auto pController = hController.Get();
+			if (pController)
+				pController->GetPawn()->CommitSuicide(false, true);
+		});
+
+		menu->Send(player);
+	};
+
+	for (int i = 0; i < gpGlobals->maxClients; i++) {
+		auto pController = CCSPlayerController::FromSlot(i);
+		if (pController && pController->IsConnected()) {
+			auto hController = pController->GetHandle();
+			menu->AddItem(pController->GetPlayerName(), MenuItemDisplayType::Text, [hController, subMenuHandler](ZEPlayer* player) { subMenuHandler(player, hController); });
+		}
+	}
 
 	menu->Send(player->GetZEPlayer());
 }

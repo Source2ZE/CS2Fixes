@@ -28,7 +28,7 @@
 class ZEPlayer;
 class ChatMenuInstance;
 
-typedef std::function<void()> MenuItemCallback;
+typedef std::function<void(ZEPlayer*)> MenuItemCallback;
 typedef std::function<bool(ZEPlayer*)> MenuConditionHandler;
 
 enum class MenuItemDisplayType
@@ -59,6 +59,7 @@ public:
     std::string m_szTitle;
     std::vector<MenuItem> m_vecItems;
     MenuConditionHandler m_funcCondition;
+    bool m_bAutoClose = true;
 };
 
 class BaseMenuInstance

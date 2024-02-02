@@ -89,7 +89,12 @@ void BaseMenuInstance::HandleInput(ZEPlayer* player, int iInput)
         {
             auto& item = m_pMenu->m_vecItems[iRealIndex];
             if (item.callback)
-                item.callback();
+                item.callback(player);
+ 
+            // menu might not exist anymore after callback which might have deleted it, by e.g. opening a new menu. Do not access m_pMenu below this point.
+            // if the player's menu instance is still the same as this instance, m_pMenu must still exist.
+            if (this == player->m_pMenuInstance.get() && m_pMenu->m_bAutoClose)
+                player->m_pMenuInstance = nullptr;
         }
     }   
 }
