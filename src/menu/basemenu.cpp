@@ -23,10 +23,19 @@
 #include <iostream>
 #include <string>
 
-void BaseMenu::AddItem(std::string name, MenuItemDisplayType type, MenuItemCallback callback)
+void BaseMenu::AddItem(std::string name, MenuItemDisplayType type, MenuItemCallback callback, ...)
 {
+    va_list args;
+    va_start(args, callback);
+
+    // realistically menu items will be very short
+    // AddItem could be called a lot so lets not waste time on calling vsnprintf twice for every item
+    char szBuffer[64];
+    vsnprintf(szBuffer, sizeof(szBuffer), name.c_str(), args);
+    va_end(args);
+
     MenuItem item = {
-        .name = name,
+        .name = std::string(szBuffer),
         .callback = callback,
         .type = type
     };

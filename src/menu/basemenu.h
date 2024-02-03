@@ -53,7 +53,7 @@ public:
         ConMsg("BaseMenu destroyed\n");
     }
     BaseMenu(std::string title) : m_szTitle(title) {};
-    void AddItem(std::string name, MenuItemDisplayType type, MenuItemCallback callback = nullptr);
+    void AddItem(std::string name, MenuItemDisplayType type, MenuItemCallback callback = nullptr, ...);
     void SetCondition(MenuConditionHandler handler) { m_funcCondition = handler; }
 public:
     std::string m_szTitle;

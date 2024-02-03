@@ -717,6 +717,8 @@ CON_COMMAND_CHAT(testmenu, "displays a test menu")
 		ClientPrint(CCSPlayerController::FromSlot(player->GetPlayerSlot()), HUD_PRINTTALK, CHAT_PREFIX "Test item2 pressed");
 	});
 
+	menu->AddItem("Formatted string %s %i", MenuItemDisplayType::Text, nullptr, "-", 5);
+
 	menu->SetCondition([](ZEPlayer* player) {
 		auto controller = CCSPlayerController::FromSlot(player->GetPlayerSlot());
 		return controller->GetPawn()->IsAlive();
