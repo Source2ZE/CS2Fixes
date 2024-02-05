@@ -56,6 +56,7 @@
 class CInfractionBase
 {
 public:
+	virtual ~CInfractionBase() = default;
 	CInfractionBase(time_t duration, uint64 steamId, bool bEndTime = false) : m_iSteamID(steamId)
 	{
 		// The duration is in minutes here

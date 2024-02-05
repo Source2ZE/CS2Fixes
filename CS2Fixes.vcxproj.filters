@@ -125,6 +125,12 @@
     <ClCompile Include="src\menu\chatmenu.cpp">
       <Filter>Source Files\menu</Filter>
     </ClCompile>
+    <ClCompile Include="src\menu\centertextmenu.cpp">
+      <Filter>Source Files\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cs2_sdk\entity\ccsplayercontroller.cpp">
+      <Filter>Source Files\cs2_sdk\entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -245,6 +251,9 @@
       <Filter>Header Files\menu</Filter>
     </ClInclude>
     <ClInclude Include="src\menu\chatmenu.h">
+      <Filter>Header Files\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\menu\centertextmenu.h">
       <Filter>Header Files\menu</Filter>
     </ClInclude>
   </ItemGroup>

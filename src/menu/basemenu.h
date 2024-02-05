@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023 Source2ZE
+ * Copyright (C) 2024 Source2ZE
  * Paging logic courtesy of CounterStrikeSharp
  * =============================================================================
  *
@@ -54,9 +54,7 @@ struct MenuItem
 class BaseMenu : public std::enable_shared_from_this<BaseMenu>
 {
 public:
-    ~BaseMenu() {
-        ConMsg("BaseMenu destroyed\n");
-    }
+    virtual ~BaseMenu() = default;
     BaseMenu(std::string title) : m_szTitle(title) {};
     void AddItem(std::string name, MenuItemDisplayType type, MenuItemCallback callback = nullptr, ...);
     void SetCondition(MenuConditionHandler handler) { m_funcCondition = handler; }
@@ -71,24 +69,25 @@ public:
 class BaseMenuInstance
 {
 public:
-    ~BaseMenuInstance() {
-        ConMsg("BaseMenuInstance destroyed\n");
-    }
+    virtual ~BaseMenuInstance() = default;
     virtual bool Render(ZEPlayer* player);
+    // a menu can be destroyed without emitting OnMenuClosed (e.g. when a player disconnects)
+    virtual void OnMenuClosed(ZEPlayer* player, bool intentional) {};
     void NextPage(ZEPlayer* player);
     void PrevPage(ZEPlayer* player);
     int GetOffset() const { return m_iOffset; };
     int GetPage() const { return m_iPage; };
-    int GetVisibleItemCount() const { return m_iMinItems + 3 - HasPrevPage() - HasNextPage() - HasCloseButton(); };
+    int GetVisibleItemCount() const { return GetNumItems() + 3 - HasPrevPage() - HasNextPage() - HasCloseButton(); };
     bool HasPrevPage() const { return m_iPage > 0; };
-    bool HasNextPage() const { return m_pMenu->m_vecItems.size() > GetOffset() + m_iMinItems; };
+    bool HasNextPage() const { return m_pMenu->m_vecItems.size() > GetOffset() + GetNumItems(); };
     bool HasCloseButton() const { return true; };
     void HandleInput(ZEPlayer* player, int iInput);
     bool CheckCondition(ZEPlayer* player);
+private:
+    virtual int GetNumItems() const { return 6; };
 public:
     std::shared_ptr<BaseMenu> m_pMenu;
 private:
-    const int m_iMinItems = 6;
     int m_iPage = 0;
     int m_iOffset = 0;
     std::stack<int> m_stackOffsets;

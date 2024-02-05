@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023 Source2ZE
+ * Copyright (C) 2024 Source2ZE
  * Pagination logic courtesy of CounterStrikeSharp
  * =============================================================================
  *
@@ -80,6 +80,7 @@ void BaseMenuInstance::HandleInput(ZEPlayer* player, int iInput)
 {
     if (!CheckCondition(player))
     {
+        player->m_pMenuInstance->OnMenuClosed(player, false);
         player->m_pMenuInstance = nullptr;
         return;
     }
@@ -89,7 +90,10 @@ void BaseMenuInstance::HandleInput(ZEPlayer* player, int iInput)
     else if (iInput == 8 && HasNextPage())
         NextPage(player);
     else if (iInput == 9 && HasCloseButton())
+    {
+        player->m_pMenuInstance->OnMenuClosed(player, true);
         player->m_pMenuInstance = nullptr;
+    }
     else if (iInput >= 1 && iInput <= GetVisibleItemCount())
     {
         int iIndex = iInput - 1;
@@ -103,7 +107,10 @@ void BaseMenuInstance::HandleInput(ZEPlayer* player, int iInput)
             // menu might not exist anymore after callback which might have deleted it, by e.g. opening a new menu. Do not access m_pMenu below this point.
             // if the player's menu instance is still the same as this instance, m_pMenu must still exist.
             if (this == player->m_pMenuInstance.get() && m_pMenu->m_bAutoClose)
+            {
+                player->m_pMenuInstance->OnMenuClosed(player, false);
                 player->m_pMenuInstance = nullptr;
+            }
         }
     }   
 }

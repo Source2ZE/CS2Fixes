@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023 Source2ZE
+ * Copyright (C) 2024 Source2ZE
  * =============================================================================
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,11 +27,11 @@ class ChatMenu : public BaseMenu
 	using BaseMenu::BaseMenu;
 public:
 	void Send(ZEPlayer* player);
-	MenuType GetMenuType() { return MenuType::Chat; };
+	MenuType GetMenuType() override { return MenuType::Chat; };
 };
 
 class ChatMenuInstance : public BaseMenuInstance
 {
 public:
-	bool Render(ZEPlayer* player);
+	bool Render(ZEPlayer* player) override;
 };

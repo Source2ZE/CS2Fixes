@@ -173,6 +173,7 @@
     <ClCompile Include="src\adminsystem.cpp" />
     <ClCompile Include="src\commands.cpp" />
     <ClCompile Include="src\cs2fixes.cpp" />
+    <ClCompile Include="src\cs2_sdk\entity\ccsplayercontroller.cpp" />
     <ClCompile Include="src\cs2_sdk\schema.cpp" />
     <ClCompile Include="src\ctimer.cpp" />
     <ClCompile Include="src\cvars.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="src\map_votes.cpp" />
     <ClCompile Include="src\mempatch.cpp" />
     <ClCompile Include="src\menu\basemenu.cpp" />
+    <ClCompile Include="src\menu\centertextmenu.cpp" />
     <ClCompile Include="src\menu\chatmenu.cpp" />
     <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\playermanager.cpp" />
@@ -226,6 +228,7 @@
     <ClInclude Include="src\mempatch.h" />
     <ClInclude Include="src\addresses.h" />
     <ClInclude Include="src\menu\basemenu.h" />
+    <ClInclude Include="src\menu\centertextmenu.h" />
     <ClInclude Include="src\menu\chatmenu.h" />
     <ClInclude Include="src\playermanager.h" />
     <ClInclude Include="src\recipientfilters.h" />

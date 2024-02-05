@@ -29,6 +29,7 @@
 class CDetourBase
 {
 public:
+	virtual ~CDetourBase() = default;
 	virtual const char* GetName() = 0;
 	virtual void FreeDetour() = 0;
 };

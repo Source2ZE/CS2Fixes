@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023 Source2ZE
+ * Copyright (C) 2024 Source2ZE
  * =============================================================================
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,8 +32,8 @@ bool CenterTextMenuInstance::Render(ZEPlayer* player)
 	auto controller = CCSPlayerController::FromSlot(player->GetPlayerSlot());
 	std::string output;
 
-	auto AppendCenterMessage = [&output](std::string text) -> void {
-		output.append(text + "<br>");
+	auto AppendCenterMessage = [&output](std::string text, bool last = false) -> void {
+		output.append(text + (last ? "" : "<br>"));
 	};
 
 	int visualOffset = 1;
@@ -42,28 +42,33 @@ bool CenterTextMenuInstance::Render(ZEPlayer* player)
 		auto& item = m_pMenu->m_vecItems[i];
 
 		if (item.type == MenuItemDisplayType::Text)
-			AppendCenterMessage("<font color=\"#FFA500\">" + std::to_string(visualOffset++) + ". " + item.name + "</font>");
+			AppendCenterMessage("<font color=\"#FFA500\" class=\"text-align-left\">test" + std::to_string(visualOffset++) + ". " + item.name + "</font>");
 		else if (item.type == MenuItemDisplayType::Spacer)
 		{
 			AppendCenterMessage("");
 			visualOffset++;
 		}
 		else if (item.type == MenuItemDisplayType::Disabled)
-			AppendCenterMessage("<font color=\"#888888\">" + std::to_string(visualOffset++) + ". " + item.name + "</font>");
+			AppendCenterMessage("<span class=\"text-align-left\">test" + std::to_string(visualOffset++) + ". " + item.name + "</font>");
 	}
 
-	if (HasPrevPage() || HasNextPage() || HasCloseButton())
-		AppendCenterMessage("");
-
 	if (HasPrevPage())
-		AppendCenterMessage("<font color=\"#FFA500\">7. Prev</font>");
+		AppendCenterMessage("<font color=\"#32a852\">7. Prev</font>");
 	if (HasNextPage())
-		AppendCenterMessage("<font color=\"#FFA500\">8. Next</font>");
+		AppendCenterMessage("<font color=\"#32a852\">8. Next</font>");
 	if (HasCloseButton())
-		AppendCenterMessage("<font color=\"#FFA500\">9. Close</font>");
+		AppendCenterMessage("<font color=\"#d10a25\">9. Close</font>", true);
 
 	controller->ShowRespawnStatus(output.c_str());
 	return true;
+}
+
+void CenterTextMenuInstance::OnMenuClosed(ZEPlayer* player, bool intentional)
+{
+	/*
+	auto controller = CCSPlayerController::FromSlot(player->GetPlayerSlot());
+	if(controller && controller->IsConnected())
+		controller->ShowRespawnStatus(" ");*/
 }
 
 void CenterTextMenu::Send(ZEPlayer* player)

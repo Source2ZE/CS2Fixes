@@ -20,7 +20,10 @@
 
 #include "common.h"
 #include "entitysystem.h"
+#define private public
 #include "igamesystemfactory.h"
+#undef private
+
 
 bool InitGameSystems();
 
