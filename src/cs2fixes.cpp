@@ -129,6 +129,7 @@ CGameConfig *g_GameConfig = nullptr;
 ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
+IGameSystem** g_pLegacyEventSystem = nullptr;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -236,6 +237,18 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pUserPreferencesStorage = new CUserPreferencesREST();
 	g_pZRWeaponConfig = new ZRWeaponConfig();
 	g_pEntityListener = new CEntityListener();
+
+	// big hax
+	CBaseGameSystemFactory* pFactoryList = *CBaseGameSystemFactory::sm_pFirst;
+	while (pFactoryList)
+	{
+		if (strcmp(pFactoryList->m_pName, "CSource1LegacyGameEventGameSystem") == 0)
+		{
+			g_pLegacyEventSystem = *(IGameSystem***)((uint8_t*)pFactoryList + 0x18);
+			break;
+		}
+		pFactoryList = pFactoryList->m_pNext;
+	}
 
 	if (late)
 	{
@@ -659,6 +672,19 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 			{
 				timer->m_flLastExecute = g_flUniversalTime;
 			}
+		}
+	}
+
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+		if (!pPlayer || pPlayer->IsFakeClient())
+			continue;
+
+		if (pPlayer->m_pMenuInstance && pPlayer->m_pMenuInstance->m_pMenu->GetMenuType() == MenuType::CenterText)
+		{
+			pPlayer->m_pMenuInstance->Render(pPlayer);
 		}
 	}
 

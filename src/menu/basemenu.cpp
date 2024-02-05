@@ -55,7 +55,7 @@ bool BaseMenuInstance::CheckCondition(ZEPlayer* player)
 
 bool BaseMenuInstance::Render(ZEPlayer* player)
 {
-    ConMsg("BaseMenuInstance::Render\n");
+    //ConMsg("BaseMenuInstance::Render\n");
 
     return CheckCondition(player);
 }

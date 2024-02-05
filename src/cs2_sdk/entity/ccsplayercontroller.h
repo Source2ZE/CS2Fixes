@@ -80,4 +80,6 @@ public:
 		static int offset = g_GameConfig->GetOffset("CCSPlayerController_Respawn");
 		CALL_VIRTUAL(void, offset, this);
 	}
+
+	void ShowRespawnStatus(const char* str);
 };

@@ -57,6 +57,7 @@ private:
 
 void RegisterEventListeners();
 void UnregisterEventListeners();
+IGameEventListener2* GetClientEventListener(CPlayerSlot slot);
 
 #define GAME_EVENT_F(_event)												\
 	void _event##_callback(IGameEvent*);									\

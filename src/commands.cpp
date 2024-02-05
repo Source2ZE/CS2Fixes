@@ -40,6 +40,7 @@
 
 #include "tier0/memdbgon.h"
 #include "menu/chatmenu.h"
+#include "menu/centertextmenu.h"
 
 using json = nlohmann::json;
 
@@ -705,19 +706,28 @@ CON_COMMAND_CHAT(discordbot, "send a message to a discord webhook")
 
 CON_COMMAND_CHAT(testmenu, "displays a test menu")
 {
-	auto menu = std::make_shared<ChatMenu>("Title");
+	auto menu = std::make_shared<CenterTextMenu>("Title");
 
 	menu->AddItem("test item", MenuItemDisplayType::Text , [](ZEPlayer* player) {
 		ClientPrint(CCSPlayerController::FromSlot(player->GetPlayerSlot()), HUD_PRINTTALK, CHAT_PREFIX "Test item pressed");
 	});
 
-	menu->AddItem("spacer", MenuItemDisplayType::Spacer);
+	//menu->AddItem("spacer", MenuItemDisplayType::Spacer);
 
 	menu->AddItem("test item2", MenuItemDisplayType::Text, [](ZEPlayer* player) {
 		ClientPrint(CCSPlayerController::FromSlot(player->GetPlayerSlot()), HUD_PRINTTALK, CHAT_PREFIX "Test item2 pressed");
 	});
 
 	menu->AddItem("Formatted string %s %i", MenuItemDisplayType::Text, nullptr, "-", 5);
+
+	menu->AddItem("test item", MenuItemDisplayType::Text);
+	menu->AddItem("test item", MenuItemDisplayType::Text);
+	menu->AddItem("test item", MenuItemDisplayType::Text);
+	menu->AddItem("test item", MenuItemDisplayType::Text);
+	menu->AddItem("test item", MenuItemDisplayType::Disabled);
+	menu->AddItem("test item", MenuItemDisplayType::Text);
+	menu->AddItem("test item", MenuItemDisplayType::Text);
+	menu->AddItem("test item", MenuItemDisplayType::Text);
 
 	menu->SetCondition([](ZEPlayer* player) {
 		auto controller = CCSPlayerController::FromSlot(player->GetPlayerSlot());

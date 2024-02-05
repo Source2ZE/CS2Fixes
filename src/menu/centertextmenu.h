@@ -20,17 +20,17 @@
 #pragma once
 #include "basemenu.h"
 
-class ChatMenuInstance;
+class CenterTextMenuInstance;
 
-class ChatMenu : public BaseMenu
+class CenterTextMenu : public BaseMenu
 {
 	using BaseMenu::BaseMenu;
 public:
 	void Send(ZEPlayer* player);
-	MenuType GetMenuType() { return MenuType::Chat; };
+	MenuType GetMenuType() { return MenuType::CenterText; };
 };
 
-class ChatMenuInstance : public BaseMenuInstance
+class CenterTextMenuInstance : public BaseMenuInstance
 {
 public:
 	bool Render(ZEPlayer* player);

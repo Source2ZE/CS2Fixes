@@ -38,13 +38,18 @@ enum class MenuItemDisplayType
     Disabled
 };
 
+enum class MenuType
+{
+    Chat,
+    CenterText
+};
+
 struct MenuItem
 {
     std::string name;
     MenuItemCallback callback;
     MenuItemDisplayType type;
 };
-
 
 class BaseMenu : public std::enable_shared_from_this<BaseMenu>
 {
@@ -55,6 +60,7 @@ public:
     BaseMenu(std::string title) : m_szTitle(title) {};
     void AddItem(std::string name, MenuItemDisplayType type, MenuItemCallback callback = nullptr, ...);
     void SetCondition(MenuConditionHandler handler) { m_funcCondition = handler; }
+    virtual MenuType GetMenuType() = 0;
 public:
     std::string m_szTitle;
     std::vector<MenuItem> m_vecItems;

@@ -31,8 +31,17 @@ extern IGameEventManager2 *g_gameEventManager;
 extern IServerGameClients *g_pSource2GameClients;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
+extern IGameSystem** g_pLegacyEventSystem;
 
 CUtlVector<CGameEventListener *> g_vecEventListeners;
+
+IGameEventListener2* GetClientEventListener(CPlayerSlot slot)
+{
+	if (!*g_pLegacyEventSystem)
+		return nullptr;
+
+	return (IGameEventListener2*)((uint8_t*)(*g_pLegacyEventSystem) + 16 * slot.Get() + 0x50);
+}
 
 void RegisterEventListeners()
 {
