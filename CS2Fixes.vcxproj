@@ -201,6 +201,7 @@
     <ClInclude Include="src\commands.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\cs2fixes.h" />
+    <ClInclude Include="src\cs2_sdk\cschemasystem.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbaseentity.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbasemodelentity.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbaseplayercontroller.h" />
