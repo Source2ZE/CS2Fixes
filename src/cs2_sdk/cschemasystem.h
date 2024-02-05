@@ -268,7 +268,7 @@ class CSchemaType
 public:
 	bool GetSizes(int *out_size1, uint8_t *unk_probably_not_size)
 	{
-		return reinterpret_cast<int(__thiscall *)(void *, int *, uint8_t *)>(vftable_[3])(this, out_size1, unk_probably_not_size);
+		return reinterpret_cast<int(THISCALL *)(void *, int *, uint8_t *)>(vftable_[3])(this, out_size1, unk_probably_not_size);
 	}
 
 public:
