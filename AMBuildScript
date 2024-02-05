@@ -274,11 +274,10 @@ class MMSPluginConfig(object):
 
     elif cxx.like('msvc'):
       if builder.options.debug == '1':
-        cxx.cflags += ['/MDd']
+        cxx.cflags += ['/MTd']
         cxx.linkflags += ['/NODEFAULTLIB:libcmt']
       else:
         cxx.cflags += ['/MT']
-        cxx.linkflags += ['/NODEFAULTLIB:libcmt']
       cxx.defines += [
         '_CRT_SECURE_NO_DEPRECATE',
         '_CRT_SECURE_NO_WARNINGS',
