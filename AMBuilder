@@ -29,20 +29,23 @@ for sdk_name in MMSPlugin.sdks:
       os.path.join(builder.sourcePath, 'protobuf', 'generated'),
     ]
 
+    target_folder = 'Debug' if builder.options.debug else 'Release'
+    target_protobuf = 'libprotobufd' if builder.options.debug else 'libprotobuf'
+
     if binary.compiler.target.platform == 'linux':
       binary.compiler.postlink += [
-        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'libfunchook.a'),
-        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'libdistorm.a'),
-        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', 'libprotobuf.a'),
+        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'libfunchook.a'),
+        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'libdistorm.a'),
+        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', target_folder, target_protobuf + '.a'),
       ]
       binary.sources += ['src/utils/plat_unix.cpp']
     elif binary.compiler.target.platform == 'windows':
       binary.compiler.postlink += [
         os.path.join('psapi.lib'),
-        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'funchook.lib'),
-        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', 'distorm.lib'),
-        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', 'libprotobuf.lib'),
-		os.path.join(builder.sourcePath, 'sdk', 'lib', 'public', 'win64', 'steam_api64.lib')
+        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'funchook.lib'),
+        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'distorm.lib'),
+        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', target_folder, target_protobuf + '.lib'),
+		    os.path.join(builder.sourcePath, 'sdk', 'lib', 'public', 'win64', 'steam_api64.lib')
       ]
       binary.sources += ['src/utils/plat_win.cpp']
 
