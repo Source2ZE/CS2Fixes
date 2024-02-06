@@ -29,7 +29,7 @@
 
 #include "cs2fixes.h"
 #undef snprintf
-#include "vendor/nlohmann/json.hpp"
+#include "vendor/nlohmann/json_fwd.hpp"
 #include <steam/steam_gameserver.h>
 
 #include <vector>
