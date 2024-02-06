@@ -28,6 +28,7 @@
 #include "httpmanager.h"
 #include "common.h"
 #include <string>
+#include "vendor/nlohmann/json.hpp"
 
 extern ISteamHTTP* g_http;
 
