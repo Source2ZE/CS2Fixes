@@ -368,12 +368,12 @@
 				"linux"			"92"
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
-			// return (*(*v9 + 2832LL))(v9, v27, 0LL);
-			// 2832 (354 * 8) is the offset
+			// return (*(*v9 + 2872LL))(v9, v27, 0LL);
+			// 2872 (359 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"		"357"
-				"linux"			"357"
+				"windows"		"359"
+				"linux"			"359"
 			}
 			// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 			"CGameRules_FindPickerEntity"
@@ -383,8 +383,8 @@
 			}
 			"PassesTriggerFilters"
 			{
-				"windows"		"245"
-				"linux"			"246"
+				"windows"		"247"
+				"linux"			"248"
 			}
 			"CCSPlayerController_Respawn"
 			{
