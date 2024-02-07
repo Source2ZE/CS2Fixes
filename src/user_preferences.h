@@ -21,7 +21,7 @@
 #include "utlmap.h"
 #include "utlstring.h"
 #undef snprintf
-#include "vendor/nlohmann/json.hpp"
+#include "vendor/nlohmann/json_fwd.hpp"
 
 using json = nlohmann::json;
 
