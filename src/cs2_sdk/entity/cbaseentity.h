@@ -112,6 +112,7 @@ public:
 	SCHEMA_FIELD(int, m_iHealth)
 	SCHEMA_FIELD(int, m_iMaxHealth)
 	SCHEMA_FIELD(int, m_iTeamNum)
+	SCHEMA_FIELD(bool, m_bLagCompensate)
 	SCHEMA_FIELD(Vector, m_vecAbsVelocity)
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
 	SCHEMA_FIELD(CCollisionProperty*, m_pCollision)
@@ -172,8 +173,8 @@ public:
 
 	CHandle<CBaseEntity> GetHandle() { return m_pEntity->m_EHandle; }
 
-	// A double pointer to entity VData is available 8 bytes past m_nSubclassID, if applicable
-	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 8); }
+	// A double pointer to entity VData is available 4 bytes past m_nSubclassID, if applicable
+	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 4); }
 
 	void DispatchSpawn(CEntityKeyValues *pEntityKeyValues = nullptr)
 	{
