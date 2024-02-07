@@ -71,7 +71,7 @@ void Panic(const char *, ...);
 
 // assumes std::string variable
 #define FAKE_STRING_CVAR(name, description, variable_name, protect)														\
-	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | protect ? FCVAR_PROTECTED : FCVAR_NONE)	\
+	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | (protect ? FCVAR_PROTECTED : FCVAR_NONE))	\
 	{																													\
 		if (args.ArgC() < 2)																							\
 			Msg("%s %s\n", args[0], variable_name.c_str());																\

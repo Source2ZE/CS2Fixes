@@ -227,7 +227,7 @@ void RegisterWeaponCommands()
 
 		for (std::string alias : weaponEntry.aliases)
 		{
-			new CChatCommand(alias.c_str(), ParseWeaponCommand, "- Buys this weapon", ADMFLAG_NONE);
+			new CChatCommand(alias.c_str(), ParseWeaponCommand, "- Buys this weapon", ADMFLAG_NONE, CMDFLAG_NOHELP);
 			ConCommandRefAbstract ref;
 
 			char cmdName[64];
@@ -408,7 +408,9 @@ CON_COMMAND_CHAT(help, "- Display list of commands in console")
 		FOR_EACH_VEC(g_CommandList, i)
 		{
 			CChatCommand *cmd = g_CommandList[i];
-			ClientPrint(player, HUD_PRINTCONSOLE, "c_%s %s", i, cmd->GetName(), cmd->GetDescription());
+
+			if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
+				ClientPrint(player, HUD_PRINTCONSOLE, "c_%s %s", cmd->GetName(), cmd->GetDescription());
 		}
 
 		return;
@@ -424,11 +426,13 @@ CON_COMMAND_CHAT(help, "- Display list of commands in console")
 	FOR_EACH_VEC(g_CommandList, i)
 	{
 		CChatCommand *cmd = g_CommandList[i];
-		uint64 flags = cmd->GetFlags();
+		uint64 flags = cmd->GetAdminFlags();
 
-		if (pZEPlayer->IsAdminFlagSet(flags))
-				ClientPrint(player, HUD_PRINTCONSOLE, "c_%s %s", cmd->GetName(), cmd->GetDescription());
+		if (pZEPlayer->IsAdminFlagSet(flags) && !cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
+				ClientPrint(player, HUD_PRINTCONSOLE, "!%s %s", cmd->GetName(), cmd->GetDescription());
 	}
+
+	ClientPrint(player, HUD_PRINTCONSOLE, "! can be replaced with / for a silent chat command, or c_ for console usage");
 }
 
 
