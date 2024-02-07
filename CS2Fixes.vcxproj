@@ -171,6 +171,7 @@
     <ClCompile Include="sdk\entity2\entityidentity.cpp" />
     <ClCompile Include="sdk\entity2\entitykeyvalues.cpp" />
     <ClCompile Include="sdk\entity2\entitysystem.cpp" />
+    <ClCompile Include="sdk\public\tier0\memoverride.cpp" />
     <ClCompile Include="sdk\tier1\keyvalues3.cpp" />
     <ClCompile Include="src\addresses.cpp" />
     <ClCompile Include="src\adminsystem.cpp" />
