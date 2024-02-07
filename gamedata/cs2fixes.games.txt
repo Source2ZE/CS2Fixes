@@ -396,6 +396,11 @@
 				"windows"		"100"
 				"linux"			"99"
 			}
+			"CheckTransmitPlayerSlot"
+			{
+				"windows"		"584"
+				"linux"			"584"
+			}
 		}
 		"Patches"
 		{

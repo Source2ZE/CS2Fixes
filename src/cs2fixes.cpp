@@ -654,9 +654,10 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 	{
 		auto &pInfo = ppInfoList[i];
 
-		// offset 560 happens to have a player index here,
+		// the offset happens to have a player index here,
 		// though this is probably part of the client class that contains the CCheckTransmitInfo
-		int iPlayerSlot = (int)*((uint8 *)pInfo + 560);
+		static int offset = g_GameConfig->GetOffset("CheckTransmitPlayerSlot");
+		int iPlayerSlot = (int)*((uint8 *)pInfo + offset);
 
 		CCSPlayerController* pSelfController = CCSPlayerController::FromSlot(iPlayerSlot);
 
