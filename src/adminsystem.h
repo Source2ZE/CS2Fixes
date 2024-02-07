@@ -53,6 +53,9 @@
 
 #define ADMIN_PREFIX "Admin %s has "
 
+void PrintSingleAdminAction(const char* pszAdminName, const char* pszTargetName, const char* pszAction, const char* pszAction2, const char* prefix);
+void PrintMultiAdminAction(ETargetType nType, const char* pszAdminName, const char* pszAction, const char* pszAction2, const char* prefix);
+
 class CInfractionBase
 {
 public:
@@ -154,3 +157,5 @@ private:
 };
 
 extern CAdminSystem *g_pAdminSystem;
+
+void PrecacheAdminBeaconParticle(IEntityResourceManifest* pResourceManifest);

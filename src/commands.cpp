@@ -29,6 +29,8 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
 #include "entity/ccsweaponbase.h"
+#include "entity/cparticlesystem.h"
+#include "entity/lights.h"
 #include "playermanager.h"
 #include "adminsystem.h"
 #include "ctimer.h"
@@ -86,16 +88,9 @@ WeaponMapEntry_t WeaponMap[] = {
 	{{"kevlar"},						"item_kevlar",			"Kevlar Vest",		650, 50, GEAR_SLOT_UTILITY},
 };
 
-// CONVAR_TODO
 bool g_bEnableWeapons = false;
 
-CON_COMMAND_F(cs2f_weapons_enable, "Whether to enable weapon commands", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bEnableWeapons);
-	else
-		g_bEnableWeapons = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_weapons_enable, "Whether to enable weapon commands", g_bEnableWeapons, false, false)
 
 void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 {
@@ -232,7 +227,7 @@ void RegisterWeaponCommands()
 
 		for (std::string alias : weaponEntry.aliases)
 		{
-			new CChatCommand(alias.c_str(), ParseWeaponCommand, "- Buys this weapon", ADMFLAG_NONE);
+			new CChatCommand(alias.c_str(), ParseWeaponCommand, "- Buys this weapon", ADMFLAG_NONE, CMDFLAG_NOHELP);
 			ConCommandRefAbstract ref;
 
 			char cmdName[64];
@@ -307,16 +302,9 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 		ConMsg("%s\n", buf);
 }
 
-// CONVAR_TODO
 bool g_bEnableStopSound = false;
 
-CON_COMMAND_F(cs2f_stopsound_enable, "Whether to enable stopsound", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bEnableStopSound);
-	else
-		g_bEnableStopSound = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_stopsound_enable, "Whether to enable stopsound", g_bEnableStopSound, false, false)
 
 CON_COMMAND_CHAT(stopsound, "- toggle weapon sounds")
 {
@@ -355,32 +343,13 @@ CON_COMMAND_CHAT(toggledecals, "- toggle world decals, if you're into having 10 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s world decals.", bSet ? "disabled" : "enabled");
 }
 
-// CONVAR_TODO
 bool g_bEnableHide = false;
 static int g_iDefaultHideDistance = 250;
 static int g_iMaxHideDistance = 2000;
 
-CON_COMMAND_F(cs2f_hide_enable, "Whether to enable hide", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bEnableHide);
-	else
-		g_bEnableHide = V_StringToBool(args[1], false);
-}
-CON_COMMAND_F(cs2f_hide_distance_default, "The default distance for hide", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_iDefaultHideDistance);
-	else
-		g_iDefaultHideDistance = V_StringToInt32(args[1], 250);
-}
-CON_COMMAND_F(cs2f_hide_distance_max, "The max distance for hide", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_iMaxHideDistance);
-	else
-		g_iMaxHideDistance = V_StringToInt32(args[1], 2000);
-}
+FAKE_BOOL_CVAR(cs2f_hide_enable, "Whether to enable hide", g_bEnableHide, false, false)
+FAKE_INT_CVAR(cs2f_hide_distance_default, "The default distance for hide", g_iDefaultHideDistance, 250, false)
+FAKE_INT_CVAR(cs2f_hide_distance_max, "The max distance for hide", g_iMaxHideDistance, 2000, false)
 
 CON_COMMAND_CHAT(hide, "<distance> - hides nearby players")
 {
@@ -439,7 +408,9 @@ CON_COMMAND_CHAT(help, "- Display list of commands in console")
 		FOR_EACH_VEC(g_CommandList, i)
 		{
 			CChatCommand *cmd = g_CommandList[i];
-			ClientPrint(player, HUD_PRINTCONSOLE, "c_%s %s", i, cmd->GetName(), cmd->GetDescription());
+
+			if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
+				ClientPrint(player, HUD_PRINTCONSOLE, "c_%s %s", cmd->GetName(), cmd->GetDescription());
 		}
 
 		return;
@@ -455,11 +426,13 @@ CON_COMMAND_CHAT(help, "- Display list of commands in console")
 	FOR_EACH_VEC(g_CommandList, i)
 	{
 		CChatCommand *cmd = g_CommandList[i];
-		uint64 flags = cmd->GetFlags();
+		uint64 flags = cmd->GetAdminFlags();
 
-		if (pZEPlayer->IsAdminFlagSet(flags))
-				ClientPrint(player, HUD_PRINTCONSOLE, "c_%s %s", cmd->GetName(), cmd->GetDescription());
+		if (pZEPlayer->IsAdminFlagSet(flags) && !cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
+				ClientPrint(player, HUD_PRINTCONSOLE, "!%s %s", cmd->GetName(), cmd->GetDescription());
 	}
+
+	ClientPrint(player, HUD_PRINTCONSOLE, "! can be replaced with / for a silent chat command, or c_ for console usage");
 }
 
 
@@ -472,6 +445,60 @@ CON_COMMAND_CHAT(myuid, "- test")
 	int iPlayer = player->GetPlayerSlot();
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your userid is %i, slot: %i, retrieved slot: %i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get(), iPlayer, g_playerManager->GetSlotFromUserId(g_pEngineServer2->GetPlayerUserId(iPlayer).Get()));
+}
+
+CON_COMMAND_CHAT(myhandle, "test")
+{
+	if (!player)
+		return;
+
+	int entry = player->GetHandle().GetEntryIndex();
+	int serial = player->GetHandle().GetSerialNumber();
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "entry index: %d    serial number: %d", entry, serial);
+}
+
+CON_COMMAND_CHAT(fl, "flashlight")
+{
+	if (!player)
+		return;
+
+	CCSPlayerPawn *pPawn = (CCSPlayerPawn *)player->GetPawn();
+
+	auto ptr = pPawn->m_pMovementServices->m_nButtons().m_pButtonStates();
+
+	Vector origin = pPawn->GetAbsOrigin();
+	Vector forward;
+	AngleVectors(pPawn->m_angEyeAngles(), &forward);
+
+	origin.z += 64.0f;
+	origin += forward * 54.0f; // The minimum distance such that an awp wouldn't block the light
+
+	CBarnLight *pLight = (CBarnLight *)CreateEntityByName("light_barn");
+
+	pLight->m_bEnabled = true;
+	pLight->m_Color->SetColor(255, 255, 255, 255);
+	pLight->m_flBrightness = 1.0f;
+	pLight->m_flRange = 2048.0f;
+	pLight->m_flSoftX = 1.0f;
+	pLight->m_flSoftY = 1.0f;
+	pLight->m_flSkirt = 0.5f;
+	pLight->m_flSkirtNear = 1.0f;
+	pLight->m_vSizeParams->Init(45.0f, 45.0f, 0.03f);
+	pLight->m_nCastShadows = 1;
+	pLight->m_nDirectLight = 3;
+	pLight->Teleport(&origin, &pPawn->m_angEyeAngles(), nullptr);
+
+	// Have to use keyvalues for this since the schema prop is a resource handle
+	CEntityKeyValues *pKeyValues = new CEntityKeyValues();
+	pKeyValues->SetString("lightcookie", "materials/effects/lightcookies/flashlight.vtex");
+
+	pLight->DispatchSpawn(pKeyValues);
+
+	variant_t val("!player");
+	pLight->AcceptInput("SetParent", &val);
+	variant_t val2("clip_limit");
+	pLight->AcceptInput("SetParentAttachmentMaintainOffset", &val2);
 }
 
 CON_COMMAND_CHAT(message, "<id> <message> - message someone")
@@ -568,6 +595,67 @@ CON_COMMAND_CHAT(setorigin, "<vector> - set your origin")
 	pPawn->SetAbsOrigin(vecNewOrigin);
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your origin is now %f %f %f", vecNewOrigin.x, vecNewOrigin.y, vecNewOrigin.z);
+}
+
+CON_COMMAND_CHAT(particle, "spawn a particle")
+{
+	if (!player)
+		return;
+
+	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
+	vecAbsOrigin.z += 64.0f;
+
+	CParticleSystem *particle = (CParticleSystem*)CreateEntityByName("info_particle_system");
+
+	particle->m_bStartActive(true);
+	particle->m_iszEffectName(args[1]);
+	particle->Teleport(&vecAbsOrigin, nullptr, nullptr);
+
+	particle->DispatchSpawn();
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have spawned a particle with effect name: %s", particle->m_iszEffectName().String());
+	Message("You have spawned a particle with effect name: %s\n", particle->m_iszEffectName().String());
+}
+
+CON_COMMAND_CHAT(particle_kv, "spawn a particle but using keyvalues to spawn")
+{
+	if (!player)
+		return;
+
+	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
+	vecAbsOrigin.z += 64.0f;
+
+	CParticleSystem *particle = (CParticleSystem *)CreateEntityByName("info_particle_system");
+
+	CEntityKeyValues *pKeyValues = new CEntityKeyValues();
+
+	pKeyValues->SetString("effect_name", args[1]);
+	pKeyValues->SetBool("start_active", true);
+	pKeyValues->SetVector("origin", vecAbsOrigin);
+
+	particle->DispatchSpawn(pKeyValues);
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have spawned a particle using keyvalues with effect name: %s", particle->m_iszEffectName().String());
+	Message("You have spawned a particle using keyvalues with effect name: %s\n", particle->m_iszEffectName().String());
+}
+
+CON_COMMAND_CHAT(emitsound, "emit a sound from the entity under crosshair")
+{
+	if (!player)
+		return;
+
+	Z_CBaseEntity *pEntity = UTIL_FindPickerEntity(player);
+
+	if (!pEntity)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No entity found");
+		return;
+	}
+
+	pEntity->EmitSound(args[1]);
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Playing %s on %s", args[1], pEntity->GetClassname());
+	Message("Playing %s on %s", args[1], pEntity->GetClassname());
 }
 
 CON_COMMAND_CHAT(getstats, "- get your stats")

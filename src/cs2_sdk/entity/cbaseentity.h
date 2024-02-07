@@ -25,6 +25,7 @@
 #include "ctakedamageinfo.h"
 #include "mathlib/vector.h"
 #include "ehandle.h"
+#include "entitykeyvalues.h"
 #include "../../gameconfig.h"
 
 extern CGameConfig *g_GameConfig;
@@ -161,9 +162,9 @@ public:
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
-	void AcceptInput(const char *pInputName, CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr, variant_t *value = nullptr)
+	void AcceptInput(const char *pInputName, variant_t value = variant_t(""), CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr)
 	{
-		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, value, 0);
+		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, &value, 0);
 	}
 
 	bool IsAlive() { return m_lifeState == LifeState_t::LIFE_ALIVE; }
@@ -173,14 +174,26 @@ public:
 	// A double pointer to entity VData is available 8 bytes past m_nSubclassID, if applicable
 	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 8); }
 
-	void DispatchSpawn()
+	void DispatchSpawn(CEntityKeyValues *pEntityKeyValues = nullptr)
 	{
-		addresses::DispatchSpawn(this, 0);
+		addresses::DispatchSpawn(this, pEntityKeyValues);
 	}
 
-	void SetEntityName(const char *pName)
+	// Emit a sound event
+	void EmitSound(const char *pszSound, int nPitch = 100, float flVolume = 1.0, float flDelay = 0.0)
 	{
-		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
+		addresses::CBaseEntity_EmitSoundParams(this, pszSound, nPitch, flVolume, flDelay);
+	}
+
+	// This was needed so we can parent to nameless entities using pointers
+	void SetParent(Z_CBaseEntity *pNewParent)
+	{
+		addresses::CBaseEntity_SetParent(this, pNewParent, 0, nullptr);
+	}
+
+	void Remove()
+	{
+		addresses::UTIL_Remove(this);
 	}
 };
 

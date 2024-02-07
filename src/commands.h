@@ -23,6 +23,9 @@
 #include "adminsystem.h"
 #include <vector>
 
+#define CMDFLAG_NONE	(0)
+#define CMDFLAG_NOHELP	(1 << 0) // Don't show in !help menu
+
 #define COMMAND_PREFIX "c_"
 #define CHAT_PREFIX	" \7[CS2Fixes]\1 "
 
@@ -42,8 +45,8 @@ void ClientPrint(CBasePlayerController *player, int destination, const char *msg
 class CChatCommand
 {
 public:
-	CChatCommand(const char *cmd, FnChatCommandCallback_t callback, const char *description, uint64 flags = ADMFLAG_NONE) :
-		m_pfnCallback(callback), m_sName(cmd), m_sDescription(description), m_nFlags(flags)
+	CChatCommand(const char *cmd, FnChatCommandCallback_t callback, const char *description, uint64 adminFlags = ADMFLAG_NONE, uint64 cmdFlags = CMDFLAG_NONE) :
+		m_pfnCallback(callback), m_sName(cmd), m_sDescription(description), m_nAdminFlags(adminFlags), m_nCmdFlags(cmdFlags)
 	{
 		g_CommandList.Insert(hash_32_fnv1a_const(cmd), this);
 	}
@@ -55,7 +58,7 @@ public:
 			return;
 
 		// If the command is run from server console, ignore admin flags
-		if (player && !CheckCommandAccess(player, m_nFlags))
+		if (player && !CheckCommandAccess(player, m_nAdminFlags))
 			return;
 
 		m_pfnCallback(args, player);
@@ -65,11 +68,16 @@ public:
 
 	const char* GetName() { return m_sName.c_str(); }
 	const char* GetDescription() { return m_sDescription.c_str(); }
-	uint64 GetFlags() { return m_nFlags; }
+	uint64 GetAdminFlags() { return m_nAdminFlags; }
+	bool IsCommandFlagSet(uint64 iFlag)
+	{
+		return !iFlag || (m_nCmdFlags & iFlag);
+	}
 
 private:
 	FnChatCommandCallback_t m_pfnCallback;
-	uint64 m_nFlags;
+	uint64 m_nAdminFlags;
+	uint64 m_nCmdFlags;
 	std::string m_sName;
 	std::string m_sDescription;
 };

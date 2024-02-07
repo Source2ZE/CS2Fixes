@@ -79,7 +79,9 @@ for sdk_name in MMSPlugin.sdks:
       binary.sources += [
       os.path.join(sdk.path, 'entity2', 'entitysystem.cpp'),
       os.path.join(sdk.path, 'entity2', 'entityidentity.cpp'),
-      os.path.join(sdk.path, 'tier1', 'convar.cpp')
+      os.path.join(sdk.path, 'entity2', 'entitykeyvalues.cpp'),
+      os.path.join(sdk.path, 'tier1', 'convar.cpp'),
+      os.path.join(sdk.path, 'tier1', 'keyvalues3.cpp'),
     ]
 
     if sdk_name in ['dota', 'cs2'] and (binary.compiler.target.platform == 'windows' and builder.options.debug != '1') or binary.compiler.target.platform == 'linux':

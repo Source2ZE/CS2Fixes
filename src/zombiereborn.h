@@ -218,7 +218,7 @@ public:
 	static void RemoveAllTimers();
 
 private:
-	static float s_flNextExecution;
+	static double s_flNextExecution;
 	static CZRRegenTimer *s_vecRegenTimers[MAXPLAYERS];
 	int m_iRegenAmount;
 	CHandle<CCSPlayerPawn> m_hPawnHandle;
@@ -262,13 +262,3 @@ void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLar
 void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, uint64 xuid);
 void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand &args);
 void ZR_Precache(IEntityResourceManifest* pResourceManifest);
-
-// need to replace with actual cvar someday
-#define CON_ZR_CVAR(name, description, variable_name, variable_type, variable_default)					\
-	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)							\
-	{																									\
-		if (args.ArgC() < 2)																			\
-			Msg("%s %i\n", args[0], variable_name);														\
-		else																							\
-			variable_name = V_StringTo##variable_type(args[1], variable_default);						\
-	}

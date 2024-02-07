@@ -24,6 +24,8 @@
 
 static uint64 g_iFlagsToRemove = (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY | FCVAR_MISSING0 | FCVAR_MISSING1 | FCVAR_MISSING2 | FCVAR_MISSING3);
 
+static constexpr const char *pUnCheatCvars[] = { "bot_stop", "bot_freeze", "bot_zombie" };
+
 void UnlockConVars()
 {
 	if (!g_pCVar)
@@ -42,7 +44,16 @@ void UnlockConVars()
 
 		hCvarHandle.Set(hCvarHandle.Get() + 1);
 
-		if (!pCvar || !(pCvar->flags & g_iFlagsToRemove))
+		if (!pCvar)
+			continue;
+		
+		for (int i = 0; i < sizeof(pUnCheatCvars) / sizeof(*pUnCheatCvars); i++)
+		{
+			if (!V_strcmp(pCvar->m_pszName, pUnCheatCvars[i]))
+				pCvar->flags &= ~FCVAR_CHEAT;
+		}
+
+		if (!(pCvar->flags & g_iFlagsToRemove))
 			continue;
 
 		pCvar->flags &= ~g_iFlagsToRemove;

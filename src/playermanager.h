@@ -23,6 +23,8 @@
 #include "steam/steamclientpublic.h"
 #include <playerslot.h>
 #include "bitvec.h"
+#include "entity/lights.h"
+#include "entity/cparticlesystem.h"
 
 #define DECAL_PREF_KEY_NAME "hide_decals"
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
@@ -36,6 +38,7 @@ enum class ETargetType {
 	RANDOM_T,
 	RANDOM_CT,
 	ALL,
+	SPECTATOR,
 	T,
 	CT,
 };
@@ -65,6 +68,14 @@ public:
 		m_bInGame = false;
 		m_iMZImmunity = 0; // out of 100
 		m_flNominateTime = -60.0f;
+	}
+
+	~ZEPlayer()
+	{
+		CBarnLight *pFlashLight = m_hFlashLight.Get();
+
+		if (pFlashLight)
+			pFlashLight->Remove();
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -101,6 +112,8 @@ public:
 	void SetInGame(bool bInGame) { m_bInGame = bInGame; }
 	void SetImmunity(int iMZImmunity) { m_iMZImmunity = iMZImmunity; }
 	void SetNominateTime(float flCurtime) { m_flNominateTime = flCurtime; }
+	void SetFlashLight(CBarnLight *pLight) { m_hFlashLight.Set(pLight); }
+	void SetBeaconParticle(CParticleSystem *pParticle) { m_hBeaconParticle.Set(pParticle); }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -119,10 +132,14 @@ public:
 	bool IsInGame() { return m_bInGame; }
 	int GetImmunity() { return m_iMZImmunity; }
 	float GetNominateTime() { return m_flNominateTime; }
+	CBarnLight *GetFlashLight() { return m_hFlashLight.Get(); }
+	CParticleSystem *GetBeaconParticle() { return m_hBeaconParticle.Get(); }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
 	void CheckInfractions();
+	void SpawnFlashLight();
+	void ToggleFlashLight();
 
 private:
 	bool m_bAuthenticated;
@@ -150,6 +167,8 @@ private:
 	bool m_bInGame;
 	int m_iMZImmunity;
 	float m_flNominateTime;
+	CHandle<CBarnLight> m_hFlashLight;
+	CHandle<CParticleSystem> m_hBeaconParticle;
 };
 
 class CPlayerManager
@@ -173,7 +192,9 @@ public:
 	void OnLateLoad();
 	void TryAuthenticate();
 	void CheckInfractions();
+	void FlashLightThink();
 	void CheckHideDistances();
+	void SetupInfiniteAmmo();
 	CPlayerSlot GetSlotFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromSteamId(uint64 steamid);

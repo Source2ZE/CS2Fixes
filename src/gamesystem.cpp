@@ -22,13 +22,14 @@
 #include "addresses.h"
 #include "gamesystem.h"
 #include "zombiereborn.h"
+#include "adminsystem.h"
 
 extern CGameConfig *g_GameConfig;
 
 CBaseGameSystemFactory **CBaseGameSystemFactory::sm_pFirst = nullptr;
 
-CResourcePrecacheSystem g_ResourcePrecacheSystem;
-IGameSystemFactory *CResourcePrecacheSystem::sm_Factory = nullptr;
+CGameSystem g_GameSystem;
+IGameSystemFactory *CGameSystem::sm_Factory = nullptr;
 
 // This mess is needed to get the pointer to sm_pFirst so we can insert game systems
 bool InitGameSystems()
@@ -52,14 +53,14 @@ bool InitGameSystems()
 	CBaseGameSystemFactory::sm_pFirst = (CBaseGameSystemFactory **)(ptr + offset);
 
 	// And insert the game system(s)
-	CResourcePrecacheSystem::sm_Factory = new CGameSystemStaticFactory<CResourcePrecacheSystem>("ResourcePrecacheSystem", &g_ResourcePrecacheSystem);
+	CGameSystem::sm_Factory = new CGameSystemStaticFactory<CGameSystem>("CS2Fixes_GameSystem", &g_GameSystem);
 
 	return true;
 }
 
-GS_EVENT_MEMBER(CResourcePrecacheSystem, BuildGameSessionManifest)
+GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
 {
-	Message("CResourcePrecacheSystem::BuildGameSessionManifest\n");
+	Message("CGameSystem::BuildGameSessionManifest\n");
 
 	IEntityResourceManifest *pResourceManifest = msg->m_pResourceManifest;
 
@@ -68,4 +69,12 @@ GS_EVENT_MEMBER(CResourcePrecacheSystem, BuildGameSessionManifest)
 	// pResourceManifest->AddResource("characters/models/my_character_model.vmdl");
 
 	ZR_Precache(pResourceManifest);
+	PrecacheAdminBeaconParticle(pResourceManifest);
+}
+
+// Called every frame before entities think
+GS_EVENT_MEMBER(CGameSystem, ServerPreEntityThink)
+{
+	// This could've gone into CS2Fixes::Hook_GameFrame but I've kept it here as an example
+	g_playerManager->FlashLightThink();
 }

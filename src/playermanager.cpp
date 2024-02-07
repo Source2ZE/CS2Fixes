@@ -24,6 +24,8 @@
 #include "map_votes.h"
 #include "user_preferences.h"
 #include "entity/ccsplayercontroller.h"
+#include "utils/entity.h"
+#include "ctimer.h"
 #include "ctime"
 
 #define VPROF_ENABLED
@@ -80,32 +82,79 @@ void ZEPlayer::SetHideDistance(int distance)
 	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), HIDE_DISTANCE_PREF_KEY_NAME, distance);
 }
 
-// CONVAR_TODO
-static float g_flFloodInterval = 0.75;
-static int g_iMaxFloodTokens = 3;
-static float g_flFloodCooldown = 3.0;
+static bool g_bFlashLightShadows = true;
+static float g_flFlashLightDistance = 54.0f; // The minimum distance such that an awp wouldn't block the light
+static std::string g_sFlashLightAttachment = "axis_of_intent";
 
-CON_COMMAND_F(cs2f_flood_interval, "Amount of time allowed between chat messages acquiring flood tokens", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+FAKE_BOOL_CVAR(cs2f_flashlight_shadows, "Whether to enable flashlight shadows", g_bFlashLightShadows, true, false)
+FAKE_FLOAT_CVAR(cs2f_flashlight_distance, "How far flashlights should be from the player's head", g_flFlashLightDistance, 54.0f, false)
+FAKE_STRING_CVAR(cs2f_flashlight_attachment, "Which attachment to parent a flashlight to", g_sFlashLightAttachment, false)
+
+void ZEPlayer::SpawnFlashLight()
 {
-	if (args.ArgC() < 2)
-		Msg("%s %.2f\n", args[0], g_flFloodInterval);
-	else
-		g_flFloodInterval = V_StringToFloat32(args[1], 0.75f);
+	if (GetFlashLight())
+		return;
+
+	CCSPlayerPawn *pPawn = (CCSPlayerPawn *)CCSPlayerController::FromSlot(GetPlayerSlot())->GetPawn();
+
+	Vector origin = pPawn->GetAbsOrigin();
+	Vector forward;
+	AngleVectors(pPawn->m_angEyeAngles(), &forward);
+
+	origin.z += 64.0f;
+	origin += forward * g_flFlashLightDistance;
+
+	CBarnLight *pLight = (CBarnLight *)CreateEntityByName("light_barn");
+
+	pLight->m_bEnabled = true;
+	pLight->m_Color->SetColor(255, 255, 255, 255);
+	pLight->m_flBrightness = 1.0f;
+	pLight->m_flRange = 2048.0f;
+	pLight->m_flSoftX = 1.0f;
+	pLight->m_flSoftY = 1.0f;
+	pLight->m_flSkirt = 0.5f;
+	pLight->m_flSkirtNear = 1.0f;
+	pLight->m_vSizeParams->Init(45.0f, 45.0f, 0.02f);
+	pLight->m_nCastShadows = g_bFlashLightShadows;
+	pLight->m_nDirectLight = 3;
+	pLight->Teleport(&origin, &pPawn->m_angEyeAngles(), nullptr);
+
+	// Have to use keyvalues for this since the schema prop is a resource handle
+	CEntityKeyValues *pKeyValues = new CEntityKeyValues();
+	pKeyValues->SetString("lightcookie", "materials/effects/lightcookies/flashlight.vtex");
+
+	pLight->DispatchSpawn(pKeyValues);
+
+	pLight->SetParent(pPawn);
+	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_sFlashLightAttachment.c_str());
+
+	SetFlashLight(pLight);
 }
-CON_COMMAND_F(cs2f_max_flood_tokens, "Maximum number of flood tokens allowed before chat messages are blocked", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+
+void ZEPlayer::ToggleFlashLight()
 {
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_iMaxFloodTokens);
-	else
-		g_iMaxFloodTokens = V_StringToInt32(args[1], 3);
+	CBarnLight *pLight = GetFlashLight();
+
+	// Play the "click" sound
+	g_pEngineServer2->ClientCommand(GetPlayerSlot(), "play sounds/common/talk.vsnd");
+
+	// Create a flashlight if we don't have one, and don't bother with the input since it spawns enabled
+	if (!pLight)
+	{
+		SpawnFlashLight();
+		return;
+	}
+
+	pLight->AcceptInput(pLight->m_bEnabled() ? "Disable" : "Enable");
 }
-CON_COMMAND_F(cs2f_flood_cooldown, "Amount of time to block messages for when a player floods", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %.2f\n", args[0], g_flFloodCooldown);
-	else
-		g_flFloodCooldown = V_StringToFloat32(args[1], 3.0f);
-}
+
+static float g_flFloodInterval = 0.75f;
+static int g_iMaxFloodTokens = 3;
+static float g_flFloodCooldown = 3.0f;
+
+FAKE_FLOAT_CVAR(cs2f_flood_interval, "Amount of time allowed between chat messages acquiring flood tokens", g_flFloodInterval, 0.75f, false)
+FAKE_INT_CVAR(cs2f_max_flood_tokens, "Maximum number of flood tokens allowed before chat messages are blocked", g_iMaxFloodTokens, 3, false)
+FAKE_FLOAT_CVAR(cs2f_flood_cooldown, "Amount of time to block messages for when a player floods", g_flFloodCooldown, 3.0f, false)
 
 bool ZEPlayer::IsFlooding()
 {
@@ -249,16 +298,33 @@ void CPlayerManager::CheckInfractions()
 	g_pAdminSystem->SaveInfractions();
 }
 
-// CONVAR_TODO
+static bool g_bFlashLightEnable = false;
+
+FAKE_BOOL_CVAR(cs2f_flashlight_enable, "Whether to enable flashlights", g_bFlashLightEnable, false, false)
+
+void CPlayerManager::FlashLightThink()
+{
+	if (!g_bFlashLightEnable)
+		return;
+
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		CCSPlayerController *pPlayer = CCSPlayerController::FromSlot(i);
+
+		if (!pPlayer || !pPlayer->m_bPawnIsAlive())
+			continue;
+
+		uint64 *pButtons = pPlayer->GetPawn()->m_pMovementServices->m_nButtons().m_pButtonStates();
+
+		// Check both to make sure flashlight is only toggled when the player presses the key
+		if ((pButtons[0] & IN_LOOK_AT_WEAPON) && (pButtons[1] & IN_LOOK_AT_WEAPON))
+			pPlayer->GetZEPlayer()->ToggleFlashLight();
+	}
+}
+
 static bool g_bHideTeammatesOnly = false;
 
-CON_COMMAND_F(cs2f_hide_teammates_only, "Whether to hide teammates only", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bHideTeammatesOnly);
-	else
-		g_bHideTeammatesOnly = V_StringToBool(args[1], false);
-}
+FAKE_BOOL_CVAR(cs2f_hide_teammates_only, "Whether to hide teammates only", g_bHideTeammatesOnly, false, false)
 
 void CPlayerManager::CheckHideDistances()
 {
@@ -316,6 +382,52 @@ void CPlayerManager::CheckHideDistances()
 	VPROF_EXIT_SCOPE();
 }
 
+static bool g_bInfiniteAmmo = false;
+FAKE_BOOL_CVAR(cs2f_infinite_reserve_ammo, "Whether to enable infinite reserve ammo on weapons", g_bInfiniteAmmo, false, false)
+
+void CPlayerManager::SetupInfiniteAmmo()
+{
+	new CTimer(5.0f, false, []()
+	{
+		if (!g_bInfiniteAmmo)
+			return 5.0f;
+
+		for (int i = 0; i < gpGlobals->maxClients; i++)
+		{
+			CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
+
+			if (!pController)
+				continue;
+
+			auto pPawn = pController->GetPawn();
+
+			if (!pPawn)
+				continue;
+
+			CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
+
+			// it can sometimes be null when player joined on the very first round? 
+			if (!pWeaponServices)
+				continue;
+
+			CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
+
+			FOR_EACH_VEC(*weapons, i)
+			{
+				CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+
+				if (!weapon)
+					continue;
+
+				if (weapon->GetWeaponVData()->m_GearSlot() == GEAR_SLOT_RIFLE || weapon->GetWeaponVData()->m_GearSlot() == GEAR_SLOT_PISTOL)
+					weapon->AcceptInput("SetReserveAmmoAmount", "999"); // 999 will be automatically clamped to the weapons m_nPrimaryReserveAmmoMax
+			}
+		}
+
+		return 5.0f;
+	});
+}
+
 ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* target, int& iNumClients, int *clients)
 {
 	ETargetType targetType = ETargetType::NONE;
@@ -327,6 +439,8 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 		targetType = ETargetType::T;
 	else if (!V_stricmp(target, "@ct"))
 		targetType = ETargetType::CT;
+	else if (!V_stricmp(target, "@spec"))
+		targetType = ETargetType::SPECTATOR;
 	else if (!V_stricmp(target, "@random"))
 		targetType = ETargetType::RANDOM;
 	else if (!V_stricmp(target, "@randomt"))
@@ -353,7 +467,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			clients[iNumClients++] = i;
 		}
 	}
-	else if (targetType == ETargetType::T || targetType == ETargetType::CT)
+	else if (targetType >= ETargetType::SPECTATOR)
 	{
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
@@ -365,13 +479,13 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			if (!player || !player->IsController() || !player->IsConnected())
 				continue;
 
-			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : CS_TEAM_CT))
+			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : targetType == ETargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
 				continue;
 
 			clients[iNumClients++] = i;
 		}
 	}
-	else if (targetType >= ETargetType::RANDOM)
+	else if (targetType >= ETargetType::RANDOM && targetType <= ETargetType::RANDOM_CT)
 	{
 		int attempts = 0;
 

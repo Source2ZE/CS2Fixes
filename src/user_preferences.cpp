@@ -33,7 +33,8 @@ using json = nlohmann::json;
 CUserPreferencesStorage* g_pUserPreferencesStorage = nullptr;
 CUserPreferencesSystem* g_pUserPreferencesSystem = nullptr;
 
-CON_COMMAND_F(cs2f_user_prefs_api, "API for user preferences, currently a REST API.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+// CONVAR_TODO
+CON_COMMAND_F(cs2f_user_prefs_api, "API for user preferences, currently a REST API.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | FCVAR_PROTECTED)
 {
 	if (!g_pUserPreferencesSystem || !g_pUserPreferencesStorage) {
 		Message("The user preferences subsystem is not enabled.");
