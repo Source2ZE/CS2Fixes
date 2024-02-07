@@ -190,7 +190,13 @@ void *CGameConfig::ResolveSignature(const char *name)
 		byte *pSignature = HexToByte(signature, iLength);
 		if (!pSignature)
 			return nullptr;
-		address = (*module)->FindSignature(pSignature, iLength);
+
+		int error;
+
+		address = (*module)->FindSignature(pSignature, iLength, error);
+
+		if (error == SIG_FOUND_MULTIPLE)
+			Panic("!!!!!!!!!! Signature for %s occurs multiple times! Using first match but this might end up crashing!\n", name);
 	}
 
 	if (!address)
