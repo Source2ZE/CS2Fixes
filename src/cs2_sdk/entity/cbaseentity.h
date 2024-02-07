@@ -121,6 +121,7 @@ public:
 	SCHEMA_FIELD(LifeState_t, m_lifeState)
 	SCHEMA_FIELD_POINTER(CUtlStringToken, m_nSubclassID)
 	SCHEMA_FIELD(float, m_flGravityScale)
+	SCHEMA_FIELD(float, m_flSpeed)
 	SCHEMA_FIELD(CUtlString, m_sUniqueHammerID);
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }

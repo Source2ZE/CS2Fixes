@@ -158,7 +158,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 	vecAbsDir.y = pushDir.x * mat[1][0] + pushDir.y * mat[1][1] + pushDir.z * mat[1][2];
 	vecAbsDir.z = pushDir.x * mat[2][0] + pushDir.y * mat[2][1] + pushDir.z * mat[2][2];
 
-	Vector vecPush = vecAbsDir * pPush->m_flPushSpeed();
+	Vector vecPush = vecAbsDir * pPush->m_flSpeed();
 
 	uint32 flags = pOther->m_fFlags();
 
