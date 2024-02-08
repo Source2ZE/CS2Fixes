@@ -117,6 +117,7 @@ public:
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
 	SCHEMA_FIELD(CCollisionProperty*, m_pCollision)
 	SCHEMA_FIELD(MoveType_t, m_MoveType)
+	SCHEMA_FIELD(MoveType_t, m_nActualMoveType)
 	SCHEMA_FIELD(uint32, m_spawnflags)
 	SCHEMA_FIELD(uint32, m_fFlags)
 	SCHEMA_FIELD(LifeState_t, m_lifeState)
@@ -196,6 +197,12 @@ public:
 	void Remove()
 	{
 		addresses::UTIL_Remove(this);
+	}
+
+	void SetMoveType(MoveType_t nMoveType)
+	{
+		m_MoveType = nMoveType; // necessary to maintain client prediction
+		m_nActualMoveType = nMoveType;
 	}
 };
 

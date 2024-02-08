@@ -712,14 +712,14 @@ CON_COMMAND_CHAT_FLAGS(noclip, "- toggle noclip on yourself", ADMFLAG_SLAY | ADM
 		return;
 	}
 
-	if (pPawn->m_MoveType() == MOVETYPE_NOCLIP)
+	if (pPawn->m_nActualMoveType() == MOVETYPE_NOCLIP)
 	{
-		pPawn->m_MoveType = MOVETYPE_WALK;
+		pPawn->SetMoveType(MOVETYPE_WALK);
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "exited noclip.", player->GetPlayerName());
 	}
 	else
 	{
-		pPawn->m_MoveType = MOVETYPE_NOCLIP;
+		pPawn->SetMoveType(MOVETYPE_NOCLIP);
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "entered noclip.", player->GetPlayerName());
 	}
 }
