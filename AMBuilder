@@ -74,6 +74,8 @@ for sdk_name in MMSPlugin.sdks:
       'src/zombiereborn.cpp',
       'src/customio.cpp',
       'src/entitylistener.cpp',
+      'protobuf/generated/network_connection.pb.cc',
+      'protobuf/generated/networkbasetypes.pb.cc'
     ]
 
     if sdk_name in ['dota', 'cs2']:

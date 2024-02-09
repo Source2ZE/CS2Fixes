@@ -151,6 +151,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2GameClients, IServerGameClients, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_gameEventSystem, IGameEventSystem, GAMEEVENTSYSTEM_INTERFACE_VERSION);
+	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkMessages, INetworkMessages, NETWORKMESSAGES_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetFileSystemFactory, g_pFullFileSystem, IFileSystem, FILESYSTEM_INTERFACE_VERSION);
 
 	// Required to get the IMetamodListener events
@@ -555,9 +556,9 @@ void CS2Fixes::Hook_ClientSettingsChanged( CPlayerSlot slot )
 #endif
 }
 
-void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, const char *pszAddress, bool bFakePlayer )
+void CS2Fixes::Hook_OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer)
 {
-	Message( "Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer );
+	Message("Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 
 	if(bFakePlayer)
 		g_playerManager->OnBotConnected(slot);
@@ -566,7 +567,33 @@ void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, ui
 bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason )
 {
 	Message( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
-		
+	
+	/*
+	CUtlVector<void*>* m_Clients = reinterpret_cast<CUtlVector<void*> *>((unsigned char*)g_pNetworkGameServer + 0x268);
+
+	ConMsg("m_Clients: %p - %p\n", m_Clients, g_pNetworkGameServer);
+
+	if (!m_Clients)
+		RETURN_META_VALUE(MRES_IGNORED, true);
+
+	ConMsg("m_Clients->Count(): %d\n", m_Clients->Count());
+
+	class CServerSideClient {
+	public:
+		virtual void pad0() = 0;
+		virtual void pad1() = 0;
+		virtual void pad2() = 0;
+		virtual void pad3() = 0;
+		virtual void pad4() = 0;
+		virtual void pad5() = 0;
+		virtual void Reconnect() = 0;
+	};
+
+	CServerSideClient* serverSideClient = (CServerSideClient*)m_Clients->Element(slot.Get());
+
+	serverSideClient->Reconnect();
+	*/
+
 	if (!g_playerManager->OnClientConnected(slot, xuid, pszNetworkID))
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
 
@@ -686,7 +713,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			if (!g_bEnableHide)
 				continue;
 
-			auto pPawn = pController->GetPawn();
+			auto pPawn = pController->m_hPawn.Get();
 
 			if (!pPawn)
 				continue;

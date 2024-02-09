@@ -127,6 +127,8 @@ CModule **CGameConfig::GetModule(const char *name)
 		return &modules::vscript;
 	else if (strcmp(library, "tier0") == 0)
 		return &modules::tier0;
+	else if (strcmp(library, "networksystem") == 0)
+		return &modules::networksystem;
 #ifdef _WIN32
 	else if (strcmp(library, "hammer") == 0)
 		return &modules::hammer;
