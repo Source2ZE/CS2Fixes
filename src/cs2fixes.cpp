@@ -447,7 +447,7 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 		if (g_RTVState != ERTVState::BLOCKED_BY_ADMIN)
 			g_RTVState = ERTVState::RTV_ALLOWED;
 
-		if (g_ExtendState != EExtendState::NO_EXTENDS)
+		if (g_ExtendState < EExtendState::POST_EXTEND_NO_EXTENDS_LEFT)
 			g_ExtendState = EExtendState::EXTEND_ALLOWED;
 		return -1.0f;
 	});
