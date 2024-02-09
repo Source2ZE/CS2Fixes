@@ -366,8 +366,8 @@
 			// 2872 (359 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"		"359"
-				"linux"			"359"
+				"windows"		"360"
+				"linux"			"360"
 			}
 			// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 			"CGameRules_FindPickerEntity"
@@ -377,13 +377,13 @@
 			}
 			"PassesTriggerFilters"
 			{
-				"windows"		"247"
-				"linux"			"248"
+				"windows"		"248"
+				"linux"			"249"
 			}
 			"CCSPlayerController_Respawn"
 			{
-				"windows"		"244"
-				"linux"			"246"
+				"windows"		"245"
+				"linux"			"247"
 			}
 			"GetHammerUniqueId"
 			{
