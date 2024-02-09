@@ -114,7 +114,7 @@ SH_DECL_HOOK6_void(ISource2GameEntities, CheckTransmit, SH_NOATTRIB, 0, CCheckTr
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand &);
 SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, const CCommandContext&, const CCommand&);
 
-CS2Fixes g_CS2Fixes;
+ZombieMod g_CS2Fixes;
 
 IGameEventSystem *g_gameEventSystem = nullptr;
 IGameEventManager2 *g_gameEventManager = nullptr;
@@ -136,8 +136,8 @@ CGameEntitySystem *GameEntitySystem()
 	return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(g_pGameResourceServiceServer) + offset);
 }
 
-PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
-bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
+PLUGIN_EXPOSE(ZombieMod, g_CS2Fixes);
+bool ZombieMod::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
 {
 	PLUGIN_SAVEVARS();
 
@@ -158,20 +158,20 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	Message( "Starting plugin.\n" );
 
-	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameFrame, g_pSource2Server, this, &CS2Fixes::Hook_GameFrame, true);
-	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIActivated, g_pSource2Server, this, &CS2Fixes::Hook_GameServerSteamAPIActivated, false);
-	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIDeactivated, g_pSource2Server, this, &CS2Fixes::Hook_GameServerSteamAPIDeactivated, false);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientActive, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientActive, true);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientDisconnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientDisconnect, true);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientPutInServer, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientPutInServer, true);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientSettingsChanged, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientSettingsChanged, false);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, OnClientConnected, g_pSource2GameClients, this, &CS2Fixes::Hook_OnClientConnected, false);
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientConnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientConnect, false );
-	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientCommand, false);
-	SH_ADD_HOOK_MEMFUNC(IGameEventSystem, PostEventAbstract, g_gameEventSystem, this, &CS2Fixes::Hook_PostEvent, false);
-	SH_ADD_HOOK_MEMFUNC(INetworkServerService, StartupServer, g_pNetworkServerService, this, &CS2Fixes::Hook_StartupServer, true);
-	SH_ADD_HOOK_MEMFUNC(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, this, &CS2Fixes::Hook_CheckTransmit, true);
-	SH_ADD_HOOK_MEMFUNC(ICvar, DispatchConCommand, g_pCVar, this, &CS2Fixes::Hook_DispatchConCommand, false);
+	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameFrame, g_pSource2Server, this, &ZombieMod::Hook_GameFrame, true);
+	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIActivated, g_pSource2Server, this, &ZombieMod::Hook_GameServerSteamAPIActivated, false);
+	SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameServerSteamAPIDeactivated, g_pSource2Server, this, &ZombieMod::Hook_GameServerSteamAPIDeactivated, false);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientActive, g_pSource2GameClients, this, &ZombieMod::Hook_ClientActive, true);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientDisconnect, g_pSource2GameClients, this, &ZombieMod::Hook_ClientDisconnect, true);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientPutInServer, g_pSource2GameClients, this, &ZombieMod::Hook_ClientPutInServer, true);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientSettingsChanged, g_pSource2GameClients, this, &ZombieMod::Hook_ClientSettingsChanged, false);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, OnClientConnected, g_pSource2GameClients, this, &ZombieMod::Hook_OnClientConnected, false);
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientConnect, g_pSource2GameClients, this, &ZombieMod::Hook_ClientConnect, false );
+	SH_ADD_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &ZombieMod::Hook_ClientCommand, false);
+	SH_ADD_HOOK_MEMFUNC(IGameEventSystem, PostEventAbstract, g_gameEventSystem, this, &ZombieMod::Hook_PostEvent, false);
+	SH_ADD_HOOK_MEMFUNC(INetworkServerService, StartupServer, g_pNetworkServerService, this, &ZombieMod::Hook_StartupServer, true);
+	SH_ADD_HOOK_MEMFUNC(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, this, &ZombieMod::Hook_CheckTransmit, true);
+	SH_ADD_HOOK_MEMFUNC(ICvar, DispatchConCommand, g_pCVar, this, &ZombieMod::Hook_DispatchConCommand, false);
 
 	META_CONPRINTF( "All hooks started!\n" );
 
@@ -277,20 +277,20 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	return true;
 }
 
-bool CS2Fixes::Unload(char *error, size_t maxlen)
+bool ZombieMod::Unload(char *error, size_t maxlen)
 {
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameDLL, GameFrame, g_pSource2Server, this, &CS2Fixes::Hook_GameFrame, true);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientActive, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientActive, true);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientDisconnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientDisconnect, true);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientPutInServer, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientPutInServer, true);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientSettingsChanged, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientSettingsChanged, false);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, OnClientConnected, g_pSource2GameClients, this, &CS2Fixes::Hook_OnClientConnected, false);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientConnect, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientConnect, false);
-	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &CS2Fixes::Hook_ClientCommand, false);
-	SH_REMOVE_HOOK_MEMFUNC(IGameEventSystem, PostEventAbstract, g_gameEventSystem, this, &CS2Fixes::Hook_PostEvent, false);
-	SH_REMOVE_HOOK_MEMFUNC(INetworkServerService, StartupServer, g_pNetworkServerService, this, &CS2Fixes::Hook_StartupServer, true);
-	SH_REMOVE_HOOK_MEMFUNC(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, this, &CS2Fixes::Hook_CheckTransmit, true);
-	SH_REMOVE_HOOK_MEMFUNC(ICvar, DispatchConCommand, g_pCVar, this, &CS2Fixes::Hook_DispatchConCommand, false);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameDLL, GameFrame, g_pSource2Server, this, &ZombieMod::Hook_GameFrame, true);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientActive, g_pSource2GameClients, this, &ZombieMod::Hook_ClientActive, true);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientDisconnect, g_pSource2GameClients, this, &ZombieMod::Hook_ClientDisconnect, true);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientPutInServer, g_pSource2GameClients, this, &ZombieMod::Hook_ClientPutInServer, true);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientSettingsChanged, g_pSource2GameClients, this, &ZombieMod::Hook_ClientSettingsChanged, false);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, OnClientConnected, g_pSource2GameClients, this, &ZombieMod::Hook_OnClientConnected, false);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientConnect, g_pSource2GameClients, this, &ZombieMod::Hook_ClientConnect, false);
+	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientCommand, g_pSource2GameClients, this, &ZombieMod::Hook_ClientCommand, false);
+	SH_REMOVE_HOOK_MEMFUNC(IGameEventSystem, PostEventAbstract, g_gameEventSystem, this, &ZombieMod::Hook_PostEvent, false);
+	SH_REMOVE_HOOK_MEMFUNC(INetworkServerService, StartupServer, g_pNetworkServerService, this, &ZombieMod::Hook_StartupServer, true);
+	SH_REMOVE_HOOK_MEMFUNC(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, this, &ZombieMod::Hook_CheckTransmit, true);
+	SH_REMOVE_HOOK_MEMFUNC(ICvar, DispatchConCommand, g_pCVar, this, &ZombieMod::Hook_DispatchConCommand, false);
 
 	ConVar_Unregister();
 
@@ -331,7 +331,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	return true;
 }
 
-void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CCommandContext& ctx, const CCommand& args)
+void ZombieMod::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CCommandContext& ctx, const CCommand& args)
 {
 	if (!g_pEntitySystem)
 		return;
@@ -412,7 +412,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 	}
 }
 
-void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*)
+void ZombieMod::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*)
 {
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	g_pEntitySystem = GameEntitySystem();
@@ -456,7 +456,7 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 		ZR_OnStartupServer();
 }
 
-void CS2Fixes::Hook_GameServerSteamAPIActivated()
+void ZombieMod::Hook_GameServerSteamAPIActivated()
 {
 	g_steamAPI.Init();
 	g_http = g_steamAPI.SteamHTTP();
@@ -464,14 +464,14 @@ void CS2Fixes::Hook_GameServerSteamAPIActivated()
 	RETURN_META(MRES_IGNORED);
 }
 
-void CS2Fixes::Hook_GameServerSteamAPIDeactivated()
+void ZombieMod::Hook_GameServerSteamAPIDeactivated()
 {
 	g_http = nullptr;
 
 	RETURN_META(MRES_IGNORED);
 }
 
-void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
+void ZombieMod::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
 	INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
 	// Message( "Hook_PostEvent(%d, %d, %d, %lli)\n", nSlot, bLocalOnly, nClientCount, clients );
@@ -519,7 +519,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 	}
 }
 
-void CS2Fixes::AllPluginsLoaded()
+void ZombieMod::AllPluginsLoaded()
 {
 	/* This is where we'd do stuff that relies on the mod or other plugins 
 	 * being initialized (for example, cvars added and events registered).
@@ -528,12 +528,12 @@ void CS2Fixes::AllPluginsLoaded()
 	Message( "AllPluginsLoaded\n" );
 }
 
-void CS2Fixes::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *pszName, uint64 xuid )
+void ZombieMod::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *pszName, uint64 xuid )
 {
 	Message( "Hook_ClientActive(%d, %d, \"%s\", %lli)\n", slot, bLoadGame, pszName, xuid );
 }
 
-void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
+void ZombieMod::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 {
 	if ((V_stricmp(args[0], "endmatch_votenextmap") == 0) && args.ArgC() == 2) {
 		g_pMapVoteSystem->RegisterPlayerVote(slot, atoi(args[1]));
@@ -548,14 +548,14 @@ void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 	}
 }
 
-void CS2Fixes::Hook_ClientSettingsChanged( CPlayerSlot slot )
+void ZombieMod::Hook_ClientSettingsChanged( CPlayerSlot slot )
 {
 #ifdef _DEBUG
 	Message( "Hook_ClientSettingsChanged(%d)\n", slot );
 #endif
 }
 
-void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, const char *pszAddress, bool bFakePlayer )
+void ZombieMod::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, const char *pszAddress, bool bFakePlayer )
 {
 	Message( "Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer );
 
@@ -563,7 +563,7 @@ void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, ui
 		g_playerManager->OnBotConnected(slot);
 }
 
-bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason )
+bool ZombieMod::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason )
 {
 	Message( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
 		
@@ -573,7 +573,7 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
 
-void CS2Fixes::Hook_ClientPutInServer( CPlayerSlot slot, char const *pszName, int type, uint64 xuid )
+void ZombieMod::Hook_ClientPutInServer( CPlayerSlot slot, char const *pszName, int type, uint64 xuid )
 {
 	Message( "Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, type, xuid );
 	g_playerManager->OnClientPutInServer(slot);
@@ -582,14 +582,14 @@ void CS2Fixes::Hook_ClientPutInServer( CPlayerSlot slot, char const *pszName, in
 		ZR_Hook_ClientPutInServer(slot, pszName, type, xuid);
 }
 
-void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, ENetworkDisconnectionReason reason, const char *pszName, uint64 xuid, const char *pszNetworkID )
+void ZombieMod::Hook_ClientDisconnect( CPlayerSlot slot, ENetworkDisconnectionReason reason, const char *pszName, uint64 xuid, const char *pszNetworkID )
 {
 	Message( "Hook_ClientDisconnect(%d, %d, \"%s\", %lli, \"%s\")\n", slot, reason, pszName, xuid, pszNetworkID );
 
 	g_playerManager->OnClientDisconnect(slot);
 }
 
-void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick )
+void ZombieMod::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick )
 {
 	VPROF_ENTER_SCOPE(__FUNCTION__);
 	/**
@@ -642,7 +642,7 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 	VPROF_EXIT_SCOPE();
 }
 
-void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount, CBitVec<16384> &unionTransmitEdicts,
+void ZombieMod::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount, CBitVec<16384> &unionTransmitEdicts,
 								const Entity2Networkable_t **pNetworkables, const uint16 *pEntityIndicies, int nEntities)
 {
 	if (!g_pEntitySystem)
@@ -701,7 +701,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 }
 
 // Potentially might not work
-void CS2Fixes::OnLevelInit( char const *pMapName,
+void ZombieMod::OnLevelInit( char const *pMapName,
 									 char const *pMapEntities,
 									 char const *pOldLevel,
 									 char const *pLandmarkName,
@@ -714,57 +714,57 @@ void CS2Fixes::OnLevelInit( char const *pMapName,
 }
 
 // Potentially might not work
-void CS2Fixes::OnLevelShutdown()
+void ZombieMod::OnLevelShutdown()
 {
 	Message("OnLevelShutdown()\n");
 }
 
-bool CS2Fixes::Pause(char *error, size_t maxlen)
+bool ZombieMod::Pause(char *error, size_t maxlen)
 {
 	return true;
 }
 
-bool CS2Fixes::Unpause(char *error, size_t maxlen)
+bool ZombieMod::Unpause(char *error, size_t maxlen)
 {
 	return true;
 }
 
-const char *CS2Fixes::GetLicense()
+const char *ZombieMod::GetLicense()
 {
 	return "GPL v3 License";
 }
 
-const char *CS2Fixes::GetVersion()
+const char *ZombieMod::GetVersion()
 {
 	return "1.3";
 }
 
-const char *CS2Fixes::GetDate()
+const char *ZombieMod::GetDate()
 {
 	return __DATE__;
 }
 
-const char *CS2Fixes::GetLogTag()
+const char *ZombieMod::GetLogTag()
 {
 	return "CS2Fixes";
 }
 
-const char *CS2Fixes::GetAuthor()
+const char *ZombieMod::GetAuthor()
 {
 	return "xen, Poggu, and the Source2ZE community";
 }
 
-const char *CS2Fixes::GetDescription()
+const char *ZombieMod::GetDescription()
 {
 	return "A bunch of experiments thrown together into one big mess of a plugin.";
 }
 
-const char *CS2Fixes::GetName()
+const char *ZombieMod::GetName()
 {
 	return "CS2Fixes";
 }
 
-const char *CS2Fixes::GetURL()
+const char *ZombieMod::GetURL()
 {
 	return "https://github.com/Source2ZE/CS2Fixes";
 }
