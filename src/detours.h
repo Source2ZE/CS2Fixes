@@ -54,4 +54,4 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7, int64_t unk8);
 void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEntity, bool a3);
 void FASTCALL Detour_SendNetMessage(void* a1, INetworkSerializable* a2, void* a3, int a4);
-void FASTCALL Detour_MountAddon(IEngineServiceMgr* pEngineServiceMgr, const char* pszAddonString);
+void* FASTCALL Detour_HostStateRequest(void *a1, void **pRequest);

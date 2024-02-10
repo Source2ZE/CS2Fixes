@@ -64,7 +64,7 @@ DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
 DECLARE_DETOUR(SendNetMessage, Detour_SendNetMessage);
-DECLARE_DETOUR(MountAddon, Detour_MountAddon);
+DECLARE_DETOUR(HostStateRequest, Detour_HostStateRequest);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -440,13 +440,25 @@ void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEn
 std::string g_sExtraAddon;
 FAKE_STRING_CVAR(cs2f_extra_addon, "extra addon", g_sExtraAddon, false);
 
-void FASTCALL Detour_MountAddon(IEngineServiceMgr* pEngineServiceMgr, const char* pszAddonString)
+void *FASTCALL Detour_HostStateRequest(void *a1, void **pRequest)
 {
-	char buf[128];
-	ConMsg("pszAddonString");
-	V_snprintf(buf, sizeof(buf), "%s,%s", pszAddonString, g_sExtraAddon.c_str()); // addons are simply comma-delimited, can have any number of them
+	if (g_sExtraAddon.empty())
+		return HostStateRequest(a1, pRequest);
 
-	MountAddon(pEngineServiceMgr, buf); // note that this will replace mounted addons, not add to them
+	// This offset hasn't changed in 6 years so it should be safe
+	char *pszAddonString = (char*)pRequest[11];
+
+	char buf[128];
+
+	// addons are simply comma-delimited, can have any number of them
+	if (pszAddonString)
+		V_snprintf(buf, sizeof(buf), "%s,%s", pszAddonString, g_sExtraAddon.c_str());
+	else
+		V_strncpy(buf, g_sExtraAddon.c_str(), sizeof(buf));
+
+	pRequest[11] = buf;
+
+	return HostStateRequest(a1, pRequest);
 }
 
 void FASTCALL Detour_SendNetMessage(void* a1, INetworkSerializable* a2, void* pData, int a4)
@@ -455,7 +467,7 @@ void FASTCALL Detour_SendNetMessage(void* a1, INetworkSerializable* a2, void* pD
 
 	NetMessageInfo_t* info = a2->GetNetMessageInfo();
 
-	if (info->m_MessageId == 7 && !once)
+	if (info->m_MessageId == 7 && !once && !g_sExtraAddon.empty())
 	{
 		CNETMsg_SignonState* msg = (CNETMsg_SignonState*)pData;
 		msg->set_addons(g_sExtraAddon.c_str());
@@ -532,9 +544,9 @@ bool InitDetours(CGameConfig *gameConfig)
 		success = false;
 	SendNetMessage.EnableDetour();
 
-	if (!MountAddon.CreateDetour(gameConfig))
+	if (!HostStateRequest.CreateDetour(gameConfig))
 		success = false;
-	MountAddon.EnableDetour();
+	HostStateRequest.EnableDetour();
 
 	return success;
 }
