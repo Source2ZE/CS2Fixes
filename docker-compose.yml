@@ -3,4 +3,4 @@ services:
     image: ambuilder
     build: .
     volumes:
-      - './dockerbuild:/app/build'
+      - '.:/app/source'
