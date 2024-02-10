@@ -442,7 +442,8 @@ FAKE_STRING_CVAR(cs2f_extra_addon, "extra addon", g_sExtraAddon, false);
 
 void *FASTCALL Detour_HostStateRequest(void *a1, void **pRequest)
 {
-	if (g_sExtraAddon.empty())
+	// skip if we're doing anything other than changelevel
+	if (g_sExtraAddon.empty() || V_strnicmp((char *)pRequest[2], "changelevel", 11))
 		return HostStateRequest(a1, pRequest);
 
 	// This offset hasn't changed in 6 years so it should be safe
@@ -473,6 +474,12 @@ void FASTCALL Detour_SendNetMessage(void* a1, INetworkSerializable* a2, void* pD
 		msg->set_addons(g_sExtraAddon.c_str());
 		msg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
 		once = true;
+
+#ifdef _DEBUG
+		CUtlString str;
+		info->m_pBinding->ToString(pData, str);
+		Message("Sending addon %s to client with this message:\n%s\n", g_sExtraAddon.c_str(), str.Get());
+#endif
 		
 		// TEMP HACK
 		new CTimer(5.0f, false, [] { once = false; return -1.0f; });
