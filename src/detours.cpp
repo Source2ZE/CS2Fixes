@@ -67,7 +67,6 @@ DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
-DECLARE_DETOUR(NetMsgSend, Detour_NetMsgSend);
 DECLARE_DETOUR(SendNetMessage, Detour_SendNetMessage);
 DECLARE_DETOUR(MountAddon, Detour_MountAddon);
 
@@ -442,55 +441,14 @@ void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEn
 	return FixLagCompEntityRelationship(a1, pEntity, a3);
 }
 
-class INetworkMessages
-{
-public:
-	virtual void pad0() = 0;
-	virtual void pad1() = 0;
-	virtual void pad2() = 0;
-	virtual void pad3() = 0;
-	virtual void pad4() = 0;
-	virtual void pad5() = 0;
-	virtual void pad6() = 0;
-	virtual void pad7() = 0;
-	virtual void pad8() = 0;
-	virtual void pad9() = 0;
-	virtual void pad10() = 0;
-	virtual void* GetMessageInQueue() = 0;
-};
-
-extern INetworkMessages* g_pNetworkMessages;
-
-void FASTCALL Detour_NetMsgSend(void* shit, void* a2, void* a3, void* a4)
-{
-
-	
-	/*
-	auto name = *(char**)((uint8_t*)g_pNetworkMessages->GetMessageInQueue() + 0x38);
-	if(name)
-		ConMsg("YIPPE %p - %p - %p %s\n", shit, a2, g_pNetworkMessages->GetMessageInQueue(), name);*/
-
-	/*
-	auto pData = (void*)((uint8_t*)g_pNetworkMessages->GetMessageInQueue() + 0x30);
-	IProtobufBinding* binding = *(IProtobufBinding**)((uint8_t*)g_pNetworkMessages->GetMessageInQueue() + 0x48);
-	CUtlString str;
-	binding->ToString(pData, str);
-	ConMsg("xd %p\n", str);
-	ConMsg("xd2 %s\n", str);*/
-	/*
-	INetMessage
-
-	auto bruh = ()
-		*/
-
-	return NetMsgSend(shit, a2, a3, a4);
-}
+std::string g_sExtraAddon;
+FAKE_STRING_CVAR(cs2f_extra_addon, "extra addon", g_sExtraAddon, false);
 
 void FASTCALL Detour_MountAddon(IEngineServiceMgr* pEngineServiceMgr, const char* pszAddonString)
 {
 	char buf[128];
 	ConMsg("pszAddonString");
-	V_snprintf(buf, sizeof(buf), "%s,3070231528", pszAddonString); // addons are simply comma-delimited, can have any number of them
+	V_snprintf(buf, sizeof(buf), "%s,%s", pszAddonString, g_sExtraAddon.c_str()); // addons are simply comma-delimited, can have any number of them
 
 	MountAddon(pEngineServiceMgr, buf); // note that this will replace mounted addons, not add to them
 }
@@ -498,26 +456,18 @@ void FASTCALL Detour_MountAddon(IEngineServiceMgr* pEngineServiceMgr, const char
 void FASTCALL Detour_SendNetMessage(void* a1, INetworkSerializable* a2, void* pData, int a4)
 {
 	static bool once = false;
-	//ConMsg("yep %p - %p\n", a2, pData);
 
 	NetMessageInfo_t* info = a2->GetNetMessageInfo();
 
-	if (info->m_MessageId != 4)
-	{
-		CUtlString str;
-		info->m_pBinding->ToString(pData, str);
-
-		ConMsg("%s", str);
-		ConMsg("%i\n", info->m_MessageId);
-	}
-
 	if (info->m_MessageId == 7 && !once)
 	{
-		ConMsg("fuck signon");
 		CNETMsg_SignonState* msg = (CNETMsg_SignonState*)pData;
-		msg->set_addons("3070231528");
+		msg->set_addons(g_sExtraAddon.c_str());
 		msg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
 		once = true;
+		
+		// TEMP HACK
+		new CTimer(5.0f, false, [] { once = false; return -1.0f; });
 	}
 
 	SendNetMessage(a1, a2, pData, a4);
@@ -581,10 +531,6 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!FixLagCompEntityRelationship.CreateDetour(gameConfig))
 		success = false;
 	FixLagCompEntityRelationship.EnableDetour();
-
-	if (!NetMsgSend.CreateDetour(gameConfig))
-		success = false;
-	NetMsgSend.EnableDetour();
 
 	if (!SendNetMessage.CreateDetour(gameConfig))
 		success = false;
