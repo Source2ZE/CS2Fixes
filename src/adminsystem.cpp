@@ -17,7 +17,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "protobuf/generated/usermessages.pb.h"
+#include "usermessages.pb.h"
 
 #include "adminsystem.h"
 #include "KeyValues.h"

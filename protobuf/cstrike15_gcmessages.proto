@@ -101,8 +101,10 @@ enum ECsgoGCMsg {
 	k_EMsgGCCStrike15_v2_GC2ClientInitSystem_Response = 9213;
 	k_EMsgGCCStrike15_v2_PrivateQueues = 9214;
 	k_EMsgGCCStrike15_v2_MatchListTournamentOperatorMgmt = 9215;
+	k_EMsgGCCStrike15_v2_BetaEnrollment = 9217;
 	k_EMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName = 9218;
 	k_EMsgGCCStrike15_v2_ClientRedeemFreeReward = 9219;
+	k_EMsgGCCStrike15_v2_ClientNetworkConfig = 9220;
 }
 
 enum ECsgoSteamUserStat {
@@ -431,6 +433,13 @@ message CMsgGCCStrike15_v2_MatchmakingStop {
 	optional int32 abandon = 1;
 }
 
+message CMsgGCCStrike15_v2_MatchmakingGC2ClientUpdate_Note {
+	optional int32 type = 1;
+	optional int32 region_id = 2;
+	optional float region_r = 3;
+	optional float distance = 4;
+}
+
 message CMsgGCCStrike15_v2_MatchmakingClient2ServerPing {
 	repeated .GameServerPing gameserverpings = 1;
 	optional int32 offset_index = 2;
@@ -439,16 +448,11 @@ message CMsgGCCStrike15_v2_MatchmakingClient2ServerPing {
 	optional uint32 max_ping = 5;
 	optional fixed32 test_token = 6;
 	optional bytes search_key = 7;
+	repeated .CMsgGCCStrike15_v2_MatchmakingGC2ClientUpdate_Note notes = 8;
+	optional string debug_message = 9;
 }
 
 message CMsgGCCStrike15_v2_MatchmakingGC2ClientUpdate {
-	message Note {
-		optional int32 type = 1;
-		optional int32 region_id = 2;
-		optional float region_r = 3;
-		optional float distance = 4;
-	}
-
 	optional int32 matchmaking = 1;
 	repeated uint32 waiting_account_id_sessions = 2;
 	optional string error = 3;
@@ -459,7 +463,7 @@ message CMsgGCCStrike15_v2_MatchmakingGC2ClientUpdate {
 	repeated uint32 failready_account_id_sessions = 10;
 	repeated uint32 vacbanned_account_id_sessions = 11;
 	optional .IpAddressMask server_ipaddress_mask = 12;
-	repeated .CMsgGCCStrike15_v2_MatchmakingGC2ClientUpdate.Note notes = 13;
+	repeated .CMsgGCCStrike15_v2_MatchmakingGC2ClientUpdate_Note notes = 13;
 	repeated uint32 penalty_account_id_sessions_green = 14;
 	repeated uint32 insufficientlevel_sessions = 15;
 	repeated uint32 vsncheck_account_id_sessions = 16;
@@ -528,6 +532,7 @@ message CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve {
 	optional uint32 rtime32_event_start = 16;
 	optional uint32 tv_control = 17;
 	repeated .OperationalVarValue op_var_values = 19;
+	optional uint32 socache_control = 20;
 }
 
 message CMsgGCCStrike15_v2_MatchmakingServerReservationResponse {
@@ -548,6 +553,8 @@ message CMsgGCCStrike15_v2_MatchmakingServerReservationResponse {
 	optional uint32 steamdatagram_routing = 17;
 	optional fixed32 test_token = 15;
 	optional uint32 flags = 16;
+	optional uint32 system_load = 18;
+	optional uint32 cpus_online = 19;
 }
 
 message CMsgGCCStrike15_v2_MatchmakingGC2ClientReserve {
@@ -558,6 +565,8 @@ message CMsgGCCStrike15_v2_MatchmakingGC2ClientReserve {
 	optional .CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve reservation = 5;
 	optional string map = 6;
 	optional string server_address = 7;
+	optional .DataCenterPing gs_ping = 8;
+	optional uint32 gs_location_id = 9;
 }
 
 message CMsgGCCStrike15_v2_MatchmakingServerRoundStats {
@@ -761,6 +770,13 @@ message CMsgGCCstrike15_v2_GC2ServerNotifyXPRewarded {
 	optional uint32 upgraded_defidx = 5;
 	optional uint32 operation_points_awarded = 6;
 	optional uint32 free_rewards = 7;
+	optional uint32 xp_trail_remaining = 8;
+	optional int32 xp_trail_xp_needed = 9;
+	optional uint32 xp_trail_level = 10;
+}
+
+message CMsgGCCStrike15_v2_ClientNetworkConfig {
+	optional bytes data = 1;
 }
 
 message CMsgGCCStrike15_ClientDeepStats {
@@ -858,6 +874,8 @@ message CEconItemPreviewDataBlock {
 		optional float scale = 4;
 		optional float rotation = 5;
 		optional uint32 tint_id = 6;
+		optional float offset_x = 7;
+		optional float offset_y = 8;
 	}
 
 	optional uint32 accountid = 1;
@@ -882,6 +900,10 @@ message CEconItemPreviewDataBlock {
 
 message CMsgGCCStrike15_v2_MatchEndRewardDropsNotification {
 	optional .CEconItemPreviewDataBlock iteminfo = 6;
+}
+
+message CMsgItemAcknowledged {
+	optional .CEconItemPreviewDataBlock iteminfo = 1;
 }
 
 message CMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest {
@@ -1004,6 +1026,10 @@ message CMsgGCCStrike15_v2_Fantasy {
 	repeated .CMsgGCCStrike15_v2_Fantasy.FantasyTeam teams = 2;
 }
 
+message CAttribute_String {
+	optional string value = 1;
+}
+
 message CMsgLegacySource1ClientWelcome {
 	message Location {
 		optional float latitude = 1;
@@ -1118,6 +1144,8 @@ message CSOPersonaDataPublic {
 	optional int32 player_level = 1;
 	optional .PlayerCommendationInfo commendation = 2;
 	optional bool elevated_state = 3;
+	optional uint32 xp_trail_timestamp_refresh = 4;
+	optional uint32 xp_trail_level = 5;
 }
 
 message CMsgGC_GlobalGame_Subscribe {
@@ -1193,6 +1221,10 @@ message PlayerDecalDigitalSignature {
 message CMsgGCCStrike15_v2_ClientPlayerDecalSign {
 	optional .PlayerDecalDigitalSignature data = 1;
 	optional uint64 itemid = 2;
+}
+
+message CMsgGCCStrike15_v2_BetaEnrollment {
+	optional uint32 eresult = 1;
 }
 
 message CMsgGCCStrike15_v2_ClientLogonFatalError {

@@ -17,12 +17,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "protobuf/generated/cstrike15_usermessages.pb.h"
-#include "protobuf/generated/usermessages.pb.h"
-#include "protobuf/generated/cs_gameevents.pb.h"
-#include "protobuf/generated/gameevents.pb.h"
-#include "protobuf/generated/te.pb.h"
-
 #include "cs2fixes.h"
 #include "iserver.h"
 
@@ -55,6 +49,8 @@
 #include "entity/cgamerules.h"
 #include "entity/ccsplayercontroller.h"
 #include "entitylistener.h"
+#include "te.pb.h"
+#include "cs_gameevents.pb.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"

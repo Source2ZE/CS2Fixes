@@ -17,11 +17,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "protobuf/generated/cstrike15_usermessages.pb.h"
-#include "protobuf/generated/usermessages.pb.h"
-#include "protobuf/generated/cs_gameevents.pb.h"
-#include "protobuf/generated/gameevents.pb.h"
-#include "protobuf/generated/te.pb.h"
+#include "networkbasetypes.pb.h"
 
 #include "cdetour.h"
 #include "common.h"
