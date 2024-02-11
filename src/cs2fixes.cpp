@@ -227,6 +227,15 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	UnlockConCommands();
 	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
+	if (late)
+	{
+		RegisterEventListeners();
+		g_pEntitySystem = GameEntitySystem();
+		g_pEntitySystem->AddListenerEntity(g_pEntityListener);
+		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
+		gpGlobals = g_pNetworkGameServer->GetGlobals();
+	}
+
 	g_pAdminSystem = new CAdminSystem();
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
@@ -236,15 +245,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pUserPreferencesStorage = new CUserPreferencesREST();
 	g_pZRWeaponConfig = new ZRWeaponConfig();
 	g_pEntityListener = new CEntityListener();
-
-	if (late)
-	{
-		RegisterEventListeners();
-		g_pEntitySystem = GameEntitySystem();
-		g_pEntitySystem->AddListenerEntity(g_pEntityListener);
-		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
-		gpGlobals = g_pNetworkGameServer->GetGlobals();
-	}
 
 	RegisterWeaponCommands();
 
@@ -654,9 +654,10 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 	{
 		auto &pInfo = ppInfoList[i];
 
-		// offset 560 happens to have a player index here,
+		// the offset happens to have a player index here,
 		// though this is probably part of the client class that contains the CCheckTransmitInfo
-		int iPlayerSlot = (int)*((uint8 *)pInfo + 560);
+		static int offset = g_GameConfig->GetOffset("CheckTransmitPlayerSlot");
+		int iPlayerSlot = (int)*((uint8 *)pInfo + offset);
 
 		CCSPlayerController* pSelfController = CCSPlayerController::FromSlot(iPlayerSlot);
 

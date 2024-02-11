@@ -28,6 +28,13 @@
 #include <Psapi.h>
 #endif
 
+enum SigError
+{
+	SIG_OK,
+	SIG_NOT_FOUND,
+	SIG_FOUND_MULTIPLE,
+};
+
 class CModule
 {
 public:
@@ -57,10 +64,11 @@ public:
 		Message("Initialized module %s base: 0x%p | size: %d\n", m_pszModule, m_base, m_size);
 	}
 
-	void *FindSignature(const byte *pData, size_t iSigLength)
+	void *FindSignature(const byte *pData, size_t iSigLength, int &error)
 	{
 		unsigned char *pMemory;
 		void *return_addr = nullptr;
+		error = 0;
 
 		pMemory = (byte*)m_base;
 
@@ -71,9 +79,20 @@ public:
 			{
 				Matches++;
 				if (Matches == iSigLength)
+				{
+					if (return_addr)
+					{
+						error = SIG_FOUND_MULTIPLE;
+						return return_addr;
+					}
+
 					return_addr = (void *)(pMemory + i);
+				}
 			}
 		}
+
+		if (!return_addr)
+			error = SIG_NOT_FOUND;
 
 		return return_addr;
 	}

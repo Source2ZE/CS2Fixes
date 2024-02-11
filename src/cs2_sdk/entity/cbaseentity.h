@@ -112,15 +112,18 @@ public:
 	SCHEMA_FIELD(int, m_iHealth)
 	SCHEMA_FIELD(int, m_iMaxHealth)
 	SCHEMA_FIELD(int, m_iTeamNum)
+	SCHEMA_FIELD(bool, m_bLagCompensate)
 	SCHEMA_FIELD(Vector, m_vecAbsVelocity)
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
 	SCHEMA_FIELD(CCollisionProperty*, m_pCollision)
 	SCHEMA_FIELD(MoveType_t, m_MoveType)
+	SCHEMA_FIELD(MoveType_t, m_nActualMoveType)
 	SCHEMA_FIELD(uint32, m_spawnflags)
 	SCHEMA_FIELD(uint32, m_fFlags)
 	SCHEMA_FIELD(LifeState_t, m_lifeState)
 	SCHEMA_FIELD_POINTER(CUtlStringToken, m_nSubclassID)
 	SCHEMA_FIELD(float, m_flGravityScale)
+	SCHEMA_FIELD(float, m_flSpeed)
 	SCHEMA_FIELD(CUtlString, m_sUniqueHammerID);
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
@@ -171,8 +174,8 @@ public:
 
 	CHandle<CBaseEntity> GetHandle() { return m_pEntity->m_EHandle; }
 
-	// A double pointer to entity VData is available 8 bytes past m_nSubclassID, if applicable
-	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 8); }
+	// A double pointer to entity VData is available 4 bytes past m_nSubclassID, if applicable
+	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 4); }
 
 	void DispatchSpawn(CEntityKeyValues *pEntityKeyValues = nullptr)
 	{
@@ -194,6 +197,12 @@ public:
 	void Remove()
 	{
 		addresses::UTIL_Remove(this);
+	}
+
+	void SetMoveType(MoveType_t nMoveType)
+	{
+		m_MoveType = nMoveType; // necessary to maintain client prediction
+		m_nActualMoveType = nMoveType;
 	}
 };
 

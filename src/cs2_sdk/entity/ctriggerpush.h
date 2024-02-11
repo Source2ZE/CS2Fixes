@@ -11,7 +11,6 @@ public:
 	DECLARE_SCHEMA_CLASS(CTriggerPush);
 
 	SCHEMA_FIELD(Vector, m_vecPushDirEntitySpace)
-	SCHEMA_FIELD(float, m_flPushSpeed)
 	SCHEMA_FIELD(bool, m_bTriggerOnStartTouch)
 
 	bool PassesTriggerFilters(Z_CBaseEntity *pOther)
