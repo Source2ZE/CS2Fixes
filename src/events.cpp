@@ -23,7 +23,9 @@
 #include "ctimer.h"
 #include "eventlistener.h"
 #include "entity/cbaseplayercontroller.h"
+#include "entity/cgamerules.h"
 #include "zombiereborn.h"
+#include "votemanager.h"
 
 #include "tier0/memdbgon.h"
 
@@ -31,6 +33,7 @@ extern IGameEventManager2 *g_gameEventManager;
 extern IServerGameClients *g_pSource2GameClients;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
+extern CCSGameRules *g_pGameRules;
 
 CUtlVector<CGameEventListener *> g_vecEventListeners;
 
@@ -195,6 +198,24 @@ GAME_EVENT_F(round_start)
 
 GAME_EVENT_F(round_end)
 {
+	if (g_bVoteManagerEnable)
+	{
+		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
+
+		// CONVAR_TODO
+		// HACK: values is actually the cvar value itself, hence this ugly cast.
+		float flTimelimit = *(float *)&cvar->values;
+
+		int iTimeleft = (int) ((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - gpGlobals->curtime);
+
+		// check for end of last round
+		if (iTimeleft <= 0)
+		{
+			g_RTVState = ERTVState::POST_LAST_ROUND_END;
+			g_ExtendState = EExtendState::POST_LAST_ROUND_END;
+		}
+	}
+
 	if (!g_bEnableTopDefender)
 		return;
 

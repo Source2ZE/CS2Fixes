@@ -21,7 +21,7 @@ bool CGameConfig::Init(IFileSystem *filesystem, char *conf_error, int conf_error
 		return false;
 	}
 
-	const KeyValues* game = m_pKeyValues->FindKey(m_szGameDir.c_str());
+	KeyValues* game = m_pKeyValues->FindKey(m_szGameDir.c_str(), false);
 	if (game)
 	{
 #if defined _LINUX
@@ -30,7 +30,7 @@ bool CGameConfig::Init(IFileSystem *filesystem, char *conf_error, int conf_error
 		const char* platform = "windows";
 #endif
 
-		const KeyValues* offsets = game->FindKey("Offsets");
+		KeyValues* offsets = game->FindKey("Offsets", false);
 		if (offsets)
 		{
 			FOR_EACH_SUBKEY(offsets, it)
@@ -39,7 +39,7 @@ bool CGameConfig::Init(IFileSystem *filesystem, char *conf_error, int conf_error
 			}
 		}
 
-		const KeyValues* signatures = game->FindKey("Signatures");
+		KeyValues *signatures = game->FindKey("Signatures", false);
 		if (signatures)
 		{
 			FOR_EACH_SUBKEY(signatures, it)
@@ -49,7 +49,7 @@ bool CGameConfig::Init(IFileSystem *filesystem, char *conf_error, int conf_error
 			}
 		}
 
-		const KeyValues* patches = game->FindKey("Patches");
+		KeyValues *patches = game->FindKey("Patches", false);
 		if (patches)
 		{
 			FOR_EACH_SUBKEY(patches, it)
@@ -190,7 +190,13 @@ void *CGameConfig::ResolveSignature(const char *name)
 		byte *pSignature = HexToByte(signature, iLength);
 		if (!pSignature)
 			return nullptr;
-		address = (*module)->FindSignature(pSignature, iLength);
+
+		int error;
+
+		address = (*module)->FindSignature(pSignature, iLength, error);
+
+		if (error == SIG_FOUND_MULTIPLE)
+			Panic("!!!!!!!!!! Signature for %s occurs multiple times! Using first match but this might end up crashing!\n", name);
 	}
 
 	if (!address)
