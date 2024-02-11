@@ -40,6 +40,7 @@
 #include "gameconfig.h"
 #include "zombiereborn.h"
 #include "customio.h"
+#include "serversideclient.h"
 #include "networksystem/inetworkserializer.h"
 
 #define VPROF_ENABLED
@@ -65,6 +66,8 @@ DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
 DECLARE_DETOUR(SendNetMessage, Detour_SendNetMessage);
 DECLARE_DETOUR(HostStateRequest, Detour_HostStateRequest);
+DECLARE_DETOUR(NotifyClientConnect, Detour_NotifyClientConnect);
+DECLARE_DETOUR(NotifyClientDisconnect, Detour_NotifyClientDisconnect);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -462,32 +465,66 @@ void *FASTCALL Detour_HostStateRequest(void *a1, void **pRequest)
 	return HostStateRequest(a1, pRequest);
 }
 
-void FASTCALL Detour_SendNetMessage(void* a1, INetworkSerializable* a2, void* pData, int a4)
-{
-	static bool once = false;
+CUtlVector<uint32> g_ClientsToAuth;
 
+void FASTCALL Detour_SendNetMessage(CNetChan *pNetChan, INetworkSerializable *a2, void *pData, int a4)
+{
 	NetMessageInfo_t* info = a2->GetNetMessageInfo();
 
-	if (info->m_MessageId == 7 && !once && !g_sExtraAddon.empty())
+	netadr *adr = pNetChan->GetRemoteAddress();
+	uint32 ip32 = *(uint32*)adr->ip;
+
+	if (info->m_MessageId == 7 && !g_sExtraAddon.empty() && g_ClientsToAuth.Find(ip32) != -1)
 	{
 		CNETMsg_SignonState* msg = (CNETMsg_SignonState*)pData;
 		msg->set_addons(g_sExtraAddon.c_str());
 		msg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
-		once = true;
 
-#ifdef _DEBUG
 		CUtlString str;
 		info->m_pBinding->ToString(pData, str);
-		Message("Sending addon %s to client with this message:\n%s\n", g_sExtraAddon.c_str(), str.Get());
-#endif
-		
-		// TEMP HACK
-		new CTimer(5.0f, false, [] { once = false; return -1.0f; });
+		Message("Sending addon to ip %i.%i.%i.%i with message:\n%s\n", adr->ip[0], adr->ip[1], adr->ip[2], adr->ip[3], str.Get());
 	}
 
-	SendNetMessage(a1, a2, pData, a4);
+	SendNetMessage(pNetChan, a2, pData, a4);
 }
 
+bool FASTCALL Detour_NotifyClientConnect(void *pSteamServer, CServerSideClient *pServerSideClient, uint32 userId, char *pvCookie, int ucbCookie)
+{
+	netadr *adr = pServerSideClient->GetRemoteAddress();
+
+	Message("-------Detour_NotifyClientConnect-------\nIP: %i.%i.%i.%i\nSteamID: %lli\nuserId: %i\npvCookie: %p\nucbCookie %i\n",
+		adr->ip[0], adr->ip[1], adr->ip[2], adr->ip[3], pServerSideClient->GetClientSteamID()->ConvertToUint64(), userId, pvCookie, ucbCookie);
+
+	// We don't have an extra addon set, so nothing to do here
+	if (g_sExtraAddon.empty())
+		return NotifyClientConnect(pSteamServer, pServerSideClient, userId, pvCookie, ucbCookie);
+
+	uint32 ip = *(uint32*)adr->ip;
+	int index = g_ClientsToAuth.Find(ip);
+
+	if (index == -1)
+	{
+		// Client just joined, save their IP as we're forcing a reconnect for extra addons
+		g_ClientsToAuth.AddToTail(ip);
+		return true;
+	}
+	else
+	{
+		// Client has reconnected after getting the extra addon, let them authenticate
+		g_ClientsToAuth.Remove(index);
+		return NotifyClientConnect(pSteamServer, pServerSideClient, userId, pvCookie, ucbCookie);
+	}
+}
+
+void FASTCALL Detour_NotifyClientDisconnect(void *pSteamServer, CServerSideClient *pServerSideClient)
+{
+	netadr *adr = pServerSideClient->GetRemoteAddress();
+
+	Message("-------\Detour_NotifyClientDisconnect-------\nIP: %i.%i.%i.%i\nSteamID: %lli\n",
+		adr->ip[0], adr->ip[1], adr->ip[2], adr->ip[3], pServerSideClient->GetClientSteamID()->ConvertToUint64());
+
+	NotifyClientDisconnect(pSteamServer, pServerSideClient);
+}
 
 CUtlVector<CDetourBase *> g_vecDetours;
 
@@ -554,6 +591,14 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!HostStateRequest.CreateDetour(gameConfig))
 		success = false;
 	HostStateRequest.EnableDetour();
+
+	if (!NotifyClientConnect.CreateDetour(gameConfig))
+		success = false;
+	NotifyClientConnect.EnableDetour();
+
+	if (!NotifyClientDisconnect.CreateDetour(gameConfig))
+		success = false;
+	NotifyClientDisconnect.EnableDetour();
 
 	return success;
 }
