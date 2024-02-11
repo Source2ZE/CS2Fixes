@@ -89,6 +89,7 @@ void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 
 bool ZRClass::IsApplicableTo(CCSPlayerController *pController)
 {
+	if (!bEnabled) return false;
 	if (!V_stricmp(szClassName.c_str(), "MotherZombie")) return false;
 	ZEPlayer* pPlayer = pController->GetZEPlayer();
 	if (!pPlayer) return false;
