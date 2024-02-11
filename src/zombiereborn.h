@@ -45,6 +45,7 @@ enum EZRSpawnType
 //everything that human and zombie share
 struct ZRClass
 {
+	bool bEnabled;
 	std::string szClassName;
 	int iHealth;
 	std::string szModelPath;
@@ -55,6 +56,7 @@ struct ZRClass
 	float flGravity;
 	uint64 iAdminFlag;
 	ZRClass(ZRClass *pClass) :
+		bEnabled(pClass->bEnabled),
 		szClassName(pClass->szClassName),
 		iHealth(pClass->iHealth),
 		szModelPath(pClass->szModelPath),
@@ -66,6 +68,7 @@ struct ZRClass
 		iAdminFlag(pClass->iAdminFlag){};
 
 	ZRClass(KeyValues *pKeys) :
+		bEnabled(pKeys->GetBool("enabled", false)),
 		szClassName(std::string(pKeys->GetName())),
 		iHealth(pKeys->GetInt("health", 0)),
 		szModelPath(std::string(pKeys->GetString("model", ""))),
@@ -81,6 +84,7 @@ struct ZRClass
 	{
 		Message(
 			"%s:\n"
+			"\tenabled: %d\n"
 			"\thealth: %d\n"
 			"\tmodel: %s\n"
 			"\tskin: %i\n"
@@ -90,6 +94,7 @@ struct ZRClass
 			"\tgravity: %f\n"
 			"\admin flag: %llu\n",
 			szClassName.c_str(),
+			bEnabled,
 			iHealth,
 			szModelPath.c_str(),
 			iSkin,
@@ -102,6 +107,8 @@ struct ZRClass
 	void Override(KeyValues *pKeys)
 	{
 		szClassName = std::string(pKeys->GetName());
+		if (pKeys->FindKey("enabled"))
+			bEnabled = pKeys->GetBool("enabled", 0);
 		if (pKeys->FindKey("health"))
 			iHealth = pKeys->GetInt("health", 0);
 		if (pKeys->FindKey("model"))
@@ -147,6 +154,7 @@ struct ZRZombieClass : ZRClass
 	{
 		Message(
 			"%s:\n"
+			"\tenabled: %d\n"
 			"\thealth: %d\n"
 			"\tmodel: %s\n"
 			"\tskin: %i\n"
@@ -158,6 +166,7 @@ struct ZRZombieClass : ZRClass
 			"\thealth_regen_count: %d\n"
 			"\thealth_regen_interval: %f\n",
 			szClassName.c_str(),
+			bEnabled,
 			iHealth,
 			szModelPath.c_str(),
 			iSkin,
