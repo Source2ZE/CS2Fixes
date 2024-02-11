@@ -5,7 +5,7 @@
 		"HumanClass1"
 		{
 			// class behavior, values will not be inherited from base class
-			"enabled"					"1" // does nothing atm, it will be reimplemented with !zclass as an indicator of pickable class
+			"enabled"					"1"
 			"team_default"				"1"
 
 			// player behavior

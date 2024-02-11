@@ -92,7 +92,7 @@ struct ZRClass
 			"\tscale: %f\n"
 			"\tspeed: %f\n"
 			"\tgravity: %f\n"
-			"\admin flag: %llu\n",
+			"\tadmin flag: %llu\n",
 			szClassName.c_str(),
 			bEnabled,
 			iHealth,
@@ -162,7 +162,7 @@ struct ZRZombieClass : ZRClass
 			"\tscale: %f\n"
 			"\tspeed: %f\n"
 			"\tgravity: %f\n"
-			"\admin flag: %d\n"
+			"\tadmin flag: %d\n"
 			"\thealth_regen_count: %d\n"
 			"\thealth_regen_interval: %f\n",
 			szClassName.c_str(),
