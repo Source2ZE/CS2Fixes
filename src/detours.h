@@ -57,5 +57,5 @@ void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsi
 void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEntity, bool a3);
 void FASTCALL Detour_SendNetMessage(CNetChan *pNetChan, INetworkSerializable *a2, void *a3, int a4);
 void* FASTCALL Detour_HostStateRequest(void *a1, void **pRequest);
-bool FASTCALL Detour_NotifyClientConnect(void *pSteamServer, CServerSideClient *pServerSideClient, uint32 userId, char *pvCookie, int ucbCookie);
-void FASTCALL Detour_NotifyClientDisconnect(void *pSteamServer, CServerSideClient *pServerSideClient);
+bool FASTCALL Detour_NotifyClientConnect(void *pSteamServer, CServerSideClient *pClient, uint32 userId, void *pvCookie, int ucbCookie);
+void FASTCALL Detour_NotifyClientDisconnect(void *pSteamServer, CServerSideClient *pClient);

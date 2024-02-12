@@ -3,13 +3,7 @@
 #include "playerslot.h"
 #include "steam/steamclientpublic.h"
 #include "utlstring.h"
-
-struct netadr
-{
-	int type;
-	uint8 ip[4];
-	uint16 port;
-};
+#include "netadr.h"
 
 class CNetChan
 {
@@ -57,7 +51,7 @@ public:
 	virtual void unk_038() = 0;
 	virtual void unk_039() = 0;
 	virtual void unk_040() = 0;
-	virtual netadr *GetRemoteAddress() = 0;
+	virtual netadr_t *GetRemoteAddress() = 0;
 };
 
 class CServerSideClient
@@ -70,8 +64,8 @@ public:
 	CPlayerUserId GetUserID() const { return m_UserID; }
 	int GetSignonState() const { return m_nSignonState; }
 	CSteamID *GetClientSteamID() const { return (CSteamID*)&m_SteamID; }
-	const char *GetClientName() const { return m_Name; }
-	netadr *GetRemoteAddress() const { return (netadr*)&m_NetAdr; }
+	const char *GetClientName() const { return m_Name.Get(); }
+	netadr_t *GetRemoteAddress() const { return (netadr_t*)&m_NetAdr; }
 
 private:
 	[[maybe_unused]] void *m_pVT1; // INetworkMessageProcessingPreFilter
@@ -79,17 +73,19 @@ private:
 #ifdef __linux__
 	[[maybe_unused]] char pad2[0x10];
 #endif
-	CNetChan *m_NetChannel; // 80 | 96
+	CNetChan *m_NetChannel;			// 80 | 96
 	[[maybe_unused]] char pad3[0x4];
-	int32 m_nSignonState; // 92 | 108
-	[[maybe_unused]] char pad4[0x38];
-	CPlayerUserId m_UserID; // 152 | 168
-	[[maybe_unused]] char pad5[0x1];
-	CSteamID m_SteamID; // 155 | 171
-	[[maybe_unused]] char pad6[0x15];
-	CPlayerSlot m_nClientSlot; // 184 | 200
-	[[maybe_unused]] char pad7[0x4];
-	CUtlString m_Name; // 192 | 208
-	[[maybe_unused]] char pad8[0x28];
-	netadr m_NetAdr;
+	int32 m_nSignonState;			// 92 | 108
+	[[maybe_unused]] char pad4[0x32];
+	bool m_bFakePlayer;				// 146 | 162
+	[[maybe_unused]] char pad5[0x5];
+	CPlayerUserId m_UserID;			// 152 | 168
+	[[maybe_unused]] char pad6[0x1];
+	CSteamID m_SteamID;				// 155 | 171
+	[[maybe_unused]] char pad7[0x1D];
+	CPlayerSlot m_nClientSlot;		// 192 | 208
+	CEntityIndex m_nEntityIndex;	// 196 | 212
+	CUtlString m_Name;				// 200 | 216
+	[[maybe_unused]] char pad8[0x20];
+	netadr_t m_NetAdr;
 };
