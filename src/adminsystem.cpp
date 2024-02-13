@@ -1241,7 +1241,7 @@ void CAdminSystem::SaveInfractions()
 	const char *pszPath = "addons/cs2fixes/data/infractions.txt";
 
 	if (!pKV->SaveToFile(g_pFullFileSystem, pszPath))
-		Warning("Failed to save infractions to %s", pszPath);
+		Warning("Failed to save infractions to %s\n", pszPath);
 }
 
 void CAdminSystem::AddInfraction(CInfractionBase* infraction)

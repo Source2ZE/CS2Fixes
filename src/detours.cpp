@@ -66,8 +66,6 @@ DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
 DECLARE_DETOUR(SendNetMessage, Detour_SendNetMessage);
 DECLARE_DETOUR(HostStateRequest, Detour_HostStateRequest);
-DECLARE_DETOUR(NotifyClientConnect, Detour_NotifyClientConnect);
-DECLARE_DETOUR(NotifyClientDisconnect, Detour_NotifyClientDisconnect);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -443,6 +441,8 @@ void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEn
 std::string g_sExtraAddon;
 FAKE_STRING_CVAR(cs2f_extra_addon, "extra addon", g_sExtraAddon, false);
 
+CUtlMap<uint64, uint32> g_ClientsPendingAddon(DefLessFunc(uint64));
+
 void *FASTCALL Detour_HostStateRequest(void *a1, void **pRequest)
 {
 	// skip if we're doing anything other than changelevel
@@ -461,101 +461,41 @@ void *FASTCALL Detour_HostStateRequest(void *a1, void **pRequest)
 	return HostStateRequest(a1, pRequest);
 }
 
-CUtlMap<uint64, uint32> g_ClientsToAuth(DefLessFunc(uint64));
-
-bool IsClientPendingAddon(uint32 ip32)
+// Returns the Steam ID associated with the IP
+uint64 IsClientPendingAddon(uint32 ip32)
 {
-	if (!g_ClientsToAuth.Count())
-		return false;
+	if (!g_ClientsPendingAddon.Count())
+		return 0;
 
-	FOR_EACH_MAP(g_ClientsToAuth, i)
+	FOR_EACH_MAP(g_ClientsPendingAddon, i)
 	{
-		if (g_ClientsToAuth.Element(i) == ip32)
-			return true;
+		if (g_ClientsPendingAddon.Element(i) == ip32)
+			return g_ClientsPendingAddon.Key(i);
 	}
 
-	return false;
+	return 0;
 }
 
-void FASTCALL Detour_SendNetMessage(CNetChan *pNetChan, INetworkSerializable *a2, void *pData, int a4)
+void FASTCALL Detour_SendNetMessage(CNetChan *pNetChan, INetworkSerializable *pNetMessage, void *pData, int a4)
 {
-	NetMessageInfo_t* info = a2->GetNetMessageInfo();
+	NetMessageInfo_t *info = pNetMessage->GetNetMessageInfo();
+
+	if (info->m_MessageId != 7 || g_sExtraAddon.empty())
+		return SendNetMessage(pNetChan, pNetMessage, pData, a4);
 
 	netadr_t *adr = pNetChan->GetRemoteAddress();
 	uint32 ip32 = *(uint32*)adr->ip;
+	uint64 iSteamID = IsClientPendingAddon(ip32);
 
-	if (info->m_MessageId == 7 && !g_sExtraAddon.empty() && IsClientPendingAddon(ip32))
+	if (iSteamID)
 	{
-		CNETMsg_SignonState *msg = new CNETMsg_SignonState(*(CNETMsg_SignonState*)pData);
-		msg->set_addons(g_sExtraAddon.c_str());
-		msg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
-
-		CUtlString str;
-		info->m_pBinding->ToString(pData, str);
-		Message("Detour_SendNetMessage:\n%s\n", str.Get());
-
-		SendNetMessage(pNetChan, a2, msg, a4);
-		delete msg;
-		return;
+		Message("Detour_SendNetMessage: Sending addon %s to client %lli\n", g_sExtraAddon.c_str(), iSteamID);
+		CNETMsg_SignonState *pMsg = (CNETMsg_SignonState *)pData;
+		pMsg->set_addons(g_sExtraAddon.c_str());
+		pMsg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
 	}
 
-	SendNetMessage(pNetChan, a2, pData, a4);
-}
-
-bool FASTCALL Detour_NotifyClientConnect(void *pSteamServer, CServerSideClient *pClient, uint32 userId, void *pvCookie, int ucbCookie)
-{
-	netadr_t *adr = pClient->GetRemoteAddress();
-
-	Message(
-		"\n-------NotifyClientConnect-------\n"
-		"IP: %i.%i.%i.%i\n"
-		"SteamID: %lli\n"
-		"userId: %i\n"
-		"ticket: 0x%p\n"
-		"ticket SteamID (1st 8 bytes): %lli\n"
-		"ticket length: %i bytes\n"
-		"---------------------------------\n",
-		adr->ip[0], adr->ip[1], adr->ip[2], adr->ip[3],
-		pClient->GetClientSteamID()->ConvertToUint64(),
-		userId,
-		pvCookie, *(uint64*)pvCookie, ucbCookie);
-
-	// We don't have an extra addon set, so nothing to do here
-	if (g_sExtraAddon.empty())
-		return NotifyClientConnect(pSteamServer, pClient, userId, pvCookie, ucbCookie);
-
-	uint64 iSteamId = pClient->GetClientSteamID()->ConvertToUint64();
-
-	if (!g_ClientsToAuth.IsValidIndex(g_ClientsToAuth.Find(iSteamId)))
-	{
-		// Client just joined, save their ID as we're forcing a reconnect for extra addons
-		Message("PENDING ADDON\n");
-		g_ClientsToAuth.Insert(iSteamId, *(uint32*)adr->ip);
-		return true;
-	}
-	else
-	{
-		// Client has reconnected after getting the extra addon(s), let them authenticate
-		g_ClientsToAuth.Remove(iSteamId);
-		return NotifyClientConnect(pSteamServer, pClient, userId, pvCookie, ucbCookie);
-	}
-}
-
-void FASTCALL Detour_NotifyClientDisconnect(void *pSteamServer, CServerSideClient *pClient)
-{
-	netadr_t *adr = pClient->GetRemoteAddress();
-
-	Message(
-		"\n-------NotifyClientDisconnect-------\n"
-		"IP: %i.%i.%i.%i\n"
-		"Name: %s\n"
-		"SteamID: %lli\n"
-		"------------------------------------\n",
-		adr->ip[0], adr->ip[1], adr->ip[2], adr->ip[3],
-		pClient->GetClientName(),
-		pClient->GetClientSteamID()->ConvertToUint64());
-
-	NotifyClientDisconnect(pSteamServer, pClient);
+	SendNetMessage(pNetChan, pNetMessage, pData, a4);
 }
 
 CUtlVector<CDetourBase *> g_vecDetours;
@@ -623,14 +563,6 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!HostStateRequest.CreateDetour(gameConfig))
 		success = false;
 	HostStateRequest.EnableDetour();
-
-	if (!NotifyClientConnect.CreateDetour(gameConfig))
-		success = false;
-	NotifyClientConnect.EnableDetour();
-
-	if (!NotifyClientDisconnect.CreateDetour(gameConfig))
-		success = false;
-	NotifyClientDisconnect.EnableDetour();
 
 	return success;
 }

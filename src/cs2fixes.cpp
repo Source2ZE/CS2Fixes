@@ -49,6 +49,7 @@
 #include "entity/cgamerules.h"
 #include "entity/ccsplayercontroller.h"
 #include "entitylistener.h"
+#include "serversideclient.h"
 #include "te.pb.h"
 #include "cs_gameevents.pb.h"
 
@@ -409,6 +410,9 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 	}
 }
 
+extern std::string g_sExtraAddon;
+extern CUtlMap<uint64, uint32> g_ClientsPendingAddon;
+
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*)
 {
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
@@ -433,6 +437,8 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 
 	RegisterEventListeners();
 	g_playerManager->SetupInfiniteAmmo();
+
+	g_ClientsPendingAddon.RemoveAll();
 
 	// Disable RTV and Extend votes after map has just started
 	g_RTVState = ERTVState::MAP_START;
@@ -525,6 +531,20 @@ void CS2Fixes::AllPluginsLoaded()
 	Message( "AllPluginsLoaded\n" );
 }
 
+CServerSideClient *GetClientBySlot(CPlayerSlot slot)
+{
+	if (!g_pNetworkGameServer)
+		return nullptr;
+
+	static int offset = g_GameConfig->GetOffset("CNetworkGameServer_ClientList");
+	CUtlVector<CServerSideClient *> *pClients = (CUtlVector<CServerSideClient *> *)(&g_pNetworkGameServer[offset]);
+
+	if (!pClients)
+		return nullptr;
+
+	return pClients->Element(slot.Get());
+}
+
 void CS2Fixes::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *pszName, uint64 xuid )
 {
 	Message( "Hook_ClientActive(%d, %d, \"%s\", %lli)\n", slot, bLoadGame, pszName, xuid );
@@ -563,35 +583,25 @@ void CS2Fixes::Hook_OnClientConnected(CPlayerSlot slot, const char* pszName, uin
 bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason )
 {
 	Message( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
-	
-	/*
-	CUtlVector<void*>* m_Clients = reinterpret_cast<CUtlVector<void*> *>((unsigned char*)g_pNetworkGameServer + 0x268);
 
-	ConMsg("m_Clients: %p - %p\n", m_Clients, g_pNetworkGameServer);
-
-	if (!m_Clients)
-		RETURN_META_VALUE(MRES_IGNORED, true);
-
-	ConMsg("m_Clients->Count(): %d\n", m_Clients->Count());
-
-	class CServerSideClient {
-	public:
-		virtual void pad0() = 0;
-		virtual void pad1() = 0;
-		virtual void pad2() = 0;
-		virtual void pad3() = 0;
-		virtual void pad4() = 0;
-		virtual void pad5() = 0;
-		virtual void Reconnect() = 0;
-	};
-
-	CServerSideClient* serverSideClient = (CServerSideClient*)m_Clients->Element(slot.Get());
-
-	serverSideClient->Reconnect();
-	*/
-
+	// Player is banned
 	if (!g_playerManager->OnClientConnected(slot, xuid, pszNetworkID))
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
+
+	CServerSideClient *pClient = GetClientBySlot(slot);
+
+	// We don't have an extra addon set so do nothing here
+	if (g_sExtraAddon.empty())
+		RETURN_META_VALUE(MRES_IGNORED, true);
+
+	// Store the client's ID and IP temporarily as they will get reconnected once the extra addon is sent
+	// This gets checked for in SendNetMessage so we don't repeatedly send the changelevel signon state
+	// The only caveat to this is that there's no way for us to verify if the client has actually downloaded the extra addon,
+	// since they're fully disconnected while downloading it
+	if (!g_ClientsPendingAddon.IsValidIndex(g_ClientsPendingAddon.Find(xuid)))
+		g_ClientsPendingAddon.Insert(xuid, *(uint32*)pClient->GetRemoteAddress()->ip);
+	else
+		g_ClientsPendingAddon.Remove(xuid);
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
