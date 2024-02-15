@@ -439,9 +439,7 @@ void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEn
 }
 
 std::string g_sExtraAddon;
-FAKE_STRING_CVAR(cs2f_extra_addon, "extra addon", g_sExtraAddon, false);
-
-CUtlMap<uint64, uint32> g_ClientsPendingAddon(DefLessFunc(uint64));
+FAKE_STRING_CVAR(cs2f_extra_addon, "The workshop ID of an extra addon to mount and send to clients", g_sExtraAddon, false);
 
 void *FASTCALL Detour_HostStateRequest(void *a1, void **pRequest)
 {
@@ -461,38 +459,31 @@ void *FASTCALL Detour_HostStateRequest(void *a1, void **pRequest)
 	return HostStateRequest(a1, pRequest);
 }
 
-// Returns the Steam ID associated with the IP
-uint64 IsClientPendingAddon(uint32 ip32)
-{
-	if (!g_ClientsPendingAddon.Count())
-		return 0;
-
-	FOR_EACH_MAP(g_ClientsPendingAddon, i)
-	{
-		if (g_ClientsPendingAddon.Element(i) == ip32)
-			return g_ClientsPendingAddon.Key(i);
-	}
-
-	return 0;
-}
+extern double g_flUniversalTime;
 
 void FASTCALL Detour_SendNetMessage(CNetChan *pNetChan, INetworkSerializable *pNetMessage, void *pData, int a4)
 {
 	NetMessageInfo_t *info = pNetMessage->GetNetMessageInfo();
 
+	// 7 for signon messages
 	if (info->m_MessageId != 7 || g_sExtraAddon.empty())
 		return SendNetMessage(pNetChan, pNetMessage, pData, a4);
 
 	netadr_t *adr = pNetChan->GetRemoteAddress();
 	uint32 ip32 = *(uint32*)adr->ip;
-	uint64 iSteamID = IsClientPendingAddon(ip32);
+	ClientJoinInfo_t *pPendingClient = GetPendingClient(ip32);
 
-	if (iSteamID)
+	CUtlString str;
+	info->m_pBinding->ToString(pData, str);
+	Message("Detour_SendNetMessage: Signon message sent to %i.%i.%i.%i:\n%s\n", adr->ip[0], adr->ip[1], adr->ip[2], adr->ip[3], str.Get());
+
+	if (pPendingClient)
 	{
-		Message("Detour_SendNetMessage: Sending addon %s to client %lli\n", g_sExtraAddon.c_str(), iSteamID);
+		Message("Detour_SendNetMessage: Sending addon %s to client %lli\n", g_sExtraAddon.c_str(), pPendingClient->steamid);
 		CNETMsg_SignonState *pMsg = (CNETMsg_SignonState *)pData;
 		pMsg->set_addons(g_sExtraAddon.c_str());
 		pMsg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
+		pPendingClient->signon_timestamp = g_flUniversalTime;
 	}
 
 	SendNetMessage(pNetChan, pNetMessage, pData, a4);

@@ -38,6 +38,38 @@ extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 
+CUtlVector<ClientJoinInfo_t> g_ClientsPendingAddon;
+
+void AddPendingClient(uint64 steamid, uint32 ip32)
+{
+	ClientJoinInfo_t PendingCLient {steamid, ip32, 0.f};
+	g_ClientsPendingAddon.AddToTail(PendingCLient);
+}
+
+ClientJoinInfo_t *GetPendingClient(uint32 ip32)
+{
+	FOR_EACH_VEC(g_ClientsPendingAddon, i)
+	{
+		if (g_ClientsPendingAddon[i].ip32 == ip32)
+			return &g_ClientsPendingAddon[i];
+	}
+
+	return nullptr;
+}
+
+ClientJoinInfo_t *GetPendingClient(uint64 steamid, int &index)
+{
+	index = 0;
+
+	FOR_EACH_VEC(g_ClientsPendingAddon, index)
+	{
+		if (g_ClientsPendingAddon[index].steamid == steamid)
+			return &g_ClientsPendingAddon[index];
+	}
+
+	return nullptr;
+}
+
 void ZEPlayer::OnAuthenticated()
 {
 	CheckAdmin();

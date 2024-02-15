@@ -410,9 +410,6 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 	}
 }
 
-extern std::string g_sExtraAddon;
-extern CUtlMap<uint64, uint32> g_ClientsPendingAddon;
-
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*)
 {
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
@@ -580,6 +577,11 @@ void CS2Fixes::Hook_OnClientConnected(CPlayerSlot slot, const char* pszName, uin
 		g_playerManager->OnBotConnected(slot);
 }
 
+extern std::string g_sExtraAddon;
+
+float g_flRejoinTimeout;
+FAKE_FLOAT_CVAR(cs2f_extra_addon_timeout, "How long until clients are timed out in between connects for the extra addon", g_flRejoinTimeout, 15.f, false);
+
 bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason )
 {
 	Message( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
@@ -594,14 +596,33 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 	if (g_sExtraAddon.empty())
 		RETURN_META_VALUE(MRES_IGNORED, true);
 
+	netadr_t *adr = pClient->GetRemoteAddress();
+	Message("Client %lli, %i.%i.%i.%i", xuid, adr->ip[0], adr->ip[1], adr->ip[2], adr->ip[3]);
+
 	// Store the client's ID and IP temporarily as they will get reconnected once the extra addon is sent
 	// This gets checked for in SendNetMessage so we don't repeatedly send the changelevel signon state
 	// The only caveat to this is that there's no way for us to verify if the client has actually downloaded the extra addon,
 	// since they're fully disconnected while downloading it
-	if (!g_ClientsPendingAddon.IsValidIndex(g_ClientsPendingAddon.Find(xuid)))
-		g_ClientsPendingAddon.Insert(xuid, *(uint32*)pClient->GetRemoteAddress()->ip);
+	int index;
+	ClientJoinInfo_t *pPendingClient = GetPendingClient(xuid, index);
+	
+	if (!pPendingClient)
+	{
+		// Client joined for the first time or after a timeout
+		Msg(" will reconnect for addon\n");
+		AddPendingClient(xuid, *(uint32*)adr->ip);
+	}
+	else if ((g_flUniversalTime - pPendingClient->signon_timestamp) < g_flRejoinTimeout)
+	{
+		// Client reconnected within the timeout interval
+		// If they already have the addon this happens almost instantly after receiving the signon message with the addon
+		Msg(" has reconnected within the interval, allowing\n");
+		g_ClientsPendingAddon.FastRemove(index);
+	}
 	else
-		g_ClientsPendingAddon.Remove(xuid);
+	{
+		Msg(" has reconnected after the timeout or did not receive the addon message, will send addon message again\n");
+	}
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }

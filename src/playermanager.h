@@ -30,6 +30,19 @@
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
 #define SOUND_STATUS_PREF_KEY_NAME "sound_status"
 
+struct ClientJoinInfo_t
+{
+	uint64 steamid;
+	uint32 ip32;
+	double signon_timestamp;
+};
+
+extern CUtlVector<ClientJoinInfo_t> g_ClientsPendingAddon;
+
+void AddPendingClient(uint64 steamid, uint32 ip32);
+ClientJoinInfo_t *GetPendingClient(uint32 ip32);
+ClientJoinInfo_t *GetPendingClient(uint64 steamid, int &index);
+
 enum class ETargetType {
 	NONE,
 	PLAYER,
