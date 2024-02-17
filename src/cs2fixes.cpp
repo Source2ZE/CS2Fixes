@@ -657,10 +657,6 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 	{
 		g_flUniversalTime += gpGlobals->curtime - g_flLastTickedTime;
 	}
-	else
-	{
-		g_flUniversalTime += gpGlobals->interval_per_tick;
-	}
 
 	g_flLastTickedTime = gpGlobals->curtime;
 	g_bHasTicked = true;
