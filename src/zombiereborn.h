@@ -24,6 +24,9 @@
 #include "gamesystem.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
+#include "vendor/nlohmann/json_fwd.hpp"
+
+using json = nlohmann::json;
 
 #define ZR_PREFIX " \4[Zombie:Reborn]\1 "
 #define HUMAN_CLASS_KEY_NAME "zr_human_class"
@@ -80,6 +83,7 @@ struct ZRClass
 		iAdminFlag(g_pAdminSystem->ParseFlags(
 			pKeys->GetString("admin_flag", "")
 		)){};
+	ZRClass(json jKeys, std::string szClassname);
 	void PrintInfo()
 	{
 		Message(
@@ -128,6 +132,7 @@ struct ZRClass
 				pKeys->GetString("admin_flag", "")
 			);
 	};
+	void Override(json jKeys, std::string szClassname);
 	bool IsApplicableTo(CCSPlayerController *pController);
 };
 
@@ -136,6 +141,7 @@ struct ZRHumanClass : ZRClass
 {
 	ZRHumanClass(ZRHumanClass *pClass) : ZRClass(pClass){};
 	ZRHumanClass(KeyValues *pKeys) : ZRClass(pKeys){};
+	ZRHumanClass(json jKeys, std::string szClassname);
 };
 
 struct ZRZombieClass : ZRClass
@@ -150,6 +156,7 @@ struct ZRZombieClass : ZRClass
 		ZRClass(pKeys),
 		iHealthRegenCount(pKeys->GetInt("health_regen_count", 0)),
 		flHealthRegenInterval(pKeys->GetFloat("health_regen_interval", 0)){};
+	ZRZombieClass(json jKeys, std::string szClassname);
 	void PrintInfo()
 	{
 		Message(
@@ -186,6 +193,7 @@ struct ZRZombieClass : ZRClass
 		if (pKeys->FindKey("health_regen_interval"))
 			flHealthRegenInterval = pKeys->GetFloat("health_regen_interval", 0);
 	};
+	void Override(json jKeys, std::string szClassname);
 };
 
 class CZRPlayerClassManager
@@ -196,6 +204,7 @@ public:
 		m_ZombieClassMap.SetLessFunc(DefLessFunc(uint32));
 		m_HumanClassMap.SetLessFunc(DefLessFunc(uint32));
 	};
+	json KV1PlayerClassConfigToJson(KeyValues* pKV);
 	void LoadPlayerClass();
 	ZRHumanClass* GetHumanClass(const char *pszClassName);
 	void ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn *pPawn);

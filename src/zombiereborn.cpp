@@ -28,6 +28,8 @@
 #include "entity/cteam.h"
 #include "user_preferences.h"
 #include <sstream>
+#include "vendor/nlohmann/json.hpp"
+#include <fstream>
 
 #include "tier0/memdbgon.h"
 
@@ -82,6 +84,61 @@ FAKE_FLOAT_CVAR(zr_respawn_delay, "Time before a zombie is automatically respawn
 FAKE_INT_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, CS_TEAM_SPECTATOR, false)
 FAKE_INT_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, 20, false)
 
+ZRClass::ZRClass(json jKeys, std::string szClassname) :
+	bEnabled(jKeys.contains("enabled") ? jKeys["enabled"].get<bool>() : false),
+	szClassName(szClassname),
+	iHealth(jKeys.contains("health") ? jKeys["health"].get<int>() : 0),
+	szModelPath(jKeys.contains("model") ? jKeys["model"].get<std::string>() : ""),
+	iSkin(jKeys.contains("skin") ? jKeys["skin"].get<int>() : 0),
+	szColor(jKeys.contains("color") ? jKeys["color"].get<std::string>() : ""),
+	flScale(jKeys.contains("scale") ? jKeys["scale"].get<float>() : 0),
+	flSpeed(jKeys.contains("speed") ? jKeys["speed"].get<float>() : 0),
+	flGravity(jKeys.contains("gravity") ? jKeys["gravity"].get<float>() : 0),
+	iAdminFlag(g_pAdminSystem->ParseFlags(
+		jKeys.contains("admin_flag") ? jKeys["admin_flag"].get<std::string>().c_str() : ""
+	)){};
+
+void ZRClass::Override(json jKeys, std::string szClassname)
+{
+	szClassName = szClassname;
+	if (jKeys.contains("enabled"))
+		bEnabled = jKeys["enabled"].get<bool>();
+	if (jKeys.contains("health"))
+		iHealth = jKeys["health"].get<int>();
+	if (jKeys.contains("model"))
+		szModelPath = jKeys["model"].get<std::string>();
+	if (jKeys.contains("skin"))
+		iSkin = jKeys["skin"].get<int>();
+	if (jKeys.contains("color"))
+		szColor = jKeys["color"].get<std::string>();
+	if (jKeys.contains("scale"))
+		flScale = jKeys["scale"].get<float>();
+	if (jKeys.contains("speed"))
+		flSpeed = jKeys["speed"].get<float>();
+	if (jKeys.contains("gravity"))
+		flGravity = jKeys["gravity"].get<float>();
+	if (jKeys.contains("admin_flag"))
+		iAdminFlag = g_pAdminSystem->ParseFlags(
+			jKeys["admin_flag"].get<std::string>().c_str()
+		);
+}
+
+ZRHumanClass::ZRHumanClass(json jKeys, std::string szClassname) : ZRClass(jKeys, szClassname){};
+
+ZRZombieClass::ZRZombieClass(json jKeys, std::string szClassname) :
+	ZRClass(jKeys, szClassname),
+	iHealthRegenCount(jKeys.contains("health_regen_count") ? jKeys["health_regen_count"].get<int>() : 0),
+	flHealthRegenInterval(jKeys.contains("health_regen_interval") ? jKeys["health_regen_interval"].get<float>() : 0){};
+
+void ZRZombieClass::Override(json jKeys, std::string szClassname)
+{
+	ZRClass::Override(jKeys, szClassname);
+	if (jKeys.contains("health_regen_count"))
+		iHealthRegenCount = jKeys["health_regen_count"].get<int>();
+	if (jKeys.contains("health_regen_interval"))
+		flHealthRegenInterval = jKeys["health_regen_interval"].get<float>();
+}
+
 void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 {
 	g_pZRPlayerClassManager->PrecacheModels(pResourceManifest);
@@ -109,6 +166,64 @@ void CZRPlayerClassManager::PrecacheModels(IEntityResourceManifest* pResourceMan
 	}
 }
 
+json CZRPlayerClassManager::KV1PlayerClassConfigToJson(KeyValues* pKV)
+{
+	json jPlayerClasses;
+
+	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+	{
+		json jTeamClasses;
+
+		for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
+		{
+			json jClass;
+
+			if (pSubKey->FindKey("enabled"))
+				jClass["enabled"] = pSubKey->GetBool("enabled", false);
+
+			if (pSubKey->FindKey("team_default"))
+				jClass["team_default"] = pSubKey->GetBool("team_default", false);
+
+			if (pSubKey->FindKey("health"))
+				jClass["health"] = pSubKey->GetInt("health", 0);
+
+			if (pSubKey->FindKey("model"))
+				jClass["model"] = std::string(pSubKey->GetString("model", ""));
+
+			if (pSubKey->FindKey("skin"))
+				jClass["skin"] = pSubKey->GetInt("skin", 0);
+
+			if (pSubKey->FindKey("color"))
+				jClass["color"] = std::string(pSubKey->GetString("color", ""));
+
+			if (pSubKey->FindKey("scale"))
+				jClass["scale"] = pSubKey->GetFloat("scale", 0.0);
+
+			if (pSubKey->FindKey("speed"))
+				jClass["speed"] = pSubKey->GetFloat("speed", 0.0);
+
+			if (pSubKey->FindKey("gravity"))
+				jClass["gravity"] = pSubKey->GetFloat("gravity", 0.0);
+
+			if (pSubKey->FindKey("admin_flag"))
+				jClass["admin_flag"] = std::string(pSubKey->GetString("admin_flag", ""));
+
+			if (pSubKey->FindKey("base"))
+				jClass["base"] = std::string(pSubKey->GetString("base", ""));
+			
+			jTeamClasses[pSubKey->GetName()] = jClass;
+		}
+
+		bool bHuman = !V_strcmp(pKey->GetName(), "Human");
+		if (bHuman)
+			jPlayerClasses["Human"] = jTeamClasses;
+		else
+			jPlayerClasses["Zombie"] = jTeamClasses;
+	}
+
+	return jPlayerClasses;
+}
+
 void CZRPlayerClassManager::LoadPlayerClass()
 {
 	Message("Loading PlayerClass...\n");
@@ -117,90 +232,105 @@ void CZRPlayerClassManager::LoadPlayerClass()
 	m_vecZombieDefaultClass.Purge();
 	m_vecHumanDefaultClass.Purge();
 
+	// attempt to load KV1 config for backwards compatibility
 	KeyValues* pKV = new KeyValues("PlayerClass");
 	KeyValues::AutoDelete autoDelete(pKV);
 
-	const char *pszPath = "addons/cs2fixes/configs/zr/playerclass.cfg";
+	const char *pszKV1Path = "addons/cs2fixes/configs/zr/playerclass.cfg";
+	bool bUsingKV1Config = true;
 
-	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
+	if (!pKV->LoadFromFile(g_pFullFileSystem, pszKV1Path))
 	{
-		Warning("Failed to load %s\n", pszPath);
-		return;
+		Warning("Failed to load %s, attempting to load json playerclass config\n", pszKV1Path);
+		bUsingKV1Config = false;
 	}
 
-	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+	json jPlayerClasses;
+
+	if (bUsingKV1Config)
+		jPlayerClasses = KV1PlayerClassConfigToJson(pKV);
+	else
 	{
-		bool bHuman = !V_strcmp(pKey->GetName(), "Human");
+		const char *pszJsonPath = "addons/cs2fixes/configs/zr/playerclass.json";
+		char szPath[MAX_PATH];
+		V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
+		std::ifstream file(szPath);
+
+		if (!file.is_open())
+		{
+			Warning("Failed to load %s\n", pszJsonPath);
+			file.close();
+			return;
+		}
+
+		jPlayerClasses = json::parse(file, nullptr, false, true);
+		file.close();
+	}
+	
+	for (auto& [szTeamName, jTeamClasses] : jPlayerClasses.items())
+	{
+		bool bHuman = !V_strcmp(szTeamName.c_str(), "Human");
 		if (bHuman)
 			Message("Human Classes:\n");
 		else
 			Message("Zombie Classes:\n");
-		
-		for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
-		{
-			bool bEnabled = pSubKey->GetBool("enabled", false);
-			bool bTeamDefault = pSubKey->GetBool("team_default", false);
 
-			const char *pszBase = pSubKey->GetString("base", nullptr);
-			const char *pszClassName = pSubKey->GetName();
+		for (auto& [szClassName, jClass] : jTeamClasses.items())
+		{
+			bool bEnabled = jClass.contains("enabled") ? jClass["enabled"].get<bool>() : false;
+			bool bTeamDefault = jClass.contains("team_default") ? jClass["team_default"].get<bool>() : false;
+
+			std::string szBase = jClass.contains("base") ? jClass["base"].get<std::string>() : "";
 
 			bool bMissingKey = false;
-			// if (!pSubKey->FindKey("enabled"))
-			// {
-			// 	Warning("%s has unspecified keyvalue: enabled\n", pszClassName);
-			// 	bMissingKey = true;
-			// }
 
-			// if (!bEnabled)
-			// 	continue;
-				
-			if (!pSubKey->FindKey("team_default"))
+			if (!jClass.contains("team_default"))
 			{
-				Warning("%s has unspecified keyvalue: team_default\n", pszClassName);
+				Warning("%s has unspecified keyvalue: team_default\n", szClassName);
 				bMissingKey = true;
 			}
 
 			// check everything if no base class
-			if (!pszBase)
+			if (szBase.empty())
 			{
-				if (!pSubKey->FindKey("health"))
+				if (!jClass.contains("health"))
 				{
-					Warning("%s has unspecified keyvalue: health\n", pszClassName);
+					Warning("%s has unspecified keyvalue: health\n", szClassName);
 					bMissingKey = true;
 				}
-				if (!pSubKey->FindKey("model"))
+				if (!jClass.contains("model"))
 				{
-					Warning("%s has unspecified keyvalue: model\n", pszClassName);
+					Warning("%s has unspecified keyvalue: model\n", szClassName);
 					bMissingKey = true;
 				}
-				if (!pSubKey->FindKey("skin"))
+				if (!jClass.contains("skin"))
 				{
-					Warning("%s has unspecified keyvalue: skin\n", pszClassName);
+					Warning("%s has unspecified keyvalue: skin\n", szClassName);
 					bMissingKey = true;
 				}
-				if (!pSubKey->FindKey("color"))
+				if (!jClass.contains("color"))
 				{
-					Warning("%s has unspecified keyvalue: color\n", pszClassName);
+					Warning("%s has unspecified keyvalue: color\n", szClassName);
 					bMissingKey = true;
 				}
-				if (!pSubKey->FindKey("scale"))
+				if (!jClass.contains("scale"))
 				{
-					Warning("%s has unspecified keyvalue: scale\n", pszClassName);
+					Warning("%s has unspecified keyvalue: scale\n", szClassName);
 					bMissingKey = true;
 				}
-				if (!pSubKey->FindKey("speed"))
+				if (!jClass.contains("speed"))
 				{
-					Warning("%s has unspecified keyvalue: speed\n", pszClassName);
+					Warning("%s has unspecified keyvalue: speed\n", szClassName);
 					bMissingKey = true;
 				}
-				if (!pSubKey->FindKey("gravity"))
+				if (!jClass.contains("gravity"))
 				{
-					Warning("%s has unspecified keyvalue: gravity\n", pszClassName);
+					Warning("%s has unspecified keyvalue: gravity\n", szClassName);
 					bMissingKey = true;
 				}
-				if (!pSubKey->FindKey("admin_flag"))
+				if (!jClass.contains("admin_flag"))
 				{
-					Warning("%s has unspecified keyvalue: admin_flag\n", pszClassName);
+					Warning("%s has unspecified keyvalue: admin_flag\n", szClassName);
 					bMissingKey = true;
 				}
 			}
@@ -210,52 +340,52 @@ void CZRPlayerClassManager::LoadPlayerClass()
 			if (bHuman)
 			{
 				ZRHumanClass *pHumanClass;
-				if (pszBase)
+				if (!szBase.empty())
 				{
-					ZRHumanClass *pBaseHumanClass = GetHumanClass(pszBase);
+					ZRHumanClass *pBaseHumanClass = GetHumanClass(szBase.c_str());
 					if (pBaseHumanClass)
 					{
 						pHumanClass = new ZRHumanClass(pBaseHumanClass);
-						pHumanClass->Override(pSubKey);
+						pHumanClass->Override(jClass, szClassName);
 					}
 					else
 					{
-						Warning("Could not find specified base \"%s\" for %s!!!\n", pszBase, pszClassName);
+						Warning("Could not find specified base \"%s\" for %s!!!\n", szBase, szClassName);
 						continue;
 					}
 				}
 				else
-					pHumanClass = new ZRHumanClass(pSubKey);
+					pHumanClass = new ZRHumanClass(jClass, szClassName);
 
-				m_HumanClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pHumanClass);
+				m_HumanClassMap.Insert(hash_32_fnv1a_const(szClassName.c_str()), pHumanClass);
 
 				if (bTeamDefault)
 					m_vecHumanDefaultClass.AddToTail(pHumanClass);
-				
+
 				pHumanClass->PrintInfo();
 			}
-			else 
+			else
 			{
 				ZRZombieClass *pZombieClass;
-				if (pszBase)
+				if (!szBase.empty())
 				{
-					ZRZombieClass *pBaseZombieClass = GetZombieClass(pszBase);
+					ZRZombieClass *pBaseZombieClass = GetZombieClass(szBase.c_str());
 					if (pBaseZombieClass)
 					{
 						pZombieClass = new ZRZombieClass(pBaseZombieClass);
-						pZombieClass->Override(pSubKey);
+						pZombieClass->Override(jClass, szClassName);
 					}
 					else
 					{
-						Warning("Could not find specified base \"%s\" for %s!!!\n", pszBase, pszClassName);
+						Warning("Could not find specified base \"%s\" for %s!!!", szBase, szClassName);
 						continue;
 					}
 				}
 				else
-					pZombieClass = new ZRZombieClass(pSubKey);
-
-				m_ZombieClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pZombieClass);
-				if (pSubKey->GetBool("team_default", false))
+					pZombieClass = new ZRZombieClass(jClass, szClassName);
+				
+				m_ZombieClassMap.Insert(hash_32_fnv1a_const(szClassName.c_str()), pZombieClass);
+				if (bTeamDefault)
 					m_vecZombieDefaultClass.AddToTail(pZombieClass);
 				
 				pZombieClass->PrintInfo();
