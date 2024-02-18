@@ -59,9 +59,9 @@ static void AddOutputCustom_Origin(Z_CBaseEntity*                  pInstance,
                                    CEntityInstance*                pCaller,
                                    const std::vector<std::string>& vecArgs)
 {
-    Vector origin(clamp(Q_atof(vecArgs[1].c_str()), -25000.f, 25000.f),
-                  clamp(Q_atof(vecArgs[2].c_str()), -25000.f, 25000.f),
-                  clamp(Q_atof(vecArgs[3].c_str()), -25000.f, 25000.f));
+    Vector origin(clamp(Q_atof(vecArgs[1].c_str()), -16384.f, 16384.f),
+                  clamp(Q_atof(vecArgs[2].c_str()), -16384.f, 16384.f),
+                  clamp(Q_atof(vecArgs[3].c_str()), -16384.f, 16384.f));
     pInstance->Teleport(&origin, nullptr, nullptr);
     Msg("SetOrigin %f %f %f for %s", origin.x, origin.y, origin.z, pInstance->GetName());
 }
@@ -157,7 +157,6 @@ static void AddOutputCustom_BaseVelocity(Z_CBaseEntity*                  pInstan
 }
 
 static void AddOutputCustom_Target(Z_CBaseEntity* pInstance,
-
                                    CEntityInstance*                pActivator,
                                    CEntityInstance*                pCaller,
                                    const std::vector<std::string>& vecArgs)

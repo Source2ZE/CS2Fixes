@@ -394,7 +394,11 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 	if (g_bEnableZR)
 		ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 
-    if ((!V_strcasecmp(pInputName->String(), "CustomAddOutput") || !V_strcasecmp(pInputName->String(), "KeyValues")) &&
+    if ((!V_strcasecmp(pInputName->String(), "CustomAddOutput")
+         || !V_strcasecmp(pInputName->String(), "KeyValues")
+         || !V_strcasecmp(pInputName->String(), "AddKeyValue")
+         || !V_strcasecmp(pInputName->String(), "SetKeyValue"))
+        &&
         (value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) &&
         reinterpret_cast<const char *>(value)) // always const char*, even if it's FIELD_STRING (that is bug string from lua 'EntFire')
         return CustomIO_HandleInput(pThis->m_pInstance, reinterpret_cast<const char *>(value), pActivator, pCaller);
