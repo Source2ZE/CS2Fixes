@@ -50,8 +50,8 @@ static void AddOutputCustom_Targetname(Z_CBaseEntity*                  pInstance
                                        CEntityInstance*                pCaller,
                                        const std::vector<std::string>& vecArgs)
 {
-    addresses::CEntityIdentity_SetEntityName(reinterpret_cast<CEntityIdentity*>(pInstance), vecArgs[1].c_str());
-    Msg("SetName %s to %d", vecArgs[1].c_str(), pInstance->GetHandle().GetEntryIndex());
+    addresses::CEntityIdentity_SetEntityName(pInstance->m_pEntity, vecArgs[1].c_str());
+    Message("SetName %s to %d", vecArgs[1].c_str(), pInstance->GetHandle().GetEntryIndex());
 }
 
 static void AddOutputCustom_Origin(Z_CBaseEntity*                  pInstance,
@@ -63,7 +63,7 @@ static void AddOutputCustom_Origin(Z_CBaseEntity*                  pInstance,
                   clamp(Q_atof(vecArgs[2].c_str()), -16384.f, 16384.f),
                   clamp(Q_atof(vecArgs[3].c_str()), -16384.f, 16384.f));
     pInstance->Teleport(&origin, nullptr, nullptr);
-    Msg("SetOrigin %f %f %f for %s", origin.x, origin.y, origin.z, pInstance->GetName());
+    Message("SetOrigin %f %f %f for %s", origin.x, origin.y, origin.z, pInstance->GetName());
 }
 
 static void AddOutputCustom_Angles(Z_CBaseEntity*                  pInstance,
@@ -75,7 +75,7 @@ static void AddOutputCustom_Angles(Z_CBaseEntity*                  pInstance,
                   clamp(Q_atof(vecArgs[1].c_str()), -360.f, 360.f),
                   clamp(Q_atof(vecArgs[2].c_str()), -360.f, 360.f));
     pInstance->Teleport(nullptr, &angles, nullptr);
-    Msg("SetAngles %f %f %f for %s", angles.x, angles.y, angles.z, pInstance->GetName());
+    Message("SetAngles %f %f %f for %s", angles.x, angles.y, angles.z, pInstance->GetName());
 }
 
 static void AddOutputCustom_MaxHealth(Z_CBaseEntity*                  pInstance,
@@ -84,7 +84,7 @@ static void AddOutputCustom_MaxHealth(Z_CBaseEntity*                  pInstance,
                                       const std::vector<std::string>& vecArgs)
 {
     pInstance->m_iMaxHealth(clamp(Q_atoi(vecArgs[1].c_str()), 1, 99999999));
-    Msg("SetMaxHealth %d for %s", pInstance->m_iMaxHealth, pInstance->GetName());
+    Message("SetMaxHealth %d for %s", pInstance->m_iMaxHealth, pInstance->GetName());
 }
 
 static void AddOutputCustom_Health(Z_CBaseEntity*                  pInstance,
@@ -94,21 +94,7 @@ static void AddOutputCustom_Health(Z_CBaseEntity*                  pInstance,
 {
     const auto value = clamp(Q_atoi(vecArgs[1].c_str()), 1, 99999999);
     pInstance->m_iHealth(value);
-    Msg("SetHealth %d for %s", pInstance->m_iHealth, pInstance->GetName());
-}
-
-static void AddOutputCustom_Solid(Z_CBaseEntity*                  pInstance,
-                                  CEntityInstance*                pActivator,
-                                  CEntityInstance*                pCaller,
-                                  const std::vector<std::string>& vecArgs)
-{
-    const auto value = clamp(Q_atoi(vecArgs[1].c_str()), SOLID_NONE, SOLID_VPHYSICS);
-    if (const auto pCollision = pInstance->m_pCollision())
-    {
-        pCollision->m_nSolidType(static_cast<SolidType_t>(value));
-        pInstance->CollisionRulesChanged();
-        Msg("SetSolid %d for %s", pInstance->m_iHealth, pInstance->GetName());
-    }
+    Message("SetHealth %d for %s", pInstance->m_iHealth, pInstance->GetName());
 }
 
 static void AddOutputCustom_MoveType(Z_CBaseEntity*                  pInstance,
@@ -124,7 +110,7 @@ static void AddOutputCustom_MoveType(Z_CBaseEntity*                  pInstance,
         pInstance->SetMoveType(type);
         if (type == MOVETYPE_NONE) // stop manually!
             pInstance->Teleport(nullptr, nullptr, &stopVelocity);
-        Msg("SetMoveType %d for %s", type, pInstance->GetName());
+        Message("SetMoveType %d for %s", type, pInstance->GetName());
     }
 }
 
@@ -138,10 +124,10 @@ static void AddOutputCustom_EntityTemplate(Z_CBaseEntity*                  pInst
         const auto pEntity = reinterpret_cast<CEnvEntityMaker*>(pInstance);
         const auto pValue  = g_pEntitySystem->AllocPooledString(vecArgs[1].c_str());
         pEntity->m_iszTemplate(pValue);
-        Msg("Set EntityTemplate to %s for %s\n", pValue.String(), pInstance->GetName());
+        Message("Set EntityTemplate to %s for %s\n", pValue.String(), pInstance->GetName());
     }
     else
-        Warning("Only env_entity_maker is supported\n");
+        Message("Only env_entity_maker is supported\n");
 }
 
 static void AddOutputCustom_BaseVelocity(Z_CBaseEntity*                  pInstance,
@@ -153,7 +139,7 @@ static void AddOutputCustom_BaseVelocity(Z_CBaseEntity*                  pInstan
                           clamp(Q_atof(vecArgs[2].c_str()), -3500.f, 3500.f),
                           clamp(Q_atof(vecArgs[3].c_str()), -3500.f, 3500.f));
     pInstance->m_vecBaseVelocity(velocity);
-    Msg("SetOrigin %f %f %f for %s", velocity.x, velocity.y, velocity.z, pInstance->GetName());
+    Message("SetOrigin %f %f %f for %s", velocity.x, velocity.y, velocity.z, pInstance->GetName());
 }
 
 static void AddOutputCustom_Target(Z_CBaseEntity* pInstance,
@@ -165,7 +151,7 @@ static void AddOutputCustom_Target(Z_CBaseEntity* pInstance,
     {
         const auto pEntity = pInstance;
         pEntity->m_target(pTarget->m_pEntity->m_name);
-        Msg("Set Target to %s for %s\n", pTarget->m_pEntity->m_name.String(), pEntity->m_pEntity->m_name.String());
+        Message("Set Target to %s for %s\n", pTarget->m_pEntity->m_name.String(), pEntity->m_pEntity->m_name.String());
     }
 }
 
@@ -181,7 +167,7 @@ static void AddOutputCustom_FilterName(Z_CBaseEntity*                  pInstance
             const auto pTrigger = reinterpret_cast<CBaseTrigger*>(pInstance);
             pTrigger->m_iFilterName(pTarget->GetName());
             pTrigger->m_hFilter(pTarget->GetRefEHandle());
-            Msg("Set FilterName to %s for %s\n", pTarget->GetName(), pTrigger->GetName());
+            Message("Set FilterName to %s for %s\n", pTarget->GetName(), pTrigger->GetName());
         }
     }
 }
@@ -196,7 +182,7 @@ static void AddOutputCustom_Force(Z_CBaseEntity*                  pInstance,
     if (V_strcasecmp(pEntity->GetClassname(), "phys_thruster") == 0)
     {
         pEntity->m_force(value);
-        Msg("Set force to %f for %s\n", value, pEntity->GetName());
+        Message("Set force to %f for %s\n", value, pEntity->GetName());
     }
 }
 
@@ -206,7 +192,6 @@ const std::vector<AddOutputInfo_t> s_AddOutputHandlers = {
     {{"angles", 4},         AddOutputCustom_Angles        },
     {{"max_health", 2},     AddOutputCustom_MaxHealth     },
     {{"health", 2},         AddOutputCustom_Health        },
-    {{"solid", 2},          AddOutputCustom_Solid         },
     {{"movetype", 2},       AddOutputCustom_MoveType      },
     {{"EntityTemplate", 2}, AddOutputCustom_EntityTemplate},
     {{"basevelocity", 4},   AddOutputCustom_BaseVelocity  },
@@ -244,9 +229,10 @@ bool CustomIO_HandleInput(CEntityInstance* pInstance,
                 split.size() == input.m_nParts)
             {
                 handler(reinterpret_cast<Z_CBaseEntity*>(pInstance), pActivator, pCaller, split);
+                return true;
             }
 
-            return true;
+            break;
         }
     }
 
