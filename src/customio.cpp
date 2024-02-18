@@ -84,7 +84,8 @@ static void AddOutputCustom_MaxHealth(Z_CBaseEntity*                  pInstance,
                                       const std::vector<std::string>& vecArgs)
 {
     pInstance->m_iMaxHealth(clamp(Q_atoi(vecArgs[1].c_str()), 1, 99999999));
-    Message("SetMaxHealth %d for %s", pInstance->m_iMaxHealth, pInstance->GetName());
+    const int m_iMaxHealth = pInstance->m_iMaxHealth;
+    Message("SetMaxHealth %d for %s", m_iMaxHealth, pInstance->GetName());
 }
 
 static void AddOutputCustom_Health(Z_CBaseEntity*                  pInstance,
@@ -94,7 +95,8 @@ static void AddOutputCustom_Health(Z_CBaseEntity*                  pInstance,
 {
     const auto value = clamp(Q_atoi(vecArgs[1].c_str()), 1, 99999999);
     pInstance->m_iHealth(value);
-    Message("SetHealth %d for %s", pInstance->m_iHealth, pInstance->GetName());
+    const int m_iHealth = pInstance->m_iHealth;
+    Message("SetHealth %d for %s", m_iHealth, pInstance->GetName());
 }
 
 static void AddOutputCustom_MoveType(Z_CBaseEntity*                  pInstance,
