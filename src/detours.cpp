@@ -125,7 +125,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 		return;
 	}
 
-	MoveType_t movetype = pOther->m_MoveType();
+	MoveType_t movetype = pOther->m_nActualMoveType();
 
 	// VPhysics handling doesn't need any changes
 	if (movetype == MOVETYPE_VPHYSICS)
