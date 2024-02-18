@@ -84,19 +84,69 @@ FAKE_FLOAT_CVAR(zr_respawn_delay, "Time before a zombie is automatically respawn
 FAKE_INT_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, CS_TEAM_SPECTATOR, false)
 FAKE_INT_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, 20, false)
 
+CON_COMMAND_F(c_reload_zrclasses, "Reload ZR player classes", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	g_pZRPlayerClassManager->LoadPlayerClass();
+}
+
+ZRModelEntry::ZRModelEntry(ZRModelEntry *modelEntry) :
+	szModelPath(modelEntry->szModelPath),
+	szColor(modelEntry->szColor)
+	{
+		vecSkin.Purge();
+		FOR_EACH_VEC(modelEntry->vecSkin, i)
+		{
+			vecSkin.AddToTail(modelEntry->vecSkin[i]);
+		}
+	};
+
+ZRModelEntry::ZRModelEntry(json jModelEntry) :
+	szModelPath(jModelEntry["modelname"].get<std::string>()),
+	szColor(jModelEntry.contains("color") ? jModelEntry["color"].get<std::string>() : "255 255 255")
+	{
+		vecSkin.Purge();
+
+		if (jModelEntry.contains("skin"))
+		{
+			if (jModelEntry["skin"].size() == 1) // single int
+			{
+				vecSkin.AddToTail(jModelEntry["skin"].get<int>());
+			}
+			else if (jModelEntry["skin"].size() > 1) // array of ints
+			{
+				for (auto& [key, skinIndex] : jModelEntry["skin"].items())
+					vecSkin.AddToTail(skinIndex);
+			}
+			else // negative value for some reason?
+			{	
+				Message("Negative skin index in ModelEntry with model %s, defaulting to 0\n", szModelPath.c_str());
+				vecSkin.AddToTail(0);
+			}
+			return;
+		}
+		vecSkin.AddToTail(0); // key missing, set default
+	};
+
+// this constructor is only used to create base class, which is required to have all values
 ZRClass::ZRClass(json jKeys, std::string szClassname) :
-	bEnabled(jKeys.contains("enabled") ? jKeys["enabled"].get<bool>() : false),
+	bEnabled(jKeys["enabled"].get<bool>()),
 	szClassName(szClassname),
-	iHealth(jKeys.contains("health") ? jKeys["health"].get<int>() : 0),
-	szModelPath(jKeys.contains("model") ? jKeys["model"].get<std::string>() : ""),
-	iSkin(jKeys.contains("skin") ? jKeys["skin"].get<int>() : 0),
-	szColor(jKeys.contains("color") ? jKeys["color"].get<std::string>() : ""),
-	flScale(jKeys.contains("scale") ? jKeys["scale"].get<float>() : 0),
-	flSpeed(jKeys.contains("speed") ? jKeys["speed"].get<float>() : 0),
-	flGravity(jKeys.contains("gravity") ? jKeys["gravity"].get<float>() : 0),
+	iHealth(jKeys["health"].get<int>()),
+	flScale(jKeys["scale"].get<float>()),
+	flSpeed(jKeys["speed"].get<float>()),
+	flGravity(jKeys["gravity"].get<float>()),
 	iAdminFlag(g_pAdminSystem->ParseFlags(
-		jKeys.contains("admin_flag") ? jKeys["admin_flag"].get<std::string>().c_str() : ""
-	)){};
+		jKeys["admin_flag"].get<std::string>().c_str()
+	))
+	{
+		vecModels.Purge();
+		
+		for (auto& [key, jModelEntry] : jKeys["model"].items())
+		{
+			ZRModelEntry *modelEntry = new ZRModelEntry(jModelEntry);
+			vecModels.AddToTail(modelEntry);
+		}
+	};
 
 void ZRClass::Override(json jKeys, std::string szClassname)
 {
@@ -105,12 +155,6 @@ void ZRClass::Override(json jKeys, std::string szClassname)
 		bEnabled = jKeys["enabled"].get<bool>();
 	if (jKeys.contains("health"))
 		iHealth = jKeys["health"].get<int>();
-	if (jKeys.contains("model"))
-		szModelPath = jKeys["model"].get<std::string>();
-	if (jKeys.contains("skin"))
-		iSkin = jKeys["skin"].get<int>();
-	if (jKeys.contains("color"))
-		szColor = jKeys["color"].get<std::string>();
 	if (jKeys.contains("scale"))
 		flScale = jKeys["scale"].get<float>();
 	if (jKeys.contains("speed"))
@@ -121,6 +165,16 @@ void ZRClass::Override(json jKeys, std::string szClassname)
 		iAdminFlag = g_pAdminSystem->ParseFlags(
 			jKeys["admin_flag"].get<std::string>().c_str()
 		);
+
+	if (!jKeys.contains("model") || jKeys["model"].empty())
+		return;
+	vecModels.Purge();
+
+	for (auto& [key, jModelEntry] : jKeys["model"].items())
+	{
+		ZRModelEntry *modelEntry = new ZRModelEntry(jModelEntry);
+		vecModels.AddToTail(modelEntry);
+	}
 }
 
 ZRHumanClass::ZRHumanClass(json jKeys, std::string szClassname) : ZRClass(jKeys, szClassname){};
@@ -158,25 +212,33 @@ void CZRPlayerClassManager::PrecacheModels(IEntityResourceManifest* pResourceMan
 {
 	FOR_EACH_MAP_FAST(m_ZombieClassMap, i)
 	{
-		pResourceManifest->AddResource(m_ZombieClassMap[i]->szModelPath.c_str());
+		FOR_EACH_VEC(m_ZombieClassMap[i]->vecModels, j)
+		{
+			pResourceManifest->AddResource(m_ZombieClassMap[i]->vecModels[j]->szModelPath.c_str());
+		}
 	}
 	FOR_EACH_MAP_FAST(m_HumanClassMap, i)
 	{
-		pResourceManifest->AddResource(m_HumanClassMap[i]->szModelPath.c_str());
+		FOR_EACH_VEC(m_HumanClassMap[i]->vecModels, j)
+		{
+			pResourceManifest->AddResource(m_HumanClassMap[i]->vecModels[j]->szModelPath.c_str());
+		}
 	}
 }
 
-json CZRPlayerClassManager::KV1PlayerClassConfigToJson(KeyValues* pKV)
+ordered_json CZRPlayerClassManager::KV1PlayerClassConfigToJson(KeyValues* pKV)
 {
-	json jPlayerClasses;
+	ordered_json jPlayerClasses;
 
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
-		json jTeamClasses;
+		ordered_json jTeamClasses;
+
+		bool bHuman = !V_strcmp(pKey->GetName(), "Human");
 
 		for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
 		{
-			json jClass;
+			json jClass, jModelEntry;
 
 			if (pSubKey->FindKey("enabled"))
 				jClass["enabled"] = pSubKey->GetBool("enabled", false);
@@ -188,13 +250,13 @@ json CZRPlayerClassManager::KV1PlayerClassConfigToJson(KeyValues* pKV)
 				jClass["health"] = pSubKey->GetInt("health", 0);
 
 			if (pSubKey->FindKey("model"))
-				jClass["model"] = std::string(pSubKey->GetString("model", ""));
+				jModelEntry["modelname"] = std::string(pSubKey->GetString("model", ""));
 
 			if (pSubKey->FindKey("skin"))
-				jClass["skin"] = pSubKey->GetInt("skin", 0);
+				jModelEntry["skin"] = pSubKey->GetInt("skin", 0);
 
 			if (pSubKey->FindKey("color"))
-				jClass["color"] = std::string(pSubKey->GetString("color", ""));
+				jModelEntry["color"] = std::string(pSubKey->GetString("color", ""));
 
 			if (pSubKey->FindKey("scale"))
 				jClass["scale"] = pSubKey->GetFloat("scale", 0.0);
@@ -211,10 +273,17 @@ json CZRPlayerClassManager::KV1PlayerClassConfigToJson(KeyValues* pKV)
 			if (pSubKey->FindKey("base"))
 				jClass["base"] = std::string(pSubKey->GetString("base", ""));
 			
+			if (!bHuman && pSubKey->FindKey("health_regen_count"))
+				jClass["health_regen_count"] = pSubKey->GetInt("health_regen_count", 0);
+			
+			if (!bHuman && pSubKey->FindKey("health_regen_interval"))
+				jClass["health_regen_interval"] = pSubKey->GetFloat("health_regen_interval", 0.0);
+
+			jClass["model"].push_back(jModelEntry);
+
 			jTeamClasses[pSubKey->GetName()] = jClass;
 		}
 
-		bool bHuman = !V_strcmp(pKey->GetName(), "Human");
 		if (bHuman)
 			jPlayerClasses["Human"] = jTeamClasses;
 		else
@@ -241,11 +310,11 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 	if (!pKV->LoadFromFile(g_pFullFileSystem, pszKV1Path))
 	{
-		Warning("Failed to load %s, attempting to load json playerclass config\n", pszKV1Path);
+		Message("Failed to load %s, attempting to load json playerclass config\n", pszKV1Path);
 		bUsingKV1Config = false;
 	}
 
-	json jPlayerClasses;
+	ordered_json jPlayerClasses;
 
 	if (bUsingKV1Config)
 		jPlayerClasses = KV1PlayerClassConfigToJson(pKV);
@@ -263,7 +332,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 			return;
 		}
 
-		jPlayerClasses = json::parse(file, nullptr, false, true);
+		jPlayerClasses = ordered_json::parse(file, nullptr, false, true);
 		file.close();
 	}
 	
@@ -298,21 +367,6 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					Warning("%s has unspecified keyvalue: health\n", szClassName);
 					bMissingKey = true;
 				}
-				if (!jClass.contains("model"))
-				{
-					Warning("%s has unspecified keyvalue: model\n", szClassName);
-					bMissingKey = true;
-				}
-				if (!jClass.contains("skin"))
-				{
-					Warning("%s has unspecified keyvalue: skin\n", szClassName);
-					bMissingKey = true;
-				}
-				if (!jClass.contains("color"))
-				{
-					Warning("%s has unspecified keyvalue: color\n", szClassName);
-					bMissingKey = true;
-				}
 				if (!jClass.contains("scale"))
 				{
 					Warning("%s has unspecified keyvalue: scale\n", szClassName);
@@ -333,7 +387,29 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					Warning("%s has unspecified keyvalue: admin_flag\n", szClassName);
 					bMissingKey = true;
 				}
+				// equivalent of model check
+				if (!jClass.contains("model"))
+				{
+					Warning("%s has unspecified keyvalue: model\n", szClassName);
+					continue;
+				}
+
+				for (int i = jClass["model"].size() - 1; i >= 0; i--)
+				{
+					if (!jClass["model"][i].contains("modelname"))
+					{
+						Warning("%s has a model entry with no modelname, skipping model entry\n", szClassName);
+						jClass["model"].erase(i);
+					}
+				}
+
+				if (jClass["model"].empty())
+				{
+					Warning("%s has no valid model entries!\n", szClassName);
+					continue;
+				}
 			}
+
 			if (bMissingKey)
 				continue;
 
@@ -346,6 +422,18 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					if (pBaseHumanClass)
 					{
 						pHumanClass = new ZRHumanClass(pBaseHumanClass);
+
+						// if a value in json ModelEntry is missing at this point, it's KV1 config and that value should be inherited from base class
+						// in KV1 config, there is only one ModelEntry per class
+						if (bUsingKV1Config && !jClass["model"][0].contains("modelname"))
+							jClass["model"][0]["modelname"] = pHumanClass->vecModels[0]->szModelPath;
+
+						if (bUsingKV1Config && !jClass["model"][0].contains("color"))
+							jClass["model"][0]["color"] = pHumanClass->vecModels[0]->szColor;
+
+						if (bUsingKV1Config && !jClass["model"][0].contains("skin"))
+							jClass["model"][0]["skin"] = pHumanClass->vecModels[0]->vecSkin[0];
+
 						pHumanClass->Override(jClass, szClassName);
 					}
 					else
@@ -373,6 +461,17 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					if (pBaseZombieClass)
 					{
 						pZombieClass = new ZRZombieClass(pBaseZombieClass);
+
+						// same thing as with human classes
+						if (bUsingKV1Config && !jClass["model"][0].contains("modelname"))
+							jClass["model"][0]["modelname"] = pZombieClass->vecModels[0]->szModelPath;
+
+						if (bUsingKV1Config && !jClass["model"][0].contains("color"))
+							jClass["model"][0]["color"] = pZombieClass->vecModels[0]->szColor;
+
+						if (bUsingKV1Config && !jClass["model"][0].contains("skin"))
+							jClass["model"][0]["skin"] = pZombieClass->vecModels[0]->vecSkin[0];
+
 						pZombieClass->Override(jClass, szClassName);
 					}
 					else
@@ -405,14 +504,15 @@ void split(const std::string& s, char delim, Out result)
 
 void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn)
 {
+	ZRModelEntry *pModelEntry = pClass->GetRandomModelEntry();
 	Color clrRender;
-	V_StringToColor(pClass->szColor.c_str(), clrRender);
+	V_StringToColor(pModelEntry->szColor.c_str(), clrRender);
 
 	pPawn->m_iMaxHealth = pClass->iHealth;
 	pPawn->m_iHealth = pClass->iHealth;
-	pPawn->SetModel(pClass->szModelPath.c_str());
+	pPawn->SetModel(pModelEntry->szModelPath.c_str());
 	pPawn->m_clrRender = clrRender;
-	pPawn->AcceptInput("Skin", pClass->iSkin);
+	pPawn->AcceptInput("Skin", pModelEntry->GetRandomSkin());
 	pPawn->m_flVelocityModifier = pClass->flSpeed;
 	pPawn->m_flGravityScale = pClass->flGravity;
 
