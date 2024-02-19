@@ -124,8 +124,7 @@ static void AddOutputCustom_Health(Z_CBaseEntity*                  pInstance,
                                    CEntityInstance*                pCaller,
                                    const std::vector<std::string>& vecArgs)
 {
-    const variant_t v(vecArgs[1].c_str());
-    pInstance->AcceptInput("SetHealth", v);
+    pInstance->AcceptInput("SetHealth", vecArgs[1].c_str());
 
 #ifdef _DEBUG
     const int m_iHealth = pInstance->m_iHealth;
