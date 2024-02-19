@@ -355,7 +355,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 			if (!jClass.contains("team_default"))
 			{
-				Warning("%s has unspecified keyvalue: team_default\n", szClassName);
+				Warning("%s has unspecified keyvalue: team_default\n", szClassName.c_str());
 				bMissingKey = true;
 			}
 
@@ -364,33 +364,33 @@ void CZRPlayerClassManager::LoadPlayerClass()
 			{
 				if (!jClass.contains("health"))
 				{
-					Warning("%s has unspecified keyvalue: health\n", szClassName);
+					Warning("%s has unspecified keyvalue: health\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 				if (!jClass.contains("scale"))
 				{
-					Warning("%s has unspecified keyvalue: scale\n", szClassName);
+					Warning("%s has unspecified keyvalue: scale\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 				if (!jClass.contains("speed"))
 				{
-					Warning("%s has unspecified keyvalue: speed\n", szClassName);
+					Warning("%s has unspecified keyvalue: speed\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 				if (!jClass.contains("gravity"))
 				{
-					Warning("%s has unspecified keyvalue: gravity\n", szClassName);
+					Warning("%s has unspecified keyvalue: gravity\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 				if (!jClass.contains("admin_flag"))
 				{
-					Warning("%s has unspecified keyvalue: admin_flag\n", szClassName);
+					Warning("%s has unspecified keyvalue: admin_flag\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 				// equivalent of model check
 				if (!jClass.contains("model"))
 				{
-					Warning("%s has unspecified keyvalue: model\n", szClassName);
+					Warning("%s has unspecified keyvalue: model\n", szClassName.c_str());
 					continue;
 				}
 
@@ -398,14 +398,14 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				{
 					if (!jClass["model"][i].contains("modelname"))
 					{
-						Warning("%s has a model entry with no modelname, skipping model entry\n", szClassName);
+						Warning("%s has a model entry with no modelname, skipping model entry\n", szClassName.c_str());
 						jClass["model"].erase(i);
 					}
 				}
 
 				if (jClass["model"].empty())
 				{
-					Warning("%s has no valid model entries!\n", szClassName);
+					Warning("%s has no valid model entries!\n", szClassName.c_str());
 					continue;
 				}
 			}
@@ -438,7 +438,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					}
 					else
 					{
-						Warning("Could not find specified base \"%s\" for %s!!!\n", szBase, szClassName);
+						Warning("Could not find specified base \"%s\" for %s!!!\n", szBase.c_str(), szClassName.c_str());
 						continue;
 					}
 				}
@@ -476,7 +476,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					}
 					else
 					{
-						Warning("Could not find specified base \"%s\" for %s!!!", szBase, szClassName);
+						Warning("Could not find specified base \"%s\" for %s!!!", szBase.c_str(), szClassName.c_str());
 						continue;
 					}
 				}
