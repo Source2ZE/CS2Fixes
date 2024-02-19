@@ -601,8 +601,7 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 	if (g_sExtraAddon.empty())
 		RETURN_META_VALUE(MRES_IGNORED, true);
 
-	netadr_t *adr = pClient->GetRemoteAddress();
-	Message("Client %lli, %i.%i.%i.%i", xuid, adr->ip[0], adr->ip[1], adr->ip[2], adr->ip[3]);
+	Message("Client %lli", xuid);
 
 	// Store the client's ID temporarily as they will get reconnected once the extra addon is sent
 	// This gets checked for in SendNetMessage so we don't repeatedly send the changelevel signon state

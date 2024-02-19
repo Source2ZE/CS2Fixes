@@ -66,7 +66,7 @@ ClientJoinInfo_t *GetPendingClient(uint64 steamid, int &index)
 	return nullptr;
 }
 
-ClientJoinInfo_t *GetPendingClient(CNetChan *pNetChan)
+ClientJoinInfo_t *GetPendingClient(INetChannel *pNetChan)
 {
 	CUtlVector<CServerSideClient *> *pClients = GetClientList();
 

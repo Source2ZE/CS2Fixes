@@ -461,7 +461,7 @@ void *FASTCALL Detour_HostStateRequest(void *a1, void **pRequest)
 
 extern double g_flUniversalTime;
 
-void FASTCALL Detour_SendNetMessage(CNetChan *pNetChan, INetworkSerializable *pNetMessage, void *pData, int a4)
+void FASTCALL Detour_SendNetMessage(INetChannel *pNetChan, INetworkSerializable *pNetMessage, void *pData, int a4)
 {
 	NetMessageInfo_t *info = pNetMessage->GetNetMessageInfo();
 
@@ -469,12 +469,7 @@ void FASTCALL Detour_SendNetMessage(CNetChan *pNetChan, INetworkSerializable *pN
 	if (info->m_MessageId != 7 || g_sExtraAddon.empty())
 		return SendNetMessage(pNetChan, pNetMessage, pData, a4);
 
-	netadr_t *adr = pNetChan->GetRemoteAddress();
 	ClientJoinInfo_t *pPendingClient = GetPendingClient(pNetChan);
-
-	CUtlString str;
-	info->m_pBinding->ToString(pData, str);
-	Message("Detour_SendNetMessage: Signon message sent to %i.%i.%i.%i:\n%s\n", adr->ip[0], adr->ip[1], adr->ip[2], adr->ip[3], str.Get());
 
 	if (pPendingClient)
 	{
