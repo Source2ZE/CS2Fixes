@@ -33,15 +33,16 @@
 struct ClientJoinInfo_t
 {
 	uint64 steamid;
-	uint32 ip32;
 	double signon_timestamp;
 };
 
+class CNetChan;
+
 extern CUtlVector<ClientJoinInfo_t> g_ClientsPendingAddon;
 
-void AddPendingClient(uint64 steamid, uint32 ip32);
-ClientJoinInfo_t *GetPendingClient(uint32 ip32);
+void AddPendingClient(uint64 steamid);
 ClientJoinInfo_t *GetPendingClient(uint64 steamid, int &index);
+ClientJoinInfo_t *GetPendingClient(CNetChan *pNetChan);
 
 enum class ETargetType {
 	NONE,

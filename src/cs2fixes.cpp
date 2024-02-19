@@ -528,13 +528,18 @@ void CS2Fixes::AllPluginsLoaded()
 	Message( "AllPluginsLoaded\n" );
 }
 
-CServerSideClient *GetClientBySlot(CPlayerSlot slot)
+CUtlVector<CServerSideClient *> *GetClientList()
 {
 	if (!g_pNetworkGameServer)
 		return nullptr;
 
 	static int offset = g_GameConfig->GetOffset("CNetworkGameServer_ClientList");
-	CUtlVector<CServerSideClient *> *pClients = (CUtlVector<CServerSideClient *> *)(&g_pNetworkGameServer[offset]);
+	return (CUtlVector<CServerSideClient *> *)(&g_pNetworkGameServer[offset]);
+}
+
+CServerSideClient *GetClientBySlot(CPlayerSlot slot)
+{
+	CUtlVector<CServerSideClient *> *pClients = GetClientList();
 
 	if (!pClients)
 		return nullptr;
@@ -599,10 +604,10 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 	netadr_t *adr = pClient->GetRemoteAddress();
 	Message("Client %lli, %i.%i.%i.%i", xuid, adr->ip[0], adr->ip[1], adr->ip[2], adr->ip[3]);
 
-	// Store the client's ID and IP temporarily as they will get reconnected once the extra addon is sent
+	// Store the client's ID temporarily as they will get reconnected once the extra addon is sent
 	// This gets checked for in SendNetMessage so we don't repeatedly send the changelevel signon state
 	// The only caveat to this is that there's no way for us to verify if the client has actually downloaded the extra addon,
-	// since they're fully disconnected while downloading it
+	// since they're fully disconnected while downloading it, so the best we can do is use a timeout interval
 	int index;
 	ClientJoinInfo_t *pPendingClient = GetPendingClient(xuid, index);
 	
@@ -610,7 +615,7 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 	{
 		// Client joined for the first time or after a timeout
 		Msg(" will reconnect for addon\n");
-		AddPendingClient(xuid, *(uint32*)adr->ip);
+		AddPendingClient(xuid);
 	}
 	else if ((g_flUniversalTime - pPendingClient->signon_timestamp) < g_flRejoinTimeout)
 	{

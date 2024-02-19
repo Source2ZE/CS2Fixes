@@ -470,8 +470,7 @@ void FASTCALL Detour_SendNetMessage(CNetChan *pNetChan, INetworkSerializable *pN
 		return SendNetMessage(pNetChan, pNetMessage, pData, a4);
 
 	netadr_t *adr = pNetChan->GetRemoteAddress();
-	uint32 ip32 = *(uint32*)adr->ip;
-	ClientJoinInfo_t *pPendingClient = GetPendingClient(ip32);
+	ClientJoinInfo_t *pPendingClient = GetPendingClient(pNetChan);
 
 	CUtlString str;
 	info->m_pBinding->ToString(pData, str);
