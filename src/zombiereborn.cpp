@@ -423,7 +423,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					{
 						pHumanClass = new ZRHumanClass(pBaseHumanClass);
 
-						// if a value in json ModelEntry is missing at this point, it's KV1 config and that value should be inherited from base class
+						// check for model entry values that should be inherited from base class
 						// in KV1 config, there is only one ModelEntry per class
 						if (bUsingKV1Config && !jClass["model"][0].contains("modelname"))
 							jClass["model"][0]["modelname"] = pHumanClass->vecModels[0]->szModelPath;
