@@ -244,8 +244,6 @@ int CGameConfig::HexStringToUint8Array(const char* hexString, uint8_t* byteArray
         }
     }
 
-    byteArray[byteCount] = '\0'; // Add a null-terminating character.
-
     return byteCount; // Return the number of bytes successfully converted.
 }
 
@@ -258,7 +256,7 @@ byte *CGameConfig::HexToByte(const char *src, size_t &length)
 	}
 
 	length = strlen(src) / 4;
-	uint8_t *dest = new uint8_t[length + 1];
+	uint8_t *dest = new uint8_t[length];
 	int byteCount = HexStringToUint8Array(src, dest, length);
 	if (byteCount <= 0)
 	{
