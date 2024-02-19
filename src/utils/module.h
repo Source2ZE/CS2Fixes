@@ -75,7 +75,7 @@ public:
 		for (size_t i = 0; i < m_size; i++)
 		{
 			size_t Matches = 0;
-			while (*(pMemory + i + Matches) == pData[Matches] || pData[Matches] == '\x2A')
+			while (Matches < iSigLength && *(pMemory + i + Matches) == pData[Matches] || pData[Matches] == '\x2A')
 			{
 				Matches++;
 				if (Matches == iSigLength)

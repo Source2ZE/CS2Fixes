@@ -258,7 +258,7 @@ byte *CGameConfig::HexToByte(const char *src, size_t &length)
 	}
 
 	length = strlen(src) / 4;
-	uint8_t *dest = new uint8_t[length];
+	uint8_t *dest = new uint8_t[length + 1];
 	int byteCount = HexStringToUint8Array(src, dest, length);
 	if (byteCount <= 0)
 	{
