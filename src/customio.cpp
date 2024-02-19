@@ -124,8 +124,9 @@ static void AddOutputCustom_Health(Z_CBaseEntity*                  pInstance,
                                    CEntityInstance*                pCaller,
                                    const std::vector<std::string>& vecArgs)
 {
-    const auto value = clamp(Q_atoi(vecArgs[1].c_str()), 1, 99999999);
-    pInstance->m_iHealth(value);
+    const variant_t v(vecArgs[1].c_str());
+    pInstance->AcceptInput("SetHealth", v);
+
 #ifdef _DEBUG
     const int m_iHealth = pInstance->m_iHealth;
     Message("SetHealth %d for %s", m_iHealth, pInstance->GetName());
@@ -176,9 +177,9 @@ static void AddOutputCustom_BaseVelocity(Z_CBaseEntity*                  pInstan
                                          CEntityInstance*                pCaller,
                                          const std::vector<std::string>& vecArgs)
 {
-    const Vector velocity(clamp(Q_atof(vecArgs[1].c_str()), -3500.f, 3500.f),
-                          clamp(Q_atof(vecArgs[2].c_str()), -3500.f, 3500.f),
-                          clamp(Q_atof(vecArgs[3].c_str()), -3500.f, 3500.f));
+    const Vector velocity(clamp(Q_atof(vecArgs[1].c_str()), -4096.f, 4096.f),
+                          clamp(Q_atof(vecArgs[2].c_str()), -4096.f, 4096.f),
+                          clamp(Q_atof(vecArgs[3].c_str()), -4096.f, 4096.f));
 
     pInstance->m_vecBaseVelocity(velocity);
 
