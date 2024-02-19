@@ -125,6 +125,7 @@ public:
 	SCHEMA_FIELD(float, m_flGravityScale)
 	SCHEMA_FIELD(float, m_flSpeed)
 	SCHEMA_FIELD(CUtlString, m_sUniqueHammerID);
+	SCHEMA_FIELD(CUtlSymbolLarge, m_target);
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 
@@ -204,6 +205,8 @@ public:
 		m_MoveType = nMoveType; // necessary to maintain client prediction
 		m_nActualMoveType = nMoveType;
 	}
+
+	const char* GetName() const { return m_pEntity->m_name.String(); }
 };
 
 class SpawnPoint : public Z_CBaseEntity

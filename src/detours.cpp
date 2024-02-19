@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023 Source2ZE
@@ -37,6 +37,7 @@
 #include "igameevents.h"
 #include "gameconfig.h"
 #include "zombiereborn.h"
+#include "customio.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -388,10 +389,21 @@ bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *p
 	return CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon);
 }
 
-void FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID)
+bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID)
 {
 	if (g_bEnableZR)
 		ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+
+    if (!V_strcasecmp(pInputName->String(), "KeyValues"))
+    {
+        if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+        {
+            // always const char*, even if it's FIELD_STRING (that is bug string from lua 'EntFire')
+            return CustomIO_HandleInput(pThis->m_pInstance, value->m_pszString, pActivator, pCaller);
+        }
+        Message("Invalid value type for input %s\n", pInputName->String());
+        return false;
+    }
 
 	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
