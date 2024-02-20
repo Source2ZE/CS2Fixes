@@ -396,8 +396,8 @@
 			}
 			"GetHammerUniqueId"
 			{
-				"windows"		"100"
-				"linux"			"99"
+				"windows"		"102"
+				"linux"			"101"
 			}
 			"CheckTransmitPlayerSlot"
 			{
