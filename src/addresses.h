@@ -32,6 +32,7 @@ namespace modules
 	inline CModule *schemasystem;
 	inline CModule *vscript;
 	inline CModule *client;
+	inline CModule* networksystem;
 #ifdef _WIN32
 	inline CModule *hammer;
 #endif

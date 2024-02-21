@@ -306,6 +306,7 @@ bool g_bEnableStopSound = false;
 
 FAKE_BOOL_CVAR(cs2f_stopsound_enable, "Whether to enable stopsound", g_bEnableStopSound, false, false)
 
+
 CON_COMMAND_CHAT(stopsound, "- toggle weapon sounds")
 {
 	if (!g_bEnableStopSound)

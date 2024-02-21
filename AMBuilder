@@ -3,97 +3,98 @@ import os
 
 MMSPlugin.plugin_name = 'cs2fixes'
 
-for sdk_name in MMSPlugin.sdks:
-  for cxx in MMSPlugin.all_targets:
-    sdk = MMSPlugin.sdks[sdk_name]
+for sdk_target in MMSPlugin.sdk_targets:
+  sdk = sdk_target.sdk
+  cxx = sdk_target.cxx
 
-    if not cxx.target.arch in sdk.platformSpec[cxx.target.platform]:
-      continue
+  binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
 
-    binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
+  if binary.compiler.family == 'gcc' or binary.compiler.family == 'clang':
+    binary.compiler.cxxflags += ['--std=c++17']
+  elif binary.compiler.family == 'msvc':
+    binary.compiler.cxxflags += ['/std:c++20']
 
-    if binary.compiler.family == 'gcc' or binary.compiler.family == 'clang':
-      binary.compiler.cxxflags += ['--std=c++17']
-    elif binary.compiler.family == 'msvc':
-      binary.compiler.cxxflags += ['/std:c++20']
+  if binary.compiler.family == 'clang':
+    binary.compiler.cxxflags += ['-Wno-register']
 
-    if binary.compiler.family == 'clang':
-      binary.compiler.cxxflags += ['-Wno-register']
+  binary.compiler.cxxincludes += [
+    os.path.join(builder.sourcePath, 'src', 'cs2_sdk'),
+    os.path.join(builder.sourcePath, 'src', 'utils'),
+    os.path.join(builder.sourcePath, 'vendor', 'funchook', 'include'),
+    os.path.join(builder.sourcePath, 'vendor', 'protobuf-3.21.8', 'src')
+  ]
 
-    binary.compiler.cxxincludes += [
-      os.path.join(builder.sourcePath, 'src', 'cs2_sdk'),
-      os.path.join(builder.sourcePath, 'src', 'utils'),
-      os.path.join(builder.sourcePath, 'vendor', 'subhook'),
-      os.path.join(builder.sourcePath, 'vendor', 'funchook', 'include'),
-      os.path.join(builder.sourcePath, 'vendor', 'protobuf-3.21.8', 'src'),
-      os.path.join(builder.sourcePath, 'protobuf', 'generated'),
+  target_folder = 'Debug' if builder.options.debug else 'Release'
+
+  if binary.compiler.target.platform == 'linux':
+    binary.compiler.postlink += [
+      os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'libfunchook.a'),
+      os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'libdistorm.a'),
+      os.path.join(builder.sourcePath, 'sdk', 'lib', 'linux64', 'release', 'libprotobuf.a'),
     ]
-
-    target_folder = 'Debug' if builder.options.debug else 'Release'
-    target_protobuf = 'libprotobufd' if builder.options.debug else 'libprotobuf'
-
-    if binary.compiler.target.platform == 'linux':
-      binary.compiler.postlink += [
-        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'libfunchook.a'),
-        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'libdistorm.a'),
-        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', target_folder, target_protobuf + '.a'),
-      ]
-      binary.sources += ['src/utils/plat_unix.cpp']
-    elif binary.compiler.target.platform == 'windows':
-      binary.compiler.postlink += [
-        os.path.join('psapi.lib'),
-        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'funchook.lib'),
-        os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'distorm.lib'),
-        os.path.join(builder.sourcePath, 'vendor', 'protobuf-lib', target_folder, target_protobuf + '.lib'),
-		    os.path.join(builder.sourcePath, 'sdk', 'lib', 'public', 'win64', 'steam_api64.lib')
-      ]
-      binary.sources += ['src/utils/plat_win.cpp']
-
-
-    binary.sources += [
-      'src/cs2fixes.cpp',
-      'src/mempatch.cpp',
-      'src/patches.cpp',
-      'src/cvars.cpp',
-      'src/adminsystem.cpp',
-      'src/commands.cpp',
-      'src/addresses.cpp',
-      'src/detours.cpp',
-      'src/events.cpp',
-      'src/utils/entity.cpp',
-      'src/cs2_sdk/schema.cpp',
-      'src/ctimer.cpp',
-      'src/playermanager.cpp',
-      'src/gameconfig.cpp',
-      'src/gamesystem.cpp',
-      'src/votemanager.cpp',
-      'src/httpmanager.cpp',
-      'src/discord.cpp',
-      'src/map_votes.cpp',
-      'src/user_preferences.cpp',
-      'src/zombiereborn.cpp',
-      'src/customio.cpp',
-      'src/entitylistener.cpp',
+    binary.sources += ['src/utils/plat_unix.cpp']
+  elif binary.compiler.target.platform == 'windows':
+    binary.compiler.postlink += [
+      os.path.join('psapi.lib'),
+      os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'funchook.lib'),
+      os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'distorm.lib'),
+      os.path.join(builder.sourcePath, 'sdk', 'lib' ,'public', 'win64', '2015', 'libprotobuf.lib'),
+	  os.path.join(builder.sourcePath, 'sdk', 'lib', 'public', 'win64', 'steam_api64.lib')
     ]
-
-    if sdk_name in ['dota', 'cs2']:
-      binary.sources += [
-      os.path.join(sdk.path, 'entity2', 'entitysystem.cpp'),
-      os.path.join(sdk.path, 'entity2', 'entityidentity.cpp'),
-      os.path.join(sdk.path, 'entity2', 'entitykeyvalues.cpp'),
-      os.path.join(sdk.path, 'tier1', 'convar.cpp'),
-      os.path.join(sdk.path, 'tier1', 'keyvalues3.cpp'),
-    ]
-
-    if sdk_name in ['dota', 'cs2'] and (binary.compiler.target.platform == 'windows' and builder.options.debug != '1') or binary.compiler.target.platform == 'linux':
-      binary.sources += [
-      os.path.join(sdk.path, 'public', 'tier0', 'memoverride.cpp')
-    ]
-
-    if cxx.target.arch == 'x86':
-      binary.sources += ['sourcehook/sourcehook_hookmangen.cpp']
-    nodes = builder.Add(binary)
-    MMSPlugin.binaries += [nodes]
+    binary.sources += ['src/utils/plat_win.cpp']
 
 
-  break
+  binary.sources += [
+    'src/cs2fixes.cpp',
+    'src/mempatch.cpp',
+    'src/patches.cpp',
+    'src/cvars.cpp',
+    'src/adminsystem.cpp',
+    'src/commands.cpp',
+    'src/addresses.cpp',
+    'src/detours.cpp',
+    'src/events.cpp',
+    'src/utils/entity.cpp',
+    'src/cs2_sdk/schema.cpp',
+    'src/ctimer.cpp',
+    'src/playermanager.cpp',
+    'src/gameconfig.cpp',
+    'src/gamesystem.cpp',
+    'src/votemanager.cpp',
+    'src/httpmanager.cpp',
+    'src/discord.cpp',
+    'src/map_votes.cpp',
+    'src/user_preferences.cpp',
+    'src/zombiereborn.cpp',
+    'src/customio.cpp',
+    'src/entitylistener.cpp',
+	'sdk/entity2/entitysystem.cpp',
+	'sdk/entity2/entityidentity.cpp',
+	'sdk/entity2/entitykeyvalues.cpp',
+	'sdk/tier1/keyvalues3.cpp',
+  ]
+  
+  protoc_builder = builder.tools.Protoc(protoc = sdk_target.protoc, sources = [
+    os.path.join(sdk['path'], 'common', 'network_connection.proto'),
+    os.path.join(sdk['path'], 'common', 'networkbasetypes.proto'),
+    os.path.join(sdk['path'], 'common', 'engine_gcmessages.proto'),
+    os.path.join(sdk['path'], 'gcsdk', 'steammessages.proto'),
+    os.path.join(sdk['path'], 'gcsdk', 'gcsdk_gcmessages.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'gameevents.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'te.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'usercmd.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'usermessages.proto'),
+    os.path.join(builder.sourcePath, 'protobuf', 'cs_gameevents.proto'),
+    os.path.join(builder.sourcePath, 'protobuf', 'cs_usercmd.proto')
+  ])
+  protoc_builder.protoc.includes += [
+    os.path.join(sdk['path'], 'gcsdk'),
+    os.path.join(sdk['path'], 'common'),
+    os.path.join(sdk['path'], 'game', 'shared'),
+    os.path.join(builder.sourcePath, 'protobuf'),
+  ]
+
+  binary.custom = [protoc_builder]
+	
+  nodes = builder.Add(binary)
+  MMSPlugin.binaries += [nodes]

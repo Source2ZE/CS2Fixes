@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "networkbasetypes.pb.h"
+
 #include "cdetour.h"
 #include "common.h"
 #include "module.h"
@@ -38,6 +40,8 @@
 #include "gameconfig.h"
 #include "zombiereborn.h"
 #include "customio.h"
+#include "serversideclient.h"
+#include "networksystem/inetworkserializer.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -60,6 +64,8 @@ DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
+DECLARE_DETOUR(SendNetMessage, Detour_SendNetMessage);
+DECLARE_DETOUR(HostStateRequest, Detour_HostStateRequest);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -432,6 +438,51 @@ void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEn
 	return FixLagCompEntityRelationship(a1, pEntity, a3);
 }
 
+std::string g_sExtraAddon;
+FAKE_STRING_CVAR(cs2f_extra_addon, "The workshop ID of an extra addon to mount and send to clients", g_sExtraAddon, false);
+
+void *FASTCALL Detour_HostStateRequest(void *a1, void **pRequest)
+{
+	// skip if we're doing anything other than changelevel
+	if (g_sExtraAddon.empty() || V_strnicmp((char *)pRequest[2], "changelevel", 11))
+		return HostStateRequest(a1, pRequest);
+
+	// This offset hasn't changed in 6 years so it should be safe
+	CUtlString *sAddonString = (CUtlString*)(pRequest + 11);
+
+	// addons are simply comma-delimited, can have any number of them
+	if (!sAddonString->IsEmpty())
+		sAddonString->Format("%s,%s", sAddonString->Get(), g_sExtraAddon.c_str());
+	else
+		sAddonString->Set(g_sExtraAddon.c_str());
+
+	return HostStateRequest(a1, pRequest);
+}
+
+extern double g_flUniversalTime;
+
+void FASTCALL Detour_SendNetMessage(INetChannel *pNetChan, INetworkSerializable *pNetMessage, void *pData, int a4)
+{
+	NetMessageInfo_t *info = pNetMessage->GetNetMessageInfo();
+
+	// 7 for signon messages
+	if (info->m_MessageId != 7 || g_sExtraAddon.empty())
+		return SendNetMessage(pNetChan, pNetMessage, pData, a4);
+
+	ClientJoinInfo_t *pPendingClient = GetPendingClient(pNetChan);
+
+	if (pPendingClient)
+	{
+		Message("Detour_SendNetMessage: Sending addon %s to client %lli\n", g_sExtraAddon.c_str(), pPendingClient->steamid);
+		CNETMsg_SignonState *pMsg = (CNETMsg_SignonState *)pData;
+		pMsg->set_addons(g_sExtraAddon.c_str());
+		pMsg->set_signon_state(SIGNONSTATE_CHANGELEVEL);
+		pPendingClient->signon_timestamp = g_flUniversalTime;
+	}
+
+	SendNetMessage(pNetChan, pNetMessage, pData, a4);
+}
+
 CUtlVector<CDetourBase *> g_vecDetours;
 
 bool InitDetours(CGameConfig *gameConfig)
@@ -489,6 +540,14 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!FixLagCompEntityRelationship.CreateDetour(gameConfig))
 		success = false;
 	FixLagCompEntityRelationship.EnableDetour();
+
+	if (!SendNetMessage.CreateDetour(gameConfig))
+		success = false;
+	SendNetMessage.EnableDetour();
+
+	if (!HostStateRequest.CreateDetour(gameConfig))
+		success = false;
+	HostStateRequest.EnableDetour();
 
 	return success;
 }

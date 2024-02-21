@@ -17,7 +17,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "protobuf/generated/usermessages.pb.h"
+#include "usermessages.pb.h"
 
 #include "adminsystem.h"
 #include "KeyValues.h"
@@ -1238,10 +1238,11 @@ void CAdminSystem::SaveInfractions()
 		pKV->AddSubKey(pSubKey);
 	}
 
-	const char *pszPath = "addons/cs2fixes/data/infractions.txt";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s", Plat_GetGameDirectory(), "/csgo/addons/cs2fixes/data/infractions.txt");
 
-	if (!pKV->SaveToFile(g_pFullFileSystem, pszPath))
-		Warning("Failed to save infractions to %s", pszPath);
+	if (!pKV->SaveToFile(g_pFullFileSystem, szPath))
+		Warning("Failed to save infractions to %s\n", szPath);
 }
 
 void CAdminSystem::AddInfraction(CInfractionBase* infraction)

@@ -168,6 +168,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="protobuf\generated\networkbasetypes.pb.cc" />
+    <ClCompile Include="protobuf\generated\network_connection.pb.cc" />
     <ClCompile Include="sdk\entity2\entityidentity.cpp" />
     <ClCompile Include="sdk\entity2\entitykeyvalues.cpp" />
     <ClCompile Include="sdk\entity2\entitysystem.cpp" />

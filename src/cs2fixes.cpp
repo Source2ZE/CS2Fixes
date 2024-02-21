@@ -17,12 +17,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "protobuf/generated/cstrike15_usermessages.pb.h"
-#include "protobuf/generated/usermessages.pb.h"
-#include "protobuf/generated/cs_gameevents.pb.h"
-#include "protobuf/generated/gameevents.pb.h"
-#include "protobuf/generated/te.pb.h"
-
 #include "cs2fixes.h"
 #include "iserver.h"
 
@@ -55,6 +49,9 @@
 #include "entity/cgamerules.h"
 #include "entity/ccsplayercontroller.h"
 #include "entitylistener.h"
+#include "serversideclient.h"
+#include "te.pb.h"
+#include "cs_gameevents.pb.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -151,6 +148,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	GET_V_IFACE_ANY(GetServerFactory, g_pSource2GameClients, IServerGameClients, SOURCE2GAMECLIENTS_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_gameEventSystem, IGameEventSystem, GAMEEVENTSYSTEM_INTERFACE_VERSION);
+	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkMessages, INetworkMessages, NETWORKMESSAGES_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetFileSystemFactory, g_pFullFileSystem, IFileSystem, FILESYSTEM_INTERFACE_VERSION);
 
 	// Required to get the IMetamodListener events
@@ -437,6 +435,8 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	RegisterEventListeners();
 	g_playerManager->SetupInfiniteAmmo();
 
+	g_ClientsPendingAddon.RemoveAll();
+
 	// Disable RTV and Extend votes after map has just started
 	g_RTVState = ERTVState::MAP_START;
 	g_ExtendState = EExtendState::MAP_START;
@@ -528,6 +528,25 @@ void CS2Fixes::AllPluginsLoaded()
 	Message( "AllPluginsLoaded\n" );
 }
 
+CUtlVector<CServerSideClient *> *GetClientList()
+{
+	if (!g_pNetworkGameServer)
+		return nullptr;
+
+	static int offset = g_GameConfig->GetOffset("CNetworkGameServer_ClientList");
+	return (CUtlVector<CServerSideClient *> *)(&g_pNetworkGameServer[offset]);
+}
+
+CServerSideClient *GetClientBySlot(CPlayerSlot slot)
+{
+	CUtlVector<CServerSideClient *> *pClients = GetClientList();
+
+	if (!pClients)
+		return nullptr;
+
+	return pClients->Element(slot.Get());
+}
+
 void CS2Fixes::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *pszName, uint64 xuid )
 {
 	Message( "Hook_ClientActive(%d, %d, \"%s\", %lli)\n", slot, bLoadGame, pszName, xuid );
@@ -555,20 +574,59 @@ void CS2Fixes::Hook_ClientSettingsChanged( CPlayerSlot slot )
 #endif
 }
 
-void CS2Fixes::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, const char *pszAddress, bool bFakePlayer )
+void CS2Fixes::Hook_OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer)
 {
-	Message( "Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer );
+	Message("Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 
 	if(bFakePlayer)
 		g_playerManager->OnBotConnected(slot);
 }
 
+extern std::string g_sExtraAddon;
+
+float g_flRejoinTimeout;
+FAKE_FLOAT_CVAR(cs2f_extra_addon_timeout, "How long until clients are timed out in between connects for the extra addon", g_flRejoinTimeout, 15.f, false);
+
 bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason )
 {
 	Message( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
-		
+
+	// Player is banned
 	if (!g_playerManager->OnClientConnected(slot, xuid, pszNetworkID))
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
+
+	CServerSideClient *pClient = GetClientBySlot(slot);
+
+	// We don't have an extra addon set so do nothing here
+	if (g_sExtraAddon.empty())
+		RETURN_META_VALUE(MRES_IGNORED, true);
+
+	Message("Client %lli", xuid);
+
+	// Store the client's ID temporarily as they will get reconnected once the extra addon is sent
+	// This gets checked for in SendNetMessage so we don't repeatedly send the changelevel signon state
+	// The only caveat to this is that there's no way for us to verify if the client has actually downloaded the extra addon,
+	// since they're fully disconnected while downloading it, so the best we can do is use a timeout interval
+	int index;
+	ClientJoinInfo_t *pPendingClient = GetPendingClient(xuid, index);
+	
+	if (!pPendingClient)
+	{
+		// Client joined for the first time or after a timeout
+		Msg(" will reconnect for addon\n");
+		AddPendingClient(xuid);
+	}
+	else if ((g_flUniversalTime - pPendingClient->signon_timestamp) < g_flRejoinTimeout)
+	{
+		// Client reconnected within the timeout interval
+		// If they already have the addon this happens almost instantly after receiving the signon message with the addon
+		Msg(" has reconnected within the interval, allowing\n");
+		g_ClientsPendingAddon.FastRemove(index);
+	}
+	else
+	{
+		Msg(" has reconnected after the timeout or did not receive the addon message, will send addon message again\n");
+	}
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
@@ -602,10 +660,6 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 	if (simulating && g_bHasTicked)
 	{
 		g_flUniversalTime += gpGlobals->curtime - g_flLastTickedTime;
-	}
-	else
-	{
-		g_flUniversalTime += gpGlobals->interval_per_tick;
 	}
 
 	g_flLastTickedTime = gpGlobals->curtime;
@@ -686,7 +740,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			if (!g_bEnableHide)
 				continue;
 
-			auto pPawn = pController->GetPawn();
+			auto pPawn = pController->m_hPawn.Get();
 
 			if (!pPawn)
 				continue;

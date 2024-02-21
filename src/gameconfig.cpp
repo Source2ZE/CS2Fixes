@@ -127,6 +127,8 @@ CModule **CGameConfig::GetModule(const char *name)
 		return &modules::vscript;
 	else if (strcmp(library, "tier0") == 0)
 		return &modules::tier0;
+	else if (strcmp(library, "networksystem") == 0)
+		return &modules::networksystem;
 #ifdef _WIN32
 	else if (strcmp(library, "hammer") == 0)
 		return &modules::hammer;
@@ -241,8 +243,6 @@ int CGameConfig::HexStringToUint8Array(const char* hexString, uint8_t* byteArray
             return -1; // Return an error code.
         }
     }
-
-    byteArray[byteCount] = '\0'; // Add a null-terminating character.
 
     return byteCount; // Return the number of bytes successfully converted.
 }

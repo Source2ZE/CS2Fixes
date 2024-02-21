@@ -38,6 +38,7 @@ bool addresses::Initialize(CGameConfig *g_GameConfig)
 	modules::server = new CModule(GAMEBIN, "server");
 	modules::schemasystem = new CModule(ROOTBIN, "schemasystem");
 	modules::vscript = new CModule(ROOTBIN, "vscript");
+	modules::networksystem = new CModule(ROOTBIN, "networksystem");
 	modules::client = nullptr;
 
 	if (!CommandLine()->HasParm("-dedicated"))
