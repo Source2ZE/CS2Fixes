@@ -2,6 +2,7 @@
 import os
 
 MMSPlugin.plugin_name = 'cs2fixes'
+MMSPlugin.plugin_alias = 'cs2fixes'
 
 for sdk_target in MMSPlugin.sdk_targets:
   sdk = sdk_target.sdk
