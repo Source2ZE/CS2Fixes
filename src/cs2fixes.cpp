@@ -83,12 +83,7 @@ void Panic(const char *msg, ...)
 	char buf[1024] = {};
 	V_vsnprintf(buf, sizeof(buf) - 1, msg, args);
 
-	if (CommandLine()->HasParm("-dedicated"))
-		Warning("[CS2Fixes] %s", buf);
-#ifdef _WIN32
-	else
-		MessageBoxA(nullptr, buf, "Warning", 0);
-#endif
+	Warning("[CS2Fixes] %s", buf);
 
 	va_end(args);
 }
