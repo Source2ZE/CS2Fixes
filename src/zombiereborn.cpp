@@ -26,6 +26,7 @@
 #include "entity/cgamerules.h"
 #include "entity/services.h"
 #include "entity/cteam.h"
+#include "entity/cparticlesystem.h"
 #include "user_preferences.h"
 #include <sstream>
 
@@ -69,6 +70,14 @@ static float g_flRespawnDelay = 5.0;
 static int g_iDefaultWinnerTeam = CS_TEAM_SPECTATOR;
 static int g_iMZImmunityReduction = 20;
 
+static std::string g_szHumanWinOverlayParticle;
+static std::string g_szHumanWinOverlayMaterial;
+static float g_flHumanWinOverlaySize;
+
+static std::string g_szZombieWinOverlayParticle;
+static std::string g_szZombieWinOverlayMaterial;
+static float g_flZombieWinOverlaySize;
+
 FAKE_BOOL_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, false, false)
 FAKE_FLOAT_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, 150.0f, false)
 FAKE_BOOL_CVAR(zr_ztele_allow_humans, "Whether to allow humans to use ztele", g_bZteleHuman, false, false)
@@ -81,10 +90,63 @@ FAKE_INT_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to
 FAKE_FLOAT_CVAR(zr_respawn_delay, "Time before a zombie is automatically respawned, negative values (e.g. -1.0) disable this, note maps can still manually respawn at any time", g_flRespawnDelay, 5.0f, false)
 FAKE_INT_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, CS_TEAM_SPECTATOR, false)
 FAKE_INT_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, 20, false)
+FAKE_STRING_CVAR(zr_human_win_overlay_particle, "Screenspace particle to display when human win", g_szHumanWinOverlayParticle, false)
+FAKE_STRING_CVAR(zr_human_win_overlay_material, "Material override for human's win overlay particle", g_szHumanWinOverlayMaterial, false)
+FAKE_FLOAT_CVAR(zr_human_win_overlay_size, "Size of human's win overlay particle", g_flHumanWinOverlaySize, 5.0f, false)
+FAKE_STRING_CVAR(zr_zombie_win_overlay_particle, "Screenspace particle to display when zombie win", g_szZombieWinOverlayParticle, false)
+FAKE_STRING_CVAR(zr_zombie_win_overlay_material, "Material override for zombie's win overlay particle", g_szZombieWinOverlayMaterial, false)
+FAKE_FLOAT_CVAR(zr_zombie_win_overlay_size, "Size of zombie's win overlay particle", g_flZombieWinOverlaySize, 5.0f, false)
 
 void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 {
 	g_pZRPlayerClassManager->PrecacheModels(pResourceManifest);
+
+	pResourceManifest->AddResource(g_szHumanWinOverlayParticle.c_str());
+	pResourceManifest->AddResource(g_szZombieWinOverlayParticle.c_str());
+	
+	pResourceManifest->AddResource(g_szHumanWinOverlayMaterial.c_str());
+	pResourceManifest->AddResource(g_szZombieWinOverlayMaterial.c_str());
+}
+
+CEnvParticleGlow* ZR_CreateOverlay(const char* pszOverlayParticlePath, float flAlpha, float flRadius, float flSelfIllum, float flLifeTime, Color clrTint, const char* pszMaterialOverride)
+{
+	CEnvParticleGlow* particle = (CEnvParticleGlow*)CreateEntityByName("env_particle_glow");
+
+	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
+
+	pKeyValues->SetString("effect_name", pszOverlayParticlePath);
+	pKeyValues->SetFloat("alphascale", flAlpha);
+	pKeyValues->SetFloat("scale", flRadius);
+	pKeyValues->SetFloat("selfillumscale", flSelfIllum);
+	pKeyValues->SetColor("colortint", clrTint);
+	pKeyValues->SetString("effect_textureOverride", pszMaterialOverride);
+
+	particle->DispatchSpawn(pKeyValues);
+	particle->AcceptInput("Start");
+
+	CHandle<CEnvParticleGlow> hParticle = particle->GetHandle();
+
+	// destroy particle first, then kill the entity
+	new CTimer(flLifeTime, false, [hParticle]()
+	{
+		CEnvParticleGlow* particle = hParticle.Get();
+
+		//Note: for simple_overlay, if the entity is somehow killed before the particle is destroyed, it will stay on forever until the round reset, which doesn't matter in this specific use case
+		if (particle)
+		{
+			particle->AcceptInput("DestroyImmediately");
+			new CTimer(0.02f, false, [hParticle]()
+			{
+				CEnvParticleGlow* particle = hParticle.Get();
+				if (particle)
+					particle->AcceptInput("Kill");
+				return -1.0f;
+			});
+		}
+		return -1.0f;
+	});
+
+	return particle;
 }
 
 bool ZRClass::IsApplicableTo(CCSPlayerController *pController)
@@ -1179,6 +1241,8 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 			return;
 		}
 		g_hTeamCT->m_iScore = g_hTeamCT->m_iScore() + 1;
+		if (!g_szHumanWinOverlayParticle.empty())
+			ZR_CreateOverlay(g_szHumanWinOverlayParticle.c_str(), 1.0f, g_flHumanWinOverlaySize, 1.0f, flRestartDelay, Color(255, 255, 255), g_szHumanWinOverlayMaterial.c_str());
 	}
 	else if (iTeamNum == CS_TEAM_T)
 	{	
@@ -1188,6 +1252,8 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 			return;
 		}
 		g_hTeamT->m_iScore = g_hTeamT->m_iScore() + 1;
+		if (!g_szZombieWinOverlayParticle.empty())
+			ZR_CreateOverlay(g_szZombieWinOverlayParticle.c_str(), 1.0f, g_flZombieWinOverlaySize, 1.0f, flRestartDelay, Color(255, 255, 255), g_szZombieWinOverlayMaterial.c_str());
 	}
 }
 
