@@ -135,7 +135,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 			Message("Human Classes:\n");
 		else
 			Message("Zombie Classes:\n");
-		
+
 		for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
 		{
 			bool bEnabled = pSubKey->GetBool("enabled", false);
@@ -153,7 +153,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 			// if (!bEnabled)
 			// 	continue;
-				
+
 			if (!pSubKey->FindKey("team_default"))
 			{
 				Warning("%s has unspecified keyvalue: team_default\n", pszClassName);
@@ -231,10 +231,10 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 				if (bTeamDefault)
 					m_vecHumanDefaultClass.AddToTail(pHumanClass);
-				
+
 				pHumanClass->PrintInfo();
 			}
-			else 
+			else
 			{
 				ZRZombieClass *pZombieClass;
 				if (pszBase)
@@ -257,7 +257,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				m_ZombieClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pZombieClass);
 				if (pSubKey->GetBool("team_default", false))
 					m_vecZombieDefaultClass.AddToTail(pZombieClass);
-				
+
 				pZombieClass->PrintInfo();
 			}
 		}
@@ -326,7 +326,7 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn *pPa
 		Warning("Missing default human class or valid preferences!\n");
 		return;
 	}
-	
+
 	ApplyHumanClass(humanClass, pPawn);
 }
 
@@ -366,7 +366,7 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pP
 		Warning("Missing default zombie class or valid preferences!\n");
 		return;
 	}
-	
+
 	ApplyZombieClass(zombieClass, pPawn);
 }
 
@@ -438,11 +438,11 @@ void CZRRegenTimer::Tick()
 		{
 			continue;
 		}
-		
+
 		if (pTimer->m_flLastExecute == -1)
 			pTimer->m_flLastExecute = g_flUniversalTime;
 
-		// Timer execute 
+		// Timer execute
 		if (pTimer->m_flLastExecute + pTimer->m_flInterval <= g_flUniversalTime)
 		{
 			pTimer->Execute();
@@ -633,7 +633,7 @@ void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamag
 	if (!pWeapon)
 		return;
 	float flWeaponKnockbackScale = pWeapon->flKnockback;
-	
+
 	Vector vecKnockback;
 	AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
 	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale);
@@ -681,7 +681,7 @@ void ZR_StripAndGiveKnife(CCSPlayerPawn *pPawn)
 	CCSPlayer_ItemServices *pItemServices = pPawn->m_pItemServices();
 	CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices();
 
-	// it can sometimes be null when player joined on the very first round? 
+	// it can sometimes be null when player joined on the very first round?
 	if (!pItemServices || !pWeaponServices)
 		return;
 
@@ -735,7 +735,7 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 		return;
 
 	ZR_StripAndGiveKnife(pVictimPawn);
-	
+
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultZombieClass(pVictimPawn);
 }
 
@@ -876,7 +876,7 @@ void ZR_InitialInfection()
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 		if (!pPlayer || vecIsMZ[i])
 			continue;
-		
+
 		pPlayer->SetImmunity(pPlayer->GetImmunity() - g_iMZImmunityReduction);
 	}
 
@@ -917,33 +917,33 @@ void ZR_StartInitialCountdown()
 	});
 }
 
-bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
-{
-	CCSPlayerPawn* pAttackerPawn = (CCSPlayerPawn*)pInfo->m_hAttacker.Get();
+// bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
+// {
+// 	CCSPlayerPawn* pAttackerPawn = (CCSPlayerPawn*)pInfo->m_hAttacker.Get();
 
-	if (!(pAttackerPawn && pVictimPawn && pAttackerPawn->IsPawn() && pVictimPawn->IsPawn()))
-		return false;
+// 	if (!(pAttackerPawn && pVictimPawn && pAttackerPawn->IsPawn() && pVictimPawn->IsPawn()))
+// 		return false;
 
-	CCSPlayerController *pAttackerController = CCSPlayerController::FromPawn(pAttackerPawn);
-	CCSPlayerController *pVictimController = CCSPlayerController::FromPawn(pVictimPawn);
-	const char *pszAbilityClass = pInfo->m_hAbility.Get() ? pInfo->m_hAbility.Get()->GetClassname() : "";
-	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_T && pVictimPawn->m_iTeamNum() == CS_TEAM_CT && !V_strncmp(pszAbilityClass, "weapon_knife", 12))
-	{
-		ZR_Infect(pAttackerController, pVictimController, false);
-		return true; // nullify the damage
-	}
+// 	CCSPlayerController *pAttackerController = CCSPlayerController::FromPawn(pAttackerPawn);
+// 	CCSPlayerController *pVictimController = CCSPlayerController::FromPawn(pVictimPawn);
+// 	const char *pszAbilityClass = pInfo->m_hAbility.Get() ? pInfo->m_hAbility.Get()->GetClassname() : "";
+// 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_T && pVictimPawn->m_iTeamNum() == CS_TEAM_CT && !V_strncmp(pszAbilityClass, "weapon_knife", 12))
+// 	{
+// 		ZR_Infect(pAttackerController, pVictimController, false);
+// 		return true; // nullify the damage
+// 	}
 
-	// grenade and molotov knockback
-	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
-	{
-		CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
-		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
-		// inflictor class from grenade damage is actually hegrenade_projectile
-		if (!V_strncmp(pszInflictorClass, "hegrenade", 9) || !V_strncmp(pszInflictorClass, "inferno", 7))
-			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage, !V_strncmp(pszInflictorClass, "inferno", 7));
-	}
-	return false;
-}
+// 	// grenade and molotov knockback
+// 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
+// 	{
+// 		CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
+// 		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
+// 		// inflictor class from grenade damage is actually hegrenade_projectile
+// 		if (!V_strncmp(pszInflictorClass, "hegrenade", 9) || !V_strncmp(pszInflictorClass, "inferno", 7))
+// 			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage, !V_strncmp(pszInflictorClass, "inferno", 7));
+// 	}
+// 	return false;
+// }
 
 // return false to prevent player from picking it up
 bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
@@ -1102,7 +1102,7 @@ bool ZR_IsTeamAlive(int iTeamNum)
 	{
 		if (!pPawn->IsAlive())
 			continue;
-		
+
 		if (pPawn->m_iTeamNum() == iTeamNum)
 			return true;
 	}
@@ -1181,7 +1181,7 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 		g_hTeamCT->m_iScore = g_hTeamCT->m_iScore() + 1;
 	}
 	else if (iTeamNum == CS_TEAM_T)
-	{	
+	{
 		if (!g_hTeamT.Get())
 		{
 			Panic("Cannot find CTeam for T!\n");
@@ -1325,7 +1325,7 @@ CON_COMMAND_CHAT(zclass, "find and select your Z:R class")
 		if (sCurrentClass[0] != '\0')
 		{
 			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Your current %s class is: %s. Available classes:", sTeamName, sCurrentClass);
-		} 
+		}
 		else
 		{
 			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Available %s classes:", sTeamName);

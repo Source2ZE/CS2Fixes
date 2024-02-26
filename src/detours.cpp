@@ -59,7 +59,7 @@ DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
 DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSound);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
-DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
+// DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
@@ -79,45 +79,45 @@ static bool g_bBlockAllDamage = false;
 FAKE_BOOL_CVAR(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", g_bBlockMolotovSelfDmg, false, false)
 FAKE_BOOL_CVAR(cs2f_block_all_dmg, "Whether to block all damage to players", g_bBlockAllDamage, false, false)
 
-void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
-{
-#ifdef _DEBUG
-	Message("\n--------------------------------\n"
-			"TakeDamage on %s\n"
-			"Attacker: %s\n"
-			"Inflictor: %s\n"
-			"Ability: %s\n"
-			"Damage: %.2f\n"
-			"Damage Type: %i\n"
-			"--------------------------------\n",
-			pThis->GetClassname(),
-			inputInfo->m_hAttacker.Get() ? inputInfo->m_hAttacker.Get()->GetClassname() : "NULL",
-			inputInfo->m_hInflictor.Get() ? inputInfo->m_hInflictor.Get()->GetClassname() : "NULL",
-			inputInfo->m_hAbility.Get() ? inputInfo->m_hAbility.Get()->GetClassname() : "NULL",
-			inputInfo->m_flDamage,
-			inputInfo->m_bitsDamageType);
-#endif
-	
-	// Block all player damage if desired
-	if (g_bBlockAllDamage && pThis->IsPawn())
-		return;
+// void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
+// {
+// #ifdef _DEBUG
+// 	Message("\n--------------------------------\n"
+// 			"TakeDamage on %s\n"
+// 			"Attacker: %s\n"
+// 			"Inflictor: %s\n"
+// 			"Ability: %s\n"
+// 			"Damage: %.2f\n"
+// 			"Damage Type: %i\n"
+// 			"--------------------------------\n",
+// 			pThis->GetClassname(),
+// 			inputInfo->m_hAttacker.Get() ? inputInfo->m_hAttacker.Get()->GetClassname() : "NULL",
+// 			inputInfo->m_hInflictor.Get() ? inputInfo->m_hInflictor.Get()->GetClassname() : "NULL",
+// 			inputInfo->m_hAbility.Get() ? inputInfo->m_hAbility.Get()->GetClassname() : "NULL",
+// 			inputInfo->m_flDamage,
+// 			inputInfo->m_bitsDamageType);
+// #endif
 
-	CBaseEntity *pInflictor = inputInfo->m_hInflictor.Get();
-	const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
+// 	// Block all player damage if desired
+// 	if (g_bBlockAllDamage && pThis->IsPawn())
+// 		return;
 
-	// Prevent everything but nades from inflicting blast damage
-	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
-		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
+// 	CBaseEntity *pInflictor = inputInfo->m_hInflictor.Get();
+// 	const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 
-	if (g_bEnableZR && ZR_Detour_TakeDamageOld((CCSPlayerPawn*)pThis, inputInfo))
-		return;
+// 	// Prevent everything but nades from inflicting blast damage
+// 	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
+// 		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
 
-	// Prevent molly on self
-	if (g_bBlockMolotovSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
-		return;
+// 	if (g_bEnableZR && ZR_Detour_TakeDamageOld((CCSPlayerPawn*)pThis, inputInfo))
+// 		return;
 
-	CBaseEntity_TakeDamageOld(pThis, inputInfo);
-}
+// 	// Prevent molly on self
+// 	if (g_bBlockMolotovSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
+// 		return;
+
+// 	CBaseEntity_TakeDamageOld(pThis, inputInfo);
+// }
 
 static bool g_bUseOldPush = false;
 
@@ -157,7 +157,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 	Vector vecAbsDir;
 
 	matrix3x4_t mat = pPush->m_CBodyComponent()->m_pSceneNode()->EntityToWorldTransform();
-	
+
 	Vector pushDir = pPush->m_vecPushDirEntitySpace();
 
 	// i had issues with vectorrotate on linux so i did it here
@@ -264,7 +264,7 @@ void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPla
 			{
 				if (pCurrentWord[j] >= '0' && pCurrentWord[j] <= '9')
 					continue;
-				
+
 				if (pCurrentWord[j] == 's')
 				{
 					pCurrentWord[j] = '\0';
@@ -521,14 +521,14 @@ bool InitDetours(CGameConfig *gameConfig)
 		success = false;
 	CGameRules_Constructor.EnableDetour();
 
-	if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
-		success = false;
-	CBaseEntity_TakeDamageOld.EnableDetour();
+	// if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
+	// 	success = false;
+	// CBaseEntity_TakeDamageOld.EnableDetour();
 
 	if (!CCSPlayer_WeaponServices_CanUse.CreateDetour(gameConfig))
 		success = false;
 	CCSPlayer_WeaponServices_CanUse.EnableDetour();
-  
+
 	if (!CEntityIdentity_AcceptInput.CreateDetour(gameConfig))
 		success = false;
 	CEntityIdentity_AcceptInput.EnableDetour();
