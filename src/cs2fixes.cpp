@@ -340,7 +340,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 		bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
 		bool bFlooding = pController && pController->GetZEPlayer()->IsFlooding();
 		bool bAdminChat = bTeamSay && *args[1] == '@';
-		bool bSilent = *args[1] == '/' || bAdminChat;
+		bool bSilent = false;
 		bool bCommand = *args[1] == '!' || *args[1] == '/';
 
 		// Chat messages should generate events regardless
@@ -401,7 +401,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 			ParseChatCommand(pszMessage, pController);
 		}
 
-		RETURN_META(MRES_SUPERCEDE);
+		// RETURN_META(MRES_SUPERCEDE);
 	}
 }
 
@@ -516,7 +516,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 
 void CS2Fixes::AllPluginsLoaded()
 {
-	/* This is where we'd do stuff that relies on the mod or other plugins 
+	/* This is where we'd do stuff that relies on the mod or other plugins
 	 * being initialized (for example, cvars added and events registered).
 	 */
 
@@ -604,7 +604,7 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 	// since they're fully disconnected while downloading it, so the best we can do is use a timeout interval
 	int index;
 	ClientJoinInfo_t *pPendingClient = GetPendingClient(xuid, index);
-	
+
 	if (!pPendingClient)
 	{
 		// Client joined for the first time or after a timeout
@@ -670,7 +670,7 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 		if (timer->m_flLastExecute == -1)
 			timer->m_flLastExecute = g_flUniversalTime;
 
-		// Timer execute 
+		// Timer execute
 		if (timer->m_flLastExecute + timer->m_flInterval <= g_flUniversalTime)
 		{
 			if (!timer->Execute())
