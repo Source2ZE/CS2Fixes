@@ -64,6 +64,7 @@ DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
+DECLARE_DETOUR(CNetworkStringTable_AddString, Detour_AddString);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -437,6 +438,22 @@ void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEn
 	return FixLagCompEntityRelationship(a1, pEntity, a3);
 }
 
+bool g_bBlockEntityStrings = false;
+FAKE_BOOL_CVAR(cs2f_block_entity_strings, "Whether to block adding entries in the EntityNames stringtable", g_bBlockEntityStrings, false, false);
+
+int64 FASTCALL Detour_AddString(void *pStringTable, bool bServer, const char *pszString, void *a4)
+{
+	if (!g_bBlockEntityStrings)
+		return CNetworkStringTable_AddString(pStringTable, bServer, pszString, a4);
+
+	static int offset = g_GameConfig->GetOffset("CNetworkStringTable_GetTableName");
+	const char *pszStringTableName = CALL_VIRTUAL(const char *, offset, pStringTable);
+
+	// The whole name is "EntityNames" so do the bare minimum comparison, since no other table starts with "Ent"
+	if (!V_strncmp(pszStringTableName, "Ent", 3))
+		return -1;
+}
+
 CUtlVector<CDetourBase *> g_vecDetours;
 
 bool InitDetours(CGameConfig *gameConfig)
@@ -494,6 +511,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!FixLagCompEntityRelationship.CreateDetour(gameConfig))
 		success = false;
 	FixLagCompEntityRelationship.EnableDetour();
+
+	if (!CNetworkStringTable_AddString.CreateDetour(gameConfig))
+		success = false;
+	CNetworkStringTable_AddString.EnableDetour();
 
 	return success;
 }
