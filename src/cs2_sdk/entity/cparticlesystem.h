@@ -33,3 +33,14 @@ public:
 	SCHEMA_FIELD(int, m_nTintCP)
 	SCHEMA_FIELD_POINTER(Color, m_clrTint)
 };
+
+class CEnvParticleGlow : public CParticleSystem
+{
+public:
+	DECLARE_SCHEMA_CLASS(CEnvParticleGlow);
+
+	SCHEMA_FIELD(float, m_flAlphaScale)
+	SCHEMA_FIELD(float, m_flRadiusScale)
+	SCHEMA_FIELD(float, m_flSelfIllumScale)
+	SCHEMA_FIELD_POINTER(Color, m_ColorTint)
+};
