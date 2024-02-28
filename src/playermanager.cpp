@@ -84,6 +84,55 @@ ClientJoinInfo_t *GetPendingClient(INetChannel *pNetChan)
 	return nullptr;
 }
 
+ZEPlayerHandle::ZEPlayerHandle() : m_Index(INVALID_ZEPLAYERHANDLE_INDEX) {};
+
+ZEPlayerHandle::ZEPlayerHandle(CPlayerSlot slot)
+{
+	m_Parts.m_PlayerSlot = slot.Get();
+	m_Parts.m_Serial = ++iZEPlayerHandleSerial;
+}
+
+ZEPlayerHandle::ZEPlayerHandle(const ZEPlayerHandle &other)
+{
+	m_Index = other.m_Index;
+}
+
+ZEPlayerHandle::ZEPlayerHandle(ZEPlayer *pZEPlayer)
+{
+	Set(pZEPlayer);
+}
+
+bool ZEPlayerHandle::operator==(ZEPlayer *pZEPlayer) const
+{
+	return Get() == pZEPlayer;
+}
+
+bool ZEPlayerHandle::operator!=(ZEPlayer *pZEPlayer) const
+{
+	return Get() != pZEPlayer;
+}
+
+void ZEPlayerHandle::Set(ZEPlayer *pZEPlayer)
+{
+	if (pZEPlayer)
+		m_Index = pZEPlayer->GetHandle().m_Index;
+	else
+		m_Index = INVALID_ZEPLAYERHANDLE_INDEX;
+}
+
+ZEPlayer *ZEPlayerHandle::Get() const
+{
+	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer((CPlayerSlot) m_Parts.m_PlayerSlot);
+
+	if (!pZEPlayer)
+		return nullptr;
+	
+	if (pZEPlayer->GetHandle().m_Index != m_Index)
+		return nullptr;
+	
+	return pZEPlayer;
+}
+
 void ZEPlayer::OnAuthenticated()
 {
 	CheckAdmin();
