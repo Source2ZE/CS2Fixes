@@ -33,18 +33,6 @@
 
 static uint32 iZEPlayerHandleSerial = 0u; // this should actually be 3 bytes large, but no way enough players join in servers lifespan for this to be an issue
 
-struct ClientJoinInfo_t
-{
-	uint64 steamid;
-	double signon_timestamp;
-};
-
-extern CUtlVector<ClientJoinInfo_t> g_ClientsPendingAddon;
-
-void AddPendingClient(uint64 steamid);
-ClientJoinInfo_t *GetPendingClient(uint64 steamid, int &index);
-ClientJoinInfo_t *GetPendingClient(INetChannel *pNetChan);
-
 enum class ETargetType {
 	NONE,
 	PLAYER,
