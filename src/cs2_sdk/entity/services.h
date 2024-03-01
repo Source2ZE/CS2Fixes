@@ -186,3 +186,14 @@ public:
 
 	SCHEMA_FIELD(WeaponPurchaseTracker_t, m_weaponPurchasesThisRound)
 };
+
+class CPlayer_ObserverServices
+{
+public:
+	DECLARE_SCHEMA_CLASS(CPlayer_ObserverServices)
+
+	SCHEMA_FIELD(ObserverMode_t, m_iObserverMode)
+	SCHEMA_FIELD(CHandle<Z_CBaseEntity>, m_hObserverTarget)
+	SCHEMA_FIELD(ObserverMode_t, m_iObserverLastMode)
+	SCHEMA_FIELD(bool, m_bForcedObserverMode)
+};

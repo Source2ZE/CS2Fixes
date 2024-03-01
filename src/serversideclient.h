@@ -4,6 +4,7 @@
 #include "steam/steamclientpublic.h"
 #include "utlstring.h"
 #include "inetchannel.h"
+#include "gameconfig.h"
 
 class CServerSideClient
 {
@@ -17,6 +18,14 @@ public:
 	CSteamID *GetClientSteamID() const { return (CSteamID*)&m_SteamID; }
 	const char *GetClientName() const { return m_Name.Get(); }
 	netadr_t *GetRemoteAddress() const { return (netadr_t*)&m_NetAdr; }
+
+	void SendFullUpdate()
+	{
+		Message("Sending full update to %s\n", GetClientName());
+
+		static int offset = g_GameConfig->GetOffset("AcknowledgementTick");
+		*(uint32*)((byte*)this + offset) = -1; // Setting -1 will force a full update on this client
+	}
 
 private:
 	[[maybe_unused]] void *m_pVT1; // INetworkMessageProcessingPreFilter

@@ -62,6 +62,17 @@ enum EInButtonState : uint32_t
 	IN_BUTTON_STATE_COUNT = 0x8,
 };
 
+enum ObserverMode_t : uint8_t
+{
+	OBS_MODE_NONE = 0x0,
+	OBS_MODE_FIXED = 0x1,
+	OBS_MODE_IN_EYE = 0x2,
+	OBS_MODE_CHASE = 0x3,
+	OBS_MODE_ROAMING = 0x4,
+	OBS_MODE_DIRECTED = 0x5,
+	NUM_OBSERVER_MODES = 0x6,
+};
+
 struct GameTime_t
 {
 public:

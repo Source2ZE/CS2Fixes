@@ -398,12 +398,19 @@
 				"windows"		"584"
 				"linux"			"584"
 			}
-			
-			// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) )
+			// engine
+			// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) ), note that this is a CUtlVector
 			"CNetworkGameServer_ClientList"
 			{
 				"windows"		"77"
 				"linux"			"79"
+			}
+			// engine
+			// "Received acknowledgement tick=%d"
+			"AcknowledgementTick"
+			{
+				"windows"		"332"
+				"linux"			"348"
 			}
 		}
 		"Patches"

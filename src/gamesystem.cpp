@@ -78,3 +78,9 @@ GS_EVENT_MEMBER(CGameSystem, ServerPreEntityThink)
 	// This could've gone into CS2Fixes::Hook_GameFrame but I've kept it here as an example
 	g_playerManager->FlashLightThink();
 }
+
+// Called every frame after entities think
+GS_EVENT_MEMBER(CGameSystem, ServerPostEntityThink)
+{
+	g_playerManager->UpdatePlayerStates();
+}

@@ -25,6 +25,7 @@
 #include "user_preferences.h"
 #include "entity/ccsplayercontroller.h"
 #include "utils/entity.h"
+#include "serversideclient.h"
 #include "ctimer.h"
 #include "ctime"
 
@@ -37,6 +38,8 @@
 extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
+
+extern CServerSideClient *GetClientBySlot(CPlayerSlot slot);
 
 ZEPlayerHandle::ZEPlayerHandle() : m_Index(INVALID_ZEPLAYERHANDLE_INDEX) {};
 
@@ -429,6 +432,39 @@ void CPlayerManager::CheckHideDistances()
 	}
 
 	VPROF_EXIT_SCOPE();
+}
+
+void CPlayerManager::UpdatePlayerStates()
+{
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		ZEPlayer *pPlayer = GetPlayer(i);
+
+		if (!pPlayer)
+			continue;
+
+		CCSPlayerController *pController = CCSPlayerController::FromSlot(i);
+
+		if (!pController)
+			continue;
+
+		uint32 iPreviousPlayerState = pPlayer->GetPlayerState();
+		uint32 iCurrentPlayerState = pController->GetPlayerState();
+
+		if (iCurrentPlayerState != iPreviousPlayerState)
+		{
+			pPlayer->SetPlayerState(iCurrentPlayerState);
+
+			// Send full update to people going into spec as a mitigation for hide crashes
+			if (iCurrentPlayerState == STATE_OBSERVER_MODE)
+			{
+				CServerSideClient *pClient = GetClientBySlot(i);
+
+				if (pClient)
+					pClient->SendFullUpdate();
+			}
+		}
+	}
 }
 
 static bool g_bInfiniteAmmo = false;

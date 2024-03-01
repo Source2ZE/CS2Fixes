@@ -80,4 +80,15 @@ public:
 		static int offset = g_GameConfig->GetOffset("CCSPlayerController_Respawn");
 		CALL_VIRTUAL(void, offset, this);
 	}
+
+	CSPlayerState GetPlayerState()
+	{
+		// All CS2 pawns are derived from this
+		CCSPlayerPawnBase *pPawn = (CCSPlayerPawnBase*)GetPawn();
+
+		if (!pPawn)
+			return STATE_NONE;
+
+		return pPawn->m_iPlayerState();
+	}
 };
