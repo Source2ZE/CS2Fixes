@@ -692,8 +692,8 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			if (pFlashLight)
 				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
 
-			if (!g_bEnableHide)
-				continue;
+			if (!g_bEnableHide || pSelfController->GetPlayerState() == STATE_OBSERVER_MODE)
+				break;
 
 			auto pPawn = pController->m_hPawn.Get();
 
@@ -702,7 +702,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 
 			// Hide players marked as hidden or ANY dead player, it seems that a ragdoll of a previously hidden player can crash?
 			// TODO: Revert this if/when valve fixes the issue?
-			if (pSelfZEPlayer->ShouldBlockTransmit(j) || pPawn->m_lifeState != LIFE_ALIVE)
+			if (pSelfZEPlayer->ShouldBlockTransmit(j) || !pPawn->IsAlive())
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 		}
 	}
