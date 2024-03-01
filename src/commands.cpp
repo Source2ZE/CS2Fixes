@@ -645,7 +645,8 @@ CON_COMMAND_CHAT(dispatch_particle, "test")
 	if (!player)
 		return;
 
-	CSingleRecipientFilter filter(player->GetPlayerSlot());
+	CRecipientFilter filter;
+	filter.AddAllPlayers();
 
 	addresses::DispatchParticleEffect(args[1], PATTACH_POINT_FOLLOW, player->GetPawn(), 0, "", false, 0, &filter, 0);
 }
