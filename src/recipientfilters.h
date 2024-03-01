@@ -19,7 +19,9 @@
 
 #pragma once
 #include "irecipientfilter.h"
+#include "playermanager.h"
 
+// Simple filter for when only 1 recipient is needed
 class CSingleRecipientFilter : public IRecipientFilter
 {
 public:
@@ -29,11 +31,8 @@ public:
 	~CSingleRecipientFilter() override {}
 
 	bool IsReliable(void) const override { return m_bReliable; }
-
 	bool IsInitMessage(void) const override { return m_bInitMessage; }
-
 	int GetRecipientCount(void) const override { return 1; }
-
 	CPlayerSlot GetRecipientIndex(int slot) const override { return CPlayerSlot(m_iRecipient); }
 
 private:
@@ -42,10 +41,17 @@ private:
 	int m_iRecipient;
 };
 
-class CCopyRecipientFilter : public IRecipientFilter
+
+class CRecipientFilter : public IRecipientFilter
 {
 public:
-	CCopyRecipientFilter(IRecipientFilter *source, int iExcept)
+	CRecipientFilter()
+	{
+		m_bReliable = true;
+		m_bInitMessage = false;
+	}
+
+	CRecipientFilter(IRecipientFilter *source, int iExcept = -1)
 	{
 		m_bReliable = source->IsReliable();
 		m_bInitMessage = source->IsInitMessage();
@@ -58,12 +64,10 @@ public:
 		}
 	}
 
-	~CCopyRecipientFilter() override {}
+	~CRecipientFilter() override {}
 
 	bool IsReliable(void) const override { return m_bReliable; }
-
 	bool IsInitMessage(void) const override { return m_bInitMessage; }
-
 	int GetRecipientCount(void) const override { return m_Recipients.Count(); }
 
 	CPlayerSlot GetRecipientIndex(int slot) const override
@@ -74,8 +78,30 @@ public:
 		return m_Recipients[slot];
 	}
 
+	void AddAllPlayers(void)
+	{
+		m_Recipients.RemoveAll();
+
+		for (int i = 0; i < MAXPLAYERS; i++)
+		{
+			if (!g_playerManager->GetPlayer(i))
+				continue;
+
+			AddRecipient(i);
+		}
+	}
+
+	void AddRecipient(CPlayerSlot slot)
+	{
+		// Don't add if it already exists
+		if (m_Recipients.Find(slot) != m_Recipients.InvalidIndex())
+			return;
+
+		m_Recipients.AddToTail(slot);
+	}
+
 private:
 	bool m_bReliable;
 	bool m_bInitMessage;
-	CUtlVectorFixed<CPlayerSlot, 64> m_Recipients;
+	CUtlVectorFixed<CPlayerSlot, MAXPLAYERS> m_Recipients;
 };
