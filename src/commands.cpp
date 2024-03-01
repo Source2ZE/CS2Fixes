@@ -640,6 +640,16 @@ CON_COMMAND_CHAT(particle_kv, "spawn a particle but using keyvalues to spawn")
 	Message("You have spawned a particle using keyvalues with effect name: %s\n", particle->m_iszEffectName().String());
 }
 
+CON_COMMAND_CHAT(dispatch_particle, "test")
+{
+	if (!player)
+		return;
+
+	CSingleRecipientFilter filter(player->GetPlayerSlot());
+
+	addresses::DispatchParticleEffect(args[1], PATTACH_POINT_FOLLOW, player->GetPawn(), 0, "", false, 0, &filter, 0);
+}
+
 CON_COMMAND_CHAT(emitsound, "emit a sound from the entity under crosshair")
 {
 	if (!player)
