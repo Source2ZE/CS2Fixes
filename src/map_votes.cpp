@@ -93,7 +93,7 @@ CON_COMMAND_CHAT_FLAGS(setnextmap, "[mapname] - Force next map (empty to clear f
 
 CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nomination)", ADMFLAG_NONE)
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_bVoteManagerEnable || !player)
 		return;
 
 	bool bIsClearingNomination = args.ArgC() < 2;
