@@ -651,6 +651,8 @@ void CS2Fixes::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick 
 	VPROF_EXIT_SCOPE();
 }
 
+extern bool g_bFlashLightTransmitOthers;
+
 void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount, CBitVec<16384> &unionTransmitEdicts,
 								const Entity2Networkable_t **pNetworkables, const uint16 *pEntityIndicies, int nEntities)
 {
@@ -689,7 +691,8 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			// Don't transmit other players' flashlights, except the one they're watching if in spec
 			CBarnLight *pFlashLight = g_playerManager->GetPlayer(j)->GetFlashLight();
 
-			if (pFlashLight && !(pSelfController->GetPlayerState() == STATE_OBSERVER_MODE && pSelfController->GetObserverTarget() == pController->GetPawn()))
+			if (!g_bFlashLightTransmitOthers && pFlashLight && 
+				!(pSelfController->GetPlayerState() == STATE_OBSERVER_MODE && pSelfController->GetObserverTarget() == pController->GetPawn()))
 				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
 
 			// Always transmit other players if spectating

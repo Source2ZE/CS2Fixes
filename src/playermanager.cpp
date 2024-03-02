@@ -136,12 +136,14 @@ void ZEPlayer::SetHideDistance(int distance)
 }
 
 static bool g_bFlashLightShadows = true;
+bool g_bFlashLightTransmitOthers = false;
 static float g_flFlashLightBrightness = 1.0f;
 static float g_flFlashLightDistance = 54.0f; // The minimum distance such that an awp wouldn't block the light
 static Color g_clrFlashLightColor(255, 255, 255);
 static std::string g_sFlashLightAttachment = "axis_of_intent";
 
 FAKE_BOOL_CVAR(cs2f_flashlight_shadows, "Whether to enable flashlight shadows", g_bFlashLightShadows, true, false)
+FAKE_BOOL_CVAR(cs2f_flashlight_transmit_others, "Whether to transmit other player's flashlights, recommended to have shadows off for this", g_bFlashLightTransmitOthers, true, false)
 FAKE_FLOAT_CVAR(cs2f_flashlight_brightness, "How bright should flashlights be", g_flFlashLightBrightness, 1.0f, false)
 FAKE_FLOAT_CVAR(cs2f_flashlight_distance, "How far flashlights should be from the player's head", g_flFlashLightDistance, 54.0f, false)
 FAKE_COLOR_CVAR(cs2f_flashlight_color, "What color to use for flashlights", g_clrFlashLightColor, false)
