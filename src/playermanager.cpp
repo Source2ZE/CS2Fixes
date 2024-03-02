@@ -135,11 +135,15 @@ void ZEPlayer::SetHideDistance(int distance)
 }
 
 static bool g_bFlashLightShadows = true;
+static float g_flFlashLightBrightness = 1.0f;
 static float g_flFlashLightDistance = 54.0f; // The minimum distance such that an awp wouldn't block the light
+static Color g_clrFlashLightColor(255, 255, 255);
 static std::string g_sFlashLightAttachment = "axis_of_intent";
 
 FAKE_BOOL_CVAR(cs2f_flashlight_shadows, "Whether to enable flashlight shadows", g_bFlashLightShadows, true, false)
+FAKE_FLOAT_CVAR(cs2f_flashlight_brightness, "How bright should flashlights be", g_flFlashLightBrightness, 1.0f, false)
 FAKE_FLOAT_CVAR(cs2f_flashlight_distance, "How far flashlights should be from the player's head", g_flFlashLightDistance, 54.0f, false)
+FAKE_COLOR_CVAR(cs2f_flashlight_color, "What color to use for flashlights", g_clrFlashLightColor, false)
 FAKE_STRING_CVAR(cs2f_flashlight_attachment, "Which attachment to parent a flashlight to", g_sFlashLightAttachment, false)
 
 void ZEPlayer::SpawnFlashLight()
@@ -159,8 +163,8 @@ void ZEPlayer::SpawnFlashLight()
 	CBarnLight *pLight = (CBarnLight *)CreateEntityByName("light_barn");
 
 	pLight->m_bEnabled = true;
-	pLight->m_Color->SetColor(255, 255, 255, 255);
-	pLight->m_flBrightness = 1.0f;
+	pLight->m_Color->SetColor(g_clrFlashLightColor[0], g_clrFlashLightColor[1], g_clrFlashLightColor[2]);
+	pLight->m_flBrightness = g_flFlashLightBrightness;
 	pLight->m_flRange = 2048.0f;
 	pLight->m_flSoftX = 1.0f;
 	pLight->m_flSoftY = 1.0f;
