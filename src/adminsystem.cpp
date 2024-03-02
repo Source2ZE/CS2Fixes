@@ -1034,7 +1034,7 @@ void CreateBeacon(int playerSlot)
 	{
 		CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(playerSlot);
 		
-		if (!pPlayer || pPlayer->m_iTeamNum < CS_TEAM_T || !pPlayer->m_hPlayerPawn->IsAlive())
+		if (!pPlayer || pPlayer->m_iTeamNum < CS_TEAM_T || !pPlayer->GetPlayerPawn()->IsAlive())
 		{
 			KillBeacon(playerSlot);
 			return -1.0f;

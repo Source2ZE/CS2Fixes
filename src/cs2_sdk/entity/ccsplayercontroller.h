@@ -35,13 +35,20 @@ public:
 	SCHEMA_FIELD(bool, m_bPawnIsAlive);
 	SCHEMA_FIELD(CHandle<CCSPlayerPawn>, m_hPlayerPawn);
 
-	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn) {
+	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn)
+	{
 		return (CCSPlayerController*)pawn->m_hController().Get();
 	}
 
 	static CCSPlayerController* FromSlot(CPlayerSlot slot)
 	{
 		return (CCSPlayerController*)g_pEntitySystem->GetBaseEntity(CEntityIndex(slot.Get() + 1));
+	}
+
+	// Returns the actual player pawn
+	CCSPlayerPawn *GetPlayerPawn()
+	{
+		return m_hPlayerPawn().Get();
 	}
 
 	ZEPlayer* GetZEPlayer()
@@ -72,7 +79,7 @@ public:
 
 	void Respawn()
 	{
-		CCSPlayerPawn *pPawn = m_hPlayerPawn.Get();
+		CCSPlayerPawn *pPawn = GetPlayerPawn();
 		if (!pPawn || pPawn->IsAlive())
 			return;
 
@@ -90,5 +97,15 @@ public:
 			return STATE_NONE;
 
 		return pPawn->m_iPlayerState();
+	}
+
+	Z_CBaseEntity *GetObserverTarget()
+	{
+		auto pPawn = GetPawn();
+
+		if (!pPawn)
+			return nullptr;
+
+		return pPawn->m_pObserverServices->m_hObserverTarget().Get();
 	}
 };
