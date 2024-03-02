@@ -78,3 +78,14 @@ void Panic(const char *, ...);
 		else																											\
 			variable_name = args[1];																					\
 	}
+
+#define FAKE_COLOR_CVAR(name, description, variable_name, protect)														\
+	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | (protect ? FCVAR_PROTECTED : FCVAR_NONE))	\
+	{																													\
+		if (args.ArgC() < 2)																							\
+			Msg("%s %i %i %i\n", args[0], variable_name[0], variable_name[1], variable_name[2]);						\
+		else if (args.ArgC() == 2)																						\
+			V_StringToColor(args[1], variable_name);																	\
+		else																											\
+			V_StringToColor(args.ArgS(), variable_name);																\
+	}
