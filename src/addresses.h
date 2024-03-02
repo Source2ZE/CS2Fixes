@@ -52,6 +52,9 @@ class CGameRules;
 class CEntityKeyValues;
 class IRecipientFilter;
 
+struct EmitSound_t;
+struct SndOpEventGuid_t;
+
 namespace addresses
 {
 	bool Initialize(CGameConfig *g_GameConfig);
@@ -83,7 +86,7 @@ namespace addresses
 	inline void(FASTCALL *CEntityIdentity_SetEntityName)(CEntityIdentity *pEntity, const char *pName);
 	inline void(FASTCALL *CBaseEntity_EmitSoundParams)(Z_CBaseEntity *pEntity, const char *pszSound, int nPitch, float flVolume, float flDelay);
 	inline void(FASTCALL *CBaseEntity_SetParent)(Z_CBaseEntity *pEntity, Z_CBaseEntity *pNewParent, CUtlStringToken nBoneOrAttachName, matrix3x4a_t *pOffsetTransform);
-
-	inline int (FASTCALL *DispatchParticleEffect)(const char *pszParticleName, int iAttachType, Z_CBaseEntity *pEntity,
+	inline int(FASTCALL *DispatchParticleEffect)(const char *pszParticleName, int iAttachType, Z_CBaseEntity *pEntity,
 		char iAttachmentPoint, CUtlSymbolLarge iAttachmentName, bool bResetAllParticlesOnEntity, int nSplitScreenPlayerSlot, IRecipientFilter *a7, byte *a8);
+	inline SndOpEventGuid_t(FASTCALL *CBaseEntity_EmitSoundFilter)(IRecipientFilter &filter, CEntityIndex ent, const EmitSound_t &params);
 }

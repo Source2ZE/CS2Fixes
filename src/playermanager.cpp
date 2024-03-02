@@ -26,6 +26,7 @@
 #include "entity/ccsplayercontroller.h"
 #include "utils/entity.h"
 #include "serversideclient.h"
+#include "recipientfilters.h"
 #include "ctimer.h"
 #include "ctime"
 
@@ -189,10 +190,11 @@ void ZEPlayer::SpawnFlashLight()
 
 void ZEPlayer::ToggleFlashLight()
 {
-	CBarnLight *pLight = GetFlashLight();
-
 	// Play the "click" sound
-	g_pEngineServer2->ClientCommand(GetPlayerSlot(), "play sounds/common/talk.vsnd");
+	CSingleRecipientFilter filter(GetPlayerSlot());
+	CCSPlayerController::FromSlot(GetPlayerSlot())->EmitSoundFilter(filter, "HudChat.Message");
+
+	CBarnLight *pLight = GetFlashLight();
 
 	// Create a flashlight if we don't have one, and don't bother with the input since it spawns enabled
 	if (!pLight)

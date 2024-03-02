@@ -189,6 +189,16 @@ public:
 		addresses::CBaseEntity_EmitSoundParams(this, pszSound, nPitch, flVolume, flDelay);
 	}
 
+	void EmitSoundFilter(IRecipientFilter &filter, const char *pszSound, float flVolume = 1.0, float flPitch = 1.0)
+	{
+		EmitSound_t params;
+		params.m_pSoundName = pszSound;
+		params.m_flVolume = flVolume;
+		params.m_nPitch = flPitch;
+
+		addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
+	}
+
 	// This was needed so we can parent to nameless entities using pointers
 	void SetParent(Z_CBaseEntity *pNewParent)
 	{
