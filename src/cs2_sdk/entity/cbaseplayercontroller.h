@@ -44,6 +44,10 @@ public:
 	SCHEMA_FIELD_POINTER(char, m_iszPlayerName)
 	SCHEMA_FIELD(PlayerConnectedState, m_iConnected)
 
+	// Returns the current pawn, which could be one of those:
+	// - The player's actual pawn
+	// - An observer pawn if spectating
+	// - A bot pawn if controlling one
 	CBasePlayerPawn *GetPawn() { return m_hPawn.Get(); }
 	const char *GetPlayerName() { return m_iszPlayerName(); }
 	int GetPlayerSlot() { return entindex() - 1; }

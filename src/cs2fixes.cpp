@@ -686,16 +686,18 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			if (!pController || !pController->IsConnected() || j == iPlayerSlot)
 				continue;
 
+			// Don't transmit other players' flashlights, except the one they're watching if in spec
 			CBarnLight *pFlashLight = g_playerManager->GetPlayer(j)->GetFlashLight();
 
-			// Don't transmit other players' flashlights
-			if (pFlashLight)
+			if (pFlashLight && !(pSelfController->GetPlayerState() == STATE_OBSERVER_MODE && pSelfController->GetObserverTarget() == pController->GetPawn()))
 				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
 
+			// Always transmit other players if spectating
 			if (!g_bEnableHide || pSelfController->GetPlayerState() == STATE_OBSERVER_MODE)
-				break;
+				continue;
 
-			auto pPawn = pController->m_hPawn.Get();
+			// Get the actual pawn as the player could be currently spectating
+			CCSPlayerPawn *pPawn = pController->GetPlayerPawn();
 
 			if (!pPawn)
 				continue;
@@ -710,7 +712,6 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 	VPROF_EXIT_SCOPE();
 }
 
-// Potentially might not work
 void CS2Fixes::OnLevelInit( char const *pMapName,
 									 char const *pMapEntities,
 									 char const *pOldLevel,
