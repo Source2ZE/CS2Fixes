@@ -685,7 +685,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			CCSPlayerController* pController = CCSPlayerController::FromSlot(j);
 
 			// Always transmit to themselves
-			if (!pController || !pController->IsConnected() || j == iPlayerSlot)
+			if (!pController || j == iPlayerSlot)
 				continue;
 
 			// Don't transmit other players' flashlights, except the one they're watching if in spec
