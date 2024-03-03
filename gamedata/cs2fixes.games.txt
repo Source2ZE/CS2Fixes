@@ -430,13 +430,6 @@
 				"windows"		"77"
 				"linux"			"79"
 			}
-			// engine
-			// "Received acknowledgement tick=%d"
-			"AcknowledgementTick"
-			{
-				"windows"		"332"
-				"linux"			"348"
-			}
 		}
 		"Patches"
 		{
