@@ -19,12 +19,10 @@ public:
 	const char *GetClientName() const { return m_Name.Get(); }
 	netadr_t *GetRemoteAddress() const { return (netadr_t*)&m_NetAdr; }
 
-	void SendFullUpdate()
+	void ForceFullUpdate()
 	{
-		Message("Sending full update to %s\n", GetClientName());
-
-		static int offset = g_GameConfig->GetOffset("AcknowledgementTick");
-		*(uint32*)((byte*)this + offset) = -1; // Setting -1 will force a full update on this client
+		Message("Forcing full update on client %s\n", GetClientName());
+		m_nDeltaTick = -1;
 	}
 
 private:
@@ -47,5 +45,7 @@ private:
 	CEntityIndex m_nEntityIndex;	// 212 | 228
 	CUtlString m_Name;				// 216 | 232
 	[[maybe_unused]] char pad8[0x20];
-	netadr_t m_NetAdr;
+	netadr_t m_NetAdr;				// 256 | 272
+	[[maybe_unused]] char pad9[0x40];
+	int m_nDeltaTick;				// 332 | 348
 };

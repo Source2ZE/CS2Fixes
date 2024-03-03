@@ -469,7 +469,7 @@ void CPlayerManager::UpdatePlayerStates()
 				CServerSideClient *pClient = GetClientBySlot(i);
 
 				if (pClient)
-					pClient->SendFullUpdate();
+					pClient->ForceFullUpdate();
 			}
 		}
 	}
