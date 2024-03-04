@@ -398,7 +398,8 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 	if (g_bEnableZR)
 		ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 
-    if (!V_strcasecmp(pInputName->String(), "KeyValues"))
+	// Handle KeyValue(s)
+    if (!V_strnicmp(pInputName->String(), "KeyValue", 8))
     {
         if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
         {
