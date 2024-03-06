@@ -689,11 +689,13 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 				continue;
 
 			// Don't transmit other players' flashlights, except the one they're watching if in spec
-			CBarnLight *pFlashLight = g_playerManager->GetPlayer(j)->GetFlashLight();
+			CBarnLight *pFlashLight = pController->IsConnected() ? g_playerManager->GetPlayer(j)->GetFlashLight() : nullptr;
 
-			if (!g_bFlashLightTransmitOthers && pFlashLight && 
+			if (!g_bFlashLightTransmitOthers && pFlashLight &&
 				!(pSelfController->GetPlayerState() == STATE_OBSERVER_MODE && pSelfController->GetObserverTarget() == pController->GetPawn()))
+			{
 				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
+			}
 
 			// Always transmit other players if spectating
 			if (!g_bEnableHide || pSelfController->GetPlayerState() == STATE_OBSERVER_MODE)
