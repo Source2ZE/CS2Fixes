@@ -96,9 +96,9 @@ static void AddOutputCustom_Angles(Z_CBaseEntity*                  pInstance,
                                    CEntityInstance*                pCaller,
                                    const std::vector<std::string>& vecArgs)
 {
-    QAngle angles(clamp(Q_atof(vecArgs[0].c_str()), -360.f, 360.f),
-                  clamp(Q_atof(vecArgs[1].c_str()), -360.f, 360.f),
-                  clamp(Q_atof(vecArgs[2].c_str()), -360.f, 360.f));
+    QAngle angles(clamp(Q_atof(vecArgs[1].c_str()), -360.f, 360.f),
+                  clamp(Q_atof(vecArgs[2].c_str()), -360.f, 360.f),
+                  clamp(Q_atof(vecArgs[3].c_str()), -360.f, 360.f));
     pInstance->Teleport(nullptr, &angles, nullptr);
 
 #ifdef _DEBUG
