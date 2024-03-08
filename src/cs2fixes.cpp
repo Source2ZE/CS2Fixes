@@ -692,13 +692,13 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			CBarnLight *pFlashLight = pController->IsConnected() ? g_playerManager->GetPlayer(j)->GetFlashLight() : nullptr;
 
 			if (!g_bFlashLightTransmitOthers && pFlashLight &&
-				!(pSelfController->GetPlayerState() == STATE_OBSERVER_MODE && pSelfController->GetObserverTarget() == pController->GetPawn()))
+				!(pSelfController->GetPawnState() == STATE_OBSERVER_MODE && pSelfController->GetObserverTarget() == pController->GetPawn()))
 			{
 				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
 			}
 
 			// Always transmit other players if spectating
-			if (!g_bEnableHide || pSelfController->GetPlayerState() == STATE_OBSERVER_MODE)
+			if (!g_bEnableHide || pSelfController->GetPawnState() == STATE_OBSERVER_MODE)
 				continue;
 
 			// Get the actual pawn as the player could be currently spectating

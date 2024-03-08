@@ -110,7 +110,7 @@ public:
 		m_bInGame = false;
 		m_iMZImmunity = 0; // out of 100
 		m_flNominateTime = -60.0f;
-		m_iPlayerState = -1;
+		m_iPlayerState = 1; // STATE_WELCOME is the initial state
 	}
 
 	~ZEPlayer()

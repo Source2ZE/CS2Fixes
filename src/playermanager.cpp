@@ -442,6 +442,19 @@ void CPlayerManager::CheckHideDistances()
 	VPROF_EXIT_SCOPE();
 }
 
+static const char *g_szPlayerStates[] =
+{
+	"STATE_ACTIVE",
+	"STATE_WELCOME",
+	"STATE_PICKINGTEAM",
+	"STATE_PICKINGCLASS",
+	"STATE_DEATH_ANIM",
+	"STATE_DEATH_WAIT_FOR_KEY",
+	"STATE_OBSERVER_MODE",
+	"STATE_GUNGAME_RESPAWN",
+	"STATE_DORMANT"
+};
+
 void CPlayerManager::UpdatePlayerStates()
 {
 	for (int i = 0; i < gpGlobals->maxClients; i++)
@@ -457,14 +470,16 @@ void CPlayerManager::UpdatePlayerStates()
 			continue;
 
 		uint32 iPreviousPlayerState = pPlayer->GetPlayerState();
-		uint32 iCurrentPlayerState = pController->GetPlayerState();
+		uint32 iCurrentPlayerState = pController->GetPawnState();
 
 		if (iCurrentPlayerState != iPreviousPlayerState)
 		{
+			Message("Player %s changed states from %s to %s\n", pController->GetPlayerName(), g_szPlayerStates[iPreviousPlayerState], g_szPlayerStates[iCurrentPlayerState]);
+
 			pPlayer->SetPlayerState(iCurrentPlayerState);
 
-			// Send full update to people going into spec as a mitigation for hide crashes
-			if (iCurrentPlayerState == STATE_OBSERVER_MODE)
+			// Send full update to people going in/out of spec as a mitigation for hide crashes
+			if (iCurrentPlayerState == STATE_OBSERVER_MODE || iPreviousPlayerState == STATE_OBSERVER_MODE)
 			{
 				CServerSideClient *pClient = GetClientBySlot(i);
 

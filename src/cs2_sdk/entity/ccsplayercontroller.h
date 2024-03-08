@@ -88,13 +88,25 @@ public:
 		CALL_VIRTUAL(void, offset, this);
 	}
 
-	CSPlayerState GetPlayerState()
+	CSPlayerState GetPawnState()
 	{
 		// All CS2 pawns are derived from this
 		CCSPlayerPawnBase *pPawn = (CCSPlayerPawnBase*)GetPawn();
 
+		// The player is still joining so their pawn doesn't exist yet, and STATE_WELCOME is what they start with
 		if (!pPawn)
-			return STATE_NONE;
+			return STATE_WELCOME;
+
+		return pPawn->m_iPlayerState();
+	}
+
+	CSPlayerState GetPlayerPawnState()
+	{
+		CCSPlayerPawn *pPawn = GetPlayerPawn();
+
+		// The player is still joining so their pawn doesn't exist yet, and STATE_WELCOME is what they start with
+		if (!pPawn)
+			return STATE_WELCOME;
 
 		return pPawn->m_iPlayerState();
 	}
