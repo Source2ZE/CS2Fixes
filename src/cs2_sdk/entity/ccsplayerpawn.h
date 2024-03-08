@@ -33,8 +33,6 @@ enum CSPlayerState
 	STATE_GUNGAME_RESPAWN = 0x7,
 	STATE_DORMANT = 0x8,
 	NUM_PLAYER_STATES = 0x9,
-
-	STATE_NONE = -1
 };
 
 
