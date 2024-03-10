@@ -36,9 +36,9 @@ public:
 	CPlayerSlot GetRecipientIndex(int slot) const override { return m_iRecipient; }
 
 private:
+	CPlayerSlot m_iRecipient;
 	bool m_bReliable;
 	bool m_bInitMessage;
-	CPlayerSlot m_iRecipient;
 };
 
 

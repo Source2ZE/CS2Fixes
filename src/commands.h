@@ -76,10 +76,10 @@ public:
 
 private:
 	FnChatCommandCallback_t m_pfnCallback;
-	uint64 m_nAdminFlags;
-	uint64 m_nCmdFlags;
 	std::string m_sName;
 	std::string m_sDescription;
+	uint64 m_nAdminFlags;
+	uint64 m_nCmdFlags;
 };
 
 struct WeaponMapEntry_t

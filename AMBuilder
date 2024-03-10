@@ -17,6 +17,7 @@ for sdk_target in MMSPlugin.sdk_targets:
 
   if binary.compiler.family == 'clang':
     binary.compiler.cxxflags += ['-Wno-register']
+    binary.compiler.cxxflags += ['-Wno-invalid-offsetof']
 
   binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath, 'src', 'cs2_sdk'),

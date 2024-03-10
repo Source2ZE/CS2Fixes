@@ -25,7 +25,7 @@
 #define FASTCALL __fastcall
 #define THISCALL __thiscall
 #else
-#define FASTCALL __attribute__((fastcall))
+#define FASTCALL
 #define THISCALL
 #define strtok_s strtok_r
 #endif

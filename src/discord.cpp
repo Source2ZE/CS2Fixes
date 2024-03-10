@@ -77,11 +77,11 @@ void CDiscordBot::PostMessage(const char* sMessage) {
 		jRequestBody["avatar_url"] = m_pszAvatarUrl;
 
 	// Send the request
-	const char* sRequestBody = jRequestBody.dump().c_str();
+	std::string sRequestBody = jRequestBody.dump();
 	if (g_bDebugDiscordRequests) {
-		Message("Sending '%s' to %s.\n", sRequestBody, GetWebhookUrl());
+		Message("Sending '%s' to %s.\n", sRequestBody.c_str(), GetWebhookUrl());
 	}
-	g_HTTPManager.POST(m_pszWebhookUrl, sRequestBody, &DiscordHttpCallback);
+	g_HTTPManager.POST(m_pszWebhookUrl, sRequestBody.c_str(), &DiscordHttpCallback);
 }
 
 bool CDiscordBotManager::LoadDiscordBotsConfig()

@@ -192,10 +192,10 @@ private:
 	bool m_bConnected;
 	const CSteamID* m_UnauthenticatedSteamID;
 	const CSteamID* m_SteamID;
+	CPlayerSlot m_slot;
 	bool m_bFakeClient;
 	bool m_bMuted;
 	bool m_bGagged;
-	CPlayerSlot m_slot;
 	uint64 m_iAdminFlags;
 	int m_iHideDistance;
 	CBitVec<MAXPLAYERS> m_shouldTransmit;
