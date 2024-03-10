@@ -1,13 +1,6 @@
 [submodule "sdk"]
 	path = sdk
 	url = https://github.com/alliedmodders/hl2sdk.git
-[submodule "vendor/subhook"]
-	path = vendor/subhook
-	url = https://github.com/Zeex/subhook
-[submodule "vendor/protobuf-3.21.8"]
-	path = vendor/protobuf-3.21.8
-	url = https://github.com/protocolbuffers/protobuf/
-	branch = v3.21.8
 [submodule "hl2sdk-manifests"]
 	path = hl2sdk-manifests
 	url = https://github.com/alliedmodders/hl2sdk-manifests
