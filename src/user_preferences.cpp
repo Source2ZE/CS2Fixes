@@ -301,8 +301,8 @@ void CUserPreferencesREST::StorePreferences(uint64 iSteamId, CUtlMap<uint32, CPr
 	V_snprintf(sUserPreferencesUrl, sizeof(sUserPreferencesUrl), "%s%llu", m_pszUserPreferencesUrl, iSteamId);
 	
 	// Dump the Json object and submit the POST request
-	const char* sDumpedJson = sJsonObject.dump().c_str();
-	g_HTTPManager.POST(sUserPreferencesUrl, sDumpedJson, [iSteamId, cb](HTTPRequestHandle request, json data) {
+	std::string sDumpedJson = sJsonObject.dump();
+	g_HTTPManager.POST(sUserPreferencesUrl, sDumpedJson.c_str(), [iSteamId, cb](HTTPRequestHandle request, json data) {
 #ifdef _DEBUG
 	Message("Executing storage callback during store for %llu\n", iSteamId);
 #endif
