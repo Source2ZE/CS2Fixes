@@ -344,19 +344,19 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 		bool bCommand = *args[1] == '!' || *args[1] == '/';
 
 		// Chat messages should generate events regardless
-		if (pController)
-		{
-			IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_chat");
+		// if (pController)
+		// {
+		// 	IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_chat");
 
-			if (pEvent)
-			{
-				pEvent->SetBool("teamonly", bTeamSay);
-				pEvent->SetInt("userid", pController->GetPlayerSlot());
-				pEvent->SetString("text", args[1]);
+		// 	if (pEvent)
+		// 	{
+		// 		pEvent->SetBool("teamonly", bTeamSay);
+		// 		pEvent->SetInt("userid", pController->GetPlayerSlot());
+		// 		pEvent->SetString("text", args[1]);
 
-				g_gameEventManager->FireEvent(pEvent, true);
-			}
-		}
+		// 		g_gameEventManager->FireEvent(pEvent, true);
+		// 	}
+		// }
 
 		if (!bGagged && !bSilent && !bFlooding)
 		{
