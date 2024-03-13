@@ -452,6 +452,8 @@ int64 FASTCALL Detour_AddString(void *pStringTable, bool bServer, const char *ps
 	// The whole name is "EntityNames" so do the bare minimum comparison, since no other table starts with "Ent"
 	if (!V_strncmp(pszStringTableName, "Ent", 3))
 		return -1;
+
+	return CNetworkStringTable_AddString(pStringTable, bServer, pszString, a4);
 }
 
 CUtlVector<CDetourBase *> g_vecDetours;
