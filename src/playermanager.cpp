@@ -455,6 +455,8 @@ static const char *g_szPlayerStates[] =
 	"STATE_DORMANT"
 };
 
+extern bool g_bEnableHide;
+
 void CPlayerManager::UpdatePlayerStates()
 {
 	for (int i = 0; i < gpGlobals->maxClients; i++)
@@ -479,7 +481,7 @@ void CPlayerManager::UpdatePlayerStates()
 			pPlayer->SetPlayerState(iCurrentPlayerState);
 
 			// Send full update to people going in/out of spec as a mitigation for hide crashes
-			if (iCurrentPlayerState == STATE_OBSERVER_MODE || iPreviousPlayerState == STATE_OBSERVER_MODE)
+			if (g_bEnableHide && (iCurrentPlayerState == STATE_OBSERVER_MODE || iPreviousPlayerState == STATE_OBSERVER_MODE))
 			{
 				CServerSideClient *pClient = GetClientBySlot(i);
 
