@@ -1,0 +1,118 @@
+// nlohmann json parser allows for use of // and /**/ comments by setting `ignore_comments` parameter to true in parsing function
+{
+	"Human":
+	{
+		"HumanClass1":
+		{
+			// class behavior, values will not be inherited from base class
+			"enabled":					true,
+			"team_default":				true,
+
+			// player behavior
+			// all player attributes are required if it doesn't have a base class
+			"health":					100,
+			"model":
+			[
+				{
+					"modelname":		"characters/models/ctm_fbi/ctm_fbi.vmdl", // required, otherwise model entry is skipped
+					"color":			"255 255 255", // optional, defaults to "255 255 255"
+					"skin":				0 // optional, can be a single integer or array of integers. Defaults to 0
+				}
+			],
+			"scale":					1.0,
+			"speed":					1.0,
+			"gravity":					1.0,
+			"admin_flag":				"" // Allowed for all players
+		},
+		"HumanClass2":
+		{
+			"enabled":					true,
+			"team_default":				true,
+
+			"base":						"HumanClass1", // optional
+
+			"model": // overrides HumanClass1 model entries
+			[
+				// model will be picked randomly from all entries
+				{
+					"modelname":		"characters/models/ctm_sas/ctm_sas.vmdl"
+				},
+				{
+					"modelname":		"characters/models/ctm_st6/ctm_st6_variantg.vmdl"
+				}
+			],
+			"admin_flag":				"b" // Only enabled in !zclass for ADMFLAG_GENERIC
+		},
+		"HumanClass3":
+		{
+			"enabled":					false,
+			"team_default":				false,
+
+			"base":						"HumanClass1",
+
+			"model":
+			[
+				{
+					// A custom model which will be automatically precached, must be loaded onto server/client by some means (e.g. workshop reuploads)
+					"modelname":		"characters/models/s2ze/isaac_clarke/isaac_clarke.vmdl",
+					"skin":				[0, 1, 3, 4] // The S2ZE Isaac Clarke model has 5 skins, at indexes 0-4, Skin will be randomly picked from indexes provided here
+				}
+			]
+		},
+		"HumanClass4":
+		{
+			"enabled":					false,
+			"team_default":				false,
+
+			"base":						"HumanClass3"
+		}
+	},
+	"Zombie":
+	{
+		"ZombieClass1":
+		{
+			"enabled":					true,
+			"team_default":				true,
+			
+			"health":					10000,
+			"model":
+			[
+				{
+					"modelname":		"characters/models/tm_jumpsuit/tm_jumpsuit_varianta.vmdl",
+					"color":			"255 150 150",
+					"skin":				0
+				}
+			],
+			"scale":					1.05,
+			"speed":					1.0,
+			"gravity":					1.0,
+			"admin_flag":				"",
+			
+			"health_regen_count":		250,
+			"health_regen_interval":	5.0
+		},
+		// special class that the first batch of zombie will be assigned to
+		"MotherZombie":
+		{
+			"enabled":					true,
+			"team_default":				false,
+			
+			"health":					40000,
+			"model":
+			[
+				{
+					"modelname":		"characters/models/tm_phoenix_heavy/tm_phoenix_heavy.vmdl",
+					"color":			"255 100 100",
+					"skin":				0
+				}
+			],
+			"scale":					1.15,
+			"speed":					1.0,
+			"gravity":					1.0,
+			"admin_flag":				"",
+
+			"health_regen_count":		500,
+			"health_regen_interval":	5.0
+		}
+	}
+}
