@@ -227,7 +227,9 @@ public:
 
 	SCHEMA_FIELD(Vector, m_fGlowColor)
 	SCHEMA_FIELD(int, m_iGlowType)
+	SCHEMA_FIELD(int, m_iGlowTeam)
 	SCHEMA_FIELD(int, m_nGlowRange)
+	SCHEMA_FIELD(int, m_nGlowRangeMin)
 	SCHEMA_FIELD(Color, m_glowColorOverride)
 	SCHEMA_FIELD(bool, m_bFlashing)
 	SCHEMA_FIELD(bool, m_bGlowing)

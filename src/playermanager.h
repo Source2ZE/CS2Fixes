@@ -25,6 +25,7 @@
 #include "bitvec.h"
 #include "entity/lights.h"
 #include "entity/cparticlesystem.h"
+#include "gamesystem.h"
 
 #define DECAL_PREF_KEY_NAME "hide_decals"
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
@@ -111,6 +112,9 @@ public:
 		m_iMZImmunity = 0; // out of 100
 		m_flNominateTime = -60.0f;
 		m_iPlayerState = 1; // STATE_WELCOME is the initial state
+		m_iLeaderIndex = 0;
+		m_iLeaderTracerIndex = 0;
+		m_flLeaderVoteTime = -30.0f;
 	}
 
 	~ZEPlayer()
@@ -158,6 +162,9 @@ public:
 	void SetFlashLight(CBarnLight *pLight) { m_hFlashLight.Set(pLight); }
 	void SetBeaconParticle(CParticleSystem *pParticle) { m_hBeaconParticle.Set(pParticle); }
 	void SetPlayerState(uint32 iPlayerState) { m_iPlayerState = iPlayerState; }
+	void SetLeader(int leaderIndex);
+	void SetLeaderTracer(int tracerIndex) { m_iLeaderTracerIndex = tracerIndex; };
+	void SetLeaderVoteTime(float flCurtime) { m_flLeaderVoteTime = flCurtime; }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -180,12 +187,22 @@ public:
 	CParticleSystem *GetBeaconParticle() { return m_hBeaconParticle.Get(); }
 	ZEPlayerHandle GetHandle() { return m_Handle; }
 	uint32 GetPlayerState() { return m_iPlayerState; }
+	bool IsLeader() { return (bool) m_iLeaderIndex; }
+	int GetLeaderIndex() { return m_iLeaderIndex; }
+	int GetLeaderTracer() { return m_iLeaderTracerIndex; }
+	int GetLeaderVoteCount();
+	bool HasPlayerVotedLeader(ZEPlayer* pPlayer);
+	float GetLeaderVoteTime() { return m_flLeaderVoteTime; }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
 	void CheckInfractions();
 	void SpawnFlashLight();
 	void ToggleFlashLight();
+	void StartBeacon(Color color, ZEPlayerHandle Giver = 0);
+	void EndBeacon();
+	void AddLeaderVote(ZEPlayer* pPlayer);
+	void PurgeLeaderVotes();
 
 private:
 	bool m_bAuthenticated;
@@ -217,6 +234,10 @@ private:
 	CHandle<CParticleSystem> m_hBeaconParticle;
 	ZEPlayerHandle m_Handle;
 	uint32 m_iPlayerState;
+	int m_iLeaderIndex;
+	CUtlVector<ZEPlayerHandle> m_vecLeaderVotes;
+	int m_iLeaderTracerIndex;
+	float m_flLeaderVoteTime;
 };
 
 class CPlayerManager
@@ -275,3 +296,5 @@ private:
 };
 
 extern CPlayerManager *g_playerManager;
+
+void PrecacheBeaconParticle(IEntityResourceManifest* pResourceManifest);

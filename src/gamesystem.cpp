@@ -22,7 +22,8 @@
 #include "addresses.h"
 #include "gamesystem.h"
 #include "zombiereborn.h"
-#include "adminsystem.h"
+#include "playermanager.h"
+#include "leader.h"
 
 extern CGameConfig *g_GameConfig;
 
@@ -69,7 +70,8 @@ GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
 	// pResourceManifest->AddResource("characters/models/my_character_model.vmdl");
 
 	ZR_Precache(pResourceManifest);
-	PrecacheAdminBeaconParticle(pResourceManifest);
+	PrecacheBeaconParticle(pResourceManifest);
+	Leader_Precache(pResourceManifest);
 }
 
 // Called every frame before entities think
