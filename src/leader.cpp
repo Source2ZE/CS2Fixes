@@ -79,7 +79,7 @@ Color Leader_ColorFromString(const char* pszColorName)
 	int iColorIndex = V_StringToInt32(pszColorName, -1);
 
 	if (iColorIndex > -1)
-		return LeaderColorMap[min(iColorIndex, g_nLeaderColorMapSize-1)].clColor;
+		return LeaderColorMap[MIN(iColorIndex, g_nLeaderColorMapSize-1)].clColor;
 
 	for (int i = 0; i < g_nLeaderColorMapSize; i++)
 	{
@@ -461,8 +461,7 @@ CON_COMMAND_CHAT(defend, "[name|duration] [duration] - place a defend marker on 
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on yourself lasting 30 seconds.");
 			return;
 		}
-
-		iArg1 = min(iArg1, 60);
+		iArg1 = MIN(iArg1, 60);
 
 		Leader_CreateDefendMarker(pPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, iArg1);
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on yourself lasting %i seconds.", iArg1);
@@ -501,7 +500,7 @@ CON_COMMAND_CHAT(defend, "[name|duration] [duration] - place a defend marker on 
 		return;
 	}
 
-	iArg2 = min(iArg2, 60);
+	iArg2 = MIN(iArg2, 60);
 
 	Leader_CreateDefendMarker(pTargetPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, iArg2);
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on %s lasting %i seconds.", pTarget->GetPlayerName(), iArg2);
@@ -590,7 +589,7 @@ CON_COMMAND_CHAT(tracer, "<name> [color] - toggle projectile tracers on a player
 		int iIndex = V_StringToInt32(args[2], -1);
 
 		if (iIndex > -1)
-			iTracerIndex = min(iIndex, g_nLeaderColorMapSize-1);
+			iTracerIndex = MIN(iIndex, g_nLeaderColorMapSize-1);
 		else
 		{
 			for (int i = 0; i < g_nLeaderColorMapSize; i++)
@@ -855,7 +854,7 @@ CON_COMMAND_CHAT_FLAGS(forceld, "<name> [color]- forces leader status on a playe
 
 		if (iColorIndex > -1)
 		{
-			iColorIndex = min(iColorIndex, g_nLeaderColorMapSize-1);
+			iColorIndex = MIN(iColorIndex, g_nLeaderColorMapSize-1);
 		}
 		else
 		{
