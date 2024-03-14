@@ -345,6 +345,8 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 		Message("%s was voted for Leader with %i vote(s). LeaderIndex = %i\n", pTarget->GetPlayerName(), iNeededLeaderVoteCount, g_iLeaderIndex);
 
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s is now a Leader!", pTarget->GetPlayerName());
+		
+		ClientPrint(pTarget, HUD_PRINTTALK, CHAT_PREFIX "You became a leader! Use !leaderhelp and !leadercolors commands to list available leader commands and colors");
 
 		// apply apparent leader perks (like leader model, glow(?)) here
 		// also run a timer somewhere (per player or global) to reapply them
