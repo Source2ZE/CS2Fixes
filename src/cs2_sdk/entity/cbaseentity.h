@@ -91,6 +91,22 @@ public:
 	SCHEMA_FIELD(CGameSceneNode *, m_pSceneNode)
 };
 
+class CModelState
+{
+public:
+	DECLARE_SCHEMA_CLASS(CModelState)
+
+	SCHEMA_FIELD(CUtlSymbolLarge, m_ModelName)
+};
+
+class CSkeletonInstance : CGameSceneNode
+{
+public:
+	DECLARE_SCHEMA_CLASS(CSkeletonInstance)
+
+	SCHEMA_FIELD(CModelState, m_modelState)
+};
+
 class CEntitySubclassVDataBase
 {
 public:
@@ -217,6 +233,11 @@ public:
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }
+
+	const char* GetModelName()
+	{
+		return ((CSkeletonInstance*)m_CBodyComponent->m_pSceneNode.Get())->m_modelState().m_ModelName.Get().String();
+	}
 };
 
 class SpawnPoint : public Z_CBaseEntity

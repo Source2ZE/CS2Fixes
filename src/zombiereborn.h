@@ -197,9 +197,11 @@ public:
 		m_HumanClassMap.SetLessFunc(DefLessFunc(uint32));
 	};
 	void LoadPlayerClass();
+	void ApplyBaseClassVisuals(ZRClass *pClass, CCSPlayerPawn *pPawn);
 	ZRHumanClass* GetHumanClass(const char *pszClassName);
 	void ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn *pPawn);
 	void ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn *pPawn);
+	void ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPawn *pPawn);
 	ZRZombieClass* GetZombieClass(const char*pszClassName);
 	void ApplyZombieClass(ZRZombieClass *pClass, CCSPlayerPawn *pPawn);
 	void ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pPawn);
