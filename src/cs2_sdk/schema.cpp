@@ -20,13 +20,12 @@
 #include "schema.h"
 
 #include "../common.h"
-#include "cschemasystem.h"
+#include "schemasystem/schemasystem.h"
 #include "tier1/utlmap.h"
 #include "tier0/memdbgon.h"
 #include "plat.h"
 #include "entity/cbaseentity.h"
 
-extern CSchemaSystem *g_pSchemaSystem2;
 extern CGlobalVars *gpGlobals;
 
 using SchemaKeyValueMap_t = CUtlMap<uint32_t, SchemaKey>;
@@ -35,10 +34,10 @@ using SchemaTableMap_t = CUtlMap<uint32_t, SchemaKeyValueMap_t*>;
 
 static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 {
-    for (int i = 0; i < field.m_metadata_size; i++)
+    for (int i = 0; i < field.m_nStaticMetadataCount; i++)
     {
         static auto networkEnabled = hash_32_fnv1a_const("MNetworkEnable");
-        if (networkEnabled == hash_32_fnv1a_const(field.m_metadata[i].m_name))
+        if (networkEnabled == hash_32_fnv1a_const(field.m_pStaticMetadata[i].m_pszName))
             return true;
     }
 
@@ -47,12 +46,12 @@ static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 
 static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* className, uint32_t classKey)
 {
-    CSchemaSystemTypeScope* pType = g_pSchemaSystem2->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
+    CSchemaSystemTypeScope* pType = g_pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
 
     if (!pType)
         return false;
 
-    SchemaClassInfoData_t *pClassInfo = pType->FindDeclaredClass(className);
+    SchemaClassInfoData_t *pClassInfo = pType->FindDeclaredClass(className).Get();
 
     if (!pClassInfo)
     {
@@ -63,8 +62,8 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* cla
         return false;
     }
 
-    short fieldsSize = pClassInfo->GetFieldsSize();
-    SchemaClassFieldData_t* pFields = pClassInfo->GetFields();
+    short fieldsSize = pClassInfo->m_nFieldCount;
+    SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
 
     SchemaKeyValueMap_t *keyValueMap = new SchemaKeyValueMap_t(0, 0, DefLessFunc(uint32_t));
     keyValueMap->EnsureCapacity(fieldsSize);
@@ -75,10 +74,10 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* cla
         SchemaClassFieldData_t& field = pFields[i];
 
 #ifdef _DEBUG
-		Message("%s::%s found at -> 0x%X - %llx\n", className, field.m_name, field.m_single_inheritance_offset, &field);
+		Message("%s::%s found at -> 0x%X - %llx\n", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
 #endif
 
-        keyValueMap->Insert(hash_32_fnv1a_const(field.m_name), {field.m_single_inheritance_offset, IsFieldNetworked(field)});
+        keyValueMap->Insert(hash_32_fnv1a_const(field.m_pszName), {field.m_nSingleInheritanceOffset, IsFieldNetworked(field)});
     }
 
     return true;
@@ -86,27 +85,27 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t *tableMap, const char* cla
 
 int16_t schema::FindChainOffset(const char* className)
 {
-    CSchemaSystemTypeScope* pType = g_pSchemaSystem2->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
+    CSchemaSystemTypeScope* pType = g_pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
 
     if (!pType)
         return false;
 
-    SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className);
+    SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className).Get();
 
     do
     {
-        SchemaClassFieldData_t* pFields = pClassInfo->GetFields();
-        short fieldsSize = pClassInfo->GetFieldsSize();
+        SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
+        short fieldsSize = pClassInfo->m_nFieldCount;
         for (int i = 0; i < fieldsSize; ++i)
         {
             SchemaClassFieldData_t& field = pFields[i];
 
-            if (V_strcmp(field.m_name, "__m_pChainEntity") == 0)
+            if (V_strcmp(field.m_pszName, "__m_pChainEntity") == 0)
             {
-                return field.m_single_inheritance_offset;
+                return field.m_nSingleInheritanceOffset;
             }
         }
-    } while ((pClassInfo = pClassInfo->GetParent()) != nullptr);
+    } while ((pClassInfo = pClassInfo->m_pBaseClasses ? pClassInfo->m_pBaseClasses->m_pClass : nullptr) != nullptr);
 
     return 0;
 }
