@@ -116,9 +116,7 @@ GAME_EVENT_F(player_spawn)
 		if (!pPawn || !pPawn->IsAlive())
 			return -1.0f;
 
-		pPawn->m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
-		pPawn->m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
-		pPawn->CollisionRulesChanged();
+		pPawn->SetCollisionGroup(COLLISION_GROUP_DEBRIS);
 
 		return -1.0f;
 	});
