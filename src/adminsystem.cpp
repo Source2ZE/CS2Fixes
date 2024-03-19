@@ -574,10 +574,19 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - slap a player", ADMFLAG_SLAY)
 		velocity.z += rand() % 200 + 100;
 		pPawn->SetAbsVelocity(velocity);
 
-		int iDamage = V_StringToInt32(args[2], 0);
+		float flDamage = V_StringToFloat32 (args[2], 0);
 			
-		if (iDamage > 0)
-			pPawn->TakeDamage(iDamage);
+		if (flDamage > 0)
+		{
+			// Default to the world
+			Z_CBaseEntity *pAttacker = (Z_CBaseEntity*)g_pEntitySystem->GetBaseEntity(CEntityIndex(0));
+
+			if (player)
+				pAttacker = player->GetPlayerPawn();
+
+			CTakeDamageInfo info(pAttacker, pAttacker, nullptr, flDamage, DMG_GENERIC);
+			pPawn->TakeDamage(info);
+		}
 
 		if (nType < ETargetType::ALL)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slapped");
