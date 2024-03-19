@@ -116,6 +116,7 @@ public:
 	SCHEMA_FIELD(Vector, m_vecAbsVelocity)
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
 	SCHEMA_FIELD(CCollisionProperty*, m_pCollision)
+	SCHEMA_FIELD(MoveCollide_t, m_MoveCollide)
 	SCHEMA_FIELD(MoveType_t, m_MoveType)
 	SCHEMA_FIELD(MoveType_t, m_nActualMoveType)
 	SCHEMA_FIELD(uint32, m_spawnflags)
@@ -214,8 +215,7 @@ public:
 
 	void SetMoveType(MoveType_t nMoveType)
 	{
-		m_MoveType = nMoveType; // necessary to maintain client prediction
-		m_nActualMoveType = nMoveType;
+		addresses::CBaseEntity_SetMoveType(this, nMoveType, m_MoveCollide);
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }

@@ -142,7 +142,6 @@ static void AddOutputCustom_MoveType(Z_CBaseEntity*                  pInstance,
     const auto type = static_cast<MoveType_t>(value);
 
     pInstance->SetMoveType(type);
-    pInstance->CollisionRulesChanged();
 
 #ifdef _DEBUG
     Message("SetMoveType %d for %s", type, pInstance->GetName());
