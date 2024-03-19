@@ -122,7 +122,9 @@ public:
 	SCHEMA_FIELD(uint32, m_fFlags)
 	SCHEMA_FIELD(LifeState_t, m_lifeState)
 	SCHEMA_FIELD_POINTER(CUtlStringToken, m_nSubclassID)
+	SCHEMA_FIELD(float, m_flFriction)
 	SCHEMA_FIELD(float, m_flGravityScale)
+	SCHEMA_FIELD(float, m_flTimeScale)
 	SCHEMA_FIELD(float, m_flSpeed)
 	SCHEMA_FIELD(CUtlString, m_sUniqueHammerID);
 	SCHEMA_FIELD(CUtlSymbolLarge, m_target);
