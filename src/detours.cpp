@@ -330,54 +330,6 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
 }
 
-void Detour_Log()
-{
-	return;
-}
-
-bool FASTCALL Detour_IsChannelEnabled(LoggingChannelID_t channelID, LoggingSeverity_t severity)
-{
-	return false;
-}
-
-CDetour<decltype(Detour_Log)> g_LoggingDetours[] =
-{
-	CDetour<decltype(Detour_Log)>( Detour_Log, "Msg" ),
-	//CDetour<decltype(Detour_Log)>( Detour_Log, "?ConMsg@@YAXPEBDZZ" ),
-	//CDetour<decltype(Detour_Log)>( Detour_Log, "?ConColorMsg@@YAXAEBVColor@@PEBDZZ" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "ConDMsg" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "DevMsg" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "Warning" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "DevWarning" ),
-	//CDetour<decltype(Detour_Log)>( Detour_Log, "?DevWarning@@YAXPEBDZZ" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "LoggingSystem_Log" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "LoggingSystem_LogDirect" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "LoggingSystem_LogAssert" ),
-	//CDetour<decltype(Detour_Log)>( Detour_IsChannelEnabled, "LoggingSystem_IsChannelEnabled" ),
-};
-
-CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	static bool bBlock = false;
-
-	if (!bBlock)
-	{
-		Message("Logging is now OFF.\n");
-
-		for (int i = 0; i < sizeof(g_LoggingDetours) / sizeof(*g_LoggingDetours); i++)
-			g_LoggingDetours[i].EnableDetour();
-	}
-	else
-	{
-		Message("Logging is now ON.\n");
-
-		for (int i = 0; i < sizeof(g_LoggingDetours) / sizeof(*g_LoggingDetours); i++)
-			g_LoggingDetours[i].DisableDetour();
-	}
-
-	bBlock = !bBlock;
-}
-
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
 	if (g_bEnableZR && !ZR_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
@@ -486,12 +438,6 @@ bool InitDetours(CGameConfig *gameConfig)
 	bool success = true;
 
 	g_vecDetours.PurgeAndDeleteElements();
-
-	for (int i = 0; i < sizeof(g_LoggingDetours) / sizeof(*g_LoggingDetours); i++)
-	{
-		if (!g_LoggingDetours[i].CreateDetour(gameConfig))
-			success = false;
-	}
 
 	if (!UTIL_SayTextFilter.CreateDetour(gameConfig))
 		success = false;
