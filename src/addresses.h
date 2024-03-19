@@ -89,4 +89,5 @@ namespace addresses
 	inline int(FASTCALL *DispatchParticleEffect)(const char *pszParticleName, int iAttachType, Z_CBaseEntity *pEntity,
 		char iAttachmentPoint, CUtlSymbolLarge iAttachmentName, bool bResetAllParticlesOnEntity, int nSplitScreenPlayerSlot, IRecipientFilter *a7, byte *a8);
 	inline SndOpEventGuid_t(FASTCALL *CBaseEntity_EmitSoundFilter)(IRecipientFilter &filter, CEntityIndex ent, const EmitSound_t &params);
+	inline void(FASTCALL *CBaseEntity_SetMoveType)(Z_CBaseEntity *pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
 }
