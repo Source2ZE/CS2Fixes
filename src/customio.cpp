@@ -138,18 +138,15 @@ static void AddOutputCustom_MoveType(Z_CBaseEntity*                  pInstance,
                                      const std::vector<std::string>& vecArgs)
 {
     static Vector stopVelocity(0, 0, 0);
-    const auto    value = clamp(Q_atoi(vecArgs[1].c_str()), MOVETYPE_NONE, MOVETYPE_LAST);
-    if (const auto type = static_cast<MoveType_t>(clamp(value, MOVETYPE_NONE, MOVETYPE_LAST));
-        type == MOVETYPE_NONE || type == MOVETYPE_WALK)
-    {
-        pInstance->SetMoveType(type);
-        if (type == MOVETYPE_NONE) // stop manually!
-            pInstance->Teleport(nullptr, nullptr, &stopVelocity);
+    const auto value = clamp(Q_atoi(vecArgs[1].c_str()), MOVETYPE_NONE, MOVETYPE_LAST);
+    const auto type = static_cast<MoveType_t>(value);
+
+    pInstance->SetMoveType(type);
+    pInstance->CollisionRulesChanged();
 
 #ifdef _DEBUG
-        Message("SetMoveType %d for %s", type, pInstance->GetName());
+    Message("SetMoveType %d for %s", type, pInstance->GetName());
 #endif
-    }
 }
 
 static void AddOutputCustom_EntityTemplate(Z_CBaseEntity*                  pInstance,
