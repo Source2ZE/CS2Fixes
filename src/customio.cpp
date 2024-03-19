@@ -180,7 +180,23 @@ static void AddOutputCustom_BaseVelocity(Z_CBaseEntity*                  pInstan
                           clamp(Q_atof(vecArgs[2].c_str()), -4096.f, 4096.f),
                           clamp(Q_atof(vecArgs[3].c_str()), -4096.f, 4096.f));
 
-    pInstance->m_vecBaseVelocity(velocity);
+    pInstance->SetBaseVelocity(velocity);
+
+#ifdef _DEBUG
+    Message("SetOrigin %f %f %f for %s", velocity.x, velocity.y, velocity.z, pInstance->GetName());
+#endif
+}
+
+static void AddOutputCustom_AbsVelocity(Z_CBaseEntity *pInstance,
+    CEntityInstance *pActivator,
+    CEntityInstance *pCaller,
+    const std::vector<std::string> &vecArgs)
+{
+    Vector velocity(clamp(Q_atof(vecArgs[1].c_str()), -4096.f, 4096.f),
+        clamp(Q_atof(vecArgs[2].c_str()), -4096.f, 4096.f),
+        clamp(Q_atof(vecArgs[3].c_str()), -4096.f, 4096.f));
+
+    pInstance->Teleport(nullptr, nullptr, &velocity);
 
 #ifdef _DEBUG
     Message("SetOrigin %f %f %f for %s", velocity.x, velocity.y, velocity.z, pInstance->GetName());
@@ -240,6 +256,90 @@ static void AddOutputCustom_Force(Z_CBaseEntity*                  pInstance,
     }
 }
 
+static void AddOutputCustom_Gravity(Z_CBaseEntity *pInstance,
+    CEntityInstance *pActivator,
+    CEntityInstance *pCaller,
+    const std::vector<std::string> &vecArgs)
+{
+    const auto value = Q_atof(vecArgs[1].c_str());
+
+    pInstance->m_flGravityScale = value;
+
+#ifdef _DEBUG
+        Message("Set gravity to %f for %s\n", value, pInstance->GetName());
+#endif
+}
+
+static void AddOutputCustom_Timescale(Z_CBaseEntity *pInstance,
+    CEntityInstance *pActivator,
+    CEntityInstance *pCaller,
+    const std::vector<std::string> &vecArgs)
+{
+    const auto value = Q_atof(vecArgs[1].c_str());
+
+    pInstance->m_flTimeScale = value;
+
+#ifdef _DEBUG
+    Message("Set timescale to %f for %s\n", value, pInstance->GetName());
+#endif
+}
+
+static void AddOutputCustom_Friction(Z_CBaseEntity *pInstance,
+    CEntityInstance *pActivator,
+    CEntityInstance *pCaller,
+    const std::vector<std::string> &vecArgs)
+{
+    const auto value = Q_atof(vecArgs[1].c_str());
+
+    pInstance->m_flFriction = value;
+
+#ifdef _DEBUG
+    Message("Set friction to %f for %s\n", value, pInstance->GetName());
+#endif
+}
+
+static void AddOutputCustom_Speed(Z_CBaseEntity *pInstance,
+    CEntityInstance *pActivator,
+    CEntityInstance *pCaller,
+    const std::vector<std::string> &vecArgs)
+{
+    if (V_strcmp(pInstance->GetClassname(), "player"))
+        return;
+
+    CCSPlayerPawn *pPawn = (CCSPlayerPawn*)pInstance;
+    CCSPlayerController *pController = (CCSPlayerController*)pPawn->GetOriginalController();
+
+    if (!pController || !pController->IsConnected())
+        return;
+
+    const auto value = Q_atof(vecArgs[1].c_str());
+
+    pController->GetZEPlayer()->SetSpeedMod(value);
+
+#ifdef _DEBUG
+    Message("Set speed to %f for %s\n", value, pInstance->GetName());
+#endif
+}
+
+static void AddOutputCustom_RunSpeed(Z_CBaseEntity *pInstance,
+    CEntityInstance *pActivator,
+    CEntityInstance *pCaller,
+    const std::vector<std::string> &vecArgs)
+{
+    if (V_strcmp(pInstance->GetClassname(), "player"))
+        return;
+
+    CCSPlayerPawn *pPawn = reinterpret_cast<CCSPlayerPawn*>(pInstance);
+
+    const auto value = Q_atof(vecArgs[1].c_str());
+
+    pPawn->m_flVelocityModifier = value;
+
+#ifdef _DEBUG
+    Message("Set runspeed to %f for %s\n", value, pInstance->GetName());
+#endif
+}
+
 const std::vector<AddOutputInfo_t> s_AddOutputHandlers = {
     {{"targetname", 2},     AddOutputCustom_Targetname    },
     {{"origin", 4},         AddOutputCustom_Origin        },
@@ -249,9 +349,15 @@ const std::vector<AddOutputInfo_t> s_AddOutputHandlers = {
     {{"movetype", 2},       AddOutputCustom_MoveType      },
     {{"EntityTemplate", 2}, AddOutputCustom_EntityTemplate},
     {{"basevelocity", 4},   AddOutputCustom_BaseVelocity  },
+    {{"absvelocity", 4},    AddOutputCustom_AbsVelocity   },
     {{"target", 2},         AddOutputCustom_Target        },
     {{"filtername", 2},     AddOutputCustom_FilterName    },
     {{"force", 2},          AddOutputCustom_Force         },
+    {{"gravity", 2},        AddOutputCustom_Gravity       },
+    {{"timescale", 2},      AddOutputCustom_Timescale     },
+    {{"friction", 2},       AddOutputCustom_Friction      },
+    {{"speed", 2},          AddOutputCustom_Speed         },
+    {{"runspeed", 2},       AddOutputCustom_RunSpeed      },
 };
 
 inline std::vector<std::string> StringSplit(const char* str, const char* delimiter)

@@ -64,6 +64,7 @@ DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
 DECLARE_DETOUR(CNetworkStringTable_AddString, Detour_AddString);
+DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -449,6 +450,35 @@ int64 FASTCALL Detour_AddString(void *pStringTable, bool bServer, const char *ps
 	return CNetworkStringTable_AddString(pStringTable, bServer, pszString, a4);
 }
 
+void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pMove)
+{
+	CCSPlayerPawn *pPawn = pThis->GetPawn();
+
+	if (!pPawn->IsAlive())
+		return ProcessMovement(pThis, pMove);
+
+	CCSPlayerController *pController = pPawn->GetOriginalController();
+
+	if (!pController || !pController->IsConnected())
+		return ProcessMovement(pThis, pMove);
+
+	float flSpeedMod = pController->GetZEPlayer()->GetSpeedMod();
+
+	if (flSpeedMod == 1.f)
+		return ProcessMovement(pThis, pMove);
+
+
+	// Yes, this is what source1 does to scale player speed
+	// Scale frametime during the entire movement processing step and revert right after
+	float flStoreFrametime = gpGlobals->frametime;
+
+	gpGlobals->frametime *= flSpeedMod;
+
+	ProcessMovement(pThis, pMove);
+
+	gpGlobals->frametime = flStoreFrametime;
+}
+
 CUtlVector<CDetourBase *> g_vecDetours;
 
 bool InitDetours(CGameConfig *gameConfig)
@@ -506,6 +536,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CNetworkStringTable_AddString.CreateDetour(gameConfig))
 		success = false;
 	CNetworkStringTable_AddString.EnableDetour();
+	
+	if (!ProcessMovement.CreateDetour(gameConfig))
+		success = false;
+	ProcessMovement.EnableDetour();
 
 	return success;
 }

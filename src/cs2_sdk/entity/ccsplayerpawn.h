@@ -43,6 +43,9 @@ public:
 	SCHEMA_FIELD(QAngle, m_angEyeAngles)
 	SCHEMA_FIELD(float, m_flVelocityModifier)
 	SCHEMA_FIELD(CSPlayerState, m_iPlayerState)
+	SCHEMA_FIELD(CHandle<CCSPlayerController>, m_hOriginalController)
+
+	CCSPlayerController *GetOriginalController() { return m_hOriginalController().Get(); }
 };
 
 class CCSPlayerPawn : public CCSPlayerPawnBase

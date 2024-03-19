@@ -52,7 +52,17 @@ public:
 	SCHEMA_FIELD(CSMatchStats_t, m_matchStats)
 };
 
-class CPlayer_MovementServices
+class CPlayerPawnComponent
+{
+public:
+	DECLARE_SCHEMA_CLASS(CPlayerPawnComponent);
+
+	SCHEMA_FIELD(CCSPlayerPawn*, __m_pChainEntity)
+
+	CCSPlayerPawn *GetPawn() { return __m_pChainEntity; }
+};
+
+class CPlayer_MovementServices : public CPlayerPawnComponent
 {
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices);
@@ -69,12 +79,28 @@ public:
 	SCHEMA_FIELD(float, m_flMaxspeed)
 };
 
-class CPlayerPawnComponent
+class CPlayer_MovementServices_Humanoid : public CPlayer_MovementServices
 {
 public:
-	DECLARE_SCHEMA_CLASS(CPlayerPawnComponent);
+	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices_Humanoid);
 
-	SCHEMA_FIELD(CCSPlayerPawn*, __m_pChainEntity)
+	SCHEMA_FIELD(float, m_flFallVelocity)
+	SCHEMA_FIELD(float, m_bInCrouch)
+	SCHEMA_FIELD(uint32_t, m_nCrouchState)
+	SCHEMA_FIELD(bool, m_bInDuckJump)
+	SCHEMA_FIELD(float, m_flSurfaceFriction)
+};
+
+class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayer_MovementServices);
+
+	SCHEMA_FIELD(float, m_flMaxFallVelocity)
+	SCHEMA_FIELD(float, m_flJumpVel)
+	SCHEMA_FIELD(float, m_flStamina)
+	SCHEMA_FIELD(float, m_flDuckSpeed)
+	SCHEMA_FIELD(bool, m_bDuckOverride)
 };
 
 class CPlayer_WeaponServices : public CPlayerPawnComponent
@@ -103,18 +129,6 @@ public:
 	SCHEMA_FIELD(bool, m_bIsBeingGivenItem)
 	SCHEMA_FIELD(bool, m_bIsPickingUpItemWithUse)
 	SCHEMA_FIELD(bool, m_bPickedUpWeapon)
-};
-
-class CPlayer_MovementServices_Humanoid : CPlayer_MovementServices
-{
-public:
-	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices_Humanoid);
-};
-
-class CCSPlayer_MovementServices : CPlayer_MovementServices_Humanoid
-{
-public:
-	DECLARE_SCHEMA_CLASS(CCSPlayer_MovementServices);
 };
 
 class CCSPlayerController_InGameMoneyServices
