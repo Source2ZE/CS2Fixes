@@ -35,6 +35,7 @@ class CGameConfig;
 class CGameRules;
 class CTakeDamageInfo;
 class CCSPlayer_WeaponServices;
+class CCSPlayer_MovementServices;
 class CBasePlayerWeapon;
 class INetworkSerializable;
 class IEngineServiceMgr;
@@ -55,3 +56,4 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7, int64_t unk8);
 void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEntity, bool a3);
 int64 FASTCALL Detour_AddString(void *pStringTable, bool bServer, const char *pszString, void *a4);
+void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pMove);
