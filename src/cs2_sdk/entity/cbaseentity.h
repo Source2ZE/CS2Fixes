@@ -25,6 +25,7 @@
 #include "ctakedamageinfo.h"
 #include "mathlib/vector.h"
 #include "ehandle.h"
+#include "../detours.h"
 #include "entitykeyvalues.h"
 #include "../../gameconfig.h"
 
@@ -140,9 +141,9 @@ public:
 	void SetAbsVelocity(Vector vecVelocity) { m_vecAbsVelocity = vecVelocity; }
 	void SetBaseVelocity(Vector vecVelocity) { m_vecBaseVelocity = vecVelocity; }
 
-	void TakeDamage(int iDamage)
+	void TakeDamage(CTakeDamageInfo &info)
 	{
-		m_iHealth = m_iHealth() - iDamage;
+		Detour_CBaseEntity_TakeDamageOld(this, &info);
 	}
 
 	void Teleport(Vector *position, QAngle *angles, Vector *velocity)
