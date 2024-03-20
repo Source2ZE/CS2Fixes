@@ -106,8 +106,6 @@ void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 	
 	pResourceManifest->AddResource(g_szHumanWinOverlayMaterial.c_str());
 	pResourceManifest->AddResource(g_szZombieWinOverlayMaterial.c_str());
-
-	pResourceManifest->AddResource("particles/burning_fx/burning_character_b.vpcf");
 }
 
 CEnvParticleGlow* ZR_CreateOverlay(const char* pszOverlayParticlePath, float flAlpha, float flRadius, float flSelfIllum, float flLifeTime, Color clrTint, const char* pszMaterialOverride)
