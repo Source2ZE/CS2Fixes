@@ -397,6 +397,19 @@ bool CustomIO_HandleInput(CEntityInstance* pInstance,
     return false;
 }
 
+
+std::string g_sBurnParticle = "particles/burning_fx/burning_character_b.vpcf";
+FAKE_STRING_CVAR(cs2f_burn_particle, "The particle to use for burning entities", g_sBurnParticle, false);
+
+float g_flBurnDamage = 1.f;
+FAKE_FLOAT_CVAR(cs2f_burn_damage, "The amount of each burn damage ticks", g_flBurnDamage, 1.f, false);
+
+float g_flBurnSlowdown = 0.6f;
+FAKE_FLOAT_CVAR(cs2f_burn_slowdown, "The slowdown of each burn damage tick as a multiplier of base speed", g_flBurnSlowdown, 0.6f, false);
+
+float g_flBurnInterval = 0.3f;
+FAKE_FLOAT_CVAR(cs2f_burn_interval, "The interval between burn damage ticks", g_flBurnInterval, 0.3f, false);
+
 bool IgniteEntity(Z_CBaseEntity *pEntity, float flDuration, Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility)
 {
     // This is not a model entity, ignore
@@ -417,7 +430,7 @@ bool IgniteEntity(Z_CBaseEntity *pEntity, float flDuration, Z_CBaseEntity *pInfl
     CHandle<Z_CBaseEntity> hAbility(pAbility);
 
     pParticleEnt->m_bStartActive(true);
-    pParticleEnt->m_iszEffectName("particles/burning_fx/burning_character_b.vpcf");
+    pParticleEnt->m_iszEffectName(g_sBurnParticle.c_str());
     pParticleEnt->m_hControlPointEnts[1] = hEntity;
     pParticleEnt->Teleport(&vecOrigin, nullptr, nullptr);
 
@@ -443,13 +456,13 @@ bool IgniteEntity(Z_CBaseEntity *pEntity, float flDuration, Z_CBaseEntity *pInfl
                 return -1.f;
             }
 
-            auto info = CTakeDamageInfo(hInflictor, hAttacker, hAbility, 1.f, DMG_BURN);
+            auto info = CTakeDamageInfo(hInflictor, hAttacker, hAbility, g_flBurnDamage, DMG_BURN);
             pEntity->TakeDamage(info);
 
             if (pEntity->IsPawn())
-                ((CCSPlayerPawn *)pEntity)->m_flVelocityModifier = 0.6;
+                ((CCSPlayerPawn *)pEntity)->m_flVelocityModifier = g_flBurnSlowdown;
 
-            return 0.3f;
+            return g_flBurnInterval;
         });
 
     return true;
