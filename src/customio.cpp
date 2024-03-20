@@ -25,11 +25,13 @@
 #include "entity/cenventitymaker.h"
 #include "entity/cphysthruster.h"
 
-#include <baseentity.h>
+#include "ctimer.h"
 
 #include <entity/cbasetrigger.h>
 #include <string>
 #include <vector>
+
+extern CGlobalVars *gpGlobals;
 
 struct AddOutputKey_t
 {
@@ -393,4 +395,62 @@ bool CustomIO_HandleInput(CEntityInstance* pInstance,
     }
 
     return false;
+}
+
+bool IgniteEntity(Z_CBaseEntity *pEntity, float flDuration, Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility)
+{
+    // This is not a model entity, ignore
+    if (!pEntity->m_pCollision())
+        return false;
+
+    Vector vecOrigin = pEntity->GetAbsOrigin();
+
+    if (pEntity->IsPawn())
+        vecOrigin.z += 24;
+
+    CParticleSystem *pParticleEnt = (CParticleSystem *)CreateEntityByName("info_particle_system");
+
+    CHandle<Z_CBaseEntity> hEntity(pEntity);
+    CHandle<CParticleSystem> hParticle(pParticleEnt);
+    CHandle<Z_CBaseEntity> hInflictor(pInflictor);
+    CHandle<Z_CBaseEntity> hAttacker(pAttacker);
+    CHandle<Z_CBaseEntity> hAbility(pAbility);
+
+    pParticleEnt->m_bStartActive(true);
+    pParticleEnt->m_iszEffectName("particles/burning_fx/burning_character_b.vpcf");
+    pParticleEnt->m_hControlPointEnts[1] = hEntity;
+    pParticleEnt->Teleport(&vecOrigin, nullptr, nullptr);
+
+    pParticleEnt->DispatchSpawn();
+
+    pParticleEnt->SetParent(pEntity);
+
+    float flStartTime = gpGlobals->curtime;
+
+    new CTimer(0.f, false, [hEntity, hParticle, flStartTime, flDuration, hInflictor, hAttacker, hAbility]()
+        {
+            Z_CBaseEntity *pEntity = hEntity.Get();
+            CParticleSystem *pParticleEnt = hParticle.Get();
+
+            if (!pEntity || !pParticleEnt)
+                return -1.f;
+
+            if (flStartTime + flDuration <= gpGlobals->curtime)
+            {
+                pParticleEnt->AcceptInput("Stop");
+                UTIL_AddEntityIOEvent(pParticleEnt, "Kill"); // Kill on the next frame
+
+                return -1.f;
+            }
+
+            auto info = CTakeDamageInfo(hInflictor, hAttacker, hAbility, 1.f, DMG_BURN);
+            pEntity->TakeDamage(info);
+
+            if (pEntity->IsPawn())
+                ((CCSPlayerPawn *)pEntity)->m_flVelocityModifier = 0.6;
+
+            return 0.3f;
+        });
+
+    return true;
 }

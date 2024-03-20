@@ -356,6 +356,20 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
         Message("Invalid value type for input %s\n", pInputName->String());
         return false;
     }
+	else if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
+	{
+		float flDuration = 0.f;
+
+		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			flDuration = V_StringToFloat32(value->m_pszString, 0.f);
+		else
+			flDuration = value->m_float;
+
+		Z_CBaseEntity *pEntity = (Z_CBaseEntity *)pThis->m_pInstance;
+
+		if (IgniteEntity(pEntity, flDuration, pEntity, pEntity))
+			return true;
+	}
 
 	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
