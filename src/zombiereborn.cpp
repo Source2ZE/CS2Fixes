@@ -920,7 +920,7 @@ void ZR_InitialInfection()
 				Vector origin = spawns[randomindex]->GetAbsOrigin();
 				QAngle rotation = spawns[randomindex]->GetAbsRotation();
 
-				pPawn->Teleport(&origin, &rotation, nullptr);
+				pPawn->Teleport(&origin, &rotation, &vec3_origin);
 			}
 
 			ZR_InfectMotherZombie(pController);

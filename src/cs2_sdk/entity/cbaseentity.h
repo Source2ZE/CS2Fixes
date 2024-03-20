@@ -146,7 +146,7 @@ public:
 		Detour_CBaseEntity_TakeDamageOld(this, &info);
 	}
 
-	void Teleport(Vector *position, QAngle *angles, Vector *velocity)
+	void Teleport(const Vector *position, const QAngle *angles, const Vector *velocity)
 	{
 		static int offset = g_GameConfig->GetOffset("Teleport");
 		CALL_VIRTUAL(void, offset, this, position, angles, velocity);
@@ -193,14 +193,14 @@ public:
 		addresses::CBaseEntity_EmitSoundParams(this, pszSound, nPitch, flVolume, flDelay);
 	}
 
-	void EmitSoundFilter(IRecipientFilter &filter, const char *pszSound, float flVolume = 1.0, float flPitch = 1.0)
+	SndOpEventGuid_t EmitSoundFilter(IRecipientFilter &filter, const char *pszSound, float flVolume = 1.0, float flPitch = 1.0)
 	{
 		EmitSound_t params;
 		params.m_pSoundName = pszSound;
 		params.m_flVolume = flVolume;
 		params.m_nPitch = flPitch;
 
-		addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
+		return addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
 	}
 
 	// This was needed so we can parent to nameless entities using pointers
