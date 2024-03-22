@@ -34,6 +34,7 @@
 #include "entity/cgamerules.h"
 #include "gamesystem.h"
 #include <vector>
+#include <format>
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
@@ -117,23 +118,29 @@ CON_COMMAND_CHAT_FLAGS(ban, "<name> <minutes|0 (permament)> - ban a player", ADM
 	int iNumClients = 0;
 	int pSlot[MAXPLAYERS];
 
-	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) != ETargetType::PLAYER || iNumClients > 1)
+	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) > ETargetType::PLAYER)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You can only target individual players for banning.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only target individual players for banning.");
 		return;
 	}
 
 	if (!iNumClients)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
 		return;
 	}
 
-	int iDuration = V_StringToInt32(args[2], -1);
-
-	if (iDuration == -1)
+	if (iNumClients > 1)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid duration.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+		return;
+	}
+
+	int iDuration = ParseTimeInput(args[2]);
+
+	if (iDuration < 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid duration.");
 		return;
 	}
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
@@ -160,18 +167,10 @@ CON_COMMAND_CHAT_FLAGS(ban, "<name> <minutes|0 (permament)> - ban a player", ADM
 
 	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "banned %s for %i minutes.", pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
-
 	if (iDuration > 0)
-	{
-		char szAction[64];
-		V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
-		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", szAction);
-	}
+		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", (" for " + FormatTime(iDuration, false)).c_str());
 	else
-	{
 		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently banned");
-	}
 }
 
 CON_COMMAND_CHAT_FLAGS(mute, "<name> <duration|0 (permament)> - mutes a player", ADMFLAG_CHAT)
@@ -194,7 +193,13 @@ CON_COMMAND_CHAT_FLAGS(mute, "<name> <duration|0 (permament)> - mutes a player",
 		return;
 	}
 
-	int iDuration = V_StringToInt32(args[2], -1);
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+		return;
+	}
+
+	int iDuration = ParseTimeInput(args[2]);
 
 	if (iDuration < 0)
 	{
@@ -209,9 +214,6 @@ CON_COMMAND_CHAT_FLAGS(mute, "<name> <duration|0 (permament)> - mutes a player",
 	}
 
 	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-
-	char szAction[64];
-	V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -240,14 +242,14 @@ CON_COMMAND_CHAT_FLAGS(mute, "<name> <duration|0 (permament)> - mutes a player",
 		g_pAdminSystem->SaveInfractions();
 
 		if (iDuration > 0)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "muted", szAction);
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "muted", (" for " + FormatTime(iDuration, false)).c_str());
 		else
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently muted");
 	}
 
 	g_pAdminSystem->SaveInfractions();
 
-	PrintMultiAdminAction(nType, pszCommandPlayerName, "muted", szAction);
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "muted", (" for " + FormatTime(iDuration, false)).c_str());
 }
 
 CON_COMMAND_CHAT_FLAGS(unmute, "<name> - unmutes a player", ADMFLAG_CHAT)
@@ -267,6 +269,12 @@ CON_COMMAND_CHAT_FLAGS(unmute, "<name> - unmutes a player", ADMFLAG_CHAT)
 	if (!iNumClients)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
 		return;
 	}
 
@@ -319,7 +327,13 @@ CON_COMMAND_CHAT_FLAGS(gag, "<name> <duration|0 (permanent)> - gag a player", AD
 		return;
 	}
 
-	int iDuration = V_StringToInt32(args[2], -1);
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+		return;
+	}
+
+	int iDuration = ParseTimeInput(args[2]);
 
 	if (iDuration < 0)
 	{
@@ -334,9 +348,6 @@ CON_COMMAND_CHAT_FLAGS(gag, "<name> <duration|0 (permanent)> - gag a player", AD
 	}
 
 	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-
-	char szAction[64];
-	V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -367,14 +378,14 @@ CON_COMMAND_CHAT_FLAGS(gag, "<name> <duration|0 (permanent)> - gag a player", AD
 			continue;
 
 		if (iDuration > 0)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "gagged", szAction);
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "gagged", (" for " + FormatTime(iDuration, false)).c_str());
 		else
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently gagged");
 	}
 
 	g_pAdminSystem->SaveInfractions();
 
-	PrintMultiAdminAction(nType, pszCommandPlayerName, "gagged", szAction);
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "gagged", (" for " + FormatTime(iDuration, false)).c_str());
 }
 
 CON_COMMAND_CHAT_FLAGS(ungag, "<name> - ungags a player", ADMFLAG_CHAT)
@@ -394,6 +405,12 @@ CON_COMMAND_CHAT_FLAGS(ungag, "<name> - ungags a player", ADMFLAG_CHAT)
 	if (!iNumClients)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
 		return;
 	}
 
@@ -438,11 +455,15 @@ CON_COMMAND_CHAT_FLAGS(kick, "<name> - kick a player", ADMFLAG_KICK)
 	int iNumClients = 0;
 	int pSlot[MAXPLAYERS];
 
-	g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
+	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+		return;
+	}
 
 	if (!iNumClients)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
 		return;
 	}
 
@@ -479,7 +500,13 @@ CON_COMMAND_CHAT_FLAGS(slay, "<name> - slay a player", ADMFLAG_SLAY)
 
 	if (!iNumClients)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
 		return;
 	}
 
@@ -518,6 +545,12 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - slap a player", ADMFLAG_SLAY)
 	if (!iNumClients)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
 		return;
 	}
 
@@ -572,7 +605,7 @@ CON_COMMAND_CHAT_FLAGS(goto, "<name> - teleport to a player", ADMFLAG_SLAY)
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 
-	if (g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots) != ETargetType::PLAYER || iNumClients > 1)
+	if (g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots) > ETargetType::PLAYER || iNumClients > 1)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target too ambiguous.");
 		return;
@@ -624,6 +657,12 @@ CON_COMMAND_CHAT_FLAGS(bring, "<name> - bring a player", ADMFLAG_SLAY)
 		return;
 	}
 
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+		return;
+	}
+
 	for (int i = 0; i < iNumClients; i++)
 	{
 		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
@@ -659,6 +698,12 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - set a player's team", ADM
 	if (!iNumClients)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
 		return;
 	}
 
@@ -811,6 +856,12 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <inpu> [parameter] - fire outputs at
 		return;
 	}
 
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+		return;
+	}
+
 	int iFoundEnts = 0;
 
 	for (int i = 0; i < iNumClients; i++)
@@ -847,6 +898,12 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "<name> <input> [parameter] - fire out
 		return;
 	}
 
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+		return;
+	}
+
 	int iFoundEnts = 0;
 
 	for (int i = 0; i < iNumClients; i++)
@@ -867,7 +924,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - change map", ADMFLAG_CHANGEMAP)
 {
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Usage: !map <mapname>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !map <mapname>");
 		return;
 	}
 
@@ -970,6 +1027,304 @@ CON_COMMAND_CHAT_FLAGS(extend, "<minutes> - extend current map (negative value r
 	else
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "extended map time %i minutes.", pszCommandPlayerName, iExtendTime);
 }
+
+CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This will also show to all online admins", ADMFLAG_GENERIC)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: /pm <name> <message>");
+		return;
+	}
+
+	if (player)
+	{
+		ZEPlayer* ply = player->GetZEPlayer();
+		if (!ply)
+			return;
+		if (ply->IsGagged())
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You may not private message players while gagged.");
+			return;
+		}
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlot[MAXPLAYERS];
+
+	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) > ETargetType::SELF)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only private message individual players.");
+		return;
+	}
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	if (iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+		return;
+	}
+
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
+	if (!pTarget)
+		return;
+
+	ZEPlayer* pTargetPlayer = pTarget->GetZEPlayer();
+
+	std::string strMessage = GetReason(args, 1, false);
+
+	const char* pszName = player ? player->GetPlayerName() : "CONSOLE";
+
+	if (player == pTarget)
+	{
+	//Player is PMing themselves (bind to display message in chat probably), so no need to echo to all admins
+		ClientPrint(player, HUD_PRINTTALK, "\x0A[SELF]\x0C %s\1: \x0B%s", pszName, strMessage.c_str());
+		return;
+	}
+
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+		if (!pPlayer || pTargetPlayer == pPlayer)
+			continue;
+
+		if (pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC) && CCSPlayerController::FromSlot(i) != player)
+			ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, "\x0A[PM to %s]\x0C %s\1: \x0B%s", pTarget->GetPlayerName(), pszName, strMessage.c_str());
+	}
+
+	ClientPrint(player, HUD_PRINTTALK, "\x0A[PM to %s]\x0C %s\1: \x0B%s", pTarget->GetPlayerName(), pszName, strMessage.c_str());
+	ClientPrint(pTarget, HUD_PRINTTALK, "\x0A[PM]\x0C %s\1: \x0B%s", pszName, strMessage.c_str());
+	Message("[PM to %s] %s: %s\n", pTarget->GetPlayerName(), pszName, strMessage.c_str());
+}
+
+CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players into console", ADMFLAG_GENERIC)
+{
+	std::vector<std::tuple<std::string, std::string, uint64>> rgNameSlotID;
+
+	for (size_t i = 0; i < gpGlobals->maxClients; i++)
+	{
+		CCSPlayerController* ccsPly = CCSPlayerController::FromSlot(i);
+
+		if (!ccsPly)
+			continue;
+
+		ZEPlayer* pPlayer = ccsPly->GetZEPlayer();
+
+		if (!pPlayer)
+			continue;
+
+		std::string strName = ccsPly->GetPlayerName();
+		if (strName.length() == 0)
+			strName = "< blank >";
+		else if (strName.length() > 20)
+			strName = strName.substr(0, 17) + "...";
+
+		if (pPlayer->IsFakeClient())
+		{
+			rgNameSlotID.push_back(std::tuple<std::string, std::string, uint64>(strName, "BOT", 0));
+			continue;
+		}
+
+		uint64 iSteamID = pPlayer->IsAuthenticated() ? pPlayer->GetSteamId64() : pPlayer->GetUnauthenticatedSteamId64();
+		uint64 iFlags = pPlayer->GetAdminFlags();
+		std::string strFlags = "";
+
+		if (iFlags & ADMFLAG_ROOT)
+			strFlags = "ROOT";
+		else
+		{
+			if (iFlags & ADMFLAG_RESERVATION)
+				strFlags.append(", RESERVATION");
+			if (iFlags & ADMFLAG_GENERIC)
+				strFlags.append(", GENERIC");
+			if (iFlags & ADMFLAG_KICK)
+				strFlags.append(", KICK");
+			if (iFlags & ADMFLAG_BAN)
+				strFlags.append(", BAN");
+			if (iFlags & ADMFLAG_UNBAN)
+				strFlags.append(", UNBAN");
+			if (iFlags & ADMFLAG_SLAY)
+				strFlags.append(", SLAY");
+			if (iFlags & ADMFLAG_CHANGEMAP)
+				strFlags.append(", CHANGEMAP");
+			if (iFlags & ADMFLAG_CONVARS)
+				strFlags.append(", CONVARS");
+			if (iFlags & ADMFLAG_CONFIG)
+				strFlags.append(", CONFIG");
+			if (iFlags & ADMFLAG_CHAT)
+				strFlags.append(", CHAT");
+			if (iFlags & ADMFLAG_VOTE)
+				strFlags.append(", VOTE");
+			if (iFlags & ADMFLAG_PASSWORD)
+				strFlags.append(", PASSWORD");
+			if (iFlags & ADMFLAG_RCON)
+				strFlags.append(", RCON");
+			if (iFlags & ADMFLAG_CHEATS)
+				strFlags.append(", CHEATS");
+			if (iFlags & ADMFLAG_CUSTOM1)
+				strFlags.append(", CUSTOM1");
+			if (iFlags & ADMFLAG_CUSTOM2)
+				strFlags.append(", CUSTOM2");
+			if (iFlags & ADMFLAG_CUSTOM3)
+				strFlags.append(", CUSTOM3");
+			if (iFlags & ADMFLAG_CUSTOM4)
+				strFlags.append(", CUSTOM4");
+			if (iFlags & ADMFLAG_CUSTOM5)
+				strFlags.append(", CUSTOM5");
+			if (iFlags & ADMFLAG_CUSTOM6)
+				strFlags.append(", CUSTOM6");
+			if (iFlags & ADMFLAG_CUSTOM7)
+				strFlags.append(", CUSTOM7");
+			if (iFlags & ADMFLAG_CUSTOM8)
+				strFlags.append(", CUSTOM8");
+			if (iFlags & ADMFLAG_CUSTOM9)
+				strFlags.append(", CUSTOM9");
+			if (iFlags & ADMFLAG_CUSTOM10)
+				strFlags.append(", CUSTOM10");
+			if (iFlags & ADMFLAG_CUSTOM11)
+				strFlags.append(", CUSTOM11");
+
+			if (strFlags.length() > 1)
+				strFlags = strFlags.substr(2);
+			else
+				strFlags = "NONE";
+		}
+
+		rgNameSlotID.push_back(std::tuple<std::string, std::string, uint64>(strName, strFlags, iSteamID));
+	}
+	// Sort player list by names alphabetically
+	std::sort(rgNameSlotID.begin(), rgNameSlotID.end(), [](auto const& a, auto const& b) {
+		std::string f = std::get<0>(a);
+		std::string s = std::get<0>(b);
+		std::transform(f.begin(), f.end(), f.begin(), [](unsigned char c) { return c > 127 ? 127 : std::tolower(c); });
+		std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return c > 127 ? 127 : std::tolower(c); });
+		return f < s;
+	});
+
+	ClientPrint(player, HUD_PRINTCONSOLE, "c_who output: %i client%s", rgNameSlotID.size(), rgNameSlotID.size() == 1 ? "" : "s");
+	ClientPrint(player, HUD_PRINTCONSOLE, std::format("|{:-<22}|{:-<52}|{:-<19}|", "-", "-", "-").c_str());
+	ClientPrint(player, HUD_PRINTCONSOLE, std::format("| {:^20} | {:^50} | {:^17} |", "Name", "Flags", "Steam64 ID").c_str());
+	ClientPrint(player, HUD_PRINTCONSOLE, std::format("|{:-<22}|{:-<52}|{:-<19}|", "-", "-", "").c_str());
+	for (auto [strPlayerName, strFlags, iSteamID] : rgNameSlotID)
+	{
+		if (strFlags.length() <= 50)
+		{
+			ClientPrint(player, HUD_PRINTCONSOLE, std::format("| {:^20} | {:^50} | {:0^17} |", strPlayerName, strFlags, iSteamID).c_str());
+		}
+		else
+		{
+			int iIndexToCut = strFlags.substr(0, 50).find_last_of(',') + 1;
+			ClientPrint(player, HUD_PRINTCONSOLE, std::format("| {:^20} | {:^50} | {:0^17} |", strPlayerName, strFlags.substr(0, iIndexToCut), iSteamID).c_str());
+			while (strFlags.length() > 50 && iIndexToCut < strFlags.length())
+			{
+				strFlags = strFlags.substr(iIndexToCut + 1);
+				ClientPrint(player, HUD_PRINTCONSOLE, std::format("| {:^20} | {:^50} | {:^17} |", "", strFlags.substr(0, 50), "").c_str());
+				iIndexToCut = strFlags.substr(0, 50).find_last_of(',') + 1;
+			}
+		}
+	}
+	ClientPrint(player, HUD_PRINTCONSOLE, std::format("|{:-<22}|{:-<52}|{:-<19}|", "-", "-", "").c_str());
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Check console for output.");
+}
+
+CON_COMMAND_CHAT(status, "<name> - Checks a player's active punishments. Non-admins may only check their own punishments")
+{
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients;
+	int pSlot[MAXPLAYERS];
+	ETargetType nType = ETargetType::SELF;
+	ZEPlayer* pTargetPlayer = nullptr;
+	bool bIsAdmin = iCommandPlayer == -1 || g_playerManager->GetPlayer(iCommandPlayer)->IsAdminFlagSet(ADMFLAG_GENERIC);
+	std::string target = !bIsAdmin || args.ArgC() == 1 ? "" : args[1];
+
+	if (bIsAdmin && target.length() > 0)
+	{
+		iNumClients = 0;
+		target = args[1];
+		nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
+	}
+	else
+	{
+		iNumClients = 1;
+		pSlot[0] = iCommandPlayer;
+	}
+
+	if (iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+		return;
+	}
+	else if (iNumClients <= 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
+	if (!pTarget)
+		return;
+
+	pTargetPlayer = g_playerManager->GetPlayer(pSlot[0]);
+
+	if (pTargetPlayer->IsFakeClient())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Cannot target bot.");
+		return;
+	}
+		
+	if (!pTargetPlayer->IsMuted() && !pTargetPlayer->IsGagged())
+	{
+		if (target.length() == 0)
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have no active punishments.");
+		else
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s has no active punishments.", pTarget->GetPlayerName());
+		return;
+	}
+
+	std::string punishment = "";
+	if (pTargetPlayer->IsMuted() && pTargetPlayer->IsGagged())
+		punishment = "\2gagged\1 and \2muted\1";
+	else if (pTargetPlayer->IsMuted())
+		punishment = "\2muted\1";
+	else if (pTargetPlayer->IsGagged())
+		punishment = "\2gagged\1";
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s %s.",
+				target.length() == 0 ? "You are" : (target + " is").c_str(), punishment.c_str());
+}
+
+CON_COMMAND_CHAT_FLAGS(listdc, "- List recently disconnected players and their Steam64 IDs", ADMFLAG_GENERIC)
+{
+	g_pAdminSystem->ShowDisconnectedPlayers(player);
+}
+
+#ifdef _DEBUG
+CON_COMMAND_CHAT_FLAGS(add_dc, "<name> <SteamID 64> <IP Address> - Adds a fake player to disconnected player list for testing", ADMFLAG_GENERIC)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !add_dc <name> <Steam64 ID> <IP Address>");
+		return;
+	}
+
+	std::string strSteamID = args[2];
+	if (strSteamID.length() != 17 || std::find_if(strSteamID.begin(), strSteamID.end(), [](unsigned char c) { return !std::isdigit(c); }) != strSteamID.end())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid Steam64 ID.");
+		return;
+	}
+	// stoll should be exception safe with above check
+	uint64 iSteamID = std::stoll(strSteamID);
+
+	g_pAdminSystem->AddDisconnectedPlayer(args[1], iSteamID, args[3]);
+}
+#endif
 
 void PrecacheAdminBeaconParticle(IEntityResourceManifest* pResourceManifest)
 {
@@ -1113,6 +1468,17 @@ CON_COMMAND_CHAT_FLAGS(beacon, "Toggle beacon on a player", ADMFLAG_GENERIC)
 	}
 
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "toggled beacon on");
+}
+
+CAdminSystem::CAdminSystem()
+{
+	LoadAdmins();
+	LoadInfractions();
+
+	// Fill out disconnected player list with empty objects which we overwrite as players leave
+	for (int i = 0; i < 20; i++)
+		m_rgDCPly[i] = std::tuple<std::string, uint64, std::string>("", 0, "");
+	m_iDCPlyIndex = 0;
 }
 
 bool CAdminSystem::LoadAdmins()
@@ -1333,6 +1699,45 @@ uint64 CAdminSystem::ParseFlags(const char* pszFlags)
 	return flags;
 }
 
+void CAdminSystem::AddDisconnectedPlayer(const char* pszName, uint64 xuid, const char* pszIP)
+{
+	auto plyInfo = std::make_tuple(pszName, xuid, pszIP);
+	for (auto& dcPlyInfo : m_rgDCPly)
+	{
+		if (std::get<1>(dcPlyInfo) == std::get<1>(plyInfo))
+			return;
+	}
+	m_rgDCPly[m_iDCPlyIndex] = plyInfo;
+	m_iDCPlyIndex = (m_iDCPlyIndex + 1) % 20;
+}
+
+void CAdminSystem::ShowDisconnectedPlayers(CCSPlayerController* const pAdmin)
+{
+	bool bAnyDCedPlayers = false;
+	for (int i = 1; i <= 20; i++)
+	{
+		int index = (m_iDCPlyIndex - i) % 20;
+		if (index < 0)
+			index += 20;
+		std::tuple<std::string, uint64, std::string> ply = m_rgDCPly[index];
+		if (std::get<1>(ply) != 0)
+		{
+			if (!bAnyDCedPlayers)
+			{
+				if (pAdmin)
+					ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "Disconnected player(s) displayed in console.");
+				ClientPrint(pAdmin, HUD_PRINTCONSOLE, "Disconnected Player(s):");
+				bAnyDCedPlayers = true;
+			}
+
+			std::string strTemp = std::get<0>(ply) + "\n\tSteam64 ID - " + std::to_string(std::get<1>(ply)) + "\n\tIP Address - " + std::get<2>(ply);
+			ClientPrint(pAdmin, HUD_PRINTCONSOLE, "%i. %s", i, strTemp.c_str());
+		}
+	}
+	if (!bAnyDCedPlayers)
+		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "No players have disconnected yet.");
+}
+
 void CBanInfraction::ApplyInfraction(ZEPlayer *player)
 {
 	g_pEngineServer2->DisconnectClient(player->GetPlayerSlot(), NETWORK_DISCONNECT_KICKBANADDED); // "Kicked and banned"
@@ -1356,4 +1761,105 @@ void CGagInfraction::ApplyInfraction(ZEPlayer *player)
 void CGagInfraction::UndoInfraction(ZEPlayer *player)
 {
 	player->SetGagged(false);
+}
+
+std::string FormatTime(std::time_t wTime, bool bInSeconds)
+{
+	if (bInSeconds)
+	{
+		if (wTime < 60)
+			return std::to_string(static_cast<int>(std::floor(wTime))) + " second" + (wTime >= 2 ? "s" : "");
+		wTime = wTime / 60;
+	}
+
+	if (wTime < 60)
+		return std::to_string(static_cast<int>(std::floor(wTime))) + " minute" + (wTime >= 2 ? "s" : "");
+	wTime = wTime / 60;
+
+	if (wTime < 24)
+		return std::to_string(static_cast<int>(std::floor(wTime))) + " hour" + (wTime >= 2 ? "s" : "");
+	wTime = wTime / 24;
+
+	if (wTime < 7)
+		return std::to_string(static_cast<int>(std::floor(wTime))) + " day" + (wTime >= 2 ? "s" : "");
+	wTime = wTime / 7;
+
+	if (wTime < 4)
+		return std::to_string(static_cast<int>(std::floor(wTime))) + " week" + (wTime >= 2 ? "s" : "");
+	wTime = wTime / 4;
+
+	return std::to_string(static_cast<int>(std::floor(wTime))) + " month" + (wTime >= 2 ? "s" : "");
+}
+
+int ParseTimeInput(std::string strTime)
+{
+	if (strTime.length() == 0 || std::find_if(strTime.begin(), strTime.end(), [](char c) { return c == '-'; }) != strTime.end())
+		return -1;
+
+	std::string strNumbers = "";
+	std::copy_if(strTime.begin(), strTime.end(), std::back_inserter(strNumbers), [](char c) { return std::isdigit(c); });
+
+	if (strNumbers.length() == 0)
+		return -1;
+	else if (strNumbers.length() > 9)
+	// Really high number, just return perma
+		return 0;
+
+	// stoi should be exception safe here due to above checks
+	int iDuration = std::stoi(strNumbers.c_str());
+
+	if (iDuration == 0)
+		return 0;
+	else if (iDuration < 0)
+		return -1;
+
+	switch (strTime[strTime.length() - 1])
+	{
+		case 'h':
+		case 'H':
+			return iDuration * 60.0 > INT_MAX ? 0 : iDuration * 60;
+		case 'd':
+		case 'D':
+			return iDuration * 60.0 * 24.0 > INT_MAX ? 0 : iDuration * 60 * 24;
+		case 'w':
+		case 'W':
+			return iDuration * 60.0 * 24.0 * 7.0 > INT_MAX ? 0 : iDuration * 60 * 24 * 7;
+		case 'm':
+		case 'M':
+			return iDuration * 60.0 * 24.0 * 30.0 > INT_MAX ? 0 : iDuration * 60 * 24 * 30;
+		default:
+			return iDuration;
+	}
+}
+
+std::string GetReason(const CCommand& args, int iArgsBefore, bool bStripUnicode)
+{
+	if (args.ArgC() <= iArgsBefore + 1)
+		return "";
+	std::string strReason = args.ArgS();
+
+	for (size_t i = 1; i <= iArgsBefore; i++)
+	{
+		// Remove spaces if arguements were split up by them.
+		while (strReason.length() > 0 && strReason.at(0) == ' ')
+			strReason = strReason.substr(1);
+		int iToRemove = std::string(args[i]).length();
+		if (iToRemove >= strReason.length())
+			return "";
+		strReason = strReason.substr(iToRemove);
+	}
+
+	std::string strOutput = "";
+	if (bStripUnicode)
+		std::copy_if(strReason.cbegin(), strReason.cend(), std::back_inserter(strOutput), [](unsigned char c) {return c < 128; });
+	else
+		strOutput = strReason;
+
+	// Clean up both ends of string very inefficiently...
+	while (strOutput.length() > 0 && (strOutput.at(0) == ' ' || strOutput.at(0) == '\"'))
+		strOutput = strOutput.substr(1);
+	while (strOutput.length() > 0 && (strOutput.at(strOutput.length() - 1) == ' ' || strOutput.at(strOutput.length() - 1) == '\"'))
+		strOutput = strOutput.substr(0, strOutput.length() - 1);
+
+	return strOutput;
 }

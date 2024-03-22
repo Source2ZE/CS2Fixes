@@ -648,7 +648,6 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 			{
 				targetType = ETargetType::PLAYER;
 				clients[iNumClients++] = i;
-				break;
 			}
 		}
 	}
