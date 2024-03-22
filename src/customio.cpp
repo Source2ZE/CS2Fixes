@@ -71,7 +71,7 @@ static void AddOutputCustom_Targetname(Z_CBaseEntity*                  pInstance
                                        CEntityInstance*                pCaller,
                                        const std::vector<std::string>& vecArgs)
 {
-    addresses::CEntityIdentity_SetEntityName(pInstance->m_pEntity, vecArgs[1].c_str());
+    pInstance->SetName(vecArgs[1].c_str());
 
 #ifdef _DEBUG
     Message("SetName %s to %d", vecArgs[1].c_str(), pInstance->GetHandle().GetEntryIndex());
@@ -113,7 +113,7 @@ static void AddOutputCustom_MaxHealth(Z_CBaseEntity*                  pInstance,
                                       CEntityInstance*                pCaller,
                                       const std::vector<std::string>& vecArgs)
 {
-    pInstance->m_iMaxHealth(clamp(Q_atoi(vecArgs[1].c_str()), 0, 99999999));
+    pInstance->m_iMaxHealth(clamp(Q_atoi(vecArgs[1].c_str()), 0, INT_MAX));
 
 #ifdef _DEBUG
     const int m_iMaxHealth = pInstance->m_iMaxHealth;
@@ -126,7 +126,7 @@ static void AddOutputCustom_Health(Z_CBaseEntity*                  pInstance,
                                    CEntityInstance*                pCaller,
                                    const std::vector<std::string>& vecArgs)
 {
-    pInstance->AcceptInput("SetHealth", vecArgs[1].c_str());
+    pInstance->m_iHealth(clamp(Q_atoi(vecArgs[1].c_str()), 0, INT_MAX));
 
 #ifdef _DEBUG
     const int m_iHealth = pInstance->m_iHealth;

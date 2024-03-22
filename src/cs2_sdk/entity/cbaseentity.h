@@ -141,6 +141,11 @@ public:
 	void SetAbsVelocity(Vector vecVelocity) { m_vecAbsVelocity = vecVelocity; }
 	void SetBaseVelocity(Vector vecVelocity) { m_vecBaseVelocity = vecVelocity; }
 
+	void SetName(const char *pName)
+	{
+		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
+	}
+
 	void TakeDamage(CTakeDamageInfo &info)
 	{
 		Detour_CBaseEntity_TakeDamageOld(this, &info);
