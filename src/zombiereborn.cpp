@@ -673,6 +673,10 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 		int iRoundNum = g_iRoundNum;
 		bool bInfect = g_ZRRoundState == EZRRoundState::POST_INFECTION;
 
+		// We're infecting this guy with a delay, disable all damage as they have 100 hp until then
+		if (bInfect)
+			pController->GetPawn()->m_bTakesDamage(false);
+
 		CHandle<CCSPlayerController> handle = pController->GetHandle();
 		new CTimer(0.05f, false, [iRoundNum, handle, bInfect]()
 		{
@@ -807,6 +811,9 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
 	if (!pVictimPawn)
 		return;
+
+	// We disabled damage due to the delayed infection, restore
+	pVictimPawn->m_bTakesDamage(true);
 
 	pVictimPawn->EmitSound("zr.amb.scream");
 
