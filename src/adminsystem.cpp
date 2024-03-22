@@ -34,7 +34,6 @@
 #include "entity/cgamerules.h"
 #include "gamesystem.h"
 #include <vector>
-#include <format>
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
@@ -1103,7 +1102,7 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 	Message("[PM to %s] %s: %s\n", pTarget->GetPlayerName(), pszName, strMessage.c_str());
 }
 
-CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players into console", ADMFLAG_GENERIC)
+CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GENERIC)
 {
 	std::vector<std::tuple<std::string, std::string, uint64>> rgNameSlotID;
 
@@ -1198,7 +1197,6 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players into console
 
 		rgNameSlotID.push_back(std::tuple<std::string, std::string, uint64>(strName, strFlags, iSteamID));
 	}
-	// Sort player list by names alphabetically
 	std::sort(rgNameSlotID.begin(), rgNameSlotID.end(), [](auto const& a, auto const& b) {
 		std::string f = std::get<0>(a);
 		std::string s = std::get<0>(b);
@@ -1208,28 +1206,65 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players into console
 	});
 
 	ClientPrint(player, HUD_PRINTCONSOLE, "c_who output: %i client%s", rgNameSlotID.size(), rgNameSlotID.size() == 1 ? "" : "s");
-	ClientPrint(player, HUD_PRINTCONSOLE, std::format("|{:-<22}|{:-<52}|{:-<19}|", "-", "-", "-").c_str());
-	ClientPrint(player, HUD_PRINTCONSOLE, std::format("| {:^20} | {:^50} | {:^17} |", "Name", "Flags", "Steam64 ID").c_str());
-	ClientPrint(player, HUD_PRINTCONSOLE, std::format("|{:-<22}|{:-<52}|{:-<19}|", "-", "-", "").c_str());
+	ClientPrint(player, HUD_PRINTCONSOLE, "|----------------------|----------------------------------------------------|-------------------|");
+	ClientPrint(player, HUD_PRINTCONSOLE, "|         Name         |                       Flags                        |    Steam64 ID     |");
+	ClientPrint(player, HUD_PRINTCONSOLE, "|----------------------|----------------------------------------------------|-------------------|");
 	for (auto [strPlayerName, strFlags, iSteamID] : rgNameSlotID)
 	{
+
+		if (strPlayerName.length() % 2 == 1)
+			strPlayerName = strPlayerName + ' ';
+		if (strPlayerName.length() < 20)
+			strPlayerName = std::string((20 - strPlayerName.length()) / 2, ' ') + strPlayerName + std::string((20 - strPlayerName.length()) / 2, ' ');
+
 		if (strFlags.length() <= 50)
 		{
-			ClientPrint(player, HUD_PRINTCONSOLE, std::format("| {:^20} | {:^50} | {:0^17} |", strPlayerName, strFlags, iSteamID).c_str());
+			if (strFlags.length() % 2 == 1)
+				strFlags = strFlags + ' ';
+			if (strFlags.length() < 50)
+				strFlags = std::string((50 - strFlags.length()) / 2, ' ') + strFlags + std::string((50 - strFlags.length()) / 2, ' ');
+
+			if (iSteamID != 0)
+				ClientPrint(player, HUD_PRINTCONSOLE, "| %s | %s | %lli |", strPlayerName.c_str(), strFlags.c_str(), iSteamID);
+			else
+				ClientPrint(player, HUD_PRINTCONSOLE, "| %s | %s | 00000000000000000 |", strPlayerName.c_str(), strFlags.c_str());
 		}
 		else
 		{
 			int iIndexToCut = strFlags.substr(0, 50).find_last_of(',') + 1;
-			ClientPrint(player, HUD_PRINTCONSOLE, std::format("| {:^20} | {:^50} | {:0^17} |", strPlayerName, strFlags.substr(0, iIndexToCut), iSteamID).c_str());
-			while (strFlags.length() > 50 && iIndexToCut < strFlags.length())
+			std::string strTemp = strFlags.substr(0, iIndexToCut);
+			if (strTemp.length() % 2 == 1)
+				strTemp = strTemp + ' ';
+			if (strTemp.length() < 50)
+				strTemp = std::string((50 - strTemp.length()) / 2, ' ') + strTemp + std::string((50 - strTemp.length()) / 2, ' ');
+			strFlags = strFlags.substr(iIndexToCut + 1);
+
+			if (iSteamID != 0)
+				ClientPrint(player, HUD_PRINTCONSOLE, "| %s | %s | %lli |", strPlayerName.c_str(), strTemp.c_str(), iSteamID);
+			else
+				ClientPrint(player, HUD_PRINTCONSOLE, "| %s | %s | 00000000000000000 |", strPlayerName.c_str(), strTemp.c_str());
+			while (strFlags.length() > 0)
 			{
-				strFlags = strFlags.substr(iIndexToCut + 1);
-				ClientPrint(player, HUD_PRINTCONSOLE, std::format("| {:^20} | {:^50} | {:^17} |", "", strFlags.substr(0, 50), "").c_str());
 				iIndexToCut = strFlags.substr(0, 50).find_last_of(',') + 1;
+				if (iIndexToCut == 0 || iIndexToCut + 1 > strFlags.length() || strFlags.length() < 50)
+				{
+					strTemp = strFlags;
+					strFlags = "";
+				}
+				else
+				{
+					strTemp = strFlags.substr(0, iIndexToCut);
+					strFlags = strFlags.substr(iIndexToCut + 1);
+				}
+				if (strTemp.length() % 2 == 1)
+					strTemp = ' ' + strTemp;
+				if (strTemp.length() < 50)
+					strTemp = std::string((50 - strTemp.length()) / 2, ' ') + strTemp + std::string((50 - strTemp.length()) / 2, ' ');
+				ClientPrint(player, HUD_PRINTCONSOLE, "|                      | %s |                   |", strTemp.c_str());
 			}
 		}
 	}
-	ClientPrint(player, HUD_PRINTCONSOLE, std::format("|{:-<22}|{:-<52}|{:-<19}|", "-", "-", "").c_str());
+	ClientPrint(player, HUD_PRINTCONSOLE, "|----------------------|----------------------------------------------------|-------------------|");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Check console for output.");
 }
 
