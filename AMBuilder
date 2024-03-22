@@ -10,13 +10,7 @@ for sdk_target in MMSPlugin.sdk_targets:
 
   binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
 
-  if binary.compiler.family == 'gcc' or binary.compiler.family == 'clang':
-    binary.compiler.cxxflags += ['--std=c++17']
-  elif binary.compiler.family == 'msvc':
-    binary.compiler.cxxflags += ['/std:c++20']
-
-  if binary.compiler.family == 'clang':
-    binary.compiler.cxxflags += ['-Wno-register']
+  if binary.compiler.behavior == 'gcc':
     binary.compiler.cxxflags += ['-Wno-invalid-offsetof']
 
   binary.compiler.cxxincludes += [
@@ -41,7 +35,7 @@ for sdk_target in MMSPlugin.sdk_targets:
       os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'funchook.lib'),
       os.path.join(builder.sourcePath, 'vendor', 'funchook', 'lib', target_folder, 'distorm.lib'),
       os.path.join(builder.sourcePath, 'sdk', 'lib' ,'public', 'win64', '2015', 'libprotobuf.lib'),
-	  os.path.join(builder.sourcePath, 'sdk', 'lib', 'public', 'win64', 'steam_api64.lib')
+      os.path.join(builder.sourcePath, 'sdk', 'lib', 'public', 'win64', 'steam_api64.lib')
     ]
     binary.sources += ['src/utils/plat_win.cpp']
 
@@ -70,12 +64,12 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/zombiereborn.cpp',
     'src/customio.cpp',
     'src/entitylistener.cpp',
-	'sdk/entity2/entitysystem.cpp',
-	'sdk/entity2/entityidentity.cpp',
-	'sdk/entity2/entitykeyvalues.cpp',
-	'sdk/tier1/keyvalues3.cpp',
+    'sdk/entity2/entitysystem.cpp',
+    'sdk/entity2/entityidentity.cpp',
+    'sdk/entity2/entitykeyvalues.cpp',
+    'sdk/tier1/keyvalues3.cpp',
   ]
-  
+
   protoc_builder = builder.tools.Protoc(protoc = sdk_target.protoc, sources = [
     os.path.join(sdk['path'], 'common', 'network_connection.proto'),
     os.path.join(sdk['path'], 'common', 'networkbasetypes.proto'),
@@ -97,6 +91,6 @@ for sdk_target in MMSPlugin.sdk_targets:
   ]
 
   binary.custom = [protoc_builder]
-	
+
   nodes = builder.Add(binary)
   MMSPlugin.binaries += [nodes]
