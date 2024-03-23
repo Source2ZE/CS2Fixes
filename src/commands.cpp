@@ -402,38 +402,45 @@ CON_COMMAND_CHAT(hide, "<distance> - hides nearby players")
 
 CON_COMMAND_CHAT(help, "- Display list of commands in console")
 {
+	std::vector<std::string> rgstrCommands;
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands is:");
 
 		FOR_EACH_VEC(g_CommandList, i)
 		{
-			CChatCommand *cmd = g_CommandList[i];
+			CChatCommand* cmd = g_CommandList[i];
 
 			if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
-				ClientPrint(player, HUD_PRINTCONSOLE, "c_%s %s", cmd->GetName(), cmd->GetDescription());
+				rgstrCommands.push_back(std::string("c_") + cmd->GetName() + " " + cmd->GetDescription());
 		}
-
-		return;
 	}
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all available commands will be shown in console.");
-	ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands you can use is:");
-
-	int iSlot = player->GetPlayerSlot();
-
-	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(iSlot);
-
-	FOR_EACH_VEC(g_CommandList, i)
+	else
 	{
-		CChatCommand *cmd = g_CommandList[i];
-		uint64 flags = cmd->GetAdminFlags();
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all available commands will be shown in console.");
+		ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands you can use is:");
 
-		if (pZEPlayer->IsAdminFlagSet(flags) && !cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
-				ClientPrint(player, HUD_PRINTCONSOLE, "!%s %s", cmd->GetName(), cmd->GetDescription());
+		int iSlot = player->GetPlayerSlot();
+
+		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iSlot);
+
+		FOR_EACH_VEC(g_CommandList, i)
+		{
+			CChatCommand* cmd = g_CommandList[i];
+			uint64 flags = cmd->GetAdminFlags();
+
+			if (pZEPlayer->IsAdminFlagSet(flags) && !cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
+				rgstrCommands.push_back(std::string("!") + cmd->GetName() + " " + cmd->GetDescription());
+		}
 	}
 
-	ClientPrint(player, HUD_PRINTCONSOLE, "! can be replaced with / for a silent chat command, or c_ for console usage");
+	std::sort(rgstrCommands.begin(), rgstrCommands.end());
+
+	for (const auto& strCommand : rgstrCommands)
+		ClientPrint(player, HUD_PRINTCONSOLE, strCommand.c_str());
+
+	if (player)
+		ClientPrint(player, HUD_PRINTCONSOLE, "! can be replaced with / for a silent chat command, or c_ for console usage");
 }
 
 
