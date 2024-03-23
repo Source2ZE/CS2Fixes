@@ -1436,6 +1436,12 @@ CON_COMMAND_CHAT_FLAGS(infect, "infect a player", ADMFLAG_GENERIC)
 		return;
 	}
 
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+		return;
+	}
+
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
 	for (int i = 0; i < iNumClients; i++)
@@ -1501,6 +1507,12 @@ CON_COMMAND_CHAT_FLAGS(revive, "revive a player", ADMFLAG_GENERIC)
 	if (!iNumClients)
 	{
 		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Target not found.");
+		return;
+	}
+
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
 		return;
 	}
 

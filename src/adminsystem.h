@@ -137,11 +137,7 @@ private:
 class CAdminSystem
 {
 public:
-	CAdminSystem()
-	{
-		LoadAdmins();
-		LoadInfractions();
-	}
+	CAdminSystem();
 	bool LoadAdmins();
 	bool LoadInfractions();
 	void AddInfraction(CInfractionBase*);
@@ -150,12 +146,28 @@ public:
 	bool FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type);
 	CAdmin *FindAdmin(uint64 iSteamID);
 	uint64 ParseFlags(const char* pszFlags);
+	void AddDisconnectedPlayer(const char* pszName, uint64 xuid, const char* pszIP);
+	void ShowDisconnectedPlayers(CCSPlayerController* const pAdmin);
 
 private:
 	CUtlVector<CAdmin> m_vecAdmins;
 	CUtlVector<CInfractionBase*> m_vecInfractions;
+	
+	// Implemented as a circular buffer.
+	std::tuple<std::string, uint64, std::string> m_rgDCPly[20];
+	int m_iDCPlyIndex;
 };
 
 extern CAdminSystem *g_pAdminSystem;
 
 void PrecacheAdminBeaconParticle(IEntityResourceManifest* pResourceManifest);
+
+// Given a formatted time entered by an admin, return the minutes
+int ParseTimeInput(std::string strTime);
+
+// Given a time in seconds/minutes, returns a formatted string of the largest (floored) unit of time this exceeds, up to months.
+// Example: FormatTime(70) == "1 minute"
+std::string FormatTime(std::time_t wTime, bool bInSeconds = true);
+
+// Gets reason from a user command such as mute, gag, ban, etc.
+std::string GetReason(const CCommand& args, int iArgsBefore, bool bStripUnicode);
