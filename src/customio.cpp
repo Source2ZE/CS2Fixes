@@ -410,60 +410,78 @@ FAKE_FLOAT_CVAR(cs2f_burn_slowdown, "The slowdown of each burn damage tick as a 
 float g_flBurnInterval = 0.3f;
 FAKE_FLOAT_CVAR(cs2f_burn_interval, "The interval between burn damage ticks", g_flBurnInterval, 0.3f, false);
 
-bool IgniteEntity(Z_CBaseEntity *pEntity, float flDuration, Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility)
+bool IgnitePawn(CCSPlayerPawn *pPawn, float flDuration, Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility)
 {
-    // This is not a model entity, ignore
-    if (!pEntity->m_pCollision())
-        return false;
+    CParticleSystem *pParticleEnt = (CParticleSystem*)pPawn->m_hEffectEntity().Get();
 
-    Vector vecOrigin = pEntity->GetAbsOrigin();
+    // This guy is already burning, don't ignite again
+    if (pParticleEnt)
+    {   
+        // Override the end time instead of just adding to it so players who get a ton of ignite inputs don't burn forever
+        pParticleEnt->m_flDissolveStartTime = gpGlobals->curtime + flDuration;
+        return true;
+    }
 
-    if (pEntity->IsPawn())
-        vecOrigin.z += 24;
+    Vector vecOrigin = pPawn->GetAbsOrigin();
 
-    CParticleSystem *pParticleEnt = (CParticleSystem *)CreateEntityByName("info_particle_system");
-
-    CHandle<Z_CBaseEntity> hEntity(pEntity);
-    CHandle<CParticleSystem> hParticle(pParticleEnt);
-    CHandle<Z_CBaseEntity> hInflictor(pInflictor);
-    CHandle<Z_CBaseEntity> hAttacker(pAttacker);
-    CHandle<Z_CBaseEntity> hAbility(pAbility);
+    pParticleEnt = (CParticleSystem *)CreateEntityByName("info_particle_system");
 
     pParticleEnt->m_bStartActive(true);
     pParticleEnt->m_iszEffectName(g_sBurnParticle.c_str());
-    pParticleEnt->m_hControlPointEnts[1] = hEntity;
+    pParticleEnt->m_hControlPointEnts[1] = pPawn;
+    pParticleEnt->m_flDissolveStartTime = gpGlobals->curtime + flDuration; // Store the end time in the particle itself so we can increment if needed
     pParticleEnt->Teleport(&vecOrigin, nullptr, nullptr);
 
     pParticleEnt->DispatchSpawn();
 
-    pParticleEnt->SetParent(pEntity);
+    pParticleEnt->SetParent(pPawn);
 
-    float flStartTime = gpGlobals->curtime;
+    pPawn->m_hEffectEntity = pParticleEnt;
 
-    new CTimer(0.f, false, [hEntity, hParticle, flStartTime, flDuration, hInflictor, hAttacker, hAbility]()
+    CHandle<CCSPlayerPawn> hPawn(pPawn);
+    CHandle<Z_CBaseEntity> hInflictor(pInflictor);
+    CHandle<Z_CBaseEntity> hAttacker(pAttacker);
+    CHandle<Z_CBaseEntity> hAbility(pAbility);
+
+    new CTimer(0.f, false, [hPawn, hInflictor, hAttacker, hAbility]()
+    {
+        CCSPlayerPawn *pPawn = hPawn.Get();
+
+        if (!pPawn)
+            return -1.f;
+
+        CParticleSystem *pParticleEnt = (CParticleSystem*)pPawn->m_hEffectEntity().Get();
+
+        if (!pParticleEnt)
+            return -1.f;
+
+        if (V_strncmp(pParticleEnt->GetClassname(), "info_part", 9) != 0)
         {
-            Z_CBaseEntity *pEntity = hEntity.Get();
-            CParticleSystem *pParticleEnt = hParticle.Get();
+            // This should never happen but just in case
+            Panic("Found unexpected entity %s while burning a pawn!\n", pParticleEnt->GetClassname());
+            return -1.f;
+        }
 
-            if (!pEntity || !pParticleEnt)
-                return -1.f;
+        if (pParticleEnt->m_flDissolveStartTime() <= gpGlobals->curtime || !pPawn->IsAlive())
+        {
+            pParticleEnt->AcceptInput("Stop");
+            UTIL_AddEntityIOEvent(pParticleEnt, "Kill"); // Kill on the next frame
 
-            if (flStartTime + flDuration <= gpGlobals->curtime)
-            {
-                pParticleEnt->AcceptInput("Stop");
-                UTIL_AddEntityIOEvent(pParticleEnt, "Kill"); // Kill on the next frame
+            return -1.f;
+        }
 
-                return -1.f;
-            }
+        CTakeDamageInfo info(hInflictor, hAttacker, hAbility, g_flBurnDamage, DMG_BURN);
 
-            auto info = CTakeDamageInfo(hInflictor, hAttacker, hAbility, g_flBurnDamage, DMG_BURN);
-            pEntity->TakeDamage(info);
+        // Damage doesn't apply if the inflictor is null
+        if (!hInflictor.Get())
+            info.m_hInflictor.Set(hAttacker);
+            
+        pPawn->TakeDamage(info);
 
-            if (pEntity->IsPawn())
-                ((CCSPlayerPawn *)pEntity)->m_flVelocityModifier = g_flBurnSlowdown;
+        pPawn->m_flVelocityModifier = g_flBurnSlowdown;
 
-            return g_flBurnInterval;
-        });
+        return g_flBurnInterval;
+    });
 
     return true;
 }

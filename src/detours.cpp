@@ -365,9 +365,9 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		else
 			flDuration = value->m_float;
 
-		Z_CBaseEntity *pEntity = (Z_CBaseEntity *)pThis->m_pInstance;
+		CCSPlayerPawn *pPawn = (CCSPlayerPawn*)pThis->m_pInstance;
 
-		if (IgniteEntity(pEntity, flDuration, pEntity, pEntity))
+		if (pPawn->IsPawn() && IgnitePawn(pPawn, flDuration, pPawn, pPawn))
 			return true;
 	}
 
