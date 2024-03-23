@@ -120,6 +120,7 @@ public:
 	SCHEMA_FIELD(MoveCollide_t, m_MoveCollide)
 	SCHEMA_FIELD(MoveType_t, m_MoveType)
 	SCHEMA_FIELD(MoveType_t, m_nActualMoveType)
+	SCHEMA_FIELD(CHandle<Z_CBaseEntity>, m_hEffectEntity)
 	SCHEMA_FIELD(uint32, m_spawnflags)
 	SCHEMA_FIELD(uint32, m_fFlags)
 	SCHEMA_FIELD(LifeState_t, m_lifeState)
