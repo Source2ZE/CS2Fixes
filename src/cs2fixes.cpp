@@ -413,21 +413,12 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 
 	Message("Hook_StartupServer: %s\n", pszMapName);
 
-	// run our cfg
-	g_pEngineServer2->ServerCommand("exec cs2fixes/cs2fixes");
-
-	// Run map cfg (if present)
-	char cmd[MAX_PATH];
-	V_snprintf(cmd, sizeof(cmd), "exec cs2fixes/maps/%s", pszMapName);
-	g_pEngineServer2->ServerCommand(cmd);
-
 	if(g_bHasTicked)
 		RemoveMapTimers();
 
 	g_bHasTicked = false;
 
 	RegisterEventListeners();
-	g_playerManager->SetupInfiniteAmmo();
 
 	// Disable RTV and Extend votes after map has just started
 	g_RTVState = ERTVState::MAP_START;
@@ -443,9 +434,6 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 			g_ExtendState = EExtendState::EXTEND_ALLOWED;
 		return -1.0f;
 	});
-
-	if (g_bEnableZR)
-		ZR_OnStartupServer();
 }
 
 void CS2Fixes::Hook_GameServerSteamAPIActivated()
@@ -727,7 +715,19 @@ void CS2Fixes::OnLevelInit( char const *pMapName,
 {
 	Message("OnLevelInit(%s)\n", pMapName);
 
+	// run our cfg
+	g_pEngineServer2->ServerCommand("exec cs2fixes/cs2fixes");
+
+	// Run map cfg (if present)
+	char cmd[MAX_PATH];
+	V_snprintf(cmd, sizeof(cmd), "exec cs2fixes/maps/%s", pMapName);
+	g_pEngineServer2->ServerCommand(cmd);
+
+	g_playerManager->SetupInfiniteAmmo();
 	g_pMapVoteSystem->OnLevelInit(pMapName);
+
+	if (g_bEnableZR)
+		ZR_OnLevelInit();
 }
 
 // Potentially might not work

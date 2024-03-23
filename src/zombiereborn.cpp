@@ -533,7 +533,7 @@ void CZRRegenTimer::RemoveAllTimers()
 	}
 }
 
-void ZR_OnStartupServer()
+void ZR_OnLevelInit()
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
 
