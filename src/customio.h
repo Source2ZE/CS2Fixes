@@ -22,10 +22,11 @@
 class CEntityIdentity;
 class CEntityInstance;
 class Z_CBaseEntity;
+class CCSPlayerPawn;
 
 bool CustomIO_HandleInput(CEntityInstance* pEntityInstance,
                           const char*      pParams,
                           CEntityInstance* pActivator,
                           CEntityInstance* pCaller);
 
-bool IgniteEntity(Z_CBaseEntity *pEntity, float flDuration, Z_CBaseEntity *pInflictor = nullptr, Z_CBaseEntity *pAttacker = nullptr, Z_CBaseEntity *pAbility = nullptr);
+bool IgnitePawn(CCSPlayerPawn *pEntity, float flDuration, Z_CBaseEntity *pInflictor = nullptr, Z_CBaseEntity *pAttacker = nullptr, Z_CBaseEntity *pAbility = nullptr);
