@@ -28,6 +28,7 @@
 #include "entity/cteam.h"
 #include "entity/cparticlesystem.h"
 #include "user_preferences.h"
+#include "customio.h"
 #include <sstream>
 
 #include "tier0/memdbgon.h"
@@ -70,7 +71,10 @@ static float g_flRespawnDelay = 5.0;
 static int g_iDefaultWinnerTeam = CS_TEAM_SPECTATOR;
 static int g_iMZImmunityReduction = 20;
 static int g_iGroanChance = 5;
-float g_flMoanInterval = 30.f;
+static float g_flMoanInterval = 30.f;
+static bool g_bNapalmGrenades = true;
+static float g_flNapalmDuration = 5.f;
+static float g_flNapalmFullDamage = 50.f;
 
 static std::string g_szHumanWinOverlayParticle;
 static std::string g_szHumanWinOverlayMaterial;
@@ -93,7 +97,10 @@ FAKE_FLOAT_CVAR(zr_respawn_delay, "Time before a zombie is automatically respawn
 FAKE_INT_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, CS_TEAM_SPECTATOR, false)
 FAKE_INT_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, 20, false)
 FAKE_INT_CVAR(zr_sounds_groan_chance, "How likely should a zombie groan whenever they take damage (1 / N)", g_iGroanChance, 5, false)
-FAKE_FLOAT_CVAR(zr_sounds_moan_interval, "How often in seconds should zombies moan", g_flMoanInterval, 30.f, false)
+FAKE_FLOAT_CVAR(zr_sounds_moan_interval, "How often in seconds should zombies moan", g_flMoanInterval, 5.f, false)
+FAKE_BOOL_CVAR(zr_napalm_enable, "Whether to use napalm grenades", g_bNapalmGrenades, true, false)
+FAKE_FLOAT_CVAR(zr_napalm_burn_duration, "How long in seconds should zombies burn from napalm grenades", g_flNapalmDuration, 5.f, false)
+FAKE_FLOAT_CVAR(zr_napalm_full_damage, "The amount of damage needed to apply full burn duration for napalm grenades (max grenade damage is 99)", g_flNapalmFullDamage, 50.f, false)
 FAKE_STRING_CVAR(zr_human_win_overlay_particle, "Screenspace particle to display when human win", g_szHumanWinOverlayParticle, false)
 FAKE_STRING_CVAR(zr_human_win_overlay_material, "Material override for human's win overlay particle", g_szHumanWinOverlayMaterial, false)
 FAKE_FLOAT_CVAR(zr_human_win_overlay_size, "Size of human's win overlay particle", g_flHumanWinOverlaySize, 5.0f, false)
@@ -1027,11 +1034,23 @@ bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 	// grenade and molotov knockback
 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
 	{
-		CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
+		Z_CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
 		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 		// inflictor class from grenade damage is actually hegrenade_projectile
+		bool bGrenade = V_strncmp(pszInflictorClass, "hegrenade", 9) == 0;
 		bool bInferno = V_strncmp(pszInflictorClass, "inferno", 7) == 0;
-		if (!V_strncmp(pszInflictorClass, "hegrenade", 9) || bInferno)
+
+		if (g_bNapalmGrenades && bGrenade)
+		{
+			// Scale burn duration by damage, so nades from farther away burn zombies for less time
+			float flDuration = (pInfo->m_flDamage / g_flNapalmFullDamage) * g_flNapalmDuration;
+			flDuration = clamp(flDuration, 0.f, g_flNapalmDuration);
+
+			// Can't use the same inflictor here as it'll end up calling this again each burn damage tick
+			IgnitePawn(pVictimPawn, flDuration, pAttackerPawn, pAttackerPawn);
+		}
+
+		if (bGrenade || bInferno)
 			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage, bInferno);
 	}
 	return false;
