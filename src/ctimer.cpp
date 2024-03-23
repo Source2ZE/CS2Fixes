@@ -36,8 +36,6 @@ void RemoveMapTimers()
         if(g_timers[prevIndex]->m_bPreserveMapChange)
             continue;
 
-        ConMsg("remove timer\n");
-
         delete g_timers[prevIndex];
         g_timers.Remove(prevIndex);
     }

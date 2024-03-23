@@ -404,21 +404,21 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 	}
 }
 
-void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*)
+void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession *pSession, const char *pszMapName)
 {
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	g_pEntitySystem = GameEntitySystem();
 	g_pEntitySystem->AddListenerEntity(g_pEntityListener);
 	gpGlobals = g_pNetworkGameServer->GetGlobals();
 
-	Message("Hook_StartupServer: %s\n", gpGlobals->mapname);
+	Message("Hook_StartupServer: %s\n", pszMapName);
 
 	// run our cfg
 	g_pEngineServer2->ServerCommand("exec cs2fixes/cs2fixes");
 
 	// Run map cfg (if present)
 	char cmd[MAX_PATH];
-	V_snprintf(cmd, sizeof(cmd), "exec cs2fixes/maps/%s", gpGlobals->mapname.ToCStr());
+	V_snprintf(cmd, sizeof(cmd), "exec cs2fixes/maps/%s", pszMapName);
 	g_pEngineServer2->ServerCommand(cmd);
 
 	if(g_bHasTicked)
