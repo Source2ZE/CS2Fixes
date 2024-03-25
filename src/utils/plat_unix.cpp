@@ -18,6 +18,7 @@
  */
 
 #ifdef __linux__
+#include "module.h"
 #include "plat.h"
 #include <dlfcn.h>
 #include <libgen.h>
@@ -28,6 +29,9 @@
 #include <elf.h>
 #include <link.h>
 #include "dbg.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "tier0/memdbgon.h"
 
@@ -42,82 +46,63 @@ struct ModuleInfo
 };
 
 // https://github.com/alliedmodders/sourcemod/blob/master/core/logic/MemoryUtils.cpp#L502-L587
-int GetModuleInformation(HINSTANCE hModule, void** base, size_t* length)
+// https://github.com/komashchenko/DynLibUtils/blob/5eb95475170becfcc64fd5d32d14ec2b76dcb6d4/module_linux.cpp#L95
+int GetModuleInformation(HINSTANCE hModule, void** base, size_t* length, std::vector<Section>& m_sections)
 {
-	struct link_map* dlmap = (struct link_map*)hModule;
-	Dl_info info;
-	Elf64_Ehdr* file;
-	Elf64_Phdr* phdr;
-	uint16_t phdrCount;
 
-	if (!dladdr((void*)dlmap->l_addr, &info))
+	link_map* lmap;
+	if (dlinfo(hModule, RTLD_DI_LINKMAP, &lmap) != 0)
 	{
+		dlclose(hModule);
 		return 1;
 	}
 
-	if (!info.dli_fbase || !info.dli_fname)
+	int fd = open(lmap->l_name, O_RDONLY);
+	if (fd == -1)
 	{
+		dlclose(hModule);
 		return 2;
 	}
 
-	/* This is for our insane sanity checks :o */
-	uintptr_t baseAddr = reinterpret_cast<uintptr_t>(info.dli_fbase);
-	file = reinterpret_cast<Elf64_Ehdr*>(baseAddr);
-
-	/* Check ELF magic */
-	if (memcmp(ELFMAG, file->e_ident, SELFMAG) != 0)
+	struct stat st;
+	if (fstat(fd, &st) == 0)
 	{
-		return 3;
-	}
-
-	/* Check ELF version */
-	if (file->e_ident[EI_VERSION] != EV_CURRENT)
-	{
-		return 4;
-	}
-
-	/* Check ELF endianness */
-	if (file->e_ident[EI_DATA] != ELFDATA2LSB)
-	{
-		return 5;
-	}
-
-	/* Check ELF architecture */
-	if (file->e_ident[EI_CLASS] != ELFCLASS64 || file->e_machine != EM_X86_64)
-	{
-		return 6;
-	}
-
-	/* For our purposes, this must be a dynamic library/shared object */
-	if (file->e_type != ET_DYN)
-	{
-		return 7;
-	}
-
-	phdrCount = file->e_phnum;
-	phdr = reinterpret_cast<Elf64_Phdr*>(baseAddr + file->e_phoff);
-
-	for (uint16_t i = 0; i < phdrCount; i++)
-	{
-		Elf64_Phdr& hdr = phdr[i];
-
-		/* We only really care about the segment with executable code */
-		if (hdr.p_type == PT_LOAD && hdr.p_flags == (PF_X | PF_R))
+		void* map = mmap(nullptr, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+		if (map != MAP_FAILED)
 		{
-			/* From glibc, elf/dl-load.c:
-			 * c->mapend = ((ph->p_vaddr + ph->p_filesz + GLRO(dl_pagesize) - 1)
-			 *             & ~(GLRO(dl_pagesize) - 1));
-			 *
-			 * In glibc, the segment file size is aligned up to the nearest page size and
-			 * added to the virtual address of the segment. We just want the size here.
-			 */
-			//lib.memorySize = PAGE_ALIGN_UP(hdr.p_filesz);
-			*length = PAGE_ALIGN_UP(hdr.p_filesz);
-			*base = (void*)(baseAddr + hdr.p_paddr);
+			ElfW(Ehdr)* ehdr = static_cast<ElfW(Ehdr)*>(map);
+			ElfW(Shdr)* shdrs = reinterpret_cast<ElfW(Shdr)*>(reinterpret_cast<uintptr_t>(ehdr) + ehdr->e_shoff);
+			const char* strTab = reinterpret_cast<const char*>(reinterpret_cast<uintptr_t>(ehdr) + shdrs[ehdr->e_shstrndx].sh_offset);
+	
+			for (auto i = 0; i < ehdr->e_phnum; ++i)
+			{
+				ElfW(Phdr)* phdr = reinterpret_cast<ElfW(Phdr)*>(reinterpret_cast<uintptr_t>(ehdr) + ehdr->e_phoff + i * ehdr->e_phentsize);
+				if (phdr->p_type == PT_LOAD && phdr->p_flags & PF_X)
+				{
+					*base = reinterpret_cast<void*>(lmap->l_addr + phdr->p_vaddr);
+					*length = phdr->p_filesz;
+					break;
+				}
+			}
 
-			break;
+			for (auto i = 0; i < ehdr->e_shnum; ++i)
+			{
+				ElfW(Shdr)* shdr = reinterpret_cast<ElfW(Shdr)*>(reinterpret_cast<uintptr_t>(shdrs) + i * ehdr->e_shentsize);
+				if (*(strTab + shdr->sh_name) == '\0')
+					continue;
+
+				Section section;
+				section.m_szName = strTab + shdr->sh_name;
+				section.m_pBase = reinterpret_cast<void*>(lmap->l_addr + shdr->sh_addr);
+				section.m_iSize = shdr->sh_size;
+				m_sections.push_back(section);
+			}
+
+			munmap(map, st.st_size);
 		}
 	}
+
+	close(fd);
 
 	return 0;
 }
@@ -216,6 +201,58 @@ void Plat_WriteMemory(void* pPatchAddress, uint8_t* pPatch, int iPatchSize)
 	memcpy(pPatchAddress, pPatch, iPatchSize);
 
 	result = mprotect(align_addr, align_size, old_prot);
+}
+
+void* CModule::FindVirtualTable(const std::string& name)
+{
+	auto readOnlyData = GetSection(".rodata");
+	auto readOnlyRelocations = GetSection(".data.rel.ro");
+
+	if (!readOnlyData || !readOnlyRelocations)
+	{
+		Warning("Failed to find .rodata or .data.rel.ro section\n");
+		return nullptr;
+	}
+
+	std::string decoratedTableName = std::to_string(name.length()) + name;
+
+	SignatureIterator sigIt(readOnlyData->m_pBase, readOnlyData->m_iSize, (const byte*)decoratedTableName.c_str(), decoratedTableName.size() + 1);
+	void* classNameString = sigIt.FindNext(false);
+
+	if (!classNameString)
+	{
+		Warning("Failed to find type descriptor for %s\n", name.c_str());
+		return nullptr;
+	}
+
+	SignatureIterator sigIt2(readOnlyRelocations->m_pBase, readOnlyRelocations->m_iSize, (const byte*)&classNameString, sizeof(void*));
+	void* typeName = sigIt2.FindNext(false);
+
+	if (!typeName)
+	{
+		Warning("Failed to find type name for %s\n", name.c_str());
+		return nullptr;
+	}
+
+	void* typeInfo = (void*)((uintptr_t)typeName - 0x8);
+
+	for (const auto& sectionName : { std::string_view(".data.rel.ro"), std::string_view(".data.rel.ro.local") })
+	{
+		auto section = GetSection(sectionName);
+		if (!section)
+			continue;
+
+		SignatureIterator sigIt3(section->m_pBase, section->m_iSize, (const byte*)&typeInfo, sizeof(void*));
+
+		while (void* vtable = sigIt3.FindNext(false))
+		{
+			if(*(int64_t*)((uintptr_t)vtable - 0x8) == 0)
+				return (void*)((uintptr_t)vtable + 0x8);
+		}
+	}
+
+	Warning("Failed to find vtable for %s\n", name.c_str());
+	return nullptr;
 }
 #endif
 
