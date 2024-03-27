@@ -41,6 +41,8 @@ class INetworkSerializable;
 class IEngineServiceMgr;
 class CServerSideClient;
 class INetChannel;
+class CBasePlayerPawn;
+class CUserCmd;
 
 bool InitDetours(CGameConfig *gameConfig);
 void FlushAllDetours();
@@ -57,3 +59,4 @@ void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsi
 void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEntity, bool a3);
 int64 FASTCALL Detour_AddString(void *pStringTable, bool bServer, const char *pszString, void *a4);
 void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pMove);
+void *FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pawn, CUserCmd *cmds, int numcmds, bool paused, float margin);

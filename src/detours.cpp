@@ -18,6 +18,8 @@
  */
 
 #include "networkbasetypes.pb.h"
+#include "usercmd.pb.h"
+#include "cs_usercmd.pb.h"
 
 #include "cdetour.h"
 #include "common.h"
@@ -65,6 +67,7 @@ DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
 DECLARE_DETOUR(CNetworkStringTable_AddString, Detour_AddString);
 DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
+DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -443,6 +446,37 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pM
 	ProcessMovement(pThis, pMove);
 
 	gpGlobals->frametime = flStoreFrametime;
+}
+
+static bool g_bDisableSubtick = false;
+FAKE_BOOL_CVAR(cs2f_disable_subtick_move, "Whether to disable subtick movement", g_bDisableSubtick, false, false)
+
+class CUserCmd
+{
+public:
+	CSGOUserCmdPB cmd;
+	[[maybe_unused]] char pad1[0x38];
+#ifdef PLATFORM_WINDOWS
+	[[maybe_unused]] char pad2[0x8];
+#endif
+};
+
+void* FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pPawn, CUserCmd *cmds, int numcmds, bool paused, float margin)
+{
+	if (!g_bDisableSubtick)
+		return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
+
+	static int offset = g_GameConfig->GetOffset("UsercmdOffset");
+
+	for (int i = 0; i < numcmds; i++)
+	{
+		CSGOUserCmdPB *pUserCmd = &cmds[i].cmd;
+
+		for (int j = 0; j < pUserCmd->mutable_base()->subtick_moves_size(); j++)
+			pUserCmd->mutable_base()->mutable_subtick_moves(j)->set_when(0.f);
+	}
+
+	return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
 }
 
 CUtlVector<CDetourBase *> g_vecDetours;
