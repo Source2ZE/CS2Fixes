@@ -122,8 +122,10 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 }
 
 static bool g_bUseOldPush = false;
-
 FAKE_BOOL_CVAR(cs2f_use_old_push, "Whether to use the old CSGO trigger_push behavior", g_bUseOldPush, false, false)
+
+static bool g_bLogPushes = false;
+FAKE_BOOL_CVAR(cs2f_log_pushes, "Whether to log pushes (cs2f_use_old_push must be enabled)", g_bLogPushes, false, false)
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
@@ -183,6 +185,19 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 		origin.z += 1.0f;
 
 		pOther->Teleport(&origin, nullptr, nullptr);
+	}
+
+	if (g_bLogPushes)
+	{
+		Vector vecEntBaseVelocity = pOther->m_vecBaseVelocity;
+		Vector vecOrigPush = vecAbsDir * pPush->m_flSpeed();
+
+		Message("Pushing entity %i | frametime = %.3f | entity basevelocity = %.2f %.2f %.2f | original push velocity = %.2f %.2f %.2f | final push velocity = %.2f %.2f %.2f\n",
+			pOther->GetEntityIndex(),
+			gpGlobals->frametime,
+			vecEntBaseVelocity.x, vecEntBaseVelocity.y, vecEntBaseVelocity.z,
+			vecOrigPush.x, vecOrigPush.y, vecOrigPush.z,
+			vecPush.x, vecPush.y, vecPush.z);
 	}
 
 	pOther->m_vecBaseVelocity(vecPush);
