@@ -55,6 +55,8 @@ extern CGameEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
 extern CCSGameRules *g_pGameRules;
 
+CUtlVector<CDetourBase *> g_vecDetours;
+
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
 DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
@@ -494,61 +496,17 @@ void* FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pPawn, CUserCmd *cmds, in
 	return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
 }
 
-CUtlVector<CDetourBase *> g_vecDetours;
-
 bool InitDetours(CGameConfig *gameConfig)
 {
 	bool success = true;
 
-	g_vecDetours.PurgeAndDeleteElements();
-
-	if (!UTIL_SayTextFilter.CreateDetour(gameConfig))
-		success = false;
-	UTIL_SayTextFilter.EnableDetour();
-
-	if (!UTIL_SayText2Filter.CreateDetour(gameConfig))
-		success = false;
-	UTIL_SayText2Filter.EnableDetour();
-
-	if (!IsHearingClient.CreateDetour(gameConfig))
-		success = false;
-	IsHearingClient.EnableDetour();
-
-	if (!TriggerPush_Touch.CreateDetour(gameConfig))
-		success = false;
-	TriggerPush_Touch.EnableDetour();
-
-	if (!CGameRules_Constructor.CreateDetour(gameConfig))
-		success = false;
-	CGameRules_Constructor.EnableDetour();
-
-	if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
-		success = false;
-	CBaseEntity_TakeDamageOld.EnableDetour();
-
-	if (!CCSPlayer_WeaponServices_CanUse.CreateDetour(gameConfig))
-		success = false;
-	CCSPlayer_WeaponServices_CanUse.EnableDetour();
-  
-	if (!CEntityIdentity_AcceptInput.CreateDetour(gameConfig))
-		success = false;
-	CEntityIdentity_AcceptInput.EnableDetour();
-
-	if (!CNavMesh_GetNearestNavArea.CreateDetour(gameConfig))
-		success = false;
-	CNavMesh_GetNearestNavArea.EnableDetour();
-
-	if (!FixLagCompEntityRelationship.CreateDetour(gameConfig))
-		success = false;
-	FixLagCompEntityRelationship.EnableDetour();
-
-	if (!CNetworkStringTable_AddString.CreateDetour(gameConfig))
-		success = false;
-	CNetworkStringTable_AddString.EnableDetour();
-	
-	if (!ProcessMovement.CreateDetour(gameConfig))
-		success = false;
-	ProcessMovement.EnableDetour();
+	FOR_EACH_VEC(g_vecDetours, i)
+	{
+		if (!g_vecDetours[i]->CreateDetour(gameConfig))
+			success = false;
+		
+		g_vecDetours[i]->EnableDetour();
+	}
 
 	return success;
 }

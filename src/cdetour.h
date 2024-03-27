@@ -30,29 +30,24 @@ class CDetourBase
 {
 public:
 	virtual const char* GetName() = 0;
+	virtual bool CreateDetour(CGameConfig *gameConfig) = 0;
 	virtual void FreeDetour() = 0;
+	virtual void EnableDetour() = 0;
+	virtual void DisableDetour() = 0;
 };
 
 template <typename T>
 class CDetour : public CDetourBase
 {
 public:
-	CDetour(T* pfnDetour, const char* pszName) :
-		m_pfnDetour(pfnDetour), m_pszName(pszName)
-	{
-		m_hook = nullptr;
-		m_bInstalled = false;
-		m_pSignature = nullptr;
-		m_pSymbol = nullptr;
-		m_pModule = nullptr;
-	}
+	CDetour(T *pfnDetour, const char *pszName);
 
 	~CDetour()
 	{
 		FreeDetour();
 	}
 
-	bool CreateDetour(CGameConfig *gameConfig);
+	bool CreateDetour(CGameConfig *gameConfig) override;
 	void EnableDetour();
 	void DisableDetour();
 	void FreeDetour() override;
@@ -80,6 +75,19 @@ private:
 extern CUtlVector<CDetourBase*> g_vecDetours;
 
 template <typename T>
+CDetour<T>::CDetour(T *pfnDetour, const char *pszName) :
+	m_pfnDetour(pfnDetour), m_pszName(pszName)
+{
+	m_hook = nullptr;
+	m_bInstalled = false;
+	m_pSignature = nullptr;
+	m_pSymbol = nullptr;
+	m_pModule = nullptr;
+
+	g_vecDetours.AddToTail(this);
+}
+
+template <typename T>
 bool CDetour<T>::CreateDetour(CGameConfig *gameConfig)
 {
 	m_pfnFunc = (T*)gameConfig->ResolveSignature(m_pszName);
@@ -90,8 +98,6 @@ bool CDetour<T>::CreateDetour(CGameConfig *gameConfig)
 
 	m_hook = funchook_create();
 	funchook_prepare(m_hook, (void**)&m_pfnFunc, (void*)m_pfnDetour);
-
-	g_vecDetours.AddToTail(this);
 
 	Message("Detoured %s at 0x%p\n", m_pszName, pFunc);
 	return true;
@@ -142,5 +148,3 @@ void CDetour<T>::FreeDetour()
 
 #define DECLARE_DETOUR(name, detour) \
 	CDetour<decltype(detour)> name(detour, #name)
-
-void FlushAllDetours();
