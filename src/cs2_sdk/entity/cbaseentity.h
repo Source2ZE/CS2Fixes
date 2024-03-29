@@ -233,11 +233,6 @@ public:
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }
-
-	const char* GetModelName()
-	{
-		return ((CSkeletonInstance*)m_CBodyComponent->m_pSceneNode.Get())->m_modelState().m_ModelName.Get().String();
-	}
 };
 
 class SpawnPoint : public Z_CBaseEntity

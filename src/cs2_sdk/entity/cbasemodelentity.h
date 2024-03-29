@@ -36,4 +36,9 @@ public:
 	{
 		addresses::CBaseModelEntity_SetModel(this, szModel);
 	}
+	
+	const char* GetModelName()
+	{
+		return ((CSkeletonInstance*)m_CBodyComponent->m_pSceneNode.Get())->m_modelState().m_ModelName.Get().String();
+	}
 };
