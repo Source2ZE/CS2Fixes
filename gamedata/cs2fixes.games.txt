@@ -4,55 +4,6 @@
 	{
 		"Signatures"
 		{
-			// Logging
-			"Msg"
-			{
-				"library"		"tier0"
-				"windows"		"@Msg"
-				"linux"			"@Msg"
-			}
-			"ConDMsg"
-			{
-				"library"		"tier0"
-				"windows"		"@ConDMsg"
-				"linux"			"@ConDMsg"
-			}
-			"DevMsg"
-			{
-				"library"		"tier0"
-				"windows"		"@DevMsg"
-				"linux"			"@DevMsg"
-			}
-			"Warning"
-			{
-				"library"		"tier0"
-				"windows"		"@Warning"
-				"linux"			"@Warning"
-			}
-			"DevWarning"
-			{
-				"library"		"tier0"
-				"windows"		"@DevWarning"
-				"linux"			"@DevWarning"
-			}
-			"LoggingSystem_Log"
-			{
-				"library"		"tier0"
-				"windows"		"@LoggingSystem_Log"
-				"linux"			"@LoggingSystem_Log"
-			}
-			"LoggingSystem_LogDirect"
-			{
-				"library"		"tier0"
-				"windows"		"@LoggingSystem_LogDirect"
-				"linux"			"@LoggingSystem_LogDirect"
-			}
-			"LoggingSystem_LogAssert"
-			{
-				"library"		"tier0"
-				"windows"		"@LoggingSystem_LogAssert"
-				"linux"			"@LoggingSystem_LogAssert"
-			}
 			// Called from Host_Say
 			"UTIL_SayTextFilter"
 			{
