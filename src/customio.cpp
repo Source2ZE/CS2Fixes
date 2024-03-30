@@ -301,7 +301,7 @@ static void AddOutputCustom_Speed(Z_CBaseEntity *pInstance,
     CEntityInstance *pCaller,
     const std::vector<std::string> &vecArgs)
 {
-    if (V_strcmp(pInstance->GetClassname(), "player"))
+    if (!pInstance->IsPawn())
         return;
 
     CCSPlayerPawn *pPawn = (CCSPlayerPawn*)pInstance;
@@ -324,7 +324,7 @@ static void AddOutputCustom_RunSpeed(Z_CBaseEntity *pInstance,
     CEntityInstance *pCaller,
     const std::vector<std::string> &vecArgs)
 {
-    if (V_strcmp(pInstance->GetClassname(), "player"))
+    if (!pInstance->IsPawn())
         return;
 
     CCSPlayerPawn *pPawn = reinterpret_cast<CCSPlayerPawn*>(pInstance);
