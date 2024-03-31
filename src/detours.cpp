@@ -95,7 +95,7 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 			inputInfo->m_flDamage,
 			inputInfo->m_bitsDamageType);
 #endif
-	
+
 	// Block all player damage if desired
 	if (g_bBlockAllDamage && pThis->IsPawn())
 		return;
@@ -155,7 +155,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 	Vector vecAbsDir;
 
 	matrix3x4_t mat = pPush->m_CBodyComponent()->m_pSceneNode()->EntityToWorldTransform();
-	
+
 	Vector pushDir = pPush->m_vecPushDirEntitySpace();
 
 	// i had issues with vectorrotate on linux so i did it here
@@ -187,11 +187,19 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 	pOther->m_fFlags(flags);
 }
 
-bool FASTCALL Detour_IsHearingClient(void* serverClient, int index)
+bool FASTCALL Detour_IsHearingClient(CServerSideClient* serverClient, int index)
 {
 	ZEPlayer* player = g_playerManager->GetPlayer(index);
 	if (player && player->IsMuted())
 		return false;
+
+    if (serverClient)
+    {
+        CCSPlayerController* client = CCSPlayerController::FromSlot(serverClient->GetPlayerSlot());
+
+        if (player->IsMutedToTeam(client->m_iTeamNum()))
+            return false;
+    }
 
 	return IsHearingClient(serverClient, index);
 }
@@ -256,7 +264,7 @@ void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPla
 			{
 				if (pCurrentWord[j] >= '0' && pCurrentWord[j] <= '9')
 					continue;
-				
+
 				if (pCurrentWord[j] == 's')
 				{
 					pCurrentWord[j] = '\0';
@@ -490,7 +498,7 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CCSPlayer_WeaponServices_CanUse.CreateDetour(gameConfig))
 		success = false;
 	CCSPlayer_WeaponServices_CanUse.EnableDetour();
-  
+
 	if (!CEntityIdentity_AcceptInput.CreateDetour(gameConfig))
 		success = false;
 	CEntityIdentity_AcceptInput.EnableDetour();

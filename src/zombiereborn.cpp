@@ -99,8 +99,8 @@ FAKE_FLOAT_CVAR(zr_human_win_overlay_size, "Size of human's win overlay particle
 FAKE_STRING_CVAR(zr_zombie_win_overlay_particle, "Screenspace particle to display when zombie win", g_szZombieWinOverlayParticle, false)
 FAKE_STRING_CVAR(zr_zombie_win_overlay_material, "Material override for zombie's win overlay particle", g_szZombieWinOverlayMaterial, false)
 FAKE_FLOAT_CVAR(zr_zombie_win_overlay_size, "Size of zombie's win overlay particle", g_flZombieWinOverlaySize, 5.0f, false)
-FAKE_BOOL_CVAR(zr_zombie_mute, "Mute zombies so only humans can talk", g_bMuteZombies, false, false)
-FAKE_STRING_CVAR(zr_zombie_mute_bypass, "Defines admin flags that can bypass zombie mutes", g_szBypassZombieMutes, false)
+FAKE_BOOL_CVAR(zr_zombie_mute, "Prevent humans from hearing zombies.", g_bMuteZombies, false, false)
+FAKE_STRING_CVAR(zr_zombie_mute_bypass, "A list of admin flags that can talk to humans as a zombie", g_szBypassZombieMutes, false)
 
 void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 {
@@ -599,20 +599,18 @@ void ZR_UpdateMute(CCSPlayerController* pController)
 	ZEPlayer* player = g_playerManager->GetPlayer(pController->GetPlayerSlot());
 	uint64 bypassFlags = g_pAdminSystem->ParseFlags(g_szBypassZombieMutes.c_str());
 
-	//	Mute all zombies
+	//  Prevent zombies from speaking to humans
+    //  Zombies can speak to each other and hear humans.
+    //  Allow admins to bypass zombie muting to speak to humans if they need to.
 	if (pController->m_iTeamNum() == CS_TEAM_T)
 	{
 		if (player->IsAdminFlagSet(bypassFlags))
 			return;
 
-		player->SetMuted(true);
-		return;
+		return player->SetMutedToTeam(CS_TEAM_CT);
 	}
 
-	//	Unmute if no active infractions
-	if (!g_pAdminSystem->HasInfraction(player, CInfractionBase::Mute))
-		player->SetMuted(false);
-
+	player->SetMutedToTeam(CS_TEAM_NONE);
 }
 
 void ZR_RespawnAll()
