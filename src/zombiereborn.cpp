@@ -387,7 +387,7 @@ void CZRPlayerClassManager::ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn 
 	
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
 
-	if (pPlayer->IsLeader())
+	if (pPlayer && pPlayer->IsLeader())
 		new CTimer(0.02f, false, [pPawn]()
 		{
 			if (pPawn)
