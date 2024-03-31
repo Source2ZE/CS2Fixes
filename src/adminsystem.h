@@ -148,6 +148,12 @@ public:
 	void SaveInfractions();
 	bool ApplyInfractions(ZEPlayer *player);
 	bool FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type);
+
+	/// @brief Determines if the player has an active infraction of the specified type
+	/// @param player 
+	/// @param type 
+	/// @return true if an active infraction is found
+	bool HasInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type);
 	CAdmin *FindAdmin(uint64 iSteamID);
 	uint64 ParseFlags(const char* pszFlags);
 

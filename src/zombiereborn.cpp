@@ -78,6 +78,8 @@ static std::string g_szZombieWinOverlayParticle;
 static std::string g_szZombieWinOverlayMaterial;
 static float g_flZombieWinOverlaySize;
 
+static bool g_bMuteZombies;
+
 FAKE_BOOL_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, false, false)
 FAKE_FLOAT_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, 150.0f, false)
 FAKE_BOOL_CVAR(zr_ztele_allow_humans, "Whether to allow humans to use ztele", g_bZteleHuman, false, false)
@@ -96,6 +98,7 @@ FAKE_FLOAT_CVAR(zr_human_win_overlay_size, "Size of human's win overlay particle
 FAKE_STRING_CVAR(zr_zombie_win_overlay_particle, "Screenspace particle to display when zombie win", g_szZombieWinOverlayParticle, false)
 FAKE_STRING_CVAR(zr_zombie_win_overlay_material, "Material override for zombie's win overlay particle", g_szZombieWinOverlayMaterial, false)
 FAKE_FLOAT_CVAR(zr_zombie_win_overlay_size, "Size of zombie's win overlay particle", g_flZombieWinOverlaySize, 5.0f, false)
+FAKE_BOOL_CVAR(zr_zombie_mute, "Mute zombies so only humans can talk", g_bMuteZombies, false, false)
 
 void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 {
@@ -586,6 +589,26 @@ ZRWeapon* ZRWeaponConfig::FindWeapon(const char *pszWeaponName)
 	return nullptr;
 }
 
+void ZR_UpdateMute(CCSPlayerController* pController)
+{
+	if (!g_bMuteZombies)
+		return;
+	
+	ZEPlayer* player = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+
+	//	Mute all zombies
+	if (pController->m_iTeamNum() == CS_TEAM_T)
+	{
+		player->SetMuted(true);
+		return;
+	}
+	
+	//	Unmute if no active infractions
+	if (!g_pAdminSystem->HasInfraction(player, CInfractionBase::Mute))
+		player->SetMuted(false);
+
+}
+
 void ZR_RespawnAll()
 {
 	for (int i = 0; i < gpGlobals->maxClients; i++)
@@ -627,6 +650,7 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 			continue;
 
 		pController->SwitchTeam(CS_TEAM_CT);
+		ZR_UpdateMute(pController);
 	}
 }
 
@@ -779,6 +803,8 @@ void ZR_Cure(CCSPlayerController *pTargetController)
 	if (!pTargetPawn)
 		return;
 
+	ZR_UpdateMute(pTargetController);
+
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultHumanClass(pTargetPawn);
 }
 
@@ -797,7 +823,8 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 		return;
 
 	ZR_StripAndGiveKnife(pVictimPawn);
-	
+	ZR_UpdateMute(pVictimController);
+
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultZombieClass(pVictimPawn);
 }
 
@@ -810,6 +837,8 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 		return;
 
 	ZR_StripAndGiveKnife(pVictimPawn);
+	ZR_UpdateMute(pVictimController);
+
 	ZRZombieClass *pClass = g_pZRPlayerClassManager->GetZombieClass("MotherZombie");
 	if (pClass)
 		g_pZRPlayerClassManager->ApplyZombieClass(pClass, pVictimPawn);
