@@ -3,7 +3,7 @@
 	zr.amb.base = 
 	{
 		type = "csgo_mega"
-		volume = 1.0
+		volume = 0.5
 		occlusion_intensity = 0
 		distance_effect_mix = 0
 		restrict_source_reverb = true
@@ -11,7 +11,7 @@
 		distance_volume_mapping_curve = 
 		[
 			[0,1,0,0,2,3,],
-			[1024,0,0,0,2,3,],
+			[2048,0,0,0,2,3,],
 		]
 	}
 	zr.amb.scream = 
