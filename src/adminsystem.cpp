@@ -1302,6 +1302,19 @@ bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EI
 	return false;
 }
 
+bool CAdminSystem::HasInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type)
+{
+	FOR_EACH_VEC(m_vecInfractions, i)
+	{
+		if (m_vecInfractions[i]->GetSteamId64() == player->GetSteamId64() && m_vecInfractions[i]->GetType() == type)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 CAdmin *CAdminSystem::FindAdmin(uint64 iSteamID)
 {
 	FOR_EACH_VEC(m_vecAdmins, i)

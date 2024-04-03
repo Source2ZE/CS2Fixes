@@ -70,7 +70,7 @@ public:
 	void operator=(const ZEPlayerHandle &other) { m_Index = other.m_Index; }
 	void operator=(ZEPlayer *pZEPlayer) { Set(pZEPlayer); }
 	void Set(ZEPlayer *pZEPlayer);
-	
+
 	ZEPlayer *Get() const;
 
 private:
@@ -89,12 +89,13 @@ class ZEPlayer
 {
 public:
 	ZEPlayer(CPlayerSlot slot, bool m_bFakeClient = false): m_slot(slot), m_bFakeClient(m_bFakeClient), m_Handle(slot)
-	{ 
+	{
 		m_bAuthenticated = false;
 		m_iAdminFlags = 0;
 		m_SteamID = nullptr;
 		m_bGagged = false;
 		m_bMuted = false;
+	    m_iBlockVoiceToTeam = CS_TEAM_NONE;
 		m_iHideDistance = 0;
 		m_bConnected = false;
 		m_iTotalDamage = 0;
@@ -130,7 +131,7 @@ public:
 	const CSteamID* GetSteamId() { return m_SteamID; }
 	bool IsAdminFlagSet(uint64 iFlag);
 	bool IsFlooding();
-	
+
 	void SetAuthenticated() { m_bAuthenticated = true; }
 	void SetConnected() { m_bConnected = true; }
 	void SetUnauthenticatedSteamId(const CSteamID* steamID) { m_UnauthenticatedSteamID = steamID; }
@@ -158,8 +159,10 @@ public:
 	void SetFlashLight(CBarnLight *pLight) { m_hFlashLight.Set(pLight); }
 	void SetBeaconParticle(CParticleSystem *pParticle) { m_hBeaconParticle.Set(pParticle); }
 	void SetPlayerState(uint32 iPlayerState) { m_iPlayerState = iPlayerState; }
+    void SetMutedToTeam(int team) { m_iBlockVoiceToTeam = team; }
 
 	bool IsMuted() { return m_bMuted; }
+    bool IsMutedToTeam(int team) { return m_iBlockVoiceToTeam == team; }
 	bool IsGagged() { return m_bGagged; }
 	bool ShouldBlockTransmit(int index) { return m_shouldTransmit.Get(index); }
 	int GetHideDistance();
@@ -180,7 +183,7 @@ public:
 	CParticleSystem *GetBeaconParticle() { return m_hBeaconParticle.Get(); }
 	ZEPlayerHandle GetHandle() { return m_Handle; }
 	uint32 GetPlayerState() { return m_iPlayerState; }
-	
+
 	void OnAuthenticated();
 	void CheckAdmin();
 	void CheckInfractions();
@@ -195,6 +198,7 @@ private:
 	CPlayerSlot m_slot;
 	bool m_bFakeClient;
 	bool m_bMuted;
+    int m_iBlockVoiceToTeam;
 	bool m_bGagged;
 	uint64 m_iAdminFlags;
 	int m_iHideDistance;
@@ -253,7 +257,7 @@ public:
 	uint64 GetStopSoundMask() { return m_nUsingStopSound; }
 	uint64 GetSilenceSoundMask() { return m_nUsingSilenceSound; }
 	uint64 GetStopDecalsMask() { return m_nUsingStopDecals; }
-	
+
 	void SetPlayerStopSound(int slot, bool set);
 	void SetPlayerSilenceSound(int slot, bool set);
 	void SetPlayerStopDecals(int slot, bool set);

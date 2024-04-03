@@ -78,6 +78,9 @@ static std::string g_szZombieWinOverlayParticle;
 static std::string g_szZombieWinOverlayMaterial;
 static float g_flZombieWinOverlaySize;
 
+static bool g_bMuteZombies;
+static std::string g_szBypassZombieMutes;
+
 FAKE_BOOL_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, false, false)
 FAKE_FLOAT_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, 150.0f, false)
 FAKE_BOOL_CVAR(zr_ztele_allow_humans, "Whether to allow humans to use ztele", g_bZteleHuman, false, false)
@@ -96,6 +99,8 @@ FAKE_FLOAT_CVAR(zr_human_win_overlay_size, "Size of human's win overlay particle
 FAKE_STRING_CVAR(zr_zombie_win_overlay_particle, "Screenspace particle to display when zombie win", g_szZombieWinOverlayParticle, false)
 FAKE_STRING_CVAR(zr_zombie_win_overlay_material, "Material override for zombie's win overlay particle", g_szZombieWinOverlayMaterial, false)
 FAKE_FLOAT_CVAR(zr_zombie_win_overlay_size, "Size of zombie's win overlay particle", g_flZombieWinOverlaySize, 5.0f, false)
+FAKE_BOOL_CVAR(zr_zombie_mute, "Prevent humans from hearing zombies.", g_bMuteZombies, false, false)
+FAKE_STRING_CVAR(zr_zombie_mute_bypass, "A list of admin flags that can talk to humans as a zombie", g_szBypassZombieMutes, false)
 
 void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 {
@@ -103,7 +108,7 @@ void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 
 	pResourceManifest->AddResource(g_szHumanWinOverlayParticle.c_str());
 	pResourceManifest->AddResource(g_szZombieWinOverlayParticle.c_str());
-	
+
 	pResourceManifest->AddResource(g_szHumanWinOverlayMaterial.c_str());
 	pResourceManifest->AddResource(g_szZombieWinOverlayMaterial.c_str());
 }
@@ -197,7 +202,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 			Message("Human Classes:\n");
 		else
 			Message("Zombie Classes:\n");
-		
+
 		for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
 		{
 			bool bEnabled = pSubKey->GetBool("enabled", false);
@@ -215,7 +220,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 			// if (!bEnabled)
 			// 	continue;
-				
+
 			if (!pSubKey->FindKey("team_default"))
 			{
 				Warning("%s has unspecified keyvalue: team_default\n", pszClassName);
@@ -293,10 +298,10 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 				if (bTeamDefault)
 					m_vecHumanDefaultClass.AddToTail(pHumanClass);
-				
+
 				pHumanClass->PrintInfo();
 			}
-			else 
+			else
 			{
 				ZRZombieClass *pZombieClass;
 				if (pszBase)
@@ -319,7 +324,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				m_ZombieClassMap.Insert(hash_32_fnv1a_const(pSubKey->GetName()), pZombieClass);
 				if (pSubKey->GetBool("team_default", false))
 					m_vecZombieDefaultClass.AddToTail(pZombieClass);
-				
+
 				pZombieClass->PrintInfo();
 			}
 		}
@@ -388,7 +393,7 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn *pPa
 		Warning("Missing default human class or valid preferences!\n");
 		return;
 	}
-	
+
 	ApplyHumanClass(humanClass, pPawn);
 }
 
@@ -428,7 +433,7 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pP
 		Warning("Missing default zombie class or valid preferences!\n");
 		return;
 	}
-	
+
 	ApplyZombieClass(zombieClass, pPawn);
 }
 
@@ -500,11 +505,11 @@ void CZRRegenTimer::Tick()
 		{
 			continue;
 		}
-		
+
 		if (pTimer->m_flLastExecute == -1)
 			pTimer->m_flLastExecute = g_flUniversalTime;
 
-		// Timer execute 
+		// Timer execute
 		if (pTimer->m_flLastExecute + pTimer->m_flInterval <= g_flUniversalTime)
 		{
 			pTimer->Execute();
@@ -586,6 +591,28 @@ ZRWeapon* ZRWeaponConfig::FindWeapon(const char *pszWeaponName)
 	return nullptr;
 }
 
+void ZR_UpdateMute(CCSPlayerController* pController)
+{
+	if (!g_bMuteZombies)
+		return;
+
+	ZEPlayer* player = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+	uint64 bypassFlags = g_pAdminSystem->ParseFlags(g_szBypassZombieMutes.c_str());
+
+	//  Prevent zombies from speaking to humans
+    //  Zombies can speak to each other and hear humans.
+    //  Allow admins to bypass zombie muting to speak to humans if they need to.
+	if (pController->m_iTeamNum() == CS_TEAM_T)
+	{
+		if (player->IsAdminFlagSet(bypassFlags))
+			return;
+
+		return player->SetMutedToTeam(CS_TEAM_CT);
+	}
+
+	player->SetMutedToTeam(CS_TEAM_NONE);
+}
+
 void ZR_RespawnAll()
 {
 	for (int i = 0; i < gpGlobals->maxClients; i++)
@@ -627,6 +654,7 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 			continue;
 
 		pController->SwitchTeam(CS_TEAM_CT);
+		ZR_UpdateMute(pController);
 	}
 }
 
@@ -695,7 +723,7 @@ void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamag
 	if (!pWeapon)
 		return;
 	float flWeaponKnockbackScale = pWeapon->flKnockback;
-	
+
 	Vector vecKnockback;
 	AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
 	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale);
@@ -743,7 +771,7 @@ void ZR_StripAndGiveKnife(CCSPlayerPawn *pPawn)
 	CCSPlayer_ItemServices *pItemServices = pPawn->m_pItemServices();
 	CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices();
 
-	// it can sometimes be null when player joined on the very first round? 
+	// it can sometimes be null when player joined on the very first round?
 	if (!pItemServices || !pWeaponServices)
 		return;
 
@@ -779,6 +807,8 @@ void ZR_Cure(CCSPlayerController *pTargetController)
 	if (!pTargetPawn)
 		return;
 
+	ZR_UpdateMute(pTargetController);
+
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultHumanClass(pTargetPawn);
 }
 
@@ -797,7 +827,8 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 		return;
 
 	ZR_StripAndGiveKnife(pVictimPawn);
-	
+	ZR_UpdateMute(pVictimController);
+
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultZombieClass(pVictimPawn);
 }
 
@@ -810,6 +841,8 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 		return;
 
 	ZR_StripAndGiveKnife(pVictimPawn);
+	ZR_UpdateMute(pVictimController);
+
 	ZRZombieClass *pClass = g_pZRPlayerClassManager->GetZombieClass("MotherZombie");
 	if (pClass)
 		g_pZRPlayerClassManager->ApplyZombieClass(pClass, pVictimPawn);
@@ -938,7 +971,7 @@ void ZR_InitialInfection()
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 		if (!pPlayer || vecIsMZ[i])
 			continue;
-		
+
 		pPlayer->SetImmunity(pPlayer->GetImmunity() - g_iMZImmunityReduction);
 	}
 
@@ -1164,7 +1197,7 @@ bool ZR_IsTeamAlive(int iTeamNum)
 	{
 		if (!pPawn->IsAlive())
 			continue;
-		
+
 		if (pPawn->m_iTeamNum() == iTeamNum)
 			return true;
 	}
@@ -1245,7 +1278,7 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 			ZR_CreateOverlay(g_szHumanWinOverlayParticle.c_str(), 1.0f, g_flHumanWinOverlaySize, 1.0f, flRestartDelay, Color(255, 255, 255), g_szHumanWinOverlayMaterial.c_str());
 	}
 	else if (iTeamNum == CS_TEAM_T)
-	{	
+	{
 		if (!g_hTeamT.Get())
 		{
 			Panic("Cannot find CTeam for T!\n");
@@ -1391,7 +1424,7 @@ CON_COMMAND_CHAT(zclass, "find and select your Z:R class")
 		if (sCurrentClass[0] != '\0')
 		{
 			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Your current %s class is: %s. Available classes:", sTeamName, sCurrentClass);
-		} 
+		}
 		else
 		{
 			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Available %s classes:", sTeamName);
