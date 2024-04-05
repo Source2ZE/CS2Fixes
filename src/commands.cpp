@@ -233,7 +233,7 @@ void RegisterWeaponCommands()
 			char cmdName[64];
 			V_snprintf(cmdName, sizeof(cmdName), "%s%s", COMMAND_PREFIX, alias.c_str());
 
-			ConCommand command(&ref, cmdName, WeaponCommandCallback, "Buys this weapon", FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);
+			new ConCommand(&ref, cmdName, WeaponCommandCallback, "Buys this weapon", FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);
 		}
 	}
 }
