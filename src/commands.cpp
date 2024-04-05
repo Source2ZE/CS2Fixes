@@ -48,6 +48,12 @@ extern CGameEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
 
+bool g_bEnableCommands;
+bool g_bEnableAdminCommands;
+
+FAKE_BOOL_CVAR(cs2f_commands_enable, "Whether to enable chat commands", g_bEnableCommands, false, 0)
+FAKE_BOOL_CVAR(cs2f_admin_commands_enable, "Whether to enable admin chat commands", g_bEnableAdminCommands, false, 0)
+
 WeaponMapEntry_t WeaponMap[] = {
 	{{"bizon"},							"weapon_bizon",			"PP-Bizon",			1400, 26, GEAR_SLOT_RIFLE},
 	{{"mac10", "mac"},					"weapon_mac10",			"MAC-10",			1050, 27, GEAR_SLOT_RIFLE},
