@@ -829,7 +829,7 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultZombieClass(pVictimPawn);
 
 	CHandle<CCSPlayerPawn> hPawn = pVictimPawn->GetHandle();
-	new CTimer(g_flMoanInterval, false, [hPawn]() { return ZR_MoanTimer(hPawn); });
+	new CTimer(g_flMoanInterval + (rand() % 5), false, [hPawn]() { return ZR_MoanTimer(hPawn); });
 }
 
 void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
@@ -850,7 +850,7 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 		g_pZRPlayerClassManager->ApplyPreferredOrDefaultZombieClass(pVictimPawn);
 
 	CHandle<CCSPlayerPawn> hPawn = pVictimPawn->GetHandle();
-	new CTimer(g_flMoanInterval, false, [hPawn]() { return ZR_MoanTimer(hPawn); });
+	new CTimer(g_flMoanInterval + (rand() % 5), false, [hPawn]() { return ZR_MoanTimer(hPawn); });
 }
 
 // make players who've been picked as MZ recently less likely to be picked again
