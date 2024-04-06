@@ -1051,7 +1051,8 @@ bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 			flDuration = clamp(flDuration, 0.f, g_flNapalmDuration);
 
 			// Can't use the same inflictor here as it'll end up calling this again each burn damage tick
-			IgnitePawn(pVictimPawn, flDuration, pAttackerPawn, pAttackerPawn);
+			// DMG_BURN makes loud noises so use DMG_FALL instead which is completely silent
+			IgnitePawn(pVictimPawn, flDuration, pAttackerPawn, pAttackerPawn, nullptr, DMG_FALL);
 		}
 
 		if (bGrenade || bInferno)

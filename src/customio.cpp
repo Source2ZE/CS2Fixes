@@ -410,7 +410,7 @@ FAKE_FLOAT_CVAR(cs2f_burn_slowdown, "The slowdown of each burn damage tick as a 
 float g_flBurnInterval = 0.3f;
 FAKE_FLOAT_CVAR(cs2f_burn_interval, "The interval between burn damage ticks", g_flBurnInterval, 0.3f, false);
 
-bool IgnitePawn(CCSPlayerPawn *pPawn, float flDuration, Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility)
+bool IgnitePawn(CCSPlayerPawn *pPawn, float flDuration, Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility, DamageTypes_t nDamageType)
 {
     CParticleSystem *pParticleEnt = (CParticleSystem*)pPawn->m_hEffectEntity().Get();
 
@@ -443,7 +443,7 @@ bool IgnitePawn(CCSPlayerPawn *pPawn, float flDuration, Z_CBaseEntity *pInflicto
     CHandle<Z_CBaseEntity> hAttacker(pAttacker);
     CHandle<Z_CBaseEntity> hAbility(pAbility);
 
-    new CTimer(0.f, false, [hPawn, hInflictor, hAttacker, hAbility]()
+    new CTimer(0.f, false, [hPawn, hInflictor, hAttacker, hAbility, nDamageType]()
     {
         CCSPlayerPawn *pPawn = hPawn.Get();
 
@@ -470,7 +470,7 @@ bool IgnitePawn(CCSPlayerPawn *pPawn, float flDuration, Z_CBaseEntity *pInflicto
             return -1.f;
         }
 
-        CTakeDamageInfo info(hInflictor, hAttacker, hAbility, g_flBurnDamage, DMG_BURN);
+        CTakeDamageInfo info(hInflictor, hAttacker, hAbility, g_flBurnDamage, nDamageType);
 
         // Damage doesn't apply if the inflictor is null
         if (!hInflictor.Get())
