@@ -36,7 +36,7 @@ LeaderColor LeaderColorMap[] = {
 	{"orange",		Color(185, 93, 63, 255)}, // Default T color
 	{"green",		Color(100, 230, 100, 255)},
 	{"yellow",		Color(200, 200, 0, 255)},
-	{"purple",		Color(79, 9, 146, 255)},
+	{"purple",		Color(164, 73, 255, 255)},
 	{"red",			Color(214, 39, 40, 255)}, // Last leader index
 };
 
@@ -254,6 +254,142 @@ void Leader_Precache(IEntityResourceManifest *pResourceManifest)
 		pResourceManifest->AddResource(g_szLeaderModelPath.c_str());
 	pResourceManifest->AddResource("particles/cs2fixes/leader_tracer.vpcf");
 	pResourceManifest->AddResource("particles/cs2fixes/leader_defend_mark.vpcf");
+}
+
+CON_COMMAND_CHAT(glow, "<name> [duration] - toggle glow on a player")
+{
+	int iPlayerSlot = player ? player->GetPlayerSlot() : -1;
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer((CPlayerSlot)iPlayerSlot);
+
+    bool bIsAdmin;
+	if (pPlayer)
+		bIsAdmin = pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC);
+	else // console
+		bIsAdmin = true;
+
+	Color color;
+	int iDuration = 0;
+	if (args.ArgC() == 3)
+		iDuration = V_StringToInt32(args[2], 0);
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+    ETargetType nTargetType = g_playerManager->TargetPlayerString(iPlayerSlot, args[1], iNumClients, pSlots);
+
+    if (bIsAdmin) // Admin command logic
+    {
+		if (args.ArgC() < 2)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !glow <name> [duration]");
+			return;
+		}
+
+        if (!iNumClients)
+        {
+            ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+            return;
+        }
+
+		const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+        for (int i = 0; i < iNumClients; i++)
+        {
+            CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+            if (!pTarget)
+                continue;
+
+			if (pTarget->m_iTeamNum < CS_TEAM_T)
+				continue;
+
+			// Exception - Use LeaderIndex color if Admin is also a Leader
+            if (pPlayer && pPlayer->IsLeader())
+				color = LeaderColorMap[pPlayer->GetLeaderIndex()].clColor;
+			else
+                color = pTarget->m_iTeamNum == CS_TEAM_T ? LeaderColorMap[2].clColor/*orange*/ : LeaderColorMap[1].clColor/*blue*/;
+
+            ZEPlayer *pPlayerTarget = g_playerManager->GetPlayer(pSlots[i]);
+
+            if (!pPlayerTarget->GetGlowModel())
+                pPlayerTarget->StartGlow(color, iDuration);
+            else
+                pPlayerTarget->EndGlow();
+
+            if (nTargetType < ETargetType::ALL)
+                PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "toggled glow on", "", CHAT_PREFIX);
+        }
+
+        PrintMultiAdminAction(nTargetType, pszCommandPlayerName, "toggled glow on", "", CHAT_PREFIX);
+
+        return;
+    }
+
+    // Leader command logic
+
+	if (!g_bEnableLeader)
+		return;
+
+	if (!pPlayer->IsLeader())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You must be a Leader or an Admin to use this command.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !glow <name> [duration]");
+		return;
+	}
+
+	if (player->m_iTeamNum != CS_TEAM_CT && g_bLeaderActionsHumanOnly)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You must be a human to use this command.");
+		return;
+	}
+
+	if (nTargetType > ETargetType::SELF)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You must target a specific player.");
+		return;
+	}
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	if (iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one player fit the target name.");
+		return;
+	}
+
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
+
+	if (!pTarget)
+		return;
+
+	if (pTarget->m_iTeamNum != CS_TEAM_CT)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only place Leader glow on a human.");
+		return;
+	}
+
+	color = LeaderColorMap[pPlayer->GetLeaderIndex()].clColor;
+
+	ZEPlayer *pPlayerTarget = g_playerManager->GetPlayer(pSlots[0]);
+
+	if (!pPlayerTarget->GetGlowModel())
+	{
+		pPlayerTarget->StartGlow(color, iDuration);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Leader %s enabled glow on %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+	}
+	else
+	{
+		pPlayerTarget->EndGlow();
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Leader %s disabled glow on %s.", player->GetPlayerName(), pTarget->GetPlayerName());
+	}
 }
 
 CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
@@ -648,6 +784,9 @@ CON_COMMAND_CHAT(beacon, "<name> [color] - toggle beacon on a player")
 
             if (!pTarget)
                 continue;
+
+			if (pTarget->m_iTeamNum < CS_TEAM_T)
+				continue;
 
 			// Exception - Use LeaderIndex color if Admin is also a Leader
             if (args.ArgC() == 2 && pPlayer && pPlayer->IsLeader())

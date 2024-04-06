@@ -376,6 +376,96 @@ void ZEPlayer::PurgeLeaderVotes()
 	m_vecLeaderVotes.Purge();
 }
 
+void ZEPlayer::StartGlow(Color color, int duration)
+{
+	CCSPlayerController *pController = CCSPlayerController::FromSlot(m_slot);
+	CCSPlayerPawn *pPawn = (CCSPlayerPawn*)pController->GetPawn();
+	
+	const char *pszModelName = pPawn->GetModelName();
+	
+	CBaseModelEntity *pModelGlow = (CBaseModelEntity*)CreateEntityByName("prop_dynamic");
+	CBaseModelEntity *pModelRelay = (CBaseModelEntity*)CreateEntityByName("prop_dynamic");
+	CEntityKeyValues *pKeyValuesRelay = new CEntityKeyValues();
+	
+	pKeyValuesRelay->SetString("model", pszModelName);
+	pKeyValuesRelay->SetInt64("spawnflags", 256U);
+	pKeyValuesRelay->SetInt("rendermode", kRenderNone);
+
+	CEntityKeyValues *pKeyValuesGlow = new CEntityKeyValues();
+	pKeyValuesGlow->SetString("model", pszModelName);
+	pKeyValuesGlow->SetInt64("spawnflags", 256U);
+	pKeyValuesGlow->SetColor("glowcolor", color);
+	pKeyValuesGlow->SetInt("glowrange", 5000);
+	pKeyValuesGlow->SetInt("glowteam", -1);
+	pKeyValuesGlow->SetInt("glowstate", 3);
+	pKeyValuesGlow->SetInt("renderamt", 1);
+
+	pModelGlow->DispatchSpawn(pKeyValuesGlow);
+	pModelRelay->DispatchSpawn(pKeyValuesRelay);
+	pModelRelay->AcceptInput("FollowEntity", "!activator", pPawn);
+	pModelGlow->AcceptInput("FollowEntity", "!activator", pModelRelay);
+
+	m_hGlowModel.Set(pModelGlow);
+	
+	CHandle<CBaseModelEntity> hGlowModel = m_hGlowModel;
+	CHandle<CCSPlayerPawn> hPawn = pPawn->GetHandle();
+	int iTeamNum = hPawn->m_iTeamNum();
+
+	// check if player's team or model changed
+	new CTimer(0.5f, false, [hGlowModel, hPawn, iTeamNum]()
+	{
+		CBaseModelEntity *pModel = hGlowModel.Get();
+		CCSPlayerPawn *pawn = hPawn.Get();
+
+		if (!pawn || !pModel)
+			return -1.0f;
+
+		if (pawn->m_iTeamNum != iTeamNum || strcmp(pModel->GetModelName(), pawn->GetModelName()))
+		{
+			CBaseModelEntity *pModelParent = (CBaseModelEntity*)pModel->m_CBodyComponent()->m_pSceneNode()->m_pParent()->m_pOwner();
+
+			if (pModelParent)
+				addresses::UTIL_Remove(pModelParent);
+			
+			return -1.0f;
+		}
+
+		return 0.5f;
+	});
+
+	// kill glow after duration, if provided
+	if (duration < 1)
+		return;
+	
+	new CTimer((float)duration, false, [hGlowModel]()
+	{
+		CBaseModelEntity *pModel = hGlowModel.Get();
+
+		if (!pModel)
+			return -1.0f;
+
+		CBaseModelEntity *pModelParent = (CBaseModelEntity*)pModel->m_CBodyComponent()->m_pSceneNode()->m_pParent()->m_pOwner();
+
+		if (pModelParent)
+			addresses::UTIL_Remove(pModelParent);
+
+		return -1.0f;
+	});
+}
+
+void ZEPlayer::EndGlow()
+{
+	CBaseModelEntity *pGlowModel = m_hGlowModel.Get();
+
+	if (!pGlowModel)
+		return;
+
+	CBaseModelEntity *pModelParent = (CBaseModelEntity*)pGlowModel->m_CBodyComponent()->m_pSceneNode()->m_pParent()->m_pOwner();
+
+	if (pModelParent)
+		addresses::UTIL_Remove(pModelParent);
+}
+
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 {
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);

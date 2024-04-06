@@ -721,6 +721,12 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			if (pSelfZEPlayer->ShouldBlockTransmit(j) || !pPawn->IsAlive() || (pOtherZEPlayer && !pOtherZEPlayer->IsLeader()))
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 		}
+
+		// Don't transmit glow model to it's owner
+		CBaseModelEntity *pGlowModel = pSelfZEPlayer->GetGlowModel();
+
+		if (pGlowModel)
+			pInfo->m_pTransmitEntity->Clear(pGlowModel->entindex());
 	}
 
 	VPROF_EXIT_SCOPE();

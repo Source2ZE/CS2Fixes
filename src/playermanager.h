@@ -163,8 +163,9 @@ public:
 	void SetBeaconParticle(CParticleSystem *pParticle) { m_hBeaconParticle.Set(pParticle); }
 	void SetPlayerState(uint32 iPlayerState) { m_iPlayerState = iPlayerState; }
 	void SetLeader(int leaderIndex);
-	void SetLeaderTracer(int tracerIndex) { m_iLeaderTracerIndex = tracerIndex; };
+	void SetLeaderTracer(int tracerIndex) { m_iLeaderTracerIndex = tracerIndex; }
 	void SetLeaderVoteTime(float flCurtime) { m_flLeaderVoteTime = flCurtime; }
+	void SetGlowModel(CBaseModelEntity *pModel) { m_hGlowModel.Set(pModel); }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -193,6 +194,7 @@ public:
 	int GetLeaderVoteCount();
 	bool HasPlayerVotedLeader(ZEPlayer* pPlayer);
 	float GetLeaderVoteTime() { return m_flLeaderVoteTime; }
+	CBaseModelEntity *GetGlowModel() { return m_hGlowModel.Get(); }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
@@ -203,6 +205,8 @@ public:
 	void EndBeacon();
 	void AddLeaderVote(ZEPlayer* pPlayer);
 	void PurgeLeaderVotes();
+	void StartGlow(Color color, int duration);
+	void EndGlow();
 
 private:
 	bool m_bAuthenticated;
@@ -238,6 +242,7 @@ private:
 	CUtlVector<ZEPlayerHandle> m_vecLeaderVotes;
 	int m_iLeaderTracerIndex;
 	float m_flLeaderVoteTime;
+	CHandle<CBaseModelEntity> m_hGlowModel;
 };
 
 class CPlayerManager
