@@ -428,7 +428,7 @@ bool IgnitePawn(CCSPlayerPawn *pPawn, float flDuration, Z_CBaseEntity *pInflicto
 
     pParticleEnt->m_bStartActive(true);
     pParticleEnt->m_iszEffectName(g_sBurnParticle.c_str());
-    pParticleEnt->m_hControlPointEnts[1] = pPawn;
+    pParticleEnt->m_hControlPointEnts[0] = pPawn;
     pParticleEnt->m_flDissolveStartTime = gpGlobals->curtime + flDuration; // Store the end time in the particle itself so we can increment if needed
     pParticleEnt->Teleport(&vecOrigin, nullptr, nullptr);
 
