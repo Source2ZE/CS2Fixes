@@ -256,7 +256,7 @@ void Leader_Precache(IEntityResourceManifest *pResourceManifest)
 	pResourceManifest->AddResource("particles/cs2fixes/leader_defend_mark.vpcf");
 }
 
-CON_COMMAND_CHAT(glow, "<name> [duration] - toggle glow on a player")
+CON_COMMAND_CHAT(glow, "<name> [duration] - toggle glow highlight on a player")
 {
 	int iPlayerSlot = player ? player->GetPlayerSlot() : -1;
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer((CPlayerSlot)iPlayerSlot);
@@ -917,6 +917,7 @@ CON_COMMAND_CHAT(leaderhelp, "- list leader commands in chat")
 	ClientPrint(player, iDestination, CHAT_PREFIX "!beacon <name> [color] - place a beacon on player");
 	ClientPrint(player, iDestination, CHAT_PREFIX "!tracer <name> [color] - give player tracers");
 	ClientPrint(player, iDestination, CHAT_PREFIX "!defend [name|duration] [duration] - place defend mark on player");
+	ClientPrint(player, iDestination, CHAT_PREFIX "!glow <name> [duration] - toggle glow highlight on a player")
 }
 
 CON_COMMAND_CHAT(leadercolors, "- list leader colors in chat")
