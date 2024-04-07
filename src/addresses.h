@@ -51,6 +51,7 @@ class IEntityFindFilter;
 class CGameRules;
 class CEntityKeyValues;
 class IRecipientFilter;
+class CTakeDamageInfo;
 
 struct EmitSound_t;
 struct SndOpEventGuid_t;
@@ -89,4 +90,7 @@ namespace addresses
 	inline int(FASTCALL *DispatchParticleEffect)(const char *pszParticleName, int iAttachType, Z_CBaseEntity *pEntity,
 		char iAttachmentPoint, CUtlSymbolLarge iAttachmentName, bool bResetAllParticlesOnEntity, int nSplitScreenPlayerSlot, IRecipientFilter *a7, byte *a8);
 	inline SndOpEventGuid_t(FASTCALL *CBaseEntity_EmitSoundFilter)(IRecipientFilter &filter, CEntityIndex ent, const EmitSound_t &params);
+	inline void(FASTCALL *CBaseEntity_SetMoveType)(Z_CBaseEntity *pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
+	inline void(FASTCALL *CTakeDamageInfo_Constructor)(CTakeDamageInfo *pThis, Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility,
+		const Vector *vecDamageForce, const Vector *vecDamagePosition, float flDamage, int bitsDamageType, int iCustomDamage, void *a10);
 }

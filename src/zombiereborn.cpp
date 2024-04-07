@@ -28,6 +28,7 @@
 #include "entity/cteam.h"
 #include "entity/cparticlesystem.h"
 #include "user_preferences.h"
+#include "customio.h"
 #include <sstream>
 #include "leader.h"
 
@@ -70,6 +71,11 @@ static int g_iInfectSpawnMinCount = 1;
 static float g_flRespawnDelay = 5.0;
 static int g_iDefaultWinnerTeam = CS_TEAM_SPECTATOR;
 static int g_iMZImmunityReduction = 20;
+static int g_iGroanChance = 5;
+static float g_flMoanInterval = 30.f;
+static bool g_bNapalmGrenades = true;
+static float g_flNapalmDuration = 5.f;
+static float g_flNapalmFullDamage = 50.f;
 
 static std::string g_szHumanWinOverlayParticle;
 static std::string g_szHumanWinOverlayMaterial;
@@ -91,6 +97,11 @@ FAKE_INT_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to
 FAKE_FLOAT_CVAR(zr_respawn_delay, "Time before a zombie is automatically respawned, negative values (e.g. -1.0) disable this, note maps can still manually respawn at any time", g_flRespawnDelay, 5.0f, false)
 FAKE_INT_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, CS_TEAM_SPECTATOR, false)
 FAKE_INT_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, 20, false)
+FAKE_INT_CVAR(zr_sounds_groan_chance, "How likely should a zombie groan whenever they take damage (1 / N)", g_iGroanChance, 5, false)
+FAKE_FLOAT_CVAR(zr_sounds_moan_interval, "How often in seconds should zombies moan", g_flMoanInterval, 5.f, false)
+FAKE_BOOL_CVAR(zr_napalm_enable, "Whether to use napalm grenades", g_bNapalmGrenades, true, false)
+FAKE_FLOAT_CVAR(zr_napalm_burn_duration, "How long in seconds should zombies burn from napalm grenades", g_flNapalmDuration, 5.f, false)
+FAKE_FLOAT_CVAR(zr_napalm_full_damage, "The amount of damage needed to apply full burn duration for napalm grenades (max grenade damage is 99)", g_flNapalmFullDamage, 50.f, false)
 FAKE_STRING_CVAR(zr_human_win_overlay_particle, "Screenspace particle to display when human win", g_szHumanWinOverlayParticle, false)
 FAKE_STRING_CVAR(zr_human_win_overlay_material, "Material override for human's win overlay particle", g_szHumanWinOverlayMaterial, false)
 FAKE_FLOAT_CVAR(zr_human_win_overlay_size, "Size of human's win overlay particle", g_flHumanWinOverlaySize, 5.0f, false)
@@ -107,6 +118,8 @@ void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 	
 	pResourceManifest->AddResource(g_szHumanWinOverlayMaterial.c_str());
 	pResourceManifest->AddResource(g_szZombieWinOverlayMaterial.c_str());
+
+	pResourceManifest->AddResource("soundevents/soundevents_zr.vsndevts");
 }
 
 CEnvParticleGlow* ZR_CreateOverlay(const char* pszOverlayParticlePath, float flAlpha, float flRadius, float flSelfIllum, float flLifeTime, Color clrTint, const char* pszMaterialOverride)
@@ -136,13 +149,7 @@ CEnvParticleGlow* ZR_CreateOverlay(const char* pszOverlayParticlePath, float flA
 		if (particle)
 		{
 			particle->AcceptInput("DestroyImmediately");
-			new CTimer(0.02f, false, [hParticle]()
-			{
-				CEnvParticleGlow* particle = hParticle.Get();
-				if (particle)
-					particle->AcceptInput("Kill");
-				return -1.0f;
-			});
+			UTIL_AddEntityIOEvent(particle, "Kill", nullptr, nullptr, "", 0.02f);
 		}
 		return -1.0f;
 	});
@@ -578,7 +585,7 @@ void CZRRegenTimer::RemoveAllTimers()
 	}
 }
 
-void ZR_OnStartupServer()
+void ZR_OnLevelInit()
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
 
@@ -725,6 +732,10 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 		int iRoundNum = g_iRoundNum;
 		bool bInfect = g_ZRRoundState == EZRRoundState::POST_INFECTION;
 
+		// We're infecting this guy with a delay, disable all damage as they have 100 hp until then
+		if (bInfect)
+			pController->GetPawn()->m_bTakesDamage(false);
+
 		CHandle<CCSPlayerController> handle = pController->GetHandle();
 		new CTimer(0.05f, false, [iRoundNum, handle, bInfect]()
 		{
@@ -834,6 +845,18 @@ void ZR_Cure(CCSPlayerController *pTargetController)
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultHumanClass(pTargetPawn);
 }
 
+float ZR_MoanTimer(CHandle<CCSPlayerPawn> hPawn)
+{
+	CCSPlayerPawn *pPawn = hPawn;
+
+	if (!pPawn || !pPawn->IsAlive() || pPawn->GetOriginalController()->m_iTeamNum() != CS_TEAM_T)
+		return -1.f;
+
+	pPawn->EmitSound("zr.amb.zombie_voice_idle");
+
+	return g_flMoanInterval;
+}
+
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bDontBroadcast)
 {
 	if (pVictimController->m_iTeamNum() == CS_TEAM_CT)
@@ -848,9 +871,17 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 	if (!pVictimPawn)
 		return;
 
+	// We disabled damage due to the delayed infection, restore
+	pVictimPawn->m_bTakesDamage(true);
+
+	pVictimPawn->EmitSound("zr.amb.scream");
+
 	ZR_StripAndGiveKnife(pVictimPawn);
 	
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultZombieClass(pVictimPawn);
+
+	CHandle<CCSPlayerPawn> hPawn = pVictimPawn->GetHandle();
+	new CTimer(g_flMoanInterval + (rand() % 5), false, [hPawn]() { return ZR_MoanTimer(hPawn); });
 }
 
 void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
@@ -861,15 +892,17 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 	if (!pVictimPawn)
 		return;
 
+	pVictimPawn->EmitSound("zr.amb.scream");
+
 	ZR_StripAndGiveKnife(pVictimPawn);
 	ZRZombieClass *pClass = g_pZRPlayerClassManager->GetZombieClass("MotherZombie");
 	if (pClass)
 		g_pZRPlayerClassManager->ApplyZombieClass(pClass, pVictimPawn);
 	else
-	{
-		//Warning("Missing mother zombie class!!!\n");
 		g_pZRPlayerClassManager->ApplyPreferredOrDefaultZombieClass(pVictimPawn);
-	}
+
+	CHandle<CCSPlayerPawn> hPawn = pVictimPawn->GetHandle();
+	new CTimer(g_flMoanInterval + (rand() % 5), false, [hPawn]() { return ZR_MoanTimer(hPawn); });
 }
 
 // make players who've been picked as MZ recently less likely to be picked again
@@ -972,7 +1005,7 @@ void ZR_InitialInfection()
 				Vector origin = spawns[randomindex]->GetAbsOrigin();
 				QAngle rotation = spawns[randomindex]->GetAbsRotation();
 
-				pPawn->Teleport(&origin, &rotation, nullptr);
+				pPawn->Teleport(&origin, &rotation, &vec3_origin);
 			}
 
 			ZR_InfectMotherZombie(pController);
@@ -1005,6 +1038,10 @@ void ZR_InitialInfection()
 void ZR_StartInitialCountdown()
 {
 	int iRoundNum = g_iRoundNum;
+
+	if (g_iInfectSpawnTimeMin > g_iInfectSpawnTimeMax)
+		V_swap(g_iInfectSpawnTimeMin, g_iInfectSpawnTimeMax);
+
 	g_iInfectionCountDown = g_iInfectSpawnTimeMin + (rand() % (g_iInfectSpawnTimeMax - g_iInfectSpawnTimeMin + 1));
 	new CTimer(0.0f, false, [iRoundNum]()
 	{
@@ -1047,14 +1084,31 @@ bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 		return true; // nullify the damage
 	}
 
+	if (g_iGroanChance && pVictimPawn->m_iTeamNum() == CS_TEAM_T && (rand() % g_iGroanChance) == 1)
+		pVictimController->GetPawn()->EmitSound("zr.amb.zombie_pain");
+
 	// grenade and molotov knockback
 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
 	{
-		CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
+		Z_CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
 		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 		// inflictor class from grenade damage is actually hegrenade_projectile
-		if (!V_strncmp(pszInflictorClass, "hegrenade", 9) || !V_strncmp(pszInflictorClass, "inferno", 7))
-			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage, !V_strncmp(pszInflictorClass, "inferno", 7));
+		bool bGrenade = V_strncmp(pszInflictorClass, "hegrenade", 9) == 0;
+		bool bInferno = V_strncmp(pszInflictorClass, "inferno", 7) == 0;
+
+		if (g_bNapalmGrenades && bGrenade)
+		{
+			// Scale burn duration by damage, so nades from farther away burn zombies for less time
+			float flDuration = (pInfo->m_flDamage / g_flNapalmFullDamage) * g_flNapalmDuration;
+			flDuration = clamp(flDuration, 0.f, g_flNapalmDuration);
+
+			// Can't use the same inflictor here as it'll end up calling this again each burn damage tick
+			// DMG_BURN makes loud noises so use DMG_FALL instead which is completely silent
+			IgnitePawn(pVictimPawn, flDuration, pAttackerPawn, pAttackerPawn, nullptr, DMG_FALL);
+		}
+
+		if (bGrenade || bInferno)
+			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage, bInferno);
 	}
 	return false;
 }
@@ -1176,6 +1230,9 @@ void ZR_OnPlayerDeath(IGameEvent* pEvent)
 		return;
 
 	ZR_CheckTeamWinConditions(pVictimPawn->m_iTeamNum() == CS_TEAM_T ? CS_TEAM_CT : CS_TEAM_T);
+
+	if (pVictimPawn->m_iTeamNum() == CS_TEAM_T && g_ZRRoundState == EZRRoundState::POST_INFECTION)
+		pVictimPawn->EmitSound("zr.amb.zombie_die");
 
 	// respawn player
 	CHandle<CCSPlayerController> handle = pVictimController->GetHandle();
@@ -1488,6 +1545,12 @@ CON_COMMAND_CHAT_FLAGS(infect, "infect a player", ADMFLAG_GENERIC)
 		return;
 	}
 
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+		return;
+	}
+
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
 	for (int i = 0; i < iNumClients; i++)
@@ -1553,6 +1616,12 @@ CON_COMMAND_CHAT_FLAGS(revive, "revive a player", ADMFLAG_GENERIC)
 	if (!iNumClients)
 	{
 		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Target not found.");
+		return;
+	}
+
+	if (nType == ETargetType::PLAYER && iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
 		return;
 	}
 

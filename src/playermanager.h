@@ -115,6 +115,7 @@ public:
 		m_iLeaderIndex = 0;
 		m_iLeaderTracerIndex = 0;
 		m_flLeaderVoteTime = -30.0f;
+		m_flSpeedMod = 1.f;
 	}
 
 	~ZEPlayer()
@@ -166,6 +167,7 @@ public:
 	void SetLeaderTracer(int tracerIndex) { m_iLeaderTracerIndex = tracerIndex; }
 	void SetLeaderVoteTime(float flCurtime) { m_flLeaderVoteTime = flCurtime; }
 	void SetGlowModel(CBaseModelEntity *pModel) { m_hGlowModel.Set(pModel); }
+	void SetSpeedMod(float flSpeedMod) { m_flSpeedMod = flSpeedMod; }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -195,6 +197,7 @@ public:
 	bool HasPlayerVotedLeader(ZEPlayer* pPlayer);
 	float GetLeaderVoteTime() { return m_flLeaderVoteTime; }
 	CBaseModelEntity *GetGlowModel() { return m_hGlowModel.Get(); }
+	float GetSpeedMod() { return m_flSpeedMod; }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
@@ -243,6 +246,7 @@ private:
 	int m_iLeaderTracerIndex;
 	float m_flLeaderVoteTime;
 	CHandle<CBaseModelEntity> m_hGlowModel;
+	float m_flSpeedMod;
 };
 
 class CPlayerManager

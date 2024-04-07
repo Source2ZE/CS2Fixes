@@ -25,6 +25,7 @@
 #include "ctakedamageinfo.h"
 #include "mathlib/vector.h"
 #include "ehandle.h"
+#include "../detours.h"
 #include "entitykeyvalues.h"
 #include "../../gameconfig.h"
 
@@ -132,13 +133,20 @@ public:
 	SCHEMA_FIELD(Vector, m_vecAbsVelocity)
 	SCHEMA_FIELD(Vector, m_vecBaseVelocity)
 	SCHEMA_FIELD(CCollisionProperty*, m_pCollision)
+	SCHEMA_FIELD(MoveCollide_t, m_MoveCollide)
 	SCHEMA_FIELD(MoveType_t, m_MoveType)
 	SCHEMA_FIELD(MoveType_t, m_nActualMoveType)
+	SCHEMA_FIELD(CHandle<Z_CBaseEntity>, m_hEffectEntity)
 	SCHEMA_FIELD(uint32, m_spawnflags)
 	SCHEMA_FIELD(uint32, m_fFlags)
 	SCHEMA_FIELD(LifeState_t, m_lifeState)
+	SCHEMA_FIELD(float, m_flDamageAccumulator)
+	SCHEMA_FIELD(bool, m_bTakesDamage)
+	SCHEMA_FIELD(TakeDamageFlags_t, m_nTakeDamageFlags)
 	SCHEMA_FIELD_POINTER(CUtlStringToken, m_nSubclassID)
+	SCHEMA_FIELD(float, m_flFriction)
 	SCHEMA_FIELD(float, m_flGravityScale)
+	SCHEMA_FIELD(float, m_flTimeScale)
 	SCHEMA_FIELD(float, m_flSpeed)
 	SCHEMA_FIELD(CUtlString, m_sUniqueHammerID);
 	SCHEMA_FIELD(CUtlSymbolLarge, m_target);
@@ -153,15 +161,30 @@ public:
 	void SetAbsVelocity(Vector vecVelocity) { m_vecAbsVelocity = vecVelocity; }
 	void SetBaseVelocity(Vector vecVelocity) { m_vecBaseVelocity = vecVelocity; }
 
-	void TakeDamage(int iDamage)
+	void SetName(const char *pName)
 	{
-		m_iHealth = m_iHealth() - iDamage;
+		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
 	}
 
-	void Teleport(Vector *position, QAngle *angles, Vector *velocity)
+	void TakeDamage(CTakeDamageInfo &info)
+	{
+		Detour_CBaseEntity_TakeDamageOld(this, &info);
+	}
+
+	void Teleport(const Vector *position, const QAngle *angles, const Vector *velocity)
 	{
 		static int offset = g_GameConfig->GetOffset("Teleport");
 		CALL_VIRTUAL(void, offset, this, position, angles, velocity);
+	}
+
+	void SetCollisionGroup(Collision_Group_t nCollisionGroup)
+	{
+		if (!m_pCollision())
+			return;
+
+		m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
+		m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
+		CollisionRulesChanged();
 	}
 
 	void CollisionRulesChanged()
@@ -205,14 +228,14 @@ public:
 		addresses::CBaseEntity_EmitSoundParams(this, pszSound, nPitch, flVolume, flDelay);
 	}
 
-	void EmitSoundFilter(IRecipientFilter &filter, const char *pszSound, float flVolume = 1.0, float flPitch = 1.0)
+	SndOpEventGuid_t EmitSoundFilter(IRecipientFilter &filter, const char *pszSound, float flVolume = 1.0, float flPitch = 1.0)
 	{
 		EmitSound_t params;
 		params.m_pSoundName = pszSound;
 		params.m_flVolume = flVolume;
 		params.m_nPitch = flPitch;
 
-		addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
+		return addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
 	}
 
 	// This was needed so we can parent to nameless entities using pointers
@@ -228,8 +251,7 @@ public:
 
 	void SetMoveType(MoveType_t nMoveType)
 	{
-		m_MoveType = nMoveType; // necessary to maintain client prediction
-		m_nActualMoveType = nMoveType;
+		addresses::CBaseEntity_SetMoveType(this, nMoveType, m_MoveCollide);
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }

@@ -1,0 +1,69 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+{
+	zr.amb.base = 
+	{
+		type = "csgo_mega"
+		volume = 0.5
+		occlusion_intensity = 0
+		distance_effect_mix = 0
+		restrict_source_reverb = true
+		disable_volume_culling = true
+		distance_volume_mapping_curve = 
+		[
+			[0,1,0,0,2,3,],
+			[2048,0,0,0,2,3,],
+		]
+	}
+	zr.amb.scream = 
+    {
+        base = "zr.amb.base"
+        vsnd_files_track_01 = 
+        [
+            "sounds/zr/fz_scream1.vsnd",
+        ]
+    }
+    zr.amb.zombie_die = 
+    {
+        base = "zr.amb.base"
+        vsnd_files_track_01 = 
+        [
+            "sounds/zr/zombie_die1.vsnd",
+            "sounds/zr/zombie_die2.vsnd",
+            "sounds/zr/zombie_die3.vsnd",
+        ]
+    }
+    zr.amb.zombie_pain = 
+    {
+        base = "zr.amb.base"
+        vsnd_files_track_01 = 
+        [
+            "sounds/zr/zombie_pain1.vsnd",
+            "sounds/zr/zombie_pain2.vsnd",
+            "sounds/zr/zombie_pain3.vsnd",
+            "sounds/zr/zombie_pain4.vsnd",
+            "sounds/zr/zombie_pain5.vsnd",
+            "sounds/zr/zombie_pain6.vsnd",
+        ]
+    }
+    zr.amb.zombie_voice_idle = 
+    {
+        base = "zr.amb.base"
+        vsnd_files_track_01 = 
+        [
+            "sounds/zr/zombie_voice_idle1.vsnd",
+            "sounds/zr/zombie_voice_idle2.vsnd",
+            "sounds/zr/zombie_voice_idle3.vsnd",
+            "sounds/zr/zombie_voice_idle4.vsnd",
+            "sounds/zr/zombie_voice_idle5.vsnd",
+            "sounds/zr/zombie_voice_idle6.vsnd",
+            "sounds/zr/zombie_voice_idle7.vsnd",
+            "sounds/zr/zombie_voice_idle8.vsnd",
+            "sounds/zr/zombie_voice_idle9.vsnd",
+            "sounds/zr/zombie_voice_idle10.vsnd",
+            "sounds/zr/zombie_voice_idle11.vsnd",
+            "sounds/zr/zombie_voice_idle12.vsnd",
+            "sounds/zr/zombie_voice_idle13.vsnd",
+            "sounds/zr/zombie_voice_idle14.vsnd",
+        ]
+    }
+}

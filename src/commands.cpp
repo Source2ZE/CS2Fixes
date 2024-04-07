@@ -48,6 +48,12 @@ extern CGameEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
 
+bool g_bEnableCommands;
+bool g_bEnableAdminCommands;
+
+FAKE_BOOL_CVAR(cs2f_commands_enable, "Whether to enable chat commands", g_bEnableCommands, false, 0)
+FAKE_BOOL_CVAR(cs2f_admin_commands_enable, "Whether to enable admin chat commands", g_bEnableAdminCommands, false, 0)
+
 WeaponMapEntry_t WeaponMap[] = {
 	{{"bizon"},							"weapon_bizon",			"PP-Bizon",			1400, 26, GEAR_SLOT_RIFLE},
 	{{"mac10", "mac"},					"weapon_mac10",			"MAC-10",			1050, 27, GEAR_SLOT_RIFLE},
@@ -233,7 +239,7 @@ void RegisterWeaponCommands()
 			char cmdName[64];
 			V_snprintf(cmdName, sizeof(cmdName), "%s%s", COMMAND_PREFIX, alias.c_str());
 
-			ConCommand command(&ref, cmdName, WeaponCommandCallback, "Buys this weapon", FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);
+			new ConCommand(&ref, cmdName, WeaponCommandCallback, "Buys this weapon", FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);
 		}
 	}
 }
@@ -402,38 +408,45 @@ CON_COMMAND_CHAT(hide, "<distance> - hides nearby players")
 
 CON_COMMAND_CHAT(help, "- Display list of commands in console")
 {
+	std::vector<std::string> rgstrCommands;
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands is:");
 
 		FOR_EACH_VEC(g_CommandList, i)
 		{
-			CChatCommand *cmd = g_CommandList[i];
+			CChatCommand* cmd = g_CommandList[i];
 
 			if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
-				ClientPrint(player, HUD_PRINTCONSOLE, "c_%s %s", cmd->GetName(), cmd->GetDescription());
+				rgstrCommands.push_back(std::string("c_") + cmd->GetName() + " " + cmd->GetDescription());
 		}
-
-		return;
 	}
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all available commands will be shown in console.");
-	ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands you can use is:");
-
-	int iSlot = player->GetPlayerSlot();
-
-	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(iSlot);
-
-	FOR_EACH_VEC(g_CommandList, i)
+	else
 	{
-		CChatCommand *cmd = g_CommandList[i];
-		uint64 flags = cmd->GetAdminFlags();
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all available commands will be shown in console.");
+		ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands you can use is:");
 
-		if (pZEPlayer->IsAdminFlagSet(flags) && !cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
-				ClientPrint(player, HUD_PRINTCONSOLE, "!%s %s", cmd->GetName(), cmd->GetDescription());
+		int iSlot = player->GetPlayerSlot();
+
+		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iSlot);
+
+		FOR_EACH_VEC(g_CommandList, i)
+		{
+			CChatCommand* cmd = g_CommandList[i];
+			uint64 flags = cmd->GetAdminFlags();
+
+			if (pZEPlayer->IsAdminFlagSet(flags) && !cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
+				rgstrCommands.push_back(std::string("!") + cmd->GetName() + " " + cmd->GetDescription());
+		}
 	}
 
-	ClientPrint(player, HUD_PRINTCONSOLE, "! can be replaced with / for a silent chat command, or c_ for console usage");
+	std::sort(rgstrCommands.begin(), rgstrCommands.end());
+
+	for (const auto& strCommand : rgstrCommands)
+		ClientPrint(player, HUD_PRINTCONSOLE, strCommand.c_str());
+
+	if (player)
+		ClientPrint(player, HUD_PRINTCONSOLE, "! can be replaced with / for a silent chat command, or c_ for console usage");
 }
 
 

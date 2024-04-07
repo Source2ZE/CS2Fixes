@@ -18,6 +18,8 @@
  */
 
 #include "networkbasetypes.pb.h"
+#include "usercmd.pb.h"
+#include "cs_usercmd.pb.h"
 
 #include "cdetour.h"
 #include "common.h"
@@ -53,6 +55,8 @@ extern CGameEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
 extern CCSGameRules *g_pGameRules;
 
+CUtlVector<CDetourBase *> g_vecDetours;
+
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
 DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
@@ -64,6 +68,8 @@ DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
 DECLARE_DETOUR(CNetworkStringTable_AddString, Detour_AddString);
+DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
+DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -118,8 +124,10 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 }
 
 static bool g_bUseOldPush = false;
-
 FAKE_BOOL_CVAR(cs2f_use_old_push, "Whether to use the old CSGO trigger_push behavior", g_bUseOldPush, false, false)
+
+static bool g_bLogPushes = false;
+FAKE_BOOL_CVAR(cs2f_log_pushes, "Whether to log pushes (cs2f_use_old_push must be enabled)", g_bLogPushes, false, false)
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
@@ -179,6 +187,19 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 		origin.z += 1.0f;
 
 		pOther->Teleport(&origin, nullptr, nullptr);
+	}
+
+	if (g_bLogPushes)
+	{
+		Vector vecEntBaseVelocity = pOther->m_vecBaseVelocity;
+		Vector vecOrigPush = vecAbsDir * pPush->m_flSpeed();
+
+		Message("Pushing entity %i | frametime = %.3f | entity basevelocity = %.2f %.2f %.2f | original push velocity = %.2f %.2f %.2f | final push velocity = %.2f %.2f %.2f\n",
+			pOther->GetEntityIndex(),
+			gpGlobals->frametime,
+			vecEntBaseVelocity.x, vecEntBaseVelocity.y, vecEntBaseVelocity.z,
+			vecOrigPush.x, vecOrigPush.y, vecOrigPush.z,
+			vecPush.x, vecPush.y, vecPush.z);
 	}
 
 	pOther->m_vecBaseVelocity(vecPush);
@@ -329,54 +350,6 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
 }
 
-void Detour_Log()
-{
-	return;
-}
-
-bool FASTCALL Detour_IsChannelEnabled(LoggingChannelID_t channelID, LoggingSeverity_t severity)
-{
-	return false;
-}
-
-CDetour<decltype(Detour_Log)> g_LoggingDetours[] =
-{
-	CDetour<decltype(Detour_Log)>( Detour_Log, "Msg" ),
-	//CDetour<decltype(Detour_Log)>( Detour_Log, "?ConMsg@@YAXPEBDZZ" ),
-	//CDetour<decltype(Detour_Log)>( Detour_Log, "?ConColorMsg@@YAXAEBVColor@@PEBDZZ" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "ConDMsg" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "DevMsg" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "Warning" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "DevWarning" ),
-	//CDetour<decltype(Detour_Log)>( Detour_Log, "?DevWarning@@YAXPEBDZZ" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "LoggingSystem_Log" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "LoggingSystem_LogDirect" ),
-	CDetour<decltype(Detour_Log)>( Detour_Log, "LoggingSystem_LogAssert" ),
-	//CDetour<decltype(Detour_Log)>( Detour_IsChannelEnabled, "LoggingSystem_IsChannelEnabled" ),
-};
-
-CON_COMMAND_F(toggle_logs, "Toggle printing most logs and warnings", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	static bool bBlock = false;
-
-	if (!bBlock)
-	{
-		Message("Logging is now OFF.\n");
-
-		for (int i = 0; i < sizeof(g_LoggingDetours) / sizeof(*g_LoggingDetours); i++)
-			g_LoggingDetours[i].EnableDetour();
-	}
-	else
-	{
-		Message("Logging is now ON.\n");
-
-		for (int i = 0; i < sizeof(g_LoggingDetours) / sizeof(*g_LoggingDetours); i++)
-			g_LoggingDetours[i].DisableDetour();
-	}
-
-	bBlock = !bBlock;
-}
-
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
 	if (g_bEnableZR && !ZR_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
@@ -403,6 +376,20 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
         Message("Invalid value type for input %s\n", pInputName->String());
         return false;
     }
+	else if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
+	{
+		float flDuration = 0.f;
+
+		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			flDuration = V_StringToFloat32(value->m_pszString, 0.f);
+		else
+			flDuration = value->m_float;
+
+		CCSPlayerPawn *pPawn = (CCSPlayerPawn*)pThis->m_pInstance;
+
+		if (pPawn->IsPawn() && IgnitePawn(pPawn, flDuration, pPawn, pPawn))
+			return true;
+	}
 
 	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
@@ -449,63 +436,77 @@ int64 FASTCALL Detour_AddString(void *pStringTable, bool bServer, const char *ps
 	return CNetworkStringTable_AddString(pStringTable, bServer, pszString, a4);
 }
 
-CUtlVector<CDetourBase *> g_vecDetours;
+void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pMove)
+{
+	CCSPlayerPawn *pPawn = pThis->GetPawn();
+
+	if (!pPawn->IsAlive())
+		return ProcessMovement(pThis, pMove);
+
+	CCSPlayerController *pController = pPawn->GetOriginalController();
+
+	if (!pController || !pController->IsConnected())
+		return ProcessMovement(pThis, pMove);
+
+	float flSpeedMod = pController->GetZEPlayer()->GetSpeedMod();
+
+	if (flSpeedMod == 1.f)
+		return ProcessMovement(pThis, pMove);
+
+
+	// Yes, this is what source1 does to scale player speed
+	// Scale frametime during the entire movement processing step and revert right after
+	float flStoreFrametime = gpGlobals->frametime;
+
+	gpGlobals->frametime *= flSpeedMod;
+
+	ProcessMovement(pThis, pMove);
+
+	gpGlobals->frametime = flStoreFrametime;
+}
+
+static bool g_bDisableSubtick = false;
+FAKE_BOOL_CVAR(cs2f_disable_subtick_move, "Whether to disable subtick movement", g_bDisableSubtick, false, false)
+
+class CUserCmd
+{
+public:
+	CSGOUserCmdPB cmd;
+	[[maybe_unused]] char pad1[0x38];
+#ifdef PLATFORM_WINDOWS
+	[[maybe_unused]] char pad2[0x8];
+#endif
+};
+
+void* FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pPawn, CUserCmd *cmds, int numcmds, bool paused, float margin)
+{
+	if (!g_bDisableSubtick)
+		return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
+
+	static int offset = g_GameConfig->GetOffset("UsercmdOffset");
+
+	for (int i = 0; i < numcmds; i++)
+	{
+		CSGOUserCmdPB *pUserCmd = &cmds[i].cmd;
+
+		for (int j = 0; j < pUserCmd->mutable_base()->subtick_moves_size(); j++)
+			pUserCmd->mutable_base()->mutable_subtick_moves(j)->set_when(0.f);
+	}
+
+	return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
+}
 
 bool InitDetours(CGameConfig *gameConfig)
 {
 	bool success = true;
 
-	g_vecDetours.PurgeAndDeleteElements();
-
-	for (int i = 0; i < sizeof(g_LoggingDetours) / sizeof(*g_LoggingDetours); i++)
+	FOR_EACH_VEC(g_vecDetours, i)
 	{
-		if (!g_LoggingDetours[i].CreateDetour(gameConfig))
+		if (!g_vecDetours[i]->CreateDetour(gameConfig))
 			success = false;
+		
+		g_vecDetours[i]->EnableDetour();
 	}
-
-	if (!UTIL_SayTextFilter.CreateDetour(gameConfig))
-		success = false;
-	UTIL_SayTextFilter.EnableDetour();
-
-	if (!UTIL_SayText2Filter.CreateDetour(gameConfig))
-		success = false;
-	UTIL_SayText2Filter.EnableDetour();
-
-	if (!IsHearingClient.CreateDetour(gameConfig))
-		success = false;
-	IsHearingClient.EnableDetour();
-
-	if (!TriggerPush_Touch.CreateDetour(gameConfig))
-		success = false;
-	TriggerPush_Touch.EnableDetour();
-
-	if (!CGameRules_Constructor.CreateDetour(gameConfig))
-		success = false;
-	CGameRules_Constructor.EnableDetour();
-
-	if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
-		success = false;
-	CBaseEntity_TakeDamageOld.EnableDetour();
-
-	if (!CCSPlayer_WeaponServices_CanUse.CreateDetour(gameConfig))
-		success = false;
-	CCSPlayer_WeaponServices_CanUse.EnableDetour();
-  
-	if (!CEntityIdentity_AcceptInput.CreateDetour(gameConfig))
-		success = false;
-	CEntityIdentity_AcceptInput.EnableDetour();
-
-	if (!CNavMesh_GetNearestNavArea.CreateDetour(gameConfig))
-		success = false;
-	CNavMesh_GetNearestNavArea.EnableDetour();
-
-	if (!FixLagCompEntityRelationship.CreateDetour(gameConfig))
-		success = false;
-	FixLagCompEntityRelationship.EnableDetour();
-
-	if (!CNetworkStringTable_AddString.CreateDetour(gameConfig))
-		success = false;
-	CNetworkStringTable_AddString.EnableDetour();
 
 	return success;
 }

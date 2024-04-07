@@ -25,6 +25,8 @@
 #include "playermanager.h"
 #include "leader.h"
 
+#include "tier0/memdbgon.h"
+
 extern CGameConfig *g_GameConfig;
 
 CBaseGameSystemFactory **CBaseGameSystemFactory::sm_pFirst = nullptr;
@@ -59,6 +61,8 @@ bool InitGameSystems()
 	return true;
 }
 
+extern std::string g_sBurnParticle;
+
 GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
 {
 	Message("CGameSystem::BuildGameSessionManifest\n");
@@ -72,6 +76,8 @@ GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
 	ZR_Precache(pResourceManifest);
 	PrecacheBeaconParticle(pResourceManifest);
 	Leader_Precache(pResourceManifest);
+
+	pResourceManifest->AddResource(g_sBurnParticle.c_str());
 }
 
 // Called every frame before entities think

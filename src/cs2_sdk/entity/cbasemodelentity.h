@@ -31,6 +31,7 @@ public:
 	SCHEMA_FIELD(CGlowProperty, m_Glow)
 	SCHEMA_FIELD(Color, m_clrRender)
 	SCHEMA_FIELD(RenderMode_t, m_nRenderMode)
+	SCHEMA_FIELD(float, m_flDissolveStartTime)
 	
 	void SetModel(const char *szModel)
 	{

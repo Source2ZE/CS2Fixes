@@ -25,19 +25,19 @@
 class CSingleRecipientFilter : public IRecipientFilter
 {
 public:
-	CSingleRecipientFilter(CPlayerSlot iRecipient, bool bReliable = true, bool bInitMessage = false) :
-		m_iRecipient(iRecipient), m_bReliable(bReliable), m_bInitMessage(bInitMessage) {}
+	CSingleRecipientFilter(CPlayerSlot iRecipient, NetChannelBufType_t nBufType = BUF_RELIABLE, bool bInitMessage = false) :
+		m_iRecipient(iRecipient), m_nBufType(nBufType), m_bInitMessage(bInitMessage) {}
 
 	~CSingleRecipientFilter() override {}
 
-	bool IsReliable(void) const override { return m_bReliable; }
+	NetChannelBufType_t GetNetworkBufType(void) const override { return m_nBufType; }
 	bool IsInitMessage(void) const override { return m_bInitMessage; }
 	int GetRecipientCount(void) const override { return 1; }
 	CPlayerSlot GetRecipientIndex(int slot) const override { return m_iRecipient; }
 
 private:
 	CPlayerSlot m_iRecipient;
-	bool m_bReliable;
+	NetChannelBufType_t m_nBufType;
 	bool m_bInitMessage;
 };
 
@@ -47,13 +47,13 @@ class CRecipientFilter : public IRecipientFilter
 public:
 	CRecipientFilter()
 	{
-		m_bReliable = true;
+		m_nBufType = BUF_RELIABLE;
 		m_bInitMessage = false;
 	}
 
 	CRecipientFilter(IRecipientFilter *source, int iExcept = -1)
 	{
-		m_bReliable = source->IsReliable();
+		m_nBufType = source->GetNetworkBufType();
 		m_bInitMessage = source->IsInitMessage();
 		m_Recipients.RemoveAll();
 
@@ -66,7 +66,7 @@ public:
 
 	~CRecipientFilter() override {}
 
-	bool IsReliable(void) const override { return m_bReliable; }
+	NetChannelBufType_t GetNetworkBufType(void) const override { return m_nBufType; }
 	bool IsInitMessage(void) const override { return m_bInitMessage; }
 	int GetRecipientCount(void) const override { return m_Recipients.Count(); }
 
@@ -101,7 +101,7 @@ public:
 	}
 
 private:
-	bool m_bReliable;
+	NetChannelBufType_t m_nBufType;
 	bool m_bInitMessage;
 	CUtlVectorFixed<CPlayerSlot, MAXPLAYERS> m_Recipients;
 };
