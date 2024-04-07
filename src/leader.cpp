@@ -917,7 +917,7 @@ CON_COMMAND_CHAT(leaderhelp, "- list leader commands in chat")
 	ClientPrint(player, iDestination, CHAT_PREFIX "!beacon <name> [color] - place a beacon on player");
 	ClientPrint(player, iDestination, CHAT_PREFIX "!tracer <name> [color] - give player tracers");
 	ClientPrint(player, iDestination, CHAT_PREFIX "!defend [name|duration] [duration] - place defend mark on player");
-	ClientPrint(player, iDestination, CHAT_PREFIX "!glow <name> [duration] - toggle glow highlight on a player")
+	ClientPrint(player, iDestination, CHAT_PREFIX "!glow <name> [duration] - toggle glow highlight on a player");
 }
 
 CON_COMMAND_CHAT(leadercolors, "- list leader colors in chat")

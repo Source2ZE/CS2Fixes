@@ -65,6 +65,10 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/customio.cpp',
     'src/entitylistener.cpp',
     'src/leader.cpp',
+    'sdk/entity2/entitysystem.cpp',
+    'sdk/entity2/entityidentity.cpp',
+    'sdk/entity2/entitykeyvalues.cpp',
+    'sdk/tier1/keyvalues3.cpp',
   ]
 
   protoc_builder = builder.tools.Protoc(protoc = sdk_target.protoc, sources = [
