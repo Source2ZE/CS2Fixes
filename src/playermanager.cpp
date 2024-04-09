@@ -422,7 +422,12 @@ void ZEPlayer::StartGlow(Color color, int duration)
 
 		if (pawn->m_iTeamNum != iTeamNum || strcmp(pModel->GetModelName(), pawn->GetModelName()))
 		{
-			CBaseModelEntity *pModelParent = (CBaseModelEntity*)pModel->m_CBodyComponent()->m_pSceneNode()->m_pParent()->m_pOwner();
+			CGameSceneNode *pParentSceneNode = pModel->m_CBodyComponent()->m_pSceneNode()->m_pParent();
+
+			if (!pParentSceneNode)
+				return -1.0f;
+
+			CBaseModelEntity *pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
 
 			if (pModelParent)
 				addresses::UTIL_Remove(pModelParent);
@@ -444,7 +449,12 @@ void ZEPlayer::StartGlow(Color color, int duration)
 		if (!pModel)
 			return -1.0f;
 
-		CBaseModelEntity *pModelParent = (CBaseModelEntity*)pModel->m_CBodyComponent()->m_pSceneNode()->m_pParent()->m_pOwner();
+		CGameSceneNode *pParentSceneNode = pModel->m_CBodyComponent()->m_pSceneNode()->m_pParent();
+
+		if (!pParentSceneNode)
+			return -1.0f;
+
+		CBaseModelEntity *pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
 
 		if (pModelParent)
 			addresses::UTIL_Remove(pModelParent);
@@ -460,7 +470,12 @@ void ZEPlayer::EndGlow()
 	if (!pGlowModel)
 		return;
 
-	CBaseModelEntity *pModelParent = (CBaseModelEntity*)pGlowModel->m_CBodyComponent()->m_pSceneNode()->m_pParent()->m_pOwner();
+	CGameSceneNode *pParentSceneNode = pGlowModel->m_CBodyComponent()->m_pSceneNode()->m_pParent();
+
+	if (!pParentSceneNode)
+		return;
+
+	CBaseModelEntity *pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
 
 	if (pModelParent)
 		addresses::UTIL_Remove(pModelParent);
