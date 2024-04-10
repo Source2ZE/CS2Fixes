@@ -131,6 +131,12 @@
     <ClCompile Include="src\customio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="protobuf\generated\cs_usercmd.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\usercmd.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">

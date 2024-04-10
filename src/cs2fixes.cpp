@@ -755,7 +755,11 @@ const char *CS2Fixes::GetLicense()
 
 const char *CS2Fixes::GetVersion()
 {
-	return CS2FIXES_VERSION; // defined by the build script
+#ifndef CS2FIXES_VERSION
+#    define CS2FIXES_VERSION "1.0-Local"
+#endif
+
+    return CS2FIXES_VERSION; // defined by the build script
 }
 
 const char *CS2Fixes::GetDate()
