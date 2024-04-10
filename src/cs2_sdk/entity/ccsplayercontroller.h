@@ -34,7 +34,9 @@ public:
 	SCHEMA_FIELD(CCSPlayerController_ActionTrackingServices*, m_pActionTrackingServices)
 	SCHEMA_FIELD(bool, m_bPawnIsAlive);
 	SCHEMA_FIELD(CHandle<CCSPlayerPawn>, m_hPlayerPawn);
+	SCHEMA_FIELD(CHandle<CCSObserverPawn>, m_hObserverPawn);
 	SCHEMA_FIELD(CHandle<CCSPlayerController>, m_hOriginalControllerOfCurrentPawn);
+	SCHEMA_FIELD(ObserverMode_t, m_DesiredObserverMode);
 
 	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn)
 	{
@@ -50,6 +52,11 @@ public:
 	CCSPlayerPawn *GetPlayerPawn()
 	{
 		return m_hPlayerPawn().Get();
+	}
+
+	CCSObserverPawn *GetObserverPawn()
+	{
+		return m_hObserverPawn.Get();
 	}
 
 	ZEPlayer* GetZEPlayer()

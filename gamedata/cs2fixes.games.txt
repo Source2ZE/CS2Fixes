@@ -422,6 +422,12 @@
 				"windows"		"1"
 				"linux"			"2"
 			}
+
+			"CBaseEntity::Event_Killed"
+			{
+				"windows"    "118"
+				"linux"      "117"
+			}
 		}
 		"Patches"
 		{

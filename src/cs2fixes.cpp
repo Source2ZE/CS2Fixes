@@ -105,6 +105,7 @@ SH_DECL_HOOK3_void(INetworkServerService, StartupServer, SH_NOATTRIB, 0, const G
 SH_DECL_HOOK6_void(ISource2GameEntities, CheckTransmit, SH_NOATTRIB, 0, CCheckTransmitInfo **, int, CBitVec<16384> &, const Entity2Networkable_t **, const uint16 *, int);
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand &);
 SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, const CCommandContext&, const CCommand&);
+SH_DECL_MANUALHOOK1(PlayerPawnKilled, 0, 0, 0, int8, void*);
 
 CS2Fixes g_CS2Fixes;
 
@@ -120,6 +121,7 @@ CGameConfig *g_GameConfig = nullptr;
 ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
+int32 g_iPawnKilledHookId = -1;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -213,6 +215,10 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		return false;
 	}
 
+    const auto pVTable = modules::server->FindVirtualTable("CCSPlayerPawn");
+    SH_MANUALHOOK_RECONFIGURE(PlayerPawnKilled, g_GameConfig->GetOffset("CBaseEntity::Event_Killed"), 0, 0);
+	g_iPawnKilledHookId = SH_ADD_MANUALDVPHOOK(PlayerPawnKilled, pVTable, SH_MEMBER(this, &CS2Fixes::Hook_OnPlayerPawnKilled), true);
+
 	Message( "All hooks started!\n" );
 
 	UnlockConVars();
@@ -285,6 +291,9 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
 	SH_REMOVE_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_REMOVE_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
+
+	if (g_iPawnKilledHookId != -1)
+		SH_REMOVE_HOOK_ID(g_iPawnKilledHookId);
 
 	ConVar_Unregister();
 
@@ -501,6 +510,42 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 	}
 }
 
+int8 CS2Fixes::Hook_OnPlayerPawnKilled(void* pInfo)
+{
+	if (!g_bEnableHide)
+		RETURN_META_VALUE(MRES_IGNORED, 0);
+
+	const auto pPawn = META_IFACEPTR(CCSPlayerPawn);
+	const auto hController = pPawn->m_hController();
+
+	if (const auto pController = reinterpret_cast<CCSPlayerController*>(hController.Get()))
+	{
+		pController->m_DesiredObserverMode(ObserverMode_t::OBS_MODE_ROAMING);
+
+		// next frame
+		new CTimer(0.001f, false, [hController]() {
+			if (const auto lpController = reinterpret_cast<CCSPlayerController*>(hController.Get()))
+			{
+				lpController->m_DesiredObserverMode(ObserverMode_t::OBS_MODE_ROAMING);
+
+				if (const auto pObserver = lpController->GetObserverPawn())
+				{
+					if (const auto pService = pObserver->m_pObserverServices())
+					{
+						pService->m_bForcedObserverMode(true);
+						pService->m_iObserverMode(ObserverMode_t::OBS_MODE_ROAMING);
+						pService->m_iObserverLastMode(ObserverMode_t::OBS_MODE_ROAMING);
+					}
+				}
+			}
+
+			return -1.0f;
+		});
+	}
+
+	RETURN_META_VALUE(MRES_IGNORED, 0);
+}
+
 void CS2Fixes::AllPluginsLoaded()
 {
 	/* This is where we'd do stuff that relies on the mod or other plugins 
@@ -546,6 +591,18 @@ void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 	{
 		ZR_Hook_ClientCommand_JoinTeam(slot, args);
 		RETURN_META(MRES_SUPERCEDE);
+	}
+	if (g_bEnableHide && V_strncasecmp(args[0], "spec", 4) == 0)
+	{
+		if (const auto pController = CCSPlayerController::FromSlot(slot))
+		{
+			const auto hObserver = pController->m_hObserverPawn();
+			const auto hCurrent  = pController->m_hPawn();
+
+			// NOTE: block spec command if enter state of Observer!!!
+			if (hObserver != hCurrent)
+				RETURN_META(MRES_SUPERCEDE);
+		}
 	}
 }
 
@@ -688,18 +745,16 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
 			}
 
-			// Always transmit other players if spectating
-			if (!g_bEnableHide || pSelfController->GetPawnState() == STATE_OBSERVER_MODE)
+			if (!g_bEnableHide)
 				continue;
 
-			// Get the actual pawn as the player could be currently spectating
+			// Get the actual player pawn of controller
 			CCSPlayerPawn *pPawn = pController->GetPlayerPawn();
 
 			if (!pPawn)
 				continue;
 
-			// Hide players marked as hidden or ANY dead player, it seems that a ragdoll of a previously hidden player can crash?
-			// TODO: Revert this if/when valve fixes the issue?
+			// NOTE due to valve broken hide, dead pawn must be hide!
 			if (pSelfZEPlayer->ShouldBlockTransmit(j) || !pPawn->IsAlive())
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 		}
