@@ -219,6 +219,8 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 	if (!g_bVoteManagerEnable)
 		return;
 
+	m_bIsVoteOngoing = false;
+
 	int iLastCooldownIndex = GetMapsInCooldown() - 1;
 	int iInitMapIndex = GetMapIndexFromSubstring(pMapName);
 	if (iLastCooldownIndex >= 0 && iInitMapIndex >= 0 && GetCooldownMap(iLastCooldownIndex) != iInitMapIndex) {
