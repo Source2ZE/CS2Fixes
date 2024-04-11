@@ -30,10 +30,12 @@
 #include "utlstring.h"
 #include "utlvector.h"
 #include "votemanager.h"
+#include "vendor/multiaddonmanager/imultiaddonmanager.h"
 
 extern CGlobalVars *gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
+extern IMultiAddonManager* g_pMultiAddonManager;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
@@ -558,6 +560,9 @@ bool CMapVoteSystem::LoadMapList()
 		return false;
 	}
 
+	if (!g_pMultiAddonManager)
+		Panic("MultiAddonManager not installed, map system cannot pre-download maps\n");
+
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey()) {
 		const char *pszName = pKey->GetName();
 		uint64 iWorkshopId = pKey->GetUint64("workshop_id");
@@ -567,6 +572,12 @@ bool CMapVoteSystem::LoadMapList()
 			Warning("Map entry %s is missing 'workshop_id' key\n", pszName);
 			return false;
 		}
+
+		char idBuffer[32];
+		V_snprintf(idBuffer, sizeof(idBuffer), "%llu", iWorkshopId);
+
+		if (g_pMultiAddonManager)
+			g_pMultiAddonManager->DownloadAddon(idBuffer, false, false);
 
 		// We just append the maps to the map list
 		CMapInfo map = CMapInfo(pszName, iWorkshopId, bIsEnabled);

@@ -55,6 +55,7 @@
 #include "cs_gameevents.pb.h"
 #include "gameevents.pb.h"
 #include "leader.h"
+#include "vendor/multiaddonmanager/imultiaddonmanager.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -124,6 +125,7 @@ CGameConfig *g_GameConfig = nullptr;
 ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
+IMultiAddonManager *g_pMultiAddonManager = nullptr;
 int g_iCGamePlayerEquipUseId = -1;
 
 CGameEntitySystem *GameEntitySystem()
@@ -542,6 +544,16 @@ void CS2Fixes::AllPluginsLoaded()
 	 */
 
 	Message( "AllPluginsLoaded\n" );
+
+	int interfaceReturn;
+	IMultiAddonManager* pInterface = (IMultiAddonManager*)g_SMAPI->MetaFactory(MULTIADDONMANAGER_INTERFACE, &interfaceReturn, nullptr);
+
+	if (interfaceReturn == META_IFACE_OK)
+		g_pMultiAddonManager = pInterface;
+	else
+		Panic("Failed to find " MULTIADDONMANAGER_INTERFACE " interface\n");
+
+	g_pMapVoteSystem->LoadMapList();
 }
 
 CUtlVector<CServerSideClient *> *GetClientList()
