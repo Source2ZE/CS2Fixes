@@ -57,6 +57,7 @@ bool StripPlayer(CCSPlayerPawn* pPawn)
 
         pWeaponServices->m_hActiveWeapon = weaponHandle;
         pItemServices->DropPlayerWeapon(weapon);
+        addresses::UTIL_Remove(weapon);
     }
 
     return true;
@@ -115,14 +116,6 @@ void TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
         return;
 
     const auto pPawn = reinterpret_cast<CCSPlayerPawn*>(pCaller);
-
-    const auto pItemServices   = pPawn->m_pItemServices();
-    const auto pWeaponServices = pPawn->m_pWeaponServices();
-
-    // it can sometimes be null when player joined on the very first round?
-    if (!pItemServices || !pWeaponServices)
-        return;
-
     const auto flags = pEntity->m_spawnflags();
 
     if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_STRIPFIRST)
@@ -134,6 +127,11 @@ void TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
     {
         // TODO
     }
+
+    const auto pItemServices = pPawn->m_pItemServices();
+
+    if (!pItemServices)
+        return;
 
     pItemServices->GiveNamedItem(pszWeapon);
 }
