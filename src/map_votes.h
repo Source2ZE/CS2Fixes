@@ -89,6 +89,8 @@ public:
     int GetMapListSize() { return m_vecMapList.Count(); };
     const char* GetMapName(int iMapIndex) { return m_vecMapList[iMapIndex].GetName(); };
     void ClearPlayerInfo(int iSlot);
+    bool IsVoteOngoing() { return m_bIsVoteOngoing; }
+    bool IsIntermissionAllowed();
 
 private:
     int WinningMapIndex();

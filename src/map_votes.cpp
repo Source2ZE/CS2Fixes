@@ -197,7 +197,7 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 
 GAME_EVENT_F(cs_win_panel_match)
 {
-	if (g_bVoteManagerEnable)
+	if (g_bVoteManagerEnable && !g_pMapVoteSystem->IsVoteOngoing())
 		g_pMapVoteSystem->StartVote();
 }
 
@@ -600,5 +600,18 @@ bool CMapVoteSystem::LoadMapList()
 			i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled"
 		);
 	}
+	return true;
+}
+
+bool CMapVoteSystem::IsIntermissionAllowed()
+{
+	if (!g_bVoteManagerEnable)
+		return true;
+
+	// We need to prevent "ending the map twice" as it messes with ongoing map votes
+	// This seems to be a CS2 bug that occurs when the round ends while already on the map end screen
+	if (m_bIsVoteOngoing)
+		return false;
+
 	return true;
 }
