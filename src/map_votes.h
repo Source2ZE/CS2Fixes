@@ -91,6 +91,7 @@ public:
     void ClearPlayerInfo(int iSlot);
     bool IsVoteOngoing() { return m_bIsVoteOngoing; }
     bool IsIntermissionAllowed();
+    bool IsMapListLoaded() { return m_bMapListLoaded; }
 
 private:
     int WinningMapIndex();
@@ -106,6 +107,7 @@ private:
     int m_iRandomWinnerShift = 0;
     int m_arrPlayerVotes[MAXPLAYERS];
     bool m_bIsVoteOngoing = false;
+    bool m_bMapListLoaded = false;
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;

@@ -474,6 +474,9 @@ void CS2Fixes::Hook_GameServerSteamAPIActivated()
 	g_steamAPI.Init();
 	g_http = g_steamAPI.SteamHTTP();
 
+	if (!g_pMapVoteSystem->IsMapListLoaded())
+		g_pMapVoteSystem->LoadMapList();
+
 	RETURN_META(MRES_IGNORED);
 }
 
@@ -552,8 +555,6 @@ void CS2Fixes::AllPluginsLoaded()
 		g_pMultiAddonManager = pInterface;
 	else
 		Panic("Failed to find " MULTIADDONMANAGER_INTERFACE " interface\n");
-
-	g_pMapVoteSystem->LoadMapList();
 }
 
 CUtlVector<CServerSideClient *> *GetClientList()

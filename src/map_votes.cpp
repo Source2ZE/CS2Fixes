@@ -600,6 +600,9 @@ bool CMapVoteSystem::LoadMapList()
 			i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled"
 		);
 	}
+
+	m_bMapListLoaded = true;
+
 	return true;
 }
 
