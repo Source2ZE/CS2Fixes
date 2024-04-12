@@ -64,3 +64,4 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pM
 void *FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pawn, CUserCmd *cmds, int numcmds, bool paused, float margin);
 void FASTCALL  Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip*, InputData_t*);
 void FASTCALL  Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip*, InputData_t*);
+int64_t* FASTCALL Detour_CCSGameRules_GoToIntermission(int64_t unk1, char unk2);

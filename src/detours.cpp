@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2024 Source2ZE
@@ -45,6 +45,7 @@
 #include "entities.h"
 #include "serversideclient.h"
 #include "networksystem/inetworkserializer.h"
+#include "map_votes.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -55,6 +56,7 @@ extern CGlobalVars *gpGlobals;
 extern CGameEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
 extern CCSGameRules *g_pGameRules;
+extern CMapVoteSystem *g_pMapVoteSystem;
 
 CUtlVector<CDetourBase *> g_vecDetours;
 
@@ -73,6 +75,7 @@ DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer);
+DECLARE_DETOUR(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -514,6 +517,14 @@ void FASTCALL Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip
 void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
 {
     CGamePlayerEquipHandler::TriggerForActivatedPlayer(pEntity, pInput);
+}
+
+int64_t* FASTCALL Detour_CCSGameRules_GoToIntermission(int64_t unk1, char unk2)
+{
+	if (!g_pMapVoteSystem->IsIntermissionAllowed())
+		return nullptr;
+
+	return CCSGameRules_GoToIntermission(unk1, unk2);
 }
 
 bool InitDetours(CGameConfig *gameConfig)
