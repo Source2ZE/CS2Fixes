@@ -35,30 +35,11 @@ public:
 bool StripPlayer(CCSPlayerPawn* pPawn)
 {
     const auto pItemServices   = pPawn->m_pItemServices();
-    const auto pWeaponServices = pPawn->m_pWeaponServices();
 
-    // it can sometimes be null when player joined on the very first round?
-    if (!pItemServices || !pWeaponServices)
+    if (!pItemServices)
         return false;
 
-    const auto weapons = pWeaponServices->m_hMyWeapons();
-
-    FOR_EACH_VEC(*weapons, i)
-    {
-        CHandle<CBasePlayerWeapon>& weaponHandle = (*weapons)[i];
-
-        if (!weaponHandle.IsValid())
-            continue;
-
-        CBasePlayerWeapon* weapon = weaponHandle.Get();
-
-        if (!weapon)
-            continue;
-
-        pWeaponServices->m_hActiveWeapon = weaponHandle;
-        pItemServices->DropPlayerWeapon(weapon);
-        addresses::UTIL_Remove(weapon);
-    }
+    pItemServices->StripPlayerWeapons(true);
 
     return true;
 }
@@ -84,7 +65,7 @@ void Use(CGamePlayerEquip* pEntity, InputData_t* pInput)
     }
     else if (flags & ::CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
     {
-        // TODO
+        // TODO support strip same flags
     }
 }
 
@@ -103,7 +84,7 @@ void TriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
     }
     else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
     {
-        // TODO
+        // TODO support strip same flags
     }
 }
 
