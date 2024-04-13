@@ -222,6 +222,11 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		snprintf(error, maxlen, "Failed to find CGamePlayerEquip vtable\n");
 		return false;
 	}
+	if (g_GameConfig->GetOffset("CBaseEntity::Use") == -1)
+	{
+		snprintf(error, maxlen, "Failed to find CBaseEntity::Use\n");
+		return false;
+	}
 	SH_MANUALHOOK_RECONFIGURE(CGamePlayerEquipUse, g_GameConfig->GetOffset("CBaseEntity::Use"), 0, 0);
 	g_iCGamePlayerEquipUseId = SH_ADD_MANUALDVPHOOK(CGamePlayerEquipUse, pCGamePlayerEquipVTable, SH_MEMBER(this, &CS2Fixes::Hook_CGamePlayerEquipUse), false);
 
