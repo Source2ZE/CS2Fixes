@@ -131,6 +131,15 @@
     <ClCompile Include="src\customio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="protobuf\generated\cs_usercmd.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\usercmd.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -282,6 +291,12 @@
     </ClInclude>
     <ClInclude Include="src\serversideclient.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\cgameplayerequip.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

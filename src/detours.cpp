@@ -42,6 +42,7 @@
 #include "gameconfig.h"
 #include "zombiereborn.h"
 #include "customio.h"
+#include "entities.h"
 #include "serversideclient.h"
 #include "networksystem/inetworkserializer.h"
 
@@ -70,6 +71,8 @@ DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship
 DECLARE_DETOUR(CNetworkStringTable_AddString, Detour_AddString);
 DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
+DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers);
+DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -494,6 +497,16 @@ void* FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pPawn, CUserCmd *cmds, in
 	}
 
 	return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
+}
+
+void FASTCALL Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
+{
+    CGamePlayerEquipHandler::TriggerForAllPlayers(pEntity, pInput);
+    CGamePlayerEquip_InputTriggerForAllPlayers(pEntity, pInput);
+}
+void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
+{
+    CGamePlayerEquipHandler::TriggerForActivatedPlayer(pEntity, pInput);
 }
 
 bool InitDetours(CGameConfig *gameConfig)

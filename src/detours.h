@@ -43,6 +43,8 @@ class CServerSideClient;
 class INetChannel;
 class CBasePlayerPawn;
 class CUserCmd;
+class CGamePlayerEquip;
+class InputData_t;
 
 bool InitDetours(CGameConfig *gameConfig);
 void FlushAllDetours();
@@ -60,3 +62,5 @@ void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEn
 int64 FASTCALL Detour_AddString(void *pStringTable, bool bServer, const char *pszString, void *a4);
 void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pMove);
 void *FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pawn, CUserCmd *cmds, int numcmds, bool paused, float margin);
+void FASTCALL  Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip*, InputData_t*);
+void FASTCALL  Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip*, InputData_t*);
