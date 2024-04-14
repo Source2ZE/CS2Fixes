@@ -162,10 +162,10 @@ private:
 	virtual void unk_14() = 0;
 	virtual CBaseEntity* _GiveNamedItem(const char* pchName) = 0;
 public:
-	virtual bool GiveNamedItemBool(const char* pchName) = 0;
-	virtual CBaseEntity* GiveNamedItem(const char* pchName) = 0;
-	virtual void DropPlayerWeapon(CBasePlayerWeapon* weapon) = 0;
-	virtual void StripPlayerWeapons() = 0;
+    virtual bool         GiveNamedItemBool(const char* pchName)      = 0;
+    virtual CBaseEntity* GiveNamedItem(const char* pchName)          = 0;
+    virtual void         DropPlayerWeapon(CBasePlayerWeapon* weapon) = 0;
+    virtual void         StripPlayerWeapons(bool removeSuit = false) = 0;
 };
 
 // We need an exactly sized class to be able to iterate the vector, our schema system implementation can't do this

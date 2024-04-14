@@ -34,6 +34,7 @@
 #include "engine/igameeventsystem.h"
 #include "gamesystem.h"
 #include "ctimer.h"
+#include "entities.h"
 #include "playermanager.h"
 #include <entity.h>
 #include "adminsystem.h"
@@ -106,6 +107,7 @@ SH_DECL_HOOK6_void(ISource2GameEntities, CheckTransmit, SH_NOATTRIB, 0, CCheckTr
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand &);
 SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, const CCommandContext&, const CCommand&);
 SH_DECL_MANUALHOOK1(PlayerPawnKilled, 0, 0, 0, int8, void*);
+SH_DECL_MANUALHOOK1_void(CGamePlayerEquipUse, 0, 0, 0, InputData_t*);
 
 CS2Fixes g_CS2Fixes;
 
@@ -122,6 +124,7 @@ ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
 int32 g_iPawnKilledHookId = -1;
+int g_iCGamePlayerEquipUseId = -1;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -215,9 +218,24 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		return false;
 	}
 
-    const auto pVTable = modules::server->FindVirtualTable("CCSPlayerPawn");
-    SH_MANUALHOOK_RECONFIGURE(PlayerPawnKilled, g_GameConfig->GetOffset("CBaseEntity::Event_Killed"), 0, 0);
+	const auto pVTable = modules::server->FindVirtualTable("CCSPlayerPawn");
+	SH_MANUALHOOK_RECONFIGURE(PlayerPawnKilled, g_GameConfig->GetOffset("CBaseEntity::Event_Killed"), 0, 0);
 	g_iPawnKilledHookId = SH_ADD_MANUALDVPHOOK(PlayerPawnKilled, pVTable, SH_MEMBER(this, &CS2Fixes::Hook_OnPlayerPawnKilled), true);
+
+	const auto pCGamePlayerEquipVTable = modules::server->FindVirtualTable("CGamePlayerEquip");
+	if (!pCGamePlayerEquipVTable)
+	{
+		snprintf(error, maxlen, "Failed to find CGamePlayerEquip vtable\n");
+		return false;
+	}
+	if (g_GameConfig->GetOffset("CBaseEntity::Use") == -1)
+	{
+		snprintf(error, maxlen, "Failed to find CBaseEntity::Use\n");
+		return false;
+	}
+	SH_MANUALHOOK_RECONFIGURE(CGamePlayerEquipUse, g_GameConfig->GetOffset("CBaseEntity::Use"), 0, 0);
+	g_iCGamePlayerEquipUseId = SH_ADD_MANUALDVPHOOK(CGamePlayerEquipUse, pCGamePlayerEquipVTable, SH_MEMBER(this, &CS2Fixes::Hook_CGamePlayerEquipUse), false);
+
 
 	Message( "All hooks started!\n" );
 
@@ -330,6 +348,9 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 	if (g_pEntityListener)
 		delete g_pEntityListener;
+
+	if (g_iCGamePlayerEquipUseId != -1)
+		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
 
 	return true;
 }
@@ -445,6 +466,13 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 			g_ExtendState = EExtendState::EXTEND_ALLOWED;
 		return -1.0f;
 	});
+}
+
+class CGamePlayerEquip;
+void CS2Fixes::Hook_CGamePlayerEquipUse(InputData_t* pInput)
+{
+	CGamePlayerEquipHandler::Use(META_IFACEPTR(CGamePlayerEquip), pInput);
+	RETURN_META(MRES_IGNORED);
 }
 
 void CS2Fixes::Hook_GameServerSteamAPIActivated()
