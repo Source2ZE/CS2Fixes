@@ -59,6 +59,7 @@ public: //hooks
 	void Hook_DispatchConCommand(ConCommandHandle cmd, const CCommandContext& ctx, const CCommand& args);
 	void Hook_CGamePlayerEquipUse(class InputData_t*);
 	void Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
+	void Hook_ApplyGameSettings(KeyValues* pKV);
 
 public:
 	const char *GetAuthor();

@@ -374,8 +374,7 @@ void CMapVoteSystem::FinishVote()
 	// Wait a second and force-change the map
 	new CTimer(1.0, false, [iWinningMap]() {
 		char sChangeMapCmd[128];
-		const char* sNextMapName = g_pMapVoteSystem->GetMapName(iWinningMap);
-		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "ds_workshop_changelevel %s", sNextMapName);
+		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", g_pMapVoteSystem->GetMapWorkshopId(iWinningMap));
 		g_pEngineServer2->ServerCommand(sChangeMapCmd);
 		return -1.0;
 	});
@@ -617,4 +616,25 @@ bool CMapVoteSystem::IsIntermissionAllowed()
 		return false;
 
 	return true;
+}
+
+void CMapVoteSystem::ApplyGameSettings(KeyValues* pKV)
+{
+	if (!g_bVoteManagerEnable || !g_pMapVoteSystem->IsMapListLoaded())
+		return;
+
+	pKV->FindKey("launchoptions")->SetString("mapgroup", "workshop");
+
+	if (pKV->FindKey("launchoptions")->FindKey("maplist"))
+		pKV->FindKey("launchoptions")->FindKey("maplist")->Clear();
+	else
+		pKV->FindKey("launchoptions")->AddKey("maplist");
+
+	for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
+	{
+		KeyValues* pKey = new KeyValues("");
+
+		pKey->SetString("", g_pMapVoteSystem->GetMapName(i));
+		pKV->FindKey("launchoptions")->FindKey("maplist")->AddSubKey(pKey);
+	}
 }
