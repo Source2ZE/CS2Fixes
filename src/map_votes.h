@@ -21,6 +21,7 @@
 #include <playerslot.h>
 #include "utlstring.h"
 #include "utlvector.h"
+#include "KeyValues.h"
 
 
 // Nomination constants, used as return codes for nomination commands
@@ -88,10 +89,12 @@ public:
     int ForceNextMap(const char* sMapSubstring);
     int GetMapListSize() { return m_vecMapList.Count(); };
     const char* GetMapName(int iMapIndex) { return m_vecMapList[iMapIndex].GetName(); };
+    uint64 GetMapWorkshopId(int iMapIndex) { return m_vecMapList[iMapIndex].GetWorkshopId(); };
     void ClearPlayerInfo(int iSlot);
     bool IsVoteOngoing() { return m_bIsVoteOngoing; }
     bool IsIntermissionAllowed();
     bool IsMapListLoaded() { return m_bMapListLoaded; }
+    void ApplyGameSettings(KeyValues* pKV);
 
 private:
     int WinningMapIndex();
