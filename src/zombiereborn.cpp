@@ -793,6 +793,10 @@ float ZR_MoanTimer(CHandle<CCSPlayerPawn> hPawn)
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bDontBroadcast)
 {
+	// This can be null if the victim disconnected right before getting hit AND someone joined in their place immediately, thus replacing the controller
+	if (!pVictimController)
+		return;
+
 	if (pVictimController->m_iTeamNum() == CS_TEAM_CT)
 		pVictimController->SwitchTeam(CS_TEAM_T);
 
@@ -1019,7 +1023,7 @@ bool ZR_Detour_TakeDamageOld(CCSPlayerPawn *pVictimPawn, CTakeDamageInfo *pInfo)
 	}
 
 	if (g_iGroanChance && pVictimPawn->m_iTeamNum() == CS_TEAM_T && (rand() % g_iGroanChance) == 1)
-		pVictimController->GetPawn()->EmitSound("zr.amb.zombie_pain");
+		pVictimPawn->EmitSound("zr.amb.zombie_pain");
 
 	// grenade and molotov knockback
 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
