@@ -253,9 +253,6 @@ public:
 		if (globalName && V_strcasecmp(globalName, "game_ui") == 0)
 			return reinterpret_cast<CGameUI *>(this);
 
-		if (V_strncasecmp(GetName(), "game_ui__", 9) == 0)
-			return reinterpret_cast<CGameUI *>(this);
-
 		return nullptr;
 	}
 };
