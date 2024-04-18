@@ -21,7 +21,10 @@
 #include <playerslot.h>
 #include "utlstring.h"
 #include "utlvector.h"
+#include "utlqueue.h"
 #include "KeyValues.h"
+#include "steam/steam_api_common.h"
+#include "steam/isteamugc.h"
 
 
 // Nomination constants, used as return codes for nomination commands
@@ -97,11 +100,16 @@ public:
     bool IsIntermissionAllowed();
     bool IsMapListLoaded() { return m_bMapListLoaded; }
     CUtlStringList CreateWorkshopMapGroup();
+    void QueueMapDownload(PublishedFileId_t iWorkshopId);
+    void PrintDownloadProgress();
 
 private:
     int WinningMapIndex();
     bool UpdateWinningMap();
     void GetNominatedMapsForVote(CUtlVector<int>& vecChosenNominatedMaps);
+
+    STEAM_GAMESERVER_CALLBACK_MANUAL(CMapVoteSystem, OnMapDownloaded, DownloadItemResult_t, m_CallbackDownloadItemResult);
+    CUtlQueue<PublishedFileId_t> m_DownloadQueue;
 
     CUtlVector<CMapInfo> m_vecMapList;
     CUtlVector<int> m_vecLastPlayedMapIndexes;
