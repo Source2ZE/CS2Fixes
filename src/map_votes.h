@@ -34,6 +34,8 @@ namespace NominationReturnCodes
     static const int MAP_NOT_FOUND = -102;
     static const int INVALID_MAP = -103;
     static const int NOMINATION_DISABLED = -104;
+    static const int NOMINATION_RESET = -105;
+    static const int NOMINATION_RESET_FAILED = -106;
 }
 #endif
 
