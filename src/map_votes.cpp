@@ -585,7 +585,7 @@ bool CMapVoteSystem::LoadMapList()
 		V_snprintf(idBuffer, sizeof(idBuffer), "%llu", iWorkshopId);
 
 		if (g_pMultiAddonManager)
-			g_pMultiAddonManager->DownloadAddon(idBuffer, false, false);
+			g_pMultiAddonManager->DownloadAddon(idBuffer, false, true);
 
 		// We just append the maps to the map list
 		CMapInfo map = CMapInfo(pszName, iWorkshopId, bIsEnabled);
