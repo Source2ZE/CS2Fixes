@@ -93,13 +93,17 @@ CON_COMMAND_CHAT_FLAGS(setnextmap, "[mapname] - Force next map (empty to clear f
 	}
 }
 
+static int __cdecl OrderStringsLexicographically(const char* const* a, const char* const* b)
+{
+	return V_strcasecmp(*a, *b);
+}
+
 CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nomination)", ADMFLAG_NONE)
 {
 	if (!g_bVoteManagerEnable || !player)
 		return;
 
-	bool bIsClearingNomination = args.ArgC() < 2;
-	int iResponse = g_pMapVoteSystem->AddMapNomination(player->GetPlayerSlot(), bIsClearingNomination ? "" : args[1]);
+	int iResponse = g_pMapVoteSystem->AddMapNomination(player->GetPlayerSlot(), args.ArgC() < 2 ? "" : args[1]);
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 
 	if (!pPlayer)
@@ -121,12 +125,28 @@ CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nom
 		case NominationReturnCodes::NOMINATION_DISABLED:
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Nomination is currently disabled.");
 			break;
+		case NominationReturnCodes::NOMINATION_RESET:
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your nomination was reset.");
+			break;
+		case NominationReturnCodes::NOMINATION_RESET_FAILED:
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
+			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all maps is:");
+			CUtlVector<const char*> vecMapNames;
+
+			for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
+				vecMapNames.AddToTail(g_pMapVoteSystem->GetMapName(i));
+
+			vecMapNames.Sort(OrderStringsLexicographically);
+
+			// TODO: print cooldown time here too (after rewrite)
+			FOR_EACH_VEC(vecMapNames, i)
+				ClientPrint(player, HUD_PRINTCONSOLE, "- %s", vecMapNames[i]);
+
+			break;
+		}
 		default:
-			if (bIsClearingNomination)
-			{
-				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your nomination was reset.");
-			}
-			else if (pPlayer->GetNominateTime() + 60.0f > gpGlobals->curtime)
+			if (pPlayer->GetNominateTime() + 60.0f > gpGlobals->curtime)
 			{
 				int iRemainingTime = (int)(pPlayer->GetNominateTime() + 60.0f - gpGlobals->curtime);
 				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can nominate again.", iRemainingTime);
@@ -140,28 +160,6 @@ CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nom
 				ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX " \x06%s \x01was nominated by %s. It now has %d nominations.", sMapName, sPlayerName, iNumNominations);
 				pPlayer->SetNominateTime(gpGlobals->curtime);
 			}
-	}
-}
-
-static int __cdecl OrderStringsLexicographically(const char* const* a, const char* const* b)
-{
-	return V_strcasecmp(*a, *b);
-}
-
-CON_COMMAND_CHAT(maplist, "- List the maps in the server")
-{
-	if (!g_bVoteManagerEnable)
-		return;
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
-	ClientPrint(player, HUD_PRINTCONSOLE, "The list of all maps is:");
-	CUtlVector<const char*> vecMapNames;
-	for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++) {
-		vecMapNames.AddToTail(g_pMapVoteSystem->GetMapName(i));
-	}
-	vecMapNames.Sort(OrderStringsLexicographically);
-	FOR_EACH_VEC(vecMapNames, i) {
-		ClientPrint(player, HUD_PRINTCONSOLE, "- %s", vecMapNames[i]);
 	}
 }
 
@@ -180,6 +178,7 @@ CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 	}
 }
 
+// TODO: also merge this into nominate after cooldown system is rewritten
 CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 {
 	if (!g_bVoteManagerEnable)
@@ -506,10 +505,18 @@ int CMapVoteSystem::AddMapNomination(CPlayerSlot iPlayerSlot, const char* sMapSu
 	if (!pController) return NominationReturnCodes::INVALID_INPUT;
 	int iSlot = pController->GetPlayerSlot();
 
-	// If we are resetting the nomination, return -1
-	if (sMapSubstring[0] == '\0') {
-		m_arrPlayerNominations[iSlot] = -1;
-		return -1;
+	if (sMapSubstring[0] == '\0')
+	{
+		// If we are resetting the nomination, return NOMINATION_RESET
+		if (m_arrPlayerNominations[iSlot] != -1)
+		{
+			m_arrPlayerNominations[iSlot] = -1;
+			return NominationReturnCodes::NOMINATION_RESET;
+		}
+		else
+		{
+			return NominationReturnCodes::NOMINATION_RESET_FAILED;
+		}
 	}
 
 	// We are not reseting the nomination: is the map found? is it valid?
