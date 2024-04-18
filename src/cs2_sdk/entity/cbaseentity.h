@@ -243,18 +243,23 @@ public:
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }
 
+
+	/* Begin Custom Entities Cast */
+
 	[[nodiscard]] CGameUI *AsGameUI()
 	{
 		if (V_strcasecmp(GetClassname(), "logic_case") != 0)
 			return nullptr;
 
-		const auto globalName = m_iGlobalname().String();
+		const auto tag = m_iszPrivateVScripts.IsValid() ? m_iszPrivateVScripts.String() : nullptr;
 
-		if (globalName && V_strcasecmp(globalName, "game_ui") == 0)
+		if (tag && V_strcasecmp(tag, "game_ui") == 0)
 			return reinterpret_cast<CGameUI *>(this);
 
 		return nullptr;
 	}
+
+	/* End Custom Entities Cast */
 };
 
 class SpawnPoint : public Z_CBaseEntity

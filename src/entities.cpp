@@ -21,9 +21,12 @@
 
 #include "ctimer.h"
 #include "entity.h"
+#include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cgameplayerequip.h"
 #include "entity/clogiccase.h"
+
+// #define ENTITY_HANDLER_ASSERTION
 
 class InputData_t
 {
@@ -243,18 +246,6 @@ inline uint64 GameUIThink(CGameUI* pEntity, CCSPlayerPawn* pPlayer, uint32 lastB
         pEntity->AcceptInput("InValue", (lastButtons & IN_DUCK) != 0 ? "UnpressedDuck" : "PressedDuck", pPlayer, pEntity);
     }
 
-    // Inspect
-    if ((nButtonsChanged & IN_LOOK_AT_WEAPON) != 0)
-    {
-        pEntity->AcceptInput("InValue", (lastButtons & IN_LOOK_AT_WEAPON) != 0 ? "UnpressedInspect" : "PressedInspect", pPlayer, pEntity);
-    }
-
-    // Score
-    if ((nButtonsChanged & IN_SCORE) != 0)
-    {
-        pEntity->AcceptInput("InValue", (lastButtons & IN_SCORE) != 0 ? "UnpressedScore" : "PressedScore", pPlayer, pEntity);
-    }
-
     return buttons;
 }
 
@@ -268,6 +259,9 @@ void RunThink(int tick)
         if (!entity)
         {
             it = s_repository.erase(it);
+#ifdef ENTITY_HANDLER_ASSERTION
+            Message("Remove Entity %d due to invalid.\n", CBaseHandle(it->first).GetEntryIndex());
+#endif
         }
         else
         {
@@ -287,12 +281,18 @@ void RunThink(int tick)
         if (!player || !player->IsPawn())
         {
             DelayInput(entity, "Deactivate");
+#ifdef ENTITY_HANDLER_ASSERTION
+            Message("Deactivate Entity %d due to invalid player.\n", entity->entindex());
+#endif
             continue;
         }
 
         if (!player->IsAlive())
         {
             DelayInput(entity, player, "Deactivate");
+#ifdef ENTITY_HANDLER_ASSERTION
+            Message("Deactivate Entity %d due to player dead.\n", entity->entindex());
+#endif
             continue;
         }
 
@@ -320,10 +320,15 @@ bool OnActivate(CGameUI* pEntity, Z_CBaseEntity* pActivator)
         pPlayer->m_fFlags(pPlayer->m_fFlags() | FL_ATCONTROLS);
 
     const CBaseHandle handle = pEntity->GetHandle();
-
-    s_repository[static_cast<uint>(handle.ToInt())] = CGameUIState(pPlayer, GetButtons(pMovement) & ~IN_USE);
+    const auto        key    = static_cast<uint>(handle.ToInt());
 
     DelayInput(pEntity, pPlayer, "InValue", "PlayerOn");
+
+    s_repository[key] = CGameUIState(pPlayer, GetButtons(pMovement) & ~IN_USE);
+
+#ifdef ENTITY_HANDLER_ASSERTION
+    Message("Activate Entity %d<%u> -> %s\n", pEntity->entindex(), key, pPlayer->GetController()->GetPlayerName());
+#endif
 
     return true;
 }
@@ -335,7 +340,12 @@ bool OnDeactivate(CGameUI* pEntity, Z_CBaseEntity* pActivator)
     const auto        it     = s_repository.find(key);
 
     if (it == s_repository.end())
+    {
+#ifdef ENTITY_HANDLER_ASSERTION
+        Message("Deactivate Entity %d -> but does not exists <%u>\n", pEntity->entindex(), key);
+#endif
         return false;
+    }
 
     if (const auto pPlayer = it->second.GetPlayer())
     {
@@ -343,6 +353,16 @@ bool OnDeactivate(CGameUI* pEntity, Z_CBaseEntity* pActivator)
             pPlayer->m_fFlags(pPlayer->m_fFlags() & ~FL_ATCONTROLS);
 
         DelayInput(pEntity, pPlayer, "InValue", "PlayerOff");
+
+#ifdef ENTITY_HANDLER_ASSERTION
+        Message("Deactivate Entity %d -> %s\n", pEntity->entindex(), pPlayer->GetController()->GetPlayerName());
+#endif
+    }
+    else
+    {
+#ifdef ENTITY_HANDLER_ASSERTION
+        Message("Deactivate Entity %d -> nullptr\n", pEntity->entindex());
+#endif
     }
 
     s_repository.erase(it);
@@ -354,7 +374,7 @@ bool OnDeactivate(CGameUI* pEntity, Z_CBaseEntity* pActivator)
 
 void EntityHandler_OnGameFramePre(bool simulate, int tick)
 {
-    if (simulate)
+    if (!simulate)
         return;
 
     CGameUIHandler::RunThink(tick);
@@ -362,6 +382,6 @@ void EntityHandler_OnGameFramePre(bool simulate, int tick)
 
 void EntityHandler_OnGameFramePost(bool simulate, int tick)
 {
-    if (simulate)
+    if (!simulate)
         return;
 }
