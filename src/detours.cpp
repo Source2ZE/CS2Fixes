@@ -369,17 +369,17 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 
 	// Handle KeyValue(s)
-    if (!V_strnicmp(pInputName->String(), "KeyValue", 8))
-    {
-        if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
-        {
-            // always const char*, even if it's FIELD_STRING (that is bug string from lua 'EntFire')
-            return CustomIO_HandleInput(pThis->m_pInstance, value->m_pszString, pActivator, pCaller);
-        }
-        Message("Invalid value type for input %s\n", pInputName->String());
-        return false;
-    }
-	else if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
+	if (!V_strnicmp(pInputName->String(), "KeyValue", 8))
+	{
+		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+		{
+			// always const char*, even if it's FIELD_STRING (that is bug string from lua 'EntFire')
+			return CustomIO_HandleInput(pThis->m_pInstance, value->m_pszString, pActivator, pCaller);
+		}
+		Message("Invalid value type for input %s\n", pInputName->String());
+		return false;
+	}
+	if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
 	{
 		float flDuration = 0.f;
 
@@ -388,13 +388,20 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		else
 			flDuration = value->m_float;
 
-		CCSPlayerPawn *pPawn = (CCSPlayerPawn*)pThis->m_pInstance;
+		CCSPlayerPawn *pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
 		if (pPawn->IsPawn() && IgnitePawn(pPawn, flDuration, pPawn, pPawn))
 			return true;
 	}
+	else if (const auto pGameUI = reinterpret_cast<Z_CBaseEntity*>(pThis->m_pInstance)->AsGameUI())
+	{
+		if (!V_strcasecmp(pInputName->String(), "Activate"))
+			return CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+		if (!V_strcasecmp(pInputName->String(), "Deactivate"))
+			return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+	}
 
-	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+    return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
 
 bool g_bBlockNavLookup = false;
