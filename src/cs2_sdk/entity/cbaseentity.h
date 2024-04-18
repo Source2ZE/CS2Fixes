@@ -243,7 +243,6 @@ public:
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }
 
-
 	/* Begin Custom Entities Cast */
 
 	[[nodiscard]] CGameUI *AsGameUI()
