@@ -618,23 +618,12 @@ bool CMapVoteSystem::IsIntermissionAllowed()
 	return true;
 }
 
-void CMapVoteSystem::ApplyGameSettings(KeyValues* pKV)
+CUtlStringList CMapVoteSystem::CreateWorkshopMapGroup()
 {
-	if (!g_bVoteManagerEnable || !g_pMapVoteSystem->IsMapListLoaded())
-		return;
-
-	pKV->FindKey("launchoptions")->SetString("mapgroup", "workshop");
-
-	if (pKV->FindKey("launchoptions")->FindKey("maplist"))
-		pKV->FindKey("launchoptions")->FindKey("maplist")->Clear();
-	else
-		pKV->FindKey("launchoptions")->AddKey("maplist");
+	CUtlStringList mapList;
 
 	for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
-	{
-		KeyValues* pKey = new KeyValues("");
+		mapList.CopyAndAddToTail(g_pMapVoteSystem->GetMapName(i));
 
-		pKey->SetString("", g_pMapVoteSystem->GetMapName(i));
-		pKV->FindKey("launchoptions")->FindKey("maplist")->AddSubKey(pKey);
-	}
+	return mapList;
 }

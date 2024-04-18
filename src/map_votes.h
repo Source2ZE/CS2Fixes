@@ -94,7 +94,7 @@ public:
     bool IsVoteOngoing() { return m_bIsVoteOngoing; }
     bool IsIntermissionAllowed();
     bool IsMapListLoaded() { return m_bMapListLoaded; }
-    void ApplyGameSettings(KeyValues* pKV);
+    CUtlStringList CreateWorkshopMapGroup();
 
 private:
     int WinningMapIndex();

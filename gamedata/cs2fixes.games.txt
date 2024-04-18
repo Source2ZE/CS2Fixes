@@ -449,6 +449,12 @@
 				"windows"		"1"
 				"linux"			"2"
 			}
+			// Right above "mapgroup workshop;" string there is a virtual call to this on g_pGameTypes using "workshop" string
+			"IGameTypes_CreateWorkshopMapGroup"
+			{
+				"windows"		"37"
+				"linux"			"38"
+			}
 		}
 		"Patches"
 		{
