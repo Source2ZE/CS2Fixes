@@ -81,8 +81,10 @@ GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
 // Called every frame before entities think
 GS_EVENT_MEMBER(CGameSystem, ServerPreEntityThink)
 {
+	extern CGlobalVars* gpGlobals;
 	// This could've gone into CS2Fixes::Hook_GameFrame but I've kept it here as an example
 	g_playerManager->FlashLightThink();
+	EntityHandler_OnGameFramePre(gpGlobals->m_bInSimulation, gpGlobals->tickcount);
 }
 
 // Called every frame after entities think
