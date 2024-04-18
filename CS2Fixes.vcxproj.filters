@@ -298,5 +298,8 @@
     <ClInclude Include="src\cs2_sdk\entity\cgameplayerequip.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\clogiccase.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

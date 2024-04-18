@@ -31,6 +31,8 @@
 
 extern CGameConfig *g_GameConfig;
 
+class CGameUI;
+
 class CGameSceneNode
 {
 public:
@@ -134,6 +136,7 @@ public:
 	SCHEMA_FIELD(float, m_flSpeed)
 	SCHEMA_FIELD(CUtlString, m_sUniqueHammerID);
 	SCHEMA_FIELD(CUtlSymbolLarge, m_target);
+	SCHEMA_FIELD(CUtlSymbolLarge, m_iGlobalname);
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 
@@ -239,6 +242,22 @@ public:
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }
+
+	[[nodiscard]] CGameUI *AsGameUI()
+	{
+		if (V_strcasecmp(GetClassname(), "logic_case") != 0)
+			return nullptr;
+
+		const auto globalName = m_iGlobalname().String();
+
+		if (globalName && V_strcasecmp(globalName, "game_ui") == 0)
+			return reinterpret_cast<CGameUI *>(this);
+
+		if (V_strncasecmp(GetName(), "game_ui__", 9) == 0)
+			return reinterpret_cast<CGameUI *>(this);
+
+		return nullptr;
+	}
 };
 
 class SpawnPoint : public Z_CBaseEntity

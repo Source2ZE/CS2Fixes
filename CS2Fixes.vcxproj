@@ -223,6 +223,7 @@
     <ClInclude Include="src\cs2_sdk\entity\cenventitymaker.h" />
     <ClInclude Include="src\cs2_sdk\entity\cgameplayerequip.h" />
     <ClInclude Include="src\cs2_sdk\entity\cgamerules.h" />
+    <ClInclude Include="src\cs2_sdk\entity\clogiccase.h" />
     <ClInclude Include="src\cs2_sdk\entity\cparticlesystem.h" />
     <ClInclude Include="src\cs2_sdk\entity\cphysthruster.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h" />
