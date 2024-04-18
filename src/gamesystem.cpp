@@ -23,9 +23,11 @@
 #include "gamesystem.h"
 #include "zombiereborn.h"
 #include "adminsystem.h"
+#include "entities.h"
 
 #include "tier0/memdbgon.h"
 
+extern CGlobalVars* gpGlobals;
 extern CGameConfig *g_GameConfig;
 
 CBaseGameSystemFactory **CBaseGameSystemFactory::sm_pFirst = nullptr;
@@ -81,7 +83,6 @@ GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
 // Called every frame before entities think
 GS_EVENT_MEMBER(CGameSystem, ServerPreEntityThink)
 {
-	extern CGlobalVars* gpGlobals;
 	// This could've gone into CS2Fixes::Hook_GameFrame but I've kept it here as an example
 	g_playerManager->FlashLightThink();
 	EntityHandler_OnGameFramePre(gpGlobals->m_bInSimulation, gpGlobals->tickcount);
