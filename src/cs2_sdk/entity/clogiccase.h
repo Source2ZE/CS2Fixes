@@ -19,24 +19,24 @@
 
 #pragma once
 
-class InputData_t;
-class CGamePlayerEquip;
-class Z_CBaseEntity;
-class CGameUI;
+#include "../schema.h"
+#include "cbaseentity.h"
 
-namespace CGamePlayerEquipHandler
+class CLogicCase : public Z_CBaseEntity
 {
-void Use(CGamePlayerEquip* pEntity, InputData_t* pInput);
-void TriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput);
-void TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput);
-} // namespace CGamePlayerEquipHandler
+public:
+    DECLARE_SCHEMA_CLASS(CLogicCase)
+};
 
-namespace CGameUIHandler
+class CGameUI : public CLogicCase
 {
-bool OnActivate(CGameUI* pEntity, Z_CBaseEntity* pActivator);
-bool OnDeactivate(CGameUI* pEntity, Z_CBaseEntity* pActivator);
-void RunThink(int tick);
-} // namespace CGameUIHandler
+public:
+    static constexpr int SF_GAMEUI_FREEZE_PLAYER   = 32;
+    static constexpr int SF_GAMEUI_JUMP_DEACTIVATE = 256;
 
-void EntityHandler_OnGameFramePre(bool simulate, int tick);
-void EntityHandler_OnGameFramePost(bool simulate, int tick);
+    // TODO Hide Weapon requires more RE
+    static constexpr int SF_GAMEUI_HIDE_WEAPON = 64;
+
+    // TODO subtick problem
+    static constexpr int SF_GAMEUI_USE_DEACTIVATE = 128;
+};

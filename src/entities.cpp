@@ -19,9 +19,11 @@
 
 #include "entities.h"
 
+#include "ctimer.h"
 #include "entity.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cgameplayerequip.h"
+#include "entity/clogiccase.h"
 
 class InputData_t
 {
@@ -32,9 +34,9 @@ public:
     int            nOutputID;
 };
 
-bool StripPlayer(CCSPlayerPawn* pPawn)
+inline bool StripPlayer(CCSPlayerPawn* pPawn)
 {
-    const auto pItemServices   = pPawn->m_pItemServices();
+    const auto pItemServices = pPawn->m_pItemServices();
 
     if (!pItemServices)
         return false;
@@ -42,6 +44,34 @@ bool StripPlayer(CCSPlayerPawn* pPawn)
     pItemServices->StripPlayerWeapons(true);
 
     return true;
+}
+
+// Must be called in GameFramePre
+inline void DelayInput(Z_CBaseEntity* pCaller, const char* input, const char* param = "")
+{
+    const auto eh = pCaller->GetHandle();
+
+    new CTimer(0.f, false, [eh, input, param]() {
+        if (const auto entity = reinterpret_cast<Z_CBaseEntity*>(eh.Get()))
+            entity->AcceptInput(input, param, nullptr, entity);
+
+        return -1.f;
+    });
+}
+
+// Must be called in GameFramePre
+inline void DelayInput(Z_CBaseEntity* pCaller, Z_CBaseEntity* pActivator, const char* input, const char* param = "")
+{
+    const auto eh = pCaller->GetHandle();
+    const auto ph = pActivator->GetHandle();
+
+    new CTimer(0.f, false, [eh, ph, input, param]() {
+        const auto player = reinterpret_cast<Z_CBaseEntity*>(ph.Get());
+        if (const auto entity = reinterpret_cast<Z_CBaseEntity*>(eh.Get()))
+            entity->AcceptInput(input, param, player, entity);
+
+        return -1.f;
+    });
 }
 
 namespace CGamePlayerEquipHandler
@@ -117,3 +147,221 @@ void TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
     pItemServices->GiveNamedItem(pszWeapon);
 }
 } // namespace CGamePlayerEquipHandler
+
+namespace CGameUIHandler
+{
+constexpr uint64 BAD_BUTTONS = ~0;
+
+struct CGameUIState
+{
+    CHandle<CCSPlayerPawn> m_pPlayer;
+    uint64                 m_nButtonState;
+
+    CGameUIState() :
+        m_pPlayer(CBaseHandle()), m_nButtonState(BAD_BUTTONS) {}
+    CGameUIState(const CGameUIState& other) = delete;
+
+    CGameUIState(CCSPlayerPawn* pawn, uint64 buttons) :
+        m_pPlayer(pawn), m_nButtonState(buttons) {}
+
+    [[nodiscard]] CCSPlayerPawn* GetPlayer() const { return m_pPlayer.Get(); }
+
+    void UpdateButtons(uint64 buttons) { m_nButtonState = buttons; }
+};
+
+static std::unordered_map<uint32, CGameUIState> s_repository;
+
+inline uint64 GetButtons(CPlayer_MovementServices* pMovement)
+{
+    const auto buttonStates = pMovement->m_nButtons().m_pButtonStates();
+    const auto buttons      = buttonStates[0];
+    return buttons;
+}
+
+inline uint64 GameUIThink(CGameUI* pEntity, CCSPlayerPawn* pPlayer, uint32 lastButtons)
+{
+    const auto pMovement = pPlayer->m_pMovementServices();
+    if (!pMovement)
+        return BAD_BUTTONS;
+
+    const auto spawnFlags = pEntity->m_spawnflags();
+    const auto buttons    = GetButtons(pMovement);
+
+    if ((spawnFlags & CGameUI::SF_GAMEUI_JUMP_DEACTIVATE) != 0 && (buttons & IN_JUMP) != 0)
+    {
+        DelayInput(pEntity, pPlayer, "Deactivate");
+        return BAD_BUTTONS;
+    }
+
+    const auto nButtonsChanged = buttons ^ lastButtons;
+
+    // W
+    if ((nButtonsChanged & IN_FORWARD) != 0)
+    {
+        pEntity->AcceptInput("InValue", (lastButtons & IN_FORWARD) != 0 ? "UnpressedForward" : "PressedForward", pPlayer, pEntity);
+    }
+
+    // A
+    if ((nButtonsChanged & IN_MOVELEFT) != 0)
+    {
+        pEntity->AcceptInput("InValue", (lastButtons & IN_MOVELEFT) != 0 ? "UnpressedMoveLeft" : "PressedMoveLeft", pPlayer, pEntity);
+    }
+
+    // S
+    if ((nButtonsChanged & IN_BACK) != 0)
+    {
+        pEntity->AcceptInput("InValue", (lastButtons & IN_BACK) != 0 ? "UnpressedBack" : "PressedBack", pPlayer, pEntity);
+    }
+
+    // D
+    if ((nButtonsChanged & IN_MOVERIGHT) != 0)
+    {
+        pEntity->AcceptInput("InValue", (lastButtons & IN_MOVERIGHT) != 0 ? "UnpressedMoveRight" : "PressedMoveRight", pPlayer, pEntity);
+    }
+
+    // Attack
+    if ((nButtonsChanged & IN_ATTACK) != 0)
+    {
+        pEntity->AcceptInput("InValue", (lastButtons & IN_ATTACK) != 0 ? "UnpressedAttack" : "PressedAttack", pPlayer, pEntity);
+    }
+
+    // Attack2
+    if ((nButtonsChanged & IN_ATTACK2) != 0)
+    {
+        pEntity->AcceptInput("InValue", (lastButtons & IN_ATTACK2) != 0 ? "UnpressedAttack2" : "PressedAttack2", pPlayer, pEntity);
+    }
+
+    // Speed
+    if ((nButtonsChanged & IN_SPEED) != 0)
+    {
+        pEntity->AcceptInput("InValue", (lastButtons & IN_SPEED) != 0 ? "UnpressedSpeed" : "PressedSpeed", pPlayer, pEntity);
+    }
+
+    // Duck
+    if ((nButtonsChanged & IN_DUCK) != 0)
+    {
+        pEntity->AcceptInput("InValue", (lastButtons & IN_DUCK) != 0 ? "UnpressedDuck" : "PressedDuck", pPlayer, pEntity);
+    }
+
+    // Inspect
+    if ((nButtonsChanged & IN_LOOK_AT_WEAPON) != 0)
+    {
+        pEntity->AcceptInput("InValue", (lastButtons & IN_LOOK_AT_WEAPON) != 0 ? "UnpressedInspect" : "PressedInspect", pPlayer, pEntity);
+    }
+
+    // Score
+    if ((nButtonsChanged & IN_SCORE) != 0)
+    {
+        pEntity->AcceptInput("InValue", (lastButtons & IN_SCORE) != 0 ? "UnpressedScore" : "PressedScore", pPlayer, pEntity);
+    }
+
+    return buttons;
+}
+
+// [Kxnrl]: Must be called on game frame pre, and timer done in post!
+void RunThink(int tick)
+{
+    // validate
+    for (auto it = s_repository.begin(); it != s_repository.end();)
+    {
+        const auto entity = CHandle<CGameUI>(it->first).Get();
+        if (!entity)
+        {
+            it = s_repository.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    // think every 4 tick
+    if ((tick & 4) != 0)
+        return;
+
+    for (auto& [key, state] : s_repository)
+    {
+        const auto entity = CHandle<CGameUI>(key).Get();
+        const auto player = state.GetPlayer();
+
+        if (!player || !player->IsPawn())
+        {
+            DelayInput(entity, "Deactivate");
+            continue;
+        }
+
+        if (!player->IsAlive())
+        {
+            DelayInput(entity, player, "Deactivate");
+            continue;
+        }
+
+        const auto newButtons = GameUIThink(entity, player, state.m_nButtonState);
+
+        if (newButtons != BAD_BUTTONS)
+        {
+            state.UpdateButtons(newButtons);
+        }
+    }
+}
+
+bool OnActivate(CGameUI* pEntity, Z_CBaseEntity* pActivator)
+{
+    if (!pActivator || !pActivator->IsPawn())
+        return false;
+
+    const auto pPlayer = reinterpret_cast<CCSPlayerPawn*>(pActivator);
+
+    const auto pMovement = pPlayer->m_pMovementServices();
+    if (!pMovement)
+        return false;
+
+    if ((pEntity->m_spawnflags() & CGameUI::SF_GAMEUI_FREEZE_PLAYER) != 0)
+        pPlayer->m_fFlags(pPlayer->m_fFlags() | FL_ATCONTROLS);
+
+    const CBaseHandle handle = pEntity->GetHandle();
+
+    s_repository[static_cast<uint>(handle.ToInt())] = CGameUIState(pPlayer, GetButtons(pMovement) & ~IN_USE);
+
+    DelayInput(pEntity, pPlayer, "InValue", "PlayerOn");
+
+    return true;
+}
+
+bool OnDeactivate(CGameUI* pEntity, Z_CBaseEntity* pActivator)
+{
+    const CBaseHandle handle = CHandle(pEntity);
+    const auto        key    = static_cast<uint>(handle.ToInt());
+    const auto        it     = s_repository.find(key);
+
+    if (it == s_repository.end())
+        return false;
+
+    if (const auto pPlayer = it->second.GetPlayer())
+    {
+        if ((pEntity->m_spawnflags() & CGameUI::SF_GAMEUI_FREEZE_PLAYER) != 0)
+            pPlayer->m_fFlags(pPlayer->m_fFlags() & ~FL_ATCONTROLS);
+
+        DelayInput(pEntity, pPlayer, "InValue", "PlayerOff");
+    }
+
+    s_repository.erase(it);
+
+    return true;
+}
+
+} // namespace CGameUIHandler
+
+void EntityHandler_OnGameFramePre(bool simulate, int tick)
+{
+    if (simulate)
+        return;
+
+    CGameUIHandler::RunThink(tick);
+}
+
+void EntityHandler_OnGameFramePost(bool simulate, int tick)
+{
+    if (simulate)
+        return;
+}

@@ -393,6 +393,13 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if (pPawn->IsPawn() && IgnitePawn(pPawn, flDuration, pPawn, pPawn))
 			return true;
 	}
+    else if (const auto pGameUI = reinterpret_cast<Z_CBaseEntity*>(pThis->m_pInstance)->AsGameUI())
+    {
+        if (!V_strcasecmp(pInputName->String(), "OnActivate"))
+            return CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+        if (!V_strcasecmp(pInputName->String(), "OnDeactivate"))
+            return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+    }
 
 	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
