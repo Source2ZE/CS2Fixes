@@ -11,7 +11,14 @@ for sdk_target in MMSPlugin.sdk_targets:
 
   binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
   
-  version = subprocess.check_output(['git', 'describe', '--tags', '--long']).decode('ascii').strip()
+  try:
+    version = subprocess.check_output(['git', 'describe', '--tags', '--long']).decode('ascii').strip()
+  except subprocess.SubprocessError as e:
+    version = "1.7-dev"
+    print("git describe failed as there are no tags")
+	
+  print(f'Setting version to "{version}"')
+	
   binary.compiler.defines += ['CS2FIXES_VERSION="' + version + '"']
 
   if binary.compiler.behavior == 'gcc':
