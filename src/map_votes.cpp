@@ -31,11 +31,13 @@
 #include "utlvector.h"
 #include "votemanager.h"
 #include "vendor/multiaddonmanager/imultiaddonmanager.h"
+#include "steam/steam_gameserver.h"
 
 extern CGlobalVars *gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
 extern IMultiAddonManager* g_pMultiAddonManager;
+extern CSteamGameServerAPIContext g_steamAPI;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
@@ -556,8 +558,55 @@ static int __cdecl OrderMapsByWorkshopId(const CMapInfo* a, const CMapInfo* b)
 	else return 1;
 }
 
+void CMapVoteSystem::PrintDownloadProgress()
+{
+	if (m_DownloadQueue.Count() == 0)
+		return;
+
+	uint64 iBytesDownloaded = 0;
+	uint64 iTotalBytes = 0;
+
+	if (!g_steamAPI.SteamUGC()->GetItemDownloadInfo(m_DownloadQueue.Head(), &iBytesDownloaded, &iTotalBytes) || !iTotalBytes)
+		return;
+
+	double flMBDownloaded = (double)iBytesDownloaded / 1024 / 1024;
+	double flTotalMB = (double)iTotalBytes / 1024 / 1024;
+
+	double flProgress = (double)iBytesDownloaded / (double)iTotalBytes;
+	flProgress *= 100.f;
+
+	Message("Downloading map %lli: %.2f/%.2f MB (%.2f%%)\n", m_DownloadQueue.Head(), flMBDownloaded, flTotalMB, flProgress);
+}
+
+void CMapVoteSystem::OnMapDownloaded(DownloadItemResult_t *pResult)
+{
+	if (!m_DownloadQueue.Check(pResult->m_nPublishedFileId))
+		return;
+
+	m_DownloadQueue.RemoveAtHead();
+
+	if (m_DownloadQueue.Count() == 0)
+		return;
+
+	g_steamAPI.SteamUGC()->DownloadItem(m_DownloadQueue.Head(), false);
+}
+
+void CMapVoteSystem::QueueMapDownload(PublishedFileId_t iWorkshopId)
+{
+	if (m_DownloadQueue.Check(iWorkshopId))
+		return;
+
+	m_DownloadQueue.Insert(iWorkshopId);
+
+	if (m_DownloadQueue.Head() == iWorkshopId)
+		g_steamAPI.SteamUGC()->DownloadItem(iWorkshopId, false);
+}
+
 bool CMapVoteSystem::LoadMapList()
 {
+	// This is called when the Steam API is init'd, now is the time to register this
+	m_CallbackDownloadItemResult.Register(this, &CMapVoteSystem::OnMapDownloaded);
+
 	m_vecMapList.Purge();
 	KeyValues* pKV = new KeyValues("maplist");
 	KeyValues::AutoDelete autoDelete(pKV);
@@ -567,9 +616,6 @@ bool CMapVoteSystem::LoadMapList()
 		Warning("Failed to load %s\n", pszPath);
 		return false;
 	}
-
-	if (!g_pMultiAddonManager)
-		Panic("MultiAddonManager not installed, map system cannot pre-download maps\n");
 
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey()) {
 		const char *pszName = pKey->GetName();
@@ -581,11 +627,7 @@ bool CMapVoteSystem::LoadMapList()
 			return false;
 		}
 
-		char idBuffer[32];
-		V_snprintf(idBuffer, sizeof(idBuffer), "%llu", iWorkshopId);
-
-		if (g_pMultiAddonManager)
-			g_pMultiAddonManager->DownloadAddon(idBuffer, false, true);
+		QueueMapDownload(iWorkshopId);
 
 		// We just append the maps to the map list
 		CMapInfo map = CMapInfo(pszName, iWorkshopId, bIsEnabled);
@@ -594,6 +636,16 @@ bool CMapVoteSystem::LoadMapList()
 		ConMsg(" - Enabled: %s\n", map.IsEnabled()? "true" : "false");
 		m_vecMapList.AddToTail(map);
 	}
+
+	new CTimer(0.f, true, [this]()
+	{
+		if (!this || m_DownloadQueue.Count() == 0)
+			return -1.f;
+
+		PrintDownloadProgress();
+
+		return 1.f;
+	});
 
 	// Sort the map list by the workshop id
 	m_vecMapList.Sort(OrderMapsByWorkshopId);
