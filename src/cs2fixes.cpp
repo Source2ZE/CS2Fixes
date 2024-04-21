@@ -55,7 +55,6 @@
 #include "cs_gameevents.pb.h"
 #include "gameevents.pb.h"
 #include "leader.h"
-#include "vendor/multiaddonmanager/imultiaddonmanager.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -112,8 +111,6 @@ SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, 
 SH_DECL_MANUALHOOK1_void(CGamePlayerEquipUse, 0, 0, 0, InputData_t*);
 SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUtlStringList&);
 
-int g_iCreateWorkshopMapGroup_Hook;
-
 CS2Fixes g_CS2Fixes;
 
 IGameEventSystem *g_gameEventSystem = nullptr;
@@ -129,8 +126,8 @@ ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
 IGameTypes* g_pGameTypes = nullptr;
-IMultiAddonManager *g_pMultiAddonManager = nullptr;
 int g_iCGamePlayerEquipUseId = -1;
+int g_iCreateWorkshopMapGroupId = -1;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -196,7 +193,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	SH_ADD_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
 	SH_ADD_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_ADD_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
-	g_iCreateWorkshopMapGroup_Hook = SH_ADD_MANUALVPHOOK(CreateWorkshopMapGroup, g_pGameTypes, SH_MEMBER(this, &CS2Fixes::Hook_CreateWorkshopMapGroup), false);
+	g_iCreateWorkshopMapGroupId = SH_ADD_MANUALVPHOOK(CreateWorkshopMapGroup, g_pGameTypes, SH_MEMBER(this, &CS2Fixes::Hook_CreateWorkshopMapGroup), false);
 
 	META_CONPRINTF( "All hooks started!\n" );
 
@@ -315,7 +312,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
 	SH_REMOVE_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_REMOVE_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
-	SH_REMOVE_HOOK_ID(g_iCreateWorkshopMapGroup_Hook);
+	SH_REMOVE_HOOK_ID(g_iCreateWorkshopMapGroupId);
 
 	ConVar_Unregister();
 
@@ -484,7 +481,7 @@ void CS2Fixes::Hook_GameServerSteamAPIActivated()
 	g_steamAPI.Init();
 	g_http = g_steamAPI.SteamHTTP();
 
-	if (!g_pMapVoteSystem->IsMapListLoaded())
+	if (g_bVoteManagerEnable && !g_pMapVoteSystem->IsMapListLoaded())
 		g_pMapVoteSystem->LoadMapList();
 
 	RETURN_META(MRES_IGNORED);
@@ -557,14 +554,6 @@ void CS2Fixes::AllPluginsLoaded()
 	 */
 
 	Message( "AllPluginsLoaded\n" );
-
-	int interfaceReturn;
-	IMultiAddonManager* pInterface = (IMultiAddonManager*)g_SMAPI->MetaFactory(MULTIADDONMANAGER_INTERFACE, &interfaceReturn, nullptr);
-
-	if (interfaceReturn == META_IFACE_OK)
-		g_pMultiAddonManager = pInterface;
-	else
-		Panic("Failed to find " MULTIADDONMANAGER_INTERFACE " interface\n");
 }
 
 CUtlVector<CServerSideClient *> *GetClientList()

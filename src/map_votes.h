@@ -121,6 +121,7 @@ private:
     int m_arrPlayerVotes[MAXPLAYERS];
     bool m_bIsVoteOngoing = false;
     bool m_bMapListLoaded = false;
+    bool m_bIntermissionStarted = false;
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;
