@@ -69,7 +69,6 @@ DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
-DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
 DECLARE_DETOUR(CNetworkStringTable_AddString, Detour_AddString);
 DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
@@ -417,18 +416,6 @@ void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsi
 		return nullptr;
 
 	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7, unk8);
-}
-
-bool g_bFixLagCompCrash = false;
-
-FAKE_BOOL_CVAR(cs2f_fix_lag_comp_crash, "Whether to fix lag compensation crash with env_entity_maker", g_bFixLagCompCrash, false, false)
-
-void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEntity, bool a3)
-{
-	if (g_bFixLagCompCrash && strcmp(pEntity->GetClassname(), "env_entity_maker") == 0)
-		return;
-
-	return FixLagCompEntityRelationship(a1, pEntity, a3);
 }
 
 bool g_bBlockEntityStrings = false;
