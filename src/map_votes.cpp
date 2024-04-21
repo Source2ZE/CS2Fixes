@@ -30,13 +30,11 @@
 #include "utlstring.h"
 #include "utlvector.h"
 #include "votemanager.h"
-#include "vendor/multiaddonmanager/imultiaddonmanager.h"
 #include "steam/steam_gameserver.h"
 
 extern CGlobalVars *gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
-extern IMultiAddonManager* g_pMultiAddonManager;
 extern CSteamGameServerAPIContext g_steamAPI;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
@@ -221,6 +219,7 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 		return;
 
 	m_bIsVoteOngoing = false;
+	m_bIntermissionStarted = false;
 
 	int iLastCooldownIndex = GetMapsInCooldown() - 1;
 	int iInitMapIndex = GetMapIndexFromSubstring(pMapName);
@@ -671,9 +670,10 @@ bool CMapVoteSystem::IsIntermissionAllowed()
 
 	// We need to prevent "ending the map twice" as it messes with ongoing map votes
 	// This seems to be a CS2 bug that occurs when the round ends while already on the map end screen
-	if (m_bIsVoteOngoing)
+	if (m_bIntermissionStarted)
 		return false;
 
+	m_bIntermissionStarted = true;
 	return true;
 }
 
