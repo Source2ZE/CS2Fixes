@@ -667,8 +667,14 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 		bool bInfect = g_ZRRoundState == EZRRoundState::POST_INFECTION;
 
 		// We're infecting this guy with a delay, disable all damage as they have 100 hp until then
-		if (bInfect)
+		// also set team immediately in case the spawn teleport is team filtered
+		if (bInfect) 
+		{
 			pController->GetPawn()->m_bTakesDamage(false);
+			pController->SwitchTeam(CS_TEAM_T);
+		}
+		else
+			pController->SwitchTeam(CS_TEAM_CT);
 
 		CHandle<CCSPlayerController> handle = pController->GetHandle();
 		new CTimer(0.05f, false, [iRoundNum, handle, bInfect]()
