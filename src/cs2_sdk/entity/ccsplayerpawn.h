@@ -35,7 +35,6 @@ enum CSPlayerState
 	NUM_PLAYER_STATES = 0x9,
 };
 
-
 class CCSPlayerPawnBase : public CBasePlayerPawn
 {
 public:
@@ -45,7 +44,7 @@ public:
 	SCHEMA_FIELD(CSPlayerState, m_iPlayerState)
 	SCHEMA_FIELD(CHandle<CCSPlayerController>, m_hOriginalController)
 
-	CCSPlayerController *GetOriginalController() { return m_hOriginalController().Get(); }
+	CCSPlayerController* GetOriginalController() { return m_hOriginalController().Get(); }
 };
 
 class CCSPlayerPawn : public CCSPlayerPawnBase
@@ -54,4 +53,10 @@ public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerPawn);
 
 	SCHEMA_FIELD(CCSPlayer_ActionTrackingServices*, m_pActionTrackingServices)
+};
+
+class CCSObserverPawn : public CCSPlayerPawnBase
+{
+public:
+    DECLARE_SCHEMA_CLASS(CCSObserverPawn);
 };
