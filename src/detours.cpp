@@ -42,6 +42,7 @@
 #include "gameconfig.h"
 #include "zombiereborn.h"
 #include "customio.h"
+#include "entities.h"
 #include "serversideclient.h"
 #include "networksystem/inetworkserializer.h"
 
@@ -70,6 +71,8 @@ DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship
 DECLARE_DETOUR(CNetworkStringTable_AddString, Detour_AddString);
 DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
+DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers);
+DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -366,17 +369,17 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 
 	// Handle KeyValue(s)
-    if (!V_strnicmp(pInputName->String(), "KeyValue", 8))
-    {
-        if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
-        {
-            // always const char*, even if it's FIELD_STRING (that is bug string from lua 'EntFire')
-            return CustomIO_HandleInput(pThis->m_pInstance, value->m_pszString, pActivator, pCaller);
-        }
-        Message("Invalid value type for input %s\n", pInputName->String());
-        return false;
-    }
-	else if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
+	if (!V_strnicmp(pInputName->String(), "KeyValue", 8))
+	{
+		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+		{
+			// always const char*, even if it's FIELD_STRING (that is bug string from lua 'EntFire')
+			return CustomIO_HandleInput(pThis->m_pInstance, value->m_pszString, pActivator, pCaller);
+		}
+		Message("Invalid value type for input %s\n", pInputName->String());
+		return false;
+	}
+	if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
 	{
 		float flDuration = 0.f;
 
@@ -385,13 +388,20 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		else
 			flDuration = value->m_float;
 
-		CCSPlayerPawn *pPawn = (CCSPlayerPawn*)pThis->m_pInstance;
+		CCSPlayerPawn *pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
 		if (pPawn->IsPawn() && IgnitePawn(pPawn, flDuration, pPawn, pPawn))
 			return true;
 	}
+	else if (const auto pGameUI = reinterpret_cast<Z_CBaseEntity*>(pThis->m_pInstance)->AsGameUI())
+	{
+		if (!V_strcasecmp(pInputName->String(), "Activate"))
+			return CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+		if (!V_strcasecmp(pInputName->String(), "Deactivate"))
+			return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+	}
 
-	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+    return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
 
 bool g_bBlockNavLookup = false;
@@ -494,6 +504,16 @@ void* FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pPawn, CUserCmd *cmds, in
 	}
 
 	return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
+}
+
+void FASTCALL Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
+{
+    CGamePlayerEquipHandler::TriggerForAllPlayers(pEntity, pInput);
+    CGamePlayerEquip_InputTriggerForAllPlayers(pEntity, pInput);
+}
+void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
+{
+    CGamePlayerEquipHandler::TriggerForActivatedPlayer(pEntity, pInput);
 }
 
 bool InitDetours(CGameConfig *gameConfig)

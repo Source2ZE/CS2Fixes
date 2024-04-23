@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023 Source2ZE
+ * Copyright (C) 2023-2024 Source2ZE
  * =============================================================================
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 
-extern CGlobalVars *gpGlobals;
+extern CGlobalVars* gpGlobals;
 
 struct AddOutputKey_t
 {
@@ -140,8 +140,8 @@ static void AddOutputCustom_MoveType(Z_CBaseEntity*                  pInstance,
                                      const std::vector<std::string>& vecArgs)
 {
     static Vector stopVelocity(0, 0, 0);
-    const auto value = clamp(Q_atoi(vecArgs[1].c_str()), MOVETYPE_NONE, MOVETYPE_LAST);
-    const auto type = static_cast<MoveType_t>(value);
+    const auto    value = clamp(Q_atoi(vecArgs[1].c_str()), MOVETYPE_NONE, MOVETYPE_LAST);
+    const auto    type  = static_cast<MoveType_t>(value);
 
     pInstance->SetMoveType(type);
 
@@ -185,14 +185,14 @@ static void AddOutputCustom_BaseVelocity(Z_CBaseEntity*                  pInstan
 #endif
 }
 
-static void AddOutputCustom_AbsVelocity(Z_CBaseEntity *pInstance,
-    CEntityInstance *pActivator,
-    CEntityInstance *pCaller,
-    const std::vector<std::string> &vecArgs)
+static void AddOutputCustom_AbsVelocity(Z_CBaseEntity*                  pInstance,
+                                        CEntityInstance*                pActivator,
+                                        CEntityInstance*                pCaller,
+                                        const std::vector<std::string>& vecArgs)
 {
     Vector velocity(clamp(Q_atof(vecArgs[1].c_str()), -4096.f, 4096.f),
-        clamp(Q_atof(vecArgs[2].c_str()), -4096.f, 4096.f),
-        clamp(Q_atof(vecArgs[3].c_str()), -4096.f, 4096.f));
+                    clamp(Q_atof(vecArgs[2].c_str()), -4096.f, 4096.f),
+                    clamp(Q_atof(vecArgs[3].c_str()), -4096.f, 4096.f));
 
     pInstance->Teleport(nullptr, nullptr, &velocity);
 
@@ -201,7 +201,7 @@ static void AddOutputCustom_AbsVelocity(Z_CBaseEntity *pInstance,
 #endif
 }
 
-static void AddOutputCustom_Target(Z_CBaseEntity* pInstance,
+static void AddOutputCustom_Target(Z_CBaseEntity*                  pInstance,
                                    CEntityInstance*                pActivator,
                                    CEntityInstance*                pCaller,
                                    const std::vector<std::string>& vecArgs)
@@ -242,7 +242,7 @@ static void AddOutputCustom_Force(Z_CBaseEntity*                  pInstance,
                                   CEntityInstance*                pCaller,
                                   const std::vector<std::string>& vecArgs)
 {
-    const auto value = Q_atof(vecArgs[1].c_str());
+    const auto value   = Q_atof(vecArgs[1].c_str());
     const auto pEntity = reinterpret_cast<CPhysThruster*>(pInstance);
     if (V_strcasecmp(pEntity->GetClassname(), "phys_thruster") == 0)
     {
@@ -254,24 +254,24 @@ static void AddOutputCustom_Force(Z_CBaseEntity*                  pInstance,
     }
 }
 
-static void AddOutputCustom_Gravity(Z_CBaseEntity *pInstance,
-    CEntityInstance *pActivator,
-    CEntityInstance *pCaller,
-    const std::vector<std::string> &vecArgs)
+static void AddOutputCustom_Gravity(Z_CBaseEntity*                  pInstance,
+                                    CEntityInstance*                pActivator,
+                                    CEntityInstance*                pCaller,
+                                    const std::vector<std::string>& vecArgs)
 {
     const auto value = Q_atof(vecArgs[1].c_str());
 
     pInstance->m_flGravityScale = value;
 
 #ifdef _DEBUG
-        Message("Set gravity to %f for %s\n", value, pInstance->GetName());
+    Message("Set gravity to %f for %s\n", value, pInstance->GetName());
 #endif
 }
 
-static void AddOutputCustom_Timescale(Z_CBaseEntity *pInstance,
-    CEntityInstance *pActivator,
-    CEntityInstance *pCaller,
-    const std::vector<std::string> &vecArgs)
+static void AddOutputCustom_Timescale(Z_CBaseEntity*                  pInstance,
+                                      CEntityInstance*                pActivator,
+                                      CEntityInstance*                pCaller,
+                                      const std::vector<std::string>& vecArgs)
 {
     const auto value = Q_atof(vecArgs[1].c_str());
 
@@ -282,10 +282,10 @@ static void AddOutputCustom_Timescale(Z_CBaseEntity *pInstance,
 #endif
 }
 
-static void AddOutputCustom_Friction(Z_CBaseEntity *pInstance,
-    CEntityInstance *pActivator,
-    CEntityInstance *pCaller,
-    const std::vector<std::string> &vecArgs)
+static void AddOutputCustom_Friction(Z_CBaseEntity*                  pInstance,
+                                     CEntityInstance*                pActivator,
+                                     CEntityInstance*                pCaller,
+                                     const std::vector<std::string>& vecArgs)
 {
     const auto value = Q_atof(vecArgs[1].c_str());
 
@@ -296,16 +296,16 @@ static void AddOutputCustom_Friction(Z_CBaseEntity *pInstance,
 #endif
 }
 
-static void AddOutputCustom_Speed(Z_CBaseEntity *pInstance,
-    CEntityInstance *pActivator,
-    CEntityInstance *pCaller,
-    const std::vector<std::string> &vecArgs)
+static void AddOutputCustom_Speed(Z_CBaseEntity*                  pInstance,
+                                  CEntityInstance*                pActivator,
+                                  CEntityInstance*                pCaller,
+                                  const std::vector<std::string>& vecArgs)
 {
     if (!pInstance->IsPawn())
         return;
 
-    CCSPlayerPawn *pPawn = (CCSPlayerPawn*)pInstance;
-    CCSPlayerController *pController = (CCSPlayerController*)pPawn->GetOriginalController();
+    const auto pPawn       = reinterpret_cast<CCSPlayerPawn*>(pInstance);
+    const auto pController = pPawn->GetOriginalController();
 
     if (!pController || !pController->IsConnected())
         return;
@@ -319,15 +319,15 @@ static void AddOutputCustom_Speed(Z_CBaseEntity *pInstance,
 #endif
 }
 
-static void AddOutputCustom_RunSpeed(Z_CBaseEntity *pInstance,
-    CEntityInstance *pActivator,
-    CEntityInstance *pCaller,
-    const std::vector<std::string> &vecArgs)
+static void AddOutputCustom_RunSpeed(Z_CBaseEntity*                  pInstance,
+                                     CEntityInstance*                pActivator,
+                                     CEntityInstance*                pCaller,
+                                     const std::vector<std::string>& vecArgs)
 {
     if (!pInstance->IsPawn())
         return;
 
-    CCSPlayerPawn *pPawn = reinterpret_cast<CCSPlayerPawn*>(pInstance);
+    const auto pPawn = reinterpret_cast<CCSPlayerPawn*>(pInstance);
 
     const auto value = Q_atof(vecArgs[1].c_str());
 
@@ -397,7 +397,6 @@ bool CustomIO_HandleInput(CEntityInstance* pInstance,
     return false;
 }
 
-
 std::string g_sBurnParticle = "particles/burning_fx/burning_character_b.vpcf";
 FAKE_STRING_CVAR(cs2f_burn_particle, "The particle to use for burning entities", g_sBurnParticle, false);
 
@@ -410,26 +409,26 @@ FAKE_FLOAT_CVAR(cs2f_burn_slowdown, "The slowdown of each burn damage tick as a 
 float g_flBurnInterval = 0.3f;
 FAKE_FLOAT_CVAR(cs2f_burn_interval, "The interval between burn damage ticks", g_flBurnInterval, 0.3f, false);
 
-bool IgnitePawn(CCSPlayerPawn *pPawn, float flDuration, Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility, DamageTypes_t nDamageType)
+bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, Z_CBaseEntity* pInflictor, Z_CBaseEntity* pAttacker, Z_CBaseEntity* pAbility, DamageTypes_t nDamageType)
 {
-    CParticleSystem *pParticleEnt = (CParticleSystem*)pPawn->m_hEffectEntity().Get();
+    auto pParticleEnt = reinterpret_cast<CParticleSystem*>(pPawn->m_hEffectEntity().Get());
 
     // This guy is already burning, don't ignite again
     if (pParticleEnt)
-    {   
+    {
         // Override the end time instead of just adding to it so players who get a ton of ignite inputs don't burn forever
         pParticleEnt->m_flDissolveStartTime = gpGlobals->curtime + flDuration;
         return true;
     }
 
-    Vector vecOrigin = pPawn->GetAbsOrigin();
+    const auto vecOrigin = pPawn->GetAbsOrigin();
 
-    pParticleEnt = (CParticleSystem *)CreateEntityByName("info_particle_system");
+    pParticleEnt = reinterpret_cast<CParticleSystem*>(CreateEntityByName("info_particle_system"));
 
     pParticleEnt->m_bStartActive(true);
     pParticleEnt->m_iszEffectName(g_sBurnParticle.c_str());
     pParticleEnt->m_hControlPointEnts[0] = pPawn;
-    pParticleEnt->m_flDissolveStartTime = gpGlobals->curtime + flDuration; // Store the end time in the particle itself so we can increment if needed
+    pParticleEnt->m_flDissolveStartTime  = gpGlobals->curtime + flDuration; // Store the end time in the particle itself so we can increment if needed
     pParticleEnt->Teleport(&vecOrigin, nullptr, nullptr);
 
     pParticleEnt->DispatchSpawn();
@@ -443,14 +442,13 @@ bool IgnitePawn(CCSPlayerPawn *pPawn, float flDuration, Z_CBaseEntity *pInflicto
     CHandle<Z_CBaseEntity> hAttacker(pAttacker);
     CHandle<Z_CBaseEntity> hAbility(pAbility);
 
-    new CTimer(0.f, false, [hPawn, hInflictor, hAttacker, hAbility, nDamageType]()
-    {
-        CCSPlayerPawn *pPawn = hPawn.Get();
+    new CTimer(0.f, false, [hPawn, hInflictor, hAttacker, hAbility, nDamageType]() {
+        CCSPlayerPawn* pPawn = hPawn.Get();
 
         if (!pPawn)
             return -1.f;
 
-        CParticleSystem *pParticleEnt = (CParticleSystem*)pPawn->m_hEffectEntity().Get();
+        const auto pParticleEnt = reinterpret_cast<CParticleSystem*>(pPawn->m_hEffectEntity().Get());
 
         if (!pParticleEnt)
             return -1.f;
@@ -475,7 +473,7 @@ bool IgnitePawn(CCSPlayerPawn *pPawn, float flDuration, Z_CBaseEntity *pInflicto
         // Damage doesn't apply if the inflictor is null
         if (!hInflictor.Get())
             info.m_hInflictor.Set(hAttacker);
-            
+
         pPawn->TakeDamage(info);
 
         pPawn->m_flVelocityModifier = g_flBurnSlowdown;

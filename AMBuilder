@@ -1,5 +1,6 @@
 # vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
 import os
+import subprocess
 
 MMSPlugin.plugin_name = 'cs2fixes'
 MMSPlugin.plugin_alias = 'cs2fixes'
@@ -9,6 +10,9 @@ for sdk_target in MMSPlugin.sdk_targets:
   cxx = sdk_target.cxx
 
   binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
+  
+  version = subprocess.check_output(['git', 'describe', '--tags', '--long']).decode('ascii').strip()
+  binary.compiler.defines += ['CS2FIXES_VERSION="' + version + '"']
 
   if binary.compiler.behavior == 'gcc':
     binary.compiler.cxxflags += ['-Wno-invalid-offsetof']
@@ -49,6 +53,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/commands.cpp',
     'src/addresses.cpp',
     'src/detours.cpp',
+    'src/entities.cpp',
     'src/events.cpp',
     'src/utils/entity.cpp',
     'src/cs2_sdk/schema.cpp',

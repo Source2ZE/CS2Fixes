@@ -46,7 +46,7 @@ public: //hooks
 				 bool loadGame,
 				 bool background );
 	void OnLevelShutdown();
-	void Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick );
+	void Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTick);
 	void Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *pszName, uint64 xuid );
 	void Hook_ClientDisconnect( CPlayerSlot slot, ENetworkDisconnectionReason reason, const char *pszName, uint64 xuid, const char *pszNetworkID );
 	void Hook_ClientPutInServer( CPlayerSlot slot, char const *pszName, int type, uint64 xuid );
@@ -57,6 +57,7 @@ public: //hooks
 	void Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount, CBitVec<16384> &unionTransmitEdicts,
 							const Entity2Networkable_t **pNetworkables, const uint16 *pEntityIndicies, int nEntities);
 	void Hook_DispatchConCommand(ConCommandHandle cmd, const CCommandContext& ctx, const CCommand& args);
+	void Hook_CGamePlayerEquipUse(class InputData_t*);
 	void Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
 
 public:
