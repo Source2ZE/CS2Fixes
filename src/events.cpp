@@ -138,7 +138,7 @@ GAME_EVENT_F(player_hurt)
 	CCSPlayerController *pVictim = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 
 	// Ignore Ts/zombies and CTs hurting themselves
-	if (!pAttacker || pAttacker->m_iTeamNum() != CS_TEAM_CT || pAttacker == pVictim)
+	if (!pAttacker || pAttacker->m_iTeamNum() != CS_TEAM_CT || pAttacker->m_iTeamNum() == pVictim->m_iTeamNum())
 		return;
 
 	ZEPlayer* pPlayer = pAttacker->GetZEPlayer();
