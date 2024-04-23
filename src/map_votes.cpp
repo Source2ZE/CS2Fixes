@@ -31,27 +31,48 @@
 #include "utlvector.h"
 #include "votemanager.h"
 #include "steam/steam_gameserver.h"
+#include <igametypes.h>
 
 extern CGlobalVars *gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
 extern CSteamGameServerAPIContext g_steamAPI;
+extern IGameTypes* g_pGameTypes;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
-CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current map on completion", ADMFLAG_ROOT)
 {
 	if (!g_bVoteManagerEnable)
 		return;
 
+	if (g_pMapVoteSystem->GetDownloadQueueSize() != 0)
+	{
+		Message("Please wait for current map downloads to finish before loading map list again\n");
+		return;
+	}
+
 	g_pMapVoteSystem->LoadMapList();
+
+	// A CUtlStringList param is also expected, but we build it in our CreateWorkshopMapGroup pre-hook anyways
+	CALL_VIRTUAL(void, g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup"), g_pGameTypes, "workshop");
+
+	// Updating the mapgroup requires reloading the map for everything to load properly
+	char sChangeMapCmd[128];
+
+	if (g_pMapVoteSystem->GetCurrentWorkshopMap() != 0)
+		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", g_pMapVoteSystem->GetCurrentWorkshopMap());
+	else if (g_pMapVoteSystem->GetCurrentMap()[0] != '\0')
+		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", g_pMapVoteSystem->GetCurrentMap());
+
+	g_pEngineServer2->ServerCommand(sChangeMapCmd);
 	Message("Map list reloaded\n");
 }
 
 CON_COMMAND_F(cs2f_vote_maps_cooldown, "Number of maps to wait until a map can be voted / nominated again i.e. cooldown.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
 	if (!g_pMapVoteSystem) {
-		Message("The map vote subsystem is not enabled.");
+		Message("The map vote subsystem is not enabled.\n");
 		return;
 	}
 
@@ -66,7 +87,7 @@ CON_COMMAND_F(cs2f_vote_maps_cooldown, "Number of maps to wait until a map can b
 CON_COMMAND_F(cs2f_vote_max_nominations, "Number of nominations to include per vote, out of a maximum of 10.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
 	if (!g_pMapVoteSystem) {
-		Message("The map vote subsystem is not enabled.");
+		Message("The map vote subsystem is not enabled.\n");
 		return;
 	}
 

@@ -25,6 +25,7 @@
 #include "KeyValues.h"
 #include "steam/steam_api_common.h"
 #include "steam/isteamugc.h"
+#include <string>
 
 
 // Nomination constants, used as return codes for nomination commands
@@ -102,6 +103,11 @@ public:
     CUtlStringList CreateWorkshopMapGroup();
     void QueueMapDownload(PublishedFileId_t iWorkshopId);
     void PrintDownloadProgress();
+    void SetCurrentWorkshopMap(uint64 iCurrentWorkshopMap) { m_iCurrentWorkshopMap = iCurrentWorkshopMap; m_strCurrentMap = ""; }
+    void SetCurrentMap(std::string strCurrentMap) { m_iCurrentWorkshopMap = 0; m_strCurrentMap = strCurrentMap; }
+    uint64 GetCurrentWorkshopMap() { return m_iCurrentWorkshopMap; }
+    const char* GetCurrentMap() { return m_strCurrentMap.c_str(); }
+    int GetDownloadQueueSize() { return m_DownloadQueue.Count(); }
 
 private:
     int WinningMapIndex();
@@ -122,6 +128,8 @@ private:
     bool m_bIsVoteOngoing = false;
     bool m_bMapListLoaded = false;
     bool m_bIntermissionStarted = false;
+    uint64 m_iCurrentWorkshopMap = 0;
+    std::string m_strCurrentMap = "";
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;
