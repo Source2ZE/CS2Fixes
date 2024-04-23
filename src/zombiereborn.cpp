@@ -30,6 +30,7 @@
 #include "user_preferences.h"
 #include "customio.h"
 #include <sstream>
+#include "leader.h"
 
 #include "tier0/memdbgon.h"
 
@@ -345,6 +346,20 @@ void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn
 	UTIL_AddEntityIOEvent(pPawn, "SetScale", nullptr, nullptr, pClass->flScale);
 }
 
+// only changes that should not (directly) affect gameplay
+void CZRPlayerClassManager::ApplyBaseClassVisuals(ZRClass *pClass, CCSPlayerPawn *pPawn)
+{
+	Color clrRender;
+	V_StringToColor(pClass->szColor.c_str(), clrRender);
+	
+	pPawn->SetModel(pClass->szModelPath.c_str());
+	pPawn->m_clrRender = clrRender;
+	pPawn->AcceptInput("Skin", pClass->iSkin);
+
+	// This has to be done a bit later
+	UTIL_AddEntityIOEvent(pPawn, "SetScale", nullptr, nullptr, pClass->flScale);
+}
+
 ZRHumanClass* CZRPlayerClassManager::GetHumanClass(const char *pszClassName)
 {
 	uint16 index = m_HumanClassMap.Find(hash_32_fnv1a_const(pszClassName));
@@ -359,6 +374,19 @@ void CZRPlayerClassManager::ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn 
 	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
 	if (pController)
 		CZRRegenTimer::StopRegen(pController);
+	
+	if (!g_bEnableLeader || !pController)
+		return;
+	
+	ZEPlayer *pPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+
+	if (pPlayer && pPlayer->IsLeader())
+		new CTimer(0.02f, false, [pPawn]()
+		{
+			if (pPawn)
+				Leader_ApplyLeaderVisuals(pPawn);
+			return -1.0f;
+		});
 }
 
 void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn *pPawn)
@@ -383,6 +411,30 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn *pPa
 	}
 	
 	ApplyHumanClass(humanClass, pPawn);
+}
+
+void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPawn *pPawn)
+{
+	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
+	if (!pController) return;
+
+	// Get the human class user preference, or default if no class is set
+	int iSlot = pController->GetPlayerSlot();
+	ZRHumanClass* humanClass = nullptr;
+	const char* sPreferredHumanClass = g_pUserPreferencesSystem->GetPreference(iSlot, HUMAN_CLASS_KEY_NAME);
+
+	// If the preferred human class exists and can be applied, override the default
+	uint16 index = m_HumanClassMap.Find(hash_32_fnv1a_const(sPreferredHumanClass));
+	if (m_HumanClassMap.IsValidIndex(index) && m_HumanClassMap[index]->IsApplicableTo(pController)) {
+		humanClass = m_HumanClassMap[index];
+	} else if (m_vecHumanDefaultClass.Count()) {
+		humanClass = m_vecHumanDefaultClass[rand() % m_vecHumanDefaultClass.Count()];
+	} else if (!humanClass) {
+		Warning("Missing default human class or valid preferences!\n");
+		return;
+	}
+
+	ApplyBaseClassVisuals((ZRClass *)humanClass, pPawn);
 }
 
 ZRZombieClass* CZRPlayerClassManager::GetZombieClass(const char *pszClassName)

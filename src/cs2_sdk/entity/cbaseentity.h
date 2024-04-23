@@ -94,6 +94,22 @@ public:
 	SCHEMA_FIELD(CGameSceneNode *, m_pSceneNode)
 };
 
+class CModelState
+{
+public:
+	DECLARE_SCHEMA_CLASS(CModelState)
+
+	SCHEMA_FIELD(CUtlSymbolLarge, m_ModelName)
+};
+
+class CSkeletonInstance : CGameSceneNode
+{
+public:
+	DECLARE_SCHEMA_CLASS(CSkeletonInstance)
+
+	SCHEMA_FIELD(CModelState, m_modelState)
+};
+
 class CEntitySubclassVDataBase
 {
 public:

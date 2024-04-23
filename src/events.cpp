@@ -26,6 +26,8 @@
 #include "entity/cgamerules.h"
 #include "zombiereborn.h"
 #include "votemanager.h"
+#include "leader.h"
+#include "recipientfilters.h"
 
 #include "tier0/memdbgon.h"
 
@@ -178,6 +180,9 @@ GAME_EVENT_F(round_start)
 	if (g_bEnableZR)
 		ZR_OnRoundStart(pEvent);
 
+	if (g_bEnableLeader)
+		Leader_OnRoundStart(pEvent);
+
 	if (!g_bEnableTopDefender)
 		return;
 
@@ -272,4 +277,10 @@ GAME_EVENT_F(round_time_warning)
 {
 	if (g_bEnableZR)
 		ZR_OnRoundTimeWarning(pEvent);
+}
+
+GAME_EVENT_F(bullet_impact)
+{
+	if (g_bEnableLeader)
+		Leader_BulletImpact(pEvent);
 }

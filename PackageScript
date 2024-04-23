@@ -66,10 +66,16 @@ builder.AddCopy(os.path.join('gamedata', 'cs2fixes.games.txt'), gamedata_folder)
 
 # Add CS2Fixes-specific compiled asset files
 particles_cs2f_folder = builder.AddFolder(os.path.join('particles', MMSPlugin.plugin_name))
-builder.AddCopy(os.path.join(builder.sourcePath, 'assets', 'particles', MMSPlugin.plugin_name, 'admin_beacon.vpcf_c'), particles_cs2f_folder)
-builder.AddCopy(os.path.join(builder.sourcePath, 'assets', 'particles', MMSPlugin.plugin_name, 'admin_beacon_inner.vpcf_c'), particles_cs2f_folder)
+builder.AddCopy(os.path.join(builder.sourcePath, 'assets', 'particles', MMSPlugin.plugin_name, 'player_beacon.vpcf_c'), particles_cs2f_folder)
+builder.AddCopy(os.path.join(builder.sourcePath, 'assets', 'particles', MMSPlugin.plugin_name, 'player_beacon_tint.vpcf_c'), particles_cs2f_folder)
+builder.AddCopy(os.path.join(builder.sourcePath, 'assets', 'particles', MMSPlugin.plugin_name, 'leader_defend_mark.vpcf_c'), particles_cs2f_folder)
+builder.AddCopy(os.path.join(builder.sourcePath, 'assets', 'particles', MMSPlugin.plugin_name, 'leader_defend_mark_ground.vpcf_c'), particles_cs2f_folder)
+builder.AddCopy(os.path.join(builder.sourcePath, 'assets', 'particles', MMSPlugin.plugin_name, 'leader_tracer.vpcf_c'), particles_cs2f_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'assets', 'particles', MMSPlugin.plugin_name, 'napalm_fire.vpcf_c'), particles_cs2f_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'assets', 'particles', MMSPlugin.plugin_name, 'simple_overlay.vpcf_c'), particles_cs2f_folder)
+
+materials_cs2f_folder = builder.AddFolder(os.path.join('materials', MMSPlugin.plugin_name))
+builder.AddCopy(os.path.join(builder.sourcePath, 'assets', 'materials', MMSPlugin.plugin_name, 'leader_defend_mark.vtex_c'), materials_cs2f_folder)
 
 soundevents_folder = builder.AddFolder(os.path.join('soundevents'))
 builder.AddCopy(os.path.join(builder.sourcePath, 'assets', 'soundevents', 'soundevents_zr.vsndevts_c'), soundevents_folder)

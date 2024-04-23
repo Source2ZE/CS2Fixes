@@ -160,8 +160,6 @@ private:
 
 extern CAdminSystem *g_pAdminSystem;
 
-void PrecacheAdminBeaconParticle(IEntityResourceManifest* pResourceManifest);
-
 // Given a formatted time entered by an admin, return the minutes
 int ParseTimeInput(std::string strTime);
 

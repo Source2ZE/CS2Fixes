@@ -29,6 +29,7 @@
 #include "recipientfilters.h"
 #include "ctimer.h"
 #include "ctime"
+#include "leader.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -211,10 +212,12 @@ void ZEPlayer::ToggleFlashLight()
 static float g_flFloodInterval = 0.75f;
 static int g_iMaxFloodTokens = 3;
 static float g_flFloodCooldown = 3.0f;
+static std::string g_sBeaconParticle = "particles/cs2fixes/player_beacon.vpcf";
 
 FAKE_FLOAT_CVAR(cs2f_flood_interval, "Amount of time allowed between chat messages acquiring flood tokens", g_flFloodInterval, 0.75f, false)
 FAKE_INT_CVAR(cs2f_max_flood_tokens, "Maximum number of flood tokens allowed before chat messages are blocked", g_iMaxFloodTokens, 3, false)
 FAKE_FLOAT_CVAR(cs2f_flood_cooldown, "Amount of time to block messages for when a player floods", g_flFloodCooldown, 3.0f, false)
+FAKE_STRING_CVAR(cs2f_beacon_particle, ".vpcf file to be precached and used for beacon", g_sBeaconParticle, false)
 
 bool ZEPlayer::IsFlooding()
 {
@@ -243,6 +246,239 @@ bool ZEPlayer::IsFlooding()
 
 	m_flLastTalkTime = newTime;
 	return false;
+}
+
+void PrecacheBeaconParticle(IEntityResourceManifest* pResourceManifest)
+{
+	pResourceManifest->AddResource(g_sBeaconParticle.c_str());
+}
+
+void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver/* = 0*/)
+{
+	CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(m_slot);
+
+	Vector vecAbsOrigin = pPlayer->GetPawn()->GetAbsOrigin();
+
+	vecAbsOrigin.z += 10;
+
+	CParticleSystem* particle = (CParticleSystem*)CreateEntityByName("info_particle_system");
+
+	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
+
+	pKeyValues->SetString("effect_name", g_sBeaconParticle.c_str());
+	pKeyValues->SetInt("tint_cp", 1);
+	pKeyValues->SetVector("origin", vecAbsOrigin);
+	pKeyValues->SetBool("start_active", true);
+
+	particle->m_clrTint->SetRawColor(color.GetRawColor());
+
+	particle->DispatchSpawn(pKeyValues);
+	particle->SetParent(pPlayer->GetPawn());
+
+	m_hBeaconParticle.Set(particle);
+
+	CHandle<CParticleSystem> hParticle = particle->GetHandle();
+	ZEPlayerHandle hPlayer = m_Handle;
+	int iTeamNum = pPlayer->m_iTeamNum;
+	bool bLeaderBeacon = false;
+
+	ZEPlayer *pGiver = hGiver.Get();
+	if (pGiver && pGiver->IsLeader())
+		bLeaderBeacon = true;
+
+	new CTimer(1.0f, true, [hPlayer, hParticle, hGiver, iTeamNum, bLeaderBeacon]()
+	{
+		CParticleSystem *pParticle = hParticle.Get();
+
+		if (!hPlayer.IsValid() || !pParticle)
+			return -1.0f;
+
+		CCSPlayerController *pPlayer = CCSPlayerController::FromSlot((CPlayerSlot) hPlayer.GetPlayerSlot());
+
+		if (pPlayer->m_iTeamNum < CS_TEAM_T || !pPlayer->m_hPlayerPawn->IsAlive() || pPlayer->m_iTeamNum != iTeamNum)
+		{
+			addresses::UTIL_Remove(pParticle);
+			return -1.0f;
+		}
+
+		if (!bLeaderBeacon)
+			return 1.0f;
+
+		ZEPlayer *pBeaconGiver = hGiver.Get();
+
+		// Continue beacon, leader is not on the server. No reason to remove the beacon
+		if (!pBeaconGiver)
+			return 1.0f;
+
+		// Remove beacon granted by leader if his leader was stripped
+		if (!pBeaconGiver->IsLeader())
+		{
+			addresses::UTIL_Remove(pParticle);
+			return -1.0f;
+		}
+
+		return 1.0f;
+	});
+}
+
+void ZEPlayer::EndBeacon()
+{
+	CParticleSystem *pParticle = m_hBeaconParticle.Get();
+
+	if (pParticle)
+		addresses::UTIL_Remove(pParticle);
+}
+
+void ZEPlayer::SetLeader(int leaderIndex)
+{
+	if (leaderIndex >= g_nLeaderColorMapSize)
+	{
+		m_iLeaderIndex = g_iLeaderIndex = 1;
+		return;
+	}
+
+	m_iLeaderIndex = leaderIndex;
+}
+
+int ZEPlayer::GetLeaderVoteCount()
+{
+	int iValidVoteCount = 0;
+
+	for (int i = m_vecLeaderVotes.Count() - 1; i >= 0; i--)
+	{
+		if (m_vecLeaderVotes[i].IsValid())
+			iValidVoteCount++;
+		else
+			m_vecLeaderVotes.Remove(i);
+	}
+
+	return iValidVoteCount;
+}
+
+bool ZEPlayer::HasPlayerVotedLeader(ZEPlayer *pPlayer)
+{
+	FOR_EACH_VEC(m_vecLeaderVotes, i)
+	{
+		if (m_vecLeaderVotes[i] == pPlayer)
+			return true;
+	}
+
+	return false;
+}
+
+void ZEPlayer::AddLeaderVote(ZEPlayer* pPlayer)
+{
+	m_vecLeaderVotes.AddToTail(pPlayer->GetHandle());
+}
+
+void ZEPlayer::PurgeLeaderVotes()
+{
+	m_vecLeaderVotes.Purge();
+}
+
+void ZEPlayer::StartGlow(Color color, int duration)
+{
+	CCSPlayerController *pController = CCSPlayerController::FromSlot(m_slot);
+	CCSPlayerPawn *pPawn = (CCSPlayerPawn*)pController->GetPawn();
+	
+	const char *pszModelName = pPawn->GetModelName();
+	
+	CBaseModelEntity *pModelGlow = (CBaseModelEntity*)CreateEntityByName("prop_dynamic");
+	CBaseModelEntity *pModelRelay = (CBaseModelEntity*)CreateEntityByName("prop_dynamic");
+	CEntityKeyValues *pKeyValuesRelay = new CEntityKeyValues();
+	
+	pKeyValuesRelay->SetString("model", pszModelName);
+	pKeyValuesRelay->SetInt64("spawnflags", 256U);
+	pKeyValuesRelay->SetInt("rendermode", kRenderNone);
+
+	CEntityKeyValues *pKeyValuesGlow = new CEntityKeyValues();
+	pKeyValuesGlow->SetString("model", pszModelName);
+	pKeyValuesGlow->SetInt64("spawnflags", 256U);
+	pKeyValuesGlow->SetColor("glowcolor", color);
+	pKeyValuesGlow->SetInt("glowrange", 5000);
+	pKeyValuesGlow->SetInt("glowteam", -1);
+	pKeyValuesGlow->SetInt("glowstate", 3);
+	pKeyValuesGlow->SetInt("renderamt", 1);
+
+	pModelGlow->DispatchSpawn(pKeyValuesGlow);
+	pModelRelay->DispatchSpawn(pKeyValuesRelay);
+	pModelRelay->AcceptInput("FollowEntity", "!activator", pPawn);
+	pModelGlow->AcceptInput("FollowEntity", "!activator", pModelRelay);
+
+	m_hGlowModel.Set(pModelGlow);
+	
+	CHandle<CBaseModelEntity> hGlowModel = m_hGlowModel;
+	CHandle<CCSPlayerPawn> hPawn = pPawn->GetHandle();
+	int iTeamNum = hPawn->m_iTeamNum();
+
+	// check if player's team or model changed
+	new CTimer(0.5f, false, [hGlowModel, hPawn, iTeamNum]()
+	{
+		CBaseModelEntity *pModel = hGlowModel.Get();
+		CCSPlayerPawn *pawn = hPawn.Get();
+
+		if (!pawn || !pModel)
+			return -1.0f;
+
+		if (pawn->m_iTeamNum != iTeamNum || strcmp(pModel->GetModelName(), pawn->GetModelName()))
+		{
+			CGameSceneNode *pParentSceneNode = pModel->m_CBodyComponent()->m_pSceneNode()->m_pParent();
+
+			if (!pParentSceneNode)
+				return -1.0f;
+
+			CBaseModelEntity *pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
+
+			if (pModelParent)
+				addresses::UTIL_Remove(pModelParent);
+			
+			return -1.0f;
+		}
+
+		return 0.5f;
+	});
+
+	// kill glow after duration, if provided
+	if (duration < 1)
+		return;
+	
+	new CTimer((float)duration, false, [hGlowModel]()
+	{
+		CBaseModelEntity *pModel = hGlowModel.Get();
+
+		if (!pModel)
+			return -1.0f;
+
+		CGameSceneNode *pParentSceneNode = pModel->m_CBodyComponent()->m_pSceneNode()->m_pParent();
+
+		if (!pParentSceneNode)
+			return -1.0f;
+
+		CBaseModelEntity *pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
+
+		if (pModelParent)
+			addresses::UTIL_Remove(pModelParent);
+
+		return -1.0f;
+	});
+}
+
+void ZEPlayer::EndGlow()
+{
+	CBaseModelEntity *pGlowModel = m_hGlowModel.Get();
+
+	if (!pGlowModel)
+		return;
+
+	CGameSceneNode *pParentSceneNode = pGlowModel->m_CBodyComponent()->m_pSceneNode()->m_pParent();
+
+	if (!pParentSceneNode)
+		return;
+
+	CBaseModelEntity *pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
+
+	if (pModelParent)
+		addresses::UTIL_Remove(pModelParent);
 }
 
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)

@@ -200,6 +200,7 @@
     <ClCompile Include="src\votemanager.cpp" />
     <ClCompile Include="src\zombiereborn.cpp" />
     <ClCompile Include="src\entitylistener.cpp" />
+    <ClCompile Include="src\leader.cpp" />
     <ClCompile Include="sdk\tier1\convar.cpp" />
     <ClCompile Include="src\utils\entity.cpp" />
     <ClCompile Include="src\utils\plat_unix.cpp" />
@@ -255,6 +256,7 @@
     <ClInclude Include="src\user_preferences.h" />
     <ClInclude Include="src\zombiereborn.h" />
     <ClInclude Include="src\entitylistener.h" />
+    <ClInclude Include="src\leader.h" />
     <ClInclude Include="src\utils\entity.h" />
     <ClInclude Include="src\utils\module.h" />
     <ClInclude Include="src\utils\plat.h" />

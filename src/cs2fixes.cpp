@@ -53,6 +53,8 @@
 #include "serversideclient.h"
 #include "te.pb.h"
 #include "cs_gameevents.pb.h"
+#include "gameevents.pb.h"
+#include "leader.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -526,6 +528,11 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 	{
 		*(uint64 *)clients &= ~g_playerManager->GetStopDecalsMask();
 	}
+	else if (info->m_MessageId == GE_Source1LegacyGameEvent)
+	{
+		if (g_bEnableLeader)
+			Leader_PostEventAbstract_Source1LegacyGameEvent(clients, pData);
+	}
 }
 
 void CS2Fixes::AllPluginsLoaded()
@@ -729,9 +736,17 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 
 			// Hide players marked as hidden or ANY dead player, it seems that a ragdoll of a previously hidden player can crash?
 			// TODO: Revert this if/when valve fixes the issue?
-			if (pSelfZEPlayer->ShouldBlockTransmit(j) || !pPawn->IsAlive())
+			// Also do not hide leaders to other players
+			ZEPlayer *pOtherZEPlayer = g_playerManager->GetPlayer(j);
+			if ((pSelfZEPlayer->ShouldBlockTransmit(j) && (pOtherZEPlayer && !pOtherZEPlayer->IsLeader())) || !pPawn->IsAlive())
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 		}
+
+		// Don't transmit glow model to it's owner
+		CBaseModelEntity *pGlowModel = pSelfZEPlayer->GetGlowModel();
+
+		if (pGlowModel)
+			pInfo->m_pTransmitEntity->Clear(pGlowModel->entindex());
 	}
 
 	VPROF_EXIT_SCOPE();

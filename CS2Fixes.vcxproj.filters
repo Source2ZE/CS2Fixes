@@ -113,6 +113,9 @@
     <ClCompile Include="src\entitylistener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\leader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="sdk\tier1\keyvalues3.cpp">
       <Filter>Source Files\sdk</Filter>
     </ClCompile>
@@ -254,6 +257,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\entitylistener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\leader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\lights.h">

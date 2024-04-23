@@ -18,28 +18,27 @@
  */
 
 #pragma once
+#include "utils/entity.h"
+#include "playermanager.h"
+#include "gamesystem.h"
+#include "igameevents.h"
 
-#include "cbaseentity.h"
-#include "globaltypes.h"
-
-class CBaseModelEntity : public Z_CBaseEntity
+struct LeaderColor
 {
-public:
-	DECLARE_SCHEMA_CLASS(CBaseModelEntity);
-
-	SCHEMA_FIELD(CCollisionProperty , m_Collision)
-	SCHEMA_FIELD(CGlowProperty, m_Glow)
-	SCHEMA_FIELD(Color, m_clrRender)
-	SCHEMA_FIELD(RenderMode_t, m_nRenderMode)
-	SCHEMA_FIELD(float, m_flDissolveStartTime)
-	
-	void SetModel(const char *szModel)
-	{
-		addresses::CBaseModelEntity_SetModel(this, szModel);
-	}
-	
-	const char* GetModelName()
-	{
-		return ((CSkeletonInstance*)m_CBodyComponent->m_pSceneNode.Get())->m_modelState().m_ModelName.Get().String();
-	}
+	const char* pszColorName;
+	Color clColor;
 };
+
+extern LeaderColor LeaderColorMap[];
+extern const size_t g_nLeaderColorMapSize;
+extern CUtlVector<ZEPlayerHandle> g_vecLeaders;
+extern int g_iLeaderIndex;
+
+extern bool g_bEnableLeader;
+
+bool Leader_NoLeaders();
+void Leader_ApplyLeaderVisuals(CCSPlayerPawn *pPawn);
+void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64 *clients, const void* pData);
+void Leader_OnRoundStart(IGameEvent *pEvent);
+void Leader_BulletImpact(IGameEvent *pEvent);
+void Leader_Precache(IEntityResourceManifest *pResourceManifest);
