@@ -362,9 +362,12 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CCommandContext& ctx, const CCommand& args)
 {
 	if (!g_pEntitySystem)
-		return;
+		RETURN_META(MRES_IGNORED);
 
 	auto iCommandPlayerSlot = ctx.GetPlayerSlot();
+
+	if (!g_bEnableCommands)
+		RETURN_META(MRES_IGNORED);
 
 	bool bSay = !V_strcmp(args.Arg(0), "say");
 	bool bTeamSay = !V_strcmp(args.Arg(0), "say_team");
@@ -438,6 +441,8 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 
 		RETURN_META(MRES_SUPERCEDE);
 	}
+
+	RETURN_META(MRES_IGNORED);
 }
 
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession *pSession, const char *pszMapName)
