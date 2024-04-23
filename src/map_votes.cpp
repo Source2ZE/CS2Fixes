@@ -58,7 +58,7 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 	CALL_VIRTUAL(void, g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup"), g_pGameTypes, "workshop");
 
 	// Updating the mapgroup requires reloading the map for everything to load properly
-	char sChangeMapCmd[128];
+	char sChangeMapCmd[128] = "";
 
 	if (g_pMapVoteSystem->GetCurrentWorkshopMap() != 0)
 		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", g_pMapVoteSystem->GetCurrentWorkshopMap());
