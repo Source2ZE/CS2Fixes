@@ -457,11 +457,6 @@
 				"windows"		"\xEB"
 				"linux"			"\x90\x90\x90\x90\x90\x90"
 			}
-			"VScriptEnable"
-			{
-				"windows"		"\xBE\x02"
-				"linux"			"\x83\xFE\x02"
-			}
 			"FixWaterFloorJump"
 			{
 				"windows"		"\x11\x43"
