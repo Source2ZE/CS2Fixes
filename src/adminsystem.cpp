@@ -168,6 +168,30 @@ CON_COMMAND_CHAT_FLAGS(ban, "<name> <minutes|0 (permament)> - ban a player", ADM
 		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently banned");
 }
 
+CON_COMMAND_CHAT_FLAGS(unban, "<steamid64> - unbans a player. Takes decimal STEAMID64", ADMFLAG_BAN)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unban <steamid64>");
+		return;
+	}
+
+	uint64 iTargetSteamId64 = V_StringToUint64(args[1], 0);
+
+	bool bResult = g_pAdminSystem->FindAndRemoveInfractionSteamId64(iTargetSteamId64, CInfractionBase::Ban);
+
+	if (!bResult)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Couldn't find user with STEAMID64 <%llu> in ban infractions.", iTargetSteamId64);
+		return;		
+	}
+
+	g_pAdminSystem->SaveInfractions();
+
+	// no need to broadcast this
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "User with STEAMID64 <%llu> has been unbanned.", iTargetSteamId64);
+}
+
 CON_COMMAND_CHAT_FLAGS(mute, "<name> <duration|0 (permament)> - mutes a player", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 3)
@@ -1555,6 +1579,21 @@ bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EI
 		if (m_vecInfractions[i]->GetSteamId64() == player->GetSteamId64() && m_vecInfractions[i]->GetType() == type)
 		{
 			m_vecInfractions[i]->UndoInfraction(player);
+			m_vecInfractions.Remove(i);
+			
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool CAdminSystem::FindAndRemoveInfractionSteamId64(uint64 steamid64, CInfractionBase::EInfractionType type)
+{
+	FOR_EACH_VEC(m_vecInfractions, i)
+	{
+		if (m_vecInfractions[i]->GetSteamId64() == steamid64 && m_vecInfractions[i]->GetType() == type)
+		{
 			m_vecInfractions.Remove(i);
 			
 			return true;
