@@ -1,5 +1,9 @@
 "Maplist"
 {
+	"de_dust2"
+	{
+		"enabled" "1"
+	}
 	"ze_my_first_ze_map"
 	{
 		"workshop_id" "123"
@@ -10,7 +14,7 @@
 		"workshop_id" "456"
 		"enabled" "1"
 	}
-	"ze_my_thirdd_ze_map"
+	"ze_my_third_ze_map"
 	{
 		"workshop_id" "789"
 		"enabled" "1"
