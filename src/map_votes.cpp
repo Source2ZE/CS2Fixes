@@ -395,7 +395,13 @@ void CMapVoteSystem::FinishVote()
 	// Wait a second and force-change the map
 	new CTimer(1.0, false, [iWinningMap]() {
 		char sChangeMapCmd[128];
-		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", g_pMapVoteSystem->GetMapWorkshopId(iWinningMap));
+		uint64 workshopId = g_pMapVoteSystem->GetMapWorkshopId(iWinningMap);
+
+		if (workshopId == 0)
+			V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", g_pMapVoteSystem->GetMapName(iWinningMap));
+		else
+			V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", workshopId);
+
 		g_pEngineServer2->ServerCommand(sChangeMapCmd);
 		return -1.0;
 	});
@@ -642,19 +648,11 @@ bool CMapVoteSystem::LoadMapList()
 		uint64 iWorkshopId = pKey->GetUint64("workshop_id");
 		bool bIsEnabled = pKey->GetBool("enabled", true);
 
-		if (!iWorkshopId) {
-			Warning("Map entry %s is missing 'workshop_id' key\n", pszName);
-			return false;
-		}
-
-		QueueMapDownload(iWorkshopId);
+		if (iWorkshopId != 0)
+			QueueMapDownload(iWorkshopId);
 
 		// We just append the maps to the map list
-		CMapInfo map = CMapInfo(pszName, iWorkshopId, bIsEnabled);
-		ConMsg("Loaded Map Info config %s\n", map.GetName());
-		ConMsg(" - Workshop ID: %llu\n", map.GetWorkshopId());
-		ConMsg(" - Enabled: %s\n", map.IsEnabled()? "true" : "false");
-		m_vecMapList.AddToTail(map);
+		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled));
 	}
 
 	new CTimer(0.f, true, [this]()
@@ -673,10 +671,11 @@ bool CMapVoteSystem::LoadMapList()
 	// Print all the maps to show the order
 	FOR_EACH_VEC(m_vecMapList, i) {
 		CMapInfo map = m_vecMapList[i];
-		ConMsg(
-			"Map %d is %s with workshop id %llu, which is %s.\n", 
-			i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled"
-		);
+
+		if (map.GetWorkshopId() == 0)
+			ConMsg("Map %d is %s, which is %s.\n", i, map.GetName(), map.IsEnabled() ? "enabled" : "disabled");
+		else
+			ConMsg("Map %d is %s with workshop id %llu, which is %s.\n", i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled");
 	}
 
 	m_bMapListLoaded = true;
