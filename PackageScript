@@ -60,7 +60,7 @@ builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'discordbots.cfg.exa
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'maplist.cfg.example'), configs_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'cfg', MMSPlugin.plugin_name, 'cs2fixes.cfg'), cfg_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'cfg', MMSPlugin.plugin_name, 'maps', 'de_somemap.cfg'), mapcfg_folder)
-builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'zr', 'playerclass.cfg.example'), zr_folder)
+builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'zr', 'playerclass.jsonc.example'), zr_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'zr', 'weapons.cfg.example'), zr_folder)
 builder.AddCopy(os.path.join('gamedata', 'cs2fixes.games.txt'), gamedata_folder)
 
