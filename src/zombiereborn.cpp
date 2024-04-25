@@ -183,6 +183,24 @@ ZRModelEntry::ZRModelEntry(ordered_json jsonModelEntry) :
 		vecSkins.AddToTail(0); // key missing, set default
 	};
 
+// seperate parsing to adminsystem's ParseFlags as making class 'z' flagged would make it available to players with non-zero flag
+uint64 ZRClass::ParseClassFlags(const char* pszFlags)
+{
+	uint64 flags = 0;
+	size_t length = V_strlen(pszFlags);
+
+	for (size_t i = 0; i < length; i++)
+	{
+		char c = tolower(pszFlags[i]);
+		if (c < 'a' || c > 'z')
+			continue;
+
+		flags |= ((uint64)1 << (c - 'a'));
+	}
+
+	return flags;
+}
+
 // this constructor is only used to create base class, which is required to have all values and min. 1 valid model entry
 ZRClass::ZRClass(ordered_json jsonKeys, std::string szClassname) :
 	bEnabled(jsonKeys["enabled"].get<bool>()),
@@ -191,7 +209,7 @@ ZRClass::ZRClass(ordered_json jsonKeys, std::string szClassname) :
 	flScale(jsonKeys["scale"].get<float>()),
 	flSpeed(jsonKeys["speed"].get<float>()),
 	flGravity(jsonKeys["gravity"].get<float>()),
-	iAdminFlag(g_pAdminSystem->ParseFlags(
+	iAdminFlag(ParseClassFlags(
 		jsonKeys["admin_flag"].get<std::string>().c_str()
 	))
 	{
@@ -218,7 +236,7 @@ void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 	if (jsonKeys.contains("gravity"))
 		flGravity = jsonKeys["gravity"].get<float>();
 	if (jsonKeys.contains("admin_flag"))
-		iAdminFlag = g_pAdminSystem->ParseFlags(
+		iAdminFlag = ParseClassFlags(
 			jsonKeys["admin_flag"].get<std::string>().c_str()
 		);
 

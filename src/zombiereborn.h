@@ -121,6 +121,7 @@ struct ZRClass
 	};
 	void Override(ordered_json jsonKeys, std::string szClassname);
 	bool IsApplicableTo(CCSPlayerController *pController);
+	uint64 ParseClassFlags(const char* pszFlags);
 	ZRModelEntry *GetRandomModelEntry()
 	{
 		return vecModels[rand() % vecModels.Count()];
