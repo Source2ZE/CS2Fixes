@@ -242,6 +242,14 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 	m_bIsVoteOngoing = false;
 	m_bIntermissionStarted = false;
 
+	// Delay one tick to override any .cfg's
+	new CTimer(0.02f, false, []()
+	{
+		g_pEngineServer2->ServerCommand("mp_match_end_changelevel 0");
+
+		return -1.0f;
+	});
+
 	int iLastCooldownIndex = GetMapsInCooldown() - 1;
 	int iInitMapIndex = GetMapIndexFromSubstring(pMapName);
 	if (iLastCooldownIndex >= 0 && iInitMapIndex >= 0 && GetCooldownMap(iLastCooldownIndex) != iInitMapIndex) {
