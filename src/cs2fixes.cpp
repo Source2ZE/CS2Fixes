@@ -590,12 +590,18 @@ void CS2Fixes::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *
 
 void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 {
-	if ((V_stricmp(args[0], "endmatch_votenextmap") == 0) && args.ArgC() == 2) {
-		g_pMapVoteSystem->RegisterPlayerVote(slot, atoi(args[1]));
-	}
 #ifdef _DEBUG
 	Message( "Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString() );
 #endif
+
+	if ((V_stricmp(args[0], "endmatch_votenextmap") == 0) && args.ArgC() == 2)
+	{
+		if (g_pMapVoteSystem->RegisterPlayerVote(slot, atoi(args[1])))
+			RETURN_META(MRES_HANDLED);
+		else
+			RETURN_META(MRES_SUPERCEDE);
+	}
+
 	if (g_bEnableZR && slot != -1 && !V_strncmp(args.Arg(0), "jointeam", 8))
 	{
 		ZR_Hook_ClientCommand_JoinTeam(slot, args);
