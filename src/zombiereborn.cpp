@@ -339,8 +339,12 @@ void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn
 	pPawn->SetModel(pClass->szModelPath.c_str());
 	pPawn->m_clrRender = clrRender;
 	pPawn->AcceptInput("Skin", pClass->iSkin);
-	pPawn->m_flVelocityModifier = pClass->flSpeed;
 	pPawn->m_flGravityScale = pClass->flGravity;
+
+	// I don't know why, I don't want to know why,
+	// I shouldn't have to wonder why, but for whatever reason
+	// this shit caused crashes on ROUND END or MAP CHANGE after the 26/04/2024 update
+	//pPawn->m_flVelocityModifier = pClass->flSpeed;
 
 	// This has to be done a bit later
 	UTIL_AddEntityIOEvent(pPawn, "SetScale", nullptr, nullptr, pClass->flScale);
