@@ -31,7 +31,6 @@
 #include "utlvector.h"
 #include "votemanager.h"
 #include "steam/steam_gameserver.h"
-#include <igametypes.h>
 
 extern CGlobalVars *gpGlobals;
 extern CCSGameRules* g_pGameRules;
