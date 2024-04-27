@@ -80,7 +80,7 @@ public:
     void OnLevelInit(const char* pMapName);
     void StartVote();
     void FinishVote();
-    void RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
+    bool RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
     void SetMapCooldown(int iMapCooldown) { m_iMapCooldown = iMapCooldown; };
     int GetMapIndexFromSubstring(const char* sMapSubstring);
     int GetMapCooldown() { return m_iMapCooldown; };

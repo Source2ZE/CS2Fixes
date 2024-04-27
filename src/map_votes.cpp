@@ -414,18 +414,18 @@ void CMapVoteSystem::FinishVote()
 	});
 }
 
-void CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption)
+bool CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption)
 {
 	if (!g_bVoteManagerEnable)
-		return;
+		return false;
 
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(iPlayerSlot);
-	if (!pController || !m_bIsVoteOngoing) return;
-	if (iVoteOption < 0 || iVoteOption >= 10) return;
+	if (!pController || !m_bIsVoteOngoing) return false;
+	if (iVoteOption < 0 || iVoteOption >= 10) return false;
 
 	// Filter out votes on invalid maps
 	int iMapIndexToVote = g_pGameRules->m_nEndMatchMapGroupVoteOptions[iVoteOption];
-	if (iMapIndexToVote < 0 || iMapIndexToVote >= m_vecMapList.Count()) return;
+	if (iMapIndexToVote < 0 || iMapIndexToVote >= m_vecMapList.Count()) return false;
 
 	// Set the vote for the player
 	int iSlot = pController->GetPlayerSlot();
@@ -437,6 +437,9 @@ void CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption
 
 	// Update the winning map for every player vote
 	UpdateWinningMap();
+
+	// Vote was counted
+	return true;
 }
 
 bool CMapVoteSystem::UpdateWinningMap()
