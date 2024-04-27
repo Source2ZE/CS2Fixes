@@ -25,7 +25,6 @@
 #include <sh_vector.h>
 #include "networksystem/inetworkserializer.h"
 #include <iserver.h>
-#include "igametypes.h"
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
 {

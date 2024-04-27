@@ -307,8 +307,5 @@
     <ClInclude Include="src\cs2_sdk\entity\clogiccase.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\cs2_sdk\igametypes.h">
-      <Filter>Header Files\cs2_sdk</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
