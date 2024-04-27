@@ -98,7 +98,7 @@
 			{
 				"library"		"server"
 				"windows"		"\xC8\x42\xEB\x2A\x48\x8B\x4B\x30"
-				"linux"			"\xC8\x42\x66\x0F\xEF\xDB\x41\x0F\x2F\x5D"
+				"linux"			"\xC8\x42\x66\x0F\xEF\xE4\x41\x0F\x2F\x65"
 			}
 			// String: "StartGravity", a function call in the function with startgravity in ends with "return (sub_XXX( a1 + 48) > 1);", change the 1 to 2
 			"WaterLevelGravity"
