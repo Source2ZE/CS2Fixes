@@ -416,9 +416,6 @@ void CMapVoteSystem::FinishVote()
 
 bool CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption)
 {
-	if (!g_bVoteManagerEnable)
-		return false;
-
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(iPlayerSlot);
 	if (!pController || !m_bIsVoteOngoing) return false;
 	if (iVoteOption < 0 || iVoteOption >= 10) return false;
