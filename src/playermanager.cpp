@@ -21,6 +21,7 @@
 #include "utlstring.h"
 #include "playermanager.h"
 #include "adminsystem.h"
+#include "commands.h"
 #include "map_votes.h"
 #include "user_preferences.h"
 #include "entity/ccsplayercontroller.h"
@@ -94,6 +95,11 @@ ZEPlayer *ZEPlayerHandle::Get() const
 
 void ZEPlayer::OnAuthenticated()
 {
+	m_bAuthenticated = true;
+	m_SteamID = m_UnauthenticatedSteamID;
+
+	Message("%lli authenticated\n", GetSteamId64());
+
 	CheckAdmin();
 	CheckInfractions();
 	g_pUserPreferencesSystem->PullPreferences(GetPlayerSlot().Get());
@@ -561,22 +567,65 @@ void CPlayerManager::OnLateLoad()
 	}
 }
 
-void CPlayerManager::TryAuthenticate()
+void CPlayerManager::OnSteamAPIActivated()
 {
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	m_CallbackValidateAuthTicketResponse.Register(this, &CPlayerManager::OnValidateAuthTicket);
+}
+
+int g_iDelayAuthFailKick = 0;
+FAKE_INT_CVAR(cs2f_delay_auth_fail_kick, "How long in seconds to delay kicking players when their Steam authentication fails, use with sv_steamauth_enforce 0", g_iDelayAuthFailKick, 0, false);
+
+void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t *pResponse)
+{
+	uint64 iSteamId = pResponse->m_SteamID.ConvertToUint64();
+
+	Message("%s: SteamID=%llu Response=%d\n", __func__, iSteamId, pResponse->m_eAuthSessionResponse);
+
+	ZEPlayer *pPlayer = nullptr;
+
+	for (ZEPlayer *pPlayer : m_vecPlayers)
 	{
-		if (m_vecPlayers[i] == nullptr || !m_vecPlayers[i]->IsConnected())
+		if (!pPlayer || !(pPlayer->GetUnauthenticatedSteamId64() == iSteamId))
 			continue;
 
-		if (m_vecPlayers[i]->IsAuthenticated() || m_vecPlayers[i]->IsFakeClient())
-			continue;
+		CCSPlayerController *pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 
-		if (g_pEngineServer2->IsClientFullyAuthenticated(i))
+		switch (pResponse->m_eAuthSessionResponse)
 		{
-			m_vecPlayers[i]->SetAuthenticated();
-			m_vecPlayers[i]->SetSteamId(m_vecPlayers[i]->GetUnauthenticatedSteamId());
-			Message("%lli authenticated %d\n", m_vecPlayers[i]->GetSteamId64(), i);
-			m_vecPlayers[i]->OnAuthenticated();
+			case k_EAuthSessionResponseOK:
+			{
+				pPlayer->OnAuthenticated();
+				return;
+			}
+
+			case k_EAuthSessionResponseAuthTicketInvalid:
+			case k_EAuthSessionResponseAuthTicketInvalidAlreadyUsed:
+			{
+				if (!g_iDelayAuthFailKick)
+					return;
+
+				ClientPrint(pController, HUD_PRINTTALK, " \7Your Steam authentication failed due to an invalid or used ticket.");
+				ClientPrint(pController, HUD_PRINTTALK, " \7You may have to restart your Steam client in order to fix this.\n");
+				[[fallthrough]];
+			}
+
+			default:
+			{
+				if (!g_iDelayAuthFailKick)
+					return;
+
+				ClientPrint(pController, HUD_PRINTTALK, " \7WARNING: You will be kicked in %i seconds due to failed Steam authentication.\n", g_iDelayAuthFailKick);
+
+				ZEPlayerHandle hPlayer = pPlayer->GetHandle();
+				new CTimer(g_iDelayAuthFailKick, true, [hPlayer]()
+				{
+					if (!hPlayer.IsValid())
+						return -1.f;
+
+					g_pEngineServer2->DisconnectClient(hPlayer.GetPlayerSlot(), NETWORK_DISCONNECT_KICKED_NOSTEAMLOGIN);
+					return -1.f;
+				});
+			}
 		}
 	}
 }

@@ -269,13 +269,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	RegisterWeaponCommands();
 
-	// Steam authentication
-	new CTimer(1.0f, true, []()
-	{
-		g_playerManager->TryAuthenticate();
-		return 1.0f;
-	});
-
 	// Check hide distance
 	new CTimer(0.5f, true, []()
 	{
@@ -489,6 +482,8 @@ void CS2Fixes::Hook_GameServerSteamAPIActivated()
 	g_steamAPI.Init();
 	g_http = g_steamAPI.SteamHTTP();
 
+	g_playerManager->OnSteamAPIActivated();
+  
 	if (g_bVoteManagerEnable && !g_pMapVoteSystem->IsMapListLoaded())
 		g_pMapVoteSystem->LoadMapList();
 
