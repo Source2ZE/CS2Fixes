@@ -432,7 +432,7 @@ bool CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption
 	m_arrPlayerVotes[iSlot] = iVoteOption;
 
 	// Log vote to console
-	const char* sMapName = g_pMapVoteSystem->GetMapName(iMapIndexToVote);
+	const char* sMapName = GetMapName(iMapIndexToVote);
 	Message("Adding vote to map %i (%s) for player %s (slot %i).\n", iVoteOption, sMapName, pController->GetPlayerName(), iSlot);
 
 	// Update the winning map for every player vote
@@ -649,7 +649,7 @@ bool CMapVoteSystem::LoadMapList()
 
 	const char *pszPath = "addons/cs2fixes/configs/maplist.cfg";
 	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath)) {
-		Warning("Failed to load %s\n", pszPath);
+		Panic("Failed to load %s\n", pszPath);
 		return false;
 	}
 
@@ -711,8 +711,8 @@ CUtlStringList CMapVoteSystem::CreateWorkshopMapGroup()
 {
 	CUtlStringList mapList;
 
-	for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
-		mapList.CopyAndAddToTail(g_pMapVoteSystem->GetMapName(i));
+	for (int i = 0; i < GetMapListSize(); i++)
+		mapList.CopyAndAddToTail(GetMapName(i));
 
 	return mapList;
 }
