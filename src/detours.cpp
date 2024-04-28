@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2024 Source2ZE
@@ -45,6 +45,7 @@
 #include "entities.h"
 #include "serversideclient.h"
 #include "networksystem/inetworkserializer.h"
+#include "map_votes.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -55,6 +56,7 @@ extern CGlobalVars *gpGlobals;
 extern CGameEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
 extern CCSGameRules *g_pGameRules;
+extern CMapVoteSystem *g_pMapVoteSystem;
 
 CUtlVector<CDetourBase *> g_vecDetours;
 
@@ -67,12 +69,12 @@ DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
-DECLARE_DETOUR(FixLagCompEntityRelationship, Detour_FixLagCompEntityRelationship);
 DECLARE_DETOUR(CNetworkStringTable_AddString, Detour_AddString);
 DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer);
+DECLARE_DETOUR(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -416,18 +418,6 @@ void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsi
 	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7, unk8);
 }
 
-bool g_bFixLagCompCrash = false;
-
-FAKE_BOOL_CVAR(cs2f_fix_lag_comp_crash, "Whether to fix lag compensation crash with env_entity_maker", g_bFixLagCompCrash, false, false)
-
-void FASTCALL Detour_FixLagCompEntityRelationship(void *a1, CEntityInstance *pEntity, bool a3)
-{
-	if (g_bFixLagCompCrash && strcmp(pEntity->GetClassname(), "env_entity_maker") == 0)
-		return;
-
-	return FixLagCompEntityRelationship(a1, pEntity, a3);
-}
-
 bool g_bBlockEntityStrings = false;
 FAKE_BOOL_CVAR(cs2f_block_entity_strings, "Whether to block adding entries in the EntityNames stringtable", g_bBlockEntityStrings, false, false);
 
@@ -514,6 +504,14 @@ void FASTCALL Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip
 void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
 {
     CGamePlayerEquipHandler::TriggerForActivatedPlayer(pEntity, pInput);
+}
+
+int64_t* FASTCALL Detour_CCSGameRules_GoToIntermission(int64_t unk1, char unk2)
+{
+	if (!g_pMapVoteSystem->IsIntermissionAllowed())
+		return nullptr;
+
+	return CCSGameRules_GoToIntermission(unk1, unk2);
 }
 
 bool InitDetours(CGameConfig *gameConfig)

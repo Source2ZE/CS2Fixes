@@ -21,6 +21,11 @@
 #include <playerslot.h>
 #include "utlstring.h"
 #include "utlvector.h"
+#include "utlqueue.h"
+#include "KeyValues.h"
+#include "steam/steam_api_common.h"
+#include "steam/isteamugc.h"
+#include <string>
 
 
 // Nomination constants, used as return codes for nomination commands
@@ -33,6 +38,8 @@ namespace NominationReturnCodes
     static const int MAP_NOT_FOUND = -102;
     static const int INVALID_MAP = -103;
     static const int NOMINATION_DISABLED = -104;
+    static const int NOMINATION_RESET = -105;
+    static const int NOMINATION_RESET_FAILED = -106;
 }
 #endif
 
@@ -63,8 +70,6 @@ class CMapVoteSystem
 public:
     CMapVoteSystem()
     {
-        LoadMapList();
-
         // Initialize the nomination / vote arrays to -1
         for (int i = 0; i < MAXPLAYERS; i++) {
             m_arrPlayerNominations[i] = -1;
@@ -75,7 +80,7 @@ public:
     void OnLevelInit(const char* pMapName);
     void StartVote();
     void FinishVote();
-    void RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
+    bool RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
     void SetMapCooldown(int iMapCooldown) { m_iMapCooldown = iMapCooldown; };
     int GetMapIndexFromSubstring(const char* sMapSubstring);
     int GetMapCooldown() { return m_iMapCooldown; };
@@ -90,12 +95,27 @@ public:
     int ForceNextMap(const char* sMapSubstring);
     int GetMapListSize() { return m_vecMapList.Count(); };
     const char* GetMapName(int iMapIndex) { return m_vecMapList[iMapIndex].GetName(); };
+    uint64 GetMapWorkshopId(int iMapIndex) { return m_vecMapList[iMapIndex].GetWorkshopId(); };
     void ClearPlayerInfo(int iSlot);
+    bool IsVoteOngoing() { return m_bIsVoteOngoing; }
+    bool IsIntermissionAllowed();
+    bool IsMapListLoaded() { return m_bMapListLoaded; }
+    CUtlStringList CreateWorkshopMapGroup();
+    void QueueMapDownload(PublishedFileId_t iWorkshopId);
+    void PrintDownloadProgress();
+    void SetCurrentWorkshopMap(uint64 iCurrentWorkshopMap) { m_iCurrentWorkshopMap = iCurrentWorkshopMap; m_strCurrentMap = ""; }
+    void SetCurrentMap(std::string strCurrentMap) { m_iCurrentWorkshopMap = 0; m_strCurrentMap = strCurrentMap; }
+    uint64 GetCurrentWorkshopMap() { return m_iCurrentWorkshopMap; }
+    const char* GetCurrentMap() { return m_strCurrentMap.c_str(); }
+    int GetDownloadQueueSize() { return m_DownloadQueue.Count(); }
 
 private:
     int WinningMapIndex();
     bool UpdateWinningMap();
     void GetNominatedMapsForVote(CUtlVector<int>& vecChosenNominatedMaps);
+
+    STEAM_GAMESERVER_CALLBACK_MANUAL(CMapVoteSystem, OnMapDownloaded, DownloadItemResult_t, m_CallbackDownloadItemResult);
+    CUtlQueue<PublishedFileId_t> m_DownloadQueue;
 
     CUtlVector<CMapInfo> m_vecMapList;
     CUtlVector<int> m_vecLastPlayedMapIndexes;
@@ -106,6 +126,10 @@ private:
     int m_iRandomWinnerShift = 0;
     int m_arrPlayerVotes[MAXPLAYERS];
     bool m_bIsVoteOngoing = false;
+    bool m_bMapListLoaded = false;
+    bool m_bIntermissionStarted = false;
+    uint64 m_iCurrentWorkshopMap = 0;
+    std::string m_strCurrentMap = "";
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;

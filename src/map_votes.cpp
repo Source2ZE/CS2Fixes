@@ -30,26 +30,48 @@
 #include "utlstring.h"
 #include "utlvector.h"
 #include "votemanager.h"
+#include "steam/steam_gameserver.h"
 
 extern CGlobalVars *gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
+extern CSteamGameServerAPIContext g_steamAPI;
+extern IGameTypes* g_pGameTypes;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
-CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current map on completion", ADMFLAG_ROOT)
 {
 	if (!g_bVoteManagerEnable)
 		return;
 
+	if (g_pMapVoteSystem->GetDownloadQueueSize() != 0)
+	{
+		Message("Please wait for current map downloads to finish before loading map list again\n");
+		return;
+	}
+
 	g_pMapVoteSystem->LoadMapList();
+
+	// A CUtlStringList param is also expected, but we build it in our CreateWorkshopMapGroup pre-hook anyways
+	CALL_VIRTUAL(void, g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup"), g_pGameTypes, "workshop");
+
+	// Updating the mapgroup requires reloading the map for everything to load properly
+	char sChangeMapCmd[128] = "";
+
+	if (g_pMapVoteSystem->GetCurrentWorkshopMap() != 0)
+		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", g_pMapVoteSystem->GetCurrentWorkshopMap());
+	else if (g_pMapVoteSystem->GetCurrentMap()[0] != '\0')
+		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", g_pMapVoteSystem->GetCurrentMap());
+
+	g_pEngineServer2->ServerCommand(sChangeMapCmd);
 	Message("Map list reloaded\n");
 }
 
 CON_COMMAND_F(cs2f_vote_maps_cooldown, "Number of maps to wait until a map can be voted / nominated again i.e. cooldown.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
 	if (!g_pMapVoteSystem) {
-		Message("The map vote subsystem is not enabled.");
+		Message("The map vote subsystem is not enabled.\n");
 		return;
 	}
 
@@ -64,7 +86,7 @@ CON_COMMAND_F(cs2f_vote_maps_cooldown, "Number of maps to wait until a map can b
 CON_COMMAND_F(cs2f_vote_max_nominations, "Number of nominations to include per vote, out of a maximum of 10.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
 	if (!g_pMapVoteSystem) {
-		Message("The map vote subsystem is not enabled.");
+		Message("The map vote subsystem is not enabled.\n");
 		return;
 	}
 
@@ -91,13 +113,17 @@ CON_COMMAND_CHAT_FLAGS(setnextmap, "[mapname] - Force next map (empty to clear f
 	}
 }
 
+static int __cdecl OrderStringsLexicographically(const char* const* a, const char* const* b)
+{
+	return V_strcasecmp(*a, *b);
+}
+
 CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nomination)", ADMFLAG_NONE)
 {
 	if (!g_bVoteManagerEnable || !player)
 		return;
 
-	bool bIsClearingNomination = args.ArgC() < 2;
-	int iResponse = g_pMapVoteSystem->AddMapNomination(player->GetPlayerSlot(), bIsClearingNomination ? "" : args[1]);
+	int iResponse = g_pMapVoteSystem->AddMapNomination(player->GetPlayerSlot(), args.ArgC() < 2 ? "" : args[1]);
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 
 	if (!pPlayer)
@@ -119,12 +145,28 @@ CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nom
 		case NominationReturnCodes::NOMINATION_DISABLED:
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Nomination is currently disabled.");
 			break;
+		case NominationReturnCodes::NOMINATION_RESET:
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your nomination was reset.");
+			break;
+		case NominationReturnCodes::NOMINATION_RESET_FAILED:
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
+			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all maps is:");
+			CUtlVector<const char*> vecMapNames;
+
+			for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
+				vecMapNames.AddToTail(g_pMapVoteSystem->GetMapName(i));
+
+			vecMapNames.Sort(OrderStringsLexicographically);
+
+			// TODO: print cooldown time here too (after rewrite)
+			FOR_EACH_VEC(vecMapNames, i)
+				ClientPrint(player, HUD_PRINTCONSOLE, "- %s", vecMapNames[i]);
+
+			break;
+		}
 		default:
-			if (bIsClearingNomination)
-			{
-				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your nomination was reset.");
-			}
-			else if (pPlayer->GetNominateTime() + 60.0f > gpGlobals->curtime)
+			if (pPlayer->GetNominateTime() + 60.0f > gpGlobals->curtime)
 			{
 				int iRemainingTime = (int)(pPlayer->GetNominateTime() + 60.0f - gpGlobals->curtime);
 				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can nominate again.", iRemainingTime);
@@ -138,28 +180,6 @@ CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nom
 				ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX " \x06%s \x01was nominated by %s. It now has %d nominations.", sMapName, sPlayerName, iNumNominations);
 				pPlayer->SetNominateTime(gpGlobals->curtime);
 			}
-	}
-}
-
-static int __cdecl OrderStringsLexicographically(const char* const* a, const char* const* b)
-{
-	return V_strcasecmp(*a, *b);
-}
-
-CON_COMMAND_CHAT(maplist, "- List the maps in the server")
-{
-	if (!g_bVoteManagerEnable)
-		return;
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
-	ClientPrint(player, HUD_PRINTCONSOLE, "The list of all maps is:");
-	CUtlVector<const char*> vecMapNames;
-	for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++) {
-		vecMapNames.AddToTail(g_pMapVoteSystem->GetMapName(i));
-	}
-	vecMapNames.Sort(OrderStringsLexicographically);
-	FOR_EACH_VEC(vecMapNames, i) {
-		ClientPrint(player, HUD_PRINTCONSOLE, "- %s", vecMapNames[i]);
 	}
 }
 
@@ -178,6 +198,7 @@ CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 	}
 }
 
+// TODO: also merge this into nominate after cooldown system is rewritten
 CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 {
 	if (!g_bVoteManagerEnable)
@@ -195,7 +216,7 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 
 GAME_EVENT_F(cs_win_panel_match)
 {
-	if (g_bVoteManagerEnable)
+	if (g_bVoteManagerEnable && !g_pMapVoteSystem->IsVoteOngoing())
 		g_pMapVoteSystem->StartVote();
 }
 
@@ -216,6 +237,17 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 {
 	if (!g_bVoteManagerEnable)
 		return;
+
+	m_bIsVoteOngoing = false;
+	m_bIntermissionStarted = false;
+
+	// Delay one tick to override any .cfg's
+	new CTimer(0.02f, false, []()
+	{
+		g_pEngineServer2->ServerCommand("mp_match_end_changelevel 0");
+
+		return -1.0f;
+	});
 
 	int iLastCooldownIndex = GetMapsInCooldown() - 1;
 	int iInitMapIndex = GetMapIndexFromSubstring(pMapName);
@@ -370,36 +402,41 @@ void CMapVoteSystem::FinishVote()
 	// Wait a second and force-change the map
 	new CTimer(1.0, false, [iWinningMap]() {
 		char sChangeMapCmd[128];
-		const char* sNextMapName = g_pMapVoteSystem->GetMapName(iWinningMap);
-		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "ds_workshop_changelevel %s", sNextMapName);
+		uint64 workshopId = g_pMapVoteSystem->GetMapWorkshopId(iWinningMap);
+
+		if (workshopId == 0)
+			V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", g_pMapVoteSystem->GetMapName(iWinningMap));
+		else
+			V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", workshopId);
+
 		g_pEngineServer2->ServerCommand(sChangeMapCmd);
 		return -1.0;
 	});
 }
 
-void CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption)
+bool CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption)
 {
-	if (!g_bVoteManagerEnable)
-		return;
-
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(iPlayerSlot);
-	if (!pController || !m_bIsVoteOngoing) return;
-	if (iVoteOption < 0 || iVoteOption >= 10) return;
+	if (!pController || !m_bIsVoteOngoing) return false;
+	if (iVoteOption < 0 || iVoteOption >= 10) return false;
 
 	// Filter out votes on invalid maps
 	int iMapIndexToVote = g_pGameRules->m_nEndMatchMapGroupVoteOptions[iVoteOption];
-	if (iMapIndexToVote < 0 || iMapIndexToVote >= m_vecMapList.Count()) return;
+	if (iMapIndexToVote < 0 || iMapIndexToVote >= m_vecMapList.Count()) return false;
 
 	// Set the vote for the player
 	int iSlot = pController->GetPlayerSlot();
 	m_arrPlayerVotes[iSlot] = iVoteOption;
 
 	// Log vote to console
-	const char* sMapName = g_pMapVoteSystem->GetMapName(iMapIndexToVote);
+	const char* sMapName = GetMapName(iMapIndexToVote);
 	Message("Adding vote to map %i (%s) for player %s (slot %i).\n", iVoteOption, sMapName, pController->GetPlayerName(), iSlot);
 
 	// Update the winning map for every player vote
 	UpdateWinningMap();
+
+	// Vote was counted
+	return true;
 }
 
 bool CMapVoteSystem::UpdateWinningMap()
@@ -503,10 +540,18 @@ int CMapVoteSystem::AddMapNomination(CPlayerSlot iPlayerSlot, const char* sMapSu
 	if (!pController) return NominationReturnCodes::INVALID_INPUT;
 	int iSlot = pController->GetPlayerSlot();
 
-	// If we are resetting the nomination, return -1
-	if (sMapSubstring[0] == '\0') {
-		m_arrPlayerNominations[iSlot] = -1;
-		return -1;
+	if (sMapSubstring[0] == '\0')
+	{
+		// If we are resetting the nomination, return NOMINATION_RESET
+		if (m_arrPlayerNominations[iSlot] != -1)
+		{
+			m_arrPlayerNominations[iSlot] = -1;
+			return NominationReturnCodes::NOMINATION_RESET;
+		}
+		else
+		{
+			return NominationReturnCodes::NOMINATION_RESET_FAILED;
+		}
 	}
 
 	// We are not reseting the nomination: is the map found? is it valid?
@@ -546,15 +591,62 @@ static int __cdecl OrderMapsByWorkshopId(const CMapInfo* a, const CMapInfo* b)
 	else return 1;
 }
 
+void CMapVoteSystem::PrintDownloadProgress()
+{
+	if (m_DownloadQueue.Count() == 0)
+		return;
+
+	uint64 iBytesDownloaded = 0;
+	uint64 iTotalBytes = 0;
+
+	if (!g_steamAPI.SteamUGC()->GetItemDownloadInfo(m_DownloadQueue.Head(), &iBytesDownloaded, &iTotalBytes) || !iTotalBytes)
+		return;
+
+	double flMBDownloaded = (double)iBytesDownloaded / 1024 / 1024;
+	double flTotalMB = (double)iTotalBytes / 1024 / 1024;
+
+	double flProgress = (double)iBytesDownloaded / (double)iTotalBytes;
+	flProgress *= 100.f;
+
+	Message("Downloading map %lli: %.2f/%.2f MB (%.2f%%)\n", m_DownloadQueue.Head(), flMBDownloaded, flTotalMB, flProgress);
+}
+
+void CMapVoteSystem::OnMapDownloaded(DownloadItemResult_t *pResult)
+{
+	if (!m_DownloadQueue.Check(pResult->m_nPublishedFileId))
+		return;
+
+	m_DownloadQueue.RemoveAtHead();
+
+	if (m_DownloadQueue.Count() == 0)
+		return;
+
+	g_steamAPI.SteamUGC()->DownloadItem(m_DownloadQueue.Head(), false);
+}
+
+void CMapVoteSystem::QueueMapDownload(PublishedFileId_t iWorkshopId)
+{
+	if (m_DownloadQueue.Check(iWorkshopId))
+		return;
+
+	m_DownloadQueue.Insert(iWorkshopId);
+
+	if (m_DownloadQueue.Head() == iWorkshopId)
+		g_steamAPI.SteamUGC()->DownloadItem(iWorkshopId, false);
+}
+
 bool CMapVoteSystem::LoadMapList()
 {
+	// This is called when the Steam API is init'd, now is the time to register this
+	m_CallbackDownloadItemResult.Register(this, &CMapVoteSystem::OnMapDownloaded);
+
 	m_vecMapList.Purge();
 	KeyValues* pKV = new KeyValues("maplist");
 	KeyValues::AutoDelete autoDelete(pKV);
 
 	const char *pszPath = "addons/cs2fixes/configs/maplist.cfg";
 	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath)) {
-		Warning("Failed to load %s\n", pszPath);
+		Panic("Failed to load %s\n", pszPath);
 		return false;
 	}
 
@@ -563,18 +655,22 @@ bool CMapVoteSystem::LoadMapList()
 		uint64 iWorkshopId = pKey->GetUint64("workshop_id");
 		bool bIsEnabled = pKey->GetBool("enabled", true);
 
-		if (!iWorkshopId) {
-			Warning("Map entry %s is missing 'workshop_id' key\n", pszName);
-			return false;
-		}
+		if (iWorkshopId != 0)
+			QueueMapDownload(iWorkshopId);
 
 		// We just append the maps to the map list
-		CMapInfo map = CMapInfo(pszName, iWorkshopId, bIsEnabled);
-		ConMsg("Loaded Map Info config %s\n", map.GetName());
-		ConMsg(" - Workshop ID: %llu\n", map.GetWorkshopId());
-		ConMsg(" - Enabled: %s\n", map.IsEnabled()? "true" : "false");
-		m_vecMapList.AddToTail(map);
+		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled));
 	}
+
+	new CTimer(0.f, true, [this]()
+	{
+		if (!this || m_DownloadQueue.Count() == 0)
+			return -1.f;
+
+		PrintDownloadProgress();
+
+		return 1.f;
+	});
 
 	// Sort the map list by the workshop id
 	m_vecMapList.Sort(OrderMapsByWorkshopId);
@@ -582,10 +678,38 @@ bool CMapVoteSystem::LoadMapList()
 	// Print all the maps to show the order
 	FOR_EACH_VEC(m_vecMapList, i) {
 		CMapInfo map = m_vecMapList[i];
-		ConMsg(
-			"Map %d is %s with workshop id %llu, which is %s.\n", 
-			i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled"
-		);
+
+		if (map.GetWorkshopId() == 0)
+			ConMsg("Map %d is %s, which is %s.\n", i, map.GetName(), map.IsEnabled() ? "enabled" : "disabled");
+		else
+			ConMsg("Map %d is %s with workshop id %llu, which is %s.\n", i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled");
 	}
+
+	m_bMapListLoaded = true;
+
 	return true;
+}
+
+bool CMapVoteSystem::IsIntermissionAllowed()
+{
+	if (!g_bVoteManagerEnable)
+		return true;
+
+	// We need to prevent "ending the map twice" as it messes with ongoing map votes
+	// This seems to be a CS2 bug that occurs when the round ends while already on the map end screen
+	if (m_bIntermissionStarted)
+		return false;
+
+	m_bIntermissionStarted = true;
+	return true;
+}
+
+CUtlStringList CMapVoteSystem::CreateWorkshopMapGroup()
+{
+	CUtlStringList mapList;
+
+	for (int i = 0; i < GetMapListSize(); i++)
+		mapList.CopyAndAddToTail(GetMapName(i));
+
+	return mapList;
 }

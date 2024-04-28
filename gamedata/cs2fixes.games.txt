@@ -239,13 +239,6 @@
 				"linux"			"\x48\x85\xC0\x74\x2E\x80\xB8\x2A\x2A\x2A\x2A\x00\x74\x25"
 			}
 
-			"FixLagCompEntityRelationship"
-			{
-				"library"		"server"
-				"windows"		"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x81\xEC\x00\x01\x00\x00\x48\x8B\x02"
-				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x41\x89\xD5\x41\x54\x49\x89\xFC\x48\x89\xF7"
-			}
-
 			// next to "soundname", in windows it's the last referenced sub while in linux it's right after
 			// this is a vscript binding though so it may be removed in the future?
 			"CBaseEntity_EmitSoundParams"
@@ -349,6 +342,14 @@
 				"windows"    "\x48\x89\x5C\x24\x18\x56\x48\x83\xEC\x20\x48\x8B\x1A"
 				"linux"      "\x55\x48\x89\xE5\x41\x55\x41\x54\x48\x83\xEC\x10\x4C\x8B\x26\x4D\x85\xE4\x74\x2A"
 			}
+
+			// "Going to intermission...\n"
+			"CCSGameRules_GoToIntermission"
+			{
+				"library"	"server"
+				"windows"	"\x48\x89\x5C\x24\x10\x48\x89\x74\x24\x18\x48\x89\x7C\x24\x20\x55\x41\x54\x41\x55\x41\x56\x41\x57\x48\x8D\xAC\x24\x00\xFC\xFF\xFF"
+				"linux"		"\x55\x31\xC0\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x41\x54\x49\x89\xFC\x53\x48\x8D\x3D\x2A\x2A\x2A\x2A\x48\x81\xEC\xB8\x12\x00\x00"
+			}
 		}
 		"Offsets"
 		{
@@ -441,6 +442,12 @@
 				"windows"		"1"
 				"linux"			"2"
 			}
+			// Right above "mapgroup workshop;" string there is a virtual call to this on g_pGameTypes using "workshop" string
+			"IGameTypes_CreateWorkshopMapGroup"
+			{
+				"windows"		"37"
+				"linux"			"38"
+			}
 		}
 		"Patches"
 		{
@@ -449,11 +456,6 @@
 			{
 				"windows"		"\xEB"
 				"linux"			"\x90\x90\x90\x90\x90\x90"
-			}
-			"VScriptEnable"
-			{
-				"windows"		"\xBE\x02"
-				"linux"			"\x83\xFE\x02"
 			}
 			"FixWaterFloorJump"
 			{
