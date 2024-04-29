@@ -187,7 +187,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 
 	if (vecPush.z > 0 && (flags & FL_ONGROUND))
 	{
-		addresses::SetGroundEntity(pOther, nullptr);
+		pOther->SetGroundEntity(nullptr);
 		Vector origin = pOther->GetAbsOrigin();
 		origin.z += 1.0f;
 
