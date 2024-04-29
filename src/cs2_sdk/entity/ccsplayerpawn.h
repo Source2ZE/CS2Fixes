@@ -20,6 +20,7 @@
 #pragma once
 
 #include "cbaseplayerpawn.h"
+class CCSPlayer_ActionTrackingServices;
 
 enum CSPlayerState
 {

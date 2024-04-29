@@ -25,6 +25,7 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/cgameplayerequip.h"
 #include "entity/clogiccase.h"
+#include "entity/services.h"
 
 // #define ENTITY_HANDLER_ASSERTION
 

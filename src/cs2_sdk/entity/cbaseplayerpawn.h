@@ -19,9 +19,11 @@
 
 #pragma once
 
-#include "cbaseentity.h"
 #include "cbasemodelentity.h"
-#include "services.h"
+class CPlayer_MovementServices;
+class CPlayer_ObserverServices;
+class CCSPlayer_ItemServices;
+class CPlayer_WeaponServices;
 
 class CBasePlayerPawn : public CBaseModelEntity
 {
