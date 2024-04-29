@@ -36,7 +36,7 @@ extern CGlobalVars *gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
 extern CSteamGameServerAPIContext g_steamAPI;
-extern IGameTypes* g_pGameTypes;
+//extern IGameTypes *g_pGameTypes;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
@@ -54,7 +54,7 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 	g_pMapVoteSystem->LoadMapList();
 
 	// A CUtlStringList param is also expected, but we build it in our CreateWorkshopMapGroup pre-hook anyways
-	CALL_VIRTUAL(void, g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup"), g_pGameTypes, "workshop");
+	//CALL_VIRTUAL(void, g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup"), g_pGameTypes, "workshop");
 
 	// Updating the mapgroup requires reloading the map for everything to load properly
 	char sChangeMapCmd[128] = "";

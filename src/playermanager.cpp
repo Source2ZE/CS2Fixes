@@ -800,7 +800,7 @@ void CPlayerManager::SetupInfiniteAmmo()
 			if (!pPawn)
 				continue;
 
-			CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
+			CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices.Get();
 
 			// it can sometimes be null when player joined on the very first round? 
 			if (!pWeaponServices)
@@ -1031,4 +1031,87 @@ void CPlayerManager::ResetPlayerFlags(int slot)
 	SetPlayerStopSound(slot, false);
 	SetPlayerSilenceSound(slot, true);
 	SetPlayerStopDecals(slot, true);
+}
+
+CCSPlayerController *ZEPlayer::GetController()
+{
+	return CCSPlayerController::FromSlot(this->GetPlayerSlot());
+}
+
+CCSPlayerPawn *ZEPlayer::GetPawn()
+{
+	CCSPlayerController *controller = this->GetController();
+	if (!controller)
+	{
+		return nullptr;
+	}
+	return controller->m_hPlayerPawn().Get();
+}
+
+void ZEPlayer::GetOrigin(Vector *origin)
+{
+	// if (this->processingMovement && this->currentMoveData)
+	//  {
+	//  	*origin = this->currentMoveData->m_vecAbsOrigin;
+	//  }
+	//  else
+	//  {
+	CBasePlayerPawn *pawn = this->GetPawn();
+	if (!pawn)
+	{
+		return;
+	}
+	*origin = pawn->m_CBodyComponent()->m_pSceneNode()->m_vecAbsOrigin();
+	// }
+}
+
+void ZEPlayer::SetOrigin(const Vector &origin)
+{
+	if (this->processingMovement && this->currentMoveData)
+	{
+		this->currentMoveData->m_vecAbsOrigin = origin;
+	}
+	else
+	{
+		CBasePlayerPawn *pawn = this->GetPawn();
+		if (!pawn)
+		{
+			return;
+		}
+		pawn->Teleport(&origin, NULL, NULL);
+	}
+}
+
+void ZEPlayer::GetVelocity(Vector *velocity)
+{
+	// if (this->processingMovement && this->currentMoveData)
+	// {
+	// 	*velocity = this->currentMoveData->m_vecVelocity;
+	// }
+	// else
+	// {
+	CBasePlayerPawn *pawn = this->GetPawn();
+	if (!pawn)
+	{
+		return;
+	}
+	*velocity = pawn->m_vecAbsVelocity();
+	//}
+}
+
+void ZEPlayer::SetVelocity(const Vector &velocity)
+{
+	if (this->processingMovement && this->currentMoveData)
+	{
+		this->currentMoveData->m_vecVelocity = velocity;
+	}
+	else
+	{
+		CBasePlayerPawn *pawn = this->GetPawn();
+		if (!pawn)
+		{
+			return;
+		}
+		pawn->Teleport(NULL, NULL, &velocity);
+	}
 }

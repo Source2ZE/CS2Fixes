@@ -28,6 +28,7 @@
 #include "entity/lights.h"
 #include "entity/cparticlesystem.h"
 #include "gamesystem.h"
+#include "entity/services.h"
 
 #define DECAL_PREF_KEY_NAME "hide_decals"
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
@@ -137,6 +138,23 @@ public:
 	const CSteamID* GetSteamId() { return m_SteamID; }
 	bool IsAdminFlagSet(uint64 iFlag);
 	bool IsFlooding();
+
+	CMoveData *currentMoveData;
+	bool processingMovement {};
+
+	CCSPlayerController *GetController();
+	CCSPlayerPawn *GetPawn();
+
+	void SetVelocity(const Vector &velocity);
+	void GetVelocity(Vector *velocity);
+	void SetOrigin(const Vector &origin);
+	void GetOrigin(Vector *origin);
+
+	bool didTPM {};
+	bool overrideTPM {};
+	Vector tpmVelocity;
+	Vector tpmOrigin;
+	Vector lastValidPlane;
 	
 	void SetConnected() { m_bConnected = true; }
 	void SetUnauthenticatedSteamId(const CSteamID* steamID) { m_UnauthenticatedSteamID = steamID; }

@@ -146,6 +146,7 @@ public:
 	SCHEMA_FIELD(bool, m_bTakesDamage)
 	SCHEMA_FIELD(TakeDamageFlags_t, m_nTakeDamageFlags)
 	SCHEMA_FIELD_POINTER(CUtlStringToken, m_nSubclassID)
+	SCHEMA_FIELD(CHandle<Z_CBaseEntity>, m_hGroundEntity)
 	SCHEMA_FIELD(float, m_flFriction)
 	SCHEMA_FIELD(float, m_flGravityScale)
 	SCHEMA_FIELD(float, m_flTimeScale)

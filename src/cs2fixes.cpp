@@ -126,7 +126,7 @@ CGameConfig *g_GameConfig = nullptr;
 ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
-IGameTypes* g_pGameTypes = nullptr;
+//IGameTypes* g_pGameTypes = nullptr;
 int g_iCGamePlayerEquipUseId = -1;
 int g_iCreateWorkshopMapGroupId = -1;
 
@@ -152,7 +152,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_gameEventSystem, IGameEventSystem, GAMEEVENTSYSTEM_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkMessages, INetworkMessages, NETWORKMESSAGES_INTERFACE_VERSION);
-	GET_V_IFACE_ANY(GetEngineFactory, g_pGameTypes, IGameTypes, GAMETYPES_INTERFACE_VERSION);
+	//GET_V_IFACE_ANY(GetEngineFactory, g_pGameTypes, IGameTypes, GAMETYPES_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetFileSystemFactory, g_pFullFileSystem, IFileSystem, FILESYSTEM_INTERFACE_VERSION);
 
 	// Required to get the IMetamodListener events
@@ -195,7 +195,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	SH_ADD_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
 	SH_ADD_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_ADD_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
-	g_iCreateWorkshopMapGroupId = SH_ADD_MANUALVPHOOK(CreateWorkshopMapGroup, g_pGameTypes, SH_MEMBER(this, &CS2Fixes::Hook_CreateWorkshopMapGroup), false);
+	//g_iCreateWorkshopMapGroupId = SH_ADD_MANUALVPHOOK(CreateWorkshopMapGroup, g_pGameTypes, SH_MEMBER(this, &CS2Fixes::Hook_CreateWorkshopMapGroup), false);
 
 	META_CONPRINTF( "All hooks started!\n" );
 

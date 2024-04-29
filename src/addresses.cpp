@@ -73,6 +73,9 @@ bool addresses::Initialize(CGameConfig *g_GameConfig)
 	RESOLVE_SIG(g_GameConfig, "CBaseEntity_EmitSoundFilter", addresses::CBaseEntity_EmitSoundFilter);
 	RESOLVE_SIG(g_GameConfig, "CBaseEntity_SetMoveType", addresses::CBaseEntity_SetMoveType);
 	RESOLVE_SIG(g_GameConfig, "CTakeDamageInfo", addresses::CTakeDamageInfo_Constructor);
-
+	RESOLVE_SIG(g_GameConfig, "InitPlayerMovementTraceFilter", addresses::InitPlayerMovementTraceFilter);
+	RESOLVE_SIG(g_GameConfig, "TracePlayerBBox", addresses::TracePlayerBBox);
+	RESOLVE_SIG(g_GameConfig, "InitGameTrace", addresses::InitGameTrace);
+	
 	return true;
 }
