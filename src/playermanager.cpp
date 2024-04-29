@@ -585,7 +585,7 @@ void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t *pRespons
 
 	for (ZEPlayer *pPlayer : m_vecPlayers)
 	{
-		if (!pPlayer || !(pPlayer->GetUnauthenticatedSteamId64() == iSteamId))
+		if (!pPlayer || pPlayer->IsFakeClient() || !(pPlayer->GetUnauthenticatedSteamId64() == iSteamId))
 			continue;
 
 		CCSPlayerController *pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
