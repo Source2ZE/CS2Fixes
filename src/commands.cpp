@@ -661,7 +661,7 @@ CON_COMMAND_CHAT(dispatch_particle, "test")
 	CRecipientFilter filter;
 	filter.AddAllPlayers();
 
-	player->GetPawn()->DispatchParticleFilter(args[1], &filter);
+	player->GetPawn()->DispatchParticle(args[1], &filter);
 }
 
 CON_COMMAND_CHAT(emitsound, "emit a sound from the entity under crosshair")

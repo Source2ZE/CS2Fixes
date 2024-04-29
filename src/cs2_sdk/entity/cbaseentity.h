@@ -241,16 +241,7 @@ public:
 		return addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
 	}
 
-	void DispatchParticle(const char *pszParticleName, ParticleAttachment_t nAttachType = PATTACH_POINT_FOLLOW,
-								char iAttachmentPoint = 0, CUtlSymbolLarge iAttachmentName = "")
-	{
-		CRecipientFilter filter;
-		filter.AddAllPlayers();
-
-		addresses::DispatchParticleEffect(pszParticleName, nAttachType, this, iAttachmentPoint, iAttachmentName, false, 0, &filter, 0);
-	}
-
-	void DispatchParticleFilter(const char *pszParticleName, IRecipientFilter *pFilter, ParticleAttachment_t nAttachType = PATTACH_POINT_FOLLOW, 
+	void DispatchParticle(const char *pszParticleName, IRecipientFilter *pFilter, ParticleAttachment_t nAttachType = PATTACH_POINT_FOLLOW, 
 		char iAttachmentPoint = 0, CUtlSymbolLarge iAttachmentName = "")
 	{
 		addresses::DispatchParticleEffect(pszParticleName, nAttachType, this, iAttachmentPoint, iAttachmentName, false, 0, pFilter, 0);
