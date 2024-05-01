@@ -481,7 +481,8 @@ void FASTCALL Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip
 }
 void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
 {
-    CGamePlayerEquipHandler::TriggerForActivatedPlayer(pEntity, pInput);
+	if (CGamePlayerEquipHandler::TriggerForActivatedPlayer(pEntity, pInput))
+		CGamePlayerEquip_InputTriggerForActivatedPlayer(pEntity, pInput);
 }
 
 int64_t* FASTCALL Detour_CCSGameRules_GoToIntermission(int64_t unk1, char unk2)
