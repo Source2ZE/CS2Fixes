@@ -32,6 +32,7 @@
 #include "engine/igameeventsystem.h"
 #include "networksystem/inetworkmessages.h"
 #include "recipientfilters.h"
+#include "serversideclient.h"
 #include "user_preferences.h"
 #include "customio.h"
 #include <sstream>
@@ -876,21 +877,18 @@ float ZR_MoanTimer(CHandle<CCSPlayerPawn> hPawn)
 
 void ZR_InfectShake(CCSPlayerController *pController)
 {
-	if (!pController)
+	if (!pController || !pController->IsConnected() || pController->IsBot())
 		return;
-
-	CCSUsrMsg_Shake *pMsg = new CCSUsrMsg_Shake();
-
-	pMsg->set_duration(g_flInfectShakeDuration);
-	pMsg->set_frequency(g_flInfectShakeFrequency);
-	pMsg->set_local_amplitude(g_flInfectShakeAmplitude);
-	pMsg->set_command(0);
 
 	INetworkSerializable *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
 
-	CSingleRecipientFilter filter(pController->GetPlayerSlot());
+	CCSUsrMsg_Shake data;
+	data.set_duration(g_flInfectShakeDuration);
+	data.set_frequency(g_flInfectShakeFrequency);
+	data.set_local_amplitude(g_flInfectShakeAmplitude);
+	data.set_command(0);
 
-	g_gameEventSystem->PostEventAbstract(0, false, &filter, pNetMsg, pMsg, 0);
+	pController->GetServerSideClient()->GetNetChannel()->SendNetMessage(pNetMsg, &data, BUF_RELIABLE);
 }
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bDontBroadcast)

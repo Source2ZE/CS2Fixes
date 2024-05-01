@@ -44,7 +44,15 @@ public:
 	SCHEMA_FIELD(CSPlayerState, m_iPlayerState)
 	SCHEMA_FIELD(CHandle<CCSPlayerController>, m_hOriginalController)
 
-	CCSPlayerController *GetOriginalController() { return m_hOriginalController().Get(); }
+	CCSPlayerController *GetOriginalController()
+	{
+		return m_hOriginalController().Get();
+	}
+
+	bool IsBot()
+	{
+		return m_fFlags() & FL_PAWN_FAKECLIENT;
+	}
 };
 
 class CCSPlayerPawn : public CCSPlayerPawnBase

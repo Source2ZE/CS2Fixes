@@ -22,6 +22,7 @@
 #include "cbaseplayercontroller.h"
 #include "services.h"
 #include "../playermanager.h"
+#include "../serversideclient.h"
 
 extern CGameEntitySystem* g_pEntitySystem;
 
@@ -55,6 +56,16 @@ public:
 	ZEPlayer* GetZEPlayer()
 	{
 		return g_playerManager->GetPlayer(GetPlayerSlot());
+	}
+
+	CServerSideClient *GetServerSideClient()
+	{
+		return GetClientBySlot(GetPlayerSlot());
+	}
+
+	bool IsBot()
+	{
+		return m_fFlags() & FL_CONTROLLER_FAKECLIENT;
 	}
 
 	void ChangeTeam(int iTeam)

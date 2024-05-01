@@ -39,8 +39,6 @@ extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 
-extern CServerSideClient *GetClientBySlot(CPlayerSlot slot);
-
 ZEPlayerHandle::ZEPlayerHandle() : m_Index(INVALID_ZEPLAYERHANDLE_INDEX) {};
 
 ZEPlayerHandle::ZEPlayerHandle(CPlayerSlot slot)
