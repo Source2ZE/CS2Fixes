@@ -52,6 +52,7 @@ class CGameRules;
 class CEntityKeyValues;
 class IRecipientFilter;
 class CTakeDamageInfo;
+class INetworkStringTable;
 
 struct EmitSound_t;
 struct SndOpEventGuid_t;
@@ -93,4 +94,5 @@ namespace addresses
 	inline void(FASTCALL *CBaseEntity_SetMoveType)(Z_CBaseEntity *pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
 	inline void(FASTCALL *CTakeDamageInfo_Constructor)(CTakeDamageInfo *pThis, Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility,
 		const Vector *vecDamageForce, const Vector *vecDamagePosition, float flDamage, int bitsDamageType, int iCustomDamage, void *a10);
+	inline void(FASTCALL *CNetworkStringTable_DeleteAllStrings)(INetworkStringTable *pThis);
 }
