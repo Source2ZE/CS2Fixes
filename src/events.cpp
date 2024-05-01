@@ -69,7 +69,7 @@ void UnregisterEventListeners()
 }
 
 bool g_bPurgeEntityNames = false;
-FAKE_BOOL_CVAR(cs2f_block_entity_strings, "Whether to purge the EntityNames stringtable on new rounds", g_bPurgeEntityNames, false, false);
+FAKE_BOOL_CVAR(cs2f_purge_entity_strings, "Whether to purge the EntityNames stringtable on new rounds", g_bPurgeEntityNames, false, false);
 
 GAME_EVENT_F(round_prestart)
 {
