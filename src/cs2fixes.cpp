@@ -332,25 +332,25 @@ const char *CS2Fixes::GetDate()
 
 const char *CS2Fixes::GetLogTag()
 {
-	return "CS2Fixes";
+	return "Rampbugfix";
 }
 
 const char *CS2Fixes::GetAuthor()
 {
-	return "xen, Poggu, and the Source2ZE community";
+	return "Interesting";
 }
 
 const char *CS2Fixes::GetDescription()
 {
-	return "A bunch of experiments thrown together into one big mess of a plugin.";
+	return "Minimizes rampbugs.";
 }
 
 const char *CS2Fixes::GetName()
 {
-	return "CS2Fixes";
+	return "Rampbugsfix";
 }
 
 const char *CS2Fixes::GetURL()
 {
-	return "https://github.com/Source2ZE/CS2Fixes";
+	return "https://github.com/Interesting-exe/CS2Fixes-RampbugFix";
 }
