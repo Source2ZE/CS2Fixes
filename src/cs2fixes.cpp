@@ -32,6 +32,7 @@
 #include "plat.h"
 #include "entitysystem.h"
 #include "engine/igameeventsystem.h"
+#include "networkstringtabledefs.h"
 #include "gamesystem.h"
 #include "ctimer.h"
 #include "entities.h"
@@ -151,6 +152,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkMessages, INetworkMessages, NETWORKMESSAGES_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_pGameTypes, IGameTypes, GAMETYPES_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetFileSystemFactory, g_pFullFileSystem, IFileSystem, FILESYSTEM_INTERFACE_VERSION);
+	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkStringTableServer, INetworkStringTableContainer, INTERFACENAME_NETWORKSTRINGTABLESERVER);
 
 	// Required to get the IMetamodListener events
 	g_SMAPI->AddListener(this, this);

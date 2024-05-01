@@ -66,7 +66,6 @@ DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
-DECLARE_DETOUR(CNetworkStringTable_AddString, Detour_AddString);
 DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers);
@@ -413,24 +412,6 @@ void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsi
 		return nullptr;
 
 	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7, unk8);
-}
-
-bool g_bBlockEntityStrings = false;
-FAKE_BOOL_CVAR(cs2f_block_entity_strings, "Whether to block adding entries in the EntityNames stringtable", g_bBlockEntityStrings, false, false);
-
-int64 FASTCALL Detour_AddString(void *pStringTable, bool bServer, const char *pszString, void *a4)
-{
-	if (!g_bBlockEntityStrings)
-		return CNetworkStringTable_AddString(pStringTable, bServer, pszString, a4);
-
-	static int offset = g_GameConfig->GetOffset("CNetworkStringTable_GetTableName");
-	const char *pszStringTableName = CALL_VIRTUAL(const char *, offset, pStringTable);
-
-	// The whole name is "EntityNames" so do the bare minimum comparison, since no other table starts with "Ent"
-	if (!V_strncmp(pszStringTableName, "Ent", 3))
-		return -1;
-
-	return CNetworkStringTable_AddString(pStringTable, bServer, pszString, a4);
 }
 
 void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pMove)
