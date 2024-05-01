@@ -56,9 +56,6 @@
 #include "gameevents.pb.h"
 #include "leader.h"
 
-#define VPROF_ENABLED
-#include "tier0/vprof.h"
-
 #include "tier0/memdbgon.h"
 
 double g_flUniversalTime;
@@ -650,7 +647,6 @@ void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, ENetworkDisconnectionRea
 
 void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTick)
 {
-	VPROF_ENTER_SCOPE(__FUNCTION__);
 	/**
 	 * simulating:
 	 * ***********
@@ -695,8 +691,6 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 		CZRRegenTimer::Tick();
 
     EntityHandler_OnGameFramePost(simulating, gpGlobals->tickcount);
-
-	VPROF_EXIT_SCOPE();
 }
 
 extern bool g_bFlashLightTransmitOthers;
@@ -706,8 +700,6 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 {
 	if (!g_pEntitySystem)
 		return;
-
-	VPROF_ENTER_SCOPE(__FUNCTION__);
 
 	for (int i = 0; i < infoCount; i++)
 	{
@@ -769,8 +761,6 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 		if (pGlowModel)
 			pInfo->m_pTransmitEntity->Clear(pGlowModel->entindex());
 	}
-
-	VPROF_EXIT_SCOPE();
 }
 
 void CS2Fixes::Hook_ApplyGameSettings(KeyValues* pKV)
