@@ -32,9 +32,6 @@
 #include "ctime"
 #include "leader.h"
 
-#define VPROF_ENABLED
-#include "tier0/vprof.h"
-
 #include "tier0/memdbgon.h"
 
 
@@ -676,8 +673,6 @@ void CPlayerManager::CheckHideDistances()
 	if (!g_pEntitySystem)
 		return;
 
-	VPROF_ENTER_SCOPE(__FUNCTION__);
-
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		auto player = GetPlayer(i);
@@ -723,8 +718,6 @@ void CPlayerManager::CheckHideDistances()
 			}
 		}
 	}
-
-	VPROF_EXIT_SCOPE();
 }
 
 static const char *g_szPlayerStates[] =
