@@ -1,3 +1,6 @@
+# Rampbug Fix
+The fix isn't perfect. rampbugs will continue to happen, especially on poorly ported maps. The fix may cause stutters when preventing a rampbug, especially on high ping.
+
 # CS2Fixes
 
 CS2Fixes is a Metamod plugin with fixes and features aimed but not limited to zombie escape. This project also serves as a good example and help for source2mod and other developers.
