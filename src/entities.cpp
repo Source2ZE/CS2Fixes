@@ -19,7 +19,6 @@
 
 #include "entities.h"
 
-#include "ctimer.h"
 #include "entity.h"
 #include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
@@ -48,34 +47,6 @@ inline bool StripPlayer(CCSPlayerPawn* pPawn)
     pItemServices->StripPlayerWeapons(true);
 
     return true;
-}
-
-// Must be called in GameFramePre
-inline void DelayInput(Z_CBaseEntity* pCaller, const char* input, const char* param = "")
-{
-    const auto eh = pCaller->GetHandle();
-
-    new CTimer(0.f, false, [eh, input, param]() {
-        if (const auto entity = reinterpret_cast<Z_CBaseEntity*>(eh.Get()))
-            entity->AcceptInput(input, param, nullptr, entity);
-
-        return -1.f;
-    });
-}
-
-// Must be called in GameFramePre
-inline void DelayInput(Z_CBaseEntity* pCaller, Z_CBaseEntity* pActivator, const char* input, const char* param = "")
-{
-    const auto eh = pCaller->GetHandle();
-    const auto ph = pActivator->GetHandle();
-
-    new CTimer(0.f, false, [eh, ph, input, param]() {
-        const auto player = reinterpret_cast<Z_CBaseEntity*>(ph.Get());
-        if (const auto entity = reinterpret_cast<Z_CBaseEntity*>(eh.Get()))
-            entity->AcceptInput(input, param, player, entity);
-
-        return -1.f;
-    });
 }
 
 namespace CGamePlayerEquipHandler
@@ -193,7 +164,6 @@ inline uint64 GameUIThink(CGameUI* pEntity, CCSPlayerPawn* pPlayer, uint32 lastB
 
     if ((spawnFlags & CGameUI::SF_GAMEUI_JUMP_DEACTIVATE) != 0 && (buttons & IN_JUMP) != 0)
     {
-        DelayInput(pEntity, pPlayer, "Deactivate");
         return BAD_BUTTONS;
     }
 
@@ -281,7 +251,6 @@ void RunThink(int tick)
 
         if (!player || !player->IsPawn())
         {
-            DelayInput(entity, "Deactivate");
 #ifdef ENTITY_HANDLER_ASSERTION
             Message("Deactivate Entity %d due to invalid player.\n", entity->entindex());
 #endif
@@ -290,7 +259,6 @@ void RunThink(int tick)
 
         if (!player->IsAlive())
         {
-            DelayInput(entity, player, "Deactivate");
 #ifdef ENTITY_HANDLER_ASSERTION
             Message("Deactivate Entity %d due to player dead.\n", entity->entindex());
 #endif
@@ -323,8 +291,6 @@ bool OnActivate(CGameUI* pEntity, Z_CBaseEntity* pActivator)
     const CBaseHandle handle = pEntity->GetHandle();
     const auto        key    = static_cast<uint>(handle.ToInt());
 
-    DelayInput(pEntity, pPlayer, "InValue", "PlayerOn");
-
     s_repository[key] = CGameUIState(pPlayer, GetButtons(pMovement) & ~IN_USE);
 
 #ifdef ENTITY_HANDLER_ASSERTION
@@ -353,7 +319,6 @@ bool OnDeactivate(CGameUI* pEntity, Z_CBaseEntity* pActivator)
         if ((pEntity->m_spawnflags() & CGameUI::SF_GAMEUI_FREEZE_PLAYER) != 0)
             pPlayer->m_fFlags(pPlayer->m_fFlags() & ~FL_ATCONTROLS);
 
-        DelayInput(pEntity, pPlayer, "InValue", "PlayerOff");
 
 #ifdef ENTITY_HANDLER_ASSERTION
         Message("Deactivate Entity %d -> %s\n", pEntity->entindex(), pPlayer->GetController()->GetPlayerName());

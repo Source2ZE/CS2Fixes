@@ -25,8 +25,6 @@
 #include "entity/cenventitymaker.h"
 #include "entity/cphysthruster.h"
 
-#include "ctimer.h"
-
 #include <entity/cbasetrigger.h>
 #include <string>
 #include <vector>
@@ -312,8 +310,6 @@ static void AddOutputCustom_Speed(Z_CBaseEntity*                  pInstance,
 
     const auto value = Q_atof(vecArgs[1].c_str());
 
-    pController->GetZEPlayer()->SetSpeedMod(value);
-
 #ifdef _DEBUG
     Message("Set speed to %f for %s\n", value, pInstance->GetName());
 #endif
@@ -436,50 +432,5 @@ bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, Z_CBaseEntity* pInflicto
     pParticleEnt->SetParent(pPawn);
 
     pPawn->m_hEffectEntity = pParticleEnt;
-
-    CHandle<CCSPlayerPawn> hPawn(pPawn);
-    CHandle<Z_CBaseEntity> hInflictor(pInflictor);
-    CHandle<Z_CBaseEntity> hAttacker(pAttacker);
-    CHandle<Z_CBaseEntity> hAbility(pAbility);
-
-    new CTimer(0.f, false, [hPawn, hInflictor, hAttacker, hAbility, nDamageType]() {
-        CCSPlayerPawn* pPawn = hPawn.Get();
-
-        if (!pPawn)
-            return -1.f;
-
-        const auto pParticleEnt = reinterpret_cast<CParticleSystem*>(pPawn->m_hEffectEntity().Get());
-
-        if (!pParticleEnt)
-            return -1.f;
-
-        if (V_strncmp(pParticleEnt->GetClassname(), "info_part", 9) != 0)
-        {
-            // This should never happen but just in case
-            Panic("Found unexpected entity %s while burning a pawn!\n", pParticleEnt->GetClassname());
-            return -1.f;
-        }
-
-        if (pParticleEnt->m_flDissolveStartTime() <= gpGlobals->curtime || !pPawn->IsAlive())
-        {
-            pParticleEnt->AcceptInput("Stop");
-            UTIL_AddEntityIOEvent(pParticleEnt, "Kill"); // Kill on the next frame
-
-            return -1.f;
-        }
-
-        CTakeDamageInfo info(hInflictor, hAttacker, hAbility, g_flBurnDamage, nDamageType);
-
-        // Damage doesn't apply if the inflictor is null
-        if (!hInflictor.Get())
-            info.m_hInflictor.Set(hAttacker);
-
-        pPawn->TakeDamage(info);
-
-        pPawn->m_flVelocityModifier = g_flBurnSlowdown;
-
-        return g_flBurnInterval;
-    });
-
     return true;
 }

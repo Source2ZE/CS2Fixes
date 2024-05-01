@@ -21,10 +21,7 @@
 #include "gameconfig.h"
 #include "addresses.h"
 #include "gamesystem.h"
-#include "zombiereborn.h"
 #include "playermanager.h"
-#include "leader.h"
-#include "adminsystem.h"
 #include "entities.h"
 
 #include "tier0/memdbgon.h"
@@ -76,10 +73,6 @@ GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
 	// Any resource adding MUST be done here, the resource manifest is not long-lived
 	// pResourceManifest->AddResource("characters/models/my_character_model.vmdl");
 
-	ZR_Precache(pResourceManifest);
-	PrecacheBeaconParticle(pResourceManifest);
-	Leader_Precache(pResourceManifest);
-
 	pResourceManifest->AddResource(g_sBurnParticle.c_str());
 }
 
@@ -87,12 +80,5 @@ GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
 GS_EVENT_MEMBER(CGameSystem, ServerPreEntityThink)
 {
 	// This could've gone into CS2Fixes::Hook_GameFrame but I've kept it here as an example
-	g_playerManager->FlashLightThink();
 	EntityHandler_OnGameFramePre(gpGlobals->m_bInSimulation, gpGlobals->tickcount);
-}
-
-// Called every frame after entities think
-GS_EVENT_MEMBER(CGameSystem, ServerPostEntityThink)
-{
-	g_playerManager->UpdatePlayerStates();
 }

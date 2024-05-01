@@ -46,11 +46,6 @@ CMemPatch g_CommonPatches[] =
 #endif
 };
 
-CMemPatch g_ClientPatches[] =
-{
-	CMemPatch("ClientMovementUnlock", "ClientMovementUnlock"),
-};
-
 #ifdef _WIN32
 CMemPatch g_ToolsPatches[] =
 {
@@ -64,31 +59,6 @@ CMemPatch g_ToolsPatches[] =
 };
 #endif
 
-// CONVAR_TODO
-bool g_bEnableMovementUnlocker = true;
-
-CON_COMMAND_F(cs2f_movement_unlocker_enable, "Whether to enable movement unlocker", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-	{
-		Msg("%s %i\n", args[0], g_bEnableMovementUnlocker);
-		return;
-	}
-
-	bool bOld = g_bEnableMovementUnlocker;
-
-	g_bEnableMovementUnlocker = V_StringToBool(args[1], false);
-
-	if (g_bEnableMovementUnlocker != bOld)
-	{
-		// Movement unlocker is always the first patch
-		if (g_bEnableMovementUnlocker)
-			g_CommonPatches[0].PerformPatch(g_GameConfig);
-		else
-			g_CommonPatches[0].UndoPatch();
-	}
-}
-
 bool InitPatches(CGameConfig *g_GameConfig)
 {
 	bool success = true;
@@ -96,16 +66,6 @@ bool InitPatches(CGameConfig *g_GameConfig)
 	{
 		if (!g_CommonPatches[i].PerformPatch(g_GameConfig))
 			success = false;
-	}
-
-	// Dedicated servers don't load client
-	if (!CommandLine()->HasParm("-dedicated"))
-	{
-		for (int i = 0; i < sizeof(g_ClientPatches) / sizeof(*g_ClientPatches); i++)
-		{
-			if (!g_ClientPatches[i].PerformPatch(g_GameConfig))
-				success = false;
-		}
 	}
 
 #ifdef _WIN32
@@ -121,12 +81,6 @@ void UndoPatches()
 {
 	for (int i = 0; i < sizeof(g_CommonPatches) / sizeof(*g_CommonPatches); i++)
 		g_CommonPatches[i].UndoPatch();
-
-	if (!CommandLine()->HasParm("-dedicated"))
-	{
-		for (int i = 0; i < sizeof(g_ClientPatches) / sizeof(*g_ClientPatches); i++)
-			g_ClientPatches[i].UndoPatch();
-	}
 
 #ifdef _WIN32
 	if (CommandLine()->HasParm("-tools"))
