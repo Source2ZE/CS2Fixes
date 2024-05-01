@@ -12,7 +12,7 @@ Minimizes rampbugs. This plugin isn't perfect and rampbugs will continue to occu
 Follow the instructions below to compile CS2Fixes.
 
 ```bash
-git clone https://github.com/Source2ZE/CS2Fixes/ && cd CS2Fixes
+git clone --single-branch --branch rampbugonly https://github.com/Interesting-exe/CS2Fixes-RampbugFix && cd CS2Fixes-RampbugFix
 git submodule update --init --recursive
 
 export MMSOURCE112=/path/to/metamod/
