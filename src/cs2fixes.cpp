@@ -28,6 +28,7 @@
 #include "icvar.h"
 #include "interface.h"
 #include "tier0/dbg.h"
+#include "tier0/vprof.h"
 #include "schemasystem/schemasystem.h"
 #include "plat.h"
 #include "entitysystem.h"
@@ -353,6 +354,8 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CCommandContext& ctx, const CCommand& args)
 {
+	VPROF_BUDGET("CS2Fixes::Hook_DispatchConCommand", "ConCommands");
+
 	if (!g_pEntitySystem)
 		RETURN_META(MRES_IGNORED);
 
@@ -656,6 +659,8 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 	 * false | game is not ticking
 	 */
 
+	VPROF_BUDGET("CS2Fixes::Hook_GameFramePost", "CS2FixesPerFrame");
+
 	if (simulating && g_bHasTicked)
 	{
 		g_flUniversalTime += gpGlobals->curtime - g_flLastTickedTime;
@@ -702,6 +707,8 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 {
 	if (!g_pEntitySystem)
 		return;
+
+	VPROF("CS2Fixes::Hook_CheckTransmit");
 
 	for (int i = 0; i < infoCount; i++)
 	{

@@ -31,6 +31,7 @@
 #include "ctimer.h"
 #include "ctime"
 #include "leader.h"
+#include "tier0/vprof.h"
 
 #include "tier0/memdbgon.h"
 
@@ -647,6 +648,8 @@ void CPlayerManager::FlashLightThink()
 	if (!g_bFlashLightEnable)
 		return;
 
+	VPROF("CPlayerManager::FlashLightThink");
+
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		CCSPlayerController *pPlayer = CCSPlayerController::FromSlot(i);
@@ -670,6 +673,8 @@ void CPlayerManager::CheckHideDistances()
 {
 	if (!g_pEntitySystem)
 		return;
+
+	VPROF("CPlayerManager::CheckHideDistances");
 
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
@@ -778,6 +783,8 @@ void CPlayerManager::SetupInfiniteAmmo()
 	{
 		if (!g_bInfiniteAmmo)
 			return 5.0f;
+
+		VPROF("CPlayerManager::InfiniteAmmoTimer");
 
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
