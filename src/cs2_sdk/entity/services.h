@@ -248,6 +248,11 @@ struct alignas(16) trace_t_s2
 	bool startsolid;
 };
 
+static_assert(offsetof(trace_t_s2, startpos) == 120);
+static_assert(offsetof(trace_t_s2, endpos) == 132);
+static_assert(offsetof(trace_t_s2, startsolid) == 183);
+static_assert(offsetof(trace_t_s2, fraction) == 172);
+
 struct touchlist_t {
 	Vector deltavelocity;
 	trace_t_s2 trace;

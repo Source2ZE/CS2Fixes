@@ -22,7 +22,6 @@
 #include "addresses.h"
 #include "gamesystem.h"
 #include "playermanager.h"
-#include "entities.h"
 
 #include "tier0/memdbgon.h"
 
@@ -59,26 +58,4 @@ bool InitGameSystems()
 	CGameSystem::sm_Factory = new CGameSystemStaticFactory<CGameSystem>("CS2Fixes_GameSystem", &g_GameSystem);
 
 	return true;
-}
-
-extern std::string g_sBurnParticle;
-
-GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
-{
-	Message("CGameSystem::BuildGameSessionManifest\n");
-
-	IEntityResourceManifest *pResourceManifest = msg->m_pResourceManifest;
-
-	// This takes any resource type, model or not
-	// Any resource adding MUST be done here, the resource manifest is not long-lived
-	// pResourceManifest->AddResource("characters/models/my_character_model.vmdl");
-
-	pResourceManifest->AddResource(g_sBurnParticle.c_str());
-}
-
-// Called every frame before entities think
-GS_EVENT_MEMBER(CGameSystem, ServerPreEntityThink)
-{
-	// This could've gone into CS2Fixes::Hook_GameFrame but I've kept it here as an example
-	EntityHandler_OnGameFramePre(gpGlobals->m_bInSimulation, gpGlobals->tickcount);
 }

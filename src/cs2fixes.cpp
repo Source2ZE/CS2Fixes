@@ -23,7 +23,6 @@
 #include "appframework/IAppSystem.h"
 #include "common.h"
 #include "detours.h"
-#include "patches.h"
 #include "icvar.h"
 #include "interface.h"
 #include "tier0/dbg.h"
@@ -32,13 +31,11 @@
 #include "entitysystem.h"
 #include "engine/igameeventsystem.h"
 #include "gamesystem.h"
-#include "entities.h"
 #include "playermanager.h"
 #include <entity.h>
 #include "gameconfig.h"
 #include "entity/cgamerules.h"
 #include "entity/ccsplayercontroller.h"
-#include "entitylistener.h"
 #include "serversideclient.h"
 #include "te.pb.h"
 #include "cs_gameevents.pb.h"
@@ -93,7 +90,6 @@ IGameEventSystem *g_gameEventSystem = nullptr;
 IGameEventManager2 *g_gameEventManager = nullptr;
 INetworkGameServer *g_pNetworkGameServer = nullptr;
 CGameEntitySystem *g_pEntitySystem = nullptr;
-CEntityListener *g_pEntityListener = nullptr;
 CGlobalVars *gpGlobals = nullptr;
 CPlayerManager *g_playerManager = nullptr;
 IVEngineServer2 *g_pEngineServer2 = nullptr;
@@ -159,9 +155,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	if (!addresses::Initialize(g_GameConfig))
 		bRequiredInitLoaded = false;
 
-	if (!InitPatches(g_GameConfig))
-		bRequiredInitLoaded = false;
-
 	if (!InitDetours(g_GameConfig))
 		bRequiredInitLoaded = false;
 
@@ -194,13 +187,11 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	if (late)
 	{
 		g_pEntitySystem = GameEntitySystem();
-		g_pEntitySystem->AddListenerEntity(g_pEntityListener);
 		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 		gpGlobals = g_pNetworkGameServer->GetGlobals();
 	}
 
 	g_playerManager = new CPlayerManager(late);
-	g_pEntityListener = new CEntityListener();
 
 	srand(time(0));
 
@@ -216,16 +207,12 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
 
 	FlushAllDetours();
-	UndoPatches();
 
 	if (g_playerManager)
 		delete g_playerManager;
 
 	if (g_GameConfig)
 		delete g_GameConfig;
-
-	if (g_pEntityListener)
-		delete g_pEntityListener;
 
 	if (g_iCGamePlayerEquipUseId != -1)
 		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
@@ -297,7 +284,6 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 {
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	g_pEntitySystem = GameEntitySystem();
-	g_pEntitySystem->AddListenerEntity(g_pEntityListener);
 	gpGlobals = g_pNetworkGameServer->GetGlobals();
 }
 
@@ -337,7 +323,7 @@ const char *CS2Fixes::GetLogTag()
 
 const char *CS2Fixes::GetAuthor()
 {
-	return "Interesting";
+	return "xen, Poggu, and the Source2ZE community (reduced by interesting with rampfix by zer0)";
 }
 
 const char *CS2Fixes::GetDescription()
@@ -347,7 +333,7 @@ const char *CS2Fixes::GetDescription()
 
 const char *CS2Fixes::GetName()
 {
-	return "Rampbugsfix";
+	return "Rampbugfix";
 }
 
 const char *CS2Fixes::GetURL()

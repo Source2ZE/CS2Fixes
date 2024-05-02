@@ -38,8 +38,6 @@
 #include "playermanager.h"
 #include "igameevents.h"
 #include "gameconfig.h"
-#include "customio.h"
-#include "entities.h"
 #include "serversideclient.h"
 #include "networksystem/inetworkserializer.h"
 
@@ -389,7 +387,6 @@ void TryPlayerMovePost(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace
 		return;
 	if (player->overrideTPM)
 	{
-		//Message("Possible rampbug avoided\n");
 		player->SetOrigin(player->tpmOrigin);
 		player->SetVelocity(player->tpmVelocity);
 	}
