@@ -37,6 +37,7 @@
 #include "customio.h"
 #include <sstream>
 #include "leader.h"
+#include "tier0/vprof.h"
 #include <fstream>
 #include "vendor/nlohmann/json.hpp"
 
@@ -824,6 +825,9 @@ void CZRRegenTimer::Tick()
 	// check every timer every 0.1
 	if (s_flNextExecution > g_flUniversalTime)
 		return;
+
+	VPROF("CZRRegenTimer::Tick");
+
 	s_flNextExecution = g_flUniversalTime + 0.1f;
 	for (int i = MAXPLAYERS - 1; i >= 0; i--)
 	{

@@ -21,7 +21,7 @@
 
 #include "platform.h"
 
-// #define USE_DEBUG_CONSOLE
+#define VPROF_LEVEL 1
 
 #define CS_TEAM_NONE        0
 #define CS_TEAM_SPECTATOR   1
