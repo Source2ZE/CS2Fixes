@@ -71,6 +71,8 @@ void UnregisterEventListeners()
 bool g_bPurgeEntityNames = false;
 FAKE_BOOL_CVAR(cs2f_purge_entity_strings, "Whether to purge the EntityNames stringtable on new rounds", g_bPurgeEntityNames, false, false);
 
+extern void FullUpdateAllClients();
+
 GAME_EVENT_F(round_prestart)
 {
 	if (g_bPurgeEntityNames)
@@ -83,6 +85,10 @@ GAME_EVENT_F(round_prestart)
 			addresses::CNetworkStringTable_DeleteAllStrings(pEntityNames);
 
 			Message("Purged %i strings from EntityNames\n", iStringCount);
+
+			pEntityNames->SetTick(-1, nullptr);
+
+			FullUpdateAllClients();
 		}
 	}
 

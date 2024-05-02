@@ -580,6 +580,20 @@ CServerSideClient *GetClientBySlot(CPlayerSlot slot)
 	return pClients->Element(slot.Get());
 }
 
+void FullUpdateAllClients()
+{
+	auto pClients = GetClientList();
+
+	FOR_EACH_VEC(*pClients, i)
+		(*pClients)[i]->ForceFullUpdate();
+}
+
+// Because sv_fullupdate doesn't work
+CON_COMMAND_F(cs2f_fullupdate, "Force a full update for all clients.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	FullUpdateAllClients();
+}
+
 void CS2Fixes::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *pszName, uint64 xuid )
 {
 	Message( "Hook_ClientActive(%d, %d, \"%s\", %lli)\n", slot, bLoadGame, pszName, xuid );
