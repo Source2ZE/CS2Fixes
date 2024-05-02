@@ -1,8 +1,5 @@
 # RampbugFix
 Minimizes rampbugs. This plugin isn't perfect and rampbugs will continue to occur until Valve decides to finally fix them
-=======
-# Rampbug Fix
-The fix isn't perfect. rampbugs will continue to happen, especially on poorly ported maps. The fix may cause stutters when preventing a rampbug, especially on high ping.
 
 # CS2Fixes
 
