@@ -34,7 +34,7 @@ The CS2Fixes name comes from the CSSFixes and CSGOFixes projects, which were pri
 Follow the instructions below to compile CS2Fixes.
 
 ```bash
-git clone https://github.com/Source2ZE/CS2Fixes/ && cd CS2Fixes
+git clone https://github.com/Interesting-exe/CS2Fixes-RampbugFix && cd CS2Fixes-RampbugFix
 git submodule update --init --recursive
 
 export MMSOURCE112=/path/to/metamod/
