@@ -170,11 +170,6 @@ public:
 		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
 	}
 
-	void TakeDamage(CTakeDamageInfo &info)
-	{
-		Detour_CBaseEntity_TakeDamageOld(this, &info);
-	}
-
 	void Teleport(const Vector *position, const QAngle *angles, const Vector *velocity)
 	{
 		static int offset = g_GameConfig->GetOffset("Teleport");
@@ -220,17 +215,6 @@ public:
 
 	// A double pointer to entity VData is available 4 bytes past m_nSubclassID, if applicable
 	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 4); }
-
-	void DispatchSpawn(CEntityKeyValues *pEntityKeyValues = nullptr)
-	{
-		addresses::DispatchSpawn(this, pEntityKeyValues);
-	}
-
-	// Emit a sound event
-	void EmitSound(const char *pszSound, int nPitch = 100, float flVolume = 1.0, float flDelay = 0.0)
-	{
-		addresses::CBaseEntity_EmitSoundParams(this, pszSound, nPitch, flVolume, flDelay);
-	}
 
 	SndOpEventGuid_t EmitSoundFilter(IRecipientFilter &filter, const char *pszSound, float flVolume = 1.0, float flPitch = 1.0)
 	{

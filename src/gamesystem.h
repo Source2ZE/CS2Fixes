@@ -27,10 +27,6 @@ bool InitGameSystems();
 class CGameSystem : public CBaseGameSystem
 {
 public:
-	GS_EVENT(BuildGameSessionManifest);
-	GS_EVENT(ServerPreEntityThink);
-	GS_EVENT(ServerPostEntityThink);
-	
 	void Shutdown() override
 	{
 		Message("CGameSystem::Shutdown\n");

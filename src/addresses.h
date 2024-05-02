@@ -69,7 +69,6 @@ namespace addresses
 	inline void(FASTCALL *StateChanged)(void *networkTransmitComponent, CEntityInstance *ent, int64 offset, int16 a4, int16 a5);
 	inline void(FASTCALL *UTIL_ClientPrintAll)(int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4);
 	inline void(FASTCALL *ClientPrint)(CBasePlayerController *player, int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4);
-	inline void(FASTCALL *SetGroundEntity)(Z_CBaseEntity *ent, Z_CBaseEntity *ground);
 	inline void(FASTCALL *CCSPlayerController_SwitchTeam)(CCSPlayerController *pController, uint32 team);
 	inline void(FASTCALL *CBasePlayerController_SetPawn)(CBasePlayerController *pController, CCSPlayerPawn *pPawn, bool a3, bool a4);
 	inline void(FASTCALL *CBaseModelEntity_SetModel)(CBaseModelEntity *pModel, const char *szModel);
@@ -92,14 +91,9 @@ namespace addresses
 	inline void(FASTCALL *TracePlayerBBox)(const Vector &start, const Vector &end, const bbox_t &bounds, CTraceFilterS2 *filter, trace_t_s2 &pm);
 	inline void(FASTCALL*InitGameTrace)(trace_t_s2 *trace);
 	
-	inline void(FASTCALL *CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4, unsigned int a5);
 	inline Z_CBaseEntity *(FASTCALL* CreateEntityByName)(const char* className, int iForceEdictIndex);
-	inline void(FASTCALL *DispatchSpawn)(Z_CBaseEntity* pEntity, CEntityKeyValues *pEntityKeyValues);
 	inline void(FASTCALL *CEntityIdentity_SetEntityName)(CEntityIdentity *pEntity, const char *pName);
-	inline void(FASTCALL *CBaseEntity_EmitSoundParams)(Z_CBaseEntity *pEntity, const char *pszSound, int nPitch, float flVolume, float flDelay);
 	inline void(FASTCALL *CBaseEntity_SetParent)(Z_CBaseEntity *pEntity, Z_CBaseEntity *pNewParent, CUtlStringToken nBoneOrAttachName, matrix3x4a_t *pOffsetTransform);
-	inline int(FASTCALL *DispatchParticleEffect)(const char *pszParticleName, int iAttachType, Z_CBaseEntity *pEntity,
-		char iAttachmentPoint, CUtlSymbolLarge iAttachmentName, bool bResetAllParticlesOnEntity, int nSplitScreenPlayerSlot, IRecipientFilter *a7, byte *a8);
 	inline SndOpEventGuid_t(FASTCALL *CBaseEntity_EmitSoundFilter)(IRecipientFilter &filter, CEntityIndex ent, const EmitSound_t &params);
 	inline void(FASTCALL *CBaseEntity_SetMoveType)(Z_CBaseEntity *pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
 	inline void(FASTCALL *CTakeDamageInfo_Constructor)(CTakeDamageInfo *pThis, Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility,
