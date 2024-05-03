@@ -150,7 +150,8 @@ FAKE_BOOL_CVAR(cs2f_flashlight_transmit_others, "Whether to transmit other playe
 FAKE_FLOAT_CVAR(cs2f_flashlight_brightness, "How bright should flashlights be", g_flFlashLightBrightness, 1.0f, false)
 FAKE_FLOAT_CVAR(cs2f_flashlight_distance, "How far flashlights should be from the player's head", g_flFlashLightDistance, 54.0f, false)
 FAKE_COLOR_CVAR(cs2f_flashlight_color, "What color to use for flashlights", g_clrFlashLightColor, false)
-FAKE_STRING_CVAR(cs2f_flashlight_attachment, "Which attachment to parent a flashlight to", g_sFlashLightAttachment, false)
+FAKE_STRING_CVAR(cs2f_flashlight_attachment, "Which attachment to parent a flashlight to. "
+	"If the player model is not properly setup, you might have to use clip_limit here instead", g_sFlashLightAttachment, false)
 
 void ZEPlayer::SpawnFlashLight()
 {
