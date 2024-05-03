@@ -1031,35 +1031,37 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 {
 	CCSPlayerController* pController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 
-	if (pController)
+	if (!pController)
+		return;
+
+	// delay infection a bit
+	int iRoundNum = g_iRoundNum;
+	bool bInfect = g_ZRRoundState == EZRRoundState::POST_INFECTION;
+
+	// We're infecting this guy with a delay, disable all damage as they have 100 hp until then
+	// also set team immediately in case the spawn teleport is team filtered
+	if (bInfect) 
 	{
-		// delay infection a bit
-		int iRoundNum = g_iRoundNum;
-		bool bInfect = g_ZRRoundState == EZRRoundState::POST_INFECTION;
-
-		// We're infecting this guy with a delay, disable all damage as they have 100 hp until then
-		// also set team immediately in case the spawn teleport is team filtered
-		if (bInfect) 
-		{
-			pController->GetPawn()->m_bTakesDamage(false);
-			pController->SwitchTeam(CS_TEAM_T);
-		}
-		else
-			pController->SwitchTeam(CS_TEAM_CT);
-
-		CHandle<CCSPlayerController> handle = pController->GetHandle();
-		new CTimer(0.05f, false, [iRoundNum, handle, bInfect]()
-		{
-			CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
-			if (iRoundNum != g_iRoundNum || !pController)
-				return -1.0f;
-			if(bInfect)
-				ZR_Infect(pController, pController, true);
-			else
-				ZR_Cure(pController);
-			return -1.0f;
-		});
+		pController->GetPawn()->m_bTakesDamage(false);
+		pController->SwitchTeam(CS_TEAM_T);
 	}
+	else
+	{
+		pController->SwitchTeam(CS_TEAM_CT);
+	}
+
+	CHandle<CCSPlayerController> handle = pController->GetHandle();
+	new CTimer(0.05f, false, [iRoundNum, handle, bInfect]()
+	{
+		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
+		if (iRoundNum != g_iRoundNum || !pController)
+			return -1.0f;
+		if(bInfect)
+			ZR_Infect(pController, pController, true);
+		else
+			ZR_Cure(pController);
+		return -1.0f;
+	});
 }
 
 void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon)
@@ -1149,6 +1151,11 @@ void ZR_Cure(CCSPlayerController *pTargetController)
 	if (pTargetController->m_iTeamNum() == CS_TEAM_T)
 		pTargetController->SwitchTeam(CS_TEAM_CT);
 
+	ZEPlayer *pZEPlayer = pTargetController->GetZEPlayer();
+
+	if (pZEPlayer)
+		pZEPlayer->SetInfectState(false);
+
 	CCSPlayerPawn *pTargetPawn = (CCSPlayerPawn*)pTargetController->GetPawn();
 	if (!pTargetPawn)
 		return;
@@ -1156,16 +1163,26 @@ void ZR_Cure(CCSPlayerController *pTargetController)
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultHumanClass(pTargetPawn);
 }
 
-float ZR_MoanTimer(CHandle<CCSPlayerPawn> hPawn)
+float ZR_MoanTimer(ZEPlayerHandle hPlayer)
 {
-	CCSPlayerPawn *pPawn = hPawn;
-
-	if (!pPawn || !pPawn->IsAlive() || pPawn->GetOriginalController()->m_iTeamNum() != CS_TEAM_T)
+	if (!hPlayer.IsValid())
 		return -1.f;
+
+	if (!hPlayer.Get()->IsInfected())
+		return -1.f;
+
+	CCSPlayerPawn *pPawn = CCSPlayerController::FromSlot(hPlayer.GetPlayerSlot())->GetPlayerPawn();
+
+	if (!pPawn || pPawn->m_iTeamNum == CS_TEAM_CT)
+		return -1.f;
+
+	// This guy is dead but still infected, and corpses are quiet
+	if (!pPawn->IsAlive())
+		return g_flMoanInterval + (rand() % 5);
 
 	pPawn->EmitSound("zr.amb.zombie_voice_idle");
 
-	return g_flMoanInterval;
+	return g_flMoanInterval + (rand() % 5);
 }
 
 void ZR_InfectShake(CCSPlayerController *pController)
@@ -1213,8 +1230,15 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 
 	ZR_InfectShake(pVictimController);
 
-	CHandle<CCSPlayerPawn> hPawn = pVictimPawn->GetHandle();
-	new CTimer(g_flMoanInterval + (rand() % 5), false, [hPawn]() { return ZR_MoanTimer(hPawn); });
+	ZEPlayer *pZEPlayer = pVictimController->GetZEPlayer();
+
+	if (pZEPlayer && !pZEPlayer->IsInfected())
+	{
+		pZEPlayer->SetInfectState(true);
+
+		ZEPlayerHandle hPlayer = pZEPlayer->GetHandle();
+		new CTimer(g_flMoanInterval + (rand() % 5), false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
+	}
 }
 
 void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
@@ -1236,8 +1260,12 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 
 	ZR_InfectShake(pVictimController);
 
-	CHandle<CCSPlayerPawn> hPawn = pVictimPawn->GetHandle();
-	new CTimer(g_flMoanInterval + (rand() % 5), false, [hPawn]() { return ZR_MoanTimer(hPawn); });
+	ZEPlayer *pZEPlayer = pVictimController->GetZEPlayer();
+
+	pZEPlayer->SetInfectState(true);
+
+	ZEPlayerHandle hPlayer = pZEPlayer->GetHandle();
+	new CTimer(g_flMoanInterval + (rand() % 5), false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
 }
 
 // make players who've been picked as MZ recently less likely to be picked again
@@ -1252,7 +1280,7 @@ void ZR_InitialInfection()
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
-		if (!pController || pController->m_iTeamNum() != CS_TEAM_CT)
+		if (!pController || !pController->IsConnected() || pController->m_iTeamNum() != CS_TEAM_CT)
 			continue;
 
 		CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
