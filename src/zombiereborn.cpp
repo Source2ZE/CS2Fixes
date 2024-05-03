@@ -963,11 +963,20 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
-		// Only do this for Ts, ignore CTs and specs
-		if (!pController || pController->m_iTeamNum() != CS_TEAM_T)
+		if (!pController)
 			continue;
 
-		pController->SwitchTeam(CS_TEAM_CT);
+		// Only do this for Ts, ignore CTs and specs
+		if (pController->m_iTeamNum() != CS_TEAM_T)
+			pController->SwitchTeam(CS_TEAM_CT);
+
+		CCSPlayerPawn *pPawn = pController->GetPlayerPawn();
+
+		// Prevent damage that occurs between now and when the round restart is finished
+		// Somehow CT filtered nukes can apply damage during the round restart (all within CCSGameRules::RestartRound)
+		// And if everyone was a zombie at this moment, they will all die and trigger ANOTHER round restart which breaks everything
+		if (pPawn)
+			pPawn->m_bTakesDamage = false;
 	}
 }
 
@@ -1002,6 +1011,20 @@ void ZR_OnRoundStart(IGameEvent* pEvent)
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
 	SetupRespawnToggler();
 	CZRRegenTimer::RemoveAllTimers();
+
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		CCSPlayerController *pController = CCSPlayerController::FromSlot(i);
+
+		if (!pController)
+			continue;
+
+		CCSPlayerPawn *pPawn = pController->GetPlayerPawn();
+
+		// Now we can enable damage back
+		if (pPawn)
+			pPawn->m_bTakesDamage = true;
+	}
 }
 
 void ZR_OnPlayerSpawn(IGameEvent* pEvent)
