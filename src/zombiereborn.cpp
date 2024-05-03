@@ -367,8 +367,6 @@ bool CZRPlayerClassManager::CreateJsonConfigFromKeyValuesFile()
 
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
-		const char* pszTeamName = !V_strcmp(pKey->GetName(), "Human") ? "Human" : "Zombie";
-
 		for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
 		{
 			ordered_json jsonClass;
@@ -401,7 +399,7 @@ bool CZRPlayerClassManager::CreateJsonConfigFromKeyValuesFile()
 			if (pSubKey->FindKey("health_regen_interval"))
 				jsonClass["health_regen_interval"] = std::stod(pSubKey->GetString("health_regen_interval"));
 
-			jsonPlayerClasses[pszTeamName][pSubKey->GetName()] = jsonClass;
+			jsonPlayerClasses[pKey->GetName()][pSubKey->GetName()] = jsonClass;
 		}
 	}
 
