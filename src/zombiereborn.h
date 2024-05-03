@@ -24,6 +24,9 @@
 #include "gamesystem.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
+#include "vendor/nlohmann/json_fwd.hpp"
+
+using ordered_json = nlohmann::ordered_json;
 
 #define ZR_PREFIX " \4[Zombie:Reborn]\1 "
 #define HUMAN_CLASS_KEY_NAME "zr_human_class"
@@ -42,15 +45,27 @@ enum EZRSpawnType
 	RESPAWN,
 };
 
+// model entries in zr classes
+struct ZRModelEntry
+{
+	std::string szModelPath;
+	CUtlVector<int> vecSkins;
+	std::string szColor;
+	ZRModelEntry(ZRModelEntry* modelEntry);
+	ZRModelEntry(ordered_json jsonModelEntry);
+	int GetRandomSkin()
+	{
+		return vecSkins[rand() % vecSkins.Count()];
+	}
+};
+
 //everything that human and zombie share
 struct ZRClass
 {
 	bool bEnabled;
 	std::string szClassName;
 	int iHealth;
-	std::string szModelPath;
-	int iSkin;
-	std::string szColor;
+	CUtlVector<ZRModelEntry*> vecModels;
 	float flScale;
 	float flSpeed;
 	float flGravity;
@@ -59,36 +74,41 @@ struct ZRClass
 		bEnabled(pClass->bEnabled),
 		szClassName(pClass->szClassName),
 		iHealth(pClass->iHealth),
-		szModelPath(pClass->szModelPath),
-		iSkin(pClass->iSkin),
-		szColor(pClass->szColor),
 		flScale(pClass->flScale),
 		flSpeed(pClass->flSpeed),
 		flGravity(pClass->flGravity),
-		iAdminFlag(pClass->iAdminFlag){};
+		iAdminFlag(pClass->iAdminFlag)
+		{
+			vecModels.Purge();
+			FOR_EACH_VEC(pClass->vecModels, i)
+			{
+				ZRModelEntry *modelEntry = new ZRModelEntry(pClass->vecModels[i]);
+				vecModels.AddToTail(modelEntry);
+			}
+		};
 
-	ZRClass(KeyValues *pKeys) :
-		bEnabled(pKeys->GetBool("enabled", false)),
-		szClassName(std::string(pKeys->GetName())),
-		iHealth(pKeys->GetInt("health", 0)),
-		szModelPath(std::string(pKeys->GetString("model", ""))),
-		iSkin(pKeys->GetInt("skin", 0)),
-		szColor(std::string(pKeys->GetString("color", ""))),
-		flScale(pKeys->GetFloat("scale", 0)),
-		flSpeed(pKeys->GetFloat("speed", 0)),
-		flGravity(pKeys->GetFloat("gravity", 0)),
-		iAdminFlag(g_pAdminSystem->ParseFlags(
-			pKeys->GetString("admin_flag", "")
-		)){};
+	ZRClass(ordered_json jsonKeys, std::string szClassname);
 	void PrintInfo()
 	{
+		std::string szModels = "";
+		FOR_EACH_VEC(vecModels, i)
+		{
+			szModels += "\n\t\t" + vecModels[i]->szModelPath;
+			szModels += " Color=\"" + vecModels[i]->szColor + "\"";
+			szModels += " Skins=[";
+			FOR_EACH_VEC(vecModels[i]->vecSkins, j)
+			{
+				szModels += std::to_string(vecModels[i]->vecSkins[j]);
+				if (j != vecModels[i]->vecSkins.Count() - 1)
+					szModels += " ";
+			}
+			szModels += "]";
+		}
 		Message(
 			"%s:\n"
 			"\tenabled: %d\n"
 			"\thealth: %d\n"
-			"\tmodel: %s\n"
-			"\tskin: %i\n"
-			"\tcolor: %s\n"
+			"\tmodels: %s\n"
 			"\tscale: %f\n"
 			"\tspeed: %f\n"
 			"\tgravity: %f\n"
@@ -96,46 +116,26 @@ struct ZRClass
 			szClassName.c_str(),
 			bEnabled,
 			iHealth,
-			szModelPath.c_str(),
-			iSkin,
-			szColor.c_str(),
+			szModels.c_str(),
 			flScale,
 			flSpeed,
 			flGravity,
 			iAdminFlag);
 	};
-	void Override(KeyValues *pKeys)
-	{
-		szClassName = std::string(pKeys->GetName());
-		if (pKeys->FindKey("enabled"))
-			bEnabled = pKeys->GetBool("enabled", 0);
-		if (pKeys->FindKey("health"))
-			iHealth = pKeys->GetInt("health", 0);
-		if (pKeys->FindKey("model"))
-			szModelPath = std::string(pKeys->GetString("model", ""));
-		if (pKeys->FindKey("skin"))
-			iSkin = pKeys->GetInt("skin", 0);
-		if (pKeys->FindKey("color"))
-			szColor = std::string(pKeys->GetString("color", ""));
-		if (pKeys->FindKey("scale"))
-			flScale = pKeys->GetFloat("scale", 0);
-		if (pKeys->FindKey("speed"))
-			flSpeed = pKeys->GetFloat("speed", 0);
-		if (pKeys->FindKey("gravity"))
-			flGravity = pKeys->GetFloat("gravity", 0);
-		if (pKeys->FindKey("admin_flag"))
-			iAdminFlag = g_pAdminSystem->ParseFlags(
-				pKeys->GetString("admin_flag", "")
-			);
-	};
+	void Override(ordered_json jsonKeys, std::string szClassname);
 	bool IsApplicableTo(CCSPlayerController *pController);
+	uint64 ParseClassFlags(const char* pszFlags);
+	ZRModelEntry *GetRandomModelEntry()
+	{
+		return vecModels[rand() % vecModels.Count()];
+	};
 };
 
 
 struct ZRHumanClass : ZRClass
 {
 	ZRHumanClass(ZRHumanClass *pClass) : ZRClass(pClass){};
-	ZRHumanClass(KeyValues *pKeys) : ZRClass(pKeys){};
+	ZRHumanClass(ordered_json jsonKeys, std::string szClassname);
 };
 
 struct ZRZombieClass : ZRClass
@@ -146,19 +146,28 @@ struct ZRZombieClass : ZRClass
 		ZRClass(pClass), 
 		iHealthRegenCount(pClass->iHealthRegenCount),
 		flHealthRegenInterval(pClass->flHealthRegenInterval){};
-	ZRZombieClass(KeyValues *pKeys) :
-		ZRClass(pKeys),
-		iHealthRegenCount(pKeys->GetInt("health_regen_count", 0)),
-		flHealthRegenInterval(pKeys->GetFloat("health_regen_interval", 0)){};
+	ZRZombieClass(ordered_json jsonKeys, std::string szClassname);
 	void PrintInfo()
 	{
+		std::string szModels = "";
+		FOR_EACH_VEC(vecModels, i)
+		{
+			szModels += "\n\t\t" + vecModels[i]->szModelPath;
+			szModels += " Color=\"" + vecModels[i]->szColor + "\"";
+			szModels += " Skins=[";
+			FOR_EACH_VEC(vecModels[i]->vecSkins, j)
+			{
+				szModels += std::to_string(vecModels[i]->vecSkins[j]);
+				if (j != vecModels[i]->vecSkins.Count() - 1)
+					szModels += " ";
+			}
+			szModels += "]";
+		}
 		Message(
 			"%s:\n"
 			"\tenabled: %d\n"
 			"\thealth: %d\n"
-			"\tmodel: %s\n"
-			"\tskin: %i\n"
-			"\tcolor: %s\n"
+			"\tmodels: %s\n"
 			"\tscale: %f\n"
 			"\tspeed: %f\n"
 			"\tgravity: %f\n"
@@ -168,9 +177,7 @@ struct ZRZombieClass : ZRClass
 			szClassName.c_str(),
 			bEnabled,
 			iHealth,
-			szModelPath.c_str(),
-			iSkin,
-			szColor.c_str(),
+			szModels.c_str(),
 			flScale,
 			flSpeed,
 			flGravity,
@@ -178,14 +185,7 @@ struct ZRZombieClass : ZRClass
 			iHealthRegenCount,
 			flHealthRegenInterval);
 	};
-	void Override(KeyValues *pKeys)
-	{
-		ZRClass::Override(pKeys);
-		if (pKeys->FindKey("health_regen_count"))
-			iHealthRegenCount = pKeys->GetInt("health_regen_count", 0);
-		if (pKeys->FindKey("health_regen_interval"))
-			flHealthRegenInterval = pKeys->GetFloat("health_regen_interval", 0);
-	};
+	void Override(ordered_json jsonKeys, std::string szClassname);
 };
 
 class CZRPlayerClassManager
@@ -197,6 +197,7 @@ public:
 		m_HumanClassMap.SetLessFunc(DefLessFunc(uint32));
 	};
 	void LoadPlayerClass();
+	bool CreateJsonConfigFromKeyValuesFile();
 	void ApplyBaseClassVisuals(ZRClass *pClass, CCSPlayerPawn *pPawn);
 	ZRHumanClass* GetHumanClass(const char *pszClassName);
 	void ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn *pPawn);
