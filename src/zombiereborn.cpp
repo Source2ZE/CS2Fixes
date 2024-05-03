@@ -429,8 +429,8 @@ bool CZRPlayerClassManager::CreateJsonConfigFromKeyValuesFile()
 
 	// remove old cfg example if it exists
 	const char *pszKVExamplePath = "addons/cs2fixes/configs/zr/playerclass.cfg.example";
-	if (std::fopen(pszKVExamplePath, "r") != nullptr)
-		std::remove(pszKVExamplePath);
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVExamplePath);
+	std::remove(szPath);
 
 	Message("Created JSON player class config at %s\n", pszJsonPath);
 	Message("Renamed %s to %s\n", pszPath, pszKVConfigRenamePath);
