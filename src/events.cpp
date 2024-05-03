@@ -22,6 +22,7 @@
 #include "commands.h"
 #include "ctimer.h"
 #include "eventlistener.h"
+#include "networkstringtabledefs.h"
 #include "entity/cbaseplayercontroller.h"
 #include "entity/cgamerules.h"
 #include "zombiereborn.h"
@@ -67,8 +68,24 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
+bool g_bPurgeEntityNames = false;
+FAKE_BOOL_CVAR(cs2f_purge_entity_strings, "Whether to purge the EntityNames stringtable on new rounds", g_bPurgeEntityNames, false, false);
+
 GAME_EVENT_F(round_prestart)
 {
+	if (g_bPurgeEntityNames)
+	{
+		INetworkStringTable *pEntityNames = g_pNetworkStringTableServer->FindTable("EntityNames");
+
+		if (pEntityNames)
+		{
+			int iStringCount = pEntityNames->GetNumStrings();
+			addresses::CNetworkStringTable_DeleteAllStrings(pEntityNames);
+
+			Message("Purged %i strings from EntityNames\n", iStringCount);
+		}
+	}
+
 	if (g_bEnableZR)
 		ZR_OnRoundPrestart(pEvent);
 }

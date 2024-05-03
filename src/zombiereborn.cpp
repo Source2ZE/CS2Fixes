@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "cstrike15_usermessages.pb.h"
+
 #include "commands.h"
 #include "utils/entity.h"
 #include "playermanager.h"
@@ -27,6 +29,10 @@
 #include "entity/services.h"
 #include "entity/cteam.h"
 #include "entity/cparticlesystem.h"
+#include "engine/igameeventsystem.h"
+#include "networksystem/inetworkmessages.h"
+#include "recipientfilters.h"
+#include "serversideclient.h"
 #include "user_preferences.h"
 #include "customio.h"
 #include <sstream>
@@ -43,6 +49,7 @@ extern IVEngineServer2* g_pEngineServer2;
 extern CGlobalVars* gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IGameEventManager2* g_gameEventManager;
+extern IGameEventSystem *g_gameEventSystem;
 extern double g_flUniversalTime;
 
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast);
@@ -89,6 +96,11 @@ static std::string g_szZombieWinOverlayParticle;
 static std::string g_szZombieWinOverlayMaterial;
 static float g_flZombieWinOverlaySize;
 
+static bool g_bInfectShake = true;
+static float g_flInfectShakeAmplitude = 15.f;
+static float g_flInfectShakeFrequency = 2.f;
+static float g_flInfectShakeDuration = 5.f;
+
 FAKE_BOOL_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, false, false)
 FAKE_FLOAT_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, 150.0f, false)
 FAKE_BOOL_CVAR(zr_ztele_allow_humans, "Whether to allow humans to use ztele", g_bZteleHuman, false, false)
@@ -112,6 +124,10 @@ FAKE_FLOAT_CVAR(zr_human_win_overlay_size, "Size of human's win overlay particle
 FAKE_STRING_CVAR(zr_zombie_win_overlay_particle, "Screenspace particle to display when zombie win", g_szZombieWinOverlayParticle, false)
 FAKE_STRING_CVAR(zr_zombie_win_overlay_material, "Material override for zombie's win overlay particle", g_szZombieWinOverlayMaterial, false)
 FAKE_FLOAT_CVAR(zr_zombie_win_overlay_size, "Size of zombie's win overlay particle", g_flZombieWinOverlaySize, 5.0f, false)
+FAKE_BOOL_CVAR(zr_infect_shake, "Whether to shake a player's view on infect", g_bInfectShake, true, false);
+FAKE_FLOAT_CVAR(zr_infect_shake_amp, "Amplitude of shaking effect", g_flInfectShakeAmplitude, 15.f, false);
+FAKE_FLOAT_CVAR(zr_infect_shake_frequency, "Frequency of shaking effect", g_flInfectShakeFrequency, 2.f, false);
+FAKE_FLOAT_CVAR(zr_infect_shake_duration, "Duration of shaking effect", g_flInfectShakeDuration, 5.f, false);
 
 CON_COMMAND_F(zr_reload_classes, "Reload ZR player classes", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
@@ -839,16 +855,22 @@ void ZR_OnLevelInit()
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
 
-	// Here we force some cvars that are necessary for the gamemode
-	g_pEngineServer2->ServerCommand("mp_give_player_c4 0");
-	g_pEngineServer2->ServerCommand("mp_friendlyfire 0");
-	g_pEngineServer2->ServerCommand("bot_quota_mode fill"); // Necessary to fix bots kicked/joining infinitely when forced to CT https://github.com/Source2ZE/ZombieReborn/issues/64
-	g_pEngineServer2->ServerCommand("mp_ignore_round_win_conditions 1");
-	// These disable most of the buy menu for zombies
-	g_pEngineServer2->ServerCommand("mp_weapons_allow_pistols 3");
-	g_pEngineServer2->ServerCommand("mp_weapons_allow_smgs 3");
-	g_pEngineServer2->ServerCommand("mp_weapons_allow_heavy 3");
-	g_pEngineServer2->ServerCommand("mp_weapons_allow_rifles 3");
+	// Delay one tick to override any .cfg's
+	new CTimer(0.02f, false, []()
+	{
+		// Here we force some cvars that are necessary for the gamemode
+		g_pEngineServer2->ServerCommand("mp_give_player_c4 0");
+		g_pEngineServer2->ServerCommand("mp_friendlyfire 0");
+		g_pEngineServer2->ServerCommand("bot_quota_mode fill"); // Necessary to fix bots kicked/joining infinitely when forced to CT https://github.com/Source2ZE/ZombieReborn/issues/64
+		g_pEngineServer2->ServerCommand("mp_ignore_round_win_conditions 1");
+		// These disable most of the buy menu for zombies
+		g_pEngineServer2->ServerCommand("mp_weapons_allow_pistols 3");
+		g_pEngineServer2->ServerCommand("mp_weapons_allow_smgs 3");
+		g_pEngineServer2->ServerCommand("mp_weapons_allow_heavy 3");
+		g_pEngineServer2->ServerCommand("mp_weapons_allow_rifles 3");
+
+		return -1.0f;
+	});
 
 	g_pZRPlayerClassManager->LoadPlayerClass();
 	g_pZRWeaponConfig->LoadWeaponConfig();
@@ -1113,6 +1135,22 @@ float ZR_MoanTimer(CHandle<CCSPlayerPawn> hPawn)
 	return g_flMoanInterval;
 }
 
+void ZR_InfectShake(CCSPlayerController *pController)
+{
+	if (!pController || !pController->IsConnected() || pController->IsBot())
+		return;
+
+	INetworkSerializable *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
+
+	CCSUsrMsg_Shake data;
+	data.set_duration(g_flInfectShakeDuration);
+	data.set_frequency(g_flInfectShakeFrequency);
+	data.set_local_amplitude(g_flInfectShakeAmplitude);
+	data.set_command(0);
+
+	pController->GetServerSideClient()->GetNetChannel()->SendNetMessage(pNetMsg, &data, BUF_RELIABLE);
+}
+
 void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bDontBroadcast)
 {
 	// This can be null if the victim disconnected right before getting hit AND someone joined in their place immediately, thus replacing the controller
@@ -1140,6 +1178,8 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 	
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultZombieClass(pVictimPawn);
 
+	ZR_InfectShake(pVictimController);
+
 	CHandle<CCSPlayerPawn> hPawn = pVictimPawn->GetHandle();
 	new CTimer(g_flMoanInterval + (rand() % 5), false, [hPawn]() { return ZR_MoanTimer(hPawn); });
 }
@@ -1160,6 +1200,8 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 		g_pZRPlayerClassManager->ApplyZombieClass(pClass, pVictimPawn);
 	else
 		g_pZRPlayerClassManager->ApplyPreferredOrDefaultZombieClass(pVictimPawn);
+
+	ZR_InfectShake(pVictimController);
 
 	CHandle<CCSPlayerPawn> hPawn = pVictimPawn->GetHandle();
 	new CTimer(g_flMoanInterval + (rand() % 5), false, [hPawn]() { return ZR_MoanTimer(hPawn); });

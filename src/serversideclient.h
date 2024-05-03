@@ -49,3 +49,5 @@ private:
 	[[maybe_unused]] char pad9[0x40];
 	int m_nDeltaTick;				// 332 | 348
 };
+
+CServerSideClient *GetClientBySlot(CPlayerSlot slot);

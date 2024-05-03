@@ -241,6 +241,12 @@ public:
 		return addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
 	}
 
+	void DispatchParticle(const char *pszParticleName, IRecipientFilter *pFilter, ParticleAttachment_t nAttachType = PATTACH_POINT_FOLLOW, 
+		char iAttachmentPoint = 0, CUtlSymbolLarge iAttachmentName = "")
+	{
+		addresses::DispatchParticleEffect(pszParticleName, nAttachType, this, iAttachmentPoint, iAttachmentName, false, 0, pFilter, 0);
+	}
+
 	// This was needed so we can parent to nameless entities using pointers
 	void SetParent(Z_CBaseEntity *pNewParent)
 	{
@@ -255,6 +261,11 @@ public:
 	void SetMoveType(MoveType_t nMoveType)
 	{
 		addresses::CBaseEntity_SetMoveType(this, nMoveType, m_MoveCollide);
+	}
+
+	void SetGroundEntity(Z_CBaseEntity *pGround)
+	{
+		addresses::SetGroundEntity(this, pGround);
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }

@@ -33,6 +33,8 @@
 #include "entity/cparticlesystem.h"
 #include "entity/cgamerules.h"
 #include "gamesystem.h"
+#include "votemanager.h"
+#include "map_votes.h"
 #include <vector>
 
 extern IVEngineServer2 *g_pEngineServer2;
@@ -958,11 +960,31 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - change map", ADMFLAG_CHANGEMAP)
 
 	if (!g_pEngineServer2->IsMapValid(args[1]))
 	{
-		// This might be a workshop map, and right now there's no easy way to get the list from a collection
-		// So blindly attempt the change for now, as the command does nothing if the map isn't found
-		std::string sCommand = "ds_workshop_changelevel " + std::string(args[1]);
+		// Injection prevention, because we pass user input to ServerCommand
+		for (int i = 0; i < strlen(args[1]); i++)
+		{
+			if (args[1][i] == ';')
+				return;
+		}
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Attempting a map change to %s from the workshop collection...", args[1]);
+		std::string sCommand;
+
+		// Check if input is numeric (workshop ID)
+		// Not safe to expose until crashing on failed workshop addon downloads is fixed
+		/*if (V_StringToUint64(args[1], 0) != 0)
+		{
+			sCommand = "host_workshop_map " + std::string(args[1]);
+		}*/
+		if (g_bVoteManagerEnable && g_pMapVoteSystem->GetMapIndexFromSubstring(args[1]) != -1)
+		{
+			sCommand = "host_workshop_map " + std::to_string(g_pMapVoteSystem->GetMapWorkshopId(g_pMapVoteSystem->GetMapIndexFromSubstring(args[1])));
+		}
+		else
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching %s.", args[1]);
+			return;
+		}
+
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", args[1]);
 
 		new CTimer(5.0f, false, [sCommand]()

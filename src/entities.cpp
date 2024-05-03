@@ -121,13 +121,13 @@ void TriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
     }
 }
 
-void TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
+bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
 {
     const auto pCaller   = pInput->pActivator;
     const auto pszWeapon = ((pInput->value.m_type == FIELD_CSTRING || pInput->value.m_type == FIELD_STRING) && pInput->value.m_pszString) ? pInput->value.m_pszString : nullptr;
 
-    if (!pCaller || !pszWeapon || !pCaller->IsPawn())
-        return;
+    if (!pCaller || !pCaller->IsPawn())
+        return true;
 
     const auto pPawn = reinterpret_cast<CCSPlayerPawn*>(pCaller);
     const auto flags = pEntity->m_spawnflags();
@@ -135,7 +135,7 @@ void TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
     if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_STRIPFIRST)
     {
         if (!StripPlayer(pPawn))
-            return;
+            return true;
     }
     else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
     {
@@ -145,9 +145,16 @@ void TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
     const auto pItemServices = pPawn->m_pItemServices();
 
     if (!pItemServices)
-        return;
+        return true;
 
-    pItemServices->GiveNamedItem(pszWeapon);
+    if (pszWeapon && V_strcmp(pszWeapon, "(null)"))
+    {
+        pItemServices->GiveNamedItem(pszWeapon);
+        // Don't execute game function (we fixed string param)
+        return false;
+    }
+
+    return true;
 }
 } // namespace CGamePlayerEquipHandler
 

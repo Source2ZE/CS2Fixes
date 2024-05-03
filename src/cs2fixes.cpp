@@ -32,6 +32,7 @@
 #include "plat.h"
 #include "entitysystem.h"
 #include "engine/igameeventsystem.h"
+#include "networkstringtabledefs.h"
 #include "gamesystem.h"
 #include "ctimer.h"
 #include "entities.h"
@@ -55,9 +56,6 @@
 #include "cs_gameevents.pb.h"
 #include "gameevents.pb.h"
 #include "leader.h"
-
-#define VPROF_ENABLED
-#include "tier0/vprof.h"
 
 #include "tier0/memdbgon.h"
 
@@ -96,6 +94,7 @@ class GameSessionConfiguration_t { };
 SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
 SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIActivated, SH_NOATTRIB, 0);
 SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIDeactivated, SH_NOATTRIB, 0);
+SH_DECL_HOOK1_void(IServerGameDLL, ApplyGameSettings, SH_NOATTRIB, 0, KeyValues*);
 SH_DECL_HOOK4_void(IServerGameClients, ClientActive, SH_NOATTRIB, 0, CPlayerSlot, bool, const char *, uint64);
 SH_DECL_HOOK5_void(IServerGameClients, ClientDisconnect, SH_NOATTRIB, 0, CPlayerSlot, ENetworkDisconnectionReason, const char *, uint64, const char *);
 SH_DECL_HOOK4_void(IServerGameClients, ClientPutInServer, SH_NOATTRIB, 0, CPlayerSlot, char const *, int, uint64);
@@ -109,6 +108,7 @@ SH_DECL_HOOK6_void(ISource2GameEntities, CheckTransmit, SH_NOATTRIB, 0, CCheckTr
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand &);
 SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, const CCommandContext&, const CCommand&);
 SH_DECL_MANUALHOOK1_void(CGamePlayerEquipUse, 0, 0, 0, InputData_t*);
+SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUtlStringList&);
 
 CS2Fixes g_CS2Fixes;
 
@@ -124,7 +124,9 @@ CGameConfig *g_GameConfig = nullptr;
 ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
+IGameTypes* g_pGameTypes = nullptr;
 int g_iCGamePlayerEquipUseId = -1;
+int g_iCreateWorkshopMapGroupId = -1;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -148,16 +150,39 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkServerService, INetworkServerService, NETWORKSERVERSERVICE_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_gameEventSystem, IGameEventSystem, GAMEEVENTSYSTEM_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkMessages, INetworkMessages, NETWORKMESSAGES_INTERFACE_VERSION);
+	GET_V_IFACE_ANY(GetEngineFactory, g_pGameTypes, IGameTypes, GAMETYPES_INTERFACE_VERSION);
 	GET_V_IFACE_ANY(GetFileSystemFactory, g_pFullFileSystem, IFileSystem, FILESYSTEM_INTERFACE_VERSION);
+	GET_V_IFACE_ANY(GetEngineFactory, g_pNetworkStringTableServer, INetworkStringTableContainer, INTERFACENAME_NETWORKSTRINGTABLESERVER);
 
 	// Required to get the IMetamodListener events
 	g_SMAPI->AddListener(this, this);
 
 	Message( "Starting plugin.\n" );
 
+	CBufferStringGrowable<256> gamedirpath;
+	g_pEngineServer2->GetGameDir(gamedirpath);
+
+	std::string gamedirname = CGameConfig::GetDirectoryName(gamedirpath.Get());
+
+	const char* gamedataPath = "addons/cs2fixes/gamedata/cs2fixes.games.txt";
+	Message("Loading %s for game: %s\n", gamedataPath, gamedirname.c_str());
+
+	g_GameConfig = new CGameConfig(gamedirname, gamedataPath);
+	char conf_error[255] = "";
+	if (!g_GameConfig->Init(g_pFullFileSystem, conf_error, sizeof(conf_error)))
+	{
+		snprintf(error, maxlen, "Could not read %s: %s", g_GameConfig->GetPath().c_str(), conf_error);
+		Panic("%s\n", error);
+		return false;
+	}
+
+	int offset = g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup");
+	SH_MANUALHOOK_RECONFIGURE(CreateWorkshopMapGroup, offset, 0, 0);
+
     SH_ADD_HOOK(IServerGameDLL, GameFrame, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameFramePost), true);
 	SH_ADD_HOOK(IServerGameDLL, GameServerSteamAPIActivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIActivated), false);
 	SH_ADD_HOOK(IServerGameDLL, GameServerSteamAPIDeactivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIDeactivated), false);
+	SH_ADD_HOOK(IServerGameDLL, ApplyGameSettings, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_ApplyGameSettings), false);
 	SH_ADD_HOOK(IServerGameClients, ClientActive, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientActive), true);
 	SH_ADD_HOOK(IServerGameClients, ClientDisconnect, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientDisconnect), true);
 	SH_ADD_HOOK(IServerGameClients, ClientPutInServer, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientPutInServer), true);
@@ -169,25 +194,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	SH_ADD_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
 	SH_ADD_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_ADD_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
+	g_iCreateWorkshopMapGroupId = SH_ADD_MANUALVPHOOK(CreateWorkshopMapGroup, g_pGameTypes, SH_MEMBER(this, &CS2Fixes::Hook_CreateWorkshopMapGroup), false);
 
 	META_CONPRINTF( "All hooks started!\n" );
-
-	CBufferStringGrowable<256> gamedirpath;
-	g_pEngineServer2->GetGameDir(gamedirpath);
-
-	std::string gamedirname = CGameConfig::GetDirectoryName(gamedirpath.Get());
-
-	const char *gamedataPath = "addons/cs2fixes/gamedata/cs2fixes.games.txt";
-	Message("Loading %s for game: %s\n", gamedataPath, gamedirname.c_str());
-
-	g_GameConfig = new CGameConfig(gamedirname, gamedataPath);
-	char conf_error[255] = "";
-	if (!g_GameConfig->Init(g_pFullFileSystem, conf_error, sizeof(conf_error)))
-	{
-		snprintf(error, maxlen, "Could not read %s: %s", g_GameConfig->GetPath().c_str(), conf_error);
-		Panic("%s\n", error);
-		return false;
-	}
 
 	bool bRequiredInitLoaded = true;
 
@@ -200,7 +209,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	if (!InitDetours(g_GameConfig))
 		bRequiredInitLoaded = false;
 
-	int offset = g_GameConfig->GetOffset("GameEventManager");
+	offset = g_GameConfig->GetOffset("GameEventManager");
 	g_gameEventManager = (IGameEventManager2 *)(CALL_VIRTUAL(uintptr_t, offset, g_pSource2Server) - 8);
 
 	if (!g_gameEventManager)
@@ -259,13 +268,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	RegisterWeaponCommands();
 
-	// Steam authentication
-	new CTimer(1.0f, true, []()
-	{
-		g_playerManager->TryAuthenticate();
-		return 1.0f;
-	});
-
 	// Check hide distance
 	new CTimer(0.5f, true, []()
 	{
@@ -293,6 +295,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
     SH_REMOVE_HOOK(IServerGameDLL, GameFrame, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameFramePost), true);
 	SH_REMOVE_HOOK(IServerGameDLL, GameServerSteamAPIActivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIActivated), false);
 	SH_REMOVE_HOOK(IServerGameDLL, GameServerSteamAPIDeactivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIDeactivated), false);
+	SH_REMOVE_HOOK(IServerGameDLL, ApplyGameSettings, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_ApplyGameSettings), false);
 	SH_REMOVE_HOOK(IServerGameClients, ClientActive, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientActive), true);
 	SH_REMOVE_HOOK(IServerGameClients, ClientDisconnect, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientDisconnect), true);
 	SH_REMOVE_HOOK(IServerGameClients, ClientPutInServer, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientPutInServer), true);
@@ -304,6 +307,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
 	SH_REMOVE_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_REMOVE_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
+	SH_REMOVE_HOOK_ID(g_iCreateWorkshopMapGroupId);
 
 	ConVar_Unregister();
 
@@ -350,9 +354,12 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CCommandContext& ctx, const CCommand& args)
 {
 	if (!g_pEntitySystem)
-		return;
+		RETURN_META(MRES_IGNORED);
 
 	auto iCommandPlayerSlot = ctx.GetPlayerSlot();
+
+	if (!g_bEnableCommands)
+		RETURN_META(MRES_IGNORED);
 
 	bool bSay = !V_strcmp(args.Arg(0), "say");
 	bool bTeamSay = !V_strcmp(args.Arg(0), "say_team");
@@ -426,6 +433,8 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 
 		RETURN_META(MRES_SUPERCEDE);
 	}
+
+	RETURN_META(MRES_IGNORED);
 }
 
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession *pSession, const char *pszMapName)
@@ -471,6 +480,11 @@ void CS2Fixes::Hook_GameServerSteamAPIActivated()
 {
 	g_steamAPI.Init();
 	g_http = g_steamAPI.SteamHTTP();
+
+	g_playerManager->OnSteamAPIActivated();
+  
+	if (g_bVoteManagerEnable && !g_pMapVoteSystem->IsMapListLoaded())
+		g_pMapVoteSystem->LoadMapList();
 
 	RETURN_META(MRES_IGNORED);
 }
@@ -570,12 +584,18 @@ void CS2Fixes::Hook_ClientActive( CPlayerSlot slot, bool bLoadGame, const char *
 
 void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 {
-	if ((V_stricmp(args[0], "endmatch_votenextmap") == 0) && args.ArgC() == 2) {
-		g_pMapVoteSystem->RegisterPlayerVote(slot, atoi(args[1]));
-	}
 #ifdef _DEBUG
 	Message( "Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString() );
 #endif
+
+	if (g_bVoteManagerEnable && V_stricmp(args[0], "endmatch_votenextmap") == 0 && args.ArgC() == 2)
+	{
+		if (g_pMapVoteSystem->RegisterPlayerVote(slot, atoi(args[1])))
+			RETURN_META(MRES_HANDLED);
+		else
+			RETURN_META(MRES_SUPERCEDE);
+	}
+
 	if (g_bEnableZR && slot != -1 && !V_strncmp(args.Arg(0), "jointeam", 8))
 	{
 		ZR_Hook_ClientCommand_JoinTeam(slot, args);
@@ -629,7 +649,6 @@ void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, ENetworkDisconnectionRea
 
 void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTick)
 {
-	VPROF_ENTER_SCOPE(__FUNCTION__);
 	/**
 	 * simulating:
 	 * ***********
@@ -674,8 +693,6 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 		CZRRegenTimer::Tick();
 
     EntityHandler_OnGameFramePost(simulating, gpGlobals->tickcount);
-
-	VPROF_EXIT_SCOPE();
 }
 
 extern bool g_bFlashLightTransmitOthers;
@@ -685,8 +702,6 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 {
 	if (!g_pEntitySystem)
 		return;
-
-	VPROF_ENTER_SCOPE(__FUNCTION__);
 
 	for (int i = 0; i < infoCount; i++)
 	{
@@ -748,8 +763,25 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 		if (pGlowModel)
 			pInfo->m_pTransmitEntity->Clear(pGlowModel->entindex());
 	}
+}
 
-	VPROF_EXIT_SCOPE();
+void CS2Fixes::Hook_ApplyGameSettings(KeyValues* pKV)
+{
+	if (!pKV->FindKey("launchoptions"))
+		return;
+
+	if (pKV->FindKey("launchoptions")->FindKey("customgamemode"))
+		g_pMapVoteSystem->SetCurrentWorkshopMap(pKV->FindKey("launchoptions")->GetUint64("customgamemode"));
+	else if (pKV->FindKey("launchoptions")->FindKey("levelname"))
+		g_pMapVoteSystem->SetCurrentMap(pKV->FindKey("launchoptions")->GetString("levelname"));
+}
+
+void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList)
+{
+	if (g_bVoteManagerEnable && g_pMapVoteSystem->IsMapListLoaded())
+		RETURN_META_MNEWPARAMS(MRES_HANDLED, CreateWorkshopMapGroup, (name, g_pMapVoteSystem->CreateWorkshopMapGroup()));
+	else
+		RETURN_META(MRES_IGNORED);
 }
 
 void CS2Fixes::OnLevelInit( char const *pMapName,
@@ -800,10 +832,10 @@ const char *CS2Fixes::GetLicense()
 const char *CS2Fixes::GetVersion()
 {
 #ifndef CS2FIXES_VERSION
-#    define CS2FIXES_VERSION "1.0-Local"
+#define CS2FIXES_VERSION "1.7-dev"
 #endif
 
-    return CS2FIXES_VERSION; // defined by the build script
+	return CS2FIXES_VERSION; // defined by the build script
 }
 
 const char *CS2Fixes::GetDate()
