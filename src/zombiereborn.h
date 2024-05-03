@@ -94,12 +94,15 @@ struct ZRClass
 		FOR_EACH_VEC(vecModels, i)
 		{
 			szModels += "\n\t\t" + vecModels[i]->szModelPath;
-			szModels += ", Color: " + vecModels[i]->szColor;
-			szModels += ", Skins: ";
+			szModels += " Color=\"" + vecModels[i]->szColor + "\"";
+			szModels += " Skins=[";
 			FOR_EACH_VEC(vecModels[i]->vecSkins, j)
 			{
-				szModels += std::to_string(vecModels[i]->vecSkins[j]) + ", ";
+				szModels += std::to_string(vecModels[i]->vecSkins[j]);
+				if (j != vecModels[i]->vecSkins.Count() - 1)
+					szModels += " ";
 			}
+			szModels += "]";
 		}
 		Message(
 			"%s:\n"
@@ -150,12 +153,15 @@ struct ZRZombieClass : ZRClass
 		FOR_EACH_VEC(vecModels, i)
 		{
 			szModels += "\n\t\t" + vecModels[i]->szModelPath;
-			szModels += ", Color: " + vecModels[i]->szColor;
-			szModels += ", Skins: ";
+			szModels += " Color=\"" + vecModels[i]->szColor + "\"";
+			szModels += " Skins=[";
 			FOR_EACH_VEC(vecModels[i]->vecSkins, j)
 			{
-				szModels += std::to_string(vecModels[i]->vecSkins[j]) + ", ";
+				szModels += std::to_string(vecModels[i]->vecSkins[j]);
+				if (j != vecModels[i]->vecSkins.Count() - 1)
+					szModels += " ";
 			}
+			szModels += "]";
 		}
 		Message(
 			"%s:\n"
