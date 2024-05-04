@@ -116,13 +116,16 @@ GAME_EVENT_F(player_spawn)
 	if (g_bEnableZR)
 		ZR_OnPlayerSpawn(pEvent);
 
-	// Rest of the code is to set debris collisions
-	if (!g_bNoblock)
-		return;
-
 	CCSPlayerController *pController = (CCSPlayerController *)pEvent->GetPlayerController("userid");
 
 	if (!pController)
+		return;
+
+	if (pController->IsConnected())
+		pController->GetZEPlayer()->OnSpawn();
+
+	// Rest of the code is to set debris collisions
+	if (!g_bNoblock)
 		return;
 
 	CHandle<CCSPlayerController> hController = pController->GetHandle();
