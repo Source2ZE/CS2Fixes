@@ -89,6 +89,11 @@ ZEPlayer *ZEPlayerHandle::Get() const
 	return pZEPlayer;
 }
 
+void ZEPlayer::OnSpawn()
+{
+	SetSpeedMod(1.f);
+}
+
 void ZEPlayer::OnAuthenticated()
 {
 	m_bAuthenticated = true;
