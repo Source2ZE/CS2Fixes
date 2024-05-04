@@ -17,11 +17,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "usermessages.pb.h"
 
 #include "adminsystem.h"
 #include "KeyValues.h"
 #include "interfaces/interfaces.h"
+#include "filesystem.h"
 #include "icvar.h"
 #include "playermanager.h"
 #include "commands.h"
@@ -1548,6 +1548,9 @@ void CAdminSystem::SaveInfractions()
 
 	char szPath[MAX_PATH];
 	V_snprintf(szPath, sizeof(szPath), "%s%s", Plat_GetGameDirectory(), "/csgo/addons/cs2fixes/data/infractions.txt");
+
+	// Create the directory in case it doesn't exist
+	g_pFullFileSystem->CreateDirHierarchyForFile(szPath, nullptr);
 
 	if (!pKV->SaveToFile(g_pFullFileSystem, szPath))
 		Warning("Failed to save infractions to %s\n", szPath);
