@@ -242,19 +242,19 @@ void ZEPlayer::SetOrigin(const Vector &origin)
 
 void ZEPlayer::GetVelocity(Vector *velocity)
 {
-	// if (this->processingMovement && this->currentMoveData)
-	// {
-	// 	*velocity = this->currentMoveData->m_vecVelocity;
-	// }
-	// else
-	// {
+	if (this->processingMovement && this->currentMoveData)
+	{
+		*velocity = this->currentMoveData->m_vecVelocity;
+	}
+	else
+	{
 	CBasePlayerPawn *pawn = this->GetPawn();
 	if (!pawn)
 	{
 		return;
 	}
 	*velocity = pawn->m_vecAbsVelocity();
-	//}
+	}
 }
 
 void ZEPlayer::SetVelocity(const Vector &velocity)

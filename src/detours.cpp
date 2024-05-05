@@ -69,17 +69,10 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pM
 	player->didTPM = false;
 	player->processingMovement = true;
 
-	// Yes, this is what source1 does to scale player speed
-	// Scale frametime during the entire movement processing step and revert right after
-	float flStoreFrametime = gpGlobals->frametime;
-
-
 	ProcessMovement(pThis, pMove);
 	
 	if(!player->didTPM)
 		player->lastValidPlane = vec3_origin;
-
-	gpGlobals->frametime = flStoreFrametime;
 	
 	player->processingMovement = false;
 }
@@ -152,8 +145,9 @@ bool IsValidMovementTrace(trace_t_s2 &tr, bbox_t bounds, CTraceFilterPlayerMovem
 
 
 #define MAX_BUMPS 4
-#define RAMP_PIERCE_DISTANCE 1.0f
+#define RAMP_PIERCE_DISTANCE 0.75f
 #define RAMP_BUG_THRESHOLD 0.99f
+#define RAMP_BUG_VELOCITY_THRESHOLD 0.95f 
 #define NEW_RAMP_THRESHOLD 0.95f
 void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_t_s2 *pFirstTrace)
 {
@@ -380,12 +374,17 @@ void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_
 	player->tpmVelocity = velocity;
 }
 
-void TryPlayerMovePost(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_t_s2 *pFirstTrace)
+void TryPlayerMovePost(CCSPlayer_MovementServices *ms)
 {
 	ZEPlayer *player = g_playerManager->GetPlayer(ms->GetPawn()->m_hController()->GetPlayerSlot());
 	if(!player)
 		return;
-	if (player->overrideTPM)
+	Vector velocity;
+	player->GetVelocity(&velocity);
+	bool velocityHeavilyModified =
+		player->tpmVelocity.Normalized().Dot(velocity.Normalized()) < RAMP_BUG_THRESHOLD
+		|| (player->tpmVelocity.Length() > 50.0f && velocity.Length() / player->tpmVelocity.Length() < RAMP_BUG_VELOCITY_THRESHOLD);
+	if (player->overrideTPM && velocityHeavilyModified)
 	{
 		player->SetOrigin(player->tpmOrigin);
 		player->SetVelocity(player->tpmVelocity);
@@ -396,7 +395,7 @@ void FASTCALL Detour_TryPlayerMove(CCSPlayer_MovementServices *ms, CMoveData *mv
 {
 	TryPlayerMovePre(ms, pFirstDest, pFirstTrace);
 	TryPlayerMove(ms, mv, pFirstDest, pFirstTrace);
-	TryPlayerMovePost(ms, pFirstDest, pFirstTrace);
+	TryPlayerMovePost(ms);
 }
 
 void CategorizePositionPre(CCSPlayer_MovementServices *ms,bool bStayOnGround)
