@@ -967,7 +967,7 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 			continue;
 
 		// Only do this for Ts, ignore CTs and specs
-		if (pController->m_iTeamNum() != CS_TEAM_T)
+		if (pController->m_iTeamNum() == CS_TEAM_T)
 			pController->SwitchTeam(CS_TEAM_CT);
 
 		CCSPlayerPawn *pPawn = pController->GetPlayerPawn();
