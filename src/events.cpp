@@ -37,6 +37,7 @@ extern IServerGameClients *g_pSource2GameClients;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 extern CCSGameRules *g_pGameRules;
+extern IVEngineServer2* g_pEngineServer2;
 
 extern int g_iRoundNum;
 
@@ -205,6 +206,9 @@ GAME_EVENT_F(player_death)
 	pPlayer->SetTotalKills(pPlayer->GetTotalKills() + 1);
 }
 
+bool g_bFullAllTalk = false;
+FAKE_BOOL_CVAR(cs2f_full_alltalk, "Whether to enforce sv_full_alltalk 1", g_bFullAllTalk, false, false);
+
 GAME_EVENT_F(round_start)
 {
 	if (g_bEnableZR)
@@ -212,6 +216,10 @@ GAME_EVENT_F(round_start)
 
 	if (g_bEnableLeader)
 		Leader_OnRoundStart(pEvent);
+
+	// Dumb workaround for CS2 always overriding sv_full_alltalk on state changes
+	if (g_bFullAllTalk)
+		g_pEngineServer2->ServerCommand("sv_full_alltalk 1");
 
 	if (!g_bEnableTopDefender)
 		return;
