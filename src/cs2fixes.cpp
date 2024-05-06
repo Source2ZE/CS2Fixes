@@ -46,6 +46,7 @@
 #include "votemanager.h"
 #include "zombiereborn.h"
 #include "httpmanager.h"
+#include "idlemanager.h"
 #include "discord.h"
 #include "map_votes.h"
 #include "user_preferences.h"
@@ -287,6 +288,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pUserPreferencesStorage = new CUserPreferencesREST();
 	g_pZRWeaponConfig = new ZRWeaponConfig();
 	g_pEntityListener = new CEntityListener();
+	g_pIdleSystem = new CIdleSystem();
 
 	RegisterWeaponCommands();
 
@@ -302,6 +304,13 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	{
 		g_playerManager->CheckInfractions();
 		return 30.0f;
+	});
+
+	// Check for idle players and kick them if permitted by cs2f_idle_kick_* 'convars'
+	new CTimer(5.0f, true, true, []()
+	{
+		g_pIdleSystem->CheckForIdleClients();
+		return 5.0f;
 	});
 
 	// run our cfg
@@ -369,6 +378,9 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 	if (g_pEntityListener)
 		delete g_pEntityListener;
+
+	if (g_pIdleSystem)
+		delete g_pIdleSystem;
 
 	if (g_iCGamePlayerEquipUseId != -1)
 		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
@@ -494,6 +506,8 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 			g_ExtendState = EExtendState::EXTEND_ALLOWED;
 		return -1.0f;
 	});
+
+	g_pIdleSystem->Reset();
 }
 
 class CGamePlayerEquip;
