@@ -91,9 +91,11 @@ GAME_EVENT_F(round_prestart)
 
 			Message("Purged %i strings from EntityNames\n", iStringCount);
 
-			pEntityNames->SetTick(-1, nullptr);
+			// Vauff: Not fixing cubemap fog in my testing
+			// This also breaks round start particle resets, so disabling for now
+			//pEntityNames->SetTick(-1, nullptr);
 
-			FullUpdateAllClients();
+			//FullUpdateAllClients();
 		}
 	}
 
