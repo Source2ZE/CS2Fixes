@@ -50,6 +50,7 @@ static float g_flLeaderVoteRatio = 0.15;
 static bool g_bLeaderActionsHumanOnly = true;
 static bool g_bMutePingsIfNoLeader = true;
 static std::string g_szLeaderModelPath = "";
+static int g_iMarkerCount = 0;
 
 FAKE_BOOL_CVAR(cs2f_leader_enable, "Whether to enable Leader features", g_bEnableLeader, false, false)
 FAKE_FLOAT_CVAR(cs2f_leader_vote_ratio, "Vote ratio needed for player to become a leader", g_flLeaderVoteRatio, 0.2f, false)
@@ -125,10 +126,26 @@ void Leader_RemoveLeaderVisuals(CCSPlayerPawn *pPawn)
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultHumanClassVisuals(pPawn);
 }
 
-void Leader_CreateDefendMarker(ZEPlayer *pPlayer, Color clrTint, int iDuration)
+bool Leader_CreateDefendMarker(ZEPlayer *pPlayer, Color clrTint, int iDuration)
 {
 	CCSPlayerController *pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 	CCSPlayerPawn *pPawn = (CCSPlayerPawn *)pController->GetPawn();
+
+	if (g_iMarkerCount >= 5)
+	{
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Too many defend markers already active!");
+		return false;
+	}
+
+	g_iMarkerCount++;
+
+	new CTimer(iDuration, false, false, []()
+	{
+		if (g_iMarkerCount > 0)
+			g_iMarkerCount--;
+
+		return -1.0f;
+	});
 
 	CParticleSystem *pMarker = (CParticleSystem *)CreateEntityByName("info_particle_system");
 
@@ -147,6 +164,8 @@ void Leader_CreateDefendMarker(ZEPlayer *pPlayer, Color clrTint, int iDuration)
 
 	UTIL_AddEntityIOEvent(pMarker, "DestroyImmediately", nullptr, nullptr, "", iDuration);
 	UTIL_AddEntityIOEvent(pMarker, "Kill", nullptr, nullptr, "", iDuration + 0.02f);
+
+	return true;
 }
 
 void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64 *clients, const void *pData)
@@ -205,6 +224,8 @@ void Leader_OnRoundStart(IGameEvent *pEvent)
 		if (pPlayer && !pPlayer->IsLeader())
 			pPlayer->SetLeaderTracer(0);
 	}
+
+	g_iMarkerCount = 0;
 }
 
 // revisit this later with a TempEnt implementation
@@ -261,7 +282,7 @@ CON_COMMAND_CHAT(glow, "<name> [duration] - toggle glow highlight on a player")
 	int iPlayerSlot = player ? player->GetPlayerSlot() : -1;
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer((CPlayerSlot)iPlayerSlot);
 
-    bool bIsAdmin;
+	bool bIsAdmin;
 	if (pPlayer)
 		bIsAdmin = pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC);
 	else // console
@@ -274,57 +295,57 @@ CON_COMMAND_CHAT(glow, "<name> [duration] - toggle glow highlight on a player")
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-    ETargetType nTargetType = g_playerManager->TargetPlayerString(iPlayerSlot, args[1], iNumClients, pSlots);
+	ETargetType nTargetType = g_playerManager->TargetPlayerString(iPlayerSlot, args[1], iNumClients, pSlots);
 
-    if (bIsAdmin) // Admin command logic
-    {
+	if (bIsAdmin) // Admin command logic
+	{
 		if (args.ArgC() < 2)
 		{
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !glow <name> [duration]");
 			return;
 		}
 
-        if (!iNumClients)
-        {
-            ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-            return;
-        }
+		if (!iNumClients)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+			return;
+		}
 
 		const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
-        for (int i = 0; i < iNumClients; i++)
-        {
-            CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+		for (int i = 0; i < iNumClients; i++)
+		{
+			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
-            if (!pTarget)
-                continue;
+			if (!pTarget)
+				continue;
 
 			if (pTarget->m_iTeamNum < CS_TEAM_T)
 				continue;
 
 			// Exception - Use LeaderIndex color if Admin is also a Leader
-            if (pPlayer && pPlayer->IsLeader())
+			if (pPlayer && pPlayer->IsLeader())
 				color = LeaderColorMap[pPlayer->GetLeaderIndex()].clColor;
 			else
-                color = pTarget->m_iTeamNum == CS_TEAM_T ? LeaderColorMap[2].clColor/*orange*/ : LeaderColorMap[1].clColor/*blue*/;
+				color = pTarget->m_iTeamNum == CS_TEAM_T ? LeaderColorMap[2].clColor/*orange*/ : LeaderColorMap[1].clColor/*blue*/;
 
-            ZEPlayer *pPlayerTarget = g_playerManager->GetPlayer(pSlots[i]);
+			ZEPlayer *pPlayerTarget = g_playerManager->GetPlayer(pSlots[i]);
 
-            if (!pPlayerTarget->GetGlowModel())
-                pPlayerTarget->StartGlow(color, iDuration);
-            else
-                pPlayerTarget->EndGlow();
+			if (!pPlayerTarget->GetGlowModel())
+				pPlayerTarget->StartGlow(color, iDuration);
+			else
+				pPlayerTarget->EndGlow();
 
-            if (nTargetType < ETargetType::ALL)
-                PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "toggled glow on", "", CHAT_PREFIX);
-        }
+			if (nTargetType < ETargetType::ALL)
+				PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "toggled glow on", "", CHAT_PREFIX);
+		}
 
-        PrintMultiAdminAction(nTargetType, pszCommandPlayerName, "toggled glow on", "", CHAT_PREFIX);
+		PrintMultiAdminAction(nTargetType, pszCommandPlayerName, "toggled glow on", "", CHAT_PREFIX);
 
-        return;
-    }
+		return;
+	}
 
-    // Leader command logic
+	// Leader command logic
 
 	if (!g_bEnableLeader)
 		return;
@@ -492,7 +513,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 
 	pPlayerTarget->AddLeaderVote(pPlayer);
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants %s to become a Leader (%i/%i votes).",\
-				   player->GetPlayerName(), pTarget->GetPlayerName(), iLeaderVoteCount+1, iNeededLeaderVoteCount);
+				player->GetPlayerName(), pTarget->GetPlayerName(), iLeaderVoteCount+1, iNeededLeaderVoteCount);
 }
 
 CON_COMMAND_CHAT(defend, "[name|duration] [duration] - place a defend marker on you or target player")
@@ -531,8 +552,9 @@ CON_COMMAND_CHAT(defend, "[name|duration] [duration] - place a defend marker on 
 			return;
 		}
 
-		Leader_CreateDefendMarker(pPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, 30);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on yourself lasting 30 seconds.");
+		if (Leader_CreateDefendMarker(pPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, 30))
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on yourself lasting 30 seconds.");
+
 		return;
 	}
 
@@ -570,9 +592,8 @@ CON_COMMAND_CHAT(defend, "[name|duration] [duration] - place a defend marker on 
 
 			ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[0]);
 
-			Leader_CreateDefendMarker(pTargetPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, 30);
-
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on %s lasting 30 seconds.", pTarget->GetPlayerName());
+			if (Leader_CreateDefendMarker(pTargetPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, 30))
+				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on %s lasting 30 seconds.", pTarget->GetPlayerName());
 
 			return;
 		}
@@ -593,14 +614,16 @@ CON_COMMAND_CHAT(defend, "[name|duration] [duration] - place a defend marker on 
 
 		if (iArg1 < 1)
 		{
-			Leader_CreateDefendMarker(pPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, 30);
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on yourself lasting 30 seconds.");
+			if (Leader_CreateDefendMarker(pPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, 30))
+				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on yourself lasting 30 seconds.");
+
 			return;
 		}
 		iArg1 = MIN(iArg1, 60);
 
-		Leader_CreateDefendMarker(pPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, iArg1);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on yourself lasting %i seconds.", iArg1);
+		if (Leader_CreateDefendMarker(pPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, iArg1))
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on yourself lasting %i seconds.", iArg1);
+
 		return;
 	}
 
@@ -631,15 +654,16 @@ CON_COMMAND_CHAT(defend, "[name|duration] [duration] - place a defend marker on 
 
 	if (iArg2 < 1) // assume it's not a valid number
 	{
-		Leader_CreateDefendMarker(pTargetPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, 30);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on %s lasting 30 seconds.", pTarget->GetPlayerName());
+		if (Leader_CreateDefendMarker(pTargetPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, 30))
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on %s lasting 30 seconds.", pTarget->GetPlayerName());
+
 		return;
 	}
 
 	iArg2 = MIN(iArg2, 60);
 
-	Leader_CreateDefendMarker(pTargetPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, iArg2);
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on %s lasting %i seconds.", pTarget->GetPlayerName(), iArg2);
+	if (Leader_CreateDefendMarker(pTargetPlayer, LeaderColorMap[pPlayer->GetLeaderIndex()].clColor, iArg2))
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed defend marker on %s lasting %i seconds.", pTarget->GetPlayerName(), iArg2);
 }
 
 CON_COMMAND_CHAT(tracer, "<name> [color] - toggle projectile tracers on a player")
@@ -748,7 +772,7 @@ CON_COMMAND_CHAT(beacon, "<name> [color] - toggle beacon on a player")
 	int iPlayerSlot = player ? player->GetPlayerSlot() : -1;
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer((CPlayerSlot)iPlayerSlot);
 
-    bool bIsAdmin;
+	bool bIsAdmin;
 	if (pPlayer)
 		bIsAdmin = pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC);
 	else // console
@@ -756,21 +780,21 @@ CON_COMMAND_CHAT(beacon, "<name> [color] - toggle beacon on a player")
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-    ETargetType nTargetType = g_playerManager->TargetPlayerString(iPlayerSlot, args[1], iNumClients, pSlots);
+	ETargetType nTargetType = g_playerManager->TargetPlayerString(iPlayerSlot, args[1], iNumClients, pSlots);
 
-    if (bIsAdmin) // Admin beacon logic
-    {
+	if (bIsAdmin) // Admin beacon logic
+	{
 		if (args.ArgC() < 2)
 		{
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !beacon <name> [color]");
 			return;
 		}
 
-        if (!iNumClients)
-        {
-            ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-            return;
-        }
+		if (!iNumClients)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+			return;
+		}
 
 		const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
@@ -778,39 +802,39 @@ CON_COMMAND_CHAT(beacon, "<name> [color] - toggle beacon on a player")
 		if (args.ArgC() == 3)
 			color = Leader_ColorFromString(args[2]);
 
-        for (int i = 0; i < iNumClients; i++)
-        {
-            CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+		for (int i = 0; i < iNumClients; i++)
+		{
+			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
-            if (!pTarget)
-                continue;
+			if (!pTarget)
+				continue;
 
 			if (pTarget->m_iTeamNum < CS_TEAM_T)
 				continue;
 
 			// Exception - Use LeaderIndex color if Admin is also a Leader
-            if (args.ArgC() == 2 && pPlayer && pPlayer->IsLeader())
+			if (args.ArgC() == 2 && pPlayer && pPlayer->IsLeader())
 				color = LeaderColorMap[pPlayer->GetLeaderIndex()].clColor;
 			else if (args.ArgC() == 2)
-                color = pTarget->m_iTeamNum == CS_TEAM_T ? LeaderColorMap[2].clColor/*orange*/ : LeaderColorMap[1].clColor/*blue*/;
+				color = pTarget->m_iTeamNum == CS_TEAM_T ? LeaderColorMap[2].clColor/*orange*/ : LeaderColorMap[1].clColor/*blue*/;
 
-            ZEPlayer *pPlayerTarget = g_playerManager->GetPlayer(pSlots[i]);
+			ZEPlayer *pPlayerTarget = g_playerManager->GetPlayer(pSlots[i]);
 
-            if (!pPlayerTarget->GetBeaconParticle())
-                pPlayerTarget->StartBeacon(color, pPlayer->GetHandle());
-            else
-                pPlayerTarget->EndBeacon();
+			if (!pPlayerTarget->GetBeaconParticle())
+				pPlayerTarget->StartBeacon(color, pPlayer->GetHandle());
+			else
+				pPlayerTarget->EndBeacon();
 
-            if (nTargetType < ETargetType::ALL)
-                PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "toggled beacon on", "", CHAT_PREFIX);
-        }
+			if (nTargetType < ETargetType::ALL)
+				PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "toggled beacon on", "", CHAT_PREFIX);
+		}
 
-        PrintMultiAdminAction(nTargetType, pszCommandPlayerName, "toggled beacon on", "", CHAT_PREFIX);
+		PrintMultiAdminAction(nTargetType, pszCommandPlayerName, "toggled beacon on", "", CHAT_PREFIX);
 
-        return;
-    }
+		return;
+	}
 
-    // Leader beacon logic
+	// Leader beacon logic
 
 	if (!g_bEnableLeader)
 		return;
