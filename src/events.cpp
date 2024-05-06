@@ -38,6 +38,8 @@ extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 extern CCSGameRules *g_pGameRules;
 
+extern int g_iRoundNum;
+
 CUtlVector<CGameEventListener *> g_vecEventListeners;
 
 void RegisterEventListeners()
@@ -75,6 +77,8 @@ extern void FullUpdateAllClients();
 
 GAME_EVENT_F(round_prestart)
 {
+	g_iRoundNum++;
+
 	if (g_bPurgeEntityNames)
 	{
 		INetworkStringTable *pEntityNames = g_pNetworkStringTableServer->FindTable("EntityNames");
@@ -131,7 +135,7 @@ GAME_EVENT_F(player_spawn)
 	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
 	// Gotta do this on the next frame...
-	new CTimer(0.0f, false, [hController]()
+	new CTimer(0.0f, false, false, [hController]()
 	{
 		CCSPlayerController *pController = hController.Get();
 

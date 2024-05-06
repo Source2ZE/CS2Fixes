@@ -54,7 +54,7 @@ inline void DelayInput(Z_CBaseEntity* pCaller, const char* input, const char* pa
 {
     const auto eh = pCaller->GetHandle();
 
-    new CTimer(0.f, false, [eh, input, param]() {
+    new CTimer(0.f, false, false, [eh, input, param]() {
         if (const auto entity = reinterpret_cast<Z_CBaseEntity*>(eh.Get()))
             entity->AcceptInput(input, param, nullptr, entity);
 
@@ -68,7 +68,7 @@ inline void DelayInput(Z_CBaseEntity* pCaller, Z_CBaseEntity* pActivator, const 
     const auto eh = pCaller->GetHandle();
     const auto ph = pActivator->GetHandle();
 
-    new CTimer(0.f, false, [eh, ph, input, param]() {
+    new CTimer(0.f, false, false, [eh, ph, input, param]() {
         const auto player = reinterpret_cast<Z_CBaseEntity*>(ph.Get());
         if (const auto entity = reinterpret_cast<Z_CBaseEntity*>(eh.Get()))
             entity->AcceptInput(input, param, player, entity);

@@ -242,7 +242,7 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 	m_bIntermissionStarted = false;
 
 	// Delay one tick to override any .cfg's
-	new CTimer(0.02f, false, []()
+	new CTimer(0.02f, false, true, []()
 	{
 		g_pEngineServer2->ServerCommand("mp_match_end_changelevel 0");
 
@@ -321,7 +321,7 @@ void CMapVoteSystem::StartVote()
 	// Start the end-of-vote timer to finish the vote
 	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_endmatch_votenextleveltime"));
 	float flVoteTime = *(float *)&cvar->values;
-	new CTimer(flVoteTime, false, []() {
+	new CTimer(flVoteTime, false, true, []() {
 		g_pMapVoteSystem->FinishVote();
 		return -1.0;
 	});
@@ -400,7 +400,7 @@ void CMapVoteSystem::FinishVote()
 		ClearPlayerInfo(i);
 
 	// Wait a second and force-change the map
-	new CTimer(1.0, false, [iWinningMap]() {
+	new CTimer(1.0, false, true, [iWinningMap]() {
 		char sChangeMapCmd[128];
 		uint64 workshopId = g_pMapVoteSystem->GetMapWorkshopId(iWinningMap);
 
@@ -662,7 +662,7 @@ bool CMapVoteSystem::LoadMapList()
 		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled));
 	}
 
-	new CTimer(0.f, true, [this]()
+	new CTimer(0.f, true, true, [this]()
 	{
 		if (!this || m_DownloadQueue.Count() == 0)
 			return -1.f;
