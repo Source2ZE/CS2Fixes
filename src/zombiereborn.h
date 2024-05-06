@@ -220,7 +220,7 @@ class CZRRegenTimer : public CTimerBase
 {
 public:
 	CZRRegenTimer(float flRegenInterval, int iRegenAmount, CHandle<CCSPlayerPawn> hPawnHandle) :
-		CTimerBase(flRegenInterval, false), m_iRegenAmount(iRegenAmount), m_hPawnHandle(hPawnHandle) {};
+		CTimerBase(flRegenInterval, false, false), m_iRegenAmount(iRegenAmount), m_hPawnHandle(hPawnHandle) {};
 
 	bool Execute();
 	static void StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController *pController);

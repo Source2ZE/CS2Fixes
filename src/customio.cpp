@@ -442,7 +442,7 @@ bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, Z_CBaseEntity* pInflicto
     CHandle<Z_CBaseEntity> hAttacker(pAttacker);
     CHandle<Z_CBaseEntity> hAbility(pAbility);
 
-    new CTimer(0.f, false, [hPawn, hInflictor, hAttacker, hAbility, nDamageType]() {
+    new CTimer(0.f, false, false, [hPawn, hInflictor, hAttacker, hAbility, nDamageType]() {
         CCSPlayerPawn* pPawn = hPawn.Get();
 
         if (!pPawn)

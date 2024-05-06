@@ -61,7 +61,6 @@ void SetupCTeams();
 bool ZR_IsTeamAlive(int iTeamNum);
 
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
-static int g_iRoundNum = 0;
 static int g_iInfectionCountDown = 0;
 static bool g_bRespawnEnabled = true;
 static CHandle<Z_CBaseEntity> g_hRespawnToggler;
@@ -669,12 +668,14 @@ void CZRPlayerClassManager::ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn 
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
 
 	if (pPlayer && pPlayer->IsLeader())
-		new CTimer(0.02f, false, [pPawn]()
+	{
+		new CTimer(0.02f, false, false, [pPawn]()
 		{
 			if (pPawn)
 				Leader_ApplyLeaderVisuals(pPawn);
 			return -1.0f;
 		});
+	}
 }
 
 void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn *pPawn)
@@ -867,7 +868,7 @@ void ZR_OnLevelInit()
 	g_ZRRoundState = EZRRoundState::ROUND_START;
 
 	// Delay one tick to override any .cfg's
-	new CTimer(0.02f, false, []()
+	new CTimer(0.02f, false, true, []()
 	{
 		// Here we force some cvars that are necessary for the gamemode
 		g_pEngineServer2->ServerCommand("mp_give_player_c4 0");
@@ -956,7 +957,6 @@ void ToggleRespawn(bool force = false, bool value = false)
 void ZR_OnRoundPrestart(IGameEvent* pEvent)
 {
 	g_ZRRoundState = EZRRoundState::ROUND_START;
-	g_iRoundNum++;
 	ToggleRespawn(true, true);
 
 	for (int i = 0; i < gpGlobals->maxClients; i++)
@@ -1035,7 +1035,6 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 		return;
 
 	// delay infection a bit
-	int iRoundNum = g_iRoundNum;
 	bool bInfect = g_ZRRoundState == EZRRoundState::POST_INFECTION;
 
 	// We're infecting this guy with a delay, disable all damage as they have 100 hp until then
@@ -1051,10 +1050,10 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 	}
 
 	CHandle<CCSPlayerController> handle = pController->GetHandle();
-	new CTimer(0.05f, false, [iRoundNum, handle, bInfect]()
+	new CTimer(0.05f, false, false, [handle, bInfect]()
 	{
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
-		if (iRoundNum != g_iRoundNum || !pController)
+		if (!pController)
 			return -1.0f;
 		if(bInfect)
 			ZR_Infect(pController, pController, true);
@@ -1237,7 +1236,7 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 		pZEPlayer->SetInfectState(true);
 
 		ZEPlayerHandle hPlayer = pZEPlayer->GetHandle();
-		new CTimer(g_flMoanInterval + (rand() % 5), false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
+		new CTimer(g_flMoanInterval + (rand() % 5), false, false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
 	}
 }
 
@@ -1265,7 +1264,7 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController)
 	pZEPlayer->SetInfectState(true);
 
 	ZEPlayerHandle hPlayer = pZEPlayer->GetHandle();
-	new CTimer(g_flMoanInterval + (rand() % 5), false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
+	new CTimer(g_flMoanInterval + (rand() % 5), false, false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
 }
 
 // make players who've been picked as MZ recently less likely to be picked again
@@ -1400,15 +1399,13 @@ void ZR_InitialInfection()
 
 void ZR_StartInitialCountdown()
 {
-	int iRoundNum = g_iRoundNum;
-
 	if (g_iInfectSpawnTimeMin > g_iInfectSpawnTimeMax)
 		V_swap(g_iInfectSpawnTimeMin, g_iInfectSpawnTimeMax);
 
 	g_iInfectionCountDown = g_iInfectSpawnTimeMin + (rand() % (g_iInfectSpawnTimeMax - g_iInfectSpawnTimeMin + 1));
-	new CTimer(0.0f, false, [iRoundNum]()
+	new CTimer(0.0f, false, false, []()
 	{
-		if (iRoundNum != g_iRoundNum || g_ZRRoundState != EZRRoundState::ROUND_START)
+		if (g_ZRRoundState != EZRRoundState::ROUND_START)
 			return -1.0f;
 		if (g_iInfectionCountDown <= 0)
 		{
@@ -1528,11 +1525,10 @@ void SpawnPlayer(CCSPlayerController* pController)
 	}
 
 	CHandle<CCSPlayerController> handle = pController->GetHandle();
-	int iRoundNum = g_iRoundNum;
-	new CTimer(2.0f, false, [iRoundNum, handle]()
+	new CTimer(2.0f, false, false, [handle]()
 	{
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
-		if (iRoundNum != g_iRoundNum || !pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T)
+		if (!pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T)
 			return -1.0f;
 		pController->Respawn();
 		return -1.0f;
@@ -1599,11 +1595,10 @@ void ZR_OnPlayerDeath(IGameEvent* pEvent)
 
 	// respawn player
 	CHandle<CCSPlayerController> handle = pVictimController->GetHandle();
-	int iRoundNum = g_iRoundNum;
-	new CTimer(g_flRespawnDelay < 0.0f ? 2.0f : g_flRespawnDelay, false, [iRoundNum, handle]()
+	new CTimer(g_flRespawnDelay < 0.0f ? 2.0f : g_flRespawnDelay, false, false, [handle]()
 	{
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
-		if (iRoundNum != g_iRoundNum || !pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T)
+		if (!pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T)
 			return -1.0f;
 		pController->Respawn();
 		return -1.0f;
@@ -1618,10 +1613,9 @@ void ZR_OnRoundFreezeEnd(IGameEvent* pEvent)
 // there is probably a better way to check when time is running out...
 void ZR_OnRoundTimeWarning(IGameEvent* pEvent)
 {
-	int iRoundNum = g_iRoundNum;
-	new CTimer(10.0, false, [iRoundNum]()
+	new CTimer(10.0, false, false, []()
 	{
-		if (iRoundNum != g_iRoundNum)
+		if (g_ZRRoundState == EZRRoundState::ROUND_END)
 			return -1.0f;
 		ZR_EndRoundAndAddTeamScore(g_iDefaultWinnerTeam);
 		return -1.0f;
@@ -1784,7 +1778,7 @@ CON_COMMAND_CHAT(ztele, "- teleport to spawn")
 
 	CHandle<CBasePlayerPawn> pawnHandle = pPawn->GetHandle();
 
-	new CTimer(5.0f, false, [spawnHandle, pawnHandle, initialpos]()
+	new CTimer(5.0f, false, false, [spawnHandle, pawnHandle, initialpos]()
 	{
 		CBasePlayerPawn* pPawn = pawnHandle.Get();
 		SpawnPoint* pSpawn = spawnHandle.Get();

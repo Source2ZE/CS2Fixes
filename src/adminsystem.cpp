@@ -987,7 +987,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - change map", ADMFLAG_CHANGEMAP)
 
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", args[1]);
 
-		new CTimer(5.0f, false, [sCommand]()
+		new CTimer(5.0f, false, true, [sCommand]()
 		{
 			g_pEngineServer2->ServerCommand(sCommand.c_str());
 			return -1.0f;
@@ -1002,7 +1002,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - change map", ADMFLAG_CHANGEMAP)
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", szMapName);
 
-	new CTimer(5.0f, false, [szMapName]()
+	new CTimer(5.0f, false, true, [szMapName]()
 	{
 		g_pEngineServer2->ChangeLevel(szMapName, nullptr);
 		return -1.0f;

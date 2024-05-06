@@ -63,6 +63,7 @@
 double g_flUniversalTime;
 float g_flLastTickedTime;
 bool g_bHasTicked;
+int g_iRoundNum = 0;
 
 void Message(const char *msg, ...)
 {
@@ -270,14 +271,14 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	RegisterWeaponCommands();
 
 	// Check hide distance
-	new CTimer(0.5f, true, []()
+	new CTimer(0.5f, true, true, []()
 	{
 		g_playerManager->CheckHideDistances();
 		return 0.5f;
 	});
 
 	// Check for the expiration of infractions like mutes or gags
-	new CTimer(30.0f, true, []()
+	new CTimer(30.0f, true, true, []()
 	{
 		g_playerManager->CheckInfractions();
 		return 30.0f;
@@ -461,7 +462,7 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	g_ExtendState = EExtendState::MAP_START;
 
 	// Allow RTV and Extend votes after 2 minutes post map start
-	new CTimer(120.0f, false, []()
+	new CTimer(120.0f, false, true, []()
 	{
 		if (g_RTVState != ERTVState::BLOCKED_BY_ADMIN)
 			g_RTVState = ERTVState::RTV_ALLOWED;
@@ -696,7 +697,7 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 		// Timer execute 
 		if (timer->m_flLastExecute + timer->m_flInterval <= g_flUniversalTime)
 		{
-			if (!timer->Execute())
+			if ((!timer->m_bPreserveRoundChange && timer->m_iRoundNum != g_iRoundNum) || !timer->Execute())
 			{
 				delete timer;
 				g_timers.Remove(prevIndex);
@@ -813,6 +814,7 @@ void CS2Fixes::OnLevelInit( char const *pMapName,
 									 bool background )
 {
 	Message("OnLevelInit(%s)\n", pMapName);
+	g_iRoundNum = 0;
 
 	// run our cfg
 	g_pEngineServer2->ServerCommand("exec cs2fixes/cs2fixes");

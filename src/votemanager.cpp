@@ -183,7 +183,7 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 		{
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! Ending the map now...");
 
-			new CTimer(3.0f, false, []()
+			new CTimer(3.0f, false, true, []()
 			{
 				g_pGameRules->TerminateRound(5.0f, CSRoundEndReason::Draw);
 
@@ -339,7 +339,7 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 			g_ExtendState = EExtendState::POST_EXTEND_COOLDOWN;
 
 			// Allow another extend vote after added time lapses
-			new CTimer(g_iExtendTimeToAdd * 60.0f, false, []()
+			new CTimer(g_iExtendTimeToAdd * 60.0f, false, true, []()
 			{
 				if (g_ExtendState == EExtendState::POST_EXTEND_COOLDOWN)
 					g_ExtendState = EExtendState::EXTEND_ALLOWED;

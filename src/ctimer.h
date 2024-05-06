@@ -21,16 +21,23 @@
 #include <functional>
 #include "utllinkedlist.h"
 
+extern int g_iRoundNum;
+
 class CTimerBase {
 public:
-	CTimerBase(float flInitialInterval, bool bPreserveMapChange) :
-		m_flInterval(flInitialInterval), m_bPreserveMapChange(bPreserveMapChange) {};
+    CTimerBase(float flInitialInterval, bool bPreserveMapChange, bool bPreserveRoundChange) :
+        m_flInterval(flInitialInterval), m_bPreserveMapChange(bPreserveMapChange), m_bPreserveRoundChange(bPreserveRoundChange)
+    {
+        m_iRoundNum = g_iRoundNum;
+    }
 
     virtual bool Execute() = 0;
 
     float m_flInterval;
     float m_flLastExecute = -1;
     bool m_bPreserveMapChange;
+    bool m_bPreserveRoundChange;
+    int m_iRoundNum;
 };
 
 extern CUtlLinkedList<CTimerBase*> g_timers;
@@ -40,8 +47,8 @@ extern CUtlLinkedList<CTimerBase*> g_timers;
 class CTimer : public CTimerBase
 {
 public:
-    CTimer(float flInitialInterval, bool bPreserveMapChange, std::function<float()> func) :
-		CTimerBase(flInitialInterval, bPreserveMapChange), m_func(func)
+    CTimer(float flInitialInterval, bool bPreserveMapChange, bool bPreserveRoundChange, std::function<float()> func) :
+		CTimerBase(flInitialInterval, bPreserveMapChange, bPreserveRoundChange), m_func(func)
     {
         g_timers.AddToTail(this);
     };
