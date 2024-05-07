@@ -132,7 +132,7 @@ static bool g_bLogPushes = false;
 FAKE_BOOL_CVAR(cs2f_log_pushes, "Whether to log pushes (cs2f_use_old_push must be enabled)", g_bLogPushes, false, false)
 
 static bool g_bPreventMultiPush = false;
-FAKE_BOOL_CVAR(cs2f_prevent_multi_push, "Whether to log pushes (cs2f_use_old_push must be enabled)", g_bPreventMultiPush, false, false)
+FAKE_BOOL_CVAR(cs2f_prevent_multi_push, "Whether to prevent pushes from affecting the same entity multiple times in a tick", g_bPreventMultiPush, false, false)
 
 std::unordered_set<uint64> g_PushEntSet;
 
