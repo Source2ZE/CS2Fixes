@@ -131,8 +131,21 @@ FAKE_BOOL_CVAR(cs2f_use_old_push, "Whether to use the old CSGO trigger_push beha
 static bool g_bLogPushes = false;
 FAKE_BOOL_CVAR(cs2f_log_pushes, "Whether to log pushes (cs2f_use_old_push must be enabled)", g_bLogPushes, false, false)
 
+static bool g_bPreventMultiPush = false;
+FAKE_BOOL_CVAR(cs2f_prevent_multi_push, "Whether to log pushes (cs2f_use_old_push must be enabled)", g_bPreventMultiPush, false, false)
+
+std::unordered_set<uint64> g_PushEntSet;
+
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
 {
+	// Fitting both handles into a single uint64
+	uint64 iPushID = ((uint64)pPush->GetHandle().ToInt() << 32) + pOther->GetHandle().ToInt();
+
+	// We're inserting the push ID into a set and if that fails it means this trigger already pushed the other ent in this tick
+	// The set is cleared on the next tick
+	if (g_bPreventMultiPush && !g_PushEntSet.insert(iPushID).second)
+		return;
+
 	// This trigger pushes only once (and kills itself) or pushes only on StartTouch, both of which are fine already
 	if (!g_bUseOldPush || pPush->m_spawnflags() & SF_TRIG_PUSH_ONCE || pPush->m_bTriggerOnStartTouch())
 	{
