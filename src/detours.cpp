@@ -85,7 +85,7 @@ static bool g_bBlockAllDamage = false;
 FAKE_BOOL_CVAR(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", g_bBlockMolotovSelfDmg, false, false)
 FAKE_BOOL_CVAR(cs2f_block_all_dmg, "Whether to block all damage to players", g_bBlockAllDamage, false, false)
 
-void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
+void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
 {
 #ifdef _DEBUG
 	Message("\n--------------------------------\n"
@@ -133,7 +133,7 @@ FAKE_BOOL_CVAR(cs2f_prevent_multi_push, "Whether to prevent pushes from affectin
 
 std::unordered_set<uint64> g_PushEntSet;
 
-void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
+void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 {
 	// Fitting both handles into a single uint64
 	uint64 iPushID = ((uint64)pPush->GetHandle().ToInt() << 32) + pOther->GetHandle().ToInt();
@@ -201,12 +201,13 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 		Vector vecEntBaseVelocity = pOther->m_vecBaseVelocity;
 		Vector vecOrigPush = vecAbsDir * pPush->m_flSpeed();
 
-		Message("Pushing entity %i | frametime = %.3f | entity basevelocity = %.2f %.2f %.2f | original push velocity = %.2f %.2f %.2f | final push velocity = %.2f %.2f %.2f\n",
-			pOther->GetEntityIndex(),
-			gpGlobals->frametime,
-			vecEntBaseVelocity.x, vecEntBaseVelocity.y, vecEntBaseVelocity.z,
-			vecOrigPush.x, vecOrigPush.y, vecOrigPush.z,
-			vecPush.x, vecPush.y, vecPush.z);
+		Message("Pushing entity %i | frame = %i | tick = %i | entity basevelocity = %.2f %.2f %.2f | original push velocity = %.2f %.2f %.2f | final push velocity = %.2f %.2f %.2f\n",
+				pOther->GetEntityIndex(),
+				gpGlobals->framecount,
+				gpGlobals->tickcount,
+				vecEntBaseVelocity.x, vecEntBaseVelocity.y, vecEntBaseVelocity.z,
+				vecOrigPush.x, vecOrigPush.y, vecOrigPush.z,
+				vecPush.x, vecPush.y, vecPush.z);
 	}
 
 	pOther->m_vecBaseVelocity(vecPush);
@@ -401,12 +402,12 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if (pPawn->IsPawn() && IgnitePawn(pPawn, flDuration, pPawn, pPawn))
 			return true;
 	}
-	else if (const auto pGameUI = reinterpret_cast<Z_CBaseEntity*>(pThis->m_pInstance)->AsGameUI())
+	else if (const auto pGameUI = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsGameUI())
 	{
 		if (!V_strcasecmp(pInputName->String(), "Activate"))
-			return CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+			return CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator));
 		if (!V_strcasecmp(pInputName->String(), "Deactivate"))
-			return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+			return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator));
 	}
 
 	VPROF_SCOPE_END();

@@ -59,7 +59,7 @@ public:
 	SCHEMA_FIELD(CEconItemView, m_Item)
 };
 
-class CEconEntity : public Z_CBaseEntity
+class CEconEntity : public CBaseEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CEconEntity)

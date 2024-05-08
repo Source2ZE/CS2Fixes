@@ -219,7 +219,7 @@ void WeaponCommandCallback(const CCommandContext& context, const CCommand& args)
 {
 	CCSPlayerController* pController = nullptr;
 	if (context.GetPlayerSlot().Get() != -1)
-		pController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(context.GetPlayerSlot().Get() + 1));
+		pController = (CCSPlayerController*)g_pEntitySystem->GetEntityInstance((CEntityIndex)(context.GetPlayerSlot().Get() + 1));
 
 	// Only allow connected players to run chat commands
 	if (pController && !pController->IsConnected())
@@ -562,7 +562,7 @@ CON_COMMAND_CHAT(sethealth, "<health> - set your health")
 
 	int health = atoi(args[1]);
 
-	Z_CBaseEntity *pEnt = (Z_CBaseEntity *)player->GetPawn();
+	CBaseEntity *pEnt = (CBaseEntity *)player->GetPawn();
 
 	pEnt->m_iHealth = health;
 
@@ -674,7 +674,7 @@ CON_COMMAND_CHAT(emitsound, "emit a sound from the entity under crosshair")
 	if (!player)
 		return;
 
-	Z_CBaseEntity *pEntity = UTIL_FindPickerEntity(player);
+	CBaseEntity *pEntity = UTIL_FindPickerEntity(player);
 
 	if (!pEntity)
 	{

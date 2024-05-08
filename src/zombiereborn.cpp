@@ -63,7 +63,7 @@ bool ZR_IsTeamAlive(int iTeamNum);
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
 static int g_iInfectionCountDown = 0;
 static bool g_bRespawnEnabled = true;
-static CHandle<Z_CBaseEntity> g_hRespawnToggler;
+static CHandle<CBaseEntity> g_hRespawnToggler;
 static CHandle<CTeam> g_hTeamCT;
 static CHandle<CTeam> g_hTeamT;
 
@@ -982,7 +982,7 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 
 void SetupRespawnToggler()
 {
-	Z_CBaseEntity* relay = CreateEntityByName("logic_relay");
+	CBaseEntity* relay = CreateEntityByName("logic_relay");
 	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
 
 	pKeyValues->SetString("targetname", "zr_toggle_respawn");
@@ -1077,7 +1077,7 @@ void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamag
 	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
-void ZR_ApplyKnockbackExplosion(Z_CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage, bool bMolotov)
+void ZR_ApplyKnockbackExplosion(CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage, bool bMolotov)
 {
 	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(pProjectile->GetClassname());
 	if (!pWeapon)
@@ -1450,7 +1450,7 @@ bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, CCSPlayerPawn *pVictimPa
 	// grenade and molotov knockback
 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
 	{
-		Z_CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
+		CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
 		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 		// inflictor class from grenade damage is actually hegrenade_projectile
 		bool bGrenade = V_strncmp(pszInflictorClass, "hegrenade", 9) == 0;
@@ -1468,7 +1468,7 @@ bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, CCSPlayerPawn *pVictimPa
 		}
 
 		if (bGrenade || bInferno)
-			ZR_ApplyKnockbackExplosion((Z_CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage, bInferno);
+			ZR_ApplyKnockbackExplosion((CBaseEntity*)pInflictor, (CCSPlayerPawn*)pVictimPawn, (int)pInfo->m_flDamage, bInferno);
 	}
 	return false;
 }
@@ -1493,7 +1493,7 @@ void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLar
 	if (!g_hRespawnToggler.IsValid())
 		return;
 
-	Z_CBaseEntity* relay = g_hRespawnToggler.Get();
+	CBaseEntity* relay = g_hRespawnToggler.Get();
 	const char* inputName = pInputName->String();
 
 	// Must be an input into our zr_toggle_respawn relay

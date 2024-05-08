@@ -44,7 +44,7 @@ public:
 
 	static CCSPlayerController* FromSlot(CPlayerSlot slot)
 	{
-		return (CCSPlayerController*)g_pEntitySystem->GetBaseEntity(CEntityIndex(slot.Get() + 1));
+		return (CCSPlayerController*)g_pEntitySystem->GetEntityInstance(CEntityIndex(slot.Get() + 1));
 	}
 
 	// Returns the actual player pawn
@@ -123,7 +123,7 @@ public:
 		return pPawn->m_iPlayerState();
 	}
 
-	Z_CBaseEntity *GetObserverTarget()
+	CBaseEntity *GetObserverTarget()
 	{
 		auto pPawn = GetPawn();
 

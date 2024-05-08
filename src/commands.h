@@ -114,7 +114,7 @@ void ParseChatCommand(const char *, CCSPlayerController *);
 	{																																					\
 		CCSPlayerController *pController = nullptr;																										\
 		if (context.GetPlayerSlot().Get() != -1)																										\
-			pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(context.GetPlayerSlot().Get() + 1));						\
+			pController = (CCSPlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(context.GetPlayerSlot().Get() + 1));					\
 																																						\
 		name##_chat_command(args, pController);																											\
 	}																																					\

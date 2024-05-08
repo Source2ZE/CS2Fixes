@@ -22,7 +22,7 @@
 #include "../schema.h"
 #include "cbaseentity.h"
 
-class CGamePlayerEquip : public Z_CBaseEntity
+class CGamePlayerEquip : public CBaseEntity
 {
 	DECLARE_SCHEMA_CLASS(CGamePlayerEquip)
 public:

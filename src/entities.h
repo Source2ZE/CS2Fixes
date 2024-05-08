@@ -21,7 +21,7 @@
 
 class InputData_t;
 class CGamePlayerEquip;
-class Z_CBaseEntity;
+class CBaseEntity;
 class CGameUI;
 
 namespace CGamePlayerEquipHandler
@@ -33,8 +33,8 @@ bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput);
 
 namespace CGameUIHandler
 {
-bool OnActivate(CGameUI* pEntity, Z_CBaseEntity* pActivator);
-bool OnDeactivate(CGameUI* pEntity, Z_CBaseEntity* pActivator);
+bool OnActivate(CGameUI* pEntity, CBaseEntity* pActivator);
+bool OnDeactivate(CGameUI* pEntity, CBaseEntity* pActivator);
 void RunThink(int tick);
 } // namespace CGameUIHandler
 

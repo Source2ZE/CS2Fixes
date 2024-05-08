@@ -579,7 +579,7 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - slap a player", ADMFLAG_SLAY)
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(pSlots[i] + 1));
 
 		if (!pTarget)
 			continue;
@@ -601,7 +601,7 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - slap a player", ADMFLAG_SLAY)
 		if (flDamage > 0)
 		{
 			// Default to the world
-			Z_CBaseEntity *pAttacker = (Z_CBaseEntity*)g_pEntitySystem->GetBaseEntity(CEntityIndex(0));
+			CBaseEntity *pAttacker = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(0));
 
 			if (player)
 				pAttacker = player->GetPlayerPawn();
@@ -815,7 +815,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "<name> <input> [parameter] - fire outputs at en
 
 	int iFoundEnts = 0;
 
-	Z_CBaseEntity *pTarget = nullptr;
+	CBaseEntity *pTarget = nullptr;
 
 	// The idea here is to only use one of the targeting modes at once, prioritizing !picker then targetname/!self then classname
 	// Try picker first, FindEntityByName can also take !picker but it always uses player 0 so we have to do this ourselves

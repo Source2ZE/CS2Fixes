@@ -116,13 +116,10 @@ public:
 	DECLARE_SCHEMA_CLASS(CEntitySubclassVDataBase)
 };
 
-class Z_CBaseEntity : public CBaseEntity
+class CBaseEntity : public CEntityInstance
 {
 public:
-	// This is a unique case as CBaseEntity is already defined in the sdk
-	typedef Z_CBaseEntity ThisClass;
-	static constexpr const char *ThisClassName = "CBaseEntity";
-	static constexpr bool IsStruct = false;
+	DECLARE_SCHEMA_CLASS(CBaseEntity)
 
 	SCHEMA_FIELD(CBodyComponent *, m_CBodyComponent)
 	SCHEMA_FIELD(CBitVec<64>, m_isSteadyState)
@@ -138,7 +135,7 @@ public:
 	SCHEMA_FIELD(MoveCollide_t, m_MoveCollide)
 	SCHEMA_FIELD(MoveType_t, m_MoveType)
 	SCHEMA_FIELD(MoveType_t, m_nActualMoveType)
-	SCHEMA_FIELD(CHandle<Z_CBaseEntity>, m_hEffectEntity)
+	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hEffectEntity)
 	SCHEMA_FIELD(uint32, m_spawnflags)
 	SCHEMA_FIELD(uint32, m_fFlags)
 	SCHEMA_FIELD(LifeState_t, m_lifeState)
@@ -248,7 +245,7 @@ public:
 	}
 
 	// This was needed so we can parent to nameless entities using pointers
-	void SetParent(Z_CBaseEntity *pNewParent)
+	void SetParent(CBaseEntity *pNewParent)
 	{
 		addresses::CBaseEntity_SetParent(this, pNewParent, 0, nullptr);
 	}
@@ -263,7 +260,7 @@ public:
 		addresses::CBaseEntity_SetMoveType(this, nMoveType, m_MoveCollide);
 	}
 
-	void SetGroundEntity(Z_CBaseEntity *pGround)
+	void SetGroundEntity(CBaseEntity *pGround)
 	{
 		addresses::SetGroundEntity(this, pGround);
 	}
@@ -288,7 +285,7 @@ public:
 	/* End Custom Entities Cast */
 };
 
-class SpawnPoint : public Z_CBaseEntity
+class SpawnPoint : public CBaseEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(SpawnPoint);
