@@ -31,8 +31,8 @@
 class InputData_t
 {
 public:
-    Z_CBaseEntity* pActivator;
-    Z_CBaseEntity* pCaller;
+    CBaseEntity* pActivator;
+    CBaseEntity* pCaller;
     variant_t      value;
     int            nOutputID;
 };
@@ -50,12 +50,12 @@ inline bool StripPlayer(CCSPlayerPawn* pPawn)
 }
 
 // Must be called in GameFramePre
-inline void DelayInput(Z_CBaseEntity* pCaller, const char* input, const char* param = "")
+inline void DelayInput(CBaseEntity* pCaller, const char* input, const char* param = "")
 {
     const auto eh = pCaller->GetHandle();
 
     new CTimer(0.f, false, false, [eh, input, param]() {
-        if (const auto entity = reinterpret_cast<Z_CBaseEntity*>(eh.Get()))
+        if (const auto entity = reinterpret_cast<CBaseEntity*>(eh.Get()))
             entity->AcceptInput(input, param, nullptr, entity);
 
         return -1.f;
@@ -63,14 +63,14 @@ inline void DelayInput(Z_CBaseEntity* pCaller, const char* input, const char* pa
 }
 
 // Must be called in GameFramePre
-inline void DelayInput(Z_CBaseEntity* pCaller, Z_CBaseEntity* pActivator, const char* input, const char* param = "")
+inline void DelayInput(CBaseEntity* pCaller, CBaseEntity* pActivator, const char* input, const char* param = "")
 {
     const auto eh = pCaller->GetHandle();
     const auto ph = pActivator->GetHandle();
 
     new CTimer(0.f, false, false, [eh, ph, input, param]() {
-        const auto player = reinterpret_cast<Z_CBaseEntity*>(ph.Get());
-        if (const auto entity = reinterpret_cast<Z_CBaseEntity*>(eh.Get()))
+        const auto player = reinterpret_cast<CBaseEntity*>(ph.Get());
+        if (const auto entity = reinterpret_cast<CBaseEntity*>(eh.Get()))
             entity->AcceptInput(input, param, player, entity);
 
         return -1.f;
@@ -312,7 +312,7 @@ void RunThink(int tick)
     }
 }
 
-bool OnActivate(CGameUI* pEntity, Z_CBaseEntity* pActivator)
+bool OnActivate(CGameUI* pEntity, CBaseEntity* pActivator)
 {
     if (!pActivator || !pActivator->IsPawn())
         return false;
@@ -340,7 +340,7 @@ bool OnActivate(CGameUI* pEntity, Z_CBaseEntity* pActivator)
     return true;
 }
 
-bool OnDeactivate(CGameUI* pEntity, Z_CBaseEntity* pActivator)
+bool OnDeactivate(CGameUI* pEntity, CBaseEntity* pActivator)
 {
     const CBaseHandle handle = CHandle(pEntity);
     const auto        key    = static_cast<uint>(handle.ToInt());

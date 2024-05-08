@@ -34,7 +34,7 @@ enum class PlayerConnectedState : uint32_t
 	PlayerReserved = 0x5,
 };
 
-class CBasePlayerController : public Z_CBaseEntity
+class CBasePlayerController : public CBaseEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerController);

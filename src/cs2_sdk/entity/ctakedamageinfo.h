@@ -78,7 +78,7 @@ public:
 		addresses::CTakeDamageInfo_Constructor(this, nullptr, nullptr, nullptr, &vec3_origin, &vec3_origin, 0.f, 0, 0, nullptr);
 	}
 
-	CTakeDamageInfo(Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility, float flDamage, DamageTypes_t bitsDamageType)
+	CTakeDamageInfo(CBaseEntity *pInflictor, CBaseEntity *pAttacker, CBaseEntity *pAbility, float flDamage, DamageTypes_t bitsDamageType)
 	{
 		addresses::CTakeDamageInfo_Constructor(this, pInflictor, pAttacker, pAbility, &vec3_origin, &vec3_origin, flDamage, bitsDamageType, 0, nullptr);
 	}
@@ -87,9 +87,9 @@ public:
 	Vector m_vecDamagePosition;
 	Vector m_vecReportedPosition;
 	Vector m_vecDamageDirection;
-	CHandle<Z_CBaseEntity> m_hInflictor;
-	CHandle<Z_CBaseEntity> m_hAttacker;
-	CHandle<Z_CBaseEntity> m_hAbility;
+	CHandle<CBaseEntity> m_hInflictor;
+	CHandle<CBaseEntity> m_hAttacker;
+	CHandle<CBaseEntity> m_hAbility;
 	float m_flDamage;
 	DamageTypes_t m_bitsDamageType;
 	int32_t m_iDamageCustom;

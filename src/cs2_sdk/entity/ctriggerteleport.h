@@ -19,20 +19,14 @@
 
 #pragma once
 
-class CEntityIdentity;
-class CEntityInstance;
-class CBaseEntity;
-class CCSPlayerPawn;
-enum DamageTypes_t : unsigned int;
+#include "cbasetrigger.h"
 
-bool CustomIO_HandleInput(CEntityInstance* pEntityInstance,
-                          const char*      pParams,
-                          CEntityInstance* pActivator,
-                          CEntityInstance* pCaller);
+class CTriggerTeleport : public CBaseTrigger
+{
+public:
+	DECLARE_SCHEMA_CLASS(CTriggerTeleport);
 
-bool IgnitePawn(CCSPlayerPawn *pEntity,
-                float flDuration,
-                CBaseEntity *pInflictor = nullptr,
-                CBaseEntity *pAttacker = nullptr,
-                CBaseEntity *pAbility = nullptr,
-                DamageTypes_t nDamageType = DamageTypes_t(8)); // DMG_BURN
+	SCHEMA_FIELD(CUtlSymbolLarge, m_iLandmark)
+	SCHEMA_FIELD(bool, m_bUseLandmarkAngles)
+	SCHEMA_FIELD(bool, m_bMirrorPlayer)
+};

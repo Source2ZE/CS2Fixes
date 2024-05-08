@@ -52,7 +52,7 @@ struct AddOutputKey_t
     int32_t     m_nParts;
 };
 
-using AddOutputHandler_t = void (*)(Z_CBaseEntity*                  pInstance,
+using AddOutputHandler_t = void (*)(CBaseEntity*                  pInstance,
                                     CEntityInstance*                pActivator,
                                     CEntityInstance*                pCaller,
                                     const std::vector<std::string>& vecArgs);
@@ -66,7 +66,7 @@ struct AddOutputInfo_t
     AddOutputHandler_t m_Handler;
 };
 
-static void AddOutputCustom_Targetname(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_Targetname(CBaseEntity*                  pInstance,
                                        CEntityInstance*                pActivator,
                                        CEntityInstance*                pCaller,
                                        const std::vector<std::string>& vecArgs)
@@ -78,7 +78,7 @@ static void AddOutputCustom_Targetname(Z_CBaseEntity*                  pInstance
 #endif
 }
 
-static void AddOutputCustom_Origin(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_Origin(CBaseEntity*                  pInstance,
                                    CEntityInstance*                pActivator,
                                    CEntityInstance*                pCaller,
                                    const std::vector<std::string>& vecArgs)
@@ -93,7 +93,7 @@ static void AddOutputCustom_Origin(Z_CBaseEntity*                  pInstance,
 #endif
 }
 
-static void AddOutputCustom_Angles(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_Angles(CBaseEntity*                  pInstance,
                                    CEntityInstance*                pActivator,
                                    CEntityInstance*                pCaller,
                                    const std::vector<std::string>& vecArgs)
@@ -108,7 +108,7 @@ static void AddOutputCustom_Angles(Z_CBaseEntity*                  pInstance,
 #endif
 }
 
-static void AddOutputCustom_MaxHealth(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_MaxHealth(CBaseEntity*                  pInstance,
                                       CEntityInstance*                pActivator,
                                       CEntityInstance*                pCaller,
                                       const std::vector<std::string>& vecArgs)
@@ -121,7 +121,7 @@ static void AddOutputCustom_MaxHealth(Z_CBaseEntity*                  pInstance,
 #endif
 }
 
-static void AddOutputCustom_Health(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_Health(CBaseEntity*                  pInstance,
                                    CEntityInstance*                pActivator,
                                    CEntityInstance*                pCaller,
                                    const std::vector<std::string>& vecArgs)
@@ -134,7 +134,7 @@ static void AddOutputCustom_Health(Z_CBaseEntity*                  pInstance,
 #endif
 }
 
-static void AddOutputCustom_MoveType(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_MoveType(CBaseEntity*                  pInstance,
                                      CEntityInstance*                pActivator,
                                      CEntityInstance*                pCaller,
                                      const std::vector<std::string>& vecArgs)
@@ -150,7 +150,7 @@ static void AddOutputCustom_MoveType(Z_CBaseEntity*                  pInstance,
 #endif
 }
 
-static void AddOutputCustom_EntityTemplate(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_EntityTemplate(CBaseEntity*                  pInstance,
                                            CEntityInstance*                pActivator,
                                            CEntityInstance*                pCaller,
                                            const std::vector<std::string>& vecArgs)
@@ -169,7 +169,7 @@ static void AddOutputCustom_EntityTemplate(Z_CBaseEntity*                  pInst
         Message("Only env_entity_maker is supported\n");
 }
 
-static void AddOutputCustom_BaseVelocity(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_BaseVelocity(CBaseEntity*                  pInstance,
                                          CEntityInstance*                pActivator,
                                          CEntityInstance*                pCaller,
                                          const std::vector<std::string>& vecArgs)
@@ -185,7 +185,7 @@ static void AddOutputCustom_BaseVelocity(Z_CBaseEntity*                  pInstan
 #endif
 }
 
-static void AddOutputCustom_AbsVelocity(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_AbsVelocity(CBaseEntity*                  pInstance,
                                         CEntityInstance*                pActivator,
                                         CEntityInstance*                pCaller,
                                         const std::vector<std::string>& vecArgs)
@@ -201,7 +201,7 @@ static void AddOutputCustom_AbsVelocity(Z_CBaseEntity*                  pInstanc
 #endif
 }
 
-static void AddOutputCustom_Target(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_Target(CBaseEntity*                  pInstance,
                                    CEntityInstance*                pActivator,
                                    CEntityInstance*                pCaller,
                                    const std::vector<std::string>& vecArgs)
@@ -217,7 +217,7 @@ static void AddOutputCustom_Target(Z_CBaseEntity*                  pInstance,
     }
 }
 
-static void AddOutputCustom_FilterName(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_FilterName(CBaseEntity*                  pInstance,
                                        CEntityInstance*                pActivator,
                                        CEntityInstance*                pCaller,
                                        const std::vector<std::string>& vecArgs)
@@ -237,7 +237,7 @@ static void AddOutputCustom_FilterName(Z_CBaseEntity*                  pInstance
     }
 }
 
-static void AddOutputCustom_Force(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_Force(CBaseEntity*                  pInstance,
                                   CEntityInstance*                pActivator,
                                   CEntityInstance*                pCaller,
                                   const std::vector<std::string>& vecArgs)
@@ -254,7 +254,7 @@ static void AddOutputCustom_Force(Z_CBaseEntity*                  pInstance,
     }
 }
 
-static void AddOutputCustom_Gravity(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_Gravity(CBaseEntity*                  pInstance,
                                     CEntityInstance*                pActivator,
                                     CEntityInstance*                pCaller,
                                     const std::vector<std::string>& vecArgs)
@@ -268,7 +268,7 @@ static void AddOutputCustom_Gravity(Z_CBaseEntity*                  pInstance,
 #endif
 }
 
-static void AddOutputCustom_Timescale(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_Timescale(CBaseEntity*                  pInstance,
                                       CEntityInstance*                pActivator,
                                       CEntityInstance*                pCaller,
                                       const std::vector<std::string>& vecArgs)
@@ -282,7 +282,7 @@ static void AddOutputCustom_Timescale(Z_CBaseEntity*                  pInstance,
 #endif
 }
 
-static void AddOutputCustom_Friction(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_Friction(CBaseEntity*                  pInstance,
                                      CEntityInstance*                pActivator,
                                      CEntityInstance*                pCaller,
                                      const std::vector<std::string>& vecArgs)
@@ -296,7 +296,7 @@ static void AddOutputCustom_Friction(Z_CBaseEntity*                  pInstance,
 #endif
 }
 
-static void AddOutputCustom_Speed(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_Speed(CBaseEntity*                  pInstance,
                                   CEntityInstance*                pActivator,
                                   CEntityInstance*                pCaller,
                                   const std::vector<std::string>& vecArgs)
@@ -319,7 +319,7 @@ static void AddOutputCustom_Speed(Z_CBaseEntity*                  pInstance,
 #endif
 }
 
-static void AddOutputCustom_RunSpeed(Z_CBaseEntity*                  pInstance,
+static void AddOutputCustom_RunSpeed(CBaseEntity*                  pInstance,
                                      CEntityInstance*                pActivator,
                                      CEntityInstance*                pCaller,
                                      const std::vector<std::string>& vecArgs)
@@ -386,7 +386,7 @@ bool CustomIO_HandleInput(CEntityInstance* pInstance,
             if (const auto split = StringSplit(param, " ");
                 split.size() == input.m_nParts)
             {
-                handler(reinterpret_cast<Z_CBaseEntity*>(pInstance), pActivator, pCaller, split);
+                handler(reinterpret_cast<CBaseEntity*>(pInstance), pActivator, pCaller, split);
                 return true;
             }
 
@@ -409,7 +409,7 @@ FAKE_FLOAT_CVAR(cs2f_burn_slowdown, "The slowdown of each burn damage tick as a 
 float g_flBurnInterval = 0.3f;
 FAKE_FLOAT_CVAR(cs2f_burn_interval, "The interval between burn damage ticks", g_flBurnInterval, 0.3f, false);
 
-bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, Z_CBaseEntity* pInflictor, Z_CBaseEntity* pAttacker, Z_CBaseEntity* pAbility, DamageTypes_t nDamageType)
+bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor, CBaseEntity* pAttacker, CBaseEntity* pAbility, DamageTypes_t nDamageType)
 {
     auto pParticleEnt = reinterpret_cast<CParticleSystem*>(pPawn->m_hEffectEntity().Get());
 
@@ -438,9 +438,9 @@ bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, Z_CBaseEntity* pInflicto
     pPawn->m_hEffectEntity = pParticleEnt;
 
     CHandle<CCSPlayerPawn> hPawn(pPawn);
-    CHandle<Z_CBaseEntity> hInflictor(pInflictor);
-    CHandle<Z_CBaseEntity> hAttacker(pAttacker);
-    CHandle<Z_CBaseEntity> hAbility(pAbility);
+    CHandle<CBaseEntity> hInflictor(pInflictor);
+    CHandle<CBaseEntity> hAttacker(pAttacker);
+    CHandle<CBaseEntity> hAbility(pAbility);
 
     new CTimer(0.f, false, false, [hPawn, hInflictor, hAttacker, hAbility, nDamageType]() {
         CCSPlayerPawn* pPawn = hPawn.Get();

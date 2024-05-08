@@ -22,7 +22,7 @@
 #include "../schema.h"
 #include "cbaseentity.h"
 
-class CPhysForce : public Z_CBaseEntity
+class CPhysForce : public CBaseEntity
 {
 	DECLARE_SCHEMA_CLASS(CPhysForce)
 public:

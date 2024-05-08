@@ -76,7 +76,7 @@ public:
 	}
 };
 
-class CCSGameRulesProxy : public Z_CBaseEntity
+class CCSGameRulesProxy : public CBaseEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CCSGameRulesProxy)

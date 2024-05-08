@@ -40,7 +40,7 @@ void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 {
 #ifdef _DEBUG
 	const char* pszClassName = pEntity->m_pEntity->m_designerName.String();
-	Message("Entity spawned: %s %s\n", pszClassName, ((Z_CBaseEntity*)pEntity)->m_sUniqueHammerID().Get());
+	Message("Entity spawned: %s %s\n", pszClassName, ((CBaseEntity*)pEntity)->m_sUniqueHammerID().Get());
 #endif
 }
 

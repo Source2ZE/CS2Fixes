@@ -22,7 +22,7 @@
 #include "../schema.h"
 #include "cbaseentity.h"
 
-class CLogicCase : public Z_CBaseEntity
+class CLogicCase : public CBaseEntity
 {
 public:
     DECLARE_SCHEMA_CLASS(CLogicCase)
