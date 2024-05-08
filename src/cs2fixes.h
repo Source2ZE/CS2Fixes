@@ -26,6 +26,8 @@
 #include "networksystem/inetworkserializer.h"
 #include <iserver.h>
 
+class CTakeDamageInfo;
+
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
 {
 public:
@@ -61,6 +63,7 @@ public: //hooks
 	void Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
 	void Hook_ApplyGameSettings(KeyValues* pKV);
 	void Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList);
+	void Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, void *a3);
 
 public:
 	const char *GetAuthor();
