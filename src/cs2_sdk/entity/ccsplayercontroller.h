@@ -63,21 +63,6 @@ public:
 		CALL_VIRTUAL(void, offset, this, iTeam);
 	}
 
-	void SwitchTeam(int iTeam)
-	{
-		if (!IsController())
-			return;
-
-		if (iTeam == CS_TEAM_SPECTATOR)
-		{
-			ChangeTeam(iTeam);
-		}
-		else
-		{
-			addresses::CCSPlayerController_SwitchTeam(this, iTeam);
-		}
-	}
-
 	void Respawn()
 	{
 		CCSPlayerPawn *pPawn = GetPlayerPawn();

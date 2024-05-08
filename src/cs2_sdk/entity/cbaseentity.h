@@ -22,7 +22,6 @@
 #include "schema.h"
 #include "ccollisionproperty.h"
 #include "globaltypes.h"
-#include "ctakedamageinfo.h"
 #include "mathlib/vector.h"
 #include "ehandle.h"
 #include "../detours.h"
@@ -144,7 +143,6 @@ public:
 	SCHEMA_FIELD(LifeState_t, m_lifeState)
 	SCHEMA_FIELD(float, m_flDamageAccumulator)
 	SCHEMA_FIELD(bool, m_bTakesDamage)
-	SCHEMA_FIELD(TakeDamageFlags_t, m_nTakeDamageFlags)
 	SCHEMA_FIELD_POINTER(CUtlStringToken, m_nSubclassID)
 	SCHEMA_FIELD(CHandle<Z_CBaseEntity>, m_hGroundEntity)
 	SCHEMA_FIELD(float, m_flFriction)
@@ -164,11 +162,6 @@ public:
 
 	void SetAbsVelocity(Vector vecVelocity) { m_vecAbsVelocity = vecVelocity; }
 	void SetBaseVelocity(Vector vecVelocity) { m_vecBaseVelocity = vecVelocity; }
-
-	void SetName(const char *pName)
-	{
-		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
-	}
 
 	void Teleport(const Vector *position, const QAngle *angles, const Vector *velocity)
 	{
@@ -204,43 +197,12 @@ public:
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
-	void AcceptInput(const char *pInputName, variant_t value = variant_t(""), CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr)
-	{
-		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, &value, 0);
-	}
-
 	bool IsAlive() { return m_lifeState == LifeState_t::LIFE_ALIVE; }
 
 	CHandle<CBaseEntity> GetHandle() { return m_pEntity->m_EHandle; }
 
 	// A double pointer to entity VData is available 4 bytes past m_nSubclassID, if applicable
 	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 4); }
-
-	SndOpEventGuid_t EmitSoundFilter(IRecipientFilter &filter, const char *pszSound, float flVolume = 1.0, float flPitch = 1.0)
-	{
-		EmitSound_t params;
-		params.m_pSoundName = pszSound;
-		params.m_flVolume = flVolume;
-		params.m_nPitch = flPitch;
-
-		return addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
-	}
-
-	// This was needed so we can parent to nameless entities using pointers
-	void SetParent(Z_CBaseEntity *pNewParent)
-	{
-		addresses::CBaseEntity_SetParent(this, pNewParent, 0, nullptr);
-	}
-
-	void Remove()
-	{
-		addresses::UTIL_Remove(this);
-	}
-
-	void SetMoveType(MoveType_t nMoveType)
-	{
-		addresses::CBaseEntity_SetMoveType(this, nMoveType, m_MoveCollide);
-	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }
 

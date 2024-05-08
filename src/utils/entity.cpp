@@ -47,25 +47,3 @@ Z_CBaseEntity *UTIL_FindPickerEntity(CBasePlayerController *pPlayer)
 
 	return CALL_VIRTUAL(Z_CBaseEntity *, offset, g_pGameRules, pPlayer);
 }
-
-Z_CBaseEntity *UTIL_FindEntityByClassname(CEntityInstance *pStartEntity, const char *szName)
-{
-	return addresses::CGameEntitySystem_FindEntityByClassName(g_pEntitySystem, pStartEntity, szName);
-}
-
-Z_CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
-									   CEntityInstance *pSearchingEntity, CEntityInstance *pActivator, CEntityInstance *pCaller, IEntityFindFilter *pFilter)
-{
-	return addresses::CGameEntitySystem_FindEntityByName(g_pEntitySystem, pStartEntity, szName, pSearchingEntity, pActivator, pCaller, pFilter);
-}
-
-Z_CBaseEntity* CreateEntityByName(const char* className)
-{
-	return addresses::CreateEntityByName(className, -1);
-}
-
-void UTIL_AddEntityIOEvent(CEntityInstance *pTarget, const char *pszInput,
-						   CEntityInstance *pActivator, CEntityInstance *pCaller, variant_t value, float flDelay)
-{
-	addresses::CEntitySystem_AddEntityIOEvent(g_pEntitySystem, pTarget, pszInput, pActivator, pCaller, &value, flDelay, 0);
-}

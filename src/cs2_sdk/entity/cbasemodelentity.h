@@ -33,11 +33,6 @@ public:
 	SCHEMA_FIELD(RenderMode_t, m_nRenderMode)
 	SCHEMA_FIELD(float, m_flDissolveStartTime)
 	
-	void SetModel(const char *szModel)
-	{
-		addresses::CBaseModelEntity_SetModel(this, szModel);
-	}
-	
 	const char* GetModelName()
 	{
 		return ((CSkeletonInstance*)m_CBodyComponent->m_pSceneNode.Get())->m_modelState().m_ModelName.Get().String();
