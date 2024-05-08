@@ -111,6 +111,7 @@ SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlo
 SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, const CCommandContext&, const CCommand&);
 SH_DECL_MANUALHOOK1_void(CGamePlayerEquipUse, 0, 0, 0, InputData_t*);
 SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUtlStringList&);
+SH_DECL_MANUALHOOK2_void(OnTakeDamage_Alive, 0, 0, 0, CTakeDamageInfo*, void*);
 
 CS2Fixes g_CS2Fixes;
 
@@ -129,6 +130,7 @@ CCSGameRules *g_pGameRules = nullptr;
 IGameTypes* g_pGameTypes = nullptr;
 int g_iCGamePlayerEquipUseId = -1;
 int g_iCreateWorkshopMapGroupId = -1;
+int g_iOnTakeDamageAliveId = -1;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -223,25 +225,43 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	if (!InitGameSystems())
 		bRequiredInitLoaded = false;
 
+	const auto pCGamePlayerEquipVTable = modules::server->FindVirtualTable("CGamePlayerEquip");
+	if (!pCGamePlayerEquipVTable)
+	{
+		snprintf(error, maxlen, "Failed to find CGamePlayerEquip vtable\n");
+		bRequiredInitLoaded = false;
+	}
+
+	offset = g_GameConfig->GetOffset("CBaseEntity::Use");
+	if (offset == -1)
+	{
+		snprintf(error, maxlen, "Failed to find CBaseEntity::Use\n");
+		bRequiredInitLoaded = false;
+	}
+	SH_MANUALHOOK_RECONFIGURE(CGamePlayerEquipUse, offset, 0, 0);
+	g_iCGamePlayerEquipUseId = SH_ADD_MANUALDVPHOOK(CGamePlayerEquipUse, pCGamePlayerEquipVTable, SH_MEMBER(this, &CS2Fixes::Hook_CGamePlayerEquipUse), false);
+
+	const auto pCCSPlayerPawnVTable = modules::server->FindVirtualTable("CCSPlayerPawn");
+	if (!pCCSPlayerPawnVTable)
+	{
+		snprintf(error, maxlen, "Failed to find CCSPlayerPawn vtable\n");
+		bRequiredInitLoaded = false;
+	}
+
+	offset = g_GameConfig->GetOffset("CBasePlayerPawn::OnTakeDamage_Alive");
+	if (offset == -1)
+	{
+		snprintf(error, maxlen, "Failed to find CBasePlayerPawn::OnTakeDamage_Alive\n");
+		bRequiredInitLoaded = false;
+	}
+	SH_MANUALHOOK_RECONFIGURE(OnTakeDamage_Alive, offset, 0, 0);
+	g_iOnTakeDamageAliveId = SH_ADD_MANUALDVPHOOK(OnTakeDamage_Alive, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_OnTakeDamage_Alive), false);
+
 	if (!bRequiredInitLoaded)
 	{
 		snprintf(error, maxlen, "One or more address lookups, patches or detours failed, please refer to startup logs for more information");
 		return false;
 	}
-
-	const auto pCGamePlayerEquipVTable = modules::server->FindVirtualTable("CGamePlayerEquip");
-	if (!pCGamePlayerEquipVTable)
-	{
-		snprintf(error, maxlen, "Failed to find CGamePlayerEquip vtable\n");
-		return false;
-	}
-	if (g_GameConfig->GetOffset("CBaseEntity::Use") == -1)
-	{
-		snprintf(error, maxlen, "Failed to find CBaseEntity::Use\n");
-		return false;
-	}
-	SH_MANUALHOOK_RECONFIGURE(CGamePlayerEquipUse, g_GameConfig->GetOffset("CBaseEntity::Use"), 0, 0);
-	g_iCGamePlayerEquipUseId = SH_ADD_MANUALDVPHOOK(CGamePlayerEquipUse, pCGamePlayerEquipVTable, SH_MEMBER(this, &CS2Fixes::Hook_CGamePlayerEquipUse), false);
 
 	Message( "All hooks started!\n" );
 
@@ -289,6 +309,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	srand(time(0));
 
+	Message("Plugin successfully started!\n");
+
 	return true;
 }
 
@@ -310,6 +332,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_REMOVE_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
 	SH_REMOVE_HOOK_ID(g_iCreateWorkshopMapGroupId);
+	SH_REMOVE_HOOK_ID(g_iOnTakeDamageAliveId);
 
 	ConVar_Unregister();
 
@@ -807,6 +830,13 @@ void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringLis
 		RETURN_META_MNEWPARAMS(MRES_HANDLED, CreateWorkshopMapGroup, (name, g_pMapVoteSystem->CreateWorkshopMapGroup()));
 	else
 		RETURN_META(MRES_IGNORED);
+}
+
+void CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, void *a3)
+{
+	CCSPlayerPawn *pPawn = META_IFACEPTR(CCSPlayerPawn);
+
+	RETURN_META(MRES_IGNORED);
 }
 
 void CS2Fixes::OnLevelInit( char const *pMapName,

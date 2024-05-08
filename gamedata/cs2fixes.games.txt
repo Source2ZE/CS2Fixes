@@ -441,6 +441,12 @@
 				"windows"		"37"
 				"linux"			"38"
 			}
+			// Long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
+			"CBasePlayerPawn::OnTakeDamage_Alive"
+			{
+				"windows"		"221"
+				"linux"			"220"
+			}
 		}
 		"Patches"
 		{
