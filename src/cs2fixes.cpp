@@ -836,6 +836,8 @@ void CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, void *a3)
 {
 	CCSPlayerPawn *pPawn = META_IFACEPTR(CCSPlayerPawn);
 
+	if (g_bEnableZR && ZR_Hook_OnTakeDamage_Alive(pInfo, pPawn))
+		RETURN_META(MRES_SUPERCEDE);
 	RETURN_META(MRES_IGNORED);
 }
 
