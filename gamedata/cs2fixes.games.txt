@@ -447,6 +447,12 @@
 				"windows"		"221"
 				"linux"			"220"
 			}
+			// There's no easy way to find this, but it's a function that checks entity flags (0x370) and ends by calling RemoveFlag with 0x800000 (FL_BASEVELOCITY)
+			"CCSPlayer_MovementServices::CheckMovingGround"
+			{
+				"windows"		"32"
+				"linux"			"33"
+			}
 		}
 		"Patches"
 		{

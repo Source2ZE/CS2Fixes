@@ -27,6 +27,7 @@
 #include <iserver.h>
 
 class CTakeDamageInfo;
+class CCSPlayer_MovementServices;
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
 {
@@ -64,6 +65,7 @@ public: //hooks
 	void Hook_ApplyGameSettings(KeyValues* pKV);
 	void Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList);
 	void Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, void *a3);
+	void Hook_CheckMovingGround(double frametime);
 
 public:
 	const char *GetAuthor();
