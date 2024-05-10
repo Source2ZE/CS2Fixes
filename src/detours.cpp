@@ -182,7 +182,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 
 	uint32 flags = pOther->m_fFlags();
 
-	if (flags & (FL_BASEVELOCITY))
+	if (flags & FL_BASEVELOCITY)
 	{
 		vecPush = vecPush + pOther->m_vecBaseVelocity();
 	}
@@ -201,10 +201,11 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 		Vector vecEntBaseVelocity = pOther->m_vecBaseVelocity;
 		Vector vecOrigPush = vecAbsDir * pPush->m_flSpeed();
 
-		Message("Pushing entity %i | frame = %i | tick = %i | entity basevelocity = %.2f %.2f %.2f | original push velocity = %.2f %.2f %.2f | final push velocity = %.2f %.2f %.2f\n",
+		Message("Pushing entity %i | frame = %i | tick = %i | entity basevelocity %s = %.2f %.2f %.2f | original push velocity = %.2f %.2f %.2f | final push velocity = %.2f %.2f %.2f\n",
 				pOther->GetEntityIndex(),
 				gpGlobals->framecount,
 				gpGlobals->tickcount,
+				(flags & FL_BASEVELOCITY) ? "WITH FLAG" : "",
 				vecEntBaseVelocity.x, vecEntBaseVelocity.y, vecEntBaseVelocity.z,
 				vecOrigPush.x, vecOrigPush.y, vecOrigPush.z,
 				vecPush.x, vecPush.y, vecPush.z);

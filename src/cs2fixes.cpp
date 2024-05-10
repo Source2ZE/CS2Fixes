@@ -113,6 +113,7 @@ SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, 
 SH_DECL_MANUALHOOK1_void(CGamePlayerEquipUse, 0, 0, 0, InputData_t*);
 SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUtlStringList&);
 SH_DECL_MANUALHOOK2_void(OnTakeDamage_Alive, 0, 0, 0, CTakeDamageInfo*, void*);
+SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
 
 CS2Fixes g_CS2Fixes;
 
@@ -132,6 +133,7 @@ IGameTypes* g_pGameTypes = nullptr;
 int g_iCGamePlayerEquipUseId = -1;
 int g_iCreateWorkshopMapGroupId = -1;
 int g_iOnTakeDamageAliveId = -1;
+int g_iCheckMovingGroundId = -1;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -258,6 +260,16 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	SH_MANUALHOOK_RECONFIGURE(OnTakeDamage_Alive, offset, 0, 0);
 	g_iOnTakeDamageAliveId = SH_ADD_MANUALDVPHOOK(OnTakeDamage_Alive, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_OnTakeDamage_Alive), false);
 
+	const auto pCCSPlayer_MovementServicesVTable = modules::server->FindVirtualTable("CCSPlayer_MovementServices");
+	offset = g_GameConfig->GetOffset("CCSPlayer_MovementServices::CheckMovingGround");
+	if (offset == -1)
+	{
+		snprintf(error, maxlen, "Failed to find CCSPlayer_MovementServices::CheckMovingGround\n");
+		bRequiredInitLoaded = false;
+	}
+	SH_MANUALHOOK_RECONFIGURE(CheckMovingGround, offset, 0, 0);
+	g_iCheckMovingGroundId = SH_ADD_MANUALDVPHOOK(CheckMovingGround, pCCSPlayer_MovementServicesVTable, SH_MEMBER(this, &CS2Fixes::Hook_CheckMovingGround), false);
+
 	if (!bRequiredInitLoaded)
 	{
 		snprintf(error, maxlen, "One or more address lookups, patches or detours failed, please refer to startup logs for more information");
@@ -342,6 +354,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
 	SH_REMOVE_HOOK_ID(g_iCreateWorkshopMapGroupId);
 	SH_REMOVE_HOOK_ID(g_iOnTakeDamageAliveId);
+	SH_REMOVE_HOOK_ID(g_iCheckMovingGroundId);
 
 	ConVar_Unregister();
 
@@ -860,6 +873,29 @@ void CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, void *a3)
 
 	if (g_bEnableZR && ZR_Hook_OnTakeDamage_Alive(pInfo, pPawn))
 		RETURN_META(MRES_SUPERCEDE);
+	RETURN_META(MRES_IGNORED);
+}
+
+void CS2Fixes::Hook_CheckMovingGround(double frametime)
+{
+	CCSPlayer_MovementServices *pMove = META_IFACEPTR(CCSPlayer_MovementServices);
+	CCSPlayerPawn *pPawn = pMove->GetPawn();
+	CCSPlayerController *pController = pPawn->GetOriginalController();
+
+	if (!pPawn || !pController)
+		RETURN_META(MRES_IGNORED);
+
+	int iSlot = pController->GetPlayerSlot();
+
+	static int aPlayerTicks[MAXPLAYERS] = {0};
+
+	// The point of doing this is to avoid running the function (and applying/resetting basevelocity) multiple times per tick
+	// This can happen when the client or server lags
+	if (aPlayerTicks[iSlot] == gpGlobals->tickcount)
+		RETURN_META(MRES_SUPERCEDE);
+
+	aPlayerTicks[iSlot] = gpGlobals->tickcount;
+
 	RETURN_META(MRES_IGNORED);
 }
 
