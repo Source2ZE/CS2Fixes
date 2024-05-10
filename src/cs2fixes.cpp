@@ -684,7 +684,9 @@ void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, ENetworkDisconnectionRea
 	Message( "Hook_ClientDisconnect(%d, %d, \"%s\", %lli, \"%s\")\n", slot, reason, pszName, xuid, pszNetworkID );
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
 
-	g_pAdminSystem->AddDisconnectedPlayer(pszName, xuid, pPlayer ? pPlayer->GetIpAddress() : "");
+	if (reason != NETWORK_DISCONNECT_LOOPSHUTDOWN) // Dont include clients that are downloading MultiAddonManager stuff
+		g_pAdminSystem->AddDisconnectedPlayer(pszName, xuid, pPlayer ? pPlayer->GetIpAddress() : "");
+
 	g_playerManager->OnClientDisconnect(slot);
 }
 

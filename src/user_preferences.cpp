@@ -50,7 +50,7 @@ CON_COMMAND_F(cs2f_user_prefs_api, "API for user preferences, currently a REST A
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(pullprefs, "Pull preferences.", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(pullprefs, "- Pull preferences.", ADMFLAG_ROOT)
 {
 	ZEPlayer* pPlayer = player->GetZEPlayer();
 	if (!pPlayer) return;
@@ -58,7 +58,7 @@ CON_COMMAND_CHAT_FLAGS(pullprefs, "Pull preferences.", ADMFLAG_ROOT)
 	g_pUserPreferencesSystem->PullPreferences(pPlayer->GetPlayerSlot().Get());
 }
 
-CON_COMMAND_CHAT_FLAGS(setpref, "Set a preference key for the player.", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(setpref, "- Set a preference key for the player.", ADMFLAG_ROOT)
 {
 	if (args.ArgC() < 3)
 		Message("Usage: %s <pref> <value>\n", args[0]);
@@ -70,7 +70,7 @@ CON_COMMAND_CHAT_FLAGS(setpref, "Set a preference key for the player.", ADMFLAG_
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(getpref, "Get a preference key for the player.", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(getpref, "- Get a preference key for the player.", ADMFLAG_ROOT)
 {
 	if (args.ArgC() < 2)
 		Message("Usage: %s <pref>\n", args[0]);
@@ -83,7 +83,7 @@ CON_COMMAND_CHAT_FLAGS(getpref, "Get a preference key for the player.", ADMFLAG_
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(pushprefs, "Push preferences.", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(pushprefs, "- Push preferences.", ADMFLAG_ROOT)
 {
 	ZEPlayer* pPlayer = player->GetZEPlayer();
 	if (!pPlayer) return;

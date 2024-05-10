@@ -411,7 +411,7 @@ CON_COMMAND_CHAT_FLAGS(disablertv, "- Disable the ability for players to vote to
 		return;
 	}
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	g_RTVState = ERTVState::BLOCKED_BY_ADMIN;
 
@@ -432,7 +432,7 @@ CON_COMMAND_CHAT_FLAGS(enablertv, "- Restore the ability for players to vote to 
 		return;
 	}
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	g_RTVState = ERTVState::RTV_ALLOWED;
 
@@ -444,7 +444,7 @@ CON_COMMAND_CHAT_FLAGS(addextend, "- Add another extend to the current map for p
 	if (!g_bVoteManagerEnable)
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	if (g_ExtendState == EExtendState::POST_EXTEND_NO_EXTENDS_LEFT || g_ExtendState == EExtendState::NO_EXTENDS)
 		g_ExtendState = EExtendState::EXTEND_ALLOWED;

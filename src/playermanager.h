@@ -29,6 +29,20 @@
 #include "entity/cparticlesystem.h"
 #include "gamesystem.h"
 
+#define NO_TARGET_BLOCKS		(0)
+#define NO_RANDOM				(1 << 1)
+#define NO_MULTIPLE 			(1 << 2)
+#define NO_SELF					(1 << 3)
+#define NO_BOT					(1 << 4)
+#define NO_HUMAN				(1 << 5)
+#define NO_UNAUTHENTICATED		(1 << 6)
+#define NO_DEAD					(1 << 7)
+#define NO_ALIVE				(1 << 8)
+#define NO_TERRORIST			(1 << 9)
+#define NO_COUNTER_TERRORIST	(1 << 10)
+#define NO_SPECTATOR			(1 << 11)
+#define NO_IMMUNITY				(1 << 12)
+
 #define DECAL_PREF_KEY_NAME "hide_decals"
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
 #define SOUND_STATUS_PREF_KEY_NAME "sound_status"
@@ -43,10 +57,45 @@ enum class ETargetType {
 	RANDOM,
 	RANDOM_T,
 	RANDOM_CT,
+	RANDOM_SPEC,
+	AIM,
 	ALL,
 	SPECTATOR,
 	T,
 	CT,
+	DEAD,
+	ALIVE,
+	BOT,
+	HUMAN,
+	ALL_BUT_SELF,
+	ALL_BUT_RANDOM,
+	ALL_BUT_RANDOM_T,
+	ALL_BUT_RANDOM_CT,
+	ALL_BUT_RANDOM_SPEC,
+	ALL_BUT_AIM,
+	ALL_BUT_SPECTATOR,
+	ALL_BUT_T,
+	ALL_BUT_CT
+};
+
+enum class ETargetError
+{
+	NO_ERRORS,
+	INVALID,
+	CONNECTING,
+	MULTIPLE_NAME_MATCHES,
+	RANDOM,
+	MULTIPLE,
+	SELF,
+	BOT,
+	HUMAN,
+	UNAUTHENTICATED,
+	INSUFFICIENT_IMMUNITY_LEVEL,
+	DEAD,
+	ALIVE,
+	TERRORIST,
+	COUNTER_TERRORIST,
+	SPECTATOR
 };
 
 class ZEPlayer;
@@ -95,6 +144,7 @@ public:
 	{ 
 		m_bAuthenticated = false;
 		m_iAdminFlags = 0;
+		m_iAdminImmunity = 0;
 		m_SteamID = nullptr;
 		m_bGagged = false;
 		m_bMuted = false;
@@ -141,8 +191,8 @@ public:
 	void SetConnected() { m_bConnected = true; }
 	void SetUnauthenticatedSteamId(const CSteamID* steamID) { m_UnauthenticatedSteamID = steamID; }
 	void SetSteamId(const CSteamID* steamID) { m_SteamID = steamID; }
-	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	void SetAdminFlags(uint64 iAdminFlags) { m_iAdminFlags = iAdminFlags; }
+	void SetAdminImmunity(int iAdminImmunity) { m_iAdminImmunity = iAdminImmunity; }
 	void SetPlayerSlot(CPlayerSlot slot) { m_slot = slot; }
 	void SetMuted(bool muted) { m_bMuted = muted; }
 	void SetGagged(bool gagged) { m_bGagged = gagged; }
@@ -170,6 +220,8 @@ public:
 	void SetGlowModel(CBaseModelEntity *pModel) { m_hGlowModel.Set(pModel); }
 	void SetSpeedMod(float flSpeedMod) { m_flSpeedMod = flSpeedMod; }
 
+	uint64 GetAdminFlags() { return m_iAdminFlags; }
+	int GetAdminImmunity() { return m_iAdminImmunity; }
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
 	bool ShouldBlockTransmit(int index) { return m_shouldTransmit.Get(index); }
@@ -223,6 +275,7 @@ private:
 	bool m_bMuted;
 	bool m_bGagged;
 	uint64 m_iAdminFlags;
+	int m_iAdminImmunity;
 	int m_iHideDistance;
 	CBitVec<MAXPLAYERS> m_shouldTransmit;
 	int m_iTotalDamage;
@@ -278,7 +331,9 @@ public:
 	CPlayerSlot GetSlotFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromSteamId(uint64 steamid);
-	ETargetType TargetPlayerString(int iCommandClient, const char* target, int &iNumClients, int *clients);
+	ETargetError GetPlayersFromString(CCSPlayerController* pPlayer, const char* pszTarget, int &iNumClients, int *clients, uint64 iBlockedFlags = NO_TARGET_BLOCKS, std::shared_ptr<ETargetType> nType = nullptr);
+	static const char* GetErrorString(ETargetError eType, int iSlot = 0);
+	bool CanTargetPlayers(CCSPlayerController* pPlayer, const char* pszTarget, int& iNumClients, int* clients, uint64 iBlockedFlags = NO_TARGET_BLOCKS, std::shared_ptr<ETargetType> nType = nullptr);
 
 	ZEPlayer *GetPlayer(CPlayerSlot slot);
 

@@ -52,9 +52,17 @@
 #define ADMFLAG_ROOT		(1 << 25) // z
 
 #define ADMIN_PREFIX "Admin %s has "
+#define CONSOLE_NAME "\2CONSOLE\1" // color it to indicate that it isnt a regular player using the command
 
 void PrintSingleAdminAction(const char* pszAdminName, const char* pszTargetName, const char* pszAction, const char* pszAction2, const char* prefix);
 void PrintMultiAdminAction(ETargetType nType, const char* pszAdminName, const char* pszAction, const char* pszAction2, const char* prefix);
+
+enum GrammarTense
+{
+	PresentOrNoun,
+	Past,
+	Continuous
+};
 
 class CInfractionBase
 {
@@ -120,18 +128,20 @@ public:
 class CAdmin
 {
 public:
-	CAdmin(const char* pszName, uint64 iSteamID, uint64 iFlags) : 
-		m_pszName(pszName), m_iSteamID(iSteamID), m_iFlags(iFlags)
+	CAdmin(const char* pszName, uint64 iSteamID, uint64 iFlags, int iAdminImmunity) : 
+		m_pszName(pszName), m_iSteamID(iSteamID), m_iFlags(iFlags), m_iAdminImmunity(iAdminImmunity)
 	{}
 
-	const char* GetName() { return m_pszName; };
-	uint64 GetSteamID() { return m_iSteamID; };
-	uint64 GetFlags() { return m_iFlags; };
+	const char* GetName() { return m_pszName; }
+	uint64 GetSteamID() { return m_iSteamID; }
+	uint64 GetFlags() { return m_iFlags; }
+	int GetImmunity() { return m_iAdminImmunity; }
 
 private:
 	const char* m_pszName;
 	uint64 m_iSteamID;
 	uint64 m_iFlags;
+	int m_iAdminImmunity;
 };
 
 class CAdminSystem
