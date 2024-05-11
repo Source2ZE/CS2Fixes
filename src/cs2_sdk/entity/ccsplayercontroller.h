@@ -33,9 +33,22 @@ public:
 
 	SCHEMA_FIELD(CCSPlayerController_InGameMoneyServices*, m_pInGameMoneyServices)
 	SCHEMA_FIELD(CCSPlayerController_ActionTrackingServices*, m_pActionTrackingServices)
-	SCHEMA_FIELD(bool, m_bPawnIsAlive);
-	SCHEMA_FIELD(CHandle<CCSPlayerPawn>, m_hPlayerPawn);
-	SCHEMA_FIELD(CHandle<CCSPlayerController>, m_hOriginalControllerOfCurrentPawn);
+	SCHEMA_FIELD(uint32_t, m_iPing)
+	SCHEMA_FIELD(CUtlSymbolLarge, m_szClan)
+	SCHEMA_FIELD_POINTER(char, m_szClanName) // char m_szClanName[32]
+	SCHEMA_FIELD(bool, m_bEverFullyConnected)
+	SCHEMA_FIELD(bool, m_bPawnIsAlive)
+	SCHEMA_FIELD(int32_t, m_nDisconnectionTick)
+	SCHEMA_FIELD(CHandle<CCSPlayerPawn>, m_hPlayerPawn)
+	SCHEMA_FIELD(CHandle<CCSPlayerPawnBase>, m_hObserverPawn)
+	SCHEMA_FIELD(CHandle<CCSPlayerController>, m_hOriginalControllerOfCurrentPawn)
+	SCHEMA_FIELD(uint32_t, m_iPawnHealth)
+	SCHEMA_FIELD(int32_t, m_iPawnArmor)
+	SCHEMA_FIELD(int32_t, m_iScore)
+	SCHEMA_FIELD(int32_t, m_iRoundScore)
+	SCHEMA_FIELD(int32_t, m_iRoundsWon)
+	SCHEMA_FIELD(int32_t, m_iMVPs)
+	SCHEMA_FIELD(float, m_flSmoothedPing)
 
 	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn)
 	{
@@ -131,5 +144,10 @@ public:
 			return nullptr;
 
 		return pPawn->m_pObserverServices->m_hObserverTarget().Get();
+	}
+
+	void AddScore(int iScore)
+	{
+		m_iScore() = m_iScore() + iScore;
 	}
 };

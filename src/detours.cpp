@@ -389,7 +389,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		Message("Invalid value type for input %s\n", pInputName->String());
 		return false;
 	}
-	if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
+	else if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
 	{
 		float flDuration = 0.f;
 
@@ -402,6 +402,23 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 
 		if (pPawn->IsPawn() && IgnitePawn(pPawn, flDuration, pPawn, pPawn))
 			return true;
+	}
+	else if (!V_strnicmp(pInputName->String(), "AddScore", 8))
+	{
+		int iScore = 0;
+
+		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			iScore = V_StringToInt32(value->m_pszString, 0);
+		else
+			iScore = value->m_int;
+
+		CCSPlayerPawn *pPawn = reinterpret_cast<CCSPlayerPawn *>(pThis->m_pInstance);
+
+		if (pPawn->IsPawn() && pPawn->GetOriginalController())
+		{
+			pPawn->GetOriginalController()->AddScore(iScore);
+			return true;
+		}
 	}
 	else if (const auto pGameUI = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsGameUI())
 	{
