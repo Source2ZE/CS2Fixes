@@ -247,8 +247,7 @@ void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPla
 	filteredText[uiFilteredTextLength] = '\0';
 
 	// Split console message into words seperated by the space character
-	CUtlVector<char*, CUtlMemory<char*, int>> words;
-	V_SplitString(filteredText, " ", words);
+	CSplitString words(filteredText, " ");
 
 	//Word count includes the first word "Console:" at index 0, first relevant word is at index 1
 	int iWordCount = words.Count();
@@ -298,7 +297,6 @@ void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPla
 			}
 		}
 	}
-	words.PurgeAndDeleteElements();
 
 	float fCurrentRoundClock = g_pGameRules->m_iRoundTime - (gpGlobals->curtime - g_pGameRules->m_fRoundStartTime.Get().m_Value);
 
