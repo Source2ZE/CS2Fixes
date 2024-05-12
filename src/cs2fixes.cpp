@@ -112,7 +112,7 @@ SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlo
 SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, const CCommandContext&, const CCommand&);
 SH_DECL_MANUALHOOK1_void(CGamePlayerEquipUse, 0, 0, 0, InputData_t*);
 SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUtlStringList&);
-SH_DECL_MANUALHOOK2_void(OnTakeDamage_Alive, 0, 0, 0, CTakeDamageInfo*, void*);
+SH_DECL_MANUALHOOK2(OnTakeDamage_Alive, 0, 0, 0, bool, CTakeDamageInfo*, void*);
 SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
 
 CS2Fixes g_CS2Fixes;
@@ -867,13 +867,14 @@ void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringLis
 		RETURN_META(MRES_IGNORED);
 }
 
-void CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, void *a3)
+bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, void *a3)
 {
 	CCSPlayerPawn *pPawn = META_IFACEPTR(CCSPlayerPawn);
 
 	if (g_bEnableZR && ZR_Hook_OnTakeDamage_Alive(pInfo, pPawn))
-		RETURN_META(MRES_SUPERCEDE);
-	RETURN_META(MRES_IGNORED);
+		RETURN_META_VALUE(MRES_SUPERCEDE, false);
+
+	RETURN_META_VALUE(MRES_IGNORED, true);
 }
 
 void CS2Fixes::Hook_CheckMovingGround(double frametime)
