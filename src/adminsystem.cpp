@@ -207,7 +207,7 @@ CON_COMMAND_CHAT_FLAGS(kick, "<name> - Kick a player", ADMFLAG_KICK)
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
@@ -225,7 +225,7 @@ CON_COMMAND_CHAT_FLAGS(kick, "<name> - Kick a player", ADMFLAG_KICK)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "kicked");
 	}
 	if (iNumClients > 1)
-		PrintMultiAdminAction(*nType, pszCommandPlayerName, "kicked");
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "kicked");
 }
 
 CON_COMMAND_CHAT_FLAGS(slay, "<name> - Slay a player", ADMFLAG_SLAY)
@@ -238,7 +238,7 @@ CON_COMMAND_CHAT_FLAGS(slay, "<name> - Slay a player", ADMFLAG_SLAY)
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD, nType))
 		return;
@@ -255,7 +255,7 @@ CON_COMMAND_CHAT_FLAGS(slay, "<name> - Slay a player", ADMFLAG_SLAY)
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(*nType, pszCommandPlayerName, "slayed");
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
 }
 
 CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - Slap a player", ADMFLAG_SLAY)
@@ -268,7 +268,7 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - Slap a player", ADMFLAG_SLAY)
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD, nType))
 		return;
@@ -309,7 +309,7 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - Slap a player", ADMFLAG_SLAY)
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(*nType, pszCommandPlayerName, "slapped");
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "slapped");
 }
 
 CON_COMMAND_CHAT_FLAGS(goto, "<name> - Teleport to a player", ADMFLAG_SLAY)
@@ -358,7 +358,7 @@ CON_COMMAND_CHAT_FLAGS(bring, "<name> - Bring a player", ADMFLAG_SLAY)
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD, nType))
 		return;
@@ -376,7 +376,7 @@ CON_COMMAND_CHAT_FLAGS(bring, "<name> - Bring a player", ADMFLAG_SLAY)
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(*nType, player->GetPlayerName(), "brought");
+		PrintMultiAdminAction(nType, player->GetPlayerName(), "brought");
 }
 
 CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADMFLAG_SLAY)
@@ -397,7 +397,7 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADM
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
@@ -423,7 +423,7 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADM
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(*nType, pszCommandPlayerName, "moved", szAction);
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
 }
 
 CON_COMMAND_CHAT_FLAGS(noclip, "- Toggle noclip on yourself", ADMFLAG_SLAY | ADMFLAG_CHEATS)
@@ -534,7 +534,7 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <inpu> [parameter] - Fire outputs at
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_IMMUNITY, nType))
 		return;
@@ -565,7 +565,7 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "<name> <input> [parameter] - Fire out
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_IMMUNITY, nType))
 		return;
@@ -732,7 +732,7 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_MULTIPLE | NO_IMMUNITY | NO_BOT, nType))
 		return;
@@ -937,7 +937,7 @@ CON_COMMAND_CHAT(status, "<name> - Checks a player's active punishments. Non-adm
 {
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 	ZEPlayer* pTargetPlayer = nullptr;
 	bool bIsAdmin = !player || player->GetZEPlayer()->IsAdminFlagSet(ADMFLAG_GENERIC);
 	std::string strTarget = (!bIsAdmin || args.ArgC() == 1) ? "@me" : args[1];
@@ -1433,7 +1433,7 @@ void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAd
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	uint64 iBlockedFlags = NO_TARGET_BLOCKS;
 	switch (infType)
@@ -1516,7 +1516,7 @@ void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAd
 
 	if (iNumClients > 1)
 	{
-		PrintMultiAdminAction(*nType, pszCommandPlayerName, GetActionPhrase(infType, GrammarTense::Past, bAdding),
+		PrintMultiAdminAction(nType, pszCommandPlayerName, GetActionPhrase(infType, GrammarTense::Past, bAdding),
 							  bAdding ? (" for " + FormatTime(iDuration, false)).c_str() : "");
 	}
 

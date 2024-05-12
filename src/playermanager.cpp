@@ -879,14 +879,9 @@ ETargetError GetTargetError(CCSPlayerController* pPlayer, CCSPlayerController* p
 
 ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, const char* pszTarget,
 												  int& iNumClients, int* rgiClients, uint64 iBlockedFlags,
-												  std::shared_ptr<ETargetType> nType)
+												  ETargetType& nType)
 {
-	std::shared_ptr<ETargetType> targetType;
-	if (nType != nullptr)
-		targetType = nType;
-	else
-		targetType = std::make_shared<ETargetType>(ETargetType::NONE);
-
+	nType = ETargetType::NONE;
 	ZEPlayer* zpPlayer = pPlayer ? pPlayer->GetZEPlayer() : nullptr;
 	bool bTargetMultiple = false;
 	bool bTargetRandom = false;
@@ -894,14 +889,14 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	
 	if (!V_stricmp(pszTarget, "@me"))
 	{
-		*targetType = ETargetType::SELF;
+		nType = ETargetType::SELF;
 
 		if (iBlockedFlags & NO_SELF || !pPlayer)
 			return ETargetError::SELF;
 	}
 	else if (!V_stricmp(pszTarget, "@!me"))
 	{
-		*targetType = ETargetType::ALL_BUT_SELF;
+		nType = ETargetType::ALL_BUT_SELF;
 
 		if (iBlockedFlags & NO_MULTIPLE)
 			return ETargetError::MULTIPLE;
@@ -911,7 +906,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@all"))
 	{
-		*targetType = ETargetType::ALL;
+		nType = ETargetType::ALL;
 
 		if (iBlockedFlags & NO_MULTIPLE)
 			return ETargetError::MULTIPLE;
@@ -922,7 +917,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 		return ETargetError::INVALID;
 	else if (!V_stricmp(pszTarget, "@t"))
 	{
-		*targetType = ETargetType::T;
+		nType = ETargetType::T;
 
 		if (iBlockedFlags & NO_TERRORIST)
 			return ETargetError::TERRORIST;
@@ -935,7 +930,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@!t"))
 	{
-		*targetType = ETargetType::ALL_BUT_T;
+		nType = ETargetType::ALL_BUT_T;
 
 		if (iBlockedFlags & NO_MULTIPLE)
 			return ETargetError::MULTIPLE;
@@ -945,7 +940,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@ct"))
 	{
-		*targetType = ETargetType::CT;
+		nType = ETargetType::CT;
 
 		if (iBlockedFlags & NO_COUNTER_TERRORIST)
 			return ETargetError::COUNTER_TERRORIST;
@@ -957,7 +952,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@!ct"))
 	{
-		*targetType = ETargetType::ALL_BUT_CT;
+		nType = ETargetType::ALL_BUT_CT;
 
 		if (iBlockedFlags & NO_MULTIPLE)
 			return ETargetError::MULTIPLE;
@@ -968,7 +963,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@spec"))
 	{
-		*targetType = ETargetType::SPECTATOR;
+		nType = ETargetType::SPECTATOR;
 
 		if (iBlockedFlags & NO_SPECTATOR)
 			return ETargetError::SPECTATOR;
@@ -982,7 +977,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@!spec"))
 	{
-		*targetType = ETargetType::ALL_BUT_SPECTATOR;
+		nType = ETargetType::ALL_BUT_SPECTATOR;
 
 		if (iBlockedFlags & NO_MULTIPLE)
 			return ETargetError::MULTIPLE;
@@ -992,7 +987,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@random"))
 	{
-		*targetType = ETargetType::RANDOM;
+		nType = ETargetType::RANDOM;
 
 		if (iBlockedFlags & NO_RANDOM)
 			return ETargetError::RANDOM;
@@ -1001,7 +996,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@!random"))
 	{
-		*targetType = ETargetType::ALL_BUT_RANDOM;
+		nType = ETargetType::ALL_BUT_RANDOM;
 
 		if (iBlockedFlags & NO_RANDOM)
 			return ETargetError::RANDOM;
@@ -1010,7 +1005,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@randomt"))
 	{
-		*targetType = ETargetType::RANDOM_T;
+		nType = ETargetType::RANDOM_T;
 		
 		if (iBlockedFlags & NO_TERRORIST)
 			return ETargetError::TERRORIST;
@@ -1022,7 +1017,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@!randomt"))
 	{
-		*targetType = ETargetType::ALL_BUT_RANDOM_T;
+		nType = ETargetType::ALL_BUT_RANDOM_T;
 		
 		if (iBlockedFlags & NO_RANDOM)
 			return ETargetError::RANDOM;
@@ -1031,7 +1026,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@randomct"))
 	{
-		*targetType = ETargetType::RANDOM_CT;
+		nType = ETargetType::RANDOM_CT;
 		
 		if (iBlockedFlags & NO_COUNTER_TERRORIST)
 			return ETargetError::COUNTER_TERRORIST;
@@ -1043,7 +1038,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@!randomct"))
 	{
-		*targetType = ETargetType::RANDOM_CT;
+		nType = ETargetType::RANDOM_CT;
 		
 		if (iBlockedFlags & NO_RANDOM)
 			return ETargetError::RANDOM;
@@ -1052,7 +1047,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@randomspec"))
 	{
-		*targetType = ETargetType::RANDOM_SPEC;
+		nType = ETargetType::RANDOM_SPEC;
 
 		if (iBlockedFlags & NO_SPECTATOR)
 			return ETargetError::SPECTATOR;
@@ -1066,7 +1061,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@!randomspec"))
 	{
-		*targetType = ETargetType::ALL_BUT_RANDOM_SPEC;
+		nType = ETargetType::ALL_BUT_RANDOM_SPEC;
 
 		if (iBlockedFlags & NO_RANDOM)
 			return ETargetError::RANDOM;
@@ -1075,7 +1070,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@dead") || !V_stricmp(pszTarget, "@!alive"))
 	{
-		*targetType = ETargetType::DEAD;
+		nType = ETargetType::DEAD;
 
 		if (iBlockedFlags & NO_DEAD)
 			return ETargetError::DEAD;
@@ -1087,7 +1082,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}		
 	else if (!V_stricmp(pszTarget, "@alive") || !V_stricmp(pszTarget, "@!dead"))
 	{
-		*targetType = ETargetType::ALIVE;
+		nType = ETargetType::ALIVE;
 
 		if (iBlockedFlags & NO_ALIVE)
 			return ETargetError::ALIVE;
@@ -1099,7 +1094,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@bot") || !V_stricmp(pszTarget, "@!human"))
 	{
-		*targetType = ETargetType::BOT;
+		nType = ETargetType::BOT;
 
 		if (iBlockedFlags & NO_BOT)
 			return ETargetError::BOT;
@@ -1111,7 +1106,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@human") || !V_stricmp(pszTarget, "@!bot"))
 	{
-		*targetType = ETargetType::HUMAN;
+		nType = ETargetType::HUMAN;
 
 		if (iBlockedFlags & NO_HUMAN)
 			return ETargetError::HUMAN;
@@ -1124,7 +1119,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	
 	// We have setup what we need and given custom errors if needed for group targetting.
 	// Now we actually get the target(s).
-	if (*targetType == ETargetType::SELF)
+	if (nType == ETargetType::SELF)
 	{
 		ETargetError eType = GetTargetError(pPlayer, pPlayer, iBlockedFlags);
 		if (eType != ETargetError::NO_ERRORS)
@@ -1223,7 +1218,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 		if (eType != ETargetError::NO_ERRORS)
 			return eType;
 
-		*targetType = ETargetType::AIM;
+		nType = ETargetType::AIM;
 
 		rgiClients[iNumClients++] = pTarget->GetPlayerSlot();
 	}
@@ -1241,7 +1236,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 		if (GetTargetError(pPlayer, pAimed, NO_IMMUNITY) != ETargetError::NO_ERRORS)
 			return ETargetError::INVALID;
 
-		*targetType = ETargetType::ALL_BUT_AIM;
+		nType = ETargetType::ALL_BUT_AIM;
 
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
@@ -1262,7 +1257,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 
 		if (iUserID != -1)
 		{
-			*targetType = ETargetType::PLAYER;
+			nType = ETargetType::PLAYER;
 			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(GetSlotFromUserId(iUserID).Get());
 			ETargetError eType = GetTargetError(pPlayer, pTarget, iBlockedFlags);
 			if (eType != ETargetError::NO_ERRORS)
@@ -1276,7 +1271,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 
 		if (iSteamID != -1)
 		{
-			*targetType = ETargetType::PLAYER;
+			nType = ETargetType::PLAYER;
 			ZEPlayer* zpTarget = GetPlayerFromSteamId(iSteamID);
 			if (!zpTarget)
 				return ETargetError::INVALID;
@@ -1308,7 +1303,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 
 			if ((!bExactName && V_stristr(pTarget->GetPlayerName(), pszTarget)) || !V_strcmp(pTarget->GetPlayerName(), pszTarget))
 			{
-				*targetType = ETargetType::PLAYER;
+				nType = ETargetType::PLAYER;
 				if (iNumClients == 1)
 				{
 					iNumClients = 0;
@@ -1324,6 +1319,13 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 
 	return iNumClients ? ETargetError::NO_ERRORS : ETargetError::INVALID;
+}
+
+ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, const char* pszTarget,
+												  int& iNumClients, int* rgiClients, uint64 iBlockedFlags)
+{
+	ETargetType nUselessVariable = ETargetType::NONE;
+	return GetPlayersFromString(pPlayer, pszTarget, iNumClients, rgiClients, iBlockedFlags, nUselessVariable);
 }
 
 const char* CPlayerManager::GetErrorString(ETargetError eType, int iSlot)
@@ -1389,7 +1391,7 @@ const char* CPlayerManager::GetErrorString(ETargetError eType, int iSlot)
 // error to pPlayer's chat. Otherwise return true and print nothing.
 bool CPlayerManager::CanTargetPlayers(CCSPlayerController* pPlayer, const char* pszTarget,
 									  int& iNumClients, int* rgiClients, uint64 iBlockedFlags,
-									  std::shared_ptr<ETargetType> nType)
+									  ETargetType& nType)
 {
 	ETargetError eType = GetPlayersFromString(pPlayer, pszTarget, iNumClients, rgiClients, iBlockedFlags, nType);
 
@@ -1399,6 +1401,13 @@ bool CPlayerManager::CanTargetPlayers(CCSPlayerController* pPlayer, const char* 
 		return false;
 	}
 	return true;
+}
+
+bool CPlayerManager::CanTargetPlayers(CCSPlayerController* pPlayer, const char* pszTarget,
+									  int& iNumClients, int* rgiClients, uint64 iBlockedFlags)
+{
+	ETargetType nUselessVariable = ETargetType::NONE;
+	return CanTargetPlayers(pPlayer, pszTarget, iNumClients, rgiClients, iBlockedFlags, nUselessVariable);
 }
 
 ZEPlayer *CPlayerManager::GetPlayer(CPlayerSlot slot)

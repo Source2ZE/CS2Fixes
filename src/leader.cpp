@@ -295,7 +295,7 @@ CON_COMMAND_CHAT(glow, "<name> [duration] - Toggle glow highlight on a player")
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (bIsAdmin) // Admin command logic
 	{
@@ -329,7 +329,7 @@ CON_COMMAND_CHAT(glow, "<name> [duration] - Toggle glow highlight on a player")
 		}
 
 		if (iNumClients > 1)
-			PrintMultiAdminAction(*nType, pszCommandPlayerName, "toggled glow on", "", CHAT_PREFIX);
+			PrintMultiAdminAction(nType, pszCommandPlayerName, "toggled glow on", "", CHAT_PREFIX);
 
 		return;
 	}
@@ -496,7 +496,7 @@ CON_COMMAND_CHAT(defend, "[name|duration] [duration] - Place a defend marker on 
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_MULTIPLE | NO_TERRORIST | NO_DEAD | NO_IMMUNITY, nType))
 		return;
@@ -648,7 +648,7 @@ CON_COMMAND_CHAT(beacon, "<name> [color] - Toggle beacon on a player")
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (bIsAdmin) // Admin beacon logic
 	{
@@ -689,7 +689,7 @@ CON_COMMAND_CHAT(beacon, "<name> [color] - Toggle beacon on a player")
 		}
 
 		if (iNumClients > 1)
-			PrintMultiAdminAction(*nType, pszCommandPlayerName, "toggled beacon on", "", CHAT_PREFIX);
+			PrintMultiAdminAction(nType, pszCommandPlayerName, "toggled beacon on", "", CHAT_PREFIX);
 
 		return;
 	}

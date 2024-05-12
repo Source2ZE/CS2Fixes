@@ -1892,7 +1892,7 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TERRORIST | NO_DEAD, nType))
 		return;
@@ -1913,7 +1913,7 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as a mother zombie" : "", ZR_PREFIX);
 	}
 	if (iNumClients > 1)
-		PrintMultiAdminAction(*nType, pszCommandPlayerName, "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as mother zombies" : "", ZR_PREFIX);
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as mother zombies" : "", ZR_PREFIX);
 
 	// Note we skip MZ immunity & spawn TP code when first infection is manually triggered
 	if (g_ZRRoundState == EZRRoundState::ROUND_START)
@@ -1945,7 +1945,7 @@ CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_COUNTER_TERRORIST, nType))
 		return;
@@ -1963,5 +1963,5 @@ CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "revived", "", ZR_PREFIX);
 	}
 	if (iNumClients > 1)
-		PrintMultiAdminAction(*nType, pszCommandPlayerName, "revived", "", ZR_PREFIX);
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "revived", "", ZR_PREFIX);
 }

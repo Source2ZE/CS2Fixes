@@ -472,7 +472,7 @@ CON_COMMAND_CHAT(info, "<name> - Get a player's information")
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
-	auto nType = std::make_shared<ETargetType>(ETargetType::NONE);
+	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_BOT | NO_IMMUNITY, nType))
 		return;
