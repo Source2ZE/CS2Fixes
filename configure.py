@@ -38,4 +38,9 @@ parser.options.add_argument('-s', '--sdks', default='all', dest='sdks',
                             'comma-delimited list of engine names (default: "all")')
 parser.options.add_argument('--targets', type=str, dest='targets', default=None,
                             help="Override the target architecture (use commas to separate multiple targets).")
+# AddressSanitizer Instructions:
+# Recompile Metamod with RTLD_DEEPBIND removed (may break some std functionality)
+# Run server with LD_PRELOAD=/usr/lib/clang/11/lib/linux/libclang_rt.asan-x86_64.so (for SteamRT3)
+parser.options.add_argument('--asan', action='store_const', const='1', dest='asan',
+                       help='Build for AddressSanitizer')
 parser.Configure()
