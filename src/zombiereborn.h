@@ -243,7 +243,6 @@ struct ZRWeapon
 
 struct ZRHitgroup
 {
-	//const char *sIndex;
 	float flKnockback;
 };
 
@@ -269,7 +268,7 @@ public:
 		m_HitgroupMap.SetLessFunc(DefLessFunc(uint32));
 	};
 	void LoadHitgroupConfig();
-	ZRHitgroup* FindHitgroupIndex(const char *pszHitgroupname);
+	ZRHitgroup* FindHitgroupIndex(int iIndex);
 private:
 	CUtlMap<uint32, ZRHitgroup*> m_HitgroupMap;
 };

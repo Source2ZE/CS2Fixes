@@ -949,48 +949,37 @@ void ZRHitgroupConfig::LoadHitgroupConfig()
 	{
 		const char *pszHitgroupName = pKey->GetName();
 		bool bEnabled = pKey->GetBool("enabled", false);
-		const char *sIndex = pKey->GetString("index", "0");
+		int iIndex = pKey->GetInt("index");
 		float flKnockback= pKey->GetFloat("knockback", .2f);
 		
 		ZRHitgroup *hitgroup = new ZRHitgroup;
-		//if (!bEnabled)
-		//	continue;
+		if (!bEnabled)
+			continue;
 
-		//hitgroup->sIndex = sIndex;
 		hitgroup->flKnockback = flKnockback;
 
-		m_HitgroupMap.Insert(hash_32_fnv1a_const(sIndex), hitgroup);
+		m_HitgroupMap.Insert(iIndex, hitgroup);
 
-		Message("Hitgroup: %s with index: %s and knockback: %f and hash_32_fnv1a_const: %d\n", pszHitgroupName, sIndex, hitgroup->flKnockback, hash_32_fnv1a_const(sIndex));
-		
+		Message("Hitgroup: %s with index: %d and knockback: %f and enable: %d and ?: %d\n", pszHitgroupName, iIndex, hitgroup->flKnockback, bEnabled, 
+		m_HitgroupMap[iIndex]);
 	}
 
 	return;
 }
 
-ZRHitgroup* ZRHitgroupConfig::FindHitgroupIndex(const char *pszHitgroupName)
+ZRHitgroup* ZRHitgroupConfig::FindHitgroupIndex(int iIndex)
 {
-	uint16 index = m_HitgroupMap.Find(hash_32_fnv1a_const(pszHitgroupName));
-	Message("We are finding hitgroup index with pszHitgroupName: %s and index is: %d\n", pszHitgroupName, index);
+	uint16 index = m_HitgroupMap.Find(iIndex);
+	//Message("We are finding hitgroup index with index: %d and index is: %d\n", iIndex, index);
 
 	if (m_HitgroupMap.IsValidIndex(index))
 	{
-		Message("We found valid index with dunno what to call (m_HitgroupMap[index]): %d\n", m_HitgroupMap[index]);
+		//Message("We found valid index with (m_HitgroupMap[index]): %d\n", m_HitgroupMap[index]);
 		return m_HitgroupMap[index];
 	}
 
 	return nullptr;
 }
-
-/*
-ZRHitgroup* ZRHitgroupConfig::FindHitgroupIndex(int iIndex)
-{
-	uint16 index = m_HitgroupMap.Find(iIndex);
-	if (m_HitgroupMap.IsValidIndex(index))
-		return m_HitgroupMap[index];
-
-	return 0;
-}*/
 
 void ZR_RespawnAll()
 {
@@ -1127,7 +1116,7 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 	});
 }
 
-void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon, const char *hitgroup)
+void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon, int hitgroup)
 {
 	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
 	ZRHitgroup *pHitgroup = g_pZRHitgroupConfig->FindHitgroupIndex(hitgroup);
@@ -1137,14 +1126,12 @@ void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamag
 	float flWeaponKnockbackScale = pWeapon->flKnockback;
 	float flHitgroupKnockbackScale;
 
-	if(pHitgroup != nullptr)
+	if(pHitgroup)
 	{
-		Message("We are setting knockback hg scale with kb scale is: %.2f and wp kb scale: %.2f\n", pHitgroup->flKnockback, pWeapon->flKnockback);
 		flHitgroupKnockbackScale = pHitgroup->flKnockback;
 	}
+	else flHitgroupKnockbackScale = 1.0;
 
-	Message("We are hitting hitgroup: %s and found hit group index: %d with kb scale: %.2f\n", hitgroup, pHitgroup, flHitgroupKnockbackScale);
-	
 	Vector vecKnockback;
 	AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
 	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale * flHitgroupKnockbackScale);
@@ -1643,17 +1630,12 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent)
 
 	int iHitGroup = pEvent->GetInt("hitgroup");
 
-	std::string hg = std::to_string(iHitGroup);
-    const char* myCharPointer = hg.c_str();
-
-	Message("My HG: %s and myCharPointer: %s\n", hg, myCharPointer);
-
 	// grenade and molotov knockbacks are handled by TakeDamage detours
 	if (!pAttackerController || !pVictimController || !V_strncmp(szWeapon, "inferno", 7) || !V_strncmp(szWeapon, "hegrenade", 9))
 		return;
 
 	if (pAttackerController->m_iTeamNum() == CS_TEAM_CT && pVictimController->m_iTeamNum() == CS_TEAM_T)
-		ZR_ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon, myCharPointer);
+		ZR_ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon, iHitGroup);
 }
 
 void ZR_OnPlayerDeath(IGameEvent* pEvent)
