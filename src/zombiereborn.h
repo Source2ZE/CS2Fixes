@@ -241,6 +241,12 @@ struct ZRWeapon
 	float flKnockback;
 };
 
+struct ZRHitgroup
+{
+	//const char *sIndex;
+	float flKnockback;
+};
+
 class ZRWeaponConfig
 {
 public:
@@ -254,7 +260,22 @@ private:
 	CUtlMap<uint32, ZRWeapon*> m_WeaponMap;
 };
 
+
+class ZRHitgroupConfig
+{
+public:
+	ZRHitgroupConfig()
+	{
+		m_HitgroupMap.SetLessFunc(DefLessFunc(uint32));
+	};
+	void LoadHitgroupConfig();
+	ZRHitgroup* FindHitgroupIndex(const char *pszHitgroupname);
+private:
+	CUtlMap<uint32, ZRHitgroup*> m_HitgroupMap;
+};
+
 extern ZRWeaponConfig *g_pZRWeaponConfig;
+extern ZRHitgroupConfig *g_pZRHitgroupConfig;
 extern CZRPlayerClassManager* g_pZRPlayerClassManager;
 
 extern bool g_bEnableZR;
