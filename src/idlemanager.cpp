@@ -57,8 +57,6 @@ void CIdleSystem::CheckForIdleClients()
 
 		if (!zPlayer || zPlayer->IsFakeClient())
 			continue;
-		
-		uint64 iIdleTime = static_cast<uint64>(std::time(0) - zPlayer->GetLastInputTime());
 
 		if (zPlayer->IsAuthenticated() && !g_bKickAdmins)
 		{
@@ -67,7 +65,7 @@ void CIdleSystem::CheckForIdleClients()
 				continue;
 		}
 
-		int iIdleTimeLeft = static_cast<uint64>(g_fIdleKickTime * 60) - iIdleTime;
+		int iIdleTimeLeft = static_cast<uint64>(g_fIdleKickTime * 60) - static_cast<uint64>(std::time(0) - zPlayer->GetLastInputTime());
 
 		if (iIdleTimeLeft > 0)
 		{
