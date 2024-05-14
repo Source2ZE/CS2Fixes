@@ -171,7 +171,8 @@ public:
 	void SetLeaderVoteTime(float flCurtime) { m_flLeaderVoteTime = flCurtime; }
 	void SetGlowModel(CBaseModelEntity *pModel) { m_hGlowModel.Set(pModel); }
 	void SetSpeedMod(float flSpeedMod) { m_flSpeedMod = flSpeedMod; }
-	void ResetIdleTime() { m_iLastInputs = IN_NONE; m_iLastInputTime = std::time(0); }
+	void SetLastInputs(uint64 iLastInputs) { m_iLastInputs = iLastInputs; }
+	void UpdateLastInputTime() { m_iLastInputTime = std::time(0); }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -202,7 +203,8 @@ public:
 	float GetLeaderVoteTime() { return m_flLeaderVoteTime; }
 	CBaseModelEntity *GetGlowModel() { return m_hGlowModel.Get(); }
 	float GetSpeedMod() { return m_flSpeedMod; }
-	uint64 GetIdleTime();
+	uint64 GetLastInputs() { return m_iLastInputs; }
+	std::time_t GetLastInputTime() { return m_iLastInputTime; }
 	
 	void OnSpawn();
 	void OnAuthenticated();

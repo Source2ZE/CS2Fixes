@@ -489,37 +489,6 @@ void ZEPlayer::EndGlow()
 		addresses::UTIL_Remove(pModelParent);
 }
 
-// Returns how long since a player has changed their inputs. Logged inputs and time for the logged
-// inputs are updated every time this function is run. Thus, when the logged input and the current
-// inputs are the same, the minimum return value is the time since the last time this function
-// was called
-uint64 ZEPlayer::GetIdleTime()
-{
-	CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(GetPlayerSlot().Get() + 1));
-	if (!pTarget)
-		return static_cast<uint64>(std::time(0) - m_iLastInputTime);
-
-	const auto pPawn = pTarget->m_hPawn();
-	if (!pPawn)
-		return static_cast<uint64>(std::time(0) - m_iLastInputTime);
-
-	const auto pMovement = pPawn->m_pMovementServices();
-	uint64 iCurrentMovement = IN_NONE;
-	if (pMovement)
-	{
-		const auto buttonStates = pMovement->m_nButtons().m_pButtonStates();
-		iCurrentMovement = buttonStates[0];
-	}
-	const auto buttonsChanged = m_iLastInputs ^ iCurrentMovement;
-
-	if (!buttonsChanged)
-		return static_cast<uint64>(std::time(0) - m_iLastInputTime);
-
-	m_iLastInputs = iCurrentMovement;
-	m_iLastInputTime = std::time(0);
-	return 0;
-}
-
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 {
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);

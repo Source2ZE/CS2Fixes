@@ -19,11 +19,14 @@
 
 #pragma once
 
+extern float g_fIdleKickTime;
+
 class CIdleSystem
 {
 public:
 	CIdleSystem() {}
 	void CheckForIdleClients();
+	void UpdateIdleTimes();
 	void PauseIdleChecks() { m_bPaused = true; }
 	void Reset();
 private:

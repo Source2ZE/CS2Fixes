@@ -19,6 +19,7 @@
 
 #include "idlemanager.h"
 #include "commands.h"
+#include <vprof.h>
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CGlobalVars *gpGlobals;
@@ -26,7 +27,7 @@ extern CPlayerManager* g_playerManager;
 
 CIdleSystem* g_pIdleSystem = nullptr;
 
-static float g_fIdleKickTime = 5.0f;
+float g_fIdleKickTime = 5.0f;
 static int g_iMinClientsForIdleKicks = 0;
 static bool g_bKickAdmins = true;
 
@@ -36,7 +37,7 @@ FAKE_BOOL_CVAR(cs2f_idle_kick_admins, "Whether to kick idle players with ADMFLAG
 
 void CIdleSystem::CheckForIdleClients()
 {
-	if (m_bPaused)
+	if (m_bPaused || g_fIdleKickTime <= 0.0f)
 		return;
 
 	int iClientNum = 0;
@@ -57,10 +58,7 @@ void CIdleSystem::CheckForIdleClients()
 		if (!zPlayer || zPlayer->IsFakeClient())
 			continue;
 		
-		uint64 iIdleTime = zPlayer->GetIdleTime();
-
-		if (g_fIdleKickTime <= 0)
-			continue;
+		uint64 iIdleTime = static_cast<uint64>(std::time(0) - zPlayer->GetLastInputTime());
 
 		if (zPlayer->IsAuthenticated() && !g_bKickAdmins)
 		{
@@ -69,10 +67,7 @@ void CIdleSystem::CheckForIdleClients()
 				continue;
 		}
 
-		// Require 3 minutes minimum (37 idle checks) to avoid false positives due to checks
-		// being intermittent instead of every frame/tick
-		uint64 iMaxIdleTime = g_fIdleKickTime < 3 ? 180 : static_cast<uint64>(g_fIdleKickTime * 60);
-		int iIdleTimeLeft = iMaxIdleTime - iIdleTime;
+		int iIdleTimeLeft = static_cast<uint64>(g_fIdleKickTime * 60) - iIdleTime;
 
 		if (iIdleTimeLeft > 0)
 		{
@@ -92,6 +87,46 @@ void CIdleSystem::CheckForIdleClients()
 	}
 }
 
+// Logged inputs and time for the logged inputs are updated every time this function is run.
+void CIdleSystem::UpdateIdleTimes()
+{
+	if (g_fIdleKickTime <= 0.0f)
+		return;
+
+	VPROF("CIdleSystem::UpdateIdleTimes");
+
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+		if (!pPlayer)
+			continue;
+
+		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pPlayer->GetPlayerSlot().Get() + 1));
+		if (!pTarget)
+			continue;
+
+		const auto pPawn = pTarget->m_hPawn();
+		if (!pPawn)
+			continue;
+
+		const auto pMovement = pPawn->m_pMovementServices();
+		uint64 iCurrentMovement = IN_NONE;
+		if (pMovement)
+		{
+			const auto buttonStates = pMovement->m_nButtons().m_pButtonStates();
+			iCurrentMovement = buttonStates[0];
+		}
+		const auto buttonsChanged = pPlayer->GetLastInputs() ^ iCurrentMovement;
+
+		if (!buttonsChanged)
+			continue;
+
+		pPlayer->SetLastInputs(iCurrentMovement);
+		pPlayer->UpdateLastInputTime();
+	}
+}
+
 void CIdleSystem::Reset()
 {
 	m_bPaused = false;
@@ -103,6 +138,7 @@ void CIdleSystem::Reset()
 		if (!pPlayer || pPlayer->IsFakeClient())
 			continue;
 
-		pPlayer->ResetIdleTime();
+		pPlayer->SetLastInputs(IN_NONE);
+		pPlayer->UpdateLastInputTime();
 	}
 }

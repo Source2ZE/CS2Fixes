@@ -643,6 +643,14 @@ void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 	Message( "Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString() );
 #endif
 
+	if (g_fIdleKickTime > 0.0f)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
+
+		if (pPlayer)
+			pPlayer->UpdateLastInputTime();
+	}
+
 	if (g_bVoteManagerEnable && V_stricmp(args[0], "endmatch_votenextmap") == 0 && args.ArgC() == 2)
 	{
 		if (g_pMapVoteSystem->RegisterPlayerVote(slot, atoi(args[1])))
