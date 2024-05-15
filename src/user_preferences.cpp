@@ -123,7 +123,7 @@ bool CUserPreferencesSystem::PutPreferences(int iSlot, uint64 iSteamId, CUtlMap<
 void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 {
 	int iHideDistance = GetPreferenceInt(iSlot, HIDE_DISTANCE_PREF_KEY_NAME, 0);
-	int iSoundStatus = GetPreferenceInt(iSlot, SOUND_STATUS_PREF_KEY_NAME, 2);
+	int iSoundStatus = GetPreferenceInt(iSlot, SOUND_STATUS_PREF_KEY_NAME, 1);
 	bool bStopSound = (bool) (iSoundStatus & 1);
 	bool bSilenceSound = (bool) (iSoundStatus & 2);
 	bool bHideDecals = (bool) GetPreferenceInt(iSlot, DECAL_PREF_KEY_NAME, 1);

@@ -575,7 +575,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 
 			// original weapon_id will override new settings if not removed
 			msg->set_weapon_id(0);
-			msg->set_sound_type(10);
+			msg->set_sound_type(9);
 			msg->set_item_def_index(61); // weapon_usp_silencer
 
 			uint64 clientMask = *(uint64 *)clients & g_playerManager->GetSilenceSoundMask();
