@@ -131,9 +131,53 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid, const char
 void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 {
 	Message("%d disconnected\n", slot.Get());
+	assert(m_vecPlayers[slot.Get()]);
 
 	delete m_vecPlayers[slot.Get()];
 	m_vecPlayers[slot.Get()] = nullptr;
+}
+
+void CPlayerManager::OnSteamAPIActivated()
+{
+	m_CallbackValidateAuthTicketResponse.Register(this, &CPlayerManager::OnValidateAuthTicket);
+}
+
+int g_iDelayAuthFailKick = 0;
+void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t *pResponse)
+{
+	uint64 iSteamId = pResponse->m_SteamID.ConvertToUint64();
+
+	Message("%s: SteamID=%llu Response=%d\n", __func__, iSteamId, pResponse->m_eAuthSessionResponse);
+
+	for (ZEPlayer *pPlayer : m_vecPlayers)
+	{
+		if (!pPlayer || pPlayer->IsFakeClient() || !(pPlayer->GetUnauthenticatedSteamId64() == iSteamId))
+			continue;
+
+		switch (pResponse->m_eAuthSessionResponse)
+		{
+		case k_EAuthSessionResponseOK:
+			{
+				pPlayer->OnAuthenticated();
+				return;
+			}
+
+		case k_EAuthSessionResponseAuthTicketInvalid:
+		case k_EAuthSessionResponseAuthTicketInvalidAlreadyUsed:
+			{
+				if (!g_iDelayAuthFailKick)
+					return;
+
+				[[fallthrough]];
+			}
+
+		default:
+			{
+				if (!g_iDelayAuthFailKick)
+					return;
+			}
+		}
+	}
 }
 
 void CPlayerManager::OnClientPutInServer(CPlayerSlot slot)

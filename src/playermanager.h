@@ -173,11 +173,14 @@ public:
 	void OnBotConnected(CPlayerSlot slot);
 	void OnClientPutInServer(CPlayerSlot slot);
 	void OnLateLoad();
+	void OnSteamAPIActivated();
 	CPlayerSlot GetSlotFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromSteamId(uint64 steamid);
 
 	ZEPlayer *GetPlayer(CPlayerSlot slot);
+
+	STEAM_GAMESERVER_CALLBACK_MANUAL(CPlayerManager, OnValidateAuthTicket, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
 
 private:
 	ZEPlayer *m_vecPlayers[MAXPLAYERS];

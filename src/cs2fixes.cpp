@@ -78,6 +78,8 @@ void Panic(const char *msg, ...)
 
 class GameSessionConfiguration_t { };
 
+SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIActivated, SH_NOATTRIB, 0);
+SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIDeactivated, SH_NOATTRIB, 0);
 SH_DECL_HOOK5_void(IServerGameClients, ClientDisconnect, SH_NOATTRIB, 0, CPlayerSlot, ENetworkDisconnectionReason, const char *, uint64, const char *);
 SH_DECL_HOOK4_void(IServerGameClients, ClientPutInServer, SH_NOATTRIB, 0, CPlayerSlot, char const *, int, uint64);
 SH_DECL_HOOK6_void(IServerGameClients, OnClientConnected, SH_NOATTRIB, 0, CPlayerSlot, const char*, uint64, const char *, const char *, bool);
@@ -96,6 +98,9 @@ IVEngineServer2 *g_pEngineServer2 = nullptr;
 CGameConfig *g_GameConfig = nullptr;
 CCSGameRules *g_pGameRules = nullptr;
 int g_iCGamePlayerEquipUseId = -1;
+
+ISteamHTTP *g_http = nullptr;
+CSteamGameServerAPIContext g_steamAPI;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -143,6 +148,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		return false;
 	}
 
+	SH_ADD_HOOK(IServerGameDLL, GameServerSteamAPIActivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIActivated), false);
+	SH_ADD_HOOK(IServerGameDLL, GameServerSteamAPIDeactivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIDeactivated), false);
 	SH_ADD_HOOK(IServerGameClients, ClientDisconnect, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientDisconnect), true);
 	SH_ADD_HOOK(IServerGameClients, ClientPutInServer, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientPutInServer), true);
 	SH_ADD_HOOK(IServerGameClients, OnClientConnected, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_OnClientConnected), false);
@@ -285,6 +292,23 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	g_pEntitySystem = GameEntitySystem();
 	gpGlobals = g_pNetworkGameServer->GetGlobals();
+}
+
+void CS2Fixes::Hook_GameServerSteamAPIActivated()
+{
+	g_steamAPI.Init();
+	g_http = g_steamAPI.SteamHTTP();
+
+	g_playerManager->OnSteamAPIActivated();
+  
+	RETURN_META(MRES_IGNORED);
+}
+
+void CS2Fixes::Hook_GameServerSteamAPIDeactivated()
+{
+	g_http = nullptr;
+
+	RETURN_META(MRES_IGNORED);
 }
 
 bool CS2Fixes::Pause(char *error, size_t maxlen)
