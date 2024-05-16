@@ -1435,24 +1435,15 @@ void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAd
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
 
-	uint64 iBlockedFlags = NO_TARGET_BLOCKS;
-	switch (infType)
-	{
-		case CInfractionBase::EInfractionType::Ban:
-			iBlockedFlags = NO_RANDOM | NO_MULTIPLE | NO_SELF | NO_BOT | NO_UNAUTHENTICATED;
-			break;
-		case CInfractionBase::EInfractionType::Mute:
-		case CInfractionBase::EInfractionType::Gag:
-			if (iDuration == 0 && bAdding)
-				iBlockedFlags = NO_RANDOM | NO_MULTIPLE | NO_BOT | NO_UNAUTHENTICATED;
-			else
-				iBlockedFlags = NO_BOT | NO_UNAUTHENTICATED;
-			break;
-	}
+	uint64 iBlockedFlags = NO_RANDOM | NO_SELF | NO_BOT | NO_UNAUTHENTICATED;
+
+	// Only allow multiple targetting for mutes that aren't perma (ie. !mute @all 1) for stopping mass mic spam
+	if (infType != CInfractionBase::EInfractionType::Mute || (bAdding && iDuration == 0))
+		iBlockedFlags |= NO_MULTIPLE;
 
 	ETargetError eType = g_playerManager->GetPlayersFromString(pAdmin, args[1], iNumClients, pSlots, iBlockedFlags, nType);
 
-	if (iDuration == 0 && (eType == ETargetError::MULTIPLE || eType == ETargetError::RANDOM))
+	if (bAdding && iDuration == 0 && (eType == ETargetError::MULTIPLE || eType == ETargetError::RANDOM))
 	{
 		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "You may only permanently %s individuals.",
 					GetActionPhrase(infType, GrammarTense::PresentOrNoun, bAdding));
