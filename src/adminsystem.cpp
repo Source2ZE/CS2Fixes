@@ -536,7 +536,7 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <inpu> [parameter] - Fire outputs at
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
 
-	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_IMMUNITY, nType))
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
 
 	int iFoundEnts = 0;
@@ -567,7 +567,7 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "<name> <input> [parameter] - Fire out
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
 
-	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_IMMUNITY, nType))
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
 
 	int iFoundEnts = 0;
