@@ -97,7 +97,6 @@ public:
 		m_bAuthenticated = false;
 		m_SteamID = nullptr;
 		m_bConnected = false;
-		m_bInGame = false;
 		m_iPlayerState = 1; // STATE_WELCOME is the initial state
 		m_flSpeedMod = 1.f;
 	}
@@ -132,12 +131,10 @@ public:
 	void SetSteamId(const CSteamID* steamID) { m_SteamID = steamID; }
 	void SetPlayerSlot(CPlayerSlot slot) { m_slot = slot; }
 	void SetIpAddress(std::string strIp) { m_strIp = strIp; }
-	void SetInGame(bool bInGame) { m_bInGame = bInGame; }
 	void SetPlayerState(uint32 iPlayerState) { m_iPlayerState = iPlayerState; }
 
 	CPlayerSlot GetPlayerSlot() { return m_slot; }
 	const char* GetIpAddress() { return m_strIp.c_str(); }
-	bool IsInGame() { return m_bInGame; }
 	ZEPlayerHandle GetHandle() { return m_Handle; }
 	uint32 GetPlayerState() { return m_iPlayerState; }
 	
@@ -151,7 +148,6 @@ private:
 	CPlayerSlot m_slot;
 	bool m_bFakeClient;
 	std::string m_strIp;
-	bool m_bInGame;
 	ZEPlayerHandle m_Handle;
 	uint32 m_iPlayerState;
 	float m_flSpeedMod;
@@ -162,13 +158,13 @@ class CPlayerManager
 public:
 	CPlayerManager(bool late = false)
 	{
-		V_memset(m_vecPlayers, 0, sizeof(m_vecPlayers));
+		m_vecPlayers = std::vector<ZEPlayer*>(MAXPLAYERS, nullptr);
 
 		if (late)
 			OnLateLoad();
 	}
 
-	bool OnClientConnected(CPlayerSlot slot, uint64 xuid, const char* pszNetworkID);
+	bool OnClientConnected(CPlayerSlot slot, uint64 xuid);
 	void OnClientDisconnect(CPlayerSlot slot);
 	void OnBotConnected(CPlayerSlot slot);
 	void OnClientPutInServer(CPlayerSlot slot);
@@ -180,7 +176,7 @@ public:
 	ZEPlayer *GetPlayer(CPlayerSlot slot);
 
 private:
-	ZEPlayer *m_vecPlayers[MAXPLAYERS];
+	std::vector<ZEPlayer*> m_vecPlayers;
 };
 
 extern CPlayerManager *g_playerManager;

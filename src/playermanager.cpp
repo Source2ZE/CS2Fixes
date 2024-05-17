@@ -96,34 +96,24 @@ void ZEPlayer::OnAuthenticated()
 
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 {
-	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);
+	m_vecPlayers.at(slot.Get()) = new ZEPlayer(slot, true);
 }
 
-bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid, const char* pszNetworkID)
+bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid)
 {
-	Assert(m_vecPlayers[slot.Get()] == nullptr);
+	ZEPlayer *pPlayer = GetPlayer(slot);
+	if (pPlayer)
+	{
+		delete pPlayer;
+	}
 
 	Message("%d connected\n", slot.Get());
 
-	ZEPlayer *pPlayer = new ZEPlayer(slot);
+	pPlayer = new ZEPlayer(slot);
 	pPlayer->SetUnauthenticatedSteamId(new CSteamID(xuid));
 
-	std::string ip(pszNetworkID);
-
-	// Remove port
-	for (int i = 0; i < ip.length(); i++)
-	{
-		if (ip[i] == ':')
-		{
-			ip = ip.substr(0, i);
-			break;
-		}
-	}
-
-	pPlayer->SetIpAddress(ip);
-
 	pPlayer->SetConnected();
-	m_vecPlayers[slot.Get()] = pPlayer;
+	m_vecPlayers.at(slot.Get()) = pPlayer;
 
 	return true;
 }
@@ -131,16 +121,11 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid, const char
 void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 {
 	Message("%d disconnected\n", slot.Get());
+	if(!GetPlayer(slot))
+		return;
 
-	delete m_vecPlayers[slot.Get()];
-	m_vecPlayers[slot.Get()] = nullptr;
-}
-
-void CPlayerManager::OnClientPutInServer(CPlayerSlot slot)
-{
-	ZEPlayer* pPlayer = m_vecPlayers[slot.Get()];
-
-	pPlayer->SetInGame(true);
+	delete m_vecPlayers.at(slot.Get());
+	m_vecPlayers.at(slot.Get()) = nullptr;
 }
 
 void CPlayerManager::OnLateLoad()
@@ -152,7 +137,7 @@ void CPlayerManager::OnLateLoad()
 		if (!pController || !pController->IsController() || !pController->IsConnected())
 			continue;
 
-		OnClientConnected(i, pController->m_steamID(), "0.0.0.0:0");
+		OnClientConnected(i, pController->m_steamID());
 	}
 }
 
@@ -161,7 +146,7 @@ ZEPlayer *CPlayerManager::GetPlayer(CPlayerSlot slot)
 	if (slot.Get() < 0 || slot.Get() >= gpGlobals->maxClients)
 		return nullptr;
 
-	return m_vecPlayers[slot.Get()];
+	return m_vecPlayers.at(slot.Get());
 };
 
 // In userids, the lower byte is always the player slot
@@ -177,7 +162,7 @@ ZEPlayer *CPlayerManager::GetPlayerFromUserId(uint16 userid)
 	if (index >= gpGlobals->maxClients)
 		return nullptr;
 
-	return m_vecPlayers[index];
+	return m_vecPlayers.at(index);
 }
 
 ZEPlayer* CPlayerManager::GetPlayerFromSteamId(uint64 steamid)
