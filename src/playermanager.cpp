@@ -94,11 +94,6 @@ void ZEPlayer::OnAuthenticated()
 	Message("%lli authenticated\n", GetSteamId64());
 }
 
-void CPlayerManager::OnBotConnected(CPlayerSlot slot)
-{
-	m_vecPlayers.at(slot.Get()) = new ZEPlayer(slot, true);
-}
-
 bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid)
 {
 	ZEPlayer *pPlayer = GetPlayer(slot);
@@ -116,16 +111,6 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid)
 	m_vecPlayers.at(slot.Get()) = pPlayer;
 
 	return true;
-}
-
-void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
-{
-	Message("%d disconnected\n", slot.Get());
-	if(!GetPlayer(slot))
-		return;
-
-	delete m_vecPlayers.at(slot.Get());
-	m_vecPlayers.at(slot.Get()) = nullptr;
 }
 
 void CPlayerManager::OnLateLoad()
