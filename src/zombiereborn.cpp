@@ -314,7 +314,8 @@ ZRHumanClass::ZRHumanClass(ordered_json jsonKeys, std::string szClassname) : ZRC
 ZRZombieClass::ZRZombieClass(ordered_json jsonKeys, std::string szClassname) :
 	ZRClass(jsonKeys, szClassname),
 	iHealthRegenCount(jsonKeys.value("health_regen_count", 0)),
-	flHealthRegenInterval(jsonKeys.value("health_regen_interval", 0)){};
+	flHealthRegenInterval(jsonKeys.value("health_regen_interval", 0)),
+	flKnockback(jsonKeys.value("knockback", 1.0)){};
 
 void ZRZombieClass::Override(ordered_json jsonKeys, std::string szClassname)
 {
@@ -323,6 +324,8 @@ void ZRZombieClass::Override(ordered_json jsonKeys, std::string szClassname)
 		iHealthRegenCount = jsonKeys["health_regen_count"].get<int>();
 	if (jsonKeys.contains("health_regen_interval"))
 		flHealthRegenInterval = jsonKeys["health_regen_interval"].get<float>();
+	if (jsonKeys.contains("knockback"))
+		flKnockback = jsonKeys["knockback"].get<float>();
 }
 
 bool ZRClass::IsApplicableTo(CCSPlayerController *pController)
@@ -397,6 +400,8 @@ bool CZRPlayerClassManager::CreateJsonConfigFromKeyValuesFile()
 				jsonClass["speed"] = std::stod(pSubKey->GetString("speed"));
 			if (pSubKey->FindKey("gravity"))
 				jsonClass["gravity"] = std::stod(pSubKey->GetString("gravity"));
+			if (pSubKey->FindKey("knockback"))
+				jsonClass["knockback"] = std::stod(pSubKey->GetString("knockback"));
 			if (pSubKey->FindKey("admin_flag"))
 				jsonClass["admin_flag"] = std::string(pSubKey->GetString("admin_flag"));
 			if (pSubKey->FindKey("health_regen_count"))
@@ -536,6 +541,11 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					Warning("%s has unspecified key: gravity\n", szClassName.c_str());
 					bMissingKey = true;
 				}
+				/*if (!jsonClass.contains("knockback"))
+				{
+					Warning("%s has unspecified key: knockback\n", szClassName.c_str());
+					bMissingKey = true;
+				}*/
 				if (!jsonClass.contains("admin_flag"))
 				{
 					Warning("%s has unspecified key: admin_flag\n", szClassName.c_str());
@@ -740,7 +750,13 @@ void CZRPlayerClassManager::ApplyZombieClass(ZRZombieClass *pClass, CCSPlayerPaw
 	ApplyBaseClass(pClass, pPawn);
 	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
 	if (pController)
+	{
+		int iSlot = pController->GetPlayerSlot();
+		vecPlayerClassIndex[iSlot] = pClass;
+
+		//Message("Apply zombie class: %i to client with slot: %d\n", pClass, iSlot);
 		CZRRegenTimer::StartRegen(pClass->flHealthRegenInterval, pClass->iHealthRegenCount, pController);
+	}
 }
 
 void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pPawn)
@@ -783,6 +799,14 @@ void CZRPlayerClassManager::GetZRClassList(const char* sTeam, CUtlVector<ZRClass
 			vecClasses.AddToTail(m_HumanClassMap[i]);
 		}
 	}
+}
+
+ZRZombieClass* CZRPlayerClassManager::GetPlayerClassIndex(CCSPlayerController *pController)
+{
+	int slot = pController->GetPlayerSlot();
+	//Message("CZRPlayerClassNameManager::GetPlayerClassIndex Player Slot: %d with class id: %i\n", slot, vecPlayerClassIndex[slot]);
+
+	return vecPlayerClassIndex[slot];
 }
 
 double CZRRegenTimer::s_flNextExecution;
@@ -1116,7 +1140,7 @@ void ZR_OnPlayerSpawn(IGameEvent* pEvent)
 	});
 }
 
-void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon, int hitgroup)
+void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon, int hitgroup, float classknockback)
 {
 	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
 	ZRHitgroup *pHitgroup = g_pZRHitgroupConfig->FindHitgroupIndex(hitgroup);
@@ -1134,7 +1158,7 @@ void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamag
 
 	Vector vecKnockback;
 	AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
-	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale * flHitgroupKnockbackScale);
+	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale * flHitgroupKnockbackScale * classknockback);
 	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
@@ -1635,7 +1659,12 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent)
 		return;
 
 	if (pAttackerController->m_iTeamNum() == CS_TEAM_CT && pVictimController->m_iTeamNum() == CS_TEAM_T)
-		ZR_ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon, iHitGroup);
+	{
+		ZRZombieClass *pClass = g_pZRPlayerClassManager->GetPlayerClassIndex(pVictimController);
+
+		//Message("victim class index is: %i with knockback value is: %.2f. Applying knockback.\n", pClass, pClass->flKnockback);
+		ZR_ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon, iHitGroup, pClass->flKnockback);
+	}
 }
 
 void ZR_OnPlayerDeath(IGameEvent* pEvent)
