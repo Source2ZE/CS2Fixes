@@ -864,12 +864,21 @@ void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringLis
 		RETURN_META(MRES_IGNORED);
 }
 
+bool g_bDropMapWeapons = false;
+
+FAKE_BOOL_CVAR(cs2f_drop_map_weapons, "Whether to force drop map-spawned weapons on death", g_bDropMapWeapons, false, false)
+
 bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, void *a3)
 {
 	CCSPlayerPawn *pPawn = META_IFACEPTR(CCSPlayerPawn);
 
 	if (g_bEnableZR && ZR_Hook_OnTakeDamage_Alive(pInfo, pPawn))
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
+
+	// This is a shit place to be doing this, but player_death event is too late and there is no pre-hook alternative
+	// Check if this is going to kill the player
+	if (g_bDropMapWeapons && pPawn && pPawn->m_iHealth - pInfo->m_flDamage <= 0)
+		pPawn->DropMapWeapons();
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
