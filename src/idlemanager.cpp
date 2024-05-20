@@ -65,7 +65,7 @@ void CIdleSystem::CheckForIdleClients()
 				continue;
 		}
 
-		time_t iIdleTimeLeft = (g_fIdleKickTime * 60) - std::time(0) - zPlayer->GetLastInputTime();
+		time_t iIdleTimeLeft = (g_fIdleKickTime * 60) - (std::time(0) - zPlayer->GetLastInputTime());
 
 		if (iIdleTimeLeft > 0)
 		{
