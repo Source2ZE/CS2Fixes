@@ -804,7 +804,7 @@ void CPlayerManager::SetupInfiniteAmmo()
 			if (!pPawn)
 				continue;
 
-			CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
+			CCSPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
 
 			// it can sometimes be null when player joined on the very first round? 
 			if (!pWeaponServices)

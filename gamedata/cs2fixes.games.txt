@@ -453,6 +453,11 @@
 				"windows"		"32"
 				"linux"			"33"
 			}
+			"CCSPlayer_WeaponServices::DropWeapon"
+			{
+				"windows"		"20"
+				"linux"			"21"
+			}
 		}
 		"Patches"
 		{

@@ -129,6 +129,12 @@ public:
 	SCHEMA_FIELD(bool, m_bIsBeingGivenItem)
 	SCHEMA_FIELD(bool, m_bIsPickingUpItemWithUse)
 	SCHEMA_FIELD(bool, m_bPickedUpWeapon)
+
+	void DropWeapon(CBasePlayerWeapon* pWeapon, Vector* pVecTarget = nullptr, Vector* pVelocity = nullptr)
+	{
+		static int offset = g_GameConfig->GetOffset("CCSPlayer_WeaponServices::DropWeapon");
+		CALL_VIRTUAL(void, offset, this, pWeapon, pVecTarget, pVelocity);
+	}
 };
 
 class CCSPlayerController_InGameMoneyServices
@@ -164,7 +170,8 @@ private:
 public:
     virtual bool         GiveNamedItemBool(const char* pchName)      = 0;
     virtual CBaseEntity* GiveNamedItem(const char* pchName)          = 0;
-    virtual void         DropPlayerWeapon(CBasePlayerWeapon* weapon) = 0;
+	// Recommended to use CCSPlayer_WeaponServices::DropWeapon instead (parameter is ignored here)
+    virtual void         DropActiveWeapon(CBasePlayerWeapon* pWeapon) = 0;
     virtual void         StripPlayerWeapons(bool removeSuit = false) = 0;
 };
 

@@ -141,7 +141,7 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 	}
 
 	CCSPlayer_ItemServices* pItemServices = pPawn->m_pItemServices;
-	CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
+	CCSPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
 
 	// it can sometimes be null when player joined on the very first round? 
 	if (!pItemServices || !pWeaponServices)
@@ -190,22 +190,14 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 	FOR_EACH_VEC(*weapons, i)
 	{
-		CHandle<CBasePlayerWeapon>& weaponHandle = (*weapons)[i];
-
-		if (!weaponHandle.IsValid())
-			continue;
-
-		CBasePlayerWeapon* weapon = weaponHandle.Get();
+		CBasePlayerWeapon* weapon = (*weapons)[i].Get();
 
 		if (!weapon)
 			continue;
 
 		if (weapon->GetWeaponVData()->m_GearSlot() == weaponEntry.iGearSlot && (weaponEntry.iGearSlot == GEAR_SLOT_RIFLE || weaponEntry.iGearSlot == GEAR_SLOT_PISTOL))
 		{
-			// Despite having to pass a weapon into DropPlayerWeapon, it only drops the weapon if it's also the players active weapon
-			pWeaponServices->m_hActiveWeapon = weaponHandle;
-			pItemServices->DropPlayerWeapon(weapon);
-
+			pWeaponServices->DropWeapon(weapon);
 			break;
 		}
 	}
