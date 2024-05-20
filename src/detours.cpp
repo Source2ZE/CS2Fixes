@@ -474,7 +474,8 @@ public:
 
 void* FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pPawn, CUserCmd *cmds, int numcmds, bool paused, float margin)
 {
-	if (!g_bDisableSubtick)
+	// Push fix only works properly if subtick movement is also disabled
+	if (!g_bDisableSubtick && !g_bUseOldPush)
 		return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
 
 	VPROF_SCOPE_BEGIN("Detour_ProcessUsercmds");
