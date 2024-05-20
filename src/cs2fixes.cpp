@@ -767,9 +767,6 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 		}
 	}
 
-	extern std::unordered_set<uint64> g_PushEntSet;
-	g_PushEntSet.clear();
-
 	if (g_bEnableZR)
 		CZRRegenTimer::Tick();
 
