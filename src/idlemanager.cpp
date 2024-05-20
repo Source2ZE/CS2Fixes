@@ -65,7 +65,7 @@ void CIdleSystem::CheckForIdleClients()
 				continue;
 		}
 
-		int iIdleTimeLeft = static_cast<uint64>(g_fIdleKickTime * 60) - static_cast<uint64>(std::time(0) - zPlayer->GetLastInputTime());
+		time_t iIdleTimeLeft = (g_fIdleKickTime * 60) - std::time(0) - zPlayer->GetLastInputTime();
 
 		if (iIdleTimeLeft > 0)
 		{
@@ -100,7 +100,7 @@ void CIdleSystem::UpdateIdleTimes()
 		if (!pPlayer)
 			continue;
 
-		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pPlayer->GetPlayerSlot().Get() + 1));
+		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetEntityInstance((CEntityIndex)(pPlayer->GetPlayerSlot().Get() + 1));
 		if (!pTarget)
 			continue;
 
