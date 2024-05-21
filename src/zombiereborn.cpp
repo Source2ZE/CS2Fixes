@@ -1883,8 +1883,6 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 		return;
 
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
-
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 	std::vector<SpawnPoint*> spawns = ZR_GetSpawns();
 
 	if (g_iInfectSpawnType == EZRSpawnType::RESPAWN && !spawns.size())

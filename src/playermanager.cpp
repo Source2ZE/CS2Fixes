@@ -1206,7 +1206,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@aim"))
 	{
-		Z_CBaseEntity* entTarget = nullptr;
+		CBaseEntity* entTarget = nullptr;
 		entTarget = UTIL_FindPickerEntity(pPlayer);
 
 		if (!entTarget->IsPawn())
@@ -1224,7 +1224,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (!V_stricmp(pszTarget, "@!aim"))
 	{
-		Z_CBaseEntity* entTarget = nullptr;
+		CBaseEntity* entTarget = nullptr;
 		entTarget = UTIL_FindPickerEntity(pPlayer);
 
 		if (!entTarget->IsPawn())
