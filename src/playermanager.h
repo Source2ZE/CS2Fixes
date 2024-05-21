@@ -168,6 +168,8 @@ public:
 		m_iLeaderTracerIndex = 0;
 		m_flLeaderVoteTime = -30.0f;
 		m_flSpeedMod = 1.f;
+		m_iLastInputs = IN_NONE;
+		m_iLastInputTime = std::time(0);
 	}
 
 	~ZEPlayer()
@@ -219,6 +221,8 @@ public:
 	void SetLeaderVoteTime(float flCurtime) { m_flLeaderVoteTime = flCurtime; }
 	void SetGlowModel(CBaseModelEntity *pModel) { m_hGlowModel.Set(pModel); }
 	void SetSpeedMod(float flSpeedMod) { m_flSpeedMod = flSpeedMod; }
+	void SetLastInputs(uint64 iLastInputs) { m_iLastInputs = iLastInputs; }
+	void UpdateLastInputTime() { m_iLastInputTime = std::time(0); }
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -251,6 +255,8 @@ public:
 	float GetLeaderVoteTime() { return m_flLeaderVoteTime; }
 	CBaseModelEntity *GetGlowModel() { return m_hGlowModel.Get(); }
 	float GetSpeedMod() { return m_flSpeedMod; }
+	uint64 GetLastInputs() { return m_iLastInputs; }
+	std::time_t GetLastInputTime() { return m_iLastInputTime; }
 	
 	void OnSpawn();
 	void OnAuthenticated();
@@ -302,6 +308,8 @@ private:
 	float m_flLeaderVoteTime;
 	CHandle<CBaseModelEntity> m_hGlowModel;
 	float m_flSpeedMod;
+	uint64 m_iLastInputs;
+	std::time_t m_iLastInputTime;
 };
 
 class CPlayerManager
@@ -310,8 +318,8 @@ public:
 	CPlayerManager(bool late = false)
 	{
 		V_memset(m_vecPlayers, 0, sizeof(m_vecPlayers));
-		m_nUsingStopSound = 0;
-		m_nUsingSilenceSound = -1; // On by default
+		m_nUsingStopSound = -1; // On by default
+		m_nUsingSilenceSound = 0;
 		m_nUsingStopDecals = -1; // On by default
 
 		if (late)

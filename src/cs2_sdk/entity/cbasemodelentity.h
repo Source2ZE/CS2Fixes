@@ -22,7 +22,7 @@
 #include "cbaseentity.h"
 #include "globaltypes.h"
 
-class CBaseModelEntity : public Z_CBaseEntity
+class CBaseModelEntity : public CBaseEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CBaseModelEntity);

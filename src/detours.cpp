@@ -85,7 +85,7 @@ static bool g_bBlockAllDamage = false;
 FAKE_BOOL_CVAR(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", g_bBlockMolotovSelfDmg, false, false)
 FAKE_BOOL_CVAR(cs2f_block_all_dmg, "Whether to block all damage to players", g_bBlockAllDamage, false, false)
 
-void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
+void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
 {
 #ifdef _DEBUG
 	Message("\n--------------------------------\n"
@@ -115,9 +115,6 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
 		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
 
-	if (g_bEnableZR && ZR_Detour_TakeDamageOld((CCSPlayerPawn*)pThis, inputInfo))
-		return;
-
 	// Prevent molly on self
 	if (g_bBlockMolotovSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
 		return;
@@ -131,21 +128,8 @@ FAKE_BOOL_CVAR(cs2f_use_old_push, "Whether to use the old CSGO trigger_push beha
 static bool g_bLogPushes = false;
 FAKE_BOOL_CVAR(cs2f_log_pushes, "Whether to log pushes (cs2f_use_old_push must be enabled)", g_bLogPushes, false, false)
 
-static bool g_bPreventMultiPush = false;
-FAKE_BOOL_CVAR(cs2f_prevent_multi_push, "Whether to prevent pushes from affecting the same entity multiple times in a tick", g_bPreventMultiPush, false, false)
-
-std::unordered_set<uint64> g_PushEntSet;
-
-void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
+void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 {
-	// Fitting both handles into a single uint64
-	uint64 iPushID = ((uint64)pPush->GetHandle().ToInt() << 32) + pOther->GetHandle().ToInt();
-
-	// We're inserting the push ID into a set and if that fails it means this trigger already pushed the other ent in this tick
-	// The set is cleared on the next tick
-	if (g_bPreventMultiPush && !g_PushEntSet.insert(iPushID).second)
-		return;
-
 	// This trigger pushes only once (and kills itself) or pushes only on StartTouch, both of which are fine already
 	if (!g_bUseOldPush || pPush->m_spawnflags() & SF_TRIG_PUSH_ONCE || pPush->m_bTriggerOnStartTouch())
 	{
@@ -185,7 +169,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 
 	uint32 flags = pOther->m_fFlags();
 
-	if (flags & (FL_BASEVELOCITY))
+	if (flags & FL_BASEVELOCITY)
 	{
 		vecPush = vecPush + pOther->m_vecBaseVelocity();
 	}
@@ -204,12 +188,14 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 		Vector vecEntBaseVelocity = pOther->m_vecBaseVelocity;
 		Vector vecOrigPush = vecAbsDir * pPush->m_flSpeed();
 
-		Message("Pushing entity %i | frametime = %.3f | entity basevelocity = %.2f %.2f %.2f | original push velocity = %.2f %.2f %.2f | final push velocity = %.2f %.2f %.2f\n",
-			pOther->GetEntityIndex(),
-			gpGlobals->frametime,
-			vecEntBaseVelocity.x, vecEntBaseVelocity.y, vecEntBaseVelocity.z,
-			vecOrigPush.x, vecOrigPush.y, vecOrigPush.z,
-			vecPush.x, vecPush.y, vecPush.z);
+		Message("Pushing entity %i | frame = %i | tick = %i | entity basevelocity %s = %.2f %.2f %.2f | original push velocity = %.2f %.2f %.2f | final push velocity = %.2f %.2f %.2f\n",
+				pOther->GetEntityIndex(),
+				gpGlobals->framecount,
+				gpGlobals->tickcount,
+				(flags & FL_BASEVELOCITY) ? "WITH FLAG" : "",
+				vecEntBaseVelocity.x, vecEntBaseVelocity.y, vecEntBaseVelocity.z,
+				vecOrigPush.x, vecOrigPush.y, vecOrigPush.z,
+				vecPush.x, vecPush.y, vecPush.z);
 	}
 
 	pOther->m_vecBaseVelocity(vecPush);
@@ -248,8 +234,7 @@ void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPla
 	filteredText[uiFilteredTextLength] = '\0';
 
 	// Split console message into words seperated by the space character
-	CUtlVector<char*, CUtlMemory<char*, int>> words;
-	V_SplitString(filteredText, " ", words);
+	CSplitString words(filteredText, " ");
 
 	//Word count includes the first word "Console:" at index 0, first relevant word is at index 1
 	int iWordCount = words.Count();
@@ -299,7 +284,6 @@ void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPla
 			}
 		}
 	}
-	words.PurgeAndDeleteElements();
 
 	float fCurrentRoundClock = g_pGameRules->m_iRoundTime - (gpGlobals->curtime - g_pGameRules->m_fRoundStartTime.Get().m_Value);
 
@@ -390,7 +374,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		Message("Invalid value type for input %s\n", pInputName->String());
 		return false;
 	}
-	if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
+	else if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
 	{
 		float flDuration = 0.f;
 
@@ -404,12 +388,29 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if (pPawn->IsPawn() && IgnitePawn(pPawn, flDuration, pPawn, pPawn))
 			return true;
 	}
-	else if (const auto pGameUI = reinterpret_cast<Z_CBaseEntity*>(pThis->m_pInstance)->AsGameUI())
+	else if (!V_strnicmp(pInputName->String(), "AddScore", 8))
+	{
+		int iScore = 0;
+
+		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			iScore = V_StringToInt32(value->m_pszString, 0);
+		else
+			iScore = value->m_int;
+
+		CCSPlayerPawn *pPawn = reinterpret_cast<CCSPlayerPawn *>(pThis->m_pInstance);
+
+		if (pPawn->IsPawn() && pPawn->GetOriginalController())
+		{
+			pPawn->GetOriginalController()->AddScore(iScore);
+			return true;
+		}
+	}
+	else if (const auto pGameUI = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsGameUI())
 	{
 		if (!V_strcasecmp(pInputName->String(), "Activate"))
-			return CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+			return CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator));
 		if (!V_strcasecmp(pInputName->String(), "Deactivate"))
-			return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+			return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator));
 	}
 
 	VPROF_SCOPE_END();
@@ -473,7 +474,8 @@ public:
 
 void* FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pPawn, CUserCmd *cmds, int numcmds, bool paused, float margin)
 {
-	if (!g_bDisableSubtick)
+	// Push fix only works properly if subtick movement is also disabled
+	if (!g_bDisableSubtick && !g_bUseOldPush)
 		return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
 
 	VPROF_SCOPE_BEGIN("Detour_ProcessUsercmds");

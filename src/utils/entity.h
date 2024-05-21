@@ -25,16 +25,16 @@
 #include "variant.h"
 
 class CEntityInstance;
-class Z_CBaseEntity;
+class CBaseEntity;
 class CBasePlayerController;
 class IEntityFindFilter;
 
-Z_CBaseEntity *UTIL_FindPickerEntity(CBasePlayerController *pPlayer);
-Z_CBaseEntity *UTIL_FindEntityByClassname(CEntityInstance *pStart, const char *name);
-Z_CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
+CBaseEntity *UTIL_FindPickerEntity(CBasePlayerController *pPlayer);
+CBaseEntity *UTIL_FindEntityByClassname(CEntityInstance *pStart, const char *name);
+CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
 									CEntityInstance *pSearchingEntity = nullptr, CEntityInstance *pActivator = nullptr,
 									CEntityInstance *pCaller = nullptr, IEntityFindFilter *pFilter = nullptr);
-Z_CBaseEntity* CreateEntityByName(const char* className);
+CBaseEntity* CreateEntityByName(const char* className);
 
 // Add an entity IO event to the event queue, just like a map would
 // The queue is processed after all entities are simulated every frame

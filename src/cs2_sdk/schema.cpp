@@ -133,7 +133,7 @@ SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char
     return tableMap->Element(memberIndex);
 }
 
-void SetStateChanged(Z_CBaseEntity* pEntity, int offset)
+void SetStateChanged(CBaseEntity* pEntity, int offset)
 {
     addresses::StateChanged(pEntity->m_NetworkTransmitComponent(), pEntity, offset, -1, -1);
 	

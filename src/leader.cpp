@@ -191,7 +191,7 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64 *clients, cons
 
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(pEvent->GetPlayerSlot("userid"));
 	CCSPlayerController *pController = CCSPlayerController::FromSlot(pEvent->GetPlayerSlot("userid"));
-	CBaseEntity *pEntity = g_pEntitySystem->GetBaseEntity(pEvent->GetEntityIndex("entityid"));
+	CBaseEntity *pEntity = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(pEvent->GetEntityIndex("entityid"));
 
 	g_gameEventManager->FreeEvent(pEvent);
 
@@ -209,7 +209,7 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64 *clients, cons
 		return;
 
 	// Remove entity responsible for visual part of the ping
-	addresses::UTIL_Remove(pEntity);
+	pEntity->Remove();
 
 	// Block clients from playing the ping sound
 	*(uint64 *)clients = 0;

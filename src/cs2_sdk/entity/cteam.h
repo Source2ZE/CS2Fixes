@@ -23,7 +23,7 @@
 #include "cbaseplayercontroller.h"
 #include "cbaseplayerpawn.h"
 
-class CTeam : public Z_CBaseEntity
+class CTeam : public CBaseEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CTeam);

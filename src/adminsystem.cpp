@@ -277,7 +277,7 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - Slap a player", ADMFLAG_SLAY)
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(pSlots[i] + 1));
 		CBasePlayerPawn *pPawn = pTarget->m_hPawn();
 
 		if (!pPawn)
@@ -295,7 +295,7 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - Slap a player", ADMFLAG_SLAY)
 		if (flDamage > 0)
 		{
 			// Default to the world
-			Z_CBaseEntity *pAttacker = (Z_CBaseEntity*)g_pEntitySystem->GetBaseEntity(CEntityIndex(0));
+			CBaseEntity *pAttacker = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(0));
 
 			if (player)
 				pAttacker = player->GetPlayerPawn();
@@ -473,7 +473,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "<name> <input> [parameter] - Fire outputs at en
 
 	int iFoundEnts = 0;
 
-	Z_CBaseEntity *pTarget = nullptr;
+	CBaseEntity *pTarget = nullptr;
 
 	// The idea here is to only use one of the targeting modes at once, prioritizing !picker then targetname/!self then classname
 	// Try picker first, FindEntityByName can also take !picker but it always uses player 0 so we have to do this ourselves
@@ -590,34 +590,40 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - Change map", ADMFLAG_CHANGEMAP)
 		return;
 	}
 
-	if (!g_pEngineServer2->IsMapValid(args[1]))
-	{
-		// Injection prevention, because we pass user input to ServerCommand
-		for (int i = 0; i < strlen(args[1]); i++)
-		{
-			if (args[1][i] == ';')
-				return;
-		}
+	std::string sMapName = args[1];
 
+	for (int i = 0; sMapName[i]; i++)
+	{
+		// Injection prevention, because we may pass user input to ServerCommand
+		if (sMapName[i] == ';')
+			return;
+
+		sMapName[i] = tolower(sMapName[i]);
+	}
+
+	const char* pszMapName = sMapName.c_str();
+
+	if (!g_pEngineServer2->IsMapValid(pszMapName))
+	{
 		std::string sCommand;
 
 		// Check if input is numeric (workshop ID)
 		// Not safe to expose until crashing on failed workshop addon downloads is fixed
-		/*if (V_StringToUint64(args[1], 0) != 0)
+		/*if (V_StringToUint64(pszMapName, 0) != 0)
 		{
-			sCommand = "host_workshop_map " + std::string(args[1]);
+			sCommand = "host_workshop_map " + sMapName;
 		}*/
-		if (g_bVoteManagerEnable && g_pMapVoteSystem->GetMapIndexFromSubstring(args[1]) != -1)
+		if (g_bVoteManagerEnable && g_pMapVoteSystem->GetMapIndexFromSubstring(pszMapName) != -1)
 		{
-			sCommand = "host_workshop_map " + std::to_string(g_pMapVoteSystem->GetMapWorkshopId(g_pMapVoteSystem->GetMapIndexFromSubstring(args[1])));
+			sCommand = "host_workshop_map " + std::to_string(g_pMapVoteSystem->GetMapWorkshopId(g_pMapVoteSystem->GetMapIndexFromSubstring(pszMapName)));
 		}
 		else
 		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching %s.", args[1]);
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching %s.", pszMapName);
 			return;
 		}
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", args[1]);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", pszMapName);
 
 		new CTimer(5.0f, false, true, [sCommand]()
 		{
@@ -628,15 +634,11 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - Change map", ADMFLAG_CHANGEMAP)
 		return;
 	}
 
-	// Copy the string, since we're passing this into a timer
-	char szMapName[MAX_PATH];
-	V_strncpy(szMapName, args[1], sizeof(szMapName));
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", pszMapName);
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", szMapName);
-
-	new CTimer(5.0f, false, true, [szMapName]()
+	new CTimer(5.0f, false, true, [sMapName]()
 	{
-		g_pEngineServer2->ChangeLevel(szMapName, nullptr);
+		g_pEngineServer2->ChangeLevel(sMapName.c_str(), nullptr);
 		return -1.0f;
 	});
 }

@@ -44,7 +44,7 @@ class CBasePlayerController;
 class CCSPlayerController;
 class CCSPlayerPawn;
 class CBaseModelEntity;
-class Z_CBaseEntity;
+class CBaseEntity;
 class CGameConfig;
 class CEntitySystem;
 class IEntityFindFilter;
@@ -65,7 +65,7 @@ namespace addresses
 	inline void(FASTCALL *StateChanged)(void *networkTransmitComponent, CEntityInstance *ent, int64 offset, int16 a4, int16 a5);
 	inline void(FASTCALL *UTIL_ClientPrintAll)(int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4);
 	inline void(FASTCALL *ClientPrint)(CBasePlayerController *player, int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4);
-	inline void(FASTCALL *SetGroundEntity)(Z_CBaseEntity *ent, Z_CBaseEntity *ground);
+	inline void(FASTCALL *SetGroundEntity)(CBaseEntity *ent, CBaseEntity *ground);
 	inline void(FASTCALL *CCSPlayerController_SwitchTeam)(CCSPlayerController *pController, uint32 team);
 	inline void(FASTCALL *CBasePlayerController_SetPawn)(CBasePlayerController *pController, CCSPlayerPawn *pPawn, bool a3, bool a4);
 	inline void(FASTCALL *CBaseModelEntity_SetModel)(CBaseModelEntity *pModel, const char *szModel);
@@ -77,22 +77,22 @@ namespace addresses
 	inline void(FASTCALL *CEntityInstance_AcceptInput)(CEntityInstance *pThis, const char *pInputName,
 													CEntityInstance *pActivator, CEntityInstance *pCaller, variant_t *value, int nOutputID);
 
-	inline Z_CBaseEntity *(FASTCALL *CGameEntitySystem_FindEntityByClassName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName);
+	inline CBaseEntity *(FASTCALL *CGameEntitySystem_FindEntityByClassName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName);
 
-	inline Z_CBaseEntity *(FASTCALL *CGameEntitySystem_FindEntityByName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName, 
+	inline CBaseEntity *(FASTCALL *CGameEntitySystem_FindEntityByName)(CEntitySystem *pEntitySystem, CEntityInstance *pStartEntity, const char *szName, 
 																		CEntityInstance *pSearchingEntity, CEntityInstance *pActivator, CEntityInstance *pCaller,
 																		IEntityFindFilter *pFilter);
 	inline void(FASTCALL *CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4, unsigned int a5);
-	inline Z_CBaseEntity *(FASTCALL* CreateEntityByName)(const char* className, int iForceEdictIndex);
-	inline void(FASTCALL *DispatchSpawn)(Z_CBaseEntity* pEntity, CEntityKeyValues *pEntityKeyValues);
+	inline CBaseEntity *(FASTCALL* CreateEntityByName)(const char* className, int iForceEdictIndex);
+	inline void(FASTCALL *DispatchSpawn)(CBaseEntity* pEntity, CEntityKeyValues *pEntityKeyValues);
 	inline void(FASTCALL *CEntityIdentity_SetEntityName)(CEntityIdentity *pEntity, const char *pName);
-	inline void(FASTCALL *CBaseEntity_EmitSoundParams)(Z_CBaseEntity *pEntity, const char *pszSound, int nPitch, float flVolume, float flDelay);
-	inline void(FASTCALL *CBaseEntity_SetParent)(Z_CBaseEntity *pEntity, Z_CBaseEntity *pNewParent, CUtlStringToken nBoneOrAttachName, matrix3x4a_t *pOffsetTransform);
-	inline int(FASTCALL *DispatchParticleEffect)(const char *pszParticleName, int iAttachType, Z_CBaseEntity *pEntity,
+	inline void(FASTCALL *CBaseEntity_EmitSoundParams)(CBaseEntity *pEntity, const char *pszSound, int nPitch, float flVolume, float flDelay);
+	inline void(FASTCALL *CBaseEntity_SetParent)(CBaseEntity *pEntity, CBaseEntity *pNewParent, CUtlStringToken nBoneOrAttachName, matrix3x4a_t *pOffsetTransform);
+	inline int(FASTCALL *DispatchParticleEffect)(const char *pszParticleName, int iAttachType, CBaseEntity *pEntity,
 		char iAttachmentPoint, CUtlSymbolLarge iAttachmentName, bool bResetAllParticlesOnEntity, int nSplitScreenPlayerSlot, IRecipientFilter *a7, byte *a8);
 	inline SndOpEventGuid_t(FASTCALL *CBaseEntity_EmitSoundFilter)(IRecipientFilter &filter, CEntityIndex ent, const EmitSound_t &params);
-	inline void(FASTCALL *CBaseEntity_SetMoveType)(Z_CBaseEntity *pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
-	inline void(FASTCALL *CTakeDamageInfo_Constructor)(CTakeDamageInfo *pThis, Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility,
+	inline void(FASTCALL *CBaseEntity_SetMoveType)(CBaseEntity *pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
+	inline void(FASTCALL *CTakeDamageInfo_Constructor)(CTakeDamageInfo *pThis, CBaseEntity *pInflictor, CBaseEntity *pAttacker, CBaseEntity *pAbility,
 		const Vector *vecDamageForce, const Vector *vecDamagePosition, float flDamage, int bitsDamageType, int iCustomDamage, void *a10);
 	inline void(FASTCALL *CNetworkStringTable_DeleteAllStrings)(INetworkStringTable *pThis);
 }

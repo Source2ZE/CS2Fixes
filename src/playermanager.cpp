@@ -810,7 +810,7 @@ void CPlayerManager::SetupInfiniteAmmo()
 			if (!pPawn)
 				continue;
 
-			CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
+			CCSPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
 
 			// it can sometimes be null when player joined on the very first round? 
 			if (!pWeaponServices)
@@ -1497,7 +1497,7 @@ void CPlayerManager::SetPlayerStopDecals(int slot, bool set)
 
 void CPlayerManager::ResetPlayerFlags(int slot)
 {
-	SetPlayerStopSound(slot, false);
-	SetPlayerSilenceSound(slot, true);
+	SetPlayerStopSound(slot, true);
+	SetPlayerSilenceSound(slot, false);
 	SetPlayerStopDecals(slot, true);
 }

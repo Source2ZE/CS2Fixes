@@ -23,6 +23,7 @@
 #include "ctimer.h"
 #include "eventlistener.h"
 #include "entity/cgamerules.h"
+#include "idlemanager.h"
 #include "strtools.h"
 #include <stdio.h>
 #include "playermanager.h"
@@ -37,6 +38,7 @@ extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
 extern CSteamGameServerAPIContext g_steamAPI;
 extern IGameTypes* g_pGameTypes;
+extern CIdleSystem* g_pIdleSystem;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
@@ -259,6 +261,8 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 void CMapVoteSystem::StartVote() 
 {
 	m_bIsVoteOngoing = true;
+
+	g_pIdleSystem->PauseIdleChecks();
 
 	// If we are forcing a map, just set all vote options to that map
 	if (m_iForcedNextMapIndex != -1) {

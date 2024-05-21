@@ -158,7 +158,7 @@ class MMSPluginConfig(object):
       ]
 
       cxx.cxxflags += ['-std=c++17']
-      if (cxx.version >= 'gcc-4.0') or cxx.family == 'clang':
+      if (builder.options.asan != '1') and ((cxx.version >= 'gcc-4.0') or cxx.family == 'clang'):
         cxx.cflags += ['-fvisibility=hidden']
         cxx.cxxflags += ['-fvisibility-inlines-hidden']
       cxx.cxxflags += [
@@ -168,6 +168,17 @@ class MMSPluginConfig(object):
         '-Wno-overloaded-virtual',
         '-Wno-register',
       ]
+      if (builder.options.asan == '1'):
+        cxx.cxxflags += [
+          '-fsanitize=address',
+          '-fsanitize-address-use-after-scope',
+          '-fno-omit-frame-pointer',
+          '-g',
+        ]
+        cxx.linkflags += [
+          '-fsanitize=address',
+          '-fsanitize-address-use-after-scope',
+        ]
       if (cxx.version >= 'gcc-4.7' or cxx.family == 'clang'):
         cxx.cxxflags += ['-Wno-delete-non-virtual-dtor']
       if cxx.family == 'gcc':
