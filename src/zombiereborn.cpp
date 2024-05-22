@@ -669,8 +669,11 @@ void CZRPlayerClassManager::ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn 
 
 	if (pPlayer && pPlayer->IsLeader())
 	{
-		new CTimer(0.02f, false, false, [pPawn]()
+		CHandle<CCSPlayerPawn> hPawn = pPawn->GetHandle();
+
+		new CTimer(0.02f, false, false, [hPawn]()
 		{
+			CCSPlayerPawn *pPawn = hPawn.Get();
 			if (pPawn)
 				Leader_ApplyLeaderVisuals(pPawn);
 			return -1.0f;
