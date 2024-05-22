@@ -38,16 +38,29 @@ Copy the contents of `dockerbuild/package/` to your server's `game/csgo/` direct
 ### Manual
 
 #### Requirements
-
 - [Metamod:Source](https://github.com/alliedmodders/metamod-source)
 - [AMBuild](https://wiki.alliedmods.net/Ambuild)
 
+#### Linux
 ```bash
-export MMSOURCE112=/path/to/metamod/
+export MMSOURCE112=/path/to/metamod
 export HL2SDKCS2=/path/to/sdk/submodule
 
 mkdir build && cd build
 python3 ../configure.py --enable-optimize --symbol-files --sdks cs2
+ambuild
+```
+
+#### Windows
+
+Make sure to run in "x64 Native Tools Command Prompt for VS"
+
+```bash
+set MMSOURCE112=\path\to\metamod
+set HL2SDKCS2=\path\to\sdk\submodule
+
+mkdir build && cd build
+py ../configure.py --enable-optimize --symbol-files --sdks cs2
 ambuild
 ```
 
