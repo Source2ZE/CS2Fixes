@@ -21,19 +21,28 @@ The CS2Fixes name comes from the CSSFixes and CSGOFixes projects, which were pri
 
 ## Compilation
 
-### Requirements
-
-- [Metamod:Source](https://www.sourcemm.net/downloads.php/?branch=master) (build 1219 or higher)
-- [AMBuild](https://wiki.alliedmods.net/Ambuild)
-
-### Instructions
-
-Follow the instructions below to compile CS2Fixes.
-
-```bash
+```
 git clone https://github.com/Source2ZE/CS2Fixes/ && cd CS2Fixes
 git submodule update --init --recursive
+```
+### Docker (easiest)
 
+Requires Docker to be installed. Produces Linux builds only.
+
+```
+docker compose up
+```
+
+Copy the contents of `dockerbuild/package/` to your server's `game/csgo/` directory.
+
+### Manual
+
+#### Requirements
+
+- [Metamod:Source](https://github.com/alliedmodders/metamod-source)
+- [AMBuild](https://wiki.alliedmods.net/Ambuild)
+
+```bash
 export MMSOURCE112=/path/to/metamod/
 export HL2SDKCS2=/path/to/sdk/submodule
 
@@ -42,4 +51,4 @@ python3 ../configure.py --enable-optimize --symbol-files --sdks cs2
 ambuild
 ```
 
-Copy the contents of package/ to your server's csgo/ directory.
+Copy the contents of `build/package/` to your server's `game/csgo/` directory.
