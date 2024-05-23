@@ -288,7 +288,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		g_pEntitySystem = GameEntitySystem();
 		g_pEntitySystem->AddListenerEntity(g_pEntityListener);
 		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
-		gpGlobals = g_pNetworkGameServer->GetGlobals();
+		gpGlobals = g_pEngineServer2->GetServerGlobals();
 	}
 
 	g_pAdminSystem = new CAdminSystem();
@@ -494,7 +494,7 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	g_pEntitySystem = GameEntitySystem();
 	g_pEntitySystem->AddListenerEntity(g_pEntityListener);
-	gpGlobals = g_pNetworkGameServer->GetGlobals();
+	gpGlobals = g_pEngineServer2->GetServerGlobals();
 
 	Message("Hook_StartupServer: %s\n", pszMapName);
 
