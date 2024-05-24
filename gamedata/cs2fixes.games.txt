@@ -370,8 +370,8 @@
 			}
 			"CollisionRulesChanged"
 			{
-				"windows"		"174"
-				"linux"			"173"
+				"windows"		"178"
+				"linux"			"177"
 			}
 			"IsEntityPawn"
 			{
@@ -410,8 +410,8 @@
 			}
 			"CCSPlayerController_Respawn"
 			{
-				"windows"		"244"
-				"linux"			"246"
+				"windows"		"254"
+				"linux"			"256"
 			}
 			"GetHammerUniqueId"
 			{
