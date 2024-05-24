@@ -115,7 +115,7 @@ public:
 	DECLARE_SCHEMA_CLASS(CEntitySubclassVDataBase)
 };
 
-class Z_CBaseEntity : public CBaseEntity
+class Z_CBaseEntity : public CEntityInstance
 {
 public:
 	// This is a unique case as CBaseEntity is already defined in the sdk
