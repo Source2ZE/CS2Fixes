@@ -67,6 +67,12 @@ enum TakeDamageFlags_t : uint32_t
 	DFLAG_IGNORE_ARMOR = 0x800,
 };
 
+// No idea what this is meant to have, but OnTakeDamage_Alive expects this and we only care about pInfo
+struct CTakeDamageInfoContainer
+{
+	CTakeDamageInfo *pInfo;
+};
+
 class CTakeDamageInfo
 {
 private:
@@ -91,6 +97,7 @@ public:
 	CHandle<CBaseEntity> m_hAttacker;
 	CHandle<CBaseEntity> m_hAbility;
 	float m_flDamage;
+	float m_flTotalledDamage;
 	DamageTypes_t m_bitsDamageType;
 	int32_t m_iDamageCustom;
 	uint8_t m_iAmmoType;
@@ -116,4 +123,7 @@ private:
 
 public:
 	bool m_bInTakeDamageFlow;
+
+private:
+	[[maybe_unused]] uint8_t __pad009d[0x8];
 };
