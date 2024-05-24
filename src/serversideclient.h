@@ -27,7 +27,7 @@ public:
 
 private:
 	[[maybe_unused]] void *m_pVT1; // INetworkMessageProcessingPreFilter
-	[[maybe_unused]] char pad1[0x40];
+	[[maybe_unused]] char pad1[0x48];
 #ifdef __linux__
 	[[maybe_unused]] char pad2[0x10];
 #endif

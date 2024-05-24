@@ -365,8 +365,8 @@
 			}
 			"Teleport"
 			{
-				"windows"		"149"
-				"linux"			"148"
+				"windows"		"155"
+				"linux"			"154"
 			}
 			"CollisionRulesChanged"
 			{
@@ -375,27 +375,27 @@
 			}
 			"IsEntityPawn"
 			{
-				"windows"		"153"
-				"linux"			"152"
+				"windows"		"165"
+				"linux"			"164"
 			}
 			"IsEntityController"
 			{
-				"windows"		"154"
-				"linux"			"153"
+				"windows"		"161"
+				"linux"			"160"
 			}
 			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
 			"CCSPlayerController_ChangeTeam"
 			{
-				"windows"		"93"
-				"linux"			"92"
+				"windows"		"98"
+				"linux"			"97"
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
-			// return (*(*v9 + 2872LL))(v9, v27, 0LL);
-			// 2872 (359 * 8) is the offset
+			// return (*(*v9 + 2976LL))(v9, v27, 0LL);
+			// 2976 (372 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"		"360"
-				"linux"			"360"
+				"windows"		"372"
+				"linux"			"372"
 			}
 			// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 			"CGameRules_FindPickerEntity"
@@ -405,8 +405,8 @@
 			}
 			"PassesTriggerFilters"
 			{
-				"windows"		"248"
-				"linux"			"249"
+				"windows"		"258"
+				"linux"			"259"
 			}
 			"CCSPlayerController_Respawn"
 			{
@@ -427,8 +427,8 @@
 			// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) ), note that this is a CUtlVector
 			"CNetworkGameServer_ClientList"
 			{
-				"windows"		"75"
-				"linux"			"77"
+				"windows"		"78"
+				"linux"			"80"
 			}
 			// Right above "mapgroup workshop;" string there is a virtual call to this on g_pGameTypes using "workshop" string
 			"IGameTypes_CreateWorkshopMapGroup"
@@ -439,8 +439,8 @@
 			// Long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
 			"CBasePlayerPawn::OnTakeDamage_Alive"
 			{
-				"windows"		"221"
-				"linux"			"220"
+				"windows"		"231"
+				"linux"			"230"
 			}
 			// There's no easy way to find this, but it's a function that checks entity flags (0x370) and ends by calling RemoveFlag with 0x800000 (FL_BASEVELOCITY)
 			"CCSPlayer_MovementServices::CheckMovingGround"
