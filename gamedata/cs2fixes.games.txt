@@ -282,8 +282,8 @@
 			}
 			"Teleport"
 			{
-				"windows"		"149"
-				"linux"			"148"
+				"windows"		"155"
+				"linux"			"154"
 			}
 			"CollisionRulesChanged"
 			{
@@ -297,8 +297,8 @@
 			}
 			"IsEntityController"
 			{
-				"windows"		"154"
-				"linux"			"153"
+				"windows"		"161"
+				"linux"			"160"
 			}
 			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
 			"CCSPlayerController_ChangeTeam"
@@ -311,8 +311,8 @@
 			// 2872 (359 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"		"360"
-				"linux"			"360"
+				"windows"		"372"
+				"linux"			"372"
 			}
 			// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 			"CGameRules_FindPickerEntity"
@@ -322,8 +322,8 @@
 			}
 			"PassesTriggerFilters"
 			{
-				"windows"		"248"
-				"linux"			"249"
+				"windows"		"258"
+				"linux"			"259"
 			}
 			"CCSPlayerController_Respawn"
 			{
@@ -344,8 +344,8 @@
 			// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) ), note that this is a CUtlVector
 			"CNetworkGameServer_ClientList"
 			{
-				"windows"		"75"
-				"linux"			"77"
+				"windows"		"78"
+				"linux"			"80"
 			}
 			// Right above "mapgroup workshop;" string there is a virtual call to this on g_pGameTypes using "workshop" string
 			"IGameTypes_CreateWorkshopMapGroup"
