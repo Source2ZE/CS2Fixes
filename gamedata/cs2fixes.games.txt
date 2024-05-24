@@ -158,8 +158,7 @@
 			{
 				"library"		"server"
 				"windows"		"\x48\x8B\x1D\x2A\x2A\x2A\x2A\x48\x85\xDB\x0F\x84\x2A\x2A\x2A\x2A\xBE\x2A\x2A\x2A\x2A\x0F\x1F\x00\x48\x8B\x7B\x10"
-				"linux"			"\x4C\x8B\x35\x2A\x2A\x2A\x2A\x4D\x85\xF6\x75\x2D\xE9\x2A\x2A\x2A\x2A\x0F\x1F\x40\x00\x48\x8B\x05"
-			}
+				"linux"			"\x4C\x8B\x35\x2A\x2A\x2A\x2A\x4D\x85\xF6\x75\x2D\xE9\x2A\x2A\x2A\x2A\x0F\x1F\x40\x00\x48\x8B\x05"			}
 			"CBasePlayerController_SetPawn"
 			{
 				"library"		"server"
@@ -292,8 +291,8 @@
 			}
 			"IsEntityPawn"
 			{
-				"windows"		"153"
-				"linux"			"152"
+				"windows"		"165"
+				"linux"			"164"
 			}
 			"IsEntityController"
 			{
@@ -303,8 +302,8 @@
 			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
 			"CCSPlayerController_ChangeTeam"
 			{
-				"windows"		"93"
-				"linux"			"92"
+				"windows"		"98"
+				"linux"			"97"
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
 			// return (*(*v9 + 2872LL))(v9, v27, 0LL);
@@ -327,8 +326,8 @@
 			}
 			"CCSPlayerController_Respawn"
 			{
-				"windows"		"244"
-				"linux"			"246"
+				"windows"		"254"
+				"linux"			"256"
 			}
 			"GetHammerUniqueId"
 			{
