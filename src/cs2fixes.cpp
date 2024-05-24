@@ -161,8 +161,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 
-	if (!InitGameSystems())
-		bRequiredInitLoaded = false;
+	//TODO: remove gamesystem.cpp/.h
+	//if (!InitGameSystems())
+	//	bRequiredInitLoaded = false;
 
 	if (!bRequiredInitLoaded)
 	{
