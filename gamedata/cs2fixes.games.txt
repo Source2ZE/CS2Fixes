@@ -51,12 +51,19 @@
 				"windows"		"\x40\x53\x48\x83\xEC\x20\x48\x8B\xD9\x3B\x51\x48"
 				"linux"			"\x55\x48\x89\xE5\x41\x55\x41\x54\x53\x48\x89\xFB\x48\x83\xEC\x08\x3B\x77\x58"
 			}
-			// idk a good way to find this again, i just brute forced the vtable. offset is 133 on CTriggerPush
+			// idk a good way to find this again, i just brute forced the vtable. offset is 136 on CTriggerPush
 			"TriggerPush_Touch"
 			{
 				"library"		"server"
 				"windows"		"\x48\x89\x74\x24\x18\x48\x89\x7C\x24\x20\x55\x48\x8D\xAC\x24\x40\xE0\xFF\xFF"
 				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x49\x89\xF5\x41\x54\x49\x89\xFC\x53\x48\x81\xEC\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x84\xC0\x74\x2A"
+			}
+			// In the vtable it comes right above Touch
+			"TriggerTeleport_StartTouch"
+			{
+				"library"		"server"
+				"windows"		"\x48\x89\x5C\x24\x20\x57\x48\x81\xEC\x2A\x00\x00\x00\x48\x8B\x01"
+				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x41\x54\x49\x89\xF4\x53\x48\x89\xFB\x48\x81\xEC\x2A\x00\x00\x00\x48\x8B\x07"
 			}
 			// this is called in CTriggerPush::Touch, using IDA pseudocode look in an `if ( ( v & 0x80 ) != 0 )` and then `if ( v > 0.0 ) SetGroundEntity()`
 			"SetGroundEntity"
@@ -373,12 +380,14 @@
 				"windows"		"178"
 				"linux"			"177"
 			}
-			"IsEntityPawn"
+			// For these two, look for the names, you'll find vscript bindings
+			// Scroll down to where the var + 64 gets set to a function, that calls the offset we want
+			"IsPlayerPawn"
 			{
-				"windows"		"165"
-				"linux"			"164"
+				"windows"		"160"
+				"linux"			"159"
 			}
-			"IsEntityController"
+			"IsPlayerController"
 			{
 				"windows"		"161"
 				"linux"			"160"

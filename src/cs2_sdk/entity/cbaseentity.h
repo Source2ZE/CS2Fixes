@@ -195,13 +195,13 @@ public:
 
 	bool IsPawn()
 	{
-		static int offset = g_GameConfig->GetOffset("IsEntityPawn");
+		static int offset = g_GameConfig->GetOffset("IsPlayerPawn");
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
 	bool IsController()
 	{
-		static int offset = g_GameConfig->GetOffset("IsEntityController");
+		static int offset = g_GameConfig->GetOffset("IsPlayerController");
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
