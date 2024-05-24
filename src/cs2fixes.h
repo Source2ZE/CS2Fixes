@@ -66,6 +66,7 @@ public: //hooks
 	void Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList);
 	bool Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, void *a3);
 	void Hook_CheckMovingGround(double frametime);
+	int Hook_LoadEventsFromFile(const char *filename, bool bSearchAll);
 
 public:
 	const char *GetAuthor();

@@ -114,6 +114,7 @@ SH_DECL_MANUALHOOK1_void(CGamePlayerEquipUse, 0, 0, 0, InputData_t*);
 SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUtlStringList&);
 SH_DECL_MANUALHOOK2(OnTakeDamage_Alive, 0, 0, 0, bool, CTakeDamageInfo*, void*);
 SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
+SH_DECL_HOOK2(IGameEventManager2, LoadEventsFromFile, SH_NOATTRIB, 0, int, const char *, bool);
 
 CS2Fixes g_CS2Fixes;
 
@@ -134,6 +135,7 @@ int g_iCGamePlayerEquipUseId = -1;
 int g_iCreateWorkshopMapGroupId = -1;
 int g_iOnTakeDamageAliveId = -1;
 int g_iCheckMovingGroundId = -1;
+int g_iLoadEventsFromFileId = -1;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -216,15 +218,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	if (!InitDetours(g_GameConfig))
 		bRequiredInitLoaded = false;
 
-	offset = g_GameConfig->GetOffset("GameEventManager");
-	g_gameEventManager = (IGameEventManager2 *)(CALL_VIRTUAL(uintptr_t, offset, g_pSource2Server) - 8);
-
-	if (!g_gameEventManager)
-	{
-		Panic("Failed to find GameEventManager\n");
-		bRequiredInitLoaded = false;
-	}
-
 	if (!InitGameSystems())
 		bRequiredInitLoaded = false;
 
@@ -269,6 +262,10 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	}
 	SH_MANUALHOOK_RECONFIGURE(CheckMovingGround, offset, 0, 0);
 	g_iCheckMovingGroundId = SH_ADD_MANUALDVPHOOK(CheckMovingGround, pCCSPlayer_MovementServicesVTable, SH_MEMBER(this, &CS2Fixes::Hook_CheckMovingGround), false);
+
+	auto pCGameEventManagerVTable = (IGameEventManager2*)modules::server->FindVirtualTable("CGameEventManager");
+
+	g_iLoadEventsFromFileId = SH_ADD_DVPHOOK(IGameEventManager2, LoadEventsFromFile, pCGameEventManagerVTable, SH_MEMBER(this, &CS2Fixes::Hook_LoadEventsFromFile), false);
 
 	if (!bRequiredInitLoaded)
 	{
@@ -352,6 +349,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
 	SH_REMOVE_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_REMOVE_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
+	SH_REMOVE_HOOK_ID(g_iLoadEventsFromFileId);
 	SH_REMOVE_HOOK_ID(g_iCreateWorkshopMapGroupId);
 	SH_REMOVE_HOOK_ID(g_iOnTakeDamageAliveId);
 	SH_REMOVE_HOOK_ID(g_iCheckMovingGroundId);
@@ -904,6 +902,13 @@ void CS2Fixes::Hook_CheckMovingGround(double frametime)
 	aPlayerTicks[iSlot] = gpGlobals->tickcount;
 
 	RETURN_META(MRES_IGNORED);
+}
+
+int CS2Fixes::Hook_LoadEventsFromFile(const char *filename, bool bSearchAll)
+{
+	ExecuteOnce(g_gameEventManager = META_IFACEPTR(IGameEventManager2));
+
+	RETURN_META_VALUE(MRES_IGNORED, 0);
 }
 
 void CS2Fixes::OnLevelInit( char const *pMapName,
