@@ -182,7 +182,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	{
 		g_pEntitySystem = GameEntitySystem();
 		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
-		gpGlobals = g_pNetworkGameServer->GetGlobals();
+		gpGlobals = g_pEngineServer2->GetServerGlobals();
 	}
 
 	g_playerManager = new CPlayerManager(late);
@@ -249,7 +249,7 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 {
 	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	g_pEntitySystem = GameEntitySystem();
-	gpGlobals = g_pNetworkGameServer->GetGlobals();
+	gpGlobals = g_pEngineServer2->GetServerGlobals();
 }
 
 bool CS2Fixes::Pause(char *error, size_t maxlen)
