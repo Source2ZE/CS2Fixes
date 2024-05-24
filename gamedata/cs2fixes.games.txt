@@ -360,8 +360,8 @@
 			}
 			"CBaseEntity::Use"
 			{
-				"windows"    "133"
-				"linux"      "132"
+				"windows"		"138"
+				"linux"			"137"
 			}
 			"Teleport"
 			{
@@ -415,8 +415,8 @@
 			}
 			"GetHammerUniqueId"
 			{
-				"windows"		"102"
-				"linux"			"101"
+				"windows"		"107"
+				"linux"			"106"
 			}
 			"CheckTransmitPlayerSlot"
 			{
