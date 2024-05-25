@@ -39,7 +39,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: CS2Fixes
+          path: CS2Fixes-RampbugFix
           submodules: recursive
           fetch-depth: 0
 
