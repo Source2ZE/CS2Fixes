@@ -20,9 +20,6 @@
 #pragma once
 
 #include <ISmmPlugin.h>
-#include "igameevents.h"
-#include <iplayerinfo.h>
-#include <sh_vector.h>
 #include "networksystem/inetworkserializer.h"
 #include <iserver.h>
 

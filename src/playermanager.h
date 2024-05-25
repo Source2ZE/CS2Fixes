@@ -19,15 +19,8 @@
 
 #pragma once
 #include "common.h"
-#include "utlvector.h"
-#include "steam/steam_api_common.h"
 #include "steam/steamclientpublic.h"
-#include "steam/isteamuser.h"
 #include <playerslot.h>
-#include "bitvec.h"
-#include "entity/lights.h"
-#include "entity/cparticlesystem.h"
-#include "gamesystem.h"
 #include "entity/services.h"
 
 #define DECAL_PREF_KEY_NAME "hide_decals"
