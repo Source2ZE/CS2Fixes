@@ -42,7 +42,6 @@
 
 extern CGlobalVars *gpGlobals;
 extern CGameEntitySystem *g_pEntitySystem;
-extern IGameEventManager2 *g_gameEventManager;
 extern CCSGameRules *g_pGameRules;
 
 CUtlVector<CDetourBase *> g_vecDetours;

@@ -20,9 +20,11 @@
 #include "cs2fixes.h"
 #include "iserver.h"
 
+#include "appframework/IAppSystem.h"
 #include "common.h"
 #include "detours.h"
 #include "icvar.h"
+#include "interface.h"
 #include "tier0/dbg.h"
 #include "schemasystem/schemasystem.h"
 #include "plat.h"
@@ -78,7 +80,6 @@ SH_DECL_HOOK3_void(INetworkServerService, StartupServer, SH_NOATTRIB, 0, const G
 CS2Fixes g_CS2Fixes;
 
 IGameEventSystem *g_gameEventSystem = nullptr;
-IGameEventManager2 *g_gameEventManager = nullptr;
 INetworkGameServer *g_pNetworkGameServer = nullptr;
 CGameEntitySystem *g_pEntitySystem = nullptr;
 CGlobalVars *gpGlobals = nullptr;
@@ -145,15 +146,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	if (!InitDetours(g_GameConfig))
 		bRequiredInitLoaded = false;
-
-	int offset = g_GameConfig->GetOffset("GameEventManager");
-	g_gameEventManager = (IGameEventManager2 *)(CALL_VIRTUAL(uintptr_t, offset, g_pSource2Server) - 8);
-
-	if (!g_gameEventManager)
-	{
-		Panic("Failed to find GameEventManager\n");
-		bRequiredInitLoaded = false;
-	}
 
 	if (!bRequiredInitLoaded)
 	{
