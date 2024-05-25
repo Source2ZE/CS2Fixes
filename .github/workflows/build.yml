@@ -25,7 +25,7 @@ jobs:
     name: Build
     runs-on: ${{ matrix.os }}
     env:
-        HL2SDKCS2: ${{ github.workspace }}/CS2Fixes/sdk
+        HL2SDKCS2: ${{ github.workspace }}/CS2Fixes-RampbugFix/sdk
     container: ${{ matrix.container }}
     strategy:
       fail-fast: false
@@ -62,7 +62,7 @@ jobs:
           cd ambuild && python setup.py install && cd ..
 
       - name: Build
-        working-directory: CS2Fixes
+        working-directory: CS2Fixes-RampbugFix
         shell: bash
         run: |
           mkdir build && cd build
