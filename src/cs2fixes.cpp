@@ -20,26 +20,20 @@
 #include "cs2fixes.h"
 #include "iserver.h"
 
-#include "appframework/IAppSystem.h"
 #include "common.h"
 #include "detours.h"
 #include "icvar.h"
-#include "interface.h"
 #include "tier0/dbg.h"
 #include "schemasystem/schemasystem.h"
 #include "plat.h"
 #include "entitysystem.h"
 #include "engine/igameeventsystem.h"
-#include "gamesystem.h"
 #include "playermanager.h"
-#include <entity.h>
 #include "gameconfig.h"
 #include "entity/cgamerules.h"
 #include "entity/ccsplayercontroller.h"
 #include "serversideclient.h"
 #include "te.pb.h"
-#include "cs_gameevents.pb.h"
-#include "gameevents.pb.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -160,10 +154,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		Panic("Failed to find GameEventManager\n");
 		bRequiredInitLoaded = false;
 	}
-
-	//TODO: remove gamesystem.cpp/.h
-	//if (!InitGameSystems())
-	//	bRequiredInitLoaded = false;
 
 	if (!bRequiredInitLoaded)
 	{
