@@ -60,7 +60,6 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/cs2_sdk/schema.cpp',
     'src/playermanager.cpp',
     'src/gameconfig.cpp',
-    'src/gamesystem.cpp',
     'sdk/entity2/entitysystem.cpp',
     'sdk/entity2/entityidentity.cpp',
     'sdk/entity2/entitykeyvalues.cpp',

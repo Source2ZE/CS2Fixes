@@ -182,7 +182,6 @@
     <ClCompile Include="src\cs2_sdk\schema.cpp" />
     <ClCompile Include="src\detours.cpp" />
     <ClCompile Include="src\gameconfig.cpp" />
-    <ClCompile Include="src\gamesystem.cpp" />
     <ClCompile Include="src\mempatch.cpp" />
     <ClCompile Include="src\playermanager.cpp" />
     <ClCompile Include="sdk\tier1\convar.cpp" />
@@ -217,7 +216,6 @@
     <ClInclude Include="src\cs2_sdk\schema.h" />
     <ClInclude Include="src\cdetour.h" />
     <ClInclude Include="src\detours.h" />
-    <ClInclude Include="src\gamesystem.h" />
     <ClInclude Include="src\gameconfig.h" />
     <ClInclude Include="src\mempatch.h" />
     <ClInclude Include="src\addresses.h" />
