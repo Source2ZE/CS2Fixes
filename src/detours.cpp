@@ -242,7 +242,7 @@ void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_
 							bool goodTrace {};
 							f32 ratio {};
 							bool hitNewPlane {};
-							for (ratio = 0.050f; ratio <= 1.0f; ratio += 0.050f)
+							for (ratio = 0.1f; ratio <= 1.0f; ratio += 0.1f)
 							{
 								addresses::TracePlayerBBox(start + offsetDirection * RAMP_PIERCE_DISTANCE * ratio,
 															end + offsetDirection * RAMP_PIERCE_DISTANCE * ratio, bounds, &filter, pierce);
