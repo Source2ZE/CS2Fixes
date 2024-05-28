@@ -55,6 +55,7 @@ extern CGameEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
 extern CCSGameRules *g_pGameRules;
 extern CMapVoteSystem *g_pMapVoteSystem;
+extern CUtlVector<CServerSideClient*>* GetClientList();
 
 CUtlVector<CDetourBase *> g_vecDetours;
 
@@ -72,6 +73,7 @@ DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer);
 DECLARE_DETOUR(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission);
+DECLARE_DETOUR(GetFreeClient, Detour_GetFreeClient);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
@@ -512,6 +514,25 @@ int64_t* FASTCALL Detour_CCSGameRules_GoToIntermission(int64_t unk1, char unk2)
 		return nullptr;
 
 	return CCSGameRules_GoToIntermission(unk1, unk2);
+}
+
+CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6)
+{
+	// Check if there is still unused slots, this should never break so just fall back to original behaviour for ease (we don't have a CServerSideClient constructor)
+	if (gpGlobals->maxClients != GetClientList()->Count())
+		return GetFreeClient(unk1, unk2, unk3, unk4, unk5, unk6);
+
+	// Phantom client fix
+	for (int i = 0; i < GetClientList()->Count(); i++)
+	{
+		CServerSideClient* pClient = (*GetClientList())[i];
+
+		if (pClient && pClient->GetSignonState() < SIGNONSTATE_CONNECTED)
+			return pClient;
+	}
+
+	// Server is actually full for real
+	return nullptr;
 }
 
 bool InitDetours(CGameConfig *gameConfig)
