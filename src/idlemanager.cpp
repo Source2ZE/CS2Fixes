@@ -27,11 +27,11 @@ extern CPlayerManager* g_playerManager;
 
 CIdleSystem* g_pIdleSystem = nullptr;
 
-float g_fIdleKickTime = 5.0f;
+float g_fIdleKickTime = 0.0f;
 static int g_iMinClientsForIdleKicks = 0;
 static bool g_bKickAdmins = true;
 
-FAKE_FLOAT_CVAR(cs2f_idle_kick_time, "Amount of minutes before kicking idle players. 0 to disable afk kicking.", g_fIdleKickTime, 5.0f, false)
+FAKE_FLOAT_CVAR(cs2f_idle_kick_time, "Amount of minutes before kicking idle players. 0 to disable afk kicking.", g_fIdleKickTime, 0.0f, false)
 FAKE_INT_CVAR(cs2f_idle_kick_min_players, "Minimum amount of connected clients to kick idle players.", g_iMinClientsForIdleKicks, 0, false)
 FAKE_BOOL_CVAR(cs2f_idle_kick_admins, "Whether to kick idle players with ADMFLAG_GENERIC", g_bKickAdmins, true, false)
 
