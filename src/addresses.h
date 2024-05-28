@@ -61,8 +61,6 @@ namespace addresses
 {
 	bool Initialize(CGameConfig *g_GameConfig);
 
-	inline void(FASTCALL *NetworkStateChanged)(int64 chainEntity, int64 offset, int64 a3);
-	inline void(FASTCALL *StateChanged)(void *networkTransmitComponent, CEntityInstance *ent, int64 offset, int16 a4, int16 a5);
 	inline void(FASTCALL *UTIL_ClientPrintAll)(int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4);
 	inline void(FASTCALL *ClientPrint)(CBasePlayerController *player, int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4);
 	inline void(FASTCALL *SetGroundEntity)(CBaseEntity *ent, CBaseEntity *ground, CBaseEntity* unk3);

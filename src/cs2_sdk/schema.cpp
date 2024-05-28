@@ -133,10 +133,16 @@ SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char
     return tableMap->Element(memberIndex);
 }
 
-void SetStateChanged(CBaseEntity* pEntity, int offset)
+void EntityNetworkStateChanged(uintptr_t entityInstance, uint nOffset)
 {
-    addresses::StateChanged(pEntity->m_NetworkTransmitComponent(), pEntity, offset, -1, -1);
-	
-    pEntity->m_lastNetworkChange = gpGlobals->curtime;
-    pEntity->m_isSteadyState().ClearAll();
-};
+    reinterpret_cast<CEntityInstance*>(entityInstance)->NetworkStateChanged(nOffset);
+}
+
+void ChainNetworkStateChanged(uintptr_t networkVarChainer, uint nLocalOffset)
+{
+    CEntityInstance* pEntity = *reinterpret_cast<CEntityInstance**>(networkVarChainer);
+    if (pEntity && (pEntity->m_pEntity->m_flags & EF_IS_CONSTRUCTION_IN_PROGRESS) == 0)
+    {
+        pEntity->NetworkStateChanged(nLocalOffset, -1, *reinterpret_cast<ChangeAccessorFieldPathIndex_t*>(networkVarChainer + 32));
+    }
+}
