@@ -127,11 +127,13 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	bool bStopSound = (bool) (iSoundStatus & 1);
 	bool bSilenceSound = (bool) (iSoundStatus & 2);
 	bool bHideDecals = (bool) GetPreferenceInt(iSlot, DECAL_PREF_KEY_NAME, 1);
+	bool bNoShake = (bool) GetPreferenceInt(iSlot, NO_SHAKE_PREF_KEY_NAME, 0);
 
 	// Set the values that we just loaded --- the player is guaranteed available
 	g_playerManager->SetPlayerStopSound(iSlot, bStopSound);
 	g_playerManager->SetPlayerSilenceSound(iSlot, bSilenceSound);
 	g_playerManager->SetPlayerStopDecals(iSlot, bHideDecals);
+	g_playerManager->SetPlayerNoShake(iSlot, bNoShake);
 
 	ZEPlayer* player = g_playerManager->GetPlayer(CPlayerSlot(iSlot));
 	player->SetHideDistance(iHideDistance);

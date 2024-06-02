@@ -58,6 +58,7 @@
 #include "cs_gameevents.pb.h"
 #include "gameevents.pb.h"
 #include "leader.h"
+#include "usermessages.pb.h"
 
 #include "tier0/memdbgon.h"
 
@@ -599,6 +600,11 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 		if (g_bEnableLeader)
 			Leader_PostEventAbstract_Source1LegacyGameEvent(clients, pData);
 	}
+	else if (g_bEnableNoShake && info->m_MessageId == UM_Shake)
+	{
+		*(uint64 *)clients &= ~g_playerManager->GetNoShakeMask();
+	}
+	
 }
 
 void CS2Fixes::AllPluginsLoaded()
