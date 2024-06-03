@@ -172,7 +172,7 @@ public:
     virtual CBaseEntity* GiveNamedItem(const char* pchName)          = 0;
 	// Recommended to use CCSPlayer_WeaponServices::DropWeapon instead (parameter is ignored here)
     virtual void         DropActiveWeapon(CBasePlayerWeapon* pWeapon) = 0;
-    virtual void         StripPlayerWeapons(bool removeSuit = false) = 0;
+    virtual void         StripPlayerWeapons(bool removeSuit) = 0;
 };
 
 // We need an exactly sized class to be able to iterate the vector, our schema system implementation can't do this
