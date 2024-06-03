@@ -1125,7 +1125,7 @@ void ZR_StripAndGiveKnife(CCSPlayerPawn *pPawn)
 		return;
 
 	pPawn->DropMapWeapons();
-	pItemServices->StripPlayerWeapons();
+	pItemServices->StripPlayerWeapons(true);
 	pItemServices->GiveNamedItem("weapon_knife");
 }
 
