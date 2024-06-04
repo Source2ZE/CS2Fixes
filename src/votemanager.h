@@ -33,6 +33,7 @@ enum class EExtendState
 {
 	MAP_START,
 	EXTEND_ALLOWED,
+	IN_PROGRESS,
 	POST_EXTEND_COOLDOWN,
 	POST_EXTEND_NO_EXTENDS_LEFT,
 	POST_LAST_ROUND_END,
@@ -40,9 +41,22 @@ enum class EExtendState
 	NO_EXTENDS,
 };
 
+enum EExtendVoteMode
+{
+	EXTENDVOTE_OFF,			// No extend votes can be called
+	EXTENDVOTE_ADMINONLY,	// Only admins can initiate extend votes, all further options also include this
+	EXTENDVOTE_MANUAL,		// Extend votes are triggered by players typing !ve
+	EXTENDVOTE_AUTO,		// Extend votes can be triggered by !ve or when map timelimit reaches a given value
+};
+
 extern ERTVState g_RTVState;
 extern EExtendState g_ExtendState;
 extern int g_iExtendsLeft;
 extern bool g_bVoteManagerEnable;
 
+void VoteManager_Init();
 void SetExtendsLeft();
+void ExtendMap(int iMinutes);
+
+float TimerCheckTimeleft();
+void StartExtendVote(int iCaller);

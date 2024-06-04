@@ -29,6 +29,7 @@
 #include "votemanager.h"
 #include "leader.h"
 #include "recipientfilters.h"
+#include "panoramavote.h"
 
 #include "tier0/memdbgon.h"
 
@@ -213,6 +214,8 @@ FAKE_BOOL_CVAR(cs2f_full_alltalk, "Whether to enforce sv_full_alltalk 1", g_bFul
 
 GAME_EVENT_F(round_start)
 {
+	g_pPanoramaVoteHandler->Init();
+
 	if (g_bEnableZR)
 		ZR_OnRoundStart(pEvent);
 
@@ -323,4 +326,9 @@ GAME_EVENT_F(bullet_impact)
 {
 	if (g_bEnableLeader)
 		Leader_BulletImpact(pEvent);
+}
+
+GAME_EVENT_F(vote_cast)
+{
+	g_pPanoramaVoteHandler->VoteCast(pEvent);
 }

@@ -195,6 +195,7 @@
     <ClCompile Include="src\idlemanager.cpp" />
     <ClCompile Include="src\map_votes.cpp" />
     <ClCompile Include="src\mempatch.cpp" />
+    <ClCompile Include="src\panoramavote.cpp" />
     <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\playermanager.cpp" />
     <ClCompile Include="src\user_preferences.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h" />
     <ClInclude Include="src\cs2_sdk\entity\cteam.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctriggerpush.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cvotecontroller.h" />
     <ClInclude Include="src\cs2_sdk\entity\globaltypes.h" />
     <ClInclude Include="src\cs2_sdk\entity\lights.h" />
     <ClInclude Include="src\cs2_sdk\entity\services.h" />
@@ -248,6 +250,7 @@
     <ClInclude Include="src\idlemanager.h" />
     <ClInclude Include="src\mempatch.h" />
     <ClInclude Include="src\addresses.h" />
+    <ClInclude Include="src\panoramavote.h" />
     <ClInclude Include="src\patches.h" />
     <ClInclude Include="src\playermanager.h" />
     <ClInclude Include="src\recipientfilters.h" />

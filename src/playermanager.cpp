@@ -24,6 +24,7 @@
 #include "commands.h"
 #include "map_votes.h"
 #include "user_preferences.h"
+#include "panoramavote.h"
 #include "entity/ccsplayercontroller.h"
 #include "utils/entity.h"
 #include "serversideclient.h"
@@ -547,6 +548,8 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	ResetPlayerFlags(slot.Get());
 
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
+
+	g_pPanoramaVoteHandler->RemovePlayerFromVote(slot.Get());
 }
 
 void CPlayerManager::OnClientPutInServer(CPlayerSlot slot)
