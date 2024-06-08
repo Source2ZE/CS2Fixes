@@ -45,6 +45,7 @@ class CBasePlayerPawn;
 class CUserCmd;
 class CGamePlayerEquip;
 class InputData_t;
+class CCSPlayerPawn;
 
 bool InitDetours(CGameConfig *gameConfig);
 void FlushAllDetours();
@@ -64,3 +65,4 @@ void FASTCALL  Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEqui
 void FASTCALL  Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip*, InputData_t*);
 int64_t* FASTCALL Detour_CCSGameRules_GoToIntermission(int64_t unk1, char unk2);
 CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6);
+float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn*);
