@@ -172,6 +172,13 @@
     <ClCompile Include="protobuf\generated\networkbasetypes.pb.cc" />
     <ClCompile Include="protobuf\generated\network_connection.pb.cc" />
     <ClCompile Include="protobuf\generated\usercmd.pb.cc" />
+    <ClCompile Include="protobuf\generated\usermessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\cstrike15_gcmessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\cstrike15_usermessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\gcsdk_gcmessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\engine_gcmessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\netmessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\steammessages.pb.cc" />
     <ClCompile Include="sdk\entity2\entityidentity.cpp" />
     <ClCompile Include="sdk\entity2\entitykeyvalues.cpp" />
     <ClCompile Include="sdk\entity2\entitysystem.cpp" />
