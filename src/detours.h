@@ -37,7 +37,7 @@ class CTakeDamageInfo;
 class CCSPlayer_WeaponServices;
 class CCSPlayer_MovementServices;
 class CBasePlayerWeapon;
-class INetworkSerializable;
+class INetworkMessageInternal;
 class IEngineServiceMgr;
 class CServerSideClient;
 class INetChannel;

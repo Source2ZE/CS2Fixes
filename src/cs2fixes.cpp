@@ -106,7 +106,7 @@ SH_DECL_HOOK1_void(IServerGameClients, ClientSettingsChanged, SH_NOATTRIB, 0, CP
 SH_DECL_HOOK6_void(IServerGameClients, OnClientConnected, SH_NOATTRIB, 0, CPlayerSlot, const char*, uint64, const char *, const char *, bool);
 SH_DECL_HOOK6(IServerGameClients, ClientConnect, SH_NOATTRIB, 0, bool, CPlayerSlot, const char*, uint64, const char *, bool, CBufferString *);
 SH_DECL_HOOK8_void(IGameEventSystem, PostEventAbstract, SH_NOATTRIB, 0, CSplitScreenSlot, bool, int, const uint64*,
-	INetworkSerializable*, const void*, unsigned long, NetChannelBufType_t)
+	INetworkMessageInternal*, const CNetMessage*, unsigned long, NetChannelBufType_t)
 SH_DECL_HOOK3_void(INetworkServerService, StartupServer, SH_NOATTRIB, 0, const GameSessionConfiguration_t&, ISource2WorldSession*, const char*);
 SH_DECL_HOOK7_void(ISource2GameEntities, CheckTransmit, SH_NOATTRIB, 0, CCheckTransmitInfo **, int, CBitVec<16384> &, const Entity2Networkable_t **, const uint16 *, int, bool);
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand &);
@@ -542,12 +542,12 @@ void CS2Fixes::Hook_GameServerSteamAPIDeactivated()
 }
 
 void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
-	INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType)
+	INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
 	// Message( "Hook_PostEvent(%d, %d, %d, %lli)\n", nSlot, bLocalOnly, nClientCount, clients );
 	// Need to explicitly get a pointer to the right function as it's overloaded and SH_CALL can't resolve that
 	static void (IGameEventSystem::*PostEventAbstract)(CSplitScreenSlot, bool, int, const uint64 *,
-							INetworkSerializable *, const void *, unsigned long, NetChannelBufType_t) = &IGameEventSystem::PostEventAbstract;
+					INetworkMessageInternal *, const CNetMessage *, unsigned long, NetChannelBufType_t) = &IGameEventSystem::PostEventAbstract;
 
 	NetMessageInfo_t *info = pEvent->GetNetMessageInfo();
 
@@ -558,7 +558,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 			// Post the silenced sound to those who use silencesound
 			// Creating a new event object requires us to include the protobuf c files which I didn't feel like doing yet
 			// So instead just edit the event in place and reset later
-			CMsgTEFireBullets *msg = (CMsgTEFireBullets *)pData;
+			auto msg = const_cast<CNetMessage*>(pData)->ToPB<CMsgTEFireBullets>();
 
 			int32_t weapon_id = msg->weapon_id();
 			int32_t sound_type = msg->sound_type();
