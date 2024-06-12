@@ -227,17 +227,19 @@ bool CPanoramaVoteHandler::SendYesNoVoteToAll(float flDuration, int iCaller, con
 
 void CPanoramaVoteHandler::SendVoteStartUM(IRecipientFilter *pFilter)
 {
-	INetworkSerializable* pNetmsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteStart");
+	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
+	auto data = pNetMsg->AllocateMessage()->ToPB<CCSUsrMsg_VoteStart>();
 
-	CCSUsrMsg_VoteStart data;
-	data.set_team(-1);
-	data.set_player_slot(m_iCurrentVoteCaller);
-	data.set_vote_type(-1);
-	data.set_disp_str(m_szCurrentVoteTitle);
-	data.set_details_str(m_szCurrentVoteDetailStr);
-	data.set_is_yes_no_vote(true);
+	data->set_team(-1);
+	data->set_player_slot(m_iCurrentVoteCaller);
+	data->set_vote_type(-1);
+	data->set_disp_str(m_szCurrentVoteTitle);
+	data->set_details_str(m_szCurrentVoteDetailStr);
+	data->set_is_yes_no_vote(true);
 
-	g_gameEventSystem->PostEventAbstract(-1, false, pFilter, pNetmsg, &data, 0);
+	g_gameEventSystem->PostEventAbstract(-1, false, pFilter, pNetMsg, data, 0);
+
+	pNetMsg->DeallocateMessage(data);
 }
 
 void CPanoramaVoteHandler::InitVoters(IRecipientFilter *pFilter)
@@ -359,30 +361,36 @@ void CPanoramaVoteHandler::EndVote(YesNoVoteEndReason reason)
 
 void CPanoramaVoteHandler::SendVoteFailed()
 {
-	INetworkSerializable* pNetmsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteFailed");
+	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteFailed");
 
-	CCSUsrMsg_VoteFailed data;
-	data.set_reason(0);
-	data.set_team(-1);
+	auto data = pNetMsg->AllocateMessage()->ToPB<CCSUsrMsg_VoteFailed>();
+
+	data->set_reason(0);
+	data->set_team(-1);
 
 	CRecipientFilter pFilter;
 	pFilter.AddAllPlayers();
-	g_gameEventSystem->PostEventAbstract(-1, false, &pFilter, pNetmsg, &data, 0);
+	g_gameEventSystem->PostEventAbstract(-1, false, &pFilter, pNetMsg, data, 0);
+
+	pNetMsg->DeallocateMessage(data);
 }
 
 void CPanoramaVoteHandler::SendVotePassed()
 {
-	INetworkSerializable* pNetmsg = g_pNetworkMessages->FindNetworkMessagePartial("VotePass");
+	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VotePass");
 
-	CCSUsrMsg_VotePass data;
-	data.set_team(-1);
-	data.set_vote_type(2);
-	data.set_disp_str("#SFUI_Vote_None");
-	data.set_details_str("");
+	auto data = pNetMsg->AllocateMessage()->ToPB<CCSUsrMsg_VotePass>();
+
+	data->set_team(-1);
+	data->set_vote_type(2);
+	data->set_disp_str("#SFUI_Vote_None");
+	data->set_details_str("");
 
 	CRecipientFilter pFilter;
 	pFilter.AddAllPlayers();
-	g_gameEventSystem->PostEventAbstract(-1, false, &pFilter, pNetmsg, &data, 0);
+	g_gameEventSystem->PostEventAbstract(-1, false, &pFilter, pNetMsg, data, 0);
+
+	pNetMsg->DeallocateMessage(data);
 }
 
 CON_COMMAND_CHAT_FLAGS(cancelvote, "Cancels the ongoing vote.", ADMFLAG_CHANGEMAP)

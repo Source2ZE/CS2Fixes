@@ -17,7 +17,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "cstrike15_usermessages.pb.h"
+#include "usermessages.pb.h"
 
 #include "commands.h"
 #include "utils/entity.h"
@@ -1173,15 +1173,18 @@ void ZR_InfectShake(CCSPlayerController *pController)
 	if (!pController || !pController->IsConnected() || pController->IsBot() || !g_bInfectShake)
 		return;
 
-	INetworkSerializable *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
+	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
 
-	CCSUsrMsg_Shake data;
-	data.set_duration(g_flInfectShakeDuration);
-	data.set_frequency(g_flInfectShakeFrequency);
-	data.set_local_amplitude(g_flInfectShakeAmplitude);
-	data.set_command(0);
+	auto data = pNetMsg->AllocateMessage()->ToPB<CUserMessageShake>();
 
-	pController->GetServerSideClient()->GetNetChannel()->SendNetMessage(pNetMsg, &data, BUF_RELIABLE);
+	data->set_duration(g_flInfectShakeDuration);
+	data->set_frequency(g_flInfectShakeFrequency);
+	data->set_amplitude(g_flInfectShakeAmplitude);
+	data->set_command(0);
+
+	pController->GetServerSideClient()->GetNetChannel()->SendNetMessage(pNetMsg, data, BUF_RELIABLE);
+
+	pNetMsg->DeallocateMessage(data);
 }
 
 std::vector<SpawnPoint*> ZR_GetSpawns()

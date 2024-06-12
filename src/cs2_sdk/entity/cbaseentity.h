@@ -177,7 +177,7 @@ public:
 		CALL_VIRTUAL(void, offset, this, position, angles, velocity);
 	}
 
-	void SetCollisionGroup(Collision_Group_t nCollisionGroup)
+	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup)
 	{
 		if (!m_pCollision())
 			return;
