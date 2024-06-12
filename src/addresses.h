@@ -23,6 +23,7 @@
 #include "utils/module.h"
 #include "utlstring.h"
 #include "variant.h"
+#include "gametrace.h"
 
 namespace modules
 {
@@ -52,10 +53,8 @@ class CGameRules;
 class CEntityKeyValues;
 class IRecipientFilter;
 class CTraceFilterPlayerMovementCS;
-class CTraceFilterS2;
+class CTraceFilter;
 struct bbox_t;
-
-struct trace_t_s2;
 
 struct SndOpEventGuid_t;
 
@@ -70,7 +69,7 @@ namespace addresses
 	// typedef void InitPlayerMovementTraceFilter_t(CTraceFilterPlayerMovementCS &pFilter, CEntityInstance *pHandleEntity, uint64_t interactWith, int collisionGroup);
 	inline void(FASTCALL *InitPlayerMovementTraceFilter)(CTraceFilterPlayerMovementCS &pFilter, CEntityInstance *pHandleEntity, uint64_t interactWith, int collisionGroup);
 	// typedef void TracePlayerBBox_t(const Vector &start, const Vector &end, const bbox_t &bounds, CTraceFilterPlayerMovementCS *filter, trace_t_s2 &pm);
-	inline void(FASTCALL *TracePlayerBBox)(const Vector &start, const Vector &end, const bbox_t &bounds, CTraceFilterS2 *filter, trace_t_s2 &pm);
-	inline void(FASTCALL*InitGameTrace)(trace_t_s2 *trace);
+	inline void(FASTCALL *TracePlayerBBox)(const Vector &start, const Vector &end, const bbox_t &bounds, CTraceFilter *filter, trace_t &pm);
+	inline void(FASTCALL*InitGameTrace)(trace_t *trace);
 	
 }

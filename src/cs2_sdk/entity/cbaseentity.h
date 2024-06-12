@@ -169,22 +169,6 @@ public:
 		CALL_VIRTUAL(void, offset, this, position, angles, velocity);
 	}
 
-	void SetCollisionGroup(Collision_Group_t nCollisionGroup)
-	{
-		if (!m_pCollision())
-			return;
-
-		m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
-		m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
-		CollisionRulesChanged();
-	}
-
-	void CollisionRulesChanged()
-	{
-		static int offset = g_GameConfig->GetOffset("CollisionRulesChanged");
-		CALL_VIRTUAL(void, offset, this);
-	}
-
 	bool IsPawn()
 	{
 		static int offset = g_GameConfig->GetOffset("IsEntityPawn");

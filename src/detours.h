@@ -19,18 +19,16 @@
 
 #pragma once
 #include "cdetour.h"
-#include <utlsymbollarge.h>
 
 
 class CGameConfig;
 class CCSPlayer_MovementServices;
 class CMoveData;
 class CCSPlayer_MovementServices;
-struct alignas(16) trace_t_s2;
 
 bool InitDetours(CGameConfig *gameConfig);
 void FlushAllDetours();
 
 void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pMove);
-void FASTCALL Detour_TryPlayerMove(CCSPlayer_MovementServices *ms, CMoveData *mv, Vector *pFirstDest, trace_t_s2 *pFirstTrace);
+void FASTCALL Detour_TryPlayerMove(CCSPlayer_MovementServices *ms, CMoveData *mv, Vector *pFirstDest, trace_t *pFirstTrace);
 void FASTCALL Detour_CategorizePosition(CCSPlayer_MovementServices *ms, CMoveData *mv, bool bStayOnGround);

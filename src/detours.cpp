@@ -92,43 +92,43 @@ void ClipVelocity(Vector &in, Vector &normal, Vector &out)
 	}
 }
 
-bool IsValidMovementTrace(trace_t_s2 &tr, bbox_t bounds, CTraceFilterPlayerMovementCS *filter)
+bool IsValidMovementTrace(trace_t &tr, bbox_t bounds, CTraceFilterPlayerMovementCS *filter)
 {
-	trace_t_s2 stuck;
+	trace_t stuck;
 	// Maybe we don't need this one.
-	// if (tr.fraction < FLT_EPSILON)
+	// if (trm_flFraction < FLT_EPSILON)
 	//{
 	//	return false;
 	//}
 
-	if (tr.startsolid)
+	if (tr.m_bStartInSolid)
 	{
 		return false;
 	}
 
 	// We hit something but no valid plane data?
-	if (tr.fraction < 1.0f && fabs(tr.planeNormal.x) < FLT_EPSILON && fabs(tr.planeNormal.y) < FLT_EPSILON && fabs(tr.planeNormal.z) < FLT_EPSILON)
+	if (tr.m_flFraction < 1.0f && fabs(tr.m_vHitNormal.x) < FLT_EPSILON && fabs(tr.m_vHitNormal.y) < FLT_EPSILON && fabs(tr.m_vHitNormal.z) < FLT_EPSILON)
 	{
 		return false;
 	}
 
 	// Is the plane deformed?
-	if (fabs(tr.planeNormal.x) > 1.0f || fabs(tr.planeNormal.y) > 1.0f || fabs(tr.planeNormal.z) > 1.0f)
+	if (fabs(tr.m_vHitNormal.x) > 1.0f || fabs(tr.m_vHitNormal.y) > 1.0f || fabs(tr.m_vHitNormal.z) > 1.0f)
 	{
 		return false;
 	}
 
 	// Do an unswept trace and a backward trace just to be sure.
-	addresses::TracePlayerBBox(tr.endpos, tr.endpos, bounds, filter, stuck);
-	if (stuck.startsolid || stuck.fraction < 1.0f - FLT_EPSILON)
+	addresses::TracePlayerBBox(tr.m_vEndPos, tr.m_vEndPos, bounds, filter, stuck);
+	if (stuck.m_bStartInSolid || stuck.m_flFraction < 1.0f - FLT_EPSILON)
 	{
 		return false;
 	}
 
-	addresses::TracePlayerBBox(tr.endpos, tr.startpos, bounds, filter, stuck);
+	addresses::TracePlayerBBox(tr.m_vEndPos, tr.m_vStartPos, bounds, filter, stuck);
 	// For whatever reason if you can hit something in only one direction and not the other way around.
 	// Only happens since Call to Arms update, so this fraction check is commented out until it is fixed.
-	if (stuck.startsolid /*|| stuck.fraction < 1.0f - FLT_EPSILON*/)
+	if (stuck.m_bStartInSolid /*|| stuck.m_flFraction < 1.0f - FLT_EPSILON*/)
 	{
 		return false;
 	}
@@ -142,7 +142,7 @@ bool IsValidMovementTrace(trace_t_s2 &tr, bbox_t bounds, CTraceFilterPlayerMovem
 #define RAMP_BUG_THRESHOLD 0.99f
 #define RAMP_BUG_VELOCITY_THRESHOLD 0.95f 
 #define NEW_RAMP_THRESHOLD 0.95f
-void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_t_s2 *pFirstTrace)
+void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_t *pFirstTrace)
 {
 	CCSPlayerPawn *pawn = ms->GetPawn();
 	ZEPlayer *player = g_playerManager->GetPlayer(pawn->m_hController()->GetPlayerSlot());
@@ -164,11 +164,11 @@ void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_
 	bool validPlane {};
 
 	f32 allFraction {};
-	trace_t_s2 pm;
+	trace_t pm;
 	u32 bumpCount {};
 	Vector planes[5];
 	u32 numPlanes {};
-	trace_t_s2 pierce;
+	trace_t pierce;
 
 	bbox_t bounds;
 	bounds.mins = {-16, -16, 0};
@@ -199,13 +199,13 @@ void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_
 			{
 				continue;
 			}
-			if (IsValidMovementTrace(pm, bounds, &filter) && pm.fraction == 1.0f)
+			if (IsValidMovementTrace(pm, bounds, &filter) && pm.m_flFraction == 1.0f)
 			{
 				// Player won't hit anything, nothing to do.
 				break;
 			}
 			if (player->lastValidPlane.Length() > FLT_EPSILON
-				&& (!IsValidMovementTrace(pm, bounds, &filter) || pm.planeNormal.Dot(player->lastValidPlane) < RAMP_BUG_THRESHOLD))
+				&& (!IsValidMovementTrace(pm, bounds, &filter) || pm.m_vHitNormal.Dot(player->lastValidPlane) < RAMP_BUG_THRESHOLD))
 			{
 				// We hit a plane that will significantly change our velocity. Make sure that this plane is significant
 				// enough.
@@ -231,7 +231,7 @@ void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_
 								{
 									continue;
 								}
-								trace_t_s2 test;
+								trace_t test;
 								addresses::TracePlayerBBox(start + offsetDirection * RAMP_PIERCE_DISTANCE, start, bounds, &filter, test);
 								if (!IsValidMovementTrace(test, bounds, &filter))
 								{
@@ -251,13 +251,13 @@ void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_
 								}
 								// Try until we hit a similar plane.
 								// clang-format off
-								validPlane = pierce.fraction < 1.0f && pierce.fraction > 0.1f 
-											 && pierce.planeNormal.Dot(player->lastValidPlane) >= RAMP_BUG_THRESHOLD;
+								validPlane = pierce.m_flFraction < 1.0f && pierce.m_flFraction > 0.1f 
+											 && pierce.m_vHitNormal.Dot(player->lastValidPlane) >= RAMP_BUG_THRESHOLD;
 
-								hitNewPlane = pm.planeNormal.Dot(pierce.planeNormal) < NEW_RAMP_THRESHOLD 
-											  && player->lastValidPlane.Dot(pierce.planeNormal) > NEW_RAMP_THRESHOLD;
+								hitNewPlane = pm.m_vHitNormal.Dot(pierce.m_vHitNormal) < NEW_RAMP_THRESHOLD 
+											  && player->lastValidPlane.Dot(pierce.m_vHitNormal) > NEW_RAMP_THRESHOLD;
 								// clang-format on
-								goodTrace = CloseEnough(pierce.fraction, 1.0f, FLT_EPSILON) || validPlane;
+								goodTrace = CloseEnough(pierce.m_flFraction, 1.0f, FLT_EPSILON) || validPlane;
 								if (goodTrace)
 								{
 									break;
@@ -266,21 +266,21 @@ void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_
 							if (goodTrace || hitNewPlane)
 							{
 								// Trace back to the original end point to find its normal.
-								trace_t_s2 test;
-								addresses::TracePlayerBBox(pierce.endpos, end, bounds, &filter, test);
+								trace_t test;
+								addresses::TracePlayerBBox(pierce.m_vEndPos, end, bounds, &filter, test);
 								pm = pierce;
-								pm.startpos = start;
-								pm.fraction = Clamp((pierce.endpos - pierce.startpos).Length() / (end - start).Length(), 0.0f, 1.0f);
-								pm.endpos = test.endpos;
-								if (pierce.planeNormal.Length() > 0.0f)
+								pm.m_vStartPos = start;
+								pm.m_flFraction = Clamp((pierce.m_vEndPos - pierce.m_vStartPos).Length() / (end - start).Length(), 0.0f, 1.0f);
+								pm.m_vEndPos = test.m_vEndPos;
+								if (pierce.m_vHitNormal.Length() > 0.0f)
 								{
-									pm.planeNormal = pierce.planeNormal;
-									player->lastValidPlane = pierce.planeNormal;
+									pm.m_vHitNormal = pierce.m_vHitNormal;
+									player->lastValidPlane = pierce.m_vHitNormal;
 								}
 								else
 								{
-									pm.planeNormal = test.planeNormal;
-									player->lastValidPlane = test.planeNormal;
+									pm.m_vHitNormal = test.m_vHitNormal;
+									player->lastValidPlane = test.m_vHitNormal;
 								}
 								success = true;
 								player->overrideTPM = true;
@@ -289,24 +289,24 @@ void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_
 					}
 				}
 			}
-			if (pm.planeNormal.Length() > 0.99f)
+			if (pm.m_vHitNormal.Length() > 0.99f)
 			{
-				player->lastValidPlane = pm.planeNormal;
+				player->lastValidPlane = pm.m_vHitNormal;
 			}
 		}
 
-		if (pm.fraction * velocity.Length() > 0.03125f)
+		if (pm.m_flFraction * velocity.Length() > 0.03125f)
 		{
-			allFraction += pm.fraction;
-			start = pm.endpos;
+			allFraction += pm.m_flFraction;
+			start = pm.m_vEndPos;
 			numPlanes = 0;
 		}
 		if (allFraction == 1.0f)
 		{
 			break;
 		}
-		timeLeft -= gpGlobals->frametime * pm.fraction;
-		planes[numPlanes] = pm.planeNormal;
+		timeLeft -= gpGlobals->frametime * pm.m_flFraction;
+		planes[numPlanes] = pm.m_vHitNormal;
 		numPlanes++;
 		if (numPlanes == 1 && pawn->m_MoveType() == MOVETYPE_WALK && pawn->m_hGroundEntity().Get() == nullptr)
 		{
@@ -363,7 +363,7 @@ void TryPlayerMovePre(CCSPlayer_MovementServices *ms, Vector *pFirstDest, trace_
 			}
 		}
 	}
-	player->tpmOrigin = pm.endpos;
+	player->tpmOrigin = pm.m_vEndPos;
 	player->tpmVelocity = velocity;
 }
 
@@ -384,7 +384,7 @@ void TryPlayerMovePost(CCSPlayer_MovementServices *ms)
 	}
 }
 
-void FASTCALL Detour_TryPlayerMove(CCSPlayer_MovementServices *ms, CMoveData *mv, Vector *pFirstDest, trace_t_s2 *pFirstTrace)
+void FASTCALL Detour_TryPlayerMove(CCSPlayer_MovementServices *ms, CMoveData *mv, Vector *pFirstDest, trace_t *pFirstTrace)
 {
 	TryPlayerMovePre(ms, pFirstDest, pFirstTrace);
 	TryPlayerMove(ms, mv, pFirstDest, pFirstTrace);
@@ -422,7 +422,7 @@ void CategorizePositionPre(CCSPlayer_MovementServices *ms,bool bStayOnGround)
 											  pawn->m_Collision().m_collisionAttribute().m_nInteractsWith(),
 											  COLLISION_GROUP_PLAYER_MOVEMENT);
 
-	trace_t_s2 trace;
+	trace_t trace;
 	addresses::InitGameTrace(&trace);
 
 	Vector origin, groundOrigin;
@@ -432,22 +432,22 @@ void CategorizePositionPre(CCSPlayer_MovementServices *ms,bool bStayOnGround)
 
 	addresses::TracePlayerBBox(origin, groundOrigin, bounds, &filter, trace);
 
-	if (trace.fraction == 1.0f)
+	if (trace.m_flFraction == 1.0f)
 	{
 		return;
 	}
 	// Is this something that you should be able to actually stand on?
-	if (trace.fraction < 0.95f && trace.planeNormal.z > 0.7f && player->lastValidPlane.Dot(trace.planeNormal) < RAMP_BUG_THRESHOLD)
+	if (trace.m_flFraction < 0.95f && trace.m_vHitNormal.z > 0.7f && player->lastValidPlane.Dot(trace.m_vHitNormal) < RAMP_BUG_THRESHOLD)
 	{
 		origin += player->lastValidPlane * 0.0625f;
 		groundOrigin = origin;
 		groundOrigin.z -= 2.0f;
 		addresses::TracePlayerBBox(origin, groundOrigin, bounds, &filter, trace);
-		if (trace.startsolid)
+		if (trace.m_bStartInSolid)
 		{
 			return;
 		}
-		if (trace.fraction == 1.0f || player->lastValidPlane.Dot(trace.planeNormal) >= RAMP_BUG_THRESHOLD)
+		if (trace.m_flFraction == 1.0f || player->lastValidPlane.Dot(trace.m_vHitNormal) >= RAMP_BUG_THRESHOLD)
 		{
 			player->SetOrigin(origin);
 		}

@@ -22,6 +22,7 @@
 #include "globaltypes.h"
 #include <entity/ccsweaponbase.h>
 #include <entity/ccsplayerpawn.h>
+#include "gametrace.h"
 
 class CBaseEntity;
 
@@ -213,135 +214,37 @@ public:
 	SCHEMA_FIELD(bool, m_bForcedObserverMode)
 };
 
-struct RnCollisionAttr_t
-{ // Unsure, doesn't seem right either for the first few members.
-	uint64_t m_nInteractsAs;
-	uint64_t m_nInteractsWith;
-	uint64_t m_nInteractsExclude;
-	uint32_t m_nEntityId;
-	uint32_t m_nOwnerId;
-	uint16_t m_nHierarchyId;
-	uint8_t m_nCollisionGroup;
-	uint8_t m_nCollisionFunctionMask;
-};
-
-struct alignas(16) trace_t_s2
-{
-	void *m_pSurfaceProperties;
-	void *m_pEnt;
-	void *m_pHitbox;
-	void *m_hBody;
-	void *m_hShape;
-	uint64_t contents;
-	Vector traceunknown[2];
-	uint8_t padding[2];
-	RnCollisionAttr_t m_ShapeAttributes;
-	Vector startpos;
-	Vector endpos;
-	Vector planeNormal;
-	Vector traceunknown1;
-	float traceunknown2;
-	float fraction;
-	uint8_t traceunknown3[4];
-	uint16_t traceunknown4;
-	uint8_t traceType;
-	bool startsolid;
-};
-
-static_assert(offsetof(trace_t_s2, startpos) == 120);
-static_assert(offsetof(trace_t_s2, endpos) == 132);
-static_assert(offsetof(trace_t_s2, startsolid) == 183);
-static_assert(offsetof(trace_t_s2, fraction) == 172);
-
 struct touchlist_t {
 	Vector deltavelocity;
-	trace_t_s2 trace;
+	trace_t trace;
 };
 
-struct RnQueryAttr_t
-{
-	uint64 m_nInteractsWith{};
-	uint64 m_nInteractsExclude{};
-	uint64 m_nInteractsAs{};
-
-	uint32 m_nEntityIdToIgnore = -1;
-	uint32 m_nEntityControllerIdToIgnore = -1;
-
-	uint32 m_nOwnerEntityIdToIgnore = -1;
-	uint32 m_nControllerOwnerEntityIdToIgnore = -1;
-
-	uint16 m_nHierarchyId{};
-	uint16 m_nControllerHierarchyId{};
-
-	uint16 m_nObjectSetMask{};
-	uint8_t m_nCollisionGroup{};
-	union
-	{
-		uint8 m_Flags{};
-		struct
-		{
-			uint8 m_bHitSolid : 1;
-			uint8 m_bHitSolidRequiresGenerateContacts : 1;
-			uint8 m_bHitTrigger : 1;
-			uint8 m_bShouldIgnoreDisabledPairs : 1;
-
-			uint8 m_bUnkFlag1 : 1;
-			uint8 m_bUnkFlag2 : 1;
-			uint8 m_bUnkFlag3 : 1;
-			uint8 m_bUnkFlag4 : 1;
-		};
-	};
-
-	bool m_bIterateEntities;
-};
-
-enum RnQueryObjectSet : uint32
-{
-	RNQUERY_OBJECTS_STATIC = 0x1,
-	RNQUERY_OBJECTS_DYNAMIC = 0x2,
-	RNQUERY_OBJECTS_NON_COLLIDEABLE = 0x4,
-	RNQUERY_OBJECTS_KEYFRAMED_ONLY = 0x108,
-	RNQUERY_OBJECTS_DYNAMIC_ONLY = 0x110,
-	RNQUERY_OBJECTS_ALL = 0x7
-};
-
-class CTraceFilterS2
-{
-public:
-	RnQueryAttr_t attr;
-	virtual ~CTraceFilterS2() {}
-	virtual bool ShouldHitEntity(CBaseEntity *other)
-	{
-		return false;
-	}
-};
-
-class CTraceFilterPlayerMovementCS : public CTraceFilterS2
+class CTraceFilterPlayerMovementCS : public CTraceFilter
 {
 };
 
-class CTraceFilterHitAllTriggers: public CTraceFilterS2
+class CTraceFilterHitAllTriggers: public CTraceFilter
 {
 public:
 	CTraceFilterHitAllTriggers()
 	{
-		attr.m_nInteractsAs = 0;
-		attr.m_nInteractsExclude = 0;
-		attr.m_nInteractsWith = 4;
-		attr.m_nEntityIdToIgnore = -1;
-		attr.m_nEntityControllerIdToIgnore = -1;
-		attr.m_nOwnerEntityIdToIgnore = -1;
-		attr.m_nControllerOwnerEntityIdToIgnore = -1;
-		attr.m_nObjectSetMask = RNQUERY_OBJECTS_ALL;
-		attr.m_nControllerHierarchyId = 0;
-		attr.m_nHierarchyId = 0;
-		attr.m_bIterateEntities = true;
-		attr.m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
-		attr.m_bHitTrigger = true;
+		m_nInteractsAs = 0;
+		m_nInteractsExclude = 0;
+		m_nInteractsWith = 4;
+		m_nEntityIdsToIgnore[0] = -1;
+		m_nEntityIdsToIgnore[1] = -1;
+		m_nOwnerIdsToIgnore[0] = -1;
+		m_nOwnerIdsToIgnore[1] = -1;
+		m_nObjectSetMask = RNQUERY_OBJECTS_ALL;
+		m_nHierarchyIds[0] = 0;
+		m_nHierarchyIds[1] = 0;
+		m_bIterateEntities = true;
+		m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
+		m_bHitTrigger = true;
 	}
 	CUtlVector<CEntityHandle> hitTriggerHandles;
 	virtual ~CTraceFilterHitAllTriggers() { hitTriggerHandles.Purge(); }
-	virtual bool ShouldHitEntity(Z_CBaseEntity *other)
+	virtual bool ShouldHitEntity(CEntityInstance *other) override
 	{
 		hitTriggerHandles.AddToTail(other->GetRefEHandle());
 		return false;
@@ -353,72 +256,118 @@ struct MoveDataUnkSubtickStruct
 	uint8_t unknown[24];
 };
 
+struct SubtickMove
+{
+	float when;
+	uint64 button;
+	bool pressed;
+};
+
 // Size: 0xE8
 class CMoveData
 {
 public:
 	CMoveData() = default;
-	CMoveData( const CMoveData &source ) : 
-		moveDataFlags{source.moveDataFlags},
-		m_nPlayerHandle{source.m_nPlayerHandle},
-		m_vecAbsViewAngles{ source.m_vecAbsViewAngles},
-		m_vecViewAngles{source.m_vecViewAngles},
-		m_vecLastMovementImpulses{source.m_vecLastMovementImpulses},
-		m_flForwardMove{source.m_flForwardMove},
-		m_flSideMove{source.m_flSideMove},
-		m_flUpMove{source.m_flUpMove},
-		m_flSubtickFraction{source.m_flSubtickFraction},
-		m_vecVelocity{source.m_vecVelocity},
-		m_vecAngles{source.m_vecAngles},
-		m_bGameCodeMovedPlayer{source.m_bGameCodeMovedPlayer},
-		m_collisionNormal{source.m_collisionNormal},
-		m_groundNormal{source.m_groundNormal},
-		m_vecAbsOrigin{source.m_vecAbsOrigin},
-		m_nGameModeMovedPlayer{source.m_nGameModeMovedPlayer},
-		m_vecOldAngles{source.m_vecOldAngles},
-		m_flMaxSpeed{source.m_flMaxSpeed},
-		m_flClientMaxSpeed{source.m_flClientMaxSpeed},
-		m_flSubtickAccelSpeed{source.m_flSubtickAccelSpeed},
-		m_bJumpedThisTick{source.m_bJumpedThisTick},
-		m_bShouldApplyGravity{source.m_bShouldApplyGravity},
-		m_outWishVel{source.m_outWishVel}
+
+	CMoveData(const CMoveData &source)
+		// clang-format off
+		: moveDataFlags {source.moveDataFlags}, 
+		m_nPlayerHandle {source.m_nPlayerHandle},
+		m_vecAbsViewAngles {source.m_vecAbsViewAngles},
+		m_vecViewAngles {source.m_vecViewAngles},
+		m_vecLastMovementImpulses {source.m_vecLastMovementImpulses},
+		m_flForwardMove {source.m_flForwardMove}, 
+		m_flSideMove {source.m_flSideMove}, 
+		m_flUpMove {source.m_flUpMove},
+		m_flSubtickFraction {source.m_flSubtickFraction}, 
+		m_vecVelocity {source.m_vecVelocity}, 
+		m_vecAngles {source.m_vecAngles},
+		m_bHasSubtickInputs {source.m_bHasSubtickInputs},
+		m_collisionNormal {source.m_collisionNormal},
+		m_groundNormal {source.m_groundNormal}, 
+		m_vecAbsOrigin {source.m_vecAbsOrigin},
+		m_nGameModeMovedPlayer {source.m_nGameModeMovedPlayer},
+		m_outWishVel {source.m_outWishVel},
+		m_vecOldAngles {source.m_vecOldAngles}, 
+		m_flMaxSpeed {source.m_flMaxSpeed}, 
+		m_flClientMaxSpeed {source.m_flClientMaxSpeed},
+		m_flSubtickAccelSpeed {source.m_flSubtickAccelSpeed}, 
+		m_bJumpedThisTick {source.m_bJumpedThisTick},
+		m_bOnGround {source.m_bOnGround},
+		m_bShouldApplyGravity {source.m_bShouldApplyGravity}, 
+		m_bGameCodeMovedPlayer {source.m_bGameCodeMovedPlayer}
+	// clang-format on
 	{
-		for (int i = 0; i < source.unknown.Count(); i++)
+		for (int i = 0; i < source.m_AttackSubtickMoves.Count(); i++)
 		{
-			this->unknown.AddToTail(source.unknown[i]);
+			this->m_AttackSubtickMoves.AddToTail(source.m_AttackSubtickMoves[i]);
+		}
+		for (int i = 0; i < source.m_SubtickMoves.Count(); i++)
+		{
+			this->m_SubtickMoves.AddToTail(source.m_SubtickMoves[i]);
 		}
 		for (int i = 0; i < source.m_TouchList.Count(); i++)
 		{
-			this->m_TouchList.AddToTail(source.m_TouchList[i]);
+			auto touch = this->m_TouchList.AddToTailGetPtr();
+			touch->deltavelocity = m_TouchList[i].deltavelocity;
+			touch->trace.m_pSurfaceProperties = m_TouchList[i].trace.m_pSurfaceProperties;
+			touch->trace.m_pEnt = m_TouchList[i].trace.m_pEnt;
+			touch->trace.m_pHitbox = m_TouchList[i].trace.m_pHitbox;
+			touch->trace.m_hBody = m_TouchList[i].trace.m_hBody;
+			touch->trace.m_hShape = m_TouchList[i].trace.m_hShape;
+			touch->trace.m_nContents = m_TouchList[i].trace.m_nContents;
+			touch->trace.m_BodyTransform = m_TouchList[i].trace.m_BodyTransform;
+			touch->trace.m_vHitNormal = m_TouchList[i].trace.m_vHitNormal;
+			touch->trace.m_vHitPoint = m_TouchList[i].trace.m_vHitPoint;
+			touch->trace.m_flHitOffset = m_TouchList[i].trace.m_flHitOffset;
+			touch->trace.m_flFraction = m_TouchList[i].trace.m_flFraction;
+			touch->trace.m_nTriangle = m_TouchList[i].trace.m_nTriangle;
+			touch->trace.m_nHitboxBoneIndex = m_TouchList[i].trace.m_nHitboxBoneIndex;
+			touch->trace.m_eRayType = m_TouchList[i].trace.m_eRayType;
+			touch->trace.m_bStartInSolid = m_TouchList[i].trace.m_bStartInSolid;
+			touch->trace.m_bExactHitPoint = m_TouchList[i].trace.m_bExactHitPoint;
 		}
-
 	}
+
 public:
-	uint8_t moveDataFlags; // 0x0
-	CHandle<CCSPlayerPawn> m_nPlayerHandle; // 0x4 don't know if this is actually a CHandle. <CBaseEntity> is a placeholder
-	QAngle m_vecAbsViewAngles; // 0x8 unsure
-	QAngle m_vecViewAngles; // 0x14
+	uint8_t moveDataFlags;
+	CHandle<CCSPlayerPawn> m_nPlayerHandle;
+	QAngle m_vecAbsViewAngles;
+	QAngle m_vecViewAngles;
 	Vector m_vecLastMovementImpulses;
-	float m_flForwardMove; // 0x20
-	float m_flSideMove; // 0x24
-	float m_flUpMove; // 0x28
-	float m_flSubtickFraction; // 0x38
-	Vector m_vecVelocity; // 0x3c
-	Vector m_vecAngles; // 0x48
-	CUtlVector<MoveDataUnkSubtickStruct> unknown;
-	bool m_bGameCodeMovedPlayer; // 0x70
-	CUtlVector<touchlist_t> m_TouchList; // 0x78
-	Vector m_collisionNormal; // 0x90
-	Vector m_groundNormal; // 0x9c unsure
-	Vector m_vecAbsOrigin; // 0xa8
-	uint8_t padding[4]; // 0xb4 unsure
-	bool m_nGameModeMovedPlayer; // 0xb8
-	Vector m_vecOldAngles; // 0xbc
-	float m_flMaxSpeed; // 0xc8
-	float m_flClientMaxSpeed; // 0xcc
-	float m_flSubtickAccelSpeed; // 0xd0 Related to ground acceleration subtick stuff with sv_stopspeed and friction
-	bool m_bJumpedThisTick; // 0xd4 something to do with basevelocity and the tick the player jumps
-	bool m_bShouldApplyGravity; // 0xd5
-	Vector m_outWishVel; //0xd8
+	float m_flForwardMove;
+	float m_flSideMove; // Warning! Flipped compared to CS:GO, moving right gives negative value
+	float m_flUpMove;
+	float m_flSubtickFraction;
+	Vector m_vecVelocity;
+	Vector m_vecAngles;
+	CUtlVector<SubtickMove> m_SubtickMoves;
+	CUtlVector<SubtickMove> m_AttackSubtickMoves;
+	bool m_bHasSubtickInputs;
+	CUtlVector<touchlist_t> m_TouchList;
+	Vector m_collisionNormal;
+	Vector m_groundNormal; // unsure
+	Vector m_vecAbsOrigin;
+	bool m_nGameModeMovedPlayer;
+	Vector m_outWishVel;
+	Vector m_vecOldAngles;
+	float m_flMaxSpeed;
+	float m_flClientMaxSpeed;
+	float m_flSubtickAccelSpeed; // Related to ground acceleration subtick stuff with sv_stopspeed and friction
+	bool m_bJumpedThisTick;      // something to do with basevelocity and the tick the player jumps
+	bool m_bOnGround;
+	bool m_bShouldApplyGravity;
+	bool m_bGameCodeMovedPlayer; // true if usercmd cmd number == (m_nGameCodeHasMovedPlayerAfterCommand + 1)
 };
-static_assert(sizeof(CMoveData) == 0xE8, "Class didn't match expected size");
+
+static_assert(offsetof(CMoveData, m_vecViewAngles) == 0x14);
+static_assert(offsetof(CMoveData, m_vecVelocity) == 0x3c);
+static_assert(offsetof(CMoveData, m_vecAngles) == 0x48);
+static_assert(offsetof(CMoveData, m_vecAbsOrigin) == 0xc0);
+static_assert(offsetof(CMoveData, m_outWishVel) == 0xd0);
+static_assert(offsetof(CMoveData, m_flMaxSpeed) == 0xe8);
+static_assert(offsetof(CMoveData, m_flClientMaxSpeed) == 0xec);
+static_assert(offsetof(CMoveData, m_flSubtickAccelSpeed) == 0xf0);
+static_assert(offsetof(CMoveData, m_bJumpedThisTick) == 0xf4);
+static_assert(offsetof(CMoveData, m_bOnGround) == 0xf5);
+static_assert(sizeof(CMoveData) == 248, "Class didn't match expected size");
