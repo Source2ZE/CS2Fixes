@@ -2787,7 +2787,7 @@ const char descriptor_table_protodef_cstrike15_5fusermessages_2eproto[] PROTOBUF
   "ervation\030\002 \001(\0132/.CMsgGCCStrike15_v2_Matc"
   "hmakingGC2ServerReserve\"N\n\030CCSUsrMsgPreM"
   "atchSayText\022\022\n\naccount_id\030\001 \001(\r\022\014\n\004text\030"
-  "\002 \001(\t\022\020\n\010all_chat\030\003 \001(\010*\246\017\n\026ECstrike15Us"
+  "\002 \001(\t\022\020\n\010all_chat\030\003 \001(\010*\222\017\n\026ECstrike15Us"
   "erMessages\022\023\n\016CS_UM_VGUIMenu\020\255\002\022\021\n\014CS_UM"
   "_Geiger\020\256\002\022\020\n\013CS_UM_Train\020\257\002\022\022\n\rCS_UM_Hu"
   "dText\020\260\002\022\022\n\rCS_UM_SayText\020\261\002\022\023\n\016CS_UM_Sa"
@@ -2835,12 +2835,11 @@ const char descriptor_table_protodef_cstrike15_5fusermessages_2eproto[] PROTOBUF
   "ndOfMatchAllPlayersData\020\367\002\022 \n\033CS_UM_Post"
   "RoundDamageReport\020\370\002\022\035\n\030CS_UM_RoundEndRe"
   "portData\020\373\002\022\033\n\026CS_UM_CurrentRoundOdds\020\374\002"
-  "\022\024\n\017CS_UM_DeepStats\020\375\002\022\022\n\rCS_UM_UtilMsg\020"
-  "\376\002\022\024\n\017CS_UM_ShootInfo\020\377\002*\210\001\n\"ECSUsrMsg_D"
-  "isconnectToLobby_Action\0220\n,k_ECSUsrMsg_D"
-  "isconnectToLobby_Action_Default\020\000\0220\n,k_E"
-  "CSUsrMsg_DisconnectToLobby_Action_GoQueu"
-  "e\020\001"
+  "\022\024\n\017CS_UM_DeepStats\020\375\002\022\024\n\017CS_UM_ShootInf"
+  "o\020\377\002*\210\001\n\"ECSUsrMsg_DisconnectToLobby_Act"
+  "ion\0220\n,k_ECSUsrMsg_DisconnectToLobby_Act"
+  "ion_Default\020\000\0220\n,k_ECSUsrMsg_DisconnectT"
+  "oLobby_Action_GoQueue\020\001"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fusermessages_2eproto_deps[2] = {
   &::descriptor_table_cstrike15_5fgcmessages_2eproto,
@@ -2848,7 +2847,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fusermes
 };
 static ::_pbi::once_flag descriptor_table_cstrike15_5fusermessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cstrike15_5fusermessages_2eproto = {
-    false, false, 10123, descriptor_table_protodef_cstrike15_5fusermessages_2eproto,
+    false, false, 10103, descriptor_table_protodef_cstrike15_5fusermessages_2eproto,
     "cstrike15_usermessages.proto",
     &descriptor_table_cstrike15_5fusermessages_2eproto_once, descriptor_table_cstrike15_5fusermessages_2eproto_deps, 2, 86,
     schemas, file_default_instances, TableStruct_cstrike15_5fusermessages_2eproto::offsets,
@@ -2941,7 +2940,6 @@ bool ECstrike15UserMessages_IsValid(int value) {
     case 379:
     case 380:
     case 381:
-    case 382:
     case 383:
       return true;
     default:

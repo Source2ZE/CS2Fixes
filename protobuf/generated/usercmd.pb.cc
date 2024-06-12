@@ -42,7 +42,9 @@ PROTOBUF_CONSTEXPR CSubtickMoveStep::CSubtickMoveStep(
   , /*decltype(_impl_._cached_size_)*/{}
   , /*decltype(_impl_.button_)*/uint64_t{0u}
   , /*decltype(_impl_.pressed_)*/false
-  , /*decltype(_impl_.when_)*/0} {}
+  , /*decltype(_impl_.when_)*/0
+  , /*decltype(_impl_.analog_forward_delta_)*/0
+  , /*decltype(_impl_.analog_left_delta_)*/0} {}
 struct CSubtickMoveStepDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CSubtickMoveStepDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -61,7 +63,7 @@ PROTOBUF_CONSTEXPR CBaseUserCmdPB::CBaseUserCmdPB(
   , /*decltype(_impl_.buttons_pb_)*/nullptr
   , /*decltype(_impl_.viewangles_)*/nullptr
   , /*decltype(_impl_.command_number_)*/0
-  , /*decltype(_impl_.tick_count_)*/0
+  , /*decltype(_impl_.client_tick_)*/0
   , /*decltype(_impl_.forwardmove_)*/0
   , /*decltype(_impl_.leftmove_)*/0
   , /*decltype(_impl_.upmove_)*/0
@@ -70,7 +72,6 @@ PROTOBUF_CONSTEXPR CBaseUserCmdPB::CBaseUserCmdPB(
   , /*decltype(_impl_.random_seed_)*/0
   , /*decltype(_impl_.mousedx_)*/0
   , /*decltype(_impl_.mousedy_)*/0
-  , /*decltype(_impl_.hasbeenpredicted_)*/false
   , /*decltype(_impl_.consumed_server_angle_changes_)*/0u
   , /*decltype(_impl_.cmd_flags_)*/0
   , /*decltype(_impl_.pawn_entity_handle_)*/16777215u} {}
@@ -123,9 +124,13 @@ const uint32_t TableStruct_usercmd_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.button_),
   PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.pressed_),
   PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.when_),
+  PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.analog_forward_delta_),
+  PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.analog_left_delta_),
   0,
   1,
   2,
+  3,
+  4,
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -133,7 +138,7 @@ const uint32_t TableStruct_usercmd_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.command_number_),
-  PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.tick_count_),
+  PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.client_tick_),
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.buttons_pb_),
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.viewangles_),
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.forwardmove_),
@@ -144,7 +149,6 @@ const uint32_t TableStruct_usercmd_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.random_seed_),
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.mousedx_),
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.mousedy_),
-  PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.hasbeenpredicted_),
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.pawn_entity_handle_),
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.subtick_moves_),
   PROTOBUF_FIELD_OFFSET(::CBaseUserCmdPB, _impl_.move_crc_),
@@ -162,12 +166,11 @@ const uint32_t TableStruct_usercmd_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   10,
   11,
   12,
-  13,
-  16,
+  15,
   ~0u,
   0,
+  13,
   14,
-  15,
   PROTOBUF_FIELD_OFFSET(::CUserCmdBasePB, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CUserCmdBasePB, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -179,9 +182,9 @@ const uint32_t TableStruct_usercmd_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 9, -1, sizeof(::CInButtonStatePB)},
-  { 12, 21, -1, sizeof(::CSubtickMoveStep)},
-  { 24, 48, -1, sizeof(::CBaseUserCmdPB)},
-  { 66, 73, -1, sizeof(::CUserCmdBasePB)},
+  { 12, 23, -1, sizeof(::CSubtickMoveStep)},
+  { 28, 51, -1, sizeof(::CBaseUserCmdPB)},
+  { 68, 75, -1, sizeof(::CUserCmdBasePB)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -195,28 +198,29 @@ const char descriptor_table_protodef_usercmd_2eproto[] PROTOBUF_SECTION_VARIABLE
   "\n\rusercmd.proto\032\026networkbasetypes.proto\""
   "T\n\020CInButtonStatePB\022\024\n\014buttonstate1\030\001 \001("
   "\004\022\024\n\014buttonstate2\030\002 \001(\004\022\024\n\014buttonstate3\030"
-  "\003 \001(\004\"A\n\020CSubtickMoveStep\022\016\n\006button\030\001 \001("
-  "\004\022\017\n\007pressed\030\002 \001(\010\022\014\n\004when\030\003 \001(\002\"\317\003\n\016CBa"
-  "seUserCmdPB\022\026\n\016command_number\030\001 \001(\005\022\022\n\nt"
-  "ick_count\030\002 \001(\005\022%\n\nbuttons_pb\030\003 \001(\0132\021.CI"
-  "nButtonStatePB\022\037\n\nviewangles\030\004 \001(\0132\013.CMs"
-  "gQAngle\022\023\n\013forwardmove\030\005 \001(\002\022\020\n\010leftmove"
-  "\030\006 \001(\002\022\016\n\006upmove\030\007 \001(\002\022\017\n\007impulse\030\010 \001(\005\022"
-  "\024\n\014weaponselect\030\t \001(\005\022\023\n\013random_seed\030\n \001"
-  "(\005\022\017\n\007mousedx\030\013 \001(\005\022\017\n\007mousedy\030\014 \001(\005\022\030\n\020"
-  "hasbeenpredicted\030\r \001(\010\022$\n\022pawn_entity_ha"
-  "ndle\030\016 \001(\r:\01016777215\022(\n\rsubtick_moves\030\022 "
-  "\003(\0132\021.CSubtickMoveStep\022\020\n\010move_crc\030\023 \001(\014"
-  "\022%\n\035consumed_server_angle_changes\030\024 \001(\r\022"
-  "\021\n\tcmd_flags\030\025 \001(\005\"/\n\016CUserCmdBasePB\022\035\n\004"
-  "base\030\001 \001(\0132\017.CBaseUserCmdPB"
+  "\003 \001(\004\"z\n\020CSubtickMoveStep\022\016\n\006button\030\001 \001("
+  "\004\022\017\n\007pressed\030\002 \001(\010\022\014\n\004when\030\003 \001(\002\022\034\n\024anal"
+  "og_forward_delta\030\004 \001(\002\022\031\n\021analog_left_de"
+  "lta\030\005 \001(\002\"\266\003\n\016CBaseUserCmdPB\022\026\n\016command_"
+  "number\030\001 \001(\005\022\023\n\013client_tick\030\002 \001(\005\022%\n\nbut"
+  "tons_pb\030\003 \001(\0132\021.CInButtonStatePB\022\037\n\nview"
+  "angles\030\004 \001(\0132\013.CMsgQAngle\022\023\n\013forwardmove"
+  "\030\005 \001(\002\022\020\n\010leftmove\030\006 \001(\002\022\016\n\006upmove\030\007 \001(\002"
+  "\022\017\n\007impulse\030\010 \001(\005\022\024\n\014weaponselect\030\t \001(\005\022"
+  "\023\n\013random_seed\030\n \001(\005\022\017\n\007mousedx\030\013 \001(\005\022\017\n"
+  "\007mousedy\030\014 \001(\005\022$\n\022pawn_entity_handle\030\016 \001"
+  "(\r:\01016777215\022(\n\rsubtick_moves\030\022 \003(\0132\021.CS"
+  "ubtickMoveStep\022\020\n\010move_crc\030\023 \001(\014\022%\n\035cons"
+  "umed_server_angle_changes\030\024 \001(\r\022\021\n\tcmd_f"
+  "lags\030\025 \001(\005\"/\n\016CUserCmdBasePB\022\035\n\004base\030\001 \001"
+  "(\0132\017.CBaseUserCmdPB"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_usercmd_2eproto_deps[1] = {
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_usercmd_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_usercmd_2eproto = {
-    false, false, 707, descriptor_table_protodef_usercmd_2eproto,
+    false, false, 739, descriptor_table_protodef_usercmd_2eproto,
     "usercmd.proto",
     &descriptor_table_usercmd_2eproto_once, descriptor_table_usercmd_2eproto_deps, 1, 4,
     schemas, file_default_instances, TableStruct_usercmd_2eproto::offsets,
@@ -509,6 +513,12 @@ class CSubtickMoveStep::_Internal {
   static void set_has_when(HasBits* has_bits) {
     (*has_bits)[0] |= 4u;
   }
+  static void set_has_analog_forward_delta(HasBits* has_bits) {
+    (*has_bits)[0] |= 8u;
+  }
+  static void set_has_analog_left_delta(HasBits* has_bits) {
+    (*has_bits)[0] |= 16u;
+  }
 };
 
 CSubtickMoveStep::CSubtickMoveStep(::PROTOBUF_NAMESPACE_ID::Arena* arena,
@@ -525,12 +535,14 @@ CSubtickMoveStep::CSubtickMoveStep(const CSubtickMoveStep& from)
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.button_){}
     , decltype(_impl_.pressed_){}
-    , decltype(_impl_.when_){}};
+    , decltype(_impl_.when_){}
+    , decltype(_impl_.analog_forward_delta_){}
+    , decltype(_impl_.analog_left_delta_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.button_, &from._impl_.button_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.when_) -
-    reinterpret_cast<char*>(&_impl_.button_)) + sizeof(_impl_.when_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.analog_left_delta_) -
+    reinterpret_cast<char*>(&_impl_.button_)) + sizeof(_impl_.analog_left_delta_));
   // @@protoc_insertion_point(copy_constructor:CSubtickMoveStep)
 }
 
@@ -544,6 +556,8 @@ inline void CSubtickMoveStep::SharedCtor(
     , decltype(_impl_.button_){uint64_t{0u}}
     , decltype(_impl_.pressed_){false}
     , decltype(_impl_.when_){0}
+    , decltype(_impl_.analog_forward_delta_){0}
+    , decltype(_impl_.analog_left_delta_){0}
   };
 }
 
@@ -571,10 +585,10 @@ void CSubtickMoveStep::Clear() {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
+  if (cached_has_bits & 0x0000001fu) {
     ::memset(&_impl_.button_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.when_) -
-        reinterpret_cast<char*>(&_impl_.button_)) + sizeof(_impl_.when_));
+        reinterpret_cast<char*>(&_impl_.analog_left_delta_) -
+        reinterpret_cast<char*>(&_impl_.button_)) + sizeof(_impl_.analog_left_delta_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -610,6 +624,24 @@ const char* CSubtickMoveStep::_InternalParse(const char* ptr, ::_pbi::ParseConte
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 29)) {
           _Internal::set_has_when(&has_bits);
           _impl_.when_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional float analog_forward_delta = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 37)) {
+          _Internal::set_has_analog_forward_delta(&has_bits);
+          _impl_.analog_forward_delta_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional float analog_left_delta = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 45)) {
+          _Internal::set_has_analog_left_delta(&has_bits);
+          _impl_.analog_left_delta_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
         } else
           goto handle_unusual;
@@ -663,6 +695,18 @@ uint8_t* CSubtickMoveStep::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFloatToArray(3, this->_internal_when(), target);
   }
 
+  // optional float analog_forward_delta = 4;
+  if (cached_has_bits & 0x00000008u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(4, this->_internal_analog_forward_delta(), target);
+  }
+
+  // optional float analog_left_delta = 5;
+  if (cached_has_bits & 0x00000010u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(5, this->_internal_analog_left_delta(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -680,7 +724,7 @@ size_t CSubtickMoveStep::ByteSizeLong() const {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
+  if (cached_has_bits & 0x0000001fu) {
     // optional uint64 button = 1;
     if (cached_has_bits & 0x00000001u) {
       total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_button());
@@ -693,6 +737,16 @@ size_t CSubtickMoveStep::ByteSizeLong() const {
 
     // optional float when = 3;
     if (cached_has_bits & 0x00000004u) {
+      total_size += 1 + 4;
+    }
+
+    // optional float analog_forward_delta = 4;
+    if (cached_has_bits & 0x00000008u) {
+      total_size += 1 + 4;
+    }
+
+    // optional float analog_left_delta = 5;
+    if (cached_has_bits & 0x00000010u) {
       total_size += 1 + 4;
     }
 
@@ -716,7 +770,7 @@ void CSubtickMoveStep::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const
   (void) cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
+  if (cached_has_bits & 0x0000001fu) {
     if (cached_has_bits & 0x00000001u) {
       _this->_impl_.button_ = from._impl_.button_;
     }
@@ -725,6 +779,12 @@ void CSubtickMoveStep::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const
     }
     if (cached_has_bits & 0x00000004u) {
       _this->_impl_.when_ = from._impl_.when_;
+    }
+    if (cached_has_bits & 0x00000008u) {
+      _this->_impl_.analog_forward_delta_ = from._impl_.analog_forward_delta_;
+    }
+    if (cached_has_bits & 0x00000010u) {
+      _this->_impl_.analog_left_delta_ = from._impl_.analog_left_delta_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
@@ -747,8 +807,8 @@ void CSubtickMoveStep::InternalSwap(CSubtickMoveStep* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CSubtickMoveStep, _impl_.when_)
-      + sizeof(CSubtickMoveStep::_impl_.when_)
+      PROTOBUF_FIELD_OFFSET(CSubtickMoveStep, _impl_.analog_left_delta_)
+      + sizeof(CSubtickMoveStep::_impl_.analog_left_delta_)
       - PROTOBUF_FIELD_OFFSET(CSubtickMoveStep, _impl_.button_)>(
           reinterpret_cast<char*>(&_impl_.button_),
           reinterpret_cast<char*>(&other->_impl_.button_));
@@ -768,7 +828,7 @@ class CBaseUserCmdPB::_Internal {
   static void set_has_command_number(HasBits* has_bits) {
     (*has_bits)[0] |= 8u;
   }
-  static void set_has_tick_count(HasBits* has_bits) {
+  static void set_has_client_tick(HasBits* has_bits) {
     (*has_bits)[0] |= 16u;
   }
   static const ::CInButtonStatePB& buttons_pb(const CBaseUserCmdPB* msg);
@@ -803,20 +863,17 @@ class CBaseUserCmdPB::_Internal {
   static void set_has_mousedy(HasBits* has_bits) {
     (*has_bits)[0] |= 4096u;
   }
-  static void set_has_hasbeenpredicted(HasBits* has_bits) {
-    (*has_bits)[0] |= 8192u;
-  }
   static void set_has_pawn_entity_handle(HasBits* has_bits) {
-    (*has_bits)[0] |= 65536u;
+    (*has_bits)[0] |= 32768u;
   }
   static void set_has_move_crc(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
   static void set_has_consumed_server_angle_changes(HasBits* has_bits) {
-    (*has_bits)[0] |= 16384u;
+    (*has_bits)[0] |= 8192u;
   }
   static void set_has_cmd_flags(HasBits* has_bits) {
-    (*has_bits)[0] |= 32768u;
+    (*has_bits)[0] |= 16384u;
   }
 };
 
@@ -849,7 +906,7 @@ CBaseUserCmdPB::CBaseUserCmdPB(const CBaseUserCmdPB& from)
     , decltype(_impl_.buttons_pb_){nullptr}
     , decltype(_impl_.viewangles_){nullptr}
     , decltype(_impl_.command_number_){}
-    , decltype(_impl_.tick_count_){}
+    , decltype(_impl_.client_tick_){}
     , decltype(_impl_.forwardmove_){}
     , decltype(_impl_.leftmove_){}
     , decltype(_impl_.upmove_){}
@@ -858,7 +915,6 @@ CBaseUserCmdPB::CBaseUserCmdPB(const CBaseUserCmdPB& from)
     , decltype(_impl_.random_seed_){}
     , decltype(_impl_.mousedx_){}
     , decltype(_impl_.mousedy_){}
-    , decltype(_impl_.hasbeenpredicted_){}
     , decltype(_impl_.consumed_server_angle_changes_){}
     , decltype(_impl_.cmd_flags_){}
     , decltype(_impl_.pawn_entity_handle_){}};
@@ -896,7 +952,7 @@ inline void CBaseUserCmdPB::SharedCtor(
     , decltype(_impl_.buttons_pb_){nullptr}
     , decltype(_impl_.viewangles_){nullptr}
     , decltype(_impl_.command_number_){0}
-    , decltype(_impl_.tick_count_){0}
+    , decltype(_impl_.client_tick_){0}
     , decltype(_impl_.forwardmove_){0}
     , decltype(_impl_.leftmove_){0}
     , decltype(_impl_.upmove_){0}
@@ -905,7 +961,6 @@ inline void CBaseUserCmdPB::SharedCtor(
     , decltype(_impl_.random_seed_){0}
     , decltype(_impl_.mousedx_){0}
     , decltype(_impl_.mousedy_){0}
-    , decltype(_impl_.hasbeenpredicted_){false}
     , decltype(_impl_.consumed_server_angle_changes_){0u}
     , decltype(_impl_.cmd_flags_){0}
     , decltype(_impl_.pawn_entity_handle_){16777215u}
@@ -967,8 +1022,8 @@ void CBaseUserCmdPB::Clear() {
     ::memset(&_impl_.impulse_, 0, static_cast<size_t>(
         reinterpret_cast<char*>(&_impl_.cmd_flags_) -
         reinterpret_cast<char*>(&_impl_.impulse_)) + sizeof(_impl_.cmd_flags_));
+    _impl_.pawn_entity_handle_ = 16777215u;
   }
-  _impl_.pawn_entity_handle_ = 16777215u;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -989,11 +1044,11 @@ const char* CBaseUserCmdPB::_InternalParse(const char* ptr, ::_pbi::ParseContext
         } else
           goto handle_unusual;
         continue;
-      // optional int32 tick_count = 2;
+      // optional int32 client_tick = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _Internal::set_has_tick_count(&has_bits);
-          _impl_.tick_count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _Internal::set_has_client_tick(&has_bits);
+          _impl_.client_tick_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1086,15 +1141,6 @@ const char* CBaseUserCmdPB::_InternalParse(const char* ptr, ::_pbi::ParseContext
         } else
           goto handle_unusual;
         continue;
-      // optional bool hasbeenpredicted = 13;
-      case 13:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 104)) {
-          _Internal::set_has_hasbeenpredicted(&has_bits);
-          _impl_.hasbeenpredicted_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
       // optional uint32 pawn_entity_handle = 14 [default = 16777215];
       case 14:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 112)) {
@@ -1181,10 +1227,10 @@ uint8_t* CBaseUserCmdPB::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_command_number(), target);
   }
 
-  // optional int32 tick_count = 2;
+  // optional int32 client_tick = 2;
   if (cached_has_bits & 0x00000010u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_tick_count(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_client_tick(), target);
   }
 
   // optional .CInButtonStatePB buttons_pb = 3;
@@ -1249,14 +1295,8 @@ uint8_t* CBaseUserCmdPB::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(12, this->_internal_mousedy(), target);
   }
 
-  // optional bool hasbeenpredicted = 13;
-  if (cached_has_bits & 0x00002000u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(13, this->_internal_hasbeenpredicted(), target);
-  }
-
   // optional uint32 pawn_entity_handle = 14 [default = 16777215];
-  if (cached_has_bits & 0x00010000u) {
+  if (cached_has_bits & 0x00008000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(14, this->_internal_pawn_entity_handle(), target);
   }
@@ -1276,13 +1316,13 @@ uint8_t* CBaseUserCmdPB::_InternalSerialize(
   }
 
   // optional uint32 consumed_server_angle_changes = 20;
-  if (cached_has_bits & 0x00004000u) {
+  if (cached_has_bits & 0x00002000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(20, this->_internal_consumed_server_angle_changes(), target);
   }
 
   // optional int32 cmd_flags = 21;
-  if (cached_has_bits & 0x00008000u) {
+  if (cached_has_bits & 0x00004000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(21, this->_internal_cmd_flags(), target);
   }
@@ -1338,9 +1378,9 @@ size_t CBaseUserCmdPB::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_command_number());
     }
 
-    // optional int32 tick_count = 2;
+    // optional int32 client_tick = 2;
     if (cached_has_bits & 0x00000010u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_tick_count());
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_client_tick());
     }
 
     // optional float forwardmove = 5;
@@ -1385,31 +1425,26 @@ size_t CBaseUserCmdPB::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_mousedy());
     }
 
-    // optional bool hasbeenpredicted = 13;
-    if (cached_has_bits & 0x00002000u) {
-      total_size += 1 + 1;
-    }
-
     // optional uint32 consumed_server_angle_changes = 20;
-    if (cached_has_bits & 0x00004000u) {
+    if (cached_has_bits & 0x00002000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_consumed_server_angle_changes());
     }
 
     // optional int32 cmd_flags = 21;
-    if (cached_has_bits & 0x00008000u) {
+    if (cached_has_bits & 0x00004000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::Int32Size(
           this->_internal_cmd_flags());
     }
 
-  }
-  // optional uint32 pawn_entity_handle = 14 [default = 16777215];
-  if (cached_has_bits & 0x00010000u) {
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_pawn_entity_handle());
-  }
+    // optional uint32 pawn_entity_handle = 14 [default = 16777215];
+    if (cached_has_bits & 0x00008000u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_pawn_entity_handle());
+    }
 
+  }
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -1446,7 +1481,7 @@ void CBaseUserCmdPB::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
       _this->_impl_.command_number_ = from._impl_.command_number_;
     }
     if (cached_has_bits & 0x00000010u) {
-      _this->_impl_.tick_count_ = from._impl_.tick_count_;
+      _this->_impl_.client_tick_ = from._impl_.client_tick_;
     }
     if (cached_has_bits & 0x00000020u) {
       _this->_impl_.forwardmove_ = from._impl_.forwardmove_;
@@ -1476,18 +1511,15 @@ void CBaseUserCmdPB::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
       _this->_impl_.mousedy_ = from._impl_.mousedy_;
     }
     if (cached_has_bits & 0x00002000u) {
-      _this->_impl_.hasbeenpredicted_ = from._impl_.hasbeenpredicted_;
-    }
-    if (cached_has_bits & 0x00004000u) {
       _this->_impl_.consumed_server_angle_changes_ = from._impl_.consumed_server_angle_changes_;
     }
-    if (cached_has_bits & 0x00008000u) {
+    if (cached_has_bits & 0x00004000u) {
       _this->_impl_.cmd_flags_ = from._impl_.cmd_flags_;
     }
+    if (cached_has_bits & 0x00008000u) {
+      _this->_impl_.pawn_entity_handle_ = from._impl_.pawn_entity_handle_;
+    }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
-  }
-  if (cached_has_bits & 0x00010000u) {
-    _this->_internal_set_pawn_entity_handle(from._internal_pawn_entity_handle());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }

@@ -70,6 +70,7 @@ PROTOBUF_CONSTEXPR CSGOUserCmdPB::CSGOUserCmdPB(
   , /*decltype(_impl_._cached_size_)*/{}
   , /*decltype(_impl_.input_history_)*/{}
   , /*decltype(_impl_.base_)*/nullptr
+  , /*decltype(_impl_.left_hand_desired_)*/false
   , /*decltype(_impl_.attack3_start_history_index_)*/-1
   , /*decltype(_impl_.attack1_start_history_index_)*/-1
   , /*decltype(_impl_.attack2_start_history_index_)*/-1} {}
@@ -146,16 +147,18 @@ const uint32_t TableStruct_cs_5fusercmd_2eproto::offsets[] PROTOBUF_SECTION_VARI
   PROTOBUF_FIELD_OFFSET(::CSGOUserCmdPB, _impl_.attack1_start_history_index_),
   PROTOBUF_FIELD_OFFSET(::CSGOUserCmdPB, _impl_.attack2_start_history_index_),
   PROTOBUF_FIELD_OFFSET(::CSGOUserCmdPB, _impl_.attack3_start_history_index_),
+  PROTOBUF_FIELD_OFFSET(::CSGOUserCmdPB, _impl_.left_hand_desired_),
   0,
   ~0u,
-  2,
   3,
+  4,
+  2,
   1,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 9, -1, sizeof(::CSGOInterpolationInfoPB)},
   { 12, 33, -1, sizeof(::CSGOInputHistoryEntryPB)},
-  { 48, 59, -1, sizeof(::CSGOUserCmdPB)},
+  { 48, 60, -1, sizeof(::CSGOUserCmdPB)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -183,12 +186,13 @@ const char descriptor_table_protodef_cs_5fusercmd_2eproto[] PROTOBUF_SECTION_VAR
   "target_head_pos_check\030\t \001(\0132\013.CMsgVector"
   "\022)\n\024target_abs_pos_check\030\n \001(\0132\013.CMsgVec"
   "tor\022)\n\024target_abs_ang_check\030\013 \001(\0132\013.CMsg"
-  "QAngle\"\332\001\n\rCSGOUserCmdPB\022\035\n\004base\030\001 \001(\0132\017"
+  "QAngle\"\374\001\n\rCSGOUserCmdPB\022\035\n\004base\030\001 \001(\0132\017"
   ".CBaseUserCmdPB\022/\n\rinput_history\030\002 \003(\0132\030"
   ".CSGOInputHistoryEntryPB\022\'\n\033attack1_star"
   "t_history_index\030\006 \001(\005:\002-1\022\'\n\033attack2_sta"
   "rt_history_index\030\007 \001(\005:\002-1\022\'\n\033attack3_st"
-  "art_history_index\030\010 \001(\005:\002-1"
+  "art_history_index\030\010 \001(\005:\002-1\022 \n\021left_hand"
+  "_desired\030\t \001(\010:\005false"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_cs_5fusercmd_2eproto_deps[2] = {
   &::descriptor_table_networkbasetypes_2eproto,
@@ -196,7 +200,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_cs_5fusercmd_2eprot
 };
 static ::_pbi::once_flag descriptor_table_cs_5fusercmd_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cs_5fusercmd_2eproto = {
-    false, false, 947, descriptor_table_protodef_cs_5fusercmd_2eproto,
+    false, false, 981, descriptor_table_protodef_cs_5fusercmd_2eproto,
     "cs_usercmd.proto",
     &descriptor_table_cs_5fusercmd_2eproto_once, descriptor_table_cs_5fusercmd_2eproto_deps, 2, 3,
     schemas, file_default_instances, TableStruct_cs_5fusercmd_2eproto::offsets,
@@ -1257,12 +1261,15 @@ class CSGOUserCmdPB::_Internal {
     (*has_bits)[0] |= 1u;
   }
   static void set_has_attack1_start_history_index(HasBits* has_bits) {
-    (*has_bits)[0] |= 4u;
-  }
-  static void set_has_attack2_start_history_index(HasBits* has_bits) {
     (*has_bits)[0] |= 8u;
   }
+  static void set_has_attack2_start_history_index(HasBits* has_bits) {
+    (*has_bits)[0] |= 16u;
+  }
   static void set_has_attack3_start_history_index(HasBits* has_bits) {
+    (*has_bits)[0] |= 4u;
+  }
+  static void set_has_left_hand_desired(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
   }
 };
@@ -1289,6 +1296,7 @@ CSGOUserCmdPB::CSGOUserCmdPB(const CSGOUserCmdPB& from)
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.input_history_){from._impl_.input_history_}
     , decltype(_impl_.base_){nullptr}
+    , decltype(_impl_.left_hand_desired_){}
     , decltype(_impl_.attack3_start_history_index_){}
     , decltype(_impl_.attack1_start_history_index_){}
     , decltype(_impl_.attack2_start_history_index_){}};
@@ -1297,9 +1305,9 @@ CSGOUserCmdPB::CSGOUserCmdPB(const CSGOUserCmdPB& from)
   if (from._internal_has_base()) {
     _this->_impl_.base_ = new ::CBaseUserCmdPB(*from._impl_.base_);
   }
-  ::memcpy(&_impl_.attack3_start_history_index_, &from._impl_.attack3_start_history_index_,
+  ::memcpy(&_impl_.left_hand_desired_, &from._impl_.left_hand_desired_,
     static_cast<size_t>(reinterpret_cast<char*>(&_impl_.attack2_start_history_index_) -
-    reinterpret_cast<char*>(&_impl_.attack3_start_history_index_)) + sizeof(_impl_.attack2_start_history_index_));
+    reinterpret_cast<char*>(&_impl_.left_hand_desired_)) + sizeof(_impl_.attack2_start_history_index_));
   // @@protoc_insertion_point(copy_constructor:CSGOUserCmdPB)
 }
 
@@ -1312,6 +1320,7 @@ inline void CSGOUserCmdPB::SharedCtor(
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.input_history_){arena}
     , decltype(_impl_.base_){nullptr}
+    , decltype(_impl_.left_hand_desired_){false}
     , decltype(_impl_.attack3_start_history_index_){-1}
     , decltype(_impl_.attack1_start_history_index_){-1}
     , decltype(_impl_.attack2_start_history_index_){-1}
@@ -1345,11 +1354,12 @@ void CSGOUserCmdPB::Clear() {
 
   _impl_.input_history_.Clear();
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000000fu) {
-    if (cached_has_bits & 0x00000001u) {
-      GOOGLE_DCHECK(_impl_.base_ != nullptr);
-      _impl_.base_->Clear();
-    }
+  if (cached_has_bits & 0x00000001u) {
+    GOOGLE_DCHECK(_impl_.base_ != nullptr);
+    _impl_.base_->Clear();
+  }
+  if (cached_has_bits & 0x0000001eu) {
+    _impl_.left_hand_desired_ = false;
     _impl_.attack3_start_history_index_ = -1;
     _impl_.attack1_start_history_index_ = -1;
     _impl_.attack2_start_history_index_ = -1;
@@ -1413,6 +1423,15 @@ const char* CSGOUserCmdPB::_InternalParse(const char* ptr, ::_pbi::ParseContext*
         } else
           goto handle_unusual;
         continue;
+      // optional bool left_hand_desired = 9 [default = false];
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
+          _Internal::set_has_left_hand_desired(&has_bits);
+          _impl_.left_hand_desired_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -1460,21 +1479,27 @@ uint8_t* CSGOUserCmdPB::_InternalSerialize(
   }
 
   // optional int32 attack1_start_history_index = 6 [default = -1];
-  if (cached_has_bits & 0x00000004u) {
+  if (cached_has_bits & 0x00000008u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(6, this->_internal_attack1_start_history_index(), target);
   }
 
   // optional int32 attack2_start_history_index = 7 [default = -1];
-  if (cached_has_bits & 0x00000008u) {
+  if (cached_has_bits & 0x00000010u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(7, this->_internal_attack2_start_history_index(), target);
   }
 
   // optional int32 attack3_start_history_index = 8 [default = -1];
-  if (cached_has_bits & 0x00000002u) {
+  if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(8, this->_internal_attack3_start_history_index(), target);
+  }
+
+  // optional bool left_hand_desired = 9 [default = false];
+  if (cached_has_bits & 0x00000002u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(9, this->_internal_left_hand_desired(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1501,7 +1526,7 @@ size_t CSGOUserCmdPB::ByteSizeLong() const {
   }
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000000fu) {
+  if (cached_has_bits & 0x0000001fu) {
     // optional .CBaseUserCmdPB base = 1;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
@@ -1509,18 +1534,23 @@ size_t CSGOUserCmdPB::ByteSizeLong() const {
           *_impl_.base_);
     }
 
-    // optional int32 attack3_start_history_index = 8 [default = -1];
+    // optional bool left_hand_desired = 9 [default = false];
     if (cached_has_bits & 0x00000002u) {
+      total_size += 1 + 1;
+    }
+
+    // optional int32 attack3_start_history_index = 8 [default = -1];
+    if (cached_has_bits & 0x00000004u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attack3_start_history_index());
     }
 
     // optional int32 attack1_start_history_index = 6 [default = -1];
-    if (cached_has_bits & 0x00000004u) {
+    if (cached_has_bits & 0x00000008u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attack1_start_history_index());
     }
 
     // optional int32 attack2_start_history_index = 7 [default = -1];
-    if (cached_has_bits & 0x00000008u) {
+    if (cached_has_bits & 0x00000010u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attack2_start_history_index());
     }
 
@@ -1545,18 +1575,21 @@ void CSGOUserCmdPB::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::
 
   _this->_impl_.input_history_.MergeFrom(from._impl_.input_history_);
   cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000000fu) {
+  if (cached_has_bits & 0x0000001fu) {
     if (cached_has_bits & 0x00000001u) {
       _this->_internal_mutable_base()->::CBaseUserCmdPB::MergeFrom(
           from._internal_base());
     }
     if (cached_has_bits & 0x00000002u) {
-      _this->_impl_.attack3_start_history_index_ = from._impl_.attack3_start_history_index_;
+      _this->_impl_.left_hand_desired_ = from._impl_.left_hand_desired_;
     }
     if (cached_has_bits & 0x00000004u) {
-      _this->_impl_.attack1_start_history_index_ = from._impl_.attack1_start_history_index_;
+      _this->_impl_.attack3_start_history_index_ = from._impl_.attack3_start_history_index_;
     }
     if (cached_has_bits & 0x00000008u) {
+      _this->_impl_.attack1_start_history_index_ = from._impl_.attack1_start_history_index_;
+    }
+    if (cached_has_bits & 0x00000010u) {
       _this->_impl_.attack2_start_history_index_ = from._impl_.attack2_start_history_index_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -1580,7 +1613,12 @@ void CSGOUserCmdPB::InternalSwap(CSGOUserCmdPB* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   _impl_.input_history_.InternalSwap(&other->_impl_.input_history_);
-  swap(_impl_.base_, other->_impl_.base_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(CSGOUserCmdPB, _impl_.left_hand_desired_)
+      + sizeof(CSGOUserCmdPB::_impl_.left_hand_desired_)
+      - PROTOBUF_FIELD_OFFSET(CSGOUserCmdPB, _impl_.base_)>(
+          reinterpret_cast<char*>(&_impl_.base_),
+          reinterpret_cast<char*>(&other->_impl_.base_));
   swap(_impl_.attack3_start_history_index_, other->_impl_.attack3_start_history_index_);
   swap(_impl_.attack1_start_history_index_, other->_impl_.attack1_start_history_index_);
   swap(_impl_.attack2_start_history_index_, other->_impl_.attack2_start_history_index_);
