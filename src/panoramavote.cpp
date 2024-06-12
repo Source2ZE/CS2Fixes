@@ -227,7 +227,7 @@ bool CPanoramaVoteHandler::SendYesNoVoteToAll(float flDuration, int iCaller, con
 
 void CPanoramaVoteHandler::SendVoteStartUM(IRecipientFilter *pFilter)
 {
-	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
+	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteStart");
 	auto data = pNetMsg->AllocateMessage()->ToPB<CCSUsrMsg_VoteStart>();
 
 	data->set_team(-1);
