@@ -1170,7 +1170,7 @@ float ZR_MoanTimer(ZEPlayerHandle hPlayer)
 
 void ZR_InfectShake(CCSPlayerController *pController)
 {
-	if (!pController || !pController->IsConnected() || pController->IsBot())
+	if (!pController || !pController->IsConnected() || pController->IsBot() || !g_bInfectShake)
 		return;
 
 	INetworkSerializable *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
