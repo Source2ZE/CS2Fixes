@@ -210,7 +210,7 @@ inline bool ETEProtobufIds_Parse(
 }
 // ===================================================================
 
-class CMsgTEArmorRicochet final :
+class CMsgTEArmorRicochet :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEArmorRicochet) */ {
  public:
   inline CMsgTEArmorRicochet() : CMsgTEArmorRicochet(nullptr) {}
@@ -395,7 +395,7 @@ class CMsgTEArmorRicochet final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEBaseBeam final :
+class CMsgTEBaseBeam :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEBaseBeam) */ {
  public:
   inline CMsgTEBaseBeam() : CMsgTEBaseBeam(nullptr) {}
@@ -720,7 +720,7 @@ class CMsgTEBaseBeam final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEBeamEntPoint final :
+class CMsgTEBeamEntPoint :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEBeamEntPoint) */ {
  public:
   inline CMsgTEBeamEntPoint() : CMsgTEBeamEntPoint(nullptr) {}
@@ -955,7 +955,7 @@ class CMsgTEBeamEntPoint final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEBeamEnts final :
+class CMsgTEBeamEnts :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEBeamEnts) */ {
  public:
   inline CMsgTEBeamEnts() : CMsgTEBeamEnts(nullptr) {}
@@ -1150,7 +1150,7 @@ class CMsgTEBeamEnts final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEBeamPoints final :
+class CMsgTEBeamPoints :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEBeamPoints) */ {
  public:
   inline CMsgTEBeamPoints() : CMsgTEBeamPoints(nullptr) {}
@@ -1355,7 +1355,7 @@ class CMsgTEBeamPoints final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEBeamRing final :
+class CMsgTEBeamRing :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEBeamRing) */ {
  public:
   inline CMsgTEBeamRing() : CMsgTEBeamRing(nullptr) {}
@@ -1550,7 +1550,7 @@ class CMsgTEBeamRing final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEBSPDecal final :
+class CMsgTEBSPDecal :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEBSPDecal) */ {
  public:
   inline CMsgTEBSPDecal() : CMsgTEBSPDecal(nullptr) {}
@@ -1785,7 +1785,7 @@ class CMsgTEBSPDecal final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEBubbles final :
+class CMsgTEBubbles :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEBubbles) */ {
  public:
   inline CMsgTEBubbles() : CMsgTEBubbles(nullptr) {}
@@ -2015,7 +2015,7 @@ class CMsgTEBubbles final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEBubbleTrail final :
+class CMsgTEBubbleTrail :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEBubbleTrail) */ {
  public:
   inline CMsgTEBubbleTrail() : CMsgTEBubbleTrail(nullptr) {}
@@ -2245,7 +2245,7 @@ class CMsgTEBubbleTrail final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEDecal final :
+class CMsgTEDecal :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEDecal) */ {
  public:
   inline CMsgTEDecal() : CMsgTEDecal(nullptr) {}
@@ -2475,7 +2475,7 @@ class CMsgTEDecal final :
 };
 // -------------------------------------------------------------------
 
-class CMsgEffectData final :
+class CMsgEffectData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgEffectData) */ {
  public:
   inline CMsgEffectData() : CMsgEffectData(nullptr) {}
@@ -2925,7 +2925,7 @@ class CMsgEffectData final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEEffectDispatch final :
+class CMsgTEEffectDispatch :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEEffectDispatch) */ {
  public:
   inline CMsgTEEffectDispatch() : CMsgTEEffectDispatch(nullptr) {}
@@ -3090,7 +3090,7 @@ class CMsgTEEffectDispatch final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEEnergySplash final :
+class CMsgTEEnergySplash :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEEnergySplash) */ {
  public:
   inline CMsgTEEnergySplash() : CMsgTEEnergySplash(nullptr) {}
@@ -3290,7 +3290,7 @@ class CMsgTEEnergySplash final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEFizz final :
+class CMsgTEFizz :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEFizz) */ {
  public:
   inline CMsgTEFizz() : CMsgTEFizz(nullptr) {}
@@ -3480,7 +3480,7 @@ class CMsgTEFizz final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEShatterSurface final :
+class CMsgTEShatterSurface :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEShatterSurface) */ {
  public:
   inline CMsgTEShatterSurface() : CMsgTEShatterSurface(nullptr) {}
@@ -3795,7 +3795,7 @@ class CMsgTEShatterSurface final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEGlowSprite final :
+class CMsgTEGlowSprite :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEGlowSprite) */ {
  public:
   inline CMsgTEGlowSprite() : CMsgTEGlowSprite(nullptr) {}
@@ -4005,7 +4005,7 @@ class CMsgTEGlowSprite final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEImpact final :
+class CMsgTEImpact :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEImpact) */ {
  public:
   inline CMsgTEImpact() : CMsgTEImpact(nullptr) {}
@@ -4205,7 +4205,7 @@ class CMsgTEImpact final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEMuzzleFlash final :
+class CMsgTEMuzzleFlash :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEMuzzleFlash) */ {
  public:
   inline CMsgTEMuzzleFlash() : CMsgTEMuzzleFlash(nullptr) {}
@@ -4420,7 +4420,7 @@ class CMsgTEMuzzleFlash final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEBloodStream final :
+class CMsgTEBloodStream :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEBloodStream) */ {
  public:
   inline CMsgTEBloodStream() : CMsgTEBloodStream(nullptr) {}
@@ -4635,7 +4635,7 @@ class CMsgTEBloodStream final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEExplosion final :
+class CMsgTEExplosion :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEExplosion) */ {
  public:
   inline CMsgTEExplosion() : CMsgTEExplosion(nullptr) {}
@@ -4960,7 +4960,7 @@ class CMsgTEExplosion final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEDust final :
+class CMsgTEDust :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEDust) */ {
  public:
   inline CMsgTEDust() : CMsgTEDust(nullptr) {}
@@ -5175,7 +5175,7 @@ class CMsgTEDust final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTELargeFunnel final :
+class CMsgTELargeFunnel :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTELargeFunnel) */ {
  public:
   inline CMsgTELargeFunnel() : CMsgTELargeFunnel(nullptr) {}
@@ -5355,7 +5355,7 @@ class CMsgTELargeFunnel final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTESparks final :
+class CMsgTESparks :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTESparks) */ {
  public:
   inline CMsgTESparks() : CMsgTESparks(nullptr) {}
@@ -5570,7 +5570,7 @@ class CMsgTESparks final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEPhysicsProp final :
+class CMsgTEPhysicsProp :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEPhysicsProp) */ {
  public:
   inline CMsgTEPhysicsProp() : CMsgTEPhysicsProp(nullptr) {}
@@ -5935,7 +5935,7 @@ class CMsgTEPhysicsProp final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEPlayerDecal final :
+class CMsgTEPlayerDecal :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEPlayerDecal) */ {
  public:
   inline CMsgTEPlayerDecal() : CMsgTEPlayerDecal(nullptr) {}
@@ -6130,7 +6130,7 @@ class CMsgTEPlayerDecal final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEProjectedDecal final :
+class CMsgTEProjectedDecal :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEProjectedDecal) */ {
  public:
   inline CMsgTEProjectedDecal() : CMsgTEProjectedDecal(nullptr) {}
@@ -6345,7 +6345,7 @@ class CMsgTEProjectedDecal final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTESmoke final :
+class CMsgTESmoke :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTESmoke) */ {
  public:
   inline CMsgTESmoke() : CMsgTESmoke(nullptr) {}
@@ -6525,7 +6525,7 @@ class CMsgTESmoke final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEWorldDecal final :
+class CMsgTEWorldDecal :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEWorldDecal) */ {
  public:
   inline CMsgTEWorldDecal() : CMsgTEWorldDecal(nullptr) {}

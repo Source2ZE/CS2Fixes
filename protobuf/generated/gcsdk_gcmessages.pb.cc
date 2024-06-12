@@ -395,7 +395,8 @@ PROTOBUF_CONSTEXPR CMsgServerHello::CMsgServerHello(
   , /*decltype(_impl_.version_)*/0u
   , /*decltype(_impl_.legacy_client_session_need_)*/0u
   , /*decltype(_impl_.client_launcher_)*/0u
-  , /*decltype(_impl_.required_internal_addr_)*/0u} {}
+  , /*decltype(_impl_.required_internal_addr_)*/0u
+  , /*decltype(_impl_.socache_control_)*/0u} {}
 struct CMsgServerHelloDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CMsgServerHelloDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -1107,6 +1108,7 @@ const uint32_t TableStruct_gcsdk_5fgcmessages_2eproto::offsets[] PROTOBUF_SECTIO
   PROTOBUF_FIELD_OFFSET(::CMsgServerHello, _impl_.legacy_steamdatagram_routing_),
   PROTOBUF_FIELD_OFFSET(::CMsgServerHello, _impl_.required_internal_addr_),
   PROTOBUF_FIELD_OFFSET(::CMsgServerHello, _impl_.steamdatagram_login_),
+  PROTOBUF_FIELD_OFFSET(::CMsgServerHello, _impl_.socache_control_),
   2,
   ~0u,
   3,
@@ -1114,6 +1116,7 @@ const uint32_t TableStruct_gcsdk_5fgcmessages_2eproto::offsets[] PROTOBUF_SECTIO
   0,
   5,
   1,
+  6,
   PROTOBUF_FIELD_OFFSET(::CMsgClientWelcome_Location, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgClientWelcome_Location, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -1453,33 +1456,33 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 232, 239, -1, sizeof(::CMsgGCRequestSessionIPResponse)},
   { 240, 248, -1, sizeof(::CMsgSOCacheHaveVersion)},
   { 250, 265, -1, sizeof(::CMsgClientHello)},
-  { 274, 287, -1, sizeof(::CMsgServerHello)},
-  { 294, 303, -1, sizeof(::CMsgClientWelcome_Location)},
-  { 306, 323, -1, sizeof(::CMsgClientWelcome)},
-  { 334, 346, -1, sizeof(::CMsgConnectionStatus)},
-  { 352, 361, -1, sizeof(::CWorkshop_PopulateItemDescriptions_Request_SingleItemDescription)},
-  { 364, 372, -1, sizeof(::CWorkshop_PopulateItemDescriptions_Request_ItemDescriptionsLanguageBlock)},
-  { 374, 382, -1, sizeof(::CWorkshop_PopulateItemDescriptions_Request)},
-  { 384, 392, -1, sizeof(::CWorkshop_GetContributors_Request)},
-  { 394, -1, -1, sizeof(::CWorkshop_GetContributors_Response)},
-  { 401, 411, -1, sizeof(::CWorkshop_SetItemPaymentRules_Request_WorkshopItemPaymentRule)},
-  { 415, 423, -1, sizeof(::CWorkshop_SetItemPaymentRules_Request_WorkshopDirectPaymentRule)},
-  { 425, 434, -1, sizeof(::CWorkshop_SetItemPaymentRules_Request_PartnerItemPaymentRule)},
-  { 437, 450, -1, sizeof(::CWorkshop_SetItemPaymentRules_Request)},
-  { 457, -1, -1, sizeof(::CWorkshop_SetItemPaymentRules_Response)},
-  { 463, 471, -1, sizeof(::CGameServers_AggregationQuery_Request)},
-  { 473, 486, -1, sizeof(::CGameServers_AggregationQuery_Response_Group)},
-  { 493, -1, -1, sizeof(::CGameServers_AggregationQuery_Response)},
-  { 500, 511, -1, sizeof(::CWorkshop_AddSpecialPayment_Request)},
-  { 516, -1, -1, sizeof(::CWorkshop_AddSpecialPayment_Response)},
-  { 522, 530, -1, sizeof(::CProductInfo_SetRichPresenceLocalization_Request_Token)},
-  { 532, 540, -1, sizeof(::CProductInfo_SetRichPresenceLocalization_Request_LanguageSection)},
-  { 542, 551, -1, sizeof(::CProductInfo_SetRichPresenceLocalization_Request)},
-  { 554, -1, -1, sizeof(::CProductInfo_SetRichPresenceLocalization_Response)},
-  { 560, 569, -1, sizeof(::CMsgSerializedSOCache_TypeCache)},
-  { 572, 580, -1, sizeof(::CMsgSerializedSOCache_Cache_Version)},
-  { 582, 592, -1, sizeof(::CMsgSerializedSOCache_Cache)},
-  { 596, 605, -1, sizeof(::CMsgSerializedSOCache)},
+  { 274, 288, -1, sizeof(::CMsgServerHello)},
+  { 296, 305, -1, sizeof(::CMsgClientWelcome_Location)},
+  { 308, 325, -1, sizeof(::CMsgClientWelcome)},
+  { 336, 348, -1, sizeof(::CMsgConnectionStatus)},
+  { 354, 363, -1, sizeof(::CWorkshop_PopulateItemDescriptions_Request_SingleItemDescription)},
+  { 366, 374, -1, sizeof(::CWorkshop_PopulateItemDescriptions_Request_ItemDescriptionsLanguageBlock)},
+  { 376, 384, -1, sizeof(::CWorkshop_PopulateItemDescriptions_Request)},
+  { 386, 394, -1, sizeof(::CWorkshop_GetContributors_Request)},
+  { 396, -1, -1, sizeof(::CWorkshop_GetContributors_Response)},
+  { 403, 413, -1, sizeof(::CWorkshop_SetItemPaymentRules_Request_WorkshopItemPaymentRule)},
+  { 417, 425, -1, sizeof(::CWorkshop_SetItemPaymentRules_Request_WorkshopDirectPaymentRule)},
+  { 427, 436, -1, sizeof(::CWorkshop_SetItemPaymentRules_Request_PartnerItemPaymentRule)},
+  { 439, 452, -1, sizeof(::CWorkshop_SetItemPaymentRules_Request)},
+  { 459, -1, -1, sizeof(::CWorkshop_SetItemPaymentRules_Response)},
+  { 465, 473, -1, sizeof(::CGameServers_AggregationQuery_Request)},
+  { 475, 488, -1, sizeof(::CGameServers_AggregationQuery_Response_Group)},
+  { 495, -1, -1, sizeof(::CGameServers_AggregationQuery_Response)},
+  { 502, 513, -1, sizeof(::CWorkshop_AddSpecialPayment_Request)},
+  { 518, -1, -1, sizeof(::CWorkshop_AddSpecialPayment_Response)},
+  { 524, 532, -1, sizeof(::CProductInfo_SetRichPresenceLocalization_Request_Token)},
+  { 534, 542, -1, sizeof(::CProductInfo_SetRichPresenceLocalization_Request_LanguageSection)},
+  { 544, 553, -1, sizeof(::CProductInfo_SetRichPresenceLocalization_Request)},
+  { 556, -1, -1, sizeof(::CProductInfo_SetRichPresenceLocalization_Response)},
+  { 562, 571, -1, sizeof(::CMsgSerializedSOCache_TypeCache)},
+  { 574, 582, -1, sizeof(::CMsgSerializedSOCache_Cache_Version)},
+  { 584, 594, -1, sizeof(::CMsgSerializedSOCache_Cache)},
+  { 598, 607, -1, sizeof(::CMsgSerializedSOCache)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -1591,112 +1594,113 @@ const char descriptor_table_protodef_gcsdk_5fgcmessages_2eproto[] PROTOBUF_SECTI
   "t_launcher\030\004 \001(\r\022\025\n\rpartner_srcid\030\005 \001(\r\022"
   "\031\n\021partner_accountid\030\006 \001(\r\022\034\n\024partner_ac"
   "countflags\030\007 \001(\r\022\036\n\026partner_accountbalan"
-  "ce\030\010 \001(\r\022\026\n\016steam_launcher\030\t \001(\r\"\372\001\n\017CMs"
+  "ce\030\010 \001(\r\022\026\n\016steam_launcher\030\t \001(\r\"\223\002\n\017CMs"
   "gServerHello\022\017\n\007version\030\001 \001(\r\0226\n\025socache"
   "_have_versions\030\002 \003(\0132\027.CMsgSOCacheHaveVe"
   "rsion\022\"\n\032legacy_client_session_need\030\003 \001("
   "\r\022\027\n\017client_launcher\030\004 \001(\r\022$\n\034legacy_ste"
   "amdatagram_routing\030\006 \001(\014\022\036\n\026required_int"
   "ernal_addr\030\007 \001(\r\022\033\n\023steamdatagram_login\030"
-  "\010 \001(\014\"\264\003\n\021CMsgClientWelcome\022\017\n\007version\030\001"
-  " \001(\r\022\021\n\tgame_data\030\002 \001(\014\022;\n\033outofdate_sub"
-  "scribed_caches\030\003 \003(\0132\026.CMsgSOCacheSubscr"
-  "ibed\022A\n\032uptodate_subscribed_caches\030\004 \003(\013"
-  "2\035.CMsgSOCacheSubscriptionCheck\022-\n\010locat"
-  "ion\030\005 \001(\0132\033.CMsgClientWelcome.Location\022\022"
-  "\n\ngame_data2\030\006 \001(\014\022$\n\034rtime32_gc_welcome"
-  "_timestamp\030\007 \001(\r\022\020\n\010currency\030\010 \001(\r\022\017\n\007ba"
-  "lance\030\t \001(\r\022\023\n\013balance_url\030\n \001(\t\022\030\n\020txn_"
-  "country_code\030\013 \001(\t\032@\n\010Location\022\020\n\010latitu"
-  "de\030\001 \001(\002\022\021\n\tlongitude\030\002 \001(\002\022\017\n\007country\030\003"
-  " \001(\t\"\345\001\n\024CMsgConnectionStatus\022D\n\006status\030"
-  "\001 \001(\0162\023.GCConnectionStatus:\037GCConnection"
-  "Status_HAVE_SESSION\022\033\n\023client_session_ne"
-  "ed\030\002 \001(\r\022\026\n\016queue_position\030\003 \001(\005\022\022\n\nqueu"
-  "e_size\030\004 \001(\005\022\024\n\014wait_seconds\030\005 \001(\005\022(\n es"
-  "timated_wait_seconds_remaining\030\006 \001(\005\"\206\003\n"
-  "*CWorkshop_PopulateItemDescriptions_Requ"
-  "est\022\r\n\005appid\030\001 \001(\r\022\\\n\tlanguages\030\002 \003(\0132I."
-  "CWorkshop_PopulateItemDescriptions_Reque"
-  "st.ItemDescriptionsLanguageBlock\032^\n\025Sing"
-  "leItemDescription\022\022\n\ngameitemid\030\001 \001(\r\022\030\n"
-  "\020item_description\030\002 \001(\t\022\027\n\017one_per_accou"
-  "nt\030\003 \001(\010\032\212\001\n\035ItemDescriptionsLanguageBlo"
-  "ck\022\020\n\010language\030\001 \001(\t\022W\n\014descriptions\030\002 \003"
-  "(\0132A.CWorkshop_PopulateItemDescriptions_"
-  "Request.SingleItemDescription\"F\n!CWorksh"
-  "op_GetContributors_Request\022\r\n\005appid\030\001 \001("
-  "\r\022\022\n\ngameitemid\030\002 \001(\r\":\n\"CWorkshop_GetCo"
-  "ntributors_Response\022\024\n\014contributors\030\001 \003("
-  "\006\"\365\005\n%CWorkshop_SetItemPaymentRules_Requ"
-  "est\022\r\n\005appid\030\001 \001(\r\022\022\n\ngameitemid\030\002 \001(\r\022a"
-  "\n\031associated_workshop_files\030\003 \003(\0132>.CWor"
-  "kshop_SetItemPaymentRules_Request.Worksh"
-  "opItemPaymentRule\022W\n\020partner_accounts\030\004 "
-  "\003(\0132=.CWorkshop_SetItemPaymentRules_Requ"
-  "est.PartnerItemPaymentRule\022\025\n\rvalidate_o"
-  "nly\030\005 \001(\010\022(\n make_workshop_files_subscri"
-  "bable\030\006 \001(\010\022v\n,associated_workshop_file_"
-  "for_direct_payments\030\007 \001(\0132@.CWorkshop_Se"
-  "tItemPaymentRules_Request.WorkshopDirect"
-  "PaymentRule\032\177\n\027WorkshopItemPaymentRule\022\030"
-  "\n\020workshop_file_id\030\001 \001(\004\022\032\n\022revenue_perc"
-  "entage\030\002 \001(\002\022\030\n\020rule_description\030\003 \001(\t\022\024"
-  "\n\trule_type\030\004 \001(\r:\0011\032O\n\031WorkshopDirectPa"
-  "ymentRule\022\030\n\020workshop_file_id\030\001 \001(\004\022\030\n\020r"
-  "ule_description\030\002 \001(\t\032b\n\026PartnerItemPaym"
-  "entRule\022\022\n\naccount_id\030\001 \001(\r\022\032\n\022revenue_p"
-  "ercentage\030\002 \001(\002\022\030\n\020rule_description\030\003 \001("
-  "\t\"(\n&CWorkshop_SetItemPaymentRules_Respo"
-  "nse\"M\n%CGameServers_AggregationQuery_Req"
-  "uest\022\016\n\006filter\030\001 \001(\t\022\024\n\014group_fields\030\003 \003"
-  "(\t\"\222\002\n&CGameServers_AggregationQuery_Res"
-  "ponse\022=\n\006groups\030\001 \003(\0132-.CGameServers_Agg"
-  "regationQuery_Response.Group\032\250\001\n\005Group\022\024"
-  "\n\014group_values\030\001 \003(\t\022\025\n\rservers_empty\030\002 "
-  "\001(\r\022\024\n\014servers_full\030\003 \001(\r\022\025\n\rservers_tot"
-  "al\030\004 \001(\r\022\026\n\016players_humans\030\005 \001(\r\022\024\n\014play"
-  "ers_bots\030\006 \001(\r\022\027\n\017player_capacity\030\007 \001(\r\""
-  "\207\001\n#CWorkshop_AddSpecialPayment_Request\022"
-  "\r\n\005appid\030\001 \001(\r\022\022\n\ngameitemid\030\002 \001(\r\022\014\n\004da"
-  "te\030\003 \001(\t\022\026\n\016payment_us_usd\030\004 \001(\004\022\027\n\017paym"
-  "ent_row_usd\030\005 \001(\004\"&\n$CWorkshop_AddSpecia"
-  "lPayment_Response\"\275\002\n0CProductInfo_SetRi"
-  "chPresenceLocalization_Request\022\r\n\005appid\030"
-  "\001 \001(\r\022T\n\tlanguages\030\002 \003(\0132A.CProductInfo_"
-  "SetRichPresenceLocalization_Request.Lang"
-  "uageSection\022\017\n\007steamid\030\003 \001(\004\032%\n\005Token\022\r\n"
-  "\005token\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\032l\n\017LanguageS"
-  "ection\022\020\n\010language\030\001 \001(\t\022G\n\006tokens\030\002 \003(\013"
-  "27.CProductInfo_SetRichPresenceLocalizat"
-  "ion_Request.Token\"3\n1CProductInfo_SetRic"
-  "hPresenceLocalization_Response\"\374\002\n\025CMsgS"
-  "erializedSOCache\022\024\n\014file_version\030\001 \001(\r\022,"
-  "\n\006caches\030\002 \003(\0132\034.CMsgSerializedSOCache.C"
-  "ache\022\037\n\027gc_socache_file_version\030\003 \001(\r\032>\n"
-  "\tTypeCache\022\014\n\004type\030\001 \001(\r\022\017\n\007objects\030\002 \003("
-  "\014\022\022\n\nservice_id\030\003 \001(\r\032\275\001\n\005Cache\022\014\n\004type\030"
-  "\001 \001(\r\022\n\n\002id\030\002 \001(\004\0226\n\010versions\030\003 \003(\0132$.CM"
-  "sgSerializedSOCache.Cache.Version\0225\n\013typ"
-  "e_caches\030\004 \003(\0132 .CMsgSerializedSOCache.T"
-  "ypeCache\032+\n\007Version\022\017\n\007service\030\001 \001(\r\022\017\n\007"
-  "version\030\002 \001(\004*\204\001\n\024GCClientLauncherType\022 "
-  "\n\034GCClientLauncherType_DEFAULT\020\000\022%\n!GCCl"
-  "ientLauncherType_PERFECTWORLD\020\001\022#\n\037GCCli"
-  "entLauncherType_STEAMCHINA\020\002*\325\001\n\022GCConne"
-  "ctionStatus\022#\n\037GCConnectionStatus_HAVE_S"
-  "ESSION\020\000\022$\n GCConnectionStatus_GC_GOING_"
-  "DOWN\020\001\022!\n\035GCConnectionStatus_NO_SESSION\020"
-  "\002\0220\n,GCConnectionStatus_NO_SESSION_IN_LO"
-  "GON_QUEUE\020\003\022\037\n\033GCConnectionStatus_NO_STE"
-  "AM\020\004"
+  "\010 \001(\014\022\027\n\017socache_control\030\t \001(\r\"\264\003\n\021CMsgC"
+  "lientWelcome\022\017\n\007version\030\001 \001(\r\022\021\n\tgame_da"
+  "ta\030\002 \001(\014\022;\n\033outofdate_subscribed_caches\030"
+  "\003 \003(\0132\026.CMsgSOCacheSubscribed\022A\n\032uptodat"
+  "e_subscribed_caches\030\004 \003(\0132\035.CMsgSOCacheS"
+  "ubscriptionCheck\022-\n\010location\030\005 \001(\0132\033.CMs"
+  "gClientWelcome.Location\022\022\n\ngame_data2\030\006 "
+  "\001(\014\022$\n\034rtime32_gc_welcome_timestamp\030\007 \001("
+  "\r\022\020\n\010currency\030\010 \001(\r\022\017\n\007balance\030\t \001(\r\022\023\n\013"
+  "balance_url\030\n \001(\t\022\030\n\020txn_country_code\030\013 "
+  "\001(\t\032@\n\010Location\022\020\n\010latitude\030\001 \001(\002\022\021\n\tlon"
+  "gitude\030\002 \001(\002\022\017\n\007country\030\003 \001(\t\"\345\001\n\024CMsgCo"
+  "nnectionStatus\022D\n\006status\030\001 \001(\0162\023.GCConne"
+  "ctionStatus:\037GCConnectionStatus_HAVE_SES"
+  "SION\022\033\n\023client_session_need\030\002 \001(\r\022\026\n\016que"
+  "ue_position\030\003 \001(\005\022\022\n\nqueue_size\030\004 \001(\005\022\024\n"
+  "\014wait_seconds\030\005 \001(\005\022(\n estimated_wait_se"
+  "conds_remaining\030\006 \001(\005\"\206\003\n*CWorkshop_Popu"
+  "lateItemDescriptions_Request\022\r\n\005appid\030\001 "
+  "\001(\r\022\\\n\tlanguages\030\002 \003(\0132I.CWorkshop_Popul"
+  "ateItemDescriptions_Request.ItemDescript"
+  "ionsLanguageBlock\032^\n\025SingleItemDescripti"
+  "on\022\022\n\ngameitemid\030\001 \001(\r\022\030\n\020item_descripti"
+  "on\030\002 \001(\t\022\027\n\017one_per_account\030\003 \001(\010\032\212\001\n\035It"
+  "emDescriptionsLanguageBlock\022\020\n\010language\030"
+  "\001 \001(\t\022W\n\014descriptions\030\002 \003(\0132A.CWorkshop_"
+  "PopulateItemDescriptions_Request.SingleI"
+  "temDescription\"F\n!CWorkshop_GetContribut"
+  "ors_Request\022\r\n\005appid\030\001 \001(\r\022\022\n\ngameitemid"
+  "\030\002 \001(\r\":\n\"CWorkshop_GetContributors_Resp"
+  "onse\022\024\n\014contributors\030\001 \003(\006\"\365\005\n%CWorkshop"
+  "_SetItemPaymentRules_Request\022\r\n\005appid\030\001 "
+  "\001(\r\022\022\n\ngameitemid\030\002 \001(\r\022a\n\031associated_wo"
+  "rkshop_files\030\003 \003(\0132>.CWorkshop_SetItemPa"
+  "ymentRules_Request.WorkshopItemPaymentRu"
+  "le\022W\n\020partner_accounts\030\004 \003(\0132=.CWorkshop"
+  "_SetItemPaymentRules_Request.PartnerItem"
+  "PaymentRule\022\025\n\rvalidate_only\030\005 \001(\010\022(\n ma"
+  "ke_workshop_files_subscribable\030\006 \001(\010\022v\n,"
+  "associated_workshop_file_for_direct_paym"
+  "ents\030\007 \001(\0132@.CWorkshop_SetItemPaymentRul"
+  "es_Request.WorkshopDirectPaymentRule\032\177\n\027"
+  "WorkshopItemPaymentRule\022\030\n\020workshop_file"
+  "_id\030\001 \001(\004\022\032\n\022revenue_percentage\030\002 \001(\002\022\030\n"
+  "\020rule_description\030\003 \001(\t\022\024\n\trule_type\030\004 \001"
+  "(\r:\0011\032O\n\031WorkshopDirectPaymentRule\022\030\n\020wo"
+  "rkshop_file_id\030\001 \001(\004\022\030\n\020rule_description"
+  "\030\002 \001(\t\032b\n\026PartnerItemPaymentRule\022\022\n\nacco"
+  "unt_id\030\001 \001(\r\022\032\n\022revenue_percentage\030\002 \001(\002"
+  "\022\030\n\020rule_description\030\003 \001(\t\"(\n&CWorkshop_"
+  "SetItemPaymentRules_Response\"M\n%CGameSer"
+  "vers_AggregationQuery_Request\022\016\n\006filter\030"
+  "\001 \001(\t\022\024\n\014group_fields\030\003 \003(\t\"\222\002\n&CGameSer"
+  "vers_AggregationQuery_Response\022=\n\006groups"
+  "\030\001 \003(\0132-.CGameServers_AggregationQuery_R"
+  "esponse.Group\032\250\001\n\005Group\022\024\n\014group_values\030"
+  "\001 \003(\t\022\025\n\rservers_empty\030\002 \001(\r\022\024\n\014servers_"
+  "full\030\003 \001(\r\022\025\n\rservers_total\030\004 \001(\r\022\026\n\016pla"
+  "yers_humans\030\005 \001(\r\022\024\n\014players_bots\030\006 \001(\r\022"
+  "\027\n\017player_capacity\030\007 \001(\r\"\207\001\n#CWorkshop_A"
+  "ddSpecialPayment_Request\022\r\n\005appid\030\001 \001(\r\022"
+  "\022\n\ngameitemid\030\002 \001(\r\022\014\n\004date\030\003 \001(\t\022\026\n\016pay"
+  "ment_us_usd\030\004 \001(\004\022\027\n\017payment_row_usd\030\005 \001"
+  "(\004\"&\n$CWorkshop_AddSpecialPayment_Respon"
+  "se\"\275\002\n0CProductInfo_SetRichPresenceLocal"
+  "ization_Request\022\r\n\005appid\030\001 \001(\r\022T\n\tlangua"
+  "ges\030\002 \003(\0132A.CProductInfo_SetRichPresence"
+  "Localization_Request.LanguageSection\022\017\n\007"
+  "steamid\030\003 \001(\004\032%\n\005Token\022\r\n\005token\030\001 \001(\t\022\r\n"
+  "\005value\030\002 \001(\t\032l\n\017LanguageSection\022\020\n\010langu"
+  "age\030\001 \001(\t\022G\n\006tokens\030\002 \003(\01327.CProductInfo"
+  "_SetRichPresenceLocalization_Request.Tok"
+  "en\"3\n1CProductInfo_SetRichPresenceLocali"
+  "zation_Response\"\374\002\n\025CMsgSerializedSOCach"
+  "e\022\024\n\014file_version\030\001 \001(\r\022,\n\006caches\030\002 \003(\0132"
+  "\034.CMsgSerializedSOCache.Cache\022\037\n\027gc_soca"
+  "che_file_version\030\003 \001(\r\032>\n\tTypeCache\022\014\n\004t"
+  "ype\030\001 \001(\r\022\017\n\007objects\030\002 \003(\014\022\022\n\nservice_id"
+  "\030\003 \001(\r\032\275\001\n\005Cache\022\014\n\004type\030\001 \001(\r\022\n\n\002id\030\002 \001"
+  "(\004\0226\n\010versions\030\003 \003(\0132$.CMsgSerializedSOC"
+  "ache.Cache.Version\0225\n\013type_caches\030\004 \003(\0132"
+  " .CMsgSerializedSOCache.TypeCache\032+\n\007Ver"
+  "sion\022\017\n\007service\030\001 \001(\r\022\017\n\007version\030\002 \001(\004*\246"
+  "\001\n\024GCClientLauncherType\022 \n\034GCClientLaunc"
+  "herType_DEFAULT\020\000\022%\n!GCClientLauncherTyp"
+  "e_PERFECTWORLD\020\001\022#\n\037GCClientLauncherType"
+  "_STEAMCHINA\020\002\022 \n\034GCClientLauncherType_SO"
+  "URCE2\020\003*\325\001\n\022GCConnectionStatus\022#\n\037GCConn"
+  "ectionStatus_HAVE_SESSION\020\000\022$\n GCConnect"
+  "ionStatus_GC_GOING_DOWN\020\001\022!\n\035GCConnectio"
+  "nStatus_NO_SESSION\020\002\0220\n,GCConnectionStat"
+  "us_NO_SESSION_IN_LOGON_QUEUE\020\003\022\037\n\033GCConn"
+  "ectionStatus_NO_STEAM\020\004"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_gcsdk_5fgcmessages_2eproto_deps[1] = {
   &::descriptor_table_steammessages_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_gcsdk_5fgcmessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_gcsdk_5fgcmessages_2eproto = {
-    false, false, 6124, descriptor_table_protodef_gcsdk_5fgcmessages_2eproto,
+    false, false, 6183, descriptor_table_protodef_gcsdk_5fgcmessages_2eproto,
     "gcsdk_gcmessages.proto",
     &descriptor_table_gcsdk_5fgcmessages_2eproto_once, descriptor_table_gcsdk_5fgcmessages_2eproto_deps, 1, 50,
     schemas, file_default_instances, TableStruct_gcsdk_5fgcmessages_2eproto::offsets,
@@ -1718,6 +1722,7 @@ bool GCClientLauncherType_IsValid(int value) {
     case 0:
     case 1:
     case 2:
+    case 3:
       return true;
     default:
       return false;
@@ -7817,6 +7822,9 @@ class CMsgServerHello::_Internal {
   static void set_has_steamdatagram_login(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
   }
+  static void set_has_socache_control(HasBits* has_bits) {
+    (*has_bits)[0] |= 64u;
+  }
 };
 
 CMsgServerHello::CMsgServerHello(::PROTOBUF_NAMESPACE_ID::Arena* arena,
@@ -7837,7 +7845,8 @@ CMsgServerHello::CMsgServerHello(const CMsgServerHello& from)
     , decltype(_impl_.version_){}
     , decltype(_impl_.legacy_client_session_need_){}
     , decltype(_impl_.client_launcher_){}
-    , decltype(_impl_.required_internal_addr_){}};
+    , decltype(_impl_.required_internal_addr_){}
+    , decltype(_impl_.socache_control_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   _impl_.legacy_steamdatagram_routing_.InitDefault();
@@ -7857,8 +7866,8 @@ CMsgServerHello::CMsgServerHello(const CMsgServerHello& from)
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.version_, &from._impl_.version_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.required_internal_addr_) -
-    reinterpret_cast<char*>(&_impl_.version_)) + sizeof(_impl_.required_internal_addr_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.socache_control_) -
+    reinterpret_cast<char*>(&_impl_.version_)) + sizeof(_impl_.socache_control_));
   // @@protoc_insertion_point(copy_constructor:CMsgServerHello)
 }
 
@@ -7876,6 +7885,7 @@ inline void CMsgServerHello::SharedCtor(
     , decltype(_impl_.legacy_client_session_need_){0u}
     , decltype(_impl_.client_launcher_){0u}
     , decltype(_impl_.required_internal_addr_){0u}
+    , decltype(_impl_.socache_control_){0u}
   };
   _impl_.legacy_steamdatagram_routing_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -7923,10 +7933,10 @@ void CMsgServerHello::Clear() {
       _impl_.steamdatagram_login_.ClearNonDefaultToEmpty();
     }
   }
-  if (cached_has_bits & 0x0000003cu) {
+  if (cached_has_bits & 0x0000007cu) {
     ::memset(&_impl_.version_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.required_internal_addr_) -
-        reinterpret_cast<char*>(&_impl_.version_)) + sizeof(_impl_.required_internal_addr_));
+        reinterpret_cast<char*>(&_impl_.socache_control_) -
+        reinterpret_cast<char*>(&_impl_.version_)) + sizeof(_impl_.socache_control_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -8006,6 +8016,15 @@ const char* CMsgServerHello::_InternalParse(const char* ptr, ::_pbi::ParseContex
         } else
           goto handle_unusual;
         continue;
+      // optional uint32 socache_control = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
+          _Internal::set_has_socache_control(&has_bits);
+          _impl_.socache_control_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -8081,6 +8100,12 @@ uint8_t* CMsgServerHello::_InternalSerialize(
         8, this->_internal_steamdatagram_login(), target);
   }
 
+  // optional uint32 socache_control = 9;
+  if (cached_has_bits & 0x00000040u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(9, this->_internal_socache_control(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -8105,7 +8130,7 @@ size_t CMsgServerHello::ByteSizeLong() const {
   }
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
+  if (cached_has_bits & 0x0000007fu) {
     // optional bytes legacy_steamdatagram_routing = 6;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
@@ -8140,6 +8165,11 @@ size_t CMsgServerHello::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_required_internal_addr());
     }
 
+    // optional uint32 socache_control = 9;
+    if (cached_has_bits & 0x00000040u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_socache_control());
+    }
+
   }
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
@@ -8161,7 +8191,7 @@ void CMsgServerHello::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
 
   _this->_impl_.socache_have_versions_.MergeFrom(from._impl_.socache_have_versions_);
   cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
+  if (cached_has_bits & 0x0000007fu) {
     if (cached_has_bits & 0x00000001u) {
       _this->_internal_set_legacy_steamdatagram_routing(from._internal_legacy_steamdatagram_routing());
     }
@@ -8179,6 +8209,9 @@ void CMsgServerHello::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
     }
     if (cached_has_bits & 0x00000020u) {
       _this->_impl_.required_internal_addr_ = from._impl_.required_internal_addr_;
+    }
+    if (cached_has_bits & 0x00000040u) {
+      _this->_impl_.socache_control_ = from._impl_.socache_control_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
@@ -8212,8 +8245,8 @@ void CMsgServerHello::InternalSwap(CMsgServerHello* other) {
       &other->_impl_.steamdatagram_login_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgServerHello, _impl_.required_internal_addr_)
-      + sizeof(CMsgServerHello::_impl_.required_internal_addr_)
+      PROTOBUF_FIELD_OFFSET(CMsgServerHello, _impl_.socache_control_)
+      + sizeof(CMsgServerHello::_impl_.socache_control_)
       - PROTOBUF_FIELD_OFFSET(CMsgServerHello, _impl_.version_)>(
           reinterpret_cast<char*>(&_impl_.version_),
           reinterpret_cast<char*>(&other->_impl_.version_));
