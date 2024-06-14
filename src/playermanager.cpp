@@ -1340,7 +1340,7 @@ const char* CPlayerManager::GetErrorString(ETargetError eType, int iSlot)
 		case ETargetError::CONNECTING:
 			return "This action cannot be performed on connecting players. Please wait a moment and try again.";
 		case ETargetError::MULTIPLE_NAME_MATCHES:
-			return "More than one player matched the given pattern. Consider using '&<full_name>' for exact name matching.";
+			return "More than one player matched the given pattern. Consider using & before the player's name for exact matching.";
 		case ETargetError::RANDOM:
 			return "This action cannot be performed on random players.";
 		case ETargetError::MULTIPLE:
