@@ -330,7 +330,7 @@ CON_COMMAND_CHAT_FLAGS(goto, "<name> - Teleport to a player", ADMFLAG_SLAY)
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 
-	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_MULTIPLE | NO_IMMUNITY))
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_SELF | NO_MULTIPLE | NO_DEAD | NO_IMMUNITY))
 		return;
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
@@ -360,7 +360,7 @@ CON_COMMAND_CHAT_FLAGS(bring, "<name> - Bring a player", ADMFLAG_SLAY)
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
 
-	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD, nType))
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_SELF | NO_DEAD, nType))
 		return;
 
 	for (int i = 0; i < iNumClients; i++)
