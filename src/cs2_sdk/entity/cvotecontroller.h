@@ -18,27 +18,21 @@
  */
 
 #pragma once
-#include "utils/entity.h"
-#include "playermanager.h"
-#include "gamesystem.h"
-#include "igameevents.h"
 
-struct LeaderColor
+#include "cbaseentity.h"
+//#include "util_shared.h"
+
+class CVoteController : public CBaseEntity
 {
-	const char* pszColorName;
-	Color clColor;
+public:
+	DECLARE_SCHEMA_CLASS(CVoteController);
+
+	SCHEMA_FIELD(int, m_iActiveIssueIndex)
+		SCHEMA_FIELD(int, m_iOnlyTeamToVote)
+		SCHEMA_FIELD_POINTER(int, m_nVoteOptionCount)
+		SCHEMA_FIELD(int, m_nPotentialVotes)
+		SCHEMA_FIELD(bool, m_bIsYesNoVote)
+		SCHEMA_FIELD_POINTER(int, m_nVotesCast)
+		SCHEMA_FIELD(int, m_nHighestCountIndex)
+		SCHEMA_FIELD_POINTER(CUtlVector<const char* >, m_VoteOptions)
 };
-
-extern LeaderColor LeaderColorMap[];
-extern const size_t g_nLeaderColorMapSize;
-extern CUtlVector<ZEPlayerHandle> g_vecLeaders;
-extern int g_iLeaderIndex;
-
-extern bool g_bEnableLeader;
-
-bool Leader_NoLeaders();
-void Leader_ApplyLeaderVisuals(CCSPlayerPawn *pPawn);
-void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64 *clients, const CNetMessage *pData);
-void Leader_OnRoundStart(IGameEvent *pEvent);
-void Leader_BulletImpact(IGameEvent *pEvent);
-void Leader_Precache(IEntityResourceManifest *pResourceManifest);

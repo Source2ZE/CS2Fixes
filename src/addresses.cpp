@@ -50,8 +50,6 @@ bool addresses::Initialize(CGameConfig *g_GameConfig)
 		modules::hammer = new CModule(ROOTBIN, "tools/hammer");
 #endif
 
-	RESOLVE_SIG(g_GameConfig, "NetworkStateChanged", addresses::NetworkStateChanged);
-	RESOLVE_SIG(g_GameConfig, "StateChanged", addresses::StateChanged);
 	RESOLVE_SIG(g_GameConfig, "UTIL_ClientPrintAll", addresses::UTIL_ClientPrintAll);
 	RESOLVE_SIG(g_GameConfig, "ClientPrint", addresses::ClientPrint);
 	RESOLVE_SIG(g_GameConfig, "SetGroundEntity", addresses::SetGroundEntity);

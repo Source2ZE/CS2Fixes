@@ -26,7 +26,7 @@
 #include "networksystem/inetworkserializer.h"
 #include <iserver.h>
 
-class CTakeDamageInfo;
+class CTakeDamageInfoContainer;
 class CCSPlayer_MovementServices;
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
@@ -34,7 +34,7 @@ class CS2Fixes : public ISmmPlugin, public IMetamodListener
 public:
 	bool Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late);
 	void Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
-		INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType);
+		INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType);
 	bool Unload(char *error, size_t maxlen);
 	bool Pause(char *error, size_t maxlen);
 	bool Unpause(char *error, size_t maxlen);
@@ -64,8 +64,9 @@ public: //hooks
 	void Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
 	void Hook_ApplyGameSettings(KeyValues* pKV);
 	void Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList);
-	bool Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, void *a3);
+	bool Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer *pInfoContainer);
 	void Hook_CheckMovingGround(double frametime);
+	int Hook_LoadEventsFromFile(const char *filename, bool bSearchAll);
 
 public:
 	const char *GetAuthor();

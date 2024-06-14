@@ -22,6 +22,7 @@
 #include "commands.h"
 #include "gameevents.pb.h"
 #include "zombiereborn.h"
+#include "networksystem/inetworkmessages.h"
 
 #include "tier0/memdbgon.h"
 
@@ -168,14 +169,16 @@ bool Leader_CreateDefendMarker(ZEPlayer *pPlayer, Color clrTint, int iDuration)
 	return true;
 }
 
-void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64 *clients, const void *pData)
+void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64 *clients, const CNetMessage *pData)
 {
 	if (!g_bEnableLeader)
 		return;
+
+	auto pPBData = pData->ToPB<CMsgSource1LegacyGameEvent>();
 	
 	static int player_ping_id = g_gameEventManager->LookupEventId("player_ping");
 
-	if (((CMsgSource1LegacyGameEvent*)pData)->eventid() != player_ping_id)
+	if (pPBData->eventid() != player_ping_id)
 		return;
 
 	// Don't kill ping visual when there's no leader, only mute the ping depending on cvar
@@ -187,7 +190,7 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64 *clients, cons
 		return;
 	}
 
-	IGameEvent *pEvent = g_gameEventManager->UnserializeEvent(*(CMsgSource1LegacyGameEvent*)pData);
+	IGameEvent *pEvent = g_gameEventManager->UnserializeEvent(*pPBData);
 
 	ZEPlayer *pPlayer = g_playerManager->GetPlayer(pEvent->GetPlayerSlot("userid"));
 	CCSPlayerController *pController = CCSPlayerController::FromSlot(pEvent->GetPlayerSlot("userid"));

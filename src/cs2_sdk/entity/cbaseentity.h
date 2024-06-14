@@ -177,7 +177,7 @@ public:
 		CALL_VIRTUAL(void, offset, this, position, angles, velocity);
 	}
 
-	void SetCollisionGroup(Collision_Group_t nCollisionGroup)
+	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup)
 	{
 		if (!m_pCollision())
 			return;
@@ -195,13 +195,13 @@ public:
 
 	bool IsPawn()
 	{
-		static int offset = g_GameConfig->GetOffset("IsEntityPawn");
+		static int offset = g_GameConfig->GetOffset("IsPlayerPawn");
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
 	bool IsController()
 	{
-		static int offset = g_GameConfig->GetOffset("IsEntityController");
+		static int offset = g_GameConfig->GetOffset("IsPlayerController");
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
@@ -262,7 +262,7 @@ public:
 
 	void SetGroundEntity(CBaseEntity *pGround)
 	{
-		addresses::SetGroundEntity(this, pGround);
+		addresses::SetGroundEntity(this, pGround, nullptr);
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }

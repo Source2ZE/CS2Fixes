@@ -66,6 +66,7 @@ PROTOBUF_CONSTEXPR CMsgTEFireBullets::CMsgTEFireBullets(
   , /*decltype(_impl_.item_def_index_)*/0u
   , /*decltype(_impl_.sound_dsp_effect_)*/0u
   , /*decltype(_impl_.num_bullets_remaining_)*/0u
+  , /*decltype(_impl_.attack_type_)*/0u
   , /*decltype(_impl_.weapon_id_)*/16777215u
   , /*decltype(_impl_.player_)*/16777215u} {}
 struct CMsgTEFireBulletsDefaultTypeInternal {
@@ -122,12 +123,13 @@ const uint32_t TableStruct_cs_5fgameevents_2eproto::offsets[] PROTOBUF_SECTION_V
   PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets, _impl_.sound_dsp_effect_),
   PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets, _impl_.ent_origin_),
   PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets, _impl_.num_bullets_remaining_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets, _impl_.attack_type_),
   0,
   1,
-  12,
+  13,
   3,
   4,
-  13,
+  14,
   5,
   6,
   7,
@@ -136,11 +138,12 @@ const uint32_t TableStruct_cs_5fgameevents_2eproto::offsets[] PROTOBUF_SECTION_V
   10,
   2,
   11,
+  12,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 9, -1, sizeof(::CMsgTEPlayerAnimEvent)},
   { 12, 19, -1, sizeof(::CMsgTERadioIcon)},
-  { 20, 40, -1, sizeof(::CMsgTEFireBullets)},
+  { 20, 41, -1, sizeof(::CMsgTEFireBullets)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -154,7 +157,7 @@ const char descriptor_table_protodef_cs_5fgameevents_2eproto[] PROTOBUF_SECTION_
   "proto\"N\n\025CMsgTEPlayerAnimEvent\022\030\n\006player"
   "\030\001 \001(\007:\01016777215\022\r\n\005event\030\002 \001(\r\022\014\n\004data\030"
   "\003 \001(\005\"+\n\017CMsgTERadioIcon\022\030\n\006player\030\001 \001(\007"
-  ":\01016777215\"\340\002\n\021CMsgTEFireBullets\022\033\n\006orig"
+  ":\01016777215\"\365\002\n\021CMsgTEFireBullets\022\033\n\006orig"
   "in\030\001 \001(\0132\013.CMsgVector\022\033\n\006angles\030\002 \001(\0132\013."
   "CMsgQAngle\022\033\n\tweapon_id\030\003 \001(\r:\01016777215\022"
   "\014\n\004mode\030\004 \001(\r\022\014\n\004seed\030\005 \001(\r\022\030\n\006player\030\006 "
@@ -163,16 +166,17 @@ const char descriptor_table_protodef_cs_5fgameevents_2eproto[] PROTOBUF_SECTION_
   "_type\030\n \001(\005\022\026\n\016item_def_index\030\013 \001(\r\022\030\n\020s"
   "ound_dsp_effect\030\014 \001(\007\022\037\n\nent_origin\030\r \001("
   "\0132\013.CMsgVector\022\035\n\025num_bullets_remaining\030"
-  "\016 \001(\r*]\n\017ECsgoGameEvents\022\031\n\024GE_PlayerAni"
-  "mEventId\020\302\003\022\030\n\023GE_RadioIconEventId\020\303\003\022\025\n"
-  "\020GE_FireBulletsId\020\304\003"
+  "\016 \001(\r\022\023\n\013attack_type\030\017 \001(\r*]\n\017ECsgoGameE"
+  "vents\022\031\n\024GE_PlayerAnimEventId\020\302\003\022\030\n\023GE_R"
+  "adioIconEventId\020\303\003\022\025\n\020GE_FireBulletsId\020\304"
+  "\003"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_cs_5fgameevents_2eproto_deps[1] = {
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_cs_5fgameevents_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cs_5fgameevents_2eproto = {
-    false, false, 620, descriptor_table_protodef_cs_5fgameevents_2eproto,
+    false, false, 641, descriptor_table_protodef_cs_5fgameevents_2eproto,
     "cs_gameevents.proto",
     &descriptor_table_cs_5fgameevents_2eproto_once, descriptor_table_cs_5fgameevents_2eproto_deps, 1, 3,
     schemas, file_default_instances, TableStruct_cs_5fgameevents_2eproto::offsets,
@@ -673,7 +677,7 @@ class CMsgTEFireBullets::_Internal {
     (*has_bits)[0] |= 2u;
   }
   static void set_has_weapon_id(HasBits* has_bits) {
-    (*has_bits)[0] |= 4096u;
+    (*has_bits)[0] |= 8192u;
   }
   static void set_has_mode(HasBits* has_bits) {
     (*has_bits)[0] |= 8u;
@@ -682,7 +686,7 @@ class CMsgTEFireBullets::_Internal {
     (*has_bits)[0] |= 16u;
   }
   static void set_has_player(HasBits* has_bits) {
-    (*has_bits)[0] |= 8192u;
+    (*has_bits)[0] |= 16384u;
   }
   static void set_has_inaccuracy(HasBits* has_bits) {
     (*has_bits)[0] |= 32u;
@@ -708,6 +712,9 @@ class CMsgTEFireBullets::_Internal {
   }
   static void set_has_num_bullets_remaining(HasBits* has_bits) {
     (*has_bits)[0] |= 2048u;
+  }
+  static void set_has_attack_type(HasBits* has_bits) {
+    (*has_bits)[0] |= 4096u;
   }
 };
 
@@ -759,6 +766,7 @@ CMsgTEFireBullets::CMsgTEFireBullets(const CMsgTEFireBullets& from)
     , decltype(_impl_.item_def_index_){}
     , decltype(_impl_.sound_dsp_effect_){}
     , decltype(_impl_.num_bullets_remaining_){}
+    , decltype(_impl_.attack_type_){}
     , decltype(_impl_.weapon_id_){}
     , decltype(_impl_.player_){}};
 
@@ -797,6 +805,7 @@ inline void CMsgTEFireBullets::SharedCtor(
     , decltype(_impl_.item_def_index_){0u}
     , decltype(_impl_.sound_dsp_effect_){0u}
     , decltype(_impl_.num_bullets_remaining_){0u}
+    , decltype(_impl_.attack_type_){0u}
     , decltype(_impl_.weapon_id_){16777215u}
     , decltype(_impl_.player_){16777215u}
   };
@@ -848,10 +857,10 @@ void CMsgTEFireBullets::Clear() {
         reinterpret_cast<char*>(&_impl_.spread_) -
         reinterpret_cast<char*>(&_impl_.mode_)) + sizeof(_impl_.spread_));
   }
-  if (cached_has_bits & 0x00003f00u) {
+  if (cached_has_bits & 0x00007f00u) {
     ::memset(&_impl_.sound_type_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.num_bullets_remaining_) -
-        reinterpret_cast<char*>(&_impl_.sound_type_)) + sizeof(_impl_.num_bullets_remaining_));
+        reinterpret_cast<char*>(&_impl_.attack_type_) -
+        reinterpret_cast<char*>(&_impl_.sound_type_)) + sizeof(_impl_.attack_type_));
     _impl_.weapon_id_ = 16777215u;
     _impl_.player_ = 16777215u;
   }
@@ -989,6 +998,15 @@ const char* CMsgTEFireBullets::_InternalParse(const char* ptr, ::_pbi::ParseCont
         } else
           goto handle_unusual;
         continue;
+      // optional uint32 attack_type = 15;
+      case 15:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 120)) {
+          _Internal::set_has_attack_type(&has_bits);
+          _impl_.attack_type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -1035,7 +1053,7 @@ uint8_t* CMsgTEFireBullets::_InternalSerialize(
   }
 
   // optional uint32 weapon_id = 3 [default = 16777215];
-  if (cached_has_bits & 0x00001000u) {
+  if (cached_has_bits & 0x00002000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_weapon_id(), target);
   }
@@ -1053,7 +1071,7 @@ uint8_t* CMsgTEFireBullets::_InternalSerialize(
   }
 
   // optional fixed32 player = 6 [default = 16777215];
-  if (cached_has_bits & 0x00002000u) {
+  if (cached_has_bits & 0x00004000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteFixed32ToArray(6, this->_internal_player(), target);
   }
@@ -1105,6 +1123,12 @@ uint8_t* CMsgTEFireBullets::_InternalSerialize(
   if (cached_has_bits & 0x00000800u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(14, this->_internal_num_bullets_remaining(), target);
+  }
+
+  // optional uint32 attack_type = 15;
+  if (cached_has_bits & 0x00001000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(15, this->_internal_attack_type(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1172,7 +1196,7 @@ size_t CMsgTEFireBullets::ByteSizeLong() const {
     }
 
   }
-  if (cached_has_bits & 0x00003f00u) {
+  if (cached_has_bits & 0x00007f00u) {
     // optional int32 sound_type = 10;
     if (cached_has_bits & 0x00000100u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_sound_type());
@@ -1193,13 +1217,18 @@ size_t CMsgTEFireBullets::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_num_bullets_remaining());
     }
 
-    // optional uint32 weapon_id = 3 [default = 16777215];
+    // optional uint32 attack_type = 15;
     if (cached_has_bits & 0x00001000u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_attack_type());
+    }
+
+    // optional uint32 weapon_id = 3 [default = 16777215];
+    if (cached_has_bits & 0x00002000u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_weapon_id());
     }
 
     // optional fixed32 player = 6 [default = 16777215];
-    if (cached_has_bits & 0x00002000u) {
+    if (cached_has_bits & 0x00004000u) {
       total_size += 1 + 4;
     }
 
@@ -1253,7 +1282,7 @@ void CMsgTEFireBullets::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, cons
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
-  if (cached_has_bits & 0x00003f00u) {
+  if (cached_has_bits & 0x00007f00u) {
     if (cached_has_bits & 0x00000100u) {
       _this->_impl_.sound_type_ = from._impl_.sound_type_;
     }
@@ -1267,9 +1296,12 @@ void CMsgTEFireBullets::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, cons
       _this->_impl_.num_bullets_remaining_ = from._impl_.num_bullets_remaining_;
     }
     if (cached_has_bits & 0x00001000u) {
-      _this->_impl_.weapon_id_ = from._impl_.weapon_id_;
+      _this->_impl_.attack_type_ = from._impl_.attack_type_;
     }
     if (cached_has_bits & 0x00002000u) {
+      _this->_impl_.weapon_id_ = from._impl_.weapon_id_;
+    }
+    if (cached_has_bits & 0x00004000u) {
       _this->_impl_.player_ = from._impl_.player_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -1293,8 +1325,8 @@ void CMsgTEFireBullets::InternalSwap(CMsgTEFireBullets* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgTEFireBullets, _impl_.num_bullets_remaining_)
-      + sizeof(CMsgTEFireBullets::_impl_.num_bullets_remaining_)
+      PROTOBUF_FIELD_OFFSET(CMsgTEFireBullets, _impl_.attack_type_)
+      + sizeof(CMsgTEFireBullets::_impl_.attack_type_)
       - PROTOBUF_FIELD_OFFSET(CMsgTEFireBullets, _impl_.origin_)>(
           reinterpret_cast<char*>(&_impl_.origin_),
           reinterpret_cast<char*>(&other->_impl_.origin_));
