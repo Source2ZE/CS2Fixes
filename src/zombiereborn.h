@@ -263,7 +263,7 @@ extern EZRRoundState g_ZRRoundState;
 void ZR_OnLevelInit();
 void ZR_OnRoundPrestart(IGameEvent* pEvent);
 void ZR_OnRoundStart(IGameEvent* pEvent);
-void ZR_OnPlayerSpawn(IGameEvent* pEvent);
+void ZR_OnPlayerSpawn(CCSPlayerController* pController);
 void ZR_OnPlayerHurt(IGameEvent* pEvent);
 void ZR_OnPlayerDeath(IGameEvent* pEvent);
 void ZR_OnRoundFreezeEnd(IGameEvent* pEvent);

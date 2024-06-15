@@ -61,6 +61,12 @@ jobs:
         run: |
           cd ambuild && python setup.py install && cd ..
 
+      - name: Install Clang 16
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          apt update && apt install -y clang-16
+          ln -sf /usr/bin/clang-16 /usr/bin/clang && ln -sf /usr/bin/clang++-16 /usr/bin/clang++
+
       - name: Build
         working-directory: CS2Fixes
         shell: bash
