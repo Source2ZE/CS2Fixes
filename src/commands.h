@@ -102,6 +102,7 @@ struct WeaponMapEntry_t
 	uint16 iItemDefIndex;
 	gear_slot_t iGearSlot;
 	int maxAmount = 0;
+	int iGearSlotPosition = 0;
 };
 
 void RegisterWeaponCommands();

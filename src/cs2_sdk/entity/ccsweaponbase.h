@@ -80,6 +80,7 @@ public:
 	DECLARE_SCHEMA_CLASS(CCSWeaponBaseVData)
 
 	SCHEMA_FIELD(gear_slot_t, m_GearSlot)
+	SCHEMA_FIELD(int, m_GearSlotPosition)
 	SCHEMA_FIELD(int, m_nPrice)
 	SCHEMA_FIELD(int, m_nPrimaryReserveAmmoMax);
 };

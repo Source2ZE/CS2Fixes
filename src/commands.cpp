@@ -90,8 +90,8 @@ WeaponMapEntry_t WeaponMap[] = {
 	{{"usp-s", "usp"},					"weapon_usp_silencer",	"USP-S",			200, 61, GEAR_SLOT_PISTOL},
 	{{"cz75-auto", "cs75a", "cz"},		"weapon_cz75a",			"CZ75-Auto",		500, 63, GEAR_SLOT_PISTOL},
 	{{"r8revolver", "revolver", "r8"},	"weapon_revolver",		"R8 Revolver",		600, 64, GEAR_SLOT_PISTOL},
-	{{"hegrenade", "he"},				"weapon_hegrenade",		"HE Grenade",		300, 44, GEAR_SLOT_GRENADES, 1},
-	{{"molotov"},						"weapon_molotov",		"Molotov",			400, 46, GEAR_SLOT_GRENADES, 1},
+	{{"hegrenade", "he"},				"weapon_hegrenade",		"HE Grenade",		300, 44, GEAR_SLOT_GRENADES, 1, 0},
+	{{"molotov"},						"weapon_molotov",		"Molotov",			400, 46, GEAR_SLOT_GRENADES, 1, 4},
 	{{"kevlar"},						"item_kevlar",			"Kevlar Vest",		650, 50, GEAR_SLOT_UTILITY},
 };
 
@@ -155,6 +155,25 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 		return;
 	}
 
+	if (weaponEntry.iGearSlot == GEAR_SLOT_GRENADES)
+	{
+		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
+
+		FOR_EACH_VEC(*weapons, i)
+		{
+			CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+
+			if (!weapon)
+				continue;
+			
+			if (weapon->GetWeaponVData()->m_GearSlot() == GEAR_SLOT_GRENADES && (weapon->GetWeaponVData()->m_GearSlotPosition() == weaponEntry.iGearSlotPosition))
+			{
+				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot carry any more %ss", weaponEntry.szWeaponName);
+				return;
+			}
+		}
+	}
+
 	if (weaponEntry.maxAmount)
 	{
 		CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
@@ -186,19 +205,22 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 		}
 	}
 
-	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
-
-	FOR_EACH_VEC(*weapons, i)
+	if (weaponEntry.iGearSlot == GEAR_SLOT_RIFLE || weaponEntry.iGearSlot == GEAR_SLOT_PISTOL)
 	{
-		CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
-		if (!weapon)
-			continue;
-
-		if (weapon->GetWeaponVData()->m_GearSlot() == weaponEntry.iGearSlot && (weaponEntry.iGearSlot == GEAR_SLOT_RIFLE || weaponEntry.iGearSlot == GEAR_SLOT_PISTOL))
+		FOR_EACH_VEC(*weapons, i)
 		{
-			pWeaponServices->DropWeapon(weapon);
-			break;
+			CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+
+			if (!weapon)
+				continue;
+
+			if (weapon->GetWeaponVData()->m_GearSlot() == weaponEntry.iGearSlot)
+			{
+				pWeaponServices->DropWeapon(weapon);
+				break;
+			}
 		}
 	}
 
