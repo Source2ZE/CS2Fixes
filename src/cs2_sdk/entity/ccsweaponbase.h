@@ -42,6 +42,12 @@ enum gear_slot_t : uint32_t
 	GEAR_SLOT_LAST = 0xc,
 };
 
+enum gear_slot_position_t : uint32_t
+{
+	GEAR_SLOT_POSITION_HEGRENADE = 0,
+	GEAR_SLOT_POSITION_MOLOTOV = 4,
+};
+
 class CEconItemView
 {
 public:

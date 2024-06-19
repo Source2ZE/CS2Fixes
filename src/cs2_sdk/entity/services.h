@@ -23,6 +23,9 @@
 #include <entity/ccsweaponbase.h>
 #include <entity/ccsplayerpawn.h>
 
+#define AMMO_OFFSET_HEGRENADE	13
+#define AMMO_OFFSET_MOLOTOV		16
+
 class CBaseEntity;
 
 struct CSPerRoundStats_t
@@ -110,6 +113,7 @@ public:
 
 	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBasePlayerWeapon>>, m_hMyWeapons)
 	SCHEMA_FIELD(CHandle<CBasePlayerWeapon>, m_hActiveWeapon)
+	SCHEMA_FIELD_POINTER(uint16_t, m_iAmmo)
 };
 
 class CCSPlayer_WeaponServices : public CPlayer_WeaponServices

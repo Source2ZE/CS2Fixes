@@ -90,14 +90,33 @@ WeaponMapEntry_t WeaponMap[] = {
 	{{"usp-s", "usp"},					"weapon_usp_silencer",	"USP-S",			200, 61, GEAR_SLOT_PISTOL},
 	{{"cz75-auto", "cs75a", "cz"},		"weapon_cz75a",			"CZ75-Auto",		500, 63, GEAR_SLOT_PISTOL},
 	{{"r8revolver", "revolver", "r8"},	"weapon_revolver",		"R8 Revolver",		600, 64, GEAR_SLOT_PISTOL},
-	{{"hegrenade", "he"},				"weapon_hegrenade",		"HE Grenade",		300, 44, GEAR_SLOT_GRENADES, 1, 0},
-	{{"molotov"},						"weapon_molotov",		"Molotov",			400, 46, GEAR_SLOT_GRENADES, 1, 4},
+	{{"hegrenade", "he"},				"weapon_hegrenade",		"HE Grenade",		300, 44, GEAR_SLOT_GRENADES, 1, GEAR_SLOT_POSITION_HEGRENADE},
+	{{"molotov"},						"weapon_molotov",		"Molotov",			400, 46, GEAR_SLOT_GRENADES, 1, GEAR_SLOT_POSITION_MOLOTOV},
 	{{"kevlar"},						"item_kevlar",			"Kevlar Vest",		650, 50, GEAR_SLOT_UTILITY},
 };
 
 bool g_bEnableWeapons = false;
 
 FAKE_BOOL_CVAR(cs2f_weapons_enable, "Whether to enable weapon commands", g_bEnableWeapons, false, false)
+
+int GetGrenadeAmmo(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pWeapon)
+{
+	if (!pWeaponServices || !pWeapon)
+		return -2;
+	
+	if (pWeapon->GetWeaponVData()->m_GearSlot != GEAR_SLOT_GRENADES)
+		return -1;
+	
+	switch (pWeapon->GetWeaponVData()->m_GearSlotPosition())
+	{
+		case GEAR_SLOT_POSITION_HEGRENADE:
+			return pWeaponServices->m_iAmmo[AMMO_OFFSET_HEGRENADE];
+		case GEAR_SLOT_POSITION_MOLOTOV:
+			return pWeaponServices->m_iAmmo[AMMO_OFFSET_MOLOTOV];
+		default:
+			return -1;
+	}
+}
 
 void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 {
@@ -159,16 +178,41 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 	{
 		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
+		// CONVAR_TODO
+		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("ammo_grenade_limit_default"));
+		// HACK: values is actually the cvar value itself, hence this ugly cast.
+		int iGrenadeLimitDefault = *(int*)&cvar->values;
+		cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("ammo_grenade_limit_total"));
+		int iGrenadeLimitTotal = *(int*)&cvar->values;
+
+		int iMatchingGrenades = 0;
+		int iTotalGrenades = 0;
+
 		FOR_EACH_VEC(*weapons, i)
 		{
 			CBasePlayerWeapon* weapon = (*weapons)[i].Get();
 
 			if (!weapon)
 				continue;
-			
-			if (weapon->GetWeaponVData()->m_GearSlot() == GEAR_SLOT_GRENADES && (weapon->GetWeaponVData()->m_GearSlotPosition() == weaponEntry.iGearSlotPosition))
+
+			int iCurrentGrenadeAmmo = GetGrenadeAmmo(pWeaponServices, weapon);
+			if (iCurrentGrenadeAmmo >= 0)
 			{
-				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot carry any more %ss", weaponEntry.szWeaponName);
+				if (weapon->GetWeaponVData()->m_GearSlotPosition() == weaponEntry.iGearSlotPosition)
+					iMatchingGrenades = iCurrentGrenadeAmmo;
+
+				iTotalGrenades += iCurrentGrenadeAmmo;
+			}
+
+			if (iMatchingGrenades >= iGrenadeLimitDefault)
+			{
+				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot carry any more %ss (Max %i)", weaponEntry.szWeaponName, iGrenadeLimitDefault);
+				return;
+			}
+
+			if (iTotalGrenades >= iGrenadeLimitTotal)
+			{
+				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot carry any more grenades (Max %i)", iGrenadeLimitTotal);
 				return;
 			}
 		}
