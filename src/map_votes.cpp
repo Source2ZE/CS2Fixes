@@ -228,11 +228,31 @@ GAME_EVENT_F(endmatch_mapvote_selecting_map)
 		g_pMapVoteSystem->FinishVote();
 }
 
+int MapVote_GetOnlinePlayers()
+{
+	int iOnlinePlayers = 0;
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+		if (pPlayer && !pPlayer->IsFakeClient())
+		{
+			iOnlinePlayers++;
+		}
+	}
+	return iOnlinePlayers;
+}
+
 bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
 {
 	if (iMapIndex >= m_vecMapList.Count() || iMapIndex < 0) return false;
 	if (m_vecLastPlayedMapIndexes.HasElement(iMapIndex)) return false;
-	return m_vecMapList[iMapIndex].IsEnabled();
+	if (!m_vecMapList[iMapIndex].IsEnabled()) return false;
+
+	int iOnlinePlayers = MapVote_GetOnlinePlayers();
+	bool bMeetsMaxPlayers = iOnlinePlayers <= m_vecMapList[iMapIndex].GetMaxPlayers();
+	bool bMeetsMinPlayers = iOnlinePlayers >= m_vecMapList[iMapIndex].GetMinPlayers();
+	return bMeetsMaxPlayers && bMeetsMinPlayers;
 }
 
 void CMapVoteSystem::OnLevelInit(const char* pMapName)
@@ -658,12 +678,14 @@ bool CMapVoteSystem::LoadMapList()
 		const char *pszName = pKey->GetName();
 		uint64 iWorkshopId = pKey->GetUint64("workshop_id");
 		bool bIsEnabled = pKey->GetBool("enabled", true);
+		int iMinPlayers = pKey->GetInt("MinPlayers", 0);
+		int iMaxPlayers = pKey->GetInt("MaxPlayers", 64);
 
 		if (iWorkshopId != 0)
 			QueueMapDownload(iWorkshopId);
 
 		// We just append the maps to the map list
-		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled));
+		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled, iMinPlayers, iMaxPlayers));
 	}
 
 	new CTimer(0.f, true, true, [this]()
@@ -686,7 +708,8 @@ bool CMapVoteSystem::LoadMapList()
 		if (map.GetWorkshopId() == 0)
 			ConMsg("Map %d is %s, which is %s.\n", i, map.GetName(), map.IsEnabled() ? "enabled" : "disabled");
 		else
-			ConMsg("Map %d is %s with workshop id %llu, which is %s.\n", i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled");
+			ConMsg("Map %d is %s with workshop id %llu, which is %s. MinPlayers: %llu MaxPlayers: %llu \n", i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled", map.GetMinPlayers(), map.GetMaxPlayers());
+			
 	}
 
 	m_bMapListLoaded = true;
