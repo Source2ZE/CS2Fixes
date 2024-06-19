@@ -209,11 +209,31 @@ GAME_EVENT_F(endmatch_mapvote_selecting_map)
 		g_pMapVoteSystem->FinishVote();
 }
 
+int MapVote_GetOnlinePlayers()
+{
+	int iOnlinePlayers = 0;
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+		if (pPlayer && !pPlayer->IsFakeClient())
+		{
+			iOnlinePlayers++;
+		}
+	}
+	return iOnlinePlayers;
+}
+
 bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
 {
 	if (iMapIndex >= m_vecMapList.Count() || iMapIndex < 0) return false;
 	if (GetCooldownMap(iMapIndex) > 0 || GetCurrentMapIndex() == iMapIndex) return false;
-	return m_vecMapList[iMapIndex].IsEnabled();
+	if (!m_vecMapList[iMapIndex].IsEnabled()) return false;
+
+	int iOnlinePlayers = MapVote_GetOnlinePlayers();
+	bool bMeetsMaxPlayers = iOnlinePlayers <= m_vecMapList[iMapIndex].GetMaxPlayers();
+	bool bMeetsMinPlayers = iOnlinePlayers >= m_vecMapList[iMapIndex].GetMinPlayers();
+	return bMeetsMaxPlayers && bMeetsMinPlayers;
 }
 
 void CMapVoteSystem::OnLevelInit(const char* pMapName)
@@ -648,13 +668,15 @@ bool CMapVoteSystem::LoadMapList()
 		uint64 iWorkshopId = pKey->GetUint64("workshop_id");
 		bool bIsEnabled = pKey->GetBool("enabled", true);
 		int iBaseCooldown = pKey->GetInt("cooldown");
+		int iMinPlayers = pKey->GetInt("MinPlayers", 0);
+		int iMaxPlayers = pKey->GetInt("MaxPlayers", 64);
 		int iCurrentCooldown = pKVcooldowns->GetInt(pszName, 0);
 
 		if (iWorkshopId != 0)
 			QueueMapDownload(iWorkshopId);
 
 		// We just append the maps to the map list
-		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled, iBaseCooldown, iCurrentCooldown));
+		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled, iMinPlayers, iMaxPlayers, iBaseCooldown, iCurrentCooldown));
 	}
 
 	new CTimer(0.f, true, true, []()
@@ -675,9 +697,9 @@ bool CMapVoteSystem::LoadMapList()
 		CMapInfo map = m_vecMapList[i];
 
 		if (map.GetWorkshopId() == 0)
-			ConMsg("Map %d is %s, which is %s with a cooldown of %d.\n", i, map.GetName(), map.IsEnabled() ? "enabled" : "disabled", map.GetBaseCooldown());
+			ConMsg("Map %d is %s, which is %s. MinPlayers: %llu MaxPlayers: %llu Cooldown: %d\n", i, map.GetName(), map.IsEnabled() ? "enabled" : "disabled", map.GetMinPlayers(), map.GetMaxPlayers(), map.GetBaseCooldown());
 		else
-			ConMsg("Map %d is %s with workshop id %llu, which is %s with a cooldown of %d.\n", i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled", map.GetBaseCooldown());
+			ConMsg("Map %d is %s with workshop id %llu, which is %s. MinPlayers: %llu MaxPlayers: %llu Cooldown: %d\n", i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled", map.GetMinPlayers(), map.GetMaxPlayers(), map.GetBaseCooldown());
 	}
 
 	m_bMapListLoaded = true;

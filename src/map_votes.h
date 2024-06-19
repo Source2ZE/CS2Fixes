@@ -47,13 +47,15 @@ namespace NominationReturnCodes
 class CMapInfo
 {
 public:
-    CMapInfo(const char* pszName, uint64 iWorkshopId, bool bIsEnabled, int iBaseCooldown, int iCurrentCooldown)
+    CMapInfo(const char* pszName, uint64 iWorkshopId, bool bIsEnabled, int iMinPlayers, int iMaxPlayers, int iBaseCooldown, int iCurrentCooldown)
     {
         V_strcpy(m_pszName, pszName);
         m_iWorkshopId = iWorkshopId;
         m_bIsEnabled = bIsEnabled;
         m_iBaseCooldown = iBaseCooldown;
         m_iCurrentCooldown = iCurrentCooldown;
+        m_iMinPlayers = iMinPlayers;
+        m_iMaxPlayers = iMaxPlayers;
     }
 
     const char* GetName() { return (const char*)m_pszName; };
@@ -63,11 +65,15 @@ public:
     int GetCooldown() { return m_iCurrentCooldown; };
     void ResetCooldownToBase() { m_iCurrentCooldown = m_iBaseCooldown; };
     void DecrementCooldown() { m_iCurrentCooldown = MAX(0, (m_iCurrentCooldown - 1)); }
+    int GetMinPlayers() { return m_iMinPlayers; };
+    int GetMaxPlayers() { return m_iMaxPlayers; };
 
 private:
     char m_pszName[64];
     uint64 m_iWorkshopId;
     bool m_bIsEnabled;
+    int m_iMinPlayers;
+    int m_iMaxPlayers;
     int m_iBaseCooldown;
     int m_iCurrentCooldown;
 };
