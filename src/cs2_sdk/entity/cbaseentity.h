@@ -32,6 +32,7 @@
 extern CGameConfig *g_GameConfig;
 
 class CGameUI;
+class CEnvHudHint;
 
 class CGameSceneNode
 {
@@ -278,6 +279,14 @@ public:
 
 		if (tag && V_strcasecmp(tag, "game_ui") == 0)
 			return reinterpret_cast<CGameUI *>(this);
+
+		return nullptr;
+	}
+
+	[[nodiscard]] CEnvHudHint *AsHudHint()
+	{
+		if (V_strcasecmp(GetClassname(), "env_hudhint") == 0)
+			return reinterpret_cast<CEnvHudHint *>(this);
 
 		return nullptr;
 	}
