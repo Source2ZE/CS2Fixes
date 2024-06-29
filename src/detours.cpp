@@ -33,6 +33,7 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
 #include "entity/ccsweaponbase.h"
+#include "entity/cenvhudhint.h"
 #include "entity/ctriggerpush.h"
 #include "entity/cgamerules.h"
 #include "entity/ctakedamageinfo.h"
@@ -405,6 +406,17 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if (pPawn->IsPawn() && pPawn->GetOriginalController())
 		{
 			pPawn->GetOriginalController()->AddScore(iScore);
+			return true;
+		}
+	}
+    else if (!V_strcasecmp(pInputName->String(), "SetMessage"))
+	{
+		if (const auto pHudHint = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsHudHint())
+		{
+			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			{
+				pHudHint->m_iszMessage(GameEntitySystem()->AllocPooledString(value->m_pszString));
+			}
 			return true;
 		}
 	}

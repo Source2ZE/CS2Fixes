@@ -231,6 +231,7 @@
     <ClInclude Include="src\cs2_sdk\entity\ccsplayerpawn.h" />
     <ClInclude Include="src\cs2_sdk\entity\ccsweaponbase.h" />
     <ClInclude Include="src\cs2_sdk\entity\cenventitymaker.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cenvhudhint.h" />
     <ClInclude Include="src\cs2_sdk\entity\cgameplayerequip.h" />
     <ClInclude Include="src\cs2_sdk\entity\cgamerules.h" />
     <ClInclude Include="src\cs2_sdk\entity\clogiccase.h" />
