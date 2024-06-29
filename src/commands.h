@@ -40,6 +40,8 @@ extern bool g_bEnableAdminCommands;
 
 extern bool g_bEnableHide;
 extern bool g_bEnableStopSound;
+extern bool g_bEnableNoShake;
+
 
 void ClientPrintAll(int destination, const char *msg, ...);
 void ClientPrint(CBasePlayerController *player, int destination, const char *msg, ...);
