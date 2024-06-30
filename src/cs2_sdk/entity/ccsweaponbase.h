@@ -42,12 +42,6 @@ enum gear_slot_t : uint32_t
 	GEAR_SLOT_LAST = 0xc,
 };
 
-enum gear_slot_position_t : uint32_t
-{
-	GEAR_SLOT_POSITION_HEGRENADE = 0,
-	GEAR_SLOT_POSITION_MOLOTOV = 4,
-};
-
 class CEconItemView
 {
 public:
@@ -86,7 +80,6 @@ public:
 	DECLARE_SCHEMA_CLASS(CCSWeaponBaseVData)
 
 	SCHEMA_FIELD(gear_slot_t, m_GearSlot)
-	SCHEMA_FIELD(int, m_GearSlotPosition)
 	SCHEMA_FIELD(int, m_nPrice)
 	SCHEMA_FIELD(int, m_nPrimaryReserveAmmoMax);
 };

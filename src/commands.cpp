@@ -90,8 +90,8 @@ WeaponMapEntry_t WeaponMap[] = {
 	{{"usp-s", "usp"},					"weapon_usp_silencer",	"USP-S",			200, 61, GEAR_SLOT_PISTOL},
 	{{"cz75-auto", "cs75a", "cz"},		"weapon_cz75a",			"CZ75-Auto",		500, 63, GEAR_SLOT_PISTOL},
 	{{"r8revolver", "revolver", "r8"},	"weapon_revolver",		"R8 Revolver",		600, 64, GEAR_SLOT_PISTOL},
-	{{"hegrenade", "he"},				"weapon_hegrenade",		"HE Grenade",		300, 44, GEAR_SLOT_GRENADES, 1, GEAR_SLOT_POSITION_HEGRENADE},
-	{{"molotov"},						"weapon_molotov",		"Molotov",			400, 46, GEAR_SLOT_GRENADES, 1, GEAR_SLOT_POSITION_MOLOTOV},
+	{{"hegrenade", "he"},				"weapon_hegrenade",		"HE Grenade",		300, 44, GEAR_SLOT_GRENADES, 1},
+	{{"molotov"},						"weapon_molotov",		"Molotov",			400, 46, GEAR_SLOT_GRENADES, 1},
 	{{"kevlar"},						"item_kevlar",			"Kevlar Vest",		650, 50, GEAR_SLOT_UTILITY},
 };
 
@@ -99,23 +99,46 @@ bool g_bEnableWeapons = false;
 
 FAKE_BOOL_CVAR(cs2f_weapons_enable, "Whether to enable weapon commands", g_bEnableWeapons, false, false)
 
-int GetGrenadeAmmo(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pWeapon)
+int GetGrenadeAmmo(CCSPlayer_WeaponServices* pWeaponServices, WeaponMapEntry_t weaponEntry)
 {
-	if (!pWeaponServices || !pWeapon)
-		return -2;
-	
-	if (pWeapon->GetWeaponVData()->m_GearSlot != GEAR_SLOT_GRENADES)
+	if (!pWeaponServices || weaponEntry.iGearSlot != GEAR_SLOT_GRENADES)
+		return -1;
+
+	// TODO: look into molotov vs inc interaction
+	if (strcmp(weaponEntry.szClassName, "weapon_hegrenade") == 0)
+		return pWeaponServices->m_iAmmo[AMMO_OFFSET_HEGRENADE];
+	else if (strcmp(weaponEntry.szClassName, "weapon_molotov") == 0 || strcmp(weaponEntry.szClassName, "weapon_incgrenade") == 0)
+		return pWeaponServices->m_iAmmo[AMMO_OFFSET_MOLOTOV];
+	else if (strcmp(weaponEntry.szClassName, "weapon_decoy") == 0)
+		return pWeaponServices->m_iAmmo[AMMO_OFFSET_DECOY];
+	else if (strcmp(weaponEntry.szClassName, "weapon_flashbang") == 0)
+		return pWeaponServices->m_iAmmo[AMMO_OFFSET_FLASHBANG];
+	else if (strcmp(weaponEntry.szClassName, "weapon_smokegrenade") == 0)
+		return pWeaponServices->m_iAmmo[AMMO_OFFSET_SMOKEGRENADE];
+	else
+		return -1;
+}
+
+int GetGrenadeAmmoTotal(CCSPlayer_WeaponServices* pWeaponServices)
+{
+	if(!pWeaponServices)
 		return -1;
 	
-	switch (pWeapon->GetWeaponVData()->m_GearSlotPosition())
+	int grenadeAmmoOffsets[] = {
+		AMMO_OFFSET_HEGRENADE,
+		AMMO_OFFSET_FLASHBANG,
+		AMMO_OFFSET_SMOKEGRENADE,
+		AMMO_OFFSET_DECOY,
+		AMMO_OFFSET_MOLOTOV,
+	};
+
+	int totalGrenades = 0;
+	for (int i = 0; i < (sizeof(grenadeAmmoOffsets) / sizeof(int)); i++)
 	{
-		case GEAR_SLOT_POSITION_HEGRENADE:
-			return pWeaponServices->m_iAmmo[AMMO_OFFSET_HEGRENADE];
-		case GEAR_SLOT_POSITION_MOLOTOV:
-			return pWeaponServices->m_iAmmo[AMMO_OFFSET_MOLOTOV];
-		default:
-			return -1;
+		totalGrenades += pWeaponServices->m_iAmmo[grenadeAmmoOffsets[i]];
 	}
+	
+	return totalGrenades;
 }
 
 void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
@@ -185,36 +208,19 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 		cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("ammo_grenade_limit_total"));
 		int iGrenadeLimitTotal = *(int*)&cvar->values;
 
-		int iMatchingGrenades = 0;
-		int iTotalGrenades = 0;
+		int iMatchingGrenades = GetGrenadeAmmo(pWeaponServices, weaponEntry);
+		int iTotalGrenades = GetGrenadeAmmoTotal(pWeaponServices);
 
-		FOR_EACH_VEC(*weapons, i)
+		if (iMatchingGrenades >= iGrenadeLimitDefault)
 		{
-			CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot carry any more %ss (Max %i)", weaponEntry.szWeaponName, iGrenadeLimitDefault);
+			return;
+		}
 
-			if (!weapon)
-				continue;
-
-			int iCurrentGrenadeAmmo = GetGrenadeAmmo(pWeaponServices, weapon);
-			if (iCurrentGrenadeAmmo >= 0)
-			{
-				if (weapon->GetWeaponVData()->m_GearSlotPosition() == weaponEntry.iGearSlotPosition)
-					iMatchingGrenades = iCurrentGrenadeAmmo;
-
-				iTotalGrenades += iCurrentGrenadeAmmo;
-			}
-
-			if (iMatchingGrenades >= iGrenadeLimitDefault)
-			{
-				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot carry any more %ss (Max %i)", weaponEntry.szWeaponName, iGrenadeLimitDefault);
-				return;
-			}
-
-			if (iTotalGrenades >= iGrenadeLimitTotal)
-			{
-				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot carry any more grenades (Max %i)", iGrenadeLimitTotal);
-				return;
-			}
+		if (iTotalGrenades >= iGrenadeLimitTotal)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot carry any more grenades (Max %i)", iGrenadeLimitTotal);
+			return;
 		}
 	}
 
