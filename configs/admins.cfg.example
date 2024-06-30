@@ -19,6 +19,11 @@
 
 // Flags 'o' to 'y' are custom flags (currently unused)
 
+// cs2f_admin_immunity 'convar' controls how targetting works with "immunity" KV
+//	0 - Commands using immunity targetting can only target players with immunities LOWER than the user's
+//	1 - Commands using immunity targetting can only target players with immunities EQUAL TO OR LOWER than the user's
+//	2 - Commands ignore immunity levels
+
 Admins
 {
 	// Admin entries should follow this format
@@ -27,5 +32,6 @@ Admins
 	//{
 	//	"steamid" "1234567890" // SteamID64
 	//	"flags" "abcdefg" // Permission flags as described above
+	//	"immunity" "1" // Non-negative value.
 	//}
 }
