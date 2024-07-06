@@ -175,6 +175,7 @@ public:
 	void SetLastInputs(uint64 iLastInputs) { m_iLastInputs = iLastInputs; }
 	void UpdateLastInputTime() { m_iLastInputTime = std::time(0); }
 	void SetMaxSpeed(float flMaxSpeed) { m_flMaxSpeed = flMaxSpeed; }
+	void ReplicateConVar(const char* pszName, const char* pszValue);
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
