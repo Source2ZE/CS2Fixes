@@ -454,17 +454,19 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 	if (!jsoncFile.is_open())
 	{
-		Warning("Failed to open %s\n", pszJsonPath);
+		Message("Failed to open %s\n", pszJsonPath);
 		bool bJsonCreated = CreateJsonConfigFromKeyValuesFile();
 		if (!bJsonCreated)
 		{
-			Warning("Playerclass config conversion failed. Playerclasses not loaded\n");
+			Panic("Playerclass config conversion failed. Playerclasses not loaded\n");
 			jsoncFile.close();
 			return;
 		}
 		jsoncFile.open(szPath);
 	}
 
+	// Less code than constantly traversing the full class vectors, temporary lifetime anyways
+	std::set<std::string> setClassNames;
 	ordered_json jsonPlayerClasses = ordered_json::parse(jsoncFile, nullptr, true, true);
 
 	for (auto& [szTeamName, jsonTeamClasses] : jsonPlayerClasses.items())
@@ -484,9 +486,15 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 			bool bMissingKey = false;
 
+			if (setClassNames.contains(szClassName))
+			{
+				Panic("A class named %s already exists!\n", szClassName.c_str());
+				bMissingKey = true;
+			}
+
 			if (!jsonClass.contains("team_default"))
 			{
-				Warning("%s has unspecified key: team_default\n", szClassName.c_str());
+				Panic("%s has unspecified key: team_default\n", szClassName.c_str());
 				bMissingKey = true;
 			}
 
@@ -495,17 +503,17 @@ void CZRPlayerClassManager::LoadPlayerClass()
 			{
 				if (!jsonClass.contains("health"))
 				{
-					Warning("%s has unspecified key: health\n", szClassName.c_str());
+					Panic("%s has unspecified key: health\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 				if (!jsonClass.contains("models"))
 				{
-					Warning("%s has unspecified key: models\n", szClassName.c_str());
+					Panic("%s has unspecified key: models\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 				else if (jsonClass["models"].size() < 1)
 				{
-					Warning("%s has no model entries\n", szClassName.c_str());
+					Panic("%s has no model entries\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 				else
@@ -514,7 +522,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					{
 						if (!jsonModelEntry.contains("modelname"))
 						{
-							Warning("%s has unspecified model entry key: modelname\n", szClassName.c_str());
+							Panic("%s has unspecified model entry key: modelname\n", szClassName.c_str());
 							bMissingKey = true;
 						}
 					}
@@ -522,22 +530,22 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				}
 				if (!jsonClass.contains("scale"))
 				{
-					Warning("%s has unspecified key: scale\n", szClassName.c_str());
+					Panic("%s has unspecified key: scale\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 				if (!jsonClass.contains("speed"))
 				{
-					Warning("%s has unspecified key: speed\n", szClassName.c_str());
+					Panic("%s has unspecified key: speed\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 				if (!jsonClass.contains("gravity"))
 				{
-					Warning("%s has unspecified key: gravity\n", szClassName.c_str());
+					Panic("%s has unspecified key: gravity\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 				if (!jsonClass.contains("admin_flag"))
 				{
-					Warning("%s has unspecified key: admin_flag\n", szClassName.c_str());
+					Panic("%s has unspecified key: admin_flag\n", szClassName.c_str());
 					bMissingKey = true;
 				}
 			}
@@ -557,7 +565,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					}
 					else
 					{
-						Warning("Could not find specified base \"%s\" for %s!!!\n", szBase.c_str(), szClassName.c_str());
+						Panic("Could not find specified base \"%s\" for %s!!!\n", szBase.c_str(), szClassName.c_str());
 						continue;
 					}
 				}
@@ -584,7 +592,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					}
 					else
 					{
-						Warning("Could not find specified base \"%s\" for %s!!!\n", szBase.c_str(), szClassName.c_str());
+						Panic("Could not find specified base \"%s\" for %s!!!\n", szBase.c_str(), szClassName.c_str());
 						continue;
 					}
 				}
@@ -597,6 +605,8 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				
 				pZombieClass->PrintInfo();
 			}
+
+			setClassNames.insert(szClassName);
 		}
 	}
 }
@@ -774,20 +784,23 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pP
 	ApplyZombieClass(zombieClass, pPawn);
 }
 
-void CZRPlayerClassManager::GetZRClassList(const char* sTeam, CUtlVector<ZRClass*> &vecClasses)
+void CZRPlayerClassManager::GetZRClassList(int iTeam, CUtlVector<ZRClass*> &vecClasses, CCSPlayerController* pController)
 {
-	if (!V_stricmp(sTeam, "zombie"))
+	if (iTeam == CS_TEAM_T || iTeam == CS_TEAM_NONE)
 	{
 		FOR_EACH_MAP_FAST(m_ZombieClassMap, i)
 		{
-			vecClasses.AddToTail(m_ZombieClassMap[i]);
+			if (!pController || m_ZombieClassMap[i]->IsApplicableTo(pController))
+				vecClasses.AddToTail(m_ZombieClassMap[i]);
 		}
 	}
-	else if (!V_stricmp(sTeam, "human"))
+
+	if (iTeam == CS_TEAM_CT || iTeam == CS_TEAM_NONE)
 	{
 		FOR_EACH_MAP_FAST(m_HumanClassMap, i)
 		{
-			vecClasses.AddToTail(m_HumanClassMap[i]);
+			if (!pController || m_HumanClassMap[i]->IsApplicableTo(pController))
+				vecClasses.AddToTail(m_HumanClassMap[i]);
 		}
 	}
 }
@@ -1797,7 +1810,7 @@ CON_COMMAND_CHAT(ztele, "- teleport to spawn")
 	});
 }
 
-CON_COMMAND_CHAT(zclass, "find and select your Z:R class")
+CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - find and select your Z:R classes")
 {
 	// Silently return so the command is completely hidden
 	if (!g_bEnableZR)
@@ -1809,58 +1822,60 @@ CON_COMMAND_CHAT(zclass, "find and select your Z:R class")
 		return;
 	}
 
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "You need to specify a team and class: %s <zombie or human> <class name>.", args[0]);
-		return;
-	}
-
-	// If no team or both team are specified, error out
-	bool bIsZombie = !V_strcasecmp(args[1], "zombie") || !V_strcasecmp(args[1], "zm")|| !V_strcasecmp(args[1], "z");
-	bool bIsHuman = !V_strcasecmp(args[1], "human") || !V_strcasecmp(args[1], "hm") || !V_strcasecmp(args[1], "h");
-	if (bIsZombie == bIsHuman) {
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "You need to specify a team and class: %s <zombie|zm|z or human|hm|h> <class name>.", args[0]);
-	}
-
-	CUtlVector<ZRClass*> teamClasses;
-	const char* sPreferenceKey = bIsZombie ? ZOMBIE_CLASS_KEY_NAME : HUMAN_CLASS_KEY_NAME;
-	const char* sTeamName = bIsZombie ? "Zombie" : "Human";
-	g_pZRPlayerClassManager->GetZRClassList(sTeamName, teamClasses);
+	CUtlVector<ZRClass*> vecClasses;
 	int iSlot = player->GetPlayerSlot();
+	bool bListingZombie = true;
+	bool bListingHuman = true;
 
-	// If a class is passed, find it among the list of classes and store -- otherwise print available classes
-	if (args.ArgC() > 2) {
-		FOR_EACH_VEC(teamClasses, i)
+	if (args.ArgC() > 1)
+	{
+		bListingZombie = !V_strcasecmp(args[1], "zombie") || !V_strcasecmp(args[1], "zm") || !V_strcasecmp(args[1], "z");
+		bListingHuman = !V_strcasecmp(args[1], "human") || !V_strcasecmp(args[1], "hm") || !V_strcasecmp(args[1], "h");
+	}
+
+	g_pZRPlayerClassManager->GetZRClassList(CS_TEAM_NONE, vecClasses, player);
+
+	if (bListingZombie || bListingHuman)
+	{
+		for (int team = CS_TEAM_T; team <= CS_TEAM_CT; team++)
 		{
-			const char* sClassName = teamClasses[i]->szClassName.c_str();
-			bool bClassMatches = !V_stricmp(sClassName, args[2]);
-			bool bIsApplicable = teamClasses[i]->IsApplicableTo(player);
-			if (bClassMatches && bIsApplicable) {
-				ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Your %s class is now set to '%s'.", sTeamName, sClassName);
-				g_pUserPreferencesSystem->SetPreference(iSlot, sPreferenceKey, sClassName);
-				return;
+			if ((team == CS_TEAM_T && !bListingZombie) || (team == CS_TEAM_CT && !bListingHuman))
+				continue;
+
+			const char* sTeamName = team == CS_TEAM_CT ? "Human" : "Zombie";
+			const char* sCurrentClass = g_pUserPreferencesSystem->GetPreference(iSlot, team == CS_TEAM_CT ? HUMAN_CLASS_KEY_NAME : ZOMBIE_CLASS_KEY_NAME);
+			
+			if (sCurrentClass[0] != '\0')
+				ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Your current %s class is: \x10%s\x1. Available classes:", sTeamName, sCurrentClass);
+			else
+				ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Available %s classes:", sTeamName);
+
+			FOR_EACH_VEC(vecClasses, i)
+			{
+				if (vecClasses[i]->iTeam == team)
+					ClientPrint(player, HUD_PRINTTALK, "%i. %s", i+1, vecClasses[i]->szClassName.c_str());
 			}
 		}
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "No available %s classes matched '%s'.", sTeamName, args[2]);
+
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Select a class using \x2!zclass <class name/number>");
 		return;
-	} else {
-		const char* sCurrentClass = g_pUserPreferencesSystem->GetPreference(iSlot, sPreferenceKey);
-		if (sCurrentClass[0] != '\0')
-		{
-			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Your current %s class is: %s. Available classes:", sTeamName, sCurrentClass);
-		} 
-		else
-		{
-			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Available %s classes:", sTeamName);
-		}
+	}
 
-		FOR_EACH_VEC(teamClasses, i)
+	FOR_EACH_VEC(vecClasses, i)
+	{
+		const char* sClassName = vecClasses[i]->szClassName.c_str();
+		bool bClassMatches = !V_stricmp(sClassName, args[1]) || (V_StringToInt32(args[1], -1) - 1) == i;
+		ZRClass* pClass = vecClasses[i];
+
+		if (bClassMatches)
 		{
-			if (teamClasses[i]->IsApplicableTo(player)) {
-				ClientPrint(player, HUD_PRINTTALK, "- %s", teamClasses[i]->szClassName.c_str());
-			}
+			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Your %s class is now set to \x10%s\x1.", pClass->iTeam == CS_TEAM_CT ? "Human" : "Zombie", sClassName);
+			g_pUserPreferencesSystem->SetPreference(iSlot, pClass->iTeam == CS_TEAM_CT ? HUMAN_CLASS_KEY_NAME : ZOMBIE_CLASS_KEY_NAME, sClassName);
+			return;
 		}
 	}
+
+	ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "No available classes matched \x10%s\x1.", args[1]);
 }
 
 CON_COMMAND_CHAT_FLAGS(infect, "infect a player", ADMFLAG_GENERIC)
