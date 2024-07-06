@@ -47,7 +47,7 @@ export MMSOURCE112=/path/to/metamod
 export HL2SDKCS2=/path/to/sdk/submodule
 
 mkdir build && cd build
-python3 ../configure.py --enable-optimize --symbol-files --sdks cs2
+python3 ../configure.py --enable-optimize --sdks cs2
 ambuild
 ```
 
@@ -60,7 +60,7 @@ set MMSOURCE112=\path\to\metamod
 set HL2SDKCS2=\path\to\sdk\submodule
 
 mkdir build && cd build
-py ../configure.py --enable-optimize --symbol-files --sdks cs2
+py ../configure.py --enable-optimize --sdks cs2
 ambuild
 ```
 
