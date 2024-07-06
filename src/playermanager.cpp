@@ -33,6 +33,7 @@
 #include "ctime"
 #include "leader.h"
 #include "tier0/vprof.h"
+#include "networksystem/inetworkmessages.h"
 
 #include "tier0/memdbgon.h"
 
@@ -488,6 +489,19 @@ void ZEPlayer::EndGlow()
 
 	if (pModelParent)
 		addresses::UTIL_Remove(pModelParent);
+}
+
+void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
+{
+	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("SetConVar");
+	auto data = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
+
+	CMsg_CVars_CVar* cvarMsg = data->mutable_convars()->add_cvars();
+	cvarMsg->set_name(pszName);
+	cvarMsg->set_value(pszValue);
+
+	GetClientBySlot(GetPlayerSlot())->GetNetChannel()->SendNetMessage(pNetMsg, data, BUF_RELIABLE);
+	pNetMsg->DeallocateMessage(data);
 }
 
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
