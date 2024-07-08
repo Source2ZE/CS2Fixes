@@ -955,7 +955,7 @@ void ZR_RespawnAll()
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
-		if (!pController ||  (pController->m_iTeamNum() != CS_TEAM_CT && pController->m_iTeamNum() != CS_TEAM_T))
+		if (!pController || pController->m_bIsHLTV || (pController->m_iTeamNum() != CS_TEAM_CT && pController->m_iTeamNum() != CS_TEAM_T))
 			continue;
 		pController->Respawn();
 	}
@@ -984,7 +984,7 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
-		if (!pController)
+		if (!pController || pController->m_bIsHLTV)
 			continue;
 
 		// Only do this for Ts, ignore CTs and specs

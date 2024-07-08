@@ -878,7 +878,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController() || !player->IsConnected())
+			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
 				continue;
 
 			clients[iNumClients++] = i;
@@ -893,7 +893,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController() || !player->IsConnected())
+			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
 				continue;
 
 			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : targetType == ETargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
@@ -918,7 +918,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(slot);
 
-			if (!player || !player->IsController() || !player->IsConnected())
+			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
 				continue;
 
 			if (targetType >= ETargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == ETargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
@@ -935,7 +935,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 		{
 			targetType = ETargetType::PLAYER;
 			CCSPlayerController* player = CCSPlayerController::FromSlot(GetSlotFromUserId(userid).Get());
-			if(player && player->IsController() && player->IsConnected())
+			if(player && player->IsController() && player->IsConnected() && !player->m_bIsHLTV)
 				clients[iNumClients++] = GetSlotFromUserId(userid).Get();
 		}
 	}
@@ -948,7 +948,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController() || !player->IsConnected())
+			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
 				continue;
 
 			if (V_stristr(player->GetPlayerName(), target))
