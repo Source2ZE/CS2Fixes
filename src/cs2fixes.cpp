@@ -681,7 +681,13 @@ void CS2Fixes::Hook_OnClientConnected(CPlayerSlot slot, const char* pszName, uin
 {
 	Message("Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 
-	if (bFakePlayer && V_strcmp(pszName, "SourceTV"))
+	// CONVAR_TODO
+	// HACK: values is actually the cvar value itself, hence this ugly cast.
+	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("tv_name"));
+	const char* pszTvName = *(const char**)&cvar->values;
+
+	// Ideally we would use CServerSideClient::IsHLTV().. but it doesn't work :(
+	if (bFakePlayer && V_strcmp(pszName, pszTvName))
 		g_playerManager->OnBotConnected(slot);
 }
 
