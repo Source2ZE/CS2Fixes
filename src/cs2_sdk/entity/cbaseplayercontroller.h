@@ -43,6 +43,7 @@ public:
 	SCHEMA_FIELD(CHandle<CBasePlayerPawn>, m_hPawn)
 	SCHEMA_FIELD_POINTER(char, m_iszPlayerName)
 	SCHEMA_FIELD(PlayerConnectedState, m_iConnected)
+	SCHEMA_FIELD(bool, m_bIsHLTV)
 
 	// Returns the current pawn, which could be one of those:
 	// - The player's actual pawn
