@@ -487,27 +487,20 @@ public:
 #endif
 };
 
-void* FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pPawn, CUserCmd *cmds, int numcmds, bool paused, float margin)
+void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController *pController, CUserCmd *cmds, int numcmds, bool paused, float margin)
 {
 	// Push fix only works properly if subtick movement is also disabled
 	if (!g_bDisableSubtick && !g_bUseOldPush)
-		return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
+		return ProcessUsercmds(pController, cmds, numcmds, paused, margin);
 
 	VPROF_SCOPE_BEGIN("Detour_ProcessUsercmds");
 
-	static int offset = g_GameConfig->GetOffset("UsercmdOffset");
-
 	for (int i = 0; i < numcmds; i++)
-	{
-		CSGOUserCmdPB *pUserCmd = &cmds[i].cmd;
-
-		for (int j = 0; j < pUserCmd->mutable_base()->subtick_moves_size(); j++)
-			pUserCmd->mutable_base()->mutable_subtick_moves(j)->set_when(0.f);
-	}
+		cmds[i].cmd.mutable_base()->mutable_subtick_moves()->Clear();
 
 	VPROF_SCOPE_END();
 
-	return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
+	return ProcessUsercmds(pController, cmds, numcmds, paused, margin);
 }
 
 void FASTCALL Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
