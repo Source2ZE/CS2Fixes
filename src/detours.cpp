@@ -443,8 +443,8 @@ void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* pThis, 
 		strMessage = strMessage + "\1 pressed button \x0C" + std::to_string(pCaller->GetEntityIndex().Get()) + " ";
 		strMessage.append(((CBaseEntity*)pCaller)->GetName());
 
-		// Dont ask why this timer is here...
-		new CTimer(0.1f, false, false, [strMessage]()
+		// ClientPrint doesn't work when called directly in here for some reason, so use in a timer instead
+		new CTimer(0.0f, false, false, [strMessage]()
 		{
 			for (int i = 0; i < gpGlobals->maxClients; i++)
 			{
