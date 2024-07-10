@@ -1414,6 +1414,26 @@ CON_COMMAND_CHAT_FLAGS(add_dc, "<name> <SteamID 64> <IP Address> - Adds a fake p
 }
 #endif
 
+CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
+{
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	ZEPlayer* zpPlayer = player->GetZEPlayer();
+	if (!zpPlayer)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Something went wrong...");
+		return;
+	}
+
+	zpPlayer->ToggleButtonWatch();
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have%s\1 button watch.",
+				zpPlayer->IsWatchingButtons() ? "\x04 enabled" : "\x02 disabled");
+}
+
 CAdminSystem::CAdminSystem()
 {
 	LoadAdmins();

@@ -490,6 +490,19 @@ void ZEPlayer::EndGlow()
 		addresses::UTIL_Remove(pModelParent);
 }
 
+void ZEPlayer::ToggleButtonWatch()
+{
+	m_bIsWatchingButton = !m_bIsWatchingButton;
+	g_pUserPreferencesSystem->SetPreferenceBool(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_bIsWatchingButton);
+}
+
+bool ZEPlayer::IsWatchingButtons()
+{
+	if (!IsAdminFlagSet(ADMFLAG_GENERIC) || IsFakeClient())
+		return false;
+	return g_pUserPreferencesSystem->GetPreferenceBool(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_bIsWatchingButton);
+}
+
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 {
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);

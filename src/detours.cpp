@@ -68,6 +68,7 @@ DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
+DECLARE_DETOUR(CEntityIOOutput_FireOutputInternal, Detour_CEntityIOOutput_FireOutputInternal);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
@@ -431,6 +432,34 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 	VPROF_SCOPE_END();
 
     return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+}
+
+
+void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, CVariant* value, float flDelay)
+{
+	if (!V_stricmp(pThis->m_pDesc->m_pName, "OnPressed") && ((CBaseEntity*)pActivator)->IsPawn())
+	{
+		std::string strMessage = CCSPlayerController::FromPawn(static_cast<CCSPlayerPawn*>(pActivator))->GetPlayerName();
+		strMessage = strMessage + "\1 pressed button \x0C" + std::to_string(pCaller->GetEntityIndex().Get()) + " ";
+		strMessage.append(((CBaseEntity*)pCaller)->GetName());
+
+		// Dont ask why this timer is here...
+		new CTimer(0.1f, false, false, [strMessage]()
+		{
+			for (int i = 0; i < gpGlobals->maxClients; i++)
+			{
+				CCSPlayerController* ccsPlayer = CCSPlayerController::FromSlot(i);
+				if (!ccsPlayer)
+					continue;
+
+				ZEPlayer* zpPlayer = ccsPlayer->GetZEPlayer();
+				if (zpPlayer && zpPlayer->IsWatchingButtons())
+					ClientPrint(ccsPlayer, HUD_PRINTTALK, " \x02[BW]\x0C %s\1", strMessage.c_str());
+			}
+
+			return -1.0f;
+		});
+	}
 }
 
 bool g_bBlockNavLookup = false;
