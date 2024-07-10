@@ -47,9 +47,14 @@
 #include "serversideclient.h"
 #include "networksystem/inetworkserializer.h"
 #include "map_votes.h"
+#include <fstream>
+#include "vendor/nlohmann/json.hpp"
 #include "tier0/vprof.h"
 
 #include "tier0/memdbgon.h"
+
+
+using json = nlohmann::json;
 
 extern CGlobalVars *gpGlobals;
 extern CGameEntitySystem *g_pEntitySystem;
@@ -596,6 +601,17 @@ bool InitDetours(CGameConfig *gameConfig)
 
 	FOR_EACH_VEC(g_vecDetours, i)
 	{
+		if (!V_strcmp(g_vecDetours[i]->GetName(), "CEntityIOOutput_FireOutputInternal"))
+		{
+			std::ifstream ifsConfig((std::string(Plat_GetGameDirectory()) + "\\csgo\\addons\\cs2fixes\\configs\\cs2fixes.jsonc"), std::fstream::in);
+			if (!ifsConfig.is_open())
+				continue;
+			
+			json jConfig = json::parse(ifsConfig, nullptr, true, true);
+			if (jConfig.empty() || !jConfig.value("enable_button_watch", false))
+				continue;
+		}
+
 		if (!g_vecDetours[i]->CreateDetour(gameConfig))
 			success = false;
 		
