@@ -142,10 +142,12 @@ struct ZRZombieClass : ZRClass
 {
 	int iHealthRegenCount;
 	float flHealthRegenInterval;
+	float flKnockback;
 	ZRZombieClass(ZRZombieClass *pClass) :
 		ZRClass(pClass), 
 		iHealthRegenCount(pClass->iHealthRegenCount),
-		flHealthRegenInterval(pClass->flHealthRegenInterval){};
+		flHealthRegenInterval(pClass->flHealthRegenInterval),
+		flKnockback(pClass->flKnockback){};
 	ZRZombieClass(ordered_json jsonKeys, std::string szClassname);
 	void PrintInfo()
 	{
@@ -171,6 +173,7 @@ struct ZRZombieClass : ZRClass
 			"\tscale: %f\n"
 			"\tspeed: %f\n"
 			"\tgravity: %f\n"
+			"\tknockback: %f\n"
 			"\tadmin flag: %d\n"
 			"\thealth_regen_count: %d\n"
 			"\thealth_regen_interval: %f\n",
@@ -181,6 +184,7 @@ struct ZRZombieClass : ZRClass
 			flScale,
 			flSpeed,
 			flGravity,
+			flKnockback,
 			iAdminFlag,
 			iHealthRegenCount,
 			flHealthRegenInterval);
@@ -208,12 +212,14 @@ public:
 	void ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pPawn);
 	void PrecacheModels(IEntityResourceManifest* pResourceManifest);
 	void GetZRClassList(const char* sTeam, CUtlVector<ZRClass*> &vecClasses);
+	ZRZombieClass* GetPlayerClassIndex(CCSPlayerController *pController);
 private:
 	void ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn);
 	CUtlVector<ZRZombieClass*> m_vecZombieDefaultClass;
 	CUtlVector<ZRHumanClass*> m_vecHumanDefaultClass;
 	CUtlMap<uint32, ZRZombieClass*> m_ZombieClassMap;
 	CUtlMap<uint32, ZRHumanClass*> m_HumanClassMap;
+	ZRZombieClass *vecPlayerClassIndex[MAXPLAYERS];
 };
 
 class CZRRegenTimer : public CTimerBase
@@ -241,6 +247,11 @@ struct ZRWeapon
 	float flKnockback;
 };
 
+struct ZRHitgroup
+{
+	float flKnockback;
+};
+
 class ZRWeaponConfig
 {
 public:
@@ -254,7 +265,22 @@ private:
 	CUtlMap<uint32, ZRWeapon*> m_WeaponMap;
 };
 
+
+class ZRHitgroupConfig
+{
+public:
+	ZRHitgroupConfig()
+	{
+		m_HitgroupMap.SetLessFunc(DefLessFunc(uint32));
+	};
+	void LoadHitgroupConfig();
+	ZRHitgroup* FindHitgroupIndex(int iIndex);
+private:
+	CUtlMap<uint32, ZRHitgroup*> m_HitgroupMap;
+};
+
 extern ZRWeaponConfig *g_pZRWeaponConfig;
+extern ZRHitgroupConfig *g_pZRHitgroupConfig;
 extern CZRPlayerClassManager* g_pZRPlayerClassManager;
 
 extern bool g_bEnableZR;
