@@ -177,6 +177,11 @@ float CUserPreferencesSystem::GetPreferenceFloat(int iSlot, const char* sKey, fl
 	return V_StringToFloat32(GetPreference(iSlot, sKey, ""), fDefaultValue);
 }
 
+float CUserPreferencesSystem::GetPreferenceBool(int iSlot, const char* sKey, bool bDefaultValue)
+{
+	return V_StringToBool(GetPreference(iSlot, sKey, ""), bDefaultValue);
+}
+
 void CUserPreferencesSystem::SetPreference(int iSlot, const char* sKey, const char* sValue)
 {
 	uint32 iKeyHash = hash_32_fnv1a_const(sKey);
@@ -209,6 +214,13 @@ void CUserPreferencesSystem::SetPreferenceFloat(int iSlot, const char* sKey, flo
 {
 	char sPreferenceString[MAX_PREFERENCE_LENGTH];
 	V_snprintf(sPreferenceString, sizeof(sPreferenceString), "%f", fValue);
+	SetPreference(iSlot, sKey, (const char*) sPreferenceString);
+}
+
+void CUserPreferencesSystem::SetPreferenceBool(int iSlot, const char* sKey, bool bValue)
+{
+	char sPreferenceString[MAX_PREFERENCE_LENGTH];
+	V_snprintf(sPreferenceString, sizeof(sPreferenceString), "%b", bValue);
 	SetPreference(iSlot, sKey, (const char*) sPreferenceString);
 }
 

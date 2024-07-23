@@ -1,0 +1,4 @@
+// Configs in this file require a server restart to change
+{
+	"enable_button_watch": false // Whether to enable button watch or not. CS# BREAKS WITH THIS ENABLED.
+}
