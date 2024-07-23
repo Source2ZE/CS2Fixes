@@ -1449,9 +1449,23 @@ CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
 		return;
 	}
 
-	zpPlayer->ToggleButtonWatch();
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have%s\1 button watch.",
-				zpPlayer->IsWatchingButtons() ? "\x04 enabled" : "\x02 disabled");
+	zpPlayer->CycleButtonWatch();
+
+	switch (zpPlayer->GetButtonWatchMode())
+	{
+		case 0:
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x02 disabled\1 button watch.");
+			break;
+		case 1:
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in chat.");
+			break;
+		case 2:
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in console.");
+			break;
+		case 3:
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in chat and console.");
+			break;
+	}
 }
 
 CAdminSystem::CAdminSystem()

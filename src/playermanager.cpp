@@ -490,17 +490,21 @@ void ZEPlayer::EndGlow()
 		addresses::UTIL_Remove(pModelParent);
 }
 
-void ZEPlayer::ToggleButtonWatch()
+void ZEPlayer::CycleButtonWatch()
 {
-	m_bIsWatchingButton = !m_bIsWatchingButton;
-	g_pUserPreferencesSystem->SetPreferenceBool(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_bIsWatchingButton);
+	m_bIsWatchingButton = (m_bIsWatchingButton + 1) % 4;
+	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_bIsWatchingButton);
 }
 
-bool ZEPlayer::IsWatchingButtons()
+// 0: Off
+// 1: Chat
+// 2: Console
+// 3: Chat + Console
+int ZEPlayer::GetButtonWatchMode()
 {
 	if (!IsAdminFlagSet(ADMFLAG_GENERIC) || IsFakeClient())
-		return false;
-	return g_pUserPreferencesSystem->GetPreferenceBool(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_bIsWatchingButton);
+		return 0;
+	return g_pUserPreferencesSystem->GetPreferenceInt(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_bIsWatchingButton);
 }
 
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)

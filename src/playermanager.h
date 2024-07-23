@@ -123,7 +123,7 @@ public:
 		m_flMaxSpeed = 1.f;
 		m_iLastInputs = IN_NONE;
 		m_iLastInputTime = std::time(0);
-		m_bIsWatchingButton = g_pUserPreferencesSystem->GetPreferenceBool(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, false);
+		m_bIsWatchingButton = g_pUserPreferencesSystem->GetPreferenceInt(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, 0);
 	}
 
 	~ZEPlayer()
@@ -178,7 +178,7 @@ public:
 	void SetLastInputs(uint64 iLastInputs) { m_iLastInputs = iLastInputs; }
 	void UpdateLastInputTime() { m_iLastInputTime = std::time(0); }
 	void SetMaxSpeed(float flMaxSpeed) { m_flMaxSpeed = flMaxSpeed; }
-	void ToggleButtonWatch();
+	void CycleButtonWatch();
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -212,7 +212,7 @@ public:
 	float GetMaxSpeed() { return m_flMaxSpeed; }
 	uint64 GetLastInputs() { return m_iLastInputs; }
 	std::time_t GetLastInputTime() { return m_iLastInputTime; }
-	bool IsWatchingButtons();
+	int GetButtonWatchMode();
 	
 	void OnSpawn();
 	void OnAuthenticated();
@@ -266,7 +266,7 @@ private:
 	float m_flMaxSpeed;
 	uint64 m_iLastInputs;
 	std::time_t m_iLastInputTime;
-	bool m_bIsWatchingButton;
+	int m_bIsWatchingButton;
 };
 
 class CPlayerManager

@@ -439,17 +439,27 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
     return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
 
-
+std::map <int, bool> mapRecentEnts;
 void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, CVariant* value, float flDelay)
 {
-	if (!V_stricmp(pThis->m_pDesc->m_pName, "OnPressed") && ((CBaseEntity*)pActivator)->IsPawn())
+	if (!V_stricmp(pThis->m_pDesc->m_pName, "OnPressed") && ((CBaseEntity*)pActivator)->IsPawn() && !mapRecentEnts.contains(pCaller->GetEntityIndex().Get()))
 	{
-		std::string strMessage = CCSPlayerController::FromPawn(static_cast<CCSPlayerPawn*>(pActivator))->GetPlayerName();
-		strMessage = strMessage + "\1 pressed button \x0C" + std::to_string(pCaller->GetEntityIndex().Get()) + " ";
-		strMessage.append(((CBaseEntity*)pCaller)->GetName());
+		CCSPlayerController* ccsPlayer = CCSPlayerController::FromPawn(static_cast<CCSPlayerPawn*>(pActivator));
+		std::string strPlayerName = ccsPlayer->GetPlayerName();
+
+		ZEPlayer* zpPlayer = ccsPlayer->GetZEPlayer();
+		std::string strPlayerID = "";
+		if (zpPlayer && !zpPlayer->IsFakeClient())
+		{
+			strPlayerID = std::to_string(zpPlayer->IsAuthenticated() ? zpPlayer->GetSteamId64() : zpPlayer->GetUnauthenticatedSteamId64());
+			strPlayerID = "(" + strPlayerID + ")";
+		}
+
+		std::string strButton = std::to_string(pCaller->GetEntityIndex().Get()) + " " +
+								std::string(((CBaseEntity*)pCaller)->GetName());
 
 		// ClientPrint doesn't work when called directly in here for some reason, so use in a timer instead
-		new CTimer(0.0f, false, false, [strMessage]()
+		new CTimer(0.0f, false, false, [strPlayerName, strButton, strPlayerID]()
 		{
 			for (int i = 0; i < gpGlobals->maxClients; i++)
 			{
@@ -458,10 +468,29 @@ void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* pThis, 
 					continue;
 
 				ZEPlayer* zpPlayer = ccsPlayer->GetZEPlayer();
-				if (zpPlayer && zpPlayer->IsWatchingButtons())
-					ClientPrint(ccsPlayer, HUD_PRINTTALK, " \x02[BW]\x0C %s\1", strMessage.c_str());
+				if (!zpPlayer)
+					continue;
+
+				if (zpPlayer->GetButtonWatchMode() % 2 == 1)
+					ClientPrint(ccsPlayer, HUD_PRINTTALK, " \x02[BW]\x0C %s\1 pressed button \x0C%s\1", strPlayerName.c_str(), strButton.c_str());
+				if (zpPlayer->GetButtonWatchMode() >= 2)
+				{
+					ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "------------------------------------ [ButtonWatch] ------------------------------------");
+					ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Player: %s %s", strPlayerName.c_str(), strPlayerID.c_str());
+					ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Button: %s", strButton.c_str());
+					ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "---------------------------------------------------------------------------------------");
+				}
 			}
 
+			return -1.0f;
+		});
+
+		// Prevent the same button from spamming more than once every 5 seconds
+		int iIndex = pCaller->GetEntityIndex().Get();
+		mapRecentEnts[iIndex] = true;
+		new CTimer(5.0f, true, true, [iIndex]()
+		{
+			mapRecentEnts.erase(iIndex);
 			return -1.0f;
 		});
 	}
