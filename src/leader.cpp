@@ -354,7 +354,7 @@ CON_COMMAND_CHAT(glow, "<name> [duration] - Toggle glow highlight on a player")
 		return;
 	}
 
-	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_SELF | NO_MULTIPLE | NO_TERRORIST))
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_MULTIPLE | NO_TERRORIST))
 		return;
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
@@ -599,7 +599,7 @@ CON_COMMAND_CHAT(tracer, "<name> [color] - Toggle projectile tracers on a player
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 
-	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_SELF | NO_MULTIPLE | NO_TERRORIST))
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_MULTIPLE | NO_TERRORIST))
 		return;
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
