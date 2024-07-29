@@ -476,20 +476,17 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 		// Finally, run the chat command if it is one, so anything will print after the player's message
 		if (bCommand)
 		{
-			char *pszMessage = (char*)args.ArgS();
+			char *pszMessage = (char *)(args.ArgS() + 1);
 
-			uint32 length = strlen(pszMessage);
-			uint32 filteredLength = 0;
-			char filtered[256];
-
-			for (uint32 i = 0; i < length; i++)
-			{
-				if (pszMessage[i] != ' ' && pszMessage[i] != '"' && pszMessage[i] != '!' && pszMessage[i] != '/')
-					filtered[filteredLength++] = pszMessage[i];
+			if (pszMessage[0] == '"' || pszMessage[0] == '!' || pszMessage[0] == '/'){
+				pszMessage += 1;
 			}
-			filtered[filteredLength] = '\0';
 
-			ParseChatCommand(filtered, pController);
+			// Host_Say at some point removes the trailing " for whatever reason, so we only remove if it was never called
+			if (bSilent)
+				pszMessage[V_strlen(pszMessage) - 1] = 0;
+
+			ParseChatCommand(pszMessage, pController);
 		}
 
 		RETURN_META(MRES_SUPERCEDE);
