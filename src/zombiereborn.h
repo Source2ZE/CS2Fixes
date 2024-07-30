@@ -62,6 +62,7 @@ struct ZRModelEntry
 //everything that human and zombie share
 struct ZRClass
 {
+	int iTeam;
 	bool bEnabled;
 	std::string szClassName;
 	int iHealth;
@@ -70,7 +71,8 @@ struct ZRClass
 	float flSpeed;
 	float flGravity;
 	uint64 iAdminFlag;
-	ZRClass(ZRClass *pClass) :
+	ZRClass(ZRClass *pClass, int iTeam) :
+		iTeam(iTeam),
 		bEnabled(pClass->bEnabled),
 		szClassName(pClass->szClassName),
 		iHealth(pClass->iHealth),
@@ -134,7 +136,7 @@ struct ZRClass
 
 struct ZRHumanClass : ZRClass
 {
-	ZRHumanClass(ZRHumanClass *pClass) : ZRClass(pClass){};
+	ZRHumanClass(ZRHumanClass *pClass) : ZRClass(pClass, CS_TEAM_CT){};
 	ZRHumanClass(ordered_json jsonKeys, std::string szClassname);
 };
 
@@ -143,7 +145,7 @@ struct ZRZombieClass : ZRClass
 	int iHealthRegenCount;
 	float flHealthRegenInterval;
 	ZRZombieClass(ZRZombieClass *pClass) :
-		ZRClass(pClass), 
+		ZRClass(pClass, CS_TEAM_T), 
 		iHealthRegenCount(pClass->iHealthRegenCount),
 		flHealthRegenInterval(pClass->flHealthRegenInterval){};
 	ZRZombieClass(ordered_json jsonKeys, std::string szClassname);
@@ -207,7 +209,7 @@ public:
 	void ApplyZombieClass(ZRZombieClass *pClass, CCSPlayerPawn *pPawn);
 	void ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pPawn);
 	void PrecacheModels(IEntityResourceManifest* pResourceManifest);
-	void GetZRClassList(const char* sTeam, CUtlVector<ZRClass*> &vecClasses);
+	void GetZRClassList(int iTeam, CUtlVector<ZRClass*> &vecClasses, CCSPlayerController* pController = nullptr);
 private:
 	void ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn);
 	CUtlVector<ZRZombieClass*> m_vecZombieDefaultClass;

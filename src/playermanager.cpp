@@ -33,6 +33,7 @@
 #include "ctime"
 #include "leader.h"
 #include "tier0/vprof.h"
+#include "networksystem/inetworkmessages.h"
 
 #include "tier0/memdbgon.h"
 
@@ -490,6 +491,19 @@ void ZEPlayer::EndGlow()
 		addresses::UTIL_Remove(pModelParent);
 }
 
+void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
+{
+	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("SetConVar");
+	auto data = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
+
+	CMsg_CVars_CVar* cvarMsg = data->mutable_convars()->add_cvars();
+	cvarMsg->set_name(pszName);
+	cvarMsg->set_value(pszValue);
+
+	GetClientBySlot(GetPlayerSlot())->GetNetChannel()->SendNetMessage(pNetMsg, data, BUF_RELIABLE);
+	pNetMsg->DeallocateMessage(data);
+}
+
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 {
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);
@@ -864,7 +878,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController() || !player->IsConnected())
+			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
 				continue;
 
 			clients[iNumClients++] = i;
@@ -879,7 +893,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController() || !player->IsConnected())
+			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
 				continue;
 
 			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : targetType == ETargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
@@ -904,7 +918,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(slot);
 
-			if (!player || !player->IsController() || !player->IsConnected())
+			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
 				continue;
 
 			if (targetType >= ETargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == ETargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
@@ -921,7 +935,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 		{
 			targetType = ETargetType::PLAYER;
 			CCSPlayerController* player = CCSPlayerController::FromSlot(GetSlotFromUserId(userid).Get());
-			if(player && player->IsController() && player->IsConnected())
+			if(player && player->IsController() && player->IsConnected() && !player->m_bIsHLTV)
 				clients[iNumClients++] = GetSlotFromUserId(userid).Get();
 		}
 	}
@@ -934,7 +948,7 @@ ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* t
 
 			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController() || !player->IsConnected())
+			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
 				continue;
 
 			if (V_stristr(player->GetPlayerName(), target))

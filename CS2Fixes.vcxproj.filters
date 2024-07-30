@@ -30,6 +30,9 @@
     <Filter Include="Source Files\sdk">
       <UniqueIdentifier>{e1906f3f-9ee2-40df-a4d2-00ee0358b050}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\protobuf">
+      <UniqueIdentifier>{7574cb5e-2839-4759-a10c-0630d8c36b2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\patches.cpp">
@@ -125,22 +128,7 @@
     <ClCompile Include="sdk\entity2\entitykeyvalues.cpp">
       <Filter>Source Files\sdk</Filter>
     </ClCompile>
-    <ClCompile Include="protobuf\generated\networkbasetypes.pb.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="protobuf\generated\network_connection.pb.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="sdk\public\tier0\memoverride.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\customio.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="protobuf\generated\cs_usercmd.pb.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="protobuf\generated\usercmd.pb.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\entities.cpp">
@@ -148,6 +136,42 @@
     </ClCompile>
     <ClCompile Include="src\panoramavote.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\usermessages.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\cs_usercmd.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\cstrike15_gcmessages.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\cstrike15_usermessages.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\engine_gcmessages.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\gcsdk_gcmessages.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\netmessages.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\network_connection.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\networkbasetypes.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\steammessages.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="protobuf\generated\usercmd.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="sdk\public\tier0\memoverride.cpp">
+      <Filter>Source Files\sdk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -320,6 +344,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cvotecontroller.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\cenvhudhint.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
   </ItemGroup>

@@ -687,7 +687,13 @@ void CS2Fixes::Hook_OnClientConnected(CPlayerSlot slot, const char* pszName, uin
 {
 	Message("Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 
-	if(bFakePlayer)
+	// CONVAR_TODO
+	// HACK: values is actually the cvar value itself, hence this ugly cast.
+	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("tv_name"));
+	const char* pszTvName = *(const char**)&cvar->values;
+
+	// Ideally we would use CServerSideClient::IsHLTV().. but it doesn't work :(
+	if (bFakePlayer && V_strcmp(pszName, pszTvName))
 		g_playerManager->OnBotConnected(slot);
 }
 
@@ -705,6 +711,10 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 void CS2Fixes::Hook_ClientPutInServer( CPlayerSlot slot, char const *pszName, int type, uint64 xuid )
 {
 	Message( "Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, type, xuid );
+
+	if (!g_playerManager->GetPlayer(slot))
+		return;
+
 	g_playerManager->OnClientPutInServer(slot);
 
 	if (g_bEnableZR)
@@ -715,6 +725,9 @@ void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, ENetworkDisconnectionRea
 {
 	Message( "Hook_ClientDisconnect(%d, %d, \"%s\", %lli)\n", slot, reason, pszName, xuid );
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
+
+	if (!pPlayer)
+		return;
 
 	g_pAdminSystem->AddDisconnectedPlayer(pszName, xuid, pPlayer ? pPlayer->GetIpAddress() : "");
 	g_playerManager->OnClientDisconnect(slot);
@@ -804,7 +817,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			CCSPlayerController* pController = CCSPlayerController::FromSlot(j);
 
 			// Always transmit to themselves
-			if (!pController || j == iPlayerSlot)
+			if (!pController || pController->m_bIsHLTV || j == iPlayerSlot)
 				continue;
 
 			// Don't transmit other players' flashlights, except the one they're watching if in spec
