@@ -595,7 +595,17 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 	}
 	else if (g_bEnableNoShake && info->m_MessageId == UM_Shake)
 	{
-		*(uint64 *)clients &= ~g_playerManager->GetNoShakeMask();
+		auto pPBData = const_cast<CNetMessage*>(pData)->ToPB<CUserMessageShake>();
+		float flAmplitude = pPBData->amplitude();
+		if (flAmplitude > g_flNoShakeAmp) {
+			// clients with noshake
+			uint64 clientNoShakeMask = *(uint64 *)clients & g_playerManager->GetNoShakeMask();
+			pPBData->set_amplitude(g_flNoShakeAmp);
+			SH_CALL(g_gameEventSystem, PostEventAbstract)(nSlot, bLocalOnly, nClientCount, &clientNoShakeMask, pEvent, pPBData, nSize, bufType);
+			// remove client with noshake from the original event
+			*(uint64 *)clients &= ~g_playerManager->GetNoShakeMask();
+			pPBData->set_amplitude(flAmplitude);
+		}
 	}
 	
 }
