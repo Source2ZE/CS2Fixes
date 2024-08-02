@@ -353,8 +353,8 @@ CON_COMMAND_CHAT(toggledecals, "- toggle world decals, if you're into having 10 
 
 bool g_bEnableNoShake = false;
 FAKE_BOOL_CVAR(cs2f_noshake_enable, "Whether to enable noshake command", g_bEnableNoShake, false, false)
-float g_flMaxShakeAmp = 0;
-FAKE_FLOAT_CVAR(cs2f_maximum_shake_amplitude, "Shaking Amplitude bigger than this will be clamped", g_flMaxShakeAmp, 0, false)
+float g_flMaxShakeAmp = -1.0;
+FAKE_FLOAT_CVAR(cs2f_maximum_shake_amplitude, "Shaking Amplitude bigger than this will be clamped", g_flMaxShakeAmp, -1.0, false)
 CON_COMMAND_CHAT(noshake, "- toggle noshake")
 {
 	if (!g_bEnableNoShake)
