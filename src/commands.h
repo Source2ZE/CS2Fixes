@@ -41,7 +41,7 @@ extern bool g_bEnableAdminCommands;
 extern bool g_bEnableHide;
 extern bool g_bEnableStopSound;
 extern bool g_bEnableNoShake;
-extern float g_flNoShakeAmp;
+extern float g_flMaxShakeAmp;
 
 
 void ClientPrintAll(int destination, const char *msg, ...);
