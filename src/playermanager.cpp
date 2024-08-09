@@ -501,7 +501,7 @@ void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
 	cvarMsg->set_value(pszValue);
 
 	GetClientBySlot(GetPlayerSlot())->GetNetChannel()->SendNetMessage(pNetMsg, data, BUF_RELIABLE);
-	pNetMsg->DeallocateMessage(data);
+	delete data;
 }
 
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
