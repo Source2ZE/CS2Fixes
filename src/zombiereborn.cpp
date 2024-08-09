@@ -1197,7 +1197,7 @@ void ZR_InfectShake(CCSPlayerController *pController)
 
 	pController->GetServerSideClient()->GetNetChannel()->SendNetMessage(pNetMsg, data, BUF_RELIABLE);
 
-	pNetMsg->DeallocateMessage(data);
+	delete data;
 }
 
 std::vector<SpawnPoint*> ZR_GetSpawns()
