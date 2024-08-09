@@ -500,7 +500,7 @@ void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
 	cvarMsg->set_name(pszName);
 	cvarMsg->set_value(pszValue);
 
-	GetClientBySlot(GetPlayerSlot())->GetNetChannel()->SendNetMessage(pNetMsg, data, BUF_RELIABLE);
+	GetClientBySlot(GetPlayerSlot())->GetNetChannel()->SendNetMessage(data, BUF_RELIABLE);
 	delete data;
 }
 
