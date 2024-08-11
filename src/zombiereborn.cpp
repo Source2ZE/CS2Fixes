@@ -894,8 +894,10 @@ void ZR_OnLevelInit()
 		// Here we force some cvars that are necessary for the gamemode
 		g_pEngineServer2->ServerCommand("mp_give_player_c4 0");
 		g_pEngineServer2->ServerCommand("mp_friendlyfire 0");
-		g_pEngineServer2->ServerCommand("bot_quota_mode fill"); // Necessary to fix bots kicked/joining infinitely when forced to CT https://github.com/Source2ZE/ZombieReborn/issues/64
 		g_pEngineServer2->ServerCommand("mp_ignore_round_win_conditions 1");
+		// Necessary to fix bots kicked/joining infinitely when forced to CT https://github.com/Source2ZE/ZombieReborn/issues/64
+		g_pEngineServer2->ServerCommand("bot_quota_mode fill");
+		g_pEngineServer2->ServerCommand("mp_autoteambalance 0");
 		// These disable most of the buy menu for zombies
 		g_pEngineServer2->ServerCommand("mp_weapons_allow_pistols 3");
 		g_pEngineServer2->ServerCommand("mp_weapons_allow_smgs 3");
