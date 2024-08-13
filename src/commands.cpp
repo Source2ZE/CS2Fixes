@@ -17,6 +17,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "usermessages.pb.h"
 #include "detours.h"
 #include "common.h"
 #include "utlstring.h"
@@ -37,6 +38,8 @@
 #include "httpmanager.h"
 #include "discord.h"
 #include "zombiereborn.h"
+#include "networksystem/inetworkmessages.h"
+#include "engine/igameeventsystem.h"
 #include "tier0/vprof.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
@@ -45,6 +48,7 @@
 
 using json = nlohmann::json;
 
+extern IGameEventSystem *g_gameEventSystem;
 extern CGameEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
@@ -289,7 +293,19 @@ void ClientPrintAll(int hud_dest, const char *msg, ...)
 
 	va_end(args);
 
-	addresses::UTIL_ClientPrintAll(hud_dest, buf, nullptr, nullptr, nullptr, nullptr);
+	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
+	auto data = pNetMsg->AllocateMessage()->ToPB<CUserMessageTextMsg>();
+
+	data->set_dest(hud_dest);
+	data->add_param(buf);
+
+	CRecipientFilter filter;
+	filter.AddAllPlayers();
+
+	g_gameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
+
+	delete data;
+
 	ConMsg("%s\n", buf);
 }
 
@@ -303,10 +319,21 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 
 	va_end(args);
 
-	if (player)
-		addresses::ClientPrint(player, hud_dest, buf, nullptr, nullptr, nullptr, nullptr);
-	else
+	if (!player)
+	{
 		ConMsg("%s\n", buf);
+		return;
+	}
+
+	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
+	auto data = pNetMsg->AllocateMessage()->ToPB<CUserMessageTextMsg>();
+
+	data->set_dest(hud_dest);
+	data->add_param(buf);
+
+	player->GetServerSideClient()->GetNetChannel()->SendNetMessage(data, BUF_RELIABLE);
+
+	delete data;
 }
 
 bool g_bEnableStopSound = false;
