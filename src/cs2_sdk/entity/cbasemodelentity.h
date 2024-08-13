@@ -27,7 +27,7 @@ class CBaseModelEntity : public CBaseEntity
 public:
 	DECLARE_SCHEMA_CLASS(CBaseModelEntity);
 
-	SCHEMA_FIELD(CCollisionProperty , m_Collision)
+	SCHEMA_FIELD(CCollisionProperty, m_Collision)
 	SCHEMA_FIELD(CGlowProperty, m_Glow)
 	SCHEMA_FIELD(Color, m_clrRender)
 	SCHEMA_FIELD(RenderMode_t, m_nRenderMode)
@@ -36,6 +36,12 @@ public:
 	void SetModel(const char *szModel)
 	{
 		addresses::CBaseModelEntity_SetModel(this, szModel);
+	}
+
+	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup)
+	{
+		m_Collision().m_CollisionGroup = COLLISION_GROUP_DEBRIS;
+		CollisionRulesChanged();
 	}
 	
 	const char* GetModelName()
