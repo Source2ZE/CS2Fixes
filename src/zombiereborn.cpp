@@ -1783,11 +1783,11 @@ CON_COMMAND_CHAT(ztele, "- teleport to spawn")
 
 	ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX"Teleporting to spawn in 5 seconds.");
 
-	CHandle<CBasePlayerPawn> pawnHandle = pPawn->GetHandle();
+	CHandle<CCSPlayerPawn> pawnHandle = pPawn->GetHandle();
 
 	new CTimer(5.0f, false, false, [spawnHandle, pawnHandle, initialpos]()
 	{
-		CBasePlayerPawn* pPawn = pawnHandle.Get();
+		CCSPlayerPawn* pPawn = pawnHandle.Get();
 		SpawnPoint* pSpawn = spawnHandle.Get();
 
 		if (!pPawn || !pSpawn)
@@ -1801,11 +1801,11 @@ CON_COMMAND_CHAT(ztele, "- teleport to spawn")
 			QAngle rotation = pSpawn->GetAbsRotation();
 
 			pPawn->Teleport(&origin, &rotation, nullptr);
-			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, ZR_PREFIX "You have been teleported to spawn.");
+			ClientPrint(pPawn->GetOriginalController(), HUD_PRINTTALK, ZR_PREFIX "You have been teleported to spawn.");
 		}
 		else
 		{
-			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, ZR_PREFIX "Teleport failed! You moved too far.");
+			ClientPrint(pPawn->GetOriginalController(), HUD_PRINTTALK, ZR_PREFIX "Teleport failed! You moved too far.");
 		}
 
 		return -1.0f;

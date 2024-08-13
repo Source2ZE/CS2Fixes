@@ -265,7 +265,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 	}
 }
 
-bool CChatCommand::CheckCommandAccess(CBasePlayerController *pPlayer, uint64 flags)
+bool CChatCommand::CheckCommandAccess(CCSPlayerController *pPlayer, uint64 flags)
 {
 	if (!pPlayer)
 		return false;
@@ -309,7 +309,7 @@ void ClientPrintAll(int hud_dest, const char *msg, ...)
 	ConMsg("%s\n", buf);
 }
 
-void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, ...)
+void ClientPrint(CCSPlayerController *player, int hud_dest, const char *msg, ...)
 {
 	va_list args;
 	va_start(args, msg);
