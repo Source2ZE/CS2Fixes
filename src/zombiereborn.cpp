@@ -155,7 +155,7 @@ void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 
 void ZR_CreateOverlay(const char* pszOverlayParticlePath, float flAlpha, float flRadius, float flLifeTime, Color clrTint, const char* pszMaterialOverride)
 {
-	CEnvParticleGlow* particle = (CEnvParticleGlow*)CreateEntityByName("env_particle_glow");
+	CEnvParticleGlow* particle = CreateEntityByName<CEnvParticleGlow>("env_particle_glow");
 
 	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
 
@@ -1767,7 +1767,7 @@ CON_COMMAND_CHAT(ztele, "- teleport to spawn")
 	CHandle<SpawnPoint> spawnHandle = spawns[randomindex]->GetHandle();
 
 	//Here's where the mess starts
-	CBasePlayerPawn* pPawn = player->GetPawn();
+	CBasePlayerPawn *pPawn = player->GetPawn();
 
 	if (!pPawn)
 		return;
