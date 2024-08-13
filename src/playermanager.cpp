@@ -174,7 +174,7 @@ void ZEPlayer::SpawnFlashLight()
 	origin.z += 64.0f;
 	origin += forward * g_flFlashLightDistance;
 
-	CBarnLight *pLight = (CBarnLight *)CreateEntityByName("light_barn");
+	CBarnLight *pLight = CreateEntityByName<CBarnLight>("light_barn");
 
 	pLight->m_bEnabled = true;
 	pLight->m_Color->SetColor(g_clrFlashLightColor[0], g_clrFlashLightColor[1], g_clrFlashLightColor[2]);
@@ -271,7 +271,7 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver/* = 0*/)
 
 	vecAbsOrigin.z += 10;
 
-	CParticleSystem* particle = (CParticleSystem*)CreateEntityByName("info_particle_system");
+	CParticleSystem* particle = CreateEntityByName<CParticleSystem>("info_particle_system");
 
 	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
 
@@ -393,8 +393,8 @@ void ZEPlayer::StartGlow(Color color, int duration)
 	
 	const char *pszModelName = pPawn->GetModelName();
 	
-	CBaseModelEntity *pModelGlow = (CBaseModelEntity*)CreateEntityByName("prop_dynamic");
-	CBaseModelEntity *pModelRelay = (CBaseModelEntity*)CreateEntityByName("prop_dynamic");
+	CBaseModelEntity *pModelGlow = CreateEntityByName<CBaseModelEntity>("prop_dynamic");
+	CBaseModelEntity *pModelRelay = CreateEntityByName<CBaseModelEntity>("prop_dynamic");
 	CEntityKeyValues *pKeyValuesRelay = new CEntityKeyValues();
 	
 	pKeyValuesRelay->SetString("model", pszModelName);

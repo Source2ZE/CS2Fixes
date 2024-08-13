@@ -516,7 +516,7 @@ CON_COMMAND_CHAT(fl, "flashlight")
 	origin.z += 64.0f;
 	origin += forward * 54.0f; // The minimum distance such that an awp wouldn't block the light
 
-	CBarnLight *pLight = (CBarnLight *)CreateEntityByName("light_barn");
+	CBarnLight *pLight = CreateEntityByName<CBarnLight>("light_barn");
 
 	pLight->m_bEnabled = true;
 	pLight->m_Color->SetColor(255, 255, 255, 255);
@@ -647,7 +647,7 @@ CON_COMMAND_CHAT(particle, "spawn a particle")
 	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
 	vecAbsOrigin.z += 64.0f;
 
-	CParticleSystem *particle = (CParticleSystem*)CreateEntityByName("info_particle_system");
+	CParticleSystem *particle = CreateEntityByName<CParticleSystem>("info_particle_system");
 
 	particle->m_bStartActive(true);
 	particle->m_iszEffectName(args[1]);
@@ -667,7 +667,7 @@ CON_COMMAND_CHAT(particle_kv, "spawn a particle but using keyvalues to spawn")
 	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
 	vecAbsOrigin.z += 64.0f;
 
-	CParticleSystem *particle = (CParticleSystem *)CreateEntityByName("info_particle_system");
+	CParticleSystem *particle = CreateEntityByName<CParticleSystem>("info_particle_system");
 
 	CEntityKeyValues *pKeyValues = new CEntityKeyValues();
 
