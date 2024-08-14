@@ -480,6 +480,7 @@ FAKE_BOOL_CVAR(cs2f_disable_subtick_move, "Whether to disable subtick movement",
 class CUserCmd
 {
 public:
+	[[maybe_unused]] char pad0[0x10];
 	CSGOUserCmdPB cmd;
 	[[maybe_unused]] char pad1[0x38];
 #ifdef PLATFORM_WINDOWS
