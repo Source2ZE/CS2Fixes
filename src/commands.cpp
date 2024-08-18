@@ -319,7 +319,7 @@ void ClientPrint(CCSPlayerController *player, int hud_dest, const char *msg, ...
 
 	va_end(args);
 
-	if (!player)
+	if (!player || !player->IsConnected())
 	{
 		ConMsg("%s\n", buf);
 		return;
