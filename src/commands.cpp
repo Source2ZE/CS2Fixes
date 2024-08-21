@@ -319,7 +319,7 @@ void ClientPrint(CCSPlayerController *player, int hud_dest, const char *msg, ...
 
 	va_end(args);
 
-	if (!player || !player->IsConnected())
+	if (!player || !player->IsConnected() || player->IsBot())
 	{
 		ConMsg("%s\n", buf);
 		return;
@@ -331,7 +331,9 @@ void ClientPrint(CCSPlayerController *player, int hud_dest, const char *msg, ...
 	data->set_dest(hud_dest);
 	data->add_param(buf);
 
-	player->GetServerSideClient()->GetNetChannel()->SendNetMessage(data, BUF_RELIABLE);
+	CSingleRecipientFilter filter(player->GetPlayerSlot());
+
+	g_gameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
 
 	delete data;
 }
