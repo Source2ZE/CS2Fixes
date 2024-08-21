@@ -54,7 +54,6 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CCSPla
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CCSPlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
 bool FASTCALL Detour_IsHearingClient(void*, int);
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther);
-void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis);
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity *pThis, CTakeDamageInfo *inputInfo);
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *, CBasePlayerWeapon *);
 bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID);
