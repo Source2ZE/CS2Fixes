@@ -51,11 +51,16 @@ void CEntityListener::OnEntityCreated(CEntityInstance* pEntity)
 	ExecuteOnce(Patch_GetHammerUniqueId(pEntity));
 
 	if (!V_strcmp("cs_gamerules", pEntity->GetClassname()))
+	{
 		g_pGameRules = ((CCSGameRulesProxy*)pEntity)->m_pGameRules;
+		g_CS2Fixes.CreateGoToIntermissionHook();
+	}
 }
 
 void CEntityListener::OnEntityDeleted(CEntityInstance* pEntity)
 {
+	if (!V_strcmp("cs_gamerules", pEntity->GetClassname()))
+		g_CS2Fixes.RemoveGoToIntermissionHook();
 }
 
 void CEntityListener::OnEntityParentChanged(CEntityInstance* pEntity, CEntityInstance* pNewParent)
