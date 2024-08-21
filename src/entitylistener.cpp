@@ -23,8 +23,10 @@
 #include "gameconfig.h"
 #include "cs2_sdk/entity/cbaseentity.h"
 #include "plat.h"
+#include "entity/cgamerules.h"
 
 extern CGameConfig *g_GameConfig;
+extern CCSGameRules* g_pGameRules;
 
 void Patch_GetHammerUniqueId(CEntityInstance *pEntity)
 {
@@ -47,6 +49,9 @@ void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 void CEntityListener::OnEntityCreated(CEntityInstance* pEntity)
 {
 	ExecuteOnce(Patch_GetHammerUniqueId(pEntity));
+
+	if (!V_strcmp("cs_gamerules", pEntity->GetClassname()))
+		g_pGameRules = ((CCSGameRulesProxy*)pEntity)->m_pGameRules;
 }
 
 void CEntityListener::OnEntityDeleted(CEntityInstance* pEntity)
