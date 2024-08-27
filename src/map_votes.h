@@ -47,22 +47,37 @@ namespace NominationReturnCodes
 class CMapInfo
 {
 public:
-    CMapInfo(const char* pszName, uint64 iWorkshopId, bool bIsEnabled)
+    CMapInfo(const char* pszName, uint64 iWorkshopId, bool bIsEnabled, int iBaseCooldown)
     {
         V_strcpy(m_pszName, pszName);
         m_iWorkshopId = iWorkshopId;
         m_bIsEnabled = bIsEnabled;
+        m_iBaseCooldown = iBaseCooldown;
+        m_iCurrentCooldown = 0;
     }
 
     const char* GetName() { return (const char*)m_pszName; };
     uint64 GetWorkshopId() const { return m_iWorkshopId; };
     bool IsEnabled() { return m_bIsEnabled; };
+    int GetBaseCooldown() { return m_iBaseCooldown; };
+    int GetCooldown() { return m_iCurrentCooldown; };
+    void ResetCooldownToBase() { m_iCurrentCooldown = m_iBaseCooldown; };
+    void DecrementCooldown() { m_iCurrentCooldown = MAX(0, (m_iCurrentCooldown - 1)); }
 
 private:
     char m_pszName[64];
     uint64 m_iWorkshopId;
     bool m_bIsEnabled;
+    int m_iBaseCooldown;
+    int m_iCurrentCooldown;
 };
+
+
+typedef struct
+{
+    const char* name;
+    int cooldown;
+} MapCooldownPair;
 
 
 class CMapVoteSystem
@@ -81,12 +96,10 @@ public:
     void StartVote();
     void FinishVote();
     bool RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
-    void SetMapCooldown(int iMapCooldown) { m_iMapCooldown = iMapCooldown; };
     int GetMapIndexFromSubstring(const char* sMapSubstring);
-    int GetMapCooldown() { return m_iMapCooldown; };
-    int GetMapsInCooldown() { return m_vecLastPlayedMapIndexes.Count(); }
-    int GetCooldownMap(int iCooldownIndex) { return m_vecLastPlayedMapIndexes[iCooldownIndex]; };
-    void PushMapIndexInCooldown(int iMapIndex) { m_vecLastPlayedMapIndexes.AddToTail(iMapIndex); };
+    int GetCooldownMap(int iMapIndex) { return m_vecMapList[iMapIndex].GetCooldown(); };
+    void PutMapOnCooldown(int iMapIndex) { m_vecMapList[iMapIndex].ResetCooldownToBase(); };
+    void PutMapOnCooldownAndDecrement(int iMapIndex);
     void SetMaxNominatedMaps(int iMaxNominatedMaps) { m_iMaxNominatedMaps = iMaxNominatedMaps; };
     int GetMaxNominatedMaps() { return m_iMaxNominatedMaps; };
     int AddMapNomination(CPlayerSlot iPlayerSlot, const char* sMapSubstring);
@@ -118,10 +131,8 @@ private:
     CUtlQueue<PublishedFileId_t> m_DownloadQueue;
 
     CUtlVector<CMapInfo> m_vecMapList;
-    CUtlVector<int> m_vecLastPlayedMapIndexes;
     int m_arrPlayerNominations[MAXPLAYERS];
     int m_iForcedNextMapIndex = -1;
-    int m_iMapCooldown = 10;
     int m_iMaxNominatedMaps = 10;
     int m_iRandomWinnerShift = 0;
     int m_arrPlayerVotes[MAXPLAYERS];
