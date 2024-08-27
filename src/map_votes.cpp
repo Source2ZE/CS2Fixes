@@ -70,21 +70,6 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 	Message("Map list reloaded\n");
 }
 
-CON_COMMAND_F(cs2f_vote_maps_cooldown, "Number of maps to wait until a map can be voted / nominated again i.e. cooldown.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (!g_pMapVoteSystem) {
-		Message("The map vote subsystem is not enabled.\n");
-		return;
-	}
-
-	if (args.ArgC() < 2)
-		Message("%s %d\n", args[0], g_pMapVoteSystem->GetMapCooldown());
-	else {
-		int iCurrentCooldown = g_pMapVoteSystem->GetMapCooldown();
-		g_pMapVoteSystem->SetMapCooldown(V_StringToInt32(args[1], iCurrentCooldown));
-	}
-}
-
 CON_COMMAND_F(cs2f_vote_max_nominations, "Number of nominations to include per vote, out of a maximum of 10.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
 	if (!g_pMapVoteSystem) {
@@ -115,12 +100,12 @@ CON_COMMAND_CHAT_FLAGS(setnextmap, "[mapname] - Force next map (empty to clear f
 	}
 }
 
-static int __cdecl OrderStringsLexicographically(const char* const* a, const char* const* b)
+static int __cdecl OrderStringsLexicographically(const MapCooldownPair *a, const MapCooldownPair *b)
 {
-	return V_strcasecmp(*a, *b);
+	return V_strcasecmp(a->name, b->name);
 }
 
-CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nomination)", ADMFLAG_NONE)
+CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nomination or list all maps)", ADMFLAG_NONE)
 {
 	if (!g_bVoteManagerEnable || !player)
 		return;
@@ -154,16 +139,25 @@ CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nom
 		{
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
 			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all maps is:");
-			CUtlVector<const char*> vecMapNames;
+			CUtlVector<MapCooldownPair> vecMapNames;
 
 			for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
-				vecMapNames.AddToTail(g_pMapVoteSystem->GetMapName(i));
+			{
+				MapCooldownPair currentMap;
+				currentMap.name = g_pMapVoteSystem->GetMapName(i);
+				currentMap.cooldown = g_pMapVoteSystem->GetCooldownMap(i);
+				vecMapNames.AddToTail(currentMap);
+			}
 
 			vecMapNames.Sort(OrderStringsLexicographically);
 
-			// TODO: print cooldown time here too (after rewrite)
 			FOR_EACH_VEC(vecMapNames, i)
-				ClientPrint(player, HUD_PRINTCONSOLE, "- %s", vecMapNames[i]);
+			{
+				if (vecMapNames[i].cooldown > 0)
+					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Cooldown: %d", vecMapNames[i].name, vecMapNames[i].cooldown);
+				else
+					ClientPrint(player, HUD_PRINTCONSOLE, "- %s", vecMapNames[i].name);
+			}
 
 			break;
 		}
@@ -200,22 +194,6 @@ CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 	}
 }
 
-// TODO: also merge this into nominate after cooldown system is rewritten
-CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
-{
-	if (!g_bVoteManagerEnable)
-		return;
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of maps in cooldown will be shown in console.");
-	ClientPrint(player, HUD_PRINTCONSOLE, "The list of maps in cooldown is:");
-	int iMapsInCooldown = g_pMapVoteSystem->GetMapsInCooldown();
-	for (int i = iMapsInCooldown - 1; i >= 0; i--) {
-		int iMapIndex = g_pMapVoteSystem->GetCooldownMap(i);
-		const char* sMapName = g_pMapVoteSystem->GetMapName(iMapIndex);
-		ClientPrint(player, HUD_PRINTCONSOLE, "- %s (%d maps ago)", sMapName, iMapsInCooldown - i);
-	}
-}
-
 GAME_EVENT_F(cs_win_panel_match)
 {
 	if (g_bVoteManagerEnable && !g_pMapVoteSystem->IsVoteOngoing())
@@ -231,7 +209,7 @@ GAME_EVENT_F(endmatch_mapvote_selecting_map)
 bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
 {
 	if (iMapIndex >= m_vecMapList.Count() || iMapIndex < 0) return false;
-	if (m_vecLastPlayedMapIndexes.HasElement(iMapIndex)) return false;
+	if (GetCooldownMap(iMapIndex) > 0) return false;
 	return m_vecMapList[iMapIndex].IsEnabled();
 }
 
@@ -251,10 +229,11 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 		return -1.0f;
 	});
 
-	int iLastCooldownIndex = GetMapsInCooldown() - 1;
-	int iInitMapIndex = GetMapIndexFromSubstring(pMapName);
-	if (iLastCooldownIndex >= 0 && iInitMapIndex >= 0 && GetCooldownMap(iLastCooldownIndex) != iInitMapIndex) {
-		PushMapIndexInCooldown(iInitMapIndex);
+	// Put the loaded map on cooldown
+	int iMapIndex = GetMapIndexFromSubstring(pMapName);
+	if (iMapIndex > 0 && iMapIndex < GetMapListSize())
+	{
+		PutMapOnCooldownAndDecrement(iMapIndex);
 	}
 }
 
@@ -391,12 +370,6 @@ void CMapVoteSystem::FinishVote()
 		int iMapIndex = g_pGameRules->m_nEndMatchMapGroupVoteOptions[i];
 		const char* sIsWinner = (i == iNextMapVoteIndex) ? "(WINNER)" : "";
 		ClientPrintAll(HUD_PRINTCONSOLE, "- %s got %d votes\n", GetMapName(iMapIndex), arrMapVotes[i]);
-	}
-
-	// Store the winning map in the vector of played maps and pop until desired cooldown
-	PushMapIndexInCooldown(iWinningMap);
-	while (m_vecLastPlayedMapIndexes.Count() > m_iMapCooldown) {
-		m_vecLastPlayedMapIndexes.Remove(0);
 	}
 
 	// Do the final clean-up
@@ -658,12 +631,13 @@ bool CMapVoteSystem::LoadMapList()
 		const char *pszName = pKey->GetName();
 		uint64 iWorkshopId = pKey->GetUint64("workshop_id");
 		bool bIsEnabled = pKey->GetBool("enabled", true);
+		int iCooldown = pKey->GetInt("cooldown");
 
 		if (iWorkshopId != 0)
 			QueueMapDownload(iWorkshopId);
 
 		// We just append the maps to the map list
-		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled));
+		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled, iCooldown));
 	}
 
 	new CTimer(0.f, true, true, []()
@@ -684,9 +658,9 @@ bool CMapVoteSystem::LoadMapList()
 		CMapInfo map = m_vecMapList[i];
 
 		if (map.GetWorkshopId() == 0)
-			ConMsg("Map %d is %s, which is %s.\n", i, map.GetName(), map.IsEnabled() ? "enabled" : "disabled");
+			ConMsg("Map %d is %s, which is %s with a cooldown of %d.\n", i, map.GetName(), map.IsEnabled() ? "enabled" : "disabled", map.GetBaseCooldown());
 		else
-			ConMsg("Map %d is %s with workshop id %llu, which is %s.\n", i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled");
+			ConMsg("Map %d is %s with workshop id %llu, which is %s with a cooldown of %d.\n", i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled", map.GetBaseCooldown());
 	}
 
 	m_bMapListLoaded = true;
@@ -716,4 +690,17 @@ CUtlStringList CMapVoteSystem::CreateWorkshopMapGroup()
 		mapList.CopyAndAddToTail(GetMapName(i));
 
 	return mapList;
+}
+
+void CMapVoteSystem::PutMapOnCooldownAndDecrement(int iMapIndex)
+{
+	// Decrement the cooldown of all maps in the map list
+
+	FOR_EACH_VEC(m_vecMapList, i)
+	{
+		CMapInfo * pMap = &m_vecMapList[i];
+		pMap->DecrementCooldown();
+	}
+
+	PutMapOnCooldown(iMapIndex);
 }
