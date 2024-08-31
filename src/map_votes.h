@@ -47,13 +47,13 @@ namespace NominationReturnCodes
 class CMapInfo
 {
 public:
-    CMapInfo(const char* pszName, uint64 iWorkshopId, bool bIsEnabled, int iBaseCooldown)
+    CMapInfo(const char* pszName, uint64 iWorkshopId, bool bIsEnabled, int iBaseCooldown, int iCurrentCooldown)
     {
         V_strcpy(m_pszName, pszName);
         m_iWorkshopId = iWorkshopId;
         m_bIsEnabled = bIsEnabled;
         m_iBaseCooldown = iBaseCooldown;
-        m_iCurrentCooldown = 0;
+        m_iCurrentCooldown = iCurrentCooldown;
     }
 
     const char* GetName() { return (const char*)m_pszName; };
@@ -126,6 +126,7 @@ private:
     int WinningMapIndex();
     bool UpdateWinningMap();
     void GetNominatedMapsForVote(CUtlVector<int>& vecChosenNominatedMaps);
+    bool WriteMapCooldownsToFile();
 
     STEAM_GAMESERVER_CALLBACK_MANUAL(CMapVoteSystem, OnMapDownloaded, DownloadItemResult_t, m_CallbackDownloadItemResult);
     CUtlQueue<PublishedFileId_t> m_DownloadQueue;
