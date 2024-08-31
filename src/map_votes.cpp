@@ -229,11 +229,12 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 		return -1.0f;
 	});
 
-	// Put the loaded map on cooldown
+	// Put the loaded map on cooldown and decrease the cooldown counter of others if loaded map is present in maplist
 	int iMapIndex = GetMapIndexFromSubstring(pMapName);
-	if (iMapIndex > 0 && iMapIndex < GetMapListSize())
+	if (iMapIndex >= 0 && iMapIndex < GetMapListSize())
 	{
 		PutMapOnCooldownAndDecrement(iMapIndex);
+		WriteMapCooldownsToFile();
 	}
 }
 
@@ -627,17 +628,26 @@ bool CMapVoteSystem::LoadMapList()
 		return false;
 	}
 
+	// Load map cooldowns from file
+	KeyValues* pKVcooldowns = new KeyValues("cooldowns");
+	KeyValues::AutoDelete autoDeleteKVcooldowns(pKVcooldowns);
+	const char *pszCooldownFilePath = "addons/cs2fixes/configs/cooldowns.cfg";
+	if (!pKVcooldowns->LoadFromFile(g_pFullFileSystem, pszCooldownFilePath)) {
+		Message("Failed to load cooldown file at %s - resetting all cooldowns to 0\n", pszCooldownFilePath);
+	}
+
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey()) {
 		const char *pszName = pKey->GetName();
 		uint64 iWorkshopId = pKey->GetUint64("workshop_id");
 		bool bIsEnabled = pKey->GetBool("enabled", true);
-		int iCooldown = pKey->GetInt("cooldown");
+		int iBaseCooldown = pKey->GetInt("cooldown");
+		int iCurrentCooldown = pKVcooldowns->GetInt(pszName, 0);
 
 		if (iWorkshopId != 0)
 			QueueMapDownload(iWorkshopId);
 
 		// We just append the maps to the map list
-		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled, iCooldown));
+		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled, iBaseCooldown, iCurrentCooldown));
 	}
 
 	new CTimer(0.f, true, true, []()
@@ -703,4 +713,27 @@ void CMapVoteSystem::PutMapOnCooldownAndDecrement(int iMapIndex)
 	}
 
 	PutMapOnCooldown(iMapIndex);
+}
+
+bool CMapVoteSystem::WriteMapCooldownsToFile()
+{
+	KeyValues* pKV = new KeyValues("cooldowns");
+	KeyValues::AutoDelete autoDelete(pKV);
+
+	const char *pszPath = "addons/cs2fixes/configs/cooldowns.cfg";
+
+	FOR_EACH_VEC(m_vecMapList, i)
+	{
+		const char* mapName = m_vecMapList[i].GetName();
+		const int mapCooldown = m_vecMapList[i].GetCooldown();
+		pKV->AddInt(mapName, mapCooldown);
+	}
+
+	if (!pKV->SaveToFile(g_pFullFileSystem, pszPath))
+	{
+		Panic("Failed to write cooldowns to file: %s\n", pszPath);
+		return false;
+	}
+
+	return true;
 }
