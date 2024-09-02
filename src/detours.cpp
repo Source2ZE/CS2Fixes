@@ -450,32 +450,26 @@ void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* pThis, 
 		std::string strButton = std::to_string(pCaller->GetEntityIndex().Get()) + " " +
 								std::string(((CBaseEntity*)pCaller)->GetName());
 
-		// ClientPrint doesn't work when called directly in here for some reason, so use in a timer instead
-		new CTimer(0.0f, false, false, [strPlayerName, strButton, strPlayerID]()
+		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
-			for (int i = 0; i < gpGlobals->maxClients; i++)
+			CCSPlayerController* ccsPlayer = CCSPlayerController::FromSlot(i);
+			if (!ccsPlayer)
+				continue;
+
+			ZEPlayer* zpPlayer = ccsPlayer->GetZEPlayer();
+			if (!zpPlayer)
+				continue;
+
+			if (zpPlayer->GetButtonWatchMode() % 2 == 1)
+				ClientPrint(ccsPlayer, HUD_PRINTTALK, " \x02[BW]\x0C %s\1 pressed button \x0C%s\1", strPlayerName.c_str(), strButton.c_str());
+			if (zpPlayer->GetButtonWatchMode() >= 2)
 			{
-				CCSPlayerController* ccsPlayer = CCSPlayerController::FromSlot(i);
-				if (!ccsPlayer)
-					continue;
-
-				ZEPlayer* zpPlayer = ccsPlayer->GetZEPlayer();
-				if (!zpPlayer)
-					continue;
-
-				if (zpPlayer->GetButtonWatchMode() % 2 == 1)
-					ClientPrint(ccsPlayer, HUD_PRINTTALK, " \x02[BW]\x0C %s\1 pressed button \x0C%s\1", strPlayerName.c_str(), strButton.c_str());
-				if (zpPlayer->GetButtonWatchMode() >= 2)
-				{
-					ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "------------------------------------ [ButtonWatch] ------------------------------------");
-					ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Player: %s %s", strPlayerName.c_str(), strPlayerID.c_str());
-					ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Button: %s", strButton.c_str());
-					ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "---------------------------------------------------------------------------------------");
-				}
+				ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "------------------------------------ [ButtonWatch] ------------------------------------");
+				ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Player: %s %s", strPlayerName.c_str(), strPlayerID.c_str());
+				ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Button: %s", strButton.c_str());
+				ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "---------------------------------------------------------------------------------------");
 			}
-
-			return -1.0f;
-		});
+		}
 
 		// Prevent the same button from spamming more than once every 5 seconds
 		int iIndex = pCaller->GetEntityIndex().Get();
