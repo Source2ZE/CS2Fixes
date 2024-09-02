@@ -17,6 +17,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "usermessages.pb.h"
 #include "detours.h"
 #include "common.h"
 #include "utlstring.h"
@@ -37,6 +38,8 @@
 #include "httpmanager.h"
 #include "discord.h"
 #include "zombiereborn.h"
+#include "networksystem/inetworkmessages.h"
+#include "engine/igameeventsystem.h"
 #include "tier0/vprof.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
@@ -45,6 +48,7 @@
 
 using json = nlohmann::json;
 
+extern IGameEventSystem *g_gameEventSystem;
 extern CGameEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
@@ -261,7 +265,7 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 	}
 }
 
-bool CChatCommand::CheckCommandAccess(CBasePlayerController *pPlayer, uint64 flags)
+bool CChatCommand::CheckCommandAccess(CCSPlayerController *pPlayer, uint64 flags)
 {
 	if (!pPlayer)
 		return false;
@@ -289,11 +293,23 @@ void ClientPrintAll(int hud_dest, const char *msg, ...)
 
 	va_end(args);
 
-	addresses::UTIL_ClientPrintAll(hud_dest, buf, nullptr, nullptr, nullptr, nullptr);
+	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
+	auto data = pNetMsg->AllocateMessage()->ToPB<CUserMessageTextMsg>();
+
+	data->set_dest(hud_dest);
+	data->add_param(buf);
+
+	CRecipientFilter filter;
+	filter.AddAllPlayers();
+
+	g_gameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
+
+	delete data;
+
 	ConMsg("%s\n", buf);
 }
 
-void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, ...)
+void ClientPrint(CCSPlayerController *player, int hud_dest, const char *msg, ...)
 {
 	va_list args;
 	va_start(args, msg);
@@ -303,10 +319,23 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 
 	va_end(args);
 
-	if (player)
-		addresses::ClientPrint(player, hud_dest, buf, nullptr, nullptr, nullptr, nullptr);
-	else
+	if (!player || !player->IsConnected() || player->IsBot())
+	{
 		ConMsg("%s\n", buf);
+		return;
+	}
+
+	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
+	auto data = pNetMsg->AllocateMessage()->ToPB<CUserMessageTextMsg>();
+
+	data->set_dest(hud_dest);
+	data->add_param(buf);
+
+	CSingleRecipientFilter filter(player->GetPlayerSlot());
+
+	g_gameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
+
+	delete data;
 }
 
 bool g_bEnableStopSound = false;
@@ -489,7 +518,7 @@ CON_COMMAND_CHAT(fl, "flashlight")
 	origin.z += 64.0f;
 	origin += forward * 54.0f; // The minimum distance such that an awp wouldn't block the light
 
-	CBarnLight *pLight = (CBarnLight *)CreateEntityByName("light_barn");
+	CBarnLight *pLight = CreateEntityByName<CBarnLight>("light_barn");
 
 	pLight->m_bEnabled = true;
 	pLight->m_Color->SetColor(255, 255, 255, 255);
@@ -620,7 +649,7 @@ CON_COMMAND_CHAT(particle, "spawn a particle")
 	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
 	vecAbsOrigin.z += 64.0f;
 
-	CParticleSystem *particle = (CParticleSystem*)CreateEntityByName("info_particle_system");
+	CParticleSystem *particle = CreateEntityByName<CParticleSystem>("info_particle_system");
 
 	particle->m_bStartActive(true);
 	particle->m_iszEffectName(args[1]);
@@ -640,7 +669,7 @@ CON_COMMAND_CHAT(particle_kv, "spawn a particle but using keyvalues to spawn")
 	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
 	vecAbsOrigin.z += 64.0f;
 
-	CParticleSystem *particle = (CParticleSystem *)CreateEntityByName("info_particle_system");
+	CParticleSystem *particle = CreateEntityByName<CParticleSystem>("info_particle_system");
 
 	CEntityKeyValues *pKeyValues = new CEntityKeyValues();
 

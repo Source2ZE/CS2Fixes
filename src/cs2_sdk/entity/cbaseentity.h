@@ -183,7 +183,6 @@ public:
 		if (!m_pCollision())
 			return;
 
-		m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
 		m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
 		CollisionRulesChanged();
 	}
