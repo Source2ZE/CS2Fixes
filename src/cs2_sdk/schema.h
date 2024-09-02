@@ -104,8 +104,8 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char *const str, const uint6
 					need to have their this pointer corrected by the offset .*/												\
 				if (!IsStruct)																								\
 					EntityNetworkStateChanged((uintptr_t)pThisClass, m_key.offset + extra_offset);							\
-				else if (IsPlatformPosix()) /* This is currently broken on windows */										\
-					CALL_VIRTUAL(void, 1, pThisClass, m_key.offset + extra_offset, 0xFFFFFFFF, 0xFFFF);						\
+				else																										\
+					CALL_VIRTUAL(void, 1, pThisClass, m_key.offset + extra_offset, 0xFFFFFFFF, 0xFFFFFFFF);					\
 			}																												\
 			*reinterpret_cast<std::add_pointer_t<type>>((uintptr_t)(pThisClass) + m_key.offset + extra_offset) = val;		\
 		}																													\

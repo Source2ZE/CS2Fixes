@@ -169,12 +169,18 @@ const char* CUserPreferencesSystem::GetPreference(int iSlot, const char* sKey, c
 
 int CUserPreferencesSystem::GetPreferenceInt(int iSlot, const char* sKey, int iDefaultValue)
 {
-	return V_StringToInt32(GetPreference(iSlot, sKey, ""), iDefaultValue);
+	const char* pszPreferenceValue = GetPreference(iSlot, sKey, "");
+	if (*pszPreferenceValue == '\0')
+		return iDefaultValue;
+	return V_StringToInt32(pszPreferenceValue, iDefaultValue);
 }
 
 float CUserPreferencesSystem::GetPreferenceFloat(int iSlot, const char* sKey, float fDefaultValue)
 {
-	return V_StringToFloat32(GetPreference(iSlot, sKey, ""), fDefaultValue);
+	const char* pszPreferenceValue = GetPreference(iSlot, sKey, "");
+	if (*pszPreferenceValue == '\0')
+		return fDefaultValue;
+	return V_StringToFloat32(pszPreferenceValue, fDefaultValue);
 }
 
 void CUserPreferencesSystem::SetPreference(int iSlot, const char* sKey, const char* sValue)

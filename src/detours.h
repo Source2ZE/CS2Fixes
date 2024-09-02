@@ -54,15 +54,13 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CCSPla
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CCSPlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
 bool FASTCALL Detour_IsHearingClient(void*, int);
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther);
-void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis);
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity *pThis, CTakeDamageInfo *inputInfo);
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *, CBasePlayerWeapon *);
 bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID);
 void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7, int64_t unk8);
 void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pMove);
-void *FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pawn, CUserCmd *cmds, int numcmds, bool paused, float margin);
+void *FASTCALL Detour_ProcessUsercmds(CCSPlayerController *pController, CUserCmd *cmds, int numcmds, bool paused, float margin);
 void FASTCALL  Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip*, InputData_t*);
 void FASTCALL  Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip*, InputData_t*);
-int64_t* FASTCALL Detour_CCSGameRules_GoToIntermission(int64_t unk1, char unk2);
 CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6);
 float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn*);

@@ -33,6 +33,7 @@
 #include "ctime"
 #include "leader.h"
 #include "tier0/vprof.h"
+#include "networksystem/inetworkmessages.h"
 
 #include "tier0/memdbgon.h"
 
@@ -179,7 +180,7 @@ void ZEPlayer::SpawnFlashLight()
 	origin.z += 64.0f;
 	origin += forward * g_flFlashLightDistance;
 
-	CBarnLight *pLight = (CBarnLight *)CreateEntityByName("light_barn");
+	CBarnLight *pLight = CreateEntityByName<CBarnLight>("light_barn");
 
 	pLight->m_bEnabled = true;
 	pLight->m_Color->SetColor(g_clrFlashLightColor[0], g_clrFlashLightColor[1], g_clrFlashLightColor[2]);
@@ -276,7 +277,7 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver/* = 0*/)
 
 	vecAbsOrigin.z += 10;
 
-	CParticleSystem* particle = (CParticleSystem*)CreateEntityByName("info_particle_system");
+	CParticleSystem* particle = CreateEntityByName<CParticleSystem>("info_particle_system");
 
 	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
 
@@ -398,8 +399,8 @@ void ZEPlayer::StartGlow(Color color, int duration)
 	
 	const char *pszModelName = pPawn->GetModelName();
 	
-	CBaseModelEntity *pModelGlow = (CBaseModelEntity*)CreateEntityByName("prop_dynamic");
-	CBaseModelEntity *pModelRelay = (CBaseModelEntity*)CreateEntityByName("prop_dynamic");
+	CBaseModelEntity *pModelGlow = CreateEntityByName<CBaseModelEntity>("prop_dynamic");
+	CBaseModelEntity *pModelRelay = CreateEntityByName<CBaseModelEntity>("prop_dynamic");
 	CEntityKeyValues *pKeyValuesRelay = new CEntityKeyValues();
 	
 	pKeyValuesRelay->SetString("model", pszModelName);
@@ -494,6 +495,19 @@ void ZEPlayer::EndGlow()
 
 	if (pModelParent)
 		addresses::UTIL_Remove(pModelParent);
+}
+
+void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
+{
+	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("SetConVar");
+	auto data = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
+
+	CMsg_CVars_CVar* cvarMsg = data->mutable_convars()->add_cvars();
+	cvarMsg->set_name(pszName);
+	cvarMsg->set_value(pszValue);
+
+	GetClientBySlot(GetPlayerSlot())->GetNetChannel()->SendNetMessage(data, BUF_RELIABLE);
+	delete data;
 }
 
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
@@ -842,7 +856,7 @@ void CPlayerManager::SetupInfiniteAmmo()
 // iOnlyThisTeam is non-zero and doesnt match pTarget
 ETargetError GetTargetError(CCSPlayerController* pPlayer, CCSPlayerController* pTarget, uint64 iBlockedFlags, int iOnlyThisTeam = -1)
 {
-	if (!pTarget || !pTarget->IsController())
+	if (!pTarget || !pTarget->IsController() || !pTarget->IsConnected() || pTarget->m_bIsHLTV)
 		return ETargetError::INVALID;
 	else if (!pTarget->IsConnected())
 		return ETargetError::CONNECTING;
@@ -1301,7 +1315,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 
 			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(i);
 
-			if (!pTarget || !pTarget->IsController())
+			if (!pTarget || !pTarget->IsController() || !pTarget->IsConnected() || pTarget->m_bIsHLTV)
 				continue;
 
 			if ((!bExactName && V_stristr(pTarget->GetPlayerName(), pszTarget)) || !V_strcmp(pTarget->GetPlayerName(), pszTarget))

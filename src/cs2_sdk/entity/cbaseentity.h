@@ -32,6 +32,7 @@
 extern CGameConfig *g_GameConfig;
 
 class CGameUI;
+class CEnvHudHint;
 
 class CGameSceneNode
 {
@@ -182,7 +183,6 @@ public:
 		if (!m_pCollision())
 			return;
 
-		m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
 		m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
 		CollisionRulesChanged();
 	}
@@ -278,6 +278,14 @@ public:
 
 		if (tag && V_strcasecmp(tag, "game_ui") == 0)
 			return reinterpret_cast<CGameUI *>(this);
+
+		return nullptr;
+	}
+
+	[[nodiscard]] CEnvHudHint *AsHudHint()
+	{
+		if (V_strcasecmp(GetClassname(), "env_hudhint") == 0)
+			return reinterpret_cast<CEnvHudHint *>(this);
 
 		return nullptr;
 	}

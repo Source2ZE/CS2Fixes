@@ -148,7 +148,7 @@ bool Leader_CreateDefendMarker(ZEPlayer *pPlayer, Color clrTint, int iDuration)
 		return -1.0f;
 	});
 
-	CParticleSystem *pMarker = (CParticleSystem *)CreateEntityByName("info_particle_system");
+	CParticleSystem *pMarker = CreateEntityByName<CParticleSystem>("info_particle_system");
 
 	Vector vecOrigin = pPawn->GetAbsOrigin();
 	vecOrigin.z += 10;
@@ -247,7 +247,7 @@ void Leader_BulletImpact(IGameEvent *pEvent)
 	CCSPlayerPawn *pPawn = (CCSPlayerPawn *)pEvent->GetPlayerPawn("userid");
 	CBasePlayerWeapon *pWeapon = pPawn->m_pWeaponServices->m_hActiveWeapon.Get();
 
-	CParticleSystem* particle = (CParticleSystem*)CreateEntityByName("info_particle_system");
+	CParticleSystem* particle = CreateEntityByName<CParticleSystem>("info_particle_system");
 
 	// Teleport particle to muzzle_flash attachment of player's weapon
 	particle->AcceptInput("SetParent", "!activator", pWeapon, nullptr);

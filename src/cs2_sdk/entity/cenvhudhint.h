@@ -19,33 +19,13 @@
 
 #pragma once
 
+#include "../schema.h"
 #include "cbaseentity.h"
-#include "globaltypes.h"
 
-class CBaseModelEntity : public CBaseEntity
+class CEnvHudHint : public CBaseEntity
 {
 public:
-	DECLARE_SCHEMA_CLASS(CBaseModelEntity);
+    DECLARE_SCHEMA_CLASS(CEnvHudHint)
 
-	SCHEMA_FIELD(CCollisionProperty, m_Collision)
-	SCHEMA_FIELD(CGlowProperty, m_Glow)
-	SCHEMA_FIELD(Color, m_clrRender)
-	SCHEMA_FIELD(RenderMode_t, m_nRenderMode)
-	SCHEMA_FIELD(float, m_flDissolveStartTime)
-	
-	void SetModel(const char *szModel)
-	{
-		addresses::CBaseModelEntity_SetModel(this, szModel);
-	}
-
-	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup)
-	{
-		m_Collision().m_CollisionGroup = COLLISION_GROUP_DEBRIS;
-		CollisionRulesChanged();
-	}
-	
-	const char* GetModelName()
-	{
-		return ((CSkeletonInstance*)m_CBodyComponent->m_pSceneNode.Get())->m_modelState().m_ModelName.Get().String();
-	}
+    SCHEMA_FIELD(CUtlSymbolLarge, m_iszMessage)
 };

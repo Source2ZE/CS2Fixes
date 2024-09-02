@@ -423,7 +423,7 @@ bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor,
 
     const auto vecOrigin = pPawn->GetAbsOrigin();
 
-    pParticleEnt = reinterpret_cast<CParticleSystem*>(CreateEntityByName("info_particle_system"));
+    pParticleEnt = CreateEntityByName<CParticleSystem>("info_particle_system");
 
     pParticleEnt->m_bStartActive(true);
     pParticleEnt->m_iszEffectName(g_sBurnParticle.c_str());
