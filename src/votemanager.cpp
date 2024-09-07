@@ -98,6 +98,9 @@ float TimerCheckTimeleft()
 	if (!gpGlobals || !g_pGameRules)
 		return flExtendVoteTickrate;
 
+	if (!g_bVoteManagerEnable)
+		return flExtendVoteTickrate;
+	
 	// Auto votes disabled, dont stop the timer in case this changes mid-map
 	if (g_ExtendVoteMode != EExtendVoteMode::EXTENDVOTE_AUTO)
 		return flExtendVoteTickrate;
