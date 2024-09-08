@@ -40,7 +40,7 @@ public:
 
 	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup)
 	{
-		m_Collision().m_CollisionGroup = COLLISION_GROUP_DEBRIS;
+		m_Collision().m_CollisionGroup = static_cast<uint8>(nCollisionGroup);
 		CollisionRulesChanged();
 	}
 	
