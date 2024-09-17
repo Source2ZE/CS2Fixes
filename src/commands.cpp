@@ -479,6 +479,86 @@ CON_COMMAND_CHAT(help, "- Display list of commands in console")
 		ClientPrint(player, HUD_PRINTCONSOLE, "! can be replaced with / for a silent chat command, or c_ for console usage");
 }
 
+CON_COMMAND_CHAT(spec, "<name> - Spectate another player")
+{
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !spec <name>");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlot[MAXPLAYERS];
+
+	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) > ETargetType::PLAYER)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only spectate a specific player.");
+		return;
+	}
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	if (iNumClients > 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one player matched.");
+		return;
+	}
+
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
+
+	if (!pTarget)
+		return;
+
+	if (pTarget == player)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot spectate yourself.");
+		return;
+	}
+
+	if (pTarget->m_iTeamNum() == CS_TEAM_SPECTATOR)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target is a spectator.");
+		return;
+	}
+
+	if (!pTarget->m_bPawnIsAlive())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target is not alive.");
+		return;
+	}
+
+	if (player->m_iTeamNum() != CS_TEAM_SPECTATOR)
+		player->SwitchTeam(CS_TEAM_SPECTATOR);
+
+	// 1 frame delay as observer services will be null on same frame as spectator team switch
+	CHandle<CCSPlayerController> hPlayer = player->GetHandle();
+	CHandle<CCSPlayerController> hTarget = pTarget->GetHandle();
+	new CTimer(0.0f, false, false, [hPlayer, hTarget](){
+		CCSPlayerController* pPlayer = hPlayer.Get();
+		CCSPlayerController* pTargetPlayer = hTarget.Get();
+		if (!pPlayer || !pTargetPlayer)
+			return -1.0f;
+		CPlayer_ObserverServices* pObserverServices = pPlayer->GetPawn()->m_pObserverServices();
+		if (!pObserverServices)
+			return -1.0f;
+		pObserverServices->m_iObserverMode.Set(OBS_MODE_IN_EYE);
+		pObserverServices->m_iObserverLastMode.Set(OBS_MODE_ROAMING);
+		pObserverServices->m_hObserverTarget.Set(pTargetPlayer->GetPawn());
+		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "Spectating player %s.", pTargetPlayer->GetPlayerName());
+		return -1.0f;
+	});
+}
 
 #if _DEBUG
 CON_COMMAND_CHAT(myuid, "- test")
