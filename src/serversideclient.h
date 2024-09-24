@@ -5,6 +5,7 @@
 #pragma once
 #endif
 
+#include "clientframe.h"
 #include "netmessages.h"
 
 #include <inetchannel.h>
@@ -75,7 +76,7 @@ public:
 	CSteamID                 GetClientSteamID() const { return m_SteamID; }
 	const char              *GetClientName() const { return m_Name; }
 	INetChannel             *GetNetChannel() const { return m_NetChannel; }
-	const netadr_t          *GetRemoteAddress() const { return m_nAddr.Get<netadr_t>(); }
+	const netadr_t          *GetRemoteAddress() const { return &m_nAddr.GetAddress(); }
 	CNetworkGameServerBase  *GetServer() const { return m_Server; }
 
 	virtual void             Connect( int socket, const char* pszName, int nUserID, INetChannel* pNetChannel, bool bFakePlayer, bool bSplitClient, int iClientPlatform ) = 0;
@@ -105,7 +106,7 @@ private:
 #endif
 
 public:
-	virtual void             ClientPrintf( PRINTF_FORMAT_STRING const char*, ...) = 0;
+	virtual void             ClientPrintf( const char*, ...) = 0;
 
 	bool                     IsConnected() const { return m_nSignonState >= SIGNONSTATE_CONNECTED; }
 	bool                     IsSpawned() const { return m_nSignonState >= SIGNONSTATE_NEW; }
