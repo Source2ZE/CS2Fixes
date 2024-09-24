@@ -29,7 +29,7 @@ extern CGameConfig *g_GameConfig;
 extern CCSGameRules* g_pGameRules;
 
 bool g_bGrenadeNoBlock = false;
-FAKE_BOOL_CVAR(cs2f_no_block_grenades, "Make grenade projectile no block.", g_bGrenadeNoBlock, false, false)
+FAKE_BOOL_CVAR(cs2f_noblock_grenades, "Whether to use noblock on grenade projectiles", g_bGrenadeNoBlock, false, false)
 
 void Patch_GetHammerUniqueId(CEntityInstance *pEntity)
 {

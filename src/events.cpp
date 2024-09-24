@@ -117,7 +117,7 @@ GAME_EVENT_F(player_team)
 
 static bool g_bNoblock = false;
 
-FAKE_BOOL_CVAR(cs2f_noblock_enable, "Whether to use noblock, which sets debris collision on every player", g_bNoblock, false, false)
+FAKE_BOOL_CVAR(cs2f_noblock_enable, "Whether to use player noblock, which sets debris collision on every player", g_bNoblock, false, false)
 
 GAME_EVENT_F(player_spawn)
 {
