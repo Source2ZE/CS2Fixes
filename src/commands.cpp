@@ -511,12 +511,12 @@ CON_COMMAND_CHAT(info, "<name> - Get a player's information")
 		ZEPlayer* zpTarget = pTarget->GetZEPlayer();
 		
 		ClientPrint(player, HUD_PRINTCONSOLE, "%s", pTarget->GetPlayerName());
-		ClientPrint(player, HUD_PRINTCONSOLE, "\tUser ID: %s", g_pEngineServer2->GetPlayerUserId(pTarget->GetPlayerSlot()).Get());
+		ClientPrint(player, HUD_PRINTCONSOLE, "\tUser ID: %i", g_pEngineServer2->GetPlayerUserId(pTarget->GetPlayerSlot()).Get());
 
 		if (zpTarget->IsAuthenticated())
-			ClientPrint(player, HUD_PRINTCONSOLE, "\tSteam64 ID: %s", zpTarget->GetSteamId64());
+			ClientPrint(player, HUD_PRINTCONSOLE, "\tSteam64 ID: %llu", zpTarget->GetSteamId64());
 		else
-			ClientPrint(player, HUD_PRINTCONSOLE, "\tSteam64 ID: %s (Unauthenticated)", zpTarget->GetUnauthenticatedSteamId());
+			ClientPrint(player, HUD_PRINTCONSOLE, "\tSteam64 ID: %llu (Unauthenticated)", zpTarget->GetUnauthenticatedSteamId());
 
 		if (bIsAdmin)
 			ClientPrint(player, HUD_PRINTCONSOLE, "\tIP Address: %s", zpTarget->GetIpAddress());
