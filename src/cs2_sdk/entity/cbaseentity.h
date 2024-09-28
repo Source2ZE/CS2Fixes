@@ -183,7 +183,7 @@ public:
 		if (!m_pCollision())
 			return;
 
-		m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
+		m_pCollision->m_CollisionGroup = static_cast<uint8>(nCollisionGroup);
 		CollisionRulesChanged();
 	}
 

@@ -492,12 +492,16 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 		// Finally, run the chat command if it is one, so anything will print after the player's message
 		if (bCommand)
 		{
-			// Do the same trimming as with admin chat
-			char *pszMessage = (char *)(args.ArgS() + 2);
+			char *pszMessage = (char *)(args.ArgS() + 1);
+
+			if (pszMessage[0] == '"' || pszMessage[0] == '!' || pszMessage[0] == '/'){
+				pszMessage += 1;
+			}
 
 			// Host_Say at some point removes the trailing " for whatever reason, so we only remove if it was never called
-			if (bSilent)
-				pszMessage[V_strlen(pszMessage) - 1] = 0;
+			if (bSilent && pszMessage[V_strlen(pszMessage) - 1] == '"'){
+				pszMessage[V_strlen(pszMessage) - 1] = '\0';
+			}
 
 			ParseChatCommand(pszMessage, pController);
 		}
