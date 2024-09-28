@@ -127,6 +127,7 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	bool bStopSound = (bool) (iSoundStatus & 1);
 	bool bSilenceSound = (bool) (iSoundStatus & 2);
 	bool bHideDecals = (bool) GetPreferenceInt(iSlot, DECAL_PREF_KEY_NAME, 1);
+	int iButtonWatchMode = g_pUserPreferencesSystem->GetPreferenceInt(iSlot, BUTTON_WATCH_PREF_KEY_NAME, 0);
 
 	// Set the values that we just loaded --- the player is guaranteed available
 	g_playerManager->SetPlayerStopSound(iSlot, bStopSound);
@@ -135,6 +136,8 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 
 	ZEPlayer* player = g_playerManager->GetPlayer(CPlayerSlot(iSlot));
 	player->SetHideDistance(iHideDistance);
+	for (int i = 0; i < iButtonWatchMode; i++)
+		player->CycleButtonWatch();
 }
 
 void CUserPreferencesSystem::PullPreferences(int iSlot) 

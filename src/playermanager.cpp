@@ -493,8 +493,8 @@ void ZEPlayer::EndGlow()
 
 void ZEPlayer::CycleButtonWatch()
 {
-	m_bIsWatchingButton = (m_bIsWatchingButton + 1) % 4;
-	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_bIsWatchingButton);
+	m_iButtonWatchMode = (m_iButtonWatchMode + 1) % 4;
+	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_iButtonWatchMode);
 }
 
 // 0: Off
@@ -505,7 +505,7 @@ int ZEPlayer::GetButtonWatchMode()
 {
 	if (!IsAdminFlagSet(ADMFLAG_GENERIC) || IsFakeClient())
 		return 0;
-	return g_pUserPreferencesSystem->GetPreferenceInt(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_bIsWatchingButton);
+	return g_pUserPreferencesSystem->GetPreferenceInt(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_iButtonWatchMode);
 }
 
 void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)

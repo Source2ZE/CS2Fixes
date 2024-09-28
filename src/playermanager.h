@@ -123,7 +123,7 @@ public:
 		m_flMaxSpeed = 1.f;
 		m_iLastInputs = IN_NONE;
 		m_iLastInputTime = std::time(0);
-		m_bIsWatchingButton = g_pUserPreferencesSystem->GetPreferenceInt(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, 0);
+		m_iButtonWatchMode = 0;
 	}
 
 	~ZEPlayer()
@@ -267,7 +267,7 @@ private:
 	float m_flMaxSpeed;
 	uint64 m_iLastInputs;
 	std::time_t m_iLastInputTime;
-	int m_bIsWatchingButton;
+	int m_iButtonWatchMode;
 };
 
 class CPlayerManager
