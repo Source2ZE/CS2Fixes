@@ -48,6 +48,7 @@
 #include "networksystem/inetworkserializer.h"
 #include "map_votes.h"
 #include <fstream>
+#undef snprintf
 #include "vendor/nlohmann/json.hpp"
 #include "tier0/vprof.h"
 

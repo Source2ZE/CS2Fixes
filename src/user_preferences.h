@@ -86,11 +86,9 @@ public:
 	const char* GetPreference(int iSlot, const char* sKey, const char* sDefaultValue = "");
 	int GetPreferenceInt(int iSlot, const char* sKey, int iDefaultValue = 0);
 	float GetPreferenceFloat(int iSlot, const char* sKey, float fDefaultValue = 0.0f);
-	float GetPreferenceBool(int iSlot, const char* sKey, bool bDefaultValue = false);
 	void SetPreference(int iSlot, const char* sKey, const char* sValue);
 	void SetPreferenceInt(int iSlot, const char* sKey, int iValue);
 	void SetPreferenceFloat(int iSlot, const char* sKey, float fValue);
-	void SetPreferenceBool(int iSlot, const char* sKey, bool bValue);
 	bool CheckPreferencesLoaded(int iSlot);
 	bool PutPreferences(int iSlot, uint64 iSteamId, CUtlMap<uint32, CPreferenceValue> &preferenceData);
 	void OnPutPreferences(int iSlot);

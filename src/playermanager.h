@@ -28,7 +28,6 @@
 #include "entity/lights.h"
 #include "entity/cparticlesystem.h"
 #include "gamesystem.h"
-#include "user_preferences.h"
 
 #define DECAL_PREF_KEY_NAME "hide_decals"
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
