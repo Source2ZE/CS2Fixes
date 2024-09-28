@@ -42,6 +42,10 @@ extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 
+static int g_iAdminImmunityTargetting = 0;
+
+FAKE_INT_CVAR(cs2f_admin_immunity, "Mode for which admin immunity system targetting allows: 0 - strictly lower, 1 - equal to or lower, 2 - ignore immunity levels", g_iAdminImmunityTargetting, 0, false)
+
 ZEPlayerHandle::ZEPlayerHandle() : m_Index(INVALID_ZEPLAYERHANDLE_INDEX) {};
 
 ZEPlayerHandle::ZEPlayerHandle(CPlayerSlot slot)
@@ -122,10 +126,12 @@ void ZEPlayer::CheckAdmin()
 	if (!admin)
 	{
 		SetAdminFlags(0);
+		SetAdminImmunity(0);
 		return;
 	}
 
 	SetAdminFlags(admin->GetFlags());
+	SetAdminImmunity(admin->GetImmunity());
 
 	Message("%lli authenticated as an admin\n", GetSteamId64());
 }
@@ -845,121 +851,580 @@ void CPlayerManager::SetupInfiniteAmmo()
 	});
 }
 
-ETargetType CPlayerManager::TargetPlayerString(int iCommandClient, const char* target, int& iNumClients, int *clients)
+// Returns ETargetError::NO_ERRORS if pPlayer can target pTarget given iBlockedFlags and iOnlyThisTeam
+// otherwise returns the error encountered in targetting that pTarget, with ETargetError::INVALID given
+// iOnlyThisTeam is non-zero and doesnt match pTarget
+ETargetError GetTargetError(CCSPlayerController* pPlayer, CCSPlayerController* pTarget, uint64 iBlockedFlags, int iOnlyThisTeam = -1)
 {
-	ETargetType targetType = ETargetType::NONE;
-	if (!V_stricmp(target, "@me"))
-		targetType = ETargetType::SELF;
-	else if (!V_stricmp(target, "@all"))
-		targetType = ETargetType::ALL;
-	else if (!V_stricmp(target, "@t"))
-		targetType = ETargetType::T;
-	else if (!V_stricmp(target, "@ct"))
-		targetType = ETargetType::CT;
-	else if (!V_stricmp(target, "@spec"))
-		targetType = ETargetType::SPECTATOR;
-	else if (!V_stricmp(target, "@random"))
-		targetType = ETargetType::RANDOM;
-	else if (!V_stricmp(target, "@randomt"))
-		targetType = ETargetType::RANDOM_T;
-	else if (!V_stricmp(target, "@randomct"))
-		targetType = ETargetType::RANDOM_CT;
+	if (!pTarget || !pTarget->IsController() || !pTarget->IsConnected() || pTarget->m_bIsHLTV)
+		return ETargetError::INVALID;
+	else if (!pTarget->IsConnected())
+		return ETargetError::CONNECTING;
+	else if (iOnlyThisTeam > -1 && pTarget->m_iTeamNum() != iOnlyThisTeam)
+		return ETargetError::INVALID;
+	else if (iBlockedFlags & NO_SELF && pTarget == pPlayer)
+		return ETargetError::SELF;
+	else if (iBlockedFlags & NO_TERRORIST && pTarget->m_iTeamNum() == CS_TEAM_T)
+		return ETargetError::TERRORIST;
+	else if (iBlockedFlags & NO_COUNTER_TERRORIST && pTarget->m_iTeamNum() == CS_TEAM_CT)
+		return ETargetError::COUNTER_TERRORIST;
+	else if (iBlockedFlags & NO_SPECTATOR && pTarget->m_iTeamNum() <= CS_TEAM_SPECTATOR)
+		return ETargetError::SPECTATOR;
+	else if (iBlockedFlags & NO_DEAD && (!pTarget->m_bPawnIsAlive() || pTarget->m_iTeamNum() <= CS_TEAM_SPECTATOR))
+		return ETargetError::DEAD;
+	else if (iBlockedFlags & NO_ALIVE && pTarget->m_bPawnIsAlive())
+		return ETargetError::ALIVE;
+
+	ZEPlayer* zpPlayer = pPlayer ? pPlayer->GetZEPlayer() : nullptr;
+	ZEPlayer* zpTarget = pTarget->GetZEPlayer();
+
+	if (!zpTarget)
+		return ETargetError::INVALID;
+	else if (iBlockedFlags & NO_BOT && zpTarget->IsFakeClient())
+		return ETargetError::BOT;
+	else if (iBlockedFlags & NO_HUMAN && !zpTarget->IsFakeClient())
+		return ETargetError::HUMAN;
+	else if (iBlockedFlags & NO_UNAUTHENTICATED && !zpTarget->IsAuthenticated())
+		return ETargetError::UNAUTHENTICATED;
+	else if (zpPlayer && !(iBlockedFlags & NO_IMMUNITY)
+			  && ((g_iAdminImmunityTargetting == 0 && zpTarget->GetAdminImmunity() > zpPlayer->GetAdminImmunity())
+				  || (g_iAdminImmunityTargetting == 1 && zpTarget->GetAdminImmunity() <= zpPlayer->GetAdminImmunity() && pTarget != pPlayer)))
+		return ETargetError::INSUFFICIENT_IMMUNITY_LEVEL;
+
+	return ETargetError::NO_ERRORS;
+}
+
+ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, const char* pszTarget,
+												  int& iNumClients, int* rgiClients, uint64 iBlockedFlags,
+												  ETargetType& nType)
+{
+	nType = ETargetType::NONE;
+	ZEPlayer* zpPlayer = pPlayer ? pPlayer->GetZEPlayer() : nullptr;
+	bool bTargetMultiple = false;
+	bool bTargetRandom = false;
+	uint64 iInverseFlags = NO_TARGET_BLOCKS;
 	
-	if (targetType == ETargetType::SELF && iCommandClient != -1)
+	if (!V_stricmp(pszTarget, "@me"))
 	{
-		clients[iNumClients++] = iCommandClient;
+		nType = ETargetType::SELF;
+
+		if (iBlockedFlags & NO_SELF || !pPlayer)
+			return ETargetError::SELF;
 	}
-	else if (targetType == ETargetType::ALL)
+	else if (!V_stricmp(pszTarget, "@!me"))
+	{
+		nType = ETargetType::ALL_BUT_SELF;
+
+		if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		iBlockedFlags |= NO_SELF;
+		bTargetMultiple = true;
+	}
+	else if (!V_stricmp(pszTarget, "@all"))
+	{
+		nType = ETargetType::ALL;
+
+		if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		bTargetMultiple = true;
+	}
+	else if (!V_stricmp(pszTarget, "@!all"))
+		return ETargetError::INVALID;
+	else if (!V_stricmp(pszTarget, "@t"))
+	{
+		nType = ETargetType::T;
+
+		if (iBlockedFlags & NO_TERRORIST)
+			return ETargetError::TERRORIST;
+		else if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		bTargetMultiple = true;
+		iBlockedFlags |= NO_COUNTER_TERRORIST | NO_SPECTATOR;
+
+	}
+	else if (!V_stricmp(pszTarget, "@!t"))
+	{
+		nType = ETargetType::ALL_BUT_T;
+
+		if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		bTargetMultiple = true;
+		iBlockedFlags |= NO_TERRORIST;
+	}
+	else if (!V_stricmp(pszTarget, "@ct"))
+	{
+		nType = ETargetType::CT;
+
+		if (iBlockedFlags & NO_COUNTER_TERRORIST)
+			return ETargetError::COUNTER_TERRORIST;
+		else if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		bTargetMultiple = true;
+		iBlockedFlags |= NO_TERRORIST | NO_SPECTATOR;
+	}
+	else if (!V_stricmp(pszTarget, "@!ct"))
+	{
+		nType = ETargetType::ALL_BUT_CT;
+
+		if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		bTargetMultiple = true;
+		iBlockedFlags |= NO_COUNTER_TERRORIST;
+
+	}
+	else if (!V_stricmp(pszTarget, "@spec"))
+	{
+		nType = ETargetType::SPECTATOR;
+
+		if (iBlockedFlags & NO_SPECTATOR)
+			return ETargetError::SPECTATOR;
+		else if (iBlockedFlags & NO_DEAD)
+			return ETargetError::DEAD;
+		else if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		bTargetMultiple = true;
+		iBlockedFlags |= NO_TERRORIST | NO_COUNTER_TERRORIST;
+	}
+	else if (!V_stricmp(pszTarget, "@!spec"))
+	{
+		nType = ETargetType::ALL_BUT_SPECTATOR;
+
+		if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		bTargetMultiple = true;
+		iBlockedFlags |= NO_SPECTATOR;
+	}
+	else if (!V_stricmp(pszTarget, "@random"))
+	{
+		nType = ETargetType::RANDOM;
+
+		if (iBlockedFlags & NO_RANDOM)
+			return ETargetError::RANDOM;
+
+		bTargetRandom = true;
+	}
+	else if (!V_stricmp(pszTarget, "@!random"))
+	{
+		nType = ETargetType::ALL_BUT_RANDOM;
+
+		if (iBlockedFlags & NO_RANDOM)
+			return ETargetError::RANDOM;
+
+		iInverseFlags = NO_RANDOM;
+	}
+	else if (!V_stricmp(pszTarget, "@randomt"))
+	{
+		nType = ETargetType::RANDOM_T;
+		
+		if (iBlockedFlags & NO_TERRORIST)
+			return ETargetError::TERRORIST;
+		else if (iBlockedFlags & NO_RANDOM)
+			return ETargetError::RANDOM;
+
+		bTargetRandom = true;
+		iBlockedFlags |= NO_COUNTER_TERRORIST;
+	}
+	else if (!V_stricmp(pszTarget, "@!randomt"))
+	{
+		nType = ETargetType::ALL_BUT_RANDOM_T;
+		
+		if (iBlockedFlags & NO_RANDOM)
+			return ETargetError::RANDOM;
+
+		iInverseFlags = NO_RANDOM | NO_COUNTER_TERRORIST | NO_SPECTATOR;
+	}
+	else if (!V_stricmp(pszTarget, "@randomct"))
+	{
+		nType = ETargetType::RANDOM_CT;
+		
+		if (iBlockedFlags & NO_COUNTER_TERRORIST)
+			return ETargetError::COUNTER_TERRORIST;
+		else if (iBlockedFlags & NO_RANDOM)
+			return ETargetError::RANDOM;
+
+		bTargetRandom = true;
+		iBlockedFlags |= NO_TERRORIST;
+	}
+	else if (!V_stricmp(pszTarget, "@!randomct"))
+	{
+		nType = ETargetType::RANDOM_CT;
+		
+		if (iBlockedFlags & NO_RANDOM)
+			return ETargetError::RANDOM;
+
+		iInverseFlags = NO_RANDOM | NO_TERRORIST | NO_SPECTATOR;
+	}
+	else if (!V_stricmp(pszTarget, "@randomspec"))
+	{
+		nType = ETargetType::RANDOM_SPEC;
+
+		if (iBlockedFlags & NO_SPECTATOR)
+			return ETargetError::SPECTATOR;
+		else if (iBlockedFlags & NO_DEAD)
+			return ETargetError::DEAD;
+		else if (iBlockedFlags & NO_RANDOM)
+			return ETargetError::RANDOM;
+
+		bTargetRandom = true;
+		iBlockedFlags |= NO_TERRORIST | NO_COUNTER_TERRORIST;
+	}
+	else if (!V_stricmp(pszTarget, "@!randomspec"))
+	{
+		nType = ETargetType::ALL_BUT_RANDOM_SPEC;
+
+		if (iBlockedFlags & NO_RANDOM)
+			return ETargetError::RANDOM;
+
+		iInverseFlags = NO_RANDOM | NO_TERRORIST | NO_COUNTER_TERRORIST;
+	}
+	else if (!V_stricmp(pszTarget, "@dead") || !V_stricmp(pszTarget, "@!alive"))
+	{
+		nType = ETargetType::DEAD;
+
+		if (iBlockedFlags & NO_DEAD)
+			return ETargetError::DEAD;
+		if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		bTargetMultiple = true;
+		iBlockedFlags |= NO_ALIVE;
+	}		
+	else if (!V_stricmp(pszTarget, "@alive") || !V_stricmp(pszTarget, "@!dead"))
+	{
+		nType = ETargetType::ALIVE;
+
+		if (iBlockedFlags & NO_ALIVE)
+			return ETargetError::ALIVE;
+		if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		bTargetMultiple = true;
+		iBlockedFlags |= NO_DEAD;
+	}
+	else if (!V_stricmp(pszTarget, "@bot") || !V_stricmp(pszTarget, "@!human"))
+	{
+		nType = ETargetType::BOT;
+
+		if (iBlockedFlags & NO_BOT)
+			return ETargetError::BOT;
+		if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		bTargetMultiple = true;
+		iBlockedFlags |= NO_HUMAN;
+	}
+	else if (!V_stricmp(pszTarget, "@human") || !V_stricmp(pszTarget, "@!bot"))
+	{
+		nType = ETargetType::HUMAN;
+
+		if (iBlockedFlags & NO_HUMAN)
+			return ETargetError::HUMAN;
+		if (iBlockedFlags & NO_MULTIPLE)
+			return ETargetError::MULTIPLE;
+
+		bTargetMultiple = true;
+		iBlockedFlags |= NO_BOT;
+	}
+	
+	// We have setup what we need and given custom errors if needed for group targetting.
+	// Now we actually get the target(s).
+	if (nType == ETargetType::SELF)
+	{
+		ETargetError eType = GetTargetError(pPlayer, pPlayer, iBlockedFlags);
+		if (eType != ETargetError::NO_ERRORS)
+			return eType;
+
+		rgiClients[iNumClients++] = zpPlayer->GetPlayerSlot().Get();
+		return ETargetError::NO_ERRORS;
+	}
+	else if (bTargetMultiple)
 	{
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;
 
-			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
+			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
-				continue;
-
-			clients[iNumClients++] = i;
+			if (GetTargetError(pPlayer, pTarget, iBlockedFlags) == ETargetError::NO_ERRORS)
+				rgiClients[iNumClients++] = i;
 		}
 	}
-	else if (targetType >= ETargetType::SPECTATOR)
+	else if (bTargetRandom)
 	{
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		int iAttempts = 0;
+
+		while (iNumClients == 0 && iAttempts < 10000)
 		{
-			if (m_vecPlayers[i] == nullptr)
-				continue;
-
-			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
-
-			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
-				continue;
-
-			if (player->m_iTeamNum() != (targetType == ETargetType::T ? CS_TEAM_T : targetType == ETargetType::CT ? CS_TEAM_CT : CS_TEAM_SPECTATOR))
-				continue;
-
-			clients[iNumClients++] = i;
-		}
-	}
-	else if (targetType >= ETargetType::RANDOM && targetType <= ETargetType::RANDOM_CT)
-	{
-		int attempts = 0;
-
-		while (iNumClients == 0 && attempts < 10000)
-		{
-			int slot = rand() % (gpGlobals->maxClients - 1);
+			int iSlot = rand() % (gpGlobals->maxClients - 1);
 
 			// Prevent infinite loop
-			attempts++;
+			iAttempts++;
 
-			if (m_vecPlayers[slot] == nullptr)
+			if (m_vecPlayers[iSlot] == nullptr)
 				continue;
 
-			CCSPlayerController* player = CCSPlayerController::FromSlot(slot);
-
-			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
-				continue;
-
-			if (targetType >= ETargetType::RANDOM_T && (player->m_iTeamNum() != (targetType == ETargetType::RANDOM_T ? CS_TEAM_T : CS_TEAM_CT)))
-				continue;
-
-			clients[iNumClients++] = slot;
+			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(iSlot);
+			if (GetTargetError(pPlayer, pTarget, iBlockedFlags) == ETargetError::NO_ERRORS)
+			{
+				rgiClients[iNumClients++] = iSlot;
+				break;
+			}
 		}
 	}
-	else if (*target == '#')
+	else if (iInverseFlags > NO_TARGET_BLOCKS)
 	{
-		int userid = V_StringToUint16(target + 1, -1);
+		CCSPlayerController* pRandomPlayer = nullptr;
+		int iAttempts = 0;
 
-		if (userid != -1)
+		while (iNumClients == 0 && iAttempts < 10000)
 		{
-			targetType = ETargetType::PLAYER;
-			CCSPlayerController* player = CCSPlayerController::FromSlot(GetSlotFromUserId(userid).Get());
-			if(player && player->IsController() && player->IsConnected() && !player->m_bIsHLTV)
-				clients[iNumClients++] = GetSlotFromUserId(userid).Get();
+			int iSlot = rand() % (gpGlobals->maxClients - 1);
+
+			// Prevent infinite loop
+			iAttempts++;
+
+			if (m_vecPlayers[iSlot] == nullptr)
+				continue;
+
+			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(iSlot);
+
+			// Can ignore immunity and blocked flags here, since we are NOT targetting them
+			if (GetTargetError(pPlayer, pTarget, iInverseFlags | NO_IMMUNITY) == ETargetError::NO_ERRORS)
+			{
+				pRandomPlayer = pTarget;
+				break;
+			}
+		}
+
+		if (pRandomPlayer == nullptr)
+			return ETargetError::INVALID;
+
+		for (int i = 0; i < gpGlobals->maxClients; i++)
+		{
+			if (m_vecPlayers[i] == nullptr)
+				continue;
+
+			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(i);
+			if (pRandomPlayer == pTarget)
+				continue;
+
+			if (GetTargetError(pPlayer, pTarget, iBlockedFlags) == ETargetError::NO_ERRORS)
+				rgiClients[iNumClients++] = i;
+		}
+	}
+	else if (!V_stricmp(pszTarget, "@aim"))
+	{
+		CBaseEntity* entTarget = nullptr;
+		entTarget = UTIL_FindPickerEntity(pPlayer);
+
+		if (!entTarget->IsPawn())
+			return ETargetError::INVALID;
+
+		CCSPlayerController* pTarget = CCSPlayerController::FromPawn(static_cast<CCSPlayerPawn*>(entTarget));
+
+		ETargetError eType = GetTargetError(pPlayer, pTarget, iBlockedFlags);
+		if (eType != ETargetError::NO_ERRORS)
+			return eType;
+
+		nType = ETargetType::AIM;
+
+		rgiClients[iNumClients++] = pTarget->GetPlayerSlot();
+	}
+	else if (!V_stricmp(pszTarget, "@!aim"))
+	{
+		CBaseEntity* entTarget = nullptr;
+		entTarget = UTIL_FindPickerEntity(pPlayer);
+
+		if (!entTarget->IsPawn())
+			return ETargetError::INVALID;
+
+		CCSPlayerController* pAimed = CCSPlayerController::FromPawn(static_cast<CCSPlayerPawn*>(entTarget));
+
+		// Can ignore immunity and blocked flags here, since we are NOT targetting them
+		if (GetTargetError(pPlayer, pAimed, NO_IMMUNITY) != ETargetError::NO_ERRORS)
+			return ETargetError::INVALID;
+
+		nType = ETargetType::ALL_BUT_AIM;
+
+		for (int i = 0; i < gpGlobals->maxClients; i++)
+		{
+			if (m_vecPlayers[i] == nullptr)
+				continue;
+
+			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(i);
+			if (pAimed == pTarget)
+				continue;
+
+			if (GetTargetError(pPlayer, pTarget, iBlockedFlags) == ETargetError::NO_ERRORS)
+				rgiClients[iNumClients++] = i;
+		}
+	}
+	else if (*pszTarget == '#')
+	{
+		int iUserID = V_StringToUint16(pszTarget + 1, -1);
+
+		if (iUserID != -1)
+		{
+			nType = ETargetType::PLAYER;
+			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(GetSlotFromUserId(iUserID).Get());
+			ETargetError eType = GetTargetError(pPlayer, pTarget, iBlockedFlags);
+			if (eType != ETargetError::NO_ERRORS)
+				return eType;
+			rgiClients[iNumClients++] = pTarget->GetPlayerSlot();
+		}
+	}
+	else if (*pszTarget == '$')
+	{
+		uint64 iSteamID = V_StringToUint64(pszTarget + 1, -1);
+
+		if (iSteamID != -1)
+		{
+			nType = ETargetType::PLAYER;
+			ZEPlayer* zpTarget = GetPlayerFromSteamId(iSteamID);
+			if (!zpTarget)
+				return ETargetError::INVALID;
+
+			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(zpTarget->GetPlayerSlot().Get());
+
+			ETargetError eType = GetTargetError(pPlayer, pTarget, iBlockedFlags);
+			if (eType != ETargetError::NO_ERRORS)
+				return eType;
+			rgiClients[iNumClients++] = pTarget->GetPlayerSlot();
 		}
 	}
 	else
 	{
+		ETargetError eType = ETargetError::NO_ERRORS;
+		bool bExactName = (*pszTarget == '&');
+		if (bExactName)
+			pszTarget++;
+
 		for (int i = 0; i < gpGlobals->maxClients; i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;
 
-			CCSPlayerController* player = CCSPlayerController::FromSlot(i);
+			CCSPlayerController* pTarget = CCSPlayerController::FromSlot(i);
 
-			if (!player || !player->IsController() || !player->IsConnected() || player->m_bIsHLTV)
+			if (!pTarget || !pTarget->IsController() || !pTarget->IsConnected() || pTarget->m_bIsHLTV)
 				continue;
 
-			if (V_stristr(player->GetPlayerName(), target))
+			if ((!bExactName && V_stristr(pTarget->GetPlayerName(), pszTarget)) || !V_strcmp(pTarget->GetPlayerName(), pszTarget))
 			{
-				targetType = ETargetType::PLAYER;
-				clients[iNumClients++] = i;
+				nType = ETargetType::PLAYER;
+				if (iNumClients == 1)
+				{
+					iNumClients = 0;
+					return ETargetError::MULTIPLE_NAME_MATCHES;
+				}
+				eType = GetTargetError(pPlayer, pTarget, iBlockedFlags);
+				if (eType == ETargetError::NO_ERRORS)
+					rgiClients[iNumClients++] = i;
 			}
+		}
+		if (eType != ETargetError::NO_ERRORS)
+			return eType;
+	}
+
+	return iNumClients ? ETargetError::NO_ERRORS : ETargetError::INVALID;
+}
+
+ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, const char* pszTarget,
+												  int& iNumClients, int* rgiClients, uint64 iBlockedFlags)
+{
+	ETargetType nUselessVariable = ETargetType::NONE;
+	return GetPlayersFromString(pPlayer, pszTarget, iNumClients, rgiClients, iBlockedFlags, nUselessVariable);
+}
+
+const char* CPlayerManager::GetErrorString(ETargetError eType, int iSlot)
+{
+	switch (eType)
+	{
+		case ETargetError::INVALID:
+			return "No matching player was found.";
+		case ETargetError::CONNECTING:
+			return "This action cannot be performed on connecting players. Please wait a moment and try again.";
+		case ETargetError::MULTIPLE_NAME_MATCHES:
+			return "More than one player matched the given pattern. Consider using & before the player's name for exact matching.";
+		case ETargetError::RANDOM:
+			return "This action cannot be performed on random players.";
+		case ETargetError::MULTIPLE:
+			return "This action cannot be performed on multiple players.";
+		case ETargetError::SELF:
+			return "This action cannot be performed on yourself.";
+		case ETargetError::BOT:
+			return "This action cannot be performed on bots.";
+		case ETargetError::HUMAN:
+			return "This action can only be performed on bots.";
+		case ETargetError::DEAD:
+			return "This action can only be performed on alive players.";
+		case ETargetError::ALIVE:
+			return "This action cannot be performed on alive players.";
+		case ETargetError::TERRORIST:
+			return "This action cannot be performed on terrorists.";
+		case ETargetError::COUNTER_TERRORIST:
+			return "This action cannot be performed on counter-terrorists.";
+		case ETargetError::SPECTATOR:
+			return "This action cannot be performed on spectators.";
+	}
+
+	CCSPlayerController* pPlayer = iSlot ? CCSPlayerController::FromSlot(iSlot) : nullptr;
+	std::string strName = pPlayer ? pPlayer->GetPlayerName() : "";
+	if (strName.length() == 0)
+	{
+		switch (eType)
+		{
+			case ETargetError::UNAUTHENTICATED:
+				return "This action cannot be performed on unauthenticated players. Please wait a moment and try again.";
+			case ETargetError::INSUFFICIENT_IMMUNITY_LEVEL:
+				return "You do not have permission to target this player.";
+		}
+	}
+	else
+	{
+		switch (eType)
+		{
+			case ETargetError::UNAUTHENTICATED:
+				return (strName + " is not yet authenticated. Please wait a moment and try again.").c_str();
+			case ETargetError::INSUFFICIENT_IMMUNITY_LEVEL:
+				return ("You do not have permission to target " + strName + ".").c_str();
 		}
 	}
 
-	return targetType;
+	// Should never reach here unless an ETargetError type was forgotten somewhere above.
+	return "Encountered an unknown ETargetError, please contact a dev with the exact command used.";
+}
+
+// Return false if GetPlayersFromString returns anything other than NO_ERRORS and then print the
+// error to pPlayer's chat. Otherwise return true and print nothing.
+bool CPlayerManager::CanTargetPlayers(CCSPlayerController* pPlayer, const char* pszTarget,
+									  int& iNumClients, int* rgiClients, uint64 iBlockedFlags,
+									  ETargetType& nType)
+{
+	ETargetError eType = GetPlayersFromString(pPlayer, pszTarget, iNumClients, rgiClients, iBlockedFlags, nType);
+
+	if (eType != ETargetError::NO_ERRORS)
+	{
+		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "%s", g_playerManager->GetErrorString(eType, (iNumClients == 0) ? 0 : pPlayer->GetPlayerSlot()));
+		return false;
+	}
+	return true;
+}
+
+bool CPlayerManager::CanTargetPlayers(CCSPlayerController* pPlayer, const char* pszTarget,
+									  int& iNumClients, int* rgiClients, uint64 iBlockedFlags)
+{
+	ETargetType nUselessVariable = ETargetType::NONE;
+	return CanTargetPlayers(pPlayer, pszTarget, iNumClients, rgiClients, iBlockedFlags, nUselessVariable);
 }
 
 ZEPlayer *CPlayerManager::GetPlayer(CPlayerSlot slot)
