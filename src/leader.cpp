@@ -522,7 +522,7 @@ CON_COMMAND_CHAT(defend, "[name|duration] [duration] - Place a defend marker on 
 		int iArg1 = V_StringToInt32(args[1], -1);
 		if (iArg1 == -1) // target not found AND assume it's not a valid number
 		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s", g_playerManager->GetErrorString(ETargetError::INVALID, (iNumClients == 0) ? 0 : pSlots[0]));
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s", g_playerManager->GetErrorString(ETargetError::INVALID, (iNumClients == 0) ? 0 : pSlots[0]).c_str());
 			return;
 		}
 

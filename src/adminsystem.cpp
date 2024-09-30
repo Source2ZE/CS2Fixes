@@ -1453,7 +1453,7 @@ void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAd
 	}
 	else if (eType != ETargetError::NO_ERRORS)
 	{
-		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "%s", g_playerManager->GetErrorString(eType, (iNumClients == 0) ? 0 : pSlots[0]));
+		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "%s", g_playerManager->GetErrorString(eType, (iNumClients == 0) ? 0 : pSlots[0]).c_str());
 		return;
 	}
 
