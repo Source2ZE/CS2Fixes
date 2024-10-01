@@ -87,6 +87,7 @@ for sdk_target in MMSPlugin.sdk_targets:
 
   protoc_builder = builder.tools.Protoc(protoc = sdk_target.protoc, sources = [
     os.path.join(sdk['path'], 'common', 'network_connection.proto'),
+    os.path.join(sdk['path'], 'common', 'netmessages.proto'),
     os.path.join(sdk['path'], 'common', 'networkbasetypes.proto'),
     os.path.join(sdk['path'], 'common', 'engine_gcmessages.proto'),
     os.path.join(sdk['path'], 'gcsdk', 'steammessages.proto'),
@@ -99,6 +100,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     os.path.join(builder.sourcePath, 'protobuf', 'cs_usercmd.proto'),
     os.path.join(builder.sourcePath, 'protobuf', 'cstrike15_gcmessages.proto'),
     os.path.join(builder.sourcePath, 'protobuf', 'cstrike15_usermessages.proto'),
+    os.path.join(builder.sourcePath, 'protobuf', 'networksystem_protomessages.proto'),
   ])
   protoc_builder.protoc.includes += [
     os.path.join(sdk['path'], 'gcsdk'),

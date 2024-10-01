@@ -28,6 +28,7 @@
 
 struct CTakeDamageInfoContainer;
 class CCSPlayer_MovementServices;
+class CServerSideClient;
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
 {
