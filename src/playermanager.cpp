@@ -1512,9 +1512,26 @@ void CPlayerManager::SetPlayerStopDecals(int slot, bool set)
 	g_pUserPreferencesSystem->SetPreferenceInt(slot, DECAL_PREF_KEY_NAME, iDecalPreferenceStatus);
 }
 
+void CPlayerManager::SetPlayerNoShake(int slot, bool set)
+{
+	if (set)
+		m_nUsingNoShake |= ((uint64)1 << slot);
+	else
+		m_nUsingNoShake &= ~((uint64)1 << slot);
+
+	// Set the user prefs if the player is ingame
+	ZEPlayer* pPlayer = m_vecPlayers[slot];
+	if (!pPlayer) return;
+
+	uint64 iSlotMask = (uint64)1 << slot;
+	int iNoShakePreferenceStatus = (m_nUsingNoShake & iSlotMask)?1:0;
+	g_pUserPreferencesSystem->SetPreferenceInt(slot, NO_SHAKE_PREF_KEY_NAME, iNoShakePreferenceStatus);
+}
+
 void CPlayerManager::ResetPlayerFlags(int slot)
 {
 	SetPlayerStopSound(slot, true);
 	SetPlayerSilenceSound(slot, false);
 	SetPlayerStopDecals(slot, true);
+	SetPlayerNoShake(slot, false);
 }

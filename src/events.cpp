@@ -100,6 +100,12 @@ GAME_EVENT_F(round_prestart)
 		}
 	}
 
+	CBaseEntity* pShake = nullptr;
+
+	// Prevent shakes carrying over from previous rounds
+	while ((pShake = UTIL_FindEntityByClassname(pShake, "env_shake")))
+		pShake->AcceptInput("StopShake");
+
 	if (g_bEnableZR)
 		ZR_OnRoundPrestart(pEvent);
 }
