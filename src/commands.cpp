@@ -34,6 +34,7 @@
 #include "entity/lights.h"
 #include "playermanager.h"
 #include "adminsystem.h"
+#include "leader.h"
 #include "ctimer.h"
 #include "httpmanager.h"
 #include "discord.h"
@@ -345,8 +346,28 @@ bool CChatCommand::CheckCommandAccess(CCSPlayerController *pPlayer, uint64 flags
 	int slot = pPlayer->GetPlayerSlot();
 
 	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(slot);
+	
+	if (!pZEPlayer)
+		return false;
 
-	if (!pZEPlayer->IsAdminFlagSet(flags))
+	if ((flags & FLAG_LEADER) == FLAG_LEADER)
+	{
+		if (!g_bEnableLeader)
+			return false;
+
+		if (!pZEPlayer->IsLeader() && !pZEPlayer->IsAdminFlagSet(FLAG_LEADER))
+		{
+			ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You must be a leader to use this command.");
+			return false;
+		}
+		
+		if (g_bLeaderActionsHumanOnly && pPlayer->m_iTeamNum != CS_TEAM_CT)
+		{
+			ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You must be a human to use this command.");
+			return false;
+		}
+	}
+	else if (!pZEPlayer->IsAdminFlagSet(flags))
 	{
 		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
 		return false;
