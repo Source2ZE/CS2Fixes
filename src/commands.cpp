@@ -475,7 +475,7 @@ CON_COMMAND_CHAT(help, "- Display list of commands in console")
 		ClientPrint(player, HUD_PRINTCONSOLE, "! can be replaced with / for a silent chat command, or c_ for console usage");
 }
 
-CON_COMMAND_CHAT(spec, "<name> - Spectate another player")
+CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 {
 	if (!player)
 	{
@@ -485,7 +485,15 @@ CON_COMMAND_CHAT(spec, "<name> - Spectate another player")
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !spec <name>");
+		if (player->m_iTeamNum() == CS_TEAM_SPECTATOR)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Already spectating.");
+		}
+		else
+		{
+			player->SwitchTeam(CS_TEAM_SPECTATOR);
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Moved to spectators.");
+		}
 		return;
 	}
 
