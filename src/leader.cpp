@@ -21,6 +21,7 @@
 #include "common.h"
 #include "commands.h"
 #include "gameevents.pb.h"
+#include "votemanager.h"
 #include "zombiereborn.h"
 #include "networksystem/inetworkmessages.h"
 
@@ -523,6 +524,12 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 		return;
 	}
 
+	if (g_RTVState == ERTVState::MAP_START)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Leader voting is not open yet.");
+		return;
+	}
+	
 	if (GetLeaders().first > 0 && !g_bLeaderVoteMultiple)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There is already an active leader.");
