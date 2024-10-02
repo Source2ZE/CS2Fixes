@@ -117,6 +117,7 @@ SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUt
 SH_DECL_MANUALHOOK1(OnTakeDamage_Alive, 0, 0, 0, bool, CTakeDamageInfoContainer *);
 SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
 SH_DECL_HOOK2(IGameEventManager2, LoadEventsFromFile, SH_NOATTRIB, 0, int, const char *, bool);
+SH_DECL_MANUALHOOK1_void(GoToIntermission, 0, 0, 0, bool);
 
 CS2Fixes g_CS2Fixes;
 
@@ -138,6 +139,7 @@ int g_iCreateWorkshopMapGroupId = -1;
 int g_iOnTakeDamageAliveId = -1;
 int g_iCheckMovingGroundId = -1;
 int g_iLoadEventsFromFileId = -1;
+int g_iGoToIntermissionId = -1;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -190,7 +192,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	int offset = g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup");
 	SH_MANUALHOOK_RECONFIGURE(CreateWorkshopMapGroup, offset, 0, 0);
 
-    SH_ADD_HOOK(IServerGameDLL, GameFrame, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameFramePost), true);
+	SH_ADD_HOOK(IServerGameDLL, GameFrame, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameFramePost), true);
 	SH_ADD_HOOK(IServerGameDLL, GameServerSteamAPIActivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIActivated), false);
 	SH_ADD_HOOK(IServerGameDLL, GameServerSteamAPIDeactivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIDeactivated), false);
 	SH_ADD_HOOK(IServerGameDLL, ApplyGameSettings, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_ApplyGameSettings), false);
@@ -275,6 +277,17 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		return false;
 	}
 
+	auto pCCSGameRulesVTable = modules::server->FindVirtualTable("CCSGameRules");
+
+	offset = g_GameConfig->GetOffset("CCSGameRules_GoToIntermission");
+	if (offset == -1)
+	{
+		snprintf(error, maxlen, "Failed to find CCSGameRules::GoToIntermission\n");
+		bRequiredInitLoaded = false;
+	}
+	SH_MANUALHOOK_RECONFIGURE(GoToIntermission, offset, 0, 0);
+	g_iGoToIntermissionId = SH_ADD_MANUALDVPHOOK(GoToIntermission, pCCSGameRulesVTable, SH_MEMBER(this, &CS2Fixes::Hook_GoToIntermission), false);
+
 	Message( "All hooks started!\n" );
 
 	UnlockConVars();
@@ -356,6 +369,9 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK_ID(g_iCreateWorkshopMapGroupId);
 	SH_REMOVE_HOOK_ID(g_iOnTakeDamageAliveId);
 	SH_REMOVE_HOOK_ID(g_iCheckMovingGroundId);
+
+	if (g_iGoToIntermissionId != -1)
+		SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
 
 	ConVar_Unregister();
 
@@ -477,12 +493,16 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 		// Finally, run the chat command if it is one, so anything will print after the player's message
 		if (bCommand)
 		{
-			// Do the same trimming as with admin chat
-			char *pszMessage = (char *)(args.ArgS() + 2);
+			char *pszMessage = (char *)(args.ArgS() + 1);
+
+			if (pszMessage[0] == '"' || pszMessage[0] == '!' || pszMessage[0] == '/'){
+				pszMessage += 1;
+			}
 
 			// Host_Say at some point removes the trailing " for whatever reason, so we only remove if it was never called
-			if (bSilent)
-				pszMessage[V_strlen(pszMessage) - 1] = 0;
+			if (bSilent && pszMessage[V_strlen(pszMessage) - 1] == '"'){
+				pszMessage[V_strlen(pszMessage) - 1] = '\0';
+			}
 
 			ParseChatCommand(pszMessage, pController);
 		}
@@ -735,7 +755,10 @@ void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, ENetworkDisconnectionRea
 	if (!pPlayer)
 		return;
 
-	g_pAdminSystem->AddDisconnectedPlayer(pszName, xuid, pPlayer ? pPlayer->GetIpAddress() : "");
+	// Dont add to c_listdc clients that are downloading MultiAddonManager stuff or were present during a map change
+	if (reason != NETWORK_DISCONNECT_LOOPSHUTDOWN && reason != NETWORK_DISCONNECT_SHUTDOWN)
+		g_pAdminSystem->AddDisconnectedPlayer(pszName, xuid, pPlayer ? pPlayer->GetIpAddress() : "");
+
 	g_playerManager->OnClientDisconnect(slot);
 }
 
@@ -878,6 +901,14 @@ void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringLis
 		RETURN_META_MNEWPARAMS(MRES_HANDLED, CreateWorkshopMapGroup, (name, g_pMapVoteSystem->CreateWorkshopMapGroup()));
 	else
 		RETURN_META(MRES_IGNORED);
+}
+
+void CS2Fixes::Hook_GoToIntermission(bool bAbortedMatch)
+{
+	if (!g_pMapVoteSystem->IsIntermissionAllowed())
+		RETURN_META(MRES_SUPERCEDE);
+
+	RETURN_META(MRES_IGNORED);
 }
 
 bool g_bDropMapWeapons = false;

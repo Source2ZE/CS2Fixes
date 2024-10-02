@@ -46,6 +46,9 @@ CAdminSystem* g_pAdminSystem = nullptr;
 
 CUtlMap<uint32, CChatCommand *> g_CommandList(0, 0, DefLessFunc(uint32));
 
+void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAdding, CInfractionBase::EInfractionType infType);
+const char* GetActionPhrase(CInfractionBase::EInfractionType infType, GrammarTense iTense, bool bAdding);
+
 void PrintSingleAdminAction(const char* pszAdminName, const char* pszTargetName, const char* pszAction, const char* pszAction2 = "", const char* prefix = CHAT_PREFIX)
 {
 	ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s %s%s.", prefix, pszAdminName, pszAction, pszTargetName, pszAction2);
@@ -56,13 +59,55 @@ void PrintMultiAdminAction(ETargetType nType, const char* pszAdminName, const ch
 	switch (nType)
 	{
 	case ETargetType::ALL:
-		ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s everyone%s.", prefix, pszAdminName, pszAction, pszAction2);
+		PrintSingleAdminAction(pszAdminName, "everyone", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::SPECTATOR:
+		PrintSingleAdminAction(pszAdminName, "spectators", pszAction, pszAction2, prefix);
 		break;
 	case ETargetType::T:
-		ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s terrorists%s.", prefix, pszAdminName, pszAction, pszAction2);
+		PrintSingleAdminAction(pszAdminName, "terrorists", pszAction, pszAction2, prefix);
 		break;
 	case ETargetType::CT:
-		ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s counter-terrorists%s.", prefix, pszAdminName, pszAction, pszAction2);
+		PrintSingleAdminAction(pszAdminName, "counter-terrorists", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::DEAD:
+		PrintSingleAdminAction(pszAdminName, "dead players", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::ALIVE:
+		PrintSingleAdminAction(pszAdminName, "alive players", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::BOT:
+		PrintSingleAdminAction(pszAdminName, "bots", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::HUMAN:
+		PrintSingleAdminAction(pszAdminName, "humans", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::ALL_BUT_SELF:
+		ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s everyone except %s%s.", prefix, pszAdminName, pszAction, pszAdminName, pszAction2);
+		break;
+	case ETargetType::ALL_BUT_RANDOM:
+		PrintSingleAdminAction(pszAdminName, "everyone except a random player", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::ALL_BUT_RANDOM_T:
+		PrintSingleAdminAction(pszAdminName, "everyone except a random terrorist", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::ALL_BUT_RANDOM_CT:
+		PrintSingleAdminAction(pszAdminName, "everyone except a random counter-terrorist", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::ALL_BUT_RANDOM_SPEC:
+		PrintSingleAdminAction(pszAdminName, "everyone except a random spectator", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::ALL_BUT_AIM:
+		PrintSingleAdminAction(pszAdminName, "everyone except a targetted player", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::ALL_BUT_SPECTATOR:
+		PrintSingleAdminAction(pszAdminName, "non-spectators", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::ALL_BUT_T:
+		PrintSingleAdminAction(pszAdminName, "non-terrorists", pszAction, pszAction2, prefix);
+		break;
+	case ETargetType::ALL_BUT_CT:
+		PrintSingleAdminAction(pszAdminName, "non-counter-terrorists", pszAction, pszAction2, prefix);
 		break;
 	}
 }
@@ -103,74 +148,12 @@ CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FC
 	Message("Infractions reloaded\n");
 }
 
-CON_COMMAND_CHAT_FLAGS(ban, "<name> <minutes|0 (permament)> - ban a player", ADMFLAG_BAN)
+CON_COMMAND_CHAT_FLAGS(ban, "<name> <minutes|0 (permament)> - Ban a player", ADMFLAG_BAN)
 {
-	if (args.ArgC() < 3)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ban <name> <duration/0 (permanent)>");
-		return;
-	}
-
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-	int iNumClients = 0;
-	int pSlot[MAXPLAYERS];
-
-	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) > ETargetType::PLAYER)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only target individual players for banning.");
-		return;
-	}
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	if (iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
-
-	int iDuration = ParseTimeInput(args[2]);
-
-	if (iDuration < 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid duration.");
-		return;
-	}
-	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
-
-	if (!pTarget)
-		return;
-
-	ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[0]);
-
-	if (pTargetPlayer->IsFakeClient())
-		return;
-
-	if (!pTargetPlayer->IsAuthenticated())
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not yet authenticated, consider kicking instead or please wait a moment and try again.", pTarget->GetPlayerName());
-		return;
-	}
-
-	CInfractionBase *infraction = new CBanInfraction(iDuration, pTargetPlayer->GetSteamId64());
-
-	g_pAdminSystem->AddInfraction(infraction);
-	infraction->ApplyInfraction(pTargetPlayer);
-	g_pAdminSystem->SaveInfractions();
-
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-
-	if (iDuration > 0)
-		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", (" for " + FormatTime(iDuration, false)).c_str());
-	else
-		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently banned");
+	ParseInfraction(args, player, true, CInfractionBase::EInfractionType::Ban);
 }
 
-CON_COMMAND_CHAT_FLAGS(unban, "<steamid64> - unbans a player. Takes decimal STEAMID64", ADMFLAG_BAN)
+CON_COMMAND_CHAT_FLAGS(unban, "<steamid64> - Unban a player. Takes decimal STEAMID64", ADMFLAG_BAN)
 {
 	if (args.ArgC() < 2)
 	{
@@ -194,277 +177,27 @@ CON_COMMAND_CHAT_FLAGS(unban, "<steamid64> - unbans a player. Takes decimal STEA
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "User with STEAMID64 <%llu> has been unbanned.", iTargetSteamId64);
 }
 
-CON_COMMAND_CHAT_FLAGS(mute, "<name> <duration|0 (permament)> - mutes a player", ADMFLAG_CHAT)
+CON_COMMAND_CHAT_FLAGS(mute, "<name> <duration|0 (permament)> - Mute a player", ADMFLAG_CHAT)
 {
-	if (args.ArgC() < 3)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !mute <name> <duration/0 (permanent)>");
-		return;
-	}
-
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-	int iNumClients = 0;
-	int pSlot[MAXPLAYERS];
-
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	if (nType == ETargetType::PLAYER && iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
-
-	int iDuration = ParseTimeInput(args[2]);
-
-	if (iDuration < 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid duration.");
-		return;
-	}
-
-	if (iDuration == 0 && nType >= ETargetType::ALL)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You may only permanently mute individuals.");
-		return;
-	}
-
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
-
-		if (!pTarget)
-			continue;
-
-		ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
-
-		if (pTargetPlayer->IsFakeClient())
-			continue;
-
-		if (!pTargetPlayer->IsAuthenticated())
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not yet authenticated, please wait a moment and try again.", pTarget->GetPlayerName());
-			continue;
-		}
-
-		CInfractionBase* infraction = new CMuteInfraction(iDuration, pTargetPlayer->GetSteamId64());
-
-		// We're overwriting the infraction, so remove the previous one first
-		g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute);
-		g_pAdminSystem->AddInfraction(infraction);
-		infraction->ApplyInfraction(pTargetPlayer);
-		g_pAdminSystem->SaveInfractions();
-
-		if (iDuration > 0)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "muted", (" for " + FormatTime(iDuration, false)).c_str());
-		else
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently muted");
-	}
-
-	g_pAdminSystem->SaveInfractions();
-
-	PrintMultiAdminAction(nType, pszCommandPlayerName, "muted", (" for " + FormatTime(iDuration, false)).c_str());
+	ParseInfraction(args, player, true, CInfractionBase::EInfractionType::Mute);
 }
 
-CON_COMMAND_CHAT_FLAGS(unmute, "<name> - unmutes a player", ADMFLAG_CHAT)
+CON_COMMAND_CHAT_FLAGS(unmute, "<name> - Unmute a player", ADMFLAG_CHAT)
 {
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !unmute <name>");
-		return;
-	}
-
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-	int iNumClients = 0;
-	int pSlot[MAXPLAYERS];
-
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	if (nType == ETargetType::PLAYER && iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
-
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
-
-		if (!pTarget)
-			continue;
-
-		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
-
-		if (pTargetPlayer->IsFakeClient())
-			continue;
-
-		if (!g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute) && nType < ETargetType::ALL)
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not muted.", pTarget->GetPlayerName());
-			continue;
-		}
-
-		if (nType < ETargetType::ALL)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "unmuted");
-	}
-
-	g_pAdminSystem->SaveInfractions();
-
-	PrintMultiAdminAction(nType, pszCommandPlayerName, "unmuted");
+	ParseInfraction(args, player, false, CInfractionBase::EInfractionType::Mute);
 }
 
-CON_COMMAND_CHAT_FLAGS(gag, "<name> <duration|0 (permanent)> - gag a player", ADMFLAG_CHAT)
+CON_COMMAND_CHAT_FLAGS(gag, "<name> <duration|0 (permanent)> - Gag a player", ADMFLAG_CHAT)
 {
-	if (args.ArgC() < 3)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !gag <name> <duration/0 (permanent)>");
-		return;
-	}
-
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-	int iNumClients = 0;
-	int pSlot[MAXPLAYERS];
-
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	if (nType == ETargetType::PLAYER && iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
-
-	int iDuration = ParseTimeInput(args[2]);
-
-	if (iDuration < 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid duration.");
-		return;
-	}
-
-	if (iDuration == 0 && nType >= ETargetType::ALL)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You may only permanently gag individuals.");
-		return;
-	}
-
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
-
-		if (!pTarget)
-			continue;
-
-		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
-
-		if (pTargetPlayer->IsFakeClient())
-			continue;
-
-		if (!pTargetPlayer->IsAuthenticated())
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not yet authenticated, please wait a moment and try again.", pTarget->GetPlayerName());
-			continue;
-		}
-
-		CInfractionBase *infraction = new CGagInfraction(iDuration, pTargetPlayer->GetSteamId64());
-
-		// We're overwriting the infraction, so remove the previous one first
-		g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Gag);
-		g_pAdminSystem->AddInfraction(infraction);
-		infraction->ApplyInfraction(pTargetPlayer);
-
-		if (nType >= ETargetType::ALL)
-			continue;
-
-		if (iDuration > 0)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "gagged", (" for " + FormatTime(iDuration, false)).c_str());
-		else
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently gagged");
-	}
-
-	g_pAdminSystem->SaveInfractions();
-
-	PrintMultiAdminAction(nType, pszCommandPlayerName, "gagged", (" for " + FormatTime(iDuration, false)).c_str());
+	ParseInfraction(args, player, true, CInfractionBase::EInfractionType::Gag);
 }
 
-CON_COMMAND_CHAT_FLAGS(ungag, "<name> - ungags a player", ADMFLAG_CHAT)
+CON_COMMAND_CHAT_FLAGS(ungag, "<name> - Ungag a player", ADMFLAG_CHAT)
 {
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ungag <name>");
-		return;
-	}
-
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-	int iNumClients = 0;
-	int pSlot[MAXPLAYERS];
-
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	if (nType == ETargetType::PLAYER && iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
-
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
-
-		if (!pTarget)
-			continue;
-
-		ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
-
-		if (pTargetPlayer->IsFakeClient())
-			continue;
-
-		if (!g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Gag) && nType < ETargetType::ALL)
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not gagged.", pTarget->GetPlayerName());
-			continue;
-		}
-
-		if (nType < ETargetType::ALL)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "ungagged");
-	}
-
-	g_pAdminSystem->SaveInfractions();
-
-	PrintMultiAdminAction(nType, pszCommandPlayerName, "ungagged");
+	ParseInfraction(args, player, false, CInfractionBase::EInfractionType::Gag);
 }
 
-CON_COMMAND_CHAT_FLAGS(kick, "<name> - kick a player", ADMFLAG_KICK)
+CON_COMMAND_CHAT_FLAGS(kick, "<name> - Kick a player", ADMFLAG_KICK)
 {
 	if (args.ArgC() < 2)
 	{
@@ -472,40 +205,30 @@ CON_COMMAND_CHAT_FLAGS(kick, "<name> - kick a player", ADMFLAG_KICK)
 		return;
 	}
 
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
-	int pSlot[MAXPLAYERS];
+	int pSlots[MAXPLAYERS];
+	ETargetType nType;
 
-	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) == ETargetType::PLAYER && iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
-	}
 
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
-
-		if (!pTarget)
-			continue;
-
-		ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+		ZEPlayer* pTargetPlayer = pTarget->GetZEPlayer();
 		
 		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot(), NETWORK_DISCONNECT_KICKED);
 
-		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "kicked");
+		if (iNumClients == 1)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "kicked");
 	}
+	if (iNumClients > 1)
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "kicked");
 }
 
-CON_COMMAND_CHAT_FLAGS(slay, "<name> - slay a player", ADMFLAG_SLAY)
+CON_COMMAND_CHAT_FLAGS(slay, "<name> - Slay a player", ADMFLAG_SLAY)
 {
 	if (args.ArgC() < 2)
 	{
@@ -513,43 +236,29 @@ CON_COMMAND_CHAT_FLAGS(slay, "<name> - slay a player", ADMFLAG_SLAY)
 		return;
 	}
 
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
+	ETargetType nType;
 
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD, nType))
 		return;
-	}
 
-	if (nType == ETargetType::PLAYER && iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
-
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
 		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
-
-		if (!pTarget)
-			continue;
-
 		pTarget->GetPawn()->CommitSuicide(false, true);
 
-		if (nType < ETargetType::ALL)
+		if (iNumClients == 1)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slayed");
 	}
 
-	PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
+	if (iNumClients > 1)
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
 }
 
-CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - slap a player", ADMFLAG_SLAY)
+CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - Slap a player", ADMFLAG_SLAY)
 {
 	if (args.ArgC() < 2)
 	{
@@ -557,33 +266,18 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - slap a player", ADMFLAG_SLAY)
 		return;
 	}
 
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
+	ETargetType nType;
 
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD, nType))
 		return;
-	}
 
-	if (nType == ETargetType::PLAYER && iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
-
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
 		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(pSlots[i] + 1));
-
-		if (!pTarget)
-			continue;
-
 		CBasePlayerPawn *pPawn = pTarget->m_hPawn();
 
 		if (!pPawn)
@@ -610,14 +304,15 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - slap a player", ADMFLAG_SLAY)
 			pPawn->TakeDamage(info);
 		}
 
-		if (nType < ETargetType::ALL)
+		if (iNumClients == 1)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slapped");
 	}
 
-	PrintMultiAdminAction(nType, pszCommandPlayerName, "slapped");
+	if (iNumClients > 1)
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "slapped");
 }
 
-CON_COMMAND_CHAT_FLAGS(goto, "<name> - teleport to a player", ADMFLAG_SLAY)
+CON_COMMAND_CHAT_FLAGS(goto, "<name> - Teleport to a player", ADMFLAG_SLAY)
 {
 	// Only players can use this command at all
 	if (!player)
@@ -635,34 +330,19 @@ CON_COMMAND_CHAT_FLAGS(goto, "<name> - teleport to a player", ADMFLAG_SLAY)
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 
-	if (g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots) > ETargetType::PLAYER || iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target too ambiguous.");
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_SELF | NO_MULTIPLE | NO_DEAD | NO_IMMUNITY))
 		return;
-	}
 
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
 
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+	Vector newOrigin = pTarget->GetPawn()->GetAbsOrigin();
 
-		if (!pTarget)
-			continue;
+	player->GetPawn()->Teleport(&newOrigin, nullptr, nullptr);
 
-		Vector newOrigin = pTarget->GetPawn()->GetAbsOrigin();
-
-		player->GetPawn()->Teleport(&newOrigin, nullptr, nullptr);
-
-		PrintSingleAdminAction(player->GetPlayerName(), pTarget->GetPlayerName(), "teleported to");
-	}
+	PrintSingleAdminAction(player->GetPlayerName(), pTarget->GetPlayerName(), "teleported to");
 }
 
-CON_COMMAND_CHAT_FLAGS(bring, "<name> - bring a player", ADMFLAG_SLAY)
+CON_COMMAND_CHAT_FLAGS(bring, "<name> - Bring a player", ADMFLAG_SLAY)
 {
 	if (!player)
 	{
@@ -678,62 +358,32 @@ CON_COMMAND_CHAT_FLAGS(bring, "<name> - bring a player", ADMFLAG_SLAY)
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
+	ETargetType nType;
 
-	ETargetType nType = g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_SELF | NO_DEAD, nType))
 		return;
-	}
-
-	if (nType == ETargetType::PLAYER && iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
 
 	for (int i = 0; i < iNumClients; i++)
 	{
 		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
-		if (!pTarget)
-			continue;
-
 		Vector newOrigin = player->GetPawn()->GetAbsOrigin();
 
 		pTarget->GetPawn()->Teleport(&newOrigin, nullptr, nullptr);
 
-		if (nType < ETargetType::ALL)
+		if (iNumClients == 1)
 			PrintSingleAdminAction(player->GetPlayerName(), pTarget->GetPlayerName(), "brought");
 	}
 
-	PrintMultiAdminAction(nType, player->GetPlayerName(), "brought");
+	if (iNumClients > 1)
+		PrintMultiAdminAction(nType, player->GetPlayerName(), "brought");
 }
 
-CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - set a player's team", ADMFLAG_SLAY)
+CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADMFLAG_SLAY)
 {
 	if (args.ArgC() < 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !setteam <name> <team (0-3)>");
-		return;
-	}
-
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
-
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	if (nType == ETargetType::PLAYER && iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
 		return;
 	}
 
@@ -745,7 +395,14 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - set a player's team", ADM
 		return;
 	}
 
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+	ETargetType nType;
+
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
+		return;
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	constexpr const char *teams[] = {"none", "spectators", "terrorists", "counter-terrorists"};
 
@@ -761,14 +418,15 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - set a player's team", ADM
 
 		pTarget->SwitchTeam(iTeam);
 
-		if (nType < ETargetType::ALL)
+		if (iNumClients == 1)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "moved", szAction);
 	}
 
-	PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
+	if (iNumClients > 1)
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
 }
 
-CON_COMMAND_CHAT_FLAGS(noclip, "- toggle noclip on yourself", ADMFLAG_SLAY | ADMFLAG_CHEATS)
+CON_COMMAND_CHAT_FLAGS(noclip, "- Toggle noclip on yourself", ADMFLAG_SLAY | ADMFLAG_CHEATS)
 {
 	if (!player)
 	{
@@ -805,7 +463,7 @@ CON_COMMAND_CHAT_FLAGS(reload_discord_bots, "- Reload discord bot config", ADMFL
 	Message("Discord bot config reloaded\n");
 }
 
-CON_COMMAND_CHAT_FLAGS(entfire, "<name> <input> [parameter] - fire outputs at entities", ADMFLAG_RCON)
+CON_COMMAND_CHAT_FLAGS(entfire, "<name> <input> [parameter] - Fire outputs at entities", ADMFLAG_RCON)
 {
 	if (args.ArgC() < 3)
 	{
@@ -866,7 +524,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "<name> <input> [parameter] - fire outputs at en
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i entities.", iFoundEnts);
 }
 
-CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <inpu> [parameter] - fire outputs at player pawns", ADMFLAG_RCON)
+CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <inpu> [parameter] - Fire outputs at player pawns", ADMFLAG_RCON)
 {
 	if (args.ArgC() < 3)
 	{
@@ -874,23 +532,12 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <inpu> [parameter] - fire outputs at
 		return;
 	}
 
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
+	ETargetType nType;
 
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
-	}
-
-	if (nType == ETargetType::PLAYER && iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
 
 	int iFoundEnts = 0;
 
@@ -898,7 +545,7 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <inpu> [parameter] - fire outputs at
 	{
 		CCSPlayerController *pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
-		if (!pTarget || !pTarget->GetPawn())
+		if (!pTarget->GetPawn())
 			continue;
 
 		pTarget->GetPawn()->AcceptInput(args[2], args[3], player, player);
@@ -908,7 +555,7 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <inpu> [parameter] - fire outputs at
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i player pawns.", iFoundEnts);
 }
 
-CON_COMMAND_CHAT_FLAGS(entfirecontroller, "<name> <input> [parameter] - fire outputs at player controllers", ADMFLAG_RCON)
+CON_COMMAND_CHAT_FLAGS(entfirecontroller, "<name> <input> [parameter] - Fire outputs at player controllers", ADMFLAG_RCON)
 {
 	if (args.ArgC() < 3)
 	{
@@ -916,33 +563,18 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "<name> <input> [parameter] - fire out
 		return;
 	}
 
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
+	ETargetType nType;
 
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
-	}
-
-	if (nType == ETargetType::PLAYER && iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
 
 	int iFoundEnts = 0;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
 		CCSPlayerController *pTarget = CCSPlayerController::FromSlot(pSlots[i]);
-
-		if (!pTarget)
-			continue;
-
 		pTarget->AcceptInput(args[2], args[3], player, player);
 		iFoundEnts++;
 	}
@@ -950,7 +582,7 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "<name> <input> [parameter] - fire out
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i player controllers.", iFoundEnts);
 }
 
-CON_COMMAND_CHAT_FLAGS(map, "<mapname> - change map", ADMFLAG_CHANGEMAP)
+CON_COMMAND_CHAT_FLAGS(map, "<mapname> - Change map", ADMFLAG_CHANGEMAP)
 {
 	if (args.ArgC() < 2)
 	{
@@ -1011,7 +643,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - change map", ADMFLAG_CHANGEMAP)
 	});
 }
 
-CON_COMMAND_CHAT_FLAGS(hsay, "<message> - say something as a hud hint", ADMFLAG_CHAT)
+CON_COMMAND_CHAT_FLAGS(hsay, "<message> - Say something as a hud hint", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 2)
 	{
@@ -1022,7 +654,7 @@ CON_COMMAND_CHAT_FLAGS(hsay, "<message> - say something as a hud hint", ADMFLAG_
 	ClientPrintAll(HUD_PRINTCENTER, "%s", args.ArgS());
 }
 
-CON_COMMAND_CHAT_FLAGS(rcon, "<command> - send a command to server console", ADMFLAG_RCON)
+CON_COMMAND_CHAT_FLAGS(rcon, "<command> - Send a command to server console", ADMFLAG_RCON)
 {
 	if (!player)
 	{
@@ -1039,7 +671,7 @@ CON_COMMAND_CHAT_FLAGS(rcon, "<command> - send a command to server console", ADM
 	g_pEngineServer2->ServerCommand(args.ArgS());
 }
 
-CON_COMMAND_CHAT_FLAGS(extend, "<minutes> - extend current map (negative value reduces map duration)", ADMFLAG_CHANGEMAP)
+CON_COMMAND_CHAT_FLAGS(extend, "<minutes> - Extend current map (negative value reduces map duration)", ADMFLAG_CHANGEMAP)
 {
 	if (args.ArgC() < 2)
 	{
@@ -1072,7 +704,7 @@ CON_COMMAND_CHAT_FLAGS(extend, "<minutes> - extend current map (negative value r
 	V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit);
 	g_pEngineServer2->ServerCommand(buf);
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	if (iExtendTime < 0)
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "shortened map time %i minutes.", pszCommandPlayerName, iExtendTime * -1);
@@ -1100,37 +732,19 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 		}
 	}
 
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
-	int pSlot[MAXPLAYERS];
+	int pSlots[MAXPLAYERS];
+	ETargetType nType;
 
-	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) > ETargetType::SELF)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only private message individual players.");
-		return;
-	}
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	if (iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
-
-	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
-	if (!pTarget)
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_MULTIPLE | NO_IMMUNITY | NO_BOT, nType))
 		return;
 
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
 	ZEPlayer* pTargetPlayer = pTarget->GetZEPlayer();
 
 	std::string strMessage = GetReason(args, 1, false);
 
-	const char* pszName = player ? player->GetPlayerName() : "CONSOLE";
+	const char* pszName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	if (player == pTarget)
 	{
@@ -1323,68 +937,38 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GE
 
 CON_COMMAND_CHAT(status, "<name> - Checks a player's active punishments. Non-admins may only check their own punishments")
 {
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-	int iNumClients;
-	int pSlot[MAXPLAYERS];
-	ETargetType nType = ETargetType::SELF;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+	ETargetType nType;
 	ZEPlayer* pTargetPlayer = nullptr;
-	bool bIsAdmin = iCommandPlayer == -1 || g_playerManager->GetPlayer(iCommandPlayer)->IsAdminFlagSet(ADMFLAG_GENERIC);
-	std::string target = !bIsAdmin || args.ArgC() == 1 ? "" : args[1];
+	bool bIsAdmin = !player || player->GetZEPlayer()->IsAdminFlagSet(ADMFLAG_GENERIC);
+	std::string strTarget = (!bIsAdmin || args.ArgC() == 1) ? "@me" : args[1];
 
-	if (bIsAdmin && target.length() > 0)
-	{
-		iNumClients = 0;
-		target = args[1];
-		nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
-	}
-	else
-	{
-		iNumClients = 1;
-		pSlot[0] = iCommandPlayer;
-	}
-
-	if (iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one client matched.");
-		return;
-	}
-	else if (iNumClients <= 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
-	if (!pTarget)
+	if (!g_playerManager->CanTargetPlayers(player, strTarget.c_str(), iNumClients, pSlots, NO_UNAUTHENTICATED | NO_MULTIPLE | NO_BOT, nType))
 		return;
 
-	pTargetPlayer = g_playerManager->GetPlayer(pSlot[0]);
-
-	if (pTargetPlayer->IsFakeClient())
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Cannot target bot.");
-		return;
-	}
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
+	pTargetPlayer = pTarget->GetZEPlayer();
 		
 	if (!pTargetPlayer->IsMuted() && !pTargetPlayer->IsGagged())
 	{
-		if (target.length() == 0)
+		if (pTarget == player)
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have no active punishments.");
 		else
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s has no active punishments.", pTarget->GetPlayerName());
 		return;
 	}
 
-	std::string punishment = "";
+	std::string strPunishment = "";
 	if (pTargetPlayer->IsMuted() && pTargetPlayer->IsGagged())
-		punishment = "\2gagged\1 and \2muted\1";
+		strPunishment = "\2gagged\1 and \2muted\1";
 	else if (pTargetPlayer->IsMuted())
-		punishment = "\2muted\1";
+		strPunishment = "\2muted\1";
 	else if (pTargetPlayer->IsGagged())
-		punishment = "\2gagged\1";
+		strPunishment = "\2gagged\1";
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s %s.",
-				target.length() == 0 ? "You are" : (target + " is").c_str(), punishment.c_str());
+				pTarget == player ? "You are" : (std::string(pTarget->GetPlayerName()) + " is").c_str(), strPunishment.c_str());
 }
 
 CON_COMMAND_CHAT_FLAGS(listdc, "- List recently disconnected players and their Steam64 IDs", ADMFLAG_GENERIC)
@@ -1443,6 +1027,7 @@ bool CAdminSystem::LoadAdmins()
 		const char *pszName = pKey->GetName();
 		const char *pszSteamID = pKey->GetString("steamid", nullptr);
 		const char *pszFlags = pKey->GetString("flags", nullptr);
+		int iImmunityLevel = pKey->GetInt("immunity", -1);
 
 		if (!pszSteamID)
 		{
@@ -1456,14 +1041,21 @@ bool CAdminSystem::LoadAdmins()
 			return false;
 		}
 
+		if (iImmunityLevel < 0)
+		{
+			Warning("Admin entry %s is missing 'immunity' key\n", pszName);
+			iImmunityLevel = 0; // Zero is default immunity, so set that if not given
+		}
+
 		ConMsg("Loaded admin %s\n", pszName);
-		ConMsg(" - Steam ID %5s\n", pszSteamID);
-		ConMsg(" - Flags %5s\n", pszFlags);
+		ConMsg(" - Steam ID: %5s\n", pszSteamID);
+		ConMsg(" - Flags: %5s\n", pszFlags);
+		ConMsg(" - Immunity: %i\n", iImmunityLevel);
 
 		uint64 iFlags = ParseFlags(pszFlags);
 
 		// Let's just use steamID64 for now
-		m_vecAdmins.AddToTail(CAdmin(pszName, atoll(pszSteamID), iFlags));
+		m_vecAdmins.AddToTail(CAdmin(pszName, atoll(pszSteamID), iFlags, iImmunityLevel));
 	}
 
 	return true;
@@ -1601,7 +1193,7 @@ bool CAdminSystem::ApplyInfractions(ZEPlayer *player)
 
 bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type)
 {
-	FOR_EACH_VEC(m_vecInfractions, i)
+	FOR_EACH_VEC_BACK(m_vecInfractions, i)
 	{
 		if (m_vecInfractions[i]->GetSteamId64() == player->GetSteamId64() && m_vecInfractions[i]->GetType() == type)
 		{
@@ -1617,7 +1209,7 @@ bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EI
 
 bool CAdminSystem::FindAndRemoveInfractionSteamId64(uint64 steamid64, CInfractionBase::EInfractionType type)
 {
-	FOR_EACH_VEC(m_vecInfractions, i)
+	FOR_EACH_VEC_BACK(m_vecInfractions, i)
 	{
 		if (m_vecInfractions[i]->GetSteamId64() == steamid64 && m_vecInfractions[i]->GetType() == type)
 		{
@@ -1824,4 +1416,144 @@ std::string GetReason(const CCommand& args, int iArgsBefore, bool bStripUnicode)
 		strOutput = strOutput.substr(0, strOutput.length() - 1);
 
 	return strOutput;
+}
+
+void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAdding, CInfractionBase::EInfractionType infType)
+{
+	if (args.ArgC() < 2 || (bAdding && args.ArgC() < 3))
+	{
+		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "Usage: !%s <name>%s",
+					GetActionPhrase(infType, PresentOrNoun, bAdding), bAdding ? " <duration>" : "");
+		return;
+	}
+
+	int iDuration = bAdding ? ParseTimeInput(args[2]) : 0;
+	if (bAdding && iDuration < 0) {
+		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "Invalid duration.");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+	ETargetType nType;
+
+	uint64 iBlockedFlags = NO_RANDOM | NO_SELF | NO_BOT | NO_UNAUTHENTICATED;
+
+	// Only allow multiple targetting for mutes that aren't perma (ie. !mute @all 1) for stopping mass mic spam
+	if (infType != CInfractionBase::EInfractionType::Mute || (bAdding && iDuration == 0))
+		iBlockedFlags |= NO_MULTIPLE;
+
+	ETargetError eType = g_playerManager->GetPlayersFromString(pAdmin, args[1], iNumClients, pSlots, iBlockedFlags, nType);
+
+	if (bAdding && iDuration == 0 && (eType == ETargetError::MULTIPLE || eType == ETargetError::RANDOM))
+	{
+		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "You may only permanently %s individuals.",
+					GetActionPhrase(infType, GrammarTense::PresentOrNoun, bAdding));
+		return;
+	}
+	else if (eType != ETargetError::NO_ERRORS)
+	{
+		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "%s", g_playerManager->GetErrorString(eType, (iNumClients == 0) ? 0 : pSlots[0]).c_str());
+		return;
+	}
+
+	const char *pszCommandPlayerName = pAdmin ? pAdmin->GetPlayerName() : CONSOLE_NAME;
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+		ZEPlayer* zpTarget = pTarget->GetZEPlayer();
+
+		if (!bAdding)
+			g_pAdminSystem->FindAndRemoveInfraction(zpTarget, infType);
+		else
+		{
+			CInfractionBase* infraction;
+			switch (infType)
+			{
+				case CInfractionBase::Mute:
+					infraction = new CMuteInfraction(0, zpTarget->GetSteamId64());
+					break;
+				case CInfractionBase::Gag:
+					infraction = new CGagInfraction(0, zpTarget->GetSteamId64());
+					break;
+				case CInfractionBase::Ban:
+					infraction = new CBanInfraction(0, zpTarget->GetSteamId64());
+					break;
+				default:
+					// This should never be reached, since we it means we are trying to apply an unimplemented block type
+					ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "Improper block type... Send to a dev with the command used.");
+					return;
+			}
+
+			// We're overwriting the infraction, so remove the previous one first
+			g_pAdminSystem->FindAndRemoveInfraction(zpTarget, infType);
+			g_pAdminSystem->AddInfraction(infraction);
+			infraction->ApplyInfraction(zpTarget);
+		}
+
+		if (iNumClients == 1 || (bAdding && iDuration == 0))
+		{
+			if (!bAdding)
+				PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), GetActionPhrase(infType, GrammarTense::Past, bAdding));
+			else if (iDuration > 0)
+				PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), GetActionPhrase(infType, GrammarTense::Past, bAdding), (" for " + FormatTime(iDuration, false)).c_str());
+			else
+			{
+				std::string strAction = "permanently ";
+				strAction.append(GetActionPhrase(infType, GrammarTense::Past, bAdding));
+				PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), strAction.c_str());
+			}
+		}
+	}
+
+	if (iNumClients > 1)
+	{
+		PrintMultiAdminAction(nType, pszCommandPlayerName, GetActionPhrase(infType, GrammarTense::Past, bAdding),
+							  bAdding ? (" for " + FormatTime(iDuration, false)).c_str() : "");
+	}
+
+	g_pAdminSystem->SaveInfractions();
+}
+
+// Returns a string matching the type of punishment and grammar tense specified
+const char* GetActionPhrase(CInfractionBase::EInfractionType infType, GrammarTense iTense, bool bAdding)
+{
+	if (iTense == GrammarTense::PresentOrNoun)
+	{
+		switch (infType)
+		{
+			case CInfractionBase::Ban:
+				return bAdding ? "ban" : "unban";
+			case CInfractionBase::Mute:
+				return bAdding ? "mute" : "unmute";
+			case CInfractionBase::Gag:
+				return bAdding ? "gag" : "ungag";
+		}
+	}
+	else if (iTense == GrammarTense::Past)
+	{
+		switch (infType)
+		{
+			case CInfractionBase::Ban:
+				return bAdding ? "banned" : "unbanned";
+			case CInfractionBase::Mute:
+				return bAdding ? "muted" : "unmuted";
+			case CInfractionBase::Gag:
+				return bAdding ? "gagged" : "ungagged";
+		}
+	}
+	else if (iTense == GrammarTense::Continuous)
+	{
+		switch (infType)
+		{
+			case CInfractionBase::Ban:
+				return bAdding ? "banning" : "unbanning";
+			case CInfractionBase::Mute:
+				return bAdding ? "muting" : "unmuting";
+			case CInfractionBase::Gag:
+				return bAdding ? "gagging" : "ungagging";
+		}
+	}
+	return "";
 }

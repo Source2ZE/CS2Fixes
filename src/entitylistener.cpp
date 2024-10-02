@@ -23,8 +23,13 @@
 #include "gameconfig.h"
 #include "cs2_sdk/entity/cbaseentity.h"
 #include "plat.h"
+#include "entity/cgamerules.h"
 
 extern CGameConfig *g_GameConfig;
+extern CCSGameRules* g_pGameRules;
+
+bool g_bGrenadeNoBlock = false;
+FAKE_BOOL_CVAR(cs2f_noblock_grenades, "Whether to use noblock on grenade projectiles", g_bGrenadeNoBlock, false, false)
 
 void Patch_GetHammerUniqueId(CEntityInstance *pEntity)
 {
@@ -42,11 +47,19 @@ void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 	const char* pszClassName = pEntity->m_pEntity->m_designerName.String();
 	Message("Entity spawned: %s %s\n", pszClassName, ((CBaseEntity*)pEntity)->m_sUniqueHammerID().Get());
 #endif
+
+	if (g_bGrenadeNoBlock && V_stristr(pEntity->GetClassname(), "_projectile"))
+	{
+		reinterpret_cast<CBaseEntity*>(pEntity)->SetCollisionGroup(COLLISION_GROUP_DEBRIS);
+	}
 }
 
 void CEntityListener::OnEntityCreated(CEntityInstance* pEntity)
 {
 	ExecuteOnce(Patch_GetHammerUniqueId(pEntity));
+
+	if (!V_strcmp("cs_gamerules", pEntity->GetClassname()))
+		g_pGameRules = ((CCSGameRulesProxy*)pEntity)->m_pGameRules;
 }
 
 void CEntityListener::OnEntityDeleted(CEntityInstance* pEntity)

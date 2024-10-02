@@ -24,6 +24,8 @@
 #include "../playermanager.h"
 #include "../serversideclient.h"
 
+extern CServerSideClient *GetClientBySlot(CPlayerSlot slot);
+
 extern CGameEntitySystem* g_pEntitySystem;
 
 class CCSPlayerController : public CBasePlayerController
