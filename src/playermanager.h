@@ -46,6 +46,7 @@
 #define DECAL_PREF_KEY_NAME "hide_decals"
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
 #define SOUND_STATUS_PREF_KEY_NAME "sound_status"
+#define BUTTON_WATCH_PREF_KEY_NAME "button_watch"
 #define INVALID_ZEPLAYERHANDLE_INDEX 0u
 
 static uint32 iZEPlayerHandleSerial = 0u; // this should actually be 3 bytes large, but no way enough players join in servers lifespan for this to be an issue
@@ -171,6 +172,7 @@ public:
 		m_flMaxSpeed = 1.f;
 		m_iLastInputs = IN_NONE;
 		m_iLastInputTime = std::time(0);
+		m_iButtonWatchMode = 0;
 	}
 
 	~ZEPlayer()
@@ -225,6 +227,7 @@ public:
 	void SetLastInputs(uint64 iLastInputs) { m_iLastInputs = iLastInputs; }
 	void UpdateLastInputTime() { m_iLastInputTime = std::time(0); }
 	void SetMaxSpeed(float flMaxSpeed) { m_flMaxSpeed = flMaxSpeed; }
+	void CycleButtonWatch();
 	void ReplicateConVar(const char* pszName, const char* pszValue);
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
@@ -261,6 +264,7 @@ public:
 	float GetMaxSpeed() { return m_flMaxSpeed; }
 	uint64 GetLastInputs() { return m_iLastInputs; }
 	std::time_t GetLastInputTime() { return m_iLastInputTime; }
+	int GetButtonWatchMode();
 	
 	void OnSpawn();
 	void OnAuthenticated();
@@ -315,6 +319,7 @@ private:
 	float m_flMaxSpeed;
 	uint64 m_iLastInputs;
 	std::time_t m_iLastInputTime;
+	int m_iButtonWatchMode;
 };
 
 class CPlayerManager

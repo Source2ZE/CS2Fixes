@@ -36,6 +36,10 @@
 #include "votemanager.h"
 #include "map_votes.h"
 #include <vector>
+#include <fstream>
+#include "vendor/nlohmann/json.hpp"
+
+using json = nlohmann::json;
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
@@ -997,6 +1001,56 @@ CON_COMMAND_CHAT_FLAGS(add_dc, "<name> <SteamID 64> <IP Address> - Adds a fake p
 	g_pAdminSystem->AddDisconnectedPlayer(args[1], iSteamID, args[3]);
 }
 #endif
+
+CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
+{
+	
+	std::ifstream ifsConfig((std::string(Plat_GetGameDirectory()) + "\\csgo\\addons\\cs2fixes\\configs\\cs2fixes.jsonc"), std::fstream::in);
+	if (!ifsConfig.is_open())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Button watch is disabled on this server.");
+		return;
+	}
+
+	json jConfig = json::parse(ifsConfig, nullptr, true, true);
+	if (jConfig.empty() || !jConfig.value("enable_button_watch", false))
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Button watch is disabled on this server.");
+		return;
+	}
+
+
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	ZEPlayer* zpPlayer = player->GetZEPlayer();
+	if (!zpPlayer)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Something went wrong...");
+		return;
+	}
+
+	zpPlayer->CycleButtonWatch();
+
+	switch (zpPlayer->GetButtonWatchMode())
+	{
+		case 0:
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x02 disabled\1 button watch.");
+			break;
+		case 1:
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in chat.");
+			break;
+		case 2:
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in console.");
+			break;
+		case 3:
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in chat and console.");
+			break;
+	}
+}
 
 CAdminSystem::CAdminSystem()
 {
