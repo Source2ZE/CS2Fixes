@@ -493,46 +493,13 @@ CON_COMMAND_CHAT(spec, "<name> - Spectate another player")
 	int iNumClients = 0;
 	int pSlot[MAXPLAYERS];
 
-	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) > ETargetType::PLAYER)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only spectate a specific player.");
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlot, NO_MULTIPLE | NO_SELF | NO_DEAD | NO_SPECTATOR))
 		return;
-	}
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
-		return;
-	}
-
-	if (iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "More than one player matched.");
-		return;
-	}
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
 
 	if (!pTarget)
 		return;
-
-	if (pTarget == player)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot spectate yourself.");
-		return;
-	}
-
-	if (pTarget->m_iTeamNum() == CS_TEAM_SPECTATOR)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target is a spectator.");
-		return;
-	}
-
-	if (!pTarget->m_bPawnIsAlive())
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target is not alive.");
-		return;
-	}
 
 	if (player->m_iTeamNum() != CS_TEAM_SPECTATOR)
 		player->SwitchTeam(CS_TEAM_SPECTATOR);
