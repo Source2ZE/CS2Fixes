@@ -91,7 +91,7 @@
 			"CategorizeUnderwater"
 			{
 				"library"		"server"
-				"windows"		"\x76\x2A\xB0\x01\xEB\x2A\x32\xC0\x45\x84\xF6"
+				"windows"		"\x81\x04\x04\x2A\x2A\x0F\x2E\x05\x2A\x2A\x2A\x2A\x7A\x2A\x75"
 				"linux"			"\x0F\x45\xC2\x4D\x85\xC0\x0F\x95\xC2\x20\xC2"
 			}
 			// Called right after "Removed %s(%s)\n"
@@ -441,6 +441,11 @@
 				"windows"		"128"
 				"linux"			"129"
 			}
+			"CategorizeUnderwater"
+			{
+				"windows"		"14"
+				"linux"			"0"
+			}
 		}
 		"Patches"
 		{
@@ -462,7 +467,7 @@
 			}
 			"CategorizeUnderwater"
 			{
-				"windows"		"\x73"
+				"windows"		"\x72"
 				"linux"			"\x0F\x42"
 			}
 			// Jumping over a check for nav mesh

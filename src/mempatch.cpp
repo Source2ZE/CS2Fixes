@@ -30,7 +30,7 @@ bool CMemPatch::PerformPatch(CGameConfig *gameConfig)
 	// If we already have an address, no need to look for it again
 	if (!m_pPatchAddress)
 	{
-		m_pPatchAddress = gameConfig->ResolveSignature(m_pSignatureName);
+		m_pPatchAddress = (uintptr_t*)gameConfig->ResolveSignature(m_pSignatureName);
 
 		if (!m_pPatchAddress)
 			return false;
@@ -45,6 +45,18 @@ bool CMemPatch::PerformPatch(CGameConfig *gameConfig)
 	m_pPatch = gameConfig->HexToByte(patch, m_iPatchLength);
 	if (!m_pPatch)
 		return false;
+
+	if (V_strcmp(m_pOffsetName, ""))
+	{
+		m_iOffset = gameConfig->GetOffset(m_pOffsetName);
+		if (m_iOffset == -1)
+		{
+			Panic("Failed to find offset %s for patch %s\n", m_pOffsetName, m_pszName);
+			return false;
+		}
+
+		m_pPatchAddress += m_iOffset;
+	}
 
 	m_pOriginalBytes = new byte[m_iPatchLength];
 	V_memcpy(m_pOriginalBytes, m_pPatchAddress, m_iPatchLength);
