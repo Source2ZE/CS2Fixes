@@ -28,6 +28,7 @@
 #include "../detours.h"
 #include "entitykeyvalues.h"
 #include "../../gameconfig.h"
+#include "tier1/utlstringtoken.h"
 
 extern CGameConfig *g_GameConfig;
 
@@ -247,7 +248,7 @@ public:
 	// This was needed so we can parent to nameless entities using pointers
 	void SetParent(CBaseEntity *pNewParent)
 	{
-		addresses::CBaseEntity_SetParent(this, pNewParent, 0, nullptr);
+		addresses::CBaseEntity_SetParent(this, pNewParent, MakeStringToken(""), nullptr);
 	}
 
 	void Remove()
