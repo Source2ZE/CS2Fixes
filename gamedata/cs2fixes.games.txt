@@ -87,13 +87,6 @@
 				"windows"		"\x3C\x01\x49\x8B\x5B\x10\x49\x8B\x7B\x18\x0F\x97\xC0\x41\x0F\x28"
 				"linux"		 	"\x3C\x01\x0F\x97\xC0\x48\x81\xC4\x50\x01"
 			}
-			// String: "PlayerMove_PostMove", generally function called before the postmove func is CategorizePosition, find the == 1.0 check in CategorizePosition
-			"CategorizeUnderwater"
-			{
-				"library"		"server"
-				"windows"		"\x76\x2A\xB0\x01\xEB\x2A\x32\xC0\x45\x84\xF6"
-				"linux"			"\x0F\x45\xC2\x4D\x85\xC0\x0F\x95\xC2\x20\xC2"
-			}
 			// Called right after "Removed %s(%s)\n"
 			"UTIL_Remove"
 			{
@@ -459,11 +452,6 @@
 			{
 				"windows"		"\x3C\x02"
 				"linux"			"\x3C\x02"
-			}
-			"CategorizeUnderwater"
-			{
-				"windows"		"\x73"
-				"linux"			"\x0F\x42"
 			}
 			// Jumping over a check for nav mesh
 			"BotNavIgnore"
