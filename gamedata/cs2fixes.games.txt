@@ -341,13 +341,13 @@
 			}
 			"CBaseEntity::Use"
 			{
-				"windows"		"138"
-				"linux"			"137"
+				"windows"		"140"
+				"linux"			"139"
 			}
 			"Teleport"
 			{
-				"windows"		"155"
-				"linux"			"154"
+				"windows"		"157"
+				"linux"			"156"
 			}
 			"CollisionRulesChanged"
 			{
@@ -369,16 +369,16 @@
 			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
 			"CCSPlayerController_ChangeTeam"
 			{
-				"windows"		"98"
-				"linux"			"97"
+				"windows"		"100"
+				"linux"			"99"
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
 			// return (*(*v9 + 2976LL))(v9, v27, 0LL);
 			// 2976 (372 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"		"372"
-				"linux"			"372"
+				"windows"		"377"
+				"linux"			"377"
 			}
 			// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 			"CGameRules_FindPickerEntity"
@@ -388,18 +388,18 @@
 			}
 			"PassesTriggerFilters"
 			{
-				"windows"		"258"
-				"linux"			"259"
+				"windows"		"260"
+				"linux"			"261"
 			}
 			"CCSPlayerController_Respawn"
 			{
-				"windows"		"254"
-				"linux"			"256"
+				"windows"		"257"
+				"linux"			"259"
 			}
 			"GetHammerUniqueId"
 			{
-				"windows"		"107"
-				"linux"			"106"
+				"windows"		"109"
+				"linux"			"108"
 			}
 			"CheckTransmitPlayerSlot"
 			{
@@ -422,19 +422,19 @@
 			// Long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
 			"CBasePlayerPawn::OnTakeDamage_Alive"
 			{
-				"windows"		"231"
-				"linux"			"230"
+				"windows"		"233"
+				"linux"			"234"
 			}
 			// There's no easy way to find this, but it's a function that checks entity flags (0x370) and ends by calling RemoveFlag with 0x800000 (FL_BASEVELOCITY)
 			"CCSPlayer_MovementServices::CheckMovingGround"
 			{
-				"windows"		"32"
-				"linux"			"33"
+				"windows"		"34"
+				"linux"			"35"
 			}
 			"CCSPlayer_WeaponServices::DropWeapon"
 			{
-				"windows"		"20"
-				"linux"			"21"
+				"windows"		"22"
+				"linux"			"23"
 			}
 			"CCSGameRules_GoToIntermission"
 			{
