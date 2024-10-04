@@ -30,7 +30,7 @@ public:
 		m_pSignatureName(pSignatureName), m_pszName(pszName), m_pOffsetName(pOffsetName)
 	{
 		m_pModule = nullptr;
-		m_pPatchAddress = nullptr;
+		m_pPatchAddress = 0x00;
 		m_pOriginalBytes = nullptr;
 		m_pSignature = nullptr;
 		m_pPatch = nullptr;
@@ -41,7 +41,7 @@ public:
 	bool PerformPatch(CGameConfig *gameConfig);
 	void UndoPatch();
 
-	void *GetPatchAddress() { return m_pPatchAddress; }
+	uintptr_t GetPatchAddress() { return m_pPatchAddress; }
 
 private:
 	CModule **m_pModule;
@@ -53,5 +53,5 @@ private:
 	const char *m_pOffsetName;
 	int m_iOffset;
 	size_t m_iPatchLength;
-	uintptr_t *m_pPatchAddress;
+	uintptr_t m_pPatchAddress;
 };
