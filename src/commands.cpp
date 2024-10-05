@@ -354,17 +354,18 @@ bool CChatCommand::CheckCommandAccess(CCSPlayerController *pPlayer, uint64 flags
 	{
 		if (!g_bEnableLeader)
 			return false;
-
-		if (!pZEPlayer->IsLeader() && !pZEPlayer->IsAdminFlagSet(FLAG_LEADER))
+		if (!pZEPlayer->IsAdminFlagSet(FLAG_LEADER))
 		{
-			ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You must be a leader to use this command.");
-			return false;
-		}
-		
-		if (g_bLeaderActionsHumanOnly && pPlayer->m_iTeamNum != CS_TEAM_CT)
-		{
-			ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You must be a human to use this command.");
-			return false;
+			if (!pZEPlayer->IsLeader())
+			{
+				ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You must be a leader to use this command.");
+				return false;
+			}
+			else if (g_bLeaderActionsHumanOnly && pPlayer->m_iTeamNum != CS_TEAM_CT)
+			{
+				ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You must be a human to use this command.");
+				return false;
+			}
 		}
 	}
 	else if (!pZEPlayer->IsAdminFlagSet(flags))
