@@ -281,7 +281,7 @@ void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPla
 		}
 	}
 
-	float fCurrentRoundClock = g_pGameRules->m_iRoundTime - (gpGlobals->curtime - g_pGameRules->m_fRoundStartTime.Get().m_Value);
+	float fCurrentRoundClock = g_pGameRules->m_iRoundTime - (gpGlobals->curtime - g_pGameRules->m_fRoundStartTime.Get().GetTime());
 
 	// Only display trigger time if the timer is greater than 4 seconds, and time expires within the round
 	if ((uiTriggerTimerLength > 4) && (fCurrentRoundClock > uiTriggerTimerLength))
