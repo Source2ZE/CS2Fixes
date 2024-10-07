@@ -666,12 +666,12 @@ bool CMapVoteSystem::LoadMapList()
 		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled));
 	}
 
-	new CTimer(0.f, true, true, [this]()
+	new CTimer(0.f, true, true, []()
 	{
-		if (!this || m_DownloadQueue.Count() == 0)
+		if (g_pMapVoteSystem->m_DownloadQueue.Count() == 0)
 			return -1.f;
 
-		PrintDownloadProgress();
+		g_pMapVoteSystem->PrintDownloadProgress();
 
 		return 1.f;
 	});
