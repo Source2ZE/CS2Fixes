@@ -100,6 +100,8 @@ enum class ETargetError
 };
 
 class ZEPlayer;
+struct ZRClass;
+struct ZRModelEntry;
 
 class ZEPlayerHandle
 {
@@ -172,6 +174,8 @@ public:
 		m_flMaxSpeed = 1.f;
 		m_iLastInputs = IN_NONE;
 		m_iLastInputTime = std::time(0);
+		m_pActiveZRClass = nullptr;
+		m_pActiveZRModel = nullptr;
 	}
 
 	~ZEPlayer()
@@ -227,6 +231,8 @@ public:
 	void UpdateLastInputTime() { m_iLastInputTime = std::time(0); }
 	void SetMaxSpeed(float flMaxSpeed) { m_flMaxSpeed = flMaxSpeed; }
 	void ReplicateConVar(const char* pszName, const char* pszValue);
+	void SetActiveZRClass(std::shared_ptr<ZRClass> pZRModel) { m_pActiveZRClass = pZRModel; }
+	void SetActiveZRModel(std::shared_ptr<ZRModelEntry> pZRClass) { m_pActiveZRModel = pZRClass; }
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -262,6 +268,8 @@ public:
 	float GetMaxSpeed() { return m_flMaxSpeed; }
 	uint64 GetLastInputs() { return m_iLastInputs; }
 	std::time_t GetLastInputTime() { return m_iLastInputTime; }
+	std::shared_ptr<ZRClass> GetActiveZRClass() { return m_pActiveZRClass; }
+	std::shared_ptr<ZRModelEntry> GetActiveZRModel() { return m_pActiveZRModel; }
 	
 	void OnSpawn();
 	void OnAuthenticated();
@@ -316,6 +324,8 @@ private:
 	float m_flMaxSpeed;
 	uint64 m_iLastInputs;
 	std::time_t m_iLastInputTime;
+	std::shared_ptr<ZRClass> m_pActiveZRClass;
+	std::shared_ptr<ZRModelEntry> m_pActiveZRModel;
 };
 
 class CPlayerManager
