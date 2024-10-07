@@ -174,7 +174,7 @@ void ZR_CreateOverlay(const char* pszOverlayParticlePath, float flAlpha, float f
 	UTIL_AddEntityIOEvent(particle, "Kill", nullptr, nullptr, "", flLifeTime + 1.0);
 }
 
-ZRModelEntry::ZRModelEntry(ZRModelEntry *modelEntry) :
+ZRModelEntry::ZRModelEntry(std::shared_ptr<ZRModelEntry> modelEntry) :
 	szModelPath(modelEntry->szModelPath),
 	szColor(modelEntry->szColor)
 	{
@@ -237,7 +237,7 @@ ZRClass::ZRClass(ordered_json jsonKeys, std::string szClassname) :
 
 		for (auto& [key, jsonModelEntry] : jsonKeys["models"].items())
 		{
-			ZRModelEntry *modelEntry = new ZRModelEntry(jsonModelEntry);
+			std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(jsonModelEntry);
 			vecModels.AddToTail(modelEntry);
 		}
 	};
@@ -303,7 +303,7 @@ void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 
 	for (auto& [key, jsonModelEntry] : jsonKeys["models"].items())
 	{
-		ZRModelEntry *modelEntry = new ZRModelEntry(jsonModelEntry);
+		std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(jsonModelEntry);
 		vecModels.AddToTail(modelEntry);
 	}
 }
@@ -460,13 +460,13 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 			if (bHuman)
 			{
-				ZRHumanClass *pHumanClass;
+				std::shared_ptr<ZRHumanClass> pHumanClass;
 				if (!szBase.empty())
 				{
-					ZRHumanClass *pBaseHumanClass = GetHumanClass(szBase.c_str());
+					std::shared_ptr<ZRHumanClass> pBaseHumanClass = GetHumanClass(szBase.c_str());
 					if (pBaseHumanClass)
 					{
-						pHumanClass = new ZRHumanClass(pBaseHumanClass);
+						pHumanClass = std::make_shared<ZRHumanClass>(pBaseHumanClass);
 						pHumanClass->Override(jsonClass, szClassName);
 					}
 					else
@@ -476,7 +476,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					}
 				}
 				else
-					pHumanClass = new ZRHumanClass(jsonClass, szClassName);
+					pHumanClass = std::make_shared<ZRHumanClass>(jsonClass, szClassName);
 
 				m_HumanClassMap.Insert(hash_32_fnv1a_const(szClassName.c_str()), pHumanClass);
 
@@ -487,13 +487,13 @@ void CZRPlayerClassManager::LoadPlayerClass()
 			}
 			else 
 			{
-				ZRZombieClass *pZombieClass;
+				std::shared_ptr<ZRZombieClass> pZombieClass;
 				if (!szBase.empty())
 				{
-					ZRZombieClass *pBaseZombieClass = GetZombieClass(szBase.c_str());
+					std::shared_ptr<ZRZombieClass> pBaseZombieClass = GetZombieClass(szBase.c_str());
 					if (pBaseZombieClass)
 					{
-						pZombieClass = new ZRZombieClass(pBaseZombieClass);
+						pZombieClass = std::make_shared<ZRZombieClass>(pBaseZombieClass);
 						pZombieClass->Override(jsonClass, szClassName);
 					}
 					else
@@ -503,7 +503,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					}
 				}
 				else
-					pZombieClass = new ZRZombieClass(jsonClass, szClassName);
+					pZombieClass = std::make_shared<ZRZombieClass>(jsonClass, szClassName);
 
 				m_ZombieClassMap.Insert(hash_32_fnv1a_const(szClassName.c_str()), pZombieClass);
 				if (bTeamDefault)
@@ -526,9 +526,9 @@ void split(const std::string& s, char delim, Out result)
 		*result++ = item;
 }
 
-void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn)
+void CZRPlayerClassManager::ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn)
 {
-	ZRModelEntry *pModelEntry = pClass->GetRandomModelEntry();
+	std::shared_ptr<ZRModelEntry> pModelEntry = pClass->GetRandomModelEntry();
 	Color clrRender;
 	V_StringToColor(pModelEntry->szColor.c_str(), clrRender);
 
@@ -547,6 +547,8 @@ void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn
 	if (const auto pPlayer = pController != nullptr ? pController->GetZEPlayer() : nullptr)
 	{
 		pPlayer->SetMaxSpeed(pClass->flSpeed);
+		pPlayer->SetActiveZRClass(pClass);
+		pPlayer->SetActiveZRModel(pModelEntry);
 	}
 
 	// This has to be done a bit later
@@ -554,9 +556,9 @@ void CZRPlayerClassManager::ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn
 }
 
 // only changes that should not (directly) affect gameplay
-void CZRPlayerClassManager::ApplyBaseClassVisuals(ZRClass *pClass, CCSPlayerPawn *pPawn)
+void CZRPlayerClassManager::ApplyBaseClassVisuals(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn)
 {
-	ZRModelEntry *pModelEntry = pClass->GetRandomModelEntry();
+	std::shared_ptr<ZRModelEntry> pModelEntry = pClass->GetRandomModelEntry();
 	Color clrRender;
 	V_StringToColor(pModelEntry->szColor.c_str(), clrRender);
 	
@@ -564,11 +566,18 @@ void CZRPlayerClassManager::ApplyBaseClassVisuals(ZRClass *pClass, CCSPlayerPawn
 	pPawn->m_clrRender = clrRender;
 	pPawn->AcceptInput("Skin", pModelEntry->GetRandomSkin());
 
+	const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
+	if (const auto pPlayer = pController != nullptr ? pController->GetZEPlayer() : nullptr)
+	{
+		pPlayer->SetActiveZRClass(pClass);
+		pPlayer->SetActiveZRModel(pModelEntry);
+	}
+
 	// This has to be done a bit later
 	UTIL_AddEntityIOEvent(pPawn, "SetScale", nullptr, nullptr, pClass->flScale);
 }
 
-ZRHumanClass* CZRPlayerClassManager::GetHumanClass(const char *pszClassName)
+std::shared_ptr<ZRHumanClass> CZRPlayerClassManager::GetHumanClass(const char* pszClassName)
 {
 	uint16 index = m_HumanClassMap.Find(hash_32_fnv1a_const(pszClassName));
 	if (!m_HumanClassMap.IsValidIndex(index))
@@ -576,7 +585,7 @@ ZRHumanClass* CZRPlayerClassManager::GetHumanClass(const char *pszClassName)
 	return m_HumanClassMap[index];
 }
 
-void CZRPlayerClassManager::ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn *pPawn)
+void CZRPlayerClassManager::ApplyHumanClass(std::shared_ptr<ZRHumanClass> pClass, CCSPlayerPawn* pPawn)
 {
 	ApplyBaseClass(pClass, pPawn);
 	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
@@ -609,7 +618,7 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn *pPa
 
 	// Get the human class user preference, or default if no class is set
 	int iSlot = pController->GetPlayerSlot();
-	ZRHumanClass* humanClass = nullptr;
+	std::shared_ptr<ZRHumanClass> humanClass = nullptr;
 	const char* sPreferredHumanClass = g_pUserPreferencesSystem->GetPreference(iSlot, HUMAN_CLASS_KEY_NAME);
 
 	// If the preferred human class exists and can be applied, override the default
@@ -633,7 +642,7 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPa
 
 	// Get the human class user preference, or default if no class is set
 	int iSlot = pController->GetPlayerSlot();
-	ZRHumanClass* humanClass = nullptr;
+	std::shared_ptr<ZRHumanClass> humanClass = nullptr;
 	const char* sPreferredHumanClass = g_pUserPreferencesSystem->GetPreference(iSlot, HUMAN_CLASS_KEY_NAME);
 
 	// If the preferred human class exists and can be applied, override the default
@@ -647,10 +656,10 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPa
 		return;
 	}
 
-	ApplyBaseClassVisuals((ZRClass *)humanClass, pPawn);
+	ApplyBaseClassVisuals(humanClass, pPawn);
 }
 
-ZRZombieClass* CZRPlayerClassManager::GetZombieClass(const char *pszClassName)
+std::shared_ptr<ZRZombieClass> CZRPlayerClassManager::GetZombieClass(const char* pszClassName)
 {
 	uint16 index = m_ZombieClassMap.Find(hash_32_fnv1a_const(pszClassName));
 	if (!m_ZombieClassMap.IsValidIndex(index))
@@ -658,7 +667,7 @@ ZRZombieClass* CZRPlayerClassManager::GetZombieClass(const char *pszClassName)
 	return m_ZombieClassMap[index];
 }
 
-void CZRPlayerClassManager::ApplyZombieClass(ZRZombieClass *pClass, CCSPlayerPawn *pPawn)
+void CZRPlayerClassManager::ApplyZombieClass(std::shared_ptr<ZRZombieClass> pClass, CCSPlayerPawn* pPawn)
 {
 	ApplyBaseClass(pClass, pPawn);
 	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
@@ -673,7 +682,7 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pP
 
 	// Get the zombie class user preference, or default if no class is set
 	int iSlot = pController->GetPlayerSlot();
-	ZRZombieClass* zombieClass = nullptr;
+	std::shared_ptr<ZRZombieClass> zombieClass = nullptr;
 	const char* sPreferredZombieClass = g_pUserPreferencesSystem->GetPreference(iSlot, ZOMBIE_CLASS_KEY_NAME);
 
 	// If the preferred zombie class exists and can be applied, override the default
@@ -690,7 +699,7 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pP
 	ApplyZombieClass(zombieClass, pPawn);
 }
 
-void CZRPlayerClassManager::GetZRClassList(int iTeam, CUtlVector<ZRClass*> &vecClasses, CCSPlayerController* pController)
+void CZRPlayerClassManager::GetZRClassList(int iTeam, CUtlVector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController)
 {
 	if (iTeam == CS_TEAM_T || iTeam == CS_TEAM_NONE)
 	{
@@ -1187,7 +1196,7 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController, std::vector<S
 	pVictimController->SwitchTeam(CS_TEAM_T);
 	pVictimPawn->EmitSound("zr.amb.scream");
 
-	ZRZombieClass *pClass = g_pZRPlayerClassManager->GetZombieClass("MotherZombie");
+	std::shared_ptr<ZRZombieClass> pClass = g_pZRPlayerClassManager->GetZombieClass("MotherZombie");
 	if (pClass)
 		g_pZRPlayerClassManager->ApplyZombieClass(pClass, pVictimPawn);
 	else
@@ -1730,7 +1739,7 @@ CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:
 		return;
 	}
 
-	CUtlVector<ZRClass*> vecClasses;
+	CUtlVector<std::shared_ptr<ZRClass>> vecClasses;
 	int iSlot = player->GetPlayerSlot();
 	bool bListingZombie = true;
 	bool bListingHuman = true;
@@ -1773,7 +1782,7 @@ CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:
 	{
 		const char* sClassName = vecClasses[i]->szClassName.c_str();
 		bool bClassMatches = !V_stricmp(sClassName, args[1]) || (V_StringToInt32(args[1], -1) - 1) == i;
-		ZRClass* pClass = vecClasses[i];
+		std::shared_ptr<ZRClass> pClass = vecClasses[i];
 
 		if (bClassMatches)
 		{
