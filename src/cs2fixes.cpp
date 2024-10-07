@@ -133,7 +133,6 @@ CGameConfig *g_GameConfig = nullptr;
 ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
-IGameTypes* g_pGameTypes = nullptr;
 int g_iCGamePlayerEquipUseId = -1;
 int g_iCreateWorkshopMapGroupId = -1;
 int g_iOnTakeDamageAliveId = -1;
