@@ -352,93 +352,6 @@ void CZRPlayerClassManager::PrecacheModels(IEntityResourceManifest* pResourceMan
 	}
 }
 
-bool CZRPlayerClassManager::CreateJsonConfigFromKeyValuesFile()
-{
-	Message("Attempting to convert KeyValues1 config format to JSON format...\n");
-
-	const char *pszPath = "addons/cs2fixes/configs/zr/playerclass.cfg";
-
-	KeyValues* pKV = new KeyValues("PlayerClass");
-	KeyValues::AutoDelete autoDelete(pKV);
-
-	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
-	{
-		Warning("Failed to load %s when trying to convert playerclass.cfg to JSON format\n", pszPath);
-		return false;
-	}
-
-	ordered_json jsonPlayerClasses;
-
-	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
-	{
-		for (KeyValues* pSubKey = pKey->GetFirstSubKey(); pSubKey; pSubKey = pSubKey->GetNextKey())
-		{
-			ordered_json jsonClass;
-
-			if (pSubKey->FindKey("enabled"))
-				jsonClass["enabled"] = pSubKey->GetBool("enabled");
-			if (pSubKey->FindKey("team_default"))
-				jsonClass["team_default"] = pSubKey->GetBool("team_default");
-			if (pSubKey->FindKey("base"))
-				jsonClass["base"] = std::string(pSubKey->GetString("base"));
-			if (pSubKey->FindKey("health"))
-				jsonClass["health"] = pSubKey->GetInt("health");
-			if (pSubKey->FindKey("model"))
-				jsonClass["models"][0]["modelname"] = std::string(pSubKey->GetString("model"));
-			if (pSubKey->FindKey("color"))
-				jsonClass["models"][0]["color"] = std::string(pSubKey->GetString("color"));
-			if (pSubKey->FindKey("skin"))
-				jsonClass["models"][0]["skins"] = pSubKey->GetInt("skin");
-			if (pSubKey->FindKey("scale"))
-				// combating float imprecision when writing to .jsonc
-				jsonClass["scale"] = std::stod(pSubKey->GetString("scale"));
-			if (pSubKey->FindKey("speed"))
-				jsonClass["speed"] = std::stod(pSubKey->GetString("speed"));
-			if (pSubKey->FindKey("gravity"))
-				jsonClass["gravity"] = std::stod(pSubKey->GetString("gravity"));
-			if (pSubKey->FindKey("admin_flag"))
-				jsonClass["admin_flag"] = std::string(pSubKey->GetString("admin_flag"));
-			if (pSubKey->FindKey("health_regen_count"))
-				jsonClass["health_regen_count"] = pSubKey->GetInt("health_regen_count");
-			if (pSubKey->FindKey("health_regen_interval"))
-				jsonClass["health_regen_interval"] = std::stod(pSubKey->GetString("health_regen_interval"));
-
-			jsonPlayerClasses[pKey->GetName()][pSubKey->GetName()] = jsonClass;
-		}
-	}
-
-	const char *pszJsonPath = "addons/cs2fixes/configs/zr/playerclass.jsonc";
-	const char *pszKVConfigRenamePath = "addons/cs2fixes/configs/zr/playerclass_old.cfg";
-	char szPath[MAX_PATH];
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
-	std::ofstream jsoncFile(szPath);
-
-	if (!jsoncFile.is_open())
-	{
-		Warning("Failed to open %s\n", pszJsonPath);
-		jsoncFile.close();
-		return false;
-	}
-
-	jsoncFile << std::setfill('\t') << std::setw(1) << jsonPlayerClasses << std::endl;
-	jsoncFile.close();
-
-	char szKVRenamePath[MAX_PATH];
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszPath);
-	V_snprintf(szKVRenamePath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVConfigRenamePath);
-
-	std::rename(szPath, szKVRenamePath);
-
-	// remove old cfg example if it exists
-	const char *pszKVExamplePath = "addons/cs2fixes/configs/zr/playerclass.cfg.example";
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVExamplePath);
-	std::remove(szPath);
-
-	Message("Created JSON player class config at %s\n", pszJsonPath);
-	Message("Renamed %s to %s\n", pszPath, pszKVConfigRenamePath);
-	return true;
-}
-
 void CZRPlayerClassManager::LoadPlayerClass()
 {
 	Message("Loading PlayerClass...\n");
@@ -454,15 +367,8 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 	if (!jsoncFile.is_open())
 	{
-		Message("Failed to open %s\n", pszJsonPath);
-		bool bJsonCreated = CreateJsonConfigFromKeyValuesFile();
-		if (!bJsonCreated)
-		{
-			Panic("Playerclass config conversion failed. Playerclasses not loaded\n");
-			jsoncFile.close();
-			return;
-		}
-		jsoncFile.open(szPath);
+		Panic("Failed to open %s. Playerclasses not loaded\n", pszJsonPath);
+		return;
 	}
 
 	// Less code than constantly traversing the full class vectors, temporary lifetime anyways

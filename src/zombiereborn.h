@@ -199,7 +199,6 @@ public:
 		m_HumanClassMap.SetLessFunc(DefLessFunc(uint32));
 	};
 	void LoadPlayerClass();
-	bool CreateJsonConfigFromKeyValuesFile();
 	void ApplyBaseClassVisuals(ZRClass *pClass, CCSPlayerPawn *pPawn);
 	ZRHumanClass* GetHumanClass(const char *pszClassName);
 	void ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn *pPawn);
