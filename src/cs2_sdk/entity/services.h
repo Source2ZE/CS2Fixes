@@ -220,3 +220,11 @@ public:
 	SCHEMA_FIELD(ObserverMode_t, m_iObserverLastMode)
 	SCHEMA_FIELD(bool, m_bForcedObserverMode)
 };
+
+class CPlayer_CameraServices
+{
+public:
+    DECLARE_SCHEMA_CLASS(CPlayer_CameraServices)
+
+    SCHEMA_FIELD(CHandle<CBaseEntity>, m_hViewEntity)
+};

@@ -17,37 +17,38 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "cs_usercmd.pb.h"
 #include "networkbasetypes.pb.h"
 #include "usercmd.pb.h"
-#include "cs_usercmd.pb.h"
 
-#include "cdetour.h"
-#include "common.h"
-#include "module.h"
 #include "addresses.h"
+#include "cdetour.h"
 #include "commands.h"
-#include "detours.h"
+#include "common.h"
 #include "ctimer.h"
-#include "irecipientfilter.h"
+#include "customio.h"
+#include "detours.h"
+#include "entities.h"
+#include "entity/cbasemodelentity.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
-#include "entity/cbasemodelentity.h"
 #include "entity/ccsweaponbase.h"
 #include "entity/cenvhudhint.h"
-#include "entity/ctriggerpush.h"
 #include "entity/cgamerules.h"
+#include "entity/cpointviewcontrol.h"
 #include "entity/ctakedamageinfo.h"
+#include "entity/ctriggerpush.h"
 #include "entity/services.h"
-#include "playermanager.h"
-#include "igameevents.h"
 #include "gameconfig.h"
-#include "zombiereborn.h"
-#include "customio.h"
-#include "entities.h"
-#include "serversideclient.h"
-#include "networksystem/inetworkserializer.h"
+#include "igameevents.h"
+#include "irecipientfilter.h"
 #include "map_votes.h"
+#include "module.h"
+#include "networksystem/inetworkserializer.h"
+#include "playermanager.h"
+#include "serversideclient.h"
 #include "tier0/vprof.h"
+#include "zombiereborn.h"
 
 #include "tier0/memdbgon.h"
 
@@ -421,6 +422,13 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 			return CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator));
 		if (!V_strcasecmp(pInputName->String(), "Deactivate"))
 			return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator));
+	}
+	else if (const auto pViewControl = reinterpret_cast<CPointViewControl*>(pThis->m_pInstance)->AsPointViewControl())
+	{
+		if (!V_strcasecmp(pInputName->String(), "EnableCamera"))
+			return CPointViewControlHandler::OnEnable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator));
+		if (!V_strcasecmp(pInputName->String(), "DisableCamera"))
+			return CPointViewControlHandler::OnDisable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator));
 	}
 
 	VPROF_SCOPE_END();

@@ -25,6 +25,7 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/cgameplayerequip.h"
 #include "entity/clogiccase.h"
+#include "entity/cpointviewcontrol.h"
 
 // #define ENTITY_HANDLER_ASSERTION
 
@@ -33,8 +34,8 @@ class InputData_t
 public:
     CBaseEntity* pActivator;
     CBaseEntity* pCaller;
-    variant_t      value;
-    int            nOutputID;
+    variant_t    value;
+    int          nOutputID;
 };
 
 inline bool StripPlayer(CCSPlayerPawn* pPawn)
@@ -379,16 +380,186 @@ bool OnDeactivate(CGameUI* pEntity, CBaseEntity* pActivator)
 
 } // namespace CGameUIHandler
 
+namespace CPointViewControlHandler
+{
+struct ViewControl
+{
+    CUtlVector<CHandle<CCSPlayerPawn>> m_players;
+    std::string                        m_viewTarget;
+    std::string                        m_name;
+};
+
+std::unordered_map<uint32, ViewControl> s_repository;
+
+inline void UpdatePlayerState(const CHandle<CCSPlayerPawn>& handle, const CHandle<CBaseEntity>& target, bool frozen, bool control)
+{
+    const auto pPawn = handle.Get();
+
+    if (!pPawn)
+        return;
+
+    if (const auto pCamera = pPawn->m_pCameraServices())
+    {
+        pCamera->m_hViewEntity(target);
+    }
+
+    auto flags = pPawn->m_fFlags();
+
+    if (frozen)
+    {
+        flags |= FL_FROZEN;
+    }
+    else
+    {
+        flags &= ~FL_FROZEN;
+    }
+
+    if (control)
+    {
+        flags |= FL_ATCONTROLS;
+    }
+    else
+    {
+        flags &= ~FL_ATCONTROLS;
+    }
+
+    pPawn->m_fFlags(flags);
+}
+
+void OnCreated(CBaseEntity* pEntity)
+{
+    const auto pViewControl = pEntity->AsPointViewControl();
+    if (!pViewControl)
+        return;
+
+    if (!pViewControl->HasTargetCameraEntity())
+    {
+        Warning("PointViewControl %s has no target camera entity\n", pViewControl->GetName());
+        return;
+    }
+
+    ViewControl vc{};
+    vc.m_viewTarget                            = pViewControl->m_target().String();
+    vc.m_name                                  = pViewControl->GetName();
+    s_repository[pEntity->GetHandle().ToInt()] = vc;
+}
+bool OnEnable(CPointViewControl* pEntity, CBaseEntity* pActivator)
+{
+    if (!pActivator || !pActivator->IsPawn() || !pActivator->IsAlive())
+        return false;
+
+    const auto key = pEntity->GetHandle().ToInt();
+    const auto it  = s_repository.find(key);
+    if (it == s_repository.end())
+        return false;
+
+    const auto pPawn  = reinterpret_cast<CCSPlayerPawn*>(pActivator);
+    const auto handle = CHandle<CCSPlayerPawn>(pPawn->GetHandle());
+
+    for (auto& [vk, vc] : s_repository)
+    {
+        if (vc.m_players.FindAndRemove(handle))
+        {
+            Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pPawn->GetController()->GetPlayerName());
+            break;
+        }
+    }
+
+    return it->second.m_players.AddToTail(handle) >= 0;
+}
+bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator)
+{
+    if (!pActivator || !pActivator->IsPawn() || !pActivator->IsAlive())
+        return false;
+
+    const auto key = pEntity->GetHandle().ToInt();
+    const auto it  = s_repository.find(key);
+    if (it == s_repository.end())
+        return false;
+
+    const auto pPawn  = reinterpret_cast<CCSPlayerPawn*>(pActivator);
+    const auto handle = CHandle<CCSPlayerPawn>(pPawn->GetHandle());
+
+    UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, false);
+
+    return it->second.m_players.FindAndRemove(handle);
+}
+void RunThink(int tick)
+{
+    // validate
+    for (auto it = s_repository.begin(); it != s_repository.end();)
+    {
+        const auto entity = CHandle<CPointViewControl>(it->first).Get();
+        if (!entity)
+        {
+            FOR_EACH_VEC(it->second.m_players, i)
+            {
+                const auto& handle = it->second.m_players.Element(i);
+                UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, false);
+            }
+
+            it = s_repository.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    // think every 4 tick
+    if ((tick & 4) != 0)
+        return;
+
+    for (auto& [vk, vc] : s_repository)
+    {
+        const auto entity = CHandle<CPointViewControl>(vk).Get();
+        if (!entity)
+            continue;
+
+        const auto pTarget = entity->GetTargetCameraEntity();
+        if (!pTarget)
+        {
+            FOR_EACH_VEC(vc.m_players, i)
+            {
+                const auto& handle = vc.m_players.Element(i);
+                UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, false);
+            }
+            vc.m_players.Purge();
+            continue;
+        }
+
+        if (vc.m_players.Count() == 0)
+            continue;
+
+        FOR_EACH_VEC(vc.m_players, i)
+        {
+            const auto& handle = vc.m_players.Element(i);
+            UpdatePlayerState(handle, pTarget, entity->HasFrozen(), entity->HasControl());
+        }
+    }
+}
+} // namespace CPointViewControlHandler
+
 void EntityHandler_OnGameFramePre(bool simulate, int tick)
 {
     if (!simulate)
         return;
 
     CGameUIHandler::RunThink(tick);
+    CPointViewControlHandler::RunThink(tick);
 }
 
 void EntityHandler_OnGameFramePost(bool simulate, int tick)
 {
     if (!simulate)
         return;
+}
+
+void EntityHandler_OnRoundRestart()
+{
+}
+
+void EntityHandler_OnEntitySpawned(CBaseEntity* pEntity)
+{
+    CPointViewControlHandler::OnCreated(pEntity);
 }
