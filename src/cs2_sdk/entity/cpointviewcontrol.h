@@ -38,7 +38,8 @@ public:
 
     [[nodiscard]] CBaseEntity* GetTargetCameraEntity()
     {
-        return UTIL_FindEntityByName(nullptr, m_target().String());
+        const auto pTarget = UTIL_FindEntityByName(nullptr, m_target().String());
+        return pTarget && pTarget->m_pCollision() ? pTarget : nullptr;
     }
 
     [[nodiscard]] bool HasTargetCameraEntity()
