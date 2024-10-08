@@ -78,7 +78,7 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class CMsgSteamDatagramRelayAuthTicket_ExtraField final :
+class CMsgSteamDatagramRelayAuthTicket_ExtraField /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramRelayAuthTicket.ExtraField) */ {
  public:
   inline CMsgSteamDatagramRelayAuthTicket_ExtraField() : CMsgSteamDatagramRelayAuthTicket_ExtraField(nullptr) {}
@@ -293,7 +293,7 @@ class CMsgSteamDatagramRelayAuthTicket_ExtraField final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramRelayAuthTicket final :
+class CMsgSteamDatagramRelayAuthTicket /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramRelayAuthTicket) */ {
  public:
   inline CMsgSteamDatagramRelayAuthTicket() : CMsgSteamDatagramRelayAuthTicket(nullptr) {}
@@ -665,7 +665,7 @@ class CMsgSteamDatagramRelayAuthTicket final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramSignedRelayAuthTicket final :
+class CMsgSteamDatagramSignedRelayAuthTicket /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramSignedRelayAuthTicket) */ {
  public:
   inline CMsgSteamDatagramSignedRelayAuthTicket() : CMsgSteamDatagramSignedRelayAuthTicket(nullptr) {}
@@ -900,7 +900,7 @@ class CMsgSteamDatagramSignedRelayAuthTicket final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramCachedCredentialsForApp final :
+class CMsgSteamDatagramCachedCredentialsForApp /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramCachedCredentialsForApp) */ {
  public:
   inline CMsgSteamDatagramCachedCredentialsForApp() : CMsgSteamDatagramCachedCredentialsForApp(nullptr) {}
@@ -1111,7 +1111,7 @@ class CMsgSteamDatagramCachedCredentialsForApp final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramGameCoordinatorServerLogin final :
+class CMsgSteamDatagramGameCoordinatorServerLogin /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramGameCoordinatorServerLogin) */ {
  public:
   inline CMsgSteamDatagramGameCoordinatorServerLogin() : CMsgSteamDatagramGameCoordinatorServerLogin(nullptr) {}
@@ -1381,7 +1381,7 @@ class CMsgSteamDatagramGameCoordinatorServerLogin final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramSignedGameCoordinatorServerLogin final :
+class CMsgSteamDatagramSignedGameCoordinatorServerLogin /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramSignedGameCoordinatorServerLogin) */ {
  public:
   inline CMsgSteamDatagramSignedGameCoordinatorServerLogin() : CMsgSteamDatagramSignedGameCoordinatorServerLogin(nullptr) {}
@@ -1586,7 +1586,7 @@ class CMsgSteamDatagramSignedGameCoordinatorServerLogin final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramHostedServerAddressPlaintext final :
+class CMsgSteamDatagramHostedServerAddressPlaintext /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramHostedServerAddressPlaintext) */ {
  public:
   inline CMsgSteamDatagramHostedServerAddressPlaintext() : CMsgSteamDatagramHostedServerAddressPlaintext(nullptr) {}

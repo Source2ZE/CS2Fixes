@@ -162,7 +162,7 @@ inline bool ESteamNetworkingSocketsCipher_Parse(
 }
 // ===================================================================
 
-class CMsgSteamDatagramSessionCryptInfo final :
+class CMsgSteamDatagramSessionCryptInfo /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramSessionCryptInfo) */ {
  public:
   inline CMsgSteamDatagramSessionCryptInfo() : CMsgSteamDatagramSessionCryptInfo(nullptr) {}
@@ -421,7 +421,7 @@ class CMsgSteamDatagramSessionCryptInfo final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramSessionCryptInfoSigned final :
+class CMsgSteamDatagramSessionCryptInfoSigned /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramSessionCryptInfoSigned) */ {
  public:
   inline CMsgSteamDatagramSessionCryptInfoSigned() : CMsgSteamDatagramSessionCryptInfoSigned(nullptr) {}
@@ -606,7 +606,7 @@ class CMsgSteamDatagramSessionCryptInfoSigned final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramDiagnostic final :
+class CMsgSteamDatagramDiagnostic /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramDiagnostic) */ {
  public:
   inline CMsgSteamDatagramDiagnostic() : CMsgSteamDatagramDiagnostic(nullptr) {}
@@ -786,7 +786,7 @@ class CMsgSteamDatagramDiagnostic final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramLinkInstantaneousStats final :
+class CMsgSteamDatagramLinkInstantaneousStats /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramLinkInstantaneousStats) */ {
  public:
   inline CMsgSteamDatagramLinkInstantaneousStats() : CMsgSteamDatagramLinkInstantaneousStats(nullptr) {}
@@ -1051,7 +1051,7 @@ class CMsgSteamDatagramLinkInstantaneousStats final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramLinkLifetimeStats final :
+class CMsgSteamDatagramLinkLifetimeStats /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramLinkLifetimeStats) */ {
  public:
   inline CMsgSteamDatagramLinkLifetimeStats() : CMsgSteamDatagramLinkLifetimeStats(nullptr) {}
@@ -2339,7 +2339,7 @@ class CMsgSteamDatagramLinkLifetimeStats final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramConnectionQuality final :
+class CMsgSteamDatagramConnectionQuality /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramConnectionQuality) */ {
  public:
   inline CMsgSteamDatagramConnectionQuality() : CMsgSteamDatagramConnectionQuality(nullptr) {}
@@ -2524,7 +2524,7 @@ class CMsgSteamDatagramConnectionQuality final :
 };
 // -------------------------------------------------------------------
 
-class CMsgICECandidate final :
+class CMsgICECandidate /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgICECandidate) */ {
  public:
   inline CMsgICECandidate() : CMsgICECandidate(nullptr) {}
@@ -2689,7 +2689,7 @@ class CMsgICECandidate final :
 };
 // -------------------------------------------------------------------
 
-class CMsgICERendezvous_Auth final :
+class CMsgICERendezvous_Auth /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgICERendezvous.Auth) */ {
  public:
   inline CMsgICERendezvous_Auth() : CMsgICERendezvous_Auth(nullptr) {}
@@ -2854,7 +2854,7 @@ class CMsgICERendezvous_Auth final :
 };
 // -------------------------------------------------------------------
 
-class CMsgICERendezvous final :
+class CMsgICERendezvous /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgICERendezvous) */ {
  public:
   inline CMsgICERendezvous() : CMsgICERendezvous(nullptr) {}
@@ -3041,7 +3041,7 @@ class CMsgICERendezvous final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous_ConnectRequest final :
+class CMsgSteamNetworkingP2PRendezvous_ConnectRequest /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous.ConnectRequest) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous_ConnectRequest() : CMsgSteamNetworkingP2PRendezvous_ConnectRequest(nullptr) {}
@@ -3276,7 +3276,7 @@ class CMsgSteamNetworkingP2PRendezvous_ConnectRequest final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous_ConnectOK final :
+class CMsgSteamNetworkingP2PRendezvous_ConnectOK /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous.ConnectOK) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous_ConnectOK() : CMsgSteamNetworkingP2PRendezvous_ConnectOK(nullptr) {}
@@ -3461,7 +3461,7 @@ class CMsgSteamNetworkingP2PRendezvous_ConnectOK final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous_ConnectionClosed final :
+class CMsgSteamNetworkingP2PRendezvous_ConnectionClosed /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous.ConnectionClosed) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous_ConnectionClosed() : CMsgSteamNetworkingP2PRendezvous_ConnectionClosed(nullptr) {}
@@ -3641,7 +3641,7 @@ class CMsgSteamNetworkingP2PRendezvous_ConnectionClosed final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous_ReliableMessage final :
+class CMsgSteamNetworkingP2PRendezvous_ReliableMessage /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous.ReliableMessage) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous_ReliableMessage() : CMsgSteamNetworkingP2PRendezvous_ReliableMessage(nullptr) {}
@@ -3806,7 +3806,7 @@ class CMsgSteamNetworkingP2PRendezvous_ReliableMessage final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous_ApplicationMessage final :
+class CMsgSteamNetworkingP2PRendezvous_ApplicationMessage /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous.ApplicationMessage) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous_ApplicationMessage() : CMsgSteamNetworkingP2PRendezvous_ApplicationMessage(nullptr) {}
@@ -4016,7 +4016,7 @@ class CMsgSteamNetworkingP2PRendezvous_ApplicationMessage final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous final :
+class CMsgSteamNetworkingP2PRendezvous /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous() : CMsgSteamNetworkingP2PRendezvous(nullptr) {}
@@ -4437,7 +4437,7 @@ class CMsgSteamNetworkingP2PRendezvous final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingICESessionSummary final :
+class CMsgSteamNetworkingICESessionSummary /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingICESessionSummary) */ {
  public:
   inline CMsgSteamNetworkingICESessionSummary() : CMsgSteamNetworkingICESessionSummary(nullptr) {}

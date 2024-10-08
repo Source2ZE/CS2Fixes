@@ -87,7 +87,7 @@ inline bool ECsgoGameEvents_Parse(
 }
 // ===================================================================
 
-class CMsgTEPlayerAnimEvent :
+class CMsgTEPlayerAnimEvent /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEPlayerAnimEvent) */ {
  public:
   inline CMsgTEPlayerAnimEvent() : CMsgTEPlayerAnimEvent(nullptr) {}
@@ -277,7 +277,7 @@ class CMsgTEPlayerAnimEvent :
 };
 // -------------------------------------------------------------------
 
-class CMsgTERadioIcon :
+class CMsgTERadioIcon /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTERadioIcon) */ {
  public:
   inline CMsgTERadioIcon() : CMsgTERadioIcon(nullptr) {}
@@ -437,7 +437,7 @@ class CMsgTERadioIcon :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEFireBullets :
+class CMsgTEFireBullets /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEFireBullets) */ {
  public:
   inline CMsgTEFireBullets() : CMsgTEFireBullets(nullptr) {}

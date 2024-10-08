@@ -419,7 +419,7 @@ inline bool ESteamLearnInferenceMetadataResult_Parse(
 }
 // ===================================================================
 
-class CMsgSteamLearnDataSourceDescObject final :
+class CMsgSteamLearnDataSourceDescObject /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearnDataSourceDescObject) */ {
  public:
   inline CMsgSteamLearnDataSourceDescObject() : CMsgSteamLearnDataSourceDescObject(nullptr) {}
@@ -583,7 +583,7 @@ class CMsgSteamLearnDataSourceDescObject final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearnDataSourceDescElement final :
+class CMsgSteamLearnDataSourceDescElement /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearnDataSourceDescElement) */ {
  public:
   inline CMsgSteamLearnDataSourceDescElement() : CMsgSteamLearnDataSourceDescElement(nullptr) {}
@@ -798,7 +798,7 @@ class CMsgSteamLearnDataSourceDescElement final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearnDataSource final :
+class CMsgSteamLearnDataSource /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearnDataSource) */ {
  public:
   inline CMsgSteamLearnDataSource() : CMsgSteamLearnDataSource(nullptr) {}
@@ -1063,7 +1063,7 @@ class CMsgSteamLearnDataSource final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearnDataObject final :
+class CMsgSteamLearnDataObject /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearnDataObject) */ {
  public:
   inline CMsgSteamLearnDataObject() : CMsgSteamLearnDataObject(nullptr) {}
@@ -1227,7 +1227,7 @@ class CMsgSteamLearnDataObject final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearnDataElement final :
+class CMsgSteamLearnDataElement /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearnDataElement) */ {
  public:
   inline CMsgSteamLearnDataElement() : CMsgSteamLearnDataElement(nullptr) {}
@@ -1510,7 +1510,7 @@ class CMsgSteamLearnDataElement final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearnData final :
+class CMsgSteamLearnData /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearnData) */ {
  public:
   inline CMsgSteamLearnData() : CMsgSteamLearnData(nullptr) {}
@@ -1714,7 +1714,7 @@ class CMsgSteamLearnData final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearnDataList final :
+class CMsgSteamLearnDataList /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearnDataList) */ {
  public:
   inline CMsgSteamLearnDataList() : CMsgSteamLearnDataList(nullptr) {}
@@ -1878,7 +1878,7 @@ class CMsgSteamLearnDataList final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_AccessData final :
+class CMsgSteamLearn_AccessData /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_AccessData) */ {
  public:
   inline CMsgSteamLearn_AccessData() : CMsgSteamLearn_AccessData(nullptr) {}
@@ -2068,7 +2068,7 @@ class CMsgSteamLearn_AccessData final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_RegisterDataSource_Request final :
+class CMsgSteamLearn_RegisterDataSource_Request /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_RegisterDataSource_Request) */ {
  public:
   inline CMsgSteamLearn_RegisterDataSource_Request() : CMsgSteamLearn_RegisterDataSource_Request(nullptr) {}
@@ -2273,7 +2273,7 @@ class CMsgSteamLearn_RegisterDataSource_Request final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_RegisterDataSource_Response final :
+class CMsgSteamLearn_RegisterDataSource_Response /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_RegisterDataSource_Response) */ {
  public:
   inline CMsgSteamLearn_RegisterDataSource_Response() : CMsgSteamLearn_RegisterDataSource_Response(nullptr) {}
@@ -2453,7 +2453,7 @@ class CMsgSteamLearn_RegisterDataSource_Response final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_CacheData_Request final :
+class CMsgSteamLearn_CacheData_Request /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_CacheData_Request) */ {
  public:
   inline CMsgSteamLearn_CacheData_Request() : CMsgSteamLearn_CacheData_Request(nullptr) {}
@@ -2658,7 +2658,7 @@ class CMsgSteamLearn_CacheData_Request final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_CacheData_Response final :
+class CMsgSteamLearn_CacheData_Response /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_CacheData_Response) */ {
  public:
   inline CMsgSteamLearn_CacheData_Response() : CMsgSteamLearn_CacheData_Response(nullptr) {}
@@ -2818,7 +2818,7 @@ class CMsgSteamLearn_CacheData_Response final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_SnapshotProject_Request final :
+class CMsgSteamLearn_SnapshotProject_Request /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_SnapshotProject_Request) */ {
  public:
   inline CMsgSteamLearn_SnapshotProject_Request() : CMsgSteamLearn_SnapshotProject_Request(nullptr) {}
@@ -3092,7 +3092,7 @@ class CMsgSteamLearn_SnapshotProject_Request final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_SnapshotProject_Response final :
+class CMsgSteamLearn_SnapshotProject_Response /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_SnapshotProject_Response) */ {
  public:
   inline CMsgSteamLearn_SnapshotProject_Response() : CMsgSteamLearn_SnapshotProject_Response(nullptr) {}
@@ -3252,7 +3252,7 @@ class CMsgSteamLearn_SnapshotProject_Response final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_BatchOperation_Request final :
+class CMsgSteamLearn_BatchOperation_Request /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_BatchOperation_Request) */ {
  public:
   inline CMsgSteamLearn_BatchOperation_Request() : CMsgSteamLearn_BatchOperation_Request(nullptr) {}
@@ -3436,7 +3436,7 @@ class CMsgSteamLearn_BatchOperation_Request final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_BatchOperation_Response final :
+class CMsgSteamLearn_BatchOperation_Response /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_BatchOperation_Response) */ {
  public:
   inline CMsgSteamLearn_BatchOperation_Response() : CMsgSteamLearn_BatchOperation_Response(nullptr) {}
@@ -3620,7 +3620,7 @@ class CMsgSteamLearn_BatchOperation_Response final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearnHMACKeys_CacheDataKeys final :
+class CMsgSteamLearnHMACKeys_CacheDataKeys /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearnHMACKeys.CacheDataKeys) */ {
  public:
   inline CMsgSteamLearnHMACKeys_CacheDataKeys() : CMsgSteamLearnHMACKeys_CacheDataKeys(nullptr) {}
@@ -3815,7 +3815,7 @@ class CMsgSteamLearnHMACKeys_CacheDataKeys final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearnHMACKeys_SnapshotProjectKeys final :
+class CMsgSteamLearnHMACKeys_SnapshotProjectKeys /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearnHMACKeys.SnapshotProjectKeys) */ {
  public:
   inline CMsgSteamLearnHMACKeys_SnapshotProjectKeys() : CMsgSteamLearnHMACKeys_SnapshotProjectKeys(nullptr) {}
@@ -4010,7 +4010,7 @@ class CMsgSteamLearnHMACKeys_SnapshotProjectKeys final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearnHMACKeys final :
+class CMsgSteamLearnHMACKeys /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearnHMACKeys) */ {
  public:
   inline CMsgSteamLearnHMACKeys() : CMsgSteamLearnHMACKeys(nullptr) {}
@@ -4218,7 +4218,7 @@ class CMsgSteamLearnHMACKeys final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_GetHMACKeys_Request final :
+class CMsgSteamLearn_GetHMACKeys_Request /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_GetHMACKeys_Request) */ {
  public:
   inline CMsgSteamLearn_GetHMACKeys_Request() : CMsgSteamLearn_GetHMACKeys_Request(nullptr) {}
@@ -4378,7 +4378,7 @@ class CMsgSteamLearn_GetHMACKeys_Request final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_GetHMACKeys_Response final :
+class CMsgSteamLearn_GetHMACKeys_Response /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_GetHMACKeys_Response) */ {
  public:
   inline CMsgSteamLearn_GetHMACKeys_Response() : CMsgSteamLearn_GetHMACKeys_Response(nullptr) {}
@@ -4558,7 +4558,7 @@ class CMsgSteamLearn_GetHMACKeys_Response final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_Inference_Request final :
+class CMsgSteamLearn_Inference_Request /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_Inference_Request) */ {
  public:
   inline CMsgSteamLearn_Inference_Request() : CMsgSteamLearn_Inference_Request(nullptr) {}
@@ -4832,7 +4832,7 @@ class CMsgSteamLearn_Inference_Request final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Request final :
+class CMsgSteamLearn_InferenceMetadata_Request /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Request) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Request() : CMsgSteamLearn_InferenceMetadata_Request(nullptr) {}
@@ -5062,7 +5062,7 @@ class CMsgSteamLearn_InferenceMetadata_Request final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadataBackend_Request final :
+class CMsgSteamLearn_InferenceMetadataBackend_Request /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadataBackend_Request) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadataBackend_Request() : CMsgSteamLearn_InferenceMetadataBackend_Request(nullptr) {}
@@ -5237,7 +5237,7 @@ class CMsgSteamLearn_InferenceMetadataBackend_Request final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Response_RowRange final :
+class CMsgSteamLearn_InferenceMetadata_Response_RowRange /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Response.RowRange) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Response_RowRange() : CMsgSteamLearn_InferenceMetadata_Response_RowRange(nullptr) {}
@@ -5412,7 +5412,7 @@ class CMsgSteamLearn_InferenceMetadata_Response_RowRange final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Response_Range final :
+class CMsgSteamLearn_InferenceMetadata_Response_Range /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Response.Range) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Response_Range() : CMsgSteamLearn_InferenceMetadata_Response_Range(nullptr) {}
@@ -5607,7 +5607,7 @@ class CMsgSteamLearn_InferenceMetadata_Response_Range final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Response_StdDev final :
+class CMsgSteamLearn_InferenceMetadata_Response_StdDev /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Response.StdDev) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Response_StdDev() : CMsgSteamLearn_InferenceMetadata_Response_StdDev(nullptr) {}
@@ -5802,7 +5802,7 @@ class CMsgSteamLearn_InferenceMetadata_Response_StdDev final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Response_CompactTable_Entry final :
+class CMsgSteamLearn_InferenceMetadata_Response_CompactTable_Entry /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Response.CompactTable.Entry) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Response_CompactTable_Entry() : CMsgSteamLearn_InferenceMetadata_Response_CompactTable_Entry(nullptr) {}
@@ -5992,7 +5992,7 @@ class CMsgSteamLearn_InferenceMetadata_Response_CompactTable_Entry final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Response_CompactTable_MapValuesEntry final :
+class CMsgSteamLearn_InferenceMetadata_Response_CompactTable_MapValuesEntry /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Response.CompactTable.MapValuesEntry) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Response_CompactTable_MapValuesEntry() : CMsgSteamLearn_InferenceMetadata_Response_CompactTable_MapValuesEntry(nullptr) {}
@@ -6172,7 +6172,7 @@ class CMsgSteamLearn_InferenceMetadata_Response_CompactTable_MapValuesEntry fina
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Response_CompactTable_MapMappingsEntry final :
+class CMsgSteamLearn_InferenceMetadata_Response_CompactTable_MapMappingsEntry /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Response.CompactTable.MapMappingsEntry) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Response_CompactTable_MapMappingsEntry() : CMsgSteamLearn_InferenceMetadata_Response_CompactTable_MapMappingsEntry(nullptr) {}
@@ -6352,7 +6352,7 @@ class CMsgSteamLearn_InferenceMetadata_Response_CompactTable_MapMappingsEntry fi
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Response_CompactTable final :
+class CMsgSteamLearn_InferenceMetadata_Response_CompactTable /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Response.CompactTable) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Response_CompactTable() : CMsgSteamLearn_InferenceMetadata_Response_CompactTable(nullptr) {}
@@ -6561,7 +6561,7 @@ class CMsgSteamLearn_InferenceMetadata_Response_CompactTable final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Response_KMeans_Cluster final :
+class CMsgSteamLearn_InferenceMetadata_Response_KMeans_Cluster /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Response.KMeans.Cluster) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Response_KMeans_Cluster() : CMsgSteamLearn_InferenceMetadata_Response_KMeans_Cluster(nullptr) {}
@@ -6796,7 +6796,7 @@ class CMsgSteamLearn_InferenceMetadata_Response_KMeans_Cluster final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Response_KMeans final :
+class CMsgSteamLearn_InferenceMetadata_Response_KMeans /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Response.KMeans) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Response_KMeans() : CMsgSteamLearn_InferenceMetadata_Response_KMeans(nullptr) {}
@@ -6983,7 +6983,7 @@ class CMsgSteamLearn_InferenceMetadata_Response_KMeans final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Response_SnapshotHistogram final :
+class CMsgSteamLearn_InferenceMetadata_Response_SnapshotHistogram /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Response.SnapshotHistogram) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Response_SnapshotHistogram() : CMsgSteamLearn_InferenceMetadata_Response_SnapshotHistogram(nullptr) {}
@@ -7197,7 +7197,7 @@ class CMsgSteamLearn_InferenceMetadata_Response_SnapshotHistogram final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceMetadata_Response final :
+class CMsgSteamLearn_InferenceMetadata_Response /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceMetadata_Response) */ {
  public:
   inline CMsgSteamLearn_InferenceMetadata_Response() : CMsgSteamLearn_InferenceMetadata_Response(nullptr) {}
@@ -7484,7 +7484,7 @@ class CMsgSteamLearn_InferenceMetadata_Response final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceBackend_Response_BinaryCrossEntropyOutput final :
+class CMsgSteamLearn_InferenceBackend_Response_BinaryCrossEntropyOutput /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceBackend_Response.BinaryCrossEntropyOutput) */ {
  public:
   inline CMsgSteamLearn_InferenceBackend_Response_BinaryCrossEntropyOutput() : CMsgSteamLearn_InferenceBackend_Response_BinaryCrossEntropyOutput(nullptr) {}
@@ -7644,7 +7644,7 @@ class CMsgSteamLearn_InferenceBackend_Response_BinaryCrossEntropyOutput final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceBackend_Response_MutliBinaryCrossEntropyOutput final :
+class CMsgSteamLearn_InferenceBackend_Response_MutliBinaryCrossEntropyOutput /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceBackend_Response.MutliBinaryCrossEntropyOutput) */ {
  public:
   inline CMsgSteamLearn_InferenceBackend_Response_MutliBinaryCrossEntropyOutput() : CMsgSteamLearn_InferenceBackend_Response_MutliBinaryCrossEntropyOutput(nullptr) {}
@@ -7836,7 +7836,7 @@ class CMsgSteamLearn_InferenceBackend_Response_MutliBinaryCrossEntropyOutput fin
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceBackend_Response_CategoricalCrossEntropyOutput final :
+class CMsgSteamLearn_InferenceBackend_Response_CategoricalCrossEntropyOutput /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceBackend_Response.CategoricalCrossEntropyOutput) */ {
  public:
   inline CMsgSteamLearn_InferenceBackend_Response_CategoricalCrossEntropyOutput() : CMsgSteamLearn_InferenceBackend_Response_CategoricalCrossEntropyOutput(nullptr) {}
@@ -8028,7 +8028,7 @@ class CMsgSteamLearn_InferenceBackend_Response_CategoricalCrossEntropyOutput fin
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceBackend_Response_Output final :
+class CMsgSteamLearn_InferenceBackend_Response_Output /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceBackend_Response.Output) */ {
  public:
   inline CMsgSteamLearn_InferenceBackend_Response_Output() : CMsgSteamLearn_InferenceBackend_Response_Output(nullptr) {}
@@ -8253,7 +8253,7 @@ class CMsgSteamLearn_InferenceBackend_Response_Output final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_InferenceBackend_Response final :
+class CMsgSteamLearn_InferenceBackend_Response /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_InferenceBackend_Response) */ {
  public:
   inline CMsgSteamLearn_InferenceBackend_Response() : CMsgSteamLearn_InferenceBackend_Response(nullptr) {}
@@ -8422,7 +8422,7 @@ class CMsgSteamLearn_InferenceBackend_Response final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamLearn_Inference_Response final :
+class CMsgSteamLearn_Inference_Response /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamLearn_Inference_Response) */ {
  public:
   inline CMsgSteamLearn_Inference_Response() : CMsgSteamLearn_Inference_Response(nullptr) {}
