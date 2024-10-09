@@ -24,6 +24,7 @@ class CGamePlayerEquip;
 class CBaseEntity;
 class CGameUI;
 class CPointViewControl;
+class CCSPlayerPawn;
 
 namespace CGamePlayerEquipHandler
 {
@@ -45,6 +46,7 @@ void OnCreated(CBaseEntity* pEntity);
 bool OnEnable(CPointViewControl* pEntity, CBaseEntity* pActivator);
 bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator);
 void RunThink(int tick);
+bool IsViewControl(CCSPlayerPawn*);
 } // namespace CPointViewControlHandler
 
 void EntityHandler_OnGameFramePre(bool simulate, int tick);

@@ -455,6 +455,12 @@
 				"windows"		"128"
 				"linux"			"129"
 			}
+
+			"CBaseEntity::GetEyePosition"
+			{
+				"windows"		"180" // 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B F2 48 8B D9 E8 ? ? ? ? 4C 8B 03
+				"linux"			"179"
+			}
 		}
 		"Patches"
 		{

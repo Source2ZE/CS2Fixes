@@ -583,6 +583,19 @@ void RunThink(int tick)
         }
     }
 }
+bool IsViewControl(CCSPlayerPawn* pPawn)
+{
+    const auto handle = pPawn->GetHandle().ToInt();
+    for (const auto& [vk, vc] : s_repository)
+    {
+        FOR_EACH_VEC(vc.m_players, i)
+        {
+            if (vc.m_players.Element(i).ToInt() == handle)
+                return true;
+        }
+    }
+    return false;
+}
 void Shutdown()
 {
     for (auto& [vk, vc] : s_repository)
