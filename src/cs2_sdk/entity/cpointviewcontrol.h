@@ -31,11 +31,10 @@ class CPointViewControl : public CBaseEntity
 
     // hello, don't port my garbage code to cssharp :)
 
-    static constexpr int SF_POINT_VIEWCONTROL_FROZEN  = 1 << 5;
-    static constexpr int SF_POINT_VIEWCONTROL_CONTROL = 1 << 6;
+    static constexpr int SF_POINT_VIEWCONTROL_FROZEN = 1 << 5;
+    static constexpr int SF_POINT_VIEWCONTROL_FOV    = 1 << 6;
 
 public:
-
     [[nodiscard]] CBaseEntity* GetTargetCameraEntity()
     {
         const auto pTarget = UTIL_FindEntityByName(nullptr, m_target().String());
@@ -52,8 +51,13 @@ public:
         return !!(m_spawnflags() & SF_POINT_VIEWCONTROL_FROZEN);
     }
 
-    [[nodiscard]] bool HasControl()
+    [[nodiscard]] bool HasFOV()
     {
-        return !!(m_spawnflags() & SF_POINT_VIEWCONTROL_CONTROL);
+        return !!(m_spawnflags() & SF_POINT_VIEWCONTROL_FOV);
+    }
+
+    [[nodiscard]] uint GetFOV()
+    {
+        return clamp(static_cast<uint>(m_iHealth()), 16, 179);
     }
 };

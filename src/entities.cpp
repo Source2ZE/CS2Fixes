@@ -24,10 +24,13 @@
 #include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cgameplayerequip.h"
+#include "entity/cgamerules.h"
 #include "entity/clogiccase.h"
 #include "entity/cpointviewcontrol.h"
 
 // #define ENTITY_HANDLER_ASSERTION
+
+extern CCSGameRules* g_pGameRules;
 
 class InputData_t
 {
@@ -389,21 +392,44 @@ struct ViewControl
     std::string                        m_name;
 };
 
-std::unordered_map<uint32, ViewControl> s_repository;
+static std::unordered_map<uint32, ViewControl> s_repository;
+static constexpr uint                          INVALID_FOV = 0xFFFFFFFF;
+static constexpr uint                          RESET_FOV   = 0xFFFFFFFE;
 
-inline void UpdatePlayerState(const CHandle<CCSPlayerPawn>& handle, const CHandle<CBaseEntity>& target, bool frozen, bool control)
+inline void UpdatePlayerState(const CHandle<CCSPlayerPawn>& handle, const CHandle<CBaseEntity>& target, bool frozen, uint fov = INVALID_FOV)
 {
     const auto pPawn = handle.Get();
 
     if (!pPawn)
         return;
 
-    if (const auto pCamera = pPawn->m_pCameraServices())
+    static CHandle<CBaseEntity> s_InvalidHandle{};
+
+    if (const auto pCamera = pPawn->GetCameraService())
     {
         pCamera->m_hViewEntity(target);
+        pCamera->m_hZoomOwner(s_InvalidHandle);
+
+        if (fov != INVALID_FOV)
+        {
+            if (const auto pController = pPawn->GetController())
+            {
+                if (fov == RESET_FOV)
+                {
+                    pCamera->m_iFOV(pController->m_iDesiredFOV());
+                }
+                else
+                {
+                    pCamera->m_iFOV(fov);
+                }
+            }
+        }
     }
 
     auto flags = pPawn->m_fFlags();
+
+    if (g_pGameRules->m_bFreezePeriod())
+        frozen = true;
 
     if (frozen)
     {
@@ -412,15 +438,6 @@ inline void UpdatePlayerState(const CHandle<CCSPlayerPawn>& handle, const CHandl
     else
     {
         flags &= ~FL_FROZEN;
-    }
-
-    if (control)
-    {
-        flags |= FL_ATCONTROLS;
-    }
-    else
-    {
-        flags &= ~FL_ATCONTROLS;
     }
 
     pPawn->m_fFlags(flags);
@@ -458,8 +475,16 @@ bool OnEnable(CPointViewControl* pEntity, CBaseEntity* pActivator)
 
     for (auto& [vk, vc] : s_repository)
     {
-        if (vc.m_players.FindAndRemove(handle))
+        if (const auto index = vc.m_players.Find(handle); index > -1)
         {
+            if (vk == static_cast<uint>(key))
+            {
+                Warning("PointViewControl %s was enabled twice in a row! player: %s\n", vc.m_name.c_str(), pPawn->GetController()->GetPlayerName());
+                return false;
+            }
+
+            vc.m_players.Remove(index);
+            UpdatePlayerState(pPawn, CHandle<CBaseEntity>(), false, RESET_FOV);
             Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pPawn->GetController()->GetPlayerName());
             break;
         }
@@ -480,7 +505,7 @@ bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator)
     const auto pPawn  = reinterpret_cast<CCSPlayerPawn*>(pActivator);
     const auto handle = CHandle<CCSPlayerPawn>(pPawn->GetHandle());
 
-    UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, false);
+    UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, RESET_FOV);
 
     return it->second.m_players.FindAndRemove(handle);
 }
@@ -495,7 +520,7 @@ void RunThink(int tick)
             FOR_EACH_VEC(it->second.m_players, i)
             {
                 const auto& handle = it->second.m_players.Element(i);
-                UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, false);
+                UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, RESET_FOV);
             }
 
             it = s_repository.erase(it);
@@ -522,7 +547,7 @@ void RunThink(int tick)
             FOR_EACH_VEC(vc.m_players, i)
             {
                 const auto& handle = vc.m_players.Element(i);
-                UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, false);
+                UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, RESET_FOV);
             }
             vc.m_players.Purge();
             continue;
@@ -534,7 +559,7 @@ void RunThink(int tick)
         FOR_EACH_VEC(vc.m_players, i)
         {
             const auto& handle = vc.m_players.Element(i);
-            UpdatePlayerState(handle, pTarget, entity->HasFrozen(), entity->HasControl());
+            UpdatePlayerState(handle, pTarget, entity->HasFrozen(), entity->HasFOV() ? entity->GetFOV() : INVALID_FOV);
         }
     }
 }

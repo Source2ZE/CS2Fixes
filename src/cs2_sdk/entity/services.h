@@ -228,3 +228,15 @@ public:
 
     SCHEMA_FIELD(CHandle<CBaseEntity>, m_hViewEntity)
 };
+
+class CCSPlayerBase_CameraServices : public CPlayer_CameraServices
+{
+public:
+    DECLARE_SCHEMA_CLASS(CCSPlayerBase_CameraServices)
+
+    SCHEMA_FIELD(CHandle<CBaseEntity>, m_hZoomOwner)
+    SCHEMA_FIELD(uint, m_iFOV)
+};
+
+class CCSPlayer_CameraServices : public CCSPlayerBase_CameraServices
+{};
