@@ -22,6 +22,7 @@
 #include "ctimer.h"
 #include "entity.h"
 #include "entity/cbaseplayercontroller.h"
+#include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cgameplayerequip.h"
 #include "entity/cgamerules.h"
@@ -395,20 +396,14 @@ struct ViewControl
 static std::unordered_map<uint32, ViewControl> s_repository;
 static constexpr uint                          INVALID_FOV = 0xFFFFFFFF;
 static constexpr uint                          RESET_FOV   = 0xFFFFFFFE;
+static CHandle<CBaseEntity>                    INVALID_HANDLE(0xFFFFFFFF);
 
-inline void UpdatePlayerState(const CHandle<CCSPlayerPawn>& handle, const CHandle<CBaseEntity>& target, bool frozen, uint fov = INVALID_FOV)
+inline void UpdatePlayerState(CCSPlayerPawn* pPawn, const CHandle<CBaseEntity>& target, bool frozen, uint fov = INVALID_FOV, bool disarm = false)
 {
-    const auto pPawn = handle.Get();
-
-    if (!pPawn)
-        return;
-
-    static CHandle<CBaseEntity> s_InvalidHandle{};
-
     if (const auto pCamera = pPawn->GetCameraService())
     {
         pCamera->m_hViewEntity(target);
-        pCamera->m_hZoomOwner(s_InvalidHandle);
+        pCamera->m_hZoomOwner(INVALID_HANDLE);
 
         if (fov != INVALID_FOV)
         {
@@ -423,6 +418,14 @@ inline void UpdatePlayerState(const CHandle<CCSPlayerPawn>& handle, const CHandl
                     pCamera->m_iFOV(fov);
                 }
             }
+        }
+    }
+
+    if (disarm)
+    {
+        if (const auto pWeapon = pPawn->m_pWeaponServices()->m_hActiveWeapon().Get())
+        {
+            pWeapon->Disarm();
         }
     }
 
@@ -484,7 +487,7 @@ bool OnEnable(CPointViewControl* pEntity, CBaseEntity* pActivator)
             }
 
             vc.m_players.Remove(index);
-            UpdatePlayerState(pPawn, CHandle<CBaseEntity>(), false, RESET_FOV);
+            UpdatePlayerState(pPawn, INVALID_HANDLE, false, RESET_FOV);
             Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pPawn->GetController()->GetPlayerName());
             break;
         }
@@ -505,7 +508,7 @@ bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator)
     const auto pPawn  = reinterpret_cast<CCSPlayerPawn*>(pActivator);
     const auto handle = CHandle<CCSPlayerPawn>(pPawn->GetHandle());
 
-    UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, RESET_FOV);
+    UpdatePlayerState(pPawn, INVALID_HANDLE, false, RESET_FOV);
 
     return it->second.m_players.FindAndRemove(handle);
 }
@@ -520,7 +523,9 @@ void RunThink(int tick)
             FOR_EACH_VEC(it->second.m_players, i)
             {
                 const auto& handle = it->second.m_players.Element(i);
-                UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, RESET_FOV);
+
+                if (const auto player = handle.Get())
+                    UpdatePlayerState(player, INVALID_HANDLE, false, RESET_FOV);
             }
 
             it = s_repository.erase(it);
@@ -547,7 +552,9 @@ void RunThink(int tick)
             FOR_EACH_VEC(vc.m_players, i)
             {
                 const auto& handle = vc.m_players.Element(i);
-                UpdatePlayerState(handle, CHandle<CBaseEntity>(), false, RESET_FOV);
+
+                if (const auto player = handle.Get())
+                    UpdatePlayerState(player, INVALID_HANDLE, false, RESET_FOV);
             }
             vc.m_players.Purge();
             continue;
@@ -559,7 +566,20 @@ void RunThink(int tick)
         FOR_EACH_VEC(vc.m_players, i)
         {
             const auto& handle = vc.m_players.Element(i);
-            UpdatePlayerState(handle, pTarget, entity->HasFrozen(), entity->HasFOV() ? entity->GetFOV() : INVALID_FOV);
+            const auto  player = handle.Get();
+            if (!player)
+            {
+                vc.m_players.Remove(i--);
+                continue;
+            }
+            if (!player->IsAlive())
+            {
+                UpdatePlayerState(player, INVALID_HANDLE, false, RESET_FOV);
+                vc.m_players.Remove(i--);
+                continue;
+            }
+
+            UpdatePlayerState(player, pTarget, entity->HasFrozen(), entity->HasFOV() ? entity->GetFOV() : INVALID_FOV, entity->HasDisarm());
         }
     }
 }

@@ -33,6 +33,7 @@ class CPointViewControl : public CBaseEntity
 
     static constexpr int SF_POINT_VIEWCONTROL_FROZEN = 1 << 5;
     static constexpr int SF_POINT_VIEWCONTROL_FOV    = 1 << 6;
+    static constexpr int SF_POINT_VIEWCONTROL_DISARM = 1 << 7;
 
 public:
     [[nodiscard]] CBaseEntity* GetTargetCameraEntity()
@@ -54,6 +55,11 @@ public:
     [[nodiscard]] bool HasFOV()
     {
         return !!(m_spawnflags() & SF_POINT_VIEWCONTROL_FOV);
+    }
+
+    [[nodiscard]] bool HasDisarm()
+    {
+        return !!(m_spawnflags() & SF_POINT_VIEWCONTROL_DISARM);
     }
 
     [[nodiscard]] uint GetFOV()
