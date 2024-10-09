@@ -583,6 +583,21 @@ void RunThink(int tick)
         }
     }
 }
+void Shutdown()
+{
+    for (auto& [vk, vc] : s_repository)
+    {
+        FOR_EACH_VEC(vc.m_players, i)
+        {
+            const auto& handle = vc.m_players.Element(i);
+
+            if (const auto player = handle.Get())
+                UpdatePlayerState(player, INVALID_HANDLE, false, RESET_FOV);
+        }
+        vc.m_players.Purge();
+    }
+    s_repository.clear();
+}
 } // namespace CPointViewControlHandler
 
 void EntityHandler_OnGameFramePre(bool simulate, int tick)
@@ -602,6 +617,7 @@ void EntityHandler_OnGameFramePost(bool simulate, int tick)
 
 void EntityHandler_OnRoundRestart()
 {
+    CPointViewControlHandler::Shutdown();
 }
 
 void EntityHandler_OnEntitySpawned(CBaseEntity* pEntity)
