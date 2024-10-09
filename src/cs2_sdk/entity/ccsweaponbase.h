@@ -97,8 +97,8 @@ public:
 
 	void Disarm()
 	{
-		m_nNextPrimaryAttackTick(max(m_nNextPrimaryAttackTick(), gpGlobals->tickcount + 24));
-		m_nNextSecondaryAttackTick(max(m_nNextSecondaryAttackTick(), gpGlobals->tickcount + 24));
+		m_nNextPrimaryAttackTick(MAX(m_nNextPrimaryAttackTick(), gpGlobals->tickcount + 24));
+		m_nNextSecondaryAttackTick(MAX(m_nNextSecondaryAttackTick(), gpGlobals->tickcount + 24));
 	}
 };
 
