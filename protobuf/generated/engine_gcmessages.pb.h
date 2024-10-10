@@ -54,7 +54,7 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class CEngineGotvSyncPacket :
+class CEngineGotvSyncPacket /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CEngineGotvSyncPacket) */ {
  public:
   inline CEngineGotvSyncPacket() : CEngineGotvSyncPacket(nullptr) {}

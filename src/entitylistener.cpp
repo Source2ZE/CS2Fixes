@@ -19,11 +19,12 @@
 
 #include "entitylistener.h"
 #include "common.h"
-#include "cs2fixes.h"
-#include "gameconfig.h"
 #include "cs2_sdk/entity/cbaseentity.h"
-#include "plat.h"
+#include "cs2fixes.h"
+#include "entities.h"
 #include "entity/cgamerules.h"
+#include "gameconfig.h"
+#include "plat.h"
 
 extern CGameConfig *g_GameConfig;
 extern CCSGameRules* g_pGameRules;
@@ -52,6 +53,8 @@ void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 	{
 		reinterpret_cast<CBaseEntity*>(pEntity)->SetCollisionGroup(COLLISION_GROUP_DEBRIS);
 	}
+
+	EntityHandler_OnEntitySpawned(reinterpret_cast<CBaseEntity*>(pEntity));
 }
 
 void CEntityListener::OnEntityCreated(CEntityInstance* pEntity)

@@ -320,6 +320,9 @@ extern CUserMsg_ParticleManager_SetSceneObjectTintAndDesatDefaultTypeInternal _C
 class CUserMsg_ParticleManager_SetTextureAttribute;
 struct CUserMsg_ParticleManager_SetTextureAttributeDefaultTypeInternal;
 extern CUserMsg_ParticleManager_SetTextureAttributeDefaultTypeInternal _CUserMsg_ParticleManager_SetTextureAttribute_default_instance_;
+class CUserMsg_ParticleManager_SetVData;
+struct CUserMsg_ParticleManager_SetVDataDefaultTypeInternal;
+extern CUserMsg_ParticleManager_SetVDataDefaultTypeInternal _CUserMsg_ParticleManager_SetVData_default_instance_;
 class CUserMsg_ParticleManager_UpdateEntityPosition;
 struct CUserMsg_ParticleManager_UpdateEntityPositionDefaultTypeInternal;
 extern CUserMsg_ParticleManager_UpdateEntityPositionDefaultTypeInternal _CUserMsg_ParticleManager_UpdateEntityPosition_default_instance_;
@@ -442,6 +445,7 @@ template<> ::CUserMsg_ParticleManager_SetParticleText* Arena::CreateMaybeMessage
 template<> ::CUserMsg_ParticleManager_SetSceneObjectGenericFlag* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetSceneObjectGenericFlag>(Arena*);
 template<> ::CUserMsg_ParticleManager_SetSceneObjectTintAndDesat* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetSceneObjectTintAndDesat>(Arena*);
 template<> ::CUserMsg_ParticleManager_SetTextureAttribute* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetTextureAttribute>(Arena*);
+template<> ::CUserMsg_ParticleManager_SetVData* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetVData>(Arena*);
 template<> ::CUserMsg_ParticleManager_UpdateEntityPosition* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_UpdateEntityPosition>(Arena*);
 template<> ::CUserMsg_ParticleManager_UpdateParticleEnt* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_UpdateParticleEnt>(Arena*);
 template<> ::CUserMsg_ParticleManager_UpdateParticleFallback* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_UpdateParticleFallback>(Arena*);
@@ -614,11 +618,12 @@ enum PARTICLE_MESSAGE : int {
   GAME_PARTICLE_MANAGER_EVENT_ADD_MODELLIST_OVERRIDE_ELEMENT = 30,
   GAME_PARTICLE_MANAGER_EVENT_CLEAR_MODELLIST_OVERRIDE = 31,
   GAME_PARTICLE_MANAGER_EVENT_CREATE_PHYSICS_SIM = 32,
-  GAME_PARTICLE_MANAGER_EVENT_DESTROY_PHYSICS_SIM = 33
+  GAME_PARTICLE_MANAGER_EVENT_DESTROY_PHYSICS_SIM = 33,
+  GAME_PARTICLE_MANAGER_EVENT_SET_VDATA = 34
 };
 bool PARTICLE_MESSAGE_IsValid(int value);
 constexpr PARTICLE_MESSAGE PARTICLE_MESSAGE_MIN = GAME_PARTICLE_MANAGER_EVENT_CREATE;
-constexpr PARTICLE_MESSAGE PARTICLE_MESSAGE_MAX = GAME_PARTICLE_MANAGER_EVENT_DESTROY_PHYSICS_SIM;
+constexpr PARTICLE_MESSAGE PARTICLE_MESSAGE_MAX = GAME_PARTICLE_MANAGER_EVENT_SET_VDATA;
 constexpr int PARTICLE_MESSAGE_ARRAYSIZE = PARTICLE_MESSAGE_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* PARTICLE_MESSAGE_descriptor();
@@ -661,7 +666,7 @@ inline bool EHapticPulseType_Parse(
 }
 // ===================================================================
 
-class CUserMessageAchievementEvent :
+class CUserMessageAchievementEvent /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageAchievementEvent) */ {
  public:
   inline CUserMessageAchievementEvent() : CUserMessageAchievementEvent(nullptr) {}
@@ -821,7 +826,7 @@ class CUserMessageAchievementEvent :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageCloseCaption :
+class CUserMessageCloseCaption /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageCloseCaption) */ {
  public:
   inline CUserMessageCloseCaption() : CUserMessageCloseCaption(nullptr) {}
@@ -1026,7 +1031,7 @@ class CUserMessageCloseCaption :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageCloseCaptionDirect :
+class CUserMessageCloseCaptionDirect /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageCloseCaptionDirect) */ {
  public:
   inline CUserMessageCloseCaptionDirect() : CUserMessageCloseCaptionDirect(nullptr) {}
@@ -1231,7 +1236,7 @@ class CUserMessageCloseCaptionDirect :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageCloseCaptionPlaceholder :
+class CUserMessageCloseCaptionPlaceholder /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageCloseCaptionPlaceholder) */ {
  public:
   inline CUserMessageCloseCaptionPlaceholder() : CUserMessageCloseCaptionPlaceholder(nullptr) {}
@@ -1441,7 +1446,7 @@ class CUserMessageCloseCaptionPlaceholder :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageCurrentTimescale :
+class CUserMessageCurrentTimescale /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageCurrentTimescale) */ {
  public:
   inline CUserMessageCurrentTimescale() : CUserMessageCurrentTimescale(nullptr) {}
@@ -1601,7 +1606,7 @@ class CUserMessageCurrentTimescale :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageDesiredTimescale :
+class CUserMessageDesiredTimescale /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageDesiredTimescale) */ {
  public:
   inline CUserMessageDesiredTimescale() : CUserMessageDesiredTimescale(nullptr) {}
@@ -1806,7 +1811,7 @@ class CUserMessageDesiredTimescale :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageFade :
+class CUserMessageFade /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageFade) */ {
  public:
   inline CUserMessageFade() : CUserMessageFade(nullptr) {}
@@ -2011,7 +2016,7 @@ class CUserMessageFade :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageShake :
+class CUserMessageShake /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageShake) */ {
  public:
   inline CUserMessageShake() : CUserMessageShake(nullptr) {}
@@ -2216,7 +2221,7 @@ class CUserMessageShake :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageShakeDir :
+class CUserMessageShakeDir /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageShakeDir) */ {
  public:
   inline CUserMessageShakeDir() : CUserMessageShakeDir(nullptr) {}
@@ -2401,7 +2406,7 @@ class CUserMessageShakeDir :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageWaterShake :
+class CUserMessageWaterShake /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageWaterShake) */ {
  public:
   inline CUserMessageWaterShake() : CUserMessageWaterShake(nullptr) {}
@@ -2606,7 +2611,7 @@ class CUserMessageWaterShake :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageScreenTilt :
+class CUserMessageScreenTilt /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageScreenTilt) */ {
  public:
   inline CUserMessageScreenTilt() : CUserMessageScreenTilt(nullptr) {}
@@ -2831,7 +2836,7 @@ class CUserMessageScreenTilt :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageSayText :
+class CUserMessageSayText /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageSayText) */ {
  public:
   inline CUserMessageSayText() : CUserMessageSayText(nullptr) {}
@@ -3026,7 +3031,7 @@ class CUserMessageSayText :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageSayText2 :
+class CUserMessageSayText2 /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageSayText2) */ {
  public:
   inline CUserMessageSayText2() : CUserMessageSayText2(nullptr) {}
@@ -3301,7 +3306,7 @@ class CUserMessageSayText2 :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageHudMsg :
+class CUserMessageHudMsg /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageHudMsg) */ {
  public:
   inline CUserMessageHudMsg() : CUserMessageHudMsg(nullptr) {}
@@ -3556,7 +3561,7 @@ class CUserMessageHudMsg :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageHudText :
+class CUserMessageHudText /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageHudText) */ {
  public:
   inline CUserMessageHudText() : CUserMessageHudText(nullptr) {}
@@ -3721,7 +3726,7 @@ class CUserMessageHudText :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageTextMsg :
+class CUserMessageTextMsg /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageTextMsg) */ {
  public:
   inline CUserMessageTextMsg() : CUserMessageTextMsg(nullptr) {}
@@ -3907,7 +3912,7 @@ class CUserMessageTextMsg :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageGameTitle :
+class CUserMessageGameTitle /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CUserMessageGameTitle) */ {
  public:
   inline CUserMessageGameTitle() : CUserMessageGameTitle(nullptr) {}
@@ -4032,7 +4037,7 @@ class CUserMessageGameTitle :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageResetHUD :
+class CUserMessageResetHUD /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CUserMessageResetHUD) */ {
  public:
   inline CUserMessageResetHUD() : CUserMessageResetHUD(nullptr) {}
@@ -4157,7 +4162,7 @@ class CUserMessageResetHUD :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageSendAudio :
+class CUserMessageSendAudio /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageSendAudio) */ {
  public:
   inline CUserMessageSendAudio() : CUserMessageSendAudio(nullptr) {}
@@ -4337,7 +4342,7 @@ class CUserMessageSendAudio :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageAudioParameter :
+class CUserMessageAudioParameter /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageAudioParameter) */ {
  public:
   inline CUserMessageAudioParameter() : CUserMessageAudioParameter(nullptr) {}
@@ -4542,7 +4547,7 @@ class CUserMessageAudioParameter :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageVoiceMask :
+class CUserMessageVoiceMask /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageVoiceMask) */ {
  public:
   inline CUserMessageVoiceMask() : CUserMessageVoiceMask(nullptr) {}
@@ -4750,7 +4755,7 @@ class CUserMessageVoiceMask :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageRequestState :
+class CUserMessageRequestState /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CUserMessageRequestState) */ {
  public:
   inline CUserMessageRequestState() : CUserMessageRequestState(nullptr) {}
@@ -4875,7 +4880,7 @@ class CUserMessageRequestState :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageRumble :
+class CUserMessageRumble /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageRumble) */ {
  public:
   inline CUserMessageRumble() : CUserMessageRumble(nullptr) {}
@@ -5065,7 +5070,7 @@ class CUserMessageRumble :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageSayTextChannel :
+class CUserMessageSayTextChannel /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageSayTextChannel) */ {
  public:
   inline CUserMessageSayTextChannel() : CUserMessageSayTextChannel(nullptr) {}
@@ -5260,7 +5265,7 @@ class CUserMessageSayTextChannel :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageColoredText :
+class CUserMessageColoredText /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageColoredText) */ {
  public:
   inline CUserMessageColoredText() : CUserMessageColoredText(nullptr) {}
@@ -5500,7 +5505,7 @@ class CUserMessageColoredText :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageItemPickup :
+class CUserMessageItemPickup /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageItemPickup) */ {
  public:
   inline CUserMessageItemPickup() : CUserMessageItemPickup(nullptr) {}
@@ -5665,7 +5670,7 @@ class CUserMessageItemPickup :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageAmmoDenied :
+class CUserMessageAmmoDenied /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageAmmoDenied) */ {
  public:
   inline CUserMessageAmmoDenied() : CUserMessageAmmoDenied(nullptr) {}
@@ -5825,7 +5830,7 @@ class CUserMessageAmmoDenied :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageShowMenu :
+class CUserMessageShowMenu /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageShowMenu) */ {
  public:
   inline CUserMessageShowMenu() : CUserMessageShowMenu(nullptr) {}
@@ -6035,7 +6040,7 @@ class CUserMessageShowMenu :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageCreditsMsg :
+class CUserMessageCreditsMsg /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageCreditsMsg) */ {
  public:
   inline CUserMessageCreditsMsg() : CUserMessageCreditsMsg(nullptr) {}
@@ -6210,7 +6215,7 @@ class CUserMessageCreditsMsg :
 };
 // -------------------------------------------------------------------
 
-class CEntityMessagePlayJingle :
+class CEntityMessagePlayJingle /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CEntityMessagePlayJingle) */ {
  public:
   inline CEntityMessagePlayJingle() : CEntityMessagePlayJingle(nullptr) {}
@@ -6375,7 +6380,7 @@ class CEntityMessagePlayJingle :
 };
 // -------------------------------------------------------------------
 
-class CEntityMessageScreenOverlay :
+class CEntityMessageScreenOverlay /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CEntityMessageScreenOverlay) */ {
  public:
   inline CEntityMessageScreenOverlay() : CEntityMessageScreenOverlay(nullptr) {}
@@ -6555,7 +6560,7 @@ class CEntityMessageScreenOverlay :
 };
 // -------------------------------------------------------------------
 
-class CEntityMessageRemoveAllDecals :
+class CEntityMessageRemoveAllDecals /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CEntityMessageRemoveAllDecals) */ {
  public:
   inline CEntityMessageRemoveAllDecals() : CEntityMessageRemoveAllDecals(nullptr) {}
@@ -6735,7 +6740,7 @@ class CEntityMessageRemoveAllDecals :
 };
 // -------------------------------------------------------------------
 
-class CEntityMessagePropagateForce :
+class CEntityMessagePropagateForce /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CEntityMessagePropagateForce) */ {
  public:
   inline CEntityMessagePropagateForce() : CEntityMessagePropagateForce(nullptr) {}
@@ -6920,7 +6925,7 @@ class CEntityMessagePropagateForce :
 };
 // -------------------------------------------------------------------
 
-class CEntityMessageDoSpark :
+class CEntityMessageDoSpark /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CEntityMessageDoSpark) */ {
  public:
   inline CEntityMessageDoSpark() : CEntityMessageDoSpark(nullptr) {}
@@ -7195,7 +7200,7 @@ class CEntityMessageDoSpark :
 };
 // -------------------------------------------------------------------
 
-class CEntityMessageFixAngle :
+class CEntityMessageFixAngle /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CEntityMessageFixAngle) */ {
  public:
   inline CEntityMessageFixAngle() : CEntityMessageFixAngle(nullptr) {}
@@ -7395,7 +7400,7 @@ class CEntityMessageFixAngle :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageCameraTransition_Transition_DataDriven :
+class CUserMessageCameraTransition_Transition_DataDriven /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageCameraTransition.Transition_DataDriven) */ {
  public:
   inline CUserMessageCameraTransition_Transition_DataDriven() : CUserMessageCameraTransition_Transition_DataDriven(nullptr) {}
@@ -7590,7 +7595,7 @@ class CUserMessageCameraTransition_Transition_DataDriven :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageCameraTransition :
+class CUserMessageCameraTransition /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageCameraTransition) */ {
  public:
   inline CUserMessageCameraTransition() : CUserMessageCameraTransition(nullptr) {}
@@ -7787,7 +7792,7 @@ class CUserMessageCameraTransition :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_ReleaseParticleIndex :
+class CUserMsg_ParticleManager_ReleaseParticleIndex /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.ReleaseParticleIndex) */ {
  public:
   inline CUserMsg_ParticleManager_ReleaseParticleIndex() : CUserMsg_ParticleManager_ReleaseParticleIndex(nullptr) {}
@@ -7912,7 +7917,7 @@ class CUserMsg_ParticleManager_ReleaseParticleIndex :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_CreateParticle :
+class CUserMsg_ParticleManager_CreateParticle /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.CreateParticle) */ {
  public:
   inline CUserMsg_ParticleManager_CreateParticle() : CUserMsg_ParticleManager_CreateParticle(nullptr) {}
@@ -8197,7 +8202,7 @@ class CUserMsg_ParticleManager_CreateParticle :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_DestroyParticle :
+class CUserMsg_ParticleManager_DestroyParticle /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.DestroyParticle) */ {
  public:
   inline CUserMsg_ParticleManager_DestroyParticle() : CUserMsg_ParticleManager_DestroyParticle(nullptr) {}
@@ -8357,7 +8362,7 @@ class CUserMsg_ParticleManager_DestroyParticle :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_DestroyParticleInvolving :
+class CUserMsg_ParticleManager_DestroyParticleInvolving /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.DestroyParticleInvolving) */ {
  public:
   inline CUserMsg_ParticleManager_DestroyParticleInvolving() : CUserMsg_ParticleManager_DestroyParticleInvolving(nullptr) {}
@@ -8532,7 +8537,7 @@ class CUserMsg_ParticleManager_DestroyParticleInvolving :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_DestroyParticleNamed :
+class CUserMsg_ParticleManager_DestroyParticleNamed /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.DestroyParticleNamed) */ {
  public:
   inline CUserMsg_ParticleManager_DestroyParticleNamed() : CUserMsg_ParticleManager_DestroyParticleNamed(nullptr) {}
@@ -8737,7 +8742,7 @@ class CUserMsg_ParticleManager_DestroyParticleNamed :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_UpdateParticle_OBSOLETE :
+class CUserMsg_ParticleManager_UpdateParticle_OBSOLETE /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.UpdateParticle_OBSOLETE) */ {
  public:
   inline CUserMsg_ParticleManager_UpdateParticle_OBSOLETE() : CUserMsg_ParticleManager_UpdateParticle_OBSOLETE(nullptr) {}
@@ -8917,7 +8922,7 @@ class CUserMsg_ParticleManager_UpdateParticle_OBSOLETE :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_UpdateParticleFwd_OBSOLETE :
+class CUserMsg_ParticleManager_UpdateParticleFwd_OBSOLETE /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.UpdateParticleFwd_OBSOLETE) */ {
  public:
   inline CUserMsg_ParticleManager_UpdateParticleFwd_OBSOLETE() : CUserMsg_ParticleManager_UpdateParticleFwd_OBSOLETE(nullptr) {}
@@ -9097,7 +9102,7 @@ class CUserMsg_ParticleManager_UpdateParticleFwd_OBSOLETE :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_UpdateParticleOrient_OBSOLETE :
+class CUserMsg_ParticleManager_UpdateParticleOrient_OBSOLETE /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.UpdateParticleOrient_OBSOLETE) */ {
  public:
   inline CUserMsg_ParticleManager_UpdateParticleOrient_OBSOLETE() : CUserMsg_ParticleManager_UpdateParticleOrient_OBSOLETE(nullptr) {}
@@ -9337,7 +9342,7 @@ class CUserMsg_ParticleManager_UpdateParticleOrient_OBSOLETE :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_UpdateParticleTransform :
+class CUserMsg_ParticleManager_UpdateParticleTransform /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.UpdateParticleTransform) */ {
  public:
   inline CUserMsg_ParticleManager_UpdateParticleTransform() : CUserMsg_ParticleManager_UpdateParticleTransform(nullptr) {}
@@ -9552,7 +9557,7 @@ class CUserMsg_ParticleManager_UpdateParticleTransform :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_UpdateParticleFallback :
+class CUserMsg_ParticleManager_UpdateParticleFallback /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.UpdateParticleFallback) */ {
  public:
   inline CUserMsg_ParticleManager_UpdateParticleFallback() : CUserMsg_ParticleManager_UpdateParticleFallback(nullptr) {}
@@ -9732,7 +9737,7 @@ class CUserMsg_ParticleManager_UpdateParticleFallback :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_UpdateParticleOffset :
+class CUserMsg_ParticleManager_UpdateParticleOffset /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.UpdateParticleOffset) */ {
  public:
   inline CUserMsg_ParticleManager_UpdateParticleOffset() : CUserMsg_ParticleManager_UpdateParticleOffset(nullptr) {}
@@ -9932,7 +9937,7 @@ class CUserMsg_ParticleManager_UpdateParticleOffset :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_UpdateParticleEnt :
+class CUserMsg_ParticleManager_UpdateParticleEnt /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.UpdateParticleEnt) */ {
  public:
   inline CUserMsg_ParticleManager_UpdateParticleEnt() : CUserMsg_ParticleManager_UpdateParticleEnt(nullptr) {}
@@ -10212,7 +10217,7 @@ class CUserMsg_ParticleManager_UpdateParticleEnt :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_UpdateParticleSetFrozen :
+class CUserMsg_ParticleManager_UpdateParticleSetFrozen /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.UpdateParticleSetFrozen) */ {
  public:
   inline CUserMsg_ParticleManager_UpdateParticleSetFrozen() : CUserMsg_ParticleManager_UpdateParticleSetFrozen(nullptr) {}
@@ -10387,7 +10392,7 @@ class CUserMsg_ParticleManager_UpdateParticleSetFrozen :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_UpdateParticleShouldDraw :
+class CUserMsg_ParticleManager_UpdateParticleShouldDraw /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.UpdateParticleShouldDraw) */ {
  public:
   inline CUserMsg_ParticleManager_UpdateParticleShouldDraw() : CUserMsg_ParticleManager_UpdateParticleShouldDraw(nullptr) {}
@@ -10547,7 +10552,7 @@ class CUserMsg_ParticleManager_UpdateParticleShouldDraw :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_ChangeControlPointAttachment :
+class CUserMsg_ParticleManager_ChangeControlPointAttachment /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.ChangeControlPointAttachment) */ {
  public:
   inline CUserMsg_ParticleManager_ChangeControlPointAttachment() : CUserMsg_ParticleManager_ChangeControlPointAttachment(nullptr) {}
@@ -10737,7 +10742,7 @@ class CUserMsg_ParticleManager_ChangeControlPointAttachment :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_UpdateEntityPosition :
+class CUserMsg_ParticleManager_UpdateEntityPosition /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.UpdateEntityPosition) */ {
  public:
   inline CUserMsg_ParticleManager_UpdateEntityPosition() : CUserMsg_ParticleManager_UpdateEntityPosition(nullptr) {}
@@ -10917,7 +10922,7 @@ class CUserMsg_ParticleManager_UpdateEntityPosition :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetParticleFoWProperties :
+class CUserMsg_ParticleManager_SetParticleFoWProperties /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetParticleFoWProperties) */ {
  public:
   inline CUserMsg_ParticleManager_SetParticleFoWProperties() : CUserMsg_ParticleManager_SetParticleFoWProperties(nullptr) {}
@@ -11107,7 +11112,7 @@ class CUserMsg_ParticleManager_SetParticleFoWProperties :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetParticleShouldCheckFoW :
+class CUserMsg_ParticleManager_SetParticleShouldCheckFoW /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetParticleShouldCheckFoW) */ {
  public:
   inline CUserMsg_ParticleManager_SetParticleShouldCheckFoW() : CUserMsg_ParticleManager_SetParticleShouldCheckFoW(nullptr) {}
@@ -11267,7 +11272,7 @@ class CUserMsg_ParticleManager_SetParticleShouldCheckFoW :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetControlPointModel :
+class CUserMsg_ParticleManager_SetControlPointModel /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetControlPointModel) */ {
  public:
   inline CUserMsg_ParticleManager_SetControlPointModel() : CUserMsg_ParticleManager_SetControlPointModel(nullptr) {}
@@ -11447,7 +11452,7 @@ class CUserMsg_ParticleManager_SetControlPointModel :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetControlPointSnapshot :
+class CUserMsg_ParticleManager_SetControlPointSnapshot /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetControlPointSnapshot) */ {
  public:
   inline CUserMsg_ParticleManager_SetControlPointSnapshot() : CUserMsg_ParticleManager_SetControlPointSnapshot(nullptr) {}
@@ -11627,7 +11632,7 @@ class CUserMsg_ParticleManager_SetControlPointSnapshot :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetParticleText :
+class CUserMsg_ParticleManager_SetParticleText /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetParticleText) */ {
  public:
   inline CUserMsg_ParticleManager_SetParticleText() : CUserMsg_ParticleManager_SetParticleText(nullptr) {}
@@ -11792,7 +11797,7 @@ class CUserMsg_ParticleManager_SetParticleText :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetTextureAttribute :
+class CUserMsg_ParticleManager_SetTextureAttribute /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetTextureAttribute) */ {
  public:
   inline CUserMsg_ParticleManager_SetTextureAttribute() : CUserMsg_ParticleManager_SetTextureAttribute(nullptr) {}
@@ -11977,7 +11982,7 @@ class CUserMsg_ParticleManager_SetTextureAttribute :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetSceneObjectGenericFlag :
+class CUserMsg_ParticleManager_SetSceneObjectGenericFlag /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetSceneObjectGenericFlag) */ {
  public:
   inline CUserMsg_ParticleManager_SetSceneObjectGenericFlag() : CUserMsg_ParticleManager_SetSceneObjectGenericFlag(nullptr) {}
@@ -12137,7 +12142,7 @@ class CUserMsg_ParticleManager_SetSceneObjectGenericFlag :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetSceneObjectTintAndDesat :
+class CUserMsg_ParticleManager_SetSceneObjectTintAndDesat /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetSceneObjectTintAndDesat) */ {
  public:
   inline CUserMsg_ParticleManager_SetSceneObjectTintAndDesat() : CUserMsg_ParticleManager_SetSceneObjectTintAndDesat(nullptr) {}
@@ -12312,7 +12317,7 @@ class CUserMsg_ParticleManager_SetSceneObjectTintAndDesat :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_ParticleSkipToTime :
+class CUserMsg_ParticleManager_ParticleSkipToTime /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.ParticleSkipToTime) */ {
  public:
   inline CUserMsg_ParticleManager_ParticleSkipToTime() : CUserMsg_ParticleManager_ParticleSkipToTime(nullptr) {}
@@ -12472,7 +12477,7 @@ class CUserMsg_ParticleManager_ParticleSkipToTime :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_ParticleCanFreeze :
+class CUserMsg_ParticleManager_ParticleCanFreeze /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.ParticleCanFreeze) */ {
  public:
   inline CUserMsg_ParticleManager_ParticleCanFreeze() : CUserMsg_ParticleManager_ParticleCanFreeze(nullptr) {}
@@ -12632,7 +12637,7 @@ class CUserMsg_ParticleManager_ParticleCanFreeze :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_ParticleFreezeTransitionOverride :
+class CUserMsg_ParticleManager_ParticleFreezeTransitionOverride /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.ParticleFreezeTransitionOverride) */ {
  public:
   inline CUserMsg_ParticleManager_ParticleFreezeTransitionOverride() : CUserMsg_ParticleManager_ParticleFreezeTransitionOverride(nullptr) {}
@@ -12792,7 +12797,7 @@ class CUserMsg_ParticleManager_ParticleFreezeTransitionOverride :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_FreezeParticleInvolving :
+class CUserMsg_ParticleManager_FreezeParticleInvolving /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.FreezeParticleInvolving) */ {
  public:
   inline CUserMsg_ParticleManager_FreezeParticleInvolving() : CUserMsg_ParticleManager_FreezeParticleInvolving(nullptr) {}
@@ -12982,7 +12987,7 @@ class CUserMsg_ParticleManager_FreezeParticleInvolving :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_AddModellistOverrideElement :
+class CUserMsg_ParticleManager_AddModellistOverrideElement /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.AddModellistOverrideElement) */ {
  public:
   inline CUserMsg_ParticleManager_AddModellistOverrideElement() : CUserMsg_ParticleManager_AddModellistOverrideElement(nullptr) {}
@@ -13177,7 +13182,7 @@ class CUserMsg_ParticleManager_AddModellistOverrideElement :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_ClearModellistOverride :
+class CUserMsg_ParticleManager_ClearModellistOverride /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.ClearModellistOverride) */ {
  public:
   inline CUserMsg_ParticleManager_ClearModellistOverride() : CUserMsg_ParticleManager_ClearModellistOverride(nullptr) {}
@@ -13337,7 +13342,7 @@ class CUserMsg_ParticleManager_ClearModellistOverride :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetParticleNamedValueContext_FloatContextValue :
+class CUserMsg_ParticleManager_SetParticleNamedValueContext_FloatContextValue /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetParticleNamedValueContext.FloatContextValue) */ {
  public:
   inline CUserMsg_ParticleManager_SetParticleNamedValueContext_FloatContextValue() : CUserMsg_ParticleManager_SetParticleNamedValueContext_FloatContextValue(nullptr) {}
@@ -13512,7 +13517,7 @@ class CUserMsg_ParticleManager_SetParticleNamedValueContext_FloatContextValue :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetParticleNamedValueContext_VectorContextValue :
+class CUserMsg_ParticleManager_SetParticleNamedValueContext_VectorContextValue /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetParticleNamedValueContext.VectorContextValue) */ {
  public:
   inline CUserMsg_ParticleManager_SetParticleNamedValueContext_VectorContextValue() : CUserMsg_ParticleManager_SetParticleNamedValueContext_VectorContextValue(nullptr) {}
@@ -13692,7 +13697,7 @@ class CUserMsg_ParticleManager_SetParticleNamedValueContext_VectorContextValue :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetParticleNamedValueContext_TransformContextValue :
+class CUserMsg_ParticleManager_SetParticleNamedValueContext_TransformContextValue /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetParticleNamedValueContext.TransformContextValue) */ {
  public:
   inline CUserMsg_ParticleManager_SetParticleNamedValueContext_TransformContextValue() : CUserMsg_ParticleManager_SetParticleNamedValueContext_TransformContextValue(nullptr) {}
@@ -13892,7 +13897,7 @@ class CUserMsg_ParticleManager_SetParticleNamedValueContext_TransformContextValu
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext :
+class CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetParticleNamedValueContext.EHandleContext) */ {
  public:
   inline CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext() : CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext(nullptr) {}
@@ -14067,7 +14072,7 @@ class CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_SetParticleNamedValueContext :
+class CUserMsg_ParticleManager_SetParticleNamedValueContext /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetParticleNamedValueContext) */ {
  public:
   inline CUserMsg_ParticleManager_SetParticleNamedValueContext() : CUserMsg_ParticleManager_SetParticleNamedValueContext(nullptr) {}
@@ -14296,7 +14301,7 @@ class CUserMsg_ParticleManager_SetParticleNamedValueContext :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_CreatePhysicsSim :
+class CUserMsg_ParticleManager_CreatePhysicsSim /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.CreatePhysicsSim) */ {
  public:
   inline CUserMsg_ParticleManager_CreatePhysicsSim() : CUserMsg_ParticleManager_CreatePhysicsSim(nullptr) {}
@@ -14461,7 +14466,7 @@ class CUserMsg_ParticleManager_CreatePhysicsSim :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager_DestroyPhysicsSim :
+class CUserMsg_ParticleManager_DestroyPhysicsSim /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.DestroyPhysicsSim) */ {
  public:
   inline CUserMsg_ParticleManager_DestroyPhysicsSim() : CUserMsg_ParticleManager_DestroyPhysicsSim(nullptr) {}
@@ -14586,7 +14591,172 @@ class CUserMsg_ParticleManager_DestroyPhysicsSim :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_ParticleManager :
+class CUserMsg_ParticleManager_SetVData /* final */ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetVData) */ {
+ public:
+  inline CUserMsg_ParticleManager_SetVData() : CUserMsg_ParticleManager_SetVData(nullptr) {}
+  ~CUserMsg_ParticleManager_SetVData() override;
+  explicit PROTOBUF_CONSTEXPR CUserMsg_ParticleManager_SetVData(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CUserMsg_ParticleManager_SetVData(const CUserMsg_ParticleManager_SetVData& from);
+  CUserMsg_ParticleManager_SetVData(CUserMsg_ParticleManager_SetVData&& from) noexcept
+    : CUserMsg_ParticleManager_SetVData() {
+    *this = ::std::move(from);
+  }
+
+  inline CUserMsg_ParticleManager_SetVData& operator=(const CUserMsg_ParticleManager_SetVData& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CUserMsg_ParticleManager_SetVData& operator=(CUserMsg_ParticleManager_SetVData&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CUserMsg_ParticleManager_SetVData& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CUserMsg_ParticleManager_SetVData* internal_default_instance() {
+    return reinterpret_cast<const CUserMsg_ParticleManager_SetVData*>(
+               &_CUserMsg_ParticleManager_SetVData_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    74;
+
+  friend void swap(CUserMsg_ParticleManager_SetVData& a, CUserMsg_ParticleManager_SetVData& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CUserMsg_ParticleManager_SetVData* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CUserMsg_ParticleManager_SetVData* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CUserMsg_ParticleManager_SetVData* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CUserMsg_ParticleManager_SetVData>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CUserMsg_ParticleManager_SetVData& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CUserMsg_ParticleManager_SetVData& from) {
+    CUserMsg_ParticleManager_SetVData::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CUserMsg_ParticleManager_SetVData* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CUserMsg_ParticleManager.SetVData";
+  }
+  protected:
+  explicit CUserMsg_ParticleManager_SetVData(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kVdataNameFieldNumber = 1,
+  };
+  // optional string vdata_name = 1;
+  bool has_vdata_name() const;
+  private:
+  bool _internal_has_vdata_name() const;
+  public:
+  void clear_vdata_name();
+  const std::string& vdata_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_vdata_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_vdata_name();
+  PROTOBUF_NODISCARD std::string* release_vdata_name();
+  void set_allocated_vdata_name(std::string* vdata_name);
+  private:
+  const std::string& _internal_vdata_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_vdata_name(const std::string& value);
+  std::string* _internal_mutable_vdata_name();
+  public:
+
+  // @@protoc_insertion_point(class_scope:CUserMsg_ParticleManager.SetVData)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr vdata_name_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_usermessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CUserMsg_ParticleManager /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager) */ {
  public:
   inline CUserMsg_ParticleManager() : CUserMsg_ParticleManager(nullptr) {}
@@ -14641,7 +14811,7 @@ class CUserMsg_ParticleManager :
                &_CUserMsg_ParticleManager_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    74;
+    75;
 
   friend void swap(CUserMsg_ParticleManager& a, CUserMsg_ParticleManager& b) {
     a.Swap(&b);
@@ -14744,6 +14914,7 @@ class CUserMsg_ParticleManager :
   typedef CUserMsg_ParticleManager_SetParticleNamedValueContext SetParticleNamedValueContext;
   typedef CUserMsg_ParticleManager_CreatePhysicsSim CreatePhysicsSim;
   typedef CUserMsg_ParticleManager_DestroyPhysicsSim DestroyPhysicsSim;
+  typedef CUserMsg_ParticleManager_SetVData SetVData;
 
   // accessors -------------------------------------------------------
 
@@ -14781,6 +14952,7 @@ class CUserMsg_ParticleManager :
     kClearModellistOverrideFieldNumber = 34,
     kCreatePhysicsSimFieldNumber = 35,
     kDestroyPhysicsSimFieldNumber = 36,
+    kSetVdataFieldNumber = 37,
     kTypeFieldNumber = 1,
     kIndexFieldNumber = 2,
   };
@@ -15378,6 +15550,24 @@ class CUserMsg_ParticleManager :
       ::CUserMsg_ParticleManager_DestroyPhysicsSim* destroy_physics_sim);
   ::CUserMsg_ParticleManager_DestroyPhysicsSim* unsafe_arena_release_destroy_physics_sim();
 
+  // optional .CUserMsg_ParticleManager.SetVData set_vdata = 37;
+  bool has_set_vdata() const;
+  private:
+  bool _internal_has_set_vdata() const;
+  public:
+  void clear_set_vdata();
+  const ::CUserMsg_ParticleManager_SetVData& set_vdata() const;
+  PROTOBUF_NODISCARD ::CUserMsg_ParticleManager_SetVData* release_set_vdata();
+  ::CUserMsg_ParticleManager_SetVData* mutable_set_vdata();
+  void set_allocated_set_vdata(::CUserMsg_ParticleManager_SetVData* set_vdata);
+  private:
+  const ::CUserMsg_ParticleManager_SetVData& _internal_set_vdata() const;
+  ::CUserMsg_ParticleManager_SetVData* _internal_mutable_set_vdata();
+  public:
+  void unsafe_arena_set_allocated_set_vdata(
+      ::CUserMsg_ParticleManager_SetVData* set_vdata);
+  ::CUserMsg_ParticleManager_SetVData* unsafe_arena_release_set_vdata();
+
   // required .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
   bool has_type() const;
   private:
@@ -15642,6 +15832,7 @@ class CUserMsg_ParticleManager :
     ::CUserMsg_ParticleManager_ClearModellistOverride* clear_modellist_override_;
     ::CUserMsg_ParticleManager_CreatePhysicsSim* create_physics_sim_;
     ::CUserMsg_ParticleManager_DestroyPhysicsSim* destroy_physics_sim_;
+    ::CUserMsg_ParticleManager_SetVData* set_vdata_;
     int type_;
     uint32_t index_;
   };
@@ -15650,7 +15841,7 @@ class CUserMsg_ParticleManager :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_HudError :
+class CUserMsg_HudError /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_HudError) */ {
  public:
   inline CUserMsg_HudError() : CUserMsg_HudError(nullptr) {}
@@ -15705,7 +15896,7 @@ class CUserMsg_HudError :
                &_CUserMsg_HudError_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    75;
+    76;
 
   friend void swap(CUserMsg_HudError& a, CUserMsg_HudError& b) {
     a.Swap(&b);
@@ -15810,7 +16001,7 @@ class CUserMsg_HudError :
 };
 // -------------------------------------------------------------------
 
-class CUserMsg_CustomGameEvent :
+class CUserMsg_CustomGameEvent /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_CustomGameEvent) */ {
  public:
   inline CUserMsg_CustomGameEvent() : CUserMsg_CustomGameEvent(nullptr) {}
@@ -15865,7 +16056,7 @@ class CUserMsg_CustomGameEvent :
                &_CUserMsg_CustomGameEvent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    76;
+    77;
 
   friend void swap(CUserMsg_CustomGameEvent& a, CUserMsg_CustomGameEvent& b) {
     a.Swap(&b);
@@ -15995,7 +16186,7 @@ class CUserMsg_CustomGameEvent :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageHapticsManagerPulse :
+class CUserMessageHapticsManagerPulse /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageHapticsManagerPulse) */ {
  public:
   inline CUserMessageHapticsManagerPulse() : CUserMessageHapticsManagerPulse(nullptr) {}
@@ -16050,7 +16241,7 @@ class CUserMessageHapticsManagerPulse :
                &_CUserMessageHapticsManagerPulse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    77;
+    78;
 
   friend void swap(CUserMessageHapticsManagerPulse& a, CUserMessageHapticsManagerPulse& b) {
     a.Swap(&b);
@@ -16200,7 +16391,7 @@ class CUserMessageHapticsManagerPulse :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageHapticsManagerEffect :
+class CUserMessageHapticsManagerEffect /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageHapticsManagerEffect) */ {
  public:
   inline CUserMessageHapticsManagerEffect() : CUserMessageHapticsManagerEffect(nullptr) {}
@@ -16255,7 +16446,7 @@ class CUserMessageHapticsManagerEffect :
                &_CUserMessageHapticsManagerEffect_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    78;
+    79;
 
   friend void swap(CUserMessageHapticsManagerEffect& a, CUserMessageHapticsManagerEffect& b) {
     a.Swap(&b);
@@ -16390,7 +16581,7 @@ class CUserMessageHapticsManagerEffect :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageAnimStateGraphState :
+class CUserMessageAnimStateGraphState /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageAnimStateGraphState) */ {
  public:
   inline CUserMessageAnimStateGraphState() : CUserMessageAnimStateGraphState(nullptr) {}
@@ -16445,7 +16636,7 @@ class CUserMessageAnimStateGraphState :
                &_CUserMessageAnimStateGraphState_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    79;
+    80;
 
   friend void swap(CUserMessageAnimStateGraphState& a, CUserMessageAnimStateGraphState& b) {
     a.Swap(&b);
@@ -16570,7 +16761,7 @@ class CUserMessageAnimStateGraphState :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageUpdateCssClasses :
+class CUserMessageUpdateCssClasses /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageUpdateCssClasses) */ {
  public:
   inline CUserMessageUpdateCssClasses() : CUserMessageUpdateCssClasses(nullptr) {}
@@ -16625,7 +16816,7 @@ class CUserMessageUpdateCssClasses :
                &_CUserMessageUpdateCssClasses_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    80;
+    81;
 
   friend void swap(CUserMessageUpdateCssClasses& a, CUserMessageUpdateCssClasses& b) {
     a.Swap(&b);
@@ -16765,7 +16956,7 @@ class CUserMessageUpdateCssClasses :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageServerFrameTime :
+class CUserMessageServerFrameTime /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageServerFrameTime) */ {
  public:
   inline CUserMessageServerFrameTime() : CUserMessageServerFrameTime(nullptr) {}
@@ -16820,7 +17011,7 @@ class CUserMessageServerFrameTime :
                &_CUserMessageServerFrameTime_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    81;
+    82;
 
   friend void swap(CUserMessageServerFrameTime& a, CUserMessageServerFrameTime& b) {
     a.Swap(&b);
@@ -16925,7 +17116,7 @@ class CUserMessageServerFrameTime :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageLagCompensationError :
+class CUserMessageLagCompensationError /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageLagCompensationError) */ {
  public:
   inline CUserMessageLagCompensationError() : CUserMessageLagCompensationError(nullptr) {}
@@ -16980,7 +17171,7 @@ class CUserMessageLagCompensationError :
                &_CUserMessageLagCompensationError_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    82;
+    83;
 
   friend void swap(CUserMessageLagCompensationError& a, CUserMessageLagCompensationError& b) {
     a.Swap(&b);
@@ -17085,7 +17276,7 @@ class CUserMessageLagCompensationError :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageRequestDllStatus :
+class CUserMessageRequestDllStatus /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageRequestDllStatus) */ {
  public:
   inline CUserMessageRequestDllStatus() : CUserMessageRequestDllStatus(nullptr) {}
@@ -17140,7 +17331,7 @@ class CUserMessageRequestDllStatus :
                &_CUserMessageRequestDllStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    83;
+    84;
 
   friend void swap(CUserMessageRequestDllStatus& a, CUserMessageRequestDllStatus& b) {
     a.Swap(&b);
@@ -17265,7 +17456,7 @@ class CUserMessageRequestDllStatus :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageRequestUtilAction :
+class CUserMessageRequestUtilAction /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageRequestUtilAction) */ {
  public:
   inline CUserMessageRequestUtilAction() : CUserMessageRequestUtilAction(nullptr) {}
@@ -17320,7 +17511,7 @@ class CUserMessageRequestUtilAction :
                &_CUserMessageRequestUtilAction_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    84;
+    85;
 
   friend void swap(CUserMessageRequestUtilAction& a, CUserMessageRequestUtilAction& b) {
     a.Swap(&b);
@@ -17485,7 +17676,7 @@ class CUserMessageRequestUtilAction :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_UtilMsg_Response_ItemDetail :
+class CUserMessage_UtilMsg_Response_ItemDetail /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_UtilMsg_Response.ItemDetail) */ {
  public:
   inline CUserMessage_UtilMsg_Response_ItemDetail() : CUserMessage_UtilMsg_Response_ItemDetail(nullptr) {}
@@ -17540,7 +17731,7 @@ class CUserMessage_UtilMsg_Response_ItemDetail :
                &_CUserMessage_UtilMsg_Response_ItemDetail_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    85;
+    86;
 
   friend void swap(CUserMessage_UtilMsg_Response_ItemDetail& a, CUserMessage_UtilMsg_Response_ItemDetail& b) {
     a.Swap(&b);
@@ -17695,7 +17886,7 @@ class CUserMessage_UtilMsg_Response_ItemDetail :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_UtilMsg_Response :
+class CUserMessage_UtilMsg_Response /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_UtilMsg_Response) */ {
  public:
   inline CUserMessage_UtilMsg_Response() : CUserMessage_UtilMsg_Response(nullptr) {}
@@ -17750,7 +17941,7 @@ class CUserMessage_UtilMsg_Response :
                &_CUserMessage_UtilMsg_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    86;
+    87;
 
   friend void swap(CUserMessage_UtilMsg_Response& a, CUserMessage_UtilMsg_Response& b) {
     a.Swap(&b);
@@ -18045,7 +18236,7 @@ class CUserMessage_UtilMsg_Response :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_DllStatus_CVDiagnostic :
+class CUserMessage_DllStatus_CVDiagnostic /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_DllStatus.CVDiagnostic) */ {
  public:
   inline CUserMessage_DllStatus_CVDiagnostic() : CUserMessage_DllStatus_CVDiagnostic(nullptr) {}
@@ -18100,7 +18291,7 @@ class CUserMessage_DllStatus_CVDiagnostic :
                &_CUserMessage_DllStatus_CVDiagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    87;
+    88;
 
   friend void swap(CUserMessage_DllStatus_CVDiagnostic& a, CUserMessage_DllStatus_CVDiagnostic& b) {
     a.Swap(&b);
@@ -18255,7 +18446,7 @@ class CUserMessage_DllStatus_CVDiagnostic :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_DllStatus_CModule :
+class CUserMessage_DllStatus_CModule /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_DllStatus.CModule) */ {
  public:
   inline CUserMessage_DllStatus_CModule() : CUserMessage_DllStatus_CModule(nullptr) {}
@@ -18310,7 +18501,7 @@ class CUserMessage_DllStatus_CModule :
                &_CUserMessage_DllStatus_CModule_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    88;
+    89;
 
   friend void swap(CUserMessage_DllStatus_CModule& a, CUserMessage_DllStatus_CModule& b) {
     a.Swap(&b);
@@ -18465,7 +18656,7 @@ class CUserMessage_DllStatus_CModule :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_DllStatus :
+class CUserMessage_DllStatus /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_DllStatus) */ {
  public:
   inline CUserMessage_DllStatus() : CUserMessage_DllStatus(nullptr) {}
@@ -18520,7 +18711,7 @@ class CUserMessage_DllStatus :
                &_CUserMessage_DllStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    89;
+    90;
 
   friend void swap(CUserMessage_DllStatus& a, CUserMessage_DllStatus& b) {
     a.Swap(&b);
@@ -18753,7 +18944,7 @@ class CUserMessage_DllStatus :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageRequestInventory :
+class CUserMessageRequestInventory /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageRequestInventory) */ {
  public:
   inline CUserMessageRequestInventory() : CUserMessageRequestInventory(nullptr) {}
@@ -18808,7 +18999,7 @@ class CUserMessageRequestInventory :
                &_CUserMessageRequestInventory_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    90;
+    91;
 
   friend void swap(CUserMessageRequestInventory& a, CUserMessageRequestInventory& b) {
     a.Swap(&b);
@@ -18943,7 +19134,7 @@ class CUserMessageRequestInventory :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_Inventory_Response_InventoryDetail :
+class CUserMessage_Inventory_Response_InventoryDetail /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_Inventory_Response.InventoryDetail) */ {
  public:
   inline CUserMessage_Inventory_Response_InventoryDetail() : CUserMessage_Inventory_Response_InventoryDetail(nullptr) {}
@@ -18998,7 +19189,7 @@ class CUserMessage_Inventory_Response_InventoryDetail :
                &_CUserMessage_Inventory_Response_InventoryDetail_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    91;
+    92;
 
   friend void swap(CUserMessage_Inventory_Response_InventoryDetail& a, CUserMessage_Inventory_Response_InventoryDetail& b) {
     a.Swap(&b);
@@ -19248,7 +19439,7 @@ class CUserMessage_Inventory_Response_InventoryDetail :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_Inventory_Response :
+class CUserMessage_Inventory_Response /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_Inventory_Response) */ {
  public:
   inline CUserMessage_Inventory_Response() : CUserMessage_Inventory_Response(nullptr) {}
@@ -19303,7 +19494,7 @@ class CUserMessage_Inventory_Response :
                &_CUserMessage_Inventory_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    92;
+    93;
 
   friend void swap(CUserMessage_Inventory_Response& a, CUserMessage_Inventory_Response& b) {
     a.Swap(&b);
@@ -19605,7 +19796,7 @@ class CUserMessage_Inventory_Response :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageRequestDiagnostic_Diagnostic :
+class CUserMessageRequestDiagnostic_Diagnostic /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageRequestDiagnostic.Diagnostic) */ {
  public:
   inline CUserMessageRequestDiagnostic_Diagnostic() : CUserMessageRequestDiagnostic_Diagnostic(nullptr) {}
@@ -19660,7 +19851,7 @@ class CUserMessageRequestDiagnostic_Diagnostic :
                &_CUserMessageRequestDiagnostic_Diagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    93;
+    94;
 
   friend void swap(CUserMessageRequestDiagnostic_Diagnostic& a, CUserMessageRequestDiagnostic_Diagnostic& b) {
     a.Swap(&b);
@@ -19960,7 +20151,7 @@ class CUserMessageRequestDiagnostic_Diagnostic :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageRequestDiagnostic :
+class CUserMessageRequestDiagnostic /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageRequestDiagnostic) */ {
  public:
   inline CUserMessageRequestDiagnostic() : CUserMessageRequestDiagnostic(nullptr) {}
@@ -20015,7 +20206,7 @@ class CUserMessageRequestDiagnostic :
                &_CUserMessageRequestDiagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    94;
+    95;
 
   friend void swap(CUserMessageRequestDiagnostic& a, CUserMessageRequestDiagnostic& b) {
     a.Swap(&b);
@@ -20126,7 +20317,7 @@ class CUserMessageRequestDiagnostic :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_Diagnostic_Response_Diagnostic :
+class CUserMessage_Diagnostic_Response_Diagnostic /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_Diagnostic_Response.Diagnostic) */ {
  public:
   inline CUserMessage_Diagnostic_Response_Diagnostic() : CUserMessage_Diagnostic_Response_Diagnostic(nullptr) {}
@@ -20181,7 +20372,7 @@ class CUserMessage_Diagnostic_Response_Diagnostic :
                &_CUserMessage_Diagnostic_Response_Diagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    95;
+    96;
 
   friend void swap(CUserMessage_Diagnostic_Response_Diagnostic& a, CUserMessage_Diagnostic_Response_Diagnostic& b) {
     a.Swap(&b);
@@ -20516,7 +20707,7 @@ class CUserMessage_Diagnostic_Response_Diagnostic :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_Diagnostic_Response :
+class CUserMessage_Diagnostic_Response /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_Diagnostic_Response) */ {
  public:
   inline CUserMessage_Diagnostic_Response() : CUserMessage_Diagnostic_Response(nullptr) {}
@@ -20571,7 +20762,7 @@ class CUserMessage_Diagnostic_Response :
                &_CUserMessage_Diagnostic_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    96;
+    97;
 
   friend void swap(CUserMessage_Diagnostic_Response& a, CUserMessage_Diagnostic_Response& b) {
     a.Swap(&b);
@@ -20758,7 +20949,7 @@ class CUserMessage_Diagnostic_Response :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_ExtraUserData :
+class CUserMessage_ExtraUserData /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_ExtraUserData) */ {
  public:
   inline CUserMessage_ExtraUserData() : CUserMessage_ExtraUserData(nullptr) {}
@@ -20813,7 +21004,7 @@ class CUserMessage_ExtraUserData :
                &_CUserMessage_ExtraUserData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    97;
+    98;
 
   friend void swap(CUserMessage_ExtraUserData& a, CUserMessage_ExtraUserData& b) {
     a.Swap(&b);
@@ -21000,7 +21191,7 @@ class CUserMessage_ExtraUserData :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_NotifyResponseFound_Criteria :
+class CUserMessage_NotifyResponseFound_Criteria /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_NotifyResponseFound.Criteria) */ {
  public:
   inline CUserMessage_NotifyResponseFound_Criteria() : CUserMessage_NotifyResponseFound_Criteria(nullptr) {}
@@ -21055,7 +21246,7 @@ class CUserMessage_NotifyResponseFound_Criteria :
                &_CUserMessage_NotifyResponseFound_Criteria_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    98;
+    99;
 
   friend void swap(CUserMessage_NotifyResponseFound_Criteria& a, CUserMessage_NotifyResponseFound_Criteria& b) {
     a.Swap(&b);
@@ -21180,7 +21371,7 @@ class CUserMessage_NotifyResponseFound_Criteria :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_NotifyResponseFound :
+class CUserMessage_NotifyResponseFound /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_NotifyResponseFound) */ {
  public:
   inline CUserMessage_NotifyResponseFound() : CUserMessage_NotifyResponseFound(nullptr) {}
@@ -21235,7 +21426,7 @@ class CUserMessage_NotifyResponseFound :
                &_CUserMessage_NotifyResponseFound_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    99;
+    100;
 
   friend void swap(CUserMessage_NotifyResponseFound& a, CUserMessage_NotifyResponseFound& b) {
     a.Swap(&b);
@@ -21422,7 +21613,7 @@ class CUserMessage_NotifyResponseFound :
 };
 // -------------------------------------------------------------------
 
-class CUserMessage_PlayResponseConditional :
+class CUserMessage_PlayResponseConditional /* final */ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_PlayResponseConditional) */ {
  public:
   inline CUserMessage_PlayResponseConditional() : CUserMessage_PlayResponseConditional(nullptr) {}
@@ -21477,7 +21668,7 @@ class CUserMessage_PlayResponseConditional :
                &_CUserMessage_PlayResponseConditional_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    100;
+    101;
 
   friend void swap(CUserMessage_PlayResponseConditional& a, CUserMessage_PlayResponseConditional& b) {
     a.Swap(&b);
@@ -30382,11 +30573,83 @@ inline void CUserMsg_ParticleManager_CreatePhysicsSim::set_allocated_prop_group_
 
 // -------------------------------------------------------------------
 
+// CUserMsg_ParticleManager_SetVData
+
+// optional string vdata_name = 1;
+inline bool CUserMsg_ParticleManager_SetVData::_internal_has_vdata_name() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CUserMsg_ParticleManager_SetVData::has_vdata_name() const {
+  return _internal_has_vdata_name();
+}
+inline void CUserMsg_ParticleManager_SetVData::clear_vdata_name() {
+  _impl_.vdata_name_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CUserMsg_ParticleManager_SetVData::vdata_name() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.SetVData.vdata_name)
+  return _internal_vdata_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CUserMsg_ParticleManager_SetVData::set_vdata_name(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.vdata_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.SetVData.vdata_name)
+}
+inline std::string* CUserMsg_ParticleManager_SetVData::mutable_vdata_name() {
+  std::string* _s = _internal_mutable_vdata_name();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.SetVData.vdata_name)
+  return _s;
+}
+inline const std::string& CUserMsg_ParticleManager_SetVData::_internal_vdata_name() const {
+  return _impl_.vdata_name_.Get();
+}
+inline void CUserMsg_ParticleManager_SetVData::_internal_set_vdata_name(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.vdata_name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CUserMsg_ParticleManager_SetVData::_internal_mutable_vdata_name() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.vdata_name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CUserMsg_ParticleManager_SetVData::release_vdata_name() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.SetVData.vdata_name)
+  if (!_internal_has_vdata_name()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.vdata_name_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.vdata_name_.IsDefault()) {
+    _impl_.vdata_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CUserMsg_ParticleManager_SetVData::set_allocated_vdata_name(std::string* vdata_name) {
+  if (vdata_name != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.vdata_name_.SetAllocated(vdata_name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.vdata_name_.IsDefault()) {
+    _impl_.vdata_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.SetVData.vdata_name)
+}
+
+// -------------------------------------------------------------------
+
 // CUserMsg_ParticleManager
 
 // required .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
 inline bool CUserMsg_ParticleManager::_internal_has_type() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000002u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000004u) != 0;
   return value;
 }
 inline bool CUserMsg_ParticleManager::has_type() const {
@@ -30394,7 +30657,7 @@ inline bool CUserMsg_ParticleManager::has_type() const {
 }
 inline void CUserMsg_ParticleManager::clear_type() {
   _impl_.type_ = 0;
-  _impl_._has_bits_[1] &= ~0x00000002u;
+  _impl_._has_bits_[1] &= ~0x00000004u;
 }
 inline ::PARTICLE_MESSAGE CUserMsg_ParticleManager::_internal_type() const {
   return static_cast< ::PARTICLE_MESSAGE >(_impl_.type_);
@@ -30405,7 +30668,7 @@ inline ::PARTICLE_MESSAGE CUserMsg_ParticleManager::type() const {
 }
 inline void CUserMsg_ParticleManager::_internal_set_type(::PARTICLE_MESSAGE value) {
   assert(::PARTICLE_MESSAGE_IsValid(value));
-  _impl_._has_bits_[1] |= 0x00000002u;
+  _impl_._has_bits_[1] |= 0x00000004u;
   _impl_.type_ = value;
 }
 inline void CUserMsg_ParticleManager::set_type(::PARTICLE_MESSAGE value) {
@@ -30415,7 +30678,7 @@ inline void CUserMsg_ParticleManager::set_type(::PARTICLE_MESSAGE value) {
 
 // required uint32 index = 2;
 inline bool CUserMsg_ParticleManager::_internal_has_index() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000004u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000008u) != 0;
   return value;
 }
 inline bool CUserMsg_ParticleManager::has_index() const {
@@ -30423,7 +30686,7 @@ inline bool CUserMsg_ParticleManager::has_index() const {
 }
 inline void CUserMsg_ParticleManager::clear_index() {
   _impl_.index_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00000004u;
+  _impl_._has_bits_[1] &= ~0x00000008u;
 }
 inline uint32_t CUserMsg_ParticleManager::_internal_index() const {
   return _impl_.index_;
@@ -30433,7 +30696,7 @@ inline uint32_t CUserMsg_ParticleManager::index() const {
   return _internal_index();
 }
 inline void CUserMsg_ParticleManager::_internal_set_index(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00000004u;
+  _impl_._has_bits_[1] |= 0x00000008u;
   _impl_.index_ = value;
 }
 inline void CUserMsg_ParticleManager::set_index(uint32_t value) {
@@ -33409,6 +33672,96 @@ inline void CUserMsg_ParticleManager::set_allocated_destroy_physics_sim(::CUserM
   }
   _impl_.destroy_physics_sim_ = destroy_physics_sim;
   // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.destroy_physics_sim)
+}
+
+// optional .CUserMsg_ParticleManager.SetVData set_vdata = 37;
+inline bool CUserMsg_ParticleManager::_internal_has_set_vdata() const {
+  bool value = (_impl_._has_bits_[1] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.set_vdata_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager::has_set_vdata() const {
+  return _internal_has_set_vdata();
+}
+inline void CUserMsg_ParticleManager::clear_set_vdata() {
+  if (_impl_.set_vdata_ != nullptr) _impl_.set_vdata_->Clear();
+  _impl_._has_bits_[1] &= ~0x00000002u;
+}
+inline const ::CUserMsg_ParticleManager_SetVData& CUserMsg_ParticleManager::_internal_set_vdata() const {
+  const ::CUserMsg_ParticleManager_SetVData* p = _impl_.set_vdata_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CUserMsg_ParticleManager_SetVData&>(
+      ::_CUserMsg_ParticleManager_SetVData_default_instance_);
+}
+inline const ::CUserMsg_ParticleManager_SetVData& CUserMsg_ParticleManager::set_vdata() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.set_vdata)
+  return _internal_set_vdata();
+}
+inline void CUserMsg_ParticleManager::unsafe_arena_set_allocated_set_vdata(
+    ::CUserMsg_ParticleManager_SetVData* set_vdata) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.set_vdata_);
+  }
+  _impl_.set_vdata_ = set_vdata;
+  if (set_vdata) {
+    _impl_._has_bits_[1] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[1] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.set_vdata)
+}
+inline ::CUserMsg_ParticleManager_SetVData* CUserMsg_ParticleManager::release_set_vdata() {
+  _impl_._has_bits_[1] &= ~0x00000002u;
+  ::CUserMsg_ParticleManager_SetVData* temp = _impl_.set_vdata_;
+  _impl_.set_vdata_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CUserMsg_ParticleManager_SetVData* CUserMsg_ParticleManager::unsafe_arena_release_set_vdata() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.set_vdata)
+  _impl_._has_bits_[1] &= ~0x00000002u;
+  ::CUserMsg_ParticleManager_SetVData* temp = _impl_.set_vdata_;
+  _impl_.set_vdata_ = nullptr;
+  return temp;
+}
+inline ::CUserMsg_ParticleManager_SetVData* CUserMsg_ParticleManager::_internal_mutable_set_vdata() {
+  _impl_._has_bits_[1] |= 0x00000002u;
+  if (_impl_.set_vdata_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CUserMsg_ParticleManager_SetVData>(GetArenaForAllocation());
+    _impl_.set_vdata_ = p;
+  }
+  return _impl_.set_vdata_;
+}
+inline ::CUserMsg_ParticleManager_SetVData* CUserMsg_ParticleManager::mutable_set_vdata() {
+  ::CUserMsg_ParticleManager_SetVData* _msg = _internal_mutable_set_vdata();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.set_vdata)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager::set_allocated_set_vdata(::CUserMsg_ParticleManager_SetVData* set_vdata) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.set_vdata_;
+  }
+  if (set_vdata) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(set_vdata);
+    if (message_arena != submessage_arena) {
+      set_vdata = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, set_vdata, submessage_arena);
+    }
+    _impl_._has_bits_[1] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[1] &= ~0x00000002u;
+  }
+  _impl_.set_vdata_ = set_vdata;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.set_vdata)
 }
 
 // -------------------------------------------------------------------
@@ -38520,6 +38873,8 @@ inline void CUserMessage_PlayResponseConditional::set_allocated_ent_origin(::CMs
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

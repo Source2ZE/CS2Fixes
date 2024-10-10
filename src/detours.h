@@ -48,6 +48,8 @@ class InputData_t;
 class CCSPlayerPawn;
 class CCSPlayer_UseServices;
 class CTraceFilter;
+class Vector;
+class QAngle;
 
 bool InitDetours(CGameConfig *gameConfig);
 void FlushAllDetours();
@@ -69,3 +71,10 @@ float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn*);
 int64 FASTCALL Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float);
 bool FASTCALL Detour_TraceFunc(int64*, int*, float*, uint64);
 bool FASTCALL Detour_TraceShape(int64*, int64, int64, int64, CTraceFilter*, int64);
+#ifdef PLATFORM_WINDOWS
+Vector* FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn*, Vector*);
+QAngle* FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*, QAngle*);
+#else
+Vector FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn*);
+QAngle FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*);
+#endif
