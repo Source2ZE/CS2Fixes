@@ -21,6 +21,7 @@
 #include "entity/ccsplayercontroller.h"
 #include "convar.h"
 #include "adminsystem.h"
+#include "leader.h"
 #include <vector>
 
 #define CMDFLAG_NONE	(0)
@@ -127,3 +128,4 @@ void ParseChatCommand(const char *, CCSPlayerController *);
 	void name##_callback(const CCommand &args, CCSPlayerController *player)
 
 #define CON_COMMAND_CHAT(name, description) CON_COMMAND_CHAT_FLAGS(name, description, ADMFLAG_NONE)
+#define CON_COMMAND_CHAT_LEADER(name, description) CON_COMMAND_CHAT_FLAGS(name, description, FLAG_LEADER)
