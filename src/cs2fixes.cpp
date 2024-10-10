@@ -962,6 +962,13 @@ Vector* CS2Fixes::Hook_GetEyePosition(Vector* ret)
 {
 	// Message("check Hook_GetEyePosition\n");
 	const auto pPawn = META_IFACEPTR(CCSPlayerPawn);
+    if (!pPawn->IsAlive())
+        RETURN_META_VALUE(MRES_IGNORED, ret);
+
+    const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
+    if (!pController || pController->IsBot() || pController->m_bIsHLTV())
+        RETURN_META_VALUE(MRES_IGNORED, ret);
+
 	if (!CPointViewControlHandler::IsViewControl(pPawn))
 		RETURN_META_VALUE(MRES_IGNORED, ret);
 
@@ -975,6 +982,13 @@ QAngle* CS2Fixes::Hook_GetEyeAngles(QAngle* ret)
 {
 	// Message("check Hook_GetEyeAngles\n");
 	const auto pPawn = META_IFACEPTR(CCSPlayerPawn);
+    if (!pPawn->IsAlive())
+        RETURN_META_VALUE(MRES_IGNORED, ret);
+
+    const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
+    if (!pController || pController->IsBot() || pController->m_bIsHLTV())
+        RETURN_META_VALUE(MRES_IGNORED, ret);
+
 	if (!CPointViewControlHandler::IsViewControl(pPawn))
 		RETURN_META_VALUE(MRES_IGNORED, ret);
 
@@ -989,6 +1003,11 @@ QAngle* CS2Fixes::Hook_GetEyeAngles(QAngle* ret)
 Vector CS2Fixes::Hook_GetEyePosition()
 {
 	const auto pPawn = META_IFACEPTR(CCSPlayerPawn);
+    if (!pPawn->IsAlive())
+        RETURN_META_VALUE(MRES_IGNORED, Vector());
+    const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
+    if (!pController || pController->IsBot() || pController->m_bIsHLTV())
+        RETURN_META_VALUE(MRES_IGNORED, Vector());
 	if (!CPointViewControlHandler::IsViewControl(pPawn))
 		RETURN_META_VALUE(MRES_IGNORED, Vector());
 	RETURN_META_VALUE(MRES_SUPERCEDE, pPawn->GetEyePosition());
@@ -996,6 +1015,11 @@ Vector CS2Fixes::Hook_GetEyePosition()
 QAngle CS2Fixes::Hook_GetEyeAngles()
 {
 	const auto pPawn = META_IFACEPTR(CCSPlayerPawn);
+	if (!pPawn->IsAlive())
+		RETURN_META_VALUE(MRES_IGNORED, QAngle());
+	const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
+	if (!pController || pController->IsBot() || pController->m_bIsHLTV())
+		RETURN_META_VALUE(MRES_IGNORED, QAngle());
 	if (!CPointViewControlHandler::IsViewControl(pPawn))
 		RETURN_META_VALUE(MRES_IGNORED, QAngle());
 	const auto& angles = pPawn->v_angle();

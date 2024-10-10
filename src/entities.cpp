@@ -474,6 +474,16 @@ bool OnEnable(CPointViewControl* pEntity, CBaseEntity* pActivator)
         return false;
 
     const auto pPawn  = reinterpret_cast<CCSPlayerPawn*>(pActivator);
+    const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
+    if (!pController)
+        return false;
+
+    if (pController->IsBot() || pController->m_bIsHLTV())
+    {
+        Warning("PointViewControl %s try enable for bot or HLTV: %s\n", it->second.m_name.c_str(), pController->GetPlayerName());
+        return false;
+    }
+
     const auto handle = CHandle<CCSPlayerPawn>(pPawn->GetHandle());
 
     for (auto& [vk, vc] : s_repository)
@@ -506,6 +516,16 @@ bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator)
         return false;
 
     const auto pPawn  = reinterpret_cast<CCSPlayerPawn*>(pActivator);
+    const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
+    if (!pController)
+        return false;
+
+    if (pController->IsBot() || pController->m_bIsHLTV())
+    {
+        Warning("PointViewControl %s try disable for bot or HLTV: %s\n", it->second.m_name.c_str(), pController->GetPlayerName());
+        return false;
+    }
+
     const auto handle = CHandle<CCSPlayerPawn>(pPawn->GetHandle());
 
     UpdatePlayerState(pPawn, INVALID_HANDLE, false, RESET_FOV);
