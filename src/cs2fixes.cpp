@@ -118,13 +118,6 @@ SH_DECL_MANUALHOOK1(OnTakeDamage_Alive, 0, 0, 0, bool, CTakeDamageInfoContainer 
 SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
 SH_DECL_HOOK2(IGameEventManager2, LoadEventsFromFile, SH_NOATTRIB, 0, int, const char *, bool);
 SH_DECL_MANUALHOOK1_void(GoToIntermission, 0, 0, 0, bool);
-#ifdef PLATFORM_WINDOWS
-SH_DECL_MANUALHOOK1(GetEyePosition, 0, 0, 0, Vector*, Vector*);
-SH_DECL_MANUALHOOK1(GetEyeAngles, 0, 0, 0, QAngle*, QAngle*);
-#else
-SH_DECL_MANUALHOOK0(GetEyePosition, 0, 0, 0, Vector);
-SH_DECL_MANUALHOOK0(GetEyeAngles, 0, 0, 0, QAngle);
-#endif
 
 CS2Fixes g_CS2Fixes;
 
@@ -146,8 +139,6 @@ int g_iOnTakeDamageAliveId = -1;
 int g_iCheckMovingGroundId = -1;
 int g_iLoadEventsFromFileId = -1;
 int g_iGoToIntermissionId = -1;
-int g_iGetEyePositionId = -1;
-int g_iGetEyeAnglesId = -1;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -265,19 +256,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	SH_MANUALHOOK_RECONFIGURE(OnTakeDamage_Alive, offset, 0, 0);
 	g_iOnTakeDamageAliveId = SH_ADD_MANUALDVPHOOK(OnTakeDamage_Alive, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_OnTakeDamage_Alive), false);
 
-	offset = g_GameConfig->GetOffset("CBaseEntity::GetEyePosition");
-	if (offset == -1)
-	{
-		snprintf(error, maxlen, "Failed to find CBaseEntity::GetEyePosition\n");
-		bRequiredInitLoaded = false;
-	}
-	SH_MANUALHOOK_RECONFIGURE(GetEyePosition, offset, 0, 0);
-	g_iGetEyePositionId = SH_ADD_MANUALDVPHOOK(GetEyePosition, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_GetEyePosition), false);
-
-	offset++;
-	SH_MANUALHOOK_RECONFIGURE(GetEyeAngles, offset, 0, 0);
-	g_iGetEyeAnglesId = SH_ADD_MANUALDVPHOOK(GetEyeAngles, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_GetEyeAngles), false);
-
 	const auto pCCSPlayer_MovementServicesVTable = modules::server->FindVirtualTable("CCSPlayer_MovementServices");
 	offset = g_GameConfig->GetOffset("CCSPlayer_MovementServices::CheckMovingGround");
 	if (offset == -1)
@@ -393,12 +371,6 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 	if (g_iGoToIntermissionId != -1)
 		SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
-
-	if (g_iGetEyePositionId != -1)
-		SH_REMOVE_HOOK_ID(g_iGetEyePositionId);
-
-	if (g_iGetEyeAnglesId != -1)
-		SH_REMOVE_HOOK_ID(g_iGetEyeAnglesId);
 
 	ConVar_Unregister();
 
@@ -956,76 +928,6 @@ bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer *pInfoContainer)
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
-
-#ifdef PLATFORM_WINDOWS
-Vector* CS2Fixes::Hook_GetEyePosition(Vector* ret)
-{
-	// Message("check Hook_GetEyePosition\n");
-	const auto pPawn = META_IFACEPTR(CCSPlayerPawn);
-    if (!pPawn->IsAlive())
-        RETURN_META_VALUE(MRES_IGNORED, ret);
-
-    const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
-    if (!pController || pController->IsBot() || pController->m_bIsHLTV())
-        RETURN_META_VALUE(MRES_IGNORED, ret);
-
-	if (!CPointViewControlHandler::IsViewControl(pPawn))
-		RETURN_META_VALUE(MRES_IGNORED, ret);
-
-	const auto& origin = pPawn->GetEyePosition();
-	ret->Init(origin.x, origin.y, origin.z);
-
-	// Message("override Hook_GetEyePosition\n");
-	RETURN_META_VALUE(MRES_SUPERCEDE, ret);
-}
-QAngle* CS2Fixes::Hook_GetEyeAngles(QAngle* ret)
-{
-	// Message("check Hook_GetEyeAngles\n");
-	const auto pPawn = META_IFACEPTR(CCSPlayerPawn);
-    if (!pPawn->IsAlive())
-        RETURN_META_VALUE(MRES_IGNORED, ret);
-
-    const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
-    if (!pController || pController->IsBot() || pController->m_bIsHLTV())
-        RETURN_META_VALUE(MRES_IGNORED, ret);
-
-	if (!CPointViewControlHandler::IsViewControl(pPawn))
-		RETURN_META_VALUE(MRES_IGNORED, ret);
-
-	const auto& angles = pPawn->v_angle();
-	ret->Init(angles.x, angles.y, angles.z);
-
-	// Message("override Hook_GetEyeAngles -> %.2f %.2f %.2f\n", ret->x, ret->y, ret->z);
-	RETURN_META_VALUE(MRES_SUPERCEDE, ret);
-}
-
-#else
-Vector CS2Fixes::Hook_GetEyePosition()
-{
-	const auto pPawn = META_IFACEPTR(CCSPlayerPawn);
-    if (!pPawn->IsAlive())
-        RETURN_META_VALUE(MRES_IGNORED, Vector());
-    const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
-    if (!pController || pController->IsBot() || pController->m_bIsHLTV())
-        RETURN_META_VALUE(MRES_IGNORED, Vector());
-	if (!CPointViewControlHandler::IsViewControl(pPawn))
-		RETURN_META_VALUE(MRES_IGNORED, Vector());
-	RETURN_META_VALUE(MRES_SUPERCEDE, pPawn->GetEyePosition());
-}
-QAngle CS2Fixes::Hook_GetEyeAngles()
-{
-	const auto pPawn = META_IFACEPTR(CCSPlayerPawn);
-	if (!pPawn->IsAlive())
-		RETURN_META_VALUE(MRES_IGNORED, QAngle());
-	const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
-	if (!pController || pController->IsBot() || pController->m_bIsHLTV())
-		RETURN_META_VALUE(MRES_IGNORED, QAngle());
-	if (!CPointViewControlHandler::IsViewControl(pPawn))
-		RETURN_META_VALUE(MRES_IGNORED, QAngle());
-	const auto& angles = pPawn->v_angle();
-	RETURN_META_VALUE(MRES_SUPERCEDE, angles);
-}
-#endif
 
 void CS2Fixes::Hook_CheckMovingGround(double frametime)
 {

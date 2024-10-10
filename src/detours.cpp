@@ -78,6 +78,8 @@ DECLARE_DETOUR(CCSPlayerPawn_GetMaxSpeed, Detour_CCSPlayerPawn_GetMaxSpeed);
 DECLARE_DETOUR(FindUseEntity, Detour_FindUseEntity);
 DECLARE_DETOUR(TraceFunc, Detour_TraceFunc);
 DECLARE_DETOUR(TraceShape, Detour_TraceShape);
+DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition);
+DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
 
 static bool g_bBlockMolotovSelfDmg = false;
 static bool g_bBlockAllDamage = false;
@@ -583,6 +585,52 @@ bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceF
 
 	return TraceShape(a1, a2, a3, a4, filter, a6);
 }
+
+#ifdef PLATFORM_WINDOWS
+Vector* FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn, Vector* pRet)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& origin = pPawn->GetEyePosition();
+        pRet->Init(origin.x, origin.y, origin.z);
+        return pRet;
+    }
+
+    return CBasePlayerPawn_GetEyePosition(pPawn, pRet);
+}
+QAngle* FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn, QAngle* pRet)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& angles = pPawn->v_angle();
+        pRet->Init(angles.x, angles.y, angles.z);
+        return pRet;
+    }
+
+    return CBasePlayerPawn_GetEyeAngles(pPawn, pRet);
+}
+#else
+Vector FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& origin = pPawn->GetEyePosition();
+        return origin;
+    }
+
+    return CBasePlayerPawn_GetEyePosition(pPawn);
+}
+QAngle FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& angles = pPawn->v_angle();
+        return angles;
+    }
+
+    return CBasePlayerPawn_GetEyeAngles(pPawn);
+}
+#endif
 
 bool InitDetours(CGameConfig *gameConfig)
 {
