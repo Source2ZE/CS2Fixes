@@ -400,10 +400,13 @@ static CHandle<CBaseEntity>                    INVALID_HANDLE(0xFFFFFFFF);
 
 inline void UpdatePlayerState(CCSPlayerPawn* pPawn, const CHandle<CBaseEntity>& target, bool frozen, uint fov = INVALID_FOV, bool disarm = false)
 {
-    if (const auto pCamera = pPawn->GetCameraService())
+    if (!pPawn)
+        return;
+
+    if (const auto pCameraService = pPawn->GetCameraService())
     {
-        pCamera->m_hViewEntity(target);
-        pCamera->m_hZoomOwner(INVALID_HANDLE);
+        pCameraService->m_hViewEntity(target);
+        pCameraService->m_hZoomOwner(INVALID_HANDLE);
 
         if (fov != INVALID_FOV)
         {
@@ -411,11 +414,11 @@ inline void UpdatePlayerState(CCSPlayerPawn* pPawn, const CHandle<CBaseEntity>& 
             {
                 if (fov == RESET_FOV)
                 {
-                    pCamera->m_iFOV(pController->m_iDesiredFOV());
+                    pCameraService->m_iFOV(pController->m_iDesiredFOV());
                 }
                 else
                 {
-                    pCamera->m_iFOV(fov);
+                    pCameraService->m_iFOV(fov);
                 }
             }
         }
@@ -423,15 +426,18 @@ inline void UpdatePlayerState(CCSPlayerPawn* pPawn, const CHandle<CBaseEntity>& 
 
     if (disarm)
     {
-        if (const auto pWeapon = pPawn->m_pWeaponServices()->m_hActiveWeapon().Get())
+        if (const auto pWeaponService = pPawn->m_pWeaponServices())
         {
-            pWeapon->Disarm();
+            if (const auto pActiveWeapon = pWeaponService->m_hActiveWeapon().Get())
+            {
+                pActiveWeapon->Disarm();
+            }
         }
     }
 
     auto flags = pPawn->m_fFlags();
 
-    if (g_pGameRules->m_bFreezePeriod())
+    if (g_pGameRules && g_pGameRules->m_bFreezePeriod())
         frozen = true;
 
     if (frozen)
@@ -473,7 +479,7 @@ bool OnEnable(CPointViewControl* pEntity, CBaseEntity* pActivator)
     if (it == s_repository.end())
         return false;
 
-    const auto pPawn  = reinterpret_cast<CCSPlayerPawn*>(pActivator);
+    const auto pPawn       = reinterpret_cast<CCSPlayerPawn*>(pActivator);
     const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
     if (!pController)
         return false;
@@ -492,13 +498,13 @@ bool OnEnable(CPointViewControl* pEntity, CBaseEntity* pActivator)
         {
             if (vk == static_cast<uint>(key))
             {
-                Warning("PointViewControl %s was enabled twice in a row! player: %s\n", vc.m_name.c_str(), pPawn->GetController()->GetPlayerName());
+                Warning("PointViewControl %s was enabled twice in a row! player: %s\n", vc.m_name.c_str(), pController->GetPlayerName());
                 return false;
             }
 
             vc.m_players.Remove(index);
             UpdatePlayerState(pPawn, INVALID_HANDLE, false, RESET_FOV);
-            Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pPawn->GetController()->GetPlayerName());
+            Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pController->GetPlayerName());
             break;
         }
     }
@@ -515,7 +521,7 @@ bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator)
     if (it == s_repository.end())
         return false;
 
-    const auto pPawn  = reinterpret_cast<CCSPlayerPawn*>(pActivator);
+    const auto pPawn       = reinterpret_cast<CCSPlayerPawn*>(pActivator);
     const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
     if (!pController)
         return false;
