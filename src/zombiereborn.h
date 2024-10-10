@@ -89,7 +89,7 @@ struct ZRClass
 			}
 		};
 
-	ZRClass(ordered_json jsonKeys, std::string szClassname);
+	ZRClass(ordered_json jsonKeys, std::string szClassname, int iTeam);
 	void PrintInfo()
 	{
 		std::string szModels = "";
