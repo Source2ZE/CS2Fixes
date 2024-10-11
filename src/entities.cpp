@@ -562,14 +562,18 @@ void RunThink(int tick)
         }
     }
 
-    // think every 4 tick
-    if ((tick & 4) != 0)
-        return;
+    // think every tick
 
     for (auto& [vk, vc] : s_repository)
     {
         const auto entity = CHandle<CPointViewControl>(vk).Get();
         if (!entity)
+        {
+            Error("Why invalid entity here?");
+            continue;
+        }
+
+        if (vc.m_players.Count() == 0)
             continue;
 
         const auto pTarget = entity->GetTargetCameraEntity();
@@ -585,9 +589,6 @@ void RunThink(int tick)
             vc.m_players.Purge();
             continue;
         }
-
-        if (vc.m_players.Count() == 0)
-            continue;
 
         FOR_EACH_VEC(vc.m_players, i)
         {
@@ -605,7 +606,7 @@ void RunThink(int tick)
                 continue;
             }
 
-            UpdatePlayerState(player, pTarget, entity->HasFrozen(), entity->HasFOV() ? entity->GetFOV() : INVALID_FOV, entity->HasDisarm());
+            UpdatePlayerState(player, pTarget->GetHandle(), entity->HasFrozen(), entity->HasFOV() ? entity->GetFOV() : INVALID_FOV, entity->HasDisarm());
         }
     }
 }
