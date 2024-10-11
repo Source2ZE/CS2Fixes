@@ -431,6 +431,10 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 			return CPointViewControlHandler::OnEnable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator));
 		if (!V_strcasecmp(pInputName->String(), "DisableCamera"))
 			return CPointViewControlHandler::OnDisable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator));
+		if (!V_strcasecmp(pInputName->String(), "EnableCameraAll"))
+			return CPointViewControlHandler::OnEnableAll(pViewControl);
+		if (!V_strcasecmp(pInputName->String(), "DisableCameraAll"))
+			return CPointViewControlHandler::OnDisableAll(pViewControl);
 	}
 
 	VPROF_SCOPE_END();

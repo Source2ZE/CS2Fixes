@@ -538,6 +538,64 @@ bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator)
 
     return it->second.m_players.FindAndRemove(handle);
 }
+bool OnEnableAll(CPointViewControl* pEntity)
+{
+    const auto key = pEntity->GetHandle().ToInt();
+    const auto it  = s_repository.find(key);
+    if (it == s_repository.end())
+        return false;
+
+    for (auto i = 0; i < gpGlobals->maxClients; i++)
+    {
+        const auto pController = CCSPlayerController::FromSlot(i);
+        if (!pController || !pController->IsConnected() || pController->IsBot() || pController->m_bIsHLTV())
+            continue;
+
+        const auto pPawn = pController->GetPlayerPawn();
+        if (!pPawn || !pPawn->IsAlive())
+            continue;
+
+        const auto handle = CHandle<CCSPlayerPawn>(pPawn->GetHandle());
+
+        for (auto& [vk, vc] : s_repository)
+        {
+            if (vk == static_cast<uint>(key))
+            {
+                continue;
+            }
+            if (const auto index = vc.m_players.Find(handle); index > -1)
+            {
+                vc.m_players.Remove(index);
+                UpdatePlayerState(pPawn, INVALID_HANDLE, false, RESET_FOV);
+                Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pController->GetPlayerName());
+            }
+        }
+
+        it->second.m_players.AddToTail(handle);
+    }
+
+    return true;
+}
+bool OnDisableAll(CPointViewControl* pEntity)
+{
+    const auto key = pEntity->GetHandle().ToInt();
+    const auto it  = s_repository.find(key);
+    if (it == s_repository.end())
+        return false;
+
+    FOR_EACH_VEC(it->second.m_players, i)
+    {
+        const auto& handle = it->second.m_players.Element(i);
+
+        if (const auto player = handle.Get())
+            UpdatePlayerState(player, INVALID_HANDLE, false, RESET_FOV);
+    }
+
+    it->second.m_players.Purge();
+
+    return true;
+}
+
 void RunThink(int tick)
 {
     // validate

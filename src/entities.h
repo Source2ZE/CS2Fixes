@@ -42,10 +42,10 @@ void RunThink(int tick);
 
 namespace CPointViewControlHandler
 {
-void OnCreated(CBaseEntity* pEntity);
 bool OnEnable(CPointViewControl* pEntity, CBaseEntity* pActivator);
 bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator);
-void RunThink(int tick);
+bool OnEnableAll(CPointViewControl* pEntity);
+bool OnDisableAll(CPointViewControl* pEntity);
 bool IsViewControl(CCSPlayerPawn*);
 } // namespace CPointViewControlHandler
 
