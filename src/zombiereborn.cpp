@@ -222,7 +222,8 @@ uint64 ZRClass::ParseClassFlags(const char* pszFlags)
 }
 
 // this constructor is only used to create base class, which is required to have all values and min. 1 valid model entry
-ZRClass::ZRClass(ordered_json jsonKeys, std::string szClassname) :
+ZRClass::ZRClass(ordered_json jsonKeys, std::string szClassname, int iTeam) :
+	iTeam(iTeam),
 	bEnabled(jsonKeys["enabled"].get<bool>()),
 	szClassName(szClassname),
 	iHealth(jsonKeys["health"].get<int>()),
@@ -308,10 +309,10 @@ void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 	}
 }
 
-ZRHumanClass::ZRHumanClass(ordered_json jsonKeys, std::string szClassname) : ZRClass(jsonKeys, szClassname){};
+ZRHumanClass::ZRHumanClass(ordered_json jsonKeys, std::string szClassname) : ZRClass(jsonKeys, szClassname, CS_TEAM_CT){};
 
 ZRZombieClass::ZRZombieClass(ordered_json jsonKeys, std::string szClassname) :
-	ZRClass(jsonKeys, szClassname),
+	ZRClass(jsonKeys, szClassname, CS_TEAM_T),
 	iHealthRegenCount(jsonKeys.value("health_regen_count", 0)),
 	flHealthRegenInterval(jsonKeys.value("health_regen_interval", 0)){};
 
@@ -1408,7 +1409,7 @@ bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeapon
 	if (!pPawn)
 		return false;
 	const char *pszWeaponClassname = pPlayerWeapon->GetClassname();
-	if (pPawn->m_iTeamNum() == CS_TEAM_T && V_strncmp(pszWeaponClassname, "weapon_knife", 12))
+	if (pPawn->m_iTeamNum() == CS_TEAM_T && V_strncmp(pszWeaponClassname, "weapon_knife", 12) && V_strncmp(pszWeaponClassname, "weapon_c4", 9))
 		return false;
 	if (pPawn->m_iTeamNum() == CS_TEAM_CT && V_strlen(pszWeaponClassname) > 7 && !g_pZRWeaponConfig->FindWeapon(pszWeaponClassname + 7))
 		return false;
