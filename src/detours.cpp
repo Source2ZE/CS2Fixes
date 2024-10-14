@@ -136,9 +136,7 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity *pThis, CTakeDamageIn
 
 		const auto pszWeaponClass   = inputInfo->m_hAbility.Get() ? inputInfo->m_hAbility.Get()->GetClassname() : "";
 		const auto pszAttackerClass = inputInfo->m_hAttacker.Get() ? inputInfo->m_hAttacker.Get()->GetClassname() : "";
-		Warning("Player take damage from %f by %s.%s with %s", inputInfo->m_flDamage, pszAttackerClass, pszInflictorClass, pszWeaponClass);
-
-		return;
+		Warning("Player take damage %f by %s.%s with %s\n", inputInfo->m_flDamage, pszAttackerClass, pszInflictorClass, pszWeaponClass);
 	}
 
 	// Prevent everything but nades from inflicting blast damage
