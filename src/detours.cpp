@@ -84,7 +84,7 @@ static bool g_bFixBlockDamage = false;
 
 FAKE_BOOL_CVAR(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", g_bBlockMolotovSelfDmg, false, false)
 FAKE_BOOL_CVAR(cs2f_block_all_dmg, "Whether to block all damage to players", g_bBlockAllDamage, false, false)
-FAKE_BOOL_CVAR(cs2f_fix_block_dmg, "Whether to fix blockdamage for players", g_bFixBlockDamage, false, false)
+FAKE_BOOL_CVAR(cs2f_fix_block_dmg, "Whether to fix block-damage on players", g_bFixBlockDamage, false, false)
 
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
 {
@@ -112,7 +112,8 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity *pThis, CTakeDamageIn
 	CBaseEntity *pInflictor = inputInfo->m_hInflictor.Get();
 	const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 
-	if (g_bFixBlockDamage && inputInfo->m_AttackerInfo.m_bIsPawn && (inputInfo->m_bitsDamageType & DMG_BULLET) == 0 && inputInfo->m_hAttacker != pThis->GetHandle())
+	// After Armory update, activator became attacker on block damage, which broke it..
+	if (g_bFixBlockDamage && inputInfo->m_AttackerInfo.m_bIsPawn && inputInfo->m_bitsDamageType ^ DMG_BULLET && inputInfo->m_hAttacker != pThis->GetHandle())
 	{
 		if (V_strcasecmp(pszInflictorClass, "func_movelinear") == 0
 			|| V_strcasecmp(pszInflictorClass, "func_mover") == 0
@@ -121,22 +122,13 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity *pThis, CTakeDamageIn
 			|| V_strcasecmp(pszInflictorClass, "func_rotating") == 0
 			|| V_strcasecmp(pszInflictorClass, "point_hurt") == 0)
 		{
-			inputInfo->m_AttackerInfo.m_bIsPawn  = false;
+			inputInfo->m_AttackerInfo.m_bIsPawn = false;
 			inputInfo->m_AttackerInfo.m_bIsWorld = true;
-			inputInfo->m_hAttacker               = inputInfo->m_hInflictor;
+			inputInfo->m_hAttacker = inputInfo->m_hInflictor;
 
-			inputInfo->m_AttackerInfo.m_hAttackerPawn       = CHandle<CCSPlayerPawn>(~0u);
+			inputInfo->m_AttackerInfo.m_hAttackerPawn = CHandle<CCSPlayerPawn>(~0u);
 			inputInfo->m_AttackerInfo.m_nAttackerPlayerSlot = ~0;
-
-			return CBaseEntity_TakeDamageOld(pThis, inputInfo);
 		}
-
-		// block other unknown
-		// [Kxnrl] I never see the below, but just log it.
-
-		const auto pszWeaponClass   = inputInfo->m_hAbility.Get() ? inputInfo->m_hAbility.Get()->GetClassname() : "";
-		const auto pszAttackerClass = inputInfo->m_hAttacker.Get() ? inputInfo->m_hAttacker.Get()->GetClassname() : "";
-		Warning("Player take damage %f by %s.%s with %s\n", inputInfo->m_flDamage, pszAttackerClass, pszInflictorClass, pszWeaponClass);
 	}
 
 	// Prevent everything but nades from inflicting blast damage
