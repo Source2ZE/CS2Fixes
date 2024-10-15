@@ -391,8 +391,8 @@
 			// 2976 (372 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"		"377"
-				"linux"			"377"
+				"windows"		"380"
+				"linux"			"380"
 			}
 			// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 			"CGameRules_FindPickerEntity"
@@ -402,8 +402,8 @@
 			}
 			"PassesTriggerFilters"
 			{
-				"windows"		"260"
-				"linux"			"261"
+				"windows"		"263"
+				"linux"			"264"
 			}
 			"CCSPlayerController_Respawn"
 			{
@@ -436,8 +436,8 @@
 			// Long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
 			"CBasePlayerPawn::OnTakeDamage_Alive"
 			{
-				"windows"		"233"
-				"linux"			"234"
+				"windows"		"236"
+				"linux"			"237"
 			}
 			// There's no easy way to find this, but it's a function that checks entity flags (0x370) and ends by calling RemoveFlag with 0x800000 (FL_BASEVELOCITY)
 			"CCSPlayer_MovementServices::CheckMovingGround"
