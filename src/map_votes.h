@@ -77,7 +77,8 @@ typedef struct
 {
     const char* name;
     int cooldown;
-} MapCooldownPair;
+    int mapIndex;
+} MapCooldownStruct;
 
 
 class CMapVoteSystem
@@ -99,7 +100,7 @@ public:
     int GetMapIndexFromSubstring(const char* sMapSubstring);
     int GetCooldownMap(int iMapIndex) { return m_vecMapList[iMapIndex].GetCooldown(); };
     void PutMapOnCooldown(int iMapIndex) { m_vecMapList[iMapIndex].ResetCooldownToBase(); };
-    void PutMapOnCooldownAndDecrement(int iMapIndex);
+    void DecrementAllMapCooldowns();
     void SetMaxNominatedMaps(int iMaxNominatedMaps) { m_iMaxNominatedMaps = iMaxNominatedMaps; };
     int GetMaxNominatedMaps() { return m_iMaxNominatedMaps; };
     int AddMapNomination(CPlayerSlot iPlayerSlot, const char* sMapSubstring);
@@ -121,6 +122,8 @@ public:
     uint64 GetCurrentWorkshopMap() { return m_iCurrentWorkshopMap; }
     const char* GetCurrentMap() { return m_strCurrentMap.c_str(); }
     int GetDownloadQueueSize() { return m_DownloadQueue.Count(); }
+    int GetCurrentMapIndex() { return m_iCurrentMapIndex; }
+    void SetCurrentMapIndex(int iMapIndex) { m_iCurrentMapIndex = iMapIndex; }
 
 private:
     int WinningMapIndex();
@@ -137,6 +140,7 @@ private:
     int m_iMaxNominatedMaps = 10;
     int m_iRandomWinnerShift = 0;
     int m_arrPlayerVotes[MAXPLAYERS];
+    int m_iCurrentMapIndex;
     bool m_bIsVoteOngoing = false;
     bool m_bMapListLoaded = false;
     bool m_bIntermissionStarted = false;
