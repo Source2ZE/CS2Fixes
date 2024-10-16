@@ -72,7 +72,7 @@ struct AttackerInfo_t
 	bool m_bNeedInit;
 	bool m_bIsPawn;
 	bool m_bIsWorld;
-	CBaseHandle m_hAttackerPawn;
+	CHandle<CCSPlayerPawn> m_hAttackerPawn;
 	uint16_t m_nAttackerPlayerSlot;
 	int m_iTeamChecked;
 	int m_nTeam;
