@@ -100,7 +100,7 @@ CON_COMMAND_CHAT_FLAGS(setnextmap, "[mapname] - Force next map (empty to clear f
 	}
 }
 
-static int __cdecl OrderStringsLexicographically(const MapCooldownPair *a, const MapCooldownPair *b)
+static int __cdecl OrderStringsLexicographically(const MapCooldownStruct *a, const MapCooldownStruct *b)
 {
 	return V_strcasecmp(a->name, b->name);
 }
@@ -139,14 +139,15 @@ CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nom
 		{
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
 			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all maps is:");
-			CUtlVector<MapCooldownPair> vecMapNames;
+			CUtlVector<MapCooldownStruct> vecMapNames;
 
 			for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
 			{
-				MapCooldownPair currentMap;
-				currentMap.name = g_pMapVoteSystem->GetMapName(i);
-				currentMap.cooldown = g_pMapVoteSystem->GetCooldownMap(i);
-				vecMapNames.AddToTail(currentMap);
+				MapCooldownStruct mapData;
+				mapData.name = g_pMapVoteSystem->GetMapName(i);
+				mapData.cooldown = g_pMapVoteSystem->GetCooldownMap(i);
+				mapData.mapIndex = i;
+				vecMapNames.AddToTail(mapData);
 			}
 
 			vecMapNames.Sort(OrderStringsLexicographically);
@@ -155,6 +156,8 @@ CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nom
 			{
 				if (vecMapNames[i].cooldown > 0)
 					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Cooldown: %d", vecMapNames[i].name, vecMapNames[i].cooldown);
+				else if (vecMapNames[i].mapIndex == g_pMapVoteSystem->GetCurrentMapIndex())
+					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Current Map", vecMapNames[i].name);
 				else
 					ClientPrint(player, HUD_PRINTCONSOLE, "- %s", vecMapNames[i].name);
 			}
@@ -209,7 +212,7 @@ GAME_EVENT_F(endmatch_mapvote_selecting_map)
 bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
 {
 	if (iMapIndex >= m_vecMapList.Count() || iMapIndex < 0) return false;
-	if (GetCooldownMap(iMapIndex) > 0) return false;
+	if (GetCooldownMap(iMapIndex) > 0 || GetCurrentMapIndex() == iMapIndex) return false;
 	return m_vecMapList[iMapIndex].IsEnabled();
 }
 
@@ -229,13 +232,7 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 		return -1.0f;
 	});
 
-	// Put the loaded map on cooldown and decrease the cooldown counter of others if loaded map is present in maplist
-	int iMapIndex = GetMapIndexFromSubstring(pMapName);
-	if (iMapIndex >= 0 && iMapIndex < GetMapListSize())
-	{
-		PutMapOnCooldownAndDecrement(iMapIndex);
-		WriteMapCooldownsToFile();
-	}
+	SetCurrentMapIndex(GetMapIndexFromSubstring(pMapName));
 }
 
 void CMapVoteSystem::StartVote() 
@@ -372,6 +369,16 @@ void CMapVoteSystem::FinishVote()
 		const char* sIsWinner = (i == iNextMapVoteIndex) ? "(WINNER)" : "";
 		ClientPrintAll(HUD_PRINTCONSOLE, "- %s got %d votes\n", GetMapName(iMapIndex), arrMapVotes[i]);
 	}
+
+	// Put the map on cooldown as we transition to the next map if map index is valid, also decrease cooldown remaining for others
+	// Map index will be invalid for any map not added to maplist.cfg
+	DecrementAllMapCooldowns();
+
+	int iMapIndex = GetCurrentMapIndex();
+	if (iMapIndex >= 0 && iMapIndex < GetMapListSize())
+		PutMapOnCooldown(iMapIndex);
+
+	WriteMapCooldownsToFile();
 
 	// Do the final clean-up
 	for (int i = 0; i < gpGlobals->maxClients; i++)
@@ -702,17 +709,13 @@ CUtlStringList CMapVoteSystem::CreateWorkshopMapGroup()
 	return mapList;
 }
 
-void CMapVoteSystem::PutMapOnCooldownAndDecrement(int iMapIndex)
+void CMapVoteSystem::DecrementAllMapCooldowns()
 {
-	// Decrement the cooldown of all maps in the map list
-
 	FOR_EACH_VEC(m_vecMapList, i)
 	{
 		CMapInfo * pMap = &m_vecMapList[i];
 		pMap->DecrementCooldown();
 	}
-
-	PutMapOnCooldown(iMapIndex);
 }
 
 bool CMapVoteSystem::WriteMapCooldownsToFile()
