@@ -87,7 +87,7 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class CCloud_GetUploadServerInfo_Request final :
+class CCloud_GetUploadServerInfo_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCloud_GetUploadServerInfo_Request) */ {
  public:
   inline CCloud_GetUploadServerInfo_Request() : CCloud_GetUploadServerInfo_Request(nullptr) {}
@@ -247,7 +247,7 @@ class CCloud_GetUploadServerInfo_Request final :
 };
 // -------------------------------------------------------------------
 
-class CCloud_GetUploadServerInfo_Response final :
+class CCloud_GetUploadServerInfo_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCloud_GetUploadServerInfo_Response) */ {
  public:
   inline CCloud_GetUploadServerInfo_Response() : CCloud_GetUploadServerInfo_Response(nullptr) {}
@@ -412,7 +412,7 @@ class CCloud_GetUploadServerInfo_Response final :
 };
 // -------------------------------------------------------------------
 
-class CCloud_GetFileDetails_Request final :
+class CCloud_GetFileDetails_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCloud_GetFileDetails_Request) */ {
  public:
   inline CCloud_GetFileDetails_Request() : CCloud_GetFileDetails_Request(nullptr) {}
@@ -587,7 +587,7 @@ class CCloud_GetFileDetails_Request final :
 };
 // -------------------------------------------------------------------
 
-class CCloud_UserFile final :
+class CCloud_UserFile :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCloud_UserFile) */ {
  public:
   inline CCloud_UserFile() : CCloud_UserFile(nullptr) {}
@@ -847,7 +847,7 @@ class CCloud_UserFile final :
 };
 // -------------------------------------------------------------------
 
-class CCloud_GetFileDetails_Response final :
+class CCloud_GetFileDetails_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCloud_GetFileDetails_Response) */ {
  public:
   inline CCloud_GetFileDetails_Response() : CCloud_GetFileDetails_Response(nullptr) {}
@@ -1012,7 +1012,7 @@ class CCloud_GetFileDetails_Response final :
 };
 // -------------------------------------------------------------------
 
-class CCloud_EnumerateUserFiles_Request final :
+class CCloud_EnumerateUserFiles_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCloud_EnumerateUserFiles_Request) */ {
  public:
   inline CCloud_EnumerateUserFiles_Request() : CCloud_EnumerateUserFiles_Request(nullptr) {}
@@ -1217,7 +1217,7 @@ class CCloud_EnumerateUserFiles_Request final :
 };
 // -------------------------------------------------------------------
 
-class CCloud_EnumerateUserFiles_Response final :
+class CCloud_EnumerateUserFiles_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCloud_EnumerateUserFiles_Response) */ {
  public:
   inline CCloud_EnumerateUserFiles_Response() : CCloud_EnumerateUserFiles_Response(nullptr) {}
@@ -1397,7 +1397,7 @@ class CCloud_EnumerateUserFiles_Response final :
 };
 // -------------------------------------------------------------------
 
-class CCloud_Delete_Request final :
+class CCloud_Delete_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCloud_Delete_Request) */ {
  public:
   inline CCloud_Delete_Request() : CCloud_Delete_Request(nullptr) {}
@@ -1577,7 +1577,7 @@ class CCloud_Delete_Request final :
 };
 // -------------------------------------------------------------------
 
-class CCloud_Delete_Response final :
+class CCloud_Delete_Response :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CCloud_Delete_Response) */ {
  public:
   inline CCloud_Delete_Response() : CCloud_Delete_Response(nullptr) {}

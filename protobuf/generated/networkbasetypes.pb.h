@@ -80,9 +80,6 @@ extern CMsg_CVars_CVarDefaultTypeInternal _CMsg_CVars_CVar_default_instance_;
 class CNETMsg_DebugOverlay;
 struct CNETMsg_DebugOverlayDefaultTypeInternal;
 extern CNETMsg_DebugOverlayDefaultTypeInternal _CNETMsg_DebugOverlay_default_instance_;
-class CNETMsg_Disconnect_Legacy;
-struct CNETMsg_Disconnect_LegacyDefaultTypeInternal;
-extern CNETMsg_Disconnect_LegacyDefaultTypeInternal _CNETMsg_Disconnect_Legacy_default_instance_;
 class CNETMsg_NOP;
 struct CNETMsg_NOPDefaultTypeInternal;
 extern CNETMsg_NOPDefaultTypeInternal _CNETMsg_NOP_default_instance_;
@@ -143,7 +140,6 @@ template<> ::CMsgVector2D* Arena::CreateMaybeMessage<::CMsgVector2D>(Arena*);
 template<> ::CMsg_CVars* Arena::CreateMaybeMessage<::CMsg_CVars>(Arena*);
 template<> ::CMsg_CVars_CVar* Arena::CreateMaybeMessage<::CMsg_CVars_CVar>(Arena*);
 template<> ::CNETMsg_DebugOverlay* Arena::CreateMaybeMessage<::CNETMsg_DebugOverlay>(Arena*);
-template<> ::CNETMsg_Disconnect_Legacy* Arena::CreateMaybeMessage<::CNETMsg_Disconnect_Legacy>(Arena*);
 template<> ::CNETMsg_NOP* Arena::CreateMaybeMessage<::CNETMsg_NOP>(Arena*);
 template<> ::CNETMsg_SetConVar* Arena::CreateMaybeMessage<::CNETMsg_SetConVar>(Arena*);
 template<> ::CNETMsg_SignonState* Arena::CreateMaybeMessage<::CNETMsg_SignonState>(Arena*);
@@ -2472,166 +2468,6 @@ class CNETMsg_SplitScreenUser :
 };
 // -------------------------------------------------------------------
 
-class CNETMsg_Disconnect_Legacy :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CNETMsg_Disconnect_Legacy) */ {
- public:
-  inline CNETMsg_Disconnect_Legacy() : CNETMsg_Disconnect_Legacy(nullptr) {}
-  ~CNETMsg_Disconnect_Legacy() override;
-  explicit PROTOBUF_CONSTEXPR CNETMsg_Disconnect_Legacy(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CNETMsg_Disconnect_Legacy(const CNETMsg_Disconnect_Legacy& from);
-  CNETMsg_Disconnect_Legacy(CNETMsg_Disconnect_Legacy&& from) noexcept
-    : CNETMsg_Disconnect_Legacy() {
-    *this = ::std::move(from);
-  }
-
-  inline CNETMsg_Disconnect_Legacy& operator=(const CNETMsg_Disconnect_Legacy& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CNETMsg_Disconnect_Legacy& operator=(CNETMsg_Disconnect_Legacy&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CNETMsg_Disconnect_Legacy& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CNETMsg_Disconnect_Legacy* internal_default_instance() {
-    return reinterpret_cast<const CNETMsg_Disconnect_Legacy*>(
-               &_CNETMsg_Disconnect_Legacy_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    12;
-
-  friend void swap(CNETMsg_Disconnect_Legacy& a, CNETMsg_Disconnect_Legacy& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CNETMsg_Disconnect_Legacy* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CNETMsg_Disconnect_Legacy* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CNETMsg_Disconnect_Legacy* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CNETMsg_Disconnect_Legacy>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CNETMsg_Disconnect_Legacy& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CNETMsg_Disconnect_Legacy& from) {
-    CNETMsg_Disconnect_Legacy::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CNETMsg_Disconnect_Legacy* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CNETMsg_Disconnect_Legacy";
-  }
-  protected:
-  explicit CNETMsg_Disconnect_Legacy(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kReasonFieldNumber = 2,
-  };
-  // optional .ENetworkDisconnectionReason reason = 2 [default = NETWORK_DISCONNECT_INVALID];
-  bool has_reason() const;
-  private:
-  bool _internal_has_reason() const;
-  public:
-  void clear_reason();
-  ::ENetworkDisconnectionReason reason() const;
-  void set_reason(::ENetworkDisconnectionReason value);
-  private:
-  ::ENetworkDisconnectionReason _internal_reason() const;
-  void _internal_set_reason(::ENetworkDisconnectionReason value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:CNETMsg_Disconnect_Legacy)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    int reason_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_networkbasetypes_2eproto;
-};
-// -------------------------------------------------------------------
-
 class CNETMsg_Tick :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CNETMsg_Tick) */ {
  public:
@@ -2687,7 +2523,7 @@ class CNETMsg_Tick :
                &_CNETMsg_Tick_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    12;
 
   friend void swap(CNETMsg_Tick& a, CNETMsg_Tick& b) {
     a.Swap(&b);
@@ -2762,15 +2598,14 @@ class CNETMsg_Tick :
   enum : int {
     kExpectedLongTickReasonFieldNumber = 11,
     kTickFieldNumber = 1,
-    kHostFrametimeFieldNumber = 2,
-    kHostFrametimeStdDeviationFieldNumber = 3,
     kHostComputationtimeFieldNumber = 4,
     kHostComputationtimeStdDeviationFieldNumber = 5,
-    kHostFramestarttimeStdDeviationFieldNumber = 6,
-    kHostLossFieldNumber = 7,
+    kLegacyHostLossFieldNumber = 7,
     kHostUnfilteredFrametimeFieldNumber = 8,
     kHltvReplayFlagsFieldNumber = 9,
     kExpectedLongTickFieldNumber = 10,
+    kHostFrameDroppedPctX10FieldNumber = 12,
+    kHostFrameIrregularArrivalPctX10FieldNumber = 13,
   };
   // optional string expected_long_tick_reason = 11;
   bool has_expected_long_tick_reason() const;
@@ -2803,32 +2638,6 @@ class CNETMsg_Tick :
   void _internal_set_tick(uint32_t value);
   public:
 
-  // optional uint32 host_frametime = 2;
-  bool has_host_frametime() const;
-  private:
-  bool _internal_has_host_frametime() const;
-  public:
-  void clear_host_frametime();
-  uint32_t host_frametime() const;
-  void set_host_frametime(uint32_t value);
-  private:
-  uint32_t _internal_host_frametime() const;
-  void _internal_set_host_frametime(uint32_t value);
-  public:
-
-  // optional uint32 host_frametime_std_deviation = 3;
-  bool has_host_frametime_std_deviation() const;
-  private:
-  bool _internal_has_host_frametime_std_deviation() const;
-  public:
-  void clear_host_frametime_std_deviation();
-  uint32_t host_frametime_std_deviation() const;
-  void set_host_frametime_std_deviation(uint32_t value);
-  private:
-  uint32_t _internal_host_frametime_std_deviation() const;
-  void _internal_set_host_frametime_std_deviation(uint32_t value);
-  public:
-
   // optional uint32 host_computationtime = 4;
   bool has_host_computationtime() const;
   private:
@@ -2855,30 +2664,17 @@ class CNETMsg_Tick :
   void _internal_set_host_computationtime_std_deviation(uint32_t value);
   public:
 
-  // optional uint32 host_framestarttime_std_deviation = 6;
-  bool has_host_framestarttime_std_deviation() const;
+  // optional uint32 legacy_host_loss = 7;
+  bool has_legacy_host_loss() const;
   private:
-  bool _internal_has_host_framestarttime_std_deviation() const;
+  bool _internal_has_legacy_host_loss() const;
   public:
-  void clear_host_framestarttime_std_deviation();
-  uint32_t host_framestarttime_std_deviation() const;
-  void set_host_framestarttime_std_deviation(uint32_t value);
+  void clear_legacy_host_loss();
+  uint32_t legacy_host_loss() const;
+  void set_legacy_host_loss(uint32_t value);
   private:
-  uint32_t _internal_host_framestarttime_std_deviation() const;
-  void _internal_set_host_framestarttime_std_deviation(uint32_t value);
-  public:
-
-  // optional uint32 host_loss = 7;
-  bool has_host_loss() const;
-  private:
-  bool _internal_has_host_loss() const;
-  public:
-  void clear_host_loss();
-  uint32_t host_loss() const;
-  void set_host_loss(uint32_t value);
-  private:
-  uint32_t _internal_host_loss() const;
-  void _internal_set_host_loss(uint32_t value);
+  uint32_t _internal_legacy_host_loss() const;
+  void _internal_set_legacy_host_loss(uint32_t value);
   public:
 
   // optional uint32 host_unfiltered_frametime = 8;
@@ -2920,6 +2716,32 @@ class CNETMsg_Tick :
   void _internal_set_expected_long_tick(uint32_t value);
   public:
 
+  // optional uint32 host_frame_dropped_pct_x10 = 12;
+  bool has_host_frame_dropped_pct_x10() const;
+  private:
+  bool _internal_has_host_frame_dropped_pct_x10() const;
+  public:
+  void clear_host_frame_dropped_pct_x10();
+  uint32_t host_frame_dropped_pct_x10() const;
+  void set_host_frame_dropped_pct_x10(uint32_t value);
+  private:
+  uint32_t _internal_host_frame_dropped_pct_x10() const;
+  void _internal_set_host_frame_dropped_pct_x10(uint32_t value);
+  public:
+
+  // optional uint32 host_frame_irregular_arrival_pct_x10 = 13;
+  bool has_host_frame_irregular_arrival_pct_x10() const;
+  private:
+  bool _internal_has_host_frame_irregular_arrival_pct_x10() const;
+  public:
+  void clear_host_frame_irregular_arrival_pct_x10();
+  uint32_t host_frame_irregular_arrival_pct_x10() const;
+  void set_host_frame_irregular_arrival_pct_x10(uint32_t value);
+  private:
+  uint32_t _internal_host_frame_irregular_arrival_pct_x10() const;
+  void _internal_set_host_frame_irregular_arrival_pct_x10(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CNETMsg_Tick)
  private:
   class _Internal;
@@ -2932,15 +2754,14 @@ class CNETMsg_Tick :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr expected_long_tick_reason_;
     uint32_t tick_;
-    uint32_t host_frametime_;
-    uint32_t host_frametime_std_deviation_;
     uint32_t host_computationtime_;
     uint32_t host_computationtime_std_deviation_;
-    uint32_t host_framestarttime_std_deviation_;
-    uint32_t host_loss_;
+    uint32_t legacy_host_loss_;
     uint32_t host_unfiltered_frametime_;
     uint32_t hltv_replay_flags_;
     uint32_t expected_long_tick_;
+    uint32_t host_frame_dropped_pct_x10_;
+    uint32_t host_frame_irregular_arrival_pct_x10_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_networkbasetypes_2eproto;
@@ -3002,7 +2823,7 @@ class CNETMsg_StringCmd :
                &_CNETMsg_StringCmd_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    13;
 
   friend void swap(CNETMsg_StringCmd& a, CNETMsg_StringCmd& b) {
     a.Swap(&b);
@@ -3182,7 +3003,7 @@ class CNETMsg_SetConVar :
                &_CNETMsg_SetConVar_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    14;
 
   friend void swap(CNETMsg_SetConVar& a, CNETMsg_SetConVar& b) {
     a.Swap(&b);
@@ -3347,7 +3168,7 @@ class CNETMsg_SignonState :
                &_CNETMsg_SignonState_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    15;
 
   friend void swap(CNETMsg_SignonState& a, CNETMsg_SignonState& b) {
     a.Swap(&b);
@@ -3603,7 +3424,7 @@ class CSVCMsg_GameEvent_key_t :
                &_CSVCMsg_GameEvent_key_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    16;
 
   friend void swap(CSVCMsg_GameEvent_key_t& a, CSVCMsg_GameEvent_key_t& b) {
     a.Swap(&b);
@@ -3873,7 +3694,7 @@ class CSVCMsg_GameEvent :
                &_CSVCMsg_GameEvent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    17;
 
   friend void swap(CSVCMsg_GameEvent& a, CSVCMsg_GameEvent& b) {
     a.Swap(&b);
@@ -4075,7 +3896,7 @@ class CSVCMsgList_GameEvents_event_t :
                &_CSVCMsgList_GameEvents_event_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    18;
 
   friend void swap(CSVCMsgList_GameEvents_event_t& a, CSVCMsgList_GameEvents_event_t& b) {
     a.Swap(&b);
@@ -4255,7 +4076,7 @@ class CSVCMsgList_GameEvents :
                &_CSVCMsgList_GameEvents_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    20;
+    19;
 
   friend void swap(CSVCMsgList_GameEvents& a, CSVCMsgList_GameEvents& b) {
     a.Swap(&b);
@@ -4421,7 +4242,7 @@ class CNETMsg_SpawnGroup_Load :
                &_CNETMsg_SpawnGroup_Load_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    20;
 
   friend void swap(CNETMsg_SpawnGroup_Load& a, CNETMsg_SpawnGroup_Load& b) {
     a.Swap(&b);
@@ -4916,7 +4737,7 @@ class CNETMsg_SpawnGroup_ManifestUpdate :
                &_CNETMsg_SpawnGroup_ManifestUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    21;
 
   friend void swap(CNETMsg_SpawnGroup_ManifestUpdate& a, CNETMsg_SpawnGroup_ManifestUpdate& b) {
     a.Swap(&b);
@@ -5111,7 +4932,7 @@ class CNETMsg_SpawnGroup_SetCreationTick :
                &_CNETMsg_SpawnGroup_SetCreationTick_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    23;
+    22;
 
   friend void swap(CNETMsg_SpawnGroup_SetCreationTick& a, CNETMsg_SpawnGroup_SetCreationTick& b) {
     a.Swap(&b);
@@ -5301,7 +5122,7 @@ class CNETMsg_SpawnGroup_Unload :
                &_CNETMsg_SpawnGroup_Unload_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    24;
+    23;
 
   friend void swap(CNETMsg_SpawnGroup_Unload& a, CNETMsg_SpawnGroup_Unload& b) {
     a.Swap(&b);
@@ -5491,7 +5312,7 @@ class CNETMsg_SpawnGroup_LoadCompleted :
                &_CNETMsg_SpawnGroup_LoadCompleted_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    25;
+    24;
 
   friend void swap(CNETMsg_SpawnGroup_LoadCompleted& a, CNETMsg_SpawnGroup_LoadCompleted& b) {
     a.Swap(&b);
@@ -5651,7 +5472,7 @@ class CSVCMsg_GameSessionConfiguration :
                &_CSVCMsg_GameSessionConfiguration_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    26;
+    25;
 
   friend void swap(CSVCMsg_GameSessionConfiguration& a, CSVCMsg_GameSessionConfiguration& b) {
     a.Swap(&b);
@@ -6121,7 +5942,7 @@ class CNETMsg_DebugOverlay :
                &_CNETMsg_DebugOverlay_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    27;
+    26;
 
   friend void swap(CNETMsg_DebugOverlay& a, CNETMsg_DebugOverlay& b) {
     a.Swap(&b);
@@ -7567,39 +7388,6 @@ inline void CNETMsg_SplitScreenUser::set_slot(int32_t value) {
 
 // -------------------------------------------------------------------
 
-// CNETMsg_Disconnect_Legacy
-
-// optional .ENetworkDisconnectionReason reason = 2 [default = NETWORK_DISCONNECT_INVALID];
-inline bool CNETMsg_Disconnect_Legacy::_internal_has_reason() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool CNETMsg_Disconnect_Legacy::has_reason() const {
-  return _internal_has_reason();
-}
-inline void CNETMsg_Disconnect_Legacy::clear_reason() {
-  _impl_.reason_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-inline ::ENetworkDisconnectionReason CNETMsg_Disconnect_Legacy::_internal_reason() const {
-  return static_cast< ::ENetworkDisconnectionReason >(_impl_.reason_);
-}
-inline ::ENetworkDisconnectionReason CNETMsg_Disconnect_Legacy::reason() const {
-  // @@protoc_insertion_point(field_get:CNETMsg_Disconnect_Legacy.reason)
-  return _internal_reason();
-}
-inline void CNETMsg_Disconnect_Legacy::_internal_set_reason(::ENetworkDisconnectionReason value) {
-  assert(::ENetworkDisconnectionReason_IsValid(value));
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.reason_ = value;
-}
-inline void CNETMsg_Disconnect_Legacy::set_reason(::ENetworkDisconnectionReason value) {
-  _internal_set_reason(value);
-  // @@protoc_insertion_point(field_set:CNETMsg_Disconnect_Legacy.reason)
-}
-
-// -------------------------------------------------------------------
-
 // CNETMsg_Tick
 
 // optional uint32 tick = 1;
@@ -7630,65 +7418,9 @@ inline void CNETMsg_Tick::set_tick(uint32_t value) {
   // @@protoc_insertion_point(field_set:CNETMsg_Tick.tick)
 }
 
-// optional uint32 host_frametime = 2;
-inline bool CNETMsg_Tick::_internal_has_host_frametime() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool CNETMsg_Tick::has_host_frametime() const {
-  return _internal_has_host_frametime();
-}
-inline void CNETMsg_Tick::clear_host_frametime() {
-  _impl_.host_frametime_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline uint32_t CNETMsg_Tick::_internal_host_frametime() const {
-  return _impl_.host_frametime_;
-}
-inline uint32_t CNETMsg_Tick::host_frametime() const {
-  // @@protoc_insertion_point(field_get:CNETMsg_Tick.host_frametime)
-  return _internal_host_frametime();
-}
-inline void CNETMsg_Tick::_internal_set_host_frametime(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.host_frametime_ = value;
-}
-inline void CNETMsg_Tick::set_host_frametime(uint32_t value) {
-  _internal_set_host_frametime(value);
-  // @@protoc_insertion_point(field_set:CNETMsg_Tick.host_frametime)
-}
-
-// optional uint32 host_frametime_std_deviation = 3;
-inline bool CNETMsg_Tick::_internal_has_host_frametime_std_deviation() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
-  return value;
-}
-inline bool CNETMsg_Tick::has_host_frametime_std_deviation() const {
-  return _internal_has_host_frametime_std_deviation();
-}
-inline void CNETMsg_Tick::clear_host_frametime_std_deviation() {
-  _impl_.host_frametime_std_deviation_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000008u;
-}
-inline uint32_t CNETMsg_Tick::_internal_host_frametime_std_deviation() const {
-  return _impl_.host_frametime_std_deviation_;
-}
-inline uint32_t CNETMsg_Tick::host_frametime_std_deviation() const {
-  // @@protoc_insertion_point(field_get:CNETMsg_Tick.host_frametime_std_deviation)
-  return _internal_host_frametime_std_deviation();
-}
-inline void CNETMsg_Tick::_internal_set_host_frametime_std_deviation(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
-  _impl_.host_frametime_std_deviation_ = value;
-}
-inline void CNETMsg_Tick::set_host_frametime_std_deviation(uint32_t value) {
-  _internal_set_host_frametime_std_deviation(value);
-  // @@protoc_insertion_point(field_set:CNETMsg_Tick.host_frametime_std_deviation)
-}
-
 // optional uint32 host_computationtime = 4;
 inline bool CNETMsg_Tick::_internal_has_host_computationtime() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
 inline bool CNETMsg_Tick::has_host_computationtime() const {
@@ -7696,7 +7428,7 @@ inline bool CNETMsg_Tick::has_host_computationtime() const {
 }
 inline void CNETMsg_Tick::clear_host_computationtime() {
   _impl_.host_computationtime_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
 }
 inline uint32_t CNETMsg_Tick::_internal_host_computationtime() const {
   return _impl_.host_computationtime_;
@@ -7706,7 +7438,7 @@ inline uint32_t CNETMsg_Tick::host_computationtime() const {
   return _internal_host_computationtime();
 }
 inline void CNETMsg_Tick::_internal_set_host_computationtime(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000004u;
   _impl_.host_computationtime_ = value;
 }
 inline void CNETMsg_Tick::set_host_computationtime(uint32_t value) {
@@ -7716,7 +7448,7 @@ inline void CNETMsg_Tick::set_host_computationtime(uint32_t value) {
 
 // optional uint32 host_computationtime_std_deviation = 5;
 inline bool CNETMsg_Tick::_internal_has_host_computationtime_std_deviation() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
 inline bool CNETMsg_Tick::has_host_computationtime_std_deviation() const {
@@ -7724,7 +7456,7 @@ inline bool CNETMsg_Tick::has_host_computationtime_std_deviation() const {
 }
 inline void CNETMsg_Tick::clear_host_computationtime_std_deviation() {
   _impl_.host_computationtime_std_deviation_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
 inline uint32_t CNETMsg_Tick::_internal_host_computationtime_std_deviation() const {
   return _impl_.host_computationtime_std_deviation_;
@@ -7734,7 +7466,7 @@ inline uint32_t CNETMsg_Tick::host_computationtime_std_deviation() const {
   return _internal_host_computationtime_std_deviation();
 }
 inline void CNETMsg_Tick::_internal_set_host_computationtime_std_deviation(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000008u;
   _impl_.host_computationtime_std_deviation_ = value;
 }
 inline void CNETMsg_Tick::set_host_computationtime_std_deviation(uint32_t value) {
@@ -7742,65 +7474,37 @@ inline void CNETMsg_Tick::set_host_computationtime_std_deviation(uint32_t value)
   // @@protoc_insertion_point(field_set:CNETMsg_Tick.host_computationtime_std_deviation)
 }
 
-// optional uint32 host_framestarttime_std_deviation = 6;
-inline bool CNETMsg_Tick::_internal_has_host_framestarttime_std_deviation() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+// optional uint32 legacy_host_loss = 7;
+inline bool CNETMsg_Tick::_internal_has_legacy_host_loss() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
-inline bool CNETMsg_Tick::has_host_framestarttime_std_deviation() const {
-  return _internal_has_host_framestarttime_std_deviation();
+inline bool CNETMsg_Tick::has_legacy_host_loss() const {
+  return _internal_has_legacy_host_loss();
 }
-inline void CNETMsg_Tick::clear_host_framestarttime_std_deviation() {
-  _impl_.host_framestarttime_std_deviation_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+inline void CNETMsg_Tick::clear_legacy_host_loss() {
+  _impl_.legacy_host_loss_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
-inline uint32_t CNETMsg_Tick::_internal_host_framestarttime_std_deviation() const {
-  return _impl_.host_framestarttime_std_deviation_;
+inline uint32_t CNETMsg_Tick::_internal_legacy_host_loss() const {
+  return _impl_.legacy_host_loss_;
 }
-inline uint32_t CNETMsg_Tick::host_framestarttime_std_deviation() const {
-  // @@protoc_insertion_point(field_get:CNETMsg_Tick.host_framestarttime_std_deviation)
-  return _internal_host_framestarttime_std_deviation();
+inline uint32_t CNETMsg_Tick::legacy_host_loss() const {
+  // @@protoc_insertion_point(field_get:CNETMsg_Tick.legacy_host_loss)
+  return _internal_legacy_host_loss();
 }
-inline void CNETMsg_Tick::_internal_set_host_framestarttime_std_deviation(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
-  _impl_.host_framestarttime_std_deviation_ = value;
+inline void CNETMsg_Tick::_internal_set_legacy_host_loss(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.legacy_host_loss_ = value;
 }
-inline void CNETMsg_Tick::set_host_framestarttime_std_deviation(uint32_t value) {
-  _internal_set_host_framestarttime_std_deviation(value);
-  // @@protoc_insertion_point(field_set:CNETMsg_Tick.host_framestarttime_std_deviation)
-}
-
-// optional uint32 host_loss = 7;
-inline bool CNETMsg_Tick::_internal_has_host_loss() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
-  return value;
-}
-inline bool CNETMsg_Tick::has_host_loss() const {
-  return _internal_has_host_loss();
-}
-inline void CNETMsg_Tick::clear_host_loss() {
-  _impl_.host_loss_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000080u;
-}
-inline uint32_t CNETMsg_Tick::_internal_host_loss() const {
-  return _impl_.host_loss_;
-}
-inline uint32_t CNETMsg_Tick::host_loss() const {
-  // @@protoc_insertion_point(field_get:CNETMsg_Tick.host_loss)
-  return _internal_host_loss();
-}
-inline void CNETMsg_Tick::_internal_set_host_loss(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
-  _impl_.host_loss_ = value;
-}
-inline void CNETMsg_Tick::set_host_loss(uint32_t value) {
-  _internal_set_host_loss(value);
-  // @@protoc_insertion_point(field_set:CNETMsg_Tick.host_loss)
+inline void CNETMsg_Tick::set_legacy_host_loss(uint32_t value) {
+  _internal_set_legacy_host_loss(value);
+  // @@protoc_insertion_point(field_set:CNETMsg_Tick.legacy_host_loss)
 }
 
 // optional uint32 host_unfiltered_frametime = 8;
 inline bool CNETMsg_Tick::_internal_has_host_unfiltered_frametime() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool CNETMsg_Tick::has_host_unfiltered_frametime() const {
@@ -7808,7 +7512,7 @@ inline bool CNETMsg_Tick::has_host_unfiltered_frametime() const {
 }
 inline void CNETMsg_Tick::clear_host_unfiltered_frametime() {
   _impl_.host_unfiltered_frametime_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
 inline uint32_t CNETMsg_Tick::_internal_host_unfiltered_frametime() const {
   return _impl_.host_unfiltered_frametime_;
@@ -7818,7 +7522,7 @@ inline uint32_t CNETMsg_Tick::host_unfiltered_frametime() const {
   return _internal_host_unfiltered_frametime();
 }
 inline void CNETMsg_Tick::_internal_set_host_unfiltered_frametime(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.host_unfiltered_frametime_ = value;
 }
 inline void CNETMsg_Tick::set_host_unfiltered_frametime(uint32_t value) {
@@ -7828,7 +7532,7 @@ inline void CNETMsg_Tick::set_host_unfiltered_frametime(uint32_t value) {
 
 // optional uint32 hltv_replay_flags = 9;
 inline bool CNETMsg_Tick::_internal_has_hltv_replay_flags() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool CNETMsg_Tick::has_hltv_replay_flags() const {
@@ -7836,7 +7540,7 @@ inline bool CNETMsg_Tick::has_hltv_replay_flags() const {
 }
 inline void CNETMsg_Tick::clear_hltv_replay_flags() {
   _impl_.hltv_replay_flags_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000200u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline uint32_t CNETMsg_Tick::_internal_hltv_replay_flags() const {
   return _impl_.hltv_replay_flags_;
@@ -7846,7 +7550,7 @@ inline uint32_t CNETMsg_Tick::hltv_replay_flags() const {
   return _internal_hltv_replay_flags();
 }
 inline void CNETMsg_Tick::_internal_set_hltv_replay_flags(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.hltv_replay_flags_ = value;
 }
 inline void CNETMsg_Tick::set_hltv_replay_flags(uint32_t value) {
@@ -7856,7 +7560,7 @@ inline void CNETMsg_Tick::set_hltv_replay_flags(uint32_t value) {
 
 // optional uint32 expected_long_tick = 10;
 inline bool CNETMsg_Tick::_internal_has_expected_long_tick() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
 inline bool CNETMsg_Tick::has_expected_long_tick() const {
@@ -7864,7 +7568,7 @@ inline bool CNETMsg_Tick::has_expected_long_tick() const {
 }
 inline void CNETMsg_Tick::clear_expected_long_tick() {
   _impl_.expected_long_tick_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000400u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
 inline uint32_t CNETMsg_Tick::_internal_expected_long_tick() const {
   return _impl_.expected_long_tick_;
@@ -7874,7 +7578,7 @@ inline uint32_t CNETMsg_Tick::expected_long_tick() const {
   return _internal_expected_long_tick();
 }
 inline void CNETMsg_Tick::_internal_set_expected_long_tick(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   _impl_.expected_long_tick_ = value;
 }
 inline void CNETMsg_Tick::set_expected_long_tick(uint32_t value) {
@@ -7948,6 +7652,62 @@ inline void CNETMsg_Tick::set_allocated_expected_long_tick_reason(std::string* e
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:CNETMsg_Tick.expected_long_tick_reason)
+}
+
+// optional uint32 host_frame_dropped_pct_x10 = 12;
+inline bool CNETMsg_Tick::_internal_has_host_frame_dropped_pct_x10() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  return value;
+}
+inline bool CNETMsg_Tick::has_host_frame_dropped_pct_x10() const {
+  return _internal_has_host_frame_dropped_pct_x10();
+}
+inline void CNETMsg_Tick::clear_host_frame_dropped_pct_x10() {
+  _impl_.host_frame_dropped_pct_x10_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
+}
+inline uint32_t CNETMsg_Tick::_internal_host_frame_dropped_pct_x10() const {
+  return _impl_.host_frame_dropped_pct_x10_;
+}
+inline uint32_t CNETMsg_Tick::host_frame_dropped_pct_x10() const {
+  // @@protoc_insertion_point(field_get:CNETMsg_Tick.host_frame_dropped_pct_x10)
+  return _internal_host_frame_dropped_pct_x10();
+}
+inline void CNETMsg_Tick::_internal_set_host_frame_dropped_pct_x10(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_.host_frame_dropped_pct_x10_ = value;
+}
+inline void CNETMsg_Tick::set_host_frame_dropped_pct_x10(uint32_t value) {
+  _internal_set_host_frame_dropped_pct_x10(value);
+  // @@protoc_insertion_point(field_set:CNETMsg_Tick.host_frame_dropped_pct_x10)
+}
+
+// optional uint32 host_frame_irregular_arrival_pct_x10 = 13;
+inline bool CNETMsg_Tick::_internal_has_host_frame_irregular_arrival_pct_x10() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  return value;
+}
+inline bool CNETMsg_Tick::has_host_frame_irregular_arrival_pct_x10() const {
+  return _internal_has_host_frame_irregular_arrival_pct_x10();
+}
+inline void CNETMsg_Tick::clear_host_frame_irregular_arrival_pct_x10() {
+  _impl_.host_frame_irregular_arrival_pct_x10_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000200u;
+}
+inline uint32_t CNETMsg_Tick::_internal_host_frame_irregular_arrival_pct_x10() const {
+  return _impl_.host_frame_irregular_arrival_pct_x10_;
+}
+inline uint32_t CNETMsg_Tick::host_frame_irregular_arrival_pct_x10() const {
+  // @@protoc_insertion_point(field_get:CNETMsg_Tick.host_frame_irregular_arrival_pct_x10)
+  return _internal_host_frame_irregular_arrival_pct_x10();
+}
+inline void CNETMsg_Tick::_internal_set_host_frame_irregular_arrival_pct_x10(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_.host_frame_irregular_arrival_pct_x10_ = value;
+}
+inline void CNETMsg_Tick::set_host_frame_irregular_arrival_pct_x10(uint32_t value) {
+  _internal_set_host_frame_irregular_arrival_pct_x10(value);
+  // @@protoc_insertion_point(field_set:CNETMsg_Tick.host_frame_irregular_arrival_pct_x10)
 }
 
 // -------------------------------------------------------------------
@@ -11596,8 +11356,6 @@ CNETMsg_DebugOverlay::mutable_strings() {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

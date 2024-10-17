@@ -113,7 +113,21 @@ struct CClientMsg_RotateAnchorDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CClientMsg_RotateAnchorDefaultTypeInternal _CClientMsg_RotateAnchor_default_instance_;
-static ::_pb::Metadata file_level_metadata_clientmessages_2eproto[6];
+PROTOBUF_CONSTEXPR CClientMsg_ListenForResponseFound::CClientMsg_ListenForResponseFound(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.player_slot_)*/-1} {}
+struct CClientMsg_ListenForResponseFoundDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CClientMsg_ListenForResponseFoundDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CClientMsg_ListenForResponseFoundDefaultTypeInternal() {}
+  union {
+    CClientMsg_ListenForResponseFound _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CClientMsg_ListenForResponseFoundDefaultTypeInternal _CClientMsg_ListenForResponseFound_default_instance_;
+static ::_pb::Metadata file_level_metadata_clientmessages_2eproto[7];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_clientmessages_2eproto[2];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_clientmessages_2eproto = nullptr;
 
@@ -184,6 +198,14 @@ const uint32_t TableStruct_clientmessages_2eproto::offsets[] PROTOBUF_SECTION_VA
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CClientMsg_RotateAnchor, _impl_.angle_),
   0,
+  PROTOBUF_FIELD_OFFSET(::CClientMsg_ListenForResponseFound, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CClientMsg_ListenForResponseFound, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CClientMsg_ListenForResponseFound, _impl_.player_slot_),
+  0,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 8, -1, sizeof(::CClientMsg_CustomGameEvent)},
@@ -192,6 +214,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 38, 45, -1, sizeof(::CClientMsg_DevPaletteVisibilityChangedEvent)},
   { 46, 55, -1, sizeof(::CClientMsg_WorldUIControllerHasPanelChangedEvent)},
   { 58, 65, -1, sizeof(::CClientMsg_RotateAnchor)},
+  { 66, 73, -1, sizeof(::CClientMsg_ListenForResponseFound)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -201,6 +224,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CClientMsg_DevPaletteVisibilityChangedEvent_default_instance_._instance,
   &::_CClientMsg_WorldUIControllerHasPanelChangedEvent_default_instance_._instance,
   &::_CClientMsg_RotateAnchor_default_instance_._instance,
+  &::_CClientMsg_ListenForResponseFound_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_clientmessages_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -218,21 +242,23 @@ const char descriptor_table_protodef_clientmessages_2eproto[] PROTOBUF_SECTION_V
   "PanelChangedEvent\022\021\n\thas_panel\030\001 \001(\010\022\026\n\016"
   "client_ehandle\030\002 \001(\r\022\031\n\021literal_hand_typ"
   "e\030\003 \001(\r\"(\n\027CClientMsg_RotateAnchor\022\r\n\005an"
-  "gle\030\001 \001(\002*\333\001\n\023EBaseClientMessages\022\027\n\022CM_"
-  "CustomGameEvent\020\230\002\022\035\n\030CM_CustomGameEvent"
-  "Bounce\020\231\002\022\025\n\020CM_ClientUIEvent\020\232\002\022#\n\036CM_D"
-  "evPaletteVisibilityChanged\020\233\002\022(\n#CM_Worl"
-  "dUIControllerHasPanelChanged\020\234\002\022\024\n\017CM_Ro"
-  "tateAnchor\020\235\002\022\020\n\013CM_MAX_BASE\020\254\002*n\n\016EClie"
-  "ntUIEvent\022\032\n\026EClientUIEvent_Invalid\020\000\022!\n"
-  "\035EClientUIEvent_DialogFinished\020\001\022\035\n\031ECli"
-  "entUIEvent_FireOutput\020\002"
+  "gle\030\001 \001(\002\"<\n!CClientMsg_ListenForRespons"
+  "eFound\022\027\n\013player_slot\030\001 \001(\005:\002-1*\373\001\n\023EBas"
+  "eClientMessages\022\027\n\022CM_CustomGameEvent\020\230\002"
+  "\022\035\n\030CM_CustomGameEventBounce\020\231\002\022\025\n\020CM_Cl"
+  "ientUIEvent\020\232\002\022#\n\036CM_DevPaletteVisibilit"
+  "yChanged\020\233\002\022(\n#CM_WorldUIControllerHasPa"
+  "nelChanged\020\234\002\022\024\n\017CM_RotateAnchor\020\235\002\022\036\n\031C"
+  "M_ListenForResponseFound\020\236\002\022\020\n\013CM_MAX_BA"
+  "SE\020\254\002*n\n\016EClientUIEvent\022\032\n\026EClientUIEven"
+  "t_Invalid\020\000\022!\n\035EClientUIEvent_DialogFini"
+  "shed\020\001\022\035\n\031EClientUIEvent_FireOutput\020\002"
   ;
 static ::_pbi::once_flag descriptor_table_clientmessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_clientmessages_2eproto = {
-    false, false, 903, descriptor_table_protodef_clientmessages_2eproto,
+    false, false, 997, descriptor_table_protodef_clientmessages_2eproto,
     "clientmessages.proto",
-    &descriptor_table_clientmessages_2eproto_once, nullptr, 0, 6,
+    &descriptor_table_clientmessages_2eproto_once, nullptr, 0, 7,
     schemas, file_default_instances, TableStruct_clientmessages_2eproto::offsets,
     file_level_metadata_clientmessages_2eproto, file_level_enum_descriptors_clientmessages_2eproto,
     file_level_service_descriptors_clientmessages_2eproto,
@@ -255,6 +281,7 @@ bool EBaseClientMessages_IsValid(int value) {
     case 283:
     case 284:
     case 285:
+    case 286:
     case 300:
       return true;
     default:
@@ -1900,6 +1927,197 @@ void CClientMsg_RotateAnchor::InternalSwap(CClientMsg_RotateAnchor* other) {
       file_level_metadata_clientmessages_2eproto[5]);
 }
 
+// ===================================================================
+
+class CClientMsg_ListenForResponseFound::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CClientMsg_ListenForResponseFound>()._impl_._has_bits_);
+  static void set_has_player_slot(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+};
+
+CClientMsg_ListenForResponseFound::CClientMsg_ListenForResponseFound(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CClientMsg_ListenForResponseFound)
+}
+CClientMsg_ListenForResponseFound::CClientMsg_ListenForResponseFound(const CClientMsg_ListenForResponseFound& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CClientMsg_ListenForResponseFound* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.player_slot_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.player_slot_ = from._impl_.player_slot_;
+  // @@protoc_insertion_point(copy_constructor:CClientMsg_ListenForResponseFound)
+}
+
+inline void CClientMsg_ListenForResponseFound::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.player_slot_){-1}
+  };
+}
+
+CClientMsg_ListenForResponseFound::~CClientMsg_ListenForResponseFound() {
+  // @@protoc_insertion_point(destructor:CClientMsg_ListenForResponseFound)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CClientMsg_ListenForResponseFound::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void CClientMsg_ListenForResponseFound::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CClientMsg_ListenForResponseFound::Clear() {
+// @@protoc_insertion_point(message_clear_start:CClientMsg_ListenForResponseFound)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.player_slot_ = -1;
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CClientMsg_ListenForResponseFound::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional int32 player_slot = 1 [default = -1];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _Internal::set_has_player_slot(&has_bits);
+          _impl_.player_slot_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CClientMsg_ListenForResponseFound::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CClientMsg_ListenForResponseFound)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional int32 player_slot = 1 [default = -1];
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_player_slot(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CClientMsg_ListenForResponseFound)
+  return target;
+}
+
+size_t CClientMsg_ListenForResponseFound::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CClientMsg_ListenForResponseFound)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // optional int32 player_slot = 1 [default = -1];
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_player_slot());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CClientMsg_ListenForResponseFound::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CClientMsg_ListenForResponseFound::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CClientMsg_ListenForResponseFound::GetClassData() const { return &_class_data_; }
+
+
+void CClientMsg_ListenForResponseFound::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CClientMsg_ListenForResponseFound*>(&to_msg);
+  auto& from = static_cast<const CClientMsg_ListenForResponseFound&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CClientMsg_ListenForResponseFound)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_player_slot()) {
+    _this->_internal_set_player_slot(from._internal_player_slot());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CClientMsg_ListenForResponseFound::CopyFrom(const CClientMsg_ListenForResponseFound& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CClientMsg_ListenForResponseFound)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CClientMsg_ListenForResponseFound::IsInitialized() const {
+  return true;
+}
+
+void CClientMsg_ListenForResponseFound::InternalSwap(CClientMsg_ListenForResponseFound* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  swap(_impl_.player_slot_, other->_impl_.player_slot_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CClientMsg_ListenForResponseFound::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_clientmessages_2eproto_getter, &descriptor_table_clientmessages_2eproto_once,
+      file_level_metadata_clientmessages_2eproto[6]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::CClientMsg_CustomGameEvent*
@@ -1925,6 +2143,10 @@ Arena::CreateMaybeMessage< ::CClientMsg_WorldUIControllerHasPanelChangedEvent >(
 template<> PROTOBUF_NOINLINE ::CClientMsg_RotateAnchor*
 Arena::CreateMaybeMessage< ::CClientMsg_RotateAnchor >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CClientMsg_RotateAnchor >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CClientMsg_ListenForResponseFound*
+Arena::CreateMaybeMessage< ::CClientMsg_ListenForResponseFound >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CClientMsg_ListenForResponseFound >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

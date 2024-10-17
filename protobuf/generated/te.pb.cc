@@ -373,6 +373,7 @@ PROTOBUF_CONSTEXPR CMsgTEExplosion::CMsgTEExplosion(
   , /*decltype(_impl_.effect_name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.origin_)*/nullptr
   , /*decltype(_impl_.normal_)*/nullptr
+  , /*decltype(_impl_.debris_origin_)*/nullptr
   , /*decltype(_impl_.framerate_)*/0u
   , /*decltype(_impl_.flags_)*/0u
   , /*decltype(_impl_.materialtype_)*/0u
@@ -380,7 +381,9 @@ PROTOBUF_CONSTEXPR CMsgTEExplosion::CMsgTEExplosion(
   , /*decltype(_impl_.magnitude_)*/0u
   , /*decltype(_impl_.scale_)*/0
   , /*decltype(_impl_.affect_ragdolls_)*/false
-  , /*decltype(_impl_.explosion_type_)*/0u} {}
+  , /*decltype(_impl_.create_debris_)*/false
+  , /*decltype(_impl_.explosion_type_)*/0u
+  , /*decltype(_impl_.debris_surfaceprop_)*/0u} {}
 struct CMsgTEExplosionDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CMsgTEExplosionDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -863,17 +866,23 @@ const uint32_t TableStruct_te_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(proto
   PROTOBUF_FIELD_OFFSET(::CMsgTEExplosion, _impl_.affect_ragdolls_),
   PROTOBUF_FIELD_OFFSET(::CMsgTEExplosion, _impl_.effect_name_),
   PROTOBUF_FIELD_OFFSET(::CMsgTEExplosion, _impl_.explosion_type_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEExplosion, _impl_.create_debris_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEExplosion, _impl_.debris_origin_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEExplosion, _impl_.debris_surfaceprop_),
   1,
-  3,
   4,
-  2,
   5,
+  2,
   6,
   7,
   8,
   9,
-  0,
   10,
+  0,
+  12,
+  11,
+  3,
+  13,
   PROTOBUF_FIELD_OFFSET(::CMsgTEDust, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgTEDust, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -1013,15 +1022,15 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 272, 281, -1, sizeof(::CMsgTEImpact)},
   { 284, 294, -1, sizeof(::CMsgTEMuzzleFlash)},
   { 298, 308, -1, sizeof(::CMsgTEBloodStream)},
-  { 312, 329, -1, sizeof(::CMsgTEExplosion)},
-  { 340, 350, -1, sizeof(::CMsgTEDust)},
-  { 354, 362, -1, sizeof(::CMsgTELargeFunnel)},
-  { 364, 374, -1, sizeof(::CMsgTESparks)},
-  { 378, 397, -1, sizeof(::CMsgTEPhysicsProp)},
-  { 410, 419, -1, sizeof(::CMsgTEPlayerDecal)},
-  { 422, 432, -1, sizeof(::CMsgTEProjectedDecal)},
-  { 436, 444, -1, sizeof(::CMsgTESmoke)},
-  { 446, 455, -1, sizeof(::CMsgTEWorldDecal)},
+  { 312, 332, -1, sizeof(::CMsgTEExplosion)},
+  { 346, 356, -1, sizeof(::CMsgTEDust)},
+  { 360, 368, -1, sizeof(::CMsgTELargeFunnel)},
+  { 370, 380, -1, sizeof(::CMsgTESparks)},
+  { 384, 403, -1, sizeof(::CMsgTEPhysicsProp)},
+  { 416, 425, -1, sizeof(::CMsgTEPlayerDecal)},
+  { 428, 438, -1, sizeof(::CMsgTEProjectedDecal)},
+  { 442, 450, -1, sizeof(::CMsgTESmoke)},
+  { 452, 461, -1, sizeof(::CMsgTEWorldDecal)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -1120,59 +1129,61 @@ const char descriptor_table_protodef_te_2eproto[] PROTOBUF_SECTION_VARIABLE(prot
   "ngle\022\r\n\005scale\030\003 \001(\002\022\014\n\004type\030\004 \001(\r\"o\n\021CMs"
   "gTEBloodStream\022\033\n\006origin\030\001 \001(\0132\013.CMsgVec"
   "tor\022\036\n\tdirection\030\002 \001(\0132\013.CMsgVector\022\r\n\005c"
-  "olor\030\003 \001(\007\022\016\n\006amount\030\004 \001(\r\"\373\001\n\017CMsgTEExp"
+  "olor\030\003 \001(\007\022\016\n\006amount\030\004 \001(\r\"\322\002\n\017CMsgTEExp"
   "losion\022\033\n\006origin\030\001 \001(\0132\013.CMsgVector\022\021\n\tf"
   "ramerate\030\002 \001(\r\022\r\n\005flags\030\003 \001(\r\022\033\n\006normal\030"
   "\004 \001(\0132\013.CMsgVector\022\024\n\014materialtype\030\005 \001(\r"
   "\022\016\n\006radius\030\006 \001(\r\022\021\n\tmagnitude\030\007 \001(\r\022\r\n\005s"
   "cale\030\010 \001(\002\022\027\n\017affect_ragdolls\030\t \001(\010\022\023\n\013e"
   "ffect_name\030\n \001(\t\022\026\n\016explosion_type\030\013 \001(\r"
-  "\"f\n\nCMsgTEDust\022\033\n\006origin\030\001 \001(\0132\013.CMsgVec"
-  "tor\022\014\n\004size\030\002 \001(\002\022\r\n\005speed\030\003 \001(\002\022\036\n\tdire"
-  "ction\030\004 \001(\0132\013.CMsgVector\"B\n\021CMsgTELargeF"
-  "unnel\022\033\n\006origin\030\001 \001(\0132\013.CMsgVector\022\020\n\010re"
-  "versed\030\002 \001(\r\"n\n\014CMsgTESparks\022\033\n\006origin\030\001"
-  " \001(\0132\013.CMsgVector\022\021\n\tmagnitude\030\002 \001(\r\022\016\n\006"
-  "length\030\003 \001(\r\022\036\n\tdirection\030\004 \001(\0132\013.CMsgVe"
-  "ctor\"\274\002\n\021CMsgTEPhysicsProp\022\033\n\006origin\030\001 \001"
-  "(\0132\013.CMsgVector\022\035\n\010velocity\030\002 \001(\0132\013.CMsg"
-  "Vector\022\033\n\006angles\030\003 \001(\0132\013.CMsgQAngle\022\014\n\004s"
-  "kin\030\004 \001(\007\022\r\n\005flags\030\005 \001(\r\022\017\n\007effects\030\006 \001("
-  "\r\022\r\n\005color\030\007 \001(\007\022\022\n\nmodelindex\030\010 \001(\006\022#\n\033"
-  "unused_breakmodelsnottomake\030\t \001(\r\022\r\n\005sca"
-  "le\030\n \001(\002\022\033\n\006dmgpos\030\013 \001(\0132\013.CMsgVector\022\033\n"
-  "\006dmgdir\030\014 \001(\0132\013.CMsgVector\022\017\n\007dmgtype\030\r "
-  "\001(\005\"X\n\021CMsgTEPlayerDecal\022\033\n\006origin\030\001 \001(\013"
-  "2\013.CMsgVector\022\022\n\006player\030\002 \001(\005:\002-1\022\022\n\006ent"
-  "ity\030\003 \001(\005:\002-1\"q\n\024CMsgTEProjectedDecal\022\033\n"
-  "\006origin\030\001 \001(\0132\013.CMsgVector\022\033\n\006angles\030\002 \001"
-  "(\0132\013.CMsgQAngle\022\r\n\005index\030\003 \001(\r\022\020\n\010distan"
-  "ce\030\004 \001(\002\"9\n\013CMsgTESmoke\022\033\n\006origin\030\001 \001(\0132"
-  "\013.CMsgVector\022\r\n\005scale\030\002 \001(\002\"[\n\020CMsgTEWor"
-  "ldDecal\022\033\n\006origin\030\001 \001(\0132\013.CMsgVector\022\033\n\006"
-  "normal\030\002 \001(\0132\013.CMsgVector\022\r\n\005index\030\003 \001(\r"
-  "*\275\004\n\016ETEProtobufIds\022\030\n\023TE_EffectDispatch"
-  "Id\020\220\003\022\027\n\022TE_ArmorRicochetId\020\221\003\022\026\n\021TE_Bea"
-  "mEntPointId\020\222\003\022\022\n\rTE_BeamEntsId\020\223\003\022\024\n\017TE"
-  "_BeamPointsId\020\224\003\022\022\n\rTE_BeamRingId\020\225\003\022\022\n\r"
-  "TE_BSPDecalId\020\227\003\022\021\n\014TE_BubblesId\020\230\003\022\025\n\020T"
-  "E_BubbleTrailId\020\231\003\022\017\n\nTE_DecalId\020\232\003\022\024\n\017T"
-  "E_WorldDecalId\020\233\003\022\026\n\021TE_EnergySplashId\020\234"
-  "\003\022\016\n\tTE_FizzId\020\235\003\022\030\n\023TE_ShatterSurfaceId"
-  "\020\236\003\022\024\n\017TE_GlowSpriteId\020\237\003\022\020\n\013TE_ImpactId"
-  "\020\240\003\022\025\n\020TE_MuzzleFlashId\020\241\003\022\025\n\020TE_BloodSt"
-  "reamId\020\242\003\022\023\n\016TE_ExplosionId\020\243\003\022\016\n\tTE_Dus"
-  "tId\020\244\003\022\025\n\020TE_LargeFunnelId\020\245\003\022\020\n\013TE_Spar"
-  "ksId\020\246\003\022\025\n\020TE_PhysicsPropId\020\247\003\022\025\n\020TE_Pla"
-  "yerDecalId\020\250\003\022\030\n\023TE_ProjectedDecalId\020\251\003\022"
-  "\017\n\nTE_SmokeId\020\252\003"
+  "\022\025\n\rcreate_debris\030\014 \001(\010\022\"\n\rdebris_origin"
+  "\030\r \001(\0132\013.CMsgVector\022\032\n\022debris_surfacepro"
+  "p\030\016 \001(\007\"f\n\nCMsgTEDust\022\033\n\006origin\030\001 \001(\0132\013."
+  "CMsgVector\022\014\n\004size\030\002 \001(\002\022\r\n\005speed\030\003 \001(\002\022"
+  "\036\n\tdirection\030\004 \001(\0132\013.CMsgVector\"B\n\021CMsgT"
+  "ELargeFunnel\022\033\n\006origin\030\001 \001(\0132\013.CMsgVecto"
+  "r\022\020\n\010reversed\030\002 \001(\r\"n\n\014CMsgTESparks\022\033\n\006o"
+  "rigin\030\001 \001(\0132\013.CMsgVector\022\021\n\tmagnitude\030\002 "
+  "\001(\r\022\016\n\006length\030\003 \001(\r\022\036\n\tdirection\030\004 \001(\0132\013"
+  ".CMsgVector\"\274\002\n\021CMsgTEPhysicsProp\022\033\n\006ori"
+  "gin\030\001 \001(\0132\013.CMsgVector\022\035\n\010velocity\030\002 \001(\013"
+  "2\013.CMsgVector\022\033\n\006angles\030\003 \001(\0132\013.CMsgQAng"
+  "le\022\014\n\004skin\030\004 \001(\007\022\r\n\005flags\030\005 \001(\r\022\017\n\007effec"
+  "ts\030\006 \001(\r\022\r\n\005color\030\007 \001(\007\022\022\n\nmodelindex\030\010 "
+  "\001(\006\022#\n\033unused_breakmodelsnottomake\030\t \001(\r"
+  "\022\r\n\005scale\030\n \001(\002\022\033\n\006dmgpos\030\013 \001(\0132\013.CMsgVe"
+  "ctor\022\033\n\006dmgdir\030\014 \001(\0132\013.CMsgVector\022\017\n\007dmg"
+  "type\030\r \001(\005\"X\n\021CMsgTEPlayerDecal\022\033\n\006origi"
+  "n\030\001 \001(\0132\013.CMsgVector\022\022\n\006player\030\002 \001(\005:\002-1"
+  "\022\022\n\006entity\030\003 \001(\005:\002-1\"q\n\024CMsgTEProjectedD"
+  "ecal\022\033\n\006origin\030\001 \001(\0132\013.CMsgVector\022\033\n\006ang"
+  "les\030\002 \001(\0132\013.CMsgQAngle\022\r\n\005index\030\003 \001(\r\022\020\n"
+  "\010distance\030\004 \001(\002\"9\n\013CMsgTESmoke\022\033\n\006origin"
+  "\030\001 \001(\0132\013.CMsgVector\022\r\n\005scale\030\002 \001(\002\"[\n\020CM"
+  "sgTEWorldDecal\022\033\n\006origin\030\001 \001(\0132\013.CMsgVec"
+  "tor\022\033\n\006normal\030\002 \001(\0132\013.CMsgVector\022\r\n\005inde"
+  "x\030\003 \001(\r*\275\004\n\016ETEProtobufIds\022\030\n\023TE_EffectD"
+  "ispatchId\020\220\003\022\027\n\022TE_ArmorRicochetId\020\221\003\022\026\n"
+  "\021TE_BeamEntPointId\020\222\003\022\022\n\rTE_BeamEntsId\020\223"
+  "\003\022\024\n\017TE_BeamPointsId\020\224\003\022\022\n\rTE_BeamRingId"
+  "\020\225\003\022\022\n\rTE_BSPDecalId\020\227\003\022\021\n\014TE_BubblesId\020"
+  "\230\003\022\025\n\020TE_BubbleTrailId\020\231\003\022\017\n\nTE_DecalId\020"
+  "\232\003\022\024\n\017TE_WorldDecalId\020\233\003\022\026\n\021TE_EnergySpl"
+  "ashId\020\234\003\022\016\n\tTE_FizzId\020\235\003\022\030\n\023TE_ShatterSu"
+  "rfaceId\020\236\003\022\024\n\017TE_GlowSpriteId\020\237\003\022\020\n\013TE_I"
+  "mpactId\020\240\003\022\025\n\020TE_MuzzleFlashId\020\241\003\022\025\n\020TE_"
+  "BloodStreamId\020\242\003\022\023\n\016TE_ExplosionId\020\243\003\022\016\n"
+  "\tTE_DustId\020\244\003\022\025\n\020TE_LargeFunnelId\020\245\003\022\020\n\013"
+  "TE_SparksId\020\246\003\022\025\n\020TE_PhysicsPropId\020\247\003\022\025\n"
+  "\020TE_PlayerDecalId\020\250\003\022\030\n\023TE_ProjectedDeca"
+  "lId\020\251\003\022\017\n\nTE_SmokeId\020\252\003"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_te_2eproto_deps[1] = {
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_te_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_te_2eproto = {
-    false, false, 4376, descriptor_table_protodef_te_2eproto,
+    false, false, 4463, descriptor_table_protodef_te_2eproto,
     "te.proto",
     &descriptor_table_te_2eproto_once, descriptor_table_te_2eproto_deps, 1, 28,
     schemas, file_default_instances, TableStruct_te_2eproto::offsets,
@@ -8196,35 +8207,45 @@ class CMsgTEExplosion::_Internal {
     (*has_bits)[0] |= 2u;
   }
   static void set_has_framerate(HasBits* has_bits) {
-    (*has_bits)[0] |= 8u;
+    (*has_bits)[0] |= 16u;
   }
   static void set_has_flags(HasBits* has_bits) {
-    (*has_bits)[0] |= 16u;
+    (*has_bits)[0] |= 32u;
   }
   static const ::CMsgVector& normal(const CMsgTEExplosion* msg);
   static void set_has_normal(HasBits* has_bits) {
     (*has_bits)[0] |= 4u;
   }
   static void set_has_materialtype(HasBits* has_bits) {
-    (*has_bits)[0] |= 32u;
-  }
-  static void set_has_radius(HasBits* has_bits) {
     (*has_bits)[0] |= 64u;
   }
-  static void set_has_magnitude(HasBits* has_bits) {
+  static void set_has_radius(HasBits* has_bits) {
     (*has_bits)[0] |= 128u;
   }
-  static void set_has_scale(HasBits* has_bits) {
+  static void set_has_magnitude(HasBits* has_bits) {
     (*has_bits)[0] |= 256u;
   }
-  static void set_has_affect_ragdolls(HasBits* has_bits) {
+  static void set_has_scale(HasBits* has_bits) {
     (*has_bits)[0] |= 512u;
+  }
+  static void set_has_affect_ragdolls(HasBits* has_bits) {
+    (*has_bits)[0] |= 1024u;
   }
   static void set_has_effect_name(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
   static void set_has_explosion_type(HasBits* has_bits) {
-    (*has_bits)[0] |= 1024u;
+    (*has_bits)[0] |= 4096u;
+  }
+  static void set_has_create_debris(HasBits* has_bits) {
+    (*has_bits)[0] |= 2048u;
+  }
+  static const ::CMsgVector& debris_origin(const CMsgTEExplosion* msg);
+  static void set_has_debris_origin(HasBits* has_bits) {
+    (*has_bits)[0] |= 8u;
+  }
+  static void set_has_debris_surfaceprop(HasBits* has_bits) {
+    (*has_bits)[0] |= 8192u;
   }
 };
 
@@ -8236,6 +8257,10 @@ const ::CMsgVector&
 CMsgTEExplosion::_Internal::normal(const CMsgTEExplosion* msg) {
   return *msg->_impl_.normal_;
 }
+const ::CMsgVector&
+CMsgTEExplosion::_Internal::debris_origin(const CMsgTEExplosion* msg) {
+  return *msg->_impl_.debris_origin_;
+}
 void CMsgTEExplosion::clear_origin() {
   if (_impl_.origin_ != nullptr) _impl_.origin_->Clear();
   _impl_._has_bits_[0] &= ~0x00000002u;
@@ -8243,6 +8268,10 @@ void CMsgTEExplosion::clear_origin() {
 void CMsgTEExplosion::clear_normal() {
   if (_impl_.normal_ != nullptr) _impl_.normal_->Clear();
   _impl_._has_bits_[0] &= ~0x00000004u;
+}
+void CMsgTEExplosion::clear_debris_origin() {
+  if (_impl_.debris_origin_ != nullptr) _impl_.debris_origin_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
 CMsgTEExplosion::CMsgTEExplosion(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
@@ -8259,6 +8288,7 @@ CMsgTEExplosion::CMsgTEExplosion(const CMsgTEExplosion& from)
     , decltype(_impl_.effect_name_){}
     , decltype(_impl_.origin_){nullptr}
     , decltype(_impl_.normal_){nullptr}
+    , decltype(_impl_.debris_origin_){nullptr}
     , decltype(_impl_.framerate_){}
     , decltype(_impl_.flags_){}
     , decltype(_impl_.materialtype_){}
@@ -8266,7 +8296,9 @@ CMsgTEExplosion::CMsgTEExplosion(const CMsgTEExplosion& from)
     , decltype(_impl_.magnitude_){}
     , decltype(_impl_.scale_){}
     , decltype(_impl_.affect_ragdolls_){}
-    , decltype(_impl_.explosion_type_){}};
+    , decltype(_impl_.create_debris_){}
+    , decltype(_impl_.explosion_type_){}
+    , decltype(_impl_.debris_surfaceprop_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   _impl_.effect_name_.InitDefault();
@@ -8283,9 +8315,12 @@ CMsgTEExplosion::CMsgTEExplosion(const CMsgTEExplosion& from)
   if (from._internal_has_normal()) {
     _this->_impl_.normal_ = new ::CMsgVector(*from._impl_.normal_);
   }
+  if (from._internal_has_debris_origin()) {
+    _this->_impl_.debris_origin_ = new ::CMsgVector(*from._impl_.debris_origin_);
+  }
   ::memcpy(&_impl_.framerate_, &from._impl_.framerate_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.explosion_type_) -
-    reinterpret_cast<char*>(&_impl_.framerate_)) + sizeof(_impl_.explosion_type_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.debris_surfaceprop_) -
+    reinterpret_cast<char*>(&_impl_.framerate_)) + sizeof(_impl_.debris_surfaceprop_));
   // @@protoc_insertion_point(copy_constructor:CMsgTEExplosion)
 }
 
@@ -8299,6 +8334,7 @@ inline void CMsgTEExplosion::SharedCtor(
     , decltype(_impl_.effect_name_){}
     , decltype(_impl_.origin_){nullptr}
     , decltype(_impl_.normal_){nullptr}
+    , decltype(_impl_.debris_origin_){nullptr}
     , decltype(_impl_.framerate_){0u}
     , decltype(_impl_.flags_){0u}
     , decltype(_impl_.materialtype_){0u}
@@ -8306,7 +8342,9 @@ inline void CMsgTEExplosion::SharedCtor(
     , decltype(_impl_.magnitude_){0u}
     , decltype(_impl_.scale_){0}
     , decltype(_impl_.affect_ragdolls_){false}
+    , decltype(_impl_.create_debris_){false}
     , decltype(_impl_.explosion_type_){0u}
+    , decltype(_impl_.debris_surfaceprop_){0u}
   };
   _impl_.effect_name_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -8328,6 +8366,7 @@ inline void CMsgTEExplosion::SharedDtor() {
   _impl_.effect_name_.Destroy();
   if (this != internal_default_instance()) delete _impl_.origin_;
   if (this != internal_default_instance()) delete _impl_.normal_;
+  if (this != internal_default_instance()) delete _impl_.debris_origin_;
 }
 
 void CMsgTEExplosion::SetCachedSize(int size) const {
@@ -8341,7 +8380,7 @@ void CMsgTEExplosion::Clear() {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
+  if (cached_has_bits & 0x0000000fu) {
     if (cached_has_bits & 0x00000001u) {
       _impl_.effect_name_.ClearNonDefaultToEmpty();
     }
@@ -8353,16 +8392,20 @@ void CMsgTEExplosion::Clear() {
       GOOGLE_DCHECK(_impl_.normal_ != nullptr);
       _impl_.normal_->Clear();
     }
+    if (cached_has_bits & 0x00000008u) {
+      GOOGLE_DCHECK(_impl_.debris_origin_ != nullptr);
+      _impl_.debris_origin_->Clear();
+    }
   }
-  if (cached_has_bits & 0x000000f8u) {
+  if (cached_has_bits & 0x000000f0u) {
     ::memset(&_impl_.framerate_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.magnitude_) -
-        reinterpret_cast<char*>(&_impl_.framerate_)) + sizeof(_impl_.magnitude_));
+        reinterpret_cast<char*>(&_impl_.radius_) -
+        reinterpret_cast<char*>(&_impl_.framerate_)) + sizeof(_impl_.radius_));
   }
-  if (cached_has_bits & 0x00000700u) {
-    ::memset(&_impl_.scale_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.explosion_type_) -
-        reinterpret_cast<char*>(&_impl_.scale_)) + sizeof(_impl_.explosion_type_));
+  if (cached_has_bits & 0x00003f00u) {
+    ::memset(&_impl_.magnitude_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.debris_surfaceprop_) -
+        reinterpret_cast<char*>(&_impl_.magnitude_)) + sizeof(_impl_.debris_surfaceprop_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -8475,6 +8518,32 @@ const char* CMsgTEExplosion::_InternalParse(const char* ptr, ::_pbi::ParseContex
         } else
           goto handle_unusual;
         continue;
+      // optional bool create_debris = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
+          _Internal::set_has_create_debris(&has_bits);
+          _impl_.create_debris_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional .CMsgVector debris_origin = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 106)) {
+          ptr = ctx->ParseMessage(_internal_mutable_debris_origin(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional fixed32 debris_surfaceprop = 14;
+      case 14:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 117)) {
+          _Internal::set_has_debris_surfaceprop(&has_bits);
+          _impl_.debris_surfaceprop_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<uint32_t>(ptr);
+          ptr += sizeof(uint32_t);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -8514,13 +8583,13 @@ uint8_t* CMsgTEExplosion::_InternalSerialize(
   }
 
   // optional uint32 framerate = 2;
-  if (cached_has_bits & 0x00000008u) {
+  if (cached_has_bits & 0x00000010u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_framerate(), target);
   }
 
   // optional uint32 flags = 3;
-  if (cached_has_bits & 0x00000010u) {
+  if (cached_has_bits & 0x00000020u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_flags(), target);
   }
@@ -8533,31 +8602,31 @@ uint8_t* CMsgTEExplosion::_InternalSerialize(
   }
 
   // optional uint32 materialtype = 5;
-  if (cached_has_bits & 0x00000020u) {
+  if (cached_has_bits & 0x00000040u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(5, this->_internal_materialtype(), target);
   }
 
   // optional uint32 radius = 6;
-  if (cached_has_bits & 0x00000040u) {
+  if (cached_has_bits & 0x00000080u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(6, this->_internal_radius(), target);
   }
 
   // optional uint32 magnitude = 7;
-  if (cached_has_bits & 0x00000080u) {
+  if (cached_has_bits & 0x00000100u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(7, this->_internal_magnitude(), target);
   }
 
   // optional float scale = 8;
-  if (cached_has_bits & 0x00000100u) {
+  if (cached_has_bits & 0x00000200u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteFloatToArray(8, this->_internal_scale(), target);
   }
 
   // optional bool affect_ragdolls = 9;
-  if (cached_has_bits & 0x00000200u) {
+  if (cached_has_bits & 0x00000400u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteBoolToArray(9, this->_internal_affect_ragdolls(), target);
   }
@@ -8573,9 +8642,28 @@ uint8_t* CMsgTEExplosion::_InternalSerialize(
   }
 
   // optional uint32 explosion_type = 11;
-  if (cached_has_bits & 0x00000400u) {
+  if (cached_has_bits & 0x00001000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(11, this->_internal_explosion_type(), target);
+  }
+
+  // optional bool create_debris = 12;
+  if (cached_has_bits & 0x00000800u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(12, this->_internal_create_debris(), target);
+  }
+
+  // optional .CMsgVector debris_origin = 13;
+  if (cached_has_bits & 0x00000008u) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(13, _Internal::debris_origin(this),
+        _Internal::debris_origin(this).GetCachedSize(), target, stream);
+  }
+
+  // optional fixed32 debris_surfaceprop = 14;
+  if (cached_has_bits & 0x00002000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFixed32ToArray(14, this->_internal_debris_surfaceprop(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -8617,46 +8705,63 @@ size_t CMsgTEExplosion::ByteSizeLong() const {
           *_impl_.normal_);
     }
 
-    // optional uint32 framerate = 2;
+    // optional .CMsgVector debris_origin = 13;
     if (cached_has_bits & 0x00000008u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *_impl_.debris_origin_);
+    }
+
+    // optional uint32 framerate = 2;
+    if (cached_has_bits & 0x00000010u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_framerate());
     }
 
     // optional uint32 flags = 3;
-    if (cached_has_bits & 0x00000010u) {
+    if (cached_has_bits & 0x00000020u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_flags());
     }
 
     // optional uint32 materialtype = 5;
-    if (cached_has_bits & 0x00000020u) {
+    if (cached_has_bits & 0x00000040u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_materialtype());
     }
 
     // optional uint32 radius = 6;
-    if (cached_has_bits & 0x00000040u) {
+    if (cached_has_bits & 0x00000080u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_radius());
     }
 
+  }
+  if (cached_has_bits & 0x00003f00u) {
     // optional uint32 magnitude = 7;
-    if (cached_has_bits & 0x00000080u) {
+    if (cached_has_bits & 0x00000100u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_magnitude());
     }
 
-  }
-  if (cached_has_bits & 0x00000700u) {
     // optional float scale = 8;
-    if (cached_has_bits & 0x00000100u) {
+    if (cached_has_bits & 0x00000200u) {
       total_size += 1 + 4;
     }
 
     // optional bool affect_ragdolls = 9;
-    if (cached_has_bits & 0x00000200u) {
+    if (cached_has_bits & 0x00000400u) {
+      total_size += 1 + 1;
+    }
+
+    // optional bool create_debris = 12;
+    if (cached_has_bits & 0x00000800u) {
       total_size += 1 + 1;
     }
 
     // optional uint32 explosion_type = 11;
-    if (cached_has_bits & 0x00000400u) {
+    if (cached_has_bits & 0x00001000u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_explosion_type());
+    }
+
+    // optional fixed32 debris_surfaceprop = 14;
+    if (cached_has_bits & 0x00002000u) {
+      total_size += 1 + 4;
     }
 
   }
@@ -8692,31 +8797,41 @@ void CMsgTEExplosion::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
           from._internal_normal());
     }
     if (cached_has_bits & 0x00000008u) {
-      _this->_impl_.framerate_ = from._impl_.framerate_;
+      _this->_internal_mutable_debris_origin()->::CMsgVector::MergeFrom(
+          from._internal_debris_origin());
     }
     if (cached_has_bits & 0x00000010u) {
-      _this->_impl_.flags_ = from._impl_.flags_;
+      _this->_impl_.framerate_ = from._impl_.framerate_;
     }
     if (cached_has_bits & 0x00000020u) {
-      _this->_impl_.materialtype_ = from._impl_.materialtype_;
+      _this->_impl_.flags_ = from._impl_.flags_;
     }
     if (cached_has_bits & 0x00000040u) {
-      _this->_impl_.radius_ = from._impl_.radius_;
+      _this->_impl_.materialtype_ = from._impl_.materialtype_;
     }
     if (cached_has_bits & 0x00000080u) {
-      _this->_impl_.magnitude_ = from._impl_.magnitude_;
+      _this->_impl_.radius_ = from._impl_.radius_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
-  if (cached_has_bits & 0x00000700u) {
+  if (cached_has_bits & 0x00003f00u) {
     if (cached_has_bits & 0x00000100u) {
-      _this->_impl_.scale_ = from._impl_.scale_;
+      _this->_impl_.magnitude_ = from._impl_.magnitude_;
     }
     if (cached_has_bits & 0x00000200u) {
-      _this->_impl_.affect_ragdolls_ = from._impl_.affect_ragdolls_;
+      _this->_impl_.scale_ = from._impl_.scale_;
     }
     if (cached_has_bits & 0x00000400u) {
+      _this->_impl_.affect_ragdolls_ = from._impl_.affect_ragdolls_;
+    }
+    if (cached_has_bits & 0x00000800u) {
+      _this->_impl_.create_debris_ = from._impl_.create_debris_;
+    }
+    if (cached_has_bits & 0x00001000u) {
       _this->_impl_.explosion_type_ = from._impl_.explosion_type_;
+    }
+    if (cached_has_bits & 0x00002000u) {
+      _this->_impl_.debris_surfaceprop_ = from._impl_.debris_surfaceprop_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
@@ -8745,8 +8860,8 @@ void CMsgTEExplosion::InternalSwap(CMsgTEExplosion* other) {
       &other->_impl_.effect_name_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgTEExplosion, _impl_.explosion_type_)
-      + sizeof(CMsgTEExplosion::_impl_.explosion_type_)
+      PROTOBUF_FIELD_OFFSET(CMsgTEExplosion, _impl_.debris_surfaceprop_)
+      + sizeof(CMsgTEExplosion::_impl_.debris_surfaceprop_)
       - PROTOBUF_FIELD_OFFSET(CMsgTEExplosion, _impl_.origin_)>(
           reinterpret_cast<char*>(&_impl_.origin_),
           reinterpret_cast<char*>(&other->_impl_.origin_));

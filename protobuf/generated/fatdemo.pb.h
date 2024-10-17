@@ -180,7 +180,7 @@ inline bool EWeaponType_Parse(
 }
 // ===================================================================
 
-class MLDict final :
+class MLDict :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:MLDict) */ {
  public:
   inline MLDict() : MLDict(nullptr) {}
@@ -395,7 +395,7 @@ class MLDict final :
 };
 // -------------------------------------------------------------------
 
-class MLEvent final :
+class MLEvent :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:MLEvent) */ {
  public:
   inline MLEvent() : MLEvent(nullptr) {}
@@ -580,7 +580,7 @@ class MLEvent final :
 };
 // -------------------------------------------------------------------
 
-class MLMatchState final :
+class MLMatchState :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:MLMatchState) */ {
  public:
   inline MLMatchState() : MLMatchState(nullptr) {}
@@ -810,7 +810,7 @@ class MLMatchState final :
 };
 // -------------------------------------------------------------------
 
-class MLRoundState final :
+class MLRoundState :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:MLRoundState) */ {
  public:
   inline MLRoundState() : MLRoundState(nullptr) {}
@@ -1010,7 +1010,7 @@ class MLRoundState final :
 };
 // -------------------------------------------------------------------
 
-class MLWeaponState final :
+class MLWeaponState :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:MLWeaponState) */ {
  public:
   inline MLWeaponState() : MLWeaponState(nullptr) {}
@@ -1285,7 +1285,7 @@ class MLWeaponState final :
 };
 // -------------------------------------------------------------------
 
-class MLPlayerState final :
+class MLPlayerState :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:MLPlayerState) */ {
  public:
   inline MLPlayerState() : MLPlayerState(nullptr) {}
@@ -1760,7 +1760,7 @@ class MLPlayerState final :
 };
 // -------------------------------------------------------------------
 
-class MLGameState final :
+class MLGameState :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:MLGameState) */ {
  public:
   inline MLGameState() : MLGameState(nullptr) {}
@@ -1965,7 +1965,7 @@ class MLGameState final :
 };
 // -------------------------------------------------------------------
 
-class MLDemoHeader final :
+class MLDemoHeader :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:MLDemoHeader) */ {
  public:
   inline MLDemoHeader() : MLDemoHeader(nullptr) {}
@@ -2175,7 +2175,7 @@ class MLDemoHeader final :
 };
 // -------------------------------------------------------------------
 
-class MLTick final :
+class MLTick :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:MLTick) */ {
  public:
   inline MLTick() : MLTick(nullptr) {}
@@ -2375,7 +2375,7 @@ class MLTick final :
 };
 // -------------------------------------------------------------------
 
-class VacNetShot final :
+class VacNetShot :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:VacNetShot) */ {
  public:
   inline VacNetShot() : VacNetShot(nullptr) {}

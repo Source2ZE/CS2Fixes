@@ -372,7 +372,7 @@ inline bool ECommunityItemAttribute_Parse(
 }
 // ===================================================================
 
-class CMsgGCHVacVerificationChange final :
+class CMsgGCHVacVerificationChange :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCHVacVerificationChange) */ {
  public:
   inline CMsgGCHVacVerificationChange() : CMsgGCHVacVerificationChange(nullptr) {}
@@ -562,7 +562,7 @@ class CMsgGCHVacVerificationChange final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCHAccountPhoneNumberChange final :
+class CMsgGCHAccountPhoneNumberChange :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCHAccountPhoneNumberChange) */ {
  public:
   inline CMsgGCHAccountPhoneNumberChange() : CMsgGCHAccountPhoneNumberChange(nullptr) {}
@@ -782,7 +782,7 @@ class CMsgGCHAccountPhoneNumberChange final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCHInviteUserToLobby final :
+class CMsgGCHInviteUserToLobby :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCHInviteUserToLobby) */ {
  public:
   inline CMsgGCHInviteUserToLobby() : CMsgGCHInviteUserToLobby(nullptr) {}
@@ -987,7 +987,7 @@ class CMsgGCHInviteUserToLobby final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCHRecurringSubscriptionStatusChange final :
+class CMsgGCHRecurringSubscriptionStatusChange :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCHRecurringSubscriptionStatusChange) */ {
  public:
   inline CMsgGCHRecurringSubscriptionStatusChange() : CMsgGCHRecurringSubscriptionStatusChange(nullptr) {}
@@ -1192,7 +1192,7 @@ class CMsgGCHRecurringSubscriptionStatusChange final :
 };
 // -------------------------------------------------------------------
 
-class CQuest_PublisherAddCommunityItemsToPlayer_Request_Attribute final :
+class CQuest_PublisherAddCommunityItemsToPlayer_Request_Attribute :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CQuest_PublisherAddCommunityItemsToPlayer_Request.Attribute) */ {
  public:
   inline CQuest_PublisherAddCommunityItemsToPlayer_Request_Attribute() : CQuest_PublisherAddCommunityItemsToPlayer_Request_Attribute(nullptr) {}
@@ -1367,7 +1367,7 @@ class CQuest_PublisherAddCommunityItemsToPlayer_Request_Attribute final :
 };
 // -------------------------------------------------------------------
 
-class CQuest_PublisherAddCommunityItemsToPlayer_Request final :
+class CQuest_PublisherAddCommunityItemsToPlayer_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CQuest_PublisherAddCommunityItemsToPlayer_Request) */ {
  public:
   inline CQuest_PublisherAddCommunityItemsToPlayer_Request() : CQuest_PublisherAddCommunityItemsToPlayer_Request(nullptr) {}
@@ -1634,7 +1634,7 @@ class CQuest_PublisherAddCommunityItemsToPlayer_Request final :
 };
 // -------------------------------------------------------------------
 
-class CQuest_PublisherAddCommunityItemsToPlayer_Response final :
+class CQuest_PublisherAddCommunityItemsToPlayer_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CQuest_PublisherAddCommunityItemsToPlayer_Response) */ {
  public:
   inline CQuest_PublisherAddCommunityItemsToPlayer_Response() : CQuest_PublisherAddCommunityItemsToPlayer_Response(nullptr) {}
@@ -1809,7 +1809,7 @@ class CQuest_PublisherAddCommunityItemsToPlayer_Response final :
 };
 // -------------------------------------------------------------------
 
-class CCommunity_GamePersonalDataCategoryInfo final :
+class CCommunity_GamePersonalDataCategoryInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCommunity_GamePersonalDataCategoryInfo) */ {
  public:
   inline CCommunity_GamePersonalDataCategoryInfo() : CCommunity_GamePersonalDataCategoryInfo(nullptr) {}
@@ -2014,7 +2014,7 @@ class CCommunity_GamePersonalDataCategoryInfo final :
 };
 // -------------------------------------------------------------------
 
-class CCommunity_GetGamePersonalDataCategories_Request final :
+class CCommunity_GetGamePersonalDataCategories_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCommunity_GetGamePersonalDataCategories_Request) */ {
  public:
   inline CCommunity_GetGamePersonalDataCategories_Request() : CCommunity_GetGamePersonalDataCategories_Request(nullptr) {}
@@ -2174,7 +2174,7 @@ class CCommunity_GetGamePersonalDataCategories_Request final :
 };
 // -------------------------------------------------------------------
 
-class CCommunity_GetGamePersonalDataCategories_Response final :
+class CCommunity_GetGamePersonalDataCategories_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCommunity_GetGamePersonalDataCategories_Response) */ {
  public:
   inline CCommunity_GetGamePersonalDataCategories_Response() : CCommunity_GetGamePersonalDataCategories_Response(nullptr) {}
@@ -2359,7 +2359,7 @@ class CCommunity_GetGamePersonalDataCategories_Response final :
 };
 // -------------------------------------------------------------------
 
-class CCommunity_GetGamePersonalDataEntries_Request final :
+class CCommunity_GetGamePersonalDataEntries_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCommunity_GetGamePersonalDataEntries_Request) */ {
  public:
   inline CCommunity_GetGamePersonalDataEntries_Request() : CCommunity_GetGamePersonalDataEntries_Request(nullptr) {}
@@ -2574,7 +2574,7 @@ class CCommunity_GetGamePersonalDataEntries_Request final :
 };
 // -------------------------------------------------------------------
 
-class CCommunity_GetGamePersonalDataEntries_Response final :
+class CCommunity_GetGamePersonalDataEntries_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCommunity_GetGamePersonalDataEntries_Response) */ {
  public:
   inline CCommunity_GetGamePersonalDataEntries_Response() : CCommunity_GetGamePersonalDataEntries_Response(nullptr) {}
@@ -2704,6 +2704,7 @@ class CCommunity_GetGamePersonalDataEntries_Response final :
   enum : int {
     kEntriesFieldNumber = 2,
     kContinueTokenFieldNumber = 3,
+    kContinueTextFieldNumber = 4,
     kGceresultFieldNumber = 1,
   };
   // repeated string entries = 2;
@@ -2748,6 +2749,24 @@ class CCommunity_GetGamePersonalDataEntries_Response final :
   std::string* _internal_mutable_continue_token();
   public:
 
+  // optional string continue_text = 4;
+  bool has_continue_text() const;
+  private:
+  bool _internal_has_continue_text() const;
+  public:
+  void clear_continue_text();
+  const std::string& continue_text() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_continue_text(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_continue_text();
+  PROTOBUF_NODISCARD std::string* release_continue_text();
+  void set_allocated_continue_text(std::string* continue_text);
+  private:
+  const std::string& _internal_continue_text() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_continue_text(const std::string& value);
+  std::string* _internal_mutable_continue_text();
+  public:
+
   // optional uint32 gceresult = 1;
   bool has_gceresult() const;
   private:
@@ -2773,6 +2792,7 @@ class CCommunity_GetGamePersonalDataEntries_Response final :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> entries_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr continue_token_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr continue_text_;
     uint32_t gceresult_;
   };
   union { Impl_ _impl_; };
@@ -2780,7 +2800,7 @@ class CCommunity_GetGamePersonalDataEntries_Response final :
 };
 // -------------------------------------------------------------------
 
-class CCommunity_TerminateGamePersonalDataEntries_Request final :
+class CCommunity_TerminateGamePersonalDataEntries_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCommunity_TerminateGamePersonalDataEntries_Request) */ {
  public:
   inline CCommunity_TerminateGamePersonalDataEntries_Request() : CCommunity_TerminateGamePersonalDataEntries_Request(nullptr) {}
@@ -2955,7 +2975,7 @@ class CCommunity_TerminateGamePersonalDataEntries_Request final :
 };
 // -------------------------------------------------------------------
 
-class CCommunity_TerminateGamePersonalDataEntries_Response final :
+class CCommunity_TerminateGamePersonalDataEntries_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCommunity_TerminateGamePersonalDataEntries_Response) */ {
  public:
   inline CCommunity_TerminateGamePersonalDataEntries_Response() : CCommunity_TerminateGamePersonalDataEntries_Response(nullptr) {}
@@ -4550,7 +4570,7 @@ inline void CCommunity_GetGamePersonalDataEntries_Request::set_allocated_continu
 
 // optional uint32 gceresult = 1;
 inline bool CCommunity_GetGamePersonalDataEntries_Response::_internal_has_gceresult() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
 inline bool CCommunity_GetGamePersonalDataEntries_Response::has_gceresult() const {
@@ -4558,7 +4578,7 @@ inline bool CCommunity_GetGamePersonalDataEntries_Response::has_gceresult() cons
 }
 inline void CCommunity_GetGamePersonalDataEntries_Response::clear_gceresult() {
   _impl_.gceresult_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000002u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
 }
 inline uint32_t CCommunity_GetGamePersonalDataEntries_Response::_internal_gceresult() const {
   return _impl_.gceresult_;
@@ -4568,7 +4588,7 @@ inline uint32_t CCommunity_GetGamePersonalDataEntries_Response::gceresult() cons
   return _internal_gceresult();
 }
 inline void CCommunity_GetGamePersonalDataEntries_Response::_internal_set_gceresult(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_._has_bits_[0] |= 0x00000004u;
   _impl_.gceresult_ = value;
 }
 inline void CCommunity_GetGamePersonalDataEntries_Response::set_gceresult(uint32_t value) {
@@ -4717,6 +4737,74 @@ inline void CCommunity_GetGamePersonalDataEntries_Response::set_allocated_contin
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:CCommunity_GetGamePersonalDataEntries_Response.continue_token)
+}
+
+// optional string continue_text = 4;
+inline bool CCommunity_GetGamePersonalDataEntries_Response::_internal_has_continue_text() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CCommunity_GetGamePersonalDataEntries_Response::has_continue_text() const {
+  return _internal_has_continue_text();
+}
+inline void CCommunity_GetGamePersonalDataEntries_Response::clear_continue_text() {
+  _impl_.continue_text_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& CCommunity_GetGamePersonalDataEntries_Response::continue_text() const {
+  // @@protoc_insertion_point(field_get:CCommunity_GetGamePersonalDataEntries_Response.continue_text)
+  return _internal_continue_text();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CCommunity_GetGamePersonalDataEntries_Response::set_continue_text(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.continue_text_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CCommunity_GetGamePersonalDataEntries_Response.continue_text)
+}
+inline std::string* CCommunity_GetGamePersonalDataEntries_Response::mutable_continue_text() {
+  std::string* _s = _internal_mutable_continue_text();
+  // @@protoc_insertion_point(field_mutable:CCommunity_GetGamePersonalDataEntries_Response.continue_text)
+  return _s;
+}
+inline const std::string& CCommunity_GetGamePersonalDataEntries_Response::_internal_continue_text() const {
+  return _impl_.continue_text_.Get();
+}
+inline void CCommunity_GetGamePersonalDataEntries_Response::_internal_set_continue_text(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.continue_text_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CCommunity_GetGamePersonalDataEntries_Response::_internal_mutable_continue_text() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.continue_text_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CCommunity_GetGamePersonalDataEntries_Response::release_continue_text() {
+  // @@protoc_insertion_point(field_release:CCommunity_GetGamePersonalDataEntries_Response.continue_text)
+  if (!_internal_has_continue_text()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.continue_text_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.continue_text_.IsDefault()) {
+    _impl_.continue_text_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CCommunity_GetGamePersonalDataEntries_Response::set_allocated_continue_text(std::string* continue_text) {
+  if (continue_text != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.continue_text_.SetAllocated(continue_text, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.continue_text_.IsDefault()) {
+    _impl_.continue_text_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CCommunity_GetGamePersonalDataEntries_Response.continue_text)
 }
 
 // -------------------------------------------------------------------

@@ -38,21 +38,23 @@ struct CMsgGCGiftedItemsDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgGCGiftedItemsDefaultTypeInternal _CMsgGCGiftedItems_default_instance_;
-PROTOBUF_CONSTEXPR CMsgApplyAutograph::CMsgApplyAutograph(
+PROTOBUF_CONSTEXPR CMsgGCDev_SchemaReservationRequest::CMsgGCDev_SchemaReservationRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.autograph_item_id_)*/uint64_t{0u}
-  , /*decltype(_impl_.item_item_id_)*/uint64_t{0u}} {}
-struct CMsgApplyAutographDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CMsgApplyAutographDefaultTypeInternal()
+  , /*decltype(_impl_.schema_typename_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.instance_name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.context_)*/uint64_t{0u}
+  , /*decltype(_impl_.id_)*/uint64_t{0u}} {}
+struct CMsgGCDev_SchemaReservationRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CMsgGCDev_SchemaReservationRequestDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CMsgApplyAutographDefaultTypeInternal() {}
+  ~CMsgGCDev_SchemaReservationRequestDefaultTypeInternal() {}
   union {
-    CMsgApplyAutograph _instance;
+    CMsgGCDev_SchemaReservationRequest _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgApplyAutographDefaultTypeInternal _CMsgApplyAutograph_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgGCDev_SchemaReservationRequestDefaultTypeInternal _CMsgGCDev_SchemaReservationRequest_default_instance_;
 PROTOBUF_CONSTEXPR CMsgCasketItem::CMsgCasketItem(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
@@ -87,6 +89,7 @@ PROTOBUF_CONSTEXPR CMsgGCItemCustomizationNotification::CMsgGCItemCustomizationN
     /*decltype(_impl_._has_bits_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
   , /*decltype(_impl_.item_id_)*/{}
+  , /*decltype(_impl_.extra_data_)*/{}
   , /*decltype(_impl_.request_)*/0u} {}
 struct CMsgGCItemCustomizationNotificationDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CMsgGCItemCustomizationNotificationDefaultTypeInternal()
@@ -97,21 +100,7 @@ struct CMsgGCItemCustomizationNotificationDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgGCItemCustomizationNotificationDefaultTypeInternal _CMsgGCItemCustomizationNotification_default_instance_;
-PROTOBUF_CONSTEXPR CAttribute_String::CAttribute_String(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_._has_bits_)*/{}
-  , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.value_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}} {}
-struct CAttribute_StringDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CAttribute_StringDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CAttribute_StringDefaultTypeInternal() {}
-  union {
-    CAttribute_String _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CAttribute_StringDefaultTypeInternal _CAttribute_String_default_instance_;
-static ::_pb::Metadata file_level_metadata_econ_5fgcmessages_2eproto[6];
+static ::_pb::Metadata file_level_metadata_econ_5fgcmessages_2eproto[5];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_econ_5fgcmessages_2eproto[4];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_econ_5fgcmessages_2eproto = nullptr;
 
@@ -132,16 +121,20 @@ const uint32_t TableStruct_econ_5fgcmessages_2eproto::offsets[] PROTOBUF_SECTION
   2,
   3,
   ~0u,
-  PROTOBUF_FIELD_OFFSET(::CMsgApplyAutograph, _impl_._has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CMsgApplyAutograph, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::CMsgGCDev_SchemaReservationRequest, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CMsgGCDev_SchemaReservationRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CMsgApplyAutograph, _impl_.autograph_item_id_),
-  PROTOBUF_FIELD_OFFSET(::CMsgApplyAutograph, _impl_.item_item_id_),
+  PROTOBUF_FIELD_OFFSET(::CMsgGCDev_SchemaReservationRequest, _impl_.schema_typename_),
+  PROTOBUF_FIELD_OFFSET(::CMsgGCDev_SchemaReservationRequest, _impl_.instance_name_),
+  PROTOBUF_FIELD_OFFSET(::CMsgGCDev_SchemaReservationRequest, _impl_.context_),
+  PROTOBUF_FIELD_OFFSET(::CMsgGCDev_SchemaReservationRequest, _impl_.id_),
   0,
   1,
+  2,
+  3,
   PROTOBUF_FIELD_OFFSET(::CMsgCasketItem, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgCasketItem, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -168,33 +161,25 @@ const uint32_t TableStruct_econ_5fgcmessages_2eproto::offsets[] PROTOBUF_SECTION
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CMsgGCItemCustomizationNotification, _impl_.item_id_),
   PROTOBUF_FIELD_OFFSET(::CMsgGCItemCustomizationNotification, _impl_.request_),
+  PROTOBUF_FIELD_OFFSET(::CMsgGCItemCustomizationNotification, _impl_.extra_data_),
   ~0u,
   0,
-  PROTOBUF_FIELD_OFFSET(::CAttribute_String, _impl_._has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CAttribute_String, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CAttribute_String, _impl_.value_),
-  0,
+  ~0u,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 11, -1, sizeof(::CMsgGCGiftedItems)},
-  { 16, 24, -1, sizeof(::CMsgApplyAutograph)},
-  { 26, 34, -1, sizeof(::CMsgCasketItem)},
-  { 36, 43, -1, sizeof(::CMsgGCUserTrackTimePlayedConsecutively)},
-  { 44, 52, -1, sizeof(::CMsgGCItemCustomizationNotification)},
-  { 54, 61, -1, sizeof(::CAttribute_String)},
+  { 16, 26, -1, sizeof(::CMsgGCDev_SchemaReservationRequest)},
+  { 30, 38, -1, sizeof(::CMsgCasketItem)},
+  { 40, 47, -1, sizeof(::CMsgGCUserTrackTimePlayedConsecutively)},
+  { 48, 57, -1, sizeof(::CMsgGCItemCustomizationNotification)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
   &::_CMsgGCGiftedItems_default_instance_._instance,
-  &::_CMsgApplyAutograph_default_instance_._instance,
+  &::_CMsgGCDev_SchemaReservationRequest_default_instance_._instance,
   &::_CMsgCasketItem_default_instance_._instance,
   &::_CMsgGCUserTrackTimePlayedConsecutively_default_instance_._instance,
   &::_CMsgGCItemCustomizationNotification_default_instance_._instance,
-  &::_CAttribute_String_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_econ_5fgcmessages_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -203,199 +188,208 @@ const char descriptor_table_protodef_econ_5fgcmessages_2eproto[] PROTOBUF_SECTIO
   "\001 \001(\r\022\024\n\014giftdefindex\030\002 \001(\r\022\032\n\022max_gifts"
   "_possible\030\003 \001(\r\022\037\n\027num_eligible_recipien"
   "ts\030\004 \001(\r\022\035\n\025recipients_accountids\030\005 \003(\r\""
-  "E\n\022CMsgApplyAutograph\022\031\n\021autograph_item_"
-  "id\030\001 \001(\004\022\024\n\014item_item_id\030\002 \001(\004\">\n\016CMsgCa"
-  "sketItem\022\026\n\016casket_item_id\030\001 \001(\004\022\024\n\014item"
-  "_item_id\030\002 \001(\004\"7\n&CMsgGCUserTrackTimePla"
-  "yedConsecutively\022\r\n\005state\030\001 \001(\r\"G\n#CMsgG"
-  "CItemCustomizationNotification\022\017\n\007item_i"
-  "d\030\001 \003(\004\022\017\n\007request\030\002 \001(\r\"\"\n\021CAttribute_S"
-  "tring\022\r\n\005value\030\001 \001(\t*\265(\n\nEGCItemMsg\022\021\n\014k"
-  "_EMsgGCBase\020\350\007\022\034\n\027k_EMsgGCSetItemPositio"
-  "n\020\351\007\022\022\n\rk_EMsgGCCraft\020\352\007\022\032\n\025k_EMsgGCCraf"
-  "tResponse\020\353\007\022\023\n\016k_EMsgGCDelete\020\354\007\022$\n\037k_E"
-  "MsgGCVerifyCacheSubscription\020\355\007\022\025\n\020k_EMs"
-  "gGCNameItem\020\356\007\022\030\n\023k_EMsgGCUnlockCrate\020\357\007"
-  "\022 \n\033k_EMsgGCUnlockCrateResponse\020\360\007\022\026\n\021k_"
-  "EMsgGCPaintItem\020\361\007\022\036\n\031k_EMsgGCPaintItemR"
-  "esponse\020\362\007\022\"\n\035k_EMsgGCGoldenWrenchBroadc"
-  "ast\020\363\007\022\030\n\023k_EMsgGCMOTDRequest\020\364\007\022 \n\033k_EM"
-  "sgGCMOTDRequestResponse\020\365\007\022\'\n\"k_EMsgGCAd"
-  "dItemToSocket_DEPRECATED\020\366\007\022/\n*k_EMsgGCA"
-  "ddItemToSocketResponse_DEPRECATED\020\367\007\022+\n&"
-  "k_EMsgGCAddSocketToBaseItem_DEPRECATED\020\370"
-  "\007\022\'\n\"k_EMsgGCAddSocketToItem_DEPRECATED\020"
-  "\371\007\022/\n*k_EMsgGCAddSocketToItemResponse_DE"
-  "PRECATED\020\372\007\022\031\n\024k_EMsgGCNameBaseItem\020\373\007\022!"
-  "\n\034k_EMsgGCNameBaseItemResponse\020\374\007\022(\n#k_E"
-  "MsgGCRemoveSocketItem_DEPRECATED\020\375\007\0220\n+k"
-  "_EMsgGCRemoveSocketItemResponse_DEPRECAT"
-  "ED\020\376\007\022!\n\034k_EMsgGCCustomizeItemTexture\020\377\007"
-  "\022)\n$k_EMsgGCCustomizeItemTextureResponse"
-  "\020\200\010\022\033\n\026k_EMsgGCUseItemRequest\020\201\010\022\034\n\027k_EM"
-  "sgGCUseItemResponse\020\202\010\022#\n\036k_EMsgGCGifted"
-  "Items_DEPRECATED\020\203\010\022\033\n\026k_EMsgGCRemoveIte"
-  "mName\020\206\010\022\034\n\027k_EMsgGCRemoveItemPaint\020\207\010\022\031"
-  "\n\024k_EMsgGCGiftWrapItem\020\210\010\022!\n\034k_EMsgGCGif"
-  "tWrapItemResponse\020\211\010\022\030\n\023k_EMsgGCDeliverG"
-  "ift\020\212\010\022%\n k_EMsgGCDeliverGiftResponseGiv"
-  "er\020\213\010\022(\n#k_EMsgGCDeliverGiftResponseRece"
-  "iver\020\214\010\022\036\n\031k_EMsgGCUnwrapGiftRequest\020\215\010\022"
-  "\037\n\032k_EMsgGCUnwrapGiftResponse\020\216\010\022\031\n\024k_EM"
-  "sgGCSetItemStyle\020\217\010\022\036\n\031k_EMsgGCUsedClaim"
-  "CodeItem\020\220\010\022\026\n\021k_EMsgGCSortItems\020\221\010\022*\n%k"
-  "_EMsgGC_RevolvingLootList_DEPRECATED\020\222\010\022"
-  "\032\n\025k_EMsgGCLookupAccount\020\223\010\022\"\n\035k_EMsgGCL"
-  "ookupAccountResponse\020\224\010\022\036\n\031k_EMsgGCLooku"
-  "pAccountName\020\225\010\022&\n!k_EMsgGCLookupAccount"
-  "NameResponse\020\226\010\022\035\n\030k_EMsgGCUpdateItemSch"
-  "ema\020\231\010\022 \n\033k_EMsgGCRemoveCustomTexture\020\233\010"
-  "\022(\n#k_EMsgGCRemoveCustomTextureResponse\020"
-  "\234\010\022\035\n\030k_EMsgGCRemoveMakersMark\020\235\010\022%\n k_E"
-  "MsgGCRemoveMakersMarkResponse\020\236\010\022#\n\036k_EM"
-  "sgGCRemoveUniqueCraftIndex\020\237\010\022+\n&k_EMsgG"
-  "CRemoveUniqueCraftIndexResponse\020\240\010\022\033\n\026k_"
-  "EMsgGCSaxxyBroadcast\020\241\010\022!\n\034k_EMsgGCBackp"
-  "ackSortFinished\020\242\010\022$\n\037k_EMsgGCAdjustItem"
-  "EquippedState\020\243\010\022\030\n\023k_EMsgGCCollectItem\020"
-  "\245\010\022)\n$k_EMsgGCItemAcknowledged__DEPRECAT"
-  "ED\020\246\010\022\031\n\024k_EMsgGC_ReportAbuse\020\251\010\022!\n\034k_EM"
-  "sgGC_ReportAbuseResponse\020\252\010\022!\n\034k_EMsgGCN"
-  "ameItemNotification\020\254\010\022#\n\036k_EMsgGCApplyC"
-  "onsumableEffects\020\255\010\022 \n\033k_EMsgGCConsumabl"
-  "eExhausted\020\256\010\022\036\n\031k_EMsgGCShowItemsPicked"
-  "Up\020\257\010\022&\n!k_EMsgGCClientDisplayNotificati"
-  "on\020\260\010\022\035\n\030k_EMsgGCApplyStrangePart\020\261\010\022)\n$"
-  "k_EMsgGC_IncrementKillCountAttribute\020\262\010\022"
-  "(\n#k_EMsgGC_IncrementKillCountResponse\020\263"
-  "\010\022 \n\033k_EMsgGCApplyPennantUpgrade\020\264\010\022\035\n\030k"
-  "_EMsgGCSetItemPositions\020\265\010\022\034\n\027k_EMsgGCAp"
-  "plyEggEssence\020\266\010\022#\n\036k_EMsgGCNameEggEssen"
-  "ceResponse\020\267\010\022\031\n\024k_EMsgGCPaintKitItem\020\270\010"
-  "\022\035\n\030k_EMsgGCPaintKitBaseItem\020\271\010\022!\n\034k_EMs"
-  "gGCPaintKitItemResponse\020\272\010\022\030\n\023k_EMsgGCGi"
-  "ftedItems\020\273\010\022\034\n\027k_EMsgGCUnlockItemStyle\020"
-  "\274\010\022$\n\037k_EMsgGCUnlockItemStyleResponse\020\275\010"
-  "\022\031\n\024k_EMsgGCApplySticker\020\276\010\022\035\n\030k_EMsgGCI"
-  "temAcknowledged\020\277\010\022\031\n\024k_EMsgGCStatTrakSw"
-  "ap\020\300\010\022-\n(k_EMsgGCUserTrackTimePlayedCons"
-  "ecutively\020\301\010\022*\n%k_EMsgGCItemCustomizatio"
-  "nNotification\020\302\010\022 \n\033k_EMsgGCModifyItemAt"
-  "tribute\020\303\010\022\032\n\025k_EMsgGCCasketItemAdd\020\304\010\022\036"
-  "\n\031k_EMsgGCCasketItemExtract\020\305\010\022#\n\036k_EMsg"
-  "GCCasketItemLoadContents\020\306\010\022\030\n\023k_EMsgGCT"
-  "radingBase\020\334\013\022)\n$k_EMsgGCTrading_Initiat"
-  "eTradeRequest\020\335\013\022*\n%k_EMsgGCTrading_Init"
-  "iateTradeResponse\020\336\013\022!\n\034k_EMsgGCTrading_"
-  "StartSession\020\337\013\022\034\n\027k_EMsgGCTrading_SetIt"
-  "em\020\340\013\022\037\n\032k_EMsgGCTrading_RemoveItem\020\341\013\022$"
-  "\n\037k_EMsgGCTrading_UpdateTradeInfo\020\342\013\022!\n\034"
-  "k_EMsgGCTrading_SetReadiness\020\343\013\022&\n!k_EMs"
-  "gGCTrading_ReadinessResponse\020\344\013\022\"\n\035k_EMs"
-  "gGCTrading_SessionClosed\020\345\013\022\"\n\035k_EMsgGCT"
-  "rading_CancelSession\020\346\013\022!\n\034k_EMsgGCTradi"
-  "ng_TradeChatMsg\020\347\013\022!\n\034k_EMsgGCTrading_Co"
-  "nfirmOffer\020\350\013\022\'\n\"k_EMsgGCTrading_TradeTy"
-  "pingChatMsg\020\351\013\022)\n$k_EMsgGCServerBrowser_"
-  "FavoriteServer\020\301\014\022*\n%k_EMsgGCServerBrows"
-  "er_BlacklistServer\020\302\014\022\036\n\031k_EMsgGCServerR"
-  "entalsBase\020\244\r\022#\n\036k_EMsgGCItemPreviewChec"
-  "kStatus\020\245\r\022&\n!k_EMsgGCItemPreviewStatusR"
-  "esponse\020\246\r\022\037\n\032k_EMsgGCItemPreviewRequest"
-  "\020\247\r\022\'\n\"k_EMsgGCItemPreviewRequestRespons"
-  "e\020\250\r\022\036\n\031k_EMsgGCItemPreviewExpire\020\251\r\022*\n%"
-  "k_EMsgGCItemPreviewExpireNotification\020\252\r"
-  "\022.\n)k_EMsgGCItemPreviewItemBoughtNotific"
-  "ation\020\253\r\022\037\n\032k_EMsgGCDev_NewItemRequest\020\321"
-  "\017\022\'\n\"k_EMsgGCDev_NewItemRequestResponse\020"
-  "\322\017\022!\n\034k_EMsgGCDev_PaintKitDropItem\020\323\017\022\035\n"
-  "\030k_EMsgGCStoreGetUserData\020\304\023\022%\n k_EMsgGC"
-  "StoreGetUserDataResponse\020\305\023\022)\n$k_EMsgGCS"
-  "torePurchaseInit_DEPRECATED\020\306\023\0221\n,k_EMsg"
-  "GCStorePurchaseInitResponse_DEPRECATED\020\307"
-  "\023\022\"\n\035k_EMsgGCStorePurchaseFinalize\020\310\023\022*\n"
-  "%k_EMsgGCStorePurchaseFinalizeResponse\020\311"
-  "\023\022 \n\033k_EMsgGCStorePurchaseCancel\020\312\023\022(\n#k"
-  "_EMsgGCStorePurchaseCancelResponse\020\313\023\022\"\n"
-  "\035k_EMsgGCStorePurchaseQueryTxn\020\314\023\022*\n%k_E"
-  "MsgGCStorePurchaseQueryTxnResponse\020\315\023\022\036\n"
-  "\031k_EMsgGCStorePurchaseInit\020\316\023\022&\n!k_EMsgG"
-  "CStorePurchaseInitResponse\020\317\023\022\"\n\035k_EMsgG"
-  "CBannedWordListRequest\020\320\023\022#\n\036k_EMsgGCBan"
-  "nedWordListResponse\020\321\023\022(\n#k_EMsgGCToGCBa"
-  "nnedWordListBroadcast\020\322\023\022&\n!k_EMsgGCToGC"
-  "BannedWordListUpdated\020\323\023\022\036\n\031k_EMsgGCToGC"
-  "DirtySDOCache\020\324\023\022&\n!k_EMsgGCToGCDirtyMul"
-  "tipleSDOCache\020\325\023\022\"\n\035k_EMsgGCToGCUpdateSQ"
-  "LKeyValue\020\326\023\022 \n\033k_EMsgGCToGCIsTrustedSer"
-  "ver\020\327\023\022(\n#k_EMsgGCToGCIsTrustedServerRes"
-  "ponse\020\330\023\022(\n#k_EMsgGCToGCBroadcastConsole"
-  "Command\020\331\023\022!\n\034k_EMsgGCServerVersionUpdat"
-  "ed\020\332\023\022%\n k_EMsgGCToGCWebAPIAccountChange"
-  "d\020\334\023\022!\n\034k_EMsgGCRequestAnnouncements\020\335\023\022"
-  ")\n$k_EMsgGCRequestAnnouncementsResponse\020"
-  "\336\023\022%\n k_EMsgGCRequestPassportItemGrant\020\337"
-  "\023\022!\n\034k_EMsgGCClientVersionUpdated\020\340\023\022)\n$"
-  "k_EMsgGCAdjustItemEquippedStateMulti\020\341\023\022"
-  "(\n#k_EMsgGCRecurringSubscriptionStatus\020\342"
-  "\023\022#\n\036k_EMsgGCAdjustEquipSlotsManual\020\343\023\022$"
-  "\n\037k_EMsgGCAdjustEquipSlotsShuffle\020\344\023*\325\002\n"
-  "\016EGCMsgResponse\022\026\n\022k_EGCMsgResponseOK\020\000\022"
-  "\032\n\026k_EGCMsgResponseDenied\020\001\022\037\n\033k_EGCMsgR"
-  "esponseServerError\020\002\022\033\n\027k_EGCMsgResponse"
-  "Timeout\020\003\022\033\n\027k_EGCMsgResponseInvalid\020\004\022\033"
-  "\n\027k_EGCMsgResponseNoMatch\020\005\022 \n\034k_EGCMsgR"
-  "esponseUnknownError\020\006\022\037\n\033k_EGCMsgRespons"
-  "eNotLoggedOn\020\007\022\032\n\026k_EGCMsgFailedToCreate"
-  "\020\010\022\031\n\025k_EGCMsgLimitExceeded\020\t\022\035\n\031k_EGCMs"
-  "gCommitUnfinalized\020\n*\351\001\n\014EUnlockStyle\022\033\n"
-  "\027k_UnlockStyle_Succeeded\020\000\022\037\n\033k_UnlockSt"
-  "yle_Failed_PreReq\020\001\022#\n\037k_UnlockStyle_Fai"
-  "led_CantAfford\020\002\022#\n\037k_UnlockStyle_Failed"
-  "_CantCommit\020\003\022&\n\"k_UnlockStyle_Failed_Ca"
-  "ntLockCache\020\004\022)\n%k_UnlockStyle_Failed_Ca"
-  "ntAffordAttrib\020\005*\362\t\n EGCItemCustomizatio"
-  "nNotification\0220\n+k_EGCItemCustomizationN"
-  "otification_NameItem\020\356\007\0223\n.k_EGCItemCust"
-  "omizationNotification_UnlockCrate\020\357\007\0226\n1"
-  "k_EGCItemCustomizationNotification_XRayI"
-  "temReveal\020\360\007\0225\n0k_EGCItemCustomizationNo"
-  "tification_XRayItemClaim\020\361\007\0225\n0k_EGCItem"
-  "CustomizationNotification_CasketTooFull\020"
-  "\363\007\0226\n1k_EGCItemCustomizationNotification"
-  "_CasketContents\020\364\007\0223\n.k_EGCItemCustomiza"
-  "tionNotification_CasketAdded\020\365\007\0225\n0k_EGC"
-  "ItemCustomizationNotification_CasketRemo"
-  "ved\020\366\007\0225\n0k_EGCItemCustomizationNotifica"
-  "tion_CasketInvFull\020\367\007\0224\n/k_EGCItemCustom"
-  "izationNotification_NameBaseItem\020\373\007\0226\n1k"
-  "_EGCItemCustomizationNotification_Remove"
-  "ItemName\020\206\010\0225\n0k_EGCItemCustomizationNot"
-  "ification_RemoveSticker\020\235\010\0224\n/k_EGCItemC"
-  "ustomizationNotification_ApplySticker\020\276\010"
-  "\0224\n/k_EGCItemCustomizationNotification_S"
-  "tatTrakSwap\020\300\010\0223\n.k_EGCItemCustomization"
-  "Notification_RemovePatch\020\301\010\0222\n-k_EGCItem"
-  "CustomizationNotification_ApplyPatch\020\302\010\022"
-  "8\n3k_EGCItemCustomizationNotification_Ac"
-  "tivateFanToken\020\332G\022=\n8k_EGCItemCustomizat"
-  "ionNotification_ActivateOperationCoin\020\333G"
-  "\0226\n1k_EGCItemCustomizationNotification_G"
-  "raffitiUnseal\020\341G\0228\n3k_EGCItemCustomizati"
-  "onNotification_GenerateSouvenir\020\364G\022A\n<k_"
-  "EGCItemCustomizationNotification_ClientR"
-  "edeemMissionReward\020\371G\022>\n9k_EGCItemCustom"
-  "izationNotification_ClientRedeemFreeRewa"
-  "rd\020\203H"
+  "q\n\"CMsgGCDev_SchemaReservationRequest\022\027\n"
+  "\017schema_typename\030\001 \001(\t\022\025\n\rinstance_name\030"
+  "\002 \001(\t\022\017\n\007context\030\003 \001(\004\022\n\n\002id\030\004 \001(\004\">\n\016CM"
+  "sgCasketItem\022\026\n\016casket_item_id\030\001 \001(\004\022\024\n\014"
+  "item_item_id\030\002 \001(\004\"7\n&CMsgGCUserTrackTim"
+  "ePlayedConsecutively\022\r\n\005state\030\001 \001(\r\"[\n#C"
+  "MsgGCItemCustomizationNotification\022\017\n\007it"
+  "em_id\030\001 \003(\004\022\017\n\007request\030\002 \001(\r\022\022\n\nextra_da"
+  "ta\030\003 \003(\004*\301)\n\nEGCItemMsg\022\021\n\014k_EMsgGCBase\020"
+  "\350\007\022\034\n\027k_EMsgGCSetItemPosition\020\351\007\022\022\n\rk_EM"
+  "sgGCCraft\020\352\007\022\032\n\025k_EMsgGCCraftResponse\020\353\007"
+  "\022\023\n\016k_EMsgGCDelete\020\354\007\022$\n\037k_EMsgGCVerifyC"
+  "acheSubscription\020\355\007\022\025\n\020k_EMsgGCNameItem\020"
+  "\356\007\022\030\n\023k_EMsgGCUnlockCrate\020\357\007\022 \n\033k_EMsgGC"
+  "UnlockCrateResponse\020\360\007\022\026\n\021k_EMsgGCPaintI"
+  "tem\020\361\007\022\036\n\031k_EMsgGCPaintItemResponse\020\362\007\022\""
+  "\n\035k_EMsgGCGoldenWrenchBroadcast\020\363\007\022\030\n\023k_"
+  "EMsgGCMOTDRequest\020\364\007\022 \n\033k_EMsgGCMOTDRequ"
+  "estResponse\020\365\007\022\'\n\"k_EMsgGCAddItemToSocke"
+  "t_DEPRECATED\020\366\007\022/\n*k_EMsgGCAddItemToSock"
+  "etResponse_DEPRECATED\020\367\007\022+\n&k_EMsgGCAddS"
+  "ocketToBaseItem_DEPRECATED\020\370\007\022\'\n\"k_EMsgG"
+  "CAddSocketToItem_DEPRECATED\020\371\007\022/\n*k_EMsg"
+  "GCAddSocketToItemResponse_DEPRECATED\020\372\007\022"
+  "\031\n\024k_EMsgGCNameBaseItem\020\373\007\022!\n\034k_EMsgGCNa"
+  "meBaseItemResponse\020\374\007\022(\n#k_EMsgGCRemoveS"
+  "ocketItem_DEPRECATED\020\375\007\0220\n+k_EMsgGCRemov"
+  "eSocketItemResponse_DEPRECATED\020\376\007\022!\n\034k_E"
+  "MsgGCCustomizeItemTexture\020\377\007\022)\n$k_EMsgGC"
+  "CustomizeItemTextureResponse\020\200\010\022\033\n\026k_EMs"
+  "gGCUseItemRequest\020\201\010\022\034\n\027k_EMsgGCUseItemR"
+  "esponse\020\202\010\022#\n\036k_EMsgGCGiftedItems_DEPREC"
+  "ATED\020\203\010\022\033\n\026k_EMsgGCRemoveItemName\020\206\010\022\034\n\027"
+  "k_EMsgGCRemoveItemPaint\020\207\010\022\031\n\024k_EMsgGCGi"
+  "ftWrapItem\020\210\010\022!\n\034k_EMsgGCGiftWrapItemRes"
+  "ponse\020\211\010\022\030\n\023k_EMsgGCDeliverGift\020\212\010\022%\n k_"
+  "EMsgGCDeliverGiftResponseGiver\020\213\010\022(\n#k_E"
+  "MsgGCDeliverGiftResponseReceiver\020\214\010\022\036\n\031k"
+  "_EMsgGCUnwrapGiftRequest\020\215\010\022\037\n\032k_EMsgGCU"
+  "nwrapGiftResponse\020\216\010\022\031\n\024k_EMsgGCSetItemS"
+  "tyle\020\217\010\022\036\n\031k_EMsgGCUsedClaimCodeItem\020\220\010\022"
+  "\026\n\021k_EMsgGCSortItems\020\221\010\022*\n%k_EMsgGC_Revo"
+  "lvingLootList_DEPRECATED\020\222\010\022\032\n\025k_EMsgGCL"
+  "ookupAccount\020\223\010\022\"\n\035k_EMsgGCLookupAccount"
+  "Response\020\224\010\022\036\n\031k_EMsgGCLookupAccountName"
+  "\020\225\010\022&\n!k_EMsgGCLookupAccountNameResponse"
+  "\020\226\010\022\035\n\030k_EMsgGCUpdateItemSchema\020\231\010\022 \n\033k_"
+  "EMsgGCRemoveCustomTexture\020\233\010\022(\n#k_EMsgGC"
+  "RemoveCustomTextureResponse\020\234\010\022\035\n\030k_EMsg"
+  "GCRemoveMakersMark\020\235\010\022%\n k_EMsgGCRemoveM"
+  "akersMarkResponse\020\236\010\022#\n\036k_EMsgGCRemoveUn"
+  "iqueCraftIndex\020\237\010\022+\n&k_EMsgGCRemoveUniqu"
+  "eCraftIndexResponse\020\240\010\022\033\n\026k_EMsgGCSaxxyB"
+  "roadcast\020\241\010\022!\n\034k_EMsgGCBackpackSortFinis"
+  "hed\020\242\010\022$\n\037k_EMsgGCAdjustItemEquippedStat"
+  "e\020\243\010\022\030\n\023k_EMsgGCCollectItem\020\245\010\022)\n$k_EMsg"
+  "GCItemAcknowledged__DEPRECATED\020\246\010\022\031\n\024k_E"
+  "MsgGC_ReportAbuse\020\251\010\022!\n\034k_EMsgGC_ReportA"
+  "buseResponse\020\252\010\022!\n\034k_EMsgGCNameItemNotif"
+  "ication\020\254\010\022#\n\036k_EMsgGCApplyConsumableEff"
+  "ects\020\255\010\022 \n\033k_EMsgGCConsumableExhausted\020\256"
+  "\010\022\036\n\031k_EMsgGCShowItemsPickedUp\020\257\010\022&\n!k_E"
+  "MsgGCClientDisplayNotification\020\260\010\022\035\n\030k_E"
+  "MsgGCApplyStrangePart\020\261\010\022)\n$k_EMsgGC_Inc"
+  "rementKillCountAttribute\020\262\010\022(\n#k_EMsgGC_"
+  "IncrementKillCountResponse\020\263\010\022 \n\033k_EMsgG"
+  "CApplyPennantUpgrade\020\264\010\022\035\n\030k_EMsgGCSetIt"
+  "emPositions\020\265\010\022\034\n\027k_EMsgGCApplyEggEssenc"
+  "e\020\266\010\022#\n\036k_EMsgGCNameEggEssenceResponse\020\267"
+  "\010\022\031\n\024k_EMsgGCPaintKitItem\020\270\010\022\035\n\030k_EMsgGC"
+  "PaintKitBaseItem\020\271\010\022!\n\034k_EMsgGCPaintKitI"
+  "temResponse\020\272\010\022\030\n\023k_EMsgGCGiftedItems\020\273\010"
+  "\022\034\n\027k_EMsgGCUnlockItemStyle\020\274\010\022$\n\037k_EMsg"
+  "GCUnlockItemStyleResponse\020\275\010\022\031\n\024k_EMsgGC"
+  "ApplySticker\020\276\010\022\035\n\030k_EMsgGCItemAcknowled"
+  "ged\020\277\010\022\031\n\024k_EMsgGCStatTrakSwap\020\300\010\022-\n(k_E"
+  "MsgGCUserTrackTimePlayedConsecutively\020\301\010"
+  "\022*\n%k_EMsgGCItemCustomizationNotificatio"
+  "n\020\302\010\022 \n\033k_EMsgGCModifyItemAttribute\020\303\010\022\032"
+  "\n\025k_EMsgGCCasketItemAdd\020\304\010\022\036\n\031k_EMsgGCCa"
+  "sketItemExtract\020\305\010\022#\n\036k_EMsgGCCasketItem"
+  "LoadContents\020\306\010\022\030\n\023k_EMsgGCTradingBase\020\334"
+  "\013\022)\n$k_EMsgGCTrading_InitiateTradeReques"
+  "t\020\335\013\022*\n%k_EMsgGCTrading_InitiateTradeRes"
+  "ponse\020\336\013\022!\n\034k_EMsgGCTrading_StartSession"
+  "\020\337\013\022\034\n\027k_EMsgGCTrading_SetItem\020\340\013\022\037\n\032k_E"
+  "MsgGCTrading_RemoveItem\020\341\013\022$\n\037k_EMsgGCTr"
+  "ading_UpdateTradeInfo\020\342\013\022!\n\034k_EMsgGCTrad"
+  "ing_SetReadiness\020\343\013\022&\n!k_EMsgGCTrading_R"
+  "eadinessResponse\020\344\013\022\"\n\035k_EMsgGCTrading_S"
+  "essionClosed\020\345\013\022\"\n\035k_EMsgGCTrading_Cance"
+  "lSession\020\346\013\022!\n\034k_EMsgGCTrading_TradeChat"
+  "Msg\020\347\013\022!\n\034k_EMsgGCTrading_ConfirmOffer\020\350"
+  "\013\022\'\n\"k_EMsgGCTrading_TradeTypingChatMsg\020"
+  "\351\013\022)\n$k_EMsgGCServerBrowser_FavoriteServ"
+  "er\020\301\014\022*\n%k_EMsgGCServerBrowser_Blacklist"
+  "Server\020\302\014\022\036\n\031k_EMsgGCServerRentalsBase\020\244"
+  "\r\022#\n\036k_EMsgGCItemPreviewCheckStatus\020\245\r\022&"
+  "\n!k_EMsgGCItemPreviewStatusResponse\020\246\r\022\037"
+  "\n\032k_EMsgGCItemPreviewRequest\020\247\r\022\'\n\"k_EMs"
+  "gGCItemPreviewRequestResponse\020\250\r\022\036\n\031k_EM"
+  "sgGCItemPreviewExpire\020\251\r\022*\n%k_EMsgGCItem"
+  "PreviewExpireNotification\020\252\r\022.\n)k_EMsgGC"
+  "ItemPreviewItemBoughtNotification\020\253\r\022\037\n\032"
+  "k_EMsgGCDev_NewItemRequest\020\321\017\022\'\n\"k_EMsgG"
+  "CDev_NewItemRequestResponse\020\322\017\022!\n\034k_EMsg"
+  "GCDev_PaintKitDropItem\020\323\017\022)\n$k_EMsgGCDev"
+  "_SchemaReservationRequest\020\324\017\022\035\n\030k_EMsgGC"
+  "StoreGetUserData\020\304\023\022%\n k_EMsgGCStoreGetU"
+  "serDataResponse\020\305\023\022)\n$k_EMsgGCStorePurch"
+  "aseInit_DEPRECATED\020\306\023\0221\n,k_EMsgGCStorePu"
+  "rchaseInitResponse_DEPRECATED\020\307\023\022\"\n\035k_EM"
+  "sgGCStorePurchaseFinalize\020\310\023\022*\n%k_EMsgGC"
+  "StorePurchaseFinalizeResponse\020\311\023\022 \n\033k_EM"
+  "sgGCStorePurchaseCancel\020\312\023\022(\n#k_EMsgGCSt"
+  "orePurchaseCancelResponse\020\313\023\022\"\n\035k_EMsgGC"
+  "StorePurchaseQueryTxn\020\314\023\022*\n%k_EMsgGCStor"
+  "ePurchaseQueryTxnResponse\020\315\023\022\036\n\031k_EMsgGC"
+  "StorePurchaseInit\020\316\023\022&\n!k_EMsgGCStorePur"
+  "chaseInitResponse\020\317\023\022\"\n\035k_EMsgGCBannedWo"
+  "rdListRequest\020\320\023\022#\n\036k_EMsgGCBannedWordLi"
+  "stResponse\020\321\023\022(\n#k_EMsgGCToGCBannedWordL"
+  "istBroadcast\020\322\023\022&\n!k_EMsgGCToGCBannedWor"
+  "dListUpdated\020\323\023\022\036\n\031k_EMsgGCToGCDirtySDOC"
+  "ache\020\324\023\022&\n!k_EMsgGCToGCDirtyMultipleSDOC"
+  "ache\020\325\023\022\"\n\035k_EMsgGCToGCUpdateSQLKeyValue"
+  "\020\326\023\022 \n\033k_EMsgGCToGCIsTrustedServer\020\327\023\022(\n"
+  "#k_EMsgGCToGCIsTrustedServerResponse\020\330\023\022"
+  "(\n#k_EMsgGCToGCBroadcastConsoleCommand\020\331"
+  "\023\022!\n\034k_EMsgGCServerVersionUpdated\020\332\023\022%\n "
+  "k_EMsgGCToGCWebAPIAccountChanged\020\334\023\022!\n\034k"
+  "_EMsgGCRequestAnnouncements\020\335\023\022)\n$k_EMsg"
+  "GCRequestAnnouncementsResponse\020\336\023\022%\n k_E"
+  "MsgGCRequestPassportItemGrant\020\337\023\022!\n\034k_EM"
+  "sgGCClientVersionUpdated\020\340\023\022)\n$k_EMsgGCA"
+  "djustItemEquippedStateMulti\020\341\023\022(\n#k_EMsg"
+  "GCRecurringSubscriptionStatus\020\342\023\022#\n\036k_EM"
+  "sgGCAdjustEquipSlotsManual\020\343\023\022$\n\037k_EMsgG"
+  "CAdjustEquipSlotsShuffle\020\344\023\022\035\n\030k_EMsgGCN"
+  "ameItemAndEquip\020\345\023\022\026\n\021k_EMsgGCOpenCrate\020"
+  "\346\023\022(\n#k_EMsgGCAcknowledgeRentalExpiratio"
+  "n\020\347\023*\325\002\n\016EGCMsgResponse\022\026\n\022k_EGCMsgRespo"
+  "nseOK\020\000\022\032\n\026k_EGCMsgResponseDenied\020\001\022\037\n\033k"
+  "_EGCMsgResponseServerError\020\002\022\033\n\027k_EGCMsg"
+  "ResponseTimeout\020\003\022\033\n\027k_EGCMsgResponseInv"
+  "alid\020\004\022\033\n\027k_EGCMsgResponseNoMatch\020\005\022 \n\034k"
+  "_EGCMsgResponseUnknownError\020\006\022\037\n\033k_EGCMs"
+  "gResponseNotLoggedOn\020\007\022\032\n\026k_EGCMsgFailed"
+  "ToCreate\020\010\022\031\n\025k_EGCMsgLimitExceeded\020\t\022\035\n"
+  "\031k_EGCMsgCommitUnfinalized\020\n*\351\001\n\014EUnlock"
+  "Style\022\033\n\027k_UnlockStyle_Succeeded\020\000\022\037\n\033k_"
+  "UnlockStyle_Failed_PreReq\020\001\022#\n\037k_UnlockS"
+  "tyle_Failed_CantAfford\020\002\022#\n\037k_UnlockStyl"
+  "e_Failed_CantCommit\020\003\022&\n\"k_UnlockStyle_F"
+  "ailed_CantLockCache\020\004\022)\n%k_UnlockStyle_F"
+  "ailed_CantAffordAttrib\020\005*\323\013\n EGCItemCust"
+  "omizationNotification\0220\n+k_EGCItemCustom"
+  "izationNotification_NameItem\020\356\007\0223\n.k_EGC"
+  "ItemCustomizationNotification_UnlockCrat"
+  "e\020\357\007\0226\n1k_EGCItemCustomizationNotificati"
+  "on_XRayItemReveal\020\360\007\0225\n0k_EGCItemCustomi"
+  "zationNotification_XRayItemClaim\020\361\007\0225\n0k"
+  "_EGCItemCustomizationNotification_Casket"
+  "TooFull\020\363\007\0226\n1k_EGCItemCustomizationNoti"
+  "fication_CasketContents\020\364\007\0223\n.k_EGCItemC"
+  "ustomizationNotification_CasketAdded\020\365\007\022"
+  "5\n0k_EGCItemCustomizationNotification_Ca"
+  "sketRemoved\020\366\007\0225\n0k_EGCItemCustomization"
+  "Notification_CasketInvFull\020\367\007\0224\n/k_EGCIt"
+  "emCustomizationNotification_NameBaseItem"
+  "\020\373\007\0226\n1k_EGCItemCustomizationNotificatio"
+  "n_RemoveItemName\020\206\010\0225\n0k_EGCItemCustomiz"
+  "ationNotification_RemoveSticker\020\235\010\0224\n/k_"
+  "EGCItemCustomizationNotification_ApplySt"
+  "icker\020\276\010\0224\n/k_EGCItemCustomizationNotifi"
+  "cation_StatTrakSwap\020\300\010\0223\n.k_EGCItemCusto"
+  "mizationNotification_RemovePatch\020\301\010\0222\n-k"
+  "_EGCItemCustomizationNotification_ApplyP"
+  "atch\020\302\010\0225\n0k_EGCItemCustomizationNotific"
+  "ation_ApplyKeychain\020\303\010\0226\n1k_EGCItemCusto"
+  "mizationNotification_RemoveKeychain\020\304\010\0228"
+  "\n3k_EGCItemCustomizationNotification_Act"
+  "ivateFanToken\020\332G\022=\n8k_EGCItemCustomizati"
+  "onNotification_ActivateOperationCoin\020\333G\022"
+  "6\n1k_EGCItemCustomizationNotification_Gr"
+  "affitiUnseal\020\341G\0228\n3k_EGCItemCustomizatio"
+  "nNotification_GenerateSouvenir\020\364G\022A\n<k_E"
+  "GCItemCustomizationNotification_ClientRe"
+  "deemMissionReward\020\371G\022>\n9k_EGCItemCustomi"
+  "zationNotification_ClientRedeemFreeRewar"
+  "d\020\203H\0227\n2k_EGCItemCustomizationNotificati"
+  "on_XpShopUseTicket\020\205H\0227\n2k_EGCItemCustom"
+  "izationNotification_XpShopAckTracks\020\206H"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_econ_5fgcmessages_2eproto_deps[1] = {
   &::descriptor_table_steammessages_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_econ_5fgcmessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_econ_5fgcmessages_2eproto = {
-    false, false, 7525, descriptor_table_protodef_econ_5fgcmessages_2eproto,
+    false, false, 7918, descriptor_table_protodef_econ_5fgcmessages_2eproto,
     "econ_gcmessages.proto",
-    &descriptor_table_econ_5fgcmessages_2eproto_once, descriptor_table_econ_5fgcmessages_2eproto_deps, 1, 6,
+    &descriptor_table_econ_5fgcmessages_2eproto_once, descriptor_table_econ_5fgcmessages_2eproto_deps, 1, 5,
     schemas, file_default_instances, TableStruct_econ_5fgcmessages_2eproto::offsets,
     file_level_metadata_econ_5fgcmessages_2eproto, file_level_enum_descriptors_econ_5fgcmessages_2eproto,
     file_level_service_descriptors_econ_5fgcmessages_2eproto,
@@ -525,6 +519,7 @@ bool EGCItemMsg_IsValid(int value) {
     case 2001:
     case 2002:
     case 2003:
+    case 2004:
     case 2500:
     case 2501:
     case 2502:
@@ -557,6 +552,9 @@ bool EGCItemMsg_IsValid(int value) {
     case 2530:
     case 2531:
     case 2532:
+    case 2533:
+    case 2534:
+    case 2535:
       return true;
     default:
       return false;
@@ -626,12 +624,16 @@ bool EGCItemCustomizationNotification_IsValid(int value) {
     case 1088:
     case 1089:
     case 1090:
+    case 1091:
+    case 1092:
     case 9178:
     case 9179:
     case 9185:
     case 9204:
     case 9209:
     case 9219:
+    case 9221:
+    case 9222:
       return true;
     default:
       return false;
@@ -971,53 +973,87 @@ void CMsgGCGiftedItems::InternalSwap(CMsgGCGiftedItems* other) {
 
 // ===================================================================
 
-class CMsgApplyAutograph::_Internal {
+class CMsgGCDev_SchemaReservationRequest::_Internal {
  public:
-  using HasBits = decltype(std::declval<CMsgApplyAutograph>()._impl_._has_bits_);
-  static void set_has_autograph_item_id(HasBits* has_bits) {
+  using HasBits = decltype(std::declval<CMsgGCDev_SchemaReservationRequest>()._impl_._has_bits_);
+  static void set_has_schema_typename(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
-  static void set_has_item_item_id(HasBits* has_bits) {
+  static void set_has_instance_name(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
+  }
+  static void set_has_context(HasBits* has_bits) {
+    (*has_bits)[0] |= 4u;
+  }
+  static void set_has_id(HasBits* has_bits) {
+    (*has_bits)[0] |= 8u;
   }
 };
 
-CMsgApplyAutograph::CMsgApplyAutograph(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+CMsgGCDev_SchemaReservationRequest::CMsgGCDev_SchemaReservationRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:CMsgApplyAutograph)
+  // @@protoc_insertion_point(arena_constructor:CMsgGCDev_SchemaReservationRequest)
 }
-CMsgApplyAutograph::CMsgApplyAutograph(const CMsgApplyAutograph& from)
+CMsgGCDev_SchemaReservationRequest::CMsgGCDev_SchemaReservationRequest(const CMsgGCDev_SchemaReservationRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CMsgApplyAutograph* const _this = this; (void)_this;
+  CMsgGCDev_SchemaReservationRequest* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){from._impl_._has_bits_}
     , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.autograph_item_id_){}
-    , decltype(_impl_.item_item_id_){}};
+    , decltype(_impl_.schema_typename_){}
+    , decltype(_impl_.instance_name_){}
+    , decltype(_impl_.context_){}
+    , decltype(_impl_.id_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&_impl_.autograph_item_id_, &from._impl_.autograph_item_id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.item_item_id_) -
-    reinterpret_cast<char*>(&_impl_.autograph_item_id_)) + sizeof(_impl_.item_item_id_));
-  // @@protoc_insertion_point(copy_constructor:CMsgApplyAutograph)
+  _impl_.schema_typename_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.schema_typename_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_schema_typename()) {
+    _this->_impl_.schema_typename_.Set(from._internal_schema_typename(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.instance_name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.instance_name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_instance_name()) {
+    _this->_impl_.instance_name_.Set(from._internal_instance_name(), 
+      _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.context_, &from._impl_.context_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.id_) -
+    reinterpret_cast<char*>(&_impl_.context_)) + sizeof(_impl_.id_));
+  // @@protoc_insertion_point(copy_constructor:CMsgGCDev_SchemaReservationRequest)
 }
 
-inline void CMsgApplyAutograph::SharedCtor(
+inline void CMsgGCDev_SchemaReservationRequest::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){}
     , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.autograph_item_id_){uint64_t{0u}}
-    , decltype(_impl_.item_item_id_){uint64_t{0u}}
+    , decltype(_impl_.schema_typename_){}
+    , decltype(_impl_.instance_name_){}
+    , decltype(_impl_.context_){uint64_t{0u}}
+    , decltype(_impl_.id_){uint64_t{0u}}
   };
+  _impl_.schema_typename_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.schema_typename_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.instance_name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.instance_name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
-CMsgApplyAutograph::~CMsgApplyAutograph() {
-  // @@protoc_insertion_point(destructor:CMsgApplyAutograph)
+CMsgGCDev_SchemaReservationRequest::~CMsgGCDev_SchemaReservationRequest() {
+  // @@protoc_insertion_point(destructor:CMsgGCDev_SchemaReservationRequest)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -1025,51 +1061,85 @@ CMsgApplyAutograph::~CMsgApplyAutograph() {
   SharedDtor();
 }
 
-inline void CMsgApplyAutograph::SharedDtor() {
+inline void CMsgGCDev_SchemaReservationRequest::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.schema_typename_.Destroy();
+  _impl_.instance_name_.Destroy();
 }
 
-void CMsgApplyAutograph::SetCachedSize(int size) const {
+void CMsgGCDev_SchemaReservationRequest::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void CMsgApplyAutograph::Clear() {
-// @@protoc_insertion_point(message_clear_start:CMsgApplyAutograph)
+void CMsgGCDev_SchemaReservationRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:CMsgGCDev_SchemaReservationRequest)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x00000003u) {
-    ::memset(&_impl_.autograph_item_id_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.item_item_id_) -
-        reinterpret_cast<char*>(&_impl_.autograph_item_id_)) + sizeof(_impl_.item_item_id_));
+    if (cached_has_bits & 0x00000001u) {
+      _impl_.schema_typename_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _impl_.instance_name_.ClearNonDefaultToEmpty();
+    }
+  }
+  if (cached_has_bits & 0x0000000cu) {
+    ::memset(&_impl_.context_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.id_) -
+        reinterpret_cast<char*>(&_impl_.context_)) + sizeof(_impl_.id_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* CMsgApplyAutograph::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* CMsgGCDev_SchemaReservationRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional uint64 autograph_item_id = 1;
+      // optional string schema_typename = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _Internal::set_has_autograph_item_id(&has_bits);
-          _impl_.autograph_item_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_schema_typename();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CMsgGCDev_SchemaReservationRequest.schema_typename");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string instance_name = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_instance_name();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CMsgGCDev_SchemaReservationRequest.instance_name");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint64 context = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _Internal::set_has_context(&has_bits);
+          _impl_.context_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // optional uint64 item_item_id = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _Internal::set_has_item_item_id(&has_bits);
-          _impl_.item_item_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+      // optional uint64 id = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _Internal::set_has_id(&has_bits);
+          _impl_.id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1098,35 +1168,55 @@ failure:
 #undef CHK_
 }
 
-uint8_t* CMsgApplyAutograph::_InternalSerialize(
+uint8_t* CMsgGCDev_SchemaReservationRequest::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CMsgApplyAutograph)
+  // @@protoc_insertion_point(serialize_to_array_start:CMsgGCDev_SchemaReservationRequest)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  // optional uint64 autograph_item_id = 1;
+  // optional string schema_typename = 1;
   if (cached_has_bits & 0x00000001u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_autograph_item_id(), target);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_schema_typename().data(), static_cast<int>(this->_internal_schema_typename().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CMsgGCDev_SchemaReservationRequest.schema_typename");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_schema_typename(), target);
   }
 
-  // optional uint64 item_item_id = 2;
+  // optional string instance_name = 2;
   if (cached_has_bits & 0x00000002u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_instance_name().data(), static_cast<int>(this->_internal_instance_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CMsgGCDev_SchemaReservationRequest.instance_name");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_instance_name(), target);
+  }
+
+  // optional uint64 context = 3;
+  if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_item_item_id(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_context(), target);
+  }
+
+  // optional uint64 id = 4;
+  if (cached_has_bits & 0x00000008u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(4, this->_internal_id(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:CMsgApplyAutograph)
+  // @@protoc_insertion_point(serialize_to_array_end:CMsgGCDev_SchemaReservationRequest)
   return target;
 }
 
-size_t CMsgApplyAutograph::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CMsgApplyAutograph)
+size_t CMsgGCDev_SchemaReservationRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CMsgGCDev_SchemaReservationRequest)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
@@ -1134,73 +1224,103 @@ size_t CMsgApplyAutograph::ByteSizeLong() const {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
-    // optional uint64 autograph_item_id = 1;
+  if (cached_has_bits & 0x0000000fu) {
+    // optional string schema_typename = 1;
     if (cached_has_bits & 0x00000001u) {
-      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_autograph_item_id());
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_schema_typename());
     }
 
-    // optional uint64 item_item_id = 2;
+    // optional string instance_name = 2;
     if (cached_has_bits & 0x00000002u) {
-      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_item_item_id());
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_instance_name());
+    }
+
+    // optional uint64 context = 3;
+    if (cached_has_bits & 0x00000004u) {
+      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_context());
+    }
+
+    // optional uint64 id = 4;
+    if (cached_has_bits & 0x00000008u) {
+      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_id());
     }
 
   }
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgApplyAutograph::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgGCDev_SchemaReservationRequest::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CMsgApplyAutograph::MergeImpl
+    CMsgGCDev_SchemaReservationRequest::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgApplyAutograph::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgGCDev_SchemaReservationRequest::GetClassData() const { return &_class_data_; }
 
 
-void CMsgApplyAutograph::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CMsgApplyAutograph*>(&to_msg);
-  auto& from = static_cast<const CMsgApplyAutograph&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgApplyAutograph)
+void CMsgGCDev_SchemaReservationRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CMsgGCDev_SchemaReservationRequest*>(&to_msg);
+  auto& from = static_cast<const CMsgGCDev_SchemaReservationRequest&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgGCDev_SchemaReservationRequest)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
+  if (cached_has_bits & 0x0000000fu) {
     if (cached_has_bits & 0x00000001u) {
-      _this->_impl_.autograph_item_id_ = from._impl_.autograph_item_id_;
+      _this->_internal_set_schema_typename(from._internal_schema_typename());
     }
     if (cached_has_bits & 0x00000002u) {
-      _this->_impl_.item_item_id_ = from._impl_.item_item_id_;
+      _this->_internal_set_instance_name(from._internal_instance_name());
+    }
+    if (cached_has_bits & 0x00000004u) {
+      _this->_impl_.context_ = from._impl_.context_;
+    }
+    if (cached_has_bits & 0x00000008u) {
+      _this->_impl_.id_ = from._impl_.id_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void CMsgApplyAutograph::CopyFrom(const CMsgApplyAutograph& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CMsgApplyAutograph)
+void CMsgGCDev_SchemaReservationRequest::CopyFrom(const CMsgGCDev_SchemaReservationRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CMsgGCDev_SchemaReservationRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool CMsgApplyAutograph::IsInitialized() const {
+bool CMsgGCDev_SchemaReservationRequest::IsInitialized() const {
   return true;
 }
 
-void CMsgApplyAutograph::InternalSwap(CMsgApplyAutograph* other) {
+void CMsgGCDev_SchemaReservationRequest::InternalSwap(CMsgGCDev_SchemaReservationRequest* other) {
   using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.schema_typename_, lhs_arena,
+      &other->_impl_.schema_typename_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.instance_name_, lhs_arena,
+      &other->_impl_.instance_name_, rhs_arena
+  );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgApplyAutograph, _impl_.item_item_id_)
-      + sizeof(CMsgApplyAutograph::_impl_.item_item_id_)
-      - PROTOBUF_FIELD_OFFSET(CMsgApplyAutograph, _impl_.autograph_item_id_)>(
-          reinterpret_cast<char*>(&_impl_.autograph_item_id_),
-          reinterpret_cast<char*>(&other->_impl_.autograph_item_id_));
+      PROTOBUF_FIELD_OFFSET(CMsgGCDev_SchemaReservationRequest, _impl_.id_)
+      + sizeof(CMsgGCDev_SchemaReservationRequest::_impl_.id_)
+      - PROTOBUF_FIELD_OFFSET(CMsgGCDev_SchemaReservationRequest, _impl_.context_)>(
+          reinterpret_cast<char*>(&_impl_.context_),
+          reinterpret_cast<char*>(&other->_impl_.context_));
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata CMsgApplyAutograph::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCDev_SchemaReservationRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_econ_5fgcmessages_2eproto_getter, &descriptor_table_econ_5fgcmessages_2eproto_once,
       file_level_metadata_econ_5fgcmessages_2eproto[1]);
@@ -1657,6 +1777,7 @@ CMsgGCItemCustomizationNotification::CMsgGCItemCustomizationNotification(const C
       decltype(_impl_._has_bits_){from._impl_._has_bits_}
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.item_id_){from._impl_.item_id_}
+    , decltype(_impl_.extra_data_){from._impl_.extra_data_}
     , decltype(_impl_.request_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -1672,6 +1793,7 @@ inline void CMsgGCItemCustomizationNotification::SharedCtor(
       decltype(_impl_._has_bits_){}
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.item_id_){arena}
+    , decltype(_impl_.extra_data_){arena}
     , decltype(_impl_.request_){0u}
   };
 }
@@ -1688,6 +1810,7 @@ CMsgGCItemCustomizationNotification::~CMsgGCItemCustomizationNotification() {
 inline void CMsgGCItemCustomizationNotification::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.item_id_.~RepeatedField();
+  _impl_.extra_data_.~RepeatedField();
 }
 
 void CMsgGCItemCustomizationNotification::SetCachedSize(int size) const {
@@ -1701,6 +1824,7 @@ void CMsgGCItemCustomizationNotification::Clear() {
   (void) cached_has_bits;
 
   _impl_.item_id_.Clear();
+  _impl_.extra_data_.Clear();
   _impl_.request_ = 0u;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -1734,6 +1858,22 @@ const char* CMsgGCItemCustomizationNotification::_InternalParse(const char* ptr,
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_request(&has_bits);
           _impl_.request_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated uint64 extra_data = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            _internal_add_extra_data(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<24>(ptr));
+        } else if (static_cast<uint8_t>(tag) == 26) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt64Parser(_internal_mutable_extra_data(), ptr, ctx);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1781,6 +1921,12 @@ uint8_t* CMsgGCItemCustomizationNotification::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_request(), target);
   }
 
+  // repeated uint64 extra_data = 3;
+  for (int i = 0, n = this->_internal_extra_data_size(); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_extra_data(i), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1803,6 +1949,15 @@ size_t CMsgGCItemCustomizationNotification::ByteSizeLong() const {
       UInt64Size(this->_impl_.item_id_);
     total_size += 1 *
                   ::_pbi::FromIntSize(this->_internal_item_id_size());
+    total_size += data_size;
+  }
+
+  // repeated uint64 extra_data = 3;
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      UInt64Size(this->_impl_.extra_data_);
+    total_size += 1 *
+                  ::_pbi::FromIntSize(this->_internal_extra_data_size());
     total_size += data_size;
   }
 
@@ -1831,6 +1986,7 @@ void CMsgGCItemCustomizationNotification::MergeImpl(::PROTOBUF_NAMESPACE_ID::Mes
   (void) cached_has_bits;
 
   _this->_impl_.item_id_.MergeFrom(from._impl_.item_id_);
+  _this->_impl_.extra_data_.MergeFrom(from._impl_.extra_data_);
   if (from._internal_has_request()) {
     _this->_internal_set_request(from._internal_request());
   }
@@ -1853,6 +2009,7 @@ void CMsgGCItemCustomizationNotification::InternalSwap(CMsgGCItemCustomizationNo
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   _impl_.item_id_.InternalSwap(&other->_impl_.item_id_);
+  _impl_.extra_data_.InternalSwap(&other->_impl_.extra_data_);
   swap(_impl_.request_, other->_impl_.request_);
 }
 
@@ -1862,235 +2019,15 @@ void CMsgGCItemCustomizationNotification::InternalSwap(CMsgGCItemCustomizationNo
       file_level_metadata_econ_5fgcmessages_2eproto[4]);
 }
 
-// ===================================================================
-
-class CAttribute_String::_Internal {
- public:
-  using HasBits = decltype(std::declval<CAttribute_String>()._impl_._has_bits_);
-  static void set_has_value(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
-};
-
-CAttribute_String::CAttribute_String(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:CAttribute_String)
-}
-CAttribute_String::CAttribute_String(const CAttribute_String& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CAttribute_String* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){from._impl_._has_bits_}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.value_){}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.value_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.value_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_value()) {
-    _this->_impl_.value_.Set(from._internal_value(), 
-      _this->GetArenaForAllocation());
-  }
-  // @@protoc_insertion_point(copy_constructor:CAttribute_String)
-}
-
-inline void CAttribute_String::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.value_){}
-  };
-  _impl_.value_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.value_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-}
-
-CAttribute_String::~CAttribute_String() {
-  // @@protoc_insertion_point(destructor:CAttribute_String)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void CAttribute_String::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.value_.Destroy();
-}
-
-void CAttribute_String::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void CAttribute_String::Clear() {
-// @@protoc_insertion_point(message_clear_start:CAttribute_String)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    _impl_.value_.ClearNonDefaultToEmpty();
-  }
-  _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* CAttribute_String::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // optional string value = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          auto str = _internal_mutable_value();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CAttribute_String.value");
-          #endif  // !NDEBUG
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  _impl_._has_bits_.Or(has_bits);
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* CAttribute_String::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CAttribute_String)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  // optional string value = 1;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_value().data(), static_cast<int>(this->_internal_value().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CAttribute_String.value");
-    target = stream->WriteStringMaybeAliased(
-        1, this->_internal_value(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:CAttribute_String)
-  return target;
-}
-
-size_t CAttribute_String::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CAttribute_String)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // optional string value = 1;
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_value());
-  }
-
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CAttribute_String::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CAttribute_String::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CAttribute_String::GetClassData() const { return &_class_data_; }
-
-
-void CAttribute_String::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CAttribute_String*>(&to_msg);
-  auto& from = static_cast<const CAttribute_String&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CAttribute_String)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (from._internal_has_value()) {
-    _this->_internal_set_value(from._internal_value());
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void CAttribute_String::CopyFrom(const CAttribute_String& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CAttribute_String)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CAttribute_String::IsInitialized() const {
-  return true;
-}
-
-void CAttribute_String::InternalSwap(CAttribute_String* other) {
-  using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.value_, lhs_arena,
-      &other->_impl_.value_, rhs_arena
-  );
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata CAttribute_String::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_econ_5fgcmessages_2eproto_getter, &descriptor_table_econ_5fgcmessages_2eproto_once,
-      file_level_metadata_econ_5fgcmessages_2eproto[5]);
-}
-
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::CMsgGCGiftedItems*
 Arena::CreateMaybeMessage< ::CMsgGCGiftedItems >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CMsgGCGiftedItems >(arena);
 }
-template<> PROTOBUF_NOINLINE ::CMsgApplyAutograph*
-Arena::CreateMaybeMessage< ::CMsgApplyAutograph >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CMsgApplyAutograph >(arena);
+template<> PROTOBUF_NOINLINE ::CMsgGCDev_SchemaReservationRequest*
+Arena::CreateMaybeMessage< ::CMsgGCDev_SchemaReservationRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CMsgGCDev_SchemaReservationRequest >(arena);
 }
 template<> PROTOBUF_NOINLINE ::CMsgCasketItem*
 Arena::CreateMaybeMessage< ::CMsgCasketItem >(Arena* arena) {
@@ -2103,10 +2040,6 @@ Arena::CreateMaybeMessage< ::CMsgGCUserTrackTimePlayedConsecutively >(Arena* are
 template<> PROTOBUF_NOINLINE ::CMsgGCItemCustomizationNotification*
 Arena::CreateMaybeMessage< ::CMsgGCItemCustomizationNotification >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CMsgGCItemCustomizationNotification >(arena);
-}
-template<> PROTOBUF_NOINLINE ::CAttribute_String*
-Arena::CreateMaybeMessage< ::CAttribute_String >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CAttribute_String >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 
