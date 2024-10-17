@@ -89,7 +89,7 @@ inline bool CMsgSteamDatagramCertificate_EKeyType_Parse(
 }
 // ===================================================================
 
-class CMsgSteamNetworkingIdentityLegacyBinary /* final */ :
+class CMsgSteamNetworkingIdentityLegacyBinary final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingIdentityLegacyBinary) */ {
  public:
   inline CMsgSteamNetworkingIdentityLegacyBinary() : CMsgSteamNetworkingIdentityLegacyBinary(nullptr) {}
@@ -329,7 +329,7 @@ class CMsgSteamNetworkingIdentityLegacyBinary /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramCertificate /* final */ :
+class CMsgSteamDatagramCertificate final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramCertificate) */ {
  public:
   inline CMsgSteamDatagramCertificate() : CMsgSteamDatagramCertificate(nullptr) {}
@@ -698,7 +698,7 @@ class CMsgSteamDatagramCertificate /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramCertificateSigned /* final */ :
+class CMsgSteamDatagramCertificateSigned final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramCertificateSigned) */ {
  public:
   inline CMsgSteamDatagramCertificateSigned() : CMsgSteamDatagramCertificateSigned(nullptr) {}
@@ -918,7 +918,7 @@ class CMsgSteamDatagramCertificateSigned /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramCertificateRequest /* final */ :
+class CMsgSteamDatagramCertificateRequest final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramCertificateRequest) */ {
  public:
   inline CMsgSteamDatagramCertificateRequest() : CMsgSteamDatagramCertificateRequest(nullptr) {}

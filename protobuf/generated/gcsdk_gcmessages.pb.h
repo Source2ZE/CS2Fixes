@@ -303,7 +303,7 @@ inline bool GCConnectionStatus_Parse(
 }
 // ===================================================================
 
-class CMsgSOIDOwner /* final */ :
+class CMsgSOIDOwner :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSOIDOwner) */ {
  public:
   inline CMsgSOIDOwner() : CMsgSOIDOwner(nullptr) {}
@@ -478,7 +478,7 @@ class CMsgSOIDOwner /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSOSingleObject /* final */ :
+class CMsgSOSingleObject :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSOSingleObject) */ {
  public:
   inline CMsgSOSingleObject() : CMsgSOSingleObject(nullptr) {}
@@ -693,7 +693,7 @@ class CMsgSOSingleObject /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSOMultipleObjects_SingleObject /* final */ :
+class CMsgSOMultipleObjects_SingleObject :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSOMultipleObjects.SingleObject) */ {
  public:
   inline CMsgSOMultipleObjects_SingleObject() : CMsgSOMultipleObjects_SingleObject(nullptr) {}
@@ -873,7 +873,7 @@ class CMsgSOMultipleObjects_SingleObject /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSOMultipleObjects /* final */ :
+class CMsgSOMultipleObjects :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSOMultipleObjects) */ {
  public:
   inline CMsgSOMultipleObjects() : CMsgSOMultipleObjects(nullptr) {}
@@ -1075,7 +1075,7 @@ class CMsgSOMultipleObjects /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSOCacheSubscribed_SubscribedType /* final */ :
+class CMsgSOCacheSubscribed_SubscribedType :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSOCacheSubscribed.SubscribedType) */ {
  public:
   inline CMsgSOCacheSubscribed_SubscribedType() : CMsgSOCacheSubscribed_SubscribedType(nullptr) {}
@@ -1261,7 +1261,7 @@ class CMsgSOCacheSubscribed_SubscribedType /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSOCacheSubscribed /* final */ :
+class CMsgSOCacheSubscribed :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSOCacheSubscribed) */ {
  public:
   inline CMsgSOCacheSubscribed() : CMsgSOCacheSubscribed(nullptr) {}
@@ -1463,7 +1463,7 @@ class CMsgSOCacheSubscribed /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSOCacheUnsubscribed /* final */ :
+class CMsgSOCacheUnsubscribed :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSOCacheUnsubscribed) */ {
  public:
   inline CMsgSOCacheUnsubscribed() : CMsgSOCacheUnsubscribed(nullptr) {}
@@ -1628,7 +1628,7 @@ class CMsgSOCacheUnsubscribed /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSOCacheSubscriptionCheck /* final */ :
+class CMsgSOCacheSubscriptionCheck :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSOCacheSubscriptionCheck) */ {
  public:
   inline CMsgSOCacheSubscriptionCheck() : CMsgSOCacheSubscriptionCheck(nullptr) {}
@@ -1808,7 +1808,7 @@ class CMsgSOCacheSubscriptionCheck /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSOCacheSubscriptionRefresh /* final */ :
+class CMsgSOCacheSubscriptionRefresh :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSOCacheSubscriptionRefresh) */ {
  public:
   inline CMsgSOCacheSubscriptionRefresh() : CMsgSOCacheSubscriptionRefresh(nullptr) {}
@@ -1973,7 +1973,7 @@ class CMsgSOCacheSubscriptionRefresh /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSOCacheVersion /* final */ :
+class CMsgSOCacheVersion :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSOCacheVersion) */ {
  public:
   inline CMsgSOCacheVersion() : CMsgSOCacheVersion(nullptr) {}
@@ -2133,7 +2133,7 @@ class CMsgSOCacheVersion /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgAccountDetails /* final */ :
+class CMsgAccountDetails :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgAccountDetails) */ {
  public:
   inline CMsgAccountDetails() : CMsgAccountDetails(nullptr) {}
@@ -2553,7 +2553,7 @@ class CMsgAccountDetails /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCMultiplexMessage /* final */ :
+class CMsgGCMultiplexMessage :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCMultiplexMessage) */ {
  public:
   inline CMsgGCMultiplexMessage() : CMsgGCMultiplexMessage(nullptr) {}
@@ -2772,7 +2772,7 @@ class CMsgGCMultiplexMessage /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCMultiplexMessage_Response /* final */ :
+class CMsgGCMultiplexMessage_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCMultiplexMessage_Response) */ {
  public:
   inline CMsgGCMultiplexMessage_Response() : CMsgGCMultiplexMessage_Response(nullptr) {}
@@ -2932,7 +2932,7 @@ class CMsgGCMultiplexMessage_Response /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGCToGCMsgMasterAck /* final */ :
+class CGCToGCMsgMasterAck :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGCToGCMsgMasterAck) */ {
  public:
   inline CGCToGCMsgMasterAck() : CGCToGCMsgMasterAck(nullptr) {}
@@ -3107,7 +3107,7 @@ class CGCToGCMsgMasterAck /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGCToGCMsgMasterAck_Response /* final */ :
+class CGCToGCMsgMasterAck_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGCToGCMsgMasterAck_Response) */ {
  public:
   inline CGCToGCMsgMasterAck_Response() : CGCToGCMsgMasterAck_Response(nullptr) {}
@@ -3267,7 +3267,7 @@ class CGCToGCMsgMasterAck_Response /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGCToGCMsgMasterStartupComplete /* final */ :
+class CGCToGCMsgMasterStartupComplete :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CGCToGCMsgMasterStartupComplete) */ {
  public:
   inline CGCToGCMsgMasterStartupComplete() : CGCToGCMsgMasterStartupComplete(nullptr) {}
@@ -3392,7 +3392,7 @@ class CGCToGCMsgMasterStartupComplete /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGCToGCMsgRouted /* final */ :
+class CGCToGCMsgRouted :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGCToGCMsgRouted) */ {
  public:
   inline CGCToGCMsgRouted() : CGCToGCMsgRouted(nullptr) {}
@@ -3602,7 +3602,7 @@ class CGCToGCMsgRouted /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGCToGCMsgRoutedReply /* final */ :
+class CGCToGCMsgRoutedReply :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGCToGCMsgRoutedReply) */ {
  public:
   inline CGCToGCMsgRoutedReply() : CGCToGCMsgRoutedReply(nullptr) {}
@@ -3782,7 +3782,7 @@ class CGCToGCMsgRoutedReply /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCUpdateSessionIP /* final */ :
+class CMsgGCUpdateSessionIP :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCUpdateSessionIP) */ {
  public:
   inline CMsgGCUpdateSessionIP() : CMsgGCUpdateSessionIP(nullptr) {}
@@ -3957,7 +3957,7 @@ class CMsgGCUpdateSessionIP /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCRequestSessionIP /* final */ :
+class CMsgGCRequestSessionIP :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCRequestSessionIP) */ {
  public:
   inline CMsgGCRequestSessionIP() : CMsgGCRequestSessionIP(nullptr) {}
@@ -4117,7 +4117,7 @@ class CMsgGCRequestSessionIP /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCRequestSessionIPResponse /* final */ :
+class CMsgGCRequestSessionIPResponse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCRequestSessionIPResponse) */ {
  public:
   inline CMsgGCRequestSessionIPResponse() : CMsgGCRequestSessionIPResponse(nullptr) {}
@@ -4277,7 +4277,7 @@ class CMsgGCRequestSessionIPResponse /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSOCacheHaveVersion /* final */ :
+class CMsgSOCacheHaveVersion :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSOCacheHaveVersion) */ {
  public:
   inline CMsgSOCacheHaveVersion() : CMsgSOCacheHaveVersion(nullptr) {}
@@ -4457,7 +4457,7 @@ class CMsgSOCacheHaveVersion /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgClientHello /* final */ :
+class CMsgClientHello :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgClientHello) */ {
  public:
   inline CMsgClientHello() : CMsgClientHello(nullptr) {}
@@ -4742,7 +4742,7 @@ class CMsgClientHello /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgServerHello /* final */ :
+class CMsgServerHello :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgServerHello) */ {
  public:
   inline CMsgServerHello() : CMsgServerHello(nullptr) {}
@@ -5022,7 +5022,7 @@ class CMsgServerHello /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgClientWelcome_Location /* final */ :
+class CMsgClientWelcome_Location :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgClientWelcome.Location) */ {
  public:
   inline CMsgClientWelcome_Location() : CMsgClientWelcome_Location(nullptr) {}
@@ -5217,7 +5217,7 @@ class CMsgClientWelcome_Location /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgClientWelcome /* final */ :
+class CMsgClientWelcome :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgClientWelcome) */ {
  public:
   inline CMsgClientWelcome() : CMsgClientWelcome(nullptr) {}
@@ -5564,7 +5564,7 @@ class CMsgClientWelcome /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgConnectionStatus /* final */ :
+class CMsgConnectionStatus :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgConnectionStatus) */ {
  public:
   inline CMsgConnectionStatus() : CMsgConnectionStatus(nullptr) {}
@@ -5799,7 +5799,7 @@ class CMsgConnectionStatus /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_PopulateItemDescriptions_Request_SingleItemDescription /* final */ :
+class CWorkshop_PopulateItemDescriptions_Request_SingleItemDescription :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CWorkshop_PopulateItemDescriptions_Request.SingleItemDescription) */ {
  public:
   inline CWorkshop_PopulateItemDescriptions_Request_SingleItemDescription() : CWorkshop_PopulateItemDescriptions_Request_SingleItemDescription(nullptr) {}
@@ -5994,7 +5994,7 @@ class CWorkshop_PopulateItemDescriptions_Request_SingleItemDescription /* final 
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_PopulateItemDescriptions_Request_ItemDescriptionsLanguageBlock /* final */ :
+class CWorkshop_PopulateItemDescriptions_Request_ItemDescriptionsLanguageBlock :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CWorkshop_PopulateItemDescriptions_Request.ItemDescriptionsLanguageBlock) */ {
  public:
   inline CWorkshop_PopulateItemDescriptions_Request_ItemDescriptionsLanguageBlock() : CWorkshop_PopulateItemDescriptions_Request_ItemDescriptionsLanguageBlock(nullptr) {}
@@ -6179,7 +6179,7 @@ class CWorkshop_PopulateItemDescriptions_Request_ItemDescriptionsLanguageBlock /
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_PopulateItemDescriptions_Request /* final */ :
+class CWorkshop_PopulateItemDescriptions_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CWorkshop_PopulateItemDescriptions_Request) */ {
  public:
   inline CWorkshop_PopulateItemDescriptions_Request() : CWorkshop_PopulateItemDescriptions_Request(nullptr) {}
@@ -6362,7 +6362,7 @@ class CWorkshop_PopulateItemDescriptions_Request /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_GetContributors_Request /* final */ :
+class CWorkshop_GetContributors_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CWorkshop_GetContributors_Request) */ {
  public:
   inline CWorkshop_GetContributors_Request() : CWorkshop_GetContributors_Request(nullptr) {}
@@ -6537,7 +6537,7 @@ class CWorkshop_GetContributors_Request /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_GetContributors_Response /* final */ :
+class CWorkshop_GetContributors_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CWorkshop_GetContributors_Response) */ {
  public:
   inline CWorkshop_GetContributors_Response() : CWorkshop_GetContributors_Response(nullptr) {}
@@ -6705,7 +6705,7 @@ class CWorkshop_GetContributors_Response /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_SetItemPaymentRules_Request_WorkshopItemPaymentRule /* final */ :
+class CWorkshop_SetItemPaymentRules_Request_WorkshopItemPaymentRule :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CWorkshop_SetItemPaymentRules_Request.WorkshopItemPaymentRule) */ {
  public:
   inline CWorkshop_SetItemPaymentRules_Request_WorkshopItemPaymentRule() : CWorkshop_SetItemPaymentRules_Request_WorkshopItemPaymentRule(nullptr) {}
@@ -6915,7 +6915,7 @@ class CWorkshop_SetItemPaymentRules_Request_WorkshopItemPaymentRule /* final */ 
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_SetItemPaymentRules_Request_WorkshopDirectPaymentRule /* final */ :
+class CWorkshop_SetItemPaymentRules_Request_WorkshopDirectPaymentRule :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CWorkshop_SetItemPaymentRules_Request.WorkshopDirectPaymentRule) */ {
  public:
   inline CWorkshop_SetItemPaymentRules_Request_WorkshopDirectPaymentRule() : CWorkshop_SetItemPaymentRules_Request_WorkshopDirectPaymentRule(nullptr) {}
@@ -7095,7 +7095,7 @@ class CWorkshop_SetItemPaymentRules_Request_WorkshopDirectPaymentRule /* final *
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_SetItemPaymentRules_Request_PartnerItemPaymentRule /* final */ :
+class CWorkshop_SetItemPaymentRules_Request_PartnerItemPaymentRule :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CWorkshop_SetItemPaymentRules_Request.PartnerItemPaymentRule) */ {
  public:
   inline CWorkshop_SetItemPaymentRules_Request_PartnerItemPaymentRule() : CWorkshop_SetItemPaymentRules_Request_PartnerItemPaymentRule(nullptr) {}
@@ -7290,7 +7290,7 @@ class CWorkshop_SetItemPaymentRules_Request_PartnerItemPaymentRule /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_SetItemPaymentRules_Request /* final */ :
+class CWorkshop_SetItemPaymentRules_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CWorkshop_SetItemPaymentRules_Request) */ {
  public:
   inline CWorkshop_SetItemPaymentRules_Request() : CWorkshop_SetItemPaymentRules_Request(nullptr) {}
@@ -7559,7 +7559,7 @@ class CWorkshop_SetItemPaymentRules_Request /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_SetItemPaymentRules_Response /* final */ :
+class CWorkshop_SetItemPaymentRules_Response :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CWorkshop_SetItemPaymentRules_Response) */ {
  public:
   inline CWorkshop_SetItemPaymentRules_Response() : CWorkshop_SetItemPaymentRules_Response(nullptr) {}
@@ -7684,7 +7684,7 @@ class CWorkshop_SetItemPaymentRules_Response /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGameServers_AggregationQuery_Request /* final */ :
+class CGameServers_AggregationQuery_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameServers_AggregationQuery_Request) */ {
  public:
   inline CGameServers_AggregationQuery_Request() : CGameServers_AggregationQuery_Request(nullptr) {}
@@ -7875,7 +7875,7 @@ class CGameServers_AggregationQuery_Request /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGameServers_AggregationQuery_Response_Group /* final */ :
+class CGameServers_AggregationQuery_Response_Group :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameServers_AggregationQuery_Response.Group) */ {
  public:
   inline CGameServers_AggregationQuery_Response_Group() : CGameServers_AggregationQuery_Response_Group(nullptr) {}
@@ -8136,7 +8136,7 @@ class CGameServers_AggregationQuery_Response_Group /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGameServers_AggregationQuery_Response /* final */ :
+class CGameServers_AggregationQuery_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameServers_AggregationQuery_Response) */ {
  public:
   inline CGameServers_AggregationQuery_Response() : CGameServers_AggregationQuery_Response(nullptr) {}
@@ -8302,7 +8302,7 @@ class CGameServers_AggregationQuery_Response /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_AddSpecialPayment_Request /* final */ :
+class CWorkshop_AddSpecialPayment_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CWorkshop_AddSpecialPayment_Request) */ {
  public:
   inline CWorkshop_AddSpecialPayment_Request() : CWorkshop_AddSpecialPayment_Request(nullptr) {}
@@ -8527,7 +8527,7 @@ class CWorkshop_AddSpecialPayment_Request /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CWorkshop_AddSpecialPayment_Response /* final */ :
+class CWorkshop_AddSpecialPayment_Response :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CWorkshop_AddSpecialPayment_Response) */ {
  public:
   inline CWorkshop_AddSpecialPayment_Response() : CWorkshop_AddSpecialPayment_Response(nullptr) {}
@@ -8652,7 +8652,7 @@ class CWorkshop_AddSpecialPayment_Response /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CProductInfo_SetRichPresenceLocalization_Request_Token /* final */ :
+class CProductInfo_SetRichPresenceLocalization_Request_Token :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CProductInfo_SetRichPresenceLocalization_Request.Token) */ {
  public:
   inline CProductInfo_SetRichPresenceLocalization_Request_Token() : CProductInfo_SetRichPresenceLocalization_Request_Token(nullptr) {}
@@ -8837,7 +8837,7 @@ class CProductInfo_SetRichPresenceLocalization_Request_Token /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CProductInfo_SetRichPresenceLocalization_Request_LanguageSection /* final */ :
+class CProductInfo_SetRichPresenceLocalization_Request_LanguageSection :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CProductInfo_SetRichPresenceLocalization_Request.LanguageSection) */ {
  public:
   inline CProductInfo_SetRichPresenceLocalization_Request_LanguageSection() : CProductInfo_SetRichPresenceLocalization_Request_LanguageSection(nullptr) {}
@@ -9022,7 +9022,7 @@ class CProductInfo_SetRichPresenceLocalization_Request_LanguageSection /* final 
 };
 // -------------------------------------------------------------------
 
-class CProductInfo_SetRichPresenceLocalization_Request /* final */ :
+class CProductInfo_SetRichPresenceLocalization_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CProductInfo_SetRichPresenceLocalization_Request) */ {
  public:
   inline CProductInfo_SetRichPresenceLocalization_Request() : CProductInfo_SetRichPresenceLocalization_Request(nullptr) {}
@@ -9220,7 +9220,7 @@ class CProductInfo_SetRichPresenceLocalization_Request /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CProductInfo_SetRichPresenceLocalization_Response /* final */ :
+class CProductInfo_SetRichPresenceLocalization_Response :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CProductInfo_SetRichPresenceLocalization_Response) */ {
  public:
   inline CProductInfo_SetRichPresenceLocalization_Response() : CProductInfo_SetRichPresenceLocalization_Response(nullptr) {}
@@ -9345,7 +9345,7 @@ class CProductInfo_SetRichPresenceLocalization_Response /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSerializedSOCache_TypeCache /* final */ :
+class CMsgSerializedSOCache_TypeCache :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSerializedSOCache.TypeCache) */ {
  public:
   inline CMsgSerializedSOCache_TypeCache() : CMsgSerializedSOCache_TypeCache(nullptr) {}
@@ -9546,7 +9546,7 @@ class CMsgSerializedSOCache_TypeCache /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSerializedSOCache_Cache_Version /* final */ :
+class CMsgSerializedSOCache_Cache_Version :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSerializedSOCache.Cache.Version) */ {
  public:
   inline CMsgSerializedSOCache_Cache_Version() : CMsgSerializedSOCache_Cache_Version(nullptr) {}
@@ -9721,7 +9721,7 @@ class CMsgSerializedSOCache_Cache_Version /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSerializedSOCache_Cache /* final */ :
+class CMsgSerializedSOCache_Cache :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSerializedSOCache.Cache) */ {
  public:
   inline CMsgSerializedSOCache_Cache() : CMsgSerializedSOCache_Cache(nullptr) {}
@@ -9938,7 +9938,7 @@ class CMsgSerializedSOCache_Cache /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgSerializedSOCache /* final */ :
+class CMsgSerializedSOCache :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSerializedSOCache) */ {
  public:
   inline CMsgSerializedSOCache() : CMsgSerializedSOCache(nullptr) {}

@@ -89,7 +89,7 @@ inline bool GCProtoBufMsgSrc_Parse(
 }
 // ===================================================================
 
-class CMsgProtoBufHeader /* final */ :
+class CMsgProtoBufHeader :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgProtoBufHeader) */ {
  public:
   inline CMsgProtoBufHeader() : CMsgProtoBufHeader(nullptr) {}
@@ -409,7 +409,7 @@ class CMsgProtoBufHeader /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CChinaAgreementSessions_StartAgreementSessionInGame_Request /* final */ :
+class CChinaAgreementSessions_StartAgreementSessionInGame_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CChinaAgreementSessions_StartAgreementSessionInGame_Request) */ {
  public:
   inline CChinaAgreementSessions_StartAgreementSessionInGame_Request() : CChinaAgreementSessions_StartAgreementSessionInGame_Request(nullptr) {}
@@ -604,7 +604,7 @@ class CChinaAgreementSessions_StartAgreementSessionInGame_Request /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CChinaAgreementSessions_StartAgreementSessionInGame_Response /* final */ :
+class CChinaAgreementSessions_StartAgreementSessionInGame_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CChinaAgreementSessions_StartAgreementSessionInGame_Response) */ {
  public:
   inline CChinaAgreementSessions_StartAgreementSessionInGame_Response() : CChinaAgreementSessions_StartAgreementSessionInGame_Response(nullptr) {}

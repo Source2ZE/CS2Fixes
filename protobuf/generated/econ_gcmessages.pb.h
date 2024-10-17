@@ -343,7 +343,7 @@ inline bool EGCItemCustomizationNotification_Parse(
 }
 // ===================================================================
 
-class CMsgGCGiftedItems /* final */ :
+class CMsgGCGiftedItems final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCGiftedItems) */ {
  public:
   inline CMsgGCGiftedItems() : CMsgGCGiftedItems(nullptr) {}
@@ -572,7 +572,7 @@ class CMsgGCGiftedItems /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgApplyAutograph /* final */ :
+class CMsgApplyAutograph final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgApplyAutograph) */ {
  public:
   inline CMsgApplyAutograph() : CMsgApplyAutograph(nullptr) {}
@@ -747,7 +747,7 @@ class CMsgApplyAutograph /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgCasketItem /* final */ :
+class CMsgCasketItem final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgCasketItem) */ {
  public:
   inline CMsgCasketItem() : CMsgCasketItem(nullptr) {}
@@ -922,7 +922,7 @@ class CMsgCasketItem /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCUserTrackTimePlayedConsecutively /* final */ :
+class CMsgGCUserTrackTimePlayedConsecutively final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCUserTrackTimePlayedConsecutively) */ {
  public:
   inline CMsgGCUserTrackTimePlayedConsecutively() : CMsgGCUserTrackTimePlayedConsecutively(nullptr) {}
@@ -1082,7 +1082,7 @@ class CMsgGCUserTrackTimePlayedConsecutively /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCItemCustomizationNotification /* final */ :
+class CMsgGCItemCustomizationNotification final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCItemCustomizationNotification) */ {
  public:
   inline CMsgGCItemCustomizationNotification() : CMsgGCItemCustomizationNotification(nullptr) {}
@@ -1266,7 +1266,7 @@ class CMsgGCItemCustomizationNotification /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CAttribute_String /* final */ :
+class CAttribute_String final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CAttribute_String) */ {
  public:
   inline CAttribute_String() : CAttribute_String(nullptr) {}

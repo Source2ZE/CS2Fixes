@@ -1386,24 +1386,7 @@ struct CCSUsrMsgPreMatchSayTextDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CCSUsrMsgPreMatchSayTextDefaultTypeInternal _CCSUsrMsgPreMatchSayText_default_instance_;
-PROTOBUF_CONSTEXPR CCSUsrMsg_SnapTapStats::CCSUsrMsg_SnapTapStats(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_._has_bits_)*/{}
-  , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.overlap_bucket_)*/{}
-  , /*decltype(_impl_.underlap_bucket_)*/{}
-  , /*decltype(_impl_.perfect_bucket_)*/0u
-  , /*decltype(_impl_.max_success_in_20_)*/0u} {}
-struct CCSUsrMsg_SnapTapStatsDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CCSUsrMsg_SnapTapStatsDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CCSUsrMsg_SnapTapStatsDefaultTypeInternal() {}
-  union {
-    CCSUsrMsg_SnapTapStats _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CCSUsrMsg_SnapTapStatsDefaultTypeInternal _CCSUsrMsg_SnapTapStats_default_instance_;
-static ::_pb::Metadata file_level_metadata_cstrike15_5fusermessages_2eproto[87];
+static ::_pb::Metadata file_level_metadata_cstrike15_5fusermessages_2eproto[86];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_cstrike15_5fusermessages_2eproto[2];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_cstrike15_5fusermessages_2eproto = nullptr;
 
@@ -2424,20 +2407,6 @@ const uint32_t TableStruct_cstrike15_5fusermessages_2eproto::offsets[] PROTOBUF_
   1,
   0,
   2,
-  PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_SnapTapStats, _impl_._has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_SnapTapStats, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_SnapTapStats, _impl_.perfect_bucket_),
-  PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_SnapTapStats, _impl_.overlap_bucket_),
-  PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_SnapTapStats, _impl_.underlap_bucket_),
-  PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_SnapTapStats, _impl_.max_success_in_20_),
-  0,
-  ~0u,
-  ~0u,
-  1,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 8, -1, sizeof(::CCSUsrMsg_VGUIMenu_Keys)},
@@ -2526,7 +2495,6 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 986, 993, -1, sizeof(::CCSUsrMsg_ClientInfo)},
   { 994, 1002, -1, sizeof(::CCSUsrMsg_ServerRankRevealAll)},
   { 1004, 1013, -1, sizeof(::CCSUsrMsgPreMatchSayText)},
-  { 1016, 1026, -1, sizeof(::CCSUsrMsg_SnapTapStats)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -2616,7 +2584,6 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CCSUsrMsg_ClientInfo_default_instance_._instance,
   &::_CCSUsrMsg_ServerRankRevealAll_default_instance_._instance,
   &::_CCSUsrMsgPreMatchSayText_default_instance_._instance,
-  &::_CCSUsrMsg_SnapTapStats_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_cstrike15_5fusermessages_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -2820,63 +2787,59 @@ const char descriptor_table_protodef_cstrike15_5fusermessages_2eproto[] PROTOBUF
   "ervation\030\002 \001(\0132/.CMsgGCCStrike15_v2_Matc"
   "hmakingGC2ServerReserve\"N\n\030CCSUsrMsgPreM"
   "atchSayText\022\022\n\naccount_id\030\001 \001(\r\022\014\n\004text\030"
-  "\002 \001(\t\022\020\n\010all_chat\030\003 \001(\010\"|\n\026CCSUsrMsg_Sna"
-  "pTapStats\022\026\n\016perfect_bucket\030\001 \001(\r\022\026\n\016ove"
-  "rlap_bucket\030\002 \003(\r\022\027\n\017underlap_bucket\030\003 \003"
-  "(\r\022\031\n\021max_success_in_20\030\004 \001(\r*\253\017\n\026ECstri"
-  "ke15UserMessages\022\023\n\016CS_UM_VGUIMenu\020\255\002\022\021\n"
-  "\014CS_UM_Geiger\020\256\002\022\020\n\013CS_UM_Train\020\257\002\022\022\n\rCS"
-  "_UM_HudText\020\260\002\022\022\n\rCS_UM_SayText\020\261\002\022\023\n\016CS"
-  "_UM_SayText2\020\262\002\022\022\n\rCS_UM_TextMsg\020\263\002\022\021\n\014C"
-  "S_UM_HudMsg\020\264\002\022\023\n\016CS_UM_ResetHud\020\265\002\022\024\n\017C"
-  "S_UM_GameTitle\020\266\002\022\020\n\013CS_UM_Shake\020\270\002\022\017\n\nC"
-  "S_UM_Fade\020\271\002\022\021\n\014CS_UM_Rumble\020\272\002\022\027\n\022CS_UM"
-  "_CloseCaption\020\273\002\022\035\n\030CS_UM_CloseCaptionDi"
-  "rect\020\274\002\022\024\n\017CS_UM_SendAudio\020\275\002\022\023\n\016CS_UM_R"
-  "awAudio\020\276\002\022\024\n\017CS_UM_VoiceMask\020\277\002\022\027\n\022CS_U"
-  "M_RequestState\020\300\002\022\021\n\014CS_UM_Damage\020\301\002\022\024\n\017"
-  "CS_UM_RadioText\020\302\002\022\023\n\016CS_UM_HintText\020\303\002\022"
-  "\026\n\021CS_UM_KeyHintText\020\304\002\022%\n CS_UM_Process"
-  "SpottedEntityUpdate\020\305\002\022\027\n\022CS_UM_ReloadEf"
-  "fect\020\306\002\022\026\n\021CS_UM_AdjustMoney\020\307\002\022\032\n\025CS_UM"
-  "_UpdateTeamMoney\020\310\002\022\034\n\027CS_UM_StopSpectat"
-  "orMode\020\311\002\022\022\n\rCS_UM_KillCam\020\312\002\022\033\n\026CS_UM_D"
-  "esiredTimescale\020\313\002\022\033\n\026CS_UM_CurrentTimes"
-  "cale\020\314\002\022\033\n\026CS_UM_AchievementEvent\020\315\002\022\035\n\030"
-  "CS_UM_MatchEndConditions\020\316\002\022\034\n\027CS_UM_Dis"
-  "connectToLobby\020\317\002\022\034\n\027CS_UM_PlayerStatsUp"
-  "date\020\320\002\022\031\n\024CS_UM_WarmupHasEnded\020\322\002\022\025\n\020CS"
-  "_UM_ClientInfo\020\323\002\022\023\n\016CS_UM_XRankGet\020\324\002\022\023"
-  "\n\016CS_UM_XRankUpd\020\325\002\022\031\n\024CS_UM_CallVoteFai"
-  "led\020\331\002\022\024\n\017CS_UM_VoteStart\020\332\002\022\023\n\016CS_UM_Vo"
-  "tePass\020\333\002\022\025\n\020CS_UM_VoteFailed\020\334\002\022\024\n\017CS_U"
-  "M_VoteSetup\020\335\002\022\036\n\031CS_UM_ServerRankReveal"
-  "All\020\336\002\022\'\n\"CS_UM_SendLastKillerDamageToCl"
-  "ient\020\337\002\022\033\n\026CS_UM_ServerRankUpdate\020\340\002\022\025\n\020"
-  "CS_UM_ItemPickup\020\341\002\022\023\n\016CS_UM_ShowMenu\020\342\002"
-  "\022\022\n\rCS_UM_BarTime\020\343\002\022\025\n\020CS_UM_AmmoDenied"
-  "\020\344\002\022\032\n\025CS_UM_MarkAchievement\020\345\002\022\033\n\026CS_UM"
-  "_MatchStatsUpdate\020\346\002\022\023\n\016CS_UM_ItemDrop\020\347"
-  "\002\022\032\n\025CS_UM_GlowPropTurnOff\020\350\002\022\036\n\031CS_UM_S"
-  "endPlayerItemDrops\020\351\002\022\037\n\032CS_UM_RoundBack"
-  "upFilenames\020\352\002\022\036\n\031CS_UM_SendPlayerItemFo"
-  "und\020\353\002\022\024\n\017CS_UM_ReportHit\020\354\002\022\023\n\016CS_UM_Xp"
-  "Update\020\355\002\022\030\n\023CS_UM_QuestProgress\020\356\002\022\037\n\032C"
-  "S_UM_ScoreLeaderboardData\020\357\002\022&\n!CS_UM_Pl"
-  "ayerDecalDigitalSignature\020\360\002\022\026\n\021CS_UM_We"
-  "aponSound\020\361\002\022 \n\033CS_UM_UpdateScreenHealth"
-  "Bar\020\362\002\022!\n\034CS_UM_EntityOutlineHighlight\020\363"
-  "\002\022\017\n\nCS_UM_SSUI\020\364\002\022\030\n\023CS_UM_SurvivalStat"
-  "s\020\365\002\022\035\n\030CS_UM_DisconnectToLobby2\020\366\002\022#\n\036C"
-  "S_UM_EndOfMatchAllPlayersData\020\367\002\022 \n\033CS_U"
-  "M_PostRoundDamageReport\020\370\002\022\035\n\030CS_UM_Roun"
-  "dEndReportData\020\373\002\022\033\n\026CS_UM_CurrentRoundO"
-  "dds\020\374\002\022\024\n\017CS_UM_DeepStats\020\375\002\022\024\n\017CS_UM_Sh"
-  "ootInfo\020\377\002\022\027\n\022CS_UM_SnapTapStats\020\200\003*\210\001\n\""
-  "ECSUsrMsg_DisconnectToLobby_Action\0220\n,k_"
-  "ECSUsrMsg_DisconnectToLobby_Action_Defau"
-  "lt\020\000\0220\n,k_ECSUsrMsg_DisconnectToLobby_Ac"
-  "tion_GoQueue\020\001"
+  "\002 \001(\t\022\020\n\010all_chat\030\003 \001(\010*\222\017\n\026ECstrike15Us"
+  "erMessages\022\023\n\016CS_UM_VGUIMenu\020\255\002\022\021\n\014CS_UM"
+  "_Geiger\020\256\002\022\020\n\013CS_UM_Train\020\257\002\022\022\n\rCS_UM_Hu"
+  "dText\020\260\002\022\022\n\rCS_UM_SayText\020\261\002\022\023\n\016CS_UM_Sa"
+  "yText2\020\262\002\022\022\n\rCS_UM_TextMsg\020\263\002\022\021\n\014CS_UM_H"
+  "udMsg\020\264\002\022\023\n\016CS_UM_ResetHud\020\265\002\022\024\n\017CS_UM_G"
+  "ameTitle\020\266\002\022\020\n\013CS_UM_Shake\020\270\002\022\017\n\nCS_UM_F"
+  "ade\020\271\002\022\021\n\014CS_UM_Rumble\020\272\002\022\027\n\022CS_UM_Close"
+  "Caption\020\273\002\022\035\n\030CS_UM_CloseCaptionDirect\020\274"
+  "\002\022\024\n\017CS_UM_SendAudio\020\275\002\022\023\n\016CS_UM_RawAudi"
+  "o\020\276\002\022\024\n\017CS_UM_VoiceMask\020\277\002\022\027\n\022CS_UM_Requ"
+  "estState\020\300\002\022\021\n\014CS_UM_Damage\020\301\002\022\024\n\017CS_UM_"
+  "RadioText\020\302\002\022\023\n\016CS_UM_HintText\020\303\002\022\026\n\021CS_"
+  "UM_KeyHintText\020\304\002\022%\n CS_UM_ProcessSpotte"
+  "dEntityUpdate\020\305\002\022\027\n\022CS_UM_ReloadEffect\020\306"
+  "\002\022\026\n\021CS_UM_AdjustMoney\020\307\002\022\032\n\025CS_UM_Updat"
+  "eTeamMoney\020\310\002\022\034\n\027CS_UM_StopSpectatorMode"
+  "\020\311\002\022\022\n\rCS_UM_KillCam\020\312\002\022\033\n\026CS_UM_Desired"
+  "Timescale\020\313\002\022\033\n\026CS_UM_CurrentTimescale\020\314"
+  "\002\022\033\n\026CS_UM_AchievementEvent\020\315\002\022\035\n\030CS_UM_"
+  "MatchEndConditions\020\316\002\022\034\n\027CS_UM_Disconnec"
+  "tToLobby\020\317\002\022\034\n\027CS_UM_PlayerStatsUpdate\020\320"
+  "\002\022\031\n\024CS_UM_WarmupHasEnded\020\322\002\022\025\n\020CS_UM_Cl"
+  "ientInfo\020\323\002\022\023\n\016CS_UM_XRankGet\020\324\002\022\023\n\016CS_U"
+  "M_XRankUpd\020\325\002\022\031\n\024CS_UM_CallVoteFailed\020\331\002"
+  "\022\024\n\017CS_UM_VoteStart\020\332\002\022\023\n\016CS_UM_VotePass"
+  "\020\333\002\022\025\n\020CS_UM_VoteFailed\020\334\002\022\024\n\017CS_UM_Vote"
+  "Setup\020\335\002\022\036\n\031CS_UM_ServerRankRevealAll\020\336\002"
+  "\022\'\n\"CS_UM_SendLastKillerDamageToClient\020\337"
+  "\002\022\033\n\026CS_UM_ServerRankUpdate\020\340\002\022\025\n\020CS_UM_"
+  "ItemPickup\020\341\002\022\023\n\016CS_UM_ShowMenu\020\342\002\022\022\n\rCS"
+  "_UM_BarTime\020\343\002\022\025\n\020CS_UM_AmmoDenied\020\344\002\022\032\n"
+  "\025CS_UM_MarkAchievement\020\345\002\022\033\n\026CS_UM_Match"
+  "StatsUpdate\020\346\002\022\023\n\016CS_UM_ItemDrop\020\347\002\022\032\n\025C"
+  "S_UM_GlowPropTurnOff\020\350\002\022\036\n\031CS_UM_SendPla"
+  "yerItemDrops\020\351\002\022\037\n\032CS_UM_RoundBackupFile"
+  "names\020\352\002\022\036\n\031CS_UM_SendPlayerItemFound\020\353\002"
+  "\022\024\n\017CS_UM_ReportHit\020\354\002\022\023\n\016CS_UM_XpUpdate"
+  "\020\355\002\022\030\n\023CS_UM_QuestProgress\020\356\002\022\037\n\032CS_UM_S"
+  "coreLeaderboardData\020\357\002\022&\n!CS_UM_PlayerDe"
+  "calDigitalSignature\020\360\002\022\026\n\021CS_UM_WeaponSo"
+  "und\020\361\002\022 \n\033CS_UM_UpdateScreenHealthBar\020\362\002"
+  "\022!\n\034CS_UM_EntityOutlineHighlight\020\363\002\022\017\n\nC"
+  "S_UM_SSUI\020\364\002\022\030\n\023CS_UM_SurvivalStats\020\365\002\022\035"
+  "\n\030CS_UM_DisconnectToLobby2\020\366\002\022#\n\036CS_UM_E"
+  "ndOfMatchAllPlayersData\020\367\002\022 \n\033CS_UM_Post"
+  "RoundDamageReport\020\370\002\022\035\n\030CS_UM_RoundEndRe"
+  "portData\020\373\002\022\033\n\026CS_UM_CurrentRoundOdds\020\374\002"
+  "\022\024\n\017CS_UM_DeepStats\020\375\002\022\024\n\017CS_UM_ShootInf"
+  "o\020\377\002*\210\001\n\"ECSUsrMsg_DisconnectToLobby_Act"
+  "ion\0220\n,k_ECSUsrMsg_DisconnectToLobby_Act"
+  "ion_Default\020\000\0220\n,k_ECSUsrMsg_DisconnectT"
+  "oLobby_Action_GoQueue\020\001"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fusermessages_2eproto_deps[2] = {
   &::descriptor_table_cstrike15_5fgcmessages_2eproto,
@@ -2884,9 +2847,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fusermes
 };
 static ::_pbi::once_flag descriptor_table_cstrike15_5fusermessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cstrike15_5fusermessages_2eproto = {
-    false, false, 10254, descriptor_table_protodef_cstrike15_5fusermessages_2eproto,
+    false, false, 10103, descriptor_table_protodef_cstrike15_5fusermessages_2eproto,
     "cstrike15_usermessages.proto",
-    &descriptor_table_cstrike15_5fusermessages_2eproto_once, descriptor_table_cstrike15_5fusermessages_2eproto_deps, 2, 87,
+    &descriptor_table_cstrike15_5fusermessages_2eproto_once, descriptor_table_cstrike15_5fusermessages_2eproto_deps, 2, 86,
     schemas, file_default_instances, TableStruct_cstrike15_5fusermessages_2eproto::offsets,
     file_level_metadata_cstrike15_5fusermessages_2eproto, file_level_enum_descriptors_cstrike15_5fusermessages_2eproto,
     file_level_service_descriptors_cstrike15_5fusermessages_2eproto,
@@ -2978,7 +2941,6 @@ bool ECstrike15UserMessages_IsValid(int value) {
     case 380:
     case 381:
     case 383:
-    case 384:
       return true;
     default:
       return false;
@@ -26151,317 +26113,6 @@ void CCSUsrMsgPreMatchSayText::InternalSwap(CCSUsrMsgPreMatchSayText* other) {
       file_level_metadata_cstrike15_5fusermessages_2eproto[85]);
 }
 
-// ===================================================================
-
-class CCSUsrMsg_SnapTapStats::_Internal {
- public:
-  using HasBits = decltype(std::declval<CCSUsrMsg_SnapTapStats>()._impl_._has_bits_);
-  static void set_has_perfect_bucket(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
-  static void set_has_max_success_in_20(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
-  }
-};
-
-CCSUsrMsg_SnapTapStats::CCSUsrMsg_SnapTapStats(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:CCSUsrMsg_SnapTapStats)
-}
-CCSUsrMsg_SnapTapStats::CCSUsrMsg_SnapTapStats(const CCSUsrMsg_SnapTapStats& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CCSUsrMsg_SnapTapStats* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){from._impl_._has_bits_}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.overlap_bucket_){from._impl_.overlap_bucket_}
-    , decltype(_impl_.underlap_bucket_){from._impl_.underlap_bucket_}
-    , decltype(_impl_.perfect_bucket_){}
-    , decltype(_impl_.max_success_in_20_){}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&_impl_.perfect_bucket_, &from._impl_.perfect_bucket_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.max_success_in_20_) -
-    reinterpret_cast<char*>(&_impl_.perfect_bucket_)) + sizeof(_impl_.max_success_in_20_));
-  // @@protoc_insertion_point(copy_constructor:CCSUsrMsg_SnapTapStats)
-}
-
-inline void CCSUsrMsg_SnapTapStats::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.overlap_bucket_){arena}
-    , decltype(_impl_.underlap_bucket_){arena}
-    , decltype(_impl_.perfect_bucket_){0u}
-    , decltype(_impl_.max_success_in_20_){0u}
-  };
-}
-
-CCSUsrMsg_SnapTapStats::~CCSUsrMsg_SnapTapStats() {
-  // @@protoc_insertion_point(destructor:CCSUsrMsg_SnapTapStats)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void CCSUsrMsg_SnapTapStats::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.overlap_bucket_.~RepeatedField();
-  _impl_.underlap_bucket_.~RepeatedField();
-}
-
-void CCSUsrMsg_SnapTapStats::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void CCSUsrMsg_SnapTapStats::Clear() {
-// @@protoc_insertion_point(message_clear_start:CCSUsrMsg_SnapTapStats)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  _impl_.overlap_bucket_.Clear();
-  _impl_.underlap_bucket_.Clear();
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
-    ::memset(&_impl_.perfect_bucket_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.max_success_in_20_) -
-        reinterpret_cast<char*>(&_impl_.perfect_bucket_)) + sizeof(_impl_.max_success_in_20_));
-  }
-  _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* CCSUsrMsg_SnapTapStats::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // optional uint32 perfect_bucket = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _Internal::set_has_perfect_bucket(&has_bits);
-          _impl_.perfect_bucket_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // repeated uint32 overlap_bucket = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            _internal_add_overlap_bucket(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<16>(ptr));
-        } else if (static_cast<uint8_t>(tag) == 18) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_overlap_bucket(), ptr, ctx);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // repeated uint32 underlap_bucket = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            _internal_add_underlap_bucket(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<24>(ptr));
-        } else if (static_cast<uint8_t>(tag) == 26) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_underlap_bucket(), ptr, ctx);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional uint32 max_success_in_20 = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
-          _Internal::set_has_max_success_in_20(&has_bits);
-          _impl_.max_success_in_20_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  _impl_._has_bits_.Or(has_bits);
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* CCSUsrMsg_SnapTapStats::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CCSUsrMsg_SnapTapStats)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  // optional uint32 perfect_bucket = 1;
-  if (cached_has_bits & 0x00000001u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_perfect_bucket(), target);
-  }
-
-  // repeated uint32 overlap_bucket = 2;
-  for (int i = 0, n = this->_internal_overlap_bucket_size(); i < n; i++) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_overlap_bucket(i), target);
-  }
-
-  // repeated uint32 underlap_bucket = 3;
-  for (int i = 0, n = this->_internal_underlap_bucket_size(); i < n; i++) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_underlap_bucket(i), target);
-  }
-
-  // optional uint32 max_success_in_20 = 4;
-  if (cached_has_bits & 0x00000002u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_max_success_in_20(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:CCSUsrMsg_SnapTapStats)
-  return target;
-}
-
-size_t CCSUsrMsg_SnapTapStats::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CCSUsrMsg_SnapTapStats)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // repeated uint32 overlap_bucket = 2;
-  {
-    size_t data_size = ::_pbi::WireFormatLite::
-      UInt32Size(this->_impl_.overlap_bucket_);
-    total_size += 1 *
-                  ::_pbi::FromIntSize(this->_internal_overlap_bucket_size());
-    total_size += data_size;
-  }
-
-  // repeated uint32 underlap_bucket = 3;
-  {
-    size_t data_size = ::_pbi::WireFormatLite::
-      UInt32Size(this->_impl_.underlap_bucket_);
-    total_size += 1 *
-                  ::_pbi::FromIntSize(this->_internal_underlap_bucket_size());
-    total_size += data_size;
-  }
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
-    // optional uint32 perfect_bucket = 1;
-    if (cached_has_bits & 0x00000001u) {
-      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_perfect_bucket());
-    }
-
-    // optional uint32 max_success_in_20 = 4;
-    if (cached_has_bits & 0x00000002u) {
-      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_max_success_in_20());
-    }
-
-  }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CCSUsrMsg_SnapTapStats::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CCSUsrMsg_SnapTapStats::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CCSUsrMsg_SnapTapStats::GetClassData() const { return &_class_data_; }
-
-
-void CCSUsrMsg_SnapTapStats::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CCSUsrMsg_SnapTapStats*>(&to_msg);
-  auto& from = static_cast<const CCSUsrMsg_SnapTapStats&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CCSUsrMsg_SnapTapStats)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  _this->_impl_.overlap_bucket_.MergeFrom(from._impl_.overlap_bucket_);
-  _this->_impl_.underlap_bucket_.MergeFrom(from._impl_.underlap_bucket_);
-  cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
-    if (cached_has_bits & 0x00000001u) {
-      _this->_impl_.perfect_bucket_ = from._impl_.perfect_bucket_;
-    }
-    if (cached_has_bits & 0x00000002u) {
-      _this->_impl_.max_success_in_20_ = from._impl_.max_success_in_20_;
-    }
-    _this->_impl_._has_bits_[0] |= cached_has_bits;
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void CCSUsrMsg_SnapTapStats::CopyFrom(const CCSUsrMsg_SnapTapStats& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CCSUsrMsg_SnapTapStats)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CCSUsrMsg_SnapTapStats::IsInitialized() const {
-  return true;
-}
-
-void CCSUsrMsg_SnapTapStats::InternalSwap(CCSUsrMsg_SnapTapStats* other) {
-  using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  _impl_.overlap_bucket_.InternalSwap(&other->_impl_.overlap_bucket_);
-  _impl_.underlap_bucket_.InternalSwap(&other->_impl_.underlap_bucket_);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CCSUsrMsg_SnapTapStats, _impl_.max_success_in_20_)
-      + sizeof(CCSUsrMsg_SnapTapStats::_impl_.max_success_in_20_)
-      - PROTOBUF_FIELD_OFFSET(CCSUsrMsg_SnapTapStats, _impl_.perfect_bucket_)>(
-          reinterpret_cast<char*>(&_impl_.perfect_bucket_),
-          reinterpret_cast<char*>(&other->_impl_.perfect_bucket_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_SnapTapStats::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[86]);
-}
-
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::CCSUsrMsg_VGUIMenu_Keys*
@@ -26807,10 +26458,6 @@ Arena::CreateMaybeMessage< ::CCSUsrMsg_ServerRankRevealAll >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::CCSUsrMsgPreMatchSayText*
 Arena::CreateMaybeMessage< ::CCSUsrMsgPreMatchSayText >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CCSUsrMsgPreMatchSayText >(arena);
-}
-template<> PROTOBUF_NOINLINE ::CCSUsrMsg_SnapTapStats*
-Arena::CreateMaybeMessage< ::CCSUsrMsg_SnapTapStats >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CCSUsrMsg_SnapTapStats >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

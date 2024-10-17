@@ -126,7 +126,7 @@ inline bool EClientUIEvent_Parse(
 }
 // ===================================================================
 
-class CClientMsg_CustomGameEvent /* final */ :
+class CClientMsg_CustomGameEvent final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CClientMsg_CustomGameEvent) */ {
  public:
   inline CClientMsg_CustomGameEvent() : CClientMsg_CustomGameEvent(nullptr) {}
@@ -311,7 +311,7 @@ class CClientMsg_CustomGameEvent /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CClientMsg_CustomGameEventBounce /* final */ :
+class CClientMsg_CustomGameEventBounce final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CClientMsg_CustomGameEventBounce) */ {
  public:
   inline CClientMsg_CustomGameEventBounce() : CClientMsg_CustomGameEventBounce(nullptr) {}
@@ -511,7 +511,7 @@ class CClientMsg_CustomGameEventBounce /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CClientMsg_ClientUIEvent /* final */ :
+class CClientMsg_ClientUIEvent final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CClientMsg_ClientUIEvent) */ {
  public:
   inline CClientMsg_ClientUIEvent() : CClientMsg_ClientUIEvent(nullptr) {}
@@ -741,7 +741,7 @@ class CClientMsg_ClientUIEvent /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CClientMsg_DevPaletteVisibilityChangedEvent /* final */ :
+class CClientMsg_DevPaletteVisibilityChangedEvent final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CClientMsg_DevPaletteVisibilityChangedEvent) */ {
  public:
   inline CClientMsg_DevPaletteVisibilityChangedEvent() : CClientMsg_DevPaletteVisibilityChangedEvent(nullptr) {}
@@ -901,7 +901,7 @@ class CClientMsg_DevPaletteVisibilityChangedEvent /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CClientMsg_WorldUIControllerHasPanelChangedEvent /* final */ :
+class CClientMsg_WorldUIControllerHasPanelChangedEvent final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CClientMsg_WorldUIControllerHasPanelChangedEvent) */ {
  public:
   inline CClientMsg_WorldUIControllerHasPanelChangedEvent() : CClientMsg_WorldUIControllerHasPanelChangedEvent(nullptr) {}
@@ -1091,7 +1091,7 @@ class CClientMsg_WorldUIControllerHasPanelChangedEvent /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CClientMsg_RotateAnchor /* final */ :
+class CClientMsg_RotateAnchor final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CClientMsg_RotateAnchor) */ {
  public:
   inline CClientMsg_RotateAnchor() : CClientMsg_RotateAnchor(nullptr) {}

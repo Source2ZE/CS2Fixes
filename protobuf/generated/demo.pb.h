@@ -184,7 +184,7 @@ inline bool EDemoCommands_Parse(
 }
 // ===================================================================
 
-class CDemoFileHeader /* final */ :
+class CDemoFileHeader final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoFileHeader) */ {
  public:
   inline CDemoFileHeader() : CDemoFileHeader(nullptr) {}
@@ -584,7 +584,7 @@ class CDemoFileHeader /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGameInfo_CDotaGameInfo_CPlayerInfo /* final */ :
+class CGameInfo_CDotaGameInfo_CPlayerInfo final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameInfo.CDotaGameInfo.CPlayerInfo) */ {
  public:
   inline CGameInfo_CDotaGameInfo_CPlayerInfo() : CGameInfo_CDotaGameInfo_CPlayerInfo(nullptr) {}
@@ -814,7 +814,7 @@ class CGameInfo_CDotaGameInfo_CPlayerInfo /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGameInfo_CDotaGameInfo_CHeroSelectEvent /* final */ :
+class CGameInfo_CDotaGameInfo_CHeroSelectEvent final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameInfo.CDotaGameInfo.CHeroSelectEvent) */ {
  public:
   inline CGameInfo_CDotaGameInfo_CHeroSelectEvent() : CGameInfo_CDotaGameInfo_CHeroSelectEvent(nullptr) {}
@@ -1004,7 +1004,7 @@ class CGameInfo_CDotaGameInfo_CHeroSelectEvent /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGameInfo_CDotaGameInfo /* final */ :
+class CGameInfo_CDotaGameInfo final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameInfo.CDotaGameInfo) */ {
  public:
   inline CGameInfo_CDotaGameInfo() : CGameInfo_CDotaGameInfo(nullptr) {}
@@ -1337,7 +1337,7 @@ class CGameInfo_CDotaGameInfo /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CGameInfo /* final */ :
+class CGameInfo final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameInfo) */ {
  public:
   inline CGameInfo() : CGameInfo(nullptr) {}
@@ -1504,7 +1504,7 @@ class CGameInfo /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoFileInfo /* final */ :
+class CDemoFileInfo final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoFileInfo) */ {
  public:
   inline CDemoFileInfo() : CDemoFileInfo(nullptr) {}
@@ -1714,7 +1714,7 @@ class CDemoFileInfo /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoPacket /* final */ :
+class CDemoPacket final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoPacket) */ {
  public:
   inline CDemoPacket() : CDemoPacket(nullptr) {}
@@ -1879,7 +1879,7 @@ class CDemoPacket /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoFullPacket /* final */ :
+class CDemoFullPacket final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoFullPacket) */ {
  public:
   inline CDemoFullPacket() : CDemoFullPacket(nullptr) {}
@@ -2064,7 +2064,7 @@ class CDemoFullPacket /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoSaveGame /* final */ :
+class CDemoSaveGame final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoSaveGame) */ {
  public:
   inline CDemoSaveGame() : CDemoSaveGame(nullptr) {}
@@ -2274,7 +2274,7 @@ class CDemoSaveGame /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoSyncTick /* final */ :
+class CDemoSyncTick final :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CDemoSyncTick) */ {
  public:
   inline CDemoSyncTick() : CDemoSyncTick(nullptr) {}
@@ -2399,7 +2399,7 @@ class CDemoSyncTick /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoConsoleCmd /* final */ :
+class CDemoConsoleCmd final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoConsoleCmd) */ {
  public:
   inline CDemoConsoleCmd() : CDemoConsoleCmd(nullptr) {}
@@ -2564,7 +2564,7 @@ class CDemoConsoleCmd /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoSendTables /* final */ :
+class CDemoSendTables final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoSendTables) */ {
  public:
   inline CDemoSendTables() : CDemoSendTables(nullptr) {}
@@ -2729,7 +2729,7 @@ class CDemoSendTables /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoClassInfo_class_t /* final */ :
+class CDemoClassInfo_class_t final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoClassInfo.class_t) */ {
  public:
   inline CDemoClassInfo_class_t() : CDemoClassInfo_class_t(nullptr) {}
@@ -2929,7 +2929,7 @@ class CDemoClassInfo_class_t /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoClassInfo /* final */ :
+class CDemoClassInfo final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoClassInfo) */ {
  public:
   inline CDemoClassInfo() : CDemoClassInfo(nullptr) {}
@@ -3095,7 +3095,7 @@ class CDemoClassInfo /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoCustomData /* final */ :
+class CDemoCustomData final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoCustomData) */ {
  public:
   inline CDemoCustomData() : CDemoCustomData(nullptr) {}
@@ -3275,7 +3275,7 @@ class CDemoCustomData /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoCustomDataCallbacks /* final */ :
+class CDemoCustomDataCallbacks final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoCustomDataCallbacks) */ {
  public:
   inline CDemoCustomDataCallbacks() : CDemoCustomDataCallbacks(nullptr) {}
@@ -3445,7 +3445,7 @@ class CDemoCustomDataCallbacks /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoAnimationData /* final */ :
+class CDemoAnimationData final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoAnimationData) */ {
  public:
   inline CDemoAnimationData() : CDemoAnimationData(nullptr) {}
@@ -3670,7 +3670,7 @@ class CDemoAnimationData /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoStringTables_items_t /* final */ :
+class CDemoStringTables_items_t final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoStringTables.items_t) */ {
  public:
   inline CDemoStringTables_items_t() : CDemoStringTables_items_t(nullptr) {}
@@ -3855,7 +3855,7 @@ class CDemoStringTables_items_t /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoStringTables_table_t /* final */ :
+class CDemoStringTables_table_t final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoStringTables.table_t) */ {
  public:
   inline CDemoStringTables_table_t() : CDemoStringTables_table_t(nullptr) {}
@@ -4075,7 +4075,7 @@ class CDemoStringTables_table_t /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoStringTables /* final */ :
+class CDemoStringTables final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoStringTables) */ {
  public:
   inline CDemoStringTables() : CDemoStringTables(nullptr) {}
@@ -4242,7 +4242,7 @@ class CDemoStringTables /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoStop /* final */ :
+class CDemoStop final :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CDemoStop) */ {
  public:
   inline CDemoStop() : CDemoStop(nullptr) {}
@@ -4367,7 +4367,7 @@ class CDemoStop /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoUserCmd /* final */ :
+class CDemoUserCmd final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoUserCmd) */ {
  public:
   inline CDemoUserCmd() : CDemoUserCmd(nullptr) {}
@@ -4547,7 +4547,7 @@ class CDemoUserCmd /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CDemoSpawnGroups /* final */ :
+class CDemoSpawnGroups final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoSpawnGroups) */ {
  public:
   inline CDemoSpawnGroups() : CDemoSpawnGroups(nullptr) {}

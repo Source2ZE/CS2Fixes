@@ -128,7 +128,7 @@ inline bool P2P_Messages_Parse(
 }
 // ===================================================================
 
-class CP2P_TextMessage /* final */ :
+class CP2P_TextMessage final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CP2P_TextMessage) */ {
  public:
   inline CP2P_TextMessage() : CP2P_TextMessage(nullptr) {}
@@ -293,7 +293,7 @@ class CP2P_TextMessage /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CSteam_Voice_Encoding /* final */ :
+class CSteam_Voice_Encoding final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSteam_Voice_Encoding) */ {
  public:
   inline CSteam_Voice_Encoding() : CSteam_Voice_Encoding(nullptr) {}
@@ -458,7 +458,7 @@ class CSteam_Voice_Encoding /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CP2P_Voice /* final */ :
+class CP2P_Voice final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CP2P_Voice) */ {
  public:
   inline CP2P_Voice() : CP2P_Voice(nullptr) {}
@@ -666,7 +666,7 @@ class CP2P_Voice /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CP2P_Ping /* final */ :
+class CP2P_Ping final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CP2P_Ping) */ {
  public:
   inline CP2P_Ping() : CP2P_Ping(nullptr) {}
@@ -844,7 +844,7 @@ class CP2P_Ping /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CP2P_VRAvatarPosition_COrientation /* final */ :
+class CP2P_VRAvatarPosition_COrientation final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CP2P_VRAvatarPosition.COrientation) */ {
  public:
   inline CP2P_VRAvatarPosition_COrientation() : CP2P_VRAvatarPosition_COrientation(nullptr) {}
@@ -1029,7 +1029,7 @@ class CP2P_VRAvatarPosition_COrientation /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CP2P_VRAvatarPosition /* final */ :
+class CP2P_VRAvatarPosition final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CP2P_VRAvatarPosition) */ {
  public:
   inline CP2P_VRAvatarPosition() : CP2P_VRAvatarPosition(nullptr) {}
@@ -1241,7 +1241,7 @@ class CP2P_VRAvatarPosition /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CP2P_WatchSynchronization /* final */ :
+class CP2P_WatchSynchronization final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CP2P_WatchSynchronization) */ {
  public:
   inline CP2P_WatchSynchronization() : CP2P_WatchSynchronization(nullptr) {}

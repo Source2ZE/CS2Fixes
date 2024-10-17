@@ -63,7 +63,7 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class CSGOInterpolationInfoPB /* final */ :
+class CSGOInterpolationInfoPB :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSGOInterpolationInfoPB) */ {
  public:
   inline CSGOInterpolationInfoPB() : CSGOInterpolationInfoPB(nullptr) {}
@@ -253,7 +253,7 @@ class CSGOInterpolationInfoPB /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CSGOInputHistoryEntryPB /* final */ :
+class CSGOInputHistoryEntryPB :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSGOInputHistoryEntryPB) */ {
  public:
   inline CSGOInputHistoryEntryPB() : CSGOInputHistoryEntryPB(nullptr) {}
@@ -668,7 +668,7 @@ class CSGOInputHistoryEntryPB /* final */ :
 };
 // -------------------------------------------------------------------
 
-class CSGOUserCmdPB /* final */ :
+class CSGOUserCmdPB :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSGOUserCmdPB) */ {
  public:
   inline CSGOUserCmdPB() : CSGOUserCmdPB(nullptr) {}
