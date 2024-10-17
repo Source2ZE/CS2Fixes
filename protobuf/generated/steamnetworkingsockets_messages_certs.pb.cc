@@ -27,7 +27,6 @@ PROTOBUF_CONSTEXPR CMsgSteamNetworkingIdentityLegacyBinary::CMsgSteamNetworkingI
   , /*decltype(_impl_.generic_bytes_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.generic_string_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.ipv6_and_port_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.xbox_pairwise_id_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.steam_id_)*/uint64_t{0u}} {}
 struct CMsgSteamNetworkingIdentityLegacyBinaryDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CMsgSteamNetworkingIdentityLegacyBinaryDefaultTypeInternal()
@@ -104,11 +103,9 @@ const uint32_t TableStruct_steamnetworkingsockets_5fmessages_5fcerts_2eproto::of
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CMsgSteamNetworkingIdentityLegacyBinary, _impl_.steam_id_),
-  PROTOBUF_FIELD_OFFSET(::CMsgSteamNetworkingIdentityLegacyBinary, _impl_.xbox_pairwise_id_),
   PROTOBUF_FIELD_OFFSET(::CMsgSteamNetworkingIdentityLegacyBinary, _impl_.generic_bytes_),
   PROTOBUF_FIELD_OFFSET(::CMsgSteamNetworkingIdentityLegacyBinary, _impl_.generic_string_),
   PROTOBUF_FIELD_OFFSET(::CMsgSteamNetworkingIdentityLegacyBinary, _impl_.ipv6_and_port_),
-  4,
   3,
   0,
   1,
@@ -163,10 +160,10 @@ const uint32_t TableStruct_steamnetworkingsockets_5fmessages_5fcerts_2eproto::of
   0,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, 11, -1, sizeof(::CMsgSteamNetworkingIdentityLegacyBinary)},
-  { 16, 32, -1, sizeof(::CMsgSteamDatagramCertificate)},
-  { 42, 52, -1, sizeof(::CMsgSteamDatagramCertificateSigned)},
-  { 56, 63, -1, sizeof(::CMsgSteamDatagramCertificateRequest)},
+  { 0, 10, -1, sizeof(::CMsgSteamNetworkingIdentityLegacyBinary)},
+  { 14, 30, -1, sizeof(::CMsgSteamDatagramCertificate)},
+  { 40, 50, -1, sizeof(::CMsgSteamDatagramCertificateSigned)},
+  { 54, 61, -1, sizeof(::CMsgSteamDatagramCertificateRequest)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -178,30 +175,29 @@ static const ::_pb::Message* const file_default_instances[] = {
 
 const char descriptor_table_protodef_steamnetworkingsockets_5fmessages_5fcerts_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n+steamnetworkingsockets_messages_certs."
-  "proto\"\233\001\n\'CMsgSteamNetworkingIdentityLeg"
-  "acyBinary\022\020\n\010steam_id\030\020 \001(\006\022\030\n\020xbox_pair"
-  "wise_id\030\021 \001(\t\022\025\n\rgeneric_bytes\030\002 \001(\014\022\026\n\016"
-  "generic_string\030\003 \001(\t\022\025\n\ripv6_and_port\030\004 "
-  "\001(\014\"\212\003\n\034CMsgSteamDatagramCertificate\022A\n\010"
-  "key_type\030\001 \001(\0162&.CMsgSteamDatagramCertif"
-  "icate.EKeyType:\007INVALID\022\020\n\010key_data\030\002 \001("
-  "\014\022\027\n\017legacy_steam_id\030\004 \001(\006\022H\n\026legacy_ide"
-  "ntity_binary\030\013 \001(\0132(.CMsgSteamNetworking"
-  "IdentityLegacyBinary\022\027\n\017identity_string\030"
-  "\014 \001(\t\022!\n\031gameserver_datacenter_ids\030\005 \003(\007"
-  "\022\024\n\014time_created\030\010 \001(\007\022\023\n\013time_expiry\030\t "
-  "\001(\007\022\017\n\007app_ids\030\n \003(\r\022\024\n\014ip_addresses\030\r \003"
-  "(\t\"$\n\010EKeyType\022\013\n\007INVALID\020\000\022\013\n\007ED25519\020\001"
-  "\"u\n\"CMsgSteamDatagramCertificateSigned\022\014"
-  "\n\004cert\030\004 \001(\014\022\021\n\tca_key_id\030\005 \001(\006\022\024\n\014ca_si"
-  "gnature\030\006 \001(\014\022\030\n\020private_key_data\030\001 \001(\014\""
-  "R\n#CMsgSteamDatagramCertificateRequest\022+"
-  "\n\004cert\030\001 \001(\0132\035.CMsgSteamDatagramCertific"
-  "ateB\005H\001\200\001\000"
+  "proto\"\201\001\n\'CMsgSteamNetworkingIdentityLeg"
+  "acyBinary\022\020\n\010steam_id\030\020 \001(\006\022\025\n\rgeneric_b"
+  "ytes\030\002 \001(\014\022\026\n\016generic_string\030\003 \001(\t\022\025\n\rip"
+  "v6_and_port\030\004 \001(\014\"\212\003\n\034CMsgSteamDatagramC"
+  "ertificate\022A\n\010key_type\030\001 \001(\0162&.CMsgSteam"
+  "DatagramCertificate.EKeyType:\007INVALID\022\020\n"
+  "\010key_data\030\002 \001(\014\022\027\n\017legacy_steam_id\030\004 \001(\006"
+  "\022H\n\026legacy_identity_binary\030\013 \001(\0132(.CMsgS"
+  "teamNetworkingIdentityLegacyBinary\022\027\n\017id"
+  "entity_string\030\014 \001(\t\022!\n\031gameserver_datace"
+  "nter_ids\030\005 \003(\007\022\024\n\014time_created\030\010 \001(\007\022\023\n\013"
+  "time_expiry\030\t \001(\007\022\017\n\007app_ids\030\n \003(\r\022\024\n\014ip"
+  "_addresses\030\r \003(\t\"$\n\010EKeyType\022\013\n\007INVALID\020"
+  "\000\022\013\n\007ED25519\020\001\"u\n\"CMsgSteamDatagramCerti"
+  "ficateSigned\022\014\n\004cert\030\004 \001(\014\022\021\n\tca_key_id\030"
+  "\005 \001(\006\022\024\n\014ca_signature\030\006 \001(\014\022\030\n\020private_k"
+  "ey_data\030\001 \001(\014\"R\n#CMsgSteamDatagramCertif"
+  "icateRequest\022+\n\004cert\030\001 \001(\0132\035.CMsgSteamDa"
+  "tagramCertificateB\005H\001\200\001\000"
   ;
 static ::_pbi::once_flag descriptor_table_steamnetworkingsockets_5fmessages_5fcerts_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_steamnetworkingsockets_5fmessages_5fcerts_2eproto = {
-    false, false, 810, descriptor_table_protodef_steamnetworkingsockets_5fmessages_5fcerts_2eproto,
+    false, false, 784, descriptor_table_protodef_steamnetworkingsockets_5fmessages_5fcerts_2eproto,
     "steamnetworkingsockets_messages_certs.proto",
     &descriptor_table_steamnetworkingsockets_5fmessages_5fcerts_2eproto_once, nullptr, 0, 4,
     schemas, file_default_instances, TableStruct_steamnetworkingsockets_5fmessages_5fcerts_2eproto::offsets,
@@ -242,9 +238,6 @@ class CMsgSteamNetworkingIdentityLegacyBinary::_Internal {
  public:
   using HasBits = decltype(std::declval<CMsgSteamNetworkingIdentityLegacyBinary>()._impl_._has_bits_);
   static void set_has_steam_id(HasBits* has_bits) {
-    (*has_bits)[0] |= 16u;
-  }
-  static void set_has_xbox_pairwise_id(HasBits* has_bits) {
     (*has_bits)[0] |= 8u;
   }
   static void set_has_generic_bytes(HasBits* has_bits) {
@@ -273,7 +266,6 @@ CMsgSteamNetworkingIdentityLegacyBinary::CMsgSteamNetworkingIdentityLegacyBinary
     , decltype(_impl_.generic_bytes_){}
     , decltype(_impl_.generic_string_){}
     , decltype(_impl_.ipv6_and_port_){}
-    , decltype(_impl_.xbox_pairwise_id_){}
     , decltype(_impl_.steam_id_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -301,14 +293,6 @@ CMsgSteamNetworkingIdentityLegacyBinary::CMsgSteamNetworkingIdentityLegacyBinary
     _this->_impl_.ipv6_and_port_.Set(from._internal_ipv6_and_port(), 
       _this->GetArenaForAllocation());
   }
-  _impl_.xbox_pairwise_id_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.xbox_pairwise_id_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_xbox_pairwise_id()) {
-    _this->_impl_.xbox_pairwise_id_.Set(from._internal_xbox_pairwise_id(), 
-      _this->GetArenaForAllocation());
-  }
   _this->_impl_.steam_id_ = from._impl_.steam_id_;
   // @@protoc_insertion_point(copy_constructor:CMsgSteamNetworkingIdentityLegacyBinary)
 }
@@ -323,7 +307,6 @@ inline void CMsgSteamNetworkingIdentityLegacyBinary::SharedCtor(
     , decltype(_impl_.generic_bytes_){}
     , decltype(_impl_.generic_string_){}
     , decltype(_impl_.ipv6_and_port_){}
-    , decltype(_impl_.xbox_pairwise_id_){}
     , decltype(_impl_.steam_id_){uint64_t{0u}}
   };
   _impl_.generic_bytes_.InitDefault();
@@ -337,10 +320,6 @@ inline void CMsgSteamNetworkingIdentityLegacyBinary::SharedCtor(
   _impl_.ipv6_and_port_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.ipv6_and_port_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.xbox_pairwise_id_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.xbox_pairwise_id_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
@@ -358,7 +337,6 @@ inline void CMsgSteamNetworkingIdentityLegacyBinary::SharedDtor() {
   _impl_.generic_bytes_.Destroy();
   _impl_.generic_string_.Destroy();
   _impl_.ipv6_and_port_.Destroy();
-  _impl_.xbox_pairwise_id_.Destroy();
 }
 
 void CMsgSteamNetworkingIdentityLegacyBinary::SetCachedSize(int size) const {
@@ -372,7 +350,7 @@ void CMsgSteamNetworkingIdentityLegacyBinary::Clear() {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000000fu) {
+  if (cached_has_bits & 0x00000007u) {
     if (cached_has_bits & 0x00000001u) {
       _impl_.generic_bytes_.ClearNonDefaultToEmpty();
     }
@@ -381,9 +359,6 @@ void CMsgSteamNetworkingIdentityLegacyBinary::Clear() {
     }
     if (cached_has_bits & 0x00000004u) {
       _impl_.ipv6_and_port_.ClearNonDefaultToEmpty();
-    }
-    if (cached_has_bits & 0x00000008u) {
-      _impl_.xbox_pairwise_id_.ClearNonDefaultToEmpty();
     }
   }
   _impl_.steam_id_ = uint64_t{0u};
@@ -434,18 +409,6 @@ const char* CMsgSteamNetworkingIdentityLegacyBinary::_InternalParse(const char* 
           _Internal::set_has_steam_id(&has_bits);
           _impl_.steam_id_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<uint64_t>(ptr);
           ptr += sizeof(uint64_t);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional string xbox_pairwise_id = 17;
-      case 17:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 138)) {
-          auto str = _internal_mutable_xbox_pairwise_id();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CMsgSteamNetworkingIdentityLegacyBinary.xbox_pairwise_id");
-          #endif  // !NDEBUG
         } else
           goto handle_unusual;
         continue;
@@ -503,19 +466,9 @@ uint8_t* CMsgSteamNetworkingIdentityLegacyBinary::_InternalSerialize(
   }
 
   // optional fixed64 steam_id = 16;
-  if (cached_has_bits & 0x00000010u) {
+  if (cached_has_bits & 0x00000008u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteFixed64ToArray(16, this->_internal_steam_id(), target);
-  }
-
-  // optional string xbox_pairwise_id = 17;
-  if (cached_has_bits & 0x00000008u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_xbox_pairwise_id().data(), static_cast<int>(this->_internal_xbox_pairwise_id().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CMsgSteamNetworkingIdentityLegacyBinary.xbox_pairwise_id");
-    target = stream->WriteStringMaybeAliased(
-        17, this->_internal_xbox_pairwise_id(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -535,7 +488,7 @@ size_t CMsgSteamNetworkingIdentityLegacyBinary::ByteSizeLong() const {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000001fu) {
+  if (cached_has_bits & 0x0000000fu) {
     // optional bytes generic_bytes = 2;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
@@ -557,15 +510,8 @@ size_t CMsgSteamNetworkingIdentityLegacyBinary::ByteSizeLong() const {
           this->_internal_ipv6_and_port());
     }
 
-    // optional string xbox_pairwise_id = 17;
-    if (cached_has_bits & 0x00000008u) {
-      total_size += 2 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-          this->_internal_xbox_pairwise_id());
-    }
-
     // optional fixed64 steam_id = 16;
-    if (cached_has_bits & 0x00000010u) {
+    if (cached_has_bits & 0x00000008u) {
       total_size += 2 + 8;
     }
 
@@ -589,7 +535,7 @@ void CMsgSteamNetworkingIdentityLegacyBinary::MergeImpl(::PROTOBUF_NAMESPACE_ID:
   (void) cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000001fu) {
+  if (cached_has_bits & 0x0000000fu) {
     if (cached_has_bits & 0x00000001u) {
       _this->_internal_set_generic_bytes(from._internal_generic_bytes());
     }
@@ -600,9 +546,6 @@ void CMsgSteamNetworkingIdentityLegacyBinary::MergeImpl(::PROTOBUF_NAMESPACE_ID:
       _this->_internal_set_ipv6_and_port(from._internal_ipv6_and_port());
     }
     if (cached_has_bits & 0x00000008u) {
-      _this->_internal_set_xbox_pairwise_id(from._internal_xbox_pairwise_id());
-    }
-    if (cached_has_bits & 0x00000010u) {
       _this->_impl_.steam_id_ = from._impl_.steam_id_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -638,10 +581,6 @@ void CMsgSteamNetworkingIdentityLegacyBinary::InternalSwap(CMsgSteamNetworkingId
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.ipv6_and_port_, lhs_arena,
       &other->_impl_.ipv6_and_port_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.xbox_pairwise_id_, lhs_arena,
-      &other->_impl_.xbox_pairwise_id_, rhs_arena
   );
   swap(_impl_.steam_id_, other->_impl_.steam_id_);
 }

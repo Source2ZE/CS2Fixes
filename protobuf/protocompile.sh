@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir temp
+mkdir -p temp/google/protobuf
 mkdir generated
 
 for proto in *.proto; do
@@ -8,6 +8,10 @@ for proto in *.proto; do
 done
 
 cd temp
-../protoc/protoc --cpp_out=../generated *.proto
+cp ../../sdk/devtools/bin/linux/protoc .
+cp ../include/descriptor.proto google/protobuf
 
+./protoc --cpp_out=../generated *.proto
+
+cd ..
 rm -rf temp

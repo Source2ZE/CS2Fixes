@@ -608,7 +608,7 @@ class CBaseUserCmdPB :
     kMoveCrcFieldNumber = 19,
     kButtonsPbFieldNumber = 3,
     kViewanglesFieldNumber = 4,
-    kCommandNumberFieldNumber = 1,
+    kLegacyCommandNumberFieldNumber = 1,
     kClientTickFieldNumber = 2,
     kForwardmoveFieldNumber = 5,
     kLeftmoveFieldNumber = 6,
@@ -694,17 +694,17 @@ class CBaseUserCmdPB :
       ::CMsgQAngle* viewangles);
   ::CMsgQAngle* unsafe_arena_release_viewangles();
 
-  // optional int32 command_number = 1;
-  bool has_command_number() const;
+  // optional int32 legacy_command_number = 1;
+  bool has_legacy_command_number() const;
   private:
-  bool _internal_has_command_number() const;
+  bool _internal_has_legacy_command_number() const;
   public:
-  void clear_command_number();
-  int32_t command_number() const;
-  void set_command_number(int32_t value);
+  void clear_legacy_command_number();
+  int32_t legacy_command_number() const;
+  void set_legacy_command_number(int32_t value);
   private:
-  int32_t _internal_command_number() const;
-  void _internal_set_command_number(int32_t value);
+  int32_t _internal_legacy_command_number() const;
+  void _internal_set_legacy_command_number(int32_t value);
   public:
 
   // optional int32 client_tick = 2;
@@ -877,7 +877,7 @@ class CBaseUserCmdPB :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr move_crc_;
     ::CInButtonStatePB* buttons_pb_;
     ::CMsgQAngle* viewangles_;
-    int32_t command_number_;
+    int32_t legacy_command_number_;
     int32_t client_tick_;
     float forwardmove_;
     float leftmove_;
@@ -1302,32 +1302,32 @@ inline void CSubtickMoveStep::set_analog_left_delta(float value) {
 
 // CBaseUserCmdPB
 
-// optional int32 command_number = 1;
-inline bool CBaseUserCmdPB::_internal_has_command_number() const {
+// optional int32 legacy_command_number = 1;
+inline bool CBaseUserCmdPB::_internal_has_legacy_command_number() const {
   bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
-inline bool CBaseUserCmdPB::has_command_number() const {
-  return _internal_has_command_number();
+inline bool CBaseUserCmdPB::has_legacy_command_number() const {
+  return _internal_has_legacy_command_number();
 }
-inline void CBaseUserCmdPB::clear_command_number() {
-  _impl_.command_number_ = 0;
+inline void CBaseUserCmdPB::clear_legacy_command_number() {
+  _impl_.legacy_command_number_ = 0;
   _impl_._has_bits_[0] &= ~0x00000008u;
 }
-inline int32_t CBaseUserCmdPB::_internal_command_number() const {
-  return _impl_.command_number_;
+inline int32_t CBaseUserCmdPB::_internal_legacy_command_number() const {
+  return _impl_.legacy_command_number_;
 }
-inline int32_t CBaseUserCmdPB::command_number() const {
-  // @@protoc_insertion_point(field_get:CBaseUserCmdPB.command_number)
-  return _internal_command_number();
+inline int32_t CBaseUserCmdPB::legacy_command_number() const {
+  // @@protoc_insertion_point(field_get:CBaseUserCmdPB.legacy_command_number)
+  return _internal_legacy_command_number();
 }
-inline void CBaseUserCmdPB::_internal_set_command_number(int32_t value) {
+inline void CBaseUserCmdPB::_internal_set_legacy_command_number(int32_t value) {
   _impl_._has_bits_[0] |= 0x00000008u;
-  _impl_.command_number_ = value;
+  _impl_.legacy_command_number_ = value;
 }
-inline void CBaseUserCmdPB::set_command_number(int32_t value) {
-  _internal_set_command_number(value);
-  // @@protoc_insertion_point(field_set:CBaseUserCmdPB.command_number)
+inline void CBaseUserCmdPB::set_legacy_command_number(int32_t value) {
+  _internal_set_legacy_command_number(value);
+  // @@protoc_insertion_point(field_set:CBaseUserCmdPB.legacy_command_number)
 }
 
 // optional int32 client_tick = 2;

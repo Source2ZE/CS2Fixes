@@ -28,7 +28,7 @@ static constexpr ::_pb::Message* const* file_default_instances = nullptr;
 
 const char descriptor_table_protodef_network_5fconnection_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\030network_connection.proto\032 google/proto"
-  "buf/descriptor.proto*\316J\n\033ENetworkDisconn"
+  "buf/descriptor.proto*\314L\n\033ENetworkDisconn"
   "ectionReason\022\036\n\032NETWORK_DISCONNECT_INVAL"
   "ID\020\000\022\037\n\033NETWORK_DISCONNECT_SHUTDOWN\020\001\022F\n"
   "%NETWORK_DISCONNECT_DISCONNECT_BY_USER\020\002"
@@ -267,16 +267,24 @@ const char descriptor_table_protodef_network_5fconnection_2eproto[] PROTOBUF_SEC
   "\032)\242\324\030%#Player_DisconnectReason_NoSteamLo"
   "gin\022X\n\'NETWORK_DISCONNECT_KICKED_NOSTEAM"
   "TICKET\020\241\001\032*\242\324\030&#Player_DisconnectReason_"
-  "NoSteamTicket:E\n\030network_connection_toke"
-  "n\022!.google.protobuf.EnumValueOptions\030\304\212\003"
-  " \001(\t"
+  "NoSteamTicket\022\217\001\n)NETWORK_DISCONNECT_KIC"
+  "KED_INPUTAUTOMATION\020\242\001\032_\242\324\030(#Player_Disc"
+  "onnectReason_InputAutomation\252\324\030/#Player_"
+  "DisconnectReason_InputAutomation_Detail\022"
+  "j\n0NETWORK_DISCONNECT_KICKED_VACNETABNOR"
+  "MALBEHAVIOR\020\243\001\0323\242\324\030/#Player_DisconnectRe"
+  "ason_VacNetAbnormalBehavior:E\n\030network_c"
+  "onnection_token\022!.google.protobuf.EnumVa"
+  "lueOptions\030\304\212\003 \001(\t:L\n\037network_connection"
+  "_detail_token\022!.google.protobuf.EnumValu"
+  "eOptions\030\305\212\003 \001(\t"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_network_5fconnection_2eproto_deps[1] = {
   &::descriptor_table_google_2fprotobuf_2fdescriptor_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_network_5fconnection_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_network_5fconnection_2eproto = {
-    false, false, 9684, descriptor_table_protodef_network_5fconnection_2eproto,
+    false, false, 10016, descriptor_table_protodef_network_5fconnection_2eproto,
     "network_connection.proto",
     &descriptor_table_network_5fconnection_2eproto_once, descriptor_table_network_5fconnection_2eproto_deps, 1, 0,
     schemas, file_default_instances, TableStruct_network_5fconnection_2eproto::offsets,
@@ -413,6 +421,8 @@ bool ENetworkDisconnectionReason_IsValid(int value) {
     case 159:
     case 160:
     case 161:
+    case 162:
+    case 163:
       return true;
     default:
       return false;
@@ -423,6 +433,10 @@ const std::string network_connection_token_default("");
 PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 ::PROTOBUF_NAMESPACE_ID::internal::ExtensionIdentifier< ::PROTOBUF_NAMESPACE_ID::EnumValueOptions,
     ::PROTOBUF_NAMESPACE_ID::internal::StringTypeTraits, 9, false>
   network_connection_token(kNetworkConnectionTokenFieldNumber, network_connection_token_default, nullptr);
+const std::string network_connection_detail_token_default("");
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 ::PROTOBUF_NAMESPACE_ID::internal::ExtensionIdentifier< ::PROTOBUF_NAMESPACE_ID::EnumValueOptions,
+    ::PROTOBUF_NAMESPACE_ID::internal::StringTypeTraits, 9, false>
+  network_connection_detail_token(kNetworkConnectionDetailTokenFieldNumber, network_connection_detail_token_default, nullptr);
 
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
