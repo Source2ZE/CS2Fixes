@@ -17,37 +17,38 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "cs_usercmd.pb.h"
 #include "networkbasetypes.pb.h"
 #include "usercmd.pb.h"
-#include "cs_usercmd.pb.h"
 
-#include "cdetour.h"
-#include "common.h"
-#include "module.h"
 #include "addresses.h"
+#include "cdetour.h"
 #include "commands.h"
-#include "detours.h"
+#include "common.h"
 #include "ctimer.h"
-#include "irecipientfilter.h"
+#include "customio.h"
+#include "detours.h"
+#include "entities.h"
+#include "entity/cbasemodelentity.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
-#include "entity/cbasemodelentity.h"
 #include "entity/ccsweaponbase.h"
 #include "entity/cenvhudhint.h"
-#include "entity/ctriggerpush.h"
 #include "entity/cgamerules.h"
+#include "entity/cpointviewcontrol.h"
 #include "entity/ctakedamageinfo.h"
+#include "entity/ctriggerpush.h"
 #include "entity/services.h"
-#include "playermanager.h"
-#include "igameevents.h"
 #include "gameconfig.h"
-#include "zombiereborn.h"
-#include "customio.h"
-#include "entities.h"
-#include "serversideclient.h"
-#include "networksystem/inetworkserializer.h"
+#include "igameevents.h"
+#include "irecipientfilter.h"
 #include "map_votes.h"
+#include "module.h"
+#include "networksystem/inetworkserializer.h"
+#include "playermanager.h"
+#include "serversideclient.h"
 #include "tier0/vprof.h"
+#include "zombiereborn.h"
 
 #include "tier0/memdbgon.h"
 
@@ -77,6 +78,8 @@ DECLARE_DETOUR(CCSPlayerPawn_GetMaxSpeed, Detour_CCSPlayerPawn_GetMaxSpeed);
 DECLARE_DETOUR(FindUseEntity, Detour_FindUseEntity);
 DECLARE_DETOUR(TraceFunc, Detour_TraceFunc);
 DECLARE_DETOUR(TraceShape, Detour_TraceShape);
+DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition);
+DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
 
 static bool g_bBlockMolotovSelfDmg = false;
 static bool g_bBlockAllDamage = false;
@@ -443,6 +446,17 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if (!V_strcasecmp(pInputName->String(), "Deactivate"))
 			return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator));
 	}
+	else if (const auto pViewControl = reinterpret_cast<CPointViewControl*>(pThis->m_pInstance)->AsPointViewControl())
+	{
+		if (!V_strcasecmp(pInputName->String(), "EnableCamera"))
+			return CPointViewControlHandler::OnEnable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator));
+		if (!V_strcasecmp(pInputName->String(), "DisableCamera"))
+			return CPointViewControlHandler::OnDisable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator));
+		if (!V_strcasecmp(pInputName->String(), "EnableCameraAll"))
+			return CPointViewControlHandler::OnEnableAll(pViewControl);
+		if (!V_strcasecmp(pInputName->String(), "DisableCameraAll"))
+			return CPointViewControlHandler::OnDisableAll(pViewControl);
+	}
 
 	VPROF_SCOPE_END();
 
@@ -596,6 +610,52 @@ bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceF
 
 	return TraceShape(a1, a2, a3, a4, filter, a6);
 }
+
+#ifdef PLATFORM_WINDOWS
+Vector* FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn, Vector* pRet)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& origin = pPawn->GetEyePosition();
+        pRet->Init(origin.x, origin.y, origin.z);
+        return pRet;
+    }
+
+    return CBasePlayerPawn_GetEyePosition(pPawn, pRet);
+}
+QAngle* FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn, QAngle* pRet)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& angles = pPawn->v_angle();
+        pRet->Init(angles.x, angles.y, angles.z);
+        return pRet;
+    }
+
+    return CBasePlayerPawn_GetEyeAngles(pPawn, pRet);
+}
+#else
+Vector FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& origin = pPawn->GetEyePosition();
+        return origin;
+    }
+
+    return CBasePlayerPawn_GetEyePosition(pPawn);
+}
+QAngle FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& angles = pPawn->v_angle();
+        return angles;
+    }
+
+    return CBasePlayerPawn_GetEyeAngles(pPawn);
+}
+#endif
 
 bool InitDetours(CGameConfig *gameConfig)
 {
