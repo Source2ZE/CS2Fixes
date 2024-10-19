@@ -21,6 +21,7 @@
 #include "KeyValues.h"
 #include "commands.h"
 #include "ctimer.h"
+#include "entities.h"
 #include "eventlistener.h"
 #include "networkstringtabledefs.h"
 #include "entity/cbaseplayercontroller.h"
@@ -99,6 +100,8 @@ GAME_EVENT_F(round_prestart)
 			//FullUpdateAllClients();
 		}
 	}
+
+	EntityHandler_OnRoundRestart();
 
 	CBaseEntity* pShake = nullptr;
 
