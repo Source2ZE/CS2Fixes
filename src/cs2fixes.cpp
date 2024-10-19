@@ -933,9 +933,13 @@ void CS2Fixes::Hook_CheckMovingGround(double frametime)
 {
 	CCSPlayer_MovementServices *pMove = META_IFACEPTR(CCSPlayer_MovementServices);
 	CCSPlayerPawn *pPawn = pMove->GetPawn();
+
+	if (!pPawn)
+		RETURN_META(MRES_IGNORED);
+
 	CCSPlayerController *pController = pPawn->GetOriginalController();
 
-	if (!pPawn || !pController)
+	if (!pController)
 		RETURN_META(MRES_IGNORED);
 
 	int iSlot = pController->GetPlayerSlot();
