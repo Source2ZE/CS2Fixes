@@ -1472,13 +1472,13 @@ void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAd
 			switch (infType)
 			{
 				case CInfractionBase::Mute:
-					infraction = new CMuteInfraction(0, zpTarget->GetSteamId64());
+					infraction = new CMuteInfraction(iDuration, zpTarget->GetSteamId64());
 					break;
 				case CInfractionBase::Gag:
-					infraction = new CGagInfraction(0, zpTarget->GetSteamId64());
+					infraction = new CGagInfraction(iDuration, zpTarget->GetSteamId64());
 					break;
 				case CInfractionBase::Ban:
-					infraction = new CBanInfraction(0, zpTarget->GetSteamId64());
+					infraction = new CBanInfraction(iDuration, zpTarget->GetSteamId64());
 					break;
 				default:
 					// This should never be reached, since we it means we are trying to apply an unimplemented block type
