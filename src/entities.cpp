@@ -559,13 +559,13 @@ bool OnEnableAll(CPointViewControl* pEntity)
 
         for (auto& [vk, vc] : s_repository)
         {
-            if (vk == static_cast<uint>(key))
-            {
-                continue;
-            }
             if (const auto index = vc.m_players.Find(handle); index > -1)
             {
                 vc.m_players.Remove(index);
+                if (vk == static_cast<uint>(key))
+                {
+                    continue;
+                }
                 UpdatePlayerState(pPawn, INVALID_HANDLE, false, RESET_FOV);
                 Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pController->GetPlayerName());
             }
