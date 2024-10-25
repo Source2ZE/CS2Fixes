@@ -169,6 +169,9 @@ GAME_EVENT_F(player_spawn)
 
 		pPawn->SetCollisionGroup(COLLISION_GROUP_DEBRIS);
 
+		if (const auto player = pController->GetZEPlayer())
+			player->SetSteamIdAttribute();
+
 		return -1.0f;
 	});
 }

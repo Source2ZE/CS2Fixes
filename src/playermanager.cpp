@@ -110,6 +110,8 @@ void ZEPlayer::OnAuthenticated()
 	CheckAdmin();
 	CheckInfractions();
 	g_pUserPreferencesSystem->PullPreferences(GetPlayerSlot().Get());
+
+	SetSteamIdAttribute();
 }
 
 void ZEPlayer::CheckInfractions()
@@ -495,6 +497,24 @@ void ZEPlayer::EndGlow()
 
 	if (pModelParent)
 		addresses::UTIL_Remove(pModelParent);
+}
+
+void ZEPlayer::SetSteamIdAttribute()
+{
+	if (!IsAuthenticated())
+		return;
+
+	const auto pController = CCSPlayerController::FromSlot(GetPlayerSlot());
+	if (!pController || !pController->IsConnected() || pController->IsBot() || pController->m_bIsHLTV())
+		return;
+
+	const auto pPawn = pController->GetPlayerPawn();
+	if (!pPawn)
+		return;
+
+	const auto& steamId = std::to_string(GetSteamId64());
+	pPawn->AcceptInput("AddAttribute", steamId.c_str());
+	pController->AcceptInput("AddAttribute", steamId.c_str());
 }
 
 void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
