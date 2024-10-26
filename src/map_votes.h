@@ -82,9 +82,8 @@ private:
 typedef struct
 {
     const char* name;
-    int cooldown;
-    int mapIndex;
-} MapCooldownStruct;
+    int index;
+} MapIndexPair;
 
 
 class CMapVoteSystem
@@ -130,6 +129,8 @@ public:
     int GetDownloadQueueSize() { return m_DownloadQueue.Count(); }
     int GetCurrentMapIndex() { return m_iCurrentMapIndex; }
     void SetCurrentMapIndex(int iMapIndex) { m_iCurrentMapIndex = iMapIndex; }
+    int GetMapMinPlayers(int iMapIndex) { return m_vecMapList[iMapIndex].GetMinPlayers(); }
+    int GetMapMaxPlayers(int iMapIndex) { return m_vecMapList[iMapIndex].GetMaxPlayers(); }
 
 private:
     int WinningMapIndex();

@@ -42,6 +42,8 @@ extern CIdleSystem* g_pIdleSystem;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
+int MapVote_GetOnlinePlayers();
+
 CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current map on completion", ADMFLAG_ROOT)
 {
 	if (!g_bVoteManagerEnable)
@@ -100,7 +102,7 @@ CON_COMMAND_CHAT_FLAGS(setnextmap, "[mapname] - Force next map (empty to clear f
 	}
 }
 
-static int __cdecl OrderStringsLexicographically(const MapCooldownStruct *a, const MapCooldownStruct *b)
+static int __cdecl OrderStringsLexicographically(const MapIndexPair *a, const MapIndexPair *b)
 {
 	return V_strcasecmp(a->name, b->name);
 }
@@ -139,27 +141,36 @@ CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nom
 		{
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
 			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all maps is:");
-			CUtlVector<MapCooldownStruct> vecMapNames;
+			CUtlVector<MapIndexPair> vecMapNames;
 
 			for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
 			{
-				MapCooldownStruct mapData;
-				mapData.name = g_pMapVoteSystem->GetMapName(i);
-				mapData.cooldown = g_pMapVoteSystem->GetCooldownMap(i);
-				mapData.mapIndex = i;
-				vecMapNames.AddToTail(mapData);
+				MapIndexPair map;
+				map.name = g_pMapVoteSystem->GetMapName(i);
+				map.index = i;
+				vecMapNames.AddToTail(map);
 			}
 
 			vecMapNames.Sort(OrderStringsLexicographically);
 
 			FOR_EACH_VEC(vecMapNames, i)
 			{
-				if (vecMapNames[i].cooldown > 0)
-					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Cooldown: %d", vecMapNames[i].name, vecMapNames[i].cooldown);
-				else if (vecMapNames[i].mapIndex == g_pMapVoteSystem->GetCurrentMapIndex())
-					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Current Map", vecMapNames[i].name);
+				const char* name = vecMapNames[i].name;
+				int mapIndex = vecMapNames[i].index;
+				int cooldown = g_pMapVoteSystem->GetCooldownMap(mapIndex);
+				int minPlayers = g_pMapVoteSystem->GetMapMinPlayers(mapIndex);
+				int maxPlayers = g_pMapVoteSystem->GetMapMaxPlayers(mapIndex);
+
+				if (cooldown > 0)
+					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Cooldown: %d", name, cooldown);
+				else if (mapIndex == g_pMapVoteSystem->GetCurrentMapIndex())
+					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Current Map", name);
+				else if (MapVote_GetOnlinePlayers() < minPlayers)
+					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Minimum Players: %d", name, minPlayers);
+				else if (MapVote_GetOnlinePlayers() > maxPlayers)
+					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Maximum Players: %d", name, maxPlayers);
 				else
-					ClientPrint(player, HUD_PRINTCONSOLE, "- %s", vecMapNames[i].name);
+					ClientPrint(player, HUD_PRINTCONSOLE, "- %s", name);
 			}
 
 			break;
