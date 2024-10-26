@@ -503,6 +503,9 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pM
 static bool g_bDisableSubtick = false;
 FAKE_BOOL_CVAR(cs2f_disable_subtick_move, "Whether to disable subtick movement", g_bDisableSubtick, false, false)
 
+static bool g_bDisableSubtickShooting = false;
+FAKE_BOOL_CVAR(cs2f_disable_subtick_shooting, "Whether to disable subtick shooting", g_bDisableSubtickShooting, false, false)
+
 class CUserCmd
 {
 public:
@@ -523,7 +526,17 @@ void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController *pController, CUserCmd
 	VPROF_SCOPE_BEGIN("Detour_ProcessUsercmds");
 
 	for (int i = 0; i < numcmds; i++)
+	{
 		cmds[i].cmd.mutable_base()->mutable_subtick_moves()->Clear();
+
+		if (g_bDisableSubtickShooting)
+		{
+			cmds[i].cmd.set_attack1_start_history_index(-1);
+			cmds[i].cmd.set_attack2_start_history_index(-1);
+			cmds[i].cmd.set_attack3_start_history_index(-1);
+			cmds[i].cmd.mutable_input_history()->Clear();
+		}
+	}
 
 	VPROF_SCOPE_END();
 
