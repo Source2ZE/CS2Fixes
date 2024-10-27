@@ -52,12 +52,12 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGlobalVars*						gpGlobals;
-extern CGameEntitySystem*				g_pEntitySystem;
-extern IGameEventManager2*				g_gameEventManager;
-extern CCSGameRules*					g_pGameRules;
-extern CMapVoteSystem*					g_pMapVoteSystem;
-extern CUtlVector<CServerSideClient*>*	GetClientList();
+extern CGlobalVars*					   gpGlobals;
+extern CGameEntitySystem*			   g_pEntitySystem;
+extern IGameEventManager2*			   g_gameEventManager;
+extern CCSGameRules*				   g_pGameRules;
+extern CMapVoteSystem*				   g_pMapVoteSystem;
+extern CUtlVector<CServerSideClient*>* GetClientList();
 
 CUtlVector<CDetourBase*> g_vecDetours;
 
@@ -647,7 +647,7 @@ void FASTCALL Detour_SimThinkManager_GetSimList(void* manager, CUtlVector<CBaseH
 
 	pList->Purge();
 
-	// Fisher-Yates shuffule
+	// Fisher-Yates shuffle
 
 	std::srand(gpGlobals->tickcount);
 
