@@ -618,49 +618,45 @@ void FASTCALL Detour_SimThinkManager_GetSimList(void* manager, CUtlVector<CBaseH
 {
 	SimThinkManager_GetSimList(manager, pList);
 
-	if (!g_bFixPhysicsPlayerShuffle || pList->Count() == 0)
+	if (!g_bFixPhysicsPlayerShuffle || pList->Count() <= 2)
 		return;
 
-	if (pList->Count() % 2 != 0)
-		Error("Hello? corrupted data");
-
-	struct ShufflePlayer
-	{
-		CBaseHandle Observer;
-		CBaseHandle Player;
-
-		ShufflePlayer() = delete;
-		ShufflePlayer(const CBaseHandle& ob, const CBaseHandle& pl) :
-			Observer(ob), Player(pl) {}
-	};
-
-	CUtlVector<ShufflePlayer> pool;
-	pool.EnsureCapacity(pList->Count() / 2);
+	CUtlVector<CBaseHandle> pawns;
+	CUtlVector<CBaseHandle> entities;
+	pawns.EnsureCapacity((gpGlobals->maxClients + 1) * 2);
+	entities.EnsureCapacity(pList->Count());
 
 	FOR_EACH_VEC(*pList, i)
 	{
-		const auto& ob = pList->Element(i);
-		const auto& pl = pList->Element(i++);
-
-		pool.AddToTail(ShufflePlayer(ob, pl));
+		const auto& handle = pList->Element(i);
+		if (const auto pEntity = reinterpret_cast<CBaseEntity*>(handle.Get()); pEntity && pEntity->IsPawn())
+			pawns.AddToTail(handle);
+		else
+			entities.AddToTail(handle);
 	}
 
 	pList->Purge();
 
-	// Fisher-Yates shuffle
+	// pawn Fisher-Yates shuffle
 
 	std::srand(gpGlobals->tickcount);
 
-	FOR_EACH_VEC_BACK(pool, i)
+	FOR_EACH_VEC_BACK(pawns, i)
 	{
 		const auto j = std::rand() % (i + 1);
-		std::swap(pool[i], pool[j]);
+		std::swap(pawns[i], pawns[j]);
 	}
 
-	FOR_EACH_VEC(pool, i)
+	FOR_EACH_VEC(pawns, i)
 	{
-		pList->AddToTail(pool.Element(i).Observer);
-		pList->AddToTail(pool.Element(i).Player);
+		pList->AddToTail(pawns.Element(i));
+	}
+
+	// but keep entities order
+
+	FOR_EACH_VEC(entities, i)
+	{
+		pList->AddToTail(entities.Element(i));
 	}
 }
 
