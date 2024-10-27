@@ -611,14 +611,14 @@ bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceF
 	return TraceShape(a1, a2, a3, a4, filter, a6);
 }
 
-bool g_bFixPhyiscsPlayerShuffle = DC_TRUETYPE;
-FAKE_BOOL_CVAR(cs2f_shuffle_player_physics_sim, "Whether to enable shuffle player list in physics simulate", g_bFixPhyiscsPlayerShuffle, true, false);
+bool g_bFixPhysicsPlayerShuffle = true;
+FAKE_BOOL_CVAR(cs2f_shuffle_player_physics_sim, "Whether to enable shuffle player list in physics simulate", g_bFixPhysicsPlayerShuffle, true, false);
 
 void FASTCALL Detour_SimThinkManager_GetSimList(void* manager, CUtlVector<CBaseHandle>* pList)
 {
 	SimThinkManager_GetSimList(manager, pList);
 
-	if (!g_bFixPhyiscsPlayerShuffle || pList->Count() == 0)
+	if (!g_bFixPhysicsPlayerShuffle || pList->Count() == 0)
 		return;
 
 	if (pList->Count() % 2 != 0)
