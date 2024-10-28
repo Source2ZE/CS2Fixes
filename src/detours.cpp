@@ -78,7 +78,6 @@ DECLARE_DETOUR(CCSPlayerPawn_GetMaxSpeed, Detour_CCSPlayerPawn_GetMaxSpeed);
 DECLARE_DETOUR(FindUseEntity, Detour_FindUseEntity);
 DECLARE_DETOUR(TraceFunc, Detour_TraceFunc);
 DECLARE_DETOUR(TraceShape, Detour_TraceShape);
-DECLARE_DETOUR(SimThinkManager_GetSimList, Detour_SimThinkManager_GetSimList);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
 
@@ -609,55 +608,6 @@ bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceF
 	}
 
 	return TraceShape(a1, a2, a3, a4, filter, a6);
-}
-
-bool g_bFixPhysicsPlayerShuffle = true;
-FAKE_BOOL_CVAR(cs2f_shuffle_player_physics_sim, "Whether to enable shuffle player list in physics simulate", g_bFixPhysicsPlayerShuffle, true, false);
-
-void FASTCALL Detour_SimThinkManager_GetSimList(void* manager, CUtlVector<CBaseHandle>* pList)
-{
-	SimThinkManager_GetSimList(manager, pList);
-
-	if (!g_bFixPhysicsPlayerShuffle || pList->Count() <= 2)
-		return;
-
-	CUtlVector<CBaseHandle> pawns;
-	CUtlVector<CBaseHandle> entities;
-	pawns.EnsureCapacity((gpGlobals->maxClients + 1) * 2);
-	entities.EnsureCapacity(pList->Count());
-
-	FOR_EACH_VEC(*pList, i)
-	{
-		const auto& handle = pList->Element(i);
-		if (const auto pEntity = reinterpret_cast<CBaseEntity*>(handle.Get()); pEntity && pEntity->IsPawn())
-			pawns.AddToTail(handle);
-		else
-			entities.AddToTail(handle);
-	}
-
-	pList->Purge();
-
-	// pawn Fisher-Yates shuffle
-
-	std::srand(gpGlobals->tickcount);
-
-	FOR_EACH_VEC_BACK(pawns, i)
-	{
-		const auto j = std::rand() % (i + 1);
-		std::swap(pawns[i], pawns[j]);
-	}
-
-	FOR_EACH_VEC(pawns, i)
-	{
-		pList->AddToTail(pawns.Element(i));
-	}
-
-	// but keep entities order
-
-	FOR_EACH_VEC(entities, i)
-	{
-		pList->AddToTail(entities.Element(i));
-	}
 }
 
 #ifdef PLATFORM_WINDOWS

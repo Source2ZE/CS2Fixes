@@ -70,7 +70,6 @@ float FASTCALL				Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn*);
 int64 FASTCALL				Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float);
 bool FASTCALL				Detour_TraceFunc(int64*, int*, float*, uint64);
 bool FASTCALL				Detour_TraceShape(int64*, int64, int64, int64, CTraceFilter*, int64);
-void FASTCALL				Detour_SimThinkManager_GetSimList(void*, CUtlVector<CBaseHandle>*);
 
 #ifdef PLATFORM_WINDOWS
 Vector* FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn*, Vector*);
