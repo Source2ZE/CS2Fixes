@@ -42,11 +42,11 @@ extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 
-static int  g_iAdminImmunityTargetting = 0;
-static bool g_bEnableMapPerksApi       = false;
+static int g_iAdminImmunityTargetting = 0;
+static bool g_bEnableMapSteamIds = false;
 
 FAKE_INT_CVAR(cs2f_admin_immunity, "Mode for which admin immunity system targetting allows: 0 - strictly lower, 1 - equal to or lower, 2 - ignore immunity levels", g_iAdminImmunityTargetting, 0, false)
-FAKE_BOOL_CVAR(cs2f_map_perks_api_enable, "Whether to enable map perks api", g_bEnableMapPerksApi, false, 0)
+FAKE_BOOL_CVAR(cs2f_map_steamids_enable, "Whether to make Steam ID's available to maps", g_bEnableMapSteamIds, false, 0)
 
 ZEPlayerHandle::ZEPlayerHandle() : m_Index(INVALID_ZEPLAYERHANDLE_INDEX) {};
 
@@ -503,7 +503,7 @@ void ZEPlayer::EndGlow()
 
 void ZEPlayer::SetSteamIdAttribute()
 {
-	if (!g_bEnableMapPerksApi)
+	if (!g_bEnableMapSteamIds)
 		return;
 
 	if (!IsAuthenticated())
