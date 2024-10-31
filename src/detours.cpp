@@ -393,7 +393,8 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		Message("Invalid value type for input %s\n", pInputName->String());
 		return false;
 	}
-	else if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
+
+	if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
 	{
 		float flDuration = 0.f;
 
@@ -431,6 +432,17 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
 			{
 				pHudHint->m_iszMessage(GameEntitySystem()->AllocPooledString(value->m_pszString));
+			}
+			return true;
+		}
+	}
+	else if (!V_strcasecmp(pInputName->String(), "SetModel"))
+	{
+		if (const auto pModelEntity = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsBaseModelEntity())
+		{
+			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			{
+				pModelEntity->SetModel(value->m_pszString);
 			}
 			return true;
 		}
