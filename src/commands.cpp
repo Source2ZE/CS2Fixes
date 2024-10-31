@@ -103,6 +103,48 @@ bool g_bEnableWeapons = false;
 
 FAKE_BOOL_CVAR(cs2f_weapons_enable, "Whether to enable weapon commands", g_bEnableWeapons, false, false)
 
+int GetGrenadeAmmo(CCSPlayer_WeaponServices* pWeaponServices, WeaponMapEntry_t weaponEntry)
+{
+	if (!pWeaponServices || weaponEntry.iGearSlot != GEAR_SLOT_GRENADES)
+		return -1;
+
+	// TODO: look into molotov vs inc interaction
+	if (strcmp(weaponEntry.szClassName, "weapon_hegrenade") == 0)
+		return pWeaponServices->m_iAmmo[AMMO_OFFSET_HEGRENADE];
+	else if (strcmp(weaponEntry.szClassName, "weapon_molotov") == 0 || strcmp(weaponEntry.szClassName, "weapon_incgrenade") == 0)
+		return pWeaponServices->m_iAmmo[AMMO_OFFSET_MOLOTOV];
+	else if (strcmp(weaponEntry.szClassName, "weapon_decoy") == 0)
+		return pWeaponServices->m_iAmmo[AMMO_OFFSET_DECOY];
+	else if (strcmp(weaponEntry.szClassName, "weapon_flashbang") == 0)
+		return pWeaponServices->m_iAmmo[AMMO_OFFSET_FLASHBANG];
+	else if (strcmp(weaponEntry.szClassName, "weapon_smokegrenade") == 0)
+		return pWeaponServices->m_iAmmo[AMMO_OFFSET_SMOKEGRENADE];
+	else
+		return -1;
+}
+
+int GetGrenadeAmmoTotal(CCSPlayer_WeaponServices* pWeaponServices)
+{
+	if(!pWeaponServices)
+		return -1;
+	
+	int grenadeAmmoOffsets[] = {
+		AMMO_OFFSET_HEGRENADE,
+		AMMO_OFFSET_FLASHBANG,
+		AMMO_OFFSET_SMOKEGRENADE,
+		AMMO_OFFSET_DECOY,
+		AMMO_OFFSET_MOLOTOV,
+	};
+
+	int totalGrenades = 0;
+	for (int i = 0; i < (sizeof(grenadeAmmoOffsets) / sizeof(int)); i++)
+	{
+		totalGrenades += pWeaponServices->m_iAmmo[grenadeAmmoOffsets[i]];
+	}
+	
+	return totalGrenades;
+}
+
 void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 {
 	if (!g_bEnableWeapons || !player || !player->m_hPawn())
@@ -159,6 +201,33 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 		return;
 	}
 
+	if (weaponEntry.iGearSlot == GEAR_SLOT_GRENADES)
+	{
+		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
+
+		// CONVAR_TODO
+		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("ammo_grenade_limit_default"));
+		// HACK: values is actually the cvar value itself, hence this ugly cast.
+		int iGrenadeLimitDefault = *(int*)&cvar->values;
+		cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("ammo_grenade_limit_total"));
+		int iGrenadeLimitTotal = *(int*)&cvar->values;
+
+		int iMatchingGrenades = GetGrenadeAmmo(pWeaponServices, weaponEntry);
+		int iTotalGrenades = GetGrenadeAmmoTotal(pWeaponServices);
+
+		if (iMatchingGrenades >= iGrenadeLimitDefault)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot carry any more %ss (Max %i)", weaponEntry.szWeaponName, iGrenadeLimitDefault);
+			return;
+		}
+
+		if (iTotalGrenades >= iGrenadeLimitTotal)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot carry any more grenades (Max %i)", iGrenadeLimitTotal);
+			return;
+		}
+	}
+
 	if (weaponEntry.maxAmount)
 	{
 		CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
@@ -190,19 +259,22 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 		}
 	}
 
-	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
-
-	FOR_EACH_VEC(*weapons, i)
+	if (weaponEntry.iGearSlot == GEAR_SLOT_RIFLE || weaponEntry.iGearSlot == GEAR_SLOT_PISTOL)
 	{
-		CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
-		if (!weapon)
-			continue;
-
-		if (weapon->GetWeaponVData()->m_GearSlot() == weaponEntry.iGearSlot && (weaponEntry.iGearSlot == GEAR_SLOT_RIFLE || weaponEntry.iGearSlot == GEAR_SLOT_PISTOL))
+		FOR_EACH_VEC(*weapons, i)
 		{
-			pWeaponServices->DropWeapon(weapon);
-			break;
+			CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+
+			if (!weapon)
+				continue;
+
+			if (weapon->GetWeaponVData()->m_GearSlot() == weaponEntry.iGearSlot)
+			{
+				pWeaponServices->DropWeapon(weapon);
+				break;
+			}
 		}
 	}
 
