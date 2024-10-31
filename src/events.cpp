@@ -21,6 +21,7 @@
 #include "KeyValues.h"
 #include "commands.h"
 #include "ctimer.h"
+#include "entities.h"
 #include "eventlistener.h"
 #include "networkstringtabledefs.h"
 #include "entity/cbaseplayercontroller.h"
@@ -100,6 +101,14 @@ GAME_EVENT_F(round_prestart)
 		}
 	}
 
+	EntityHandler_OnRoundRestart();
+
+	CBaseEntity* pShake = nullptr;
+
+	// Prevent shakes carrying over from previous rounds
+	while ((pShake = UTIL_FindEntityByClassname(pShake, "env_shake")))
+		pShake->AcceptInput("StopShake");
+
 	if (g_bEnableZR)
 		ZR_OnRoundPrestart(pEvent);
 }
@@ -117,7 +126,7 @@ GAME_EVENT_F(player_team)
 
 static bool g_bNoblock = false;
 
-FAKE_BOOL_CVAR(cs2f_noblock_enable, "Whether to use noblock, which sets debris collision on every player", g_bNoblock, false, false)
+FAKE_BOOL_CVAR(cs2f_noblock_enable, "Whether to use player noblock, which sets debris collision on every player", g_bNoblock, false, false)
 
 GAME_EVENT_F(player_spawn)
 {
@@ -138,10 +147,6 @@ GAME_EVENT_F(player_spawn)
 	if (pController->IsConnected())
 		pController->GetZEPlayer()->OnSpawn();
 
-	// Rest of the code is to set debris collisions
-	if (!g_bNoblock)
-		return;
-
 	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
 	// Gotta do this on the next frame...
@@ -149,13 +154,19 @@ GAME_EVENT_F(player_spawn)
 	{
 		CCSPlayerController *pController = hController.Get();
 
-		if (!pController || !pController->m_bPawnIsAlive())
+		if (!pController)
+			return -1.0f;
+
+		if (const auto player = pController->GetZEPlayer())
+			player->SetSteamIdAttribute();
+
+		if (!pController->m_bPawnIsAlive())
 			return -1.0f;
 
 		CBasePlayerPawn *pPawn = pController->GetPawn();
 
 		// Just in case somehow there's health but the player is, say, an observer
-		if (!pPawn || !pPawn->IsAlive())
+		if (!g_bNoblock || !pPawn || !pPawn->IsAlive())
 			return -1.0f;
 
 		pPawn->SetCollisionGroup(COLLISION_GROUP_DEBRIS);

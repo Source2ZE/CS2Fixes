@@ -40,9 +40,12 @@ extern bool g_bEnableAdminCommands;
 
 extern bool g_bEnableHide;
 extern bool g_bEnableStopSound;
+extern bool g_bEnableNoShake;
+extern float g_flMaxShakeAmp;
+
 
 void ClientPrintAll(int destination, const char *msg, ...);
-void ClientPrint(CBasePlayerController *player, int destination, const char *msg, ...);
+void ClientPrint(CCSPlayerController *player, int destination, const char *msg, ...);
 
 // Just a wrapper class so we're able to insert the callback
 class CChatCommand
@@ -75,7 +78,7 @@ public:
 		m_pfnCallback(args, player);
 	}
 
-	static bool CheckCommandAccess(CBasePlayerController *pPlayer, uint64 flags);
+	static bool CheckCommandAccess(CCSPlayerController *pPlayer, uint64 flags);
 
 	const char* GetName() { return m_sName.c_str(); }
 	const char* GetDescription() { return m_sDescription.c_str(); }

@@ -237,9 +237,11 @@
     <ClInclude Include="src\cs2_sdk\entity\clogiccase.h" />
     <ClInclude Include="src\cs2_sdk\entity\cparticlesystem.h" />
     <ClInclude Include="src\cs2_sdk\entity\cphysthruster.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cpointviewcontrol.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h" />
     <ClInclude Include="src\cs2_sdk\entity\cteam.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctriggerpush.h" />
+    <ClInclude Include="src\cs2_sdk\entity\ctriggerteleport.h" />
     <ClInclude Include="src\cs2_sdk\entity\cvotecontroller.h" />
     <ClInclude Include="src\cs2_sdk\entity\globaltypes.h" />
     <ClInclude Include="src\cs2_sdk\entity\lights.h" />

@@ -98,6 +98,9 @@ float TimerCheckTimeleft()
 	if (!gpGlobals || !g_pGameRules)
 		return flExtendVoteTickrate;
 
+	if (!g_bVoteManagerEnable)
+		return flExtendVoteTickrate;
+	
 	// Auto votes disabled, dont stop the timer in case this changes mid-map
 	if (g_ExtendVoteMode != EExtendVoteMode::EXTENDVOTE_AUTO)
 		return flExtendVoteTickrate;
@@ -528,7 +531,7 @@ CON_COMMAND_CHAT_FLAGS(disablertv, "- Disable the ability for players to vote to
 		return;
 	}
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	g_RTVState = ERTVState::BLOCKED_BY_ADMIN;
 
@@ -549,7 +552,7 @@ CON_COMMAND_CHAT_FLAGS(enablertv, "- Restore the ability for players to vote to 
 		return;
 	}
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	g_RTVState = ERTVState::RTV_ALLOWED;
 
@@ -570,7 +573,7 @@ CON_COMMAND_CHAT_FLAGS(addextend, "- Add another extend to the current map for p
 		return;
 	}
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	if (g_ExtendState == EExtendState::POST_EXTEND_NO_EXTENDS_LEFT || g_ExtendState == EExtendState::NO_EXTENDS)
 		g_ExtendState = EExtendState::EXTEND_ALLOWED;

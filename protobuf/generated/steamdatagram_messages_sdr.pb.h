@@ -170,6 +170,9 @@ extern CMsgSteamNetworkingIPAddressDefaultTypeInternal _CMsgSteamNetworkingIPAdd
 class CMsgSteamNetworkingP2PSDRRoutingSummary;
 struct CMsgSteamNetworkingP2PSDRRoutingSummaryDefaultTypeInternal;
 extern CMsgSteamNetworkingP2PSDRRoutingSummaryDefaultTypeInternal _CMsgSteamNetworkingP2PSDRRoutingSummary_default_instance_;
+class CMsgTOSTreatment;
+struct CMsgTOSTreatmentDefaultTypeInternal;
+extern CMsgTOSTreatmentDefaultTypeInternal _CMsgTOSTreatment_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::CMsgSteamDatagramClientPingSampleReply* Arena::CreateMaybeMessage<::CMsgSteamDatagramClientPingSampleReply>(Arena*);
 template<> ::CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter* Arena::CreateMaybeMessage<::CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter>(Arena*);
@@ -212,15 +215,15 @@ template<> ::CMsgSteamDatagramSetSecondaryAddressResult* Arena::CreateMaybeMessa
 template<> ::CMsgSteamDatagramSignedMessageGeneric* Arena::CreateMaybeMessage<::CMsgSteamDatagramSignedMessageGeneric>(Arena*);
 template<> ::CMsgSteamNetworkingIPAddress* Arena::CreateMaybeMessage<::CMsgSteamNetworkingIPAddress>(Arena*);
 template<> ::CMsgSteamNetworkingP2PSDRRoutingSummary* Arena::CreateMaybeMessage<::CMsgSteamNetworkingP2PSDRRoutingSummary>(Arena*);
+template<> ::CMsgTOSTreatment* Arena::CreateMaybeMessage<::CMsgTOSTreatment>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
 enum CMsgSteamDatagramRouterPingReply_AltAddress_Protocol : int {
-  CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_DefaultProtocol = 0,
-  CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_NetworkNext = 1
+  CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_DefaultProtocol = 0
 };
 bool CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_IsValid(int value);
 constexpr CMsgSteamDatagramRouterPingReply_AltAddress_Protocol CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_Protocol_MIN = CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_DefaultProtocol;
-constexpr CMsgSteamDatagramRouterPingReply_AltAddress_Protocol CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_Protocol_MAX = CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_NetworkNext;
+constexpr CMsgSteamDatagramRouterPingReply_AltAddress_Protocol CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_Protocol_MAX = CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_DefaultProtocol;
 constexpr int CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_Protocol_ARRAYSIZE = CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_Protocol_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_descriptor();
@@ -491,7 +494,7 @@ inline bool ESteamDatagramMsgID_Parse(
 }
 // ===================================================================
 
-class CMsgSteamNetworkingIPAddress final :
+class CMsgSteamNetworkingIPAddress :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingIPAddress) */ {
  public:
   inline CMsgSteamNetworkingIPAddress() : CMsgSteamNetworkingIPAddress(nullptr) {}
@@ -671,7 +674,7 @@ class CMsgSteamNetworkingIPAddress final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramSignedMessageGeneric final :
+class CMsgSteamDatagramSignedMessageGeneric :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramSignedMessageGeneric) */ {
  public:
   inline CMsgSteamDatagramSignedMessageGeneric() : CMsgSteamDatagramSignedMessageGeneric(nullptr) {}
@@ -896,7 +899,7 @@ class CMsgSteamDatagramSignedMessageGeneric final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramRouterPingReply_RouteException final :
+class CMsgSteamDatagramRouterPingReply_RouteException :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramRouterPingReply.RouteException) */ {
  public:
   inline CMsgSteamDatagramRouterPingReply_RouteException() : CMsgSteamDatagramRouterPingReply_RouteException(nullptr) {}
@@ -1086,7 +1089,7 @@ class CMsgSteamDatagramRouterPingReply_RouteException final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramRouterPingReply_AltAddress final :
+class CMsgSteamDatagramRouterPingReply_AltAddress :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramRouterPingReply.AltAddress) */ {
  public:
   inline CMsgSteamDatagramRouterPingReply_AltAddress() : CMsgSteamDatagramRouterPingReply_AltAddress(nullptr) {}
@@ -1214,8 +1217,6 @@ class CMsgSteamDatagramRouterPingReply_AltAddress final :
   typedef CMsgSteamDatagramRouterPingReply_AltAddress_Protocol Protocol;
   static constexpr Protocol DefaultProtocol =
     CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_DefaultProtocol;
-  static constexpr Protocol NetworkNext =
-    CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_NetworkNext;
   static inline bool Protocol_IsValid(int value) {
     return CMsgSteamDatagramRouterPingReply_AltAddress_Protocol_IsValid(value);
   }
@@ -1341,7 +1342,7 @@ class CMsgSteamDatagramRouterPingReply_AltAddress final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramRouterPingReply final :
+class CMsgSteamDatagramRouterPingReply :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramRouterPingReply) */ {
  public:
   inline CMsgSteamDatagramRouterPingReply() : CMsgSteamDatagramRouterPingReply(nullptr) {}
@@ -1518,6 +1519,11 @@ class CMsgSteamDatagramRouterPingReply final :
     kScoringPenaltyRelayClusterFieldNumber = 9,
     kYourPublicPortFieldNumber = 11,
     kFlagsFieldNumber = 12,
+    kRecvTosFieldNumber = 16,
+    kEchoSentTosFieldNumber = 17,
+    kSentTosFieldNumber = 18,
+    kEchoRequestReplyTosFieldNumber = 19,
+    kDummyVarintFieldNumber = 100,
   };
   // repeated fixed32 latency_datacenter_ids = 2 [packed = true];
   int latency_datacenter_ids_size() const;
@@ -1778,6 +1784,71 @@ class CMsgSteamDatagramRouterPingReply final :
   void _internal_set_flags(uint32_t value);
   public:
 
+  // optional uint32 recv_tos = 16;
+  bool has_recv_tos() const;
+  private:
+  bool _internal_has_recv_tos() const;
+  public:
+  void clear_recv_tos();
+  uint32_t recv_tos() const;
+  void set_recv_tos(uint32_t value);
+  private:
+  uint32_t _internal_recv_tos() const;
+  void _internal_set_recv_tos(uint32_t value);
+  public:
+
+  // optional uint32 echo_sent_tos = 17;
+  bool has_echo_sent_tos() const;
+  private:
+  bool _internal_has_echo_sent_tos() const;
+  public:
+  void clear_echo_sent_tos();
+  uint32_t echo_sent_tos() const;
+  void set_echo_sent_tos(uint32_t value);
+  private:
+  uint32_t _internal_echo_sent_tos() const;
+  void _internal_set_echo_sent_tos(uint32_t value);
+  public:
+
+  // optional uint32 sent_tos = 18;
+  bool has_sent_tos() const;
+  private:
+  bool _internal_has_sent_tos() const;
+  public:
+  void clear_sent_tos();
+  uint32_t sent_tos() const;
+  void set_sent_tos(uint32_t value);
+  private:
+  uint32_t _internal_sent_tos() const;
+  void _internal_set_sent_tos(uint32_t value);
+  public:
+
+  // optional uint32 echo_request_reply_tos = 19;
+  bool has_echo_request_reply_tos() const;
+  private:
+  bool _internal_has_echo_request_reply_tos() const;
+  public:
+  void clear_echo_request_reply_tos();
+  uint32_t echo_request_reply_tos() const;
+  void set_echo_request_reply_tos(uint32_t value);
+  private:
+  uint32_t _internal_echo_request_reply_tos() const;
+  void _internal_set_echo_request_reply_tos(uint32_t value);
+  public:
+
+  // optional uint64 dummy_varint = 100;
+  bool has_dummy_varint() const;
+  private:
+  bool _internal_has_dummy_varint() const;
+  public:
+  void clear_dummy_varint();
+  uint64_t dummy_varint() const;
+  void set_dummy_varint(uint64_t value);
+  private:
+  uint64_t _internal_dummy_varint() const;
+  void _internal_set_dummy_varint(uint64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CMsgSteamDatagramRouterPingReply)
  private:
   class _Internal;
@@ -1806,13 +1877,18 @@ class CMsgSteamDatagramRouterPingReply final :
     uint32_t scoring_penalty_relay_cluster_;
     uint32_t your_public_port_;
     uint32_t flags_;
+    uint32_t recv_tos_;
+    uint32_t echo_sent_tos_;
+    uint32_t sent_tos_;
+    uint32_t echo_request_reply_tos_;
+    uint64_t dummy_varint_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_steamdatagram_5fmessages_5fsdr_2eproto;
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramGameserverPingRequestBody final :
+class CMsgSteamDatagramGameserverPingRequestBody :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramGameserverPingRequestBody) */ {
  public:
   inline CMsgSteamDatagramGameserverPingRequestBody() : CMsgSteamDatagramGameserverPingRequestBody(nullptr) {}
@@ -2077,7 +2153,7 @@ class CMsgSteamDatagramGameserverPingRequestBody final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramGameserverPingRequestEnvelope final :
+class CMsgSteamDatagramGameserverPingRequestEnvelope :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramGameserverPingRequestEnvelope) */ {
  public:
   inline CMsgSteamDatagramGameserverPingRequestEnvelope() : CMsgSteamDatagramGameserverPingRequestEnvelope(nullptr) {}
@@ -2377,7 +2453,7 @@ class CMsgSteamDatagramGameserverPingRequestEnvelope final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramGameserverPingReplyData final :
+class CMsgSteamDatagramGameserverPingReplyData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramGameserverPingReplyData) */ {
  public:
   inline CMsgSteamDatagramGameserverPingReplyData() : CMsgSteamDatagramGameserverPingReplyData(nullptr) {}
@@ -2702,7 +2778,7 @@ class CMsgSteamDatagramGameserverPingReplyData final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramNoSessionRelayToClient final :
+class CMsgSteamDatagramNoSessionRelayToClient :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramNoSessionRelayToClient) */ {
  public:
   inline CMsgSteamDatagramNoSessionRelayToClient() : CMsgSteamDatagramNoSessionRelayToClient(nullptr) {}
@@ -2937,7 +3013,7 @@ class CMsgSteamDatagramNoSessionRelayToClient final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramNoSessionRelayToPeer final :
+class CMsgSteamDatagramNoSessionRelayToPeer :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramNoSessionRelayToPeer) */ {
  public:
   inline CMsgSteamDatagramNoSessionRelayToPeer() : CMsgSteamDatagramNoSessionRelayToPeer(nullptr) {}
@@ -3142,7 +3218,212 @@ class CMsgSteamDatagramNoSessionRelayToPeer final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramClientPingSampleRequest final :
+class CMsgTOSTreatment :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTOSTreatment) */ {
+ public:
+  inline CMsgTOSTreatment() : CMsgTOSTreatment(nullptr) {}
+  ~CMsgTOSTreatment() override;
+  explicit PROTOBUF_CONSTEXPR CMsgTOSTreatment(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgTOSTreatment(const CMsgTOSTreatment& from);
+  CMsgTOSTreatment(CMsgTOSTreatment&& from) noexcept
+    : CMsgTOSTreatment() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgTOSTreatment& operator=(const CMsgTOSTreatment& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgTOSTreatment& operator=(CMsgTOSTreatment&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgTOSTreatment& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgTOSTreatment* internal_default_instance() {
+    return reinterpret_cast<const CMsgTOSTreatment*>(
+               &_CMsgTOSTreatment_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    10;
+
+  friend void swap(CMsgTOSTreatment& a, CMsgTOSTreatment& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgTOSTreatment* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgTOSTreatment* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgTOSTreatment* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgTOSTreatment>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgTOSTreatment& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgTOSTreatment& from) {
+    CMsgTOSTreatment::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgTOSTreatment* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgTOSTreatment";
+  }
+  protected:
+  explicit CMsgTOSTreatment(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kL4SDetectFieldNumber = 1,
+    kUpEcn1FieldNumber = 2,
+    kDownDscp45FieldNumber = 3,
+  };
+  // optional string l4s_detect = 1;
+  bool has_l4s_detect() const;
+  private:
+  bool _internal_has_l4s_detect() const;
+  public:
+  void clear_l4s_detect();
+  const std::string& l4s_detect() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_l4s_detect(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_l4s_detect();
+  PROTOBUF_NODISCARD std::string* release_l4s_detect();
+  void set_allocated_l4s_detect(std::string* l4s_detect);
+  private:
+  const std::string& _internal_l4s_detect() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_l4s_detect(const std::string& value);
+  std::string* _internal_mutable_l4s_detect();
+  public:
+
+  // optional string up_ecn1 = 2;
+  bool has_up_ecn1() const;
+  private:
+  bool _internal_has_up_ecn1() const;
+  public:
+  void clear_up_ecn1();
+  const std::string& up_ecn1() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_up_ecn1(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_up_ecn1();
+  PROTOBUF_NODISCARD std::string* release_up_ecn1();
+  void set_allocated_up_ecn1(std::string* up_ecn1);
+  private:
+  const std::string& _internal_up_ecn1() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_up_ecn1(const std::string& value);
+  std::string* _internal_mutable_up_ecn1();
+  public:
+
+  // optional string down_dscp45 = 3;
+  bool has_down_dscp45() const;
+  private:
+  bool _internal_has_down_dscp45() const;
+  public:
+  void clear_down_dscp45();
+  const std::string& down_dscp45() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_down_dscp45(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_down_dscp45();
+  PROTOBUF_NODISCARD std::string* release_down_dscp45();
+  void set_allocated_down_dscp45(std::string* down_dscp45);
+  private:
+  const std::string& _internal_down_dscp45() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_down_dscp45(const std::string& value);
+  std::string* _internal_mutable_down_dscp45();
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgTOSTreatment)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr l4s_detect_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr up_ecn1_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr down_dscp45_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_steamdatagram_5fmessages_5fsdr_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CMsgSteamDatagramClientPingSampleRequest :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramClientPingSampleRequest) */ {
  public:
   inline CMsgSteamDatagramClientPingSampleRequest() : CMsgSteamDatagramClientPingSampleRequest(nullptr) {}
@@ -3197,7 +3478,7 @@ class CMsgSteamDatagramClientPingSampleRequest final :
                &_CMsgSteamDatagramClientPingSampleRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    11;
 
   friend void swap(CMsgSteamDatagramClientPingSampleRequest& a, CMsgSteamDatagramClientPingSampleRequest& b) {
     a.Swap(&b);
@@ -3302,7 +3583,7 @@ class CMsgSteamDatagramClientPingSampleRequest final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramClientPingSampleReply_POP_AltAddress final :
+class CMsgSteamDatagramClientPingSampleReply_POP_AltAddress :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramClientPingSampleReply.POP.AltAddress) */ {
  public:
   inline CMsgSteamDatagramClientPingSampleReply_POP_AltAddress() : CMsgSteamDatagramClientPingSampleReply_POP_AltAddress(nullptr) {}
@@ -3357,7 +3638,7 @@ class CMsgSteamDatagramClientPingSampleReply_POP_AltAddress final :
                &_CMsgSteamDatagramClientPingSampleReply_POP_AltAddress_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    12;
 
   friend void swap(CMsgSteamDatagramClientPingSampleReply_POP_AltAddress& a, CMsgSteamDatagramClientPingSampleReply_POP_AltAddress& b) {
     a.Swap(&b);
@@ -3497,7 +3778,7 @@ class CMsgSteamDatagramClientPingSampleReply_POP_AltAddress final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramClientPingSampleReply_POP final :
+class CMsgSteamDatagramClientPingSampleReply_POP :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramClientPingSampleReply.POP) */ {
  public:
   inline CMsgSteamDatagramClientPingSampleReply_POP() : CMsgSteamDatagramClientPingSampleReply_POP(nullptr) {}
@@ -3552,7 +3833,7 @@ class CMsgSteamDatagramClientPingSampleReply_POP final :
                &_CMsgSteamDatagramClientPingSampleReply_POP_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    13;
 
   friend void swap(CMsgSteamDatagramClientPingSampleReply_POP& a, CMsgSteamDatagramClientPingSampleReply_POP& b) {
     a.Swap(&b);
@@ -3889,7 +4170,7 @@ class CMsgSteamDatagramClientPingSampleReply_POP final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter final :
+class CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramClientPingSampleReply.LegacyDataCenter) */ {
  public:
   inline CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter() : CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter(nullptr) {}
@@ -3944,7 +4225,7 @@ class CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter final :
                &_CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    14;
 
   friend void swap(CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter& a, CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter& b) {
     a.Swap(&b);
@@ -4079,7 +4360,7 @@ class CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramClientPingSampleReply final :
+class CMsgSteamDatagramClientPingSampleReply :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramClientPingSampleReply) */ {
  public:
   inline CMsgSteamDatagramClientPingSampleReply() : CMsgSteamDatagramClientPingSampleReply(nullptr) {}
@@ -4134,7 +4415,7 @@ class CMsgSteamDatagramClientPingSampleReply final :
                &_CMsgSteamDatagramClientPingSampleReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    15;
 
   friend void swap(CMsgSteamDatagramClientPingSampleReply& a, CMsgSteamDatagramClientPingSampleReply& b) {
     a.Swap(&b);
@@ -4212,6 +4493,7 @@ class CMsgSteamDatagramClientPingSampleReply final :
   enum : int {
     kPopsFieldNumber = 2,
     kLegacyDataCentersFieldNumber = 3,
+    kTosFieldNumber = 6,
     kConnectionIdFieldNumber = 1,
     kRelayOverrideActiveFieldNumber = 5,
   };
@@ -4251,6 +4533,24 @@ class CMsgSteamDatagramClientPingSampleReply final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter >&
       legacy_data_centers() const;
 
+  // optional .CMsgTOSTreatment tos = 6;
+  bool has_tos() const;
+  private:
+  bool _internal_has_tos() const;
+  public:
+  void clear_tos();
+  const ::CMsgTOSTreatment& tos() const;
+  PROTOBUF_NODISCARD ::CMsgTOSTreatment* release_tos();
+  ::CMsgTOSTreatment* mutable_tos();
+  void set_allocated_tos(::CMsgTOSTreatment* tos);
+  private:
+  const ::CMsgTOSTreatment& _internal_tos() const;
+  ::CMsgTOSTreatment* _internal_mutable_tos();
+  public:
+  void unsafe_arena_set_allocated_tos(
+      ::CMsgTOSTreatment* tos);
+  ::CMsgTOSTreatment* unsafe_arena_release_tos();
+
   // optional fixed32 connection_id = 1;
   bool has_connection_id() const;
   private:
@@ -4289,6 +4589,7 @@ class CMsgSteamDatagramClientPingSampleReply final :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSteamDatagramClientPingSampleReply_POP > pops_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter > legacy_data_centers_;
+    ::CMsgTOSTreatment* tos_;
     uint32_t connection_id_;
     bool relay_override_active_;
   };
@@ -4297,7 +4598,7 @@ class CMsgSteamDatagramClientPingSampleReply final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramClientSwitchedPrimary_RouterQuality final :
+class CMsgSteamDatagramClientSwitchedPrimary_RouterQuality :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramClientSwitchedPrimary.RouterQuality) */ {
  public:
   inline CMsgSteamDatagramClientSwitchedPrimary_RouterQuality() : CMsgSteamDatagramClientSwitchedPrimary_RouterQuality(nullptr) {}
@@ -4352,7 +4653,7 @@ class CMsgSteamDatagramClientSwitchedPrimary_RouterQuality final :
                &_CMsgSteamDatagramClientSwitchedPrimary_RouterQuality_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    16;
 
   friend void swap(CMsgSteamDatagramClientSwitchedPrimary_RouterQuality& a, CMsgSteamDatagramClientSwitchedPrimary_RouterQuality& b) {
     a.Swap(&b);
@@ -4502,7 +4803,7 @@ class CMsgSteamDatagramClientSwitchedPrimary_RouterQuality final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramClientSwitchedPrimary final :
+class CMsgSteamDatagramClientSwitchedPrimary :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramClientSwitchedPrimary) */ {
  public:
   inline CMsgSteamDatagramClientSwitchedPrimary() : CMsgSteamDatagramClientSwitchedPrimary(nullptr) {}
@@ -4557,7 +4858,7 @@ class CMsgSteamDatagramClientSwitchedPrimary final :
                &_CMsgSteamDatagramClientSwitchedPrimary_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    17;
 
   friend void swap(CMsgSteamDatagramClientSwitchedPrimary& a, CMsgSteamDatagramClientSwitchedPrimary& b) {
     a.Swap(&b);
@@ -4854,7 +5155,7 @@ class CMsgSteamDatagramClientSwitchedPrimary final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramConnectRequest final :
+class CMsgSteamDatagramConnectRequest :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramConnectRequest) */ {
  public:
   inline CMsgSteamDatagramConnectRequest() : CMsgSteamDatagramConnectRequest(nullptr) {}
@@ -4909,7 +5210,7 @@ class CMsgSteamDatagramConnectRequest final :
                &_CMsgSteamDatagramConnectRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    18;
 
   friend void swap(CMsgSteamDatagramConnectRequest& a, CMsgSteamDatagramConnectRequest& b) {
     a.Swap(&b);
@@ -5144,7 +5445,7 @@ class CMsgSteamDatagramConnectRequest final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramConnectOK final :
+class CMsgSteamDatagramConnectOK :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramConnectOK) */ {
  public:
   inline CMsgSteamDatagramConnectOK() : CMsgSteamDatagramConnectOK(nullptr) {}
@@ -5199,7 +5500,7 @@ class CMsgSteamDatagramConnectOK final :
                &_CMsgSteamDatagramConnectOK_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    19;
 
   friend void swap(CMsgSteamDatagramConnectOK& a, CMsgSteamDatagramConnectOK& b) {
     a.Swap(&b);
@@ -5404,7 +5705,7 @@ class CMsgSteamDatagramConnectOK final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PSDRRoutingSummary final :
+class CMsgSteamNetworkingP2PSDRRoutingSummary :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PSDRRoutingSummary) */ {
  public:
   inline CMsgSteamNetworkingP2PSDRRoutingSummary() : CMsgSteamNetworkingP2PSDRRoutingSummary(nullptr) {}
@@ -5459,7 +5760,7 @@ class CMsgSteamNetworkingP2PSDRRoutingSummary final :
                &_CMsgSteamNetworkingP2PSDRRoutingSummary_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    20;
 
   friend void swap(CMsgSteamNetworkingP2PSDRRoutingSummary& a, CMsgSteamNetworkingP2PSDRRoutingSummary& b) {
     a.Swap(&b);
@@ -5774,7 +6075,7 @@ class CMsgSteamNetworkingP2PSDRRoutingSummary final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramP2PRoutingSummary final :
+class CMsgSteamDatagramP2PRoutingSummary :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramP2PRoutingSummary) */ {
  public:
   inline CMsgSteamDatagramP2PRoutingSummary() : CMsgSteamDatagramP2PRoutingSummary(nullptr) {}
@@ -5829,7 +6130,7 @@ class CMsgSteamDatagramP2PRoutingSummary final :
                &_CMsgSteamDatagramP2PRoutingSummary_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    20;
+    21;
 
   friend void swap(CMsgSteamDatagramP2PRoutingSummary& a, CMsgSteamDatagramP2PRoutingSummary& b) {
     a.Swap(&b);
@@ -5959,7 +6260,7 @@ class CMsgSteamDatagramP2PRoutingSummary final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramConnectionClosed final :
+class CMsgSteamDatagramConnectionClosed :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramConnectionClosed) */ {
  public:
   inline CMsgSteamDatagramConnectionClosed() : CMsgSteamDatagramConnectionClosed(nullptr) {}
@@ -6014,7 +6315,7 @@ class CMsgSteamDatagramConnectionClosed final :
                &_CMsgSteamDatagramConnectionClosed_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    22;
 
   friend void swap(CMsgSteamDatagramConnectionClosed& a, CMsgSteamDatagramConnectionClosed& b) {
     a.Swap(&b);
@@ -6471,7 +6772,7 @@ class CMsgSteamDatagramConnectionClosed final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramNoConnection final :
+class CMsgSteamDatagramNoConnection :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramNoConnection) */ {
  public:
   inline CMsgSteamDatagramNoConnection() : CMsgSteamDatagramNoConnection(nullptr) {}
@@ -6526,7 +6827,7 @@ class CMsgSteamDatagramNoConnection final :
                &_CMsgSteamDatagramNoConnection_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    23;
 
   friend void swap(CMsgSteamDatagramNoConnection& a, CMsgSteamDatagramNoConnection& b) {
     a.Swap(&b);
@@ -6876,7 +7177,7 @@ class CMsgSteamDatagramNoConnection final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramGameserverSessionRequest final :
+class CMsgSteamDatagramGameserverSessionRequest :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramGameserverSessionRequest) */ {
  public:
   inline CMsgSteamDatagramGameserverSessionRequest() : CMsgSteamDatagramGameserverSessionRequest(nullptr) {}
@@ -6931,7 +7232,7 @@ class CMsgSteamDatagramGameserverSessionRequest final :
                &_CMsgSteamDatagramGameserverSessionRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    23;
+    24;
 
   friend void swap(CMsgSteamDatagramGameserverSessionRequest& a, CMsgSteamDatagramGameserverSessionRequest& b) {
     a.Swap(&b);
@@ -7211,7 +7512,7 @@ class CMsgSteamDatagramGameserverSessionRequest final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramGameserverSessionEstablished final :
+class CMsgSteamDatagramGameserverSessionEstablished :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramGameserverSessionEstablished) */ {
  public:
   inline CMsgSteamDatagramGameserverSessionEstablished() : CMsgSteamDatagramGameserverSessionEstablished(nullptr) {}
@@ -7266,7 +7567,7 @@ class CMsgSteamDatagramGameserverSessionEstablished final :
                &_CMsgSteamDatagramGameserverSessionEstablished_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    24;
+    25;
 
   friend void swap(CMsgSteamDatagramGameserverSessionEstablished& a, CMsgSteamDatagramGameserverSessionEstablished& b) {
     a.Swap(&b);
@@ -7456,7 +7757,7 @@ class CMsgSteamDatagramGameserverSessionEstablished final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramConnectionStatsClientToRouter final :
+class CMsgSteamDatagramConnectionStatsClientToRouter :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramConnectionStatsClientToRouter) */ {
  public:
   inline CMsgSteamDatagramConnectionStatsClientToRouter() : CMsgSteamDatagramConnectionStatsClientToRouter(nullptr) {}
@@ -7511,7 +7812,7 @@ class CMsgSteamDatagramConnectionStatsClientToRouter final :
                &_CMsgSteamDatagramConnectionStatsClientToRouter_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    25;
+    26;
 
   friend void swap(CMsgSteamDatagramConnectionStatsClientToRouter& a, CMsgSteamDatagramConnectionStatsClientToRouter& b) {
     a.Swap(&b);
@@ -7785,7 +8086,7 @@ class CMsgSteamDatagramConnectionStatsClientToRouter final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramConnectionStatsRouterToClient final :
+class CMsgSteamDatagramConnectionStatsRouterToClient :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramConnectionStatsRouterToClient) */ {
  public:
   inline CMsgSteamDatagramConnectionStatsRouterToClient() : CMsgSteamDatagramConnectionStatsRouterToClient(nullptr) {}
@@ -7840,7 +8141,7 @@ class CMsgSteamDatagramConnectionStatsRouterToClient final :
                &_CMsgSteamDatagramConnectionStatsRouterToClient_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    26;
+    27;
 
   friend void swap(CMsgSteamDatagramConnectionStatsRouterToClient& a, CMsgSteamDatagramConnectionStatsRouterToClient& b) {
     a.Swap(&b);
@@ -8170,7 +8471,7 @@ class CMsgSteamDatagramConnectionStatsRouterToClient final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramConnectionStatsRouterToServer final :
+class CMsgSteamDatagramConnectionStatsRouterToServer :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramConnectionStatsRouterToServer) */ {
  public:
   inline CMsgSteamDatagramConnectionStatsRouterToServer() : CMsgSteamDatagramConnectionStatsRouterToServer(nullptr) {}
@@ -8225,7 +8526,7 @@ class CMsgSteamDatagramConnectionStatsRouterToServer final :
                &_CMsgSteamDatagramConnectionStatsRouterToServer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    27;
+    28;
 
   friend void swap(CMsgSteamDatagramConnectionStatsRouterToServer& a, CMsgSteamDatagramConnectionStatsRouterToServer& b) {
     a.Swap(&b);
@@ -8575,7 +8876,7 @@ class CMsgSteamDatagramConnectionStatsRouterToServer final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramConnectionStatsServerToRouter final :
+class CMsgSteamDatagramConnectionStatsServerToRouter :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramConnectionStatsServerToRouter) */ {
  public:
   inline CMsgSteamDatagramConnectionStatsServerToRouter() : CMsgSteamDatagramConnectionStatsServerToRouter(nullptr) {}
@@ -8630,7 +8931,7 @@ class CMsgSteamDatagramConnectionStatsServerToRouter final :
                &_CMsgSteamDatagramConnectionStatsServerToRouter_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    28;
+    29;
 
   friend void swap(CMsgSteamDatagramConnectionStatsServerToRouter& a, CMsgSteamDatagramConnectionStatsServerToRouter& b) {
     a.Swap(&b);
@@ -8930,7 +9231,7 @@ class CMsgSteamDatagramConnectionStatsServerToRouter final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramP2PSessionRequestBody_EncryptedData final :
+class CMsgSteamDatagramP2PSessionRequestBody_EncryptedData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramP2PSessionRequestBody.EncryptedData) */ {
  public:
   inline CMsgSteamDatagramP2PSessionRequestBody_EncryptedData() : CMsgSteamDatagramP2PSessionRequestBody_EncryptedData(nullptr) {}
@@ -8985,7 +9286,7 @@ class CMsgSteamDatagramP2PSessionRequestBody_EncryptedData final :
                &_CMsgSteamDatagramP2PSessionRequestBody_EncryptedData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    29;
+    30;
 
   friend void swap(CMsgSteamDatagramP2PSessionRequestBody_EncryptedData& a, CMsgSteamDatagramP2PSessionRequestBody_EncryptedData& b) {
     a.Swap(&b);
@@ -9095,7 +9396,7 @@ class CMsgSteamDatagramP2PSessionRequestBody_EncryptedData final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramP2PSessionRequestBody final :
+class CMsgSteamDatagramP2PSessionRequestBody :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramP2PSessionRequestBody) */ {
  public:
   inline CMsgSteamDatagramP2PSessionRequestBody() : CMsgSteamDatagramP2PSessionRequestBody(nullptr) {}
@@ -9150,7 +9451,7 @@ class CMsgSteamDatagramP2PSessionRequestBody final :
                &_CMsgSteamDatagramP2PSessionRequestBody_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    30;
+    31;
 
   friend void swap(CMsgSteamDatagramP2PSessionRequestBody& a, CMsgSteamDatagramP2PSessionRequestBody& b) {
     a.Swap(&b);
@@ -9462,7 +9763,7 @@ class CMsgSteamDatagramP2PSessionRequestBody final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramP2PSessionRequest final :
+class CMsgSteamDatagramP2PSessionRequest :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramP2PSessionRequest) */ {
  public:
   inline CMsgSteamDatagramP2PSessionRequest() : CMsgSteamDatagramP2PSessionRequest(nullptr) {}
@@ -9517,7 +9818,7 @@ class CMsgSteamDatagramP2PSessionRequest final :
                &_CMsgSteamDatagramP2PSessionRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    31;
+    32;
 
   friend void swap(CMsgSteamDatagramP2PSessionRequest& a, CMsgSteamDatagramP2PSessionRequest& b) {
     a.Swap(&b);
@@ -9667,7 +9968,7 @@ class CMsgSteamDatagramP2PSessionRequest final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramP2PSessionEstablished final :
+class CMsgSteamDatagramP2PSessionEstablished :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramP2PSessionEstablished) */ {
  public:
   inline CMsgSteamDatagramP2PSessionEstablished() : CMsgSteamDatagramP2PSessionEstablished(nullptr) {}
@@ -9722,7 +10023,7 @@ class CMsgSteamDatagramP2PSessionEstablished final :
                &_CMsgSteamDatagramP2PSessionEstablished_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    32;
+    33;
 
   friend void swap(CMsgSteamDatagramP2PSessionEstablished& a, CMsgSteamDatagramP2PSessionEstablished& b) {
     a.Swap(&b);
@@ -9877,7 +10178,7 @@ class CMsgSteamDatagramP2PSessionEstablished final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramConnectionStatsP2PClientToRouter final :
+class CMsgSteamDatagramConnectionStatsP2PClientToRouter :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramConnectionStatsP2PClientToRouter) */ {
  public:
   inline CMsgSteamDatagramConnectionStatsP2PClientToRouter() : CMsgSteamDatagramConnectionStatsP2PClientToRouter(nullptr) {}
@@ -9932,7 +10233,7 @@ class CMsgSteamDatagramConnectionStatsP2PClientToRouter final :
                &_CMsgSteamDatagramConnectionStatsP2PClientToRouter_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    33;
+    34;
 
   friend void swap(CMsgSteamDatagramConnectionStatsP2PClientToRouter& a, CMsgSteamDatagramConnectionStatsP2PClientToRouter& b) {
     a.Swap(&b);
@@ -10298,7 +10599,7 @@ class CMsgSteamDatagramConnectionStatsP2PClientToRouter final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramConnectionStatsP2PRouterToClient final :
+class CMsgSteamDatagramConnectionStatsP2PRouterToClient :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramConnectionStatsP2PRouterToClient) */ {
  public:
   inline CMsgSteamDatagramConnectionStatsP2PRouterToClient() : CMsgSteamDatagramConnectionStatsP2PRouterToClient(nullptr) {}
@@ -10353,7 +10654,7 @@ class CMsgSteamDatagramConnectionStatsP2PRouterToClient final :
                &_CMsgSteamDatagramConnectionStatsP2PRouterToClient_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    34;
+    35;
 
   friend void swap(CMsgSteamDatagramConnectionStatsP2PRouterToClient& a, CMsgSteamDatagramConnectionStatsP2PRouterToClient& b) {
     a.Swap(&b);
@@ -10735,7 +11036,7 @@ class CMsgSteamDatagramConnectionStatsP2PRouterToClient final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramP2PBadRouteRouterToClient final :
+class CMsgSteamDatagramP2PBadRouteRouterToClient :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramP2PBadRouteRouterToClient) */ {
  public:
   inline CMsgSteamDatagramP2PBadRouteRouterToClient() : CMsgSteamDatagramP2PBadRouteRouterToClient(nullptr) {}
@@ -10790,7 +11091,7 @@ class CMsgSteamDatagramP2PBadRouteRouterToClient final :
                &_CMsgSteamDatagramP2PBadRouteRouterToClient_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    35;
+    36;
 
   friend void swap(CMsgSteamDatagramP2PBadRouteRouterToClient& a, CMsgSteamDatagramP2PBadRouteRouterToClient& b) {
     a.Swap(&b);
@@ -10945,7 +11246,7 @@ class CMsgSteamDatagramP2PBadRouteRouterToClient final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramP2PRoutes_RelayCluster final :
+class CMsgSteamDatagramP2PRoutes_RelayCluster :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramP2PRoutes.RelayCluster) */ {
  public:
   inline CMsgSteamDatagramP2PRoutes_RelayCluster() : CMsgSteamDatagramP2PRoutes_RelayCluster(nullptr) {}
@@ -11000,7 +11301,7 @@ class CMsgSteamDatagramP2PRoutes_RelayCluster final :
                &_CMsgSteamDatagramP2PRoutes_RelayCluster_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    36;
+    37;
 
   friend void swap(CMsgSteamDatagramP2PRoutes_RelayCluster& a, CMsgSteamDatagramP2PRoutes_RelayCluster& b) {
     a.Swap(&b);
@@ -11155,7 +11456,7 @@ class CMsgSteamDatagramP2PRoutes_RelayCluster final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramP2PRoutes_Route final :
+class CMsgSteamDatagramP2PRoutes_Route :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramP2PRoutes.Route) */ {
  public:
   inline CMsgSteamDatagramP2PRoutes_Route() : CMsgSteamDatagramP2PRoutes_Route(nullptr) {}
@@ -11210,7 +11511,7 @@ class CMsgSteamDatagramP2PRoutes_Route final :
                &_CMsgSteamDatagramP2PRoutes_Route_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    37;
+    38;
 
   friend void swap(CMsgSteamDatagramP2PRoutes_Route& a, CMsgSteamDatagramP2PRoutes_Route& b) {
     a.Swap(&b);
@@ -11360,7 +11661,7 @@ class CMsgSteamDatagramP2PRoutes_Route final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramP2PRoutes final :
+class CMsgSteamDatagramP2PRoutes :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramP2PRoutes) */ {
  public:
   inline CMsgSteamDatagramP2PRoutes() : CMsgSteamDatagramP2PRoutes(nullptr) {}
@@ -11415,7 +11716,7 @@ class CMsgSteamDatagramP2PRoutes final :
                &_CMsgSteamDatagramP2PRoutes_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    38;
+    39;
 
   friend void swap(CMsgSteamDatagramP2PRoutes& a, CMsgSteamDatagramP2PRoutes& b) {
     a.Swap(&b);
@@ -11563,7 +11864,7 @@ class CMsgSteamDatagramP2PRoutes final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramSetSecondaryAddressRequest final :
+class CMsgSteamDatagramSetSecondaryAddressRequest :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramSetSecondaryAddressRequest) */ {
  public:
   inline CMsgSteamDatagramSetSecondaryAddressRequest() : CMsgSteamDatagramSetSecondaryAddressRequest(nullptr) {}
@@ -11618,7 +11919,7 @@ class CMsgSteamDatagramSetSecondaryAddressRequest final :
                &_CMsgSteamDatagramSetSecondaryAddressRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    39;
+    40;
 
   friend void swap(CMsgSteamDatagramSetSecondaryAddressRequest& a, CMsgSteamDatagramSetSecondaryAddressRequest& b) {
     a.Swap(&b);
@@ -11808,7 +12109,7 @@ class CMsgSteamDatagramSetSecondaryAddressRequest final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramSetSecondaryAddressResult final :
+class CMsgSteamDatagramSetSecondaryAddressResult :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramSetSecondaryAddressResult) */ {
  public:
   inline CMsgSteamDatagramSetSecondaryAddressResult() : CMsgSteamDatagramSetSecondaryAddressResult(nullptr) {}
@@ -11863,7 +12164,7 @@ class CMsgSteamDatagramSetSecondaryAddressResult final :
                &_CMsgSteamDatagramSetSecondaryAddressResult_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    40;
+    41;
 
   friend void swap(CMsgSteamDatagramSetSecondaryAddressResult& a, CMsgSteamDatagramSetSecondaryAddressResult& b) {
     a.Swap(&b);
@@ -13049,6 +13350,118 @@ inline void CMsgSteamDatagramRouterPingReply::set_client_cookie(uint32_t value) 
   // @@protoc_insertion_point(field_set:CMsgSteamDatagramRouterPingReply.client_cookie)
 }
 
+// optional uint32 recv_tos = 16;
+inline bool CMsgSteamDatagramRouterPingReply::_internal_has_recv_tos() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  return value;
+}
+inline bool CMsgSteamDatagramRouterPingReply::has_recv_tos() const {
+  return _internal_has_recv_tos();
+}
+inline void CMsgSteamDatagramRouterPingReply::clear_recv_tos() {
+  _impl_.recv_tos_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000400u;
+}
+inline uint32_t CMsgSteamDatagramRouterPingReply::_internal_recv_tos() const {
+  return _impl_.recv_tos_;
+}
+inline uint32_t CMsgSteamDatagramRouterPingReply::recv_tos() const {
+  // @@protoc_insertion_point(field_get:CMsgSteamDatagramRouterPingReply.recv_tos)
+  return _internal_recv_tos();
+}
+inline void CMsgSteamDatagramRouterPingReply::_internal_set_recv_tos(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_.recv_tos_ = value;
+}
+inline void CMsgSteamDatagramRouterPingReply::set_recv_tos(uint32_t value) {
+  _internal_set_recv_tos(value);
+  // @@protoc_insertion_point(field_set:CMsgSteamDatagramRouterPingReply.recv_tos)
+}
+
+// optional uint32 echo_sent_tos = 17;
+inline bool CMsgSteamDatagramRouterPingReply::_internal_has_echo_sent_tos() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  return value;
+}
+inline bool CMsgSteamDatagramRouterPingReply::has_echo_sent_tos() const {
+  return _internal_has_echo_sent_tos();
+}
+inline void CMsgSteamDatagramRouterPingReply::clear_echo_sent_tos() {
+  _impl_.echo_sent_tos_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
+}
+inline uint32_t CMsgSteamDatagramRouterPingReply::_internal_echo_sent_tos() const {
+  return _impl_.echo_sent_tos_;
+}
+inline uint32_t CMsgSteamDatagramRouterPingReply::echo_sent_tos() const {
+  // @@protoc_insertion_point(field_get:CMsgSteamDatagramRouterPingReply.echo_sent_tos)
+  return _internal_echo_sent_tos();
+}
+inline void CMsgSteamDatagramRouterPingReply::_internal_set_echo_sent_tos(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_.echo_sent_tos_ = value;
+}
+inline void CMsgSteamDatagramRouterPingReply::set_echo_sent_tos(uint32_t value) {
+  _internal_set_echo_sent_tos(value);
+  // @@protoc_insertion_point(field_set:CMsgSteamDatagramRouterPingReply.echo_sent_tos)
+}
+
+// optional uint32 sent_tos = 18;
+inline bool CMsgSteamDatagramRouterPingReply::_internal_has_sent_tos() const {
+  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+  return value;
+}
+inline bool CMsgSteamDatagramRouterPingReply::has_sent_tos() const {
+  return _internal_has_sent_tos();
+}
+inline void CMsgSteamDatagramRouterPingReply::clear_sent_tos() {
+  _impl_.sent_tos_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00001000u;
+}
+inline uint32_t CMsgSteamDatagramRouterPingReply::_internal_sent_tos() const {
+  return _impl_.sent_tos_;
+}
+inline uint32_t CMsgSteamDatagramRouterPingReply::sent_tos() const {
+  // @@protoc_insertion_point(field_get:CMsgSteamDatagramRouterPingReply.sent_tos)
+  return _internal_sent_tos();
+}
+inline void CMsgSteamDatagramRouterPingReply::_internal_set_sent_tos(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00001000u;
+  _impl_.sent_tos_ = value;
+}
+inline void CMsgSteamDatagramRouterPingReply::set_sent_tos(uint32_t value) {
+  _internal_set_sent_tos(value);
+  // @@protoc_insertion_point(field_set:CMsgSteamDatagramRouterPingReply.sent_tos)
+}
+
+// optional uint32 echo_request_reply_tos = 19;
+inline bool CMsgSteamDatagramRouterPingReply::_internal_has_echo_request_reply_tos() const {
+  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  return value;
+}
+inline bool CMsgSteamDatagramRouterPingReply::has_echo_request_reply_tos() const {
+  return _internal_has_echo_request_reply_tos();
+}
+inline void CMsgSteamDatagramRouterPingReply::clear_echo_request_reply_tos() {
+  _impl_.echo_request_reply_tos_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00002000u;
+}
+inline uint32_t CMsgSteamDatagramRouterPingReply::_internal_echo_request_reply_tos() const {
+  return _impl_.echo_request_reply_tos_;
+}
+inline uint32_t CMsgSteamDatagramRouterPingReply::echo_request_reply_tos() const {
+  // @@protoc_insertion_point(field_get:CMsgSteamDatagramRouterPingReply.echo_request_reply_tos)
+  return _internal_echo_request_reply_tos();
+}
+inline void CMsgSteamDatagramRouterPingReply::_internal_set_echo_request_reply_tos(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_.echo_request_reply_tos_ = value;
+}
+inline void CMsgSteamDatagramRouterPingReply::set_echo_request_reply_tos(uint32_t value) {
+  _internal_set_echo_request_reply_tos(value);
+  // @@protoc_insertion_point(field_set:CMsgSteamDatagramRouterPingReply.echo_request_reply_tos)
+}
+
 // optional uint32 scoring_penalty_relay_cluster = 9;
 inline bool CMsgSteamDatagramRouterPingReply::_internal_has_scoring_penalty_relay_cluster() const {
   bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
@@ -13251,6 +13664,34 @@ inline void CMsgSteamDatagramRouterPingReply::set_allocated_dummy_pad(std::strin
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:CMsgSteamDatagramRouterPingReply.dummy_pad)
+}
+
+// optional uint64 dummy_varint = 100;
+inline bool CMsgSteamDatagramRouterPingReply::_internal_has_dummy_varint() const {
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+  return value;
+}
+inline bool CMsgSteamDatagramRouterPingReply::has_dummy_varint() const {
+  return _internal_has_dummy_varint();
+}
+inline void CMsgSteamDatagramRouterPingReply::clear_dummy_varint() {
+  _impl_.dummy_varint_ = uint64_t{0u};
+  _impl_._has_bits_[0] &= ~0x00004000u;
+}
+inline uint64_t CMsgSteamDatagramRouterPingReply::_internal_dummy_varint() const {
+  return _impl_.dummy_varint_;
+}
+inline uint64_t CMsgSteamDatagramRouterPingReply::dummy_varint() const {
+  // @@protoc_insertion_point(field_get:CMsgSteamDatagramRouterPingReply.dummy_varint)
+  return _internal_dummy_varint();
+}
+inline void CMsgSteamDatagramRouterPingReply::_internal_set_dummy_varint(uint64_t value) {
+  _impl_._has_bits_[0] |= 0x00004000u;
+  _impl_.dummy_varint_ = value;
+}
+inline void CMsgSteamDatagramRouterPingReply::set_dummy_varint(uint64_t value) {
+  _internal_set_dummy_varint(value);
+  // @@protoc_insertion_point(field_set:CMsgSteamDatagramRouterPingReply.dummy_varint)
 }
 
 // -------------------------------------------------------------------
@@ -14724,6 +15165,214 @@ inline void CMsgSteamDatagramNoSessionRelayToPeer::set_kludge_pad(uint64_t value
 
 // -------------------------------------------------------------------
 
+// CMsgTOSTreatment
+
+// optional string l4s_detect = 1;
+inline bool CMsgTOSTreatment::_internal_has_l4s_detect() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CMsgTOSTreatment::has_l4s_detect() const {
+  return _internal_has_l4s_detect();
+}
+inline void CMsgTOSTreatment::clear_l4s_detect() {
+  _impl_.l4s_detect_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CMsgTOSTreatment::l4s_detect() const {
+  // @@protoc_insertion_point(field_get:CMsgTOSTreatment.l4s_detect)
+  return _internal_l4s_detect();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgTOSTreatment::set_l4s_detect(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.l4s_detect_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgTOSTreatment.l4s_detect)
+}
+inline std::string* CMsgTOSTreatment::mutable_l4s_detect() {
+  std::string* _s = _internal_mutable_l4s_detect();
+  // @@protoc_insertion_point(field_mutable:CMsgTOSTreatment.l4s_detect)
+  return _s;
+}
+inline const std::string& CMsgTOSTreatment::_internal_l4s_detect() const {
+  return _impl_.l4s_detect_.Get();
+}
+inline void CMsgTOSTreatment::_internal_set_l4s_detect(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.l4s_detect_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgTOSTreatment::_internal_mutable_l4s_detect() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.l4s_detect_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgTOSTreatment::release_l4s_detect() {
+  // @@protoc_insertion_point(field_release:CMsgTOSTreatment.l4s_detect)
+  if (!_internal_has_l4s_detect()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.l4s_detect_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.l4s_detect_.IsDefault()) {
+    _impl_.l4s_detect_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgTOSTreatment::set_allocated_l4s_detect(std::string* l4s_detect) {
+  if (l4s_detect != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.l4s_detect_.SetAllocated(l4s_detect, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.l4s_detect_.IsDefault()) {
+    _impl_.l4s_detect_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgTOSTreatment.l4s_detect)
+}
+
+// optional string up_ecn1 = 2;
+inline bool CMsgTOSTreatment::_internal_has_up_ecn1() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgTOSTreatment::has_up_ecn1() const {
+  return _internal_has_up_ecn1();
+}
+inline void CMsgTOSTreatment::clear_up_ecn1() {
+  _impl_.up_ecn1_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& CMsgTOSTreatment::up_ecn1() const {
+  // @@protoc_insertion_point(field_get:CMsgTOSTreatment.up_ecn1)
+  return _internal_up_ecn1();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgTOSTreatment::set_up_ecn1(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.up_ecn1_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgTOSTreatment.up_ecn1)
+}
+inline std::string* CMsgTOSTreatment::mutable_up_ecn1() {
+  std::string* _s = _internal_mutable_up_ecn1();
+  // @@protoc_insertion_point(field_mutable:CMsgTOSTreatment.up_ecn1)
+  return _s;
+}
+inline const std::string& CMsgTOSTreatment::_internal_up_ecn1() const {
+  return _impl_.up_ecn1_.Get();
+}
+inline void CMsgTOSTreatment::_internal_set_up_ecn1(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.up_ecn1_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgTOSTreatment::_internal_mutable_up_ecn1() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.up_ecn1_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgTOSTreatment::release_up_ecn1() {
+  // @@protoc_insertion_point(field_release:CMsgTOSTreatment.up_ecn1)
+  if (!_internal_has_up_ecn1()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.up_ecn1_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.up_ecn1_.IsDefault()) {
+    _impl_.up_ecn1_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgTOSTreatment::set_allocated_up_ecn1(std::string* up_ecn1) {
+  if (up_ecn1 != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.up_ecn1_.SetAllocated(up_ecn1, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.up_ecn1_.IsDefault()) {
+    _impl_.up_ecn1_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgTOSTreatment.up_ecn1)
+}
+
+// optional string down_dscp45 = 3;
+inline bool CMsgTOSTreatment::_internal_has_down_dscp45() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CMsgTOSTreatment::has_down_dscp45() const {
+  return _internal_has_down_dscp45();
+}
+inline void CMsgTOSTreatment::clear_down_dscp45() {
+  _impl_.down_dscp45_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline const std::string& CMsgTOSTreatment::down_dscp45() const {
+  // @@protoc_insertion_point(field_get:CMsgTOSTreatment.down_dscp45)
+  return _internal_down_dscp45();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgTOSTreatment::set_down_dscp45(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000004u;
+ _impl_.down_dscp45_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgTOSTreatment.down_dscp45)
+}
+inline std::string* CMsgTOSTreatment::mutable_down_dscp45() {
+  std::string* _s = _internal_mutable_down_dscp45();
+  // @@protoc_insertion_point(field_mutable:CMsgTOSTreatment.down_dscp45)
+  return _s;
+}
+inline const std::string& CMsgTOSTreatment::_internal_down_dscp45() const {
+  return _impl_.down_dscp45_.Get();
+}
+inline void CMsgTOSTreatment::_internal_set_down_dscp45(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.down_dscp45_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgTOSTreatment::_internal_mutable_down_dscp45() {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  return _impl_.down_dscp45_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgTOSTreatment::release_down_dscp45() {
+  // @@protoc_insertion_point(field_release:CMsgTOSTreatment.down_dscp45)
+  if (!_internal_has_down_dscp45()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  auto* p = _impl_.down_dscp45_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.down_dscp45_.IsDefault()) {
+    _impl_.down_dscp45_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgTOSTreatment::set_allocated_down_dscp45(std::string* down_dscp45) {
+  if (down_dscp45 != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  _impl_.down_dscp45_.SetAllocated(down_dscp45, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.down_dscp45_.IsDefault()) {
+    _impl_.down_dscp45_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgTOSTreatment.down_dscp45)
+}
+
+// -------------------------------------------------------------------
+
 // CMsgSteamDatagramClientPingSampleRequest
 
 // optional fixed32 connection_id = 1;
@@ -15440,7 +16089,7 @@ inline void CMsgSteamDatagramClientPingSampleReply_LegacyDataCenter::set_best_dc
 
 // optional fixed32 connection_id = 1;
 inline bool CMsgSteamDatagramClientPingSampleReply::_internal_has_connection_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
 inline bool CMsgSteamDatagramClientPingSampleReply::has_connection_id() const {
@@ -15448,7 +16097,7 @@ inline bool CMsgSteamDatagramClientPingSampleReply::has_connection_id() const {
 }
 inline void CMsgSteamDatagramClientPingSampleReply::clear_connection_id() {
   _impl_.connection_id_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000001u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
 }
 inline uint32_t CMsgSteamDatagramClientPingSampleReply::_internal_connection_id() const {
   return _impl_.connection_id_;
@@ -15458,7 +16107,7 @@ inline uint32_t CMsgSteamDatagramClientPingSampleReply::connection_id() const {
   return _internal_connection_id();
 }
 inline void CMsgSteamDatagramClientPingSampleReply::_internal_set_connection_id(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_._has_bits_[0] |= 0x00000002u;
   _impl_.connection_id_ = value;
 }
 inline void CMsgSteamDatagramClientPingSampleReply::set_connection_id(uint32_t value) {
@@ -15468,7 +16117,7 @@ inline void CMsgSteamDatagramClientPingSampleReply::set_connection_id(uint32_t v
 
 // optional bool relay_override_active = 5;
 inline bool CMsgSteamDatagramClientPingSampleReply::_internal_has_relay_override_active() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
 inline bool CMsgSteamDatagramClientPingSampleReply::has_relay_override_active() const {
@@ -15476,7 +16125,7 @@ inline bool CMsgSteamDatagramClientPingSampleReply::has_relay_override_active() 
 }
 inline void CMsgSteamDatagramClientPingSampleReply::clear_relay_override_active() {
   _impl_.relay_override_active_ = false;
-  _impl_._has_bits_[0] &= ~0x00000002u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
 }
 inline bool CMsgSteamDatagramClientPingSampleReply::_internal_relay_override_active() const {
   return _impl_.relay_override_active_;
@@ -15486,12 +16135,102 @@ inline bool CMsgSteamDatagramClientPingSampleReply::relay_override_active() cons
   return _internal_relay_override_active();
 }
 inline void CMsgSteamDatagramClientPingSampleReply::_internal_set_relay_override_active(bool value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_._has_bits_[0] |= 0x00000004u;
   _impl_.relay_override_active_ = value;
 }
 inline void CMsgSteamDatagramClientPingSampleReply::set_relay_override_active(bool value) {
   _internal_set_relay_override_active(value);
   // @@protoc_insertion_point(field_set:CMsgSteamDatagramClientPingSampleReply.relay_override_active)
+}
+
+// optional .CMsgTOSTreatment tos = 6;
+inline bool CMsgSteamDatagramClientPingSampleReply::_internal_has_tos() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.tos_ != nullptr);
+  return value;
+}
+inline bool CMsgSteamDatagramClientPingSampleReply::has_tos() const {
+  return _internal_has_tos();
+}
+inline void CMsgSteamDatagramClientPingSampleReply::clear_tos() {
+  if (_impl_.tos_ != nullptr) _impl_.tos_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const ::CMsgTOSTreatment& CMsgSteamDatagramClientPingSampleReply::_internal_tos() const {
+  const ::CMsgTOSTreatment* p = _impl_.tos_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgTOSTreatment&>(
+      ::_CMsgTOSTreatment_default_instance_);
+}
+inline const ::CMsgTOSTreatment& CMsgSteamDatagramClientPingSampleReply::tos() const {
+  // @@protoc_insertion_point(field_get:CMsgSteamDatagramClientPingSampleReply.tos)
+  return _internal_tos();
+}
+inline void CMsgSteamDatagramClientPingSampleReply::unsafe_arena_set_allocated_tos(
+    ::CMsgTOSTreatment* tos) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.tos_);
+  }
+  _impl_.tos_ = tos;
+  if (tos) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CMsgSteamDatagramClientPingSampleReply.tos)
+}
+inline ::CMsgTOSTreatment* CMsgSteamDatagramClientPingSampleReply::release_tos() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgTOSTreatment* temp = _impl_.tos_;
+  _impl_.tos_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgTOSTreatment* CMsgSteamDatagramClientPingSampleReply::unsafe_arena_release_tos() {
+  // @@protoc_insertion_point(field_release:CMsgSteamDatagramClientPingSampleReply.tos)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgTOSTreatment* temp = _impl_.tos_;
+  _impl_.tos_ = nullptr;
+  return temp;
+}
+inline ::CMsgTOSTreatment* CMsgSteamDatagramClientPingSampleReply::_internal_mutable_tos() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.tos_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgTOSTreatment>(GetArenaForAllocation());
+    _impl_.tos_ = p;
+  }
+  return _impl_.tos_;
+}
+inline ::CMsgTOSTreatment* CMsgSteamDatagramClientPingSampleReply::mutable_tos() {
+  ::CMsgTOSTreatment* _msg = _internal_mutable_tos();
+  // @@protoc_insertion_point(field_mutable:CMsgSteamDatagramClientPingSampleReply.tos)
+  return _msg;
+}
+inline void CMsgSteamDatagramClientPingSampleReply::set_allocated_tos(::CMsgTOSTreatment* tos) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.tos_;
+  }
+  if (tos) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(tos);
+    if (message_arena != submessage_arena) {
+      tos = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, tos, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.tos_ = tos;
+  // @@protoc_insertion_point(field_set_allocated:CMsgSteamDatagramClientPingSampleReply.tos)
 }
 
 // repeated .CMsgSteamDatagramClientPingSampleReply.POP pops = 2;
@@ -25082,6 +25821,8 @@ inline void CMsgSteamDatagramSetSecondaryAddressResult::set_allocated_message(st
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -259,10 +259,12 @@ const char descriptor_table_protodef_c_5fpeer2peer_5fnetmessages_2eproto[] PROTO
   "(\005\022+\n#dota_spectator_watching_broadcaste"
   "r\030\005 \001(\010\022!\n\031dota_spectator_hero_index\030\006 \001"
   "(\005\022 \n\030dota_spectator_autospeed\030\007 \001(\005\022\031\n\021"
-  "dota_replay_speed\030\010 \001(\005*}\n\014P2P_Messages\022"
-  "\024\n\017p2p_TextMessage\020\200\002\022\016\n\tp2p_Voice\020\201\002\022\r\n"
-  "\010p2p_Ping\020\202\002\022\031\n\024p2p_VRAvatarPosition\020\203\002\022"
-  "\035\n\030p2p_WatchSynchronization\020\204\002"
+  "dota_replay_speed\030\010 \001(\005*\277\001\n\014P2P_Messages"
+  "\022\024\n\017p2p_TextMessage\020\200\002\022\016\n\tp2p_Voice\020\201\002\022\r"
+  "\n\010p2p_Ping\020\202\002\022\031\n\024p2p_VRAvatarPosition\020\203\002"
+  "\022\035\n\030p2p_WatchSynchronization\020\204\002\022\036\n\031p2p_F"
+  "ightingGame_GameData\020\205\002\022 \n\033p2p_FightingG"
+  "ame_Connection\020\206\002"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_c_5fpeer2peer_5fnetmessages_2eproto_deps[2] = {
   &::descriptor_table_netmessages_2eproto,
@@ -270,7 +272,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_c_5fpeer2peer_5fnet
 };
 static ::_pbi::once_flag descriptor_table_c_5fpeer2peer_5fnetmessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_c_5fpeer2peer_5fnetmessages_2eproto = {
-    false, false, 910, descriptor_table_protodef_c_5fpeer2peer_5fnetmessages_2eproto,
+    false, false, 977, descriptor_table_protodef_c_5fpeer2peer_5fnetmessages_2eproto,
     "c_peer2peer_netmessages.proto",
     &descriptor_table_c_5fpeer2peer_5fnetmessages_2eproto_once, descriptor_table_c_5fpeer2peer_5fnetmessages_2eproto_deps, 2, 7,
     schemas, file_default_instances, TableStruct_c_5fpeer2peer_5fnetmessages_2eproto::offsets,
@@ -313,6 +315,8 @@ bool P2P_Messages_IsValid(int value) {
     case 258:
     case 259:
     case 260:
+    case 261:
+    case 262:
       return true;
     default:
       return false;

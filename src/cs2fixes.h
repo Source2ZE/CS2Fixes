@@ -26,8 +26,9 @@
 #include "networksystem/inetworkserializer.h"
 #include <iserver.h>
 
-class CTakeDamageInfoContainer;
+struct CTakeDamageInfoContainer;
 class CCSPlayer_MovementServices;
+class CServerSideClient;
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
 {
@@ -64,7 +65,15 @@ public: //hooks
 	void Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
 	void Hook_ApplyGameSettings(KeyValues* pKV);
 	void Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList);
+	void Hook_GoToIntermission(bool bAbortedMatch);
 	bool Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer *pInfoContainer);
+#ifdef PLATFORM_WINDOWS
+	Vector* Hook_GetEyePosition(Vector*);
+	QAngle* Hook_GetEyeAngles(QAngle*);
+#else
+	Vector Hook_GetEyePosition();
+	QAngle Hook_GetEyeAngles();
+#endif
 	void Hook_CheckMovingGround(double frametime);
 	int Hook_LoadEventsFromFile(const char *filename, bool bSearchAll);
 

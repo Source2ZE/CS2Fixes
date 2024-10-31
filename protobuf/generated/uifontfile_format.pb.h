@@ -61,7 +61,7 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class CUIFontFilePB final :
+class CUIFontFilePB :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUIFontFilePB) */ {
  public:
   inline CUIFontFilePB() : CUIFontFilePB(nullptr) {}
@@ -246,7 +246,7 @@ class CUIFontFilePB final :
 };
 // -------------------------------------------------------------------
 
-class CUIFontFilePackagePB_CUIEncryptedFontFilePB final :
+class CUIFontFilePackagePB_CUIEncryptedFontFilePB :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUIFontFilePackagePB.CUIEncryptedFontFilePB) */ {
  public:
   inline CUIFontFilePackagePB_CUIEncryptedFontFilePB() : CUIFontFilePackagePB_CUIEncryptedFontFilePB(nullptr) {}
@@ -411,7 +411,7 @@ class CUIFontFilePackagePB_CUIEncryptedFontFilePB final :
 };
 // -------------------------------------------------------------------
 
-class CUIFontFilePackagePB final :
+class CUIFontFilePackagePB :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUIFontFilePackagePB) */ {
  public:
   inline CUIFontFilePackagePB() : CUIFontFilePackagePB(nullptr) {}

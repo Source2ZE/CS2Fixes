@@ -139,6 +139,9 @@ extern CMsgGCCStrike15_v2_Client2GCStreamUnlockDefaultTypeInternal _CMsgGCCStrik
 class CMsgGCCStrike15_v2_Client2GCTextMsg;
 struct CMsgGCCStrike15_v2_Client2GCTextMsgDefaultTypeInternal;
 extern CMsgGCCStrike15_v2_Client2GCTextMsgDefaultTypeInternal _CMsgGCCStrike15_v2_Client2GCTextMsg_default_instance_;
+class CMsgGCCStrike15_v2_Client2GcAckXPShopTracks;
+struct CMsgGCCStrike15_v2_Client2GcAckXPShopTracksDefaultTypeInternal;
+extern CMsgGCCStrike15_v2_Client2GcAckXPShopTracksDefaultTypeInternal _CMsgGCCStrike15_v2_Client2GcAckXPShopTracks_default_instance_;
 class CMsgGCCStrike15_v2_ClientAccountBalance;
 struct CMsgGCCStrike15_v2_ClientAccountBalanceDefaultTypeInternal;
 extern CMsgGCCStrike15_v2_ClientAccountBalanceDefaultTypeInternal _CMsgGCCStrike15_v2_ClientAccountBalance_default_instance_;
@@ -238,6 +241,9 @@ extern CMsgGCCStrike15_v2_GC2ClientInitSystemDefaultTypeInternal _CMsgGCCStrike1
 class CMsgGCCStrike15_v2_GC2ClientInitSystem_Response;
 struct CMsgGCCStrike15_v2_GC2ClientInitSystem_ResponseDefaultTypeInternal;
 extern CMsgGCCStrike15_v2_GC2ClientInitSystem_ResponseDefaultTypeInternal _CMsgGCCStrike15_v2_GC2ClientInitSystem_Response_default_instance_;
+class CMsgGCCStrike15_v2_GC2ClientNotifyXPShop;
+struct CMsgGCCStrike15_v2_GC2ClientNotifyXPShopDefaultTypeInternal;
+extern CMsgGCCStrike15_v2_GC2ClientNotifyXPShopDefaultTypeInternal _CMsgGCCStrike15_v2_GC2ClientNotifyXPShop_default_instance_;
 class CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode;
 struct CMsgGCCStrike15_v2_GC2ClientRefuseSecureModeDefaultTypeInternal;
 extern CMsgGCCStrike15_v2_GC2ClientRefuseSecureModeDefaultTypeInternal _CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode_default_instance_;
@@ -439,12 +445,18 @@ extern CPreMatchInfoData_TeamStatsDefaultTypeInternal _CPreMatchInfoData_TeamSta
 class CSOAccountItemPersonalStore;
 struct CSOAccountItemPersonalStoreDefaultTypeInternal;
 extern CSOAccountItemPersonalStoreDefaultTypeInternal _CSOAccountItemPersonalStore_default_instance_;
+class CSOAccountKeychainRemoveToolCharges;
+struct CSOAccountKeychainRemoveToolChargesDefaultTypeInternal;
+extern CSOAccountKeychainRemoveToolChargesDefaultTypeInternal _CSOAccountKeychainRemoveToolCharges_default_instance_;
 class CSOAccountRecurringSubscription;
 struct CSOAccountRecurringSubscriptionDefaultTypeInternal;
 extern CSOAccountRecurringSubscriptionDefaultTypeInternal _CSOAccountRecurringSubscription_default_instance_;
 class CSOAccountSeasonalOperation;
 struct CSOAccountSeasonalOperationDefaultTypeInternal;
 extern CSOAccountSeasonalOperationDefaultTypeInternal _CSOAccountSeasonalOperation_default_instance_;
+class CSOAccountXpShop;
+struct CSOAccountXpShopDefaultTypeInternal;
+extern CSOAccountXpShopDefaultTypeInternal _CSOAccountXpShop_default_instance_;
 class CSOEconCoupon;
 struct CSOEconCouponDefaultTypeInternal;
 extern CSOEconCouponDefaultTypeInternal _CSOEconCoupon_default_instance_;
@@ -575,6 +587,7 @@ template<> ::CMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse* Arena::Cr
 template<> ::CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin>(Arena*);
 template<> ::CMsgGCCStrike15_v2_Client2GCStreamUnlock* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_Client2GCStreamUnlock>(Arena*);
 template<> ::CMsgGCCStrike15_v2_Client2GCTextMsg* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_Client2GCTextMsg>(Arena*);
+template<> ::CMsgGCCStrike15_v2_Client2GcAckXPShopTracks* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_Client2GcAckXPShopTracks>(Arena*);
 template<> ::CMsgGCCStrike15_v2_ClientAccountBalance* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_ClientAccountBalance>(Arena*);
 template<> ::CMsgGCCStrike15_v2_ClientAuthKeyCode* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_ClientAuthKeyCode>(Arena*);
 template<> ::CMsgGCCStrike15_v2_ClientCommendPlayer* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_ClientCommendPlayer>(Arena*);
@@ -608,6 +621,7 @@ template<> ::CMsgGCCStrike15_v2_Fantasy_FantasySlot* Arena::CreateMaybeMessage<:
 template<> ::CMsgGCCStrike15_v2_Fantasy_FantasyTeam* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_Fantasy_FantasyTeam>(Arena*);
 template<> ::CMsgGCCStrike15_v2_GC2ClientInitSystem* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_GC2ClientInitSystem>(Arena*);
 template<> ::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response>(Arena*);
+template<> ::CMsgGCCStrike15_v2_GC2ClientNotifyXPShop* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_GC2ClientNotifyXPShop>(Arena*);
 template<> ::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode>(Arena*);
 template<> ::CMsgGCCStrike15_v2_GC2ClientRequestValidation* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_GC2ClientRequestValidation>(Arena*);
 template<> ::CMsgGCCStrike15_v2_GC2ClientTextMsg* Arena::CreateMaybeMessage<::CMsgGCCStrike15_v2_GC2ClientTextMsg>(Arena*);
@@ -675,8 +689,10 @@ template<> ::CMsgLegacySource1ClientWelcome_Location* Arena::CreateMaybeMessage<
 template<> ::CPreMatchInfoData* Arena::CreateMaybeMessage<::CPreMatchInfoData>(Arena*);
 template<> ::CPreMatchInfoData_TeamStats* Arena::CreateMaybeMessage<::CPreMatchInfoData_TeamStats>(Arena*);
 template<> ::CSOAccountItemPersonalStore* Arena::CreateMaybeMessage<::CSOAccountItemPersonalStore>(Arena*);
+template<> ::CSOAccountKeychainRemoveToolCharges* Arena::CreateMaybeMessage<::CSOAccountKeychainRemoveToolCharges>(Arena*);
 template<> ::CSOAccountRecurringSubscription* Arena::CreateMaybeMessage<::CSOAccountRecurringSubscription>(Arena*);
 template<> ::CSOAccountSeasonalOperation* Arena::CreateMaybeMessage<::CSOAccountSeasonalOperation>(Arena*);
+template<> ::CSOAccountXpShop* Arena::CreateMaybeMessage<::CSOAccountXpShop>(Arena*);
 template<> ::CSOEconCoupon* Arena::CreateMaybeMessage<::CSOEconCoupon>(Arena*);
 template<> ::CSOPersonaDataPublic* Arena::CreateMaybeMessage<::CSOPersonaDataPublic>(Arena*);
 template<> ::CSOQuestProgress* Arena::CreateMaybeMessage<::CSOQuestProgress>(Arena*);
@@ -814,11 +830,13 @@ enum ECsgoGCMsg : int {
   k_EMsgGCCStrike15_v2_BetaEnrollment = 9217,
   k_EMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName = 9218,
   k_EMsgGCCStrike15_v2_ClientRedeemFreeReward = 9219,
-  k_EMsgGCCStrike15_v2_ClientNetworkConfig = 9220
+  k_EMsgGCCStrike15_v2_ClientNetworkConfig = 9220,
+  k_EMsgGCCStrike15_v2_GC2ClientNotifyXPShop = 9221,
+  k_EMsgGCCStrike15_v2_Client2GcAckXPShopTracks = 9222
 };
 bool ECsgoGCMsg_IsValid(int value);
 constexpr ECsgoGCMsg ECsgoGCMsg_MIN = k_EMsgGCCStrike15_v2_Base;
-constexpr ECsgoGCMsg ECsgoGCMsg_MAX = k_EMsgGCCStrike15_v2_ClientNetworkConfig;
+constexpr ECsgoGCMsg ECsgoGCMsg_MAX = k_EMsgGCCStrike15_v2_Client2GcAckXPShopTracks;
 constexpr int ECsgoGCMsg_ARRAYSIZE = ECsgoGCMsg_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ECsgoGCMsg_descriptor();
@@ -8151,6 +8169,7 @@ class CMsgGC_ServerQuestUpdateData :
     kBinaryDataFieldNumber = 2,
     kMissionlbsdataFieldNumber = 4,
     kMmGameModeFieldNumber = 3,
+    kFlagsFieldNumber = 5,
   };
   // repeated .PlayerQuestData player_quest_data = 1;
   int player_quest_data_size() const;
@@ -8219,6 +8238,19 @@ class CMsgGC_ServerQuestUpdateData :
   void _internal_set_mm_game_mode(uint32_t value);
   public:
 
+  // optional uint32 flags = 5;
+  bool has_flags() const;
+  private:
+  bool _internal_has_flags() const;
+  public:
+  void clear_flags();
+  uint32_t flags() const;
+  void set_flags(uint32_t value);
+  private:
+  uint32_t _internal_flags() const;
+  void _internal_set_flags(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CMsgGC_ServerQuestUpdateData)
  private:
   class _Internal;
@@ -8233,6 +8265,7 @@ class CMsgGC_ServerQuestUpdateData :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr binary_data_;
     ::ScoreLeaderboardData* missionlbsdata_;
     uint32_t mm_game_mode_;
+    uint32_t flags_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_cstrike15_5fgcmessages_2eproto;
@@ -11334,6 +11367,7 @@ class CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve :
     kTournamentTeamsFieldNumber = 12,
     kTournamentCastersAccountIdsFieldNumber = 13,
     kOpVarValuesFieldNumber = 19,
+    kTeammateColorsFieldNumber = 21,
     kTournamentEventFieldNumber = 11,
     kPreMatchDataFieldNumber = 15,
     kMatchIdFieldNumber = 3,
@@ -11485,6 +11519,28 @@ class CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve :
   ::OperationalVarValue* add_op_var_values();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::OperationalVarValue >&
       op_var_values() const;
+
+  // repeated int32 teammate_colors = 21;
+  int teammate_colors_size() const;
+  private:
+  int _internal_teammate_colors_size() const;
+  public:
+  void clear_teammate_colors();
+  private:
+  int32_t _internal_teammate_colors(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      _internal_teammate_colors() const;
+  void _internal_add_teammate_colors(int32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      _internal_mutable_teammate_colors();
+  public:
+  int32_t teammate_colors(int index) const;
+  void set_teammate_colors(int index, int32_t value);
+  void add_teammate_colors(int32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      teammate_colors() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      mutable_teammate_colors();
 
   // optional .TournamentEvent tournament_event = 11;
   bool has_tournament_event() const;
@@ -11682,6 +11738,7 @@ class CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve :
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TournamentTeam > tournament_teams_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t > tournament_casters_account_ids_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::OperationalVarValue > op_var_values_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > teammate_colors_;
     ::TournamentEvent* tournament_event_;
     ::CPreMatchInfoData* pre_match_data_;
     uint64_t match_id_;
@@ -21066,6 +21123,8 @@ class CEconItemPreviewDataBlock_Sticker :
     kTintIdFieldNumber = 6,
     kOffsetXFieldNumber = 7,
     kOffsetYFieldNumber = 8,
+    kOffsetZFieldNumber = 9,
+    kPatternFieldNumber = 10,
   };
   // optional uint32 slot = 1;
   bool has_slot() const;
@@ -21171,6 +21230,32 @@ class CEconItemPreviewDataBlock_Sticker :
   void _internal_set_offset_y(float value);
   public:
 
+  // optional float offset_z = 9;
+  bool has_offset_z() const;
+  private:
+  bool _internal_has_offset_z() const;
+  public:
+  void clear_offset_z();
+  float offset_z() const;
+  void set_offset_z(float value);
+  private:
+  float _internal_offset_z() const;
+  void _internal_set_offset_z(float value);
+  public:
+
+  // optional uint32 pattern = 10;
+  bool has_pattern() const;
+  private:
+  bool _internal_has_pattern() const;
+  public:
+  void clear_pattern();
+  uint32_t pattern() const;
+  void set_pattern(uint32_t value);
+  private:
+  uint32_t _internal_pattern() const;
+  void _internal_set_pattern(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CEconItemPreviewDataBlock.Sticker)
  private:
   class _Internal;
@@ -21189,6 +21274,8 @@ class CEconItemPreviewDataBlock_Sticker :
     uint32_t tint_id_;
     float offset_x_;
     float offset_y_;
+    float offset_z_;
+    uint32_t pattern_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_cstrike15_5fgcmessages_2eproto;
@@ -21326,6 +21413,7 @@ class CEconItemPreviewDataBlock :
 
   enum : int {
     kStickersFieldNumber = 12,
+    kKeychainsFieldNumber = 20,
     kCustomnameFieldNumber = 11,
     kItemidFieldNumber = 2,
     kAccountidFieldNumber = 1,
@@ -21343,6 +21431,7 @@ class CEconItemPreviewDataBlock :
     kDropreasonFieldNumber = 16,
     kMusicindexFieldNumber = 17,
     kEntindexFieldNumber = 18,
+    kPetindexFieldNumber = 19,
   };
   // repeated .CEconItemPreviewDataBlock.Sticker stickers = 12;
   int stickers_size() const;
@@ -21361,6 +21450,24 @@ class CEconItemPreviewDataBlock :
   ::CEconItemPreviewDataBlock_Sticker* add_stickers();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CEconItemPreviewDataBlock_Sticker >&
       stickers() const;
+
+  // repeated .CEconItemPreviewDataBlock.Sticker keychains = 20;
+  int keychains_size() const;
+  private:
+  int _internal_keychains_size() const;
+  public:
+  void clear_keychains();
+  ::CEconItemPreviewDataBlock_Sticker* mutable_keychains(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CEconItemPreviewDataBlock_Sticker >*
+      mutable_keychains();
+  private:
+  const ::CEconItemPreviewDataBlock_Sticker& _internal_keychains(int index) const;
+  ::CEconItemPreviewDataBlock_Sticker* _internal_add_keychains();
+  public:
+  const ::CEconItemPreviewDataBlock_Sticker& keychains(int index) const;
+  ::CEconItemPreviewDataBlock_Sticker* add_keychains();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CEconItemPreviewDataBlock_Sticker >&
+      keychains() const;
 
   // optional string customname = 11;
   bool has_customname() const;
@@ -21588,6 +21695,19 @@ class CEconItemPreviewDataBlock :
   void _internal_set_entindex(int32_t value);
   public:
 
+  // optional uint32 petindex = 19;
+  bool has_petindex() const;
+  private:
+  bool _internal_has_petindex() const;
+  public:
+  void clear_petindex();
+  uint32_t petindex() const;
+  void set_petindex(uint32_t value);
+  private:
+  uint32_t _internal_petindex() const;
+  void _internal_set_petindex(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CEconItemPreviewDataBlock)
  private:
   class _Internal;
@@ -21599,6 +21719,7 @@ class CEconItemPreviewDataBlock :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CEconItemPreviewDataBlock_Sticker > stickers_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CEconItemPreviewDataBlock_Sticker > keychains_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr customname_;
     uint64_t itemid_;
     uint32_t accountid_;
@@ -21616,6 +21737,7 @@ class CEconItemPreviewDataBlock :
     uint32_t dropreason_;
     uint32_t musicindex_;
     int32_t entindex_;
+    uint32_t petindex_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_cstrike15_5fgcmessages_2eproto;
@@ -28697,7 +28819,7 @@ class CSOAccountItemPersonalStore :
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
       mutable_items();
 
-  // optional uint32 generation_time = 1 [(.key_field) = true];
+  // optional uint32 generation_time = 1;
   bool has_generation_time() const;
   private:
   bool _internal_has_generation_time() const;
@@ -28736,6 +28858,365 @@ class CSOAccountItemPersonalStore :
     ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > items_;
     uint32_t generation_time_;
     uint32_t redeemable_balance_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cstrike15_5fgcmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSOAccountXpShop :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOAccountXpShop) */ {
+ public:
+  inline CSOAccountXpShop() : CSOAccountXpShop(nullptr) {}
+  ~CSOAccountXpShop() override;
+  explicit PROTOBUF_CONSTEXPR CSOAccountXpShop(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSOAccountXpShop(const CSOAccountXpShop& from);
+  CSOAccountXpShop(CSOAccountXpShop&& from) noexcept
+    : CSOAccountXpShop() {
+    *this = ::std::move(from);
+  }
+
+  inline CSOAccountXpShop& operator=(const CSOAccountXpShop& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSOAccountXpShop& operator=(CSOAccountXpShop&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSOAccountXpShop& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSOAccountXpShop* internal_default_instance() {
+    return reinterpret_cast<const CSOAccountXpShop*>(
+               &_CSOAccountXpShop_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    118;
+
+  friend void swap(CSOAccountXpShop& a, CSOAccountXpShop& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSOAccountXpShop* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSOAccountXpShop* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSOAccountXpShop* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSOAccountXpShop>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSOAccountXpShop& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSOAccountXpShop& from) {
+    CSOAccountXpShop::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSOAccountXpShop* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSOAccountXpShop";
+  }
+  protected:
+  explicit CSOAccountXpShop(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kXpTracksFieldNumber = 3,
+    kGenerationTimeFieldNumber = 1,
+    kRedeemableBalanceFieldNumber = 2,
+  };
+  // repeated uint32 xp_tracks = 3;
+  int xp_tracks_size() const;
+  private:
+  int _internal_xp_tracks_size() const;
+  public:
+  void clear_xp_tracks();
+  private:
+  uint32_t _internal_xp_tracks(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      _internal_xp_tracks() const;
+  void _internal_add_xp_tracks(uint32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      _internal_mutable_xp_tracks();
+  public:
+  uint32_t xp_tracks(int index) const;
+  void set_xp_tracks(int index, uint32_t value);
+  void add_xp_tracks(uint32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      xp_tracks() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      mutable_xp_tracks();
+
+  // optional uint32 generation_time = 1;
+  bool has_generation_time() const;
+  private:
+  bool _internal_has_generation_time() const;
+  public:
+  void clear_generation_time();
+  uint32_t generation_time() const;
+  void set_generation_time(uint32_t value);
+  private:
+  uint32_t _internal_generation_time() const;
+  void _internal_set_generation_time(uint32_t value);
+  public:
+
+  // optional uint32 redeemable_balance = 2;
+  bool has_redeemable_balance() const;
+  private:
+  bool _internal_has_redeemable_balance() const;
+  public:
+  void clear_redeemable_balance();
+  uint32_t redeemable_balance() const;
+  void set_redeemable_balance(uint32_t value);
+  private:
+  uint32_t _internal_redeemable_balance() const;
+  void _internal_set_redeemable_balance(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CSOAccountXpShop)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t > xp_tracks_;
+    uint32_t generation_time_;
+    uint32_t redeemable_balance_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cstrike15_5fgcmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSOAccountKeychainRemoveToolCharges :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOAccountKeychainRemoveToolCharges) */ {
+ public:
+  inline CSOAccountKeychainRemoveToolCharges() : CSOAccountKeychainRemoveToolCharges(nullptr) {}
+  ~CSOAccountKeychainRemoveToolCharges() override;
+  explicit PROTOBUF_CONSTEXPR CSOAccountKeychainRemoveToolCharges(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSOAccountKeychainRemoveToolCharges(const CSOAccountKeychainRemoveToolCharges& from);
+  CSOAccountKeychainRemoveToolCharges(CSOAccountKeychainRemoveToolCharges&& from) noexcept
+    : CSOAccountKeychainRemoveToolCharges() {
+    *this = ::std::move(from);
+  }
+
+  inline CSOAccountKeychainRemoveToolCharges& operator=(const CSOAccountKeychainRemoveToolCharges& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSOAccountKeychainRemoveToolCharges& operator=(CSOAccountKeychainRemoveToolCharges&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSOAccountKeychainRemoveToolCharges& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSOAccountKeychainRemoveToolCharges* internal_default_instance() {
+    return reinterpret_cast<const CSOAccountKeychainRemoveToolCharges*>(
+               &_CSOAccountKeychainRemoveToolCharges_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    119;
+
+  friend void swap(CSOAccountKeychainRemoveToolCharges& a, CSOAccountKeychainRemoveToolCharges& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSOAccountKeychainRemoveToolCharges* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSOAccountKeychainRemoveToolCharges* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSOAccountKeychainRemoveToolCharges* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSOAccountKeychainRemoveToolCharges>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSOAccountKeychainRemoveToolCharges& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSOAccountKeychainRemoveToolCharges& from) {
+    CSOAccountKeychainRemoveToolCharges::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSOAccountKeychainRemoveToolCharges* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSOAccountKeychainRemoveToolCharges";
+  }
+  protected:
+  explicit CSOAccountKeychainRemoveToolCharges(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kChargesFieldNumber = 1,
+  };
+  // optional uint32 charges = 1;
+  bool has_charges() const;
+  private:
+  bool _internal_has_charges() const;
+  public:
+  void clear_charges();
+  uint32_t charges() const;
+  void set_charges(uint32_t value);
+  private:
+  uint32_t _internal_charges() const;
+  void _internal_set_charges(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CSOAccountKeychainRemoveToolCharges)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    uint32_t charges_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_cstrike15_5fgcmessages_2eproto;
@@ -28797,7 +29278,7 @@ class CSOQuestProgress :
                &_CSOQuestProgress_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    118;
+    120;
 
   friend void swap(CSOQuestProgress& a, CSOQuestProgress& b) {
     a.Swap(&b);
@@ -28987,7 +29468,7 @@ class CSOAccountSeasonalOperation :
                &_CSOAccountSeasonalOperation_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    119;
+    121;
 
   friend void swap(CSOAccountSeasonalOperation& a, CSOAccountSeasonalOperation& b) {
     a.Swap(&b);
@@ -29237,7 +29718,7 @@ class CSOAccountRecurringSubscription :
                &_CSOAccountRecurringSubscription_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    120;
+    122;
 
   friend void swap(CSOAccountRecurringSubscription& a, CSOAccountRecurringSubscription& b) {
     a.Swap(&b);
@@ -29412,7 +29893,7 @@ class CSOPersonaDataPublic :
                &_CSOPersonaDataPublic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    121;
+    123;
 
   friend void swap(CSOPersonaDataPublic& a, CSOPersonaDataPublic& b) {
     a.Swap(&b);
@@ -29582,6 +30063,346 @@ class CSOPersonaDataPublic :
 };
 // -------------------------------------------------------------------
 
+class CMsgGCCStrike15_v2_GC2ClientNotifyXPShop :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop) */ {
+ public:
+  inline CMsgGCCStrike15_v2_GC2ClientNotifyXPShop() : CMsgGCCStrike15_v2_GC2ClientNotifyXPShop(nullptr) {}
+  ~CMsgGCCStrike15_v2_GC2ClientNotifyXPShop() override;
+  explicit PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_GC2ClientNotifyXPShop(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgGCCStrike15_v2_GC2ClientNotifyXPShop(const CMsgGCCStrike15_v2_GC2ClientNotifyXPShop& from);
+  CMsgGCCStrike15_v2_GC2ClientNotifyXPShop(CMsgGCCStrike15_v2_GC2ClientNotifyXPShop&& from) noexcept
+    : CMsgGCCStrike15_v2_GC2ClientNotifyXPShop() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgGCCStrike15_v2_GC2ClientNotifyXPShop& operator=(const CMsgGCCStrike15_v2_GC2ClientNotifyXPShop& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgGCCStrike15_v2_GC2ClientNotifyXPShop& operator=(CMsgGCCStrike15_v2_GC2ClientNotifyXPShop&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgGCCStrike15_v2_GC2ClientNotifyXPShop& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgGCCStrike15_v2_GC2ClientNotifyXPShop* internal_default_instance() {
+    return reinterpret_cast<const CMsgGCCStrike15_v2_GC2ClientNotifyXPShop*>(
+               &_CMsgGCCStrike15_v2_GC2ClientNotifyXPShop_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    124;
+
+  friend void swap(CMsgGCCStrike15_v2_GC2ClientNotifyXPShop& a, CMsgGCCStrike15_v2_GC2ClientNotifyXPShop& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgGCCStrike15_v2_GC2ClientNotifyXPShop* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgGCCStrike15_v2_GC2ClientNotifyXPShop* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgGCCStrike15_v2_GC2ClientNotifyXPShop* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgGCCStrike15_v2_GC2ClientNotifyXPShop>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgGCCStrike15_v2_GC2ClientNotifyXPShop& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgGCCStrike15_v2_GC2ClientNotifyXPShop& from) {
+    CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgGCCStrike15_v2_GC2ClientNotifyXPShop* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgGCCStrike15_v2_GC2ClientNotifyXPShop";
+  }
+  protected:
+  explicit CMsgGCCStrike15_v2_GC2ClientNotifyXPShop(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPrematchFieldNumber = 1,
+    kPostmatchFieldNumber = 2,
+    kCurrentXpFieldNumber = 3,
+    kCurrentLevelFieldNumber = 4,
+  };
+  // optional .CSOAccountXpShop prematch = 1;
+  bool has_prematch() const;
+  private:
+  bool _internal_has_prematch() const;
+  public:
+  void clear_prematch();
+  const ::CSOAccountXpShop& prematch() const;
+  PROTOBUF_NODISCARD ::CSOAccountXpShop* release_prematch();
+  ::CSOAccountXpShop* mutable_prematch();
+  void set_allocated_prematch(::CSOAccountXpShop* prematch);
+  private:
+  const ::CSOAccountXpShop& _internal_prematch() const;
+  ::CSOAccountXpShop* _internal_mutable_prematch();
+  public:
+  void unsafe_arena_set_allocated_prematch(
+      ::CSOAccountXpShop* prematch);
+  ::CSOAccountXpShop* unsafe_arena_release_prematch();
+
+  // optional .CSOAccountXpShop postmatch = 2;
+  bool has_postmatch() const;
+  private:
+  bool _internal_has_postmatch() const;
+  public:
+  void clear_postmatch();
+  const ::CSOAccountXpShop& postmatch() const;
+  PROTOBUF_NODISCARD ::CSOAccountXpShop* release_postmatch();
+  ::CSOAccountXpShop* mutable_postmatch();
+  void set_allocated_postmatch(::CSOAccountXpShop* postmatch);
+  private:
+  const ::CSOAccountXpShop& _internal_postmatch() const;
+  ::CSOAccountXpShop* _internal_mutable_postmatch();
+  public:
+  void unsafe_arena_set_allocated_postmatch(
+      ::CSOAccountXpShop* postmatch);
+  ::CSOAccountXpShop* unsafe_arena_release_postmatch();
+
+  // optional uint32 current_xp = 3;
+  bool has_current_xp() const;
+  private:
+  bool _internal_has_current_xp() const;
+  public:
+  void clear_current_xp();
+  uint32_t current_xp() const;
+  void set_current_xp(uint32_t value);
+  private:
+  uint32_t _internal_current_xp() const;
+  void _internal_set_current_xp(uint32_t value);
+  public:
+
+  // optional uint32 current_level = 4;
+  bool has_current_level() const;
+  private:
+  bool _internal_has_current_level() const;
+  public:
+  void clear_current_level();
+  uint32_t current_level() const;
+  void set_current_level(uint32_t value);
+  private:
+  uint32_t _internal_current_level() const;
+  void _internal_set_current_level(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::CSOAccountXpShop* prematch_;
+    ::CSOAccountXpShop* postmatch_;
+    uint32_t current_xp_;
+    uint32_t current_level_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cstrike15_5fgcmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CMsgGCCStrike15_v2_Client2GcAckXPShopTracks :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CMsgGCCStrike15_v2_Client2GcAckXPShopTracks) */ {
+ public:
+  inline CMsgGCCStrike15_v2_Client2GcAckXPShopTracks() : CMsgGCCStrike15_v2_Client2GcAckXPShopTracks(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_Client2GcAckXPShopTracks(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgGCCStrike15_v2_Client2GcAckXPShopTracks(const CMsgGCCStrike15_v2_Client2GcAckXPShopTracks& from);
+  CMsgGCCStrike15_v2_Client2GcAckXPShopTracks(CMsgGCCStrike15_v2_Client2GcAckXPShopTracks&& from) noexcept
+    : CMsgGCCStrike15_v2_Client2GcAckXPShopTracks() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgGCCStrike15_v2_Client2GcAckXPShopTracks& operator=(const CMsgGCCStrike15_v2_Client2GcAckXPShopTracks& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgGCCStrike15_v2_Client2GcAckXPShopTracks& operator=(CMsgGCCStrike15_v2_Client2GcAckXPShopTracks&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgGCCStrike15_v2_Client2GcAckXPShopTracks& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgGCCStrike15_v2_Client2GcAckXPShopTracks* internal_default_instance() {
+    return reinterpret_cast<const CMsgGCCStrike15_v2_Client2GcAckXPShopTracks*>(
+               &_CMsgGCCStrike15_v2_Client2GcAckXPShopTracks_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    125;
+
+  friend void swap(CMsgGCCStrike15_v2_Client2GcAckXPShopTracks& a, CMsgGCCStrike15_v2_Client2GcAckXPShopTracks& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgGCCStrike15_v2_Client2GcAckXPShopTracks* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgGCCStrike15_v2_Client2GcAckXPShopTracks* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgGCCStrike15_v2_Client2GcAckXPShopTracks* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgGCCStrike15_v2_Client2GcAckXPShopTracks>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const CMsgGCCStrike15_v2_Client2GcAckXPShopTracks& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const CMsgGCCStrike15_v2_Client2GcAckXPShopTracks& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgGCCStrike15_v2_Client2GcAckXPShopTracks";
+  }
+  protected:
+  explicit CMsgGCCStrike15_v2_Client2GcAckXPShopTracks(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:CMsgGCCStrike15_v2_Client2GcAckXPShopTracks)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_cstrike15_5fgcmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
 class CMsgGC_GlobalGame_Subscribe :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGC_GlobalGame_Subscribe) */ {
  public:
@@ -29637,7 +30458,7 @@ class CMsgGC_GlobalGame_Subscribe :
                &_CMsgGC_GlobalGame_Subscribe_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    122;
+    126;
 
   friend void swap(CMsgGC_GlobalGame_Subscribe& a, CMsgGC_GlobalGame_Subscribe& b) {
     a.Swap(&b);
@@ -29797,7 +30618,7 @@ class CMsgGC_GlobalGame_Unsubscribe :
                &_CMsgGC_GlobalGame_Unsubscribe_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    123;
+    127;
 
   friend void swap(CMsgGC_GlobalGame_Unsubscribe& a, CMsgGC_GlobalGame_Unsubscribe& b) {
     a.Swap(&b);
@@ -29957,7 +30778,7 @@ class CMsgGC_GlobalGame_Play :
                &_CMsgGC_GlobalGame_Play_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    124;
+    128;
 
   friend void swap(CMsgGC_GlobalGame_Play& a, CMsgGC_GlobalGame_Play& b) {
     a.Swap(&b);
@@ -30147,7 +30968,7 @@ class CMsgGCCStrike15_v2_AcknowledgePenalty :
                &_CMsgGCCStrike15_v2_AcknowledgePenalty_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    125;
+    129;
 
   friend void swap(CMsgGCCStrike15_v2_AcknowledgePenalty& a, CMsgGCCStrike15_v2_AcknowledgePenalty& b) {
     a.Swap(&b);
@@ -30307,7 +31128,7 @@ class CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin :
                &_CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    126;
+    130;
 
   friend void swap(CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin& a, CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin& b) {
     a.Swap(&b);
@@ -30512,7 +31333,7 @@ class CMsgGCCStrike15_v2_Client2GCStreamUnlock :
                &_CMsgGCCStrike15_v2_Client2GCStreamUnlock_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    127;
+    131;
 
   friend void swap(CMsgGCCStrike15_v2_Client2GCStreamUnlock& a, CMsgGCCStrike15_v2_Client2GCStreamUnlock& b) {
     a.Swap(&b);
@@ -30687,7 +31508,7 @@ class CMsgGCCStrike15_v2_ClientToGCRequestElevate :
                &_CMsgGCCStrike15_v2_ClientToGCRequestElevate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    128;
+    132;
 
   friend void swap(CMsgGCCStrike15_v2_ClientToGCRequestElevate& a, CMsgGCCStrike15_v2_ClientToGCRequestElevate& b) {
     a.Swap(&b);
@@ -30847,7 +31668,7 @@ class CMsgGCCStrike15_v2_ClientToGCChat :
                &_CMsgGCCStrike15_v2_ClientToGCChat_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    129;
+    133;
 
   friend void swap(CMsgGCCStrike15_v2_ClientToGCChat& a, CMsgGCCStrike15_v2_ClientToGCChat& b) {
     a.Swap(&b);
@@ -31027,7 +31848,7 @@ class CMsgGCCStrike15_v2_GCToClientChat :
                &_CMsgGCCStrike15_v2_GCToClientChat_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    130;
+    134;
 
   friend void swap(CMsgGCCStrike15_v2_GCToClientChat& a, CMsgGCCStrike15_v2_GCToClientChat& b) {
     a.Swap(&b);
@@ -31207,7 +32028,7 @@ class CMsgGCCStrike15_v2_ClientAuthKeyCode :
                &_CMsgGCCStrike15_v2_ClientAuthKeyCode_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    131;
+    135;
 
   friend void swap(CMsgGCCStrike15_v2_ClientAuthKeyCode& a, CMsgGCCStrike15_v2_ClientAuthKeyCode& b) {
     a.Swap(&b);
@@ -31387,7 +32208,7 @@ class CMsgGCCStrike15_GotvSyncPacket :
                &_CMsgGCCStrike15_GotvSyncPacket_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    132;
+    136;
 
   friend void swap(CMsgGCCStrike15_GotvSyncPacket& a, CMsgGCCStrike15_GotvSyncPacket& b) {
     a.Swap(&b);
@@ -31552,7 +32373,7 @@ class PlayerDecalDigitalSignature :
                &_PlayerDecalDigitalSignature_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    133;
+    137;
 
   friend void swap(PlayerDecalDigitalSignature& a, PlayerDecalDigitalSignature& b) {
     a.Swap(&b);
@@ -31948,7 +32769,7 @@ class CMsgGCCStrike15_v2_ClientPlayerDecalSign :
                &_CMsgGCCStrike15_v2_ClientPlayerDecalSign_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    134;
+    138;
 
   friend void swap(CMsgGCCStrike15_v2_ClientPlayerDecalSign& a, CMsgGCCStrike15_v2_ClientPlayerDecalSign& b) {
     a.Swap(&b);
@@ -32128,7 +32949,7 @@ class CMsgGCCStrike15_v2_BetaEnrollment :
                &_CMsgGCCStrike15_v2_BetaEnrollment_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    135;
+    139;
 
   friend void swap(CMsgGCCStrike15_v2_BetaEnrollment& a, CMsgGCCStrike15_v2_BetaEnrollment& b) {
     a.Swap(&b);
@@ -32288,7 +33109,7 @@ class CMsgGCCStrike15_v2_ClientLogonFatalError :
                &_CMsgGCCStrike15_v2_ClientLogonFatalError_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    136;
+    140;
 
   friend void swap(CMsgGCCStrike15_v2_ClientLogonFatalError& a, CMsgGCCStrike15_v2_ClientLogonFatalError& b) {
     a.Swap(&b);
@@ -32488,7 +33309,7 @@ class CMsgGCCStrike15_v2_ClientPollState :
                &_CMsgGCCStrike15_v2_ClientPollState_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    137;
+    141;
 
   friend void swap(CMsgGCCStrike15_v2_ClientPollState& a, CMsgGCCStrike15_v2_ClientPollState& b) {
     a.Swap(&b);
@@ -32698,7 +33519,7 @@ class CMsgGCCStrike15_v2_Party_Register :
                &_CMsgGCCStrike15_v2_Party_Register_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    138;
+    142;
 
   friend void swap(CMsgGCCStrike15_v2_Party_Register& a, CMsgGCCStrike15_v2_Party_Register& b) {
     a.Swap(&b);
@@ -32978,7 +33799,7 @@ class CMsgGCCStrike15_v2_Party_Search :
                &_CMsgGCCStrike15_v2_Party_Search_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    139;
+    143;
 
   friend void swap(CMsgGCCStrike15_v2_Party_Search& a, CMsgGCCStrike15_v2_Party_Search& b) {
     a.Swap(&b);
@@ -33222,7 +34043,7 @@ class CMsgGCCStrike15_v2_Party_SearchResults_Entry :
                &_CMsgGCCStrike15_v2_Party_SearchResults_Entry_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    140;
+    144;
 
   friend void swap(CMsgGCCStrike15_v2_Party_SearchResults_Entry& a, CMsgGCCStrike15_v2_Party_SearchResults_Entry& b) {
     a.Swap(&b);
@@ -33472,7 +34293,7 @@ class CMsgGCCStrike15_v2_Party_SearchResults :
                &_CMsgGCCStrike15_v2_Party_SearchResults_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    141;
+    145;
 
   friend void swap(CMsgGCCStrike15_v2_Party_SearchResults& a, CMsgGCCStrike15_v2_Party_SearchResults& b) {
     a.Swap(&b);
@@ -33638,7 +34459,7 @@ class CMsgGCCStrike15_v2_Party_Invite :
                &_CMsgGCCStrike15_v2_Party_Invite_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    142;
+    146;
 
   friend void swap(CMsgGCCStrike15_v2_Party_Invite& a, CMsgGCCStrike15_v2_Party_Invite& b) {
     a.Swap(&b);
@@ -33813,7 +34634,7 @@ class CMsgGCCStrike15_v2_Account_RequestCoPlays_Player :
                &_CMsgGCCStrike15_v2_Account_RequestCoPlays_Player_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    143;
+    147;
 
   friend void swap(CMsgGCCStrike15_v2_Account_RequestCoPlays_Player& a, CMsgGCCStrike15_v2_Account_RequestCoPlays_Player& b) {
     a.Swap(&b);
@@ -34003,7 +34824,7 @@ class CMsgGCCStrike15_v2_Account_RequestCoPlays :
                &_CMsgGCCStrike15_v2_Account_RequestCoPlays_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    144;
+    148;
 
   friend void swap(CMsgGCCStrike15_v2_Account_RequestCoPlays& a, CMsgGCCStrike15_v2_Account_RequestCoPlays& b) {
     a.Swap(&b);
@@ -34185,7 +35006,7 @@ class CMsgGCCStrike15_v2_ClientToGCRequestTicket :
                &_CMsgGCCStrike15_v2_ClientToGCRequestTicket_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    145;
+    149;
 
   friend void swap(CMsgGCCStrike15_v2_ClientToGCRequestTicket& a, CMsgGCCStrike15_v2_ClientToGCRequestTicket& b) {
     a.Swap(&b);
@@ -34395,7 +35216,7 @@ class CMsgGCToClientSteamDatagramTicket :
                &_CMsgGCToClientSteamDatagramTicket_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    146;
+    150;
 
   friend void swap(CMsgGCToClientSteamDatagramTicket& a, CMsgGCToClientSteamDatagramTicket& b) {
     a.Swap(&b);
@@ -34559,7 +35380,7 @@ class CMsgGCCStrike15_v2_ClientRequestOffers :
                &_CMsgGCCStrike15_v2_ClientRequestOffers_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    147;
+    151;
 
   friend void swap(CMsgGCCStrike15_v2_ClientRequestOffers& a, CMsgGCCStrike15_v2_ClientRequestOffers& b) {
     a.Swap(&b);
@@ -34685,7 +35506,7 @@ class CMsgGCCStrike15_v2_ClientRequestSouvenir :
                &_CMsgGCCStrike15_v2_ClientRequestSouvenir_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    148;
+    152;
 
   friend void swap(CMsgGCCStrike15_v2_ClientRequestSouvenir& a, CMsgGCCStrike15_v2_ClientRequestSouvenir& b) {
     a.Swap(&b);
@@ -34875,7 +35696,7 @@ class CMsgGCCStrike15_v2_ClientAccountBalance :
                &_CMsgGCCStrike15_v2_ClientAccountBalance_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    149;
+    153;
 
   friend void swap(CMsgGCCStrike15_v2_ClientAccountBalance& a, CMsgGCCStrike15_v2_ClientAccountBalance& b) {
     a.Swap(&b);
@@ -35055,7 +35876,7 @@ class CMsgGCCStrike15_v2_ClientPartyJoinRelay :
                &_CMsgGCCStrike15_v2_ClientPartyJoinRelay_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    150;
+    154;
 
   friend void swap(CMsgGCCStrike15_v2_ClientPartyJoinRelay& a, CMsgGCCStrike15_v2_ClientPartyJoinRelay& b) {
     a.Swap(&b);
@@ -35230,7 +36051,7 @@ class CMsgGCCStrike15_v2_ClientPartyWarning_Entry :
                &_CMsgGCCStrike15_v2_ClientPartyWarning_Entry_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    151;
+    155;
 
   friend void swap(CMsgGCCStrike15_v2_ClientPartyWarning_Entry& a, CMsgGCCStrike15_v2_ClientPartyWarning_Entry& b) {
     a.Swap(&b);
@@ -35405,7 +36226,7 @@ class CMsgGCCStrike15_v2_ClientPartyWarning :
                &_CMsgGCCStrike15_v2_ClientPartyWarning_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    152;
+    156;
 
   friend void swap(CMsgGCCStrike15_v2_ClientPartyWarning& a, CMsgGCCStrike15_v2_ClientPartyWarning& b) {
     a.Swap(&b);
@@ -35571,7 +36392,7 @@ class CMsgGCCStrike15_v2_SetEventFavorite :
                &_CMsgGCCStrike15_v2_SetEventFavorite_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    153;
+    157;
 
   friend void swap(CMsgGCCStrike15_v2_SetEventFavorite& a, CMsgGCCStrike15_v2_SetEventFavorite& b) {
     a.Swap(&b);
@@ -35746,7 +36567,7 @@ class CMsgGCCStrike15_v2_GetEventFavorites_Request :
                &_CMsgGCCStrike15_v2_GetEventFavorites_Request_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    154;
+    158;
 
   friend void swap(CMsgGCCStrike15_v2_GetEventFavorites_Request& a, CMsgGCCStrike15_v2_GetEventFavorites_Request& b) {
     a.Swap(&b);
@@ -35906,7 +36727,7 @@ class CMsgGCCStrike15_v2_GetEventFavorites_Response :
                &_CMsgGCCStrike15_v2_GetEventFavorites_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    155;
+    159;
 
   friend void swap(CMsgGCCStrike15_v2_GetEventFavorites_Response& a, CMsgGCCStrike15_v2_GetEventFavorites_Response& b) {
     a.Swap(&b);
@@ -36106,7 +36927,7 @@ class CMsgGCCStrike15_v2_ClientPerfReport_Entry :
                &_CMsgGCCStrike15_v2_ClientPerfReport_Entry_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    156;
+    160;
 
   friend void swap(CMsgGCCStrike15_v2_ClientPerfReport_Entry& a, CMsgGCCStrike15_v2_ClientPerfReport_Entry& b) {
     a.Swap(&b);
@@ -36351,7 +37172,7 @@ class CMsgGCCStrike15_v2_ClientPerfReport :
                &_CMsgGCCStrike15_v2_ClientPerfReport_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    157;
+    161;
 
   friend void swap(CMsgGCCStrike15_v2_ClientPerfReport& a, CMsgGCCStrike15_v2_ClientPerfReport& b) {
     a.Swap(&b);
@@ -36517,7 +37338,7 @@ class CVDiagnostic :
                &_CVDiagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    158;
+    162;
 
   friend void swap(CVDiagnostic& a, CVDiagnostic& b) {
     a.Swap(&b);
@@ -36727,7 +37548,7 @@ class CMsgGCCStrike15_v2_ClientReportValidation :
                &_CMsgGCCStrike15_v2_ClientReportValidation_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    159;
+    163;
 
   friend void swap(CMsgGCCStrike15_v2_ClientReportValidation& a, CMsgGCCStrike15_v2_ClientReportValidation& b) {
     a.Swap(&b);
@@ -37192,7 +38013,7 @@ class CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode :
                &_CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    160;
+    164;
 
   friend void swap(CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode& a, CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode& b) {
     a.Swap(&b);
@@ -37482,7 +38303,7 @@ class CMsgGCCStrike15_v2_GC2ClientRequestValidation :
                &_CMsgGCCStrike15_v2_GC2ClientRequestValidation_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    161;
+    165;
 
   friend void swap(CMsgGCCStrike15_v2_GC2ClientRequestValidation& a, CMsgGCCStrike15_v2_GC2ClientRequestValidation& b) {
     a.Swap(&b);
@@ -37662,7 +38483,7 @@ class CMsgGCCStrike15_v2_GC2ClientInitSystem :
                &_CMsgGCCStrike15_v2_GC2ClientInitSystem_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    162;
+    166;
 
   friend void swap(CMsgGCCStrike15_v2_GC2ClientInitSystem& a, CMsgGCCStrike15_v2_GC2ClientInitSystem& b) {
     a.Swap(&b);
@@ -37972,7 +38793,7 @@ class CMsgGCCStrike15_v2_GC2ClientInitSystem_Response :
                &_CMsgGCCStrike15_v2_GC2ClientInitSystem_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    163;
+    167;
 
   friend void swap(CMsgGCCStrike15_v2_GC2ClientInitSystem_Response& a, CMsgGCCStrike15_v2_GC2ClientInitSystem_Response& b) {
     a.Swap(&b);
@@ -38277,7 +39098,7 @@ class CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName :
                &_CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    164;
+    168;
 
   friend void swap(CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName& a, CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName& b) {
     a.Swap(&b);
@@ -44755,6 +45576,34 @@ inline void CMsgGC_ServerQuestUpdateData::set_allocated_missionlbsdata(::ScoreLe
   // @@protoc_insertion_point(field_set_allocated:CMsgGC_ServerQuestUpdateData.missionlbsdata)
 }
 
+// optional uint32 flags = 5;
+inline bool CMsgGC_ServerQuestUpdateData::_internal_has_flags() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CMsgGC_ServerQuestUpdateData::has_flags() const {
+  return _internal_has_flags();
+}
+inline void CMsgGC_ServerQuestUpdateData::clear_flags() {
+  _impl_.flags_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline uint32_t CMsgGC_ServerQuestUpdateData::_internal_flags() const {
+  return _impl_.flags_;
+}
+inline uint32_t CMsgGC_ServerQuestUpdateData::flags() const {
+  // @@protoc_insertion_point(field_get:CMsgGC_ServerQuestUpdateData.flags)
+  return _internal_flags();
+}
+inline void CMsgGC_ServerQuestUpdateData::_internal_set_flags(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.flags_ = value;
+}
+inline void CMsgGC_ServerQuestUpdateData::set_flags(uint32_t value) {
+  _internal_set_flags(value);
+  // @@protoc_insertion_point(field_set:CMsgGC_ServerQuestUpdateData.flags)
+}
+
 // -------------------------------------------------------------------
 
 // CMsgGCCStrike15_v2_MatchmakingGC2ServerConfirm
@@ -48581,6 +49430,53 @@ inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::_internal_set_socach
 inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::set_socache_control(uint32_t value) {
   _internal_set_socache_control(value);
   // @@protoc_insertion_point(field_set:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.socache_control)
+}
+
+// repeated int32 teammate_colors = 21;
+inline int CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::_internal_teammate_colors_size() const {
+  return _impl_.teammate_colors_.size();
+}
+inline int CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::teammate_colors_size() const {
+  return _internal_teammate_colors_size();
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::clear_teammate_colors() {
+  _impl_.teammate_colors_.Clear();
+}
+inline int32_t CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::_internal_teammate_colors(int index) const {
+  return _impl_.teammate_colors_.Get(index);
+}
+inline int32_t CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::teammate_colors(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.teammate_colors)
+  return _internal_teammate_colors(index);
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::set_teammate_colors(int index, int32_t value) {
+  _impl_.teammate_colors_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.teammate_colors)
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::_internal_add_teammate_colors(int32_t value) {
+  _impl_.teammate_colors_.Add(value);
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::add_teammate_colors(int32_t value) {
+  _internal_add_teammate_colors(value);
+  // @@protoc_insertion_point(field_add:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.teammate_colors)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::_internal_teammate_colors() const {
+  return _impl_.teammate_colors_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::teammate_colors() const {
+  // @@protoc_insertion_point(field_list:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.teammate_colors)
+  return _internal_teammate_colors();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::_internal_mutable_teammate_colors() {
+  return &_impl_.teammate_colors_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::mutable_teammate_colors() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.teammate_colors)
+  return _internal_mutable_teammate_colors();
 }
 
 // -------------------------------------------------------------------
@@ -57678,6 +58574,62 @@ inline void CEconItemPreviewDataBlock_Sticker::set_offset_y(float value) {
   // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.Sticker.offset_y)
 }
 
+// optional float offset_z = 9;
+inline bool CEconItemPreviewDataBlock_Sticker::_internal_has_offset_z() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  return value;
+}
+inline bool CEconItemPreviewDataBlock_Sticker::has_offset_z() const {
+  return _internal_has_offset_z();
+}
+inline void CEconItemPreviewDataBlock_Sticker::clear_offset_z() {
+  _impl_.offset_z_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000100u;
+}
+inline float CEconItemPreviewDataBlock_Sticker::_internal_offset_z() const {
+  return _impl_.offset_z_;
+}
+inline float CEconItemPreviewDataBlock_Sticker::offset_z() const {
+  // @@protoc_insertion_point(field_get:CEconItemPreviewDataBlock.Sticker.offset_z)
+  return _internal_offset_z();
+}
+inline void CEconItemPreviewDataBlock_Sticker::_internal_set_offset_z(float value) {
+  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_.offset_z_ = value;
+}
+inline void CEconItemPreviewDataBlock_Sticker::set_offset_z(float value) {
+  _internal_set_offset_z(value);
+  // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.Sticker.offset_z)
+}
+
+// optional uint32 pattern = 10;
+inline bool CEconItemPreviewDataBlock_Sticker::_internal_has_pattern() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  return value;
+}
+inline bool CEconItemPreviewDataBlock_Sticker::has_pattern() const {
+  return _internal_has_pattern();
+}
+inline void CEconItemPreviewDataBlock_Sticker::clear_pattern() {
+  _impl_.pattern_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000200u;
+}
+inline uint32_t CEconItemPreviewDataBlock_Sticker::_internal_pattern() const {
+  return _impl_.pattern_;
+}
+inline uint32_t CEconItemPreviewDataBlock_Sticker::pattern() const {
+  // @@protoc_insertion_point(field_get:CEconItemPreviewDataBlock.Sticker.pattern)
+  return _internal_pattern();
+}
+inline void CEconItemPreviewDataBlock_Sticker::_internal_set_pattern(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_.pattern_ = value;
+}
+inline void CEconItemPreviewDataBlock_Sticker::set_pattern(uint32_t value) {
+  _internal_set_pattern(value);
+  // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.Sticker.pattern)
+}
+
 // -------------------------------------------------------------------
 
 // CEconItemPreviewDataBlock
@@ -58236,6 +59188,74 @@ inline void CEconItemPreviewDataBlock::_internal_set_entindex(int32_t value) {
 inline void CEconItemPreviewDataBlock::set_entindex(int32_t value) {
   _internal_set_entindex(value);
   // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.entindex)
+}
+
+// optional uint32 petindex = 19;
+inline bool CEconItemPreviewDataBlock::_internal_has_petindex() const {
+  bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
+  return value;
+}
+inline bool CEconItemPreviewDataBlock::has_petindex() const {
+  return _internal_has_petindex();
+}
+inline void CEconItemPreviewDataBlock::clear_petindex() {
+  _impl_.petindex_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00020000u;
+}
+inline uint32_t CEconItemPreviewDataBlock::_internal_petindex() const {
+  return _impl_.petindex_;
+}
+inline uint32_t CEconItemPreviewDataBlock::petindex() const {
+  // @@protoc_insertion_point(field_get:CEconItemPreviewDataBlock.petindex)
+  return _internal_petindex();
+}
+inline void CEconItemPreviewDataBlock::_internal_set_petindex(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00020000u;
+  _impl_.petindex_ = value;
+}
+inline void CEconItemPreviewDataBlock::set_petindex(uint32_t value) {
+  _internal_set_petindex(value);
+  // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.petindex)
+}
+
+// repeated .CEconItemPreviewDataBlock.Sticker keychains = 20;
+inline int CEconItemPreviewDataBlock::_internal_keychains_size() const {
+  return _impl_.keychains_.size();
+}
+inline int CEconItemPreviewDataBlock::keychains_size() const {
+  return _internal_keychains_size();
+}
+inline void CEconItemPreviewDataBlock::clear_keychains() {
+  _impl_.keychains_.Clear();
+}
+inline ::CEconItemPreviewDataBlock_Sticker* CEconItemPreviewDataBlock::mutable_keychains(int index) {
+  // @@protoc_insertion_point(field_mutable:CEconItemPreviewDataBlock.keychains)
+  return _impl_.keychains_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CEconItemPreviewDataBlock_Sticker >*
+CEconItemPreviewDataBlock::mutable_keychains() {
+  // @@protoc_insertion_point(field_mutable_list:CEconItemPreviewDataBlock.keychains)
+  return &_impl_.keychains_;
+}
+inline const ::CEconItemPreviewDataBlock_Sticker& CEconItemPreviewDataBlock::_internal_keychains(int index) const {
+  return _impl_.keychains_.Get(index);
+}
+inline const ::CEconItemPreviewDataBlock_Sticker& CEconItemPreviewDataBlock::keychains(int index) const {
+  // @@protoc_insertion_point(field_get:CEconItemPreviewDataBlock.keychains)
+  return _internal_keychains(index);
+}
+inline ::CEconItemPreviewDataBlock_Sticker* CEconItemPreviewDataBlock::_internal_add_keychains() {
+  return _impl_.keychains_.Add();
+}
+inline ::CEconItemPreviewDataBlock_Sticker* CEconItemPreviewDataBlock::add_keychains() {
+  ::CEconItemPreviewDataBlock_Sticker* _add = _internal_add_keychains();
+  // @@protoc_insertion_point(field_add:CEconItemPreviewDataBlock.keychains)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CEconItemPreviewDataBlock_Sticker >&
+CEconItemPreviewDataBlock::keychains() const {
+  // @@protoc_insertion_point(field_list:CEconItemPreviewDataBlock.keychains)
+  return _impl_.keychains_;
 }
 
 // -------------------------------------------------------------------
@@ -62714,7 +63734,7 @@ inline void CSOEconCoupon::set_expiration_date(uint32_t value) {
 
 // CSOAccountItemPersonalStore
 
-// optional uint32 generation_time = 1 [(.key_field) = true];
+// optional uint32 generation_time = 1;
 inline bool CSOAccountItemPersonalStore::_internal_has_generation_time() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   return value;
@@ -62815,6 +63835,145 @@ inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
 CSOAccountItemPersonalStore::mutable_items() {
   // @@protoc_insertion_point(field_mutable_list:CSOAccountItemPersonalStore.items)
   return _internal_mutable_items();
+}
+
+// -------------------------------------------------------------------
+
+// CSOAccountXpShop
+
+// optional uint32 generation_time = 1;
+inline bool CSOAccountXpShop::_internal_has_generation_time() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CSOAccountXpShop::has_generation_time() const {
+  return _internal_has_generation_time();
+}
+inline void CSOAccountXpShop::clear_generation_time() {
+  _impl_.generation_time_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline uint32_t CSOAccountXpShop::_internal_generation_time() const {
+  return _impl_.generation_time_;
+}
+inline uint32_t CSOAccountXpShop::generation_time() const {
+  // @@protoc_insertion_point(field_get:CSOAccountXpShop.generation_time)
+  return _internal_generation_time();
+}
+inline void CSOAccountXpShop::_internal_set_generation_time(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.generation_time_ = value;
+}
+inline void CSOAccountXpShop::set_generation_time(uint32_t value) {
+  _internal_set_generation_time(value);
+  // @@protoc_insertion_point(field_set:CSOAccountXpShop.generation_time)
+}
+
+// optional uint32 redeemable_balance = 2;
+inline bool CSOAccountXpShop::_internal_has_redeemable_balance() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CSOAccountXpShop::has_redeemable_balance() const {
+  return _internal_has_redeemable_balance();
+}
+inline void CSOAccountXpShop::clear_redeemable_balance() {
+  _impl_.redeemable_balance_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline uint32_t CSOAccountXpShop::_internal_redeemable_balance() const {
+  return _impl_.redeemable_balance_;
+}
+inline uint32_t CSOAccountXpShop::redeemable_balance() const {
+  // @@protoc_insertion_point(field_get:CSOAccountXpShop.redeemable_balance)
+  return _internal_redeemable_balance();
+}
+inline void CSOAccountXpShop::_internal_set_redeemable_balance(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.redeemable_balance_ = value;
+}
+inline void CSOAccountXpShop::set_redeemable_balance(uint32_t value) {
+  _internal_set_redeemable_balance(value);
+  // @@protoc_insertion_point(field_set:CSOAccountXpShop.redeemable_balance)
+}
+
+// repeated uint32 xp_tracks = 3;
+inline int CSOAccountXpShop::_internal_xp_tracks_size() const {
+  return _impl_.xp_tracks_.size();
+}
+inline int CSOAccountXpShop::xp_tracks_size() const {
+  return _internal_xp_tracks_size();
+}
+inline void CSOAccountXpShop::clear_xp_tracks() {
+  _impl_.xp_tracks_.Clear();
+}
+inline uint32_t CSOAccountXpShop::_internal_xp_tracks(int index) const {
+  return _impl_.xp_tracks_.Get(index);
+}
+inline uint32_t CSOAccountXpShop::xp_tracks(int index) const {
+  // @@protoc_insertion_point(field_get:CSOAccountXpShop.xp_tracks)
+  return _internal_xp_tracks(index);
+}
+inline void CSOAccountXpShop::set_xp_tracks(int index, uint32_t value) {
+  _impl_.xp_tracks_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CSOAccountXpShop.xp_tracks)
+}
+inline void CSOAccountXpShop::_internal_add_xp_tracks(uint32_t value) {
+  _impl_.xp_tracks_.Add(value);
+}
+inline void CSOAccountXpShop::add_xp_tracks(uint32_t value) {
+  _internal_add_xp_tracks(value);
+  // @@protoc_insertion_point(field_add:CSOAccountXpShop.xp_tracks)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CSOAccountXpShop::_internal_xp_tracks() const {
+  return _impl_.xp_tracks_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CSOAccountXpShop::xp_tracks() const {
+  // @@protoc_insertion_point(field_list:CSOAccountXpShop.xp_tracks)
+  return _internal_xp_tracks();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CSOAccountXpShop::_internal_mutable_xp_tracks() {
+  return &_impl_.xp_tracks_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CSOAccountXpShop::mutable_xp_tracks() {
+  // @@protoc_insertion_point(field_mutable_list:CSOAccountXpShop.xp_tracks)
+  return _internal_mutable_xp_tracks();
+}
+
+// -------------------------------------------------------------------
+
+// CSOAccountKeychainRemoveToolCharges
+
+// optional uint32 charges = 1;
+inline bool CSOAccountKeychainRemoveToolCharges::_internal_has_charges() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CSOAccountKeychainRemoveToolCharges::has_charges() const {
+  return _internal_has_charges();
+}
+inline void CSOAccountKeychainRemoveToolCharges::clear_charges() {
+  _impl_.charges_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline uint32_t CSOAccountKeychainRemoveToolCharges::_internal_charges() const {
+  return _impl_.charges_;
+}
+inline uint32_t CSOAccountKeychainRemoveToolCharges::charges() const {
+  // @@protoc_insertion_point(field_get:CSOAccountKeychainRemoveToolCharges.charges)
+  return _internal_charges();
+}
+inline void CSOAccountKeychainRemoveToolCharges::_internal_set_charges(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.charges_ = value;
+}
+inline void CSOAccountKeychainRemoveToolCharges::set_charges(uint32_t value) {
+  _internal_set_charges(value);
+  // @@protoc_insertion_point(field_set:CSOAccountKeychainRemoveToolCharges.charges)
 }
 
 // -------------------------------------------------------------------
@@ -63370,6 +64529,250 @@ inline void CSOPersonaDataPublic::set_xp_trail_level(uint32_t value) {
   _internal_set_xp_trail_level(value);
   // @@protoc_insertion_point(field_set:CSOPersonaDataPublic.xp_trail_level)
 }
+
+// -------------------------------------------------------------------
+
+// CMsgGCCStrike15_v2_GC2ClientNotifyXPShop
+
+// optional .CSOAccountXpShop prematch = 1;
+inline bool CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_has_prematch() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.prematch_ != nullptr);
+  return value;
+}
+inline bool CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::has_prematch() const {
+  return _internal_has_prematch();
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::clear_prematch() {
+  if (_impl_.prematch_ != nullptr) _impl_.prematch_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const ::CSOAccountXpShop& CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_prematch() const {
+  const ::CSOAccountXpShop* p = _impl_.prematch_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CSOAccountXpShop&>(
+      ::_CSOAccountXpShop_default_instance_);
+}
+inline const ::CSOAccountXpShop& CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::prematch() const {
+  // @@protoc_insertion_point(field_get:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.prematch)
+  return _internal_prematch();
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::unsafe_arena_set_allocated_prematch(
+    ::CSOAccountXpShop* prematch) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.prematch_);
+  }
+  _impl_.prematch_ = prematch;
+  if (prematch) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.prematch)
+}
+inline ::CSOAccountXpShop* CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::release_prematch() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CSOAccountXpShop* temp = _impl_.prematch_;
+  _impl_.prematch_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CSOAccountXpShop* CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::unsafe_arena_release_prematch() {
+  // @@protoc_insertion_point(field_release:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.prematch)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CSOAccountXpShop* temp = _impl_.prematch_;
+  _impl_.prematch_ = nullptr;
+  return temp;
+}
+inline ::CSOAccountXpShop* CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_mutable_prematch() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.prematch_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CSOAccountXpShop>(GetArenaForAllocation());
+    _impl_.prematch_ = p;
+  }
+  return _impl_.prematch_;
+}
+inline ::CSOAccountXpShop* CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::mutable_prematch() {
+  ::CSOAccountXpShop* _msg = _internal_mutable_prematch();
+  // @@protoc_insertion_point(field_mutable:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.prematch)
+  return _msg;
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::set_allocated_prematch(::CSOAccountXpShop* prematch) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.prematch_;
+  }
+  if (prematch) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(prematch);
+    if (message_arena != submessage_arena) {
+      prematch = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, prematch, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.prematch_ = prematch;
+  // @@protoc_insertion_point(field_set_allocated:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.prematch)
+}
+
+// optional .CSOAccountXpShop postmatch = 2;
+inline bool CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_has_postmatch() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.postmatch_ != nullptr);
+  return value;
+}
+inline bool CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::has_postmatch() const {
+  return _internal_has_postmatch();
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::clear_postmatch() {
+  if (_impl_.postmatch_ != nullptr) _impl_.postmatch_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const ::CSOAccountXpShop& CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_postmatch() const {
+  const ::CSOAccountXpShop* p = _impl_.postmatch_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CSOAccountXpShop&>(
+      ::_CSOAccountXpShop_default_instance_);
+}
+inline const ::CSOAccountXpShop& CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::postmatch() const {
+  // @@protoc_insertion_point(field_get:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.postmatch)
+  return _internal_postmatch();
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::unsafe_arena_set_allocated_postmatch(
+    ::CSOAccountXpShop* postmatch) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.postmatch_);
+  }
+  _impl_.postmatch_ = postmatch;
+  if (postmatch) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.postmatch)
+}
+inline ::CSOAccountXpShop* CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::release_postmatch() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CSOAccountXpShop* temp = _impl_.postmatch_;
+  _impl_.postmatch_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CSOAccountXpShop* CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::unsafe_arena_release_postmatch() {
+  // @@protoc_insertion_point(field_release:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.postmatch)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CSOAccountXpShop* temp = _impl_.postmatch_;
+  _impl_.postmatch_ = nullptr;
+  return temp;
+}
+inline ::CSOAccountXpShop* CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_mutable_postmatch() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.postmatch_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CSOAccountXpShop>(GetArenaForAllocation());
+    _impl_.postmatch_ = p;
+  }
+  return _impl_.postmatch_;
+}
+inline ::CSOAccountXpShop* CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::mutable_postmatch() {
+  ::CSOAccountXpShop* _msg = _internal_mutable_postmatch();
+  // @@protoc_insertion_point(field_mutable:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.postmatch)
+  return _msg;
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::set_allocated_postmatch(::CSOAccountXpShop* postmatch) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.postmatch_;
+  }
+  if (postmatch) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(postmatch);
+    if (message_arena != submessage_arena) {
+      postmatch = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, postmatch, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.postmatch_ = postmatch;
+  // @@protoc_insertion_point(field_set_allocated:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.postmatch)
+}
+
+// optional uint32 current_xp = 3;
+inline bool CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_has_current_xp() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::has_current_xp() const {
+  return _internal_has_current_xp();
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::clear_current_xp() {
+  _impl_.current_xp_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline uint32_t CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_current_xp() const {
+  return _impl_.current_xp_;
+}
+inline uint32_t CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::current_xp() const {
+  // @@protoc_insertion_point(field_get:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.current_xp)
+  return _internal_current_xp();
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_set_current_xp(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.current_xp_ = value;
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::set_current_xp(uint32_t value) {
+  _internal_set_current_xp(value);
+  // @@protoc_insertion_point(field_set:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.current_xp)
+}
+
+// optional uint32 current_level = 4;
+inline bool CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_has_current_level() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::has_current_level() const {
+  return _internal_has_current_level();
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::clear_current_level() {
+  _impl_.current_level_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline uint32_t CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_current_level() const {
+  return _impl_.current_level_;
+}
+inline uint32_t CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::current_level() const {
+  // @@protoc_insertion_point(field_get:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.current_level)
+  return _internal_current_level();
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::_internal_set_current_level(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.current_level_ = value;
+}
+inline void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::set_current_level(uint32_t value) {
+  _internal_set_current_level(value);
+  // @@protoc_insertion_point(field_set:CMsgGCCStrike15_v2_GC2ClientNotifyXPShop.current_level)
+}
+
+// -------------------------------------------------------------------
+
+// CMsgGCCStrike15_v2_Client2GcAckXPShopTracks
 
 // -------------------------------------------------------------------
 
@@ -69417,6 +70820,14 @@ inline void CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName::set_allocated_leade
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -105,6 +105,8 @@ enum ECsgoGCMsg {
 	k_EMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName = 9218;
 	k_EMsgGCCStrike15_v2_ClientRedeemFreeReward = 9219;
 	k_EMsgGCCStrike15_v2_ClientNetworkConfig = 9220;
+	k_EMsgGCCStrike15_v2_GC2ClientNotifyXPShop = 9221;
+	k_EMsgGCCStrike15_v2_Client2GcAckXPShopTracks = 9222;
 }
 
 enum ECsgoSteamUserStat {
@@ -404,6 +406,7 @@ message CMsgGC_ServerQuestUpdateData {
 	optional bytes binary_data = 2;
 	optional uint32 mm_game_mode = 3;
 	optional .ScoreLeaderboardData missionlbsdata = 4;
+	optional uint32 flags = 5;
 }
 
 message CMsgGCCStrike15_v2_MatchmakingGC2ServerConfirm {
@@ -533,6 +536,7 @@ message CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve {
 	optional uint32 tv_control = 17;
 	repeated .OperationalVarValue op_var_values = 19;
 	optional uint32 socache_control = 20;
+	repeated int32 teammate_colors = 21;
 }
 
 message CMsgGCCStrike15_v2_MatchmakingServerReservationResponse {
@@ -878,6 +882,8 @@ message CEconItemPreviewDataBlock {
 		optional uint32 tint_id = 6;
 		optional float offset_x = 7;
 		optional float offset_y = 8;
+		optional float offset_z = 9;
+		optional uint32 pattern = 10;
 	}
 
 	optional uint32 accountid = 1;
@@ -899,6 +905,7 @@ message CEconItemPreviewDataBlock {
 	optional uint32 musicindex = 17;
 	optional int32 entindex = 18;
 	optional uint32 petindex = 19;
+	repeated .CEconItemPreviewDataBlock.Sticker keychains = 20;
 }
 
 message CMsgGCCStrike15_v2_MatchEndRewardDropsNotification {
@@ -1117,9 +1124,19 @@ message CSOEconCoupon {
 }
 
 message CSOAccountItemPersonalStore {
-	optional uint32 generation_time = 1 [(key_field) = true];
+	optional uint32 generation_time = 1;
 	optional uint32 redeemable_balance = 2;
 	repeated uint64 items = 3;
+}
+
+message CSOAccountXpShop {
+	optional uint32 generation_time = 1;
+	optional uint32 redeemable_balance = 2;
+	repeated uint32 xp_tracks = 3;
+}
+
+message CSOAccountKeychainRemoveToolCharges {
+	optional uint32 charges = 1;
 }
 
 message CSOQuestProgress {
@@ -1149,6 +1166,16 @@ message CSOPersonaDataPublic {
 	optional bool elevated_state = 3;
 	optional uint32 xp_trail_timestamp_refresh = 4;
 	optional uint32 xp_trail_level = 5;
+}
+
+message CMsgGCCStrike15_v2_GC2ClientNotifyXPShop {
+	optional .CSOAccountXpShop prematch = 1;
+	optional .CSOAccountXpShop postmatch = 2;
+	optional uint32 current_xp = 3;
+	optional uint32 current_level = 4;
+}
+
+message CMsgGCCStrike15_v2_Client2GcAckXPShopTracks {
 }
 
 message CMsgGC_GlobalGame_Subscribe {

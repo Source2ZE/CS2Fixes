@@ -50,7 +50,7 @@ CON_COMMAND_F(cs2f_user_prefs_api, "API for user preferences, currently a REST A
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(pullprefs, "Pull preferences.", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(pullprefs, "- Pull preferences.", ADMFLAG_ROOT)
 {
 	ZEPlayer* pPlayer = player->GetZEPlayer();
 	if (!pPlayer) return;
@@ -58,7 +58,7 @@ CON_COMMAND_CHAT_FLAGS(pullprefs, "Pull preferences.", ADMFLAG_ROOT)
 	g_pUserPreferencesSystem->PullPreferences(pPlayer->GetPlayerSlot().Get());
 }
 
-CON_COMMAND_CHAT_FLAGS(setpref, "Set a preference key for the player.", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(setpref, "- Set a preference key for the player.", ADMFLAG_ROOT)
 {
 	if (args.ArgC() < 3)
 		Message("Usage: %s <pref> <value>\n", args[0]);
@@ -70,7 +70,7 @@ CON_COMMAND_CHAT_FLAGS(setpref, "Set a preference key for the player.", ADMFLAG_
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(getpref, "Get a preference key for the player.", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(getpref, "- Get a preference key for the player.", ADMFLAG_ROOT)
 {
 	if (args.ArgC() < 2)
 		Message("Usage: %s <pref>\n", args[0]);
@@ -83,7 +83,7 @@ CON_COMMAND_CHAT_FLAGS(getpref, "Get a preference key for the player.", ADMFLAG_
 	}
 }
 
-CON_COMMAND_CHAT_FLAGS(pushprefs, "Push preferences.", ADMFLAG_ROOT)
+CON_COMMAND_CHAT_FLAGS(pushprefs, "- Push preferences.", ADMFLAG_ROOT)
 {
 	ZEPlayer* pPlayer = player->GetZEPlayer();
 	if (!pPlayer) return;
@@ -127,11 +127,13 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	bool bStopSound = (bool) (iSoundStatus & 1);
 	bool bSilenceSound = (bool) (iSoundStatus & 2);
 	bool bHideDecals = (bool) GetPreferenceInt(iSlot, DECAL_PREF_KEY_NAME, 1);
+	bool bNoShake = (bool) GetPreferenceInt(iSlot, NO_SHAKE_PREF_KEY_NAME, 0);
 
 	// Set the values that we just loaded --- the player is guaranteed available
 	g_playerManager->SetPlayerStopSound(iSlot, bStopSound);
 	g_playerManager->SetPlayerSilenceSound(iSlot, bSilenceSound);
 	g_playerManager->SetPlayerStopDecals(iSlot, bHideDecals);
+	g_playerManager->SetPlayerNoShake(iSlot, bNoShake);
 
 	ZEPlayer* player = g_playerManager->GetPlayer(CPlayerSlot(iSlot));
 	player->SetHideDistance(iHideDistance);
@@ -169,12 +171,18 @@ const char* CUserPreferencesSystem::GetPreference(int iSlot, const char* sKey, c
 
 int CUserPreferencesSystem::GetPreferenceInt(int iSlot, const char* sKey, int iDefaultValue)
 {
-	return V_StringToInt32(GetPreference(iSlot, sKey, ""), iDefaultValue);
+	const char* pszPreferenceValue = GetPreference(iSlot, sKey, "");
+	if (*pszPreferenceValue == '\0')
+		return iDefaultValue;
+	return V_StringToInt32(pszPreferenceValue, iDefaultValue);
 }
 
 float CUserPreferencesSystem::GetPreferenceFloat(int iSlot, const char* sKey, float fDefaultValue)
 {
-	return V_StringToFloat32(GetPreference(iSlot, sKey, ""), fDefaultValue);
+	const char* pszPreferenceValue = GetPreference(iSlot, sKey, "");
+	if (*pszPreferenceValue == '\0')
+		return fDefaultValue;
+	return V_StringToFloat32(pszPreferenceValue, fDefaultValue);
 }
 
 void CUserPreferencesSystem::SetPreference(int iSlot, const char* sKey, const char* sValue)

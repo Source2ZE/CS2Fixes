@@ -72,7 +72,7 @@ jobs:
         shell: bash
         run: |
           mkdir build && cd build
-          python ../configure.py --enable-optimize --symbol-files --sdks cs2
+          python ../configure.py --enable-optimize --sdks cs2
           ambuild
 
       - name: Upload artifact

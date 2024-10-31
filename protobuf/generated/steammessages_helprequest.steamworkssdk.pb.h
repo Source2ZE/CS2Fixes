@@ -59,7 +59,7 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class CHelpRequestLogs_UploadUserApplicationLog_Request final :
+class CHelpRequestLogs_UploadUserApplicationLog_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CHelpRequestLogs_UploadUserApplicationLog_Request) */ {
  public:
   inline CHelpRequestLogs_UploadUserApplicationLog_Request() : CHelpRequestLogs_UploadUserApplicationLog_Request(nullptr) {}
@@ -279,7 +279,7 @@ class CHelpRequestLogs_UploadUserApplicationLog_Request final :
 };
 // -------------------------------------------------------------------
 
-class CHelpRequestLogs_UploadUserApplicationLog_Response final :
+class CHelpRequestLogs_UploadUserApplicationLog_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CHelpRequestLogs_UploadUserApplicationLog_Response) */ {
  public:
   inline CHelpRequestLogs_UploadUserApplicationLog_Response() : CHelpRequestLogs_UploadUserApplicationLog_Response(nullptr) {}
