@@ -956,8 +956,10 @@ FAKE_BOOL_CVAR(cs2f_shuffle_player_physics_sim, "Whether to enable shuffle playe
 
 struct TouchLinked_t
 {
+	uint32_t TouchFlags;
+
 private:
-	uint8_t padding_0[24];
+	uint8_t padding_0[20];
 
 public:
 	CBaseHandle SourceHandle;
@@ -965,41 +967,58 @@ public:
 
 private:
 	uint8_t padding_1[208];
+
+public:
+	[[nodiscard]] bool IsUnTouching() const
+	{
+		return !!(TouchFlags & 0x10);
+	}
+
+	[[nodiscard]] bool IsTouching() const
+	{
+		return (!!(TouchFlags & 4)) || (!!(TouchFlags & 8));
+	}
 };
 static_assert(sizeof(TouchLinked_t) == 240, "Touch_t size mismatch");
 void CS2Fixes::Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool unknown)
 {
-	if (g_SHPtr->GetStatus() == MRES_SUPERCEDE || pList->Count() == 0)
+	if (!g_bFixPhysicsPlayerShuffle || g_SHPtr->GetStatus() == MRES_SUPERCEDE || pList->Count() <= 1)
 		return;
 
 	// [Kxnrl]
-	// I don't know what happens if we shuffle them, but let's try.
-	// the original list looks like very randomly.
+	// seems it sorted by flags?
 
 	std::srand(gpGlobals->tickcount);
 
-#ifdef _DEBUG
-	std::string dump{};
+	// Fisher-Yates shuffle
+
+	std::vector<TouchLinked_t> touchingLinks;
+	std::vector<TouchLinked_t> unTouchLinks;
 
 	FOR_EACH_VEC(*pList, i)
 	{
-		char buffer[64];
-		snprintf(buffer, sizeof(buffer), "#%d sourceIndex: %d | targetIndex: %d\n", i, pList->Element(i).SourceHandle.GetEntryIndex(), pList->Element(i).TargetHandle.GetEntryIndex());
-		dump.append(buffer);
+		const auto& link = pList->Element(i);
+		if (link.IsUnTouching())
+			unTouchLinks.push_back(link);
+		else
+			touchingLinks.push_back(link);
 	}
-#endif
 
-	// Fisher-Yates shuffle
+	if (touchingLinks.size() <= 1)
+		return;
 
-	FOR_EACH_VEC_BACK(*pList, i)
+	for (size_t i = touchingLinks.size() - 1; i > 0; --i)
 	{
 		const auto j = std::rand() % (i + 1);
-		std::swap(pList->Element(i), pList->Element(j));
+		std::swap(touchingLinks[i], touchingLinks[j]);
 	}
 
-#ifdef _DEBUG
-	Message("Fixup Physics List -> %d pairs\n%s", pList->Count(), dump.c_str());
-#endif
+	pList->Purge();
+
+	for (const auto link : touchingLinks)
+		pList->AddToTail(link);
+	for (const auto link : unTouchLinks)
+		pList->AddToTail(link);
 }
 
 void CS2Fixes::Hook_CheckMovingGround(double frametime)
