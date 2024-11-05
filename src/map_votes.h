@@ -132,6 +132,8 @@ public:
     int GetMapMinPlayers(int iMapIndex) { return m_vecMapList[iMapIndex].GetMinPlayers(); }
     int GetMapMaxPlayers(int iMapIndex) { return m_vecMapList[iMapIndex].GetMaxPlayers(); }
     bool GetMapEnabledStatus(int iMapIndex) { return m_vecMapList[iMapIndex].IsEnabled(); }
+    int GetDefaultMapCooldown() { return m_iDefaultMapCooldown; }
+    void SetDefaultMapCooldown(int iMapCooldown) { m_iDefaultMapCooldown = iMapCooldown; }
 
 private:
     int WinningMapIndex();
@@ -145,6 +147,7 @@ private:
     CUtlVector<CMapInfo> m_vecMapList;
     int m_arrPlayerNominations[MAXPLAYERS];
     int m_iForcedNextMapIndex = -1;
+    int m_iDefaultMapCooldown = 10;
     int m_iMaxNominatedMaps = 10;
     int m_iRandomWinnerShift = 0;
     int m_arrPlayerVotes[MAXPLAYERS];
