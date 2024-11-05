@@ -678,8 +678,8 @@ bool CMapVoteSystem::LoadMapList()
 		const char *pszName = pKey->GetName();
 		uint64 iWorkshopId = pKey->GetUint64("workshop_id");
 		bool bIsEnabled = pKey->GetBool("enabled", true);
-		int iMinPlayers = pKey->GetInt("minPlayers", 0);
-		int iMaxPlayers = pKey->GetInt("maxPlayers", 64);
+		int iMinPlayers = pKey->GetInt("min_players", 0);
+		int iMaxPlayers = pKey->GetInt("max_players", 64);
 		int iBaseCooldown = pKey->GetInt("cooldown");
 		int iCurrentCooldown = pKVcooldowns->GetInt(pszName, 0);
 

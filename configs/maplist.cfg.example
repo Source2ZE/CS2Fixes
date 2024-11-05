@@ -9,22 +9,22 @@
 	{
 		"workshop_id" "123"
 		"enabled" "1"
-		"minPlayers" "30"
+		"min_players" "30"
 		"cooldown" "2"
 	}
 	"ze_my_second_ze_map"
 	{
 		"workshop_id" "456"
 		"enabled" "1"
-		"minPlayers" "5"
-		"maxPlayers" "10"
+		"min_players" "5"
+		"max_players" "10"
 		"cooldown" "3"
 	}
 	"ze_my_third_ze_map"
 	{
 		"workshop_id" "789"
 		"enabled" "1"
-		"maxPlayers" "20"
+		"max_players" "20"
 		"cooldown" "1"
 	}
 }
