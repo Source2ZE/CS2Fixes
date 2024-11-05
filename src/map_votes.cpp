@@ -687,7 +687,7 @@ bool CMapVoteSystem::LoadMapList()
 	// Load map cooldowns from file
 	KeyValues* pKVcooldowns = new KeyValues("cooldowns");
 	KeyValues::AutoDelete autoDeleteKVcooldowns(pKVcooldowns);
-	const char *pszCooldownFilePath = "addons/cs2fixes/configs/cooldowns.cfg";
+	const char *pszCooldownFilePath = "addons/cs2fixes/data/cooldowns.txt";
 	if (!pKVcooldowns->LoadFromFile(g_pFullFileSystem, pszCooldownFilePath)) {
 		Message("Failed to load cooldown file at %s - resetting all cooldowns to 0\n", pszCooldownFilePath);
 	}
@@ -774,7 +774,7 @@ bool CMapVoteSystem::WriteMapCooldownsToFile()
 	KeyValues* pKV = new KeyValues("cooldowns");
 	KeyValues::AutoDelete autoDelete(pKV);
 
-	const char *pszPath = "addons/cs2fixes/configs/cooldowns.cfg";
+	const char *pszPath = "addons/cs2fixes/data/cooldowns.txt";
 
 	FOR_EACH_VEC(m_vecMapList, i)
 	{
