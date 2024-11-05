@@ -72,6 +72,21 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 	Message("Map list reloaded\n");
 }
 
+CON_COMMAND_F(cs2f_vote_maps_cooldown, "Default number of maps to wait until a map can be voted / nominated again i.e. cooldown.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (!g_pMapVoteSystem) {
+		Message("The map vote subsystem is not enabled.\n");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+		Message("%s %d\n", args[0], g_pMapVoteSystem->GetDefaultMapCooldown());
+	else {
+		int iCurrentCooldown = g_pMapVoteSystem->GetDefaultMapCooldown();
+		g_pMapVoteSystem->SetDefaultMapCooldown(V_StringToInt32(args[1], iCurrentCooldown));
+	}
+}
+
 CON_COMMAND_F(cs2f_vote_max_nominations, "Number of nominations to include per vote, out of a maximum of 10.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
 	if (!g_pMapVoteSystem) {
@@ -698,7 +713,7 @@ bool CMapVoteSystem::LoadMapList()
 		bool bIsEnabled = pKey->GetBool("enabled", true);
 		int iMinPlayers = pKey->GetInt("min_players", 0);
 		int iMaxPlayers = pKey->GetInt("max_players", 64);
-		int iBaseCooldown = pKey->GetInt("cooldown");
+		int iBaseCooldown = pKey->GetInt("cooldown", m_iDefaultMapCooldown);
 		int iCurrentCooldown = pKVcooldowns->GetInt(pszName, 0);
 
 		if (iWorkshopId != 0)
