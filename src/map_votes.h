@@ -131,6 +131,7 @@ public:
     void SetCurrentMapIndex(int iMapIndex) { m_iCurrentMapIndex = iMapIndex; }
     int GetMapMinPlayers(int iMapIndex) { return m_vecMapList[iMapIndex].GetMinPlayers(); }
     int GetMapMaxPlayers(int iMapIndex) { return m_vecMapList[iMapIndex].GetMaxPlayers(); }
+    bool GetMapEnabledStatus(int iMapIndex) { return m_vecMapList[iMapIndex].IsEnabled(); }
 
 private:
     int WinningMapIndex();

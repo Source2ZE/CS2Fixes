@@ -208,6 +208,24 @@ CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 	}
 }
 
+CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
+{
+	if (!g_bVoteManagerEnable)
+		return;
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of maps in cooldown will be shown in console.");
+	ClientPrint(player, HUD_PRINTCONSOLE, "The list of maps in cooldown is:");
+	int iMapCount = g_pMapVoteSystem->GetMapListSize();
+	for (int iMapIndex = 0; iMapIndex < iMapCount; iMapIndex++) {
+		int iCooldown = g_pMapVoteSystem->GetCooldownMap(iMapIndex);
+		if (iCooldown > 0 && g_pMapVoteSystem->GetMapEnabledStatus(iMapIndex))
+		{
+			const char* sMapName = g_pMapVoteSystem->GetMapName(iMapIndex);
+			ClientPrint(player, HUD_PRINTCONSOLE, "- %s (%d maps remaining)", sMapName, iCooldown);
+		}
+	}
+}
+
 GAME_EVENT_F(cs_win_panel_match)
 {
 	if (g_bVoteManagerEnable && !g_pMapVoteSystem->IsVoteOngoing())
