@@ -283,6 +283,7 @@ public:
 	void PurgeLeaderVotes();
 	void StartGlow(Color color, int duration);
 	void EndGlow();
+	void SetSteamIdAttribute();
 
 private:
 	bool m_bAuthenticated;

@@ -134,10 +134,6 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageIn
 		}
 	}
 
-	// Prevent everything but nades from inflicting blast damage
-	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
-		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
-
 	// Prevent molly on self
 	if (g_bBlockMolotovSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
 		return;
@@ -397,7 +393,8 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		Message("Invalid value type for input %s\n", pInputName->String());
 		return false;
 	}
-	else if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
+
+	if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
 	{
 		float flDuration = 0.f;
 
@@ -435,6 +432,17 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
 			{
 				pHudHint->m_iszMessage(GameEntitySystem()->AllocPooledString(value->m_pszString));
+			}
+			return true;
+		}
+	}
+	else if (!V_strcasecmp(pInputName->String(), "SetModel"))
+	{
+		if (const auto pModelEntity = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsBaseModelEntity())
+		{
+			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			{
+				pModelEntity->SetModel(value->m_pszString);
 			}
 			return true;
 		}
@@ -506,6 +514,9 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pM
 static bool g_bDisableSubtick = false;
 FAKE_BOOL_CVAR(cs2f_disable_subtick_move, "Whether to disable subtick movement", g_bDisableSubtick, false, false)
 
+static bool g_bDisableSubtickShooting = false;
+FAKE_BOOL_CVAR(cs2f_disable_subtick_shooting, "Whether to disable subtick shooting", g_bDisableSubtickShooting, false, false)
+
 class CUserCmd
 {
 public:
@@ -526,7 +537,17 @@ void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd
 	VPROF_SCOPE_BEGIN("Detour_ProcessUsercmds");
 
 	for (int i = 0; i < numcmds; i++)
+	{
 		cmds[i].cmd.mutable_base()->mutable_subtick_moves()->Clear();
+
+		if (g_bDisableSubtickShooting)
+		{
+			cmds[i].cmd.set_attack1_start_history_index(-1);
+			cmds[i].cmd.set_attack2_start_history_index(-1);
+			cmds[i].cmd.set_attack3_start_history_index(-1);
+			cmds[i].cmd.mutable_input_history()->Clear();
+		}
+	}
 
 	VPROF_SCOPE_END();
 

@@ -16,3 +16,4 @@ bld/
 *.vcxproj.user
 .vscode
 /dockerbuild
+.idea/*
