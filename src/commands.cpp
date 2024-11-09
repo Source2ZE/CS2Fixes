@@ -593,6 +593,8 @@ CON_COMMAND_CHAT(help, "- Display list of commands in console")
 
 CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 {
+	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)player->GetPawn();
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
@@ -607,6 +609,9 @@ CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 		}
 		else
 		{
+			if (pPawn && pPawn->IsAlive())
+				pPawn->CommitSuicide(false, true);
+
 			player->SwitchTeam(CS_TEAM_SPECTATOR);
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Moved to spectators.");
 		}
@@ -626,7 +631,12 @@ CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 		return;
 
 	if (player->m_iTeamNum() != CS_TEAM_SPECTATOR)
+	{
+		if (pPawn && pPawn->IsAlive())
+			pPawn->CommitSuicide(false, true);
+
 		player->SwitchTeam(CS_TEAM_SPECTATOR);
+	}
 
 	// 1 frame delay as observer services will be null on same frame as spectator team switch
 	CHandle<CCSPlayerController> hPlayer = player->GetHandle();
