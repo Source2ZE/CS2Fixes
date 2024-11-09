@@ -622,7 +622,7 @@ CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 	int iNumClients = 0;
 	int pSlot[MAXPLAYERS];
 
-	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlot, NO_MULTIPLE | NO_SELF | NO_DEAD | NO_SPECTATOR))
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlot, NO_MULTIPLE | NO_SELF | NO_DEAD | NO_SPECTATOR | NO_IMMUNITY))
 		return;
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
