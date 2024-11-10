@@ -389,6 +389,10 @@ void Leader_OnRoundStart(IGameEvent* pEvent)
 			continue;
 
 		CCSPlayerPawn* pawnLeader = (CCSPlayerPawn*)pLeader->GetPawn();
+
+		if (!pawnLeader)
+			continue;
+
 		ZEPlayer* zpLeader = g_playerManager->GetPlayer((CPlayerSlot)i);
 
 		if (zpLeader && !zpLeader->IsLeader())
