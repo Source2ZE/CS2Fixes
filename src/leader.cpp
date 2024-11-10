@@ -524,7 +524,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 		return;
 	}
 
-	if (g_RTVState == ERTVState::MAP_START)
+	if (gpGlobals->curtime < 60.0f)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Leader voting is not open yet.");
 		return;
