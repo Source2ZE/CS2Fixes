@@ -21,7 +21,6 @@
 #include "common.h"
 #include "commands.h"
 #include "gameevents.pb.h"
-#include "votemanager.h"
 #include "zombiereborn.h"
 #include "networksystem/inetworkmessages.h"
 
@@ -116,7 +115,7 @@ bool Leader_SetNewLeader(ZEPlayer* zpLeader, std::string strColor = "")
 	zpLeader->SetLeader(true);
 	Color color = Color(0, 0, 0, 0);
 
-	if (pawnLeader->m_iHealth() > 0 && pLeader->m_iTeamNum == CS_TEAM_CT && (Color)(pawnLeader->m_clrRender) != Color(255, 255, 255, 255))
+	if (pawnLeader && pawnLeader->m_iHealth() > 0 && pLeader->m_iTeamNum == CS_TEAM_CT && (Color)(pawnLeader->m_clrRender) != Color(255, 255, 255, 255))
 		color = pawnLeader->m_clrRender;
 
 	if (strColor.length() > 0)
@@ -597,7 +596,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 				player->GetPlayerName(), pTarget->GetPlayerName(), iLeaderVoteCount+1, iNeededLeaderVoteCount);
 }
 
-CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend marker on you or target player")
+CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend marker on the target player")
 {
 	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
 	bool bIsAdmin = pPlayer ? pPlayer->IsAdminFlagSet(FLAG_LEADER) : true;
@@ -778,24 +777,68 @@ CON_COMMAND_CHAT(leaderhelp, "- List leader commands in chat")
 	if (!g_bEnableLeader)
 		return;
 
-	int iDestination = player ? HUD_PRINTTALK : HUD_PRINTCONSOLE;
-
-	ClientPrint(player, iDestination, CHAT_PREFIX "List of leader commands:");
-	ClientPrint(player, iDestination, CHAT_PREFIX "!beacon <name> [color] - Place a beacon on player");
-	ClientPrint(player, iDestination, CHAT_PREFIX "!tracer <name> [color] - Give player tracers");
-	ClientPrint(player, iDestination, CHAT_PREFIX "!defend [name|duration] [duration] - Place defend mark on player");
-	ClientPrint(player, iDestination, CHAT_PREFIX "!glow <name> [color] - Toggle glow highlight on a player");
-	ClientPrint(player, iDestination, CHAT_PREFIX "!leadercolors - List leader colors in chat");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "List of leader commands:");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!leader [name] [color] - Give another player leader status");
+	if (g_bLeaderCanTargetPlayers)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!beacon <name> [color] - Toggle beacon on a player");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!tracer <name> [color] - Toggle projectile tracers on a player");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!defend [name|duration] [duration] - Place a defend marker on the target player");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!glow <name> [color] - Toggle glow highlight on a player");
+	}
+	else
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!beacon - Toggle beacon on yourself");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!tracer - Toggle projectile tracers on yourself");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!defend [duration] - Place a defend marker on yourself");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!glow - Toggle glow highlight on yourself");
+	}
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!disablepings - Disable non-leaders pings");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!leadercolor [color] - List leader colors in chat or change your active leader color");
 }
 
-CON_COMMAND_CHAT(leadercolors, "- List leader colors in chat")
+CON_COMMAND_CHAT(leadercolor, "[color] - List leader colors in chat or change your leader color")
 {
 	if (!g_bEnableLeader)
 		return;
 
-	int iDestination = player ? HUD_PRINTTALK : HUD_PRINTCONSOLE;
+	ZEPlayer* zpPlayer = player ? player->GetZEPlayer() : nullptr;
+	if (zpPlayer && zpPlayer->IsLeader() && args.ArgC() >= 2)
+	{
+		std::string strColor = args[1];
+		std::transform(strColor.begin(), strColor.end(), strColor.begin(), [](unsigned char c) { return std::tolower(c); });
+		if (strColor.length() > 0 && mapColorPresets.contains(strColor))
+		{
+			auto const& colorPreset = mapColorPresets.at(strColor);
+			Color color = colorPreset.color;
+			zpPlayer->SetLeaderColor(color);
 
-	ClientPrint(player, iDestination, CHAT_PREFIX "List of leader colors:");
+			// Override current leader visuals with the new color they manually picked
+			if (zpPlayer->GetGlowModel())
+			{
+				zpPlayer->EndGlow();
+				zpPlayer->StartGlow(color, 0);
+			}
+
+			if (zpPlayer->GetTracerColor().a() == 255)
+				zpPlayer->SetTracerColor(color);
+
+			if (zpPlayer->GetBeaconParticle())
+			{
+				zpPlayer->EndBeacon();
+				zpPlayer->StartBeacon(color, zpPlayer ? zpPlayer->GetHandle() : 0);
+			}
+
+			CCSPlayerPawn* pawnPlayer = (CCSPlayerPawn*)player->GetPawn();
+			if (pawnPlayer && pawnPlayer->m_iHealth() > 0 && player->m_iTeamNum == CS_TEAM_CT)
+				pawnPlayer->m_clrRender = color;
+
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Set your leader color to %s%s\x01.", colorPreset.strChatColor.c_str(), strColor.c_str());
+			return;
+		}
+	}
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "List of leader colors:");
 
 	std::string strColors = "";
 	for (auto const& [strColorName, colorPreset] : mapColorPresets)
@@ -805,7 +848,7 @@ CON_COMMAND_CHAT(leadercolors, "- List leader colors in chat")
 	if (strColors.length() > 2)
 		strColors = strColors.substr(0, strColors.length() - 2);
 
-	ClientPrint(player, iDestination, CHAT_PREFIX "%s", strColors.c_str());
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s", strColors.c_str());
 }
 
 CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a player")
