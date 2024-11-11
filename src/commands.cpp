@@ -804,53 +804,9 @@ CON_COMMAND_CHAT(fl, "- Flashlight")
 	pLight->AcceptInput("SetParentAttachmentMaintainOffset", &val2);
 }
 
-CON_COMMAND_CHAT(message, "<id> <message> - Message someone")
-{
-	if (!player)
-		return;
-
-	// Note that the engine will treat this as a player slot number, not an entity index
-	int uid = atoi(args[1]);
-
-	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(uid);
-
-	if (!pTarget)
-		return;
-
-	// skipping the id and space, it's dumb but w/e
-	const char *pMessage = args.ArgS() + V_strlen(args[1]) + 1;
-
-	ClientPrint(pTarget, HUD_PRINTTALK, CHAT_PREFIX "Private message from %s to %s: \5%s", player->GetPlayerName(), pTarget->GetPlayerName(), pMessage);
-}
-
 CON_COMMAND_CHAT(say, "<message> - Say something using console")
 {
 	ClientPrintAll(HUD_PRINTTALK, "%s", args.ArgS());
-}
-
-CON_COMMAND_CHAT(takemoney, "<amount> - Take your money")
-{
-	if (!player)
-		return;
-
-	int amount = atoi(args[1]);
-	int money = player->m_pInGameMoneyServices->m_iAccount;
-
-	player->m_pInGameMoneyServices->m_iAccount = money - amount;
-}
-
-CON_COMMAND_CHAT(sethealth, "<health> - Set your health")
-{
-	if (!player)
-		return;
-
-	int health = atoi(args[1]);
-
-	CBaseEntity *pEnt = (CBaseEntity *)player->GetPawn();
-
-	pEnt->m_iHealth = health;
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your health is now %d", health);
 }
 
 CON_COMMAND_CHAT(test_target, "<name> [blocked flag] [...] - Test string targetting")
@@ -905,20 +861,6 @@ CON_COMMAND_CHAT(test_target, "<name> [blocked flag] [...] - Test string targett
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Targeting %s", pTarget->GetPlayerName());
 		Message("Targeting %s\n", pTarget->GetPlayerName());
 	}
-}
-
-CON_COMMAND_CHAT(setorigin, "<vector> - Set your origin")
-{
-	if (!player)
-		return;
-
-	CBasePlayerPawn *pPawn = player->GetPawn();
-	Vector vecNewOrigin;
-	V_StringToVector(args.ArgS(), vecNewOrigin);
-
-	pPawn->Teleport(&vecNewOrigin, nullptr, nullptr);
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your origin is now %f %f %f", vecNewOrigin.x, vecNewOrigin.y, vecNewOrigin.z);
 }
 
 CON_COMMAND_CHAT(particle, "- Spawn a particle")
