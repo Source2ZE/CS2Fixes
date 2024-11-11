@@ -426,34 +426,30 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADM
 		PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
 }
 
-CON_COMMAND_CHAT_FLAGS(noclip, "- Toggle noclip on yourself", ADMFLAG_SLAY | ADMFLAG_CHEATS)
+CON_COMMAND_CHAT_FLAGS(noclip, "[name] - Toggle noclip on a player", ADMFLAG_CHEATS)
 {
-	if (!player)
-	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
-		return;
-	}
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
 
-	CBasePlayerPawn *pPawn = player->m_hPawn();
+	if (!g_playerManager->CanTargetPlayers(player, args.ArgC() < 2 ? "@me" : args[1], iNumClients, pSlots, NO_MULTIPLE | NO_DEAD | NO_SPECTATOR))
+		return;
+
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
+	CBasePlayerPawn *pPawn = pTarget->m_hPawn();
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	if (!pPawn)
 		return;
 
-	if (pPawn->m_iHealth() <= 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot noclip while dead!");
-		return;
-	}
-
 	if (pPawn->m_nActualMoveType() == MOVETYPE_NOCLIP)
 	{
 		pPawn->SetMoveType(MOVETYPE_WALK);
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "exited noclip.", player->GetPlayerName());
+		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "disabled noclip on");
 	}
 	else
 	{
 		pPawn->SetMoveType(MOVETYPE_NOCLIP);
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "entered noclip.", player->GetPlayerName());
+		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "enabled noclip on");
 	}
 }
 
