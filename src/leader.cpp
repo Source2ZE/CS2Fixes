@@ -244,13 +244,20 @@ void Leader_ApplyLeaderVisuals(CCSPlayerPawn* pPawn)
 	}
 
 	pPawn->m_clrRender = zpLeader->GetLeaderColor();
-	if (zpLeader->GetBeaconColor().a() == 255 && !zpLeader->GetBeaconParticle())
+	if (zpLeader->GetBeaconColor().a() == 255)
 	{
-		zpLeader->StartBeacon(zpLeader->GetBeaconColor(), zpLeader->GetHandle());
+		Color colorBeacon = zpLeader->GetBeaconColor();
+		if (zpLeader->GetBeaconParticle())
+			zpLeader->EndBeacon();
+		zpLeader->StartBeacon(colorBeacon, zpLeader->GetHandle());
 	}
-	if (zpLeader->GetGlowColor().a() == 255 && !zpLeader->GetGlowModel())
+
+	if (zpLeader->GetGlowColor().a() == 255)
 	{
-		zpLeader->StartGlow(zpLeader->GetGlowColor(), 0);
+		Color colorGlow = zpLeader->GetGlowColor();
+		if (zpLeader->GetGlowModel())
+			zpLeader->EndGlow();
+		zpLeader->StartGlow(colorGlow, 0);
 	}
 }
 
@@ -355,7 +362,7 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, cons
 	g_gameEventManager->FreeEvent(pEvent);
 
 	// Add a mark particle to CT leader pings
-	if (pPlayer->IsLeader())
+	if (pPlayer->IsLeader() && (pController->m_iTeamNum == CS_TEAM_CT || !g_bLeaderActionsHumanOnly))
 	{
 		Vector vecOrigin = pEntity->GetAbsOrigin();
 		vecOrigin.z += 10;
@@ -606,13 +613,12 @@ CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend mar
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
-	uint64 iTargetFlags = NO_MULTIPLE | NO_DEAD | NO_TERRORIST | NO_IMMUNITY;
 	const char* pszTarget = "@me";
 	if ((args.ArgC() >= 2 || (args.ArgC() == 2 && iDuration == -1)) && (bIsAdmin || g_bLeaderCanTargetPlayers))
 		pszTarget = args[1];
 	iDuration = (iDuration < 1) ? 30 : MIN(iDuration, 60);
 	
-	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, iTargetFlags, nType))
+	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, NO_MULTIPLE | NO_DEAD | NO_TERRORIST | NO_IMMUNITY, nType))
 		return;
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
@@ -640,12 +646,11 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
-	uint64 iTargetFlags = NO_DEAD | NO_TERRORIST | NO_MULTIPLE;
 	const char* pszTarget = "@me";
 	if (args.ArgC() >= 2 && (bIsAdmin || g_bLeaderCanTargetPlayers))
 		pszTarget = args[1];
 
-	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, iTargetFlags, nType))
+	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, NO_DEAD | NO_TERRORIST | NO_MULTIPLE, nType))
 		return;
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
@@ -795,6 +800,7 @@ CON_COMMAND_CHAT(leaderhelp, "- List leader commands in chat")
 	}
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!disablepings - Disable non-leaders pings");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!leadercolor [color] - List leader colors in chat or change your active leader color");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!resign - Remove leader status from yourself");
 }
 
 CON_COMMAND_CHAT(leadercolor, "[color] - List leader colors in chat or change your leader color")
@@ -867,12 +873,11 @@ CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a playe
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
-	uint64 iTargetFlags = NO_MULTIPLE | NO_BOT;
 	const char* pszTarget = "@me";
 	if (args.ArgC() >= 2)
 		pszTarget = args[1];
 
-	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, iTargetFlags, nType))
+	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, NO_MULTIPLE | NO_BOT, nType))
 		return;
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
@@ -887,21 +892,22 @@ CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a playe
 	}
 }
 
-CON_COMMAND_CHAT_LEADER(removeleader, "[name] - Remove leader status from a player")
+CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a player", ADMFLAG_GENERIC)
 {
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !removeleader <name>");
+		return;
+	}
+
 	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
-	bool bIsAdmin = pPlayer ? pPlayer->IsAdminFlagSet(FLAG_LEADER) : true;
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
-	uint64 iTargetFlags = NO_MULTIPLE | NO_BOT;
-	const char* pszTarget = "@me";
-	if (bIsAdmin && args.ArgC() >= 2)
-		pszTarget = args[1];
 
-	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, iTargetFlags, nType))
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_MULTIPLE | NO_BOT, nType))
 		return;
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
@@ -909,7 +915,7 @@ CON_COMMAND_CHAT_LEADER(removeleader, "[name] - Remove leader status from a play
 
 	if (!pPlayerTarget->IsLeader())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not a leader.", pTarget->GetPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not a leader. Use !leaders to list all current leaders.", pTarget->GetPlayerName());
 		return;
 	}
 
@@ -933,7 +939,47 @@ CON_COMMAND_CHAT_LEADER(removeleader, "[name] - Remove leader status from a play
 		Leader_RemoveLeaderVisuals(pPawn);
 
 	if (player == pTarget)
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s resigned from leader.", player->GetPlayerName());
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s resigned from being a leader.", player->GetPlayerName());
 	else
 		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "removed leader from ", "", CHAT_PREFIX);
+}
+
+CON_COMMAND_CHAT(resign, "- Remove leader status from yourself")
+{
+	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
+	// Only players can use this command at all
+	if (!player || !pPlayer)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	// Check for this inside of command instead of using CON_COMMAND_CHAT_LEADER so that leaders can resign
+	// even when they are not CTs and cs2f_leader_actions_ct_only is set to true
+	if (!pPlayer->IsLeader())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You must be a leader to use this command.");
+		return;
+	}
+
+	player->m_iScore() = player->m_iScore() - 20000;
+	pPlayer->SetLeader(false);
+	pPlayer->SetLeaderColor(Color(0, 0, 0, 0));
+	pPlayer->SetTracerColor(Color(0, 0, 0, 0));
+	pPlayer->SetBeaconColor(Color(0, 0, 0, 0));
+	pPlayer->SetGlowColor(Color(0, 0, 0, 0));
+	FOR_EACH_VEC_BACK(g_vecLeaders, i)
+	{
+		if (g_vecLeaders[i] == pPlayer)
+		{
+			g_vecLeaders.Remove(i);
+			break;
+		}
+	}
+
+	CCSPlayerPawn* pPawn = (player->m_iTeamNum != CS_TEAM_CT || !player->IsAlive()) ? nullptr : (CCSPlayerPawn*)player->GetPawn();
+	if (pPawn)
+		Leader_RemoveLeaderVisuals(pPawn);
+
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s resigned from being a leader.", player->GetPlayerName());
 }
