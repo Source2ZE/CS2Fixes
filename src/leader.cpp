@@ -59,6 +59,7 @@ static bool g_bPingWithLeader = true;
 bool g_bEnableLeader = false;
 static float g_flLeaderVoteRatio = 0.15;
 bool g_bLeaderActionsHumanOnly = true;
+bool g_bLeaderMarkerHumanOnly = true;
 static bool g_bMuteNonLeaderPings = true;
 static std::string g_strLeaderModelPath = "";
 static std::string g_strDefendParticlePath = "particles/cs2fixes/leader_defend_mark.vpcf";
@@ -69,6 +70,7 @@ static bool g_bLeaderVoteMultiple = true;
 FAKE_BOOL_CVAR(cs2f_leader_enable, "Whether to enable Leader features", g_bEnableLeader, false, false)
 FAKE_FLOAT_CVAR(cs2f_leader_vote_ratio, "Vote ratio needed for player to become a leader", g_flLeaderVoteRatio, 0.2f, false)
 FAKE_BOOL_CVAR(cs2f_leader_actions_ct_only, "Whether to allow leader actions (like !beacon) only from human team", g_bLeaderActionsHumanOnly, true, false)
+FAKE_BOOL_CVAR(cs2f_leader_marker_ct_only, "Whether to have zombie leaders' player_pings spawn in particle markers or not", g_bLeaderMarkerHumanOnly, true, false)
 FAKE_BOOL_CVAR(cs2f_leader_mute_player_pings, "Whether to mute player pings made by non-leaders", g_bMuteNonLeaderPings, true, false)
 FAKE_STRING_CVAR(cs2f_leader_model_path, "Path to player model to be used for leaders", g_strLeaderModelPath, false)
 FAKE_STRING_CVAR(cs2f_leader_defend_particle, "Path to defend particle to be used with c_defend", g_strDefendParticlePath, false)
@@ -362,7 +364,7 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, cons
 	g_gameEventManager->FreeEvent(pEvent);
 
 	// Add a mark particle to CT leader pings
-	if (pPlayer->IsLeader() && (pController->m_iTeamNum == CS_TEAM_CT || !g_bLeaderActionsHumanOnly))
+	if (pPlayer->IsLeader() && (pController->m_iTeamNum == CS_TEAM_CT || !g_bLeaderMarkerHumanOnly))
 	{
 		Vector vecOrigin = pEntity->GetAbsOrigin();
 		vecOrigin.z += 10;
@@ -894,6 +896,9 @@ CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a playe
 
 CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a player", ADMFLAG_GENERIC)
 {
+	if (!g_bEnableLeader)
+		return;
+
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !removeleader <name>");
@@ -946,6 +951,9 @@ CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a playe
 
 CON_COMMAND_CHAT(resign, "- Remove leader status from yourself")
 {
+	if (!g_bEnableLeader)
+		return;
+
 	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
 	// Only players can use this command at all
 	if (!player || !pPlayer)
