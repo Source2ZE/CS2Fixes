@@ -34,6 +34,7 @@
 #include "leader.h"
 #include "tier0/vprof.h"
 #include "networksystem/inetworkmessages.h"
+#include "engine/igameeventsystem.h"
 
 #include "tier0/memdbgon.h"
 
@@ -41,6 +42,7 @@
 extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
+extern IGameEventSystem* g_gameEventSystem;
 
 static int g_iAdminImmunityTargetting = 0;
 static bool g_bEnableMapSteamIds = false;
@@ -557,7 +559,9 @@ void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
 	cvarMsg->set_name(pszName);
 	cvarMsg->set_value(pszValue);
 
-	GetClientBySlot(GetPlayerSlot())->GetNetChannel()->SendNetMessage(data, BUF_RELIABLE);
+	CSingleRecipientFilter filter(GetPlayerSlot());
+	g_gameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
+
 	delete data;
 }
 
