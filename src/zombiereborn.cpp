@@ -1113,7 +1113,8 @@ void ZR_InfectShake(CCSPlayerController *pController)
 	data->set_amplitude(g_flInfectShakeAmplitude);
 	data->set_command(0);
 
-	pController->GetServerSideClient()->GetNetChannel()->SendNetMessage(data, BUF_RELIABLE);
+	CSingleRecipientFilter filter(pController->GetPlayerSlot());
+	g_gameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
 
 	delete data;
 }

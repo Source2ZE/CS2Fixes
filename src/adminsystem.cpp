@@ -426,34 +426,30 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADM
 		PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
 }
 
-CON_COMMAND_CHAT_FLAGS(noclip, "- Toggle noclip on yourself", ADMFLAG_SLAY | ADMFLAG_CHEATS)
+CON_COMMAND_CHAT_FLAGS(noclip, "[name] - Toggle noclip on a player", ADMFLAG_CHEATS)
 {
-	if (!player)
-	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
-		return;
-	}
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
 
-	CBasePlayerPawn *pPawn = player->m_hPawn();
+	if (!g_playerManager->CanTargetPlayers(player, args.ArgC() < 2 ? "@me" : args[1], iNumClients, pSlots, NO_MULTIPLE | NO_DEAD | NO_SPECTATOR))
+		return;
+
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
+	CBasePlayerPawn *pPawn = pTarget->m_hPawn();
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	if (!pPawn)
 		return;
 
-	if (pPawn->m_iHealth() <= 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot noclip while dead!");
-		return;
-	}
-
 	if (pPawn->m_nActualMoveType() == MOVETYPE_NOCLIP)
 	{
 		pPawn->SetMoveType(MOVETYPE_WALK);
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "exited noclip.", player->GetPlayerName());
+		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "disabled noclip on");
 	}
 	else
 	{
 		pPawn->SetMoveType(MOVETYPE_NOCLIP);
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "entered noclip.", player->GetPlayerName());
+		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "enabled noclip on");
 	}
 }
 
@@ -974,6 +970,138 @@ CON_COMMAND_CHAT(status, "<name> - Checks a player's active punishments. Non-adm
 CON_COMMAND_CHAT_FLAGS(listdc, "- List recently disconnected players and their Steam64 IDs", ADMFLAG_GENERIC)
 {
 	g_pAdminSystem->ShowDisconnectedPlayers(player);
+}
+
+CON_COMMAND_CHAT_FLAGS(endround, "- Immediately ends the round, client-side variant of endround", ADMFLAG_RCON)
+{
+	g_pGameRules->TerminateRound(0.0f, CSRoundEndReason::Draw);
+}
+
+CON_COMMAND_CHAT_FLAGS(money, "<name> <amount> - Set a player's amount of money", ADMFLAG_CHEATS)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !money <name> <amount>");
+		return;
+	}
+
+	int iMoney = V_StringToInt32(args[2], -1);
+
+	if (iMoney < 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid amount specified, must be a positive number.");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+	ETargetType nType;
+
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
+		return;
+
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+
+	char szAction[64];
+	V_snprintf(szAction, sizeof(szAction), "set $%i money on", iMoney);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		pTarget->m_pInGameMoneyServices->m_iAccount = iMoney;
+
+		if (iNumClients == 1)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), szAction, "");
+	}
+
+	if (iNumClients > 1)
+		PrintMultiAdminAction(nType, pszCommandPlayerName, szAction, "");
+}
+
+CON_COMMAND_CHAT_FLAGS(health, "<name> <health> - Set a player's health", ADMFLAG_CHEATS)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !health <name> <health>");
+		return;
+	}
+
+	int iHealth = V_StringToInt32(args[2], -1);
+
+	if (iHealth < 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid amount specified, must be a positive number.");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+	ETargetType nType;
+
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_SPECTATOR, nType))
+		return;
+
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+
+	char szAction[64];
+	V_snprintf(szAction, sizeof(szAction), "set %i health on", iHealth);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		CCSPlayerPawn* pPawn = pTarget->GetPlayerPawn();
+
+		if (!pPawn)
+			continue;
+
+		if (pPawn->m_iMaxHealth < iHealth)
+			pPawn->m_iMaxHealth = iHealth;
+
+		pPawn->m_iHealth = iHealth;
+
+		if (iNumClients == 1)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), szAction, "");
+	}
+
+	if (iNumClients > 1)
+		PrintMultiAdminAction(nType, pszCommandPlayerName, szAction, "");
+}
+
+CON_COMMAND_CHAT_FLAGS(setpos, "<x y z> - Set your origin", ADMFLAG_CHEATS)
+{
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	CBasePlayerPawn* pPawn = player->GetPawn();
+
+	if (!pPawn)
+		return;
+
+	if (pPawn->m_iTeamNum() < CS_TEAM_T || !pPawn->IsAlive())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You must be alive to use this command.");
+		return;
+	}
+
+	Vector origin;
+	V_StringToVector(args.ArgS(), origin);
+
+	char szOrigin[64];
+	V_snprintf(szOrigin, sizeof(szOrigin), "%f %f %f", origin.x, origin.y, origin.z);
+
+	pPawn->Teleport(&origin, nullptr, nullptr);
+	PrintSingleAdminAction(player->GetPlayerName(), szOrigin, "teleported to");
 }
 
 #ifdef _DEBUG

@@ -34,6 +34,7 @@
 #include "leader.h"
 #include "tier0/vprof.h"
 #include "networksystem/inetworkmessages.h"
+#include "engine/igameeventsystem.h"
 
 #include "tier0/memdbgon.h"
 
@@ -41,6 +42,7 @@
 extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
+extern IGameEventSystem* g_gameEventSystem;
 
 static int g_iAdminImmunityTargetting = 0;
 static bool g_bEnableMapSteamIds = false;
@@ -275,6 +277,8 @@ void PrecacheBeaconParticle(IEntityResourceManifest* pResourceManifest)
 
 void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver/* = 0*/)
 {
+	SetBeaconColor(color);
+
 	CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(m_slot);
 
 	Vector vecAbsOrigin = pPlayer->GetPawn()->GetAbsOrigin();
@@ -343,21 +347,42 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver/* = 0*/)
 
 void ZEPlayer::EndBeacon()
 {
+	SetBeaconColor(Color(0, 0, 0, 0));
+
 	CParticleSystem *pParticle = m_hBeaconParticle.Get();
 
 	if (pParticle)
 		addresses::UTIL_Remove(pParticle);
 }
 
-void ZEPlayer::SetLeader(int leaderIndex)
+// Kills off currently active mark (if exists) and makes a new one.
+// iDuration being non-positive only kills off active marks.
+void ZEPlayer::CreateMark(float fDuration, Vector vecOrigin)
 {
-	if (leaderIndex >= g_nLeaderColorMapSize)
+	if (m_handleMark && m_handleMark.IsValid())
 	{
-		m_iLeaderIndex = g_iLeaderIndex = 1;
-		return;
+		UTIL_AddEntityIOEvent(m_handleMark.Get(), "DestroyImmediately", nullptr, nullptr, "", 0);
+		UTIL_AddEntityIOEvent(m_handleMark.Get(), "Kill", nullptr, nullptr, "", 0.02f);
 	}
+		
+	if (fDuration <= 0)
+		return;
 
-	m_iLeaderIndex = leaderIndex;
+	CParticleSystem* pMarker = CreateEntityByName<CParticleSystem>("info_particle_system");
+	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
+
+	pKeyValues->SetString("effect_name", g_strMarkParticlePath.c_str());
+	pKeyValues->SetInt("tint_cp", 1);
+	pKeyValues->SetColor("tint_cp_color", GetLeaderColor());
+	pKeyValues->SetVector("origin", vecOrigin);
+	pKeyValues->SetBool("start_active", true);
+
+	pMarker->DispatchSpawn(pKeyValues);
+
+	UTIL_AddEntityIOEvent(pMarker, "DestroyImmediately", nullptr, nullptr, "", fDuration);
+	UTIL_AddEntityIOEvent(pMarker, "Kill", nullptr, nullptr, "", fDuration + 0.02f);
+
+	m_handleMark = pMarker->GetHandle(); // Save handle in case we need to kill mark earlier than above IO.
 }
 
 int ZEPlayer::GetLeaderVoteCount()
@@ -398,6 +423,7 @@ void ZEPlayer::PurgeLeaderVotes()
 
 void ZEPlayer::StartGlow(Color color, int duration)
 {
+	SetGlowColor(color);
 	CCSPlayerController *pController = CCSPlayerController::FromSlot(m_slot);
 	CCSPlayerPawn *pPawn = (CCSPlayerPawn*)pController->GetPawn();
 	
@@ -485,6 +511,8 @@ void ZEPlayer::StartGlow(Color color, int duration)
 
 void ZEPlayer::EndGlow()
 {
+	SetGlowColor(Color(0, 0, 0, 0));
+
 	CBaseModelEntity *pGlowModel = m_hGlowModel.Get();
 
 	if (!pGlowModel)
@@ -531,7 +559,9 @@ void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
 	cvarMsg->set_name(pszName);
 	cvarMsg->set_value(pszValue);
 
-	GetClientBySlot(GetPlayerSlot())->GetNetChannel()->SendNetMessage(data, BUF_RELIABLE);
+	CSingleRecipientFilter filter(GetPlayerSlot());
+	g_gameEventSystem->PostEventAbstract(-1, false, &filter, pNetMsg, data, 0);
+
 	delete data;
 }
 
