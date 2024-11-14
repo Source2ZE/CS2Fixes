@@ -539,9 +539,12 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 		RemoveMapTimers();
 
 	g_bHasTicked = false;
+
 	RegisterEventListeners();
+
 	g_pPanoramaVoteHandler->Reset();
 	VoteManager_Init();
+
 	g_pIdleSystem->Reset();
 }
 
@@ -638,7 +641,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 
 void CS2Fixes::AllPluginsLoaded()
 {
-	/* This is where we'd do stuff that relies on the mod or other plugins	
+	/* This is where we'd do stuff that relies on the mod or other plugins 
 	 * being initialized (for example, cvars added and events registered).
 	 */
 
