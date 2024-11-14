@@ -941,8 +941,8 @@ bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer *pInfoContainer)
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
 
-bool g_bFixPhysicsPlayerShuffle = true;
-FAKE_BOOL_CVAR(cs2f_shuffle_player_physics_sim, "Whether to enable shuffle player list in physics simulate", g_bFixPhysicsPlayerShuffle, true, false);
+bool g_bFixPhysicsPlayerShuffle = false;
+FAKE_BOOL_CVAR(cs2f_shuffle_player_physics_sim, "Whether to enable shuffle player list in physics simulate", g_bFixPhysicsPlayerShuffle, false, false);
 
 struct TouchLinked_t
 {
