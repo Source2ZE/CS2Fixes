@@ -275,6 +275,8 @@ void PrecacheBeaconParticle(IEntityResourceManifest* pResourceManifest)
 
 void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver/* = 0*/)
 {
+	SetBeaconColor(color);
+
 	CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(m_slot);
 
 	Vector vecAbsOrigin = pPlayer->GetPawn()->GetAbsOrigin();
@@ -343,21 +345,42 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver/* = 0*/)
 
 void ZEPlayer::EndBeacon()
 {
+	SetBeaconColor(Color(0, 0, 0, 0));
+
 	CParticleSystem *pParticle = m_hBeaconParticle.Get();
 
 	if (pParticle)
 		addresses::UTIL_Remove(pParticle);
 }
 
-void ZEPlayer::SetLeader(int leaderIndex)
+// Kills off currently active mark (if exists) and makes a new one.
+// iDuration being non-positive only kills off active marks.
+void ZEPlayer::CreateMark(float fDuration, Vector vecOrigin)
 {
-	if (leaderIndex >= g_nLeaderColorMapSize)
+	if (m_handleMark && m_handleMark.IsValid())
 	{
-		m_iLeaderIndex = g_iLeaderIndex = 1;
-		return;
+		UTIL_AddEntityIOEvent(m_handleMark.Get(), "DestroyImmediately", nullptr, nullptr, "", 0);
+		UTIL_AddEntityIOEvent(m_handleMark.Get(), "Kill", nullptr, nullptr, "", 0.02f);
 	}
+		
+	if (fDuration <= 0)
+		return;
 
-	m_iLeaderIndex = leaderIndex;
+	CParticleSystem* pMarker = CreateEntityByName<CParticleSystem>("info_particle_system");
+	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
+
+	pKeyValues->SetString("effect_name", g_strMarkParticlePath.c_str());
+	pKeyValues->SetInt("tint_cp", 1);
+	pKeyValues->SetColor("tint_cp_color", GetLeaderColor());
+	pKeyValues->SetVector("origin", vecOrigin);
+	pKeyValues->SetBool("start_active", true);
+
+	pMarker->DispatchSpawn(pKeyValues);
+
+	UTIL_AddEntityIOEvent(pMarker, "DestroyImmediately", nullptr, nullptr, "", fDuration);
+	UTIL_AddEntityIOEvent(pMarker, "Kill", nullptr, nullptr, "", fDuration + 0.02f);
+
+	m_handleMark = pMarker->GetHandle(); // Save handle in case we need to kill mark earlier than above IO.
 }
 
 int ZEPlayer::GetLeaderVoteCount()
@@ -398,6 +421,7 @@ void ZEPlayer::PurgeLeaderVotes()
 
 void ZEPlayer::StartGlow(Color color, int duration)
 {
+	SetGlowColor(color);
 	CCSPlayerController *pController = CCSPlayerController::FromSlot(m_slot);
 	CCSPlayerPawn *pPawn = (CCSPlayerPawn*)pController->GetPawn();
 	
@@ -485,6 +509,8 @@ void ZEPlayer::StartGlow(Color color, int duration)
 
 void ZEPlayer::EndGlow()
 {
+	SetGlowColor(Color(0, 0, 0, 0));
+
 	CBaseModelEntity *pGlowModel = m_hGlowModel.Get();
 
 	if (!pGlowModel)
