@@ -52,14 +52,14 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGlobalVars*					   gpGlobals;
-extern CGameEntitySystem*			   g_pEntitySystem;
-extern IGameEventManager2*			   g_gameEventManager;
-extern CCSGameRules*				   g_pGameRules;
-extern CMapVoteSystem*				   g_pMapVoteSystem;
+extern CGlobalVars *gpGlobals;
+extern CGameEntitySystem *g_pEntitySystem;
+extern IGameEventManager2 *g_gameEventManager;
+extern CCSGameRules *g_pGameRules;
+extern CMapVoteSystem *g_pMapVoteSystem;
 extern CUtlVector<CServerSideClient*>* GetClientList();
 
-CUtlVector<CDetourBase*> g_vecDetours;
+CUtlVector<CDetourBase *> g_vecDetours;
 
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
@@ -82,14 +82,14 @@ DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosi
 DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
 
 static bool g_bBlockMolotovSelfDmg = false;
-static bool g_bBlockAllDamage	   = false;
-static bool g_bFixBlockDamage	   = false;
+static bool g_bBlockAllDamage = false;
+static bool g_bFixBlockDamage = false;
 
 FAKE_BOOL_CVAR(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", g_bBlockMolotovSelfDmg, false, false)
 FAKE_BOOL_CVAR(cs2f_block_all_dmg, "Whether to block all damage to players", g_bBlockAllDamage, false, false)
 FAKE_BOOL_CVAR(cs2f_fix_block_dmg, "Whether to fix block-damage on players", g_bFixBlockDamage, false, false)
 
-void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* inputInfo)
+void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
 {
 #ifdef _DEBUG
 	Message("\n--------------------------------\n"
@@ -107,13 +107,13 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageIn
 			inputInfo->m_flDamage,
 			inputInfo->m_bitsDamageType);
 #endif
-
+	
 	// Block all player damage if desired
 	if (g_bBlockAllDamage && pThis->IsPawn())
 		return;
 
-	CBaseEntity* pInflictor		   = inputInfo->m_hInflictor.Get();
-	const char*	 pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
+	CBaseEntity *pInflictor = inputInfo->m_hInflictor.Get();
+	const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 
 	// After Armory update, activator became attacker on block damage, which broke it..
 	if (g_bFixBlockDamage && inputInfo->m_AttackerInfo.m_bIsPawn && inputInfo->m_bitsDamageType ^ DMG_BULLET && inputInfo->m_hAttacker != pThis->GetHandle())
@@ -125,11 +125,11 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageIn
 			|| V_strcasecmp(pszInflictorClass, "func_rotating") == 0
 			|| V_strcasecmp(pszInflictorClass, "point_hurt") == 0)
 		{
-			inputInfo->m_AttackerInfo.m_bIsPawn	 = false;
+			inputInfo->m_AttackerInfo.m_bIsPawn = false;
 			inputInfo->m_AttackerInfo.m_bIsWorld = true;
-			inputInfo->m_hAttacker				 = inputInfo->m_hInflictor;
+			inputInfo->m_hAttacker = inputInfo->m_hInflictor;
 
-			inputInfo->m_AttackerInfo.m_hAttackerPawn		= CHandle<CCSPlayerPawn>(~0u);
+			inputInfo->m_AttackerInfo.m_hAttackerPawn = CHandle<CCSPlayerPawn>(~0u);
 			inputInfo->m_AttackerInfo.m_nAttackerPlayerSlot = ~0;
 		}
 	}
@@ -178,7 +178,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 	if (pOther->m_CBodyComponent()->m_pSceneNode()->m_pParent())
 		return;
 
-	Vector		vecAbsDir;
+	Vector vecAbsDir;
 	matrix3x4_t matTransform = pPush->m_CBodyComponent()->m_pSceneNode()->EntityToWorldTransform();
 
 	Vector vecPushDir = pPush->m_vecPushDirEntitySpace();
@@ -205,7 +205,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 	if (g_bLogPushes)
 	{
 		Vector vecEntBaseVelocity = pOther->m_vecBaseVelocity;
-		Vector vecOrigPush		  = vecAbsDir * pPush->m_flSpeed();
+		Vector vecOrigPush = vecAbsDir * pPush->m_flSpeed();
 
 		Message("Pushing entity %i | frame = %i | tick = %i | entity basevelocity %s = %.2f %.2f %.2f | original push velocity = %.2f %.2f %.2f | final push velocity = %.2f %.2f %.2f\n",
 				pOther->GetEntityIndex(),
@@ -232,16 +232,16 @@ bool FASTCALL Detour_IsHearingClient(void* serverClient, int index)
 	return IsHearingClient(serverClient, index);
 }
 
-void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
+void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPlayerController *pPlayer, uint64 eMessageType)
 {
 	VPROF("SayChatMessageWithTimer");
 
 	char buf[256];
 
 	// Filter console message - remove non-alphanumeric chars and convert to lowercase
-	uint32 uiTextLength			= strlen(pText);
+	uint32 uiTextLength = strlen(pText);
 	uint32 uiFilteredTextLength = 0;
-	char   filteredText[256];
+	char filteredText[256];
 
 	for (uint32 i = 0; i < uiTextLength; i++)
 	{
@@ -255,8 +255,8 @@ void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPla
 	// Split console message into words seperated by the space character
 	CSplitString words(filteredText, " ");
 
-	// Word count includes the first word "Console:" at index 0, first relevant word is at index 1
-	int	   iWordCount			= words.Count();
+	//Word count includes the first word "Console:" at index 0, first relevant word is at index 1
+	int iWordCount = words.Count();
 	uint32 uiTriggerTimerLength = 0;
 
 	if (iWordCount == 2)
@@ -264,13 +264,13 @@ void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPla
 
 	for (int i = 1; i < iWordCount && uiTriggerTimerLength == 0; i++)
 	{
-		uint32 uiCurrentValue	= V_StringToUint32(words.Element(i), 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING);
+		uint32 uiCurrentValue = V_StringToUint32(words.Element(i), 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING);
 		uint32 uiNextWordLength = 0;
-		char*  pNextWord		= NULL;
+		char* pNextWord = NULL;
 
 		if (i + 1 < iWordCount)
 		{
-			pNextWord		 = words.Element(i + 1);
+			pNextWord = words.Element(i + 1);
 			uiNextWordLength = strlen(pNextWord);
 		}
 
@@ -286,17 +286,17 @@ void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPla
 		// Case: ... Xs - only support up to 3 digit numbers (in seconds) for this timer parse method
 		if (uiCurrentValue == 0)
 		{
-			char*  pCurrentWord		   = words.Element(i);
+			char* pCurrentWord = words.Element(i);
 			uint32 uiCurrentScanLength = MIN(strlen(pCurrentWord), 4);
 
 			for (uint32 j = 0; j < uiCurrentScanLength; j++)
 			{
 				if (pCurrentWord[j] >= '0' && pCurrentWord[j] <= '9')
 					continue;
-
+				
 				if (pCurrentWord[j] == 's')
 				{
-					pCurrentWord[j]		 = '\0';
+					pCurrentWord[j] = '\0';
 					uiTriggerTimerLength = V_StringToUint32(pCurrentWord, 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING);
 				}
 				break;
@@ -330,7 +330,7 @@ bool g_bEnableTriggerTimer = false;
 
 FAKE_BOOL_CVAR(cs2f_trigger_timer_enable, "Whether to process countdown messages said by Console (e.g. Hold for 10 seconds) and append the round time where the countdown resolves", g_bEnableTriggerTimer, false, false)
 
-void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
+void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pText, CCSPlayerController *pPlayer, uint64 eMessageType)
 {
 	if (pPlayer)
 		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
@@ -345,17 +345,17 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const char* pT
 }
 
 void FASTCALL Detour_UTIL_SayText2Filter(
-	IRecipientFilter&	 filter,
-	CCSPlayerController* pEntity,
-	uint64				 eMessageType,
-	const char*			 msg_name,
-	const char*			 param1,
-	const char*			 param2,
-	const char*			 param3,
-	const char*			 param4)
+	IRecipientFilter &filter,
+	CCSPlayerController *pEntity,
+	uint64 eMessageType,
+	const char *msg_name,
+	const char *param1,
+	const char *param2,
+	const char *param3,
+	const char *param4)
 {
 #ifdef _DEBUG
-	CPlayerSlot			 slot	= filter.GetRecipientIndex(0);
+    CPlayerSlot slot = filter.GetRecipientIndex(0);
 	CCSPlayerController* target = CCSPlayerController::FromSlot(slot);
 
 	if (target)
@@ -365,7 +365,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
 }
 
-bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
+bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
 	if (g_bEnableZR && !ZR_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
 	{
@@ -403,7 +403,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		else
 			flDuration = value->m_float;
 
-		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
+		CCSPlayerPawn *pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
 		if (pPawn->IsPawn() && IgnitePawn(pPawn, flDuration, pPawn, pPawn))
 			return true;
@@ -417,7 +417,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		else
 			iScore = value->m_int;
 
-		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
+		CCSPlayerPawn *pPawn = reinterpret_cast<CCSPlayerPawn *>(pThis->m_pInstance);
 
 		if (pPawn->IsPawn() && pPawn->GetOriginalController())
 		{
@@ -425,7 +425,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 			return true;
 		}
 	}
-	else if (!V_strcasecmp(pInputName->String(), "SetMessage"))
+    else if (!V_strcasecmp(pInputName->String(), "SetMessage"))
 	{
 		if (const auto pHudHint = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsHudHint())
 		{
@@ -468,7 +468,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 
 	VPROF_SCOPE_END();
 
-	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+    return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
 
 bool g_bBlockNavLookup = false;
@@ -483,14 +483,14 @@ void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsi
 	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7, unk8);
 }
 
-void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pMove)
+void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pMove)
 {
-	CCSPlayerPawn* pPawn = pThis->GetPawn();
+	CCSPlayerPawn *pPawn = pThis->GetPawn();
 
 	if (!pPawn->IsAlive())
 		return ProcessMovement(pThis, pMove);
 
-	CCSPlayerController* pController = pPawn->GetOriginalController();
+	CCSPlayerController *pController = pPawn->GetOriginalController();
 
 	if (!pController || !pController->IsConnected())
 		return ProcessMovement(pThis, pMove);
@@ -499,6 +499,7 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pM
 
 	if (flSpeedMod == 1.f)
 		return ProcessMovement(pThis, pMove);
+
 
 	// Yes, this is what source1 does to scale player speed
 	// Scale frametime during the entire movement processing step and revert right after
@@ -521,14 +522,14 @@ class CUserCmd
 {
 public:
 	[[maybe_unused]] char pad0[0x10];
-	CSGOUserCmdPB		  cmd;
+	CSGOUserCmdPB cmd;
 	[[maybe_unused]] char pad1[0x38];
 #ifdef PLATFORM_WINDOWS
 	[[maybe_unused]] char pad2[0x8];
 #endif
 };
 
-void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd* cmds, int numcmds, bool paused, float margin)
+void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController *pController, CUserCmd *cmds, int numcmds, bool paused, float margin)
 {
 	// Push fix only works properly if subtick movement is also disabled
 	if (!g_bDisableSubtick && !g_bUseOldPush)
@@ -556,8 +557,8 @@ void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd
 
 void FASTCALL Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
 {
-	CGamePlayerEquipHandler::TriggerForAllPlayers(pEntity, pInput);
-	CGamePlayerEquip_InputTriggerForAllPlayers(pEntity, pInput);
+    CGamePlayerEquipHandler::TriggerForAllPlayers(pEntity, pInput);
+    CGamePlayerEquip_InputTriggerForAllPlayers(pEntity, pInput);
 }
 void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
 {
@@ -600,11 +601,11 @@ float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
 bool g_bPreventUsingPlayers = false;
 FAKE_BOOL_CVAR(cs2f_prevent_using_players, "Whether to prevent +use from hitting players (0=can use players, 1=cannot use players)", g_bPreventUsingPlayers, false, false);
 
-bool		   g_bFindingUseEntity = false;
+bool g_bFindingUseEntity = false;
 int64 FASTCALL Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float a2)
 {
 	g_bFindingUseEntity = true;
-	int64 ent			= FindUseEntity(pThis, a2);
+	int64 ent = FindUseEntity(pThis, a2);
 	g_bFindingUseEntity = false;
 	return ent;
 }
@@ -613,7 +614,7 @@ bool FASTCALL Detour_TraceFunc(int64* a1, int* a2, float* a3, uint64 traceMask)
 {
 	if (g_bPreventUsingPlayers && g_bFindingUseEntity)
 	{
-		uint64 newMask = traceMask & (~(CONTENTS_PLAYER & CONTENTS_NPC));
+		uint64 newMask = traceMask & ( ~(CONTENTS_PLAYER & CONTENTS_NPC) );
 		return TraceFunc(a1, a2, a3, newMask);
 	}
 
@@ -634,50 +635,50 @@ bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceF
 #ifdef PLATFORM_WINDOWS
 Vector* FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn, Vector* pRet)
 {
-	if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
-	{
-		const auto& origin = pPawn->GetEyePosition();
-		pRet->Init(origin.x, origin.y, origin.z);
-		return pRet;
-	}
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& origin = pPawn->GetEyePosition();
+        pRet->Init(origin.x, origin.y, origin.z);
+        return pRet;
+    }
 
-	return CBasePlayerPawn_GetEyePosition(pPawn, pRet);
+    return CBasePlayerPawn_GetEyePosition(pPawn, pRet);
 }
 QAngle* FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn, QAngle* pRet)
 {
-	if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
-	{
-		const auto& angles = pPawn->v_angle();
-		pRet->Init(angles.x, angles.y, angles.z);
-		return pRet;
-	}
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& angles = pPawn->v_angle();
+        pRet->Init(angles.x, angles.y, angles.z);
+        return pRet;
+    }
 
-	return CBasePlayerPawn_GetEyeAngles(pPawn, pRet);
+    return CBasePlayerPawn_GetEyeAngles(pPawn, pRet);
 }
 #else
 Vector FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn)
 {
-	if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
-	{
-		const auto& origin = pPawn->GetEyePosition();
-		return origin;
-	}
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& origin = pPawn->GetEyePosition();
+        return origin;
+    }
 
-	return CBasePlayerPawn_GetEyePosition(pPawn);
+    return CBasePlayerPawn_GetEyePosition(pPawn);
 }
 QAngle FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn)
 {
-	if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
-	{
-		const auto& angles = pPawn->v_angle();
-		return angles;
-	}
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& angles = pPawn->v_angle();
+        return angles;
+    }
 
-	return CBasePlayerPawn_GetEyeAngles(pPawn);
+    return CBasePlayerPawn_GetEyeAngles(pPawn);
 }
 #endif
 
-bool InitDetours(CGameConfig* gameConfig)
+bool InitDetours(CGameConfig *gameConfig)
 {
 	bool success = true;
 
@@ -685,7 +686,7 @@ bool InitDetours(CGameConfig* gameConfig)
 	{
 		if (!g_vecDetours[i]->CreateDetour(gameConfig))
 			success = false;
-
+		
 		g_vecDetours[i]->EnableDetour();
 	}
 
