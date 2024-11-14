@@ -72,9 +72,12 @@ void Message(const char *msg, ...)
 {
 	va_list args;
 	va_start(args, msg);
+
 	char buf[1024] = {};
 	V_vsnprintf(buf, sizeof(buf) - 1, msg, args);
+
 	ConColorMsg(Color(255, 0, 255, 255), "[CS2Fixes] %s", buf);
+
 	va_end(args);
 }
 
@@ -82,14 +85,16 @@ void Panic(const char *msg, ...)
 {
 	va_list args;
 	va_start(args, msg);
+
 	char buf[1024] = {};
 	V_vsnprintf(buf, sizeof(buf) - 1, msg, args);
+
 	Warning("[CS2Fixes] %s", buf);
+
 	va_end(args);
 }
 
-class GameSessionConfiguration_t
-{};
+class GameSessionConfiguration_t { };
 
 SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
 SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIActivated, SH_NOATTRIB, 0);
@@ -137,7 +142,7 @@ int g_iLoadEventsFromFileId = -1;
 int g_iGoToIntermissionId = -1;
 int g_iPhysicsTouchShuffle = -1;
 
-CGameEntitySystem* GameEntitySystem()
+CGameEntitySystem *GameEntitySystem()
 {
 	static int offset = g_GameConfig->GetOffset("GameEntitySystem");
 	return *reinterpret_cast<CGameEntitySystem **>((uintptr_t)(g_pGameResourceServiceServer) + offset);
@@ -344,10 +349,14 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		g_pIdleSystem->CheckForIdleClients();
 		return 5.0f;
 	});
+
 	// run our cfg
 	g_pEngineServer2->ServerCommand("exec cs2fixes/cs2fixes");
+
 	srand(time(0));
+
 	Message("Plugin successfully started!\n");
+
 	return true;
 }
 
@@ -459,6 +468,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 				pEvent->SetBool("teamonly", bTeamSay);
 				pEvent->SetInt("userid", pController->GetPlayerSlot());
 				pEvent->SetString("text", args[1]);
+
 				g_gameEventManager->FireEvent(pEvent, true);
 			}
 		}
@@ -485,12 +495,14 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 
 				if (!pPlayer)
 					continue;
+
 				if (pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC))
 					ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, " \4(ADMINS) %s:\1 %s", pController->GetPlayerName(), pszMessage);
 				else if (i == iCommandPlayerSlot.Get()) // Sender is not an admin
 					ClientPrint(pController, HUD_PRINTTALK, " \4(TO ADMINS) %s:\1 %s", pController->GetPlayerName(), pszMessage);
 			}
 		}
+
 		// Finally, run the chat command if it is one, so anything will print after the player's message
 		if (bCommand)
 		{
@@ -507,8 +519,10 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 
 			ParseChatCommand(pszMessage, pController);
 		}
+
 		RETURN_META(MRES_SUPERCEDE);
 	}
+
 	RETURN_META(MRES_IGNORED);
 }
 
@@ -590,6 +604,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 
 			SH_CALL(g_gameEventSystem, PostEventAbstract)
 			(nSlot, bLocalOnly, nClientCount, &clientMask, pEvent, msg, nSize, bufType);
+
 			msg->set_weapon_id(weapon_id);
 			msg->set_sound_type(sound_type);
 			msg->set_item_def_index(item_def_index);
@@ -623,7 +638,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 
 void CS2Fixes::AllPluginsLoaded()
 {
-	/* This is where we'd do stuff that relies on the mod or other plugins
+	/* This is where we'd do stuff that relies on the mod or other plugins	
 	 * being initialized (for example, cvars added and events registered).
 	 */
 
@@ -645,6 +660,7 @@ CServerSideClient *GetClientBySlot(CPlayerSlot slot)
 
 	if (!pClients)
 		return nullptr;
+
 	return pClients->Element(slot.Get());
 }
 
@@ -676,9 +692,11 @@ void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 	if (g_fIdleKickTime > 0.0f)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
+
 		if (pPlayer)
 			pPlayer->UpdateLastInputTime();
 	}
+
 	if (g_bVoteManagerEnable && V_stricmp(args[0], "endmatch_votenextmap") == 0 && args.ArgC() == 2)
 	{
 		if (g_pMapVoteSystem->RegisterPlayerVote(slot, atoi(args[1])))
@@ -686,6 +704,7 @@ void CS2Fixes::Hook_ClientCommand( CPlayerSlot slot, const CCommand &args )
 		else
 			RETURN_META(MRES_SUPERCEDE);
 	}
+
 	if (g_bEnableZR && slot != -1 && !V_strncmp(args.Arg(0), "jointeam", 8))
 	{
 		ZR_Hook_ClientCommand_JoinTeam(slot, args);
@@ -721,6 +740,7 @@ bool CS2Fixes::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64
 	// Player is banned
 	if (!g_playerManager->OnClientConnected(slot, xuid, pszNetworkID))
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
+
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
 
@@ -730,7 +750,9 @@ void CS2Fixes::Hook_ClientPutInServer( CPlayerSlot slot, char const *pszName, in
 
 	if (!g_playerManager->GetPlayer(slot))
 		return;
+
 	g_playerManager->OnClientPutInServer(slot);
+
 	if (g_bEnableZR)
 		ZR_Hook_ClientPutInServer(slot, pszName, type, xuid);
 }
@@ -742,9 +764,11 @@ void CS2Fixes::Hook_ClientDisconnect( CPlayerSlot slot, ENetworkDisconnectionRea
 
 	if (!pPlayer)
 		return;
+
 	// Dont add to c_listdc clients that are downloading MultiAddonManager stuff or were present during a map change
 	if (reason != NETWORK_DISCONNECT_LOOPSHUTDOWN && reason != NETWORK_DISCONNECT_SHUTDOWN)
 		g_pAdminSystem->AddDisconnectedPlayer(pszName, xuid, pPlayer ? pPlayer->GetIpAddress() : "");
+
 	g_playerManager->OnClientDisconnect(slot);
 }
 
@@ -821,9 +845,12 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 
 		if (!pSelfController || !pSelfController->IsConnected())
 			continue;
+
 		auto pSelfZEPlayer = g_playerManager->GetPlayer(iPlayerSlot);
+
 		if (!pSelfZEPlayer)
 			continue;
+
 		for (int j = 0; j < gpGlobals->maxClients; j++)
 		{
 			CCSPlayerController* pController = CCSPlayerController::FromSlot(j);
@@ -993,13 +1020,18 @@ void CS2Fixes::Hook_CheckMovingGround(double frametime)
 
 	if (!pController)
 		RETURN_META(MRES_IGNORED);
+
 	int iSlot = pController->GetPlayerSlot();
+
 	static int aPlayerTicks[MAXPLAYERS] = {0};
+
 	// The point of doing this is to avoid running the function (and applying/resetting basevelocity) multiple times per tick
 	// This can happen when the client or server lags
 	if (aPlayerTicks[iSlot] == gpGlobals->tickcount)
 		RETURN_META(MRES_SUPERCEDE);
+
 	aPlayerTicks[iSlot] = gpGlobals->tickcount;
+
 	RETURN_META(MRES_IGNORED);
 }
 
