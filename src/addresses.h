@@ -33,10 +33,11 @@ namespace modules
 	inline CModule *vscript;
 	inline CModule *client;
 	inline CModule* networksystem;
+	inline CModule* vphysics2;
 #ifdef _WIN32
 	inline CModule *hammer;
 #endif
-}
+} // namespace modules
 
 class CEntityInstance;
 class CEntityIdentity;

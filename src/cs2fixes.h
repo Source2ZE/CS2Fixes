@@ -29,6 +29,7 @@
 struct CTakeDamageInfoContainer;
 class CCSPlayer_MovementServices;
 class CServerSideClient;
+struct TouchLinked_t;
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
 {
@@ -67,6 +68,7 @@ public: //hooks
 	void Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList);
 	void Hook_GoToIntermission(bool bAbortedMatch);
 	bool Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer *pInfoContainer);
+	void Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool unknown);
 #ifdef PLATFORM_WINDOWS
 	Vector* Hook_GetEyePosition(Vector*);
 	QAngle* Hook_GetEyeAngles(QAngle*);

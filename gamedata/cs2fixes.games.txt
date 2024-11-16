@@ -460,6 +460,13 @@
 				"windows"		"128"
 				"linux"			"129"
 			}
+
+			// server.dll -> xref 'sv_phys_stop_at_collision' first __fastcall
+			"CVPhys2World::GetTouchingList"
+			{
+				"windows"    "23"
+				"linux"      "24"
+			}
 		}
 		"Patches"
 		{
