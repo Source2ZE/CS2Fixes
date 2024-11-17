@@ -134,6 +134,7 @@ public:
     bool GetMapEnabledStatus(int iMapIndex) { return m_vecMapList[iMapIndex].IsEnabled(); }
     int GetDefaultMapCooldown() { return m_iDefaultMapCooldown; }
     void SetDefaultMapCooldown(int iMapCooldown) { m_iDefaultMapCooldown = iMapCooldown; }
+    void ClearInvalidNominations();
 
 private:
     int WinningMapIndex();
