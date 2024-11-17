@@ -806,3 +806,28 @@ bool CMapVoteSystem::WriteMapCooldownsToFile()
 
 	return true;
 }
+
+void CMapVoteSystem::ClearInvalidNominations()
+{
+	if (!g_bVoteManagerEnable || m_bIsVoteOngoing)
+		return;
+
+	for (int i = 0; i < gpGlobals->maxClients; i++) {
+		int iNominatedMapIndex = m_arrPlayerNominations[i];
+
+		// Ignore unset nominations (negative index)
+		if (iNominatedMapIndex < 0)
+			continue;
+
+		// Check if nominated index still meets criteria for nomination
+		if (!IsMapIndexEnabled(iNominatedMapIndex))
+		{
+			ClearPlayerInfo(i);
+			CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(i);
+			if (!pPlayer)
+				continue;
+
+			ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "Your nomination for \x06%s \x01has been removed because the player count requirements are no longer met.", GetMapName(iNominatedMapIndex));
+		}
+	}
+}

@@ -610,6 +610,7 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid, const char
 	ResetPlayerFlags(slot.Get());
 
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
+	g_pMapVoteSystem->ClearInvalidNominations();
 	
 	return true;
 }
@@ -627,6 +628,7 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	ResetPlayerFlags(slot.Get());
 
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
+	g_pMapVoteSystem->ClearInvalidNominations();
 
 	g_pPanoramaVoteHandler->RemovePlayerFromVote(slot.Get());
 }
