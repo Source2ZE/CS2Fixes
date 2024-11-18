@@ -741,9 +741,9 @@ bool CMapVoteSystem::LoadMapList()
 		CMapInfo map = m_vecMapList[i];
 
 		if (map.GetWorkshopId() == 0)
-			ConMsg("Map %d is %s, which is %s. MinPlayers: %llu MaxPlayers: %llu Cooldown: %d\n", i, map.GetName(), map.IsEnabled() ? "enabled" : "disabled", map.GetMinPlayers(), map.GetMaxPlayers(), map.GetBaseCooldown());
+			ConMsg("Map %d is %s, which is %s. MinPlayers: %d MaxPlayers: %d Cooldown: %d\n", i, map.GetName(), map.IsEnabled() ? "enabled" : "disabled", map.GetMinPlayers(), map.GetMaxPlayers(), map.GetBaseCooldown());
 		else
-			ConMsg("Map %d is %s with workshop id %llu, which is %s. MinPlayers: %llu MaxPlayers: %llu Cooldown: %d\n", i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled", map.GetMinPlayers(), map.GetMaxPlayers(), map.GetBaseCooldown());
+			ConMsg("Map %d is %s with workshop id %llu, which is %s. MinPlayers: %d MaxPlayers: %d Cooldown: %d\n", i, map.GetName(), map.GetWorkshopId(), map.IsEnabled()? "enabled" : "disabled", map.GetMinPlayers(), map.GetMaxPlayers(), map.GetBaseCooldown());
 	}
 
 	m_bMapListLoaded = true;
