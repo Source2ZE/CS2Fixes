@@ -1009,9 +1009,9 @@ void CS2Fixes::Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool u
 
 	pList->Purge();
 
-	for (const auto link : touchingLinks)
+	for (const auto &link : touchingLinks)
 		pList->AddToTail(link);
-	for (const auto link : unTouchLinks)
+	for (const auto &link : unTouchLinks)
 		pList->AddToTail(link);
 }
 
