@@ -305,6 +305,14 @@ public:
 		return nullptr;
 	}
 
+	[[nodiscard]] CBaseModelEntity* AsBaseModelEntity()
+	{
+		if (const auto pCollision = this->m_pCollision())
+			return reinterpret_cast<CBaseModelEntity*>(this);
+
+		return nullptr;
+	}
+
 	/* End Custom Entities Cast */
 };
 

@@ -118,6 +118,7 @@ SH_DECL_MANUALHOOK1(OnTakeDamage_Alive, 0, 0, 0, bool, CTakeDamageInfoContainer 
 SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
 SH_DECL_HOOK2(IGameEventManager2, LoadEventsFromFile, SH_NOATTRIB, 0, int, const char *, bool);
 SH_DECL_MANUALHOOK1_void(GoToIntermission, 0, 0, 0, bool);
+SH_DECL_MANUALHOOK2_void(PhysicsTouchShuffle, 0, 0, 0, CUtlVector<TouchLinked_t>*, bool);
 
 CS2Fixes g_CS2Fixes;
 
@@ -139,6 +140,7 @@ int g_iOnTakeDamageAliveId = -1;
 int g_iCheckMovingGroundId = -1;
 int g_iLoadEventsFromFileId = -1;
 int g_iGoToIntermissionId = -1;
+int g_iPhysicsTouchShuffle = -1;
 
 CGameEntitySystem *GameEntitySystem()
 {
@@ -266,6 +268,17 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	SH_MANUALHOOK_RECONFIGURE(CheckMovingGround, offset, 0, 0);
 	g_iCheckMovingGroundId = SH_ADD_MANUALDVPHOOK(CheckMovingGround, pCCSPlayer_MovementServicesVTable, SH_MEMBER(this, &CS2Fixes::Hook_CheckMovingGround), false);
 
+	auto pCVPhys2WorldVTable = modules::vphysics2->FindVirtualTable("CVPhys2World");
+
+	offset = g_GameConfig->GetOffset("CVPhys2World::GetTouchingList");
+	if (offset == -1)
+	{
+		snprintf(error, maxlen, "Failed to find CVPhys2World::GetTouchingList\n");
+		bRequiredInitLoaded = false;
+	}
+	SH_MANUALHOOK_RECONFIGURE(PhysicsTouchShuffle, offset, 0, 0);
+	g_iPhysicsTouchShuffle = SH_ADD_MANUALDVPHOOK(PhysicsTouchShuffle, pCVPhys2WorldVTable, SH_MEMBER(this, &CS2Fixes::Hook_PhysicsTouchShuffle), true);
+
 	auto pCGameEventManagerVTable = (IGameEventManager2*)modules::server->FindVirtualTable("CGameEventManager");
 
 	g_iLoadEventsFromFileId = SH_ADD_DVPHOOK(IGameEventManager2, LoadEventsFromFile, pCGameEventManagerVTable, SH_MEMBER(this, &CS2Fixes::Hook_LoadEventsFromFile), false);
@@ -368,6 +381,7 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 	SH_REMOVE_HOOK_ID(g_iCreateWorkshopMapGroupId);
 	SH_REMOVE_HOOK_ID(g_iOnTakeDamageAliveId);
 	SH_REMOVE_HOOK_ID(g_iCheckMovingGroundId);
+	SH_REMOVE_HOOK_ID(g_iPhysicsTouchShuffle);
 
 	if (g_iGoToIntermissionId != -1)
 		SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
@@ -547,7 +561,7 @@ void CS2Fixes::Hook_GameServerSteamAPIActivated()
 	g_http = g_steamAPI.SteamHTTP();
 
 	g_playerManager->OnSteamAPIActivated();
-  
+
 	if (g_bVoteManagerEnable && !g_pMapVoteSystem->IsMapListLoaded())
 		g_pMapVoteSystem->LoadMapList();
 
@@ -622,7 +636,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 		if (g_bEnableNoShake)
 			*(uint64 *)clients &= ~g_playerManager->GetNoShakeMask();
 	}
-	
+
 }
 
 void CS2Fixes::AllPluginsLoaded()
@@ -843,7 +857,6 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 		for (int j = 0; j < gpGlobals->maxClients; j++)
 		{
 			CCSPlayerController* pController = CCSPlayerController::FromSlot(j);
-
 			// Always transmit to themselves
 			if (!pController || pController->m_bIsHLTV || j == iPlayerSlot)
 				continue;
@@ -856,7 +869,6 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			{
 				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
 			}
-
 			// Always transmit other players if spectating
 			if (!g_bEnableHide || pSelfController->GetPawnState() == STATE_OBSERVER_MODE)
 				continue;
@@ -927,6 +939,76 @@ bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer *pInfoContainer)
 		pPawn->DropMapWeapons();
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
+}
+
+bool g_bFixPhysicsPlayerShuffle = false;
+FAKE_BOOL_CVAR(cs2f_shuffle_player_physics_sim, "Whether to enable shuffle player list in physics simulate", g_bFixPhysicsPlayerShuffle, false, false);
+
+struct TouchLinked_t
+{
+	uint32_t TouchFlags;
+
+private:
+	uint8_t padding_0[20];
+
+public:
+	CBaseHandle SourceHandle;
+	CBaseHandle TargetHandle;
+
+private:
+	uint8_t padding_1[208];
+
+public:
+	[[nodiscard]] bool IsUnTouching() const
+	{
+		return !!(TouchFlags & 0x10);
+	}
+
+	[[nodiscard]] bool IsTouching() const
+	{
+		return (!!(TouchFlags & 4)) || (!!(TouchFlags & 8));
+	}
+};
+static_assert(sizeof(TouchLinked_t) == 240, "Touch_t size mismatch");
+void CS2Fixes::Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool unknown)
+{
+	if (!g_bFixPhysicsPlayerShuffle || g_SHPtr->GetStatus() == MRES_SUPERCEDE || pList->Count() <= 1)
+		return;
+
+	// [Kxnrl]
+	// seems it sorted by flags?
+
+	std::srand(gpGlobals->tickcount);
+
+	// Fisher-Yates shuffle
+
+	std::vector<TouchLinked_t> touchingLinks;
+	std::vector<TouchLinked_t> unTouchLinks;
+
+	FOR_EACH_VEC(*pList, i)
+	{
+		const auto& link = pList->Element(i);
+		if (link.IsUnTouching())
+			unTouchLinks.push_back(link);
+		else
+			touchingLinks.push_back(link);
+	}
+
+	if (touchingLinks.size() <= 1)
+		return;
+
+	for (size_t i = touchingLinks.size() - 1; i > 0; --i)
+	{
+		const auto j = std::rand() % (i + 1);
+		std::swap(touchingLinks[i], touchingLinks[j]);
+	}
+
+	pList->Purge();
+
+	for (const auto link : touchingLinks)
+		pList->AddToTail(link);
+	for (const auto link : unTouchLinks)
+		pList->AddToTail(link);
 }
 
 void CS2Fixes::Hook_CheckMovingGround(double frametime)

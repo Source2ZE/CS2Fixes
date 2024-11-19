@@ -22,21 +22,27 @@
 #include "playermanager.h"
 #include "gamesystem.h"
 #include "igameevents.h"
+#include "adminsystem.h"
 
-struct LeaderColor
+ // Inside IsAdminFlagSet, checks for ADMFLAG_GENERIC.
+ // Inside command permissions, checks for if leader system is enabled and player is leader
+ // OR if player has ADMFLAG_GENERIC
+#define FLAG_LEADER (ADMFLAG_GENERIC | 1 << 31)
+
+struct ColorPreset
 {
-	const char* pszColorName;
-	Color clColor;
+	std::string strChatColor;
+	Color color;
+	bool bIsChatColor;
 };
 
-extern LeaderColor LeaderColorMap[];
-extern const size_t g_nLeaderColorMapSize;
+extern std::map<std::string, ColorPreset> mapColorPresets;
 extern CUtlVector<ZEPlayerHandle> g_vecLeaders;
-extern int g_iLeaderIndex;
 
 extern bool g_bEnableLeader;
+extern bool g_bLeaderActionsHumanOnly;
+extern std::string g_strMarkParticlePath;
 
-bool Leader_NoLeaders();
 void Leader_ApplyLeaderVisuals(CCSPlayerPawn *pPawn);
 void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64 *clients, const CNetMessage *pData);
 void Leader_OnRoundStart(IGameEvent *pEvent);
