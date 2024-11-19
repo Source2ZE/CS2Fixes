@@ -18,6 +18,15 @@
  */
 
 #pragma once
+ // Bandaid needed for #include "string_t.h" to compile...
+#ifndef NULL
+	#define NULL 0
+#endif
+
+#include <string_t.h>
+#include <entityhandle.h>
+#include <entitysystem.h>
+#include <entityinstance.h>
 
 class InputData_t;
 class CGamePlayerEquip;
@@ -53,3 +62,40 @@ void EntityHandler_OnGameFramePre(bool simulate, int tick);
 void EntityHandler_OnGameFramePost(bool simulate, int tick);
 void EntityHandler_OnRoundRestart();
 void EntityHandler_OnEntitySpawned(CBaseEntity* pEntity);
+
+struct EntityIOConnectionDesc_t
+{
+	string_t m_targetDesc;
+	string_t m_targetInput;
+	string_t m_valueOverride;
+	CEntityHandle m_hTarget;
+	EntityIOTargetType_t m_nTargetType;
+	int32 m_nTimesToFire;
+	float m_flDelay;
+};
+
+struct EntityIOConnection_t : EntityIOConnectionDesc_t
+{
+	bool m_bMarkedForRemoval;
+	EntityIOConnection_t* m_pNext;
+};
+
+struct EntityIOOutputDesc_t
+{
+	const char* m_pName;
+	uint32 m_nFlags;
+	uint32 m_nOutputOffset;
+};
+
+class CEntityIOOutput
+{
+public:
+	void* vtable;
+	EntityIOConnection_t* m_pConnections;
+	EntityIOOutputDesc_t* m_pDesc;
+};
+
+bool IsButtonWatchEnabled();
+void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay);
+bool SetupFireOutputInternalDetour();
+void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay);

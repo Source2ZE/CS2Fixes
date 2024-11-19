@@ -20,7 +20,6 @@
 #pragma once
 #include "cdetour.h"
 #include <utlsymbollarge.h>
-#include "entitysystem.h"
 
 class CCheckTransmitInfo;
 class IRecipientFilter;
@@ -50,38 +49,7 @@ class CCSPlayer_UseServices;
 class CTraceFilter;
 class Vector;
 class QAngle;
-
-struct EntityIOConnectionDesc_t
-{
-    const char* m_targetDesc;
-    const char* m_targetInput;
-    const char* m_valueOverride;
-    CEntityHandle m_hTarget;
-    EntityIOTargetType_t m_nTargetType;
-    int32 m_nTimesToFire;
-    float m_flDelay;
-};
-
-struct EntityIOConnection_t : EntityIOConnectionDesc_t
-{
-    bool m_bMarkedForRemoval;
-    EntityIOConnection_t* m_pNext;
-};
-
-struct EntityIOOutputDesc_t
-{
-    const char* m_pName;
-    uint32 m_nFlags;
-    uint32 m_nOutputOffset;
-};
-
-class CEntityIOOutput
-{
-public:
-    void* vtable;
-    EntityIOConnection_t* m_pConnections;
-    EntityIOOutputDesc_t* m_pDesc;
-};
+class CEntityIOOutput;
 
 bool InitDetours(CGameConfig *gameConfig);
 void FlushAllDetours();
@@ -93,7 +61,6 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity *pThis, CTakeDamageInfo *inputInfo);
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *, CBasePlayerWeapon *);
 bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID);
-void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, CVariant* value, float flDelay);
 void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7, int64_t unk8);
 void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pMove);
 void *FASTCALL Detour_ProcessUsercmds(CCSPlayerController *pController, CUserCmd *cmds, int numcmds, bool paused, float margin);

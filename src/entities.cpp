@@ -28,10 +28,11 @@
 #include "entity/cgamerules.h"
 #include "entity/clogiccase.h"
 #include "entity/cpointviewcontrol.h"
+#include "detours.h"
+#include "cs2fixes.h"
+#include "commands.h"
 
 // #define ENTITY_HANDLER_ASSERTION
-
-extern CCSGameRules* g_pGameRules;
 
 class InputData_t
 {
@@ -721,4 +722,125 @@ void EntityHandler_OnRoundRestart()
 void EntityHandler_OnEntitySpawned(CBaseEntity* pEntity)
 {
     CPointViewControlHandler::OnCreated(pEntity);
+}
+
+std::map <int, bool> mapRecentEnts;
+CDetour<decltype(Detour_CEntityIOOutput_FireOutputInternal)>* CEntityIOOutput_FireOutputInternal = nullptr;
+bool IsButtonWatchEnabled()
+{
+    return std::any_of(vecIOFunctions.begin(), vecIOFunctions.end(), [](IOCallback& cb) {
+        return cb.target<decltype(ButtonWatch)>() == &ButtonWatch;
+    });
+}
+
+void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
+{
+    if (!IsButtonWatchEnabled() || V_stricmp(pThis->m_pDesc->m_pName, "OnPressed") ||
+        !((CBaseEntity*)pActivator)->IsPawn() || !pCaller ||
+        mapRecentEnts.contains(pCaller->GetEntityIndex().Get()))
+        return;
+
+    CCSPlayerController* ccsPlayer = CCSPlayerController::FromPawn(static_cast<CCSPlayerPawn*>(pActivator));
+    std::string strPlayerName = ccsPlayer->GetPlayerName();
+
+    ZEPlayer* zpPlayer = ccsPlayer->GetZEPlayer();
+    std::string strPlayerID = "";
+    if (zpPlayer && !zpPlayer->IsFakeClient())
+    {
+        strPlayerID = std::to_string(zpPlayer->IsAuthenticated() ? zpPlayer->GetSteamId64() : zpPlayer->GetUnauthenticatedSteamId64());
+        strPlayerID = "(" + strPlayerID + ")";
+    }
+
+    std::string strButton = std::to_string(pCaller->GetEntityIndex().Get()) + " " +
+        std::string(((CBaseEntity*)pCaller)->GetName());
+
+    for (int i = 0; i < gpGlobals->maxClients; i++)
+    {
+        CCSPlayerController* ccsPlayer = CCSPlayerController::FromSlot(i);
+        if (!ccsPlayer)
+            continue;
+
+        ZEPlayer* zpPlayer = ccsPlayer->GetZEPlayer();
+        if (!zpPlayer)
+            continue;
+
+        if (zpPlayer->GetButtonWatchMode() % 2 == 1)
+            ClientPrint(ccsPlayer, HUD_PRINTTALK, " \x02[BW]\x0C %s\1 pressed button \x0C%s\1", strPlayerName.c_str(), strButton.c_str());
+        if (zpPlayer->GetButtonWatchMode() >= 2)
+        {
+            ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "------------------------------------ [ButtonWatch] ------------------------------------");
+            ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Player: %s %s", strPlayerName.c_str(), strPlayerID.c_str());
+            ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Button: %s", strButton.c_str());
+            ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "---------------------------------------------------------------------------------------");
+        }
+    }
+
+    // Prevent the same button from spamming more than once every 5 seconds
+    int iIndex = pCaller->GetEntityIndex().Get();
+    mapRecentEnts[iIndex] = true;
+    new CTimer(5.0f, true, true, [iIndex]()
+    {
+        mapRecentEnts.erase(iIndex);
+        return -1.0f;
+    });
+}
+
+extern CCSGameRules* g_pGameRules;
+// Tries to setup Detour_CEntityIOOutput_FireOutputInternal if it is not already setup.
+// Returns true if detour is usable, otherwise false.
+bool SetupFireOutputInternalDetour()
+{
+    if (CEntityIOOutput_FireOutputInternal != nullptr)
+        return true;
+
+    CEntityIOOutput_FireOutputInternal = new CDetour(Detour_CEntityIOOutput_FireOutputInternal, "CEntityIOOutput_FireOutputInternal");
+    if (!CEntityIOOutput_FireOutputInternal->CreateDetour(g_GameConfig))
+    {
+        Msg("Failed to detour CEntityIOOutput_FireOutputInternal\n");
+        delete CEntityIOOutput_FireOutputInternal;
+        CEntityIOOutput_FireOutputInternal = nullptr;
+        return false;
+    }
+    CEntityIOOutput_FireOutputInternal->EnableDetour();
+    return true;
+}
+
+CON_COMMAND_F(cs2f_enable_button_watch, "CS# BREAKS IF THIS IS EVER ENABLED. Whether to enable button watch or not.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | FCVAR_PROTECTED)
+{
+    if (args.ArgC() < 2)
+    {
+        Msg("%s %b\n", args[0], IsButtonWatchEnabled());
+        return;
+    }
+
+    if (!V_StringToBool(args[1], false) || !SetupFireOutputInternalDetour())
+    {
+        vecIOFunctions.erase(std::remove_if(vecIOFunctions.begin(), vecIOFunctions.end(), [](const IOCallback& cb) {
+            return cb.target<decltype(ButtonWatch)>() == &ButtonWatch;
+        }), vecIOFunctions.end());
+    }
+    else if (!IsButtonWatchEnabled())
+    {
+        vecIOFunctions.push_back(ButtonWatch);
+    }
+}
+
+using IOCallback = std::function<void(const CEntityIOOutput*, CEntityInstance*, CEntityInstance*, const CVariant*, float)>;
+// Add callback functions to this vector that wish to hook into Detour_CEntityIOOutput_FireOutputInternal
+// to make it more modular/cleaner than shoving everything into the detour
+std::vector<IOCallback> vecIOFunctions;
+void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
+{
+#ifdef DEBUG
+    // pCaller can absolutely be null. Needs to be checked
+    if(pCaller)
+        ConMsg("Output %s fired on %s\n", pThis->m_pDesc->m_pName, pCaller->GetClassname());
+    else
+        ConMsg("Output %s fired with no caller\n", pThis->m_pDesc->m_pName);
+#endif
+
+    for (const auto& cb : vecIOFunctions)
+        cb(pThis, pActivator, pCaller, value, flDelay);
+
+    (*CEntityIOOutput_FireOutputInternal)(pThis, pActivator, pCaller, value, flDelay);
 }

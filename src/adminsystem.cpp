@@ -35,11 +35,8 @@
 #include "gamesystem.h"
 #include "votemanager.h"
 #include "map_votes.h"
+#include "entities.h"
 #include <vector>
-#include <fstream>
-#include "vendor/nlohmann/json.hpp"
-
-using json = nlohmann::json;
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
@@ -1004,21 +1001,11 @@ CON_COMMAND_CHAT_FLAGS(add_dc, "<name> <SteamID 64> <IP Address> - Adds a fake p
 
 CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
 {
-	
-	std::ifstream ifsConfig((std::string(Plat_GetGameDirectory()) + "\\csgo\\addons\\cs2fixes\\configs\\cs2fixes.jsonc"), std::fstream::in);
-	if (!ifsConfig.is_open())
+	if (!IsButtonWatchEnabled())
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Button watch is disabled on this server.");
 		return;
 	}
-
-	json jConfig = json::parse(ifsConfig, nullptr, true, true);
-	if (jConfig.empty() || !jConfig.value("enable_button_watch", false))
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Button watch is disabled on this server.");
-		return;
-	}
-
 
 	if (!player)
 	{
@@ -1029,7 +1016,7 @@ CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
 	ZEPlayer* zpPlayer = player->GetZEPlayer();
 	if (!zpPlayer)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Something went wrong...");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Something went wrong, please wait a moment before trying this command again.");
 		return;
 	}
 

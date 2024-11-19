@@ -47,16 +47,11 @@
 #include "networksystem/inetworkserializer.h"
 #include "playermanager.h"
 #include "serversideclient.h"
-#include <fstream>
-#undef snprintf
-#include "vendor/nlohmann/json.hpp"
 #include "tier0/vprof.h"
 #include "zombiereborn.h"
 
 #include "tier0/memdbgon.h"
 
-
-using json = nlohmann::json;
 
 extern CGlobalVars *gpGlobals;
 extern CGameEntitySystem *g_pEntitySystem;
@@ -74,7 +69,6 @@ DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
-DECLARE_DETOUR(CEntityIOOutput_FireOutputInternal, Detour_CEntityIOOutput_FireOutputInternal);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
@@ -466,57 +460,6 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
     return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
 
-std::map <int, bool> mapRecentEnts;
-void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, CVariant* value, float flDelay)
-{
-	if (!V_stricmp(pThis->m_pDesc->m_pName, "OnPressed") && ((CBaseEntity*)pActivator)->IsPawn() && !mapRecentEnts.contains(pCaller->GetEntityIndex().Get()))
-	{
-		CCSPlayerController* ccsPlayer = CCSPlayerController::FromPawn(static_cast<CCSPlayerPawn*>(pActivator));
-		std::string strPlayerName = ccsPlayer->GetPlayerName();
-
-		ZEPlayer* zpPlayer = ccsPlayer->GetZEPlayer();
-		std::string strPlayerID = "";
-		if (zpPlayer && !zpPlayer->IsFakeClient())
-		{
-			strPlayerID = std::to_string(zpPlayer->IsAuthenticated() ? zpPlayer->GetSteamId64() : zpPlayer->GetUnauthenticatedSteamId64());
-			strPlayerID = "(" + strPlayerID + ")";
-		}
-
-		std::string strButton = std::to_string(pCaller->GetEntityIndex().Get()) + " " +
-								std::string(((CBaseEntity*)pCaller)->GetName());
-
-		for (int i = 0; i < gpGlobals->maxClients; i++)
-		{
-			CCSPlayerController* ccsPlayer = CCSPlayerController::FromSlot(i);
-			if (!ccsPlayer)
-				continue;
-
-			ZEPlayer* zpPlayer = ccsPlayer->GetZEPlayer();
-			if (!zpPlayer)
-				continue;
-
-			if (zpPlayer->GetButtonWatchMode() % 2 == 1)
-				ClientPrint(ccsPlayer, HUD_PRINTTALK, " \x02[BW]\x0C %s\1 pressed button \x0C%s\1", strPlayerName.c_str(), strButton.c_str());
-			if (zpPlayer->GetButtonWatchMode() >= 2)
-			{
-				ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "------------------------------------ [ButtonWatch] ------------------------------------");
-				ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Player: %s %s", strPlayerName.c_str(), strPlayerID.c_str());
-				ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Button: %s", strButton.c_str());
-				ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "---------------------------------------------------------------------------------------");
-			}
-		}
-
-		// Prevent the same button from spamming more than once every 5 seconds
-		int iIndex = pCaller->GetEntityIndex().Get();
-		mapRecentEnts[iIndex] = true;
-		new CTimer(5.0f, true, true, [iIndex]()
-		{
-			mapRecentEnts.erase(iIndex);
-			return -1.0f;
-		});
-	}
-}
-
 bool g_bBlockNavLookup = false;
 
 FAKE_BOOL_CVAR(cs2f_block_nav_lookup, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", g_bBlockNavLookup, false, false)
@@ -732,12 +675,9 @@ bool InitDetours(CGameConfig *gameConfig)
 	{
 		if (!V_strcmp(g_vecDetours[i]->GetName(), "CEntityIOOutput_FireOutputInternal"))
 		{
-			std::ifstream ifsConfig((std::string(Plat_GetGameDirectory()) + "\\csgo\\addons\\cs2fixes\\configs\\cs2fixes.jsonc"), std::fstream::in);
-			if (!ifsConfig.is_open())
-				continue;
-			
-			json jConfig = json::parse(ifsConfig, nullptr, true, true);
-			if (jConfig.empty() || !jConfig.value("enable_button_watch", false))
+			// Check if features needing this detour are actually enabled.
+			// If not, leave this detour disabled for CS# compatibility
+			if (!IsButtonWatchEnabled())
 				continue;
 		}
 
