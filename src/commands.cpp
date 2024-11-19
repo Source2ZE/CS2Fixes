@@ -380,6 +380,28 @@ CON_COMMAND_CHAT(toggledecals, "- Toggle world decals, if you're into having 10 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s world decals.", bSet ? "disabled" : "enabled");
 }
 
+bool g_bEnableNoShake = false;
+FAKE_BOOL_CVAR(cs2f_noshake_enable, "Whether to enable noshake command", g_bEnableNoShake, false, false)
+float g_flMaxShakeAmp = -1.0;
+FAKE_FLOAT_CVAR(cs2f_maximum_shake_amplitude, "Shaking Amplitude bigger than this will be clamped", g_flMaxShakeAmp, -1.0, false)
+CON_COMMAND_CHAT(noshake, "- toggle noshake")
+{
+	if (!g_bEnableNoShake)
+		return;
+
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	int iPlayer = player->GetPlayerSlot();
+	bool bSet = !g_playerManager->IsPlayerUsingNoShake(iPlayer);
+
+	g_playerManager->SetPlayerNoShake(iPlayer, bSet);
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s noshake.", bSet ? "enabled" : "disabled");
+}
+
 bool g_bEnableHide = false;
 static int g_iDefaultHideDistance = 250;
 static int g_iMaxHideDistance = 2000;
@@ -473,6 +495,62 @@ CON_COMMAND_CHAT(help, "- Display list of commands in console")
 
 	if (player)
 		ClientPrint(player, HUD_PRINTCONSOLE, "! can be replaced with / for a silent chat command, or c_ for console usage");
+}
+
+CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
+{
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		if (player->m_iTeamNum() == CS_TEAM_SPECTATOR)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Already spectating.");
+		}
+		else
+		{
+			player->SwitchTeam(CS_TEAM_SPECTATOR);
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Moved to spectators.");
+		}
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlot[MAXPLAYERS];
+
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlot, NO_MULTIPLE | NO_SELF | NO_DEAD | NO_SPECTATOR))
+		return;
+
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
+
+	if (!pTarget)
+		return;
+
+	if (player->m_iTeamNum() != CS_TEAM_SPECTATOR)
+		player->SwitchTeam(CS_TEAM_SPECTATOR);
+
+	// 1 frame delay as observer services will be null on same frame as spectator team switch
+	CHandle<CCSPlayerController> hPlayer = player->GetHandle();
+	CHandle<CCSPlayerController> hTarget = pTarget->GetHandle();
+	new CTimer(0.0f, false, false, [hPlayer, hTarget](){
+		CCSPlayerController* pPlayer = hPlayer.Get();
+		CCSPlayerController* pTargetPlayer = hTarget.Get();
+		if (!pPlayer || !pTargetPlayer)
+			return -1.0f;
+		CPlayer_ObserverServices* pObserverServices = pPlayer->GetPawn()->m_pObserverServices();
+		if (!pObserverServices)
+			return -1.0f;
+		pObserverServices->m_iObserverMode.Set(OBS_MODE_IN_EYE);
+		pObserverServices->m_iObserverLastMode.Set(OBS_MODE_ROAMING);
+		pObserverServices->m_hObserverTarget.Set(pTargetPlayer->GetPawn());
+		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "Spectating player %s.", pTargetPlayer->GetPlayerName());
+		return -1.0f;
+	});
 }
 
 CON_COMMAND_CHAT(getpos, "- Get your position and angles")

@@ -131,7 +131,7 @@ inline bool ESteamNetworkingUDPMsgID_Parse(
 }
 // ===================================================================
 
-class CMsgSteamSockets_UDP_ChallengeRequest final :
+class CMsgSteamSockets_UDP_ChallengeRequest :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamSockets_UDP_ChallengeRequest) */ {
  public:
   inline CMsgSteamSockets_UDP_ChallengeRequest() : CMsgSteamSockets_UDP_ChallengeRequest(nullptr) {}
@@ -321,7 +321,7 @@ class CMsgSteamSockets_UDP_ChallengeRequest final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamSockets_UDP_ChallengeReply final :
+class CMsgSteamSockets_UDP_ChallengeReply :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamSockets_UDP_ChallengeReply) */ {
  public:
   inline CMsgSteamSockets_UDP_ChallengeReply() : CMsgSteamSockets_UDP_ChallengeReply(nullptr) {}
@@ -526,7 +526,7 @@ class CMsgSteamSockets_UDP_ChallengeReply final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamSockets_UDP_ConnectRequest final :
+class CMsgSteamSockets_UDP_ConnectRequest :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamSockets_UDP_ConnectRequest) */ {
  public:
   inline CMsgSteamSockets_UDP_ConnectRequest() : CMsgSteamSockets_UDP_ConnectRequest(nullptr) {}
@@ -841,7 +841,7 @@ class CMsgSteamSockets_UDP_ConnectRequest final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamSockets_UDP_ConnectOK final :
+class CMsgSteamSockets_UDP_ConnectOK :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamSockets_UDP_ConnectOK) */ {
  public:
   inline CMsgSteamSockets_UDP_ConnectOK() : CMsgSteamSockets_UDP_ConnectOK(nullptr) {}
@@ -1141,7 +1141,7 @@ class CMsgSteamSockets_UDP_ConnectOK final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamSockets_UDP_ConnectionClosed final :
+class CMsgSteamSockets_UDP_ConnectionClosed :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamSockets_UDP_ConnectionClosed) */ {
  public:
   inline CMsgSteamSockets_UDP_ConnectionClosed() : CMsgSteamSockets_UDP_ConnectionClosed(nullptr) {}
@@ -1351,7 +1351,7 @@ class CMsgSteamSockets_UDP_ConnectionClosed final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamSockets_UDP_NoConnection final :
+class CMsgSteamSockets_UDP_NoConnection :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamSockets_UDP_NoConnection) */ {
  public:
   inline CMsgSteamSockets_UDP_NoConnection() : CMsgSteamSockets_UDP_NoConnection(nullptr) {}
@@ -1526,7 +1526,7 @@ class CMsgSteamSockets_UDP_NoConnection final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamSockets_UDP_Stats final :
+class CMsgSteamSockets_UDP_Stats :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamSockets_UDP_Stats) */ {
  public:
   inline CMsgSteamSockets_UDP_Stats() : CMsgSteamSockets_UDP_Stats(nullptr) {}

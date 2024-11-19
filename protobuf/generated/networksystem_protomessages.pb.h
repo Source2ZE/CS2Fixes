@@ -70,7 +70,7 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class NetMessageSplitscreenUserChanged final :
+class NetMessageSplitscreenUserChanged :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:NetMessageSplitscreenUserChanged) */ {
  public:
   inline NetMessageSplitscreenUserChanged() : NetMessageSplitscreenUserChanged(nullptr) {}
@@ -230,7 +230,7 @@ class NetMessageSplitscreenUserChanged final :
 };
 // -------------------------------------------------------------------
 
-class NetMessageConnectionClosed final :
+class NetMessageConnectionClosed :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:NetMessageConnectionClosed) */ {
  public:
   inline NetMessageConnectionClosed() : NetMessageConnectionClosed(nullptr) {}
@@ -390,7 +390,7 @@ class NetMessageConnectionClosed final :
 };
 // -------------------------------------------------------------------
 
-class NetMessageConnectionCrashed final :
+class NetMessageConnectionCrashed :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:NetMessageConnectionCrashed) */ {
  public:
   inline NetMessageConnectionCrashed() : NetMessageConnectionCrashed(nullptr) {}
@@ -550,7 +550,7 @@ class NetMessageConnectionCrashed final :
 };
 // -------------------------------------------------------------------
 
-class NetMessagePacketStart final :
+class NetMessagePacketStart :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:NetMessagePacketStart) */ {
  public:
   inline NetMessagePacketStart() : NetMessagePacketStart(nullptr) {}
@@ -675,7 +675,7 @@ class NetMessagePacketStart final :
 };
 // -------------------------------------------------------------------
 
-class NetMessagePacketEnd final :
+class NetMessagePacketEnd :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:NetMessagePacketEnd) */ {
  public:
   inline NetMessagePacketEnd() : NetMessagePacketEnd(nullptr) {}

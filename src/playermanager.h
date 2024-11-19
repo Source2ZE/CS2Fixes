@@ -46,6 +46,7 @@
 #define DECAL_PREF_KEY_NAME "hide_decals"
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
 #define SOUND_STATUS_PREF_KEY_NAME "sound_status"
+#define NO_SHAKE_PREF_KEY_NAME "no_shake"
 #define BUTTON_WATCH_PREF_KEY_NAME "button_watch"
 #define INVALID_ZEPLAYERHANDLE_INDEX 0u
 
@@ -100,6 +101,8 @@ enum class ETargetError
 };
 
 class ZEPlayer;
+struct ZRClass;
+struct ZRModelEntry;
 
 class ZEPlayerHandle
 {
@@ -172,6 +175,8 @@ public:
 		m_flMaxSpeed = 1.f;
 		m_iLastInputs = IN_NONE;
 		m_iLastInputTime = std::time(0);
+		m_pActiveZRClass = nullptr;
+		m_pActiveZRModel = nullptr;
 		m_iButtonWatchMode = 0;
 	}
 
@@ -229,6 +234,8 @@ public:
 	void SetMaxSpeed(float flMaxSpeed) { m_flMaxSpeed = flMaxSpeed; }
 	void CycleButtonWatch();
 	void ReplicateConVar(const char* pszName, const char* pszValue);
+	void SetActiveZRClass(std::shared_ptr<ZRClass> pZRModel) { m_pActiveZRClass = pZRModel; }
+	void SetActiveZRModel(std::shared_ptr<ZRModelEntry> pZRClass) { m_pActiveZRModel = pZRClass; }
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -264,6 +271,8 @@ public:
 	float GetMaxSpeed() { return m_flMaxSpeed; }
 	uint64 GetLastInputs() { return m_iLastInputs; }
 	std::time_t GetLastInputTime() { return m_iLastInputTime; }
+	std::shared_ptr<ZRClass> GetActiveZRClass() { return m_pActiveZRClass; }
+	std::shared_ptr<ZRModelEntry> GetActiveZRModel() { return m_pActiveZRModel; }
 	int GetButtonWatchMode();
 	
 	void OnSpawn();
@@ -319,6 +328,8 @@ private:
 	float m_flMaxSpeed;
 	uint64 m_iLastInputs;
 	std::time_t m_iLastInputTime;
+	std::shared_ptr<ZRClass> m_pActiveZRClass;
+	std::shared_ptr<ZRModelEntry> m_pActiveZRModel;
 	int m_iButtonWatchMode;
 };
 
@@ -331,6 +342,7 @@ public:
 		m_nUsingStopSound = -1; // On by default
 		m_nUsingSilenceSound = 0;
 		m_nUsingStopDecals = -1; // On by default
+		m_nUsingNoShake = 0;
 
 		if (late)
 			OnLateLoad();
@@ -351,7 +363,7 @@ public:
 	ZEPlayer *GetPlayerFromSteamId(uint64 steamid);
 	ETargetError GetPlayersFromString(CCSPlayerController* pPlayer, const char* pszTarget, int &iNumClients, int *clients, uint64 iBlockedFlags = NO_TARGET_BLOCKS);
 	ETargetError GetPlayersFromString(CCSPlayerController* pPlayer, const char* pszTarget, int &iNumClients, int *clients, uint64 iBlockedFlags, ETargetType& nType);
-	static const char* GetErrorString(ETargetError eType, int iSlot = 0);
+	static std::string GetErrorString(ETargetError eType, int iSlot = 0);
 	bool CanTargetPlayers(CCSPlayerController* pPlayer, const char* pszTarget, int& iNumClients, int* clients, uint64 iBlockedFlags = NO_TARGET_BLOCKS);
 	bool CanTargetPlayers(CCSPlayerController* pPlayer, const char* pszTarget, int& iNumClients, int* clients, uint64 iBlockedFlags, ETargetType& nType);
 
@@ -360,16 +372,19 @@ public:
 	uint64 GetStopSoundMask() { return m_nUsingStopSound; }
 	uint64 GetSilenceSoundMask() { return m_nUsingSilenceSound; }
 	uint64 GetStopDecalsMask() { return m_nUsingStopDecals; }
+	uint64 GetNoShakeMask() { return m_nUsingNoShake; }
 	
 	void SetPlayerStopSound(int slot, bool set);
 	void SetPlayerSilenceSound(int slot, bool set);
 	void SetPlayerStopDecals(int slot, bool set);
+	void SetPlayerNoShake(int slot, bool set);
 
 	void ResetPlayerFlags(int slot);
 
 	bool IsPlayerUsingStopSound(int slot) { return m_nUsingStopSound & ((uint64)1 << slot); }
 	bool IsPlayerUsingSilenceSound(int slot) { return m_nUsingSilenceSound & ((uint64)1 << slot); }
 	bool IsPlayerUsingStopDecals(int slot) { return m_nUsingStopDecals & ((uint64)1 << slot); }
+	bool IsPlayerUsingNoShake(int slot) { return m_nUsingNoShake & ((uint64)1 << slot); }
 
 	void UpdatePlayerStates();
 
@@ -381,6 +396,7 @@ private:
 	uint64 m_nUsingStopSound;
 	uint64 m_nUsingSilenceSound;
 	uint64 m_nUsingStopDecals;
+	uint64 m_nUsingNoShake;
 };
 
 extern CPlayerManager *g_playerManager;

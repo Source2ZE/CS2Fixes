@@ -229,7 +229,7 @@ inline bool ENotificationSetting_Parse(
 }
 // ===================================================================
 
-class CPlayer_GetMutualFriendsForIncomingInvites_Request final :
+class CPlayer_GetMutualFriendsForIncomingInvites_Request :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CPlayer_GetMutualFriendsForIncomingInvites_Request) */ {
  public:
   inline CPlayer_GetMutualFriendsForIncomingInvites_Request() : CPlayer_GetMutualFriendsForIncomingInvites_Request(nullptr) {}
@@ -354,7 +354,7 @@ class CPlayer_GetMutualFriendsForIncomingInvites_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_IncomingInviteMutualFriendList final :
+class CPlayer_IncomingInviteMutualFriendList :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_IncomingInviteMutualFriendList) */ {
  public:
   inline CPlayer_IncomingInviteMutualFriendList() : CPlayer_IncomingInviteMutualFriendList(nullptr) {}
@@ -538,7 +538,7 @@ class CPlayer_IncomingInviteMutualFriendList final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetMutualFriendsForIncomingInvites_Response final :
+class CPlayer_GetMutualFriendsForIncomingInvites_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetMutualFriendsForIncomingInvites_Response) */ {
  public:
   inline CPlayer_GetMutualFriendsForIncomingInvites_Response() : CPlayer_GetMutualFriendsForIncomingInvites_Response(nullptr) {}
@@ -702,7 +702,7 @@ class CPlayer_GetMutualFriendsForIncomingInvites_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetFriendsGameplayInfo_Request final :
+class CPlayer_GetFriendsGameplayInfo_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetFriendsGameplayInfo_Request) */ {
  public:
   inline CPlayer_GetFriendsGameplayInfo_Request() : CPlayer_GetFriendsGameplayInfo_Request(nullptr) {}
@@ -862,7 +862,7 @@ class CPlayer_GetFriendsGameplayInfo_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetFriendsGameplayInfo_Response_FriendsGameplayInfo final :
+class CPlayer_GetFriendsGameplayInfo_Response_FriendsGameplayInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetFriendsGameplayInfo_Response.FriendsGameplayInfo) */ {
  public:
   inline CPlayer_GetFriendsGameplayInfo_Response_FriendsGameplayInfo() : CPlayer_GetFriendsGameplayInfo_Response_FriendsGameplayInfo(nullptr) {}
@@ -1052,7 +1052,7 @@ class CPlayer_GetFriendsGameplayInfo_Response_FriendsGameplayInfo final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetFriendsGameplayInfo_Response_OwnGameplayInfo final :
+class CPlayer_GetFriendsGameplayInfo_Response_OwnGameplayInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetFriendsGameplayInfo_Response.OwnGameplayInfo) */ {
  public:
   inline CPlayer_GetFriendsGameplayInfo_Response_OwnGameplayInfo() : CPlayer_GetFriendsGameplayInfo_Response_OwnGameplayInfo(nullptr) {}
@@ -1272,7 +1272,7 @@ class CPlayer_GetFriendsGameplayInfo_Response_OwnGameplayInfo final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetFriendsGameplayInfo_Response final :
+class CPlayer_GetFriendsGameplayInfo_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetFriendsGameplayInfo_Response) */ {
  public:
   inline CPlayer_GetFriendsGameplayInfo_Response() : CPlayer_GetFriendsGameplayInfo_Response(nullptr) {}
@@ -1540,7 +1540,7 @@ class CPlayer_GetFriendsGameplayInfo_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetGameBadgeLevels_Request final :
+class CPlayer_GetGameBadgeLevels_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetGameBadgeLevels_Request) */ {
  public:
   inline CPlayer_GetGameBadgeLevels_Request() : CPlayer_GetGameBadgeLevels_Request(nullptr) {}
@@ -1700,7 +1700,7 @@ class CPlayer_GetGameBadgeLevels_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetGameBadgeLevels_Response_Badge final :
+class CPlayer_GetGameBadgeLevels_Response_Badge :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetGameBadgeLevels_Response.Badge) */ {
  public:
   inline CPlayer_GetGameBadgeLevels_Response_Badge() : CPlayer_GetGameBadgeLevels_Response_Badge(nullptr) {}
@@ -1890,7 +1890,7 @@ class CPlayer_GetGameBadgeLevels_Response_Badge final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetGameBadgeLevels_Response final :
+class CPlayer_GetGameBadgeLevels_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetGameBadgeLevels_Response) */ {
  public:
   inline CPlayer_GetGameBadgeLevels_Response() : CPlayer_GetGameBadgeLevels_Response(nullptr) {}
@@ -2072,7 +2072,7 @@ class CPlayer_GetGameBadgeLevels_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetLastPlayedTimes_Request final :
+class CPlayer_GetLastPlayedTimes_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetLastPlayedTimes_Request) */ {
  public:
   inline CPlayer_GetLastPlayedTimes_Request() : CPlayer_GetLastPlayedTimes_Request(nullptr) {}
@@ -2232,7 +2232,7 @@ class CPlayer_GetLastPlayedTimes_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetLastPlayedTimes_Response_Game final :
+class CPlayer_GetLastPlayedTimes_Response_Game :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetLastPlayedTimes_Response.Game) */ {
  public:
   inline CPlayer_GetLastPlayedTimes_Response_Game() : CPlayer_GetLastPlayedTimes_Response_Game(nullptr) {}
@@ -2452,7 +2452,7 @@ class CPlayer_GetLastPlayedTimes_Response_Game final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetLastPlayedTimes_Response final :
+class CPlayer_GetLastPlayedTimes_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetLastPlayedTimes_Response) */ {
  public:
   inline CPlayer_GetLastPlayedTimes_Response() : CPlayer_GetLastPlayedTimes_Response(nullptr) {}
@@ -2618,7 +2618,7 @@ class CPlayer_GetLastPlayedTimes_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_AcceptSSA_Request final :
+class CPlayer_AcceptSSA_Request :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CPlayer_AcceptSSA_Request) */ {
  public:
   inline CPlayer_AcceptSSA_Request() : CPlayer_AcceptSSA_Request(nullptr) {}
@@ -2743,7 +2743,7 @@ class CPlayer_AcceptSSA_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_AcceptSSA_Response final :
+class CPlayer_AcceptSSA_Response :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CPlayer_AcceptSSA_Response) */ {
  public:
   inline CPlayer_AcceptSSA_Response() : CPlayer_AcceptSSA_Response(nullptr) {}
@@ -2868,7 +2868,7 @@ class CPlayer_AcceptSSA_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetNicknameList_Request final :
+class CPlayer_GetNicknameList_Request :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CPlayer_GetNicknameList_Request) */ {
  public:
   inline CPlayer_GetNicknameList_Request() : CPlayer_GetNicknameList_Request(nullptr) {}
@@ -2993,7 +2993,7 @@ class CPlayer_GetNicknameList_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetNicknameList_Response_PlayerNickname final :
+class CPlayer_GetNicknameList_Response_PlayerNickname :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetNicknameList_Response.PlayerNickname) */ {
  public:
   inline CPlayer_GetNicknameList_Response_PlayerNickname() : CPlayer_GetNicknameList_Response_PlayerNickname(nullptr) {}
@@ -3173,7 +3173,7 @@ class CPlayer_GetNicknameList_Response_PlayerNickname final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetNicknameList_Response final :
+class CPlayer_GetNicknameList_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetNicknameList_Response) */ {
  public:
   inline CPlayer_GetNicknameList_Response() : CPlayer_GetNicknameList_Response(nullptr) {}
@@ -3339,7 +3339,7 @@ class CPlayer_GetNicknameList_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetPerFriendPreferences_Request final :
+class CPlayer_GetPerFriendPreferences_Request :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CPlayer_GetPerFriendPreferences_Request) */ {
  public:
   inline CPlayer_GetPerFriendPreferences_Request() : CPlayer_GetPerFriendPreferences_Request(nullptr) {}
@@ -3464,7 +3464,7 @@ class CPlayer_GetPerFriendPreferences_Request final :
 };
 // -------------------------------------------------------------------
 
-class PerFriendPreferences final :
+class PerFriendPreferences :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PerFriendPreferences) */ {
  public:
   inline PerFriendPreferences() : PerFriendPreferences(nullptr) {}
@@ -3749,7 +3749,7 @@ class PerFriendPreferences final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetPerFriendPreferences_Response final :
+class CPlayer_GetPerFriendPreferences_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetPerFriendPreferences_Response) */ {
  public:
   inline CPlayer_GetPerFriendPreferences_Response() : CPlayer_GetPerFriendPreferences_Response(nullptr) {}
@@ -3913,7 +3913,7 @@ class CPlayer_GetPerFriendPreferences_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_SetPerFriendPreferences_Request final :
+class CPlayer_SetPerFriendPreferences_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_SetPerFriendPreferences_Request) */ {
  public:
   inline CPlayer_SetPerFriendPreferences_Request() : CPlayer_SetPerFriendPreferences_Request(nullptr) {}
@@ -4078,7 +4078,7 @@ class CPlayer_SetPerFriendPreferences_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_SetPerFriendPreferences_Response final :
+class CPlayer_SetPerFriendPreferences_Response :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CPlayer_SetPerFriendPreferences_Response) */ {
  public:
   inline CPlayer_SetPerFriendPreferences_Response() : CPlayer_SetPerFriendPreferences_Response(nullptr) {}
@@ -4203,7 +4203,7 @@ class CPlayer_SetPerFriendPreferences_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_AddFriend_Request final :
+class CPlayer_AddFriend_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_AddFriend_Request) */ {
  public:
   inline CPlayer_AddFriend_Request() : CPlayer_AddFriend_Request(nullptr) {}
@@ -4363,7 +4363,7 @@ class CPlayer_AddFriend_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_AddFriend_Response final :
+class CPlayer_AddFriend_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_AddFriend_Response) */ {
  public:
   inline CPlayer_AddFriend_Response() : CPlayer_AddFriend_Response(nullptr) {}
@@ -4538,7 +4538,7 @@ class CPlayer_AddFriend_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_RemoveFriend_Request final :
+class CPlayer_RemoveFriend_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_RemoveFriend_Request) */ {
  public:
   inline CPlayer_RemoveFriend_Request() : CPlayer_RemoveFriend_Request(nullptr) {}
@@ -4698,7 +4698,7 @@ class CPlayer_RemoveFriend_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_RemoveFriend_Response final :
+class CPlayer_RemoveFriend_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_RemoveFriend_Response) */ {
  public:
   inline CPlayer_RemoveFriend_Response() : CPlayer_RemoveFriend_Response(nullptr) {}
@@ -4858,7 +4858,7 @@ class CPlayer_RemoveFriend_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_IgnoreFriend_Request final :
+class CPlayer_IgnoreFriend_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_IgnoreFriend_Request) */ {
  public:
   inline CPlayer_IgnoreFriend_Request() : CPlayer_IgnoreFriend_Request(nullptr) {}
@@ -5033,7 +5033,7 @@ class CPlayer_IgnoreFriend_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_IgnoreFriend_Response final :
+class CPlayer_IgnoreFriend_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_IgnoreFriend_Response) */ {
  public:
   inline CPlayer_IgnoreFriend_Response() : CPlayer_IgnoreFriend_Response(nullptr) {}
@@ -5193,7 +5193,7 @@ class CPlayer_IgnoreFriend_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetCommunityPreferences_Request final :
+class CPlayer_GetCommunityPreferences_Request :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CPlayer_GetCommunityPreferences_Request) */ {
  public:
   inline CPlayer_GetCommunityPreferences_Request() : CPlayer_GetCommunityPreferences_Request(nullptr) {}
@@ -5318,7 +5318,7 @@ class CPlayer_GetCommunityPreferences_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_CommunityPreferences final :
+class CPlayer_CommunityPreferences :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_CommunityPreferences) */ {
  public:
   inline CPlayer_CommunityPreferences() : CPlayer_CommunityPreferences(nullptr) {}
@@ -5523,7 +5523,7 @@ class CPlayer_CommunityPreferences final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetCommunityPreferences_Response final :
+class CPlayer_GetCommunityPreferences_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetCommunityPreferences_Response) */ {
  public:
   inline CPlayer_GetCommunityPreferences_Response() : CPlayer_GetCommunityPreferences_Response(nullptr) {}
@@ -5688,7 +5688,7 @@ class CPlayer_GetCommunityPreferences_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_SetCommunityPreferences_Request final :
+class CPlayer_SetCommunityPreferences_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_SetCommunityPreferences_Request) */ {
  public:
   inline CPlayer_SetCommunityPreferences_Request() : CPlayer_SetCommunityPreferences_Request(nullptr) {}
@@ -5853,7 +5853,7 @@ class CPlayer_SetCommunityPreferences_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_SetCommunityPreferences_Response final :
+class CPlayer_SetCommunityPreferences_Response :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CPlayer_SetCommunityPreferences_Response) */ {
  public:
   inline CPlayer_SetCommunityPreferences_Response() : CPlayer_SetCommunityPreferences_Response(nullptr) {}
@@ -5978,7 +5978,7 @@ class CPlayer_SetCommunityPreferences_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetNewSteamAnnouncementState_Request final :
+class CPlayer_GetNewSteamAnnouncementState_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetNewSteamAnnouncementState_Request) */ {
  public:
   inline CPlayer_GetNewSteamAnnouncementState_Request() : CPlayer_GetNewSteamAnnouncementState_Request(nullptr) {}
@@ -6138,7 +6138,7 @@ class CPlayer_GetNewSteamAnnouncementState_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_GetNewSteamAnnouncementState_Response final :
+class CPlayer_GetNewSteamAnnouncementState_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_GetNewSteamAnnouncementState_Response) */ {
  public:
   inline CPlayer_GetNewSteamAnnouncementState_Response() : CPlayer_GetNewSteamAnnouncementState_Response(nullptr) {}
@@ -6368,7 +6368,7 @@ class CPlayer_GetNewSteamAnnouncementState_Response final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_UpdateSteamAnnouncementLastRead_Request final :
+class CPlayer_UpdateSteamAnnouncementLastRead_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CPlayer_UpdateSteamAnnouncementLastRead_Request) */ {
  public:
   inline CPlayer_UpdateSteamAnnouncementLastRead_Request() : CPlayer_UpdateSteamAnnouncementLastRead_Request(nullptr) {}
@@ -6543,7 +6543,7 @@ class CPlayer_UpdateSteamAnnouncementLastRead_Request final :
 };
 // -------------------------------------------------------------------
 
-class CPlayer_UpdateSteamAnnouncementLastRead_Response final :
+class CPlayer_UpdateSteamAnnouncementLastRead_Response :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CPlayer_UpdateSteamAnnouncementLastRead_Response) */ {
  public:
   inline CPlayer_UpdateSteamAnnouncementLastRead_Response() : CPlayer_UpdateSteamAnnouncementLastRead_Response(nullptr) {}

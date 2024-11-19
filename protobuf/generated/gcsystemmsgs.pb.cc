@@ -206,6 +206,7 @@ PROTOBUF_CONSTEXPR CCommunity_GetGamePersonalDataEntries_Response::CCommunity_Ge
   , /*decltype(_impl_._cached_size_)*/{}
   , /*decltype(_impl_.entries_)*/{}
   , /*decltype(_impl_.continue_token_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.continue_text_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.gceresult_)*/0u} {}
 struct CCommunity_GetGamePersonalDataEntries_ResponseDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CCommunity_GetGamePersonalDataEntries_ResponseDefaultTypeInternal()
@@ -399,9 +400,11 @@ const uint32_t TableStruct_gcsystemmsgs_2eproto::offsets[] PROTOBUF_SECTION_VARI
   PROTOBUF_FIELD_OFFSET(::CCommunity_GetGamePersonalDataEntries_Response, _impl_.gceresult_),
   PROTOBUF_FIELD_OFFSET(::CCommunity_GetGamePersonalDataEntries_Response, _impl_.entries_),
   PROTOBUF_FIELD_OFFSET(::CCommunity_GetGamePersonalDataEntries_Response, _impl_.continue_token_),
-  1,
+  PROTOBUF_FIELD_OFFSET(::CCommunity_GetGamePersonalDataEntries_Response, _impl_.continue_text_),
+  2,
   ~0u,
   0,
+  1,
   PROTOBUF_FIELD_OFFSET(::CCommunity_TerminateGamePersonalDataEntries_Request, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CCommunity_TerminateGamePersonalDataEntries_Request, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -433,9 +436,9 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 108, 115, -1, sizeof(::CCommunity_GetGamePersonalDataCategories_Request)},
   { 116, 124, -1, sizeof(::CCommunity_GetGamePersonalDataCategories_Response)},
   { 126, 136, -1, sizeof(::CCommunity_GetGamePersonalDataEntries_Request)},
-  { 140, 149, -1, sizeof(::CCommunity_GetGamePersonalDataEntries_Response)},
-  { 152, 160, -1, sizeof(::CCommunity_TerminateGamePersonalDataEntries_Request)},
-  { 162, 169, -1, sizeof(::CCommunity_TerminateGamePersonalDataEntries_Response)},
+  { 140, 150, -1, sizeof(::CCommunity_GetGamePersonalDataEntries_Response)},
+  { 154, 162, -1, sizeof(::CCommunity_TerminateGamePersonalDataEntries_Request)},
+  { 164, 171, -1, sizeof(::CCommunity_TerminateGamePersonalDataEntries_Response)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -488,141 +491,141 @@ const char descriptor_table_protodef_gcsystemmsgs_2eproto[] PROTOBUF_SECTION_VAR
   "p_assets_basename\030\002 \001(\t\"u\n-CCommunity_Ge"
   "tGamePersonalDataEntries_Request\022\r\n\005appi"
   "d\030\001 \001(\r\022\017\n\007steamid\030\002 \001(\004\022\014\n\004type\030\003 \001(\t\022\026"
-  "\n\016continue_token\030\004 \001(\t\"l\n.CCommunity_Get"
-  "GamePersonalDataEntries_Response\022\021\n\tgcer"
-  "esult\030\001 \001(\r\022\017\n\007entries\030\002 \003(\t\022\026\n\016continue"
-  "_token\030\003 \001(\t\"U\n3CCommunity_TerminateGame"
-  "PersonalDataEntries_Request\022\r\n\005appid\030\001 \001"
-  "(\r\022\017\n\007steamid\030\002 \001(\004\"I\n4CCommunity_Termin"
-  "ateGamePersonalDataEntries_Response\022\021\n\tg"
-  "ceresult\030\001 \001(\r*\302\030\n\014EGCSystemMsg\022\023\n\017k_EGC"
-  "MsgInvalid\020\000\022\021\n\rk_EGCMsgMulti\020\001\022\030\n\024k_EGC"
-  "MsgGenericReply\020\n\022\026\n\022k_EGCMsgSystemBase\020"
-  "2\022\036\n\032k_EGCMsgAchievementAwarded\0203\022\026\n\022k_E"
-  "GCMsgConCommand\0204\022\030\n\024k_EGCMsgStartPlayin"
-  "g\0205\022\027\n\023k_EGCMsgStopPlaying\0206\022\033\n\027k_EGCMsg"
-  "StartGameserver\0207\022\032\n\026k_EGCMsgStopGameser"
-  "ver\0208\022\025\n\021k_EGCMsgWGRequest\0209\022\026\n\022k_EGCMsg"
-  "WGResponse\020:\022\"\n\036k_EGCMsgGetUserGameStats"
-  "Schema\020;\022*\n&k_EGCMsgGetUserGameStatsSche"
-  "maResponse\020<\022\"\n\036k_EGCMsgGetUserStatsDEPR"
-  "ECATED\020=\022 \n\034k_EGCMsgGetUserStatsResponse"
-  "\020>\022\032\n\026k_EGCMsgAppInfoUpdated\020\?\022\033\n\027k_EGCM"
-  "sgValidateSession\020@\022#\n\037k_EGCMsgValidateS"
-  "essionResponse\020A\022\"\n\036k_EGCMsgLookupAccoun"
-  "tFromInput\020B\022\033\n\027k_EGCMsgSendHTTPRequest\020"
-  "C\022#\n\037k_EGCMsgSendHTTPRequestResponse\020D\022\030"
-  "\n\024k_EGCMsgPreTestSetup\020E\022\037\n\033k_EGCMsgReco"
-  "rdSupportAction\020F\022(\n$k_EGCMsgGetAccountD"
-  "etails_DEPRECATED\020G\022\"\n\036k_EGCMsgReceiveIn"
-  "terAppMessage\020I\022\030\n\024k_EGCMsgFindAccounts\020"
-  "J\022\025\n\021k_EGCMsgPostAlert\020K\022\027\n\023k_EGCMsgGetL"
-  "icenses\020L\022\030\n\024k_EGCMsgGetUserStats\020M\022\027\n\023k"
-  "_EGCMsgGetCommands\020N\022\037\n\033k_EGCMsgGetComma"
-  "ndsResponse\020O\022\032\n\026k_EGCMsgAddFreeLicense\020"
-  "P\022\"\n\036k_EGCMsgAddFreeLicenseResponse\020Q\022\031\n"
-  "\025k_EGCMsgGetIPLocation\020R\022!\n\035k_EGCMsgGetI"
-  "PLocationResponse\020S\022\035\n\031k_EGCMsgSystemSta"
-  "tsSchema\020T\022\032\n\026k_EGCMsgGetSystemStats\020U\022\""
-  "\n\036k_EGCMsgGetSystemStatsResponse\020V\022\025\n\021k_"
-  "EGCMsgSendEmail\020W\022\035\n\031k_EGCMsgSendEmailRe"
-  "sponse\020X\022\034\n\030k_EGCMsgGetEmailTemplate\020Y\022$"
-  "\n k_EGCMsgGetEmailTemplateResponse\020Z\022\032\n\026"
-  "k_EGCMsgGrantGuestPass\020[\022\"\n\036k_EGCMsgGran"
-  "tGuestPassResponse\020\\\022\035\n\031k_EGCMsgGetAccou"
-  "ntDetails\020]\022%\n!k_EGCMsgGetAccountDetails"
-  "Response\020^\022\033\n\027k_EGCMsgGetPersonaNames\020_\022"
-  "#\n\037k_EGCMsgGetPersonaNamesResponse\020`\022\030\n\024"
-  "k_EGCMsgMultiplexMsg\020a\022 \n\034k_EGCMsgMultip"
-  "lexMsgResponse\020b\022$\n k_EGCMsgWebAPIRegist"
-  "erInterfaces\020e\022\034\n\030k_EGCMsgWebAPIJobReque"
-  "st\020f\022(\n$k_EGCMsgWebAPIJobRequestHttpResp"
-  "onse\020h\022+\n\'k_EGCMsgWebAPIJobRequestForwar"
-  "dResponse\020i\022\031\n\024k_EGCMsgMemCachedGet\020\310\001\022!"
-  "\n\034k_EGCMsgMemCachedGetResponse\020\311\001\022\031\n\024k_E"
-  "GCMsgMemCachedSet\020\312\001\022\034\n\027k_EGCMsgMemCache"
-  "dDelete\020\313\001\022\033\n\026k_EGCMsgMemCachedStats\020\314\001\022"
-  "#\n\036k_EGCMsgMemCachedStatsResponse\020\315\001\022\037\n\032"
-  "k_EGCMsgMasterSetDirectory\020\334\001\022\'\n\"k_EGCMs"
-  "gMasterSetDirectoryResponse\020\335\001\022#\n\036k_EGCM"
-  "sgMasterSetWebAPIRouting\020\336\001\022+\n&k_EGCMsgM"
-  "asterSetWebAPIRoutingResponse\020\337\001\022&\n!k_EG"
-  "CMsgMasterSetClientMsgRouting\020\340\001\022.\n)k_EG"
-  "CMsgMasterSetClientMsgRoutingResponse\020\341\001"
-  "\022\027\n\022k_EGCMsgSetOptions\020\342\001\022\037\n\032k_EGCMsgSet"
-  "OptionsResponse\020\343\001\022\030\n\023k_EGCMsgSystemBase"
-  "2\020\364\003\022#\n\036k_EGCMsgGetPurchaseTrustStatus\020\365"
-  "\003\022+\n&k_EGCMsgGetPurchaseTrustStatusRespo"
-  "nse\020\366\003\022\032\n\025k_EGCMsgUpdateSession\020\367\003\022%\n k_"
-  "EGCMsgGCAccountVacStatusChange\020\370\003\022\034\n\027k_E"
-  "GCMsgCheckFriendship\020\371\003\022$\n\037k_EGCMsgCheck"
-  "FriendshipResponse\020\372\003\022\"\n\035k_EGCMsgGetPart"
-  "nerAccountLink\020\373\003\022*\n%k_EGCMsgGetPartnerA"
-  "ccountLinkResponse\020\374\003\022\037\n\032k_EGCMsgDPPartn"
-  "erMicroTxns\020\200\004\022\'\n\"k_EGCMsgDPPartnerMicro"
-  "TxnsResponse\020\201\004\022\"\n\035k_EGCMsgVacVerificati"
-  "onChange\020\206\004\022%\n k_EGCMsgAccountPhoneNumbe"
-  "rChange\020\207\004\022\036\n\031k_EGCMsgInviteUserToLobby\020"
-  "\213\004\0221\n,k_EGCMsgGetGamePersonalDataCategor"
-  "iesRequest\020\214\004\0222\n-k_EGCMsgGetGamePersonal"
-  "DataCategoriesResponse\020\215\004\022.\n)k_EGCMsgGet"
-  "GamePersonalDataEntriesRequest\020\216\004\022/\n*k_E"
-  "GCMsgGetGamePersonalDataEntriesResponse\020"
-  "\217\004\0224\n/k_EGCMsgTerminateGamePersonalDataE"
-  "ntriesRequest\020\220\004\0225\n0k_EGCMsgTerminateGam"
-  "ePersonalDataEntriesResponse\020\221\004\022.\n)k_EGC"
-  "MsgRecurringSubscriptionStatusChange\020\222\004\022"
-  " \n\033k_EGCMsgDirectServiceMethod\020\223\004\022(\n#k_E"
-  "GCMsgDirectServiceMethodResponse\020\224\004*\357\001\n\006"
-  "ESOMsg\022\023\n\017k_ESOMsg_Create\020\025\022\023\n\017k_ESOMsg_"
-  "Update\020\026\022\024\n\020k_ESOMsg_Destroy\020\027\022\034\n\030k_ESOM"
-  "sg_CacheSubscribed\020\030\022\036\n\032k_ESOMsg_CacheUn"
-  "subscribed\020\031\022\033\n\027k_ESOMsg_UpdateMultiple\020"
-  "\032\022#\n\037k_ESOMsg_CacheSubscriptionCheck\020\033\022%"
-  "\n!k_ESOMsg_CacheSubscriptionRefresh\020\034*\331\002"
-  "\n\020EGCBaseClientMsg\022\032\n\025k_EMsgGCClientWelc"
-  "ome\020\244\037\022\032\n\025k_EMsgGCServerWelcome\020\245\037\022\030\n\023k_"
-  "EMsgGCClientHello\020\246\037\022\030\n\023k_EMsgGCServerHe"
-  "llo\020\247\037\022#\n\036k_EMsgGCClientConnectionStatus"
-  "\020\251\037\022#\n\036k_EMsgGCServerConnectionStatus\020\252\037"
-  "\022\037\n\032k_EMsgGCClientHelloPartner\020\253\037\022\032\n\025k_E"
-  "MsgGCClientHelloPW\020\254\037\022\032\n\025k_EMsgGCClientH"
-  "elloR2\020\255\037\022\032\n\025k_EMsgGCClientHelloR3\020\256\037\022\032\n"
-  "\025k_EMsgGCClientHelloR4\020\257\037*\211\002\n\nEGCToGCMsg"
-  "\022\032\n\025k_EGCToGCMsgMasterAck\020\226\001\022\"\n\035k_EGCToG"
-  "CMsgMasterAckResponse\020\227\001\022\027\n\022k_EGCToGCMsg"
-  "Routed\020\230\001\022\034\n\027k_EGCToGCMsgRoutedReply\020\231\001\022"
-  "\032\n\025k_EMsgUpdateSessionIP\020\232\001\022\033\n\026k_EMsgReq"
-  "uestSessionIP\020\233\001\022#\n\036k_EMsgRequestSession"
-  "IPResponse\020\234\001\022&\n!k_EGCToGCMsgMasterStart"
-  "upComplete\020\235\001*\260\003\n\023ECommunityItemClass\022!\n"
-  "\035k_ECommunityItemClass_Invalid\020\000\022\037\n\033k_EC"
-  "ommunityItemClass_Badge\020\001\022\"\n\036k_ECommunit"
-  "yItemClass_GameCard\020\002\022+\n\'k_ECommunityIte"
-  "mClass_ProfileBackground\020\003\022\"\n\036k_ECommuni"
-  "tyItemClass_Emoticon\020\004\022%\n!k_ECommunityIt"
-  "emClass_BoosterPack\020\005\022$\n k_ECommunityIte"
-  "mClass_Consumable\020\006\022!\n\035k_ECommunityItemC"
-  "lass_GameGoo\020\007\022)\n%k_ECommunityItemClass_"
-  "ProfileModifier\020\010\022\037\n\033k_ECommunityItemCla"
-  "ss_Scene\020\t\022$\n k_ECommunityItemClass_Sali"
-  "enItem\020\n*\326\003\n\027ECommunityItemAttribute\022%\n!"
-  "k_ECommunityItemAttribute_Invalid\020\000\022(\n$k"
-  "_ECommunityItemAttribute_CardBorder\020\001\022#\n"
-  "\037k_ECommunityItemAttribute_Level\020\002\022)\n%k_"
-  "ECommunityItemAttribute_IssueNumber\020\003\022*\n"
-  "&k_ECommunityItemAttribute_TradableTime\020"
-  "\004\022,\n(k_ECommunityItemAttribute_StorePack"
-  "ageID\020\005\0220\n,k_ECommunityItemAttribute_Com"
-  "munityItemAppID\020\006\022/\n+k_ECommunityItemAtt"
-  "ribute_CommunityItemType\020\007\0223\n/k_ECommuni"
-  "tyItemAttribute_ProfileModiferEnabled\020\010\022"
-  "(\n$k_ECommunityItemAttribute_ExpiryTime\020"
-  "\t"
+  "\n\016continue_token\030\004 \001(\t\"\203\001\n.CCommunity_Ge"
+  "tGamePersonalDataEntries_Response\022\021\n\tgce"
+  "result\030\001 \001(\r\022\017\n\007entries\030\002 \003(\t\022\026\n\016continu"
+  "e_token\030\003 \001(\t\022\025\n\rcontinue_text\030\004 \001(\t\"U\n3"
+  "CCommunity_TerminateGamePersonalDataEntr"
+  "ies_Request\022\r\n\005appid\030\001 \001(\r\022\017\n\007steamid\030\002 "
+  "\001(\004\"I\n4CCommunity_TerminateGamePersonalD"
+  "ataEntries_Response\022\021\n\tgceresult\030\001 \001(\r*\302"
+  "\030\n\014EGCSystemMsg\022\023\n\017k_EGCMsgInvalid\020\000\022\021\n\r"
+  "k_EGCMsgMulti\020\001\022\030\n\024k_EGCMsgGenericReply\020"
+  "\n\022\026\n\022k_EGCMsgSystemBase\0202\022\036\n\032k_EGCMsgAch"
+  "ievementAwarded\0203\022\026\n\022k_EGCMsgConCommand\020"
+  "4\022\030\n\024k_EGCMsgStartPlaying\0205\022\027\n\023k_EGCMsgS"
+  "topPlaying\0206\022\033\n\027k_EGCMsgStartGameserver\020"
+  "7\022\032\n\026k_EGCMsgStopGameserver\0208\022\025\n\021k_EGCMs"
+  "gWGRequest\0209\022\026\n\022k_EGCMsgWGResponse\020:\022\"\n\036"
+  "k_EGCMsgGetUserGameStatsSchema\020;\022*\n&k_EG"
+  "CMsgGetUserGameStatsSchemaResponse\020<\022\"\n\036"
+  "k_EGCMsgGetUserStatsDEPRECATED\020=\022 \n\034k_EG"
+  "CMsgGetUserStatsResponse\020>\022\032\n\026k_EGCMsgAp"
+  "pInfoUpdated\020\?\022\033\n\027k_EGCMsgValidateSessio"
+  "n\020@\022#\n\037k_EGCMsgValidateSessionResponse\020A"
+  "\022\"\n\036k_EGCMsgLookupAccountFromInput\020B\022\033\n\027"
+  "k_EGCMsgSendHTTPRequest\020C\022#\n\037k_EGCMsgSen"
+  "dHTTPRequestResponse\020D\022\030\n\024k_EGCMsgPreTes"
+  "tSetup\020E\022\037\n\033k_EGCMsgRecordSupportAction\020"
+  "F\022(\n$k_EGCMsgGetAccountDetails_DEPRECATE"
+  "D\020G\022\"\n\036k_EGCMsgReceiveInterAppMessage\020I\022"
+  "\030\n\024k_EGCMsgFindAccounts\020J\022\025\n\021k_EGCMsgPos"
+  "tAlert\020K\022\027\n\023k_EGCMsgGetLicenses\020L\022\030\n\024k_E"
+  "GCMsgGetUserStats\020M\022\027\n\023k_EGCMsgGetComman"
+  "ds\020N\022\037\n\033k_EGCMsgGetCommandsResponse\020O\022\032\n"
+  "\026k_EGCMsgAddFreeLicense\020P\022\"\n\036k_EGCMsgAdd"
+  "FreeLicenseResponse\020Q\022\031\n\025k_EGCMsgGetIPLo"
+  "cation\020R\022!\n\035k_EGCMsgGetIPLocationRespons"
+  "e\020S\022\035\n\031k_EGCMsgSystemStatsSchema\020T\022\032\n\026k_"
+  "EGCMsgGetSystemStats\020U\022\"\n\036k_EGCMsgGetSys"
+  "temStatsResponse\020V\022\025\n\021k_EGCMsgSendEmail\020"
+  "W\022\035\n\031k_EGCMsgSendEmailResponse\020X\022\034\n\030k_EG"
+  "CMsgGetEmailTemplate\020Y\022$\n k_EGCMsgGetEma"
+  "ilTemplateResponse\020Z\022\032\n\026k_EGCMsgGrantGue"
+  "stPass\020[\022\"\n\036k_EGCMsgGrantGuestPassRespon"
+  "se\020\\\022\035\n\031k_EGCMsgGetAccountDetails\020]\022%\n!k"
+  "_EGCMsgGetAccountDetailsResponse\020^\022\033\n\027k_"
+  "EGCMsgGetPersonaNames\020_\022#\n\037k_EGCMsgGetPe"
+  "rsonaNamesResponse\020`\022\030\n\024k_EGCMsgMultiple"
+  "xMsg\020a\022 \n\034k_EGCMsgMultiplexMsgResponse\020b"
+  "\022$\n k_EGCMsgWebAPIRegisterInterfaces\020e\022\034"
+  "\n\030k_EGCMsgWebAPIJobRequest\020f\022(\n$k_EGCMsg"
+  "WebAPIJobRequestHttpResponse\020h\022+\n\'k_EGCM"
+  "sgWebAPIJobRequestForwardResponse\020i\022\031\n\024k"
+  "_EGCMsgMemCachedGet\020\310\001\022!\n\034k_EGCMsgMemCac"
+  "hedGetResponse\020\311\001\022\031\n\024k_EGCMsgMemCachedSe"
+  "t\020\312\001\022\034\n\027k_EGCMsgMemCachedDelete\020\313\001\022\033\n\026k_"
+  "EGCMsgMemCachedStats\020\314\001\022#\n\036k_EGCMsgMemCa"
+  "chedStatsResponse\020\315\001\022\037\n\032k_EGCMsgMasterSe"
+  "tDirectory\020\334\001\022\'\n\"k_EGCMsgMasterSetDirect"
+  "oryResponse\020\335\001\022#\n\036k_EGCMsgMasterSetWebAP"
+  "IRouting\020\336\001\022+\n&k_EGCMsgMasterSetWebAPIRo"
+  "utingResponse\020\337\001\022&\n!k_EGCMsgMasterSetCli"
+  "entMsgRouting\020\340\001\022.\n)k_EGCMsgMasterSetCli"
+  "entMsgRoutingResponse\020\341\001\022\027\n\022k_EGCMsgSetO"
+  "ptions\020\342\001\022\037\n\032k_EGCMsgSetOptionsResponse\020"
+  "\343\001\022\030\n\023k_EGCMsgSystemBase2\020\364\003\022#\n\036k_EGCMsg"
+  "GetPurchaseTrustStatus\020\365\003\022+\n&k_EGCMsgGet"
+  "PurchaseTrustStatusResponse\020\366\003\022\032\n\025k_EGCM"
+  "sgUpdateSession\020\367\003\022%\n k_EGCMsgGCAccountV"
+  "acStatusChange\020\370\003\022\034\n\027k_EGCMsgCheckFriend"
+  "ship\020\371\003\022$\n\037k_EGCMsgCheckFriendshipRespon"
+  "se\020\372\003\022\"\n\035k_EGCMsgGetPartnerAccountLink\020\373"
+  "\003\022*\n%k_EGCMsgGetPartnerAccountLinkRespon"
+  "se\020\374\003\022\037\n\032k_EGCMsgDPPartnerMicroTxns\020\200\004\022\'"
+  "\n\"k_EGCMsgDPPartnerMicroTxnsResponse\020\201\004\022"
+  "\"\n\035k_EGCMsgVacVerificationChange\020\206\004\022%\n k"
+  "_EGCMsgAccountPhoneNumberChange\020\207\004\022\036\n\031k_"
+  "EGCMsgInviteUserToLobby\020\213\004\0221\n,k_EGCMsgGe"
+  "tGamePersonalDataCategoriesRequest\020\214\004\0222\n"
+  "-k_EGCMsgGetGamePersonalDataCategoriesRe"
+  "sponse\020\215\004\022.\n)k_EGCMsgGetGamePersonalData"
+  "EntriesRequest\020\216\004\022/\n*k_EGCMsgGetGamePers"
+  "onalDataEntriesResponse\020\217\004\0224\n/k_EGCMsgTe"
+  "rminateGamePersonalDataEntriesRequest\020\220\004"
+  "\0225\n0k_EGCMsgTerminateGamePersonalDataEnt"
+  "riesResponse\020\221\004\022.\n)k_EGCMsgRecurringSubs"
+  "criptionStatusChange\020\222\004\022 \n\033k_EGCMsgDirec"
+  "tServiceMethod\020\223\004\022(\n#k_EGCMsgDirectServi"
+  "ceMethodResponse\020\224\004*\357\001\n\006ESOMsg\022\023\n\017k_ESOM"
+  "sg_Create\020\025\022\023\n\017k_ESOMsg_Update\020\026\022\024\n\020k_ES"
+  "OMsg_Destroy\020\027\022\034\n\030k_ESOMsg_CacheSubscrib"
+  "ed\020\030\022\036\n\032k_ESOMsg_CacheUnsubscribed\020\031\022\033\n\027"
+  "k_ESOMsg_UpdateMultiple\020\032\022#\n\037k_ESOMsg_Ca"
+  "cheSubscriptionCheck\020\033\022%\n!k_ESOMsg_Cache"
+  "SubscriptionRefresh\020\034*\331\002\n\020EGCBaseClientM"
+  "sg\022\032\n\025k_EMsgGCClientWelcome\020\244\037\022\032\n\025k_EMsg"
+  "GCServerWelcome\020\245\037\022\030\n\023k_EMsgGCClientHell"
+  "o\020\246\037\022\030\n\023k_EMsgGCServerHello\020\247\037\022#\n\036k_EMsg"
+  "GCClientConnectionStatus\020\251\037\022#\n\036k_EMsgGCS"
+  "erverConnectionStatus\020\252\037\022\037\n\032k_EMsgGCClie"
+  "ntHelloPartner\020\253\037\022\032\n\025k_EMsgGCClientHello"
+  "PW\020\254\037\022\032\n\025k_EMsgGCClientHelloR2\020\255\037\022\032\n\025k_E"
+  "MsgGCClientHelloR3\020\256\037\022\032\n\025k_EMsgGCClientH"
+  "elloR4\020\257\037*\211\002\n\nEGCToGCMsg\022\032\n\025k_EGCToGCMsg"
+  "MasterAck\020\226\001\022\"\n\035k_EGCToGCMsgMasterAckRes"
+  "ponse\020\227\001\022\027\n\022k_EGCToGCMsgRouted\020\230\001\022\034\n\027k_E"
+  "GCToGCMsgRoutedReply\020\231\001\022\032\n\025k_EMsgUpdateS"
+  "essionIP\020\232\001\022\033\n\026k_EMsgRequestSessionIP\020\233\001"
+  "\022#\n\036k_EMsgRequestSessionIPResponse\020\234\001\022&\n"
+  "!k_EGCToGCMsgMasterStartupComplete\020\235\001*\260\003"
+  "\n\023ECommunityItemClass\022!\n\035k_ECommunityIte"
+  "mClass_Invalid\020\000\022\037\n\033k_ECommunityItemClas"
+  "s_Badge\020\001\022\"\n\036k_ECommunityItemClass_GameC"
+  "ard\020\002\022+\n\'k_ECommunityItemClass_ProfileBa"
+  "ckground\020\003\022\"\n\036k_ECommunityItemClass_Emot"
+  "icon\020\004\022%\n!k_ECommunityItemClass_BoosterP"
+  "ack\020\005\022$\n k_ECommunityItemClass_Consumabl"
+  "e\020\006\022!\n\035k_ECommunityItemClass_GameGoo\020\007\022)"
+  "\n%k_ECommunityItemClass_ProfileModifier\020"
+  "\010\022\037\n\033k_ECommunityItemClass_Scene\020\t\022$\n k_"
+  "ECommunityItemClass_SalienItem\020\n*\326\003\n\027ECo"
+  "mmunityItemAttribute\022%\n!k_ECommunityItem"
+  "Attribute_Invalid\020\000\022(\n$k_ECommunityItemA"
+  "ttribute_CardBorder\020\001\022#\n\037k_ECommunityIte"
+  "mAttribute_Level\020\002\022)\n%k_ECommunityItemAt"
+  "tribute_IssueNumber\020\003\022*\n&k_ECommunityIte"
+  "mAttribute_TradableTime\020\004\022,\n(k_ECommunit"
+  "yItemAttribute_StorePackageID\020\005\0220\n,k_ECo"
+  "mmunityItemAttribute_CommunityItemAppID\020"
+  "\006\022/\n+k_ECommunityItemAttribute_Community"
+  "ItemType\020\007\0223\n/k_ECommunityItemAttribute_"
+  "ProfileModiferEnabled\020\010\022(\n$k_ECommunityI"
+  "temAttribute_ExpiryTime\020\t"
   ;
 static ::_pbi::once_flag descriptor_table_gcsystemmsgs_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_gcsystemmsgs_2eproto = {
-    false, false, 6481, descriptor_table_protodef_gcsystemmsgs_2eproto,
+    false, false, 6505, descriptor_table_protodef_gcsystemmsgs_2eproto,
     "gcsystemmsgs.proto",
     &descriptor_table_gcsystemmsgs_2eproto_once, nullptr, 0, 14,
     schemas, file_default_instances, TableStruct_gcsystemmsgs_2eproto::offsets,
@@ -4086,10 +4089,13 @@ class CCommunity_GetGamePersonalDataEntries_Response::_Internal {
  public:
   using HasBits = decltype(std::declval<CCommunity_GetGamePersonalDataEntries_Response>()._impl_._has_bits_);
   static void set_has_gceresult(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
+    (*has_bits)[0] |= 4u;
   }
   static void set_has_continue_token(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
+  }
+  static void set_has_continue_text(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
   }
 };
 
@@ -4107,6 +4113,7 @@ CCommunity_GetGamePersonalDataEntries_Response::CCommunity_GetGamePersonalDataEn
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.entries_){from._impl_.entries_}
     , decltype(_impl_.continue_token_){}
+    , decltype(_impl_.continue_text_){}
     , decltype(_impl_.gceresult_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -4116,6 +4123,14 @@ CCommunity_GetGamePersonalDataEntries_Response::CCommunity_GetGamePersonalDataEn
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (from._internal_has_continue_token()) {
     _this->_impl_.continue_token_.Set(from._internal_continue_token(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.continue_text_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.continue_text_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_continue_text()) {
+    _this->_impl_.continue_text_.Set(from._internal_continue_text(), 
       _this->GetArenaForAllocation());
   }
   _this->_impl_.gceresult_ = from._impl_.gceresult_;
@@ -4131,11 +4146,16 @@ inline void CCommunity_GetGamePersonalDataEntries_Response::SharedCtor(
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.entries_){arena}
     , decltype(_impl_.continue_token_){}
+    , decltype(_impl_.continue_text_){}
     , decltype(_impl_.gceresult_){0u}
   };
   _impl_.continue_token_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.continue_token_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.continue_text_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.continue_text_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
@@ -4152,6 +4172,7 @@ inline void CCommunity_GetGamePersonalDataEntries_Response::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.entries_.~RepeatedPtrField();
   _impl_.continue_token_.Destroy();
+  _impl_.continue_text_.Destroy();
 }
 
 void CCommunity_GetGamePersonalDataEntries_Response::SetCachedSize(int size) const {
@@ -4166,8 +4187,13 @@ void CCommunity_GetGamePersonalDataEntries_Response::Clear() {
 
   _impl_.entries_.Clear();
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    _impl_.continue_token_.ClearNonDefaultToEmpty();
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _impl_.continue_token_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _impl_.continue_text_.ClearNonDefaultToEmpty();
+    }
   }
   _impl_.gceresult_ = 0u;
   _impl_._has_bits_.Clear();
@@ -4219,6 +4245,18 @@ const char* CCommunity_GetGamePersonalDataEntries_Response::_InternalParse(const
         } else
           goto handle_unusual;
         continue;
+      // optional string continue_text = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+          auto str = _internal_mutable_continue_text();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CCommunity_GetGamePersonalDataEntries_Response.continue_text");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -4251,7 +4289,7 @@ uint8_t* CCommunity_GetGamePersonalDataEntries_Response::_InternalSerialize(
 
   cached_has_bits = _impl_._has_bits_[0];
   // optional uint32 gceresult = 1;
-  if (cached_has_bits & 0x00000002u) {
+  if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_gceresult(), target);
   }
@@ -4274,6 +4312,16 @@ uint8_t* CCommunity_GetGamePersonalDataEntries_Response::_InternalSerialize(
       "CCommunity_GetGamePersonalDataEntries_Response.continue_token");
     target = stream->WriteStringMaybeAliased(
         3, this->_internal_continue_token(), target);
+  }
+
+  // optional string continue_text = 4;
+  if (cached_has_bits & 0x00000002u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_continue_text().data(), static_cast<int>(this->_internal_continue_text().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CCommunity_GetGamePersonalDataEntries_Response.continue_text");
+    target = stream->WriteStringMaybeAliased(
+        4, this->_internal_continue_text(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -4301,7 +4349,7 @@ size_t CCommunity_GetGamePersonalDataEntries_Response::ByteSizeLong() const {
   }
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
+  if (cached_has_bits & 0x00000007u) {
     // optional string continue_token = 3;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
@@ -4309,8 +4357,15 @@ size_t CCommunity_GetGamePersonalDataEntries_Response::ByteSizeLong() const {
           this->_internal_continue_token());
     }
 
-    // optional uint32 gceresult = 1;
+    // optional string continue_text = 4;
     if (cached_has_bits & 0x00000002u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_continue_text());
+    }
+
+    // optional uint32 gceresult = 1;
+    if (cached_has_bits & 0x00000004u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_gceresult());
     }
 
@@ -4335,11 +4390,14 @@ void CCommunity_GetGamePersonalDataEntries_Response::MergeImpl(::PROTOBUF_NAMESP
 
   _this->_impl_.entries_.MergeFrom(from._impl_.entries_);
   cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
+  if (cached_has_bits & 0x00000007u) {
     if (cached_has_bits & 0x00000001u) {
       _this->_internal_set_continue_token(from._internal_continue_token());
     }
     if (cached_has_bits & 0x00000002u) {
+      _this->_internal_set_continue_text(from._internal_continue_text());
+    }
+    if (cached_has_bits & 0x00000004u) {
       _this->_impl_.gceresult_ = from._impl_.gceresult_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -4368,6 +4426,10 @@ void CCommunity_GetGamePersonalDataEntries_Response::InternalSwap(CCommunity_Get
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.continue_token_, lhs_arena,
       &other->_impl_.continue_token_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.continue_text_, lhs_arena,
+      &other->_impl_.continue_text_, rhs_arena
   );
   swap(_impl_.gceresult_, other->_impl_.gceresult_);
 }

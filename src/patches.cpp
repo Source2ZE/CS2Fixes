@@ -35,7 +35,6 @@ CMemPatch g_CommonPatches[] =
 {
 	CMemPatch("ServerMovementUnlock", "ServerMovementUnlock"),
 	CMemPatch("CheckJumpButtonWater", "FixWaterFloorJump"),
-	CMemPatch("CategorizeUnderwater", "CategorizeUnderwater"),
 	CMemPatch("WaterLevelGravity", "WaterLevelGravity"),
 	CMemPatch("CPhysBox_Use", "CPhysBox_Use"),
 	CMemPatch("BotNavIgnore", "BotNavIgnore"),

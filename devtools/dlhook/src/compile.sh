@@ -1,0 +1,1 @@
+gcc -fPIC -rdynamic -shared dlhook.c -o libasan.so.dlhook.so

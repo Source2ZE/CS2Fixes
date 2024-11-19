@@ -21,6 +21,8 @@
 
 #include "cbaseentity.h"
 
+extern CGlobalVars* gpGlobals;
+
 enum gear_slot_t : uint32_t
 {
 	GEAR_SLOT_INVALID = 0xffffffff,
@@ -88,8 +90,16 @@ class CBasePlayerWeapon : public CEconEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerWeapon)
+	SCHEMA_FIELD(int, m_nNextPrimaryAttackTick)
+	SCHEMA_FIELD(int, m_nNextSecondaryAttackTick)
 
 	CCSWeaponBaseVData* GetWeaponVData() { return (CCSWeaponBaseVData*)GetVData(); }
+
+	void Disarm()
+	{
+		m_nNextPrimaryAttackTick(MAX(m_nNextPrimaryAttackTick(), gpGlobals->tickcount + 24));
+		m_nNextSecondaryAttackTick(MAX(m_nNextSecondaryAttackTick(), gpGlobals->tickcount + 24));
+	}
 };
 
 class CCSWeaponBase : public CBasePlayerWeapon

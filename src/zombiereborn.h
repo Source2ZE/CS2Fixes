@@ -51,7 +51,7 @@ struct ZRModelEntry
 	std::string szModelPath;
 	CUtlVector<int> vecSkins;
 	std::string szColor;
-	ZRModelEntry(ZRModelEntry* modelEntry);
+	ZRModelEntry(std::shared_ptr<ZRModelEntry> modelEntry);
 	ZRModelEntry(ordered_json jsonModelEntry);
 	int GetRandomSkin()
 	{
@@ -66,12 +66,12 @@ struct ZRClass
 	bool bEnabled;
 	std::string szClassName;
 	int iHealth;
-	CUtlVector<ZRModelEntry*> vecModels;
+	CUtlVector<std::shared_ptr<ZRModelEntry>> vecModels;
 	float flScale;
 	float flSpeed;
 	float flGravity;
 	uint64 iAdminFlag;
-	ZRClass(ZRClass *pClass, int iTeam) :
+	ZRClass(std::shared_ptr<ZRClass> pClass, int iTeam) :
 		iTeam(iTeam),
 		bEnabled(pClass->bEnabled),
 		szClassName(pClass->szClassName),
@@ -84,12 +84,12 @@ struct ZRClass
 			vecModels.Purge();
 			FOR_EACH_VEC(pClass->vecModels, i)
 			{
-				ZRModelEntry *modelEntry = new ZRModelEntry(pClass->vecModels[i]);
+				std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(pClass->vecModels[i]);
 				vecModels.AddToTail(modelEntry);
 			}
 		};
 
-	ZRClass(ordered_json jsonKeys, std::string szClassname);
+	ZRClass(ordered_json jsonKeys, std::string szClassname, int iTeam);
 	void PrintInfo()
 	{
 		std::string szModels = "";
@@ -127,7 +127,7 @@ struct ZRClass
 	void Override(ordered_json jsonKeys, std::string szClassname);
 	bool IsApplicableTo(CCSPlayerController *pController);
 	uint64 ParseClassFlags(const char* pszFlags);
-	ZRModelEntry *GetRandomModelEntry()
+	std::shared_ptr<ZRModelEntry> GetRandomModelEntry()
 	{
 		return vecModels[rand() % vecModels.Count()];
 	};
@@ -136,7 +136,7 @@ struct ZRClass
 
 struct ZRHumanClass : ZRClass
 {
-	ZRHumanClass(ZRHumanClass *pClass) : ZRClass(pClass, CS_TEAM_CT){};
+	ZRHumanClass(std::shared_ptr<ZRHumanClass> pClass) : ZRClass(pClass, CS_TEAM_CT) {};
 	ZRHumanClass(ordered_json jsonKeys, std::string szClassname);
 };
 
@@ -144,7 +144,7 @@ struct ZRZombieClass : ZRClass
 {
 	int iHealthRegenCount;
 	float flHealthRegenInterval;
-	ZRZombieClass(ZRZombieClass *pClass) :
+	ZRZombieClass(std::shared_ptr<ZRZombieClass> pClass) :
 		ZRClass(pClass, CS_TEAM_T), 
 		iHealthRegenCount(pClass->iHealthRegenCount),
 		flHealthRegenInterval(pClass->flHealthRegenInterval){};
@@ -199,23 +199,22 @@ public:
 		m_HumanClassMap.SetLessFunc(DefLessFunc(uint32));
 	};
 	void LoadPlayerClass();
-	bool CreateJsonConfigFromKeyValuesFile();
-	void ApplyBaseClassVisuals(ZRClass *pClass, CCSPlayerPawn *pPawn);
-	ZRHumanClass* GetHumanClass(const char *pszClassName);
-	void ApplyHumanClass(ZRHumanClass *pClass, CCSPlayerPawn *pPawn);
+	void ApplyBaseClassVisuals(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
+	std::shared_ptr<ZRHumanClass> GetHumanClass(const char* pszClassName);
+	void ApplyHumanClass(std::shared_ptr<ZRHumanClass> pClass, CCSPlayerPawn* pPawn);
 	void ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn *pPawn);
 	void ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPawn *pPawn);
-	ZRZombieClass* GetZombieClass(const char*pszClassName);
-	void ApplyZombieClass(ZRZombieClass *pClass, CCSPlayerPawn *pPawn);
+	std::shared_ptr<ZRZombieClass> GetZombieClass(const char* pszClassName);
+	void ApplyZombieClass(std::shared_ptr<ZRZombieClass> pClass, CCSPlayerPawn* pPawn);
 	void ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pPawn);
 	void PrecacheModels(IEntityResourceManifest* pResourceManifest);
-	void GetZRClassList(int iTeam, CUtlVector<ZRClass*> &vecClasses, CCSPlayerController* pController = nullptr);
+	void GetZRClassList(int iTeam, CUtlVector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController = nullptr);
 private:
-	void ApplyBaseClass(ZRClass* pClass, CCSPlayerPawn *pPawn);
-	CUtlVector<ZRZombieClass*> m_vecZombieDefaultClass;
-	CUtlVector<ZRHumanClass*> m_vecHumanDefaultClass;
-	CUtlMap<uint32, ZRZombieClass*> m_ZombieClassMap;
-	CUtlMap<uint32, ZRHumanClass*> m_HumanClassMap;
+	void ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
+	CUtlVector<std::shared_ptr<ZRZombieClass>> m_vecZombieDefaultClass;
+	CUtlVector<std::shared_ptr<ZRHumanClass>> m_vecHumanDefaultClass;
+	CUtlMap<uint32, std::shared_ptr<ZRZombieClass>> m_ZombieClassMap;
+	CUtlMap<uint32, std::shared_ptr<ZRHumanClass>> m_HumanClassMap;
 };
 
 class CZRRegenTimer : public CTimerBase

@@ -28,11 +28,13 @@
 #include "../detours.h"
 #include "entitykeyvalues.h"
 #include "../../gameconfig.h"
+#include "tier1/utlstringtoken.h"
 
 extern CGameConfig *g_GameConfig;
 
 class CGameUI;
 class CEnvHudHint;
+class CPointViewControl;
 
 class CGameSceneNode
 {
@@ -247,7 +249,7 @@ public:
 	// This was needed so we can parent to nameless entities using pointers
 	void SetParent(CBaseEntity *pNewParent)
 	{
-		addresses::CBaseEntity_SetParent(this, pNewParent, 0, nullptr);
+		addresses::CBaseEntity_SetParent(this, pNewParent, MakeStringToken(""), nullptr);
 	}
 
 	void Remove()
@@ -286,6 +288,19 @@ public:
 	{
 		if (V_strcasecmp(GetClassname(), "env_hudhint") == 0)
 			return reinterpret_cast<CEnvHudHint *>(this);
+
+		return nullptr;
+	}
+
+	[[nodiscard]] CPointViewControl *AsPointViewControl()
+	{
+		if (V_strcasecmp(GetClassname(), "logic_relay") != 0)
+			return nullptr;
+
+		const auto tag = m_iszPrivateVScripts.IsValid() ? m_iszPrivateVScripts.String() : nullptr;
+
+		if (tag && V_strcasecmp(tag, "point_viewcontrol") == 0)
+			return reinterpret_cast<CPointViewControl *>(this);
 
 		return nullptr;
 	}

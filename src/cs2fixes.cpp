@@ -59,6 +59,7 @@
 #include "cs_gameevents.pb.h"
 #include "gameevents.pb.h"
 #include "leader.h"
+#include "usermessages.pb.h"
 
 #include "tier0/memdbgon.h"
 
@@ -132,7 +133,6 @@ CGameConfig *g_GameConfig = nullptr;
 ISteamHTTP *g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
-IGameTypes* g_pGameTypes = nullptr;
 int g_iCGamePlayerEquipUseId = -1;
 int g_iCreateWorkshopMapGroupId = -1;
 int g_iOnTakeDamageAliveId = -1;
@@ -612,6 +612,17 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 		if (g_bEnableLeader)
 			Leader_PostEventAbstract_Source1LegacyGameEvent(clients, pData);
 	}
+	else if (info->m_MessageId == UM_Shake)
+	{
+		auto pPBData = const_cast<CNetMessage*>(pData)->ToPB<CUserMessageShake>();
+		if (g_flMaxShakeAmp >= 0 && pPBData->amplitude() > g_flMaxShakeAmp)
+			pPBData->set_amplitude(g_flMaxShakeAmp);
+
+		// remove client with noshake from the event
+		if (g_bEnableNoShake)
+			*(uint64 *)clients &= ~g_playerManager->GetNoShakeMask();
+	}
+	
 }
 
 void CS2Fixes::AllPluginsLoaded()
@@ -922,9 +933,13 @@ void CS2Fixes::Hook_CheckMovingGround(double frametime)
 {
 	CCSPlayer_MovementServices *pMove = META_IFACEPTR(CCSPlayer_MovementServices);
 	CCSPlayerPawn *pPawn = pMove->GetPawn();
+
+	if (!pPawn)
+		RETURN_META(MRES_IGNORED);
+
 	CCSPlayerController *pController = pPawn->GetOriginalController();
 
-	if (!pPawn || !pController)
+	if (!pController)
 		RETURN_META(MRES_IGNORED);
 
 	int iSlot = pController->GetPlayerSlot();

@@ -52,12 +52,16 @@ extern CSGOInputHistoryEntryPBDefaultTypeInternal _CSGOInputHistoryEntryPB_defau
 class CSGOInterpolationInfoPB;
 struct CSGOInterpolationInfoPBDefaultTypeInternal;
 extern CSGOInterpolationInfoPBDefaultTypeInternal _CSGOInterpolationInfoPB_default_instance_;
+class CSGOInterpolationInfoPB_CL;
+struct CSGOInterpolationInfoPB_CLDefaultTypeInternal;
+extern CSGOInterpolationInfoPB_CLDefaultTypeInternal _CSGOInterpolationInfoPB_CL_default_instance_;
 class CSGOUserCmdPB;
 struct CSGOUserCmdPBDefaultTypeInternal;
 extern CSGOUserCmdPBDefaultTypeInternal _CSGOUserCmdPB_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::CSGOInputHistoryEntryPB* Arena::CreateMaybeMessage<::CSGOInputHistoryEntryPB>(Arena*);
 template<> ::CSGOInterpolationInfoPB* Arena::CreateMaybeMessage<::CSGOInterpolationInfoPB>(Arena*);
+template<> ::CSGOInterpolationInfoPB_CL* Arena::CreateMaybeMessage<::CSGOInterpolationInfoPB_CL>(Arena*);
 template<> ::CSGOUserCmdPB* Arena::CreateMaybeMessage<::CSGOUserCmdPB>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
@@ -253,6 +257,166 @@ class CSGOInterpolationInfoPB :
 };
 // -------------------------------------------------------------------
 
+class CSGOInterpolationInfoPB_CL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSGOInterpolationInfoPB_CL) */ {
+ public:
+  inline CSGOInterpolationInfoPB_CL() : CSGOInterpolationInfoPB_CL(nullptr) {}
+  ~CSGOInterpolationInfoPB_CL() override;
+  explicit PROTOBUF_CONSTEXPR CSGOInterpolationInfoPB_CL(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSGOInterpolationInfoPB_CL(const CSGOInterpolationInfoPB_CL& from);
+  CSGOInterpolationInfoPB_CL(CSGOInterpolationInfoPB_CL&& from) noexcept
+    : CSGOInterpolationInfoPB_CL() {
+    *this = ::std::move(from);
+  }
+
+  inline CSGOInterpolationInfoPB_CL& operator=(const CSGOInterpolationInfoPB_CL& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSGOInterpolationInfoPB_CL& operator=(CSGOInterpolationInfoPB_CL&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSGOInterpolationInfoPB_CL& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSGOInterpolationInfoPB_CL* internal_default_instance() {
+    return reinterpret_cast<const CSGOInterpolationInfoPB_CL*>(
+               &_CSGOInterpolationInfoPB_CL_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  friend void swap(CSGOInterpolationInfoPB_CL& a, CSGOInterpolationInfoPB_CL& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSGOInterpolationInfoPB_CL* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSGOInterpolationInfoPB_CL* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSGOInterpolationInfoPB_CL* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSGOInterpolationInfoPB_CL>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSGOInterpolationInfoPB_CL& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSGOInterpolationInfoPB_CL& from) {
+    CSGOInterpolationInfoPB_CL::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSGOInterpolationInfoPB_CL* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSGOInterpolationInfoPB_CL";
+  }
+  protected:
+  explicit CSGOInterpolationInfoPB_CL(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kFracFieldNumber = 3,
+  };
+  // optional float frac = 3 [default = 0];
+  bool has_frac() const;
+  private:
+  bool _internal_has_frac() const;
+  public:
+  void clear_frac();
+  float frac() const;
+  void set_frac(float value);
+  private:
+  float _internal_frac() const;
+  void _internal_set_frac(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CSGOInterpolationInfoPB_CL)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    float frac_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cs_5fusercmd_2eproto;
+};
+// -------------------------------------------------------------------
+
 class CSGOInputHistoryEntryPB :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSGOInputHistoryEntryPB) */ {
  public:
@@ -308,7 +472,7 @@ class CSGOInputHistoryEntryPB :
                &_CSGOInputHistoryEntryPB_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    2;
 
   friend void swap(CSGOInputHistoryEntryPB& a, CSGOInputHistoryEntryPB& b) {
     a.Swap(&b);
@@ -382,20 +546,20 @@ class CSGOInputHistoryEntryPB :
 
   enum : int {
     kViewAnglesFieldNumber = 2,
-    kShootPositionFieldNumber = 3,
-    kTargetHeadPosCheckFieldNumber = 9,
-    kTargetAbsPosCheckFieldNumber = 10,
-    kTargetAbsAngCheckFieldNumber = 11,
     kClInterpFieldNumber = 12,
     kSvInterp0FieldNumber = 13,
     kSvInterp1FieldNumber = 14,
     kPlayerInterpFieldNumber = 15,
+    kShootPositionFieldNumber = 66,
+    kTargetHeadPosCheckFieldNumber = 67,
+    kTargetAbsPosCheckFieldNumber = 68,
+    kTargetAbsAngCheckFieldNumber = 69,
     kRenderTickCountFieldNumber = 4,
     kRenderTickFractionFieldNumber = 5,
     kPlayerTickCountFieldNumber = 6,
     kPlayerTickFractionFieldNumber = 7,
-    kFrameNumberFieldNumber = 20,
-    kTargetEntIndexFieldNumber = 8,
+    kFrameNumberFieldNumber = 64,
+    kTargetEntIndexFieldNumber = 65,
   };
   // optional .CMsgQAngle view_angles = 2;
   bool has_view_angles() const;
@@ -415,95 +579,23 @@ class CSGOInputHistoryEntryPB :
       ::CMsgQAngle* view_angles);
   ::CMsgQAngle* unsafe_arena_release_view_angles();
 
-  // optional .CMsgVector shoot_position = 3;
-  bool has_shoot_position() const;
-  private:
-  bool _internal_has_shoot_position() const;
-  public:
-  void clear_shoot_position();
-  const ::CMsgVector& shoot_position() const;
-  PROTOBUF_NODISCARD ::CMsgVector* release_shoot_position();
-  ::CMsgVector* mutable_shoot_position();
-  void set_allocated_shoot_position(::CMsgVector* shoot_position);
-  private:
-  const ::CMsgVector& _internal_shoot_position() const;
-  ::CMsgVector* _internal_mutable_shoot_position();
-  public:
-  void unsafe_arena_set_allocated_shoot_position(
-      ::CMsgVector* shoot_position);
-  ::CMsgVector* unsafe_arena_release_shoot_position();
-
-  // optional .CMsgVector target_head_pos_check = 9;
-  bool has_target_head_pos_check() const;
-  private:
-  bool _internal_has_target_head_pos_check() const;
-  public:
-  void clear_target_head_pos_check();
-  const ::CMsgVector& target_head_pos_check() const;
-  PROTOBUF_NODISCARD ::CMsgVector* release_target_head_pos_check();
-  ::CMsgVector* mutable_target_head_pos_check();
-  void set_allocated_target_head_pos_check(::CMsgVector* target_head_pos_check);
-  private:
-  const ::CMsgVector& _internal_target_head_pos_check() const;
-  ::CMsgVector* _internal_mutable_target_head_pos_check();
-  public:
-  void unsafe_arena_set_allocated_target_head_pos_check(
-      ::CMsgVector* target_head_pos_check);
-  ::CMsgVector* unsafe_arena_release_target_head_pos_check();
-
-  // optional .CMsgVector target_abs_pos_check = 10;
-  bool has_target_abs_pos_check() const;
-  private:
-  bool _internal_has_target_abs_pos_check() const;
-  public:
-  void clear_target_abs_pos_check();
-  const ::CMsgVector& target_abs_pos_check() const;
-  PROTOBUF_NODISCARD ::CMsgVector* release_target_abs_pos_check();
-  ::CMsgVector* mutable_target_abs_pos_check();
-  void set_allocated_target_abs_pos_check(::CMsgVector* target_abs_pos_check);
-  private:
-  const ::CMsgVector& _internal_target_abs_pos_check() const;
-  ::CMsgVector* _internal_mutable_target_abs_pos_check();
-  public:
-  void unsafe_arena_set_allocated_target_abs_pos_check(
-      ::CMsgVector* target_abs_pos_check);
-  ::CMsgVector* unsafe_arena_release_target_abs_pos_check();
-
-  // optional .CMsgQAngle target_abs_ang_check = 11;
-  bool has_target_abs_ang_check() const;
-  private:
-  bool _internal_has_target_abs_ang_check() const;
-  public:
-  void clear_target_abs_ang_check();
-  const ::CMsgQAngle& target_abs_ang_check() const;
-  PROTOBUF_NODISCARD ::CMsgQAngle* release_target_abs_ang_check();
-  ::CMsgQAngle* mutable_target_abs_ang_check();
-  void set_allocated_target_abs_ang_check(::CMsgQAngle* target_abs_ang_check);
-  private:
-  const ::CMsgQAngle& _internal_target_abs_ang_check() const;
-  ::CMsgQAngle* _internal_mutable_target_abs_ang_check();
-  public:
-  void unsafe_arena_set_allocated_target_abs_ang_check(
-      ::CMsgQAngle* target_abs_ang_check);
-  ::CMsgQAngle* unsafe_arena_release_target_abs_ang_check();
-
-  // optional .CSGOInterpolationInfoPB cl_interp = 12;
+  // optional .CSGOInterpolationInfoPB_CL cl_interp = 12;
   bool has_cl_interp() const;
   private:
   bool _internal_has_cl_interp() const;
   public:
   void clear_cl_interp();
-  const ::CSGOInterpolationInfoPB& cl_interp() const;
-  PROTOBUF_NODISCARD ::CSGOInterpolationInfoPB* release_cl_interp();
-  ::CSGOInterpolationInfoPB* mutable_cl_interp();
-  void set_allocated_cl_interp(::CSGOInterpolationInfoPB* cl_interp);
+  const ::CSGOInterpolationInfoPB_CL& cl_interp() const;
+  PROTOBUF_NODISCARD ::CSGOInterpolationInfoPB_CL* release_cl_interp();
+  ::CSGOInterpolationInfoPB_CL* mutable_cl_interp();
+  void set_allocated_cl_interp(::CSGOInterpolationInfoPB_CL* cl_interp);
   private:
-  const ::CSGOInterpolationInfoPB& _internal_cl_interp() const;
-  ::CSGOInterpolationInfoPB* _internal_mutable_cl_interp();
+  const ::CSGOInterpolationInfoPB_CL& _internal_cl_interp() const;
+  ::CSGOInterpolationInfoPB_CL* _internal_mutable_cl_interp();
   public:
   void unsafe_arena_set_allocated_cl_interp(
-      ::CSGOInterpolationInfoPB* cl_interp);
-  ::CSGOInterpolationInfoPB* unsafe_arena_release_cl_interp();
+      ::CSGOInterpolationInfoPB_CL* cl_interp);
+  ::CSGOInterpolationInfoPB_CL* unsafe_arena_release_cl_interp();
 
   // optional .CSGOInterpolationInfoPB sv_interp0 = 13;
   bool has_sv_interp0() const;
@@ -559,6 +651,78 @@ class CSGOInputHistoryEntryPB :
       ::CSGOInterpolationInfoPB* player_interp);
   ::CSGOInterpolationInfoPB* unsafe_arena_release_player_interp();
 
+  // optional .CMsgVector shoot_position = 66;
+  bool has_shoot_position() const;
+  private:
+  bool _internal_has_shoot_position() const;
+  public:
+  void clear_shoot_position();
+  const ::CMsgVector& shoot_position() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_shoot_position();
+  ::CMsgVector* mutable_shoot_position();
+  void set_allocated_shoot_position(::CMsgVector* shoot_position);
+  private:
+  const ::CMsgVector& _internal_shoot_position() const;
+  ::CMsgVector* _internal_mutable_shoot_position();
+  public:
+  void unsafe_arena_set_allocated_shoot_position(
+      ::CMsgVector* shoot_position);
+  ::CMsgVector* unsafe_arena_release_shoot_position();
+
+  // optional .CMsgVector target_head_pos_check = 67;
+  bool has_target_head_pos_check() const;
+  private:
+  bool _internal_has_target_head_pos_check() const;
+  public:
+  void clear_target_head_pos_check();
+  const ::CMsgVector& target_head_pos_check() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_target_head_pos_check();
+  ::CMsgVector* mutable_target_head_pos_check();
+  void set_allocated_target_head_pos_check(::CMsgVector* target_head_pos_check);
+  private:
+  const ::CMsgVector& _internal_target_head_pos_check() const;
+  ::CMsgVector* _internal_mutable_target_head_pos_check();
+  public:
+  void unsafe_arena_set_allocated_target_head_pos_check(
+      ::CMsgVector* target_head_pos_check);
+  ::CMsgVector* unsafe_arena_release_target_head_pos_check();
+
+  // optional .CMsgVector target_abs_pos_check = 68;
+  bool has_target_abs_pos_check() const;
+  private:
+  bool _internal_has_target_abs_pos_check() const;
+  public:
+  void clear_target_abs_pos_check();
+  const ::CMsgVector& target_abs_pos_check() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_target_abs_pos_check();
+  ::CMsgVector* mutable_target_abs_pos_check();
+  void set_allocated_target_abs_pos_check(::CMsgVector* target_abs_pos_check);
+  private:
+  const ::CMsgVector& _internal_target_abs_pos_check() const;
+  ::CMsgVector* _internal_mutable_target_abs_pos_check();
+  public:
+  void unsafe_arena_set_allocated_target_abs_pos_check(
+      ::CMsgVector* target_abs_pos_check);
+  ::CMsgVector* unsafe_arena_release_target_abs_pos_check();
+
+  // optional .CMsgQAngle target_abs_ang_check = 69;
+  bool has_target_abs_ang_check() const;
+  private:
+  bool _internal_has_target_abs_ang_check() const;
+  public:
+  void clear_target_abs_ang_check();
+  const ::CMsgQAngle& target_abs_ang_check() const;
+  PROTOBUF_NODISCARD ::CMsgQAngle* release_target_abs_ang_check();
+  ::CMsgQAngle* mutable_target_abs_ang_check();
+  void set_allocated_target_abs_ang_check(::CMsgQAngle* target_abs_ang_check);
+  private:
+  const ::CMsgQAngle& _internal_target_abs_ang_check() const;
+  ::CMsgQAngle* _internal_mutable_target_abs_ang_check();
+  public:
+  void unsafe_arena_set_allocated_target_abs_ang_check(
+      ::CMsgQAngle* target_abs_ang_check);
+  ::CMsgQAngle* unsafe_arena_release_target_abs_ang_check();
+
   // optional int32 render_tick_count = 4;
   bool has_render_tick_count() const;
   private:
@@ -611,7 +775,7 @@ class CSGOInputHistoryEntryPB :
   void _internal_set_player_tick_fraction(float value);
   public:
 
-  // optional int32 frame_number = 20;
+  // optional int32 frame_number = 64;
   bool has_frame_number() const;
   private:
   bool _internal_has_frame_number() const;
@@ -624,7 +788,7 @@ class CSGOInputHistoryEntryPB :
   void _internal_set_frame_number(int32_t value);
   public:
 
-  // optional int32 target_ent_index = 8 [default = -1];
+  // optional int32 target_ent_index = 65 [default = -1];
   bool has_target_ent_index() const;
   private:
   bool _internal_has_target_ent_index() const;
@@ -648,14 +812,14 @@ class CSGOInputHistoryEntryPB :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::CMsgQAngle* view_angles_;
+    ::CSGOInterpolationInfoPB_CL* cl_interp_;
+    ::CSGOInterpolationInfoPB* sv_interp0_;
+    ::CSGOInterpolationInfoPB* sv_interp1_;
+    ::CSGOInterpolationInfoPB* player_interp_;
     ::CMsgVector* shoot_position_;
     ::CMsgVector* target_head_pos_check_;
     ::CMsgVector* target_abs_pos_check_;
     ::CMsgQAngle* target_abs_ang_check_;
-    ::CSGOInterpolationInfoPB* cl_interp_;
-    ::CSGOInterpolationInfoPB* sv_interp0_;
-    ::CSGOInterpolationInfoPB* sv_interp1_;
-    ::CSGOInterpolationInfoPB* player_interp_;
     int32_t render_tick_count_;
     float render_tick_fraction_;
     int32_t player_tick_count_;
@@ -723,7 +887,7 @@ class CSGOUserCmdPB :
                &_CSGOUserCmdPB_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    3;
 
   friend void swap(CSGOUserCmdPB& a, CSGOUserCmdPB& b) {
     a.Swap(&b);
@@ -799,6 +963,7 @@ class CSGOUserCmdPB :
     kInputHistoryFieldNumber = 2,
     kBaseFieldNumber = 1,
     kLeftHandDesiredFieldNumber = 9,
+    kIsPredictingDamageFieldNumber = 10,
     kAttack3StartHistoryIndexFieldNumber = 8,
     kAttack1StartHistoryIndexFieldNumber = 6,
     kAttack2StartHistoryIndexFieldNumber = 7,
@@ -850,6 +1015,19 @@ class CSGOUserCmdPB :
   private:
   bool _internal_left_hand_desired() const;
   void _internal_set_left_hand_desired(bool value);
+  public:
+
+  // optional bool is_predicting_damage = 10 [default = false];
+  bool has_is_predicting_damage() const;
+  private:
+  bool _internal_has_is_predicting_damage() const;
+  public:
+  void clear_is_predicting_damage();
+  bool is_predicting_damage() const;
+  void set_is_predicting_damage(bool value);
+  private:
+  bool _internal_is_predicting_damage() const;
+  void _internal_set_is_predicting_damage(bool value);
   public:
 
   // optional int32 attack3_start_history_index = 8 [default = -1];
@@ -904,6 +1082,7 @@ class CSGOUserCmdPB :
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSGOInputHistoryEntryPB > input_history_;
     ::CBaseUserCmdPB* base_;
     bool left_hand_desired_;
+    bool is_predicting_damage_;
     int32_t attack3_start_history_index_;
     int32_t attack1_start_history_index_;
     int32_t attack2_start_history_index_;
@@ -1004,6 +1183,38 @@ inline void CSGOInterpolationInfoPB::_internal_set_frac(float value) {
 inline void CSGOInterpolationInfoPB::set_frac(float value) {
   _internal_set_frac(value);
   // @@protoc_insertion_point(field_set:CSGOInterpolationInfoPB.frac)
+}
+
+// -------------------------------------------------------------------
+
+// CSGOInterpolationInfoPB_CL
+
+// optional float frac = 3 [default = 0];
+inline bool CSGOInterpolationInfoPB_CL::_internal_has_frac() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CSGOInterpolationInfoPB_CL::has_frac() const {
+  return _internal_has_frac();
+}
+inline void CSGOInterpolationInfoPB_CL::clear_frac() {
+  _impl_.frac_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline float CSGOInterpolationInfoPB_CL::_internal_frac() const {
+  return _impl_.frac_;
+}
+inline float CSGOInterpolationInfoPB_CL::frac() const {
+  // @@protoc_insertion_point(field_get:CSGOInterpolationInfoPB_CL.frac)
+  return _internal_frac();
+}
+inline void CSGOInterpolationInfoPB_CL::_internal_set_frac(float value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.frac_ = value;
+}
+inline void CSGOInterpolationInfoPB_CL::set_frac(float value) {
+  _internal_set_frac(value);
+  // @@protoc_insertion_point(field_set:CSGOInterpolationInfoPB_CL.frac)
 }
 
 // -------------------------------------------------------------------
@@ -1209,9 +1420,9 @@ inline void CSGOInputHistoryEntryPB::set_player_tick_fraction(float value) {
   // @@protoc_insertion_point(field_set:CSGOInputHistoryEntryPB.player_tick_fraction)
 }
 
-// optional .CSGOInterpolationInfoPB cl_interp = 12;
+// optional .CSGOInterpolationInfoPB_CL cl_interp = 12;
 inline bool CSGOInputHistoryEntryPB::_internal_has_cl_interp() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.cl_interp_ != nullptr);
   return value;
 }
@@ -1220,33 +1431,33 @@ inline bool CSGOInputHistoryEntryPB::has_cl_interp() const {
 }
 inline void CSGOInputHistoryEntryPB::clear_cl_interp() {
   if (_impl_.cl_interp_ != nullptr) _impl_.cl_interp_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
 }
-inline const ::CSGOInterpolationInfoPB& CSGOInputHistoryEntryPB::_internal_cl_interp() const {
-  const ::CSGOInterpolationInfoPB* p = _impl_.cl_interp_;
-  return p != nullptr ? *p : reinterpret_cast<const ::CSGOInterpolationInfoPB&>(
-      ::_CSGOInterpolationInfoPB_default_instance_);
+inline const ::CSGOInterpolationInfoPB_CL& CSGOInputHistoryEntryPB::_internal_cl_interp() const {
+  const ::CSGOInterpolationInfoPB_CL* p = _impl_.cl_interp_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CSGOInterpolationInfoPB_CL&>(
+      ::_CSGOInterpolationInfoPB_CL_default_instance_);
 }
-inline const ::CSGOInterpolationInfoPB& CSGOInputHistoryEntryPB::cl_interp() const {
+inline const ::CSGOInterpolationInfoPB_CL& CSGOInputHistoryEntryPB::cl_interp() const {
   // @@protoc_insertion_point(field_get:CSGOInputHistoryEntryPB.cl_interp)
   return _internal_cl_interp();
 }
 inline void CSGOInputHistoryEntryPB::unsafe_arena_set_allocated_cl_interp(
-    ::CSGOInterpolationInfoPB* cl_interp) {
+    ::CSGOInterpolationInfoPB_CL* cl_interp) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.cl_interp_);
   }
   _impl_.cl_interp_ = cl_interp;
   if (cl_interp) {
-    _impl_._has_bits_[0] |= 0x00000020u;
+    _impl_._has_bits_[0] |= 0x00000002u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000020u;
+    _impl_._has_bits_[0] &= ~0x00000002u;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSGOInputHistoryEntryPB.cl_interp)
 }
-inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::release_cl_interp() {
-  _impl_._has_bits_[0] &= ~0x00000020u;
-  ::CSGOInterpolationInfoPB* temp = _impl_.cl_interp_;
+inline ::CSGOInterpolationInfoPB_CL* CSGOInputHistoryEntryPB::release_cl_interp() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CSGOInterpolationInfoPB_CL* temp = _impl_.cl_interp_;
   _impl_.cl_interp_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -1259,27 +1470,27 @@ inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::release_cl_interp() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::unsafe_arena_release_cl_interp() {
+inline ::CSGOInterpolationInfoPB_CL* CSGOInputHistoryEntryPB::unsafe_arena_release_cl_interp() {
   // @@protoc_insertion_point(field_release:CSGOInputHistoryEntryPB.cl_interp)
-  _impl_._has_bits_[0] &= ~0x00000020u;
-  ::CSGOInterpolationInfoPB* temp = _impl_.cl_interp_;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CSGOInterpolationInfoPB_CL* temp = _impl_.cl_interp_;
   _impl_.cl_interp_ = nullptr;
   return temp;
 }
-inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::_internal_mutable_cl_interp() {
-  _impl_._has_bits_[0] |= 0x00000020u;
+inline ::CSGOInterpolationInfoPB_CL* CSGOInputHistoryEntryPB::_internal_mutable_cl_interp() {
+  _impl_._has_bits_[0] |= 0x00000002u;
   if (_impl_.cl_interp_ == nullptr) {
-    auto* p = CreateMaybeMessage<::CSGOInterpolationInfoPB>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::CSGOInterpolationInfoPB_CL>(GetArenaForAllocation());
     _impl_.cl_interp_ = p;
   }
   return _impl_.cl_interp_;
 }
-inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::mutable_cl_interp() {
-  ::CSGOInterpolationInfoPB* _msg = _internal_mutable_cl_interp();
+inline ::CSGOInterpolationInfoPB_CL* CSGOInputHistoryEntryPB::mutable_cl_interp() {
+  ::CSGOInterpolationInfoPB_CL* _msg = _internal_mutable_cl_interp();
   // @@protoc_insertion_point(field_mutable:CSGOInputHistoryEntryPB.cl_interp)
   return _msg;
 }
-inline void CSGOInputHistoryEntryPB::set_allocated_cl_interp(::CSGOInterpolationInfoPB* cl_interp) {
+inline void CSGOInputHistoryEntryPB::set_allocated_cl_interp(::CSGOInterpolationInfoPB_CL* cl_interp) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete _impl_.cl_interp_;
@@ -1291,9 +1502,9 @@ inline void CSGOInputHistoryEntryPB::set_allocated_cl_interp(::CSGOInterpolation
       cl_interp = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, cl_interp, submessage_arena);
     }
-    _impl_._has_bits_[0] |= 0x00000020u;
+    _impl_._has_bits_[0] |= 0x00000002u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000020u;
+    _impl_._has_bits_[0] &= ~0x00000002u;
   }
   _impl_.cl_interp_ = cl_interp;
   // @@protoc_insertion_point(field_set_allocated:CSGOInputHistoryEntryPB.cl_interp)
@@ -1301,7 +1512,7 @@ inline void CSGOInputHistoryEntryPB::set_allocated_cl_interp(::CSGOInterpolation
 
 // optional .CSGOInterpolationInfoPB sv_interp0 = 13;
 inline bool CSGOInputHistoryEntryPB::_internal_has_sv_interp0() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.sv_interp0_ != nullptr);
   return value;
 }
@@ -1310,7 +1521,7 @@ inline bool CSGOInputHistoryEntryPB::has_sv_interp0() const {
 }
 inline void CSGOInputHistoryEntryPB::clear_sv_interp0() {
   if (_impl_.sv_interp0_ != nullptr) _impl_.sv_interp0_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
 }
 inline const ::CSGOInterpolationInfoPB& CSGOInputHistoryEntryPB::_internal_sv_interp0() const {
   const ::CSGOInterpolationInfoPB* p = _impl_.sv_interp0_;
@@ -1328,14 +1539,14 @@ inline void CSGOInputHistoryEntryPB::unsafe_arena_set_allocated_sv_interp0(
   }
   _impl_.sv_interp0_ = sv_interp0;
   if (sv_interp0) {
-    _impl_._has_bits_[0] |= 0x00000040u;
+    _impl_._has_bits_[0] |= 0x00000004u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000040u;
+    _impl_._has_bits_[0] &= ~0x00000004u;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSGOInputHistoryEntryPB.sv_interp0)
 }
 inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::release_sv_interp0() {
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
   ::CSGOInterpolationInfoPB* temp = _impl_.sv_interp0_;
   _impl_.sv_interp0_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
@@ -1351,13 +1562,13 @@ inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::release_sv_interp0() 
 }
 inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::unsafe_arena_release_sv_interp0() {
   // @@protoc_insertion_point(field_release:CSGOInputHistoryEntryPB.sv_interp0)
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
   ::CSGOInterpolationInfoPB* temp = _impl_.sv_interp0_;
   _impl_.sv_interp0_ = nullptr;
   return temp;
 }
 inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::_internal_mutable_sv_interp0() {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00000004u;
   if (_impl_.sv_interp0_ == nullptr) {
     auto* p = CreateMaybeMessage<::CSGOInterpolationInfoPB>(GetArenaForAllocation());
     _impl_.sv_interp0_ = p;
@@ -1381,9 +1592,9 @@ inline void CSGOInputHistoryEntryPB::set_allocated_sv_interp0(::CSGOInterpolatio
       sv_interp0 = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, sv_interp0, submessage_arena);
     }
-    _impl_._has_bits_[0] |= 0x00000040u;
+    _impl_._has_bits_[0] |= 0x00000004u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000040u;
+    _impl_._has_bits_[0] &= ~0x00000004u;
   }
   _impl_.sv_interp0_ = sv_interp0;
   // @@protoc_insertion_point(field_set_allocated:CSGOInputHistoryEntryPB.sv_interp0)
@@ -1391,7 +1602,7 @@ inline void CSGOInputHistoryEntryPB::set_allocated_sv_interp0(::CSGOInterpolatio
 
 // optional .CSGOInterpolationInfoPB sv_interp1 = 14;
 inline bool CSGOInputHistoryEntryPB::_internal_has_sv_interp1() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.sv_interp1_ != nullptr);
   return value;
 }
@@ -1400,7 +1611,7 @@ inline bool CSGOInputHistoryEntryPB::has_sv_interp1() const {
 }
 inline void CSGOInputHistoryEntryPB::clear_sv_interp1() {
   if (_impl_.sv_interp1_ != nullptr) _impl_.sv_interp1_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
 inline const ::CSGOInterpolationInfoPB& CSGOInputHistoryEntryPB::_internal_sv_interp1() const {
   const ::CSGOInterpolationInfoPB* p = _impl_.sv_interp1_;
@@ -1418,14 +1629,14 @@ inline void CSGOInputHistoryEntryPB::unsafe_arena_set_allocated_sv_interp1(
   }
   _impl_.sv_interp1_ = sv_interp1;
   if (sv_interp1) {
-    _impl_._has_bits_[0] |= 0x00000080u;
+    _impl_._has_bits_[0] |= 0x00000008u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000080u;
+    _impl_._has_bits_[0] &= ~0x00000008u;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSGOInputHistoryEntryPB.sv_interp1)
 }
 inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::release_sv_interp1() {
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
   ::CSGOInterpolationInfoPB* temp = _impl_.sv_interp1_;
   _impl_.sv_interp1_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
@@ -1441,13 +1652,13 @@ inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::release_sv_interp1() 
 }
 inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::unsafe_arena_release_sv_interp1() {
   // @@protoc_insertion_point(field_release:CSGOInputHistoryEntryPB.sv_interp1)
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
   ::CSGOInterpolationInfoPB* temp = _impl_.sv_interp1_;
   _impl_.sv_interp1_ = nullptr;
   return temp;
 }
 inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::_internal_mutable_sv_interp1() {
-  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] |= 0x00000008u;
   if (_impl_.sv_interp1_ == nullptr) {
     auto* p = CreateMaybeMessage<::CSGOInterpolationInfoPB>(GetArenaForAllocation());
     _impl_.sv_interp1_ = p;
@@ -1471,9 +1682,9 @@ inline void CSGOInputHistoryEntryPB::set_allocated_sv_interp1(::CSGOInterpolatio
       sv_interp1 = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, sv_interp1, submessage_arena);
     }
-    _impl_._has_bits_[0] |= 0x00000080u;
+    _impl_._has_bits_[0] |= 0x00000008u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000080u;
+    _impl_._has_bits_[0] &= ~0x00000008u;
   }
   _impl_.sv_interp1_ = sv_interp1;
   // @@protoc_insertion_point(field_set_allocated:CSGOInputHistoryEntryPB.sv_interp1)
@@ -1481,7 +1692,7 @@ inline void CSGOInputHistoryEntryPB::set_allocated_sv_interp1(::CSGOInterpolatio
 
 // optional .CSGOInterpolationInfoPB player_interp = 15;
 inline bool CSGOInputHistoryEntryPB::_internal_has_player_interp() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.player_interp_ != nullptr);
   return value;
 }
@@ -1490,7 +1701,7 @@ inline bool CSGOInputHistoryEntryPB::has_player_interp() const {
 }
 inline void CSGOInputHistoryEntryPB::clear_player_interp() {
   if (_impl_.player_interp_ != nullptr) _impl_.player_interp_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline const ::CSGOInterpolationInfoPB& CSGOInputHistoryEntryPB::_internal_player_interp() const {
   const ::CSGOInterpolationInfoPB* p = _impl_.player_interp_;
@@ -1508,14 +1719,14 @@ inline void CSGOInputHistoryEntryPB::unsafe_arena_set_allocated_player_interp(
   }
   _impl_.player_interp_ = player_interp;
   if (player_interp) {
-    _impl_._has_bits_[0] |= 0x00000100u;
+    _impl_._has_bits_[0] |= 0x00000010u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000100u;
+    _impl_._has_bits_[0] &= ~0x00000010u;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSGOInputHistoryEntryPB.player_interp)
 }
 inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::release_player_interp() {
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
   ::CSGOInterpolationInfoPB* temp = _impl_.player_interp_;
   _impl_.player_interp_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
@@ -1531,13 +1742,13 @@ inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::release_player_interp
 }
 inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::unsafe_arena_release_player_interp() {
   // @@protoc_insertion_point(field_release:CSGOInputHistoryEntryPB.player_interp)
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
   ::CSGOInterpolationInfoPB* temp = _impl_.player_interp_;
   _impl_.player_interp_ = nullptr;
   return temp;
 }
 inline ::CSGOInterpolationInfoPB* CSGOInputHistoryEntryPB::_internal_mutable_player_interp() {
-  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   if (_impl_.player_interp_ == nullptr) {
     auto* p = CreateMaybeMessage<::CSGOInterpolationInfoPB>(GetArenaForAllocation());
     _impl_.player_interp_ = p;
@@ -1561,15 +1772,15 @@ inline void CSGOInputHistoryEntryPB::set_allocated_player_interp(::CSGOInterpola
       player_interp = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, player_interp, submessage_arena);
     }
-    _impl_._has_bits_[0] |= 0x00000100u;
+    _impl_._has_bits_[0] |= 0x00000010u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000100u;
+    _impl_._has_bits_[0] &= ~0x00000010u;
   }
   _impl_.player_interp_ = player_interp;
   // @@protoc_insertion_point(field_set_allocated:CSGOInputHistoryEntryPB.player_interp)
 }
 
-// optional int32 frame_number = 20;
+// optional int32 frame_number = 64;
 inline bool CSGOInputHistoryEntryPB::_internal_has_frame_number() const {
   bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
   return value;
@@ -1597,7 +1808,7 @@ inline void CSGOInputHistoryEntryPB::set_frame_number(int32_t value) {
   // @@protoc_insertion_point(field_set:CSGOInputHistoryEntryPB.frame_number)
 }
 
-// optional int32 target_ent_index = 8 [default = -1];
+// optional int32 target_ent_index = 65 [default = -1];
 inline bool CSGOInputHistoryEntryPB::_internal_has_target_ent_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
   return value;
@@ -1625,9 +1836,9 @@ inline void CSGOInputHistoryEntryPB::set_target_ent_index(int32_t value) {
   // @@protoc_insertion_point(field_set:CSGOInputHistoryEntryPB.target_ent_index)
 }
 
-// optional .CMsgVector shoot_position = 3;
+// optional .CMsgVector shoot_position = 66;
 inline bool CSGOInputHistoryEntryPB::_internal_has_shoot_position() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.shoot_position_ != nullptr);
   return value;
 }
@@ -1650,14 +1861,14 @@ inline void CSGOInputHistoryEntryPB::unsafe_arena_set_allocated_shoot_position(
   }
   _impl_.shoot_position_ = shoot_position;
   if (shoot_position) {
-    _impl_._has_bits_[0] |= 0x00000002u;
+    _impl_._has_bits_[0] |= 0x00000020u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000002u;
+    _impl_._has_bits_[0] &= ~0x00000020u;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSGOInputHistoryEntryPB.shoot_position)
 }
 inline ::CMsgVector* CSGOInputHistoryEntryPB::release_shoot_position() {
-  _impl_._has_bits_[0] &= ~0x00000002u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
   ::CMsgVector* temp = _impl_.shoot_position_;
   _impl_.shoot_position_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
@@ -1673,13 +1884,13 @@ inline ::CMsgVector* CSGOInputHistoryEntryPB::release_shoot_position() {
 }
 inline ::CMsgVector* CSGOInputHistoryEntryPB::unsafe_arena_release_shoot_position() {
   // @@protoc_insertion_point(field_release:CSGOInputHistoryEntryPB.shoot_position)
-  _impl_._has_bits_[0] &= ~0x00000002u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
   ::CMsgVector* temp = _impl_.shoot_position_;
   _impl_.shoot_position_ = nullptr;
   return temp;
 }
 inline ::CMsgVector* CSGOInputHistoryEntryPB::_internal_mutable_shoot_position() {
-  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   if (_impl_.shoot_position_ == nullptr) {
     auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
     _impl_.shoot_position_ = p;
@@ -1704,17 +1915,17 @@ inline void CSGOInputHistoryEntryPB::set_allocated_shoot_position(::CMsgVector* 
       shoot_position = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, shoot_position, submessage_arena);
     }
-    _impl_._has_bits_[0] |= 0x00000002u;
+    _impl_._has_bits_[0] |= 0x00000020u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000002u;
+    _impl_._has_bits_[0] &= ~0x00000020u;
   }
   _impl_.shoot_position_ = shoot_position;
   // @@protoc_insertion_point(field_set_allocated:CSGOInputHistoryEntryPB.shoot_position)
 }
 
-// optional .CMsgVector target_head_pos_check = 9;
+// optional .CMsgVector target_head_pos_check = 67;
 inline bool CSGOInputHistoryEntryPB::_internal_has_target_head_pos_check() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.target_head_pos_check_ != nullptr);
   return value;
 }
@@ -1737,14 +1948,14 @@ inline void CSGOInputHistoryEntryPB::unsafe_arena_set_allocated_target_head_pos_
   }
   _impl_.target_head_pos_check_ = target_head_pos_check;
   if (target_head_pos_check) {
-    _impl_._has_bits_[0] |= 0x00000004u;
+    _impl_._has_bits_[0] |= 0x00000040u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000004u;
+    _impl_._has_bits_[0] &= ~0x00000040u;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSGOInputHistoryEntryPB.target_head_pos_check)
 }
 inline ::CMsgVector* CSGOInputHistoryEntryPB::release_target_head_pos_check() {
-  _impl_._has_bits_[0] &= ~0x00000004u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
   ::CMsgVector* temp = _impl_.target_head_pos_check_;
   _impl_.target_head_pos_check_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
@@ -1760,13 +1971,13 @@ inline ::CMsgVector* CSGOInputHistoryEntryPB::release_target_head_pos_check() {
 }
 inline ::CMsgVector* CSGOInputHistoryEntryPB::unsafe_arena_release_target_head_pos_check() {
   // @@protoc_insertion_point(field_release:CSGOInputHistoryEntryPB.target_head_pos_check)
-  _impl_._has_bits_[0] &= ~0x00000004u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
   ::CMsgVector* temp = _impl_.target_head_pos_check_;
   _impl_.target_head_pos_check_ = nullptr;
   return temp;
 }
 inline ::CMsgVector* CSGOInputHistoryEntryPB::_internal_mutable_target_head_pos_check() {
-  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   if (_impl_.target_head_pos_check_ == nullptr) {
     auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
     _impl_.target_head_pos_check_ = p;
@@ -1791,17 +2002,17 @@ inline void CSGOInputHistoryEntryPB::set_allocated_target_head_pos_check(::CMsgV
       target_head_pos_check = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, target_head_pos_check, submessage_arena);
     }
-    _impl_._has_bits_[0] |= 0x00000004u;
+    _impl_._has_bits_[0] |= 0x00000040u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000004u;
+    _impl_._has_bits_[0] &= ~0x00000040u;
   }
   _impl_.target_head_pos_check_ = target_head_pos_check;
   // @@protoc_insertion_point(field_set_allocated:CSGOInputHistoryEntryPB.target_head_pos_check)
 }
 
-// optional .CMsgVector target_abs_pos_check = 10;
+// optional .CMsgVector target_abs_pos_check = 68;
 inline bool CSGOInputHistoryEntryPB::_internal_has_target_abs_pos_check() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.target_abs_pos_check_ != nullptr);
   return value;
 }
@@ -1824,14 +2035,14 @@ inline void CSGOInputHistoryEntryPB::unsafe_arena_set_allocated_target_abs_pos_c
   }
   _impl_.target_abs_pos_check_ = target_abs_pos_check;
   if (target_abs_pos_check) {
-    _impl_._has_bits_[0] |= 0x00000008u;
+    _impl_._has_bits_[0] |= 0x00000080u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000008u;
+    _impl_._has_bits_[0] &= ~0x00000080u;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSGOInputHistoryEntryPB.target_abs_pos_check)
 }
 inline ::CMsgVector* CSGOInputHistoryEntryPB::release_target_abs_pos_check() {
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
   ::CMsgVector* temp = _impl_.target_abs_pos_check_;
   _impl_.target_abs_pos_check_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
@@ -1847,13 +2058,13 @@ inline ::CMsgVector* CSGOInputHistoryEntryPB::release_target_abs_pos_check() {
 }
 inline ::CMsgVector* CSGOInputHistoryEntryPB::unsafe_arena_release_target_abs_pos_check() {
   // @@protoc_insertion_point(field_release:CSGOInputHistoryEntryPB.target_abs_pos_check)
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
   ::CMsgVector* temp = _impl_.target_abs_pos_check_;
   _impl_.target_abs_pos_check_ = nullptr;
   return temp;
 }
 inline ::CMsgVector* CSGOInputHistoryEntryPB::_internal_mutable_target_abs_pos_check() {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   if (_impl_.target_abs_pos_check_ == nullptr) {
     auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
     _impl_.target_abs_pos_check_ = p;
@@ -1878,17 +2089,17 @@ inline void CSGOInputHistoryEntryPB::set_allocated_target_abs_pos_check(::CMsgVe
       target_abs_pos_check = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, target_abs_pos_check, submessage_arena);
     }
-    _impl_._has_bits_[0] |= 0x00000008u;
+    _impl_._has_bits_[0] |= 0x00000080u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000008u;
+    _impl_._has_bits_[0] &= ~0x00000080u;
   }
   _impl_.target_abs_pos_check_ = target_abs_pos_check;
   // @@protoc_insertion_point(field_set_allocated:CSGOInputHistoryEntryPB.target_abs_pos_check)
 }
 
-// optional .CMsgQAngle target_abs_ang_check = 11;
+// optional .CMsgQAngle target_abs_ang_check = 69;
 inline bool CSGOInputHistoryEntryPB::_internal_has_target_abs_ang_check() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.target_abs_ang_check_ != nullptr);
   return value;
 }
@@ -1911,14 +2122,14 @@ inline void CSGOInputHistoryEntryPB::unsafe_arena_set_allocated_target_abs_ang_c
   }
   _impl_.target_abs_ang_check_ = target_abs_ang_check;
   if (target_abs_ang_check) {
-    _impl_._has_bits_[0] |= 0x00000010u;
+    _impl_._has_bits_[0] |= 0x00000100u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000010u;
+    _impl_._has_bits_[0] &= ~0x00000100u;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSGOInputHistoryEntryPB.target_abs_ang_check)
 }
 inline ::CMsgQAngle* CSGOInputHistoryEntryPB::release_target_abs_ang_check() {
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
   ::CMsgQAngle* temp = _impl_.target_abs_ang_check_;
   _impl_.target_abs_ang_check_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
@@ -1934,13 +2145,13 @@ inline ::CMsgQAngle* CSGOInputHistoryEntryPB::release_target_abs_ang_check() {
 }
 inline ::CMsgQAngle* CSGOInputHistoryEntryPB::unsafe_arena_release_target_abs_ang_check() {
   // @@protoc_insertion_point(field_release:CSGOInputHistoryEntryPB.target_abs_ang_check)
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
   ::CMsgQAngle* temp = _impl_.target_abs_ang_check_;
   _impl_.target_abs_ang_check_ = nullptr;
   return temp;
 }
 inline ::CMsgQAngle* CSGOInputHistoryEntryPB::_internal_mutable_target_abs_ang_check() {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000100u;
   if (_impl_.target_abs_ang_check_ == nullptr) {
     auto* p = CreateMaybeMessage<::CMsgQAngle>(GetArenaForAllocation());
     _impl_.target_abs_ang_check_ = p;
@@ -1965,9 +2176,9 @@ inline void CSGOInputHistoryEntryPB::set_allocated_target_abs_ang_check(::CMsgQA
       target_abs_ang_check = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, target_abs_ang_check, submessage_arena);
     }
-    _impl_._has_bits_[0] |= 0x00000010u;
+    _impl_._has_bits_[0] |= 0x00000100u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000010u;
+    _impl_._has_bits_[0] &= ~0x00000100u;
   }
   _impl_.target_abs_ang_check_ = target_abs_ang_check;
   // @@protoc_insertion_point(field_set_allocated:CSGOInputHistoryEntryPB.target_abs_ang_check)
@@ -2106,7 +2317,7 @@ CSGOUserCmdPB::input_history() const {
 
 // optional int32 attack1_start_history_index = 6 [default = -1];
 inline bool CSGOUserCmdPB::_internal_has_attack1_start_history_index() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool CSGOUserCmdPB::has_attack1_start_history_index() const {
@@ -2114,7 +2325,7 @@ inline bool CSGOUserCmdPB::has_attack1_start_history_index() const {
 }
 inline void CSGOUserCmdPB::clear_attack1_start_history_index() {
   _impl_.attack1_start_history_index_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline int32_t CSGOUserCmdPB::_internal_attack1_start_history_index() const {
   return _impl_.attack1_start_history_index_;
@@ -2124,7 +2335,7 @@ inline int32_t CSGOUserCmdPB::attack1_start_history_index() const {
   return _internal_attack1_start_history_index();
 }
 inline void CSGOUserCmdPB::_internal_set_attack1_start_history_index(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.attack1_start_history_index_ = value;
 }
 inline void CSGOUserCmdPB::set_attack1_start_history_index(int32_t value) {
@@ -2134,7 +2345,7 @@ inline void CSGOUserCmdPB::set_attack1_start_history_index(int32_t value) {
 
 // optional int32 attack2_start_history_index = 7 [default = -1];
 inline bool CSGOUserCmdPB::_internal_has_attack2_start_history_index() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool CSGOUserCmdPB::has_attack2_start_history_index() const {
@@ -2142,7 +2353,7 @@ inline bool CSGOUserCmdPB::has_attack2_start_history_index() const {
 }
 inline void CSGOUserCmdPB::clear_attack2_start_history_index() {
   _impl_.attack2_start_history_index_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
 inline int32_t CSGOUserCmdPB::_internal_attack2_start_history_index() const {
   return _impl_.attack2_start_history_index_;
@@ -2152,7 +2363,7 @@ inline int32_t CSGOUserCmdPB::attack2_start_history_index() const {
   return _internal_attack2_start_history_index();
 }
 inline void CSGOUserCmdPB::_internal_set_attack2_start_history_index(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.attack2_start_history_index_ = value;
 }
 inline void CSGOUserCmdPB::set_attack2_start_history_index(int32_t value) {
@@ -2162,7 +2373,7 @@ inline void CSGOUserCmdPB::set_attack2_start_history_index(int32_t value) {
 
 // optional int32 attack3_start_history_index = 8 [default = -1];
 inline bool CSGOUserCmdPB::_internal_has_attack3_start_history_index() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
 inline bool CSGOUserCmdPB::has_attack3_start_history_index() const {
@@ -2170,7 +2381,7 @@ inline bool CSGOUserCmdPB::has_attack3_start_history_index() const {
 }
 inline void CSGOUserCmdPB::clear_attack3_start_history_index() {
   _impl_.attack3_start_history_index_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000004u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
 inline int32_t CSGOUserCmdPB::_internal_attack3_start_history_index() const {
   return _impl_.attack3_start_history_index_;
@@ -2180,7 +2391,7 @@ inline int32_t CSGOUserCmdPB::attack3_start_history_index() const {
   return _internal_attack3_start_history_index();
 }
 inline void CSGOUserCmdPB::_internal_set_attack3_start_history_index(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_._has_bits_[0] |= 0x00000008u;
   _impl_.attack3_start_history_index_ = value;
 }
 inline void CSGOUserCmdPB::set_attack3_start_history_index(int32_t value) {
@@ -2216,9 +2427,39 @@ inline void CSGOUserCmdPB::set_left_hand_desired(bool value) {
   // @@protoc_insertion_point(field_set:CSGOUserCmdPB.left_hand_desired)
 }
 
+// optional bool is_predicting_damage = 10 [default = false];
+inline bool CSGOUserCmdPB::_internal_has_is_predicting_damage() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CSGOUserCmdPB::has_is_predicting_damage() const {
+  return _internal_has_is_predicting_damage();
+}
+inline void CSGOUserCmdPB::clear_is_predicting_damage() {
+  _impl_.is_predicting_damage_ = false;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline bool CSGOUserCmdPB::_internal_is_predicting_damage() const {
+  return _impl_.is_predicting_damage_;
+}
+inline bool CSGOUserCmdPB::is_predicting_damage() const {
+  // @@protoc_insertion_point(field_get:CSGOUserCmdPB.is_predicting_damage)
+  return _internal_is_predicting_damage();
+}
+inline void CSGOUserCmdPB::_internal_set_is_predicting_damage(bool value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.is_predicting_damage_ = value;
+}
+inline void CSGOUserCmdPB::set_is_predicting_damage(bool value) {
+  _internal_set_is_predicting_damage(value);
+  // @@protoc_insertion_point(field_set:CSGOUserCmdPB.is_predicting_damage)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

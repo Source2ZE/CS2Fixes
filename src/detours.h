@@ -46,6 +46,10 @@ class CUserCmd;
 class CGamePlayerEquip;
 class InputData_t;
 class CCSPlayerPawn;
+class CCSPlayer_UseServices;
+class CTraceFilter;
+class Vector;
+class QAngle;
 
 struct EntityIOConnectionDesc_t
 {
@@ -97,3 +101,13 @@ void FASTCALL  Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEqui
 void FASTCALL  Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip*, InputData_t*);
 CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6);
 float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn*);
+int64 FASTCALL Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float);
+bool FASTCALL Detour_TraceFunc(int64*, int*, float*, uint64);
+bool FASTCALL Detour_TraceShape(int64*, int64, int64, int64, CTraceFilter*, int64);
+#ifdef PLATFORM_WINDOWS
+Vector* FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn*, Vector*);
+QAngle* FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*, QAngle*);
+#else
+Vector FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn*);
+QAngle FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*);
+#endif

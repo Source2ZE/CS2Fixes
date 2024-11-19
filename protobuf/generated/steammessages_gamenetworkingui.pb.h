@@ -72,7 +72,7 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class CGameNetworkingUI_GlobalState final :
+class CGameNetworkingUI_GlobalState :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CGameNetworkingUI_GlobalState) */ {
  public:
   inline CGameNetworkingUI_GlobalState() : CGameNetworkingUI_GlobalState(nullptr) {}
@@ -197,7 +197,7 @@ class CGameNetworkingUI_GlobalState final :
 };
 // -------------------------------------------------------------------
 
-class CGameNetworkingUI_ConnectionState final :
+class CGameNetworkingUI_ConnectionState :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameNetworkingUI_ConnectionState) */ {
  public:
   inline CGameNetworkingUI_ConnectionState() : CGameNetworkingUI_ConnectionState(nullptr) {}
@@ -812,7 +812,7 @@ class CGameNetworkingUI_ConnectionState final :
 };
 // -------------------------------------------------------------------
 
-class CGameNetworkingUI_Message final :
+class CGameNetworkingUI_Message :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameNetworkingUI_Message) */ {
  public:
   inline CGameNetworkingUI_Message() : CGameNetworkingUI_Message(nullptr) {}
@@ -976,7 +976,7 @@ class CGameNetworkingUI_Message final :
 };
 // -------------------------------------------------------------------
 
-class CGameNetworkingUI_ConnectionSummary final :
+class CGameNetworkingUI_ConnectionSummary :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameNetworkingUI_ConnectionSummary) */ {
  public:
   inline CGameNetworkingUI_ConnectionSummary() : CGameNetworkingUI_ConnectionSummary(nullptr) {}
@@ -1251,7 +1251,7 @@ class CGameNetworkingUI_ConnectionSummary final :
 };
 // -------------------------------------------------------------------
 
-class CGameNetworkingUI_AppSummary final :
+class CGameNetworkingUI_AppSummary :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGameNetworkingUI_AppSummary) */ {
  public:
   inline CGameNetworkingUI_AppSummary() : CGameNetworkingUI_AppSummary(nullptr) {}
