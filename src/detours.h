@@ -21,6 +21,7 @@
 #include "cdetour.h"
 #include <utlsymbollarge.h>
 
+
 class CCheckTransmitInfo;
 class IRecipientFilter;
 class ISoundEmitterSystemBase;
@@ -49,7 +50,6 @@ class CCSPlayer_UseServices;
 class CTraceFilter;
 class Vector;
 class QAngle;
-class CEntityIOOutput;
 
 bool InitDetours(CGameConfig *gameConfig);
 void FlushAllDetours();

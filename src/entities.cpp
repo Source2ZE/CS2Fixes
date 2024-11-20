@@ -34,6 +34,8 @@
 
 // #define ENTITY_HANDLER_ASSERTION
 
+extern CCSGameRules* g_pGameRules;
+
 class InputData_t
 {
 public:
@@ -724,15 +726,60 @@ void EntityHandler_OnEntitySpawned(CBaseEntity* pEntity)
     CPointViewControlHandler::OnCreated(pEntity);
 }
 
-std::map <int, bool> mapRecentEnts;
 CDetour<decltype(Detour_CEntityIOOutput_FireOutputInternal)>* CEntityIOOutput_FireOutputInternal = nullptr;
+using IOCallback = std::function<void(const CEntityIOOutput*, CEntityInstance*, CEntityInstance*, const CVariant*, float)>;
+// Add callback functions to this map that wish to hook into Detour_CEntityIOOutput_FireOutputInternal
+// to make it more modular/cleaner than shoving everything into the detour (buttonwatch, entwatch, etc.)
+std::map<std::string, IOCallback> mapIOFunctions;
+void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
+{
+    for (const auto& [name, cb] : mapIOFunctions)
+        cb(pThis, pActivator, pCaller, value, flDelay);
+
+    (*CEntityIOOutput_FireOutputInternal)(pThis, pActivator, pCaller, value, flDelay);
+}
+
+// Tries to setup Detour_CEntityIOOutput_FireOutputInternal if it is not already setup.
+// Returns true if detour is usable, otherwise false.
+bool SetupFireOutputInternalDetour()
+{
+    if (CEntityIOOutput_FireOutputInternal != nullptr)
+        return true;
+
+    CEntityIOOutput_FireOutputInternal = new CDetour(Detour_CEntityIOOutput_FireOutputInternal, "CEntityIOOutput_FireOutputInternal");
+    if (!CEntityIOOutput_FireOutputInternal->CreateDetour(g_GameConfig))
+    {
+        Msg("Failed to detour CEntityIOOutput_FireOutputInternal\n");
+        delete CEntityIOOutput_FireOutputInternal;
+        CEntityIOOutput_FireOutputInternal = nullptr;
+        return false;
+    }
+    CEntityIOOutput_FireOutputInternal->EnableDetour();
+    return true;
+}
+
+CON_COMMAND_F(cs2f_enable_button_watch, "CS# BREAKS IF THIS IS EVER ENABLED. Whether to enable button watch or not.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | FCVAR_PROTECTED)
+{
+    if (args.ArgC() < 2)
+    {
+        Msg("%s %i\n", args[0], IsButtonWatchEnabled());
+        return;
+    }
+
+    if (!V_StringToBool(args[1], false) || !SetupFireOutputInternalDetour())
+        mapIOFunctions.erase("buttonwatch");
+    else if (!IsButtonWatchEnabled())
+        mapIOFunctions["buttonwatch"] = ButtonWatch;
+}
+
 bool IsButtonWatchEnabled()
 {
-    return std::any_of(vecIOFunctions.begin(), vecIOFunctions.end(), [](IOCallback& cb) {
-        return cb.target<decltype(ButtonWatch)>() == &ButtonWatch;
+    return std::any_of(mapIOFunctions.begin(), mapIOFunctions.end(), [](const auto& p) {
+        return p.first == "buttonwatch";
     });
 }
 
+std::map <int, bool> mapRecentEnts;
 void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
 {
     if (!IsButtonWatchEnabled() || V_stricmp(pThis->m_pDesc->m_pName, "OnPressed") ||
@@ -775,7 +822,7 @@ void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEnt
         }
     }
 
-    // Prevent the same button from spamming more than once every 5 seconds
+    // Limit each button to only printing out at most once every 5 seconds
     int iIndex = pCaller->GetEntityIndex().Get();
     mapRecentEnts[iIndex] = true;
     new CTimer(5.0f, true, true, [iIndex]()
@@ -783,64 +830,4 @@ void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEnt
         mapRecentEnts.erase(iIndex);
         return -1.0f;
     });
-}
-
-extern CCSGameRules* g_pGameRules;
-// Tries to setup Detour_CEntityIOOutput_FireOutputInternal if it is not already setup.
-// Returns true if detour is usable, otherwise false.
-bool SetupFireOutputInternalDetour()
-{
-    if (CEntityIOOutput_FireOutputInternal != nullptr)
-        return true;
-
-    CEntityIOOutput_FireOutputInternal = new CDetour(Detour_CEntityIOOutput_FireOutputInternal, "CEntityIOOutput_FireOutputInternal");
-    if (!CEntityIOOutput_FireOutputInternal->CreateDetour(g_GameConfig))
-    {
-        Msg("Failed to detour CEntityIOOutput_FireOutputInternal\n");
-        delete CEntityIOOutput_FireOutputInternal;
-        CEntityIOOutput_FireOutputInternal = nullptr;
-        return false;
-    }
-    CEntityIOOutput_FireOutputInternal->EnableDetour();
-    return true;
-}
-
-CON_COMMAND_F(cs2f_enable_button_watch, "CS# BREAKS IF THIS IS EVER ENABLED. Whether to enable button watch or not.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | FCVAR_PROTECTED)
-{
-    if (args.ArgC() < 2)
-    {
-        Msg("%s %b\n", args[0], IsButtonWatchEnabled());
-        return;
-    }
-
-    if (!V_StringToBool(args[1], false) || !SetupFireOutputInternalDetour())
-    {
-        vecIOFunctions.erase(std::remove_if(vecIOFunctions.begin(), vecIOFunctions.end(), [](const IOCallback& cb) {
-            return cb.target<decltype(ButtonWatch)>() == &ButtonWatch;
-        }), vecIOFunctions.end());
-    }
-    else if (!IsButtonWatchEnabled())
-    {
-        vecIOFunctions.push_back(ButtonWatch);
-    }
-}
-
-using IOCallback = std::function<void(const CEntityIOOutput*, CEntityInstance*, CEntityInstance*, const CVariant*, float)>;
-// Add callback functions to this vector that wish to hook into Detour_CEntityIOOutput_FireOutputInternal
-// to make it more modular/cleaner than shoving everything into the detour
-std::vector<IOCallback> vecIOFunctions;
-void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
-{
-#ifdef DEBUG
-    // pCaller can absolutely be null. Needs to be checked
-    if(pCaller)
-        ConMsg("Output %s fired on %s\n", pThis->m_pDesc->m_pName, pCaller->GetClassname());
-    else
-        ConMsg("Output %s fired with no caller\n", pThis->m_pDesc->m_pName);
-#endif
-
-    for (const auto& cb : vecIOFunctions)
-        cb(pThis, pActivator, pCaller, value, flDelay);
-
-    (*CEntityIOOutput_FireOutputInternal)(pThis, pActivator, pCaller, value, flDelay);
 }

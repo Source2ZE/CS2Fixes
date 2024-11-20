@@ -52,7 +52,6 @@
 
 #include "tier0/memdbgon.h"
 
-
 extern CGlobalVars *gpGlobals;
 extern CGameEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
@@ -685,14 +684,6 @@ bool InitDetours(CGameConfig *gameConfig)
 
 	FOR_EACH_VEC(g_vecDetours, i)
 	{
-		if (!V_strcmp(g_vecDetours[i]->GetName(), "CEntityIOOutput_FireOutputInternal"))
-		{
-			// Check if features needing this detour are actually enabled.
-			// If not, leave this detour disabled for CS# compatibility
-			if (!IsButtonWatchEnabled())
-				continue;
-		}
-
 		if (!g_vecDetours[i]->CreateDetour(gameConfig))
 			success = false;
 		
