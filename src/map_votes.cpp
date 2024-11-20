@@ -690,14 +690,33 @@ bool CMapVoteSystem::LoadMapList()
 		Message("Failed to load cooldown file at %s - resetting all cooldowns to 0\n", pszCooldownFilePath);
 	}
 
+	// KV1 has some funny behaviour with capitalization, to ensure consistency we can't directly lookup case-sensitive key names
+	std::unordered_map<std::string, int> mapCooldowns;
+
+	for (KeyValues* pKey = pKVcooldowns->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+	{
+		std::string sMapName = pKey->GetName();
+		int iCooldown = pKey->GetInt();
+
+		for (int i = 0; sMapName[i]; i++)
+			sMapName[i] = tolower(sMapName[i]);
+
+		mapCooldowns[sMapName] = iCooldown;
+	}
+
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey()) {
-		const char *pszName = pKey->GetName();
+		const char* pszName = pKey->GetName();
+		std::string sName = pszName;
+
+		for (int i = 0; sName[i]; i++)
+			sName[i] = tolower(sName[i]);
+
 		uint64 iWorkshopId = pKey->GetUint64("workshop_id");
 		bool bIsEnabled = pKey->GetBool("enabled", true);
 		int iMinPlayers = pKey->GetInt("min_players", 0);
 		int iMaxPlayers = pKey->GetInt("max_players", 64);
 		int iBaseCooldown = pKey->GetInt("cooldown", m_iDefaultMapCooldown);
-		int iCurrentCooldown = pKVcooldowns->GetInt(pszName, 0);
+		int iCurrentCooldown = mapCooldowns[sName];
 
 		if (iWorkshopId != 0)
 			QueueMapDownload(iWorkshopId);
@@ -776,9 +795,13 @@ bool CMapVoteSystem::WriteMapCooldownsToFile()
 
 	FOR_EACH_VEC(m_vecMapList, i)
 	{
-		const char* mapName = m_vecMapList[i].GetName();
+		std::string mapName = m_vecMapList[i].GetName();
 		const int mapCooldown = m_vecMapList[i].GetCooldown();
-		pKV->AddInt(mapName, mapCooldown);
+
+		for (int i = 0; mapName[i]; i++)
+			mapName[i] = tolower(mapName[i]);
+
+		pKV->AddInt(mapName.c_str(), mapCooldown);
 	}
 
 	if (!pKV->SaveToFile(g_pFullFileSystem, pszPath))
