@@ -43,6 +43,7 @@ extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 extern IGameEventSystem* g_gameEventSystem;
+extern CUtlVector<CServerSideClient*>* GetClientList();
 
 static int g_iAdminImmunityTargetting = 0;
 static bool g_bEnableMapSteamIds = false;
@@ -1595,4 +1596,19 @@ void CPlayerManager::ResetPlayerFlags(int slot)
 	SetPlayerSilenceSound(slot, false);
 	SetPlayerStopDecals(slot, true);
 	SetPlayerNoShake(slot, false);
+}
+
+int CPlayerManager::GetOnlinePlayerCount(bool bCountBots)
+{
+	int iOnlinePlayers = 0;
+
+	for (int i = 0; i < GetClientList()->Count(); i++)
+	{
+		CServerSideClient* pClient = (*GetClientList())[i];
+
+		if (pClient && pClient->GetSignonState() >= SIGNONSTATE_CONNECTED && (bCountBots || !pClient->IsFakeClient()))
+			iOnlinePlayers++;
+	}
+
+	return iOnlinePlayers;
 }

@@ -42,8 +42,6 @@ extern CIdleSystem* g_pIdleSystem;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
-int MapVote_GetOnlinePlayers();
-
 CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current map on completion", ADMFLAG_ROOT)
 {
 	if (!g_bVoteManagerEnable)
@@ -180,9 +178,9 @@ CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nom
 					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Cooldown: %d", name, cooldown);
 				else if (mapIndex == g_pMapVoteSystem->GetCurrentMapIndex())
 					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Current Map", name);
-				else if (MapVote_GetOnlinePlayers() < minPlayers)
+				else if (g_playerManager->GetOnlinePlayerCount(false) < minPlayers)
 					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Minimum Players: %d", name, minPlayers);
-				else if (MapVote_GetOnlinePlayers() > maxPlayers)
+				else if (g_playerManager->GetOnlinePlayerCount(false) > maxPlayers)
 					ClientPrint(player, HUD_PRINTCONSOLE, "- %s - Maximum Players: %d", name, maxPlayers);
 				else
 					ClientPrint(player, HUD_PRINTCONSOLE, "- %s", name);
@@ -253,28 +251,13 @@ GAME_EVENT_F(endmatch_mapvote_selecting_map)
 		g_pMapVoteSystem->FinishVote();
 }
 
-int MapVote_GetOnlinePlayers()
-{
-	int iOnlinePlayers = 0;
-	for (int i = 0; i < gpGlobals->maxClients; i++)
-	{
-		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
-
-		if (pPlayer && !pPlayer->IsFakeClient())
-		{
-			iOnlinePlayers++;
-		}
-	}
-	return iOnlinePlayers;
-}
-
 bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
 {
 	if (iMapIndex >= m_vecMapList.Count() || iMapIndex < 0) return false;
 	if (GetCooldownMap(iMapIndex) > 0 || GetCurrentMapIndex() == iMapIndex) return false;
 	if (!m_vecMapList[iMapIndex].IsEnabled()) return false;
 
-	int iOnlinePlayers = MapVote_GetOnlinePlayers();
+	int iOnlinePlayers = g_playerManager->GetOnlinePlayerCount(false);
 	bool bMeetsMaxPlayers = iOnlinePlayers <= m_vecMapList[iMapIndex].GetMaxPlayers();
 	bool bMeetsMinPlayers = iOnlinePlayers >= m_vecMapList[iMapIndex].GetMinPlayers();
 	return bMeetsMaxPlayers && bMeetsMinPlayers;
