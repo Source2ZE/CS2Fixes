@@ -149,6 +149,7 @@ CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nom
 			break;
 		case NominationReturnCodes::NOMINATION_RESET:
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your nomination was reset.");
+			g_pMapVoteSystem->ClearPlayerInfo(player->GetPlayerSlot());
 			break;
 		case NominationReturnCodes::NOMINATION_RESET_FAILED:
 		{
