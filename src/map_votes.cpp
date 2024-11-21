@@ -227,17 +227,26 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 	if (!g_bVoteManagerEnable)
 		return;
 
+	int iMapCount = g_pMapVoteSystem->GetMapListSize();
+	std::vector<std::pair<std::string, int> > vecCooldowns;
+
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of maps in cooldown will be shown in console.");
 	ClientPrint(player, HUD_PRINTCONSOLE, "The list of maps in cooldown is:");
-	int iMapCount = g_pMapVoteSystem->GetMapListSize();
-	for (int iMapIndex = 0; iMapIndex < iMapCount; iMapIndex++) {
+	
+	for (int iMapIndex = 0; iMapIndex < iMapCount; iMapIndex++)
+	{
 		int iCooldown = g_pMapVoteSystem->GetCooldownMap(iMapIndex);
+
 		if (iCooldown > 0 && g_pMapVoteSystem->GetMapEnabledStatus(iMapIndex))
-		{
-			const char* sMapName = g_pMapVoteSystem->GetMapName(iMapIndex);
-			ClientPrint(player, HUD_PRINTCONSOLE, "- %s (%d maps remaining)", sMapName, iCooldown);
-		}
+			vecCooldowns.push_back(std::make_pair(g_pMapVoteSystem->GetMapName(iMapIndex), iCooldown));
 	}
+
+	std::sort(vecCooldowns.begin(), vecCooldowns.end(), [](auto& left, auto& right) {
+		return left.second < right.second;
+	});
+
+	for (auto pair : vecCooldowns)
+		ClientPrint(player, HUD_PRINTCONSOLE, "- %s (%d maps remaining)", pair.first.c_str(), pair.second);
 }
 
 GAME_EVENT_F(cs_win_panel_match)
@@ -802,7 +811,8 @@ bool CMapVoteSystem::WriteMapCooldownsToFile()
 		for (int i = 0; mapName[i]; i++)
 			mapName[i] = tolower(mapName[i]);
 
-		pKV->AddInt(mapName.c_str(), mapCooldown);
+		if (mapCooldown > 0)
+			pKV->AddInt(mapName.c_str(), mapCooldown);
 	}
 
 	if (!pKV->SaveToFile(g_pFullFileSystem, pszPath))
