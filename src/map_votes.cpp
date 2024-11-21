@@ -159,6 +159,9 @@ CON_COMMAND_CHAT_FLAGS(nominate, "[mapname] - Nominate a map (empty to clear nom
 
 			for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
 			{
+				if (!g_pMapVoteSystem->GetMapEnabledStatus(i))
+					continue;
+
 				MapIndexPair map;
 				map.name = g_pMapVoteSystem->GetMapName(i);
 				map.index = i;
