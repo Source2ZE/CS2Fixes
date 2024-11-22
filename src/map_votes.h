@@ -34,12 +34,16 @@
 namespace NominationReturnCodes
 {
     static const int VOTE_STARTED = -100;
-    static const int INVALID_INPUT = -101;
-    static const int MAP_NOT_FOUND = -102;
-    static const int INVALID_MAP = -103;
-    static const int NOMINATION_DISABLED = -104;
-    static const int NOMINATION_RESET = -105;
-    static const int NOMINATION_RESET_FAILED = -106;
+    static const int NOMINATION_DISABLED = -101;
+    static const int NOMINATION_RESET = -102;
+    static const int NOMINATION_RESET_FAILED = -103;
+    static const int MAP_NOT_FOUND = -104;
+    static const int MAP_DISABLED = -105;
+    static const int MAP_CURRENT = -106;
+    static const int MAP_COOLDOWN = -107;
+    static const int MAP_MINPLAYERS = -108;
+    static const int MAP_MAXPLAYERS = -109;
+    static const int MAP_NOMINATED = -110;
 }
 #endif
 
@@ -108,7 +112,7 @@ public:
     void DecrementAllMapCooldowns();
     void SetMaxNominatedMaps(int iMaxNominatedMaps) { m_iMaxNominatedMaps = iMaxNominatedMaps; };
     int GetMaxNominatedMaps() { return m_iMaxNominatedMaps; };
-    int AddMapNomination(CPlayerSlot iPlayerSlot, const char* sMapSubstring);
+    std::pair<int, int> AddMapNomination(CPlayerSlot iPlayerSlot, const char* sMapSubstring);
     bool IsMapIndexEnabled(int iMapIndex);
     int GetTotalNominations(int iMapIndex);
     int ForceNextMap(const char* sMapSubstring);
