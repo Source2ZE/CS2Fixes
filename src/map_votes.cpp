@@ -100,19 +100,21 @@ CON_COMMAND_F(cs2f_vote_max_nominations, "Number of nominations to include per v
 	}
 }
 
+//TODO: workshop id support for rcon admins?
 CON_COMMAND_CHAT_FLAGS(setnextmap, "[mapname] - Force next map (empty to clear forced next map)", ADMFLAG_CHANGEMAP)
 {
 	if (!g_bVoteManagerEnable)
 		return;
 
-	bool bIsClearingForceNextMap = args.ArgC() < 2;
-	int iResponse = g_pMapVoteSystem->ForceNextMap(bIsClearingForceNextMap ? "" : args[1]);
-	if (bIsClearingForceNextMap) {
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You reset the forced next map.");
-	}
-	else {
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have forced the next map to %s.", g_pMapVoteSystem->GetMapName(iResponse));
-	}
+	int iPreviousNextMap = g_pMapVoteSystem->GetForcedNextMap();
+	int iResponse = g_pMapVoteSystem->ForceNextMap(args.ArgC() < 2 ? "" : args[1]);
+
+	if (iResponse >= 0 && iPreviousNextMap == iResponse)
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\x06%s\x01 is already the next map!", g_pMapVoteSystem->GetMapName(iResponse));
+	else if (iResponse == -1)
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching \x06%s\x01.", args[1]);
+	else if (iResponse == -3)
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There is no next map to reset!", args[1]);
 }
 
 static int __cdecl OrderStringsLexicographically(const MapIndexPair *a, const MapIndexPair *b)
@@ -283,6 +285,10 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 
 	m_bIsVoteOngoing = false;
 	m_bIntermissionStarted = false;
+	m_iForcedNextMapIndex = -1;
+
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+		ClearPlayerInfo(i);
 
 	// Delay one tick to override any .cfg's
 	new CTimer(0.02f, false, true, []()
@@ -301,21 +307,27 @@ void CMapVoteSystem::StartVote()
 
 	g_pIdleSystem->PauseIdleChecks();
 
+	// Reset the player vote counts as the vote just started
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+		m_arrPlayerVotes[i] = -1;
+
 	// If we are forcing a map, just set all vote options to that map
-	if (m_iForcedNextMapIndex != -1) {
-		for (int i = 0; i < 10; i++) {
+	if (m_iForcedNextMapIndex != -1)
+	{
+		for (int i = 0; i < 10; i++)
 			g_pGameRules->m_nEndMatchMapGroupVoteOptions[i] = m_iForcedNextMapIndex;
-			return;
-		}
+
+		new CTimer(6.0f, false, true, []()
+		{
+			g_pMapVoteSystem->FinishVote();
+			return -1.0f;
+		});
+
+		return;
 	}
 
 	// Seed the randomness for the event
 	m_iRandomWinnerShift = rand();
-
-	// Reset the player vote counts as the vote just started
-	for (int i = 0; i < gpGlobals->maxClients; i++) {
-		m_arrPlayerVotes[i] = -1;
-	}
 
 	// Select random maps not in cooldown, not disabled, and not nominated
 	CUtlVector<int> vecPossibleMaps;
@@ -386,7 +398,6 @@ void CMapVoteSystem::FinishVote()
 
 	// Clean up the ongoing voting state and variables
 	m_bIsVoteOngoing = false;
-	m_iForcedNextMapIndex = -1;
 
 	// Get the winning map
 	bool bIsNextMapVoted = UpdateWinningMap();
@@ -439,10 +450,6 @@ void CMapVoteSystem::FinishVote()
 		PutMapOnCooldown(iMapIndex);
 
 	WriteMapCooldownsToFile();
-
-	// Do the final clean-up
-	for (int i = 0; i < gpGlobals->maxClients; i++)
-		ClearPlayerInfo(i);
 
 	// Wait a second and force-change the map
 	new CTimer(1.0, false, true, [iWinningMap]() {
@@ -609,18 +616,29 @@ int CMapVoteSystem::AddMapNomination(CPlayerSlot iPlayerSlot, const char* sMapSu
 
 int CMapVoteSystem::ForceNextMap(const char* sMapSubstring)
 {
-	if (sMapSubstring[0] == '\0') {
-		ClientPrintAll(HUD_PRINTTALK, " \x06%s \x01 is no longer the forced next map.\n", m_vecMapList[m_iForcedNextMapIndex].GetName());
-		m_iForcedNextMapIndex = -1;
-		return 0;
+	if (sMapSubstring[0] == '\0')
+	{
+		if (m_iForcedNextMapIndex != -1)
+		{
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01is no longer the forced next map.\n", m_vecMapList[m_iForcedNextMapIndex].GetName());
+			m_iForcedNextMapIndex = -1;
+			return -2;
+		}
+
+		return -3;
 	}
 
 	int iFoundIndex = GetMapIndexFromSubstring(sMapSubstring);
-	if (iFoundIndex == -1) return iFoundIndex;
+
+	if (iFoundIndex == -1)
+		return iFoundIndex;
+
+	if (m_iForcedNextMapIndex == iFoundIndex)
+		return iFoundIndex;
 
 	// When found, print the map and store the forced map
 	m_iForcedNextMapIndex = iFoundIndex;
-	ClientPrintAll(HUD_PRINTTALK, " \x06%s \x01 has been forced as next map.\n", m_vecMapList[iFoundIndex].GetName());
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01has been forced as the next map.\n", m_vecMapList[iFoundIndex].GetName());
 	return iFoundIndex;
 }
 

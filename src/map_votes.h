@@ -135,6 +135,7 @@ public:
     int GetDefaultMapCooldown() { return m_iDefaultMapCooldown; }
     void SetDefaultMapCooldown(int iMapCooldown) { m_iDefaultMapCooldown = iMapCooldown; }
     void ClearInvalidNominations();
+    int GetForcedNextMap() { return m_iForcedNextMapIndex; }
 
 private:
     int WinningMapIndex();
