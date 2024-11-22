@@ -279,7 +279,7 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 		g_RTVState = ERTVState::POST_RTV_SUCCESSFULL;
 		g_ExtendState = EExtendState::POST_RTV;
 		// CONVAR_TODO
-		g_pEngineServer2->ServerCommand("mp_timelimit 1");
+		g_pEngineServer2->ServerCommand("mp_timelimit 0.01");
 
 		if (g_bRTVEndRound)
 		{
