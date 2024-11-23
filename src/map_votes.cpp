@@ -49,7 +49,7 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 
 	if (g_pMapVoteSystem->GetDownloadQueueSize() != 0)
 	{
-		Message("Please wait for current map downloads to finish before loading map list again\n");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Please wait for current map downloads to finish before loading map list again.");
 		return;
 	}
 
@@ -67,7 +67,7 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", g_pMapVoteSystem->GetCurrentMap());
 
 	g_pEngineServer2->ServerCommand(sChangeMapCmd);
-	Message("Map list reloaded\n");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Map list reloaded!");
 }
 
 CON_COMMAND_F(cs2f_vote_maps_cooldown, "Default number of maps to wait until a map can be voted / nominated again i.e. cooldown.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
@@ -454,19 +454,24 @@ void CMapVoteSystem::FinishVote()
 	if (iNextMapVoteIndex < 0) iNextMapVoteIndex = -1;
 	g_pGameRules->m_nEndMatchMapVoteWinner = iNextMapVoteIndex;
 	int iWinningMap = g_pGameRules->m_nEndMatchMapGroupVoteOptions[iNextMapVoteIndex];
+	char buffer[256];
+
 	if (bIsNextMapVoted) {
-		ClientPrintAll(HUD_PRINTTALK, "The vote has ended. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
+		V_snprintf(buffer, sizeof(buffer), "The vote has ended. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
 	}
 	else if (bIsNextMapForced) {
-		ClientPrintAll(HUD_PRINTTALK, "The vote was overriden. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
+		V_snprintf(buffer, sizeof(buffer), "The vote was overriden. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
 	}
 	else {
-		ClientPrintAll(HUD_PRINTTALK, "No map was chosen. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
+		V_snprintf(buffer, sizeof(buffer), "No map was chosen. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
 	}
+
+	ClientPrintAll(HUD_PRINTTALK, buffer);
+	Message(buffer);
 
 	// Print vote result information: how many votes did each map get?
 	int arrMapVotes[10] = { 0 };
-	ClientPrintAll(HUD_PRINTCONSOLE, "Map vote result --- total votes per map:\n");
+	Message("Map vote result --- total votes per map:\n");
 	for (int i = 0; i < gpGlobals->maxClients; i++) {
 		auto pController = CCSPlayerController::FromSlot(i);
 		int iPlayerVotedIndex = m_arrPlayerVotes[i];
@@ -477,7 +482,7 @@ void CMapVoteSystem::FinishVote()
 	for (int i = 0; i < 10; i++) {
 		int iMapIndex = g_pGameRules->m_nEndMatchMapGroupVoteOptions[i];
 		const char* sIsWinner = (i == iNextMapVoteIndex) ? "(WINNER)" : "";
-		ClientPrintAll(HUD_PRINTCONSOLE, "- %s got %d votes\n", GetMapName(iMapIndex), arrMapVotes[i]);
+		Message("- %s got %d votes\n", GetMapName(iMapIndex), arrMapVotes[i]);
 	}
 
 	// Put the map on cooldown as we transition to the next map if map index is valid, also decrease cooldown remaining for others
