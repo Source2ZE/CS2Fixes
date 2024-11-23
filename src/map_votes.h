@@ -26,6 +26,7 @@
 #include "steam/steam_api_common.h"
 #include "steam/isteamugc.h"
 #include <string>
+#include <vector>
 
 
 // Nomination constants, used as return codes for nomination commands
@@ -38,12 +39,13 @@ namespace NominationReturnCodes
     static const int NOMINATION_RESET = -102;
     static const int NOMINATION_RESET_FAILED = -103;
     static const int MAP_NOT_FOUND = -104;
-    static const int MAP_DISABLED = -105;
-    static const int MAP_CURRENT = -106;
-    static const int MAP_COOLDOWN = -107;
-    static const int MAP_MINPLAYERS = -108;
-    static const int MAP_MAXPLAYERS = -109;
-    static const int MAP_NOMINATED = -110;
+    static const int MAP_MULTIPLE = -105;
+    static const int MAP_DISABLED = -106;
+    static const int MAP_CURRENT = -107;
+    static const int MAP_COOLDOWN = -108;
+    static const int MAP_MINPLAYERS = -109;
+    static const int MAP_MAXPLAYERS = -110;
+    static const int MAP_NOMINATED = -111;
 }
 #endif
 
@@ -106,16 +108,17 @@ public:
     void StartVote();
     void FinishVote();
     bool RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
-    int GetMapIndexFromSubstring(const char* sMapSubstring);
+    std::vector<int> GetMapIndexesFromSubstring(const char* sMapSubstring);
+    int GetMapIndexFromString(const char* sMapString);
     int GetCooldownMap(int iMapIndex) { return m_vecMapList[iMapIndex].GetCooldown(); };
     void PutMapOnCooldown(int iMapIndex) { m_vecMapList[iMapIndex].ResetCooldownToBase(); };
     void DecrementAllMapCooldowns();
     void SetMaxNominatedMaps(int iMaxNominatedMaps) { m_iMaxNominatedMaps = iMaxNominatedMaps; };
     int GetMaxNominatedMaps() { return m_iMaxNominatedMaps; };
-    std::pair<int, int> AddMapNomination(CPlayerSlot iPlayerSlot, const char* sMapSubstring);
+    std::pair<int, std::vector<int>> AddMapNomination(CPlayerSlot iPlayerSlot, const char* sMapSubstring);
     bool IsMapIndexEnabled(int iMapIndex);
     int GetTotalNominations(int iMapIndex);
-    int ForceNextMap(const char* sMapSubstring);
+    std::pair<int, std::vector<int>> ForceNextMap(const char* sMapSubstring);
     int GetMapListSize() { return m_vecMapList.Count(); };
     const char* GetMapName(int iMapIndex) { return m_vecMapList[iMapIndex].GetName(); };
     uint64 GetMapWorkshopId(int iMapIndex) { return m_vecMapList[iMapIndex].GetWorkshopId(); };
