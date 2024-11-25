@@ -43,6 +43,7 @@ extern IVEngineServer2 *g_pEngineServer2;
 extern CGameEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 extern IGameEventSystem* g_gameEventSystem;
+extern CUtlVector<CServerSideClient*>* GetClientList();
 
 static int g_iAdminImmunityTargetting = 0;
 static bool g_bEnableMapSteamIds = false;
@@ -610,6 +611,7 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid, const char
 	ResetPlayerFlags(slot.Get());
 
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
+	g_pMapVoteSystem->ClearInvalidNominations();
 	
 	return true;
 }
@@ -627,6 +629,7 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	ResetPlayerFlags(slot.Get());
 
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
+	g_pMapVoteSystem->ClearInvalidNominations();
 
 	g_pPanoramaVoteHandler->RemovePlayerFromVote(slot.Get());
 }
@@ -1593,4 +1596,19 @@ void CPlayerManager::ResetPlayerFlags(int slot)
 	SetPlayerSilenceSound(slot, false);
 	SetPlayerStopDecals(slot, true);
 	SetPlayerNoShake(slot, false);
+}
+
+int CPlayerManager::GetOnlinePlayerCount(bool bCountBots)
+{
+	int iOnlinePlayers = 0;
+
+	for (int i = 0; i < GetClientList()->Count(); i++)
+	{
+		CServerSideClient* pClient = (*GetClientList())[i];
+
+		if (pClient && pClient->GetSignonState() >= SIGNONSTATE_CONNECTED && (bCountBots || !pClient->IsFakeClient()))
+			iOnlinePlayers++;
+	}
+
+	return iOnlinePlayers;
 }

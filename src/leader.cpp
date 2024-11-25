@@ -90,21 +90,6 @@ FAKE_INT_CVAR(cs2f_leader_max_glows, "Max amount of glows set by leaders (doesn'
 FAKE_INT_CVAR(cs2f_leader_max_tracers, "Max amount of tracers set by leaders (doesn't impact admins)", g_iMaxTracers, 3, false)
 FAKE_INT_CVAR(cs2f_leader_max_beacons, "Max amount of beacons set by leaders (doesn't impact admins)", g_iMaxBeacons, 3, false)
 
-int Leader_GetNeededLeaderVoteCount()
-{
-	int iOnlinePlayers = 0;
-
-	for (int i = 0; i < gpGlobals->maxClients; i++)
-	{
-		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
-
-		if (pPlayer && !pPlayer->IsFakeClient())
-			iOnlinePlayers++;
-	}
-
-	return (int)(iOnlinePlayers * g_flLeaderVoteRatio) + 1;
-}
-
 bool Leader_SetNewLeader(ZEPlayer* zpLeader, std::string strColor = "")
 {
 	CCSPlayerController* pLeader = CCSPlayerController::FromSlot(zpLeader->GetPlayerSlot());
@@ -587,7 +572,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 	}
 
 	int iLeaderVoteCount = pPlayerTarget->GetLeaderVoteCount();
-	int iNeededLeaderVoteCount = Leader_GetNeededLeaderVoteCount();
+	int iNeededLeaderVoteCount = (int)(g_playerManager->GetOnlinePlayerCount(false) * g_flLeaderVoteRatio) + 1;;
 
 	pPlayer->SetLeaderVoteTime(gpGlobals->curtime);
 

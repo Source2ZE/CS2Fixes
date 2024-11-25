@@ -591,7 +591,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - Change map", ADMFLAG_CHANGEMAP)
 	for (int i = 0; sMapName[i]; i++)
 	{
 		// Injection prevention, because we may pass user input to ServerCommand
-		if (sMapName[i] == ';')
+		if (sMapName[i] == ';' || sMapName[i] == '|')
 			return;
 
 		sMapName[i] = tolower(sMapName[i]);
@@ -602,16 +602,27 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - Change map", ADMFLAG_CHANGEMAP)
 	if (!g_pEngineServer2->IsMapValid(pszMapName))
 	{
 		std::string sCommand;
+		std::vector<int> foundIndexes = g_pMapVoteSystem->GetMapIndexesFromSubstring(pszMapName);
 
 		// Check if input is numeric (workshop ID)
-		// Not safe to expose until crashing on failed workshop addon downloads is fixed
-		/*if (V_StringToUint64(pszMapName, 0) != 0)
+		// Not safe to expose to all admins until crashing on failed workshop addon downloads is fixed
+		if ((!player || player->GetZEPlayer()->IsAdminFlagSet(ADMFLAG_RCON)) && V_StringToUint64(pszMapName, 0) != 0)
 		{
 			sCommand = "host_workshop_map " + sMapName;
-		}*/
-		if (g_bVoteManagerEnable && g_pMapVoteSystem->GetMapIndexFromSubstring(pszMapName) != -1)
+		}
+		else if (g_bVoteManagerEnable && foundIndexes.size() > 0)
 		{
-			sCommand = "host_workshop_map " + std::to_string(g_pMapVoteSystem->GetMapWorkshopId(g_pMapVoteSystem->GetMapIndexFromSubstring(pszMapName)));
+			if (foundIndexes.size() > 1)
+			{
+				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Multiple maps matched \x06%s\x01, try being more specific:", pszMapName);
+
+				for (int i = 0; i < foundIndexes.size() && i < 5; i++)
+					ClientPrint(player, HUD_PRINTTALK, "- %s", g_pMapVoteSystem->GetMapName(foundIndexes[i]));
+
+				return;
+			}
+
+			sCommand = "host_workshop_map " + std::to_string(g_pMapVoteSystem->GetMapWorkshopId(foundIndexes[0]));
 		}
 		else
 		{

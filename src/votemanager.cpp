@@ -167,22 +167,7 @@ int GetCurrentRTVCount()
 
 int GetNeededRTVCount()
 {
-	int iOnlinePlayers = 0.0f;
-	int iVoteCount = 0;
-
-	for (int i = 0; i < gpGlobals->maxClients; i++)
-	{
-		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
-
-		if (pPlayer && !pPlayer->IsFakeClient())
-		{
-			iOnlinePlayers++;
-			if (pPlayer->GetRTVVote())
-				iVoteCount++;
-		}
-	}
-
-	return (int)(iOnlinePlayers * g_flRTVSucceedRatio) + 1;
+	return (int)(g_playerManager->GetOnlinePlayerCount(false) * g_flRTVSucceedRatio) + 1;
 }
 
 int GetCurrentExtendCount()
@@ -279,7 +264,7 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 		g_RTVState = ERTVState::POST_RTV_SUCCESSFULL;
 		g_ExtendState = EExtendState::POST_RTV;
 		// CONVAR_TODO
-		g_pEngineServer2->ServerCommand("mp_timelimit 1");
+		g_pEngineServer2->ServerCommand("mp_timelimit 0.01");
 
 		if (g_bRTVEndRound)
 		{
