@@ -1881,7 +1881,7 @@ CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:
 	FOR_EACH_VEC(vecClasses, i)
 	{
 		const char* sClassName = vecClasses[i]->szClassName.c_str();
-		bool bClassMatches = !V_stricmp(sClassName, args[1]) || (V_StringToInt32(args[1], -1) - 1) == i;
+		bool bClassMatches = !V_stricmp(sClassName, args[1]) || (V_StringToInt32(args[1], -1, NULL, NULL, PARSING_FLAG_SKIP_WARNING) - 1) == i;
 		std::shared_ptr<ZRClass> pClass = vecClasses[i];
 
 		if (bClassMatches)
