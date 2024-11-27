@@ -606,7 +606,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - Change map", ADMFLAG_CHANGEMAP)
 
 		// Check if input is numeric (workshop ID)
 		// Not safe to expose to all admins until crashing on failed workshop addon downloads is fixed
-		if ((!player || player->GetZEPlayer()->IsAdminFlagSet(ADMFLAG_RCON)) && V_StringToUint64(pszMapName, 0) != 0)
+		if ((!player || player->GetZEPlayer()->IsAdminFlagSet(ADMFLAG_RCON)) && V_StringToUint64(pszMapName, 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING) != 0)
 		{
 			sCommand = "host_workshop_map " + sMapName;
 		}
