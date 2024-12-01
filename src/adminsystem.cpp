@@ -35,7 +35,7 @@
 #include "gamesystem.h"
 #include "votemanager.h"
 #include "map_votes.h"
-#include "entities.h"
+#include "buttonwatch.h"
 #include <vector>
 
 extern IVEngineServer2 *g_pEngineServer2;
