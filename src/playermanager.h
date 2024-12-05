@@ -160,7 +160,7 @@ public:
 		m_bVotedRTV = false;
 		m_bVotedExtend = false;
 		m_bIsInfected = false;
-		m_flRTVVoteTime = 0;
+		m_flRTVVoteTime = -60.0f;
 		m_flExtendVoteTime = 0;
 		m_iFloodTokens = 0;
 		m_flLastTalkTime = 0;
@@ -402,6 +402,7 @@ public:
 	bool IsPlayerUsingNoShake(int slot) { return m_nUsingNoShake & ((uint64)1 << slot); }
 
 	void UpdatePlayerStates();
+	int GetOnlinePlayerCount(bool bCountBots);
 
 	STEAM_GAMESERVER_CALLBACK_MANUAL(CPlayerManager, OnValidateAuthTicket, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
 
