@@ -173,7 +173,7 @@
     <ClCompile Include="sdk\public\tier0\memoverride.cpp">
       <Filter>Source Files\sdk</Filter>
     </ClCompile>
-    <ClCompile Include="buttonwatch.cpp">
+    <ClCompile Include="src\buttonwatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -654,7 +654,7 @@ bool SetupFireOutputInternalDetour()
 	CEntityIOOutput_FireOutputInternal = new CDetour(Detour_CEntityIOOutput_FireOutputInternal, "CEntityIOOutput_FireOutputInternal");
 	if (!CEntityIOOutput_FireOutputInternal->CreateDetour(g_GameConfig))
 	{
-		Msg("Failed to detour CEntityIOOutput_FireOutputInternal\n");
+		Panic("Failed to detour CEntityIOOutput_FireOutputInternal\n");
 		delete CEntityIOOutput_FireOutputInternal;
 		CEntityIOOutput_FireOutputInternal = nullptr;
 		return false;

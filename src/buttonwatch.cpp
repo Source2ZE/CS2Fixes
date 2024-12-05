@@ -32,7 +32,7 @@
 #include "cs2fixes.h"
 #include "commands.h"
 
-CON_COMMAND_F(cs2f_enable_button_watch, "CS# BREAKS IF THIS IS EVER ENABLED. Whether to enable button watch or not.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | FCVAR_PROTECTED)
+CON_COMMAND_F(cs2f_enable_button_watch, "INCOMPATIBLE WITH CS#. Whether to enable button watch or not.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | FCVAR_PROTECTED)
 {
     if (args.ArgC() < 2)
     {
@@ -44,6 +44,46 @@ CON_COMMAND_F(cs2f_enable_button_watch, "CS# BREAKS IF THIS IS EVER ENABLED. Whe
         mapIOFunctions.erase("buttonwatch");
     else if (!IsButtonWatchEnabled())
         mapIOFunctions["buttonwatch"] = ButtonWatch;
+}
+
+CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
+{
+    if (!IsButtonWatchEnabled())
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Button watch is disabled on this server.");
+        return;
+    }
+
+    if (!player)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
+        return;
+    }
+
+    ZEPlayer* zpPlayer = player->GetZEPlayer();
+    if (!zpPlayer)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Something went wrong, please wait a moment before trying this command again.");
+        return;
+    }
+
+    zpPlayer->CycleButtonWatch();
+
+    switch (zpPlayer->GetButtonWatchMode())
+    {
+        case 0:
+            ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x02 disabled\1 button watch.");
+            break;
+        case 1:
+            ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in chat.");
+            break;
+        case 2:
+            ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in console.");
+            break;
+        case 3:
+            ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in chat and console.");
+            break;
+    }
 }
 
 bool IsButtonWatchEnabled()

@@ -168,7 +168,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="buttonwatch.cpp" />
+    <ClCompile Include="src\buttonwatch.cpp" />
     <ClCompile Include="protobuf\generated\cs_usercmd.pb.cc" />
     <ClCompile Include="protobuf\generated\networkbasetypes.pb.cc" />
     <ClCompile Include="protobuf\generated\network_connection.pb.cc" />
