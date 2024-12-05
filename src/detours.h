@@ -57,7 +57,7 @@ bool SetupFireOutputInternalDetour();
 
 // Add callback functions to this map that wish to hook into Detour_CEntityIOOutput_FireOutputInternal
 // to make it more modular/cleaner than shoving everything into the detour (buttonwatch, entwatch, etc.)
-static std::map<std::string, std::function<void(const CEntityIOOutput*, CEntityInstance*, CEntityInstance*, const CVariant*, float)>> mapIOFunctions;
+extern std::map<std::string, std::function<void(const CEntityIOOutput*, CEntityInstance*, CEntityInstance*, const CVariant*, float)>> mapIOFunctions;
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CCSPlayerController *, uint64);
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CCSPlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
