@@ -78,6 +78,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/customio.cpp',
     'src/entitylistener.cpp',
     'src/leader.cpp',
+    'src/buttonwatch.cpp',
     'src/idlemanager.cpp',
     'sdk/entity2/entitysystem.cpp',
     'sdk/entity2/entityidentity.cpp',

@@ -530,6 +530,23 @@ void ZEPlayer::EndGlow()
 		addresses::UTIL_Remove(pModelParent);
 }
 
+void ZEPlayer::CycleButtonWatch()
+{
+	m_iButtonWatchMode = (m_iButtonWatchMode + 1) % 4;
+	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_iButtonWatchMode);
+}
+
+// 0: Off
+// 1: Chat
+// 2: Console
+// 3: Chat + Console
+int ZEPlayer::GetButtonWatchMode()
+{
+	if (!IsAdminFlagSet(ADMFLAG_GENERIC) || IsFakeClient())
+		return 0;
+	return g_pUserPreferencesSystem->GetPreferenceInt(m_slot.Get(), BUTTON_WATCH_PREF_KEY_NAME, m_iButtonWatchMode);
+}
+
 void ZEPlayer::SetSteamIdAttribute()
 {
 	if (!g_bEnableMapSteamIds)

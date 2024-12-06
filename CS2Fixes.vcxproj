@@ -168,6 +168,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\buttonwatch.cpp" />
     <ClCompile Include="protobuf\generated\cs_usercmd.pb.cc" />
     <ClCompile Include="protobuf\generated\networkbasetypes.pb.cc" />
     <ClCompile Include="protobuf\generated\network_connection.pb.cc" />
@@ -216,6 +217,7 @@
     <ClCompile Include="src\utils\plat_win.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\buttonwatch.h" />
     <ClInclude Include="src\adminsystem.h" />
     <ClInclude Include="src\commands.h" />
     <ClInclude Include="src\common.h" />
@@ -247,6 +249,7 @@
     <ClInclude Include="src\cs2_sdk\entity\lights.h" />
     <ClInclude Include="src\cs2_sdk\entity\services.h" />
     <ClInclude Include="src\cs2_sdk\schema.h" />
+    <ClInclude Include="src\cs2_sdk\entityio.h" />
     <ClInclude Include="src\cdetour.h" />
     <ClInclude Include="src\ctimer.h" />
     <ClInclude Include="src\customio.h" />

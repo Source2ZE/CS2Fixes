@@ -173,6 +173,9 @@
     <ClCompile Include="sdk\public\tier0\memoverride.cpp">
       <Filter>Source Files\sdk</Filter>
     </ClCompile>
+    <ClCompile Include="src\buttonwatch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -194,6 +197,9 @@
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\schema.h">
+      <Filter>Header Files\cs2_sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entityio.h">
       <Filter>Header Files\cs2_sdk</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cbaseplayercontroller.h">
@@ -293,6 +299,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\leader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\buttonwatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\lights.h">
