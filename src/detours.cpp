@@ -80,6 +80,7 @@ DECLARE_DETOUR(TraceFunc, Detour_TraceFunc);
 DECLARE_DETOUR(TraceShape, Detour_TraceShape);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
+DECLARE_DETOUR(OnNetLanConnectionlessPacket, Detour_OnNetLanConnectionlessPacket);
 
 static bool g_bBlockMolotovSelfDmg = false;
 static bool g_bBlockAllDamage = false;
@@ -630,6 +631,15 @@ bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceF
 	}
 
 	return TraceShape(a1, a2, a3, a4, filter, a6);
+}
+
+KeyValues* FASTCALL Detour_OnNetLanConnectionlessPacket(int64_t unk1, int64_t* unk2)
+{
+	Message("Blocked server crash attempt\n");
+
+	// Apparently this is a legacy function anyways
+	// Just return a dummy KV pointer
+	return new KeyValues("Root");
 }
 
 #ifdef PLATFORM_WINDOWS
