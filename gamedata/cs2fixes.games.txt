@@ -465,6 +465,11 @@
 				"windows"		"22"
 				"linux"			"23"
 			}
+			"CCSPlayer_WeaponServices::SelectItem"
+			{
+				"windows"		"24"
+				"linux"			"25"
+			}
 			"CCSGameRules_GoToIntermission"
 			{
 				"windows"		"128"
