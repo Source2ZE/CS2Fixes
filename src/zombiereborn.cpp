@@ -1135,14 +1135,29 @@ void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerContr
 void ZR_StripAndGiveKnife(CCSPlayerPawn *pPawn)
 {
 	CCSPlayer_ItemServices *pItemServices = pPawn->m_pItemServices();
+	CCSPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices();
 
 	// it can sometimes be null when player joined on the very first round? 
-	if (!pItemServices)
+	if (!pItemServices || !pWeaponServices)
 		return;
 
 	pPawn->DropMapWeapons();
 	pItemServices->StripPlayerWeapons(true);
 	pItemServices->GiveNamedItem("weapon_knife");
+
+	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
+
+	FOR_EACH_VEC(*weapons, i)
+	{
+		CBasePlayerWeapon* pWeapon = (*weapons)[i].Get();
+
+		if (pWeapon && pWeapon->GetWeaponVData()->m_GearSlot() == GEAR_SLOT_KNIFE)
+		{
+			// Normally this isn't necessary, but there's a small window if infected right after throwing a grenade where this is needed
+			pWeaponServices->SelectItem(pWeapon);
+			break;
+		}
+	}
 }
 
 void ZR_Cure(CCSPlayerController *pTargetController)

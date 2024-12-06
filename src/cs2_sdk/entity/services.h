@@ -142,6 +142,12 @@ public:
 		static int offset = g_GameConfig->GetOffset("CCSPlayer_WeaponServices::DropWeapon");
 		CALL_VIRTUAL(void, offset, this, pWeapon, pVecTarget, pVelocity);
 	}
+
+	void SelectItem(CBasePlayerWeapon* pWeapon, int unk1 = 0)
+	{
+		static int offset = g_GameConfig->GetOffset("CCSPlayer_WeaponServices::SelectItem");
+		CALL_VIRTUAL(void, offset, this, pWeapon, unk1);
+	}
 };
 
 class CCSPlayerController_InGameMoneyServices
