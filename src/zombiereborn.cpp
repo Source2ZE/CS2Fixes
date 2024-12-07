@@ -1143,7 +1143,21 @@ void ZR_StripAndGiveKnife(CCSPlayerPawn *pPawn)
 
 	pPawn->DropMapWeapons();
 	pItemServices->StripPlayerWeapons(true);
-	pItemServices->GiveNamedItem("weapon_knife");
+
+	if (pPawn->m_iTeamNum == CS_TEAM_T)
+	{
+		pItemServices->GiveNamedItem("weapon_knife_t");
+	}
+	else if (pPawn->m_iTeamNum == CS_TEAM_CT)
+	{
+		pItemServices->GiveNamedItem("weapon_knife");
+
+		// CONVAR_TODO
+		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_free_armor"));
+		// HACK: values is actually the cvar value itself, hence this ugly cast.
+		if (*(int*)&cvar->values > 0)
+			pItemServices->GiveNamedItem("item_kevlar");
+	}
 
 	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
@@ -1283,6 +1297,7 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController, std::vector<S
 	if (!pVictimPawn)
 		return;
 
+	pVictimController->SwitchTeam(CS_TEAM_T);
 	ZR_StripAndGiveKnife(pVictimPawn);
 
 	// pick random spawn point
@@ -1295,7 +1310,6 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController, std::vector<S
 		pVictimPawn->Teleport(&origin, &rotation, &vec3_origin);
 	}
 
-	pVictimController->SwitchTeam(CS_TEAM_T);
 	pVictimPawn->EmitSound("zr.amb.scream");
 
 	std::shared_ptr<ZRZombieClass> pClass = g_pZRPlayerClassManager->GetZombieClass("MotherZombie");
@@ -2002,7 +2016,11 @@ CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 		CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pTarget->GetPawn();
 
+		if (!pPawn)
+			return;
+
 		ZR_Cure(pTarget);
+		ZR_StripAndGiveKnife(pPawn);
 
 		if (iNumClients == 1)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "revived", "", ZR_PREFIX);

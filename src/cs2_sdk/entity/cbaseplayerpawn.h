@@ -39,7 +39,7 @@ public:
 	SCHEMA_FIELD(QAngle, v_angle)
 
 	// Drops any map-spawned weapons the pawn is holding
-	// NOTE: Currently very broken with map items (entities parented to weapons?) due to a game bug..? Needs further investigation/work
+	// NOTE: This doesn't predict correctly to the weapon holder! Looks very funky when testing, but not really an issue on live servers
 	void DropMapWeapons()
 	{
 		if (!m_pWeaponServices())
