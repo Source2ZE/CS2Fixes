@@ -865,11 +865,10 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 			if (!pController || pController->m_bIsHLTV || j == iPlayerSlot)
 				continue;
 
-			// Don't transmit other players' flashlights, except the one they're watching if in spec
+			// Don't transmit other players' flashlights
 			CBarnLight *pFlashLight = pController->IsConnected() ? g_playerManager->GetPlayer(j)->GetFlashLight() : nullptr;
 
-			if (!g_bFlashLightTransmitOthers && pFlashLight &&
-				!(pSelfController->GetPawnState() == STATE_OBSERVER_MODE && pSelfController->GetObserverTarget() == pController->GetPawn()))
+			if (!g_bFlashLightTransmitOthers && pFlashLight)
 			{
 				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
 			}
