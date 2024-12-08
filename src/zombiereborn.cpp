@@ -739,6 +739,10 @@ bool CZRRegenTimer::Execute()
 	if (!pPawn || !pPawn->IsAlive())
 		return false;
 
+	// Do we even need to regen?
+	if (pPawn->m_iHealth() >= pPawn->m_iMaxHealth())
+		return true;
+
 	int iHealth = pPawn->m_iHealth() + m_iRegenAmount;
 	pPawn->m_iHealth = pPawn->m_iMaxHealth() < iHealth ? pPawn->m_iMaxHealth() : iHealth;
 	return true;
