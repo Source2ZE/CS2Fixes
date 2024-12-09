@@ -49,6 +49,7 @@
 #include "serversideclient.h"
 #include "tier0/vprof.h"
 #include "zombiereborn.h"
+#include "buttonwatch.h"
 
 #include "tier0/memdbgon.h"
 
@@ -630,6 +631,37 @@ bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceF
 	}
 
 	return TraceShape(a1, a2, a3, a4, filter, a6);
+}
+
+
+CDetour<decltype(Detour_CEntityIOOutput_FireOutputInternal)>* CEntityIOOutput_FireOutputInternal = nullptr;
+std::map<std::string, std::function<void(const CEntityIOOutput*, CEntityInstance*, CEntityInstance*, const CVariant*, float)>> mapIOFunctions{};
+void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
+{
+	for (const auto& [name, cb] : mapIOFunctions)
+		cb(pThis, pActivator, pCaller, value, flDelay);
+
+	(*CEntityIOOutput_FireOutputInternal)(pThis, pActivator, pCaller, value, flDelay);
+}
+
+// Tries to setup Detour_CEntityIOOutput_FireOutputInternal if it is not already setup. This is not
+// enabled unless a feature needs it, as the detour breaks CS# compatibility
+// Returns true if detour is usable, otherwise false.
+bool SetupFireOutputInternalDetour()
+{
+	if (CEntityIOOutput_FireOutputInternal != nullptr)
+		return true;
+
+	CEntityIOOutput_FireOutputInternal = new CDetour(Detour_CEntityIOOutput_FireOutputInternal, "CEntityIOOutput_FireOutputInternal");
+	if (!CEntityIOOutput_FireOutputInternal->CreateDetour(g_GameConfig))
+	{
+		Panic("Failed to detour CEntityIOOutput_FireOutputInternal\n");
+		delete CEntityIOOutput_FireOutputInternal;
+		CEntityIOOutput_FireOutputInternal = nullptr;
+		return false;
+	}
+	CEntityIOOutput_FireOutputInternal->EnableDetour();
+	return true;
 }
 
 #ifdef PLATFORM_WINDOWS

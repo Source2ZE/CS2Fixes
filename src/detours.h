@@ -20,7 +20,7 @@
 #pragma once
 #include "cdetour.h"
 #include <utlsymbollarge.h>
-
+#include "cs2_sdk/entityio.h"
 
 class CCheckTransmitInfo;
 class IRecipientFilter;
@@ -53,6 +53,11 @@ class QAngle;
 
 bool InitDetours(CGameConfig *gameConfig);
 void FlushAllDetours();
+bool SetupFireOutputInternalDetour();
+
+// Add callback functions to this map that wish to hook into Detour_CEntityIOOutput_FireOutputInternal
+// to make it more modular/cleaner than shoving everything into the detour (buttonwatch, entwatch, etc.)
+extern std::map<std::string, std::function<void(const CEntityIOOutput*, CEntityInstance*, CEntityInstance*, const CVariant*, float)>> mapIOFunctions;
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &, const char *, CCSPlayerController *, uint64);
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter &, CCSPlayerController *, uint64, const char *, const char *, const char *, const char *, const char *);
@@ -71,6 +76,7 @@ float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn*);
 int64 FASTCALL Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float);
 bool FASTCALL Detour_TraceFunc(int64*, int*, float*, uint64);
 bool FASTCALL Detour_TraceShape(int64*, int64, int64, int64, CTraceFilter*, int64);
+void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay);
 #ifdef PLATFORM_WINDOWS
 Vector* FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn*, Vector*);
 QAngle* FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*, QAngle*);
