@@ -34,6 +34,7 @@ namespace modules
 	inline CModule *client;
 	inline CModule* networksystem;
 	inline CModule* vphysics2;
+	inline CModule* matchmaking;
 #ifdef _WIN32
 	inline CModule *hammer;
 #endif

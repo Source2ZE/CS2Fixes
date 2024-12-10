@@ -40,6 +40,7 @@ bool addresses::Initialize(CGameConfig *g_GameConfig)
 	modules::vscript = new CModule(ROOTBIN, "vscript");
 	modules::networksystem = new CModule(ROOTBIN, "networksystem");
 	modules::vphysics2 = new CModule(ROOTBIN, "vphysics2");
+	modules::matchmaking = new CModule(GAMEBIN, "matchmaking");
 	modules::client = nullptr;
 
 	if (!CommandLine()->HasParm("-dedicated"))
