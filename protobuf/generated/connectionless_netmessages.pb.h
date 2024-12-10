@@ -58,7 +58,7 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class C2S_CONNECT_Message final :
+class C2S_CONNECT_Message :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:C2S_CONNECT_Message) */ {
  public:
   inline C2S_CONNECT_Message() : C2S_CONNECT_Message(nullptr) {}
@@ -195,7 +195,6 @@ class C2S_CONNECT_Message final :
     kReservationCookieFieldNumber = 4,
     kChallengeNumberFieldNumber = 3,
     kLowViolenceFieldNumber = 5,
-    kUseSnpFieldNumber = 10,
   };
   // repeated .CCLCMsg_SplitPlayerConnect splitplayers = 7;
   int splitplayers_size() const;
@@ -334,19 +333,6 @@ class C2S_CONNECT_Message final :
   void _internal_set_low_violence(bool value);
   public:
 
-  // optional sint32 use_snp = 10;
-  bool has_use_snp() const;
-  private:
-  bool _internal_has_use_snp() const;
-  public:
-  void clear_use_snp();
-  int32_t use_snp() const;
-  void set_use_snp(int32_t value);
-  private:
-  int32_t _internal_use_snp() const;
-  void _internal_set_use_snp(int32_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:C2S_CONNECT_Message)
  private:
   class _Internal;
@@ -366,14 +352,13 @@ class C2S_CONNECT_Message final :
     uint64_t reservation_cookie_;
     uint32_t challenge_number_;
     bool low_violence_;
-    int32_t use_snp_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_connectionless_5fnetmessages_2eproto;
 };
 // -------------------------------------------------------------------
 
-class C2S_CONNECTION_Message final :
+class C2S_CONNECTION_Message :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:C2S_CONNECTION_Message) */ {
  public:
   inline C2S_CONNECTION_Message() : C2S_CONNECTION_Message(nullptr) {}
@@ -502,7 +487,6 @@ class C2S_CONNECTION_Message final :
 
   enum : int {
     kAddonNameFieldNumber = 1,
-    kUseSnpFieldNumber = 2,
   };
   // optional string addon_name = 1;
   bool has_addon_name() const;
@@ -522,19 +506,6 @@ class C2S_CONNECTION_Message final :
   std::string* _internal_mutable_addon_name();
   public:
 
-  // optional bool use_snp = 2;
-  bool has_use_snp() const;
-  private:
-  bool _internal_has_use_snp() const;
-  public:
-  void clear_use_snp();
-  bool use_snp() const;
-  void set_use_snp(bool value);
-  private:
-  bool _internal_use_snp() const;
-  void _internal_set_use_snp(bool value);
-  public:
-
   // @@protoc_insertion_point(class_scope:C2S_CONNECTION_Message)
  private:
   class _Internal;
@@ -546,7 +517,6 @@ class C2S_CONNECTION_Message final :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr addon_name_;
-    bool use_snp_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_connectionless_5fnetmessages_2eproto;
@@ -943,34 +913,6 @@ inline void C2S_CONNECT_Message::set_allocated_challenge_context(std::string* ch
   // @@protoc_insertion_point(field_set_allocated:C2S_CONNECT_Message.challenge_context)
 }
 
-// optional sint32 use_snp = 10;
-inline bool C2S_CONNECT_Message::_internal_has_use_snp() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
-  return value;
-}
-inline bool C2S_CONNECT_Message::has_use_snp() const {
-  return _internal_has_use_snp();
-}
-inline void C2S_CONNECT_Message::clear_use_snp() {
-  _impl_.use_snp_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000100u;
-}
-inline int32_t C2S_CONNECT_Message::_internal_use_snp() const {
-  return _impl_.use_snp_;
-}
-inline int32_t C2S_CONNECT_Message::use_snp() const {
-  // @@protoc_insertion_point(field_get:C2S_CONNECT_Message.use_snp)
-  return _internal_use_snp();
-}
-inline void C2S_CONNECT_Message::_internal_set_use_snp(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
-  _impl_.use_snp_ = value;
-}
-inline void C2S_CONNECT_Message::set_use_snp(int32_t value) {
-  _internal_set_use_snp(value);
-  // @@protoc_insertion_point(field_set:C2S_CONNECT_Message.use_snp)
-}
-
 // -------------------------------------------------------------------
 
 // C2S_CONNECTION_Message
@@ -1041,34 +983,6 @@ inline void C2S_CONNECTION_Message::set_allocated_addon_name(std::string* addon_
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:C2S_CONNECTION_Message.addon_name)
-}
-
-// optional bool use_snp = 2;
-inline bool C2S_CONNECTION_Message::_internal_has_use_snp() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool C2S_CONNECTION_Message::has_use_snp() const {
-  return _internal_has_use_snp();
-}
-inline void C2S_CONNECTION_Message::clear_use_snp() {
-  _impl_.use_snp_ = false;
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-inline bool C2S_CONNECTION_Message::_internal_use_snp() const {
-  return _impl_.use_snp_;
-}
-inline bool C2S_CONNECTION_Message::use_snp() const {
-  // @@protoc_insertion_point(field_get:C2S_CONNECTION_Message.use_snp)
-  return _internal_use_snp();
-}
-inline void C2S_CONNECTION_Message::_internal_set_use_snp(bool value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.use_snp_ = value;
-}
-inline void C2S_CONNECTION_Message::set_use_snp(bool value) {
-  _internal_set_use_snp(value);
-  // @@protoc_insertion_point(field_set:C2S_CONNECTION_Message.use_snp)
 }
 
 #ifdef __GNUC__

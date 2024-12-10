@@ -34,7 +34,7 @@ enum class PlayerConnectedState : uint32_t
 	PlayerReserved = 0x5,
 };
 
-class CBasePlayerController : public Z_CBaseEntity
+class CBasePlayerController : public CBaseEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CBasePlayerController);
@@ -43,6 +43,8 @@ public:
 	SCHEMA_FIELD(CHandle<CBasePlayerPawn>, m_hPawn)
 	SCHEMA_FIELD_POINTER(char, m_iszPlayerName)
 	SCHEMA_FIELD(PlayerConnectedState, m_iConnected)
+	SCHEMA_FIELD(bool, m_bIsHLTV)
+	SCHEMA_FIELD(uint, m_iDesiredFOV)
 
 	// Returns the current pawn, which could be one of those:
 	// - The player's actual pawn
@@ -54,6 +56,6 @@ public:
 	bool IsConnected() { return m_iConnected() == PlayerConnectedState::PlayerConnected; }
 	void SetPawn(CCSPlayerPawn* pawn)
 	{
-		addresses::CBasePlayerController_SetPawn(this, pawn, true, false);
+		addresses::CBasePlayerController_SetPawn(this, pawn, true, false, false);
 	}
 };

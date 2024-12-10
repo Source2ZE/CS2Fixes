@@ -168,10 +168,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\buttonwatch.cpp" />
     <ClCompile Include="protobuf\generated\cs_usercmd.pb.cc" />
     <ClCompile Include="protobuf\generated\networkbasetypes.pb.cc" />
     <ClCompile Include="protobuf\generated\network_connection.pb.cc" />
     <ClCompile Include="protobuf\generated\usercmd.pb.cc" />
+    <ClCompile Include="protobuf\generated\usermessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\cstrike15_gcmessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\cstrike15_usermessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\gcsdk_gcmessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\engine_gcmessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\netmessages.pb.cc" />
+    <ClCompile Include="protobuf\generated\steammessages.pb.cc" />
     <ClCompile Include="sdk\entity2\entityidentity.cpp" />
     <ClCompile Include="sdk\entity2\entitykeyvalues.cpp" />
     <ClCompile Include="sdk\entity2\entitysystem.cpp" />
@@ -192,8 +200,10 @@
     <ClCompile Include="src\gameconfig.cpp" />
     <ClCompile Include="src\gamesystem.cpp" />
     <ClCompile Include="src\httpmanager.cpp" />
+    <ClCompile Include="src\idlemanager.cpp" />
     <ClCompile Include="src\map_votes.cpp" />
     <ClCompile Include="src\mempatch.cpp" />
+    <ClCompile Include="src\panoramavote.cpp" />
     <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\playermanager.cpp" />
     <ClCompile Include="src\user_preferences.cpp" />
@@ -207,6 +217,7 @@
     <ClCompile Include="src\utils\plat_win.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\buttonwatch.h" />
     <ClInclude Include="src\adminsystem.h" />
     <ClInclude Include="src\commands.h" />
     <ClInclude Include="src\common.h" />
@@ -222,18 +233,23 @@
     <ClInclude Include="src\cs2_sdk\entity\ccsplayerpawn.h" />
     <ClInclude Include="src\cs2_sdk\entity\ccsweaponbase.h" />
     <ClInclude Include="src\cs2_sdk\entity\cenventitymaker.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cenvhudhint.h" />
     <ClInclude Include="src\cs2_sdk\entity\cgameplayerequip.h" />
     <ClInclude Include="src\cs2_sdk\entity\cgamerules.h" />
     <ClInclude Include="src\cs2_sdk\entity\clogiccase.h" />
     <ClInclude Include="src\cs2_sdk\entity\cparticlesystem.h" />
     <ClInclude Include="src\cs2_sdk\entity\cphysthruster.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cpointviewcontrol.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h" />
     <ClInclude Include="src\cs2_sdk\entity\cteam.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctriggerpush.h" />
+    <ClInclude Include="src\cs2_sdk\entity\ctriggerteleport.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cvotecontroller.h" />
     <ClInclude Include="src\cs2_sdk\entity\globaltypes.h" />
     <ClInclude Include="src\cs2_sdk\entity\lights.h" />
     <ClInclude Include="src\cs2_sdk\entity\services.h" />
     <ClInclude Include="src\cs2_sdk\schema.h" />
+    <ClInclude Include="src\cs2_sdk\entityio.h" />
     <ClInclude Include="src\cdetour.h" />
     <ClInclude Include="src\ctimer.h" />
     <ClInclude Include="src\customio.h" />
@@ -244,8 +260,10 @@
     <ClInclude Include="src\gamesystem.h" />
     <ClInclude Include="src\gameconfig.h" />
     <ClInclude Include="src\httpmanager.h" />
+    <ClInclude Include="src\idlemanager.h" />
     <ClInclude Include="src\mempatch.h" />
     <ClInclude Include="src\addresses.h" />
+    <ClInclude Include="src\panoramavote.h" />
     <ClInclude Include="src\patches.h" />
     <ClInclude Include="src\playermanager.h" />
     <ClInclude Include="src\recipientfilters.h" />

@@ -168,14 +168,6 @@ struct EmitSound_t
 	gender_t m_SpeakerGender;
 };
 
-struct GameTime_t
-{
-public:
-	DECLARE_SCHEMA_CLASS_INLINE(GameTime_t)
-
-	SCHEMA_FIELD(float, m_Value)
-};
-
 class CNetworkTransmitComponent
 {
 public:

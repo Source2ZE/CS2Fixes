@@ -29,9 +29,25 @@
 #include "entity/cparticlesystem.h"
 #include "gamesystem.h"
 
+#define NO_TARGET_BLOCKS		(0)
+#define NO_RANDOM				(1 << 1)
+#define NO_MULTIPLE 			(1 << 2)
+#define NO_SELF					(1 << 3)
+#define NO_BOT					(1 << 4)
+#define NO_HUMAN				(1 << 5)
+#define NO_UNAUTHENTICATED		(1 << 6)
+#define NO_DEAD					(1 << 7)
+#define NO_ALIVE				(1 << 8)
+#define NO_TERRORIST			(1 << 9)
+#define NO_COUNTER_TERRORIST	(1 << 10)
+#define NO_SPECTATOR			(1 << 11)
+#define NO_IMMUNITY				(1 << 12)
+
 #define DECAL_PREF_KEY_NAME "hide_decals"
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
 #define SOUND_STATUS_PREF_KEY_NAME "sound_status"
+#define NO_SHAKE_PREF_KEY_NAME "no_shake"
+#define BUTTON_WATCH_PREF_KEY_NAME "button_watch"
 #define INVALID_ZEPLAYERHANDLE_INDEX 0u
 
 static uint32 iZEPlayerHandleSerial = 0u; // this should actually be 3 bytes large, but no way enough players join in servers lifespan for this to be an issue
@@ -43,13 +59,50 @@ enum class ETargetType {
 	RANDOM,
 	RANDOM_T,
 	RANDOM_CT,
+	RANDOM_SPEC,
+	AIM,
 	ALL,
 	SPECTATOR,
 	T,
 	CT,
+	DEAD,
+	ALIVE,
+	BOT,
+	HUMAN,
+	ALL_BUT_SELF,
+	ALL_BUT_RANDOM,
+	ALL_BUT_RANDOM_T,
+	ALL_BUT_RANDOM_CT,
+	ALL_BUT_RANDOM_SPEC,
+	ALL_BUT_AIM,
+	ALL_BUT_SPECTATOR,
+	ALL_BUT_T,
+	ALL_BUT_CT
+};
+
+enum class ETargetError
+{
+	NO_ERRORS,
+	INVALID,
+	CONNECTING,
+	MULTIPLE_NAME_MATCHES,
+	RANDOM,
+	MULTIPLE,
+	SELF,
+	BOT,
+	HUMAN,
+	UNAUTHENTICATED,
+	INSUFFICIENT_IMMUNITY_LEVEL,
+	DEAD,
+	ALIVE,
+	TERRORIST,
+	COUNTER_TERRORIST,
+	SPECTATOR
 };
 
 class ZEPlayer;
+struct ZRClass;
+struct ZRModelEntry;
 
 class ZEPlayerHandle
 {
@@ -95,6 +148,7 @@ public:
 	{ 
 		m_bAuthenticated = false;
 		m_iAdminFlags = 0;
+		m_iAdminImmunity = 0;
 		m_SteamID = nullptr;
 		m_bGagged = false;
 		m_bMuted = false;
@@ -106,7 +160,7 @@ public:
 		m_bVotedRTV = false;
 		m_bVotedExtend = false;
 		m_bIsInfected = false;
-		m_flRTVVoteTime = 0;
+		m_flRTVVoteTime = -60.0f;
 		m_flExtendVoteTime = 0;
 		m_iFloodTokens = 0;
 		m_flLastTalkTime = 0;
@@ -114,10 +168,20 @@ public:
 		m_iMZImmunity = 0; // out of 100
 		m_flNominateTime = -60.0f;
 		m_iPlayerState = 1; // STATE_WELCOME is the initial state
-		m_iLeaderIndex = 0;
-		m_iLeaderTracerIndex = 0;
+		m_bIsLeader = false;
+		m_handleMark = nullptr;
+		m_colorLeader = Color(0, 0, 0, 0);
+		m_colorTracer = Color(0, 0, 0, 0);
+		m_colorGlow = Color(0, 0, 0, 0);
+		m_colorBeacon = Color(0, 0, 0, 0);
 		m_flLeaderVoteTime = -30.0f;
 		m_flSpeedMod = 1.f;
+		m_flMaxSpeed = 1.f;
+		m_iLastInputs = IN_NONE;
+		m_iLastInputTime = std::time(0);
+		m_pActiveZRClass = nullptr;
+		m_pActiveZRModel = nullptr;
+		m_iButtonWatchMode = 0;
 	}
 
 	~ZEPlayer()
@@ -141,8 +205,8 @@ public:
 	void SetConnected() { m_bConnected = true; }
 	void SetUnauthenticatedSteamId(const CSteamID* steamID) { m_UnauthenticatedSteamID = steamID; }
 	void SetSteamId(const CSteamID* steamID) { m_SteamID = steamID; }
-	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	void SetAdminFlags(uint64 iAdminFlags) { m_iAdminFlags = iAdminFlags; }
+	void SetAdminImmunity(int iAdminImmunity) { m_iAdminImmunity = iAdminImmunity; }
 	void SetPlayerSlot(CPlayerSlot slot) { m_slot = slot; }
 	void SetMuted(bool muted) { m_bMuted = muted; }
 	void SetGagged(bool gagged) { m_bGagged = gagged; }
@@ -164,12 +228,25 @@ public:
 	void SetFlashLight(CBarnLight *pLight) { m_hFlashLight.Set(pLight); }
 	void SetBeaconParticle(CParticleSystem *pParticle) { m_hBeaconParticle.Set(pParticle); }
 	void SetPlayerState(uint32 iPlayerState) { m_iPlayerState = iPlayerState; }
-	void SetLeader(int leaderIndex);
-	void SetLeaderTracer(int tracerIndex) { m_iLeaderTracerIndex = tracerIndex; }
+	void SetLeader(bool bIsLeader) { m_bIsLeader = bIsLeader; }
+	void CreateMark(float fDuration, Vector vecOrigin);
+	void SetLeaderColor(Color colorLeader) {m_colorLeader = colorLeader;}
+	void SetTracerColor(Color colorTracer) { m_colorTracer = colorTracer; }
+	void SetGlowColor(Color colorGlow) { m_colorGlow = colorGlow; }
+	void SetBeaconColor(Color colorBeacon) { m_colorBeacon = colorBeacon; }
 	void SetLeaderVoteTime(float flCurtime) { m_flLeaderVoteTime = flCurtime; }
 	void SetGlowModel(CBaseModelEntity *pModel) { m_hGlowModel.Set(pModel); }
 	void SetSpeedMod(float flSpeedMod) { m_flSpeedMod = flSpeedMod; }
+	void SetLastInputs(uint64 iLastInputs) { m_iLastInputs = iLastInputs; }
+	void UpdateLastInputTime() { m_iLastInputTime = std::time(0); }
+	void SetMaxSpeed(float flMaxSpeed) { m_flMaxSpeed = flMaxSpeed; }
+	void CycleButtonWatch();
+	void ReplicateConVar(const char* pszName, const char* pszValue);
+	void SetActiveZRClass(std::shared_ptr<ZRClass> pZRModel) { m_pActiveZRClass = pZRModel; }
+	void SetActiveZRModel(std::shared_ptr<ZRModelEntry> pZRClass) { m_pActiveZRModel = pZRClass; }
 
+	uint64 GetAdminFlags() { return m_iAdminFlags; }
+	int GetAdminImmunity() { return m_iAdminImmunity; }
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
 	bool ShouldBlockTransmit(int index) { return m_shouldTransmit.Get(index); }
@@ -191,14 +268,22 @@ public:
 	CParticleSystem *GetBeaconParticle() { return m_hBeaconParticle.Get(); }
 	ZEPlayerHandle GetHandle() { return m_Handle; }
 	uint32 GetPlayerState() { return m_iPlayerState; }
-	bool IsLeader() { return (bool) m_iLeaderIndex; }
-	int GetLeaderIndex() { return m_iLeaderIndex; }
-	int GetLeaderTracer() { return m_iLeaderTracerIndex; }
+	bool IsLeader() { return m_bIsLeader; }
+	Color GetLeaderColor() { return m_colorLeader; }
+	Color GetTracerColor() { return m_colorTracer; }
+	Color GetGlowColor() { return m_colorGlow; }
+	Color GetBeaconColor() { return m_colorBeacon; }
 	int GetLeaderVoteCount();
 	bool HasPlayerVotedLeader(ZEPlayer* pPlayer);
 	float GetLeaderVoteTime() { return m_flLeaderVoteTime; }
 	CBaseModelEntity *GetGlowModel() { return m_hGlowModel.Get(); }
 	float GetSpeedMod() { return m_flSpeedMod; }
+	float GetMaxSpeed() { return m_flMaxSpeed; }
+	uint64 GetLastInputs() { return m_iLastInputs; }
+	std::time_t GetLastInputTime() { return m_iLastInputTime; }
+	std::shared_ptr<ZRClass> GetActiveZRClass() { return m_pActiveZRClass; }
+	std::shared_ptr<ZRModelEntry> GetActiveZRModel() { return m_pActiveZRModel; }
+	int GetButtonWatchMode();
 	
 	void OnSpawn();
 	void OnAuthenticated();
@@ -212,6 +297,7 @@ public:
 	void PurgeLeaderVotes();
 	void StartGlow(Color color, int duration);
 	void EndGlow();
+	void SetSteamIdAttribute();
 
 private:
 	bool m_bAuthenticated;
@@ -223,6 +309,7 @@ private:
 	bool m_bMuted;
 	bool m_bGagged;
 	uint64 m_iAdminFlags;
+	int m_iAdminImmunity;
 	int m_iHideDistance;
 	CBitVec<MAXPLAYERS> m_shouldTransmit;
 	int m_iTotalDamage;
@@ -243,12 +330,22 @@ private:
 	CHandle<CParticleSystem> m_hBeaconParticle;
 	ZEPlayerHandle m_Handle;
 	uint32 m_iPlayerState;
-	int m_iLeaderIndex;
+	bool m_bIsLeader;
+	CHandle<CBaseEntity> m_handleMark;
+	Color m_colorLeader;
+	Color m_colorTracer;
+	Color m_colorGlow;
+	Color m_colorBeacon;
 	CUtlVector<ZEPlayerHandle> m_vecLeaderVotes;
-	int m_iLeaderTracerIndex;
 	float m_flLeaderVoteTime;
 	CHandle<CBaseModelEntity> m_hGlowModel;
 	float m_flSpeedMod;
+	float m_flMaxSpeed;
+	uint64 m_iLastInputs;
+	std::time_t m_iLastInputTime;
+	std::shared_ptr<ZRClass> m_pActiveZRClass;
+	std::shared_ptr<ZRModelEntry> m_pActiveZRModel;
+	int m_iButtonWatchMode;
 };
 
 class CPlayerManager
@@ -257,9 +354,10 @@ public:
 	CPlayerManager(bool late = false)
 	{
 		V_memset(m_vecPlayers, 0, sizeof(m_vecPlayers));
-		m_nUsingStopSound = 0;
-		m_nUsingSilenceSound = -1; // On by default
+		m_nUsingStopSound = -1; // On by default
+		m_nUsingSilenceSound = 0;
 		m_nUsingStopDecals = -1; // On by default
+		m_nUsingNoShake = 0;
 
 		if (late)
 			OnLateLoad();
@@ -278,25 +376,33 @@ public:
 	CPlayerSlot GetSlotFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromUserId(uint16 userid);
 	ZEPlayer *GetPlayerFromSteamId(uint64 steamid);
-	ETargetType TargetPlayerString(int iCommandClient, const char* target, int &iNumClients, int *clients);
+	ETargetError GetPlayersFromString(CCSPlayerController* pPlayer, const char* pszTarget, int &iNumClients, int *clients, uint64 iBlockedFlags = NO_TARGET_BLOCKS);
+	ETargetError GetPlayersFromString(CCSPlayerController* pPlayer, const char* pszTarget, int &iNumClients, int *clients, uint64 iBlockedFlags, ETargetType& nType);
+	static std::string GetErrorString(ETargetError eType, int iSlot = 0);
+	bool CanTargetPlayers(CCSPlayerController* pPlayer, const char* pszTarget, int& iNumClients, int* clients, uint64 iBlockedFlags = NO_TARGET_BLOCKS);
+	bool CanTargetPlayers(CCSPlayerController* pPlayer, const char* pszTarget, int& iNumClients, int* clients, uint64 iBlockedFlags, ETargetType& nType);
 
 	ZEPlayer *GetPlayer(CPlayerSlot slot);
 
 	uint64 GetStopSoundMask() { return m_nUsingStopSound; }
 	uint64 GetSilenceSoundMask() { return m_nUsingSilenceSound; }
 	uint64 GetStopDecalsMask() { return m_nUsingStopDecals; }
+	uint64 GetNoShakeMask() { return m_nUsingNoShake; }
 	
 	void SetPlayerStopSound(int slot, bool set);
 	void SetPlayerSilenceSound(int slot, bool set);
 	void SetPlayerStopDecals(int slot, bool set);
+	void SetPlayerNoShake(int slot, bool set);
 
 	void ResetPlayerFlags(int slot);
 
 	bool IsPlayerUsingStopSound(int slot) { return m_nUsingStopSound & ((uint64)1 << slot); }
 	bool IsPlayerUsingSilenceSound(int slot) { return m_nUsingSilenceSound & ((uint64)1 << slot); }
 	bool IsPlayerUsingStopDecals(int slot) { return m_nUsingStopDecals & ((uint64)1 << slot); }
+	bool IsPlayerUsingNoShake(int slot) { return m_nUsingNoShake & ((uint64)1 << slot); }
 
 	void UpdatePlayerStates();
+	int GetOnlinePlayerCount(bool bCountBots);
 
 	STEAM_GAMESERVER_CALLBACK_MANUAL(CPlayerManager, OnValidateAuthTicket, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
 
@@ -306,6 +412,7 @@ private:
 	uint64 m_nUsingStopSound;
 	uint64 m_nUsingSilenceSound;
 	uint64 m_nUsingStopDecals;
+	uint64 m_nUsingNoShake;
 };
 
 extern CPlayerManager *g_playerManager;

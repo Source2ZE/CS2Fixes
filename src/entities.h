@@ -21,8 +21,10 @@
 
 class InputData_t;
 class CGamePlayerEquip;
-class Z_CBaseEntity;
+class CBaseEntity;
 class CGameUI;
+class CPointViewControl;
+class CCSPlayerPawn;
 
 namespace CGamePlayerEquipHandler
 {
@@ -33,10 +35,21 @@ bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput);
 
 namespace CGameUIHandler
 {
-bool OnActivate(CGameUI* pEntity, Z_CBaseEntity* pActivator);
-bool OnDeactivate(CGameUI* pEntity, Z_CBaseEntity* pActivator);
+bool OnActivate(CGameUI* pEntity, CBaseEntity* pActivator);
+bool OnDeactivate(CGameUI* pEntity, CBaseEntity* pActivator);
 void RunThink(int tick);
 } // namespace CGameUIHandler
 
+namespace CPointViewControlHandler
+{
+bool OnEnable(CPointViewControl* pEntity, CBaseEntity* pActivator);
+bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator);
+bool OnEnableAll(CPointViewControl* pEntity);
+bool OnDisableAll(CPointViewControl* pEntity);
+bool IsViewControl(CCSPlayerPawn*);
+} // namespace CPointViewControlHandler
+
 void EntityHandler_OnGameFramePre(bool simulate, int tick);
 void EntityHandler_OnGameFramePost(bool simulate, int tick);
+void EntityHandler_OnRoundRestart();
+void EntityHandler_OnEntitySpawned(CBaseEntity* pEntity);

@@ -61,12 +61,18 @@ jobs:
         run: |
           cd ambuild && python setup.py install && cd ..
 
+      - name: Install Clang 16
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          apt update && apt install -y clang-16
+          ln -sf /usr/bin/clang-16 /usr/bin/clang && ln -sf /usr/bin/clang++-16 /usr/bin/clang++
+
       - name: Build
         working-directory: CS2Fixes
         shell: bash
         run: |
           mkdir build && cd build
-          python ../configure.py --enable-optimize --symbol-files --sdks cs2
+          python ../configure.py --enable-optimize --sdks cs2
           ambuild
 
       - name: Upload artifact

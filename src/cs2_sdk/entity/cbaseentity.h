@@ -28,10 +28,13 @@
 #include "../detours.h"
 #include "entitykeyvalues.h"
 #include "../../gameconfig.h"
+#include "tier1/utlstringtoken.h"
 
 extern CGameConfig *g_GameConfig;
 
 class CGameUI;
+class CEnvHudHint;
+class CPointViewControl;
 
 class CGameSceneNode
 {
@@ -116,13 +119,10 @@ public:
 	DECLARE_SCHEMA_CLASS(CEntitySubclassVDataBase)
 };
 
-class Z_CBaseEntity : public CBaseEntity
+class CBaseEntity : public CEntityInstance
 {
 public:
-	// This is a unique case as CBaseEntity is already defined in the sdk
-	typedef Z_CBaseEntity ThisClass;
-	static constexpr const char *ThisClassName = "CBaseEntity";
-	static constexpr bool IsStruct = false;
+	DECLARE_SCHEMA_CLASS(CBaseEntity)
 
 	SCHEMA_FIELD(CBodyComponent *, m_CBodyComponent)
 	SCHEMA_FIELD(CBitVec<64>, m_isSteadyState)
@@ -138,7 +138,7 @@ public:
 	SCHEMA_FIELD(MoveCollide_t, m_MoveCollide)
 	SCHEMA_FIELD(MoveType_t, m_MoveType)
 	SCHEMA_FIELD(MoveType_t, m_nActualMoveType)
-	SCHEMA_FIELD(CHandle<Z_CBaseEntity>, m_hEffectEntity)
+	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hEffectEntity)
 	SCHEMA_FIELD(uint32, m_spawnflags)
 	SCHEMA_FIELD(uint32, m_fFlags)
 	SCHEMA_FIELD(LifeState_t, m_lifeState)
@@ -180,13 +180,12 @@ public:
 		CALL_VIRTUAL(void, offset, this, position, angles, velocity);
 	}
 
-	void SetCollisionGroup(Collision_Group_t nCollisionGroup)
+	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup)
 	{
 		if (!m_pCollision())
 			return;
 
-		m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
-		m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
+		m_pCollision->m_CollisionGroup = static_cast<uint8>(nCollisionGroup);
 		CollisionRulesChanged();
 	}
 
@@ -198,13 +197,13 @@ public:
 
 	bool IsPawn()
 	{
-		static int offset = g_GameConfig->GetOffset("IsEntityPawn");
+		static int offset = g_GameConfig->GetOffset("IsPlayerPawn");
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
 	bool IsController()
 	{
-		static int offset = g_GameConfig->GetOffset("IsEntityController");
+		static int offset = g_GameConfig->GetOffset("IsPlayerController");
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
@@ -248,9 +247,9 @@ public:
 	}
 
 	// This was needed so we can parent to nameless entities using pointers
-	void SetParent(Z_CBaseEntity *pNewParent)
+	void SetParent(CBaseEntity *pNewParent)
 	{
-		addresses::CBaseEntity_SetParent(this, pNewParent, 0, nullptr);
+		addresses::CBaseEntity_SetParent(this, pNewParent, MakeStringToken(""), nullptr);
 	}
 
 	void Remove()
@@ -263,9 +262,9 @@ public:
 		addresses::CBaseEntity_SetMoveType(this, nMoveType, m_MoveCollide);
 	}
 
-	void SetGroundEntity(Z_CBaseEntity *pGround)
+	void SetGroundEntity(CBaseEntity *pGround)
 	{
-		addresses::SetGroundEntity(this, pGround);
+		addresses::SetGroundEntity(this, pGround, nullptr);
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }
@@ -285,10 +284,39 @@ public:
 		return nullptr;
 	}
 
+	[[nodiscard]] CEnvHudHint *AsHudHint()
+	{
+		if (V_strcasecmp(GetClassname(), "env_hudhint") == 0)
+			return reinterpret_cast<CEnvHudHint *>(this);
+
+		return nullptr;
+	}
+
+	[[nodiscard]] CPointViewControl *AsPointViewControl()
+	{
+		if (V_strcasecmp(GetClassname(), "logic_relay") != 0)
+			return nullptr;
+
+		const auto tag = m_iszPrivateVScripts.IsValid() ? m_iszPrivateVScripts.String() : nullptr;
+
+		if (tag && V_strcasecmp(tag, "point_viewcontrol") == 0)
+			return reinterpret_cast<CPointViewControl *>(this);
+
+		return nullptr;
+	}
+
+	[[nodiscard]] CBaseModelEntity* AsBaseModelEntity()
+	{
+		if (const auto pCollision = this->m_pCollision())
+			return reinterpret_cast<CBaseModelEntity*>(this);
+
+		return nullptr;
+	}
+
 	/* End Custom Entities Cast */
 };
 
-class SpawnPoint : public Z_CBaseEntity
+class SpawnPoint : public CBaseEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(SpawnPoint);

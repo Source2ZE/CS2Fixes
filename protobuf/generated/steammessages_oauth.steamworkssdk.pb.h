@@ -58,7 +58,7 @@ PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
 
-class COAuthToken_ImplicitGrantNoPrompt_Request final :
+class COAuthToken_ImplicitGrantNoPrompt_Request :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:COAuthToken_ImplicitGrantNoPrompt_Request) */ {
  public:
   inline COAuthToken_ImplicitGrantNoPrompt_Request() : COAuthToken_ImplicitGrantNoPrompt_Request(nullptr) {}
@@ -223,7 +223,7 @@ class COAuthToken_ImplicitGrantNoPrompt_Request final :
 };
 // -------------------------------------------------------------------
 
-class COAuthToken_ImplicitGrantNoPrompt_Response final :
+class COAuthToken_ImplicitGrantNoPrompt_Response :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:COAuthToken_ImplicitGrantNoPrompt_Response) */ {
  public:
   inline COAuthToken_ImplicitGrantNoPrompt_Response() : COAuthToken_ImplicitGrantNoPrompt_Response(nullptr) {}

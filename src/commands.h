@@ -21,6 +21,7 @@
 #include "entity/ccsplayercontroller.h"
 #include "convar.h"
 #include "adminsystem.h"
+#include "leader.h"
 #include <vector>
 
 #define CMDFLAG_NONE	(0)
@@ -40,9 +41,12 @@ extern bool g_bEnableAdminCommands;
 
 extern bool g_bEnableHide;
 extern bool g_bEnableStopSound;
+extern bool g_bEnableNoShake;
+extern float g_flMaxShakeAmp;
+
 
 void ClientPrintAll(int destination, const char *msg, ...);
-void ClientPrint(CBasePlayerController *player, int destination, const char *msg, ...);
+void ClientPrint(CCSPlayerController *player, int destination, const char *msg, ...);
 
 // Just a wrapper class so we're able to insert the callback
 class CChatCommand
@@ -75,7 +79,7 @@ public:
 		m_pfnCallback(args, player);
 	}
 
-	static bool CheckCommandAccess(CBasePlayerController *pPlayer, uint64 flags);
+	static bool CheckCommandAccess(CCSPlayerController *pPlayer, uint64 flags);
 
 	const char* GetName() { return m_sName.c_str(); }
 	const char* GetDescription() { return m_sDescription.c_str(); }
@@ -114,7 +118,7 @@ void ParseChatCommand(const char *, CCSPlayerController *);
 	{																																					\
 		CCSPlayerController *pController = nullptr;																										\
 		if (context.GetPlayerSlot().Get() != -1)																										\
-			pController = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(context.GetPlayerSlot().Get() + 1));						\
+			pController = (CCSPlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(context.GetPlayerSlot().Get() + 1));					\
 																																						\
 		name##_chat_command(args, pController);																											\
 	}																																					\
@@ -124,3 +128,4 @@ void ParseChatCommand(const char *, CCSPlayerController *);
 	void name##_callback(const CCommand &args, CCSPlayerController *player)
 
 #define CON_COMMAND_CHAT(name, description) CON_COMMAND_CHAT_FLAGS(name, description, ADMFLAG_NONE)
+#define CON_COMMAND_CHAT_LEADER(name, description) CON_COMMAND_CHAT_FLAGS(name, description, FLAG_LEADER)

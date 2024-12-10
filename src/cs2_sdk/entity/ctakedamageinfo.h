@@ -67,6 +67,23 @@ enum TakeDamageFlags_t : uint32_t
 	DFLAG_IGNORE_ARMOR = 0x800,
 };
 
+struct AttackerInfo_t
+{
+	bool m_bNeedInit;
+	bool m_bIsPawn;
+	bool m_bIsWorld;
+	CHandle<CCSPlayerPawn> m_hAttackerPawn;
+	uint16_t m_nAttackerPlayerSlot;
+	int m_iTeamChecked;
+	int m_nTeam;
+};
+
+// No idea what this is meant to have, but OnTakeDamage_Alive expects this and we only care about pInfo
+struct CTakeDamageInfoContainer
+{
+	CTakeDamageInfo *pInfo;
+};
+
 class CTakeDamageInfo
 {
 private:
@@ -78,7 +95,7 @@ public:
 		addresses::CTakeDamageInfo_Constructor(this, nullptr, nullptr, nullptr, &vec3_origin, &vec3_origin, 0.f, 0, 0, nullptr);
 	}
 
-	CTakeDamageInfo(Z_CBaseEntity *pInflictor, Z_CBaseEntity *pAttacker, Z_CBaseEntity *pAbility, float flDamage, DamageTypes_t bitsDamageType)
+	CTakeDamageInfo(CBaseEntity *pInflictor, CBaseEntity *pAttacker, CBaseEntity *pAbility, float flDamage, DamageTypes_t bitsDamageType)
 	{
 		addresses::CTakeDamageInfo_Constructor(this, pInflictor, pAttacker, pAbility, &vec3_origin, &vec3_origin, flDamage, bitsDamageType, 0, nullptr);
 	}
@@ -87,16 +104,18 @@ public:
 	Vector m_vecDamagePosition;
 	Vector m_vecReportedPosition;
 	Vector m_vecDamageDirection;
-	CHandle<Z_CBaseEntity> m_hInflictor;
-	CHandle<Z_CBaseEntity> m_hAttacker;
-	CHandle<Z_CBaseEntity> m_hAbility;
+	CHandle<CBaseEntity> m_hInflictor;
+	CHandle<CBaseEntity> m_hAttacker;
+	CHandle<CBaseEntity> m_hAbility;
 	float m_flDamage;
+	float m_flTotalledDamage;
+	float m_flTotalledDamageAbsorbed;
 	DamageTypes_t m_bitsDamageType;
 	int32_t m_iDamageCustom;
 	uint8_t m_iAmmoType;
 
 private:
-	[[maybe_unused]] uint8_t __pad0051[0xf];
+	[[maybe_unused]] uint8_t __pad0059[0xf];
 
 public:
 	float m_flOriginalDamage;
@@ -104,16 +123,27 @@ public:
 	bool m_bShouldSpark;
 
 private:
-	[[maybe_unused]] uint8_t __pad0066[0xa];
+	[[maybe_unused]] uint8_t __pad006e[0x2];
+
+public:
+	float m_flDamageAbsorbed;
+
+private:
+	[[maybe_unused]] uint8_t __pad0074[0x8];
 
 public:
 	TakeDamageFlags_t m_nDamageFlags;
-	int32_t m_nNumObjectsPenetrated;
-	uint64_t m_hScriptInstance;
 
 private:
-	[[maybe_unused]] uint8_t __pad0080[0x14];
+	[[maybe_unused]] uint8_t __pad0084[0x4];
 
 public:
+	int32_t m_nNumObjectsPenetrated;
+	float m_flFriendlyFireDamageReductionRatio;
+	uint64_t m_hScriptInstance;
+	AttackerInfo_t m_AttackerInfo;
 	bool m_bInTakeDamageFlow;
+
+private:
+	[[maybe_unused]] uint8_t __pad00ad[0x4];
 };

@@ -490,7 +490,7 @@ inline bool GC_BannedWordType_Parse(
 }
 // ===================================================================
 
-class CGCStorePurchaseInit_LineItem final :
+class CGCStorePurchaseInit_LineItem :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CGCStorePurchaseInit_LineItem) */ {
  public:
   inline CGCStorePurchaseInit_LineItem() : CGCStorePurchaseInit_LineItem(nullptr) {}
@@ -695,7 +695,7 @@ class CGCStorePurchaseInit_LineItem final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCStorePurchaseInit final :
+class CMsgGCStorePurchaseInit :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCStorePurchaseInit) */ {
  public:
   inline CMsgGCStorePurchaseInit() : CMsgGCStorePurchaseInit(nullptr) {}
@@ -910,7 +910,7 @@ class CMsgGCStorePurchaseInit final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCStorePurchaseInitResponse final :
+class CMsgGCStorePurchaseInitResponse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCStorePurchaseInitResponse) */ {
  public:
   inline CMsgGCStorePurchaseInitResponse() : CMsgGCStorePurchaseInitResponse(nullptr) {}
@@ -1129,7 +1129,7 @@ class CMsgGCStorePurchaseInitResponse final :
 };
 // -------------------------------------------------------------------
 
-class CSOPartyInvite final :
+class CSOPartyInvite :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOPartyInvite) */ {
  public:
   inline CSOPartyInvite() : CSOPartyInvite(nullptr) {}
@@ -1324,7 +1324,7 @@ class CSOPartyInvite final :
 };
 // -------------------------------------------------------------------
 
-class CSOLobbyInvite final :
+class CSOLobbyInvite :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOLobbyInvite) */ {
  public:
   inline CSOLobbyInvite() : CSOLobbyInvite(nullptr) {}
@@ -1519,7 +1519,7 @@ class CSOLobbyInvite final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSystemBroadcast final :
+class CMsgSystemBroadcast :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSystemBroadcast) */ {
  public:
   inline CMsgSystemBroadcast() : CMsgSystemBroadcast(nullptr) {}
@@ -1684,7 +1684,7 @@ class CMsgSystemBroadcast final :
 };
 // -------------------------------------------------------------------
 
-class CMsgInviteToParty final :
+class CMsgInviteToParty :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgInviteToParty) */ {
  public:
   inline CMsgInviteToParty() : CMsgInviteToParty(nullptr) {}
@@ -1874,7 +1874,7 @@ class CMsgInviteToParty final :
 };
 // -------------------------------------------------------------------
 
-class CMsgInvitationCreated final :
+class CMsgInvitationCreated :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgInvitationCreated) */ {
  public:
   inline CMsgInvitationCreated() : CMsgInvitationCreated(nullptr) {}
@@ -2049,7 +2049,7 @@ class CMsgInvitationCreated final :
 };
 // -------------------------------------------------------------------
 
-class CMsgPartyInviteResponse final :
+class CMsgPartyInviteResponse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgPartyInviteResponse) */ {
  public:
   inline CMsgPartyInviteResponse() : CMsgPartyInviteResponse(nullptr) {}
@@ -2254,7 +2254,7 @@ class CMsgPartyInviteResponse final :
 };
 // -------------------------------------------------------------------
 
-class CMsgKickFromParty final :
+class CMsgKickFromParty :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgKickFromParty) */ {
  public:
   inline CMsgKickFromParty() : CMsgKickFromParty(nullptr) {}
@@ -2414,7 +2414,7 @@ class CMsgKickFromParty final :
 };
 // -------------------------------------------------------------------
 
-class CMsgLeaveParty final :
+class CMsgLeaveParty :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CMsgLeaveParty) */ {
  public:
   inline CMsgLeaveParty() : CMsgLeaveParty(nullptr) {}
@@ -2539,7 +2539,7 @@ class CMsgLeaveParty final :
 };
 // -------------------------------------------------------------------
 
-class CMsgServerAvailable final :
+class CMsgServerAvailable :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CMsgServerAvailable) */ {
  public:
   inline CMsgServerAvailable() : CMsgServerAvailable(nullptr) {}
@@ -2664,7 +2664,7 @@ class CMsgServerAvailable final :
 };
 // -------------------------------------------------------------------
 
-class CMsgLANServerAvailable final :
+class CMsgLANServerAvailable :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgLANServerAvailable) */ {
  public:
   inline CMsgLANServerAvailable() : CMsgLANServerAvailable(nullptr) {}
@@ -2824,7 +2824,7 @@ class CMsgLANServerAvailable final :
 };
 // -------------------------------------------------------------------
 
-class CSOEconGameAccountClient final :
+class CSOEconGameAccountClient :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOEconGameAccountClient) */ {
  public:
   inline CSOEconGameAccountClient() : CSOEconGameAccountClient(nullptr) {}
@@ -3044,7 +3044,7 @@ class CSOEconGameAccountClient final :
 };
 // -------------------------------------------------------------------
 
-class CSOItemCriteriaCondition final :
+class CSOItemCriteriaCondition :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOItemCriteriaCondition) */ {
  public:
   inline CSOItemCriteriaCondition() : CSOItemCriteriaCondition(nullptr) {}
@@ -3274,7 +3274,7 @@ class CSOItemCriteriaCondition final :
 };
 // -------------------------------------------------------------------
 
-class CSOItemCriteria final :
+class CSOItemCriteria :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOItemCriteria) */ {
  public:
   inline CSOItemCriteria() : CSOItemCriteria(nullptr) {}
@@ -3589,7 +3589,7 @@ class CSOItemCriteria final :
 };
 // -------------------------------------------------------------------
 
-class CSOItemRecipe final :
+class CSOItemRecipe :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOItemRecipe) */ {
  public:
   inline CSOItemRecipe() : CSOItemRecipe(nullptr) {}
@@ -4088,7 +4088,7 @@ class CSOItemRecipe final :
 };
 // -------------------------------------------------------------------
 
-class CMsgDevNewItemRequest final :
+class CMsgDevNewItemRequest :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgDevNewItemRequest) */ {
  public:
   inline CMsgDevNewItemRequest() : CMsgDevNewItemRequest(nullptr) {}
@@ -4268,7 +4268,7 @@ class CMsgDevNewItemRequest final :
 };
 // -------------------------------------------------------------------
 
-class CMsgIncrementKillCountAttribute final :
+class CMsgIncrementKillCountAttribute :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgIncrementKillCountAttribute) */ {
  public:
   inline CMsgIncrementKillCountAttribute() : CMsgIncrementKillCountAttribute(nullptr) {}
@@ -4488,7 +4488,7 @@ class CMsgIncrementKillCountAttribute final :
 };
 // -------------------------------------------------------------------
 
-class CMsgApplySticker final :
+class CMsgApplySticker :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgApplySticker) */ {
  public:
   inline CMsgApplySticker() : CMsgApplySticker(nullptr) {}
@@ -4708,7 +4708,7 @@ class CMsgApplySticker final :
 };
 // -------------------------------------------------------------------
 
-class CMsgModifyItemAttribute final :
+class CMsgModifyItemAttribute :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgModifyItemAttribute) */ {
  public:
   inline CMsgModifyItemAttribute() : CMsgModifyItemAttribute(nullptr) {}
@@ -4898,7 +4898,7 @@ class CMsgModifyItemAttribute final :
 };
 // -------------------------------------------------------------------
 
-class CMsgApplyStatTrakSwap final :
+class CMsgApplyStatTrakSwap :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgApplyStatTrakSwap) */ {
  public:
   inline CMsgApplyStatTrakSwap() : CMsgApplyStatTrakSwap(nullptr) {}
@@ -5088,7 +5088,7 @@ class CMsgApplyStatTrakSwap final :
 };
 // -------------------------------------------------------------------
 
-class CMsgApplyStrangePart final :
+class CMsgApplyStrangePart :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgApplyStrangePart) */ {
  public:
   inline CMsgApplyStrangePart() : CMsgApplyStrangePart(nullptr) {}
@@ -5263,7 +5263,7 @@ class CMsgApplyStrangePart final :
 };
 // -------------------------------------------------------------------
 
-class CMsgApplyPennantUpgrade final :
+class CMsgApplyPennantUpgrade :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgApplyPennantUpgrade) */ {
  public:
   inline CMsgApplyPennantUpgrade() : CMsgApplyPennantUpgrade(nullptr) {}
@@ -5438,7 +5438,7 @@ class CMsgApplyPennantUpgrade final :
 };
 // -------------------------------------------------------------------
 
-class CMsgApplyEggEssence final :
+class CMsgApplyEggEssence :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgApplyEggEssence) */ {
  public:
   inline CMsgApplyEggEssence() : CMsgApplyEggEssence(nullptr) {}
@@ -5613,7 +5613,7 @@ class CMsgApplyEggEssence final :
 };
 // -------------------------------------------------------------------
 
-class CSOEconItemAttribute final :
+class CSOEconItemAttribute :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOEconItemAttribute) */ {
  public:
   inline CSOEconItemAttribute() : CSOEconItemAttribute(nullptr) {}
@@ -5808,7 +5808,7 @@ class CSOEconItemAttribute final :
 };
 // -------------------------------------------------------------------
 
-class CSOEconItemEquipped final :
+class CSOEconItemEquipped :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOEconItemEquipped) */ {
  public:
   inline CSOEconItemEquipped() : CSOEconItemEquipped(nullptr) {}
@@ -5983,7 +5983,7 @@ class CSOEconItemEquipped final :
 };
 // -------------------------------------------------------------------
 
-class CSOEconItem final :
+class CSOEconItem :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOEconItem) */ {
  public:
   inline CSOEconItem() : CSOEconItem(nullptr) {}
@@ -6423,7 +6423,7 @@ class CSOEconItem final :
 };
 // -------------------------------------------------------------------
 
-class CMsgAdjustItemEquippedState final :
+class CMsgAdjustItemEquippedState :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgAdjustItemEquippedState) */ {
  public:
   inline CMsgAdjustItemEquippedState() : CMsgAdjustItemEquippedState(nullptr) {}
@@ -6628,7 +6628,7 @@ class CMsgAdjustItemEquippedState final :
 };
 // -------------------------------------------------------------------
 
-class CMsgAdjustItemEquippedStateMulti final :
+class CMsgAdjustItemEquippedStateMulti :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgAdjustItemEquippedStateMulti) */ {
  public:
   inline CMsgAdjustItemEquippedStateMulti() : CMsgAdjustItemEquippedStateMulti(nullptr) {}
@@ -6844,7 +6844,7 @@ class CMsgAdjustItemEquippedStateMulti final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSortItems final :
+class CMsgSortItems :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSortItems) */ {
  public:
   inline CMsgSortItems() : CMsgSortItems(nullptr) {}
@@ -7004,7 +7004,7 @@ class CMsgSortItems final :
 };
 // -------------------------------------------------------------------
 
-class CSOEconClaimCode final :
+class CSOEconClaimCode :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOEconClaimCode) */ {
  public:
   inline CSOEconClaimCode() : CSOEconClaimCode(nullptr) {}
@@ -7214,7 +7214,7 @@ class CSOEconClaimCode final :
 };
 // -------------------------------------------------------------------
 
-class CMsgStoreGetUserData final :
+class CMsgStoreGetUserData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgStoreGetUserData) */ {
  public:
   inline CMsgStoreGetUserData() : CMsgStoreGetUserData(nullptr) {}
@@ -7389,7 +7389,7 @@ class CMsgStoreGetUserData final :
 };
 // -------------------------------------------------------------------
 
-class CMsgStoreGetUserDataResponse final :
+class CMsgStoreGetUserDataResponse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgStoreGetUserDataResponse) */ {
  public:
   inline CMsgStoreGetUserDataResponse() : CMsgStoreGetUserDataResponse(nullptr) {}
@@ -7619,7 +7619,7 @@ class CMsgStoreGetUserDataResponse final :
 };
 // -------------------------------------------------------------------
 
-class CMsgUpdateItemSchema final :
+class CMsgUpdateItemSchema :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgUpdateItemSchema) */ {
  public:
   inline CMsgUpdateItemSchema() : CMsgUpdateItemSchema(nullptr) {}
@@ -7819,7 +7819,7 @@ class CMsgUpdateItemSchema final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCError final :
+class CMsgGCError :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCError) */ {
  public:
   inline CMsgGCError() : CMsgGCError(nullptr) {}
@@ -7984,7 +7984,7 @@ class CMsgGCError final :
 };
 // -------------------------------------------------------------------
 
-class CMsgRequestInventoryRefresh final :
+class CMsgRequestInventoryRefresh :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CMsgRequestInventoryRefresh) */ {
  public:
   inline CMsgRequestInventoryRefresh() : CMsgRequestInventoryRefresh(nullptr) {}
@@ -8109,7 +8109,7 @@ class CMsgRequestInventoryRefresh final :
 };
 // -------------------------------------------------------------------
 
-class CMsgConVarValue final :
+class CMsgConVarValue :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgConVarValue) */ {
  public:
   inline CMsgConVarValue() : CMsgConVarValue(nullptr) {}
@@ -8294,7 +8294,7 @@ class CMsgConVarValue final :
 };
 // -------------------------------------------------------------------
 
-class CMsgReplicateConVars final :
+class CMsgReplicateConVars :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgReplicateConVars) */ {
  public:
   inline CMsgReplicateConVars() : CMsgReplicateConVars(nullptr) {}
@@ -8458,7 +8458,7 @@ class CMsgReplicateConVars final :
 };
 // -------------------------------------------------------------------
 
-class CMsgUseItem final :
+class CMsgUseItem :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgUseItem) */ {
  public:
   inline CMsgUseItem() : CMsgUseItem(nullptr) {}
@@ -8687,7 +8687,7 @@ class CMsgUseItem final :
 };
 // -------------------------------------------------------------------
 
-class CMsgReplayUploadedToYouTube final :
+class CMsgReplayUploadedToYouTube :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgReplayUploadedToYouTube) */ {
  public:
   inline CMsgReplayUploadedToYouTube() : CMsgReplayUploadedToYouTube(nullptr) {}
@@ -8887,7 +8887,7 @@ class CMsgReplayUploadedToYouTube final :
 };
 // -------------------------------------------------------------------
 
-class CMsgConsumableExhausted final :
+class CMsgConsumableExhausted :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgConsumableExhausted) */ {
  public:
   inline CMsgConsumableExhausted() : CMsgConsumableExhausted(nullptr) {}
@@ -9047,7 +9047,7 @@ class CMsgConsumableExhausted final :
 };
 // -------------------------------------------------------------------
 
-class CMsgItemAcknowledged__DEPRECATED final :
+class CMsgItemAcknowledged__DEPRECATED :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgItemAcknowledged__DEPRECATED) */ {
  public:
   inline CMsgItemAcknowledged__DEPRECATED() : CMsgItemAcknowledged__DEPRECATED(nullptr) {}
@@ -9297,7 +9297,7 @@ class CMsgItemAcknowledged__DEPRECATED final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSetItemPositions_ItemPosition final :
+class CMsgSetItemPositions_ItemPosition :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSetItemPositions.ItemPosition) */ {
  public:
   inline CMsgSetItemPositions_ItemPosition() : CMsgSetItemPositions_ItemPosition(nullptr) {}
@@ -9487,7 +9487,7 @@ class CMsgSetItemPositions_ItemPosition final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSetItemPositions final :
+class CMsgSetItemPositions :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSetItemPositions) */ {
  public:
   inline CMsgSetItemPositions() : CMsgSetItemPositions(nullptr) {}
@@ -9653,7 +9653,7 @@ class CMsgSetItemPositions final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCReportAbuse final :
+class CMsgGCReportAbuse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCReportAbuse) */ {
  public:
   inline CMsgGCReportAbuse() : CMsgGCReportAbuse(nullptr) {}
@@ -9908,7 +9908,7 @@ class CMsgGCReportAbuse final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCReportAbuseResponse final :
+class CMsgGCReportAbuseResponse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCReportAbuseResponse) */ {
  public:
   inline CMsgGCReportAbuseResponse() : CMsgGCReportAbuseResponse(nullptr) {}
@@ -10103,7 +10103,7 @@ class CMsgGCReportAbuseResponse final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCNameItemNotification final :
+class CMsgGCNameItemNotification :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCNameItemNotification) */ {
  public:
   inline CMsgGCNameItemNotification() : CMsgGCNameItemNotification(nullptr) {}
@@ -10298,7 +10298,7 @@ class CMsgGCNameItemNotification final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCClientDisplayNotification final :
+class CMsgGCClientDisplayNotification :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCClientDisplayNotification) */ {
  public:
   inline CMsgGCClientDisplayNotification() : CMsgGCClientDisplayNotification(nullptr) {}
@@ -10535,7 +10535,7 @@ class CMsgGCClientDisplayNotification final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCShowItemsPickedUp final :
+class CMsgGCShowItemsPickedUp :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCShowItemsPickedUp) */ {
  public:
   inline CMsgGCShowItemsPickedUp() : CMsgGCShowItemsPickedUp(nullptr) {}
@@ -10695,7 +10695,7 @@ class CMsgGCShowItemsPickedUp final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCIncrementKillCountResponse final :
+class CMsgGCIncrementKillCountResponse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCIncrementKillCountResponse) */ {
  public:
   inline CMsgGCIncrementKillCountResponse() : CMsgGCIncrementKillCountResponse(nullptr) {}
@@ -10900,7 +10900,7 @@ class CMsgGCIncrementKillCountResponse final :
 };
 // -------------------------------------------------------------------
 
-class CSOEconItemDropRateBonus final :
+class CSOEconItemDropRateBonus :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOEconItemDropRateBonus) */ {
  public:
   inline CSOEconItemDropRateBonus() : CSOEconItemDropRateBonus(nullptr) {}
@@ -11135,7 +11135,7 @@ class CSOEconItemDropRateBonus final :
 };
 // -------------------------------------------------------------------
 
-class CSOEconItemLeagueViewPass final :
+class CSOEconItemLeagueViewPass :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOEconItemLeagueViewPass) */ {
  public:
   inline CSOEconItemLeagueViewPass() : CSOEconItemLeagueViewPass(nullptr) {}
@@ -11340,7 +11340,7 @@ class CSOEconItemLeagueViewPass final :
 };
 // -------------------------------------------------------------------
 
-class CSOEconItemEventTicket final :
+class CSOEconItemEventTicket :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOEconItemEventTicket) */ {
  public:
   inline CSOEconItemEventTicket() : CSOEconItemEventTicket(nullptr) {}
@@ -11530,7 +11530,7 @@ class CSOEconItemEventTicket final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCItemPreviewItemBoughtNotification final :
+class CMsgGCItemPreviewItemBoughtNotification :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCItemPreviewItemBoughtNotification) */ {
  public:
   inline CMsgGCItemPreviewItemBoughtNotification() : CMsgGCItemPreviewItemBoughtNotification(nullptr) {}
@@ -11690,7 +11690,7 @@ class CMsgGCItemPreviewItemBoughtNotification final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCStorePurchaseCancel final :
+class CMsgGCStorePurchaseCancel :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCStorePurchaseCancel) */ {
  public:
   inline CMsgGCStorePurchaseCancel() : CMsgGCStorePurchaseCancel(nullptr) {}
@@ -11850,7 +11850,7 @@ class CMsgGCStorePurchaseCancel final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCStorePurchaseCancelResponse final :
+class CMsgGCStorePurchaseCancelResponse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCStorePurchaseCancelResponse) */ {
  public:
   inline CMsgGCStorePurchaseCancelResponse() : CMsgGCStorePurchaseCancelResponse(nullptr) {}
@@ -12010,7 +12010,7 @@ class CMsgGCStorePurchaseCancelResponse final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCStorePurchaseFinalize final :
+class CMsgGCStorePurchaseFinalize :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCStorePurchaseFinalize) */ {
  public:
   inline CMsgGCStorePurchaseFinalize() : CMsgGCStorePurchaseFinalize(nullptr) {}
@@ -12170,7 +12170,7 @@ class CMsgGCStorePurchaseFinalize final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCStorePurchaseFinalizeResponse final :
+class CMsgGCStorePurchaseFinalizeResponse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCStorePurchaseFinalizeResponse) */ {
  public:
   inline CMsgGCStorePurchaseFinalizeResponse() : CMsgGCStorePurchaseFinalizeResponse(nullptr) {}
@@ -12354,7 +12354,7 @@ class CMsgGCStorePurchaseFinalizeResponse final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCBannedWordListRequest final :
+class CMsgGCBannedWordListRequest :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCBannedWordListRequest) */ {
  public:
   inline CMsgGCBannedWordListRequest() : CMsgGCBannedWordListRequest(nullptr) {}
@@ -12529,7 +12529,7 @@ class CMsgGCBannedWordListRequest final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCRequestAnnouncements final :
+class CMsgGCRequestAnnouncements :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CMsgGCRequestAnnouncements) */ {
  public:
   inline CMsgGCRequestAnnouncements() : CMsgGCRequestAnnouncements(nullptr) {}
@@ -12654,7 +12654,7 @@ class CMsgGCRequestAnnouncements final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCRequestAnnouncementsResponse final :
+class CMsgGCRequestAnnouncementsResponse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCRequestAnnouncementsResponse) */ {
  public:
   inline CMsgGCRequestAnnouncementsResponse() : CMsgGCRequestAnnouncementsResponse(nullptr) {}
@@ -12879,7 +12879,7 @@ class CMsgGCRequestAnnouncementsResponse final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCBannedWord final :
+class CMsgGCBannedWord :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCBannedWord) */ {
  public:
   inline CMsgGCBannedWord() : CMsgGCBannedWord(nullptr) {}
@@ -13074,7 +13074,7 @@ class CMsgGCBannedWord final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCBannedWordListResponse final :
+class CMsgGCBannedWordListResponse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCBannedWordListResponse) */ {
  public:
   inline CMsgGCBannedWordListResponse() : CMsgGCBannedWordListResponse(nullptr) {}
@@ -13254,7 +13254,7 @@ class CMsgGCBannedWordListResponse final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCToGCBannedWordListBroadcast final :
+class CMsgGCToGCBannedWordListBroadcast :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCToGCBannedWordListBroadcast) */ {
  public:
   inline CMsgGCToGCBannedWordListBroadcast() : CMsgGCToGCBannedWordListBroadcast(nullptr) {}
@@ -13419,7 +13419,7 @@ class CMsgGCToGCBannedWordListBroadcast final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCToGCBannedWordListUpdated final :
+class CMsgGCToGCBannedWordListUpdated :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCToGCBannedWordListUpdated) */ {
  public:
   inline CMsgGCToGCBannedWordListUpdated() : CMsgGCToGCBannedWordListUpdated(nullptr) {}
@@ -13579,7 +13579,7 @@ class CMsgGCToGCBannedWordListUpdated final :
 };
 // -------------------------------------------------------------------
 
-class CSOEconDefaultEquippedDefinitionInstanceClient final :
+class CSOEconDefaultEquippedDefinitionInstanceClient :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOEconDefaultEquippedDefinitionInstanceClient) */ {
  public:
   inline CSOEconDefaultEquippedDefinitionInstanceClient() : CSOEconDefaultEquippedDefinitionInstanceClient(nullptr) {}
@@ -13784,7 +13784,7 @@ class CSOEconDefaultEquippedDefinitionInstanceClient final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCToGCDirtySDOCache final :
+class CMsgGCToGCDirtySDOCache :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCToGCDirtySDOCache) */ {
  public:
   inline CMsgGCToGCDirtySDOCache() : CMsgGCToGCDirtySDOCache(nullptr) {}
@@ -13959,7 +13959,7 @@ class CMsgGCToGCDirtySDOCache final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCToGCDirtyMultipleSDOCache final :
+class CMsgGCToGCDirtyMultipleSDOCache :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCToGCDirtyMultipleSDOCache) */ {
  public:
   inline CMsgGCToGCDirtyMultipleSDOCache() : CMsgGCToGCDirtyMultipleSDOCache(nullptr) {}
@@ -14143,7 +14143,7 @@ class CMsgGCToGCDirtyMultipleSDOCache final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCCollectItem final :
+class CMsgGCCollectItem :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCCollectItem) */ {
  public:
   inline CMsgGCCollectItem() : CMsgGCCollectItem(nullptr) {}
@@ -14318,7 +14318,7 @@ class CMsgGCCollectItem final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSDONoMemcached final :
+class CMsgSDONoMemcached :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CMsgSDONoMemcached) */ {
  public:
   inline CMsgSDONoMemcached() : CMsgSDONoMemcached(nullptr) {}
@@ -14443,7 +14443,7 @@ class CMsgSDONoMemcached final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCToGCUpdateSQLKeyValue final :
+class CMsgGCToGCUpdateSQLKeyValue :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCToGCUpdateSQLKeyValue) */ {
  public:
   inline CMsgGCToGCUpdateSQLKeyValue() : CMsgGCToGCUpdateSQLKeyValue(nullptr) {}
@@ -14608,7 +14608,7 @@ class CMsgGCToGCUpdateSQLKeyValue final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCToGCIsTrustedServer final :
+class CMsgGCToGCIsTrustedServer :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCToGCIsTrustedServer) */ {
  public:
   inline CMsgGCToGCIsTrustedServer() : CMsgGCToGCIsTrustedServer(nullptr) {}
@@ -14768,7 +14768,7 @@ class CMsgGCToGCIsTrustedServer final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCToGCIsTrustedServerResponse final :
+class CMsgGCToGCIsTrustedServerResponse :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCToGCIsTrustedServerResponse) */ {
  public:
   inline CMsgGCToGCIsTrustedServerResponse() : CMsgGCToGCIsTrustedServerResponse(nullptr) {}
@@ -14928,7 +14928,7 @@ class CMsgGCToGCIsTrustedServerResponse final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCToGCBroadcastConsoleCommand final :
+class CMsgGCToGCBroadcastConsoleCommand :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCToGCBroadcastConsoleCommand) */ {
  public:
   inline CMsgGCToGCBroadcastConsoleCommand() : CMsgGCToGCBroadcastConsoleCommand(nullptr) {}
@@ -15093,7 +15093,7 @@ class CMsgGCToGCBroadcastConsoleCommand final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCServerVersionUpdated final :
+class CMsgGCServerVersionUpdated :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCServerVersionUpdated) */ {
  public:
   inline CMsgGCServerVersionUpdated() : CMsgGCServerVersionUpdated(nullptr) {}
@@ -15253,7 +15253,7 @@ class CMsgGCServerVersionUpdated final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCClientVersionUpdated final :
+class CMsgGCClientVersionUpdated :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCClientVersionUpdated) */ {
  public:
   inline CMsgGCClientVersionUpdated() : CMsgGCClientVersionUpdated(nullptr) {}
@@ -15413,7 +15413,7 @@ class CMsgGCClientVersionUpdated final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCToGCWebAPIAccountChanged final :
+class CMsgGCToGCWebAPIAccountChanged :
     public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CMsgGCToGCWebAPIAccountChanged) */ {
  public:
   inline CMsgGCToGCWebAPIAccountChanged() : CMsgGCToGCWebAPIAccountChanged(nullptr) {}
@@ -15538,7 +15538,7 @@ class CMsgGCToGCWebAPIAccountChanged final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGCToGCRequestPassportItemGrant final :
+class CMsgGCToGCRequestPassportItemGrant :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGCToGCRequestPassportItemGrant) */ {
  public:
   inline CMsgGCToGCRequestPassportItemGrant() : CMsgGCToGCRequestPassportItemGrant(nullptr) {}
@@ -15728,7 +15728,7 @@ class CMsgGCToGCRequestPassportItemGrant final :
 };
 // -------------------------------------------------------------------
 
-class CMsgGameServerInfo final :
+class CMsgGameServerInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgGameServerInfo) */ {
  public:
   inline CMsgGameServerInfo() : CMsgGameServerInfo(nullptr) {}
@@ -16180,7 +16180,7 @@ class CMsgGameServerInfo final :
 };
 // -------------------------------------------------------------------
 
-class CSOEconEquipSlot final :
+class CSOEconEquipSlot :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSOEconEquipSlot) */ {
  public:
   inline CSOEconEquipSlot() : CSOEconEquipSlot(nullptr) {}
@@ -16400,7 +16400,7 @@ class CSOEconEquipSlot final :
 };
 // -------------------------------------------------------------------
 
-class CMsgAdjustEquipSlot final :
+class CMsgAdjustEquipSlot :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgAdjustEquipSlot) */ {
  public:
   inline CMsgAdjustEquipSlot() : CMsgAdjustEquipSlot(nullptr) {}
@@ -16590,7 +16590,7 @@ class CMsgAdjustEquipSlot final :
 };
 // -------------------------------------------------------------------
 
-class CMsgAdjustEquipSlots final :
+class CMsgAdjustEquipSlots :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgAdjustEquipSlots) */ {
  public:
   inline CMsgAdjustEquipSlots() : CMsgAdjustEquipSlots(nullptr) {}

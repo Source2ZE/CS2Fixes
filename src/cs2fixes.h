@@ -26,14 +26,17 @@
 #include "networksystem/inetworkserializer.h"
 #include <iserver.h>
 
-class CTakeDamageInfo;
+struct CTakeDamageInfoContainer;
+class CCSPlayer_MovementServices;
+class CServerSideClient;
+struct TouchLinked_t;
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
 {
 public:
 	bool Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late);
 	void Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
-		INetworkSerializable* pEvent, const void* pData, unsigned long nSize, NetChannelBufType_t bufType);
+		INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType);
 	bool Unload(char *error, size_t maxlen);
 	bool Pause(char *error, size_t maxlen);
 	bool Unpause(char *error, size_t maxlen);
@@ -57,13 +60,24 @@ public: //hooks
 	bool Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason );
 	void Hook_ClientCommand( CPlayerSlot nSlot, const CCommand &_cmd );
 	void Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount, CBitVec<16384> &unionTransmitEdicts,
-							const Entity2Networkable_t **pNetworkables, const uint16 *pEntityIndicies, int nEntities);
+							const Entity2Networkable_t **pNetworkables, const uint16 *pEntityIndicies, int nEntities, bool bEnablePVSBits);
 	void Hook_DispatchConCommand(ConCommandHandle cmd, const CCommandContext& ctx, const CCommand& args);
 	void Hook_CGamePlayerEquipUse(class InputData_t*);
 	void Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
 	void Hook_ApplyGameSettings(KeyValues* pKV);
 	void Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList);
-	void Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, void *a3);
+	void Hook_GoToIntermission(bool bAbortedMatch);
+	bool Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer *pInfoContainer);
+	void Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool unknown);
+#ifdef PLATFORM_WINDOWS
+	Vector* Hook_GetEyePosition(Vector*);
+	QAngle* Hook_GetEyeAngles(QAngle*);
+#else
+	Vector Hook_GetEyePosition();
+	QAngle Hook_GetEyeAngles();
+#endif
+	void Hook_CheckMovingGround(double frametime);
+	int Hook_LoadEventsFromFile(const char *filename, bool bSearchAll);
 
 public:
 	const char *GetAuthor();

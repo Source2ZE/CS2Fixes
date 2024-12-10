@@ -35,6 +35,8 @@ for task in MMSPlugin.binaries:
 
   if task.target.arch == 'x86_64':
     builder.AddCopy(task.binary, bin64_folder)
+    if cxx.target.platform == 'windows' and task.debug:
+      builder.AddCopy(task.debug, bin64_folder)
   else:
     builder.AddCopy(task.binary, bin_folder)
 

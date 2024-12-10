@@ -23,18 +23,24 @@
 #include "datamap.h"
 #include "string_t.h"
 #include "variant.h"
+#include "../addresses.h"
 
 class CEntityInstance;
-class Z_CBaseEntity;
+class CBaseEntity;
 class CBasePlayerController;
 class IEntityFindFilter;
 
-Z_CBaseEntity *UTIL_FindPickerEntity(CBasePlayerController *pPlayer);
-Z_CBaseEntity *UTIL_FindEntityByClassname(CEntityInstance *pStart, const char *name);
-Z_CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
+CBaseEntity *UTIL_FindPickerEntity(CBasePlayerController *pPlayer);
+CBaseEntity *UTIL_FindEntityByClassname(CEntityInstance *pStart, const char *name);
+CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
 									CEntityInstance *pSearchingEntity = nullptr, CEntityInstance *pActivator = nullptr,
 									CEntityInstance *pCaller = nullptr, IEntityFindFilter *pFilter = nullptr);
-Z_CBaseEntity* CreateEntityByName(const char* className);
+
+template <typename T = CBaseEntity>
+T* CreateEntityByName(const char* className)
+{
+	return reinterpret_cast<T*>(addresses::CreateEntityByName(className, -1));
+}
 
 // Add an entity IO event to the event queue, just like a map would
 // The queue is processed after all entities are simulated every frame

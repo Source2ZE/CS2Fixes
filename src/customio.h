@@ -21,7 +21,7 @@
 
 class CEntityIdentity;
 class CEntityInstance;
-class Z_CBaseEntity;
+class CBaseEntity;
 class CCSPlayerPawn;
 enum DamageTypes_t : unsigned int;
 
@@ -32,7 +32,7 @@ bool CustomIO_HandleInput(CEntityInstance* pEntityInstance,
 
 bool IgnitePawn(CCSPlayerPawn *pEntity,
                 float flDuration,
-                Z_CBaseEntity *pInflictor = nullptr,
-                Z_CBaseEntity *pAttacker = nullptr,
-                Z_CBaseEntity *pAbility = nullptr,
+                CBaseEntity *pInflictor = nullptr,
+                CBaseEntity *pAttacker = nullptr,
+                CBaseEntity *pAbility = nullptr,
                 DamageTypes_t nDamageType = DamageTypes_t(8)); // DMG_BURN

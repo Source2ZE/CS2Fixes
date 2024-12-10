@@ -162,7 +162,7 @@ inline bool ESteamNetworkingSocketsCipher_Parse(
 }
 // ===================================================================
 
-class CMsgSteamDatagramSessionCryptInfo final :
+class CMsgSteamDatagramSessionCryptInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramSessionCryptInfo) */ {
  public:
   inline CMsgSteamDatagramSessionCryptInfo() : CMsgSteamDatagramSessionCryptInfo(nullptr) {}
@@ -421,7 +421,7 @@ class CMsgSteamDatagramSessionCryptInfo final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramSessionCryptInfoSigned final :
+class CMsgSteamDatagramSessionCryptInfoSigned :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramSessionCryptInfoSigned) */ {
  public:
   inline CMsgSteamDatagramSessionCryptInfoSigned() : CMsgSteamDatagramSessionCryptInfoSigned(nullptr) {}
@@ -606,7 +606,7 @@ class CMsgSteamDatagramSessionCryptInfoSigned final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramDiagnostic final :
+class CMsgSteamDatagramDiagnostic :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramDiagnostic) */ {
  public:
   inline CMsgSteamDatagramDiagnostic() : CMsgSteamDatagramDiagnostic(nullptr) {}
@@ -786,7 +786,7 @@ class CMsgSteamDatagramDiagnostic final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramLinkInstantaneousStats final :
+class CMsgSteamDatagramLinkInstantaneousStats :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramLinkInstantaneousStats) */ {
  public:
   inline CMsgSteamDatagramLinkInstantaneousStats() : CMsgSteamDatagramLinkInstantaneousStats(nullptr) {}
@@ -1051,7 +1051,7 @@ class CMsgSteamDatagramLinkInstantaneousStats final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramLinkLifetimeStats final :
+class CMsgSteamDatagramLinkLifetimeStats :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramLinkLifetimeStats) */ {
  public:
   inline CMsgSteamDatagramLinkLifetimeStats() : CMsgSteamDatagramLinkLifetimeStats(nullptr) {}
@@ -1226,34 +1226,6 @@ class CMsgSteamDatagramLinkLifetimeStats final :
     kJitterHistogram5FieldNumber = 64,
     kJitterHistogram10FieldNumber = 65,
     kJitterHistogram20FieldNumber = 66,
-    kTxspeedMaxFieldNumber = 67,
-    kTxspeedHistogram16FieldNumber = 68,
-    kTxspeedHistogram32FieldNumber = 69,
-    kTxspeedHistogram64FieldNumber = 70,
-    kTxspeedHistogram128FieldNumber = 71,
-    kTxspeedHistogram256FieldNumber = 72,
-    kTxspeedHistogram512FieldNumber = 73,
-    kTxspeedHistogram1024FieldNumber = 74,
-    kTxspeedHistogramMaxFieldNumber = 75,
-    kTxspeedNtile5ThFieldNumber = 76,
-    kTxspeedNtile50ThFieldNumber = 77,
-    kTxspeedNtile75ThFieldNumber = 78,
-    kTxspeedNtile95ThFieldNumber = 79,
-    kTxspeedNtile98ThFieldNumber = 80,
-    kRxspeedMaxFieldNumber = 81,
-    kRxspeedHistogram16FieldNumber = 82,
-    kRxspeedHistogram32FieldNumber = 83,
-    kRxspeedHistogram64FieldNumber = 84,
-    kRxspeedHistogram128FieldNumber = 85,
-    kRxspeedHistogram256FieldNumber = 86,
-    kRxspeedHistogram512FieldNumber = 87,
-    kRxspeedHistogram1024FieldNumber = 88,
-    kRxspeedHistogramMaxFieldNumber = 89,
-    kRxspeedNtile5ThFieldNumber = 90,
-    kRxspeedNtile50ThFieldNumber = 91,
-    kRxspeedNtile75ThFieldNumber = 92,
-    kRxspeedNtile95ThFieldNumber = 93,
-    kRxspeedNtile98ThFieldNumber = 94,
   };
   // repeated uint64 multipath_packets_recv_sequenced = 12;
   int multipath_packets_recv_sequenced_size() const;
@@ -1884,370 +1856,6 @@ class CMsgSteamDatagramLinkLifetimeStats final :
   void _internal_set_jitter_histogram_20(uint32_t value);
   public:
 
-  // optional uint32 txspeed_max = 67;
-  bool has_txspeed_max() const;
-  private:
-  bool _internal_has_txspeed_max() const;
-  public:
-  void clear_txspeed_max();
-  uint32_t txspeed_max() const;
-  void set_txspeed_max(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_max() const;
-  void _internal_set_txspeed_max(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_histogram_16 = 68;
-  bool has_txspeed_histogram_16() const;
-  private:
-  bool _internal_has_txspeed_histogram_16() const;
-  public:
-  void clear_txspeed_histogram_16();
-  uint32_t txspeed_histogram_16() const;
-  void set_txspeed_histogram_16(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_histogram_16() const;
-  void _internal_set_txspeed_histogram_16(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_histogram_32 = 69;
-  bool has_txspeed_histogram_32() const;
-  private:
-  bool _internal_has_txspeed_histogram_32() const;
-  public:
-  void clear_txspeed_histogram_32();
-  uint32_t txspeed_histogram_32() const;
-  void set_txspeed_histogram_32(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_histogram_32() const;
-  void _internal_set_txspeed_histogram_32(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_histogram_64 = 70;
-  bool has_txspeed_histogram_64() const;
-  private:
-  bool _internal_has_txspeed_histogram_64() const;
-  public:
-  void clear_txspeed_histogram_64();
-  uint32_t txspeed_histogram_64() const;
-  void set_txspeed_histogram_64(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_histogram_64() const;
-  void _internal_set_txspeed_histogram_64(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_histogram_128 = 71;
-  bool has_txspeed_histogram_128() const;
-  private:
-  bool _internal_has_txspeed_histogram_128() const;
-  public:
-  void clear_txspeed_histogram_128();
-  uint32_t txspeed_histogram_128() const;
-  void set_txspeed_histogram_128(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_histogram_128() const;
-  void _internal_set_txspeed_histogram_128(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_histogram_256 = 72;
-  bool has_txspeed_histogram_256() const;
-  private:
-  bool _internal_has_txspeed_histogram_256() const;
-  public:
-  void clear_txspeed_histogram_256();
-  uint32_t txspeed_histogram_256() const;
-  void set_txspeed_histogram_256(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_histogram_256() const;
-  void _internal_set_txspeed_histogram_256(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_histogram_512 = 73;
-  bool has_txspeed_histogram_512() const;
-  private:
-  bool _internal_has_txspeed_histogram_512() const;
-  public:
-  void clear_txspeed_histogram_512();
-  uint32_t txspeed_histogram_512() const;
-  void set_txspeed_histogram_512(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_histogram_512() const;
-  void _internal_set_txspeed_histogram_512(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_histogram_1024 = 74;
-  bool has_txspeed_histogram_1024() const;
-  private:
-  bool _internal_has_txspeed_histogram_1024() const;
-  public:
-  void clear_txspeed_histogram_1024();
-  uint32_t txspeed_histogram_1024() const;
-  void set_txspeed_histogram_1024(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_histogram_1024() const;
-  void _internal_set_txspeed_histogram_1024(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_histogram_max = 75;
-  bool has_txspeed_histogram_max() const;
-  private:
-  bool _internal_has_txspeed_histogram_max() const;
-  public:
-  void clear_txspeed_histogram_max();
-  uint32_t txspeed_histogram_max() const;
-  void set_txspeed_histogram_max(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_histogram_max() const;
-  void _internal_set_txspeed_histogram_max(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_ntile_5th = 76;
-  bool has_txspeed_ntile_5th() const;
-  private:
-  bool _internal_has_txspeed_ntile_5th() const;
-  public:
-  void clear_txspeed_ntile_5th();
-  uint32_t txspeed_ntile_5th() const;
-  void set_txspeed_ntile_5th(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_ntile_5th() const;
-  void _internal_set_txspeed_ntile_5th(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_ntile_50th = 77;
-  bool has_txspeed_ntile_50th() const;
-  private:
-  bool _internal_has_txspeed_ntile_50th() const;
-  public:
-  void clear_txspeed_ntile_50th();
-  uint32_t txspeed_ntile_50th() const;
-  void set_txspeed_ntile_50th(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_ntile_50th() const;
-  void _internal_set_txspeed_ntile_50th(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_ntile_75th = 78;
-  bool has_txspeed_ntile_75th() const;
-  private:
-  bool _internal_has_txspeed_ntile_75th() const;
-  public:
-  void clear_txspeed_ntile_75th();
-  uint32_t txspeed_ntile_75th() const;
-  void set_txspeed_ntile_75th(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_ntile_75th() const;
-  void _internal_set_txspeed_ntile_75th(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_ntile_95th = 79;
-  bool has_txspeed_ntile_95th() const;
-  private:
-  bool _internal_has_txspeed_ntile_95th() const;
-  public:
-  void clear_txspeed_ntile_95th();
-  uint32_t txspeed_ntile_95th() const;
-  void set_txspeed_ntile_95th(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_ntile_95th() const;
-  void _internal_set_txspeed_ntile_95th(uint32_t value);
-  public:
-
-  // optional uint32 txspeed_ntile_98th = 80;
-  bool has_txspeed_ntile_98th() const;
-  private:
-  bool _internal_has_txspeed_ntile_98th() const;
-  public:
-  void clear_txspeed_ntile_98th();
-  uint32_t txspeed_ntile_98th() const;
-  void set_txspeed_ntile_98th(uint32_t value);
-  private:
-  uint32_t _internal_txspeed_ntile_98th() const;
-  void _internal_set_txspeed_ntile_98th(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_max = 81;
-  bool has_rxspeed_max() const;
-  private:
-  bool _internal_has_rxspeed_max() const;
-  public:
-  void clear_rxspeed_max();
-  uint32_t rxspeed_max() const;
-  void set_rxspeed_max(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_max() const;
-  void _internal_set_rxspeed_max(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_histogram_16 = 82;
-  bool has_rxspeed_histogram_16() const;
-  private:
-  bool _internal_has_rxspeed_histogram_16() const;
-  public:
-  void clear_rxspeed_histogram_16();
-  uint32_t rxspeed_histogram_16() const;
-  void set_rxspeed_histogram_16(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_histogram_16() const;
-  void _internal_set_rxspeed_histogram_16(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_histogram_32 = 83;
-  bool has_rxspeed_histogram_32() const;
-  private:
-  bool _internal_has_rxspeed_histogram_32() const;
-  public:
-  void clear_rxspeed_histogram_32();
-  uint32_t rxspeed_histogram_32() const;
-  void set_rxspeed_histogram_32(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_histogram_32() const;
-  void _internal_set_rxspeed_histogram_32(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_histogram_64 = 84;
-  bool has_rxspeed_histogram_64() const;
-  private:
-  bool _internal_has_rxspeed_histogram_64() const;
-  public:
-  void clear_rxspeed_histogram_64();
-  uint32_t rxspeed_histogram_64() const;
-  void set_rxspeed_histogram_64(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_histogram_64() const;
-  void _internal_set_rxspeed_histogram_64(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_histogram_128 = 85;
-  bool has_rxspeed_histogram_128() const;
-  private:
-  bool _internal_has_rxspeed_histogram_128() const;
-  public:
-  void clear_rxspeed_histogram_128();
-  uint32_t rxspeed_histogram_128() const;
-  void set_rxspeed_histogram_128(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_histogram_128() const;
-  void _internal_set_rxspeed_histogram_128(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_histogram_256 = 86;
-  bool has_rxspeed_histogram_256() const;
-  private:
-  bool _internal_has_rxspeed_histogram_256() const;
-  public:
-  void clear_rxspeed_histogram_256();
-  uint32_t rxspeed_histogram_256() const;
-  void set_rxspeed_histogram_256(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_histogram_256() const;
-  void _internal_set_rxspeed_histogram_256(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_histogram_512 = 87;
-  bool has_rxspeed_histogram_512() const;
-  private:
-  bool _internal_has_rxspeed_histogram_512() const;
-  public:
-  void clear_rxspeed_histogram_512();
-  uint32_t rxspeed_histogram_512() const;
-  void set_rxspeed_histogram_512(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_histogram_512() const;
-  void _internal_set_rxspeed_histogram_512(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_histogram_1024 = 88;
-  bool has_rxspeed_histogram_1024() const;
-  private:
-  bool _internal_has_rxspeed_histogram_1024() const;
-  public:
-  void clear_rxspeed_histogram_1024();
-  uint32_t rxspeed_histogram_1024() const;
-  void set_rxspeed_histogram_1024(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_histogram_1024() const;
-  void _internal_set_rxspeed_histogram_1024(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_histogram_max = 89;
-  bool has_rxspeed_histogram_max() const;
-  private:
-  bool _internal_has_rxspeed_histogram_max() const;
-  public:
-  void clear_rxspeed_histogram_max();
-  uint32_t rxspeed_histogram_max() const;
-  void set_rxspeed_histogram_max(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_histogram_max() const;
-  void _internal_set_rxspeed_histogram_max(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_ntile_5th = 90;
-  bool has_rxspeed_ntile_5th() const;
-  private:
-  bool _internal_has_rxspeed_ntile_5th() const;
-  public:
-  void clear_rxspeed_ntile_5th();
-  uint32_t rxspeed_ntile_5th() const;
-  void set_rxspeed_ntile_5th(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_ntile_5th() const;
-  void _internal_set_rxspeed_ntile_5th(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_ntile_50th = 91;
-  bool has_rxspeed_ntile_50th() const;
-  private:
-  bool _internal_has_rxspeed_ntile_50th() const;
-  public:
-  void clear_rxspeed_ntile_50th();
-  uint32_t rxspeed_ntile_50th() const;
-  void set_rxspeed_ntile_50th(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_ntile_50th() const;
-  void _internal_set_rxspeed_ntile_50th(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_ntile_75th = 92;
-  bool has_rxspeed_ntile_75th() const;
-  private:
-  bool _internal_has_rxspeed_ntile_75th() const;
-  public:
-  void clear_rxspeed_ntile_75th();
-  uint32_t rxspeed_ntile_75th() const;
-  void set_rxspeed_ntile_75th(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_ntile_75th() const;
-  void _internal_set_rxspeed_ntile_75th(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_ntile_95th = 93;
-  bool has_rxspeed_ntile_95th() const;
-  private:
-  bool _internal_has_rxspeed_ntile_95th() const;
-  public:
-  void clear_rxspeed_ntile_95th();
-  uint32_t rxspeed_ntile_95th() const;
-  void set_rxspeed_ntile_95th(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_ntile_95th() const;
-  void _internal_set_rxspeed_ntile_95th(uint32_t value);
-  public:
-
-  // optional uint32 rxspeed_ntile_98th = 94;
-  bool has_rxspeed_ntile_98th() const;
-  private:
-  bool _internal_has_rxspeed_ntile_98th() const;
-  public:
-  void clear_rxspeed_ntile_98th();
-  uint32_t rxspeed_ntile_98th() const;
-  void set_rxspeed_ntile_98th(uint32_t value);
-  private:
-  uint32_t _internal_rxspeed_ntile_98th() const;
-  void _internal_set_rxspeed_ntile_98th(uint32_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:CMsgSteamDatagramLinkLifetimeStats)
  private:
   class _Internal;
@@ -2256,7 +1864,7 @@ class CMsgSteamDatagramLinkLifetimeStats final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<3> _has_bits_;
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<2> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > multipath_packets_recv_sequenced_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > multipath_packets_recv_later_;
@@ -2305,41 +1913,13 @@ class CMsgSteamDatagramLinkLifetimeStats final :
     uint32_t jitter_histogram_5_;
     uint32_t jitter_histogram_10_;
     uint32_t jitter_histogram_20_;
-    uint32_t txspeed_max_;
-    uint32_t txspeed_histogram_16_;
-    uint32_t txspeed_histogram_32_;
-    uint32_t txspeed_histogram_64_;
-    uint32_t txspeed_histogram_128_;
-    uint32_t txspeed_histogram_256_;
-    uint32_t txspeed_histogram_512_;
-    uint32_t txspeed_histogram_1024_;
-    uint32_t txspeed_histogram_max_;
-    uint32_t txspeed_ntile_5th_;
-    uint32_t txspeed_ntile_50th_;
-    uint32_t txspeed_ntile_75th_;
-    uint32_t txspeed_ntile_95th_;
-    uint32_t txspeed_ntile_98th_;
-    uint32_t rxspeed_max_;
-    uint32_t rxspeed_histogram_16_;
-    uint32_t rxspeed_histogram_32_;
-    uint32_t rxspeed_histogram_64_;
-    uint32_t rxspeed_histogram_128_;
-    uint32_t rxspeed_histogram_256_;
-    uint32_t rxspeed_histogram_512_;
-    uint32_t rxspeed_histogram_1024_;
-    uint32_t rxspeed_histogram_max_;
-    uint32_t rxspeed_ntile_5th_;
-    uint32_t rxspeed_ntile_50th_;
-    uint32_t rxspeed_ntile_75th_;
-    uint32_t rxspeed_ntile_95th_;
-    uint32_t rxspeed_ntile_98th_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_steamnetworkingsockets_5fmessages_2eproto;
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamDatagramConnectionQuality final :
+class CMsgSteamDatagramConnectionQuality :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamDatagramConnectionQuality) */ {
  public:
   inline CMsgSteamDatagramConnectionQuality() : CMsgSteamDatagramConnectionQuality(nullptr) {}
@@ -2524,7 +2104,7 @@ class CMsgSteamDatagramConnectionQuality final :
 };
 // -------------------------------------------------------------------
 
-class CMsgICECandidate final :
+class CMsgICECandidate :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgICECandidate) */ {
  public:
   inline CMsgICECandidate() : CMsgICECandidate(nullptr) {}
@@ -2689,7 +2269,7 @@ class CMsgICECandidate final :
 };
 // -------------------------------------------------------------------
 
-class CMsgICERendezvous_Auth final :
+class CMsgICERendezvous_Auth :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgICERendezvous.Auth) */ {
  public:
   inline CMsgICERendezvous_Auth() : CMsgICERendezvous_Auth(nullptr) {}
@@ -2854,7 +2434,7 @@ class CMsgICERendezvous_Auth final :
 };
 // -------------------------------------------------------------------
 
-class CMsgICERendezvous final :
+class CMsgICERendezvous :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgICERendezvous) */ {
  public:
   inline CMsgICERendezvous() : CMsgICERendezvous(nullptr) {}
@@ -3041,7 +2621,7 @@ class CMsgICERendezvous final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous_ConnectRequest final :
+class CMsgSteamNetworkingP2PRendezvous_ConnectRequest :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous.ConnectRequest) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous_ConnectRequest() : CMsgSteamNetworkingP2PRendezvous_ConnectRequest(nullptr) {}
@@ -3276,7 +2856,7 @@ class CMsgSteamNetworkingP2PRendezvous_ConnectRequest final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous_ConnectOK final :
+class CMsgSteamNetworkingP2PRendezvous_ConnectOK :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous.ConnectOK) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous_ConnectOK() : CMsgSteamNetworkingP2PRendezvous_ConnectOK(nullptr) {}
@@ -3461,7 +3041,7 @@ class CMsgSteamNetworkingP2PRendezvous_ConnectOK final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous_ConnectionClosed final :
+class CMsgSteamNetworkingP2PRendezvous_ConnectionClosed :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous.ConnectionClosed) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous_ConnectionClosed() : CMsgSteamNetworkingP2PRendezvous_ConnectionClosed(nullptr) {}
@@ -3641,7 +3221,7 @@ class CMsgSteamNetworkingP2PRendezvous_ConnectionClosed final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous_ReliableMessage final :
+class CMsgSteamNetworkingP2PRendezvous_ReliableMessage :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous.ReliableMessage) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous_ReliableMessage() : CMsgSteamNetworkingP2PRendezvous_ReliableMessage(nullptr) {}
@@ -3806,7 +3386,7 @@ class CMsgSteamNetworkingP2PRendezvous_ReliableMessage final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous_ApplicationMessage final :
+class CMsgSteamNetworkingP2PRendezvous_ApplicationMessage :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous.ApplicationMessage) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous_ApplicationMessage() : CMsgSteamNetworkingP2PRendezvous_ApplicationMessage(nullptr) {}
@@ -4016,7 +3596,7 @@ class CMsgSteamNetworkingP2PRendezvous_ApplicationMessage final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingP2PRendezvous final :
+class CMsgSteamNetworkingP2PRendezvous :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingP2PRendezvous) */ {
  public:
   inline CMsgSteamNetworkingP2PRendezvous() : CMsgSteamNetworkingP2PRendezvous(nullptr) {}
@@ -4437,7 +4017,7 @@ class CMsgSteamNetworkingP2PRendezvous final :
 };
 // -------------------------------------------------------------------
 
-class CMsgSteamNetworkingICESessionSummary final :
+class CMsgSteamNetworkingICESessionSummary :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSteamNetworkingICESessionSummary) */ {
  public:
   inline CMsgSteamNetworkingICESessionSummary() : CMsgSteamNetworkingICESessionSummary(nullptr) {}
@@ -6838,790 +6418,6 @@ inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_jitter_histogram_2
 inline void CMsgSteamDatagramLinkLifetimeStats::set_jitter_histogram_20(uint32_t value) {
   _internal_set_jitter_histogram_20(value);
   // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.jitter_histogram_20)
-}
-
-// optional uint32 txspeed_max = 67;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_max() const {
-  bool value = (_impl_._has_bits_[1] & 0x00002000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_max() const {
-  return _internal_has_txspeed_max();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_max() {
-  _impl_.txspeed_max_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00002000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_max() const {
-  return _impl_.txspeed_max_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_max() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_max)
-  return _internal_txspeed_max();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_max(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00002000u;
-  _impl_.txspeed_max_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_max(uint32_t value) {
-  _internal_set_txspeed_max(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_max)
-}
-
-// optional uint32 txspeed_histogram_16 = 68;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_histogram_16() const {
-  bool value = (_impl_._has_bits_[1] & 0x00004000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_histogram_16() const {
-  return _internal_has_txspeed_histogram_16();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_histogram_16() {
-  _impl_.txspeed_histogram_16_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00004000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_histogram_16() const {
-  return _impl_.txspeed_histogram_16_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_histogram_16() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_16)
-  return _internal_txspeed_histogram_16();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_histogram_16(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00004000u;
-  _impl_.txspeed_histogram_16_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_histogram_16(uint32_t value) {
-  _internal_set_txspeed_histogram_16(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_16)
-}
-
-// optional uint32 txspeed_histogram_32 = 69;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_histogram_32() const {
-  bool value = (_impl_._has_bits_[1] & 0x00008000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_histogram_32() const {
-  return _internal_has_txspeed_histogram_32();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_histogram_32() {
-  _impl_.txspeed_histogram_32_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00008000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_histogram_32() const {
-  return _impl_.txspeed_histogram_32_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_histogram_32() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_32)
-  return _internal_txspeed_histogram_32();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_histogram_32(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00008000u;
-  _impl_.txspeed_histogram_32_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_histogram_32(uint32_t value) {
-  _internal_set_txspeed_histogram_32(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_32)
-}
-
-// optional uint32 txspeed_histogram_64 = 70;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_histogram_64() const {
-  bool value = (_impl_._has_bits_[1] & 0x00010000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_histogram_64() const {
-  return _internal_has_txspeed_histogram_64();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_histogram_64() {
-  _impl_.txspeed_histogram_64_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00010000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_histogram_64() const {
-  return _impl_.txspeed_histogram_64_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_histogram_64() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_64)
-  return _internal_txspeed_histogram_64();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_histogram_64(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00010000u;
-  _impl_.txspeed_histogram_64_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_histogram_64(uint32_t value) {
-  _internal_set_txspeed_histogram_64(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_64)
-}
-
-// optional uint32 txspeed_histogram_128 = 71;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_histogram_128() const {
-  bool value = (_impl_._has_bits_[1] & 0x00020000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_histogram_128() const {
-  return _internal_has_txspeed_histogram_128();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_histogram_128() {
-  _impl_.txspeed_histogram_128_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00020000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_histogram_128() const {
-  return _impl_.txspeed_histogram_128_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_histogram_128() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_128)
-  return _internal_txspeed_histogram_128();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_histogram_128(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00020000u;
-  _impl_.txspeed_histogram_128_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_histogram_128(uint32_t value) {
-  _internal_set_txspeed_histogram_128(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_128)
-}
-
-// optional uint32 txspeed_histogram_256 = 72;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_histogram_256() const {
-  bool value = (_impl_._has_bits_[1] & 0x00040000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_histogram_256() const {
-  return _internal_has_txspeed_histogram_256();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_histogram_256() {
-  _impl_.txspeed_histogram_256_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00040000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_histogram_256() const {
-  return _impl_.txspeed_histogram_256_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_histogram_256() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_256)
-  return _internal_txspeed_histogram_256();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_histogram_256(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00040000u;
-  _impl_.txspeed_histogram_256_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_histogram_256(uint32_t value) {
-  _internal_set_txspeed_histogram_256(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_256)
-}
-
-// optional uint32 txspeed_histogram_512 = 73;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_histogram_512() const {
-  bool value = (_impl_._has_bits_[1] & 0x00080000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_histogram_512() const {
-  return _internal_has_txspeed_histogram_512();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_histogram_512() {
-  _impl_.txspeed_histogram_512_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00080000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_histogram_512() const {
-  return _impl_.txspeed_histogram_512_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_histogram_512() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_512)
-  return _internal_txspeed_histogram_512();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_histogram_512(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00080000u;
-  _impl_.txspeed_histogram_512_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_histogram_512(uint32_t value) {
-  _internal_set_txspeed_histogram_512(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_512)
-}
-
-// optional uint32 txspeed_histogram_1024 = 74;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_histogram_1024() const {
-  bool value = (_impl_._has_bits_[1] & 0x00100000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_histogram_1024() const {
-  return _internal_has_txspeed_histogram_1024();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_histogram_1024() {
-  _impl_.txspeed_histogram_1024_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00100000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_histogram_1024() const {
-  return _impl_.txspeed_histogram_1024_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_histogram_1024() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_1024)
-  return _internal_txspeed_histogram_1024();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_histogram_1024(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00100000u;
-  _impl_.txspeed_histogram_1024_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_histogram_1024(uint32_t value) {
-  _internal_set_txspeed_histogram_1024(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_1024)
-}
-
-// optional uint32 txspeed_histogram_max = 75;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_histogram_max() const {
-  bool value = (_impl_._has_bits_[1] & 0x00200000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_histogram_max() const {
-  return _internal_has_txspeed_histogram_max();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_histogram_max() {
-  _impl_.txspeed_histogram_max_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00200000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_histogram_max() const {
-  return _impl_.txspeed_histogram_max_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_histogram_max() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_max)
-  return _internal_txspeed_histogram_max();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_histogram_max(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00200000u;
-  _impl_.txspeed_histogram_max_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_histogram_max(uint32_t value) {
-  _internal_set_txspeed_histogram_max(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_histogram_max)
-}
-
-// optional uint32 txspeed_ntile_5th = 76;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_ntile_5th() const {
-  bool value = (_impl_._has_bits_[1] & 0x00400000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_ntile_5th() const {
-  return _internal_has_txspeed_ntile_5th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_ntile_5th() {
-  _impl_.txspeed_ntile_5th_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00400000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_ntile_5th() const {
-  return _impl_.txspeed_ntile_5th_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_ntile_5th() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_ntile_5th)
-  return _internal_txspeed_ntile_5th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_ntile_5th(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00400000u;
-  _impl_.txspeed_ntile_5th_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_ntile_5th(uint32_t value) {
-  _internal_set_txspeed_ntile_5th(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_ntile_5th)
-}
-
-// optional uint32 txspeed_ntile_50th = 77;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_ntile_50th() const {
-  bool value = (_impl_._has_bits_[1] & 0x00800000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_ntile_50th() const {
-  return _internal_has_txspeed_ntile_50th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_ntile_50th() {
-  _impl_.txspeed_ntile_50th_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00800000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_ntile_50th() const {
-  return _impl_.txspeed_ntile_50th_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_ntile_50th() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_ntile_50th)
-  return _internal_txspeed_ntile_50th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_ntile_50th(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00800000u;
-  _impl_.txspeed_ntile_50th_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_ntile_50th(uint32_t value) {
-  _internal_set_txspeed_ntile_50th(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_ntile_50th)
-}
-
-// optional uint32 txspeed_ntile_75th = 78;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_ntile_75th() const {
-  bool value = (_impl_._has_bits_[1] & 0x01000000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_ntile_75th() const {
-  return _internal_has_txspeed_ntile_75th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_ntile_75th() {
-  _impl_.txspeed_ntile_75th_ = 0u;
-  _impl_._has_bits_[1] &= ~0x01000000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_ntile_75th() const {
-  return _impl_.txspeed_ntile_75th_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_ntile_75th() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_ntile_75th)
-  return _internal_txspeed_ntile_75th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_ntile_75th(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x01000000u;
-  _impl_.txspeed_ntile_75th_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_ntile_75th(uint32_t value) {
-  _internal_set_txspeed_ntile_75th(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_ntile_75th)
-}
-
-// optional uint32 txspeed_ntile_95th = 79;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_ntile_95th() const {
-  bool value = (_impl_._has_bits_[1] & 0x02000000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_ntile_95th() const {
-  return _internal_has_txspeed_ntile_95th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_ntile_95th() {
-  _impl_.txspeed_ntile_95th_ = 0u;
-  _impl_._has_bits_[1] &= ~0x02000000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_ntile_95th() const {
-  return _impl_.txspeed_ntile_95th_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_ntile_95th() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_ntile_95th)
-  return _internal_txspeed_ntile_95th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_ntile_95th(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x02000000u;
-  _impl_.txspeed_ntile_95th_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_ntile_95th(uint32_t value) {
-  _internal_set_txspeed_ntile_95th(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_ntile_95th)
-}
-
-// optional uint32 txspeed_ntile_98th = 80;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_txspeed_ntile_98th() const {
-  bool value = (_impl_._has_bits_[1] & 0x04000000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_txspeed_ntile_98th() const {
-  return _internal_has_txspeed_ntile_98th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_txspeed_ntile_98th() {
-  _impl_.txspeed_ntile_98th_ = 0u;
-  _impl_._has_bits_[1] &= ~0x04000000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_txspeed_ntile_98th() const {
-  return _impl_.txspeed_ntile_98th_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::txspeed_ntile_98th() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.txspeed_ntile_98th)
-  return _internal_txspeed_ntile_98th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_txspeed_ntile_98th(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x04000000u;
-  _impl_.txspeed_ntile_98th_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_txspeed_ntile_98th(uint32_t value) {
-  _internal_set_txspeed_ntile_98th(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.txspeed_ntile_98th)
-}
-
-// optional uint32 rxspeed_max = 81;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_max() const {
-  bool value = (_impl_._has_bits_[1] & 0x08000000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_max() const {
-  return _internal_has_rxspeed_max();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_max() {
-  _impl_.rxspeed_max_ = 0u;
-  _impl_._has_bits_[1] &= ~0x08000000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_max() const {
-  return _impl_.rxspeed_max_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_max() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_max)
-  return _internal_rxspeed_max();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_max(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x08000000u;
-  _impl_.rxspeed_max_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_max(uint32_t value) {
-  _internal_set_rxspeed_max(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_max)
-}
-
-// optional uint32 rxspeed_histogram_16 = 82;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_histogram_16() const {
-  bool value = (_impl_._has_bits_[1] & 0x10000000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_histogram_16() const {
-  return _internal_has_rxspeed_histogram_16();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_histogram_16() {
-  _impl_.rxspeed_histogram_16_ = 0u;
-  _impl_._has_bits_[1] &= ~0x10000000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_histogram_16() const {
-  return _impl_.rxspeed_histogram_16_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_histogram_16() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_16)
-  return _internal_rxspeed_histogram_16();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_histogram_16(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x10000000u;
-  _impl_.rxspeed_histogram_16_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_histogram_16(uint32_t value) {
-  _internal_set_rxspeed_histogram_16(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_16)
-}
-
-// optional uint32 rxspeed_histogram_32 = 83;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_histogram_32() const {
-  bool value = (_impl_._has_bits_[1] & 0x20000000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_histogram_32() const {
-  return _internal_has_rxspeed_histogram_32();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_histogram_32() {
-  _impl_.rxspeed_histogram_32_ = 0u;
-  _impl_._has_bits_[1] &= ~0x20000000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_histogram_32() const {
-  return _impl_.rxspeed_histogram_32_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_histogram_32() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_32)
-  return _internal_rxspeed_histogram_32();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_histogram_32(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x20000000u;
-  _impl_.rxspeed_histogram_32_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_histogram_32(uint32_t value) {
-  _internal_set_rxspeed_histogram_32(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_32)
-}
-
-// optional uint32 rxspeed_histogram_64 = 84;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_histogram_64() const {
-  bool value = (_impl_._has_bits_[1] & 0x40000000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_histogram_64() const {
-  return _internal_has_rxspeed_histogram_64();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_histogram_64() {
-  _impl_.rxspeed_histogram_64_ = 0u;
-  _impl_._has_bits_[1] &= ~0x40000000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_histogram_64() const {
-  return _impl_.rxspeed_histogram_64_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_histogram_64() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_64)
-  return _internal_rxspeed_histogram_64();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_histogram_64(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x40000000u;
-  _impl_.rxspeed_histogram_64_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_histogram_64(uint32_t value) {
-  _internal_set_rxspeed_histogram_64(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_64)
-}
-
-// optional uint32 rxspeed_histogram_128 = 85;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_histogram_128() const {
-  bool value = (_impl_._has_bits_[1] & 0x80000000u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_histogram_128() const {
-  return _internal_has_rxspeed_histogram_128();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_histogram_128() {
-  _impl_.rxspeed_histogram_128_ = 0u;
-  _impl_._has_bits_[1] &= ~0x80000000u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_histogram_128() const {
-  return _impl_.rxspeed_histogram_128_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_histogram_128() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_128)
-  return _internal_rxspeed_histogram_128();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_histogram_128(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x80000000u;
-  _impl_.rxspeed_histogram_128_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_histogram_128(uint32_t value) {
-  _internal_set_rxspeed_histogram_128(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_128)
-}
-
-// optional uint32 rxspeed_histogram_256 = 86;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_histogram_256() const {
-  bool value = (_impl_._has_bits_[2] & 0x00000001u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_histogram_256() const {
-  return _internal_has_rxspeed_histogram_256();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_histogram_256() {
-  _impl_.rxspeed_histogram_256_ = 0u;
-  _impl_._has_bits_[2] &= ~0x00000001u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_histogram_256() const {
-  return _impl_.rxspeed_histogram_256_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_histogram_256() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_256)
-  return _internal_rxspeed_histogram_256();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_histogram_256(uint32_t value) {
-  _impl_._has_bits_[2] |= 0x00000001u;
-  _impl_.rxspeed_histogram_256_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_histogram_256(uint32_t value) {
-  _internal_set_rxspeed_histogram_256(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_256)
-}
-
-// optional uint32 rxspeed_histogram_512 = 87;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_histogram_512() const {
-  bool value = (_impl_._has_bits_[2] & 0x00000002u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_histogram_512() const {
-  return _internal_has_rxspeed_histogram_512();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_histogram_512() {
-  _impl_.rxspeed_histogram_512_ = 0u;
-  _impl_._has_bits_[2] &= ~0x00000002u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_histogram_512() const {
-  return _impl_.rxspeed_histogram_512_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_histogram_512() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_512)
-  return _internal_rxspeed_histogram_512();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_histogram_512(uint32_t value) {
-  _impl_._has_bits_[2] |= 0x00000002u;
-  _impl_.rxspeed_histogram_512_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_histogram_512(uint32_t value) {
-  _internal_set_rxspeed_histogram_512(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_512)
-}
-
-// optional uint32 rxspeed_histogram_1024 = 88;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_histogram_1024() const {
-  bool value = (_impl_._has_bits_[2] & 0x00000004u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_histogram_1024() const {
-  return _internal_has_rxspeed_histogram_1024();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_histogram_1024() {
-  _impl_.rxspeed_histogram_1024_ = 0u;
-  _impl_._has_bits_[2] &= ~0x00000004u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_histogram_1024() const {
-  return _impl_.rxspeed_histogram_1024_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_histogram_1024() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_1024)
-  return _internal_rxspeed_histogram_1024();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_histogram_1024(uint32_t value) {
-  _impl_._has_bits_[2] |= 0x00000004u;
-  _impl_.rxspeed_histogram_1024_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_histogram_1024(uint32_t value) {
-  _internal_set_rxspeed_histogram_1024(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_1024)
-}
-
-// optional uint32 rxspeed_histogram_max = 89;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_histogram_max() const {
-  bool value = (_impl_._has_bits_[2] & 0x00000008u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_histogram_max() const {
-  return _internal_has_rxspeed_histogram_max();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_histogram_max() {
-  _impl_.rxspeed_histogram_max_ = 0u;
-  _impl_._has_bits_[2] &= ~0x00000008u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_histogram_max() const {
-  return _impl_.rxspeed_histogram_max_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_histogram_max() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_max)
-  return _internal_rxspeed_histogram_max();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_histogram_max(uint32_t value) {
-  _impl_._has_bits_[2] |= 0x00000008u;
-  _impl_.rxspeed_histogram_max_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_histogram_max(uint32_t value) {
-  _internal_set_rxspeed_histogram_max(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_histogram_max)
-}
-
-// optional uint32 rxspeed_ntile_5th = 90;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_ntile_5th() const {
-  bool value = (_impl_._has_bits_[2] & 0x00000010u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_ntile_5th() const {
-  return _internal_has_rxspeed_ntile_5th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_ntile_5th() {
-  _impl_.rxspeed_ntile_5th_ = 0u;
-  _impl_._has_bits_[2] &= ~0x00000010u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_ntile_5th() const {
-  return _impl_.rxspeed_ntile_5th_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_ntile_5th() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_ntile_5th)
-  return _internal_rxspeed_ntile_5th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_ntile_5th(uint32_t value) {
-  _impl_._has_bits_[2] |= 0x00000010u;
-  _impl_.rxspeed_ntile_5th_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_ntile_5th(uint32_t value) {
-  _internal_set_rxspeed_ntile_5th(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_ntile_5th)
-}
-
-// optional uint32 rxspeed_ntile_50th = 91;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_ntile_50th() const {
-  bool value = (_impl_._has_bits_[2] & 0x00000020u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_ntile_50th() const {
-  return _internal_has_rxspeed_ntile_50th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_ntile_50th() {
-  _impl_.rxspeed_ntile_50th_ = 0u;
-  _impl_._has_bits_[2] &= ~0x00000020u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_ntile_50th() const {
-  return _impl_.rxspeed_ntile_50th_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_ntile_50th() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_ntile_50th)
-  return _internal_rxspeed_ntile_50th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_ntile_50th(uint32_t value) {
-  _impl_._has_bits_[2] |= 0x00000020u;
-  _impl_.rxspeed_ntile_50th_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_ntile_50th(uint32_t value) {
-  _internal_set_rxspeed_ntile_50th(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_ntile_50th)
-}
-
-// optional uint32 rxspeed_ntile_75th = 92;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_ntile_75th() const {
-  bool value = (_impl_._has_bits_[2] & 0x00000040u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_ntile_75th() const {
-  return _internal_has_rxspeed_ntile_75th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_ntile_75th() {
-  _impl_.rxspeed_ntile_75th_ = 0u;
-  _impl_._has_bits_[2] &= ~0x00000040u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_ntile_75th() const {
-  return _impl_.rxspeed_ntile_75th_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_ntile_75th() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_ntile_75th)
-  return _internal_rxspeed_ntile_75th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_ntile_75th(uint32_t value) {
-  _impl_._has_bits_[2] |= 0x00000040u;
-  _impl_.rxspeed_ntile_75th_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_ntile_75th(uint32_t value) {
-  _internal_set_rxspeed_ntile_75th(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_ntile_75th)
-}
-
-// optional uint32 rxspeed_ntile_95th = 93;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_ntile_95th() const {
-  bool value = (_impl_._has_bits_[2] & 0x00000080u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_ntile_95th() const {
-  return _internal_has_rxspeed_ntile_95th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_ntile_95th() {
-  _impl_.rxspeed_ntile_95th_ = 0u;
-  _impl_._has_bits_[2] &= ~0x00000080u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_ntile_95th() const {
-  return _impl_.rxspeed_ntile_95th_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_ntile_95th() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_ntile_95th)
-  return _internal_rxspeed_ntile_95th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_ntile_95th(uint32_t value) {
-  _impl_._has_bits_[2] |= 0x00000080u;
-  _impl_.rxspeed_ntile_95th_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_ntile_95th(uint32_t value) {
-  _internal_set_rxspeed_ntile_95th(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_ntile_95th)
-}
-
-// optional uint32 rxspeed_ntile_98th = 94;
-inline bool CMsgSteamDatagramLinkLifetimeStats::_internal_has_rxspeed_ntile_98th() const {
-  bool value = (_impl_._has_bits_[2] & 0x00000100u) != 0;
-  return value;
-}
-inline bool CMsgSteamDatagramLinkLifetimeStats::has_rxspeed_ntile_98th() const {
-  return _internal_has_rxspeed_ntile_98th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::clear_rxspeed_ntile_98th() {
-  _impl_.rxspeed_ntile_98th_ = 0u;
-  _impl_._has_bits_[2] &= ~0x00000100u;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::_internal_rxspeed_ntile_98th() const {
-  return _impl_.rxspeed_ntile_98th_;
-}
-inline uint32_t CMsgSteamDatagramLinkLifetimeStats::rxspeed_ntile_98th() const {
-  // @@protoc_insertion_point(field_get:CMsgSteamDatagramLinkLifetimeStats.rxspeed_ntile_98th)
-  return _internal_rxspeed_ntile_98th();
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::_internal_set_rxspeed_ntile_98th(uint32_t value) {
-  _impl_._has_bits_[2] |= 0x00000100u;
-  _impl_.rxspeed_ntile_98th_ = value;
-}
-inline void CMsgSteamDatagramLinkLifetimeStats::set_rxspeed_ntile_98th(uint32_t value) {
-  _internal_set_rxspeed_ntile_98th(value);
-  // @@protoc_insertion_point(field_set:CMsgSteamDatagramLinkLifetimeStats.rxspeed_ntile_98th)
 }
 
 // -------------------------------------------------------------------

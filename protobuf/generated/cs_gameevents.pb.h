@@ -87,7 +87,7 @@ inline bool ECsgoGameEvents_Parse(
 }
 // ===================================================================
 
-class CMsgTEPlayerAnimEvent final :
+class CMsgTEPlayerAnimEvent :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEPlayerAnimEvent) */ {
  public:
   inline CMsgTEPlayerAnimEvent() : CMsgTEPlayerAnimEvent(nullptr) {}
@@ -277,7 +277,7 @@ class CMsgTEPlayerAnimEvent final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTERadioIcon final :
+class CMsgTERadioIcon :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTERadioIcon) */ {
  public:
   inline CMsgTERadioIcon() : CMsgTERadioIcon(nullptr) {}
@@ -437,7 +437,7 @@ class CMsgTERadioIcon final :
 };
 // -------------------------------------------------------------------
 
-class CMsgTEFireBullets final :
+class CMsgTEFireBullets :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEFireBullets) */ {
  public:
   inline CMsgTEFireBullets() : CMsgTEFireBullets(nullptr) {}
@@ -577,6 +577,7 @@ class CMsgTEFireBullets final :
     kItemDefIndexFieldNumber = 11,
     kSoundDspEffectFieldNumber = 12,
     kNumBulletsRemainingFieldNumber = 14,
+    kAttackTypeFieldNumber = 15,
     kWeaponIdFieldNumber = 3,
     kPlayerFieldNumber = 6,
   };
@@ -751,6 +752,19 @@ class CMsgTEFireBullets final :
   void _internal_set_num_bullets_remaining(uint32_t value);
   public:
 
+  // optional uint32 attack_type = 15;
+  bool has_attack_type() const;
+  private:
+  bool _internal_has_attack_type() const;
+  public:
+  void clear_attack_type();
+  uint32_t attack_type() const;
+  void set_attack_type(uint32_t value);
+  private:
+  uint32_t _internal_attack_type() const;
+  void _internal_set_attack_type(uint32_t value);
+  public:
+
   // optional uint32 weapon_id = 3 [default = 16777215];
   bool has_weapon_id() const;
   private:
@@ -799,6 +813,7 @@ class CMsgTEFireBullets final :
     uint32_t item_def_index_;
     uint32_t sound_dsp_effect_;
     uint32_t num_bullets_remaining_;
+    uint32_t attack_type_;
     uint32_t weapon_id_;
     uint32_t player_;
   };
@@ -1112,7 +1127,7 @@ inline void CMsgTEFireBullets::set_allocated_angles(::CMsgQAngle* angles) {
 
 // optional uint32 weapon_id = 3 [default = 16777215];
 inline bool CMsgTEFireBullets::_internal_has_weapon_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_weapon_id() const {
@@ -1120,7 +1135,7 @@ inline bool CMsgTEFireBullets::has_weapon_id() const {
 }
 inline void CMsgTEFireBullets::clear_weapon_id() {
   _impl_.weapon_id_ = 16777215u;
-  _impl_._has_bits_[0] &= ~0x00001000u;
+  _impl_._has_bits_[0] &= ~0x00002000u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_weapon_id() const {
   return _impl_.weapon_id_;
@@ -1130,7 +1145,7 @@ inline uint32_t CMsgTEFireBullets::weapon_id() const {
   return _internal_weapon_id();
 }
 inline void CMsgTEFireBullets::_internal_set_weapon_id(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00001000u;
+  _impl_._has_bits_[0] |= 0x00002000u;
   _impl_.weapon_id_ = value;
 }
 inline void CMsgTEFireBullets::set_weapon_id(uint32_t value) {
@@ -1196,7 +1211,7 @@ inline void CMsgTEFireBullets::set_seed(uint32_t value) {
 
 // optional fixed32 player = 6 [default = 16777215];
 inline bool CMsgTEFireBullets::_internal_has_player() const {
-  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_player() const {
@@ -1204,7 +1219,7 @@ inline bool CMsgTEFireBullets::has_player() const {
 }
 inline void CMsgTEFireBullets::clear_player() {
   _impl_.player_ = 16777215u;
-  _impl_._has_bits_[0] &= ~0x00002000u;
+  _impl_._has_bits_[0] &= ~0x00004000u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_player() const {
   return _impl_.player_;
@@ -1214,7 +1229,7 @@ inline uint32_t CMsgTEFireBullets::player() const {
   return _internal_player();
 }
 inline void CMsgTEFireBullets::_internal_set_player(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_._has_bits_[0] |= 0x00004000u;
   _impl_.player_ = value;
 }
 inline void CMsgTEFireBullets::set_player(uint32_t value) {
@@ -1503,6 +1518,34 @@ inline void CMsgTEFireBullets::_internal_set_num_bullets_remaining(uint32_t valu
 inline void CMsgTEFireBullets::set_num_bullets_remaining(uint32_t value) {
   _internal_set_num_bullets_remaining(value);
   // @@protoc_insertion_point(field_set:CMsgTEFireBullets.num_bullets_remaining)
+}
+
+// optional uint32 attack_type = 15;
+inline bool CMsgTEFireBullets::_internal_has_attack_type() const {
+  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+  return value;
+}
+inline bool CMsgTEFireBullets::has_attack_type() const {
+  return _internal_has_attack_type();
+}
+inline void CMsgTEFireBullets::clear_attack_type() {
+  _impl_.attack_type_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00001000u;
+}
+inline uint32_t CMsgTEFireBullets::_internal_attack_type() const {
+  return _impl_.attack_type_;
+}
+inline uint32_t CMsgTEFireBullets::attack_type() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.attack_type)
+  return _internal_attack_type();
+}
+inline void CMsgTEFireBullets::_internal_set_attack_type(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00001000u;
+  _impl_.attack_type_ = value;
+}
+inline void CMsgTEFireBullets::set_attack_type(uint32_t value) {
+  _internal_set_attack_type(value);
+  // @@protoc_insertion_point(field_set:CMsgTEFireBullets.attack_type)
 }
 
 #ifdef __GNUC__

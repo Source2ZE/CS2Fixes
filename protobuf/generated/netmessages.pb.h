@@ -23,7 +23,6 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/arena.h>
 #include <google/protobuf/arenastring.h>
-#include <google/protobuf/generated_message_bases.h>
 #include <google/protobuf/generated_message_util.h>
 #include <google/protobuf/metadata_lite.h>
 #include <google/protobuf/generated_message_reflection.h>
@@ -59,12 +58,12 @@ extern CCLCMsg_BaselineAckDefaultTypeInternal _CCLCMsg_BaselineAck_default_insta
 class CCLCMsg_ClientInfo;
 struct CCLCMsg_ClientInfoDefaultTypeInternal;
 extern CCLCMsg_ClientInfoDefaultTypeInternal _CCLCMsg_ClientInfo_default_instance_;
-class CCLCMsg_ClientMessage;
-struct CCLCMsg_ClientMessageDefaultTypeInternal;
-extern CCLCMsg_ClientMessageDefaultTypeInternal _CCLCMsg_ClientMessage_default_instance_;
 class CCLCMsg_CmdKeyValues;
 struct CCLCMsg_CmdKeyValuesDefaultTypeInternal;
 extern CCLCMsg_CmdKeyValuesDefaultTypeInternal _CCLCMsg_CmdKeyValues_default_instance_;
+class CCLCMsg_Diagnostic;
+struct CCLCMsg_DiagnosticDefaultTypeInternal;
+extern CCLCMsg_DiagnosticDefaultTypeInternal _CCLCMsg_Diagnostic_default_instance_;
 class CCLCMsg_FileCRCCheck;
 struct CCLCMsg_FileCRCCheckDefaultTypeInternal;
 extern CCLCMsg_FileCRCCheckDefaultTypeInternal _CCLCMsg_FileCRCCheck_default_instance_;
@@ -92,9 +91,6 @@ extern CCLCMsg_RequestPauseDefaultTypeInternal _CCLCMsg_RequestPause_default_ins
 class CCLCMsg_RespondCvarValue;
 struct CCLCMsg_RespondCvarValueDefaultTypeInternal;
 extern CCLCMsg_RespondCvarValueDefaultTypeInternal _CCLCMsg_RespondCvarValue_default_instance_;
-class CCLCMsg_ServerPing;
-struct CCLCMsg_ServerPingDefaultTypeInternal;
-extern CCLCMsg_ServerPingDefaultTypeInternal _CCLCMsg_ServerPing_default_instance_;
 class CCLCMsg_ServerStatus;
 struct CCLCMsg_ServerStatusDefaultTypeInternal;
 extern CCLCMsg_ServerStatusDefaultTypeInternal _CCLCMsg_ServerStatus_default_instance_;
@@ -122,6 +118,18 @@ extern CMsgServerNetworkStats_PortDefaultTypeInternal _CMsgServerNetworkStats_Po
 class CMsgServerPeer;
 struct CMsgServerPeerDefaultTypeInternal;
 extern CMsgServerPeerDefaultTypeInternal _CMsgServerPeer_default_instance_;
+class CMsgServerUserCmd;
+struct CMsgServerUserCmdDefaultTypeInternal;
+extern CMsgServerUserCmdDefaultTypeInternal _CMsgServerUserCmd_default_instance_;
+class CMsgSource2SystemSpecs;
+struct CMsgSource2SystemSpecsDefaultTypeInternal;
+extern CMsgSource2SystemSpecsDefaultTypeInternal _CMsgSource2SystemSpecs_default_instance_;
+class CMsgSource2VProfLiteReport;
+struct CMsgSource2VProfLiteReportDefaultTypeInternal;
+extern CMsgSource2VProfLiteReportDefaultTypeInternal _CMsgSource2VProfLiteReport_default_instance_;
+class CMsgSource2VProfLiteReportItem;
+struct CMsgSource2VProfLiteReportItemDefaultTypeInternal;
+extern CMsgSource2VProfLiteReportItemDefaultTypeInternal _CMsgSource2VProfLiteReportItem_default_instance_;
 class CMsgVoiceAudio;
 struct CMsgVoiceAudioDefaultTypeInternal;
 extern CMsgVoiceAudioDefaultTypeInternal _CMsgVoiceAudio_default_instance_;
@@ -188,9 +196,9 @@ extern CSVCMsg_PacketEntitiesDefaultTypeInternal _CSVCMsg_PacketEntities_default
 class CSVCMsg_PacketEntities_alternate_baseline_t;
 struct CSVCMsg_PacketEntities_alternate_baseline_tDefaultTypeInternal;
 extern CSVCMsg_PacketEntities_alternate_baseline_tDefaultTypeInternal _CSVCMsg_PacketEntities_alternate_baseline_t_default_instance_;
-class CSVCMsg_PacketEntities_command_queue_info_t;
-struct CSVCMsg_PacketEntities_command_queue_info_tDefaultTypeInternal;
-extern CSVCMsg_PacketEntities_command_queue_info_tDefaultTypeInternal _CSVCMsg_PacketEntities_command_queue_info_t_default_instance_;
+class CSVCMsg_PacketEntities_non_transmitted_entities_t;
+struct CSVCMsg_PacketEntities_non_transmitted_entities_tDefaultTypeInternal;
+extern CSVCMsg_PacketEntities_non_transmitted_entities_tDefaultTypeInternal _CSVCMsg_PacketEntities_non_transmitted_entities_t_default_instance_;
 class CSVCMsg_PacketReliable;
 struct CSVCMsg_PacketReliableDefaultTypeInternal;
 extern CSVCMsg_PacketReliableDefaultTypeInternal _CSVCMsg_PacketReliable_default_instance_;
@@ -242,6 +250,9 @@ extern CSVCMsg_TempEntitiesDefaultTypeInternal _CSVCMsg_TempEntities_default_ins
 class CSVCMsg_UpdateStringTable;
 struct CSVCMsg_UpdateStringTableDefaultTypeInternal;
 extern CSVCMsg_UpdateStringTableDefaultTypeInternal _CSVCMsg_UpdateStringTable_default_instance_;
+class CSVCMsg_UserCommands;
+struct CSVCMsg_UserCommandsDefaultTypeInternal;
+extern CSVCMsg_UserCommandsDefaultTypeInternal _CSVCMsg_UserCommands_default_instance_;
 class CSVCMsg_UserMessage;
 struct CSVCMsg_UserMessageDefaultTypeInternal;
 extern CSVCMsg_UserMessageDefaultTypeInternal _CSVCMsg_UserMessage_default_instance_;
@@ -251,6 +262,12 @@ extern CSVCMsg_VoiceDataDefaultTypeInternal _CSVCMsg_VoiceData_default_instance_
 class CSVCMsg_VoiceInit;
 struct CSVCMsg_VoiceInitDefaultTypeInternal;
 extern CSVCMsg_VoiceInitDefaultTypeInternal _CSVCMsg_VoiceInit_default_instance_;
+class CSource2Metrics_MatchPerfSummary_Notification;
+struct CSource2Metrics_MatchPerfSummary_NotificationDefaultTypeInternal;
+extern CSource2Metrics_MatchPerfSummary_NotificationDefaultTypeInternal _CSource2Metrics_MatchPerfSummary_Notification_default_instance_;
+class CSource2Metrics_MatchPerfSummary_Notification_Client;
+struct CSource2Metrics_MatchPerfSummary_Notification_ClientDefaultTypeInternal;
+extern CSource2Metrics_MatchPerfSummary_Notification_ClientDefaultTypeInternal _CSource2Metrics_MatchPerfSummary_Notification_Client_default_instance_;
 class ProtoFlattenedSerializerField_t;
 struct ProtoFlattenedSerializerField_tDefaultTypeInternal;
 extern ProtoFlattenedSerializerField_tDefaultTypeInternal _ProtoFlattenedSerializerField_t_default_instance_;
@@ -265,8 +282,8 @@ template<> ::CBidirMsg_RebroadcastGameEvent* Arena::CreateMaybeMessage<::CBidirM
 template<> ::CBidirMsg_RebroadcastSource* Arena::CreateMaybeMessage<::CBidirMsg_RebroadcastSource>(Arena*);
 template<> ::CCLCMsg_BaselineAck* Arena::CreateMaybeMessage<::CCLCMsg_BaselineAck>(Arena*);
 template<> ::CCLCMsg_ClientInfo* Arena::CreateMaybeMessage<::CCLCMsg_ClientInfo>(Arena*);
-template<> ::CCLCMsg_ClientMessage* Arena::CreateMaybeMessage<::CCLCMsg_ClientMessage>(Arena*);
 template<> ::CCLCMsg_CmdKeyValues* Arena::CreateMaybeMessage<::CCLCMsg_CmdKeyValues>(Arena*);
+template<> ::CCLCMsg_Diagnostic* Arena::CreateMaybeMessage<::CCLCMsg_Diagnostic>(Arena*);
 template<> ::CCLCMsg_FileCRCCheck* Arena::CreateMaybeMessage<::CCLCMsg_FileCRCCheck>(Arena*);
 template<> ::CCLCMsg_HltvFixupOperatorTick* Arena::CreateMaybeMessage<::CCLCMsg_HltvFixupOperatorTick>(Arena*);
 template<> ::CCLCMsg_HltvReplay* Arena::CreateMaybeMessage<::CCLCMsg_HltvReplay>(Arena*);
@@ -276,7 +293,6 @@ template<> ::CCLCMsg_Move* Arena::CreateMaybeMessage<::CCLCMsg_Move>(Arena*);
 template<> ::CCLCMsg_RconServerDetails* Arena::CreateMaybeMessage<::CCLCMsg_RconServerDetails>(Arena*);
 template<> ::CCLCMsg_RequestPause* Arena::CreateMaybeMessage<::CCLCMsg_RequestPause>(Arena*);
 template<> ::CCLCMsg_RespondCvarValue* Arena::CreateMaybeMessage<::CCLCMsg_RespondCvarValue>(Arena*);
-template<> ::CCLCMsg_ServerPing* Arena::CreateMaybeMessage<::CCLCMsg_ServerPing>(Arena*);
 template<> ::CCLCMsg_ServerStatus* Arena::CreateMaybeMessage<::CCLCMsg_ServerStatus>(Arena*);
 template<> ::CCLCMsg_SplitPlayerConnect* Arena::CreateMaybeMessage<::CCLCMsg_SplitPlayerConnect>(Arena*);
 template<> ::CCLCMsg_SplitPlayerDisconnect* Arena::CreateMaybeMessage<::CCLCMsg_SplitPlayerDisconnect>(Arena*);
@@ -286,6 +302,10 @@ template<> ::CMsgServerNetworkStats* Arena::CreateMaybeMessage<::CMsgServerNetwo
 template<> ::CMsgServerNetworkStats_Player* Arena::CreateMaybeMessage<::CMsgServerNetworkStats_Player>(Arena*);
 template<> ::CMsgServerNetworkStats_Port* Arena::CreateMaybeMessage<::CMsgServerNetworkStats_Port>(Arena*);
 template<> ::CMsgServerPeer* Arena::CreateMaybeMessage<::CMsgServerPeer>(Arena*);
+template<> ::CMsgServerUserCmd* Arena::CreateMaybeMessage<::CMsgServerUserCmd>(Arena*);
+template<> ::CMsgSource2SystemSpecs* Arena::CreateMaybeMessage<::CMsgSource2SystemSpecs>(Arena*);
+template<> ::CMsgSource2VProfLiteReport* Arena::CreateMaybeMessage<::CMsgSource2VProfLiteReport>(Arena*);
+template<> ::CMsgSource2VProfLiteReportItem* Arena::CreateMaybeMessage<::CMsgSource2VProfLiteReportItem>(Arena*);
 template<> ::CMsgVoiceAudio* Arena::CreateMaybeMessage<::CMsgVoiceAudio>(Arena*);
 template<> ::CSVCMsg_BSPDecal* Arena::CreateMaybeMessage<::CSVCMsg_BSPDecal>(Arena*);
 template<> ::CSVCMsg_Broadcast_Command* Arena::CreateMaybeMessage<::CSVCMsg_Broadcast_Command>(Arena*);
@@ -308,7 +328,7 @@ template<> ::CSVCMsg_HltvReplay* Arena::CreateMaybeMessage<::CSVCMsg_HltvReplay>
 template<> ::CSVCMsg_Menu* Arena::CreateMaybeMessage<::CSVCMsg_Menu>(Arena*);
 template<> ::CSVCMsg_PacketEntities* Arena::CreateMaybeMessage<::CSVCMsg_PacketEntities>(Arena*);
 template<> ::CSVCMsg_PacketEntities_alternate_baseline_t* Arena::CreateMaybeMessage<::CSVCMsg_PacketEntities_alternate_baseline_t>(Arena*);
-template<> ::CSVCMsg_PacketEntities_command_queue_info_t* Arena::CreateMaybeMessage<::CSVCMsg_PacketEntities_command_queue_info_t>(Arena*);
+template<> ::CSVCMsg_PacketEntities_non_transmitted_entities_t* Arena::CreateMaybeMessage<::CSVCMsg_PacketEntities_non_transmitted_entities_t>(Arena*);
 template<> ::CSVCMsg_PacketReliable* Arena::CreateMaybeMessage<::CSVCMsg_PacketReliable>(Arena*);
 template<> ::CSVCMsg_PeerList* Arena::CreateMaybeMessage<::CSVCMsg_PeerList>(Arena*);
 template<> ::CSVCMsg_Prefetch* Arena::CreateMaybeMessage<::CSVCMsg_Prefetch>(Arena*);
@@ -326,9 +346,12 @@ template<> ::CSVCMsg_SplitScreen* Arena::CreateMaybeMessage<::CSVCMsg_SplitScree
 template<> ::CSVCMsg_StopSound* Arena::CreateMaybeMessage<::CSVCMsg_StopSound>(Arena*);
 template<> ::CSVCMsg_TempEntities* Arena::CreateMaybeMessage<::CSVCMsg_TempEntities>(Arena*);
 template<> ::CSVCMsg_UpdateStringTable* Arena::CreateMaybeMessage<::CSVCMsg_UpdateStringTable>(Arena*);
+template<> ::CSVCMsg_UserCommands* Arena::CreateMaybeMessage<::CSVCMsg_UserCommands>(Arena*);
 template<> ::CSVCMsg_UserMessage* Arena::CreateMaybeMessage<::CSVCMsg_UserMessage>(Arena*);
 template<> ::CSVCMsg_VoiceData* Arena::CreateMaybeMessage<::CSVCMsg_VoiceData>(Arena*);
 template<> ::CSVCMsg_VoiceInit* Arena::CreateMaybeMessage<::CSVCMsg_VoiceInit>(Arena*);
+template<> ::CSource2Metrics_MatchPerfSummary_Notification* Arena::CreateMaybeMessage<::CSource2Metrics_MatchPerfSummary_Notification>(Arena*);
+template<> ::CSource2Metrics_MatchPerfSummary_Notification_Client* Arena::CreateMaybeMessage<::CSource2Metrics_MatchPerfSummary_Notification_Client>(Arena*);
 template<> ::ProtoFlattenedSerializerField_t* Arena::CreateMaybeMessage<::ProtoFlattenedSerializerField_t>(Arena*);
 template<> ::ProtoFlattenedSerializerField_t_polymorphic_field_t* Arena::CreateMaybeMessage<::ProtoFlattenedSerializerField_t_polymorphic_field_t>(Arena*);
 template<> ::ProtoFlattenedSerializer_t* Arena::CreateMaybeMessage<::ProtoFlattenedSerializer_t>(Arena*);
@@ -339,23 +362,21 @@ enum CLC_Messages : int {
   clc_Move = 21,
   clc_VoiceData = 22,
   clc_BaselineAck = 23,
-  clc_ListenEvents = 24,
   clc_RespondCvarValue = 25,
   clc_FileCRCCheck = 26,
   clc_LoadingProgress = 27,
   clc_SplitPlayerConnect = 28,
-  clc_ClientMessage = 29,
   clc_SplitPlayerDisconnect = 30,
   clc_ServerStatus = 31,
-  clc_ServerPing = 32,
   clc_RequestPause = 33,
   clc_CmdKeyValues = 34,
   clc_RconServerDetails = 35,
-  clc_HltvReplay = 36
+  clc_HltvReplay = 36,
+  clc_Diagnostic = 37
 };
 bool CLC_Messages_IsValid(int value);
 constexpr CLC_Messages CLC_Messages_MIN = clc_ClientInfo;
-constexpr CLC_Messages CLC_Messages_MAX = clc_HltvReplay;
+constexpr CLC_Messages CLC_Messages_MAX = clc_Diagnostic;
 constexpr int CLC_Messages_ARRAYSIZE = CLC_Messages_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CLC_Messages_descriptor();
@@ -400,13 +421,13 @@ enum SVC_Messages : int {
   svc_FullFrameSplit = 70,
   svc_RconServerDetails = 71,
   svc_UserMessage = 72,
-  svc_HltvReplay = 73,
   svc_Broadcast_Command = 74,
-  svc_HltvFixupOperatorStatus = 75
+  svc_HltvFixupOperatorStatus = 75,
+  svc_UserCmds = 76
 };
 bool SVC_Messages_IsValid(int value);
 constexpr SVC_Messages SVC_Messages_MIN = svc_ServerInfo;
-constexpr SVC_Messages SVC_Messages_MAX = svc_HltvFixupOperatorStatus;
+constexpr SVC_Messages SVC_Messages_MAX = svc_UserCmds;
 constexpr int SVC_Messages_ARRAYSIZE = SVC_Messages_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* SVC_Messages_descriptor();
@@ -425,11 +446,12 @@ inline bool SVC_Messages_Parse(
 }
 enum VoiceDataFormat_t : int {
   VOICEDATA_FORMAT_STEAM = 0,
-  VOICEDATA_FORMAT_ENGINE = 1
+  VOICEDATA_FORMAT_ENGINE = 1,
+  VOICEDATA_FORMAT_OPUS = 2
 };
 bool VoiceDataFormat_t_IsValid(int value);
 constexpr VoiceDataFormat_t VoiceDataFormat_t_MIN = VOICEDATA_FORMAT_STEAM;
-constexpr VoiceDataFormat_t VoiceDataFormat_t_MAX = VOICEDATA_FORMAT_ENGINE;
+constexpr VoiceDataFormat_t VoiceDataFormat_t_MAX = VOICEDATA_FORMAT_OPUS;
 constexpr int VoiceDataFormat_t_ARRAYSIZE = VoiceDataFormat_t_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* VoiceDataFormat_t_descriptor();
@@ -663,7 +685,7 @@ inline bool ReplayEventType_t_Parse(
 }
 // ===================================================================
 
-class CCLCMsg_ClientInfo final :
+class CCLCMsg_ClientInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_ClientInfo) */ {
  public:
   inline CCLCMsg_ClientInfo() : CCLCMsg_ClientInfo(nullptr) {}
@@ -888,7 +910,7 @@ class CCLCMsg_ClientInfo final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_Move final :
+class CCLCMsg_Move :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_Move) */ {
  public:
   inline CCLCMsg_Move() : CCLCMsg_Move(nullptr) {}
@@ -1017,8 +1039,7 @@ class CCLCMsg_Move final :
 
   enum : int {
     kDataFieldNumber = 3,
-    kCommandNumberFieldNumber = 4,
-    kNumCommandsFieldNumber = 5,
+    kLastCommandNumberFieldNumber = 4,
   };
   // optional bytes data = 3;
   bool has_data() const;
@@ -1038,30 +1059,17 @@ class CCLCMsg_Move final :
   std::string* _internal_mutable_data();
   public:
 
-  // optional uint32 command_number = 4;
-  bool has_command_number() const;
+  // optional uint32 last_command_number = 4;
+  bool has_last_command_number() const;
   private:
-  bool _internal_has_command_number() const;
+  bool _internal_has_last_command_number() const;
   public:
-  void clear_command_number();
-  uint32_t command_number() const;
-  void set_command_number(uint32_t value);
+  void clear_last_command_number();
+  uint32_t last_command_number() const;
+  void set_last_command_number(uint32_t value);
   private:
-  uint32_t _internal_command_number() const;
-  void _internal_set_command_number(uint32_t value);
-  public:
-
-  // optional uint32 num_commands = 5;
-  bool has_num_commands() const;
-  private:
-  bool _internal_has_num_commands() const;
-  public:
-  void clear_num_commands();
-  uint32_t num_commands() const;
-  void set_num_commands(uint32_t value);
-  private:
-  uint32_t _internal_num_commands() const;
-  void _internal_set_num_commands(uint32_t value);
+  uint32_t _internal_last_command_number() const;
+  void _internal_set_last_command_number(uint32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:CCLCMsg_Move)
@@ -1075,15 +1083,14 @@ class CCLCMsg_Move final :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
-    uint32_t command_number_;
-    uint32_t num_commands_;
+    uint32_t last_command_number_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_netmessages_2eproto;
 };
 // -------------------------------------------------------------------
 
-class CMsgVoiceAudio final :
+class CMsgVoiceAudio :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgVoiceAudio) */ {
  public:
   inline CMsgVoiceAudio() : CMsgVoiceAudio(nullptr) {}
@@ -1211,13 +1218,38 @@ class CMsgVoiceAudio final :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kPacketOffsetsFieldNumber = 8,
     kVoiceDataFieldNumber = 2,
     kFormatFieldNumber = 1,
     kSequenceBytesFieldNumber = 3,
     kSectionNumberFieldNumber = 4,
     kSampleRateFieldNumber = 5,
     kUncompressedSampleOffsetFieldNumber = 6,
+    kNumPacketsFieldNumber = 7,
+    kVoiceLevelFieldNumber = 9,
   };
+  // repeated uint32 packet_offsets = 8 [packed = true];
+  int packet_offsets_size() const;
+  private:
+  int _internal_packet_offsets_size() const;
+  public:
+  void clear_packet_offsets();
+  private:
+  uint32_t _internal_packet_offsets(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      _internal_packet_offsets() const;
+  void _internal_add_packet_offsets(uint32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      _internal_mutable_packet_offsets();
+  public:
+  uint32_t packet_offsets(int index) const;
+  void set_packet_offsets(int index, uint32_t value);
+  void add_packet_offsets(uint32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      packet_offsets() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      mutable_packet_offsets();
+
   // optional bytes voice_data = 2;
   bool has_voice_data() const;
   private:
@@ -1301,6 +1333,32 @@ class CMsgVoiceAudio final :
   void _internal_set_uncompressed_sample_offset(uint32_t value);
   public:
 
+  // optional uint32 num_packets = 7;
+  bool has_num_packets() const;
+  private:
+  bool _internal_has_num_packets() const;
+  public:
+  void clear_num_packets();
+  uint32_t num_packets() const;
+  void set_num_packets(uint32_t value);
+  private:
+  uint32_t _internal_num_packets() const;
+  void _internal_set_num_packets(uint32_t value);
+  public:
+
+  // optional float voice_level = 9;
+  bool has_voice_level() const;
+  private:
+  bool _internal_has_voice_level() const;
+  public:
+  void clear_voice_level();
+  float voice_level() const;
+  void set_voice_level(float value);
+  private:
+  float _internal_voice_level() const;
+  void _internal_set_voice_level(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CMsgVoiceAudio)
  private:
   class _Internal;
@@ -1311,19 +1369,23 @@ class CMsgVoiceAudio final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t > packet_offsets_;
+    mutable std::atomic<int> _packet_offsets_cached_byte_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr voice_data_;
     int format_;
     int32_t sequence_bytes_;
     uint32_t section_number_;
     uint32_t sample_rate_;
     uint32_t uncompressed_sample_offset_;
+    uint32_t num_packets_;
+    float voice_level_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_netmessages_2eproto;
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_VoiceData final :
+class CCLCMsg_VoiceData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_VoiceData) */ {
  public:
   inline CCLCMsg_VoiceData() : CCLCMsg_VoiceData(nullptr) {}
@@ -1518,7 +1580,7 @@ class CCLCMsg_VoiceData final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_BaselineAck final :
+class CCLCMsg_BaselineAck :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_BaselineAck) */ {
  public:
   inline CCLCMsg_BaselineAck() : CCLCMsg_BaselineAck(nullptr) {}
@@ -1693,7 +1755,7 @@ class CCLCMsg_BaselineAck final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_ListenEvents final :
+class CCLCMsg_ListenEvents :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_ListenEvents) */ {
  public:
   inline CCLCMsg_ListenEvents() : CCLCMsg_ListenEvents(nullptr) {}
@@ -1861,7 +1923,7 @@ class CCLCMsg_ListenEvents final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_RespondCvarValue final :
+class CCLCMsg_RespondCvarValue :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_RespondCvarValue) */ {
  public:
   inline CCLCMsg_RespondCvarValue() : CCLCMsg_RespondCvarValue(nullptr) {}
@@ -2076,7 +2138,7 @@ class CCLCMsg_RespondCvarValue final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_FileCRCCheck final :
+class CCLCMsg_FileCRCCheck :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_FileCRCCheck) */ {
  public:
   inline CCLCMsg_FileCRCCheck() : CCLCMsg_FileCRCCheck(nullptr) {}
@@ -2306,7 +2368,7 @@ class CCLCMsg_FileCRCCheck final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_LoadingProgress final :
+class CCLCMsg_LoadingProgress :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_LoadingProgress) */ {
  public:
   inline CCLCMsg_LoadingProgress() : CCLCMsg_LoadingProgress(nullptr) {}
@@ -2466,7 +2528,7 @@ class CCLCMsg_LoadingProgress final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_SplitPlayerConnect final :
+class CCLCMsg_SplitPlayerConnect :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_SplitPlayerConnect) */ {
  public:
   inline CCLCMsg_SplitPlayerConnect() : CCLCMsg_SplitPlayerConnect(nullptr) {}
@@ -2631,187 +2693,7 @@ class CCLCMsg_SplitPlayerConnect final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_ClientMessage final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_ClientMessage) */ {
- public:
-  inline CCLCMsg_ClientMessage() : CCLCMsg_ClientMessage(nullptr) {}
-  ~CCLCMsg_ClientMessage() override;
-  explicit PROTOBUF_CONSTEXPR CCLCMsg_ClientMessage(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CCLCMsg_ClientMessage(const CCLCMsg_ClientMessage& from);
-  CCLCMsg_ClientMessage(CCLCMsg_ClientMessage&& from) noexcept
-    : CCLCMsg_ClientMessage() {
-    *this = ::std::move(from);
-  }
-
-  inline CCLCMsg_ClientMessage& operator=(const CCLCMsg_ClientMessage& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CCLCMsg_ClientMessage& operator=(CCLCMsg_ClientMessage&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CCLCMsg_ClientMessage& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CCLCMsg_ClientMessage* internal_default_instance() {
-    return reinterpret_cast<const CCLCMsg_ClientMessage*>(
-               &_CCLCMsg_ClientMessage_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    10;
-
-  friend void swap(CCLCMsg_ClientMessage& a, CCLCMsg_ClientMessage& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CCLCMsg_ClientMessage* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CCLCMsg_ClientMessage* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CCLCMsg_ClientMessage* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CCLCMsg_ClientMessage>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CCLCMsg_ClientMessage& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CCLCMsg_ClientMessage& from) {
-    CCLCMsg_ClientMessage::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CCLCMsg_ClientMessage* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CCLCMsg_ClientMessage";
-  }
-  protected:
-  explicit CCLCMsg_ClientMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kDataFieldNumber = 2,
-    kMsgTypeFieldNumber = 1,
-  };
-  // optional bytes data = 2;
-  bool has_data() const;
-  private:
-  bool _internal_has_data() const;
-  public:
-  void clear_data();
-  const std::string& data() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_data(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_data();
-  PROTOBUF_NODISCARD std::string* release_data();
-  void set_allocated_data(std::string* data);
-  private:
-  const std::string& _internal_data() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
-  std::string* _internal_mutable_data();
-  public:
-
-  // optional int32 msg_type = 1;
-  bool has_msg_type() const;
-  private:
-  bool _internal_has_msg_type() const;
-  public:
-  void clear_msg_type();
-  int32_t msg_type() const;
-  void set_msg_type(int32_t value);
-  private:
-  int32_t _internal_msg_type() const;
-  void _internal_set_msg_type(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:CCLCMsg_ClientMessage)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
-    int32_t msg_type_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_netmessages_2eproto;
-};
-// -------------------------------------------------------------------
-
-class CCLCMsg_SplitPlayerDisconnect final :
+class CCLCMsg_SplitPlayerDisconnect :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_SplitPlayerDisconnect) */ {
  public:
   inline CCLCMsg_SplitPlayerDisconnect() : CCLCMsg_SplitPlayerDisconnect(nullptr) {}
@@ -2866,7 +2748,7 @@ class CCLCMsg_SplitPlayerDisconnect final :
                &_CCLCMsg_SplitPlayerDisconnect_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    10;
 
   friend void swap(CCLCMsg_SplitPlayerDisconnect& a, CCLCMsg_SplitPlayerDisconnect& b) {
     a.Swap(&b);
@@ -2971,7 +2853,7 @@ class CCLCMsg_SplitPlayerDisconnect final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_ServerStatus final :
+class CCLCMsg_ServerStatus :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_ServerStatus) */ {
  public:
   inline CCLCMsg_ServerStatus() : CCLCMsg_ServerStatus(nullptr) {}
@@ -3026,7 +2908,7 @@ class CCLCMsg_ServerStatus final :
                &_CCLCMsg_ServerStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    11;
 
   friend void swap(CCLCMsg_ServerStatus& a, CCLCMsg_ServerStatus& b) {
     a.Swap(&b);
@@ -3131,132 +3013,7 @@ class CCLCMsg_ServerStatus final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_ServerPing final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:CCLCMsg_ServerPing) */ {
- public:
-  inline CCLCMsg_ServerPing() : CCLCMsg_ServerPing(nullptr) {}
-  explicit PROTOBUF_CONSTEXPR CCLCMsg_ServerPing(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CCLCMsg_ServerPing(const CCLCMsg_ServerPing& from);
-  CCLCMsg_ServerPing(CCLCMsg_ServerPing&& from) noexcept
-    : CCLCMsg_ServerPing() {
-    *this = ::std::move(from);
-  }
-
-  inline CCLCMsg_ServerPing& operator=(const CCLCMsg_ServerPing& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CCLCMsg_ServerPing& operator=(CCLCMsg_ServerPing&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CCLCMsg_ServerPing& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CCLCMsg_ServerPing* internal_default_instance() {
-    return reinterpret_cast<const CCLCMsg_ServerPing*>(
-               &_CCLCMsg_ServerPing_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    13;
-
-  friend void swap(CCLCMsg_ServerPing& a, CCLCMsg_ServerPing& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CCLCMsg_ServerPing* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CCLCMsg_ServerPing* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CCLCMsg_ServerPing* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CCLCMsg_ServerPing>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const CCLCMsg_ServerPing& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const CCLCMsg_ServerPing& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
-  }
-  public:
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CCLCMsg_ServerPing";
-  }
-  protected:
-  explicit CCLCMsg_ServerPing(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // @@protoc_insertion_point(class_scope:CCLCMsg_ServerPing)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-  };
-  friend struct ::TableStruct_netmessages_2eproto;
-};
-// -------------------------------------------------------------------
-
-class CCLCMsg_RequestPause final :
+class CCLCMsg_RequestPause :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_RequestPause) */ {
  public:
   inline CCLCMsg_RequestPause() : CCLCMsg_RequestPause(nullptr) {}
@@ -3311,7 +3068,7 @@ class CCLCMsg_RequestPause final :
                &_CCLCMsg_RequestPause_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    12;
 
   friend void swap(CCLCMsg_RequestPause& a, CCLCMsg_RequestPause& b) {
     a.Swap(&b);
@@ -3431,7 +3188,7 @@ class CCLCMsg_RequestPause final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_CmdKeyValues final :
+class CCLCMsg_CmdKeyValues :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_CmdKeyValues) */ {
  public:
   inline CCLCMsg_CmdKeyValues() : CCLCMsg_CmdKeyValues(nullptr) {}
@@ -3486,7 +3243,7 @@ class CCLCMsg_CmdKeyValues final :
                &_CCLCMsg_CmdKeyValues_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    13;
 
   friend void swap(CCLCMsg_CmdKeyValues& a, CCLCMsg_CmdKeyValues& b) {
     a.Swap(&b);
@@ -3596,7 +3353,7 @@ class CCLCMsg_CmdKeyValues final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_RconServerDetails final :
+class CCLCMsg_RconServerDetails :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_RconServerDetails) */ {
  public:
   inline CCLCMsg_RconServerDetails() : CCLCMsg_RconServerDetails(nullptr) {}
@@ -3651,7 +3408,7 @@ class CCLCMsg_RconServerDetails final :
                &_CCLCMsg_RconServerDetails_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    14;
 
   friend void swap(CCLCMsg_RconServerDetails& a, CCLCMsg_RconServerDetails& b) {
     a.Swap(&b);
@@ -3761,7 +3518,1494 @@ class CCLCMsg_RconServerDetails final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_ServerInfo final :
+class CMsgSource2SystemSpecs :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSource2SystemSpecs) */ {
+ public:
+  inline CMsgSource2SystemSpecs() : CMsgSource2SystemSpecs(nullptr) {}
+  ~CMsgSource2SystemSpecs() override;
+  explicit PROTOBUF_CONSTEXPR CMsgSource2SystemSpecs(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgSource2SystemSpecs(const CMsgSource2SystemSpecs& from);
+  CMsgSource2SystemSpecs(CMsgSource2SystemSpecs&& from) noexcept
+    : CMsgSource2SystemSpecs() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgSource2SystemSpecs& operator=(const CMsgSource2SystemSpecs& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgSource2SystemSpecs& operator=(CMsgSource2SystemSpecs&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgSource2SystemSpecs& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgSource2SystemSpecs* internal_default_instance() {
+    return reinterpret_cast<const CMsgSource2SystemSpecs*>(
+               &_CMsgSource2SystemSpecs_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    15;
+
+  friend void swap(CMsgSource2SystemSpecs& a, CMsgSource2SystemSpecs& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgSource2SystemSpecs* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgSource2SystemSpecs* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgSource2SystemSpecs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgSource2SystemSpecs>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgSource2SystemSpecs& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgSource2SystemSpecs& from) {
+    CMsgSource2SystemSpecs::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgSource2SystemSpecs* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgSource2SystemSpecs";
+  }
+  protected:
+  explicit CMsgSource2SystemSpecs(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kCpuIdFieldNumber = 1,
+    kCpuBrandFieldNumber = 2,
+    kGpuRendersystemDllNameFieldNumber = 41,
+    kGpuDriverNameFieldNumber = 43,
+    kCpuModelFieldNumber = 3,
+    kCpuNumPhysicalFieldNumber = 4,
+    kRamPhysicalTotalMbFieldNumber = 21,
+    kGpuVendorIdFieldNumber = 42,
+    kGpuDriverVersionHighFieldNumber = 44,
+    kGpuDriverVersionLowFieldNumber = 45,
+    kGpuDxSupportLevelFieldNumber = 46,
+    kGpuTextureMemorySizeMbFieldNumber = 47,
+  };
+  // optional string cpu_id = 1;
+  bool has_cpu_id() const;
+  private:
+  bool _internal_has_cpu_id() const;
+  public:
+  void clear_cpu_id();
+  const std::string& cpu_id() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_cpu_id(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_cpu_id();
+  PROTOBUF_NODISCARD std::string* release_cpu_id();
+  void set_allocated_cpu_id(std::string* cpu_id);
+  private:
+  const std::string& _internal_cpu_id() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_cpu_id(const std::string& value);
+  std::string* _internal_mutable_cpu_id();
+  public:
+
+  // optional string cpu_brand = 2;
+  bool has_cpu_brand() const;
+  private:
+  bool _internal_has_cpu_brand() const;
+  public:
+  void clear_cpu_brand();
+  const std::string& cpu_brand() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_cpu_brand(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_cpu_brand();
+  PROTOBUF_NODISCARD std::string* release_cpu_brand();
+  void set_allocated_cpu_brand(std::string* cpu_brand);
+  private:
+  const std::string& _internal_cpu_brand() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_cpu_brand(const std::string& value);
+  std::string* _internal_mutable_cpu_brand();
+  public:
+
+  // optional string gpu_rendersystem_dll_name = 41;
+  bool has_gpu_rendersystem_dll_name() const;
+  private:
+  bool _internal_has_gpu_rendersystem_dll_name() const;
+  public:
+  void clear_gpu_rendersystem_dll_name();
+  const std::string& gpu_rendersystem_dll_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_gpu_rendersystem_dll_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_gpu_rendersystem_dll_name();
+  PROTOBUF_NODISCARD std::string* release_gpu_rendersystem_dll_name();
+  void set_allocated_gpu_rendersystem_dll_name(std::string* gpu_rendersystem_dll_name);
+  private:
+  const std::string& _internal_gpu_rendersystem_dll_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_gpu_rendersystem_dll_name(const std::string& value);
+  std::string* _internal_mutable_gpu_rendersystem_dll_name();
+  public:
+
+  // optional string gpu_driver_name = 43;
+  bool has_gpu_driver_name() const;
+  private:
+  bool _internal_has_gpu_driver_name() const;
+  public:
+  void clear_gpu_driver_name();
+  const std::string& gpu_driver_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_gpu_driver_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_gpu_driver_name();
+  PROTOBUF_NODISCARD std::string* release_gpu_driver_name();
+  void set_allocated_gpu_driver_name(std::string* gpu_driver_name);
+  private:
+  const std::string& _internal_gpu_driver_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_gpu_driver_name(const std::string& value);
+  std::string* _internal_mutable_gpu_driver_name();
+  public:
+
+  // optional uint32 cpu_model = 3;
+  bool has_cpu_model() const;
+  private:
+  bool _internal_has_cpu_model() const;
+  public:
+  void clear_cpu_model();
+  uint32_t cpu_model() const;
+  void set_cpu_model(uint32_t value);
+  private:
+  uint32_t _internal_cpu_model() const;
+  void _internal_set_cpu_model(uint32_t value);
+  public:
+
+  // optional uint32 cpu_num_physical = 4;
+  bool has_cpu_num_physical() const;
+  private:
+  bool _internal_has_cpu_num_physical() const;
+  public:
+  void clear_cpu_num_physical();
+  uint32_t cpu_num_physical() const;
+  void set_cpu_num_physical(uint32_t value);
+  private:
+  uint32_t _internal_cpu_num_physical() const;
+  void _internal_set_cpu_num_physical(uint32_t value);
+  public:
+
+  // optional uint32 ram_physical_total_mb = 21;
+  bool has_ram_physical_total_mb() const;
+  private:
+  bool _internal_has_ram_physical_total_mb() const;
+  public:
+  void clear_ram_physical_total_mb();
+  uint32_t ram_physical_total_mb() const;
+  void set_ram_physical_total_mb(uint32_t value);
+  private:
+  uint32_t _internal_ram_physical_total_mb() const;
+  void _internal_set_ram_physical_total_mb(uint32_t value);
+  public:
+
+  // optional uint32 gpu_vendor_id = 42;
+  bool has_gpu_vendor_id() const;
+  private:
+  bool _internal_has_gpu_vendor_id() const;
+  public:
+  void clear_gpu_vendor_id();
+  uint32_t gpu_vendor_id() const;
+  void set_gpu_vendor_id(uint32_t value);
+  private:
+  uint32_t _internal_gpu_vendor_id() const;
+  void _internal_set_gpu_vendor_id(uint32_t value);
+  public:
+
+  // optional uint32 gpu_driver_version_high = 44;
+  bool has_gpu_driver_version_high() const;
+  private:
+  bool _internal_has_gpu_driver_version_high() const;
+  public:
+  void clear_gpu_driver_version_high();
+  uint32_t gpu_driver_version_high() const;
+  void set_gpu_driver_version_high(uint32_t value);
+  private:
+  uint32_t _internal_gpu_driver_version_high() const;
+  void _internal_set_gpu_driver_version_high(uint32_t value);
+  public:
+
+  // optional uint32 gpu_driver_version_low = 45;
+  bool has_gpu_driver_version_low() const;
+  private:
+  bool _internal_has_gpu_driver_version_low() const;
+  public:
+  void clear_gpu_driver_version_low();
+  uint32_t gpu_driver_version_low() const;
+  void set_gpu_driver_version_low(uint32_t value);
+  private:
+  uint32_t _internal_gpu_driver_version_low() const;
+  void _internal_set_gpu_driver_version_low(uint32_t value);
+  public:
+
+  // optional uint32 gpu_dx_support_level = 46;
+  bool has_gpu_dx_support_level() const;
+  private:
+  bool _internal_has_gpu_dx_support_level() const;
+  public:
+  void clear_gpu_dx_support_level();
+  uint32_t gpu_dx_support_level() const;
+  void set_gpu_dx_support_level(uint32_t value);
+  private:
+  uint32_t _internal_gpu_dx_support_level() const;
+  void _internal_set_gpu_dx_support_level(uint32_t value);
+  public:
+
+  // optional uint32 gpu_texture_memory_size_mb = 47;
+  bool has_gpu_texture_memory_size_mb() const;
+  private:
+  bool _internal_has_gpu_texture_memory_size_mb() const;
+  public:
+  void clear_gpu_texture_memory_size_mb();
+  uint32_t gpu_texture_memory_size_mb() const;
+  void set_gpu_texture_memory_size_mb(uint32_t value);
+  private:
+  uint32_t _internal_gpu_texture_memory_size_mb() const;
+  void _internal_set_gpu_texture_memory_size_mb(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgSource2SystemSpecs)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr cpu_id_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr cpu_brand_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr gpu_rendersystem_dll_name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr gpu_driver_name_;
+    uint32_t cpu_model_;
+    uint32_t cpu_num_physical_;
+    uint32_t ram_physical_total_mb_;
+    uint32_t gpu_vendor_id_;
+    uint32_t gpu_driver_version_high_;
+    uint32_t gpu_driver_version_low_;
+    uint32_t gpu_dx_support_level_;
+    uint32_t gpu_texture_memory_size_mb_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CMsgSource2VProfLiteReportItem :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSource2VProfLiteReportItem) */ {
+ public:
+  inline CMsgSource2VProfLiteReportItem() : CMsgSource2VProfLiteReportItem(nullptr) {}
+  ~CMsgSource2VProfLiteReportItem() override;
+  explicit PROTOBUF_CONSTEXPR CMsgSource2VProfLiteReportItem(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgSource2VProfLiteReportItem(const CMsgSource2VProfLiteReportItem& from);
+  CMsgSource2VProfLiteReportItem(CMsgSource2VProfLiteReportItem&& from) noexcept
+    : CMsgSource2VProfLiteReportItem() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgSource2VProfLiteReportItem& operator=(const CMsgSource2VProfLiteReportItem& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgSource2VProfLiteReportItem& operator=(CMsgSource2VProfLiteReportItem&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgSource2VProfLiteReportItem& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgSource2VProfLiteReportItem* internal_default_instance() {
+    return reinterpret_cast<const CMsgSource2VProfLiteReportItem*>(
+               &_CMsgSource2VProfLiteReportItem_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    16;
+
+  friend void swap(CMsgSource2VProfLiteReportItem& a, CMsgSource2VProfLiteReportItem& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgSource2VProfLiteReportItem* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgSource2VProfLiteReportItem* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgSource2VProfLiteReportItem* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgSource2VProfLiteReportItem>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgSource2VProfLiteReportItem& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgSource2VProfLiteReportItem& from) {
+    CMsgSource2VProfLiteReportItem::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgSource2VProfLiteReportItem* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgSource2VProfLiteReportItem";
+  }
+  protected:
+  explicit CMsgSource2VProfLiteReportItem(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNameFieldNumber = 1,
+    kActiveSamplesFieldNumber = 2,
+    kUsecMaxFieldNumber = 3,
+    kUsecAvgActiveFieldNumber = 11,
+    kUsecP50ActiveFieldNumber = 12,
+    kUsecP99ActiveFieldNumber = 13,
+    kUsecAvgAllFieldNumber = 21,
+    kUsecP50AllFieldNumber = 22,
+    kUsecP99AllFieldNumber = 23,
+  };
+  // optional string name = 1;
+  bool has_name() const;
+  private:
+  bool _internal_has_name() const;
+  public:
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // optional uint32 active_samples = 2;
+  bool has_active_samples() const;
+  private:
+  bool _internal_has_active_samples() const;
+  public:
+  void clear_active_samples();
+  uint32_t active_samples() const;
+  void set_active_samples(uint32_t value);
+  private:
+  uint32_t _internal_active_samples() const;
+  void _internal_set_active_samples(uint32_t value);
+  public:
+
+  // optional uint32 usec_max = 3;
+  bool has_usec_max() const;
+  private:
+  bool _internal_has_usec_max() const;
+  public:
+  void clear_usec_max();
+  uint32_t usec_max() const;
+  void set_usec_max(uint32_t value);
+  private:
+  uint32_t _internal_usec_max() const;
+  void _internal_set_usec_max(uint32_t value);
+  public:
+
+  // optional uint32 usec_avg_active = 11;
+  bool has_usec_avg_active() const;
+  private:
+  bool _internal_has_usec_avg_active() const;
+  public:
+  void clear_usec_avg_active();
+  uint32_t usec_avg_active() const;
+  void set_usec_avg_active(uint32_t value);
+  private:
+  uint32_t _internal_usec_avg_active() const;
+  void _internal_set_usec_avg_active(uint32_t value);
+  public:
+
+  // optional uint32 usec_p50_active = 12;
+  bool has_usec_p50_active() const;
+  private:
+  bool _internal_has_usec_p50_active() const;
+  public:
+  void clear_usec_p50_active();
+  uint32_t usec_p50_active() const;
+  void set_usec_p50_active(uint32_t value);
+  private:
+  uint32_t _internal_usec_p50_active() const;
+  void _internal_set_usec_p50_active(uint32_t value);
+  public:
+
+  // optional uint32 usec_p99_active = 13;
+  bool has_usec_p99_active() const;
+  private:
+  bool _internal_has_usec_p99_active() const;
+  public:
+  void clear_usec_p99_active();
+  uint32_t usec_p99_active() const;
+  void set_usec_p99_active(uint32_t value);
+  private:
+  uint32_t _internal_usec_p99_active() const;
+  void _internal_set_usec_p99_active(uint32_t value);
+  public:
+
+  // optional uint32 usec_avg_all = 21;
+  bool has_usec_avg_all() const;
+  private:
+  bool _internal_has_usec_avg_all() const;
+  public:
+  void clear_usec_avg_all();
+  uint32_t usec_avg_all() const;
+  void set_usec_avg_all(uint32_t value);
+  private:
+  uint32_t _internal_usec_avg_all() const;
+  void _internal_set_usec_avg_all(uint32_t value);
+  public:
+
+  // optional uint32 usec_p50_all = 22;
+  bool has_usec_p50_all() const;
+  private:
+  bool _internal_has_usec_p50_all() const;
+  public:
+  void clear_usec_p50_all();
+  uint32_t usec_p50_all() const;
+  void set_usec_p50_all(uint32_t value);
+  private:
+  uint32_t _internal_usec_p50_all() const;
+  void _internal_set_usec_p50_all(uint32_t value);
+  public:
+
+  // optional uint32 usec_p99_all = 23;
+  bool has_usec_p99_all() const;
+  private:
+  bool _internal_has_usec_p99_all() const;
+  public:
+  void clear_usec_p99_all();
+  uint32_t usec_p99_all() const;
+  void set_usec_p99_all(uint32_t value);
+  private:
+  uint32_t _internal_usec_p99_all() const;
+  void _internal_set_usec_p99_all(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgSource2VProfLiteReportItem)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+    uint32_t active_samples_;
+    uint32_t usec_max_;
+    uint32_t usec_avg_active_;
+    uint32_t usec_p50_active_;
+    uint32_t usec_p99_active_;
+    uint32_t usec_avg_all_;
+    uint32_t usec_p50_all_;
+    uint32_t usec_p99_all_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CMsgSource2VProfLiteReport :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSource2VProfLiteReport) */ {
+ public:
+  inline CMsgSource2VProfLiteReport() : CMsgSource2VProfLiteReport(nullptr) {}
+  ~CMsgSource2VProfLiteReport() override;
+  explicit PROTOBUF_CONSTEXPR CMsgSource2VProfLiteReport(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgSource2VProfLiteReport(const CMsgSource2VProfLiteReport& from);
+  CMsgSource2VProfLiteReport(CMsgSource2VProfLiteReport&& from) noexcept
+    : CMsgSource2VProfLiteReport() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgSource2VProfLiteReport& operator=(const CMsgSource2VProfLiteReport& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgSource2VProfLiteReport& operator=(CMsgSource2VProfLiteReport&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgSource2VProfLiteReport& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgSource2VProfLiteReport* internal_default_instance() {
+    return reinterpret_cast<const CMsgSource2VProfLiteReport*>(
+               &_CMsgSource2VProfLiteReport_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    17;
+
+  friend void swap(CMsgSource2VProfLiteReport& a, CMsgSource2VProfLiteReport& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgSource2VProfLiteReport* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgSource2VProfLiteReport* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgSource2VProfLiteReport* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgSource2VProfLiteReport>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgSource2VProfLiteReport& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgSource2VProfLiteReport& from) {
+    CMsgSource2VProfLiteReport::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgSource2VProfLiteReport* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgSource2VProfLiteReport";
+  }
+  protected:
+  explicit CMsgSource2VProfLiteReport(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kItemsFieldNumber = 2,
+    kTotalFieldNumber = 1,
+    kDiscardedFramesFieldNumber = 3,
+  };
+  // repeated .CMsgSource2VProfLiteReportItem items = 2;
+  int items_size() const;
+  private:
+  int _internal_items_size() const;
+  public:
+  void clear_items();
+  ::CMsgSource2VProfLiteReportItem* mutable_items(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2VProfLiteReportItem >*
+      mutable_items();
+  private:
+  const ::CMsgSource2VProfLiteReportItem& _internal_items(int index) const;
+  ::CMsgSource2VProfLiteReportItem* _internal_add_items();
+  public:
+  const ::CMsgSource2VProfLiteReportItem& items(int index) const;
+  ::CMsgSource2VProfLiteReportItem* add_items();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2VProfLiteReportItem >&
+      items() const;
+
+  // optional .CMsgSource2VProfLiteReportItem total = 1;
+  bool has_total() const;
+  private:
+  bool _internal_has_total() const;
+  public:
+  void clear_total();
+  const ::CMsgSource2VProfLiteReportItem& total() const;
+  PROTOBUF_NODISCARD ::CMsgSource2VProfLiteReportItem* release_total();
+  ::CMsgSource2VProfLiteReportItem* mutable_total();
+  void set_allocated_total(::CMsgSource2VProfLiteReportItem* total);
+  private:
+  const ::CMsgSource2VProfLiteReportItem& _internal_total() const;
+  ::CMsgSource2VProfLiteReportItem* _internal_mutable_total();
+  public:
+  void unsafe_arena_set_allocated_total(
+      ::CMsgSource2VProfLiteReportItem* total);
+  ::CMsgSource2VProfLiteReportItem* unsafe_arena_release_total();
+
+  // optional uint32 discarded_frames = 3;
+  bool has_discarded_frames() const;
+  private:
+  bool _internal_has_discarded_frames() const;
+  public:
+  void clear_discarded_frames();
+  uint32_t discarded_frames() const;
+  void set_discarded_frames(uint32_t value);
+  private:
+  uint32_t _internal_discarded_frames() const;
+  void _internal_set_discarded_frames(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgSource2VProfLiteReport)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2VProfLiteReportItem > items_;
+    ::CMsgSource2VProfLiteReportItem* total_;
+    uint32_t discarded_frames_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CCLCMsg_Diagnostic :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_Diagnostic) */ {
+ public:
+  inline CCLCMsg_Diagnostic() : CCLCMsg_Diagnostic(nullptr) {}
+  ~CCLCMsg_Diagnostic() override;
+  explicit PROTOBUF_CONSTEXPR CCLCMsg_Diagnostic(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CCLCMsg_Diagnostic(const CCLCMsg_Diagnostic& from);
+  CCLCMsg_Diagnostic(CCLCMsg_Diagnostic&& from) noexcept
+    : CCLCMsg_Diagnostic() {
+    *this = ::std::move(from);
+  }
+
+  inline CCLCMsg_Diagnostic& operator=(const CCLCMsg_Diagnostic& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CCLCMsg_Diagnostic& operator=(CCLCMsg_Diagnostic&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CCLCMsg_Diagnostic& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CCLCMsg_Diagnostic* internal_default_instance() {
+    return reinterpret_cast<const CCLCMsg_Diagnostic*>(
+               &_CCLCMsg_Diagnostic_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    18;
+
+  friend void swap(CCLCMsg_Diagnostic& a, CCLCMsg_Diagnostic& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CCLCMsg_Diagnostic* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CCLCMsg_Diagnostic* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CCLCMsg_Diagnostic* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CCLCMsg_Diagnostic>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CCLCMsg_Diagnostic& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CCLCMsg_Diagnostic& from) {
+    CCLCMsg_Diagnostic::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CCLCMsg_Diagnostic* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CCLCMsg_Diagnostic";
+  }
+  protected:
+  explicit CCLCMsg_Diagnostic(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSystemSpecsFieldNumber = 1,
+    kVprofReportFieldNumber = 2,
+  };
+  // optional .CMsgSource2SystemSpecs system_specs = 1;
+  bool has_system_specs() const;
+  private:
+  bool _internal_has_system_specs() const;
+  public:
+  void clear_system_specs();
+  const ::CMsgSource2SystemSpecs& system_specs() const;
+  PROTOBUF_NODISCARD ::CMsgSource2SystemSpecs* release_system_specs();
+  ::CMsgSource2SystemSpecs* mutable_system_specs();
+  void set_allocated_system_specs(::CMsgSource2SystemSpecs* system_specs);
+  private:
+  const ::CMsgSource2SystemSpecs& _internal_system_specs() const;
+  ::CMsgSource2SystemSpecs* _internal_mutable_system_specs();
+  public:
+  void unsafe_arena_set_allocated_system_specs(
+      ::CMsgSource2SystemSpecs* system_specs);
+  ::CMsgSource2SystemSpecs* unsafe_arena_release_system_specs();
+
+  // optional .CMsgSource2VProfLiteReport vprof_report = 2;
+  bool has_vprof_report() const;
+  private:
+  bool _internal_has_vprof_report() const;
+  public:
+  void clear_vprof_report();
+  const ::CMsgSource2VProfLiteReport& vprof_report() const;
+  PROTOBUF_NODISCARD ::CMsgSource2VProfLiteReport* release_vprof_report();
+  ::CMsgSource2VProfLiteReport* mutable_vprof_report();
+  void set_allocated_vprof_report(::CMsgSource2VProfLiteReport* vprof_report);
+  private:
+  const ::CMsgSource2VProfLiteReport& _internal_vprof_report() const;
+  ::CMsgSource2VProfLiteReport* _internal_mutable_vprof_report();
+  public:
+  void unsafe_arena_set_allocated_vprof_report(
+      ::CMsgSource2VProfLiteReport* vprof_report);
+  ::CMsgSource2VProfLiteReport* unsafe_arena_release_vprof_report();
+
+  // @@protoc_insertion_point(class_scope:CCLCMsg_Diagnostic)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::CMsgSource2SystemSpecs* system_specs_;
+    ::CMsgSource2VProfLiteReport* vprof_report_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSource2Metrics_MatchPerfSummary_Notification_Client :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSource2Metrics_MatchPerfSummary_Notification.Client) */ {
+ public:
+  inline CSource2Metrics_MatchPerfSummary_Notification_Client() : CSource2Metrics_MatchPerfSummary_Notification_Client(nullptr) {}
+  ~CSource2Metrics_MatchPerfSummary_Notification_Client() override;
+  explicit PROTOBUF_CONSTEXPR CSource2Metrics_MatchPerfSummary_Notification_Client(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSource2Metrics_MatchPerfSummary_Notification_Client(const CSource2Metrics_MatchPerfSummary_Notification_Client& from);
+  CSource2Metrics_MatchPerfSummary_Notification_Client(CSource2Metrics_MatchPerfSummary_Notification_Client&& from) noexcept
+    : CSource2Metrics_MatchPerfSummary_Notification_Client() {
+    *this = ::std::move(from);
+  }
+
+  inline CSource2Metrics_MatchPerfSummary_Notification_Client& operator=(const CSource2Metrics_MatchPerfSummary_Notification_Client& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSource2Metrics_MatchPerfSummary_Notification_Client& operator=(CSource2Metrics_MatchPerfSummary_Notification_Client&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSource2Metrics_MatchPerfSummary_Notification_Client& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSource2Metrics_MatchPerfSummary_Notification_Client* internal_default_instance() {
+    return reinterpret_cast<const CSource2Metrics_MatchPerfSummary_Notification_Client*>(
+               &_CSource2Metrics_MatchPerfSummary_Notification_Client_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    19;
+
+  friend void swap(CSource2Metrics_MatchPerfSummary_Notification_Client& a, CSource2Metrics_MatchPerfSummary_Notification_Client& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSource2Metrics_MatchPerfSummary_Notification_Client* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSource2Metrics_MatchPerfSummary_Notification_Client* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSource2Metrics_MatchPerfSummary_Notification_Client* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSource2Metrics_MatchPerfSummary_Notification_Client>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSource2Metrics_MatchPerfSummary_Notification_Client& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSource2Metrics_MatchPerfSummary_Notification_Client& from) {
+    CSource2Metrics_MatchPerfSummary_Notification_Client::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSource2Metrics_MatchPerfSummary_Notification_Client* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSource2Metrics_MatchPerfSummary_Notification.Client";
+  }
+  protected:
+  explicit CSource2Metrics_MatchPerfSummary_Notification_Client(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSystemSpecsFieldNumber = 1,
+    kProfileFieldNumber = 2,
+    kSteamidFieldNumber = 10,
+    kBuildIdFieldNumber = 3,
+  };
+  // optional .CMsgSource2SystemSpecs system_specs = 1;
+  bool has_system_specs() const;
+  private:
+  bool _internal_has_system_specs() const;
+  public:
+  void clear_system_specs();
+  const ::CMsgSource2SystemSpecs& system_specs() const;
+  PROTOBUF_NODISCARD ::CMsgSource2SystemSpecs* release_system_specs();
+  ::CMsgSource2SystemSpecs* mutable_system_specs();
+  void set_allocated_system_specs(::CMsgSource2SystemSpecs* system_specs);
+  private:
+  const ::CMsgSource2SystemSpecs& _internal_system_specs() const;
+  ::CMsgSource2SystemSpecs* _internal_mutable_system_specs();
+  public:
+  void unsafe_arena_set_allocated_system_specs(
+      ::CMsgSource2SystemSpecs* system_specs);
+  ::CMsgSource2SystemSpecs* unsafe_arena_release_system_specs();
+
+  // optional .CMsgSource2VProfLiteReport profile = 2;
+  bool has_profile() const;
+  private:
+  bool _internal_has_profile() const;
+  public:
+  void clear_profile();
+  const ::CMsgSource2VProfLiteReport& profile() const;
+  PROTOBUF_NODISCARD ::CMsgSource2VProfLiteReport* release_profile();
+  ::CMsgSource2VProfLiteReport* mutable_profile();
+  void set_allocated_profile(::CMsgSource2VProfLiteReport* profile);
+  private:
+  const ::CMsgSource2VProfLiteReport& _internal_profile() const;
+  ::CMsgSource2VProfLiteReport* _internal_mutable_profile();
+  public:
+  void unsafe_arena_set_allocated_profile(
+      ::CMsgSource2VProfLiteReport* profile);
+  ::CMsgSource2VProfLiteReport* unsafe_arena_release_profile();
+
+  // optional fixed64 steamid = 10;
+  bool has_steamid() const;
+  private:
+  bool _internal_has_steamid() const;
+  public:
+  void clear_steamid();
+  uint64_t steamid() const;
+  void set_steamid(uint64_t value);
+  private:
+  uint64_t _internal_steamid() const;
+  void _internal_set_steamid(uint64_t value);
+  public:
+
+  // optional uint32 build_id = 3;
+  bool has_build_id() const;
+  private:
+  bool _internal_has_build_id() const;
+  public:
+  void clear_build_id();
+  uint32_t build_id() const;
+  void set_build_id(uint32_t value);
+  private:
+  uint32_t _internal_build_id() const;
+  void _internal_set_build_id(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CSource2Metrics_MatchPerfSummary_Notification.Client)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::CMsgSource2SystemSpecs* system_specs_;
+    ::CMsgSource2VProfLiteReport* profile_;
+    uint64_t steamid_;
+    uint32_t build_id_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSource2Metrics_MatchPerfSummary_Notification :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSource2Metrics_MatchPerfSummary_Notification) */ {
+ public:
+  inline CSource2Metrics_MatchPerfSummary_Notification() : CSource2Metrics_MatchPerfSummary_Notification(nullptr) {}
+  ~CSource2Metrics_MatchPerfSummary_Notification() override;
+  explicit PROTOBUF_CONSTEXPR CSource2Metrics_MatchPerfSummary_Notification(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSource2Metrics_MatchPerfSummary_Notification(const CSource2Metrics_MatchPerfSummary_Notification& from);
+  CSource2Metrics_MatchPerfSummary_Notification(CSource2Metrics_MatchPerfSummary_Notification&& from) noexcept
+    : CSource2Metrics_MatchPerfSummary_Notification() {
+    *this = ::std::move(from);
+  }
+
+  inline CSource2Metrics_MatchPerfSummary_Notification& operator=(const CSource2Metrics_MatchPerfSummary_Notification& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSource2Metrics_MatchPerfSummary_Notification& operator=(CSource2Metrics_MatchPerfSummary_Notification&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSource2Metrics_MatchPerfSummary_Notification& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSource2Metrics_MatchPerfSummary_Notification* internal_default_instance() {
+    return reinterpret_cast<const CSource2Metrics_MatchPerfSummary_Notification*>(
+               &_CSource2Metrics_MatchPerfSummary_Notification_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    20;
+
+  friend void swap(CSource2Metrics_MatchPerfSummary_Notification& a, CSource2Metrics_MatchPerfSummary_Notification& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSource2Metrics_MatchPerfSummary_Notification* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSource2Metrics_MatchPerfSummary_Notification* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSource2Metrics_MatchPerfSummary_Notification* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSource2Metrics_MatchPerfSummary_Notification>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSource2Metrics_MatchPerfSummary_Notification& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSource2Metrics_MatchPerfSummary_Notification& from) {
+    CSource2Metrics_MatchPerfSummary_Notification::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSource2Metrics_MatchPerfSummary_Notification* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSource2Metrics_MatchPerfSummary_Notification";
+  }
+  protected:
+  explicit CSource2Metrics_MatchPerfSummary_Notification(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef CSource2Metrics_MatchPerfSummary_Notification_Client Client;
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kClientsFieldNumber = 11,
+    kGameModeFieldNumber = 2,
+    kMapFieldNumber = 20,
+    kServerProfileFieldNumber = 10,
+    kAppidFieldNumber = 1,
+    kServerBuildIdFieldNumber = 3,
+  };
+  // repeated .CSource2Metrics_MatchPerfSummary_Notification.Client clients = 11;
+  int clients_size() const;
+  private:
+  int _internal_clients_size() const;
+  public:
+  void clear_clients();
+  ::CSource2Metrics_MatchPerfSummary_Notification_Client* mutable_clients(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSource2Metrics_MatchPerfSummary_Notification_Client >*
+      mutable_clients();
+  private:
+  const ::CSource2Metrics_MatchPerfSummary_Notification_Client& _internal_clients(int index) const;
+  ::CSource2Metrics_MatchPerfSummary_Notification_Client* _internal_add_clients();
+  public:
+  const ::CSource2Metrics_MatchPerfSummary_Notification_Client& clients(int index) const;
+  ::CSource2Metrics_MatchPerfSummary_Notification_Client* add_clients();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSource2Metrics_MatchPerfSummary_Notification_Client >&
+      clients() const;
+
+  // optional string game_mode = 2;
+  bool has_game_mode() const;
+  private:
+  bool _internal_has_game_mode() const;
+  public:
+  void clear_game_mode();
+  const std::string& game_mode() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_game_mode(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_game_mode();
+  PROTOBUF_NODISCARD std::string* release_game_mode();
+  void set_allocated_game_mode(std::string* game_mode);
+  private:
+  const std::string& _internal_game_mode() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_game_mode(const std::string& value);
+  std::string* _internal_mutable_game_mode();
+  public:
+
+  // optional string map = 20;
+  bool has_map() const;
+  private:
+  bool _internal_has_map() const;
+  public:
+  void clear_map();
+  const std::string& map() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_map(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_map();
+  PROTOBUF_NODISCARD std::string* release_map();
+  void set_allocated_map(std::string* map);
+  private:
+  const std::string& _internal_map() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_map(const std::string& value);
+  std::string* _internal_mutable_map();
+  public:
+
+  // optional .CMsgSource2VProfLiteReport server_profile = 10;
+  bool has_server_profile() const;
+  private:
+  bool _internal_has_server_profile() const;
+  public:
+  void clear_server_profile();
+  const ::CMsgSource2VProfLiteReport& server_profile() const;
+  PROTOBUF_NODISCARD ::CMsgSource2VProfLiteReport* release_server_profile();
+  ::CMsgSource2VProfLiteReport* mutable_server_profile();
+  void set_allocated_server_profile(::CMsgSource2VProfLiteReport* server_profile);
+  private:
+  const ::CMsgSource2VProfLiteReport& _internal_server_profile() const;
+  ::CMsgSource2VProfLiteReport* _internal_mutable_server_profile();
+  public:
+  void unsafe_arena_set_allocated_server_profile(
+      ::CMsgSource2VProfLiteReport* server_profile);
+  ::CMsgSource2VProfLiteReport* unsafe_arena_release_server_profile();
+
+  // optional uint32 appid = 1;
+  bool has_appid() const;
+  private:
+  bool _internal_has_appid() const;
+  public:
+  void clear_appid();
+  uint32_t appid() const;
+  void set_appid(uint32_t value);
+  private:
+  uint32_t _internal_appid() const;
+  void _internal_set_appid(uint32_t value);
+  public:
+
+  // optional uint32 server_build_id = 3;
+  bool has_server_build_id() const;
+  private:
+  bool _internal_has_server_build_id() const;
+  public:
+  void clear_server_build_id();
+  uint32_t server_build_id() const;
+  void set_server_build_id(uint32_t value);
+  private:
+  uint32_t _internal_server_build_id() const;
+  void _internal_set_server_build_id(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CSource2Metrics_MatchPerfSummary_Notification)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSource2Metrics_MatchPerfSummary_Notification_Client > clients_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr game_mode_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr map_;
+    ::CMsgSource2VProfLiteReport* server_profile_;
+    uint32_t appid_;
+    uint32_t server_build_id_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSVCMsg_ServerInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_ServerInfo) */ {
  public:
   inline CSVCMsg_ServerInfo() : CSVCMsg_ServerInfo(nullptr) {}
@@ -3816,7 +5060,7 @@ class CSVCMsg_ServerInfo final :
                &_CSVCMsg_ServerInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    21;
 
   friend void swap(CSVCMsg_ServerInfo& a, CSVCMsg_ServerInfo& b) {
     a.Swap(&b);
@@ -4181,7 +5425,7 @@ class CSVCMsg_ServerInfo final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_ClassInfo_class_t final :
+class CSVCMsg_ClassInfo_class_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_ClassInfo.class_t) */ {
  public:
   inline CSVCMsg_ClassInfo_class_t() : CSVCMsg_ClassInfo_class_t(nullptr) {}
@@ -4236,7 +5480,7 @@ class CSVCMsg_ClassInfo_class_t final :
                &_CSVCMsg_ClassInfo_class_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    22;
 
   friend void swap(CSVCMsg_ClassInfo_class_t& a, CSVCMsg_ClassInfo_class_t& b) {
     a.Swap(&b);
@@ -4361,7 +5605,7 @@ class CSVCMsg_ClassInfo_class_t final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_ClassInfo final :
+class CSVCMsg_ClassInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_ClassInfo) */ {
  public:
   inline CSVCMsg_ClassInfo() : CSVCMsg_ClassInfo(nullptr) {}
@@ -4416,7 +5660,7 @@ class CSVCMsg_ClassInfo final :
                &_CSVCMsg_ClassInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    23;
 
   friend void swap(CSVCMsg_ClassInfo& a, CSVCMsg_ClassInfo& b) {
     a.Swap(&b);
@@ -4543,7 +5787,7 @@ class CSVCMsg_ClassInfo final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_SetPause final :
+class CSVCMsg_SetPause :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_SetPause) */ {
  public:
   inline CSVCMsg_SetPause() : CSVCMsg_SetPause(nullptr) {}
@@ -4598,7 +5842,7 @@ class CSVCMsg_SetPause final :
                &_CSVCMsg_SetPause_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    20;
+    24;
 
   friend void swap(CSVCMsg_SetPause& a, CSVCMsg_SetPause& b) {
     a.Swap(&b);
@@ -4703,7 +5947,7 @@ class CSVCMsg_SetPause final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_VoiceInit final :
+class CSVCMsg_VoiceInit :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_VoiceInit) */ {
  public:
   inline CSVCMsg_VoiceInit() : CSVCMsg_VoiceInit(nullptr) {}
@@ -4758,7 +6002,7 @@ class CSVCMsg_VoiceInit final :
                &_CSVCMsg_VoiceInit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    25;
 
   friend void swap(CSVCMsg_VoiceInit& a, CSVCMsg_VoiceInit& b) {
     a.Swap(&b);
@@ -4898,7 +6142,7 @@ class CSVCMsg_VoiceInit final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_Print final :
+class CSVCMsg_Print :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_Print) */ {
  public:
   inline CSVCMsg_Print() : CSVCMsg_Print(nullptr) {}
@@ -4953,7 +6197,7 @@ class CSVCMsg_Print final :
                &_CSVCMsg_Print_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    26;
 
   friend void swap(CSVCMsg_Print& a, CSVCMsg_Print& b) {
     a.Swap(&b);
@@ -5063,7 +6307,7 @@ class CSVCMsg_Print final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_Sounds_sounddata_t final :
+class CSVCMsg_Sounds_sounddata_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_Sounds.sounddata_t) */ {
  public:
   inline CSVCMsg_Sounds_sounddata_t() : CSVCMsg_Sounds_sounddata_t(nullptr) {}
@@ -5118,7 +6362,7 @@ class CSVCMsg_Sounds_sounddata_t final :
                &_CSVCMsg_Sounds_sounddata_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    23;
+    27;
 
   friend void swap(CSVCMsg_Sounds_sounddata_t& a, CSVCMsg_Sounds_sounddata_t& b) {
     a.Swap(&b);
@@ -5493,7 +6737,7 @@ class CSVCMsg_Sounds_sounddata_t final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_Sounds final :
+class CSVCMsg_Sounds :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_Sounds) */ {
  public:
   inline CSVCMsg_Sounds() : CSVCMsg_Sounds(nullptr) {}
@@ -5548,7 +6792,7 @@ class CSVCMsg_Sounds final :
                &_CSVCMsg_Sounds_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    24;
+    28;
 
   friend void swap(CSVCMsg_Sounds& a, CSVCMsg_Sounds& b) {
     a.Swap(&b);
@@ -5675,7 +6919,7 @@ class CSVCMsg_Sounds final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_Prefetch final :
+class CSVCMsg_Prefetch :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_Prefetch) */ {
  public:
   inline CSVCMsg_Prefetch() : CSVCMsg_Prefetch(nullptr) {}
@@ -5730,7 +6974,7 @@ class CSVCMsg_Prefetch final :
                &_CSVCMsg_Prefetch_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    25;
+    29;
 
   friend void swap(CSVCMsg_Prefetch& a, CSVCMsg_Prefetch& b) {
     a.Swap(&b);
@@ -5850,7 +7094,7 @@ class CSVCMsg_Prefetch final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_SetView final :
+class CSVCMsg_SetView :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_SetView) */ {
  public:
   inline CSVCMsg_SetView() : CSVCMsg_SetView(nullptr) {}
@@ -5905,7 +7149,7 @@ class CSVCMsg_SetView final :
                &_CSVCMsg_SetView_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    26;
+    30;
 
   friend void swap(CSVCMsg_SetView& a, CSVCMsg_SetView& b) {
     a.Swap(&b);
@@ -6025,7 +7269,7 @@ class CSVCMsg_SetView final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_FixAngle final :
+class CSVCMsg_FixAngle :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_FixAngle) */ {
  public:
   inline CSVCMsg_FixAngle() : CSVCMsg_FixAngle(nullptr) {}
@@ -6080,7 +7324,7 @@ class CSVCMsg_FixAngle final :
                &_CSVCMsg_FixAngle_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    27;
+    31;
 
   friend void swap(CSVCMsg_FixAngle& a, CSVCMsg_FixAngle& b) {
     a.Swap(&b);
@@ -6205,7 +7449,7 @@ class CSVCMsg_FixAngle final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_CrosshairAngle final :
+class CSVCMsg_CrosshairAngle :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_CrosshairAngle) */ {
  public:
   inline CSVCMsg_CrosshairAngle() : CSVCMsg_CrosshairAngle(nullptr) {}
@@ -6260,7 +7504,7 @@ class CSVCMsg_CrosshairAngle final :
                &_CSVCMsg_CrosshairAngle_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    28;
+    32;
 
   friend void swap(CSVCMsg_CrosshairAngle& a, CSVCMsg_CrosshairAngle& b) {
     a.Swap(&b);
@@ -6370,7 +7614,7 @@ class CSVCMsg_CrosshairAngle final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_BSPDecal final :
+class CSVCMsg_BSPDecal :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_BSPDecal) */ {
  public:
   inline CSVCMsg_BSPDecal() : CSVCMsg_BSPDecal(nullptr) {}
@@ -6425,7 +7669,7 @@ class CSVCMsg_BSPDecal final :
                &_CSVCMsg_BSPDecal_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    29;
+    33;
 
   friend void swap(CSVCMsg_BSPDecal& a, CSVCMsg_BSPDecal& b) {
     a.Swap(&b);
@@ -6595,7 +7839,7 @@ class CSVCMsg_BSPDecal final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_SplitScreen final :
+class CSVCMsg_SplitScreen :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_SplitScreen) */ {
  public:
   inline CSVCMsg_SplitScreen() : CSVCMsg_SplitScreen(nullptr) {}
@@ -6650,7 +7894,7 @@ class CSVCMsg_SplitScreen final :
                &_CSVCMsg_SplitScreen_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    30;
+    34;
 
   friend void swap(CSVCMsg_SplitScreen& a, CSVCMsg_SplitScreen& b) {
     a.Swap(&b);
@@ -6785,7 +8029,7 @@ class CSVCMsg_SplitScreen final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_GetCvarValue final :
+class CSVCMsg_GetCvarValue :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_GetCvarValue) */ {
  public:
   inline CSVCMsg_GetCvarValue() : CSVCMsg_GetCvarValue(nullptr) {}
@@ -6840,7 +8084,7 @@ class CSVCMsg_GetCvarValue final :
                &_CSVCMsg_GetCvarValue_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    31;
+    35;
 
   friend void swap(CSVCMsg_GetCvarValue& a, CSVCMsg_GetCvarValue& b) {
     a.Swap(&b);
@@ -6965,7 +8209,7 @@ class CSVCMsg_GetCvarValue final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_Menu final :
+class CSVCMsg_Menu :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_Menu) */ {
  public:
   inline CSVCMsg_Menu() : CSVCMsg_Menu(nullptr) {}
@@ -7020,7 +8264,7 @@ class CSVCMsg_Menu final :
                &_CSVCMsg_Menu_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    32;
+    36;
 
   friend void swap(CSVCMsg_Menu& a, CSVCMsg_Menu& b) {
     a.Swap(&b);
@@ -7145,7 +8389,7 @@ class CSVCMsg_Menu final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_UserMessage final :
+class CSVCMsg_UserMessage :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_UserMessage) */ {
  public:
   inline CSVCMsg_UserMessage() : CSVCMsg_UserMessage(nullptr) {}
@@ -7200,7 +8444,7 @@ class CSVCMsg_UserMessage final :
                &_CSVCMsg_UserMessage_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    33;
+    37;
 
   friend void swap(CSVCMsg_UserMessage& a, CSVCMsg_UserMessage& b) {
     a.Swap(&b);
@@ -7340,7 +8584,7 @@ class CSVCMsg_UserMessage final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_SendTable_sendprop_t final :
+class CSVCMsg_SendTable_sendprop_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_SendTable.sendprop_t) */ {
  public:
   inline CSVCMsg_SendTable_sendprop_t() : CSVCMsg_SendTable_sendprop_t(nullptr) {}
@@ -7395,7 +8639,7 @@ class CSVCMsg_SendTable_sendprop_t final :
                &_CSVCMsg_SendTable_sendprop_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    34;
+    38;
 
   friend void swap(CSVCMsg_SendTable_sendprop_t& a, CSVCMsg_SendTable_sendprop_t& b) {
     a.Swap(&b);
@@ -7630,7 +8874,7 @@ class CSVCMsg_SendTable_sendprop_t final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_SendTable final :
+class CSVCMsg_SendTable :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_SendTable) */ {
  public:
   inline CSVCMsg_SendTable() : CSVCMsg_SendTable(nullptr) {}
@@ -7685,7 +8929,7 @@ class CSVCMsg_SendTable final :
                &_CSVCMsg_SendTable_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    35;
+    39;
 
   friend void swap(CSVCMsg_SendTable& a, CSVCMsg_SendTable& b) {
     a.Swap(&b);
@@ -7847,7 +9091,7 @@ class CSVCMsg_SendTable final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_GameEventList_key_t final :
+class CSVCMsg_GameEventList_key_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_GameEventList.key_t) */ {
  public:
   inline CSVCMsg_GameEventList_key_t() : CSVCMsg_GameEventList_key_t(nullptr) {}
@@ -7902,7 +9146,7 @@ class CSVCMsg_GameEventList_key_t final :
                &_CSVCMsg_GameEventList_key_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    36;
+    40;
 
   friend void swap(CSVCMsg_GameEventList_key_t& a, CSVCMsg_GameEventList_key_t& b) {
     a.Swap(&b);
@@ -8027,7 +9271,7 @@ class CSVCMsg_GameEventList_key_t final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_GameEventList_descriptor_t final :
+class CSVCMsg_GameEventList_descriptor_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_GameEventList.descriptor_t) */ {
  public:
   inline CSVCMsg_GameEventList_descriptor_t() : CSVCMsg_GameEventList_descriptor_t(nullptr) {}
@@ -8082,7 +9326,7 @@ class CSVCMsg_GameEventList_descriptor_t final :
                &_CSVCMsg_GameEventList_descriptor_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    37;
+    41;
 
   friend void swap(CSVCMsg_GameEventList_descriptor_t& a, CSVCMsg_GameEventList_descriptor_t& b) {
     a.Swap(&b);
@@ -8227,7 +9471,7 @@ class CSVCMsg_GameEventList_descriptor_t final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_GameEventList final :
+class CSVCMsg_GameEventList :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_GameEventList) */ {
  public:
   inline CSVCMsg_GameEventList() : CSVCMsg_GameEventList(nullptr) {}
@@ -8282,7 +9526,7 @@ class CSVCMsg_GameEventList final :
                &_CSVCMsg_GameEventList_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    38;
+    42;
 
   friend void swap(CSVCMsg_GameEventList& a, CSVCMsg_GameEventList& b) {
     a.Swap(&b);
@@ -8394,227 +9638,7 @@ class CSVCMsg_GameEventList final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_PacketEntities_command_queue_info_t final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_PacketEntities.command_queue_info_t) */ {
- public:
-  inline CSVCMsg_PacketEntities_command_queue_info_t() : CSVCMsg_PacketEntities_command_queue_info_t(nullptr) {}
-  ~CSVCMsg_PacketEntities_command_queue_info_t() override;
-  explicit PROTOBUF_CONSTEXPR CSVCMsg_PacketEntities_command_queue_info_t(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CSVCMsg_PacketEntities_command_queue_info_t(const CSVCMsg_PacketEntities_command_queue_info_t& from);
-  CSVCMsg_PacketEntities_command_queue_info_t(CSVCMsg_PacketEntities_command_queue_info_t&& from) noexcept
-    : CSVCMsg_PacketEntities_command_queue_info_t() {
-    *this = ::std::move(from);
-  }
-
-  inline CSVCMsg_PacketEntities_command_queue_info_t& operator=(const CSVCMsg_PacketEntities_command_queue_info_t& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CSVCMsg_PacketEntities_command_queue_info_t& operator=(CSVCMsg_PacketEntities_command_queue_info_t&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CSVCMsg_PacketEntities_command_queue_info_t& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CSVCMsg_PacketEntities_command_queue_info_t* internal_default_instance() {
-    return reinterpret_cast<const CSVCMsg_PacketEntities_command_queue_info_t*>(
-               &_CSVCMsg_PacketEntities_command_queue_info_t_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    39;
-
-  friend void swap(CSVCMsg_PacketEntities_command_queue_info_t& a, CSVCMsg_PacketEntities_command_queue_info_t& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CSVCMsg_PacketEntities_command_queue_info_t* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CSVCMsg_PacketEntities_command_queue_info_t* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CSVCMsg_PacketEntities_command_queue_info_t* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CSVCMsg_PacketEntities_command_queue_info_t>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CSVCMsg_PacketEntities_command_queue_info_t& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CSVCMsg_PacketEntities_command_queue_info_t& from) {
-    CSVCMsg_PacketEntities_command_queue_info_t::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CSVCMsg_PacketEntities_command_queue_info_t* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CSVCMsg_PacketEntities.command_queue_info_t";
-  }
-  protected:
-  explicit CSVCMsg_PacketEntities_command_queue_info_t(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kCommandsQueuedFieldNumber = 1,
-    kCommandQueueDesiredSizeFieldNumber = 2,
-    kStarvedCommandTicksFieldNumber = 3,
-    kTimeDilationPercentFieldNumber = 4,
-    kDiscardedCommandTicksFieldNumber = 5,
-  };
-  // optional uint32 commands_queued = 1;
-  bool has_commands_queued() const;
-  private:
-  bool _internal_has_commands_queued() const;
-  public:
-  void clear_commands_queued();
-  uint32_t commands_queued() const;
-  void set_commands_queued(uint32_t value);
-  private:
-  uint32_t _internal_commands_queued() const;
-  void _internal_set_commands_queued(uint32_t value);
-  public:
-
-  // optional uint32 command_queue_desired_size = 2;
-  bool has_command_queue_desired_size() const;
-  private:
-  bool _internal_has_command_queue_desired_size() const;
-  public:
-  void clear_command_queue_desired_size();
-  uint32_t command_queue_desired_size() const;
-  void set_command_queue_desired_size(uint32_t value);
-  private:
-  uint32_t _internal_command_queue_desired_size() const;
-  void _internal_set_command_queue_desired_size(uint32_t value);
-  public:
-
-  // optional uint32 starved_command_ticks = 3;
-  bool has_starved_command_ticks() const;
-  private:
-  bool _internal_has_starved_command_ticks() const;
-  public:
-  void clear_starved_command_ticks();
-  uint32_t starved_command_ticks() const;
-  void set_starved_command_ticks(uint32_t value);
-  private:
-  uint32_t _internal_starved_command_ticks() const;
-  void _internal_set_starved_command_ticks(uint32_t value);
-  public:
-
-  // optional float time_dilation_percent = 4;
-  bool has_time_dilation_percent() const;
-  private:
-  bool _internal_has_time_dilation_percent() const;
-  public:
-  void clear_time_dilation_percent();
-  float time_dilation_percent() const;
-  void set_time_dilation_percent(float value);
-  private:
-  float _internal_time_dilation_percent() const;
-  void _internal_set_time_dilation_percent(float value);
-  public:
-
-  // optional uint32 discarded_command_ticks = 5;
-  bool has_discarded_command_ticks() const;
-  private:
-  bool _internal_has_discarded_command_ticks() const;
-  public:
-  void clear_discarded_command_ticks();
-  uint32_t discarded_command_ticks() const;
-  void set_discarded_command_ticks(uint32_t value);
-  private:
-  uint32_t _internal_discarded_command_ticks() const;
-  void _internal_set_discarded_command_ticks(uint32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:CSVCMsg_PacketEntities.command_queue_info_t)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    uint32_t commands_queued_;
-    uint32_t command_queue_desired_size_;
-    uint32_t starved_command_ticks_;
-    float time_dilation_percent_;
-    uint32_t discarded_command_ticks_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_netmessages_2eproto;
-};
-// -------------------------------------------------------------------
-
-class CSVCMsg_PacketEntities_alternate_baseline_t final :
+class CSVCMsg_PacketEntities_alternate_baseline_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_PacketEntities.alternate_baseline_t) */ {
  public:
   inline CSVCMsg_PacketEntities_alternate_baseline_t() : CSVCMsg_PacketEntities_alternate_baseline_t(nullptr) {}
@@ -8669,7 +9693,7 @@ class CSVCMsg_PacketEntities_alternate_baseline_t final :
                &_CSVCMsg_PacketEntities_alternate_baseline_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    40;
+    43;
 
   friend void swap(CSVCMsg_PacketEntities_alternate_baseline_t& a, CSVCMsg_PacketEntities_alternate_baseline_t& b) {
     a.Swap(&b);
@@ -8789,7 +9813,187 @@ class CSVCMsg_PacketEntities_alternate_baseline_t final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_PacketEntities final :
+class CSVCMsg_PacketEntities_non_transmitted_entities_t :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_PacketEntities.non_transmitted_entities_t) */ {
+ public:
+  inline CSVCMsg_PacketEntities_non_transmitted_entities_t() : CSVCMsg_PacketEntities_non_transmitted_entities_t(nullptr) {}
+  ~CSVCMsg_PacketEntities_non_transmitted_entities_t() override;
+  explicit PROTOBUF_CONSTEXPR CSVCMsg_PacketEntities_non_transmitted_entities_t(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSVCMsg_PacketEntities_non_transmitted_entities_t(const CSVCMsg_PacketEntities_non_transmitted_entities_t& from);
+  CSVCMsg_PacketEntities_non_transmitted_entities_t(CSVCMsg_PacketEntities_non_transmitted_entities_t&& from) noexcept
+    : CSVCMsg_PacketEntities_non_transmitted_entities_t() {
+    *this = ::std::move(from);
+  }
+
+  inline CSVCMsg_PacketEntities_non_transmitted_entities_t& operator=(const CSVCMsg_PacketEntities_non_transmitted_entities_t& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSVCMsg_PacketEntities_non_transmitted_entities_t& operator=(CSVCMsg_PacketEntities_non_transmitted_entities_t&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSVCMsg_PacketEntities_non_transmitted_entities_t& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSVCMsg_PacketEntities_non_transmitted_entities_t* internal_default_instance() {
+    return reinterpret_cast<const CSVCMsg_PacketEntities_non_transmitted_entities_t*>(
+               &_CSVCMsg_PacketEntities_non_transmitted_entities_t_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    44;
+
+  friend void swap(CSVCMsg_PacketEntities_non_transmitted_entities_t& a, CSVCMsg_PacketEntities_non_transmitted_entities_t& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSVCMsg_PacketEntities_non_transmitted_entities_t* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSVCMsg_PacketEntities_non_transmitted_entities_t* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSVCMsg_PacketEntities_non_transmitted_entities_t* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSVCMsg_PacketEntities_non_transmitted_entities_t>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSVCMsg_PacketEntities_non_transmitted_entities_t& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSVCMsg_PacketEntities_non_transmitted_entities_t& from) {
+    CSVCMsg_PacketEntities_non_transmitted_entities_t::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSVCMsg_PacketEntities_non_transmitted_entities_t* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSVCMsg_PacketEntities.non_transmitted_entities_t";
+  }
+  protected:
+  explicit CSVCMsg_PacketEntities_non_transmitted_entities_t(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDataFieldNumber = 2,
+    kHeaderCountFieldNumber = 1,
+  };
+  // optional bytes data = 2;
+  bool has_data() const;
+  private:
+  bool _internal_has_data() const;
+  public:
+  void clear_data();
+  const std::string& data() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_data(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_data();
+  PROTOBUF_NODISCARD std::string* release_data();
+  void set_allocated_data(std::string* data);
+  private:
+  const std::string& _internal_data() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
+  std::string* _internal_mutable_data();
+  public:
+
+  // optional int32 header_count = 1;
+  bool has_header_count() const;
+  private:
+  bool _internal_has_header_count() const;
+  public:
+  void clear_header_count();
+  int32_t header_count() const;
+  void set_header_count(int32_t value);
+  private:
+  int32_t _internal_header_count() const;
+  void _internal_set_header_count(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CSVCMsg_PacketEntities.non_transmitted_entities_t)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+    int32_t header_count_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSVCMsg_PacketEntities :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_PacketEntities) */ {
  public:
   inline CSVCMsg_PacketEntities() : CSVCMsg_PacketEntities(nullptr) {}
@@ -8844,7 +10048,7 @@ class CSVCMsg_PacketEntities final :
                &_CSVCMsg_PacketEntities_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    41;
+    45;
 
   friend void swap(CSVCMsg_PacketEntities& a, CSVCMsg_PacketEntities& b) {
     a.Swap(&b);
@@ -8914,27 +10118,33 @@ class CSVCMsg_PacketEntities final :
 
   // nested types ----------------------------------------------------
 
-  typedef CSVCMsg_PacketEntities_command_queue_info_t command_queue_info_t;
   typedef CSVCMsg_PacketEntities_alternate_baseline_t alternate_baseline_t;
+  typedef CSVCMsg_PacketEntities_non_transmitted_entities_t non_transmitted_entities_t;
 
   // accessors -------------------------------------------------------
 
   enum : int {
     kAlternateBaselinesFieldNumber = 15,
+    kCmdRecvStatusFieldNumber = 22,
     kEntityDataFieldNumber = 7,
     kSerializedEntitiesFieldNumber = 13,
-    kCommandQueueInfoFieldNumber = 14,
+    kDevPaddingFieldNumber = 999,
+    kNonTransmittedEntitiesFieldNumber = 19,
     kMaxEntriesFieldNumber = 1,
     kUpdatedEntriesFieldNumber = 2,
     kBaselineFieldNumber = 5,
-    kIsDeltaFieldNumber = 3,
+    kLegacyIsDeltaFieldNumber = 3,
     kUpdateBaselineFieldNumber = 4,
     kPendingFullFrameFieldNumber = 8,
     kDeltaFromFieldNumber = 6,
     kActiveSpawngroupHandleFieldNumber = 9,
     kMaxSpawngroupCreationsequenceFieldNumber = 10,
-    kLastCmdNumberFieldNumber = 11,
+    kLastCmdNumberExecutedFieldNumber = 11,
     kServerTickFieldNumber = 12,
+    kHasPvsVisBitsFieldNumber = 16,
+    kLastCmdNumberRecvDeltaFieldNumber = 17,
+    kCqStarvedCommandTicksFieldNumber = 20,
+    kCqDiscardedCommandTicksFieldNumber = 21,
   };
   // repeated .CSVCMsg_PacketEntities.alternate_baseline_t alternate_baselines = 15;
   int alternate_baselines_size() const;
@@ -8953,6 +10163,28 @@ class CSVCMsg_PacketEntities final :
   ::CSVCMsg_PacketEntities_alternate_baseline_t* add_alternate_baselines();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSVCMsg_PacketEntities_alternate_baseline_t >&
       alternate_baselines() const;
+
+  // repeated sint32 cmd_recv_status = 22 [packed = true];
+  int cmd_recv_status_size() const;
+  private:
+  int _internal_cmd_recv_status_size() const;
+  public:
+  void clear_cmd_recv_status();
+  private:
+  int32_t _internal_cmd_recv_status(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      _internal_cmd_recv_status() const;
+  void _internal_add_cmd_recv_status(int32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      _internal_mutable_cmd_recv_status();
+  public:
+  int32_t cmd_recv_status(int index) const;
+  void set_cmd_recv_status(int index, int32_t value);
+  void add_cmd_recv_status(int32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      cmd_recv_status() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      mutable_cmd_recv_status();
 
   // optional bytes entity_data = 7;
   bool has_entity_data() const;
@@ -8990,23 +10222,41 @@ class CSVCMsg_PacketEntities final :
   std::string* _internal_mutable_serialized_entities();
   public:
 
-  // optional .CSVCMsg_PacketEntities.command_queue_info_t command_queue_info = 14;
-  bool has_command_queue_info() const;
+  // optional bytes dev_padding = 999;
+  bool has_dev_padding() const;
   private:
-  bool _internal_has_command_queue_info() const;
+  bool _internal_has_dev_padding() const;
   public:
-  void clear_command_queue_info();
-  const ::CSVCMsg_PacketEntities_command_queue_info_t& command_queue_info() const;
-  PROTOBUF_NODISCARD ::CSVCMsg_PacketEntities_command_queue_info_t* release_command_queue_info();
-  ::CSVCMsg_PacketEntities_command_queue_info_t* mutable_command_queue_info();
-  void set_allocated_command_queue_info(::CSVCMsg_PacketEntities_command_queue_info_t* command_queue_info);
+  void clear_dev_padding();
+  const std::string& dev_padding() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_dev_padding(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_dev_padding();
+  PROTOBUF_NODISCARD std::string* release_dev_padding();
+  void set_allocated_dev_padding(std::string* dev_padding);
   private:
-  const ::CSVCMsg_PacketEntities_command_queue_info_t& _internal_command_queue_info() const;
-  ::CSVCMsg_PacketEntities_command_queue_info_t* _internal_mutable_command_queue_info();
+  const std::string& _internal_dev_padding() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_dev_padding(const std::string& value);
+  std::string* _internal_mutable_dev_padding();
   public:
-  void unsafe_arena_set_allocated_command_queue_info(
-      ::CSVCMsg_PacketEntities_command_queue_info_t* command_queue_info);
-  ::CSVCMsg_PacketEntities_command_queue_info_t* unsafe_arena_release_command_queue_info();
+
+  // optional .CSVCMsg_PacketEntities.non_transmitted_entities_t non_transmitted_entities = 19;
+  bool has_non_transmitted_entities() const;
+  private:
+  bool _internal_has_non_transmitted_entities() const;
+  public:
+  void clear_non_transmitted_entities();
+  const ::CSVCMsg_PacketEntities_non_transmitted_entities_t& non_transmitted_entities() const;
+  PROTOBUF_NODISCARD ::CSVCMsg_PacketEntities_non_transmitted_entities_t* release_non_transmitted_entities();
+  ::CSVCMsg_PacketEntities_non_transmitted_entities_t* mutable_non_transmitted_entities();
+  void set_allocated_non_transmitted_entities(::CSVCMsg_PacketEntities_non_transmitted_entities_t* non_transmitted_entities);
+  private:
+  const ::CSVCMsg_PacketEntities_non_transmitted_entities_t& _internal_non_transmitted_entities() const;
+  ::CSVCMsg_PacketEntities_non_transmitted_entities_t* _internal_mutable_non_transmitted_entities();
+  public:
+  void unsafe_arena_set_allocated_non_transmitted_entities(
+      ::CSVCMsg_PacketEntities_non_transmitted_entities_t* non_transmitted_entities);
+  ::CSVCMsg_PacketEntities_non_transmitted_entities_t* unsafe_arena_release_non_transmitted_entities();
 
   // optional int32 max_entries = 1;
   bool has_max_entries() const;
@@ -9047,17 +10297,17 @@ class CSVCMsg_PacketEntities final :
   void _internal_set_baseline(int32_t value);
   public:
 
-  // optional bool is_delta = 3;
-  bool has_is_delta() const;
+  // optional bool legacy_is_delta = 3;
+  bool has_legacy_is_delta() const;
   private:
-  bool _internal_has_is_delta() const;
+  bool _internal_has_legacy_is_delta() const;
   public:
-  void clear_is_delta();
-  bool is_delta() const;
-  void set_is_delta(bool value);
+  void clear_legacy_is_delta();
+  bool legacy_is_delta() const;
+  void set_legacy_is_delta(bool value);
   private:
-  bool _internal_is_delta() const;
-  void _internal_set_is_delta(bool value);
+  bool _internal_legacy_is_delta() const;
+  void _internal_set_legacy_is_delta(bool value);
   public:
 
   // optional bool update_baseline = 4;
@@ -9125,17 +10375,17 @@ class CSVCMsg_PacketEntities final :
   void _internal_set_max_spawngroup_creationsequence(uint32_t value);
   public:
 
-  // optional uint32 last_cmd_number = 11;
-  bool has_last_cmd_number() const;
+  // optional uint32 last_cmd_number_executed = 11;
+  bool has_last_cmd_number_executed() const;
   private:
-  bool _internal_has_last_cmd_number() const;
+  bool _internal_has_last_cmd_number_executed() const;
   public:
-  void clear_last_cmd_number();
-  uint32_t last_cmd_number() const;
-  void set_last_cmd_number(uint32_t value);
+  void clear_last_cmd_number_executed();
+  uint32_t last_cmd_number_executed() const;
+  void set_last_cmd_number_executed(uint32_t value);
   private:
-  uint32_t _internal_last_cmd_number() const;
-  void _internal_set_last_cmd_number(uint32_t value);
+  uint32_t _internal_last_cmd_number_executed() const;
+  void _internal_set_last_cmd_number_executed(uint32_t value);
   public:
 
   // optional uint32 server_tick = 12;
@@ -9151,6 +10401,58 @@ class CSVCMsg_PacketEntities final :
   void _internal_set_server_tick(uint32_t value);
   public:
 
+  // optional uint32 has_pvs_vis_bits = 16;
+  bool has_has_pvs_vis_bits() const;
+  private:
+  bool _internal_has_has_pvs_vis_bits() const;
+  public:
+  void clear_has_pvs_vis_bits();
+  uint32_t has_pvs_vis_bits() const;
+  void set_has_pvs_vis_bits(uint32_t value);
+  private:
+  uint32_t _internal_has_pvs_vis_bits() const;
+  void _internal_set_has_pvs_vis_bits(uint32_t value);
+  public:
+
+  // optional sint32 last_cmd_number_recv_delta = 17;
+  bool has_last_cmd_number_recv_delta() const;
+  private:
+  bool _internal_has_last_cmd_number_recv_delta() const;
+  public:
+  void clear_last_cmd_number_recv_delta();
+  int32_t last_cmd_number_recv_delta() const;
+  void set_last_cmd_number_recv_delta(int32_t value);
+  private:
+  int32_t _internal_last_cmd_number_recv_delta() const;
+  void _internal_set_last_cmd_number_recv_delta(int32_t value);
+  public:
+
+  // optional uint32 cq_starved_command_ticks = 20;
+  bool has_cq_starved_command_ticks() const;
+  private:
+  bool _internal_has_cq_starved_command_ticks() const;
+  public:
+  void clear_cq_starved_command_ticks();
+  uint32_t cq_starved_command_ticks() const;
+  void set_cq_starved_command_ticks(uint32_t value);
+  private:
+  uint32_t _internal_cq_starved_command_ticks() const;
+  void _internal_set_cq_starved_command_ticks(uint32_t value);
+  public:
+
+  // optional uint32 cq_discarded_command_ticks = 21;
+  bool has_cq_discarded_command_ticks() const;
+  private:
+  bool _internal_has_cq_discarded_command_ticks() const;
+  public:
+  void clear_cq_discarded_command_ticks();
+  uint32_t cq_discarded_command_ticks() const;
+  void set_cq_discarded_command_ticks(uint32_t value);
+  private:
+  uint32_t _internal_cq_discarded_command_ticks() const;
+  void _internal_set_cq_discarded_command_ticks(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CSVCMsg_PacketEntities)
  private:
   class _Internal;
@@ -9162,27 +10464,34 @@ class CSVCMsg_PacketEntities final :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSVCMsg_PacketEntities_alternate_baseline_t > alternate_baselines_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > cmd_recv_status_;
+    mutable std::atomic<int> _cmd_recv_status_cached_byte_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr entity_data_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr serialized_entities_;
-    ::CSVCMsg_PacketEntities_command_queue_info_t* command_queue_info_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr dev_padding_;
+    ::CSVCMsg_PacketEntities_non_transmitted_entities_t* non_transmitted_entities_;
     int32_t max_entries_;
     int32_t updated_entries_;
     int32_t baseline_;
-    bool is_delta_;
+    bool legacy_is_delta_;
     bool update_baseline_;
     bool pending_full_frame_;
     int32_t delta_from_;
     uint32_t active_spawngroup_handle_;
     uint32_t max_spawngroup_creationsequence_;
-    uint32_t last_cmd_number_;
+    uint32_t last_cmd_number_executed_;
     uint32_t server_tick_;
+    uint32_t has_pvs_vis_bits_;
+    int32_t last_cmd_number_recv_delta_;
+    uint32_t cq_starved_command_ticks_;
+    uint32_t cq_discarded_command_ticks_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_netmessages_2eproto;
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_TempEntities final :
+class CSVCMsg_TempEntities :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_TempEntities) */ {
  public:
   inline CSVCMsg_TempEntities() : CSVCMsg_TempEntities(nullptr) {}
@@ -9237,7 +10546,7 @@ class CSVCMsg_TempEntities final :
                &_CSVCMsg_TempEntities_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    42;
+    46;
 
   friend void swap(CSVCMsg_TempEntities& a, CSVCMsg_TempEntities& b) {
     a.Swap(&b);
@@ -9377,7 +10686,7 @@ class CSVCMsg_TempEntities final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_CreateStringTable final :
+class CSVCMsg_CreateStringTable :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_CreateStringTable) */ {
  public:
   inline CSVCMsg_CreateStringTable() : CSVCMsg_CreateStringTable(nullptr) {}
@@ -9432,7 +10741,7 @@ class CSVCMsg_CreateStringTable final :
                &_CSVCMsg_CreateStringTable_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    43;
+    47;
 
   friend void swap(CSVCMsg_CreateStringTable& a, CSVCMsg_CreateStringTable& b) {
     a.Swap(&b);
@@ -9682,7 +10991,7 @@ class CSVCMsg_CreateStringTable final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_UpdateStringTable final :
+class CSVCMsg_UpdateStringTable :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_UpdateStringTable) */ {
  public:
   inline CSVCMsg_UpdateStringTable() : CSVCMsg_UpdateStringTable(nullptr) {}
@@ -9737,7 +11046,7 @@ class CSVCMsg_UpdateStringTable final :
                &_CSVCMsg_UpdateStringTable_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    44;
+    48;
 
   friend void swap(CSVCMsg_UpdateStringTable& a, CSVCMsg_UpdateStringTable& b) {
     a.Swap(&b);
@@ -9877,7 +11186,7 @@ class CSVCMsg_UpdateStringTable final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_VoiceData final :
+class CSVCMsg_VoiceData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_VoiceData) */ {
  public:
   inline CSVCMsg_VoiceData() : CSVCMsg_VoiceData(nullptr) {}
@@ -9932,7 +11241,7 @@ class CSVCMsg_VoiceData final :
                &_CSVCMsg_VoiceData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    45;
+    49;
 
   friend void swap(CSVCMsg_VoiceData& a, CSVCMsg_VoiceData& b) {
     a.Swap(&b);
@@ -10132,7 +11441,7 @@ class CSVCMsg_VoiceData final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_PacketReliable final :
+class CSVCMsg_PacketReliable :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_PacketReliable) */ {
  public:
   inline CSVCMsg_PacketReliable() : CSVCMsg_PacketReliable(nullptr) {}
@@ -10187,7 +11496,7 @@ class CSVCMsg_PacketReliable final :
                &_CSVCMsg_PacketReliable_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    46;
+    50;
 
   friend void swap(CSVCMsg_PacketReliable& a, CSVCMsg_PacketReliable& b) {
     a.Swap(&b);
@@ -10322,7 +11631,7 @@ class CSVCMsg_PacketReliable final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_FullFrameSplit final :
+class CSVCMsg_FullFrameSplit :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_FullFrameSplit) */ {
  public:
   inline CSVCMsg_FullFrameSplit() : CSVCMsg_FullFrameSplit(nullptr) {}
@@ -10377,7 +11686,7 @@ class CSVCMsg_FullFrameSplit final :
                &_CSVCMsg_FullFrameSplit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    47;
+    51;
 
   friend void swap(CSVCMsg_FullFrameSplit& a, CSVCMsg_FullFrameSplit& b) {
     a.Swap(&b);
@@ -10532,7 +11841,7 @@ class CSVCMsg_FullFrameSplit final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_HLTVStatus final :
+class CSVCMsg_HLTVStatus :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_HLTVStatus) */ {
  public:
   inline CSVCMsg_HLTVStatus() : CSVCMsg_HLTVStatus(nullptr) {}
@@ -10587,7 +11896,7 @@ class CSVCMsg_HLTVStatus final :
                &_CSVCMsg_HLTVStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    48;
+    52;
 
   friend void swap(CSVCMsg_HLTVStatus& a, CSVCMsg_HLTVStatus& b) {
     a.Swap(&b);
@@ -10742,7 +12051,7 @@ class CSVCMsg_HLTVStatus final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_ServerSteamID final :
+class CSVCMsg_ServerSteamID :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_ServerSteamID) */ {
  public:
   inline CSVCMsg_ServerSteamID() : CSVCMsg_ServerSteamID(nullptr) {}
@@ -10797,7 +12106,7 @@ class CSVCMsg_ServerSteamID final :
                &_CSVCMsg_ServerSteamID_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    49;
+    53;
 
   friend void swap(CSVCMsg_ServerSteamID& a, CSVCMsg_ServerSteamID& b) {
     a.Swap(&b);
@@ -10902,7 +12211,7 @@ class CSVCMsg_ServerSteamID final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_CmdKeyValues final :
+class CSVCMsg_CmdKeyValues :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_CmdKeyValues) */ {
  public:
   inline CSVCMsg_CmdKeyValues() : CSVCMsg_CmdKeyValues(nullptr) {}
@@ -10957,7 +12266,7 @@ class CSVCMsg_CmdKeyValues final :
                &_CSVCMsg_CmdKeyValues_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    50;
+    54;
 
   friend void swap(CSVCMsg_CmdKeyValues& a, CSVCMsg_CmdKeyValues& b) {
     a.Swap(&b);
@@ -11067,7 +12376,7 @@ class CSVCMsg_CmdKeyValues final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_RconServerDetails final :
+class CSVCMsg_RconServerDetails :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_RconServerDetails) */ {
  public:
   inline CSVCMsg_RconServerDetails() : CSVCMsg_RconServerDetails(nullptr) {}
@@ -11122,7 +12431,7 @@ class CSVCMsg_RconServerDetails final :
                &_CSVCMsg_RconServerDetails_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    51;
+    55;
 
   friend void swap(CSVCMsg_RconServerDetails& a, CSVCMsg_RconServerDetails& b) {
     a.Swap(&b);
@@ -11252,7 +12561,7 @@ class CSVCMsg_RconServerDetails final :
 };
 // -------------------------------------------------------------------
 
-class CMsgIPCAddress final :
+class CMsgIPCAddress :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgIPCAddress) */ {
  public:
   inline CMsgIPCAddress() : CMsgIPCAddress(nullptr) {}
@@ -11307,7 +12616,7 @@ class CMsgIPCAddress final :
                &_CMsgIPCAddress_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    52;
+    56;
 
   friend void swap(CMsgIPCAddress& a, CMsgIPCAddress& b) {
     a.Swap(&b);
@@ -11427,7 +12736,7 @@ class CMsgIPCAddress final :
 };
 // -------------------------------------------------------------------
 
-class CMsgServerPeer final :
+class CMsgServerPeer :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgServerPeer) */ {
  public:
   inline CMsgServerPeer() : CMsgServerPeer(nullptr) {}
@@ -11482,7 +12791,7 @@ class CMsgServerPeer final :
                &_CMsgServerPeer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    53;
+    57;
 
   friend void swap(CMsgServerPeer& a, CMsgServerPeer& b) {
     a.Swap(&b);
@@ -11667,7 +12976,7 @@ class CMsgServerPeer final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_PeerList final :
+class CSVCMsg_PeerList :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_PeerList) */ {
  public:
   inline CSVCMsg_PeerList() : CSVCMsg_PeerList(nullptr) {}
@@ -11722,7 +13031,7 @@ class CSVCMsg_PeerList final :
                &_CSVCMsg_PeerList_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    54;
+    58;
 
   friend void swap(CSVCMsg_PeerList& a, CSVCMsg_PeerList& b) {
     a.Swap(&b);
@@ -11831,7 +13140,7 @@ class CSVCMsg_PeerList final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_ClearAllStringTables final :
+class CSVCMsg_ClearAllStringTables :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_ClearAllStringTables) */ {
  public:
   inline CSVCMsg_ClearAllStringTables() : CSVCMsg_ClearAllStringTables(nullptr) {}
@@ -11886,7 +13195,7 @@ class CSVCMsg_ClearAllStringTables final :
                &_CSVCMsg_ClearAllStringTables_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    55;
+    59;
 
   friend void swap(CSVCMsg_ClearAllStringTables& a, CSVCMsg_ClearAllStringTables& b) {
     a.Swap(&b);
@@ -12011,7 +13320,7 @@ class CSVCMsg_ClearAllStringTables final :
 };
 // -------------------------------------------------------------------
 
-class ProtoFlattenedSerializerField_t_polymorphic_field_t final :
+class ProtoFlattenedSerializerField_t_polymorphic_field_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:ProtoFlattenedSerializerField_t.polymorphic_field_t) */ {
  public:
   inline ProtoFlattenedSerializerField_t_polymorphic_field_t() : ProtoFlattenedSerializerField_t_polymorphic_field_t(nullptr) {}
@@ -12066,7 +13375,7 @@ class ProtoFlattenedSerializerField_t_polymorphic_field_t final :
                &_ProtoFlattenedSerializerField_t_polymorphic_field_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    56;
+    60;
 
   friend void swap(ProtoFlattenedSerializerField_t_polymorphic_field_t& a, ProtoFlattenedSerializerField_t_polymorphic_field_t& b) {
     a.Swap(&b);
@@ -12186,7 +13495,7 @@ class ProtoFlattenedSerializerField_t_polymorphic_field_t final :
 };
 // -------------------------------------------------------------------
 
-class ProtoFlattenedSerializerField_t final :
+class ProtoFlattenedSerializerField_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:ProtoFlattenedSerializerField_t) */ {
  public:
   inline ProtoFlattenedSerializerField_t() : ProtoFlattenedSerializerField_t(nullptr) {}
@@ -12241,7 +13550,7 @@ class ProtoFlattenedSerializerField_t final :
                &_ProtoFlattenedSerializerField_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    57;
+    61;
 
   friend void swap(ProtoFlattenedSerializerField_t& a, ProtoFlattenedSerializerField_t& b) {
     a.Swap(&b);
@@ -12327,6 +13636,7 @@ class ProtoFlattenedSerializerField_t final :
     kFieldSerializerVersionFieldNumber = 8,
     kSendNodeSymFieldNumber = 9,
     kVarEncoderSymFieldNumber = 10,
+    kVarSerializerSymFieldNumber = 12,
   };
   // repeated .ProtoFlattenedSerializerField_t.polymorphic_field_t polymorphic_types = 11;
   int polymorphic_types_size() const;
@@ -12476,6 +13786,19 @@ class ProtoFlattenedSerializerField_t final :
   void _internal_set_var_encoder_sym(int32_t value);
   public:
 
+  // optional int32 var_serializer_sym = 12;
+  bool has_var_serializer_sym() const;
+  private:
+  bool _internal_has_var_serializer_sym() const;
+  public:
+  void clear_var_serializer_sym();
+  int32_t var_serializer_sym() const;
+  void set_var_serializer_sym(int32_t value);
+  private:
+  int32_t _internal_var_serializer_sym() const;
+  void _internal_set_var_serializer_sym(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:ProtoFlattenedSerializerField_t)
  private:
   class _Internal;
@@ -12497,13 +13820,14 @@ class ProtoFlattenedSerializerField_t final :
     int32_t field_serializer_version_;
     int32_t send_node_sym_;
     int32_t var_encoder_sym_;
+    int32_t var_serializer_sym_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_netmessages_2eproto;
 };
 // -------------------------------------------------------------------
 
-class ProtoFlattenedSerializer_t final :
+class ProtoFlattenedSerializer_t :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:ProtoFlattenedSerializer_t) */ {
  public:
   inline ProtoFlattenedSerializer_t() : ProtoFlattenedSerializer_t(nullptr) {}
@@ -12558,7 +13882,7 @@ class ProtoFlattenedSerializer_t final :
                &_ProtoFlattenedSerializer_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    58;
+    62;
 
   friend void swap(ProtoFlattenedSerializer_t& a, ProtoFlattenedSerializer_t& b) {
     a.Swap(&b);
@@ -12702,7 +14026,7 @@ class ProtoFlattenedSerializer_t final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_FlattenedSerializer final :
+class CSVCMsg_FlattenedSerializer :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_FlattenedSerializer) */ {
  public:
   inline CSVCMsg_FlattenedSerializer() : CSVCMsg_FlattenedSerializer(nullptr) {}
@@ -12757,7 +14081,7 @@ class CSVCMsg_FlattenedSerializer final :
                &_CSVCMsg_FlattenedSerializer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    59;
+    63;
 
   friend void swap(CSVCMsg_FlattenedSerializer& a, CSVCMsg_FlattenedSerializer& b) {
     a.Swap(&b);
@@ -12912,7 +14236,7 @@ class CSVCMsg_FlattenedSerializer final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_StopSound final :
+class CSVCMsg_StopSound :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_StopSound) */ {
  public:
   inline CSVCMsg_StopSound() : CSVCMsg_StopSound(nullptr) {}
@@ -12967,7 +14291,7 @@ class CSVCMsg_StopSound final :
                &_CSVCMsg_StopSound_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    60;
+    64;
 
   friend void swap(CSVCMsg_StopSound& a, CSVCMsg_StopSound& b) {
     a.Swap(&b);
@@ -13072,7 +14396,7 @@ class CSVCMsg_StopSound final :
 };
 // -------------------------------------------------------------------
 
-class CBidirMsg_RebroadcastGameEvent final :
+class CBidirMsg_RebroadcastGameEvent :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CBidirMsg_RebroadcastGameEvent) */ {
  public:
   inline CBidirMsg_RebroadcastGameEvent() : CBidirMsg_RebroadcastGameEvent(nullptr) {}
@@ -13127,7 +14451,7 @@ class CBidirMsg_RebroadcastGameEvent final :
                &_CBidirMsg_RebroadcastGameEvent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    61;
+    65;
 
   friend void swap(CBidirMsg_RebroadcastGameEvent& a, CBidirMsg_RebroadcastGameEvent& b) {
     a.Swap(&b);
@@ -13277,7 +14601,7 @@ class CBidirMsg_RebroadcastGameEvent final :
 };
 // -------------------------------------------------------------------
 
-class CBidirMsg_RebroadcastSource final :
+class CBidirMsg_RebroadcastSource :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CBidirMsg_RebroadcastSource) */ {
  public:
   inline CBidirMsg_RebroadcastSource() : CBidirMsg_RebroadcastSource(nullptr) {}
@@ -13332,7 +14656,7 @@ class CBidirMsg_RebroadcastSource final :
                &_CBidirMsg_RebroadcastSource_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    62;
+    66;
 
   friend void swap(CBidirMsg_RebroadcastSource& a, CBidirMsg_RebroadcastSource& b) {
     a.Swap(&b);
@@ -13437,7 +14761,7 @@ class CBidirMsg_RebroadcastSource final :
 };
 // -------------------------------------------------------------------
 
-class CMsgServerNetworkStats_Port final :
+class CMsgServerNetworkStats_Port :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgServerNetworkStats.Port) */ {
  public:
   inline CMsgServerNetworkStats_Port() : CMsgServerNetworkStats_Port(nullptr) {}
@@ -13492,7 +14816,7 @@ class CMsgServerNetworkStats_Port final :
                &_CMsgServerNetworkStats_Port_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    63;
+    67;
 
   friend void swap(CMsgServerNetworkStats_Port& a, CMsgServerNetworkStats_Port& b) {
     a.Swap(&b);
@@ -13617,7 +14941,7 @@ class CMsgServerNetworkStats_Port final :
 };
 // -------------------------------------------------------------------
 
-class CMsgServerNetworkStats_Player final :
+class CMsgServerNetworkStats_Player :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgServerNetworkStats.Player) */ {
  public:
   inline CMsgServerNetworkStats_Player() : CMsgServerNetworkStats_Player(nullptr) {}
@@ -13672,7 +14996,7 @@ class CMsgServerNetworkStats_Player final :
                &_CMsgServerNetworkStats_Player_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    64;
+    68;
 
   friend void swap(CMsgServerNetworkStats_Player& a, CMsgServerNetworkStats_Player& b) {
     a.Swap(&b);
@@ -13747,10 +15071,12 @@ class CMsgServerNetworkStats_Player final :
   enum : int {
     kRemoteAddrFieldNumber = 2,
     kSteamidFieldNumber = 1,
-    kPingStddevMsFieldNumber = 3,
     kPingAvgMsFieldNumber = 4,
     kPacketLossPctFieldNumber = 5,
     kIsBotFieldNumber = 6,
+    kLossInFieldNumber = 7,
+    kLossOutFieldNumber = 8,
+    kEngineLatencyMsFieldNumber = 9,
   };
   // optional string remote_addr = 2;
   bool has_remote_addr() const;
@@ -13781,19 +15107,6 @@ class CMsgServerNetworkStats_Player final :
   private:
   uint64_t _internal_steamid() const;
   void _internal_set_steamid(uint64_t value);
-  public:
-
-  // optional int32 ping_stddev_ms = 3;
-  bool has_ping_stddev_ms() const;
-  private:
-  bool _internal_has_ping_stddev_ms() const;
-  public:
-  void clear_ping_stddev_ms();
-  int32_t ping_stddev_ms() const;
-  void set_ping_stddev_ms(int32_t value);
-  private:
-  int32_t _internal_ping_stddev_ms() const;
-  void _internal_set_ping_stddev_ms(int32_t value);
   public:
 
   // optional int32 ping_avg_ms = 4;
@@ -13835,6 +15148,45 @@ class CMsgServerNetworkStats_Player final :
   void _internal_set_is_bot(bool value);
   public:
 
+  // optional float loss_in = 7;
+  bool has_loss_in() const;
+  private:
+  bool _internal_has_loss_in() const;
+  public:
+  void clear_loss_in();
+  float loss_in() const;
+  void set_loss_in(float value);
+  private:
+  float _internal_loss_in() const;
+  void _internal_set_loss_in(float value);
+  public:
+
+  // optional float loss_out = 8;
+  bool has_loss_out() const;
+  private:
+  bool _internal_has_loss_out() const;
+  public:
+  void clear_loss_out();
+  float loss_out() const;
+  void set_loss_out(float value);
+  private:
+  float _internal_loss_out() const;
+  void _internal_set_loss_out(float value);
+  public:
+
+  // optional int32 engine_latency_ms = 9;
+  bool has_engine_latency_ms() const;
+  private:
+  bool _internal_has_engine_latency_ms() const;
+  public:
+  void clear_engine_latency_ms();
+  int32_t engine_latency_ms() const;
+  void set_engine_latency_ms(int32_t value);
+  private:
+  int32_t _internal_engine_latency_ms() const;
+  void _internal_set_engine_latency_ms(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CMsgServerNetworkStats.Player)
  private:
   class _Internal;
@@ -13847,17 +15199,19 @@ class CMsgServerNetworkStats_Player final :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr remote_addr_;
     uint64_t steamid_;
-    int32_t ping_stddev_ms_;
     int32_t ping_avg_ms_;
     float packet_loss_pct_;
     bool is_bot_;
+    float loss_in_;
+    float loss_out_;
+    int32_t engine_latency_ms_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_netmessages_2eproto;
 };
 // -------------------------------------------------------------------
 
-class CMsgServerNetworkStats final :
+class CMsgServerNetworkStats :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgServerNetworkStats) */ {
  public:
   inline CMsgServerNetworkStats() : CMsgServerNetworkStats(nullptr) {}
@@ -13912,7 +15266,7 @@ class CMsgServerNetworkStats final :
                &_CMsgServerNetworkStats_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    65;
+    69;
 
   friend void swap(CMsgServerNetworkStats& a, CMsgServerNetworkStats& b) {
     a.Swap(&b);
@@ -14001,8 +15355,8 @@ class CMsgServerNetworkStats final :
     kNumSpectatorsFieldNumber = 10,
     kNumTvRelaysFieldNumber = 11,
     kFpsFieldNumber = 12,
-    kAvgLatencyOutFieldNumber = 18,
-    kAvgLatencyInFieldNumber = 19,
+    kAvgPingMsFieldNumber = 18,
+    kAvgEngineLatencyOutFieldNumber = 19,
     kAvgPacketsOutFieldNumber = 20,
     kAvgPacketsInFieldNumber = 21,
     kAvgLossOutFieldNumber = 22,
@@ -14193,30 +15547,30 @@ class CMsgServerNetworkStats final :
   void _internal_set_fps(float value);
   public:
 
-  // optional float avg_latency_out = 18;
-  bool has_avg_latency_out() const;
+  // optional float avg_ping_ms = 18;
+  bool has_avg_ping_ms() const;
   private:
-  bool _internal_has_avg_latency_out() const;
+  bool _internal_has_avg_ping_ms() const;
   public:
-  void clear_avg_latency_out();
-  float avg_latency_out() const;
-  void set_avg_latency_out(float value);
+  void clear_avg_ping_ms();
+  float avg_ping_ms() const;
+  void set_avg_ping_ms(float value);
   private:
-  float _internal_avg_latency_out() const;
-  void _internal_set_avg_latency_out(float value);
+  float _internal_avg_ping_ms() const;
+  void _internal_set_avg_ping_ms(float value);
   public:
 
-  // optional float avg_latency_in = 19;
-  bool has_avg_latency_in() const;
+  // optional float avg_engine_latency_out = 19;
+  bool has_avg_engine_latency_out() const;
   private:
-  bool _internal_has_avg_latency_in() const;
+  bool _internal_has_avg_engine_latency_out() const;
   public:
-  void clear_avg_latency_in();
-  float avg_latency_in() const;
-  void set_avg_latency_in(float value);
+  void clear_avg_engine_latency_out();
+  float avg_engine_latency_out() const;
+  void set_avg_engine_latency_out(float value);
   private:
-  float _internal_avg_latency_in() const;
-  void _internal_set_avg_latency_in(float value);
+  float _internal_avg_engine_latency_out() const;
+  void _internal_set_avg_engine_latency_out(float value);
   public:
 
   // optional float avg_packets_out = 20;
@@ -14372,8 +15726,8 @@ class CMsgServerNetworkStats final :
     int32_t num_spectators_;
     int32_t num_tv_relays_;
     float fps_;
-    float avg_latency_out_;
-    float avg_latency_in_;
+    float avg_ping_ms_;
+    float avg_engine_latency_out_;
     float avg_packets_out_;
     float avg_packets_in_;
     float avg_loss_out_;
@@ -14390,7 +15744,7 @@ class CMsgServerNetworkStats final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_HltvReplay final :
+class CSVCMsg_HltvReplay :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_HltvReplay) */ {
  public:
   inline CSVCMsg_HltvReplay() : CSVCMsg_HltvReplay(nullptr) {}
@@ -14445,7 +15799,7 @@ class CSVCMsg_HltvReplay final :
                &_CSVCMsg_HltvReplay_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    66;
+    70;
 
   friend void swap(CSVCMsg_HltvReplay& a, CSVCMsg_HltvReplay& b) {
     a.Swap(&b);
@@ -14655,7 +16009,7 @@ class CSVCMsg_HltvReplay final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_HltvReplay final :
+class CCLCMsg_HltvReplay :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_HltvReplay) */ {
  public:
   inline CCLCMsg_HltvReplay() : CCLCMsg_HltvReplay(nullptr) {}
@@ -14710,7 +16064,7 @@ class CCLCMsg_HltvReplay final :
                &_CCLCMsg_HltvReplay_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    67;
+    71;
 
   friend void swap(CCLCMsg_HltvReplay& a, CCLCMsg_HltvReplay& b) {
     a.Swap(&b);
@@ -14875,7 +16229,7 @@ class CCLCMsg_HltvReplay final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_Broadcast_Command final :
+class CSVCMsg_Broadcast_Command :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_Broadcast_Command) */ {
  public:
   inline CSVCMsg_Broadcast_Command() : CSVCMsg_Broadcast_Command(nullptr) {}
@@ -14930,7 +16284,7 @@ class CSVCMsg_Broadcast_Command final :
                &_CSVCMsg_Broadcast_Command_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    68;
+    72;
 
   friend void swap(CSVCMsg_Broadcast_Command& a, CSVCMsg_Broadcast_Command& b) {
     a.Swap(&b);
@@ -15040,7 +16394,7 @@ class CSVCMsg_Broadcast_Command final :
 };
 // -------------------------------------------------------------------
 
-class CCLCMsg_HltvFixupOperatorTick final :
+class CCLCMsg_HltvFixupOperatorTick :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_HltvFixupOperatorTick) */ {
  public:
   inline CCLCMsg_HltvFixupOperatorTick() : CCLCMsg_HltvFixupOperatorTick(nullptr) {}
@@ -15095,7 +16449,7 @@ class CCLCMsg_HltvFixupOperatorTick final :
                &_CCLCMsg_HltvFixupOperatorTick_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    69;
+    73;
 
   friend void swap(CCLCMsg_HltvFixupOperatorTick& a, CCLCMsg_HltvFixupOperatorTick& b) {
     a.Swap(&b);
@@ -15325,7 +16679,7 @@ class CCLCMsg_HltvFixupOperatorTick final :
 };
 // -------------------------------------------------------------------
 
-class CSVCMsg_HltvFixupOperatorStatus final :
+class CSVCMsg_HltvFixupOperatorStatus :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_HltvFixupOperatorStatus) */ {
  public:
   inline CSVCMsg_HltvFixupOperatorStatus() : CSVCMsg_HltvFixupOperatorStatus(nullptr) {}
@@ -15380,7 +16734,7 @@ class CSVCMsg_HltvFixupOperatorStatus final :
                &_CSVCMsg_HltvFixupOperatorStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    70;
+    74;
 
   friend void swap(CSVCMsg_HltvFixupOperatorStatus& a, CSVCMsg_HltvFixupOperatorStatus& b) {
     a.Swap(&b);
@@ -15499,6 +16853,395 @@ class CSVCMsg_HltvFixupOperatorStatus final :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr override_operator_name_;
     uint32_t mode_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CMsgServerUserCmd :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgServerUserCmd) */ {
+ public:
+  inline CMsgServerUserCmd() : CMsgServerUserCmd(nullptr) {}
+  ~CMsgServerUserCmd() override;
+  explicit PROTOBUF_CONSTEXPR CMsgServerUserCmd(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgServerUserCmd(const CMsgServerUserCmd& from);
+  CMsgServerUserCmd(CMsgServerUserCmd&& from) noexcept
+    : CMsgServerUserCmd() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgServerUserCmd& operator=(const CMsgServerUserCmd& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgServerUserCmd& operator=(CMsgServerUserCmd&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgServerUserCmd& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgServerUserCmd* internal_default_instance() {
+    return reinterpret_cast<const CMsgServerUserCmd*>(
+               &_CMsgServerUserCmd_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    75;
+
+  friend void swap(CMsgServerUserCmd& a, CMsgServerUserCmd& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgServerUserCmd* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgServerUserCmd* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgServerUserCmd* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgServerUserCmd>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgServerUserCmd& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgServerUserCmd& from) {
+    CMsgServerUserCmd::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgServerUserCmd* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgServerUserCmd";
+  }
+  protected:
+  explicit CMsgServerUserCmd(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDataFieldNumber = 1,
+    kCmdNumberFieldNumber = 2,
+    kServerTickExecutedFieldNumber = 4,
+    kClientTickFieldNumber = 5,
+    kPlayerSlotFieldNumber = 3,
+  };
+  // optional bytes data = 1;
+  bool has_data() const;
+  private:
+  bool _internal_has_data() const;
+  public:
+  void clear_data();
+  const std::string& data() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_data(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_data();
+  PROTOBUF_NODISCARD std::string* release_data();
+  void set_allocated_data(std::string* data);
+  private:
+  const std::string& _internal_data() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
+  std::string* _internal_mutable_data();
+  public:
+
+  // optional int32 cmd_number = 2;
+  bool has_cmd_number() const;
+  private:
+  bool _internal_has_cmd_number() const;
+  public:
+  void clear_cmd_number();
+  int32_t cmd_number() const;
+  void set_cmd_number(int32_t value);
+  private:
+  int32_t _internal_cmd_number() const;
+  void _internal_set_cmd_number(int32_t value);
+  public:
+
+  // optional int32 server_tick_executed = 4;
+  bool has_server_tick_executed() const;
+  private:
+  bool _internal_has_server_tick_executed() const;
+  public:
+  void clear_server_tick_executed();
+  int32_t server_tick_executed() const;
+  void set_server_tick_executed(int32_t value);
+  private:
+  int32_t _internal_server_tick_executed() const;
+  void _internal_set_server_tick_executed(int32_t value);
+  public:
+
+  // optional int32 client_tick = 5;
+  bool has_client_tick() const;
+  private:
+  bool _internal_has_client_tick() const;
+  public:
+  void clear_client_tick();
+  int32_t client_tick() const;
+  void set_client_tick(int32_t value);
+  private:
+  int32_t _internal_client_tick() const;
+  void _internal_set_client_tick(int32_t value);
+  public:
+
+  // optional int32 player_slot = 3 [default = -1];
+  bool has_player_slot() const;
+  private:
+  bool _internal_has_player_slot() const;
+  public:
+  void clear_player_slot();
+  int32_t player_slot() const;
+  void set_player_slot(int32_t value);
+  private:
+  int32_t _internal_player_slot() const;
+  void _internal_set_player_slot(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgServerUserCmd)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+    int32_t cmd_number_;
+    int32_t server_tick_executed_;
+    int32_t client_tick_;
+    int32_t player_slot_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSVCMsg_UserCommands :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_UserCommands) */ {
+ public:
+  inline CSVCMsg_UserCommands() : CSVCMsg_UserCommands(nullptr) {}
+  ~CSVCMsg_UserCommands() override;
+  explicit PROTOBUF_CONSTEXPR CSVCMsg_UserCommands(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSVCMsg_UserCommands(const CSVCMsg_UserCommands& from);
+  CSVCMsg_UserCommands(CSVCMsg_UserCommands&& from) noexcept
+    : CSVCMsg_UserCommands() {
+    *this = ::std::move(from);
+  }
+
+  inline CSVCMsg_UserCommands& operator=(const CSVCMsg_UserCommands& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSVCMsg_UserCommands& operator=(CSVCMsg_UserCommands&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSVCMsg_UserCommands& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSVCMsg_UserCommands* internal_default_instance() {
+    return reinterpret_cast<const CSVCMsg_UserCommands*>(
+               &_CSVCMsg_UserCommands_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    76;
+
+  friend void swap(CSVCMsg_UserCommands& a, CSVCMsg_UserCommands& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSVCMsg_UserCommands* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSVCMsg_UserCommands* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSVCMsg_UserCommands* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSVCMsg_UserCommands>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSVCMsg_UserCommands& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSVCMsg_UserCommands& from) {
+    CSVCMsg_UserCommands::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSVCMsg_UserCommands* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSVCMsg_UserCommands";
+  }
+  protected:
+  explicit CSVCMsg_UserCommands(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kCommandsFieldNumber = 1,
+  };
+  // repeated .CMsgServerUserCmd commands = 1;
+  int commands_size() const;
+  private:
+  int _internal_commands_size() const;
+  public:
+  void clear_commands();
+  ::CMsgServerUserCmd* mutable_commands(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgServerUserCmd >*
+      mutable_commands();
+  private:
+  const ::CMsgServerUserCmd& _internal_commands(int index) const;
+  ::CMsgServerUserCmd* _internal_add_commands();
+  public:
+  const ::CMsgServerUserCmd& commands(int index) const;
+  ::CMsgServerUserCmd* add_commands();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgServerUserCmd >&
+      commands() const;
+
+  // @@protoc_insertion_point(class_scope:CSVCMsg_UserCommands)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgServerUserCmd > commands_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_netmessages_2eproto;
@@ -15766,60 +17509,32 @@ inline void CCLCMsg_Move::set_allocated_data(std::string* data) {
   // @@protoc_insertion_point(field_set_allocated:CCLCMsg_Move.data)
 }
 
-// optional uint32 command_number = 4;
-inline bool CCLCMsg_Move::_internal_has_command_number() const {
+// optional uint32 last_command_number = 4;
+inline bool CCLCMsg_Move::_internal_has_last_command_number() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
-inline bool CCLCMsg_Move::has_command_number() const {
-  return _internal_has_command_number();
+inline bool CCLCMsg_Move::has_last_command_number() const {
+  return _internal_has_last_command_number();
 }
-inline void CCLCMsg_Move::clear_command_number() {
-  _impl_.command_number_ = 0u;
+inline void CCLCMsg_Move::clear_last_command_number() {
+  _impl_.last_command_number_ = 0u;
   _impl_._has_bits_[0] &= ~0x00000002u;
 }
-inline uint32_t CCLCMsg_Move::_internal_command_number() const {
-  return _impl_.command_number_;
+inline uint32_t CCLCMsg_Move::_internal_last_command_number() const {
+  return _impl_.last_command_number_;
 }
-inline uint32_t CCLCMsg_Move::command_number() const {
-  // @@protoc_insertion_point(field_get:CCLCMsg_Move.command_number)
-  return _internal_command_number();
+inline uint32_t CCLCMsg_Move::last_command_number() const {
+  // @@protoc_insertion_point(field_get:CCLCMsg_Move.last_command_number)
+  return _internal_last_command_number();
 }
-inline void CCLCMsg_Move::_internal_set_command_number(uint32_t value) {
+inline void CCLCMsg_Move::_internal_set_last_command_number(uint32_t value) {
   _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.command_number_ = value;
+  _impl_.last_command_number_ = value;
 }
-inline void CCLCMsg_Move::set_command_number(uint32_t value) {
-  _internal_set_command_number(value);
-  // @@protoc_insertion_point(field_set:CCLCMsg_Move.command_number)
-}
-
-// optional uint32 num_commands = 5;
-inline bool CCLCMsg_Move::_internal_has_num_commands() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool CCLCMsg_Move::has_num_commands() const {
-  return _internal_has_num_commands();
-}
-inline void CCLCMsg_Move::clear_num_commands() {
-  _impl_.num_commands_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline uint32_t CCLCMsg_Move::_internal_num_commands() const {
-  return _impl_.num_commands_;
-}
-inline uint32_t CCLCMsg_Move::num_commands() const {
-  // @@protoc_insertion_point(field_get:CCLCMsg_Move.num_commands)
-  return _internal_num_commands();
-}
-inline void CCLCMsg_Move::_internal_set_num_commands(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.num_commands_ = value;
-}
-inline void CCLCMsg_Move::set_num_commands(uint32_t value) {
-  _internal_set_num_commands(value);
-  // @@protoc_insertion_point(field_set:CCLCMsg_Move.num_commands)
+inline void CCLCMsg_Move::set_last_command_number(uint32_t value) {
+  _internal_set_last_command_number(value);
+  // @@protoc_insertion_point(field_set:CCLCMsg_Move.last_command_number)
 }
 
 // -------------------------------------------------------------------
@@ -16033,6 +17748,109 @@ inline void CMsgVoiceAudio::_internal_set_uncompressed_sample_offset(uint32_t va
 inline void CMsgVoiceAudio::set_uncompressed_sample_offset(uint32_t value) {
   _internal_set_uncompressed_sample_offset(value);
   // @@protoc_insertion_point(field_set:CMsgVoiceAudio.uncompressed_sample_offset)
+}
+
+// optional uint32 num_packets = 7;
+inline bool CMsgVoiceAudio::_internal_has_num_packets() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CMsgVoiceAudio::has_num_packets() const {
+  return _internal_has_num_packets();
+}
+inline void CMsgVoiceAudio::clear_num_packets() {
+  _impl_.num_packets_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline uint32_t CMsgVoiceAudio::_internal_num_packets() const {
+  return _impl_.num_packets_;
+}
+inline uint32_t CMsgVoiceAudio::num_packets() const {
+  // @@protoc_insertion_point(field_get:CMsgVoiceAudio.num_packets)
+  return _internal_num_packets();
+}
+inline void CMsgVoiceAudio::_internal_set_num_packets(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.num_packets_ = value;
+}
+inline void CMsgVoiceAudio::set_num_packets(uint32_t value) {
+  _internal_set_num_packets(value);
+  // @@protoc_insertion_point(field_set:CMsgVoiceAudio.num_packets)
+}
+
+// repeated uint32 packet_offsets = 8 [packed = true];
+inline int CMsgVoiceAudio::_internal_packet_offsets_size() const {
+  return _impl_.packet_offsets_.size();
+}
+inline int CMsgVoiceAudio::packet_offsets_size() const {
+  return _internal_packet_offsets_size();
+}
+inline void CMsgVoiceAudio::clear_packet_offsets() {
+  _impl_.packet_offsets_.Clear();
+}
+inline uint32_t CMsgVoiceAudio::_internal_packet_offsets(int index) const {
+  return _impl_.packet_offsets_.Get(index);
+}
+inline uint32_t CMsgVoiceAudio::packet_offsets(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgVoiceAudio.packet_offsets)
+  return _internal_packet_offsets(index);
+}
+inline void CMsgVoiceAudio::set_packet_offsets(int index, uint32_t value) {
+  _impl_.packet_offsets_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgVoiceAudio.packet_offsets)
+}
+inline void CMsgVoiceAudio::_internal_add_packet_offsets(uint32_t value) {
+  _impl_.packet_offsets_.Add(value);
+}
+inline void CMsgVoiceAudio::add_packet_offsets(uint32_t value) {
+  _internal_add_packet_offsets(value);
+  // @@protoc_insertion_point(field_add:CMsgVoiceAudio.packet_offsets)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CMsgVoiceAudio::_internal_packet_offsets() const {
+  return _impl_.packet_offsets_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CMsgVoiceAudio::packet_offsets() const {
+  // @@protoc_insertion_point(field_list:CMsgVoiceAudio.packet_offsets)
+  return _internal_packet_offsets();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CMsgVoiceAudio::_internal_mutable_packet_offsets() {
+  return &_impl_.packet_offsets_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CMsgVoiceAudio::mutable_packet_offsets() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgVoiceAudio.packet_offsets)
+  return _internal_mutable_packet_offsets();
+}
+
+// optional float voice_level = 9;
+inline bool CMsgVoiceAudio::_internal_has_voice_level() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  return value;
+}
+inline bool CMsgVoiceAudio::has_voice_level() const {
+  return _internal_has_voice_level();
+}
+inline void CMsgVoiceAudio::clear_voice_level() {
+  _impl_.voice_level_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000080u;
+}
+inline float CMsgVoiceAudio::_internal_voice_level() const {
+  return _impl_.voice_level_;
+}
+inline float CMsgVoiceAudio::voice_level() const {
+  // @@protoc_insertion_point(field_get:CMsgVoiceAudio.voice_level)
+  return _internal_voice_level();
+}
+inline void CMsgVoiceAudio::_internal_set_voice_level(float value) {
+  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_.voice_level_ = value;
+}
+inline void CMsgVoiceAudio::set_voice_level(float value) {
+  _internal_set_voice_level(value);
+  // @@protoc_insertion_point(field_set:CMsgVoiceAudio.voice_level)
 }
 
 // -------------------------------------------------------------------
@@ -16822,106 +18640,6 @@ inline void CCLCMsg_SplitPlayerConnect::set_allocated_playername(std::string* pl
 
 // -------------------------------------------------------------------
 
-// CCLCMsg_ClientMessage
-
-// optional int32 msg_type = 1;
-inline bool CCLCMsg_ClientMessage::_internal_has_msg_type() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool CCLCMsg_ClientMessage::has_msg_type() const {
-  return _internal_has_msg_type();
-}
-inline void CCLCMsg_ClientMessage::clear_msg_type() {
-  _impl_.msg_type_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-inline int32_t CCLCMsg_ClientMessage::_internal_msg_type() const {
-  return _impl_.msg_type_;
-}
-inline int32_t CCLCMsg_ClientMessage::msg_type() const {
-  // @@protoc_insertion_point(field_get:CCLCMsg_ClientMessage.msg_type)
-  return _internal_msg_type();
-}
-inline void CCLCMsg_ClientMessage::_internal_set_msg_type(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.msg_type_ = value;
-}
-inline void CCLCMsg_ClientMessage::set_msg_type(int32_t value) {
-  _internal_set_msg_type(value);
-  // @@protoc_insertion_point(field_set:CCLCMsg_ClientMessage.msg_type)
-}
-
-// optional bytes data = 2;
-inline bool CCLCMsg_ClientMessage::_internal_has_data() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool CCLCMsg_ClientMessage::has_data() const {
-  return _internal_has_data();
-}
-inline void CCLCMsg_ClientMessage::clear_data() {
-  _impl_.data_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-inline const std::string& CCLCMsg_ClientMessage::data() const {
-  // @@protoc_insertion_point(field_get:CCLCMsg_ClientMessage.data)
-  return _internal_data();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void CCLCMsg_ClientMessage::set_data(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000001u;
- _impl_.data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:CCLCMsg_ClientMessage.data)
-}
-inline std::string* CCLCMsg_ClientMessage::mutable_data() {
-  std::string* _s = _internal_mutable_data();
-  // @@protoc_insertion_point(field_mutable:CCLCMsg_ClientMessage.data)
-  return _s;
-}
-inline const std::string& CCLCMsg_ClientMessage::_internal_data() const {
-  return _impl_.data_.Get();
-}
-inline void CCLCMsg_ClientMessage::_internal_set_data(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.data_.Set(value, GetArenaForAllocation());
-}
-inline std::string* CCLCMsg_ClientMessage::_internal_mutable_data() {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  return _impl_.data_.Mutable(GetArenaForAllocation());
-}
-inline std::string* CCLCMsg_ClientMessage::release_data() {
-  // @@protoc_insertion_point(field_release:CCLCMsg_ClientMessage.data)
-  if (!_internal_has_data()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  auto* p = _impl_.data_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.data_.IsDefault()) {
-    _impl_.data_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void CCLCMsg_ClientMessage::set_allocated_data(std::string* data) {
-  if (data != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000001u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
-  }
-  _impl_.data_.SetAllocated(data, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.data_.IsDefault()) {
-    _impl_.data_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:CCLCMsg_ClientMessage.data)
-}
-
-// -------------------------------------------------------------------
-
 // CCLCMsg_SplitPlayerDisconnect
 
 // optional int32 slot = 1;
@@ -16983,10 +18701,6 @@ inline void CCLCMsg_ServerStatus::set_simplified(bool value) {
   _internal_set_simplified(value);
   // @@protoc_insertion_point(field_set:CCLCMsg_ServerStatus.simplified)
 }
-
-// -------------------------------------------------------------------
-
-// CCLCMsg_ServerPing
 
 // -------------------------------------------------------------------
 
@@ -17191,6 +18905,1714 @@ inline void CCLCMsg_RconServerDetails::set_allocated_token(std::string* token) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:CCLCMsg_RconServerDetails.token)
+}
+
+// -------------------------------------------------------------------
+
+// CMsgSource2SystemSpecs
+
+// optional string cpu_id = 1;
+inline bool CMsgSource2SystemSpecs::_internal_has_cpu_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_cpu_id() const {
+  return _internal_has_cpu_id();
+}
+inline void CMsgSource2SystemSpecs::clear_cpu_id() {
+  _impl_.cpu_id_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CMsgSource2SystemSpecs::cpu_id() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.cpu_id)
+  return _internal_cpu_id();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgSource2SystemSpecs::set_cpu_id(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.cpu_id_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.cpu_id)
+}
+inline std::string* CMsgSource2SystemSpecs::mutable_cpu_id() {
+  std::string* _s = _internal_mutable_cpu_id();
+  // @@protoc_insertion_point(field_mutable:CMsgSource2SystemSpecs.cpu_id)
+  return _s;
+}
+inline const std::string& CMsgSource2SystemSpecs::_internal_cpu_id() const {
+  return _impl_.cpu_id_.Get();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_cpu_id(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.cpu_id_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgSource2SystemSpecs::_internal_mutable_cpu_id() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.cpu_id_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgSource2SystemSpecs::release_cpu_id() {
+  // @@protoc_insertion_point(field_release:CMsgSource2SystemSpecs.cpu_id)
+  if (!_internal_has_cpu_id()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.cpu_id_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.cpu_id_.IsDefault()) {
+    _impl_.cpu_id_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgSource2SystemSpecs::set_allocated_cpu_id(std::string* cpu_id) {
+  if (cpu_id != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.cpu_id_.SetAllocated(cpu_id, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.cpu_id_.IsDefault()) {
+    _impl_.cpu_id_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgSource2SystemSpecs.cpu_id)
+}
+
+// optional string cpu_brand = 2;
+inline bool CMsgSource2SystemSpecs::_internal_has_cpu_brand() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_cpu_brand() const {
+  return _internal_has_cpu_brand();
+}
+inline void CMsgSource2SystemSpecs::clear_cpu_brand() {
+  _impl_.cpu_brand_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& CMsgSource2SystemSpecs::cpu_brand() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.cpu_brand)
+  return _internal_cpu_brand();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgSource2SystemSpecs::set_cpu_brand(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.cpu_brand_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.cpu_brand)
+}
+inline std::string* CMsgSource2SystemSpecs::mutable_cpu_brand() {
+  std::string* _s = _internal_mutable_cpu_brand();
+  // @@protoc_insertion_point(field_mutable:CMsgSource2SystemSpecs.cpu_brand)
+  return _s;
+}
+inline const std::string& CMsgSource2SystemSpecs::_internal_cpu_brand() const {
+  return _impl_.cpu_brand_.Get();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_cpu_brand(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.cpu_brand_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgSource2SystemSpecs::_internal_mutable_cpu_brand() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.cpu_brand_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgSource2SystemSpecs::release_cpu_brand() {
+  // @@protoc_insertion_point(field_release:CMsgSource2SystemSpecs.cpu_brand)
+  if (!_internal_has_cpu_brand()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.cpu_brand_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.cpu_brand_.IsDefault()) {
+    _impl_.cpu_brand_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgSource2SystemSpecs::set_allocated_cpu_brand(std::string* cpu_brand) {
+  if (cpu_brand != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.cpu_brand_.SetAllocated(cpu_brand, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.cpu_brand_.IsDefault()) {
+    _impl_.cpu_brand_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgSource2SystemSpecs.cpu_brand)
+}
+
+// optional uint32 cpu_model = 3;
+inline bool CMsgSource2SystemSpecs::_internal_has_cpu_model() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_cpu_model() const {
+  return _internal_has_cpu_model();
+}
+inline void CMsgSource2SystemSpecs::clear_cpu_model() {
+  _impl_.cpu_model_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline uint32_t CMsgSource2SystemSpecs::_internal_cpu_model() const {
+  return _impl_.cpu_model_;
+}
+inline uint32_t CMsgSource2SystemSpecs::cpu_model() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.cpu_model)
+  return _internal_cpu_model();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_cpu_model(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.cpu_model_ = value;
+}
+inline void CMsgSource2SystemSpecs::set_cpu_model(uint32_t value) {
+  _internal_set_cpu_model(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.cpu_model)
+}
+
+// optional uint32 cpu_num_physical = 4;
+inline bool CMsgSource2SystemSpecs::_internal_has_cpu_num_physical() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_cpu_num_physical() const {
+  return _internal_has_cpu_num_physical();
+}
+inline void CMsgSource2SystemSpecs::clear_cpu_num_physical() {
+  _impl_.cpu_num_physical_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline uint32_t CMsgSource2SystemSpecs::_internal_cpu_num_physical() const {
+  return _impl_.cpu_num_physical_;
+}
+inline uint32_t CMsgSource2SystemSpecs::cpu_num_physical() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.cpu_num_physical)
+  return _internal_cpu_num_physical();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_cpu_num_physical(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.cpu_num_physical_ = value;
+}
+inline void CMsgSource2SystemSpecs::set_cpu_num_physical(uint32_t value) {
+  _internal_set_cpu_num_physical(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.cpu_num_physical)
+}
+
+// optional uint32 ram_physical_total_mb = 21;
+inline bool CMsgSource2SystemSpecs::_internal_has_ram_physical_total_mb() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_ram_physical_total_mb() const {
+  return _internal_has_ram_physical_total_mb();
+}
+inline void CMsgSource2SystemSpecs::clear_ram_physical_total_mb() {
+  _impl_.ram_physical_total_mb_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline uint32_t CMsgSource2SystemSpecs::_internal_ram_physical_total_mb() const {
+  return _impl_.ram_physical_total_mb_;
+}
+inline uint32_t CMsgSource2SystemSpecs::ram_physical_total_mb() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.ram_physical_total_mb)
+  return _internal_ram_physical_total_mb();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_ram_physical_total_mb(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.ram_physical_total_mb_ = value;
+}
+inline void CMsgSource2SystemSpecs::set_ram_physical_total_mb(uint32_t value) {
+  _internal_set_ram_physical_total_mb(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.ram_physical_total_mb)
+}
+
+// optional string gpu_rendersystem_dll_name = 41;
+inline bool CMsgSource2SystemSpecs::_internal_has_gpu_rendersystem_dll_name() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_gpu_rendersystem_dll_name() const {
+  return _internal_has_gpu_rendersystem_dll_name();
+}
+inline void CMsgSource2SystemSpecs::clear_gpu_rendersystem_dll_name() {
+  _impl_.gpu_rendersystem_dll_name_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline const std::string& CMsgSource2SystemSpecs::gpu_rendersystem_dll_name() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.gpu_rendersystem_dll_name)
+  return _internal_gpu_rendersystem_dll_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgSource2SystemSpecs::set_gpu_rendersystem_dll_name(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000004u;
+ _impl_.gpu_rendersystem_dll_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.gpu_rendersystem_dll_name)
+}
+inline std::string* CMsgSource2SystemSpecs::mutable_gpu_rendersystem_dll_name() {
+  std::string* _s = _internal_mutable_gpu_rendersystem_dll_name();
+  // @@protoc_insertion_point(field_mutable:CMsgSource2SystemSpecs.gpu_rendersystem_dll_name)
+  return _s;
+}
+inline const std::string& CMsgSource2SystemSpecs::_internal_gpu_rendersystem_dll_name() const {
+  return _impl_.gpu_rendersystem_dll_name_.Get();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_gpu_rendersystem_dll_name(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.gpu_rendersystem_dll_name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgSource2SystemSpecs::_internal_mutable_gpu_rendersystem_dll_name() {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  return _impl_.gpu_rendersystem_dll_name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgSource2SystemSpecs::release_gpu_rendersystem_dll_name() {
+  // @@protoc_insertion_point(field_release:CMsgSource2SystemSpecs.gpu_rendersystem_dll_name)
+  if (!_internal_has_gpu_rendersystem_dll_name()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  auto* p = _impl_.gpu_rendersystem_dll_name_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.gpu_rendersystem_dll_name_.IsDefault()) {
+    _impl_.gpu_rendersystem_dll_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgSource2SystemSpecs::set_allocated_gpu_rendersystem_dll_name(std::string* gpu_rendersystem_dll_name) {
+  if (gpu_rendersystem_dll_name != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  _impl_.gpu_rendersystem_dll_name_.SetAllocated(gpu_rendersystem_dll_name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.gpu_rendersystem_dll_name_.IsDefault()) {
+    _impl_.gpu_rendersystem_dll_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgSource2SystemSpecs.gpu_rendersystem_dll_name)
+}
+
+// optional uint32 gpu_vendor_id = 42;
+inline bool CMsgSource2SystemSpecs::_internal_has_gpu_vendor_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_gpu_vendor_id() const {
+  return _internal_has_gpu_vendor_id();
+}
+inline void CMsgSource2SystemSpecs::clear_gpu_vendor_id() {
+  _impl_.gpu_vendor_id_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
+}
+inline uint32_t CMsgSource2SystemSpecs::_internal_gpu_vendor_id() const {
+  return _impl_.gpu_vendor_id_;
+}
+inline uint32_t CMsgSource2SystemSpecs::gpu_vendor_id() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.gpu_vendor_id)
+  return _internal_gpu_vendor_id();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_gpu_vendor_id(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_.gpu_vendor_id_ = value;
+}
+inline void CMsgSource2SystemSpecs::set_gpu_vendor_id(uint32_t value) {
+  _internal_set_gpu_vendor_id(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.gpu_vendor_id)
+}
+
+// optional string gpu_driver_name = 43;
+inline bool CMsgSource2SystemSpecs::_internal_has_gpu_driver_name() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_gpu_driver_name() const {
+  return _internal_has_gpu_driver_name();
+}
+inline void CMsgSource2SystemSpecs::clear_gpu_driver_name() {
+  _impl_.gpu_driver_name_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline const std::string& CMsgSource2SystemSpecs::gpu_driver_name() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.gpu_driver_name)
+  return _internal_gpu_driver_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgSource2SystemSpecs::set_gpu_driver_name(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000008u;
+ _impl_.gpu_driver_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.gpu_driver_name)
+}
+inline std::string* CMsgSource2SystemSpecs::mutable_gpu_driver_name() {
+  std::string* _s = _internal_mutable_gpu_driver_name();
+  // @@protoc_insertion_point(field_mutable:CMsgSource2SystemSpecs.gpu_driver_name)
+  return _s;
+}
+inline const std::string& CMsgSource2SystemSpecs::_internal_gpu_driver_name() const {
+  return _impl_.gpu_driver_name_.Get();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_gpu_driver_name(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.gpu_driver_name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgSource2SystemSpecs::_internal_mutable_gpu_driver_name() {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  return _impl_.gpu_driver_name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgSource2SystemSpecs::release_gpu_driver_name() {
+  // @@protoc_insertion_point(field_release:CMsgSource2SystemSpecs.gpu_driver_name)
+  if (!_internal_has_gpu_driver_name()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  auto* p = _impl_.gpu_driver_name_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.gpu_driver_name_.IsDefault()) {
+    _impl_.gpu_driver_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgSource2SystemSpecs::set_allocated_gpu_driver_name(std::string* gpu_driver_name) {
+  if (gpu_driver_name != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  _impl_.gpu_driver_name_.SetAllocated(gpu_driver_name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.gpu_driver_name_.IsDefault()) {
+    _impl_.gpu_driver_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgSource2SystemSpecs.gpu_driver_name)
+}
+
+// optional uint32 gpu_driver_version_high = 44;
+inline bool CMsgSource2SystemSpecs::_internal_has_gpu_driver_version_high() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_gpu_driver_version_high() const {
+  return _internal_has_gpu_driver_version_high();
+}
+inline void CMsgSource2SystemSpecs::clear_gpu_driver_version_high() {
+  _impl_.gpu_driver_version_high_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
+}
+inline uint32_t CMsgSource2SystemSpecs::_internal_gpu_driver_version_high() const {
+  return _impl_.gpu_driver_version_high_;
+}
+inline uint32_t CMsgSource2SystemSpecs::gpu_driver_version_high() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.gpu_driver_version_high)
+  return _internal_gpu_driver_version_high();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_gpu_driver_version_high(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_.gpu_driver_version_high_ = value;
+}
+inline void CMsgSource2SystemSpecs::set_gpu_driver_version_high(uint32_t value) {
+  _internal_set_gpu_driver_version_high(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.gpu_driver_version_high)
+}
+
+// optional uint32 gpu_driver_version_low = 45;
+inline bool CMsgSource2SystemSpecs::_internal_has_gpu_driver_version_low() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_gpu_driver_version_low() const {
+  return _internal_has_gpu_driver_version_low();
+}
+inline void CMsgSource2SystemSpecs::clear_gpu_driver_version_low() {
+  _impl_.gpu_driver_version_low_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000200u;
+}
+inline uint32_t CMsgSource2SystemSpecs::_internal_gpu_driver_version_low() const {
+  return _impl_.gpu_driver_version_low_;
+}
+inline uint32_t CMsgSource2SystemSpecs::gpu_driver_version_low() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.gpu_driver_version_low)
+  return _internal_gpu_driver_version_low();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_gpu_driver_version_low(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_.gpu_driver_version_low_ = value;
+}
+inline void CMsgSource2SystemSpecs::set_gpu_driver_version_low(uint32_t value) {
+  _internal_set_gpu_driver_version_low(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.gpu_driver_version_low)
+}
+
+// optional uint32 gpu_dx_support_level = 46;
+inline bool CMsgSource2SystemSpecs::_internal_has_gpu_dx_support_level() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_gpu_dx_support_level() const {
+  return _internal_has_gpu_dx_support_level();
+}
+inline void CMsgSource2SystemSpecs::clear_gpu_dx_support_level() {
+  _impl_.gpu_dx_support_level_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000400u;
+}
+inline uint32_t CMsgSource2SystemSpecs::_internal_gpu_dx_support_level() const {
+  return _impl_.gpu_dx_support_level_;
+}
+inline uint32_t CMsgSource2SystemSpecs::gpu_dx_support_level() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.gpu_dx_support_level)
+  return _internal_gpu_dx_support_level();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_gpu_dx_support_level(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_.gpu_dx_support_level_ = value;
+}
+inline void CMsgSource2SystemSpecs::set_gpu_dx_support_level(uint32_t value) {
+  _internal_set_gpu_dx_support_level(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.gpu_dx_support_level)
+}
+
+// optional uint32 gpu_texture_memory_size_mb = 47;
+inline bool CMsgSource2SystemSpecs::_internal_has_gpu_texture_memory_size_mb() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  return value;
+}
+inline bool CMsgSource2SystemSpecs::has_gpu_texture_memory_size_mb() const {
+  return _internal_has_gpu_texture_memory_size_mb();
+}
+inline void CMsgSource2SystemSpecs::clear_gpu_texture_memory_size_mb() {
+  _impl_.gpu_texture_memory_size_mb_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
+}
+inline uint32_t CMsgSource2SystemSpecs::_internal_gpu_texture_memory_size_mb() const {
+  return _impl_.gpu_texture_memory_size_mb_;
+}
+inline uint32_t CMsgSource2SystemSpecs::gpu_texture_memory_size_mb() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2SystemSpecs.gpu_texture_memory_size_mb)
+  return _internal_gpu_texture_memory_size_mb();
+}
+inline void CMsgSource2SystemSpecs::_internal_set_gpu_texture_memory_size_mb(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_.gpu_texture_memory_size_mb_ = value;
+}
+inline void CMsgSource2SystemSpecs::set_gpu_texture_memory_size_mb(uint32_t value) {
+  _internal_set_gpu_texture_memory_size_mb(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2SystemSpecs.gpu_texture_memory_size_mb)
+}
+
+// -------------------------------------------------------------------
+
+// CMsgSource2VProfLiteReportItem
+
+// optional string name = 1;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_name() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_name() const {
+  return _internal_has_name();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_name() {
+  _impl_.name_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CMsgSource2VProfLiteReportItem::name() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgSource2VProfLiteReportItem::set_name(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.name)
+}
+inline std::string* CMsgSource2VProfLiteReportItem::mutable_name() {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:CMsgSource2VProfLiteReportItem.name)
+  return _s;
+}
+inline const std::string& CMsgSource2VProfLiteReportItem::_internal_name() const {
+  return _impl_.name_.Get();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_name(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgSource2VProfLiteReportItem::_internal_mutable_name() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgSource2VProfLiteReportItem::release_name() {
+  // @@protoc_insertion_point(field_release:CMsgSource2VProfLiteReportItem.name)
+  if (!_internal_has_name()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.name_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgSource2VProfLiteReportItem::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgSource2VProfLiteReportItem.name)
+}
+
+// optional uint32 active_samples = 2;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_active_samples() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_active_samples() const {
+  return _internal_has_active_samples();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_active_samples() {
+  _impl_.active_samples_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_active_samples() const {
+  return _impl_.active_samples_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::active_samples() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.active_samples)
+  return _internal_active_samples();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_active_samples(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.active_samples_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_active_samples(uint32_t value) {
+  _internal_set_active_samples(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.active_samples)
+}
+
+// optional uint32 usec_max = 3;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_max() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_max() const {
+  return _internal_has_usec_max();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_max() {
+  _impl_.usec_max_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_max() const {
+  return _impl_.usec_max_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_max() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_max)
+  return _internal_usec_max();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_max(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.usec_max_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_max(uint32_t value) {
+  _internal_set_usec_max(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_max)
+}
+
+// optional uint32 usec_avg_active = 11;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_avg_active() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_avg_active() const {
+  return _internal_has_usec_avg_active();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_avg_active() {
+  _impl_.usec_avg_active_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_avg_active() const {
+  return _impl_.usec_avg_active_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_avg_active() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_avg_active)
+  return _internal_usec_avg_active();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_avg_active(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.usec_avg_active_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_avg_active(uint32_t value) {
+  _internal_set_usec_avg_active(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_avg_active)
+}
+
+// optional uint32 usec_p50_active = 12;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_p50_active() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_p50_active() const {
+  return _internal_has_usec_p50_active();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_p50_active() {
+  _impl_.usec_p50_active_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_p50_active() const {
+  return _impl_.usec_p50_active_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_p50_active() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_p50_active)
+  return _internal_usec_p50_active();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_p50_active(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.usec_p50_active_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_p50_active(uint32_t value) {
+  _internal_set_usec_p50_active(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_p50_active)
+}
+
+// optional uint32 usec_p99_active = 13;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_p99_active() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_p99_active() const {
+  return _internal_has_usec_p99_active();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_p99_active() {
+  _impl_.usec_p99_active_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_p99_active() const {
+  return _impl_.usec_p99_active_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_p99_active() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_p99_active)
+  return _internal_usec_p99_active();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_p99_active(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.usec_p99_active_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_p99_active(uint32_t value) {
+  _internal_set_usec_p99_active(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_p99_active)
+}
+
+// optional uint32 usec_avg_all = 21;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_avg_all() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_avg_all() const {
+  return _internal_has_usec_avg_all();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_avg_all() {
+  _impl_.usec_avg_all_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_avg_all() const {
+  return _impl_.usec_avg_all_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_avg_all() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_avg_all)
+  return _internal_usec_avg_all();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_avg_all(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.usec_avg_all_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_avg_all(uint32_t value) {
+  _internal_set_usec_avg_all(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_avg_all)
+}
+
+// optional uint32 usec_p50_all = 22;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_p50_all() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_p50_all() const {
+  return _internal_has_usec_p50_all();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_p50_all() {
+  _impl_.usec_p50_all_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_p50_all() const {
+  return _impl_.usec_p50_all_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_p50_all() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_p50_all)
+  return _internal_usec_p50_all();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_p50_all(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_.usec_p50_all_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_p50_all(uint32_t value) {
+  _internal_set_usec_p50_all(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_p50_all)
+}
+
+// optional uint32 usec_p99_all = 23;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_p99_all() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_p99_all() const {
+  return _internal_has_usec_p99_all();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_p99_all() {
+  _impl_.usec_p99_all_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_p99_all() const {
+  return _impl_.usec_p99_all_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_p99_all() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_p99_all)
+  return _internal_usec_p99_all();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_p99_all(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_.usec_p99_all_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_p99_all(uint32_t value) {
+  _internal_set_usec_p99_all(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_p99_all)
+}
+
+// -------------------------------------------------------------------
+
+// CMsgSource2VProfLiteReport
+
+// optional .CMsgSource2VProfLiteReportItem total = 1;
+inline bool CMsgSource2VProfLiteReport::_internal_has_total() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.total_ != nullptr);
+  return value;
+}
+inline bool CMsgSource2VProfLiteReport::has_total() const {
+  return _internal_has_total();
+}
+inline void CMsgSource2VProfLiteReport::clear_total() {
+  if (_impl_.total_ != nullptr) _impl_.total_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const ::CMsgSource2VProfLiteReportItem& CMsgSource2VProfLiteReport::_internal_total() const {
+  const ::CMsgSource2VProfLiteReportItem* p = _impl_.total_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgSource2VProfLiteReportItem&>(
+      ::_CMsgSource2VProfLiteReportItem_default_instance_);
+}
+inline const ::CMsgSource2VProfLiteReportItem& CMsgSource2VProfLiteReport::total() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReport.total)
+  return _internal_total();
+}
+inline void CMsgSource2VProfLiteReport::unsafe_arena_set_allocated_total(
+    ::CMsgSource2VProfLiteReportItem* total) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.total_);
+  }
+  _impl_.total_ = total;
+  if (total) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CMsgSource2VProfLiteReport.total)
+}
+inline ::CMsgSource2VProfLiteReportItem* CMsgSource2VProfLiteReport::release_total() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgSource2VProfLiteReportItem* temp = _impl_.total_;
+  _impl_.total_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgSource2VProfLiteReportItem* CMsgSource2VProfLiteReport::unsafe_arena_release_total() {
+  // @@protoc_insertion_point(field_release:CMsgSource2VProfLiteReport.total)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgSource2VProfLiteReportItem* temp = _impl_.total_;
+  _impl_.total_ = nullptr;
+  return temp;
+}
+inline ::CMsgSource2VProfLiteReportItem* CMsgSource2VProfLiteReport::_internal_mutable_total() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.total_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgSource2VProfLiteReportItem>(GetArenaForAllocation());
+    _impl_.total_ = p;
+  }
+  return _impl_.total_;
+}
+inline ::CMsgSource2VProfLiteReportItem* CMsgSource2VProfLiteReport::mutable_total() {
+  ::CMsgSource2VProfLiteReportItem* _msg = _internal_mutable_total();
+  // @@protoc_insertion_point(field_mutable:CMsgSource2VProfLiteReport.total)
+  return _msg;
+}
+inline void CMsgSource2VProfLiteReport::set_allocated_total(::CMsgSource2VProfLiteReportItem* total) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.total_;
+  }
+  if (total) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(total);
+    if (message_arena != submessage_arena) {
+      total = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, total, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.total_ = total;
+  // @@protoc_insertion_point(field_set_allocated:CMsgSource2VProfLiteReport.total)
+}
+
+// repeated .CMsgSource2VProfLiteReportItem items = 2;
+inline int CMsgSource2VProfLiteReport::_internal_items_size() const {
+  return _impl_.items_.size();
+}
+inline int CMsgSource2VProfLiteReport::items_size() const {
+  return _internal_items_size();
+}
+inline void CMsgSource2VProfLiteReport::clear_items() {
+  _impl_.items_.Clear();
+}
+inline ::CMsgSource2VProfLiteReportItem* CMsgSource2VProfLiteReport::mutable_items(int index) {
+  // @@protoc_insertion_point(field_mutable:CMsgSource2VProfLiteReport.items)
+  return _impl_.items_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2VProfLiteReportItem >*
+CMsgSource2VProfLiteReport::mutable_items() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2VProfLiteReport.items)
+  return &_impl_.items_;
+}
+inline const ::CMsgSource2VProfLiteReportItem& CMsgSource2VProfLiteReport::_internal_items(int index) const {
+  return _impl_.items_.Get(index);
+}
+inline const ::CMsgSource2VProfLiteReportItem& CMsgSource2VProfLiteReport::items(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReport.items)
+  return _internal_items(index);
+}
+inline ::CMsgSource2VProfLiteReportItem* CMsgSource2VProfLiteReport::_internal_add_items() {
+  return _impl_.items_.Add();
+}
+inline ::CMsgSource2VProfLiteReportItem* CMsgSource2VProfLiteReport::add_items() {
+  ::CMsgSource2VProfLiteReportItem* _add = _internal_add_items();
+  // @@protoc_insertion_point(field_add:CMsgSource2VProfLiteReport.items)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2VProfLiteReportItem >&
+CMsgSource2VProfLiteReport::items() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2VProfLiteReport.items)
+  return _impl_.items_;
+}
+
+// optional uint32 discarded_frames = 3;
+inline bool CMsgSource2VProfLiteReport::_internal_has_discarded_frames() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReport::has_discarded_frames() const {
+  return _internal_has_discarded_frames();
+}
+inline void CMsgSource2VProfLiteReport::clear_discarded_frames() {
+  _impl_.discarded_frames_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline uint32_t CMsgSource2VProfLiteReport::_internal_discarded_frames() const {
+  return _impl_.discarded_frames_;
+}
+inline uint32_t CMsgSource2VProfLiteReport::discarded_frames() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReport.discarded_frames)
+  return _internal_discarded_frames();
+}
+inline void CMsgSource2VProfLiteReport::_internal_set_discarded_frames(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.discarded_frames_ = value;
+}
+inline void CMsgSource2VProfLiteReport::set_discarded_frames(uint32_t value) {
+  _internal_set_discarded_frames(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReport.discarded_frames)
+}
+
+// -------------------------------------------------------------------
+
+// CCLCMsg_Diagnostic
+
+// optional .CMsgSource2SystemSpecs system_specs = 1;
+inline bool CCLCMsg_Diagnostic::_internal_has_system_specs() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.system_specs_ != nullptr);
+  return value;
+}
+inline bool CCLCMsg_Diagnostic::has_system_specs() const {
+  return _internal_has_system_specs();
+}
+inline void CCLCMsg_Diagnostic::clear_system_specs() {
+  if (_impl_.system_specs_ != nullptr) _impl_.system_specs_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const ::CMsgSource2SystemSpecs& CCLCMsg_Diagnostic::_internal_system_specs() const {
+  const ::CMsgSource2SystemSpecs* p = _impl_.system_specs_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgSource2SystemSpecs&>(
+      ::_CMsgSource2SystemSpecs_default_instance_);
+}
+inline const ::CMsgSource2SystemSpecs& CCLCMsg_Diagnostic::system_specs() const {
+  // @@protoc_insertion_point(field_get:CCLCMsg_Diagnostic.system_specs)
+  return _internal_system_specs();
+}
+inline void CCLCMsg_Diagnostic::unsafe_arena_set_allocated_system_specs(
+    ::CMsgSource2SystemSpecs* system_specs) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.system_specs_);
+  }
+  _impl_.system_specs_ = system_specs;
+  if (system_specs) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CCLCMsg_Diagnostic.system_specs)
+}
+inline ::CMsgSource2SystemSpecs* CCLCMsg_Diagnostic::release_system_specs() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgSource2SystemSpecs* temp = _impl_.system_specs_;
+  _impl_.system_specs_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgSource2SystemSpecs* CCLCMsg_Diagnostic::unsafe_arena_release_system_specs() {
+  // @@protoc_insertion_point(field_release:CCLCMsg_Diagnostic.system_specs)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgSource2SystemSpecs* temp = _impl_.system_specs_;
+  _impl_.system_specs_ = nullptr;
+  return temp;
+}
+inline ::CMsgSource2SystemSpecs* CCLCMsg_Diagnostic::_internal_mutable_system_specs() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.system_specs_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgSource2SystemSpecs>(GetArenaForAllocation());
+    _impl_.system_specs_ = p;
+  }
+  return _impl_.system_specs_;
+}
+inline ::CMsgSource2SystemSpecs* CCLCMsg_Diagnostic::mutable_system_specs() {
+  ::CMsgSource2SystemSpecs* _msg = _internal_mutable_system_specs();
+  // @@protoc_insertion_point(field_mutable:CCLCMsg_Diagnostic.system_specs)
+  return _msg;
+}
+inline void CCLCMsg_Diagnostic::set_allocated_system_specs(::CMsgSource2SystemSpecs* system_specs) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.system_specs_;
+  }
+  if (system_specs) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(system_specs);
+    if (message_arena != submessage_arena) {
+      system_specs = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, system_specs, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.system_specs_ = system_specs;
+  // @@protoc_insertion_point(field_set_allocated:CCLCMsg_Diagnostic.system_specs)
+}
+
+// optional .CMsgSource2VProfLiteReport vprof_report = 2;
+inline bool CCLCMsg_Diagnostic::_internal_has_vprof_report() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.vprof_report_ != nullptr);
+  return value;
+}
+inline bool CCLCMsg_Diagnostic::has_vprof_report() const {
+  return _internal_has_vprof_report();
+}
+inline void CCLCMsg_Diagnostic::clear_vprof_report() {
+  if (_impl_.vprof_report_ != nullptr) _impl_.vprof_report_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const ::CMsgSource2VProfLiteReport& CCLCMsg_Diagnostic::_internal_vprof_report() const {
+  const ::CMsgSource2VProfLiteReport* p = _impl_.vprof_report_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgSource2VProfLiteReport&>(
+      ::_CMsgSource2VProfLiteReport_default_instance_);
+}
+inline const ::CMsgSource2VProfLiteReport& CCLCMsg_Diagnostic::vprof_report() const {
+  // @@protoc_insertion_point(field_get:CCLCMsg_Diagnostic.vprof_report)
+  return _internal_vprof_report();
+}
+inline void CCLCMsg_Diagnostic::unsafe_arena_set_allocated_vprof_report(
+    ::CMsgSource2VProfLiteReport* vprof_report) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.vprof_report_);
+  }
+  _impl_.vprof_report_ = vprof_report;
+  if (vprof_report) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CCLCMsg_Diagnostic.vprof_report)
+}
+inline ::CMsgSource2VProfLiteReport* CCLCMsg_Diagnostic::release_vprof_report() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgSource2VProfLiteReport* temp = _impl_.vprof_report_;
+  _impl_.vprof_report_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgSource2VProfLiteReport* CCLCMsg_Diagnostic::unsafe_arena_release_vprof_report() {
+  // @@protoc_insertion_point(field_release:CCLCMsg_Diagnostic.vprof_report)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgSource2VProfLiteReport* temp = _impl_.vprof_report_;
+  _impl_.vprof_report_ = nullptr;
+  return temp;
+}
+inline ::CMsgSource2VProfLiteReport* CCLCMsg_Diagnostic::_internal_mutable_vprof_report() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.vprof_report_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgSource2VProfLiteReport>(GetArenaForAllocation());
+    _impl_.vprof_report_ = p;
+  }
+  return _impl_.vprof_report_;
+}
+inline ::CMsgSource2VProfLiteReport* CCLCMsg_Diagnostic::mutable_vprof_report() {
+  ::CMsgSource2VProfLiteReport* _msg = _internal_mutable_vprof_report();
+  // @@protoc_insertion_point(field_mutable:CCLCMsg_Diagnostic.vprof_report)
+  return _msg;
+}
+inline void CCLCMsg_Diagnostic::set_allocated_vprof_report(::CMsgSource2VProfLiteReport* vprof_report) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.vprof_report_;
+  }
+  if (vprof_report) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(vprof_report);
+    if (message_arena != submessage_arena) {
+      vprof_report = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, vprof_report, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.vprof_report_ = vprof_report;
+  // @@protoc_insertion_point(field_set_allocated:CCLCMsg_Diagnostic.vprof_report)
+}
+
+// -------------------------------------------------------------------
+
+// CSource2Metrics_MatchPerfSummary_Notification_Client
+
+// optional .CMsgSource2SystemSpecs system_specs = 1;
+inline bool CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_has_system_specs() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.system_specs_ != nullptr);
+  return value;
+}
+inline bool CSource2Metrics_MatchPerfSummary_Notification_Client::has_system_specs() const {
+  return _internal_has_system_specs();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::clear_system_specs() {
+  if (_impl_.system_specs_ != nullptr) _impl_.system_specs_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const ::CMsgSource2SystemSpecs& CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_system_specs() const {
+  const ::CMsgSource2SystemSpecs* p = _impl_.system_specs_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgSource2SystemSpecs&>(
+      ::_CMsgSource2SystemSpecs_default_instance_);
+}
+inline const ::CMsgSource2SystemSpecs& CSource2Metrics_MatchPerfSummary_Notification_Client::system_specs() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_MatchPerfSummary_Notification.Client.system_specs)
+  return _internal_system_specs();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::unsafe_arena_set_allocated_system_specs(
+    ::CMsgSource2SystemSpecs* system_specs) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.system_specs_);
+  }
+  _impl_.system_specs_ = system_specs;
+  if (system_specs) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSource2Metrics_MatchPerfSummary_Notification.Client.system_specs)
+}
+inline ::CMsgSource2SystemSpecs* CSource2Metrics_MatchPerfSummary_Notification_Client::release_system_specs() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgSource2SystemSpecs* temp = _impl_.system_specs_;
+  _impl_.system_specs_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgSource2SystemSpecs* CSource2Metrics_MatchPerfSummary_Notification_Client::unsafe_arena_release_system_specs() {
+  // @@protoc_insertion_point(field_release:CSource2Metrics_MatchPerfSummary_Notification.Client.system_specs)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgSource2SystemSpecs* temp = _impl_.system_specs_;
+  _impl_.system_specs_ = nullptr;
+  return temp;
+}
+inline ::CMsgSource2SystemSpecs* CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_mutable_system_specs() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.system_specs_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgSource2SystemSpecs>(GetArenaForAllocation());
+    _impl_.system_specs_ = p;
+  }
+  return _impl_.system_specs_;
+}
+inline ::CMsgSource2SystemSpecs* CSource2Metrics_MatchPerfSummary_Notification_Client::mutable_system_specs() {
+  ::CMsgSource2SystemSpecs* _msg = _internal_mutable_system_specs();
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_MatchPerfSummary_Notification.Client.system_specs)
+  return _msg;
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::set_allocated_system_specs(::CMsgSource2SystemSpecs* system_specs) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.system_specs_;
+  }
+  if (system_specs) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(system_specs);
+    if (message_arena != submessage_arena) {
+      system_specs = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, system_specs, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.system_specs_ = system_specs;
+  // @@protoc_insertion_point(field_set_allocated:CSource2Metrics_MatchPerfSummary_Notification.Client.system_specs)
+}
+
+// optional .CMsgSource2VProfLiteReport profile = 2;
+inline bool CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_has_profile() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.profile_ != nullptr);
+  return value;
+}
+inline bool CSource2Metrics_MatchPerfSummary_Notification_Client::has_profile() const {
+  return _internal_has_profile();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::clear_profile() {
+  if (_impl_.profile_ != nullptr) _impl_.profile_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const ::CMsgSource2VProfLiteReport& CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_profile() const {
+  const ::CMsgSource2VProfLiteReport* p = _impl_.profile_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgSource2VProfLiteReport&>(
+      ::_CMsgSource2VProfLiteReport_default_instance_);
+}
+inline const ::CMsgSource2VProfLiteReport& CSource2Metrics_MatchPerfSummary_Notification_Client::profile() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_MatchPerfSummary_Notification.Client.profile)
+  return _internal_profile();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::unsafe_arena_set_allocated_profile(
+    ::CMsgSource2VProfLiteReport* profile) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.profile_);
+  }
+  _impl_.profile_ = profile;
+  if (profile) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSource2Metrics_MatchPerfSummary_Notification.Client.profile)
+}
+inline ::CMsgSource2VProfLiteReport* CSource2Metrics_MatchPerfSummary_Notification_Client::release_profile() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgSource2VProfLiteReport* temp = _impl_.profile_;
+  _impl_.profile_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgSource2VProfLiteReport* CSource2Metrics_MatchPerfSummary_Notification_Client::unsafe_arena_release_profile() {
+  // @@protoc_insertion_point(field_release:CSource2Metrics_MatchPerfSummary_Notification.Client.profile)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgSource2VProfLiteReport* temp = _impl_.profile_;
+  _impl_.profile_ = nullptr;
+  return temp;
+}
+inline ::CMsgSource2VProfLiteReport* CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_mutable_profile() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.profile_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgSource2VProfLiteReport>(GetArenaForAllocation());
+    _impl_.profile_ = p;
+  }
+  return _impl_.profile_;
+}
+inline ::CMsgSource2VProfLiteReport* CSource2Metrics_MatchPerfSummary_Notification_Client::mutable_profile() {
+  ::CMsgSource2VProfLiteReport* _msg = _internal_mutable_profile();
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_MatchPerfSummary_Notification.Client.profile)
+  return _msg;
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::set_allocated_profile(::CMsgSource2VProfLiteReport* profile) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.profile_;
+  }
+  if (profile) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(profile);
+    if (message_arena != submessage_arena) {
+      profile = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, profile, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.profile_ = profile;
+  // @@protoc_insertion_point(field_set_allocated:CSource2Metrics_MatchPerfSummary_Notification.Client.profile)
+}
+
+// optional uint32 build_id = 3;
+inline bool CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_has_build_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_MatchPerfSummary_Notification_Client::has_build_id() const {
+  return _internal_has_build_id();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::clear_build_id() {
+  _impl_.build_id_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline uint32_t CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_build_id() const {
+  return _impl_.build_id_;
+}
+inline uint32_t CSource2Metrics_MatchPerfSummary_Notification_Client::build_id() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_MatchPerfSummary_Notification.Client.build_id)
+  return _internal_build_id();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_set_build_id(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.build_id_ = value;
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::set_build_id(uint32_t value) {
+  _internal_set_build_id(value);
+  // @@protoc_insertion_point(field_set:CSource2Metrics_MatchPerfSummary_Notification.Client.build_id)
+}
+
+// optional fixed64 steamid = 10;
+inline bool CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_has_steamid() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_MatchPerfSummary_Notification_Client::has_steamid() const {
+  return _internal_has_steamid();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::clear_steamid() {
+  _impl_.steamid_ = uint64_t{0u};
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline uint64_t CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_steamid() const {
+  return _impl_.steamid_;
+}
+inline uint64_t CSource2Metrics_MatchPerfSummary_Notification_Client::steamid() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_MatchPerfSummary_Notification.Client.steamid)
+  return _internal_steamid();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::_internal_set_steamid(uint64_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.steamid_ = value;
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification_Client::set_steamid(uint64_t value) {
+  _internal_set_steamid(value);
+  // @@protoc_insertion_point(field_set:CSource2Metrics_MatchPerfSummary_Notification.Client.steamid)
+}
+
+// -------------------------------------------------------------------
+
+// CSource2Metrics_MatchPerfSummary_Notification
+
+// optional uint32 appid = 1;
+inline bool CSource2Metrics_MatchPerfSummary_Notification::_internal_has_appid() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_MatchPerfSummary_Notification::has_appid() const {
+  return _internal_has_appid();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::clear_appid() {
+  _impl_.appid_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline uint32_t CSource2Metrics_MatchPerfSummary_Notification::_internal_appid() const {
+  return _impl_.appid_;
+}
+inline uint32_t CSource2Metrics_MatchPerfSummary_Notification::appid() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_MatchPerfSummary_Notification.appid)
+  return _internal_appid();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::_internal_set_appid(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.appid_ = value;
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::set_appid(uint32_t value) {
+  _internal_set_appid(value);
+  // @@protoc_insertion_point(field_set:CSource2Metrics_MatchPerfSummary_Notification.appid)
+}
+
+// optional string game_mode = 2;
+inline bool CSource2Metrics_MatchPerfSummary_Notification::_internal_has_game_mode() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_MatchPerfSummary_Notification::has_game_mode() const {
+  return _internal_has_game_mode();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::clear_game_mode() {
+  _impl_.game_mode_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CSource2Metrics_MatchPerfSummary_Notification::game_mode() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_MatchPerfSummary_Notification.game_mode)
+  return _internal_game_mode();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CSource2Metrics_MatchPerfSummary_Notification::set_game_mode(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.game_mode_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CSource2Metrics_MatchPerfSummary_Notification.game_mode)
+}
+inline std::string* CSource2Metrics_MatchPerfSummary_Notification::mutable_game_mode() {
+  std::string* _s = _internal_mutable_game_mode();
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_MatchPerfSummary_Notification.game_mode)
+  return _s;
+}
+inline const std::string& CSource2Metrics_MatchPerfSummary_Notification::_internal_game_mode() const {
+  return _impl_.game_mode_.Get();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::_internal_set_game_mode(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.game_mode_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_MatchPerfSummary_Notification::_internal_mutable_game_mode() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.game_mode_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_MatchPerfSummary_Notification::release_game_mode() {
+  // @@protoc_insertion_point(field_release:CSource2Metrics_MatchPerfSummary_Notification.game_mode)
+  if (!_internal_has_game_mode()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.game_mode_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.game_mode_.IsDefault()) {
+    _impl_.game_mode_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::set_allocated_game_mode(std::string* game_mode) {
+  if (game_mode != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.game_mode_.SetAllocated(game_mode, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.game_mode_.IsDefault()) {
+    _impl_.game_mode_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CSource2Metrics_MatchPerfSummary_Notification.game_mode)
+}
+
+// optional uint32 server_build_id = 3;
+inline bool CSource2Metrics_MatchPerfSummary_Notification::_internal_has_server_build_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_MatchPerfSummary_Notification::has_server_build_id() const {
+  return _internal_has_server_build_id();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::clear_server_build_id() {
+  _impl_.server_build_id_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline uint32_t CSource2Metrics_MatchPerfSummary_Notification::_internal_server_build_id() const {
+  return _impl_.server_build_id_;
+}
+inline uint32_t CSource2Metrics_MatchPerfSummary_Notification::server_build_id() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_MatchPerfSummary_Notification.server_build_id)
+  return _internal_server_build_id();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::_internal_set_server_build_id(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.server_build_id_ = value;
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::set_server_build_id(uint32_t value) {
+  _internal_set_server_build_id(value);
+  // @@protoc_insertion_point(field_set:CSource2Metrics_MatchPerfSummary_Notification.server_build_id)
+}
+
+// optional .CMsgSource2VProfLiteReport server_profile = 10;
+inline bool CSource2Metrics_MatchPerfSummary_Notification::_internal_has_server_profile() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.server_profile_ != nullptr);
+  return value;
+}
+inline bool CSource2Metrics_MatchPerfSummary_Notification::has_server_profile() const {
+  return _internal_has_server_profile();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::clear_server_profile() {
+  if (_impl_.server_profile_ != nullptr) _impl_.server_profile_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline const ::CMsgSource2VProfLiteReport& CSource2Metrics_MatchPerfSummary_Notification::_internal_server_profile() const {
+  const ::CMsgSource2VProfLiteReport* p = _impl_.server_profile_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgSource2VProfLiteReport&>(
+      ::_CMsgSource2VProfLiteReport_default_instance_);
+}
+inline const ::CMsgSource2VProfLiteReport& CSource2Metrics_MatchPerfSummary_Notification::server_profile() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_MatchPerfSummary_Notification.server_profile)
+  return _internal_server_profile();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::unsafe_arena_set_allocated_server_profile(
+    ::CMsgSource2VProfLiteReport* server_profile) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.server_profile_);
+  }
+  _impl_.server_profile_ = server_profile;
+  if (server_profile) {
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSource2Metrics_MatchPerfSummary_Notification.server_profile)
+}
+inline ::CMsgSource2VProfLiteReport* CSource2Metrics_MatchPerfSummary_Notification::release_server_profile() {
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  ::CMsgSource2VProfLiteReport* temp = _impl_.server_profile_;
+  _impl_.server_profile_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgSource2VProfLiteReport* CSource2Metrics_MatchPerfSummary_Notification::unsafe_arena_release_server_profile() {
+  // @@protoc_insertion_point(field_release:CSource2Metrics_MatchPerfSummary_Notification.server_profile)
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  ::CMsgSource2VProfLiteReport* temp = _impl_.server_profile_;
+  _impl_.server_profile_ = nullptr;
+  return temp;
+}
+inline ::CMsgSource2VProfLiteReport* CSource2Metrics_MatchPerfSummary_Notification::_internal_mutable_server_profile() {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  if (_impl_.server_profile_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgSource2VProfLiteReport>(GetArenaForAllocation());
+    _impl_.server_profile_ = p;
+  }
+  return _impl_.server_profile_;
+}
+inline ::CMsgSource2VProfLiteReport* CSource2Metrics_MatchPerfSummary_Notification::mutable_server_profile() {
+  ::CMsgSource2VProfLiteReport* _msg = _internal_mutable_server_profile();
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_MatchPerfSummary_Notification.server_profile)
+  return _msg;
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::set_allocated_server_profile(::CMsgSource2VProfLiteReport* server_profile) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.server_profile_;
+  }
+  if (server_profile) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(server_profile);
+    if (message_arena != submessage_arena) {
+      server_profile = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, server_profile, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  _impl_.server_profile_ = server_profile;
+  // @@protoc_insertion_point(field_set_allocated:CSource2Metrics_MatchPerfSummary_Notification.server_profile)
+}
+
+// repeated .CSource2Metrics_MatchPerfSummary_Notification.Client clients = 11;
+inline int CSource2Metrics_MatchPerfSummary_Notification::_internal_clients_size() const {
+  return _impl_.clients_.size();
+}
+inline int CSource2Metrics_MatchPerfSummary_Notification::clients_size() const {
+  return _internal_clients_size();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::clear_clients() {
+  _impl_.clients_.Clear();
+}
+inline ::CSource2Metrics_MatchPerfSummary_Notification_Client* CSource2Metrics_MatchPerfSummary_Notification::mutable_clients(int index) {
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_MatchPerfSummary_Notification.clients)
+  return _impl_.clients_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSource2Metrics_MatchPerfSummary_Notification_Client >*
+CSource2Metrics_MatchPerfSummary_Notification::mutable_clients() {
+  // @@protoc_insertion_point(field_mutable_list:CSource2Metrics_MatchPerfSummary_Notification.clients)
+  return &_impl_.clients_;
+}
+inline const ::CSource2Metrics_MatchPerfSummary_Notification_Client& CSource2Metrics_MatchPerfSummary_Notification::_internal_clients(int index) const {
+  return _impl_.clients_.Get(index);
+}
+inline const ::CSource2Metrics_MatchPerfSummary_Notification_Client& CSource2Metrics_MatchPerfSummary_Notification::clients(int index) const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_MatchPerfSummary_Notification.clients)
+  return _internal_clients(index);
+}
+inline ::CSource2Metrics_MatchPerfSummary_Notification_Client* CSource2Metrics_MatchPerfSummary_Notification::_internal_add_clients() {
+  return _impl_.clients_.Add();
+}
+inline ::CSource2Metrics_MatchPerfSummary_Notification_Client* CSource2Metrics_MatchPerfSummary_Notification::add_clients() {
+  ::CSource2Metrics_MatchPerfSummary_Notification_Client* _add = _internal_add_clients();
+  // @@protoc_insertion_point(field_add:CSource2Metrics_MatchPerfSummary_Notification.clients)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSource2Metrics_MatchPerfSummary_Notification_Client >&
+CSource2Metrics_MatchPerfSummary_Notification::clients() const {
+  // @@protoc_insertion_point(field_list:CSource2Metrics_MatchPerfSummary_Notification.clients)
+  return _impl_.clients_;
+}
+
+// optional string map = 20;
+inline bool CSource2Metrics_MatchPerfSummary_Notification::_internal_has_map() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_MatchPerfSummary_Notification::has_map() const {
+  return _internal_has_map();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::clear_map() {
+  _impl_.map_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& CSource2Metrics_MatchPerfSummary_Notification::map() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_MatchPerfSummary_Notification.map)
+  return _internal_map();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CSource2Metrics_MatchPerfSummary_Notification::set_map(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.map_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CSource2Metrics_MatchPerfSummary_Notification.map)
+}
+inline std::string* CSource2Metrics_MatchPerfSummary_Notification::mutable_map() {
+  std::string* _s = _internal_mutable_map();
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_MatchPerfSummary_Notification.map)
+  return _s;
+}
+inline const std::string& CSource2Metrics_MatchPerfSummary_Notification::_internal_map() const {
+  return _impl_.map_.Get();
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::_internal_set_map(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.map_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_MatchPerfSummary_Notification::_internal_mutable_map() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.map_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_MatchPerfSummary_Notification::release_map() {
+  // @@protoc_insertion_point(field_release:CSource2Metrics_MatchPerfSummary_Notification.map)
+  if (!_internal_has_map()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.map_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.map_.IsDefault()) {
+    _impl_.map_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CSource2Metrics_MatchPerfSummary_Notification::set_allocated_map(std::string* map) {
+  if (map != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.map_.SetAllocated(map, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.map_.IsDefault()) {
+    _impl_.map_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CSource2Metrics_MatchPerfSummary_Notification.map)
 }
 
 // -------------------------------------------------------------------
@@ -20697,150 +24119,6 @@ CSVCMsg_GameEventList::descriptors() const {
 
 // -------------------------------------------------------------------
 
-// CSVCMsg_PacketEntities_command_queue_info_t
-
-// optional uint32 commands_queued = 1;
-inline bool CSVCMsg_PacketEntities_command_queue_info_t::_internal_has_commands_queued() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool CSVCMsg_PacketEntities_command_queue_info_t::has_commands_queued() const {
-  return _internal_has_commands_queued();
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::clear_commands_queued() {
-  _impl_.commands_queued_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-inline uint32_t CSVCMsg_PacketEntities_command_queue_info_t::_internal_commands_queued() const {
-  return _impl_.commands_queued_;
-}
-inline uint32_t CSVCMsg_PacketEntities_command_queue_info_t::commands_queued() const {
-  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.command_queue_info_t.commands_queued)
-  return _internal_commands_queued();
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::_internal_set_commands_queued(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.commands_queued_ = value;
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::set_commands_queued(uint32_t value) {
-  _internal_set_commands_queued(value);
-  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.command_queue_info_t.commands_queued)
-}
-
-// optional uint32 command_queue_desired_size = 2;
-inline bool CSVCMsg_PacketEntities_command_queue_info_t::_internal_has_command_queue_desired_size() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool CSVCMsg_PacketEntities_command_queue_info_t::has_command_queue_desired_size() const {
-  return _internal_has_command_queue_desired_size();
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::clear_command_queue_desired_size() {
-  _impl_.command_queue_desired_size_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-inline uint32_t CSVCMsg_PacketEntities_command_queue_info_t::_internal_command_queue_desired_size() const {
-  return _impl_.command_queue_desired_size_;
-}
-inline uint32_t CSVCMsg_PacketEntities_command_queue_info_t::command_queue_desired_size() const {
-  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.command_queue_info_t.command_queue_desired_size)
-  return _internal_command_queue_desired_size();
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::_internal_set_command_queue_desired_size(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.command_queue_desired_size_ = value;
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::set_command_queue_desired_size(uint32_t value) {
-  _internal_set_command_queue_desired_size(value);
-  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.command_queue_info_t.command_queue_desired_size)
-}
-
-// optional uint32 starved_command_ticks = 3;
-inline bool CSVCMsg_PacketEntities_command_queue_info_t::_internal_has_starved_command_ticks() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool CSVCMsg_PacketEntities_command_queue_info_t::has_starved_command_ticks() const {
-  return _internal_has_starved_command_ticks();
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::clear_starved_command_ticks() {
-  _impl_.starved_command_ticks_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline uint32_t CSVCMsg_PacketEntities_command_queue_info_t::_internal_starved_command_ticks() const {
-  return _impl_.starved_command_ticks_;
-}
-inline uint32_t CSVCMsg_PacketEntities_command_queue_info_t::starved_command_ticks() const {
-  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.command_queue_info_t.starved_command_ticks)
-  return _internal_starved_command_ticks();
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::_internal_set_starved_command_ticks(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.starved_command_ticks_ = value;
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::set_starved_command_ticks(uint32_t value) {
-  _internal_set_starved_command_ticks(value);
-  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.command_queue_info_t.starved_command_ticks)
-}
-
-// optional float time_dilation_percent = 4;
-inline bool CSVCMsg_PacketEntities_command_queue_info_t::_internal_has_time_dilation_percent() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
-  return value;
-}
-inline bool CSVCMsg_PacketEntities_command_queue_info_t::has_time_dilation_percent() const {
-  return _internal_has_time_dilation_percent();
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::clear_time_dilation_percent() {
-  _impl_.time_dilation_percent_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000008u;
-}
-inline float CSVCMsg_PacketEntities_command_queue_info_t::_internal_time_dilation_percent() const {
-  return _impl_.time_dilation_percent_;
-}
-inline float CSVCMsg_PacketEntities_command_queue_info_t::time_dilation_percent() const {
-  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.command_queue_info_t.time_dilation_percent)
-  return _internal_time_dilation_percent();
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::_internal_set_time_dilation_percent(float value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
-  _impl_.time_dilation_percent_ = value;
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::set_time_dilation_percent(float value) {
-  _internal_set_time_dilation_percent(value);
-  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.command_queue_info_t.time_dilation_percent)
-}
-
-// optional uint32 discarded_command_ticks = 5;
-inline bool CSVCMsg_PacketEntities_command_queue_info_t::_internal_has_discarded_command_ticks() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
-  return value;
-}
-inline bool CSVCMsg_PacketEntities_command_queue_info_t::has_discarded_command_ticks() const {
-  return _internal_has_discarded_command_ticks();
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::clear_discarded_command_ticks() {
-  _impl_.discarded_command_ticks_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000010u;
-}
-inline uint32_t CSVCMsg_PacketEntities_command_queue_info_t::_internal_discarded_command_ticks() const {
-  return _impl_.discarded_command_ticks_;
-}
-inline uint32_t CSVCMsg_PacketEntities_command_queue_info_t::discarded_command_ticks() const {
-  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.command_queue_info_t.discarded_command_ticks)
-  return _internal_discarded_command_ticks();
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::_internal_set_discarded_command_ticks(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
-  _impl_.discarded_command_ticks_ = value;
-}
-inline void CSVCMsg_PacketEntities_command_queue_info_t::set_discarded_command_ticks(uint32_t value) {
-  _internal_set_discarded_command_ticks(value);
-  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.command_queue_info_t.discarded_command_ticks)
-}
-
-// -------------------------------------------------------------------
-
 // CSVCMsg_PacketEntities_alternate_baseline_t
 
 // optional int32 entity_index = 1;
@@ -20901,11 +24179,111 @@ inline void CSVCMsg_PacketEntities_alternate_baseline_t::set_baseline_index(int3
 
 // -------------------------------------------------------------------
 
+// CSVCMsg_PacketEntities_non_transmitted_entities_t
+
+// optional int32 header_count = 1;
+inline bool CSVCMsg_PacketEntities_non_transmitted_entities_t::_internal_has_header_count() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CSVCMsg_PacketEntities_non_transmitted_entities_t::has_header_count() const {
+  return _internal_has_header_count();
+}
+inline void CSVCMsg_PacketEntities_non_transmitted_entities_t::clear_header_count() {
+  _impl_.header_count_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline int32_t CSVCMsg_PacketEntities_non_transmitted_entities_t::_internal_header_count() const {
+  return _impl_.header_count_;
+}
+inline int32_t CSVCMsg_PacketEntities_non_transmitted_entities_t::header_count() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.non_transmitted_entities_t.header_count)
+  return _internal_header_count();
+}
+inline void CSVCMsg_PacketEntities_non_transmitted_entities_t::_internal_set_header_count(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.header_count_ = value;
+}
+inline void CSVCMsg_PacketEntities_non_transmitted_entities_t::set_header_count(int32_t value) {
+  _internal_set_header_count(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.non_transmitted_entities_t.header_count)
+}
+
+// optional bytes data = 2;
+inline bool CSVCMsg_PacketEntities_non_transmitted_entities_t::_internal_has_data() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CSVCMsg_PacketEntities_non_transmitted_entities_t::has_data() const {
+  return _internal_has_data();
+}
+inline void CSVCMsg_PacketEntities_non_transmitted_entities_t::clear_data() {
+  _impl_.data_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CSVCMsg_PacketEntities_non_transmitted_entities_t::data() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.non_transmitted_entities_t.data)
+  return _internal_data();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CSVCMsg_PacketEntities_non_transmitted_entities_t::set_data(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.non_transmitted_entities_t.data)
+}
+inline std::string* CSVCMsg_PacketEntities_non_transmitted_entities_t::mutable_data() {
+  std::string* _s = _internal_mutable_data();
+  // @@protoc_insertion_point(field_mutable:CSVCMsg_PacketEntities.non_transmitted_entities_t.data)
+  return _s;
+}
+inline const std::string& CSVCMsg_PacketEntities_non_transmitted_entities_t::_internal_data() const {
+  return _impl_.data_.Get();
+}
+inline void CSVCMsg_PacketEntities_non_transmitted_entities_t::_internal_set_data(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.data_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CSVCMsg_PacketEntities_non_transmitted_entities_t::_internal_mutable_data() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.data_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CSVCMsg_PacketEntities_non_transmitted_entities_t::release_data() {
+  // @@protoc_insertion_point(field_release:CSVCMsg_PacketEntities.non_transmitted_entities_t.data)
+  if (!_internal_has_data()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.data_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CSVCMsg_PacketEntities_non_transmitted_entities_t::set_allocated_data(std::string* data) {
+  if (data != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.data_.SetAllocated(data, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CSVCMsg_PacketEntities.non_transmitted_entities_t.data)
+}
+
+// -------------------------------------------------------------------
+
 // CSVCMsg_PacketEntities
 
 // optional int32 max_entries = 1;
 inline bool CSVCMsg_PacketEntities::_internal_has_max_entries() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool CSVCMsg_PacketEntities::has_max_entries() const {
@@ -20913,7 +24291,7 @@ inline bool CSVCMsg_PacketEntities::has_max_entries() const {
 }
 inline void CSVCMsg_PacketEntities::clear_max_entries() {
   _impl_.max_entries_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline int32_t CSVCMsg_PacketEntities::_internal_max_entries() const {
   return _impl_.max_entries_;
@@ -20923,7 +24301,7 @@ inline int32_t CSVCMsg_PacketEntities::max_entries() const {
   return _internal_max_entries();
 }
 inline void CSVCMsg_PacketEntities::_internal_set_max_entries(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.max_entries_ = value;
 }
 inline void CSVCMsg_PacketEntities::set_max_entries(int32_t value) {
@@ -20933,7 +24311,7 @@ inline void CSVCMsg_PacketEntities::set_max_entries(int32_t value) {
 
 // optional int32 updated_entries = 2;
 inline bool CSVCMsg_PacketEntities::_internal_has_updated_entries() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool CSVCMsg_PacketEntities::has_updated_entries() const {
@@ -20941,7 +24319,7 @@ inline bool CSVCMsg_PacketEntities::has_updated_entries() const {
 }
 inline void CSVCMsg_PacketEntities::clear_updated_entries() {
   _impl_.updated_entries_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
 inline int32_t CSVCMsg_PacketEntities::_internal_updated_entries() const {
   return _impl_.updated_entries_;
@@ -20951,7 +24329,7 @@ inline int32_t CSVCMsg_PacketEntities::updated_entries() const {
   return _internal_updated_entries();
 }
 inline void CSVCMsg_PacketEntities::_internal_set_updated_entries(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.updated_entries_ = value;
 }
 inline void CSVCMsg_PacketEntities::set_updated_entries(int32_t value) {
@@ -20959,37 +24337,37 @@ inline void CSVCMsg_PacketEntities::set_updated_entries(int32_t value) {
   // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.updated_entries)
 }
 
-// optional bool is_delta = 3;
-inline bool CSVCMsg_PacketEntities::_internal_has_is_delta() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+// optional bool legacy_is_delta = 3;
+inline bool CSVCMsg_PacketEntities::_internal_has_legacy_is_delta() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
-inline bool CSVCMsg_PacketEntities::has_is_delta() const {
-  return _internal_has_is_delta();
+inline bool CSVCMsg_PacketEntities::has_legacy_is_delta() const {
+  return _internal_has_legacy_is_delta();
 }
-inline void CSVCMsg_PacketEntities::clear_is_delta() {
-  _impl_.is_delta_ = false;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+inline void CSVCMsg_PacketEntities::clear_legacy_is_delta() {
+  _impl_.legacy_is_delta_ = false;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
-inline bool CSVCMsg_PacketEntities::_internal_is_delta() const {
-  return _impl_.is_delta_;
+inline bool CSVCMsg_PacketEntities::_internal_legacy_is_delta() const {
+  return _impl_.legacy_is_delta_;
 }
-inline bool CSVCMsg_PacketEntities::is_delta() const {
-  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.is_delta)
-  return _internal_is_delta();
+inline bool CSVCMsg_PacketEntities::legacy_is_delta() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.legacy_is_delta)
+  return _internal_legacy_is_delta();
 }
-inline void CSVCMsg_PacketEntities::_internal_set_is_delta(bool value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
-  _impl_.is_delta_ = value;
+inline void CSVCMsg_PacketEntities::_internal_set_legacy_is_delta(bool value) {
+  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_.legacy_is_delta_ = value;
 }
-inline void CSVCMsg_PacketEntities::set_is_delta(bool value) {
-  _internal_set_is_delta(value);
-  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.is_delta)
+inline void CSVCMsg_PacketEntities::set_legacy_is_delta(bool value) {
+  _internal_set_legacy_is_delta(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.legacy_is_delta)
 }
 
 // optional bool update_baseline = 4;
 inline bool CSVCMsg_PacketEntities::_internal_has_update_baseline() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   return value;
 }
 inline bool CSVCMsg_PacketEntities::has_update_baseline() const {
@@ -20997,7 +24375,7 @@ inline bool CSVCMsg_PacketEntities::has_update_baseline() const {
 }
 inline void CSVCMsg_PacketEntities::clear_update_baseline() {
   _impl_.update_baseline_ = false;
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
 }
 inline bool CSVCMsg_PacketEntities::_internal_update_baseline() const {
   return _impl_.update_baseline_;
@@ -21007,7 +24385,7 @@ inline bool CSVCMsg_PacketEntities::update_baseline() const {
   return _internal_update_baseline();
 }
 inline void CSVCMsg_PacketEntities::_internal_set_update_baseline(bool value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] |= 0x00000100u;
   _impl_.update_baseline_ = value;
 }
 inline void CSVCMsg_PacketEntities::set_update_baseline(bool value) {
@@ -21017,7 +24395,7 @@ inline void CSVCMsg_PacketEntities::set_update_baseline(bool value) {
 
 // optional int32 baseline = 5;
 inline bool CSVCMsg_PacketEntities::_internal_has_baseline() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool CSVCMsg_PacketEntities::has_baseline() const {
@@ -21025,7 +24403,7 @@ inline bool CSVCMsg_PacketEntities::has_baseline() const {
 }
 inline void CSVCMsg_PacketEntities::clear_baseline() {
   _impl_.baseline_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline int32_t CSVCMsg_PacketEntities::_internal_baseline() const {
   return _impl_.baseline_;
@@ -21035,7 +24413,7 @@ inline int32_t CSVCMsg_PacketEntities::baseline() const {
   return _internal_baseline();
 }
 inline void CSVCMsg_PacketEntities::_internal_set_baseline(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.baseline_ = value;
 }
 inline void CSVCMsg_PacketEntities::set_baseline(int32_t value) {
@@ -21045,7 +24423,7 @@ inline void CSVCMsg_PacketEntities::set_baseline(int32_t value) {
 
 // optional int32 delta_from = 6;
 inline bool CSVCMsg_PacketEntities::_internal_has_delta_from() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
   return value;
 }
 inline bool CSVCMsg_PacketEntities::has_delta_from() const {
@@ -21053,7 +24431,7 @@ inline bool CSVCMsg_PacketEntities::has_delta_from() const {
 }
 inline void CSVCMsg_PacketEntities::clear_delta_from() {
   _impl_.delta_from_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000200u;
+  _impl_._has_bits_[0] &= ~0x00000400u;
 }
 inline int32_t CSVCMsg_PacketEntities::_internal_delta_from() const {
   return _impl_.delta_from_;
@@ -21063,7 +24441,7 @@ inline int32_t CSVCMsg_PacketEntities::delta_from() const {
   return _internal_delta_from();
 }
 inline void CSVCMsg_PacketEntities::_internal_set_delta_from(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_._has_bits_[0] |= 0x00000400u;
   _impl_.delta_from_ = value;
 }
 inline void CSVCMsg_PacketEntities::set_delta_from(int32_t value) {
@@ -21141,7 +24519,7 @@ inline void CSVCMsg_PacketEntities::set_allocated_entity_data(std::string* entit
 
 // optional bool pending_full_frame = 8;
 inline bool CSVCMsg_PacketEntities::_internal_has_pending_full_frame() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
   return value;
 }
 inline bool CSVCMsg_PacketEntities::has_pending_full_frame() const {
@@ -21149,7 +24527,7 @@ inline bool CSVCMsg_PacketEntities::has_pending_full_frame() const {
 }
 inline void CSVCMsg_PacketEntities::clear_pending_full_frame() {
   _impl_.pending_full_frame_ = false;
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00000200u;
 }
 inline bool CSVCMsg_PacketEntities::_internal_pending_full_frame() const {
   return _impl_.pending_full_frame_;
@@ -21159,7 +24537,7 @@ inline bool CSVCMsg_PacketEntities::pending_full_frame() const {
   return _internal_pending_full_frame();
 }
 inline void CSVCMsg_PacketEntities::_internal_set_pending_full_frame(bool value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_._has_bits_[0] |= 0x00000200u;
   _impl_.pending_full_frame_ = value;
 }
 inline void CSVCMsg_PacketEntities::set_pending_full_frame(bool value) {
@@ -21169,7 +24547,7 @@ inline void CSVCMsg_PacketEntities::set_pending_full_frame(bool value) {
 
 // optional uint32 active_spawngroup_handle = 9;
 inline bool CSVCMsg_PacketEntities::_internal_has_active_spawngroup_handle() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
   return value;
 }
 inline bool CSVCMsg_PacketEntities::has_active_spawngroup_handle() const {
@@ -21177,7 +24555,7 @@ inline bool CSVCMsg_PacketEntities::has_active_spawngroup_handle() const {
 }
 inline void CSVCMsg_PacketEntities::clear_active_spawngroup_handle() {
   _impl_.active_spawngroup_handle_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000400u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
 }
 inline uint32_t CSVCMsg_PacketEntities::_internal_active_spawngroup_handle() const {
   return _impl_.active_spawngroup_handle_;
@@ -21187,7 +24565,7 @@ inline uint32_t CSVCMsg_PacketEntities::active_spawngroup_handle() const {
   return _internal_active_spawngroup_handle();
 }
 inline void CSVCMsg_PacketEntities::_internal_set_active_spawngroup_handle(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_._has_bits_[0] |= 0x00000800u;
   _impl_.active_spawngroup_handle_ = value;
 }
 inline void CSVCMsg_PacketEntities::set_active_spawngroup_handle(uint32_t value) {
@@ -21197,7 +24575,7 @@ inline void CSVCMsg_PacketEntities::set_active_spawngroup_handle(uint32_t value)
 
 // optional uint32 max_spawngroup_creationsequence = 10;
 inline bool CSVCMsg_PacketEntities::_internal_has_max_spawngroup_creationsequence() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
   return value;
 }
 inline bool CSVCMsg_PacketEntities::has_max_spawngroup_creationsequence() const {
@@ -21205,7 +24583,7 @@ inline bool CSVCMsg_PacketEntities::has_max_spawngroup_creationsequence() const 
 }
 inline void CSVCMsg_PacketEntities::clear_max_spawngroup_creationsequence() {
   _impl_.max_spawngroup_creationsequence_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000800u;
+  _impl_._has_bits_[0] &= ~0x00001000u;
 }
 inline uint32_t CSVCMsg_PacketEntities::_internal_max_spawngroup_creationsequence() const {
   return _impl_.max_spawngroup_creationsequence_;
@@ -21215,7 +24593,7 @@ inline uint32_t CSVCMsg_PacketEntities::max_spawngroup_creationsequence() const 
   return _internal_max_spawngroup_creationsequence();
 }
 inline void CSVCMsg_PacketEntities::_internal_set_max_spawngroup_creationsequence(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_._has_bits_[0] |= 0x00001000u;
   _impl_.max_spawngroup_creationsequence_ = value;
 }
 inline void CSVCMsg_PacketEntities::set_max_spawngroup_creationsequence(uint32_t value) {
@@ -21223,37 +24601,65 @@ inline void CSVCMsg_PacketEntities::set_max_spawngroup_creationsequence(uint32_t
   // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.max_spawngroup_creationsequence)
 }
 
-// optional uint32 last_cmd_number = 11;
-inline bool CSVCMsg_PacketEntities::_internal_has_last_cmd_number() const {
-  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+// optional uint32 last_cmd_number_executed = 11;
+inline bool CSVCMsg_PacketEntities::_internal_has_last_cmd_number_executed() const {
+  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
   return value;
 }
-inline bool CSVCMsg_PacketEntities::has_last_cmd_number() const {
-  return _internal_has_last_cmd_number();
+inline bool CSVCMsg_PacketEntities::has_last_cmd_number_executed() const {
+  return _internal_has_last_cmd_number_executed();
 }
-inline void CSVCMsg_PacketEntities::clear_last_cmd_number() {
-  _impl_.last_cmd_number_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00001000u;
+inline void CSVCMsg_PacketEntities::clear_last_cmd_number_executed() {
+  _impl_.last_cmd_number_executed_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00002000u;
 }
-inline uint32_t CSVCMsg_PacketEntities::_internal_last_cmd_number() const {
-  return _impl_.last_cmd_number_;
+inline uint32_t CSVCMsg_PacketEntities::_internal_last_cmd_number_executed() const {
+  return _impl_.last_cmd_number_executed_;
 }
-inline uint32_t CSVCMsg_PacketEntities::last_cmd_number() const {
-  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.last_cmd_number)
-  return _internal_last_cmd_number();
+inline uint32_t CSVCMsg_PacketEntities::last_cmd_number_executed() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.last_cmd_number_executed)
+  return _internal_last_cmd_number_executed();
 }
-inline void CSVCMsg_PacketEntities::_internal_set_last_cmd_number(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00001000u;
-  _impl_.last_cmd_number_ = value;
+inline void CSVCMsg_PacketEntities::_internal_set_last_cmd_number_executed(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_.last_cmd_number_executed_ = value;
 }
-inline void CSVCMsg_PacketEntities::set_last_cmd_number(uint32_t value) {
-  _internal_set_last_cmd_number(value);
-  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.last_cmd_number)
+inline void CSVCMsg_PacketEntities::set_last_cmd_number_executed(uint32_t value) {
+  _internal_set_last_cmd_number_executed(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.last_cmd_number_executed)
+}
+
+// optional sint32 last_cmd_number_recv_delta = 17;
+inline bool CSVCMsg_PacketEntities::_internal_has_last_cmd_number_recv_delta() const {
+  bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
+  return value;
+}
+inline bool CSVCMsg_PacketEntities::has_last_cmd_number_recv_delta() const {
+  return _internal_has_last_cmd_number_recv_delta();
+}
+inline void CSVCMsg_PacketEntities::clear_last_cmd_number_recv_delta() {
+  _impl_.last_cmd_number_recv_delta_ = 0;
+  _impl_._has_bits_[0] &= ~0x00010000u;
+}
+inline int32_t CSVCMsg_PacketEntities::_internal_last_cmd_number_recv_delta() const {
+  return _impl_.last_cmd_number_recv_delta_;
+}
+inline int32_t CSVCMsg_PacketEntities::last_cmd_number_recv_delta() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.last_cmd_number_recv_delta)
+  return _internal_last_cmd_number_recv_delta();
+}
+inline void CSVCMsg_PacketEntities::_internal_set_last_cmd_number_recv_delta(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00010000u;
+  _impl_.last_cmd_number_recv_delta_ = value;
+}
+inline void CSVCMsg_PacketEntities::set_last_cmd_number_recv_delta(int32_t value) {
+  _internal_set_last_cmd_number_recv_delta(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.last_cmd_number_recv_delta)
 }
 
 // optional uint32 server_tick = 12;
 inline bool CSVCMsg_PacketEntities::_internal_has_server_tick() const {
-  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
   return value;
 }
 inline bool CSVCMsg_PacketEntities::has_server_tick() const {
@@ -21261,7 +24667,7 @@ inline bool CSVCMsg_PacketEntities::has_server_tick() const {
 }
 inline void CSVCMsg_PacketEntities::clear_server_tick() {
   _impl_.server_tick_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00002000u;
+  _impl_._has_bits_[0] &= ~0x00004000u;
 }
 inline uint32_t CSVCMsg_PacketEntities::_internal_server_tick() const {
   return _impl_.server_tick_;
@@ -21271,7 +24677,7 @@ inline uint32_t CSVCMsg_PacketEntities::server_tick() const {
   return _internal_server_tick();
 }
 inline void CSVCMsg_PacketEntities::_internal_set_server_tick(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_._has_bits_[0] |= 0x00004000u;
   _impl_.server_tick_ = value;
 }
 inline void CSVCMsg_PacketEntities::set_server_tick(uint32_t value) {
@@ -21347,96 +24753,6 @@ inline void CSVCMsg_PacketEntities::set_allocated_serialized_entities(std::strin
   // @@protoc_insertion_point(field_set_allocated:CSVCMsg_PacketEntities.serialized_entities)
 }
 
-// optional .CSVCMsg_PacketEntities.command_queue_info_t command_queue_info = 14;
-inline bool CSVCMsg_PacketEntities::_internal_has_command_queue_info() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  PROTOBUF_ASSUME(!value || _impl_.command_queue_info_ != nullptr);
-  return value;
-}
-inline bool CSVCMsg_PacketEntities::has_command_queue_info() const {
-  return _internal_has_command_queue_info();
-}
-inline void CSVCMsg_PacketEntities::clear_command_queue_info() {
-  if (_impl_.command_queue_info_ != nullptr) _impl_.command_queue_info_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline const ::CSVCMsg_PacketEntities_command_queue_info_t& CSVCMsg_PacketEntities::_internal_command_queue_info() const {
-  const ::CSVCMsg_PacketEntities_command_queue_info_t* p = _impl_.command_queue_info_;
-  return p != nullptr ? *p : reinterpret_cast<const ::CSVCMsg_PacketEntities_command_queue_info_t&>(
-      ::_CSVCMsg_PacketEntities_command_queue_info_t_default_instance_);
-}
-inline const ::CSVCMsg_PacketEntities_command_queue_info_t& CSVCMsg_PacketEntities::command_queue_info() const {
-  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.command_queue_info)
-  return _internal_command_queue_info();
-}
-inline void CSVCMsg_PacketEntities::unsafe_arena_set_allocated_command_queue_info(
-    ::CSVCMsg_PacketEntities_command_queue_info_t* command_queue_info) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.command_queue_info_);
-  }
-  _impl_.command_queue_info_ = command_queue_info;
-  if (command_queue_info) {
-    _impl_._has_bits_[0] |= 0x00000004u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000004u;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSVCMsg_PacketEntities.command_queue_info)
-}
-inline ::CSVCMsg_PacketEntities_command_queue_info_t* CSVCMsg_PacketEntities::release_command_queue_info() {
-  _impl_._has_bits_[0] &= ~0x00000004u;
-  ::CSVCMsg_PacketEntities_command_queue_info_t* temp = _impl_.command_queue_info_;
-  _impl_.command_queue_info_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::CSVCMsg_PacketEntities_command_queue_info_t* CSVCMsg_PacketEntities::unsafe_arena_release_command_queue_info() {
-  // @@protoc_insertion_point(field_release:CSVCMsg_PacketEntities.command_queue_info)
-  _impl_._has_bits_[0] &= ~0x00000004u;
-  ::CSVCMsg_PacketEntities_command_queue_info_t* temp = _impl_.command_queue_info_;
-  _impl_.command_queue_info_ = nullptr;
-  return temp;
-}
-inline ::CSVCMsg_PacketEntities_command_queue_info_t* CSVCMsg_PacketEntities::_internal_mutable_command_queue_info() {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  if (_impl_.command_queue_info_ == nullptr) {
-    auto* p = CreateMaybeMessage<::CSVCMsg_PacketEntities_command_queue_info_t>(GetArenaForAllocation());
-    _impl_.command_queue_info_ = p;
-  }
-  return _impl_.command_queue_info_;
-}
-inline ::CSVCMsg_PacketEntities_command_queue_info_t* CSVCMsg_PacketEntities::mutable_command_queue_info() {
-  ::CSVCMsg_PacketEntities_command_queue_info_t* _msg = _internal_mutable_command_queue_info();
-  // @@protoc_insertion_point(field_mutable:CSVCMsg_PacketEntities.command_queue_info)
-  return _msg;
-}
-inline void CSVCMsg_PacketEntities::set_allocated_command_queue_info(::CSVCMsg_PacketEntities_command_queue_info_t* command_queue_info) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete _impl_.command_queue_info_;
-  }
-  if (command_queue_info) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(command_queue_info);
-    if (message_arena != submessage_arena) {
-      command_queue_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, command_queue_info, submessage_arena);
-    }
-    _impl_._has_bits_[0] |= 0x00000004u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000004u;
-  }
-  _impl_.command_queue_info_ = command_queue_info;
-  // @@protoc_insertion_point(field_set_allocated:CSVCMsg_PacketEntities.command_queue_info)
-}
-
 // repeated .CSVCMsg_PacketEntities.alternate_baseline_t alternate_baselines = 15;
 inline int CSVCMsg_PacketEntities::_internal_alternate_baselines_size() const {
   return _impl_.alternate_baselines_.size();
@@ -21475,6 +24791,295 @@ inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSVCMsg_PacketEntities
 CSVCMsg_PacketEntities::alternate_baselines() const {
   // @@protoc_insertion_point(field_list:CSVCMsg_PacketEntities.alternate_baselines)
   return _impl_.alternate_baselines_;
+}
+
+// optional uint32 has_pvs_vis_bits = 16;
+inline bool CSVCMsg_PacketEntities::_internal_has_has_pvs_vis_bits() const {
+  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
+  return value;
+}
+inline bool CSVCMsg_PacketEntities::has_has_pvs_vis_bits() const {
+  return _internal_has_has_pvs_vis_bits();
+}
+inline void CSVCMsg_PacketEntities::clear_has_pvs_vis_bits() {
+  _impl_.has_pvs_vis_bits_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00008000u;
+}
+inline uint32_t CSVCMsg_PacketEntities::_internal_has_pvs_vis_bits() const {
+  return _impl_.has_pvs_vis_bits_;
+}
+inline uint32_t CSVCMsg_PacketEntities::has_pvs_vis_bits() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.has_pvs_vis_bits)
+  return _internal_has_pvs_vis_bits();
+}
+inline void CSVCMsg_PacketEntities::_internal_set_has_pvs_vis_bits(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00008000u;
+  _impl_.has_pvs_vis_bits_ = value;
+}
+inline void CSVCMsg_PacketEntities::set_has_pvs_vis_bits(uint32_t value) {
+  _internal_set_has_pvs_vis_bits(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.has_pvs_vis_bits)
+}
+
+// repeated sint32 cmd_recv_status = 22 [packed = true];
+inline int CSVCMsg_PacketEntities::_internal_cmd_recv_status_size() const {
+  return _impl_.cmd_recv_status_.size();
+}
+inline int CSVCMsg_PacketEntities::cmd_recv_status_size() const {
+  return _internal_cmd_recv_status_size();
+}
+inline void CSVCMsg_PacketEntities::clear_cmd_recv_status() {
+  _impl_.cmd_recv_status_.Clear();
+}
+inline int32_t CSVCMsg_PacketEntities::_internal_cmd_recv_status(int index) const {
+  return _impl_.cmd_recv_status_.Get(index);
+}
+inline int32_t CSVCMsg_PacketEntities::cmd_recv_status(int index) const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.cmd_recv_status)
+  return _internal_cmd_recv_status(index);
+}
+inline void CSVCMsg_PacketEntities::set_cmd_recv_status(int index, int32_t value) {
+  _impl_.cmd_recv_status_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.cmd_recv_status)
+}
+inline void CSVCMsg_PacketEntities::_internal_add_cmd_recv_status(int32_t value) {
+  _impl_.cmd_recv_status_.Add(value);
+}
+inline void CSVCMsg_PacketEntities::add_cmd_recv_status(int32_t value) {
+  _internal_add_cmd_recv_status(value);
+  // @@protoc_insertion_point(field_add:CSVCMsg_PacketEntities.cmd_recv_status)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CSVCMsg_PacketEntities::_internal_cmd_recv_status() const {
+  return _impl_.cmd_recv_status_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CSVCMsg_PacketEntities::cmd_recv_status() const {
+  // @@protoc_insertion_point(field_list:CSVCMsg_PacketEntities.cmd_recv_status)
+  return _internal_cmd_recv_status();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CSVCMsg_PacketEntities::_internal_mutable_cmd_recv_status() {
+  return &_impl_.cmd_recv_status_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CSVCMsg_PacketEntities::mutable_cmd_recv_status() {
+  // @@protoc_insertion_point(field_mutable_list:CSVCMsg_PacketEntities.cmd_recv_status)
+  return _internal_mutable_cmd_recv_status();
+}
+
+// optional .CSVCMsg_PacketEntities.non_transmitted_entities_t non_transmitted_entities = 19;
+inline bool CSVCMsg_PacketEntities::_internal_has_non_transmitted_entities() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.non_transmitted_entities_ != nullptr);
+  return value;
+}
+inline bool CSVCMsg_PacketEntities::has_non_transmitted_entities() const {
+  return _internal_has_non_transmitted_entities();
+}
+inline void CSVCMsg_PacketEntities::clear_non_transmitted_entities() {
+  if (_impl_.non_transmitted_entities_ != nullptr) _impl_.non_transmitted_entities_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline const ::CSVCMsg_PacketEntities_non_transmitted_entities_t& CSVCMsg_PacketEntities::_internal_non_transmitted_entities() const {
+  const ::CSVCMsg_PacketEntities_non_transmitted_entities_t* p = _impl_.non_transmitted_entities_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CSVCMsg_PacketEntities_non_transmitted_entities_t&>(
+      ::_CSVCMsg_PacketEntities_non_transmitted_entities_t_default_instance_);
+}
+inline const ::CSVCMsg_PacketEntities_non_transmitted_entities_t& CSVCMsg_PacketEntities::non_transmitted_entities() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.non_transmitted_entities)
+  return _internal_non_transmitted_entities();
+}
+inline void CSVCMsg_PacketEntities::unsafe_arena_set_allocated_non_transmitted_entities(
+    ::CSVCMsg_PacketEntities_non_transmitted_entities_t* non_transmitted_entities) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.non_transmitted_entities_);
+  }
+  _impl_.non_transmitted_entities_ = non_transmitted_entities;
+  if (non_transmitted_entities) {
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSVCMsg_PacketEntities.non_transmitted_entities)
+}
+inline ::CSVCMsg_PacketEntities_non_transmitted_entities_t* CSVCMsg_PacketEntities::release_non_transmitted_entities() {
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CSVCMsg_PacketEntities_non_transmitted_entities_t* temp = _impl_.non_transmitted_entities_;
+  _impl_.non_transmitted_entities_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CSVCMsg_PacketEntities_non_transmitted_entities_t* CSVCMsg_PacketEntities::unsafe_arena_release_non_transmitted_entities() {
+  // @@protoc_insertion_point(field_release:CSVCMsg_PacketEntities.non_transmitted_entities)
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CSVCMsg_PacketEntities_non_transmitted_entities_t* temp = _impl_.non_transmitted_entities_;
+  _impl_.non_transmitted_entities_ = nullptr;
+  return temp;
+}
+inline ::CSVCMsg_PacketEntities_non_transmitted_entities_t* CSVCMsg_PacketEntities::_internal_mutable_non_transmitted_entities() {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  if (_impl_.non_transmitted_entities_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CSVCMsg_PacketEntities_non_transmitted_entities_t>(GetArenaForAllocation());
+    _impl_.non_transmitted_entities_ = p;
+  }
+  return _impl_.non_transmitted_entities_;
+}
+inline ::CSVCMsg_PacketEntities_non_transmitted_entities_t* CSVCMsg_PacketEntities::mutable_non_transmitted_entities() {
+  ::CSVCMsg_PacketEntities_non_transmitted_entities_t* _msg = _internal_mutable_non_transmitted_entities();
+  // @@protoc_insertion_point(field_mutable:CSVCMsg_PacketEntities.non_transmitted_entities)
+  return _msg;
+}
+inline void CSVCMsg_PacketEntities::set_allocated_non_transmitted_entities(::CSVCMsg_PacketEntities_non_transmitted_entities_t* non_transmitted_entities) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.non_transmitted_entities_;
+  }
+  if (non_transmitted_entities) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(non_transmitted_entities);
+    if (message_arena != submessage_arena) {
+      non_transmitted_entities = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, non_transmitted_entities, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  _impl_.non_transmitted_entities_ = non_transmitted_entities;
+  // @@protoc_insertion_point(field_set_allocated:CSVCMsg_PacketEntities.non_transmitted_entities)
+}
+
+// optional uint32 cq_starved_command_ticks = 20;
+inline bool CSVCMsg_PacketEntities::_internal_has_cq_starved_command_ticks() const {
+  bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
+  return value;
+}
+inline bool CSVCMsg_PacketEntities::has_cq_starved_command_ticks() const {
+  return _internal_has_cq_starved_command_ticks();
+}
+inline void CSVCMsg_PacketEntities::clear_cq_starved_command_ticks() {
+  _impl_.cq_starved_command_ticks_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00020000u;
+}
+inline uint32_t CSVCMsg_PacketEntities::_internal_cq_starved_command_ticks() const {
+  return _impl_.cq_starved_command_ticks_;
+}
+inline uint32_t CSVCMsg_PacketEntities::cq_starved_command_ticks() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.cq_starved_command_ticks)
+  return _internal_cq_starved_command_ticks();
+}
+inline void CSVCMsg_PacketEntities::_internal_set_cq_starved_command_ticks(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00020000u;
+  _impl_.cq_starved_command_ticks_ = value;
+}
+inline void CSVCMsg_PacketEntities::set_cq_starved_command_ticks(uint32_t value) {
+  _internal_set_cq_starved_command_ticks(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.cq_starved_command_ticks)
+}
+
+// optional uint32 cq_discarded_command_ticks = 21;
+inline bool CSVCMsg_PacketEntities::_internal_has_cq_discarded_command_ticks() const {
+  bool value = (_impl_._has_bits_[0] & 0x00040000u) != 0;
+  return value;
+}
+inline bool CSVCMsg_PacketEntities::has_cq_discarded_command_ticks() const {
+  return _internal_has_cq_discarded_command_ticks();
+}
+inline void CSVCMsg_PacketEntities::clear_cq_discarded_command_ticks() {
+  _impl_.cq_discarded_command_ticks_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00040000u;
+}
+inline uint32_t CSVCMsg_PacketEntities::_internal_cq_discarded_command_ticks() const {
+  return _impl_.cq_discarded_command_ticks_;
+}
+inline uint32_t CSVCMsg_PacketEntities::cq_discarded_command_ticks() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.cq_discarded_command_ticks)
+  return _internal_cq_discarded_command_ticks();
+}
+inline void CSVCMsg_PacketEntities::_internal_set_cq_discarded_command_ticks(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00040000u;
+  _impl_.cq_discarded_command_ticks_ = value;
+}
+inline void CSVCMsg_PacketEntities::set_cq_discarded_command_ticks(uint32_t value) {
+  _internal_set_cq_discarded_command_ticks(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.cq_discarded_command_ticks)
+}
+
+// optional bytes dev_padding = 999;
+inline bool CSVCMsg_PacketEntities::_internal_has_dev_padding() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CSVCMsg_PacketEntities::has_dev_padding() const {
+  return _internal_has_dev_padding();
+}
+inline void CSVCMsg_PacketEntities::clear_dev_padding() {
+  _impl_.dev_padding_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline const std::string& CSVCMsg_PacketEntities::dev_padding() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_PacketEntities.dev_padding)
+  return _internal_dev_padding();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CSVCMsg_PacketEntities::set_dev_padding(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000004u;
+ _impl_.dev_padding_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CSVCMsg_PacketEntities.dev_padding)
+}
+inline std::string* CSVCMsg_PacketEntities::mutable_dev_padding() {
+  std::string* _s = _internal_mutable_dev_padding();
+  // @@protoc_insertion_point(field_mutable:CSVCMsg_PacketEntities.dev_padding)
+  return _s;
+}
+inline const std::string& CSVCMsg_PacketEntities::_internal_dev_padding() const {
+  return _impl_.dev_padding_.Get();
+}
+inline void CSVCMsg_PacketEntities::_internal_set_dev_padding(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.dev_padding_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CSVCMsg_PacketEntities::_internal_mutable_dev_padding() {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  return _impl_.dev_padding_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CSVCMsg_PacketEntities::release_dev_padding() {
+  // @@protoc_insertion_point(field_release:CSVCMsg_PacketEntities.dev_padding)
+  if (!_internal_has_dev_padding()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  auto* p = _impl_.dev_padding_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.dev_padding_.IsDefault()) {
+    _impl_.dev_padding_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CSVCMsg_PacketEntities::set_allocated_dev_padding(std::string* dev_padding) {
+  if (dev_padding != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  _impl_.dev_padding_.SetAllocated(dev_padding, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.dev_padding_.IsDefault()) {
+    _impl_.dev_padding_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CSVCMsg_PacketEntities.dev_padding)
 }
 
 // -------------------------------------------------------------------
@@ -23825,6 +27430,34 @@ ProtoFlattenedSerializerField_t::polymorphic_types() const {
   return _impl_.polymorphic_types_;
 }
 
+// optional int32 var_serializer_sym = 12;
+inline bool ProtoFlattenedSerializerField_t::_internal_has_var_serializer_sym() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  return value;
+}
+inline bool ProtoFlattenedSerializerField_t::has_var_serializer_sym() const {
+  return _internal_has_var_serializer_sym();
+}
+inline void ProtoFlattenedSerializerField_t::clear_var_serializer_sym() {
+  _impl_.var_serializer_sym_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000400u;
+}
+inline int32_t ProtoFlattenedSerializerField_t::_internal_var_serializer_sym() const {
+  return _impl_.var_serializer_sym_;
+}
+inline int32_t ProtoFlattenedSerializerField_t::var_serializer_sym() const {
+  // @@protoc_insertion_point(field_get:ProtoFlattenedSerializerField_t.var_serializer_sym)
+  return _internal_var_serializer_sym();
+}
+inline void ProtoFlattenedSerializerField_t::_internal_set_var_serializer_sym(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_.var_serializer_sym_ = value;
+}
+inline void ProtoFlattenedSerializerField_t::set_var_serializer_sym(int32_t value) {
+  _internal_set_var_serializer_sym(value);
+  // @@protoc_insertion_point(field_set:ProtoFlattenedSerializerField_t.var_serializer_sym)
+}
+
 // -------------------------------------------------------------------
 
 // ProtoFlattenedSerializer_t
@@ -24471,37 +28104,9 @@ inline void CMsgServerNetworkStats_Player::set_allocated_remote_addr(std::string
   // @@protoc_insertion_point(field_set_allocated:CMsgServerNetworkStats.Player.remote_addr)
 }
 
-// optional int32 ping_stddev_ms = 3;
-inline bool CMsgServerNetworkStats_Player::_internal_has_ping_stddev_ms() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool CMsgServerNetworkStats_Player::has_ping_stddev_ms() const {
-  return _internal_has_ping_stddev_ms();
-}
-inline void CMsgServerNetworkStats_Player::clear_ping_stddev_ms() {
-  _impl_.ping_stddev_ms_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline int32_t CMsgServerNetworkStats_Player::_internal_ping_stddev_ms() const {
-  return _impl_.ping_stddev_ms_;
-}
-inline int32_t CMsgServerNetworkStats_Player::ping_stddev_ms() const {
-  // @@protoc_insertion_point(field_get:CMsgServerNetworkStats.Player.ping_stddev_ms)
-  return _internal_ping_stddev_ms();
-}
-inline void CMsgServerNetworkStats_Player::_internal_set_ping_stddev_ms(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.ping_stddev_ms_ = value;
-}
-inline void CMsgServerNetworkStats_Player::set_ping_stddev_ms(int32_t value) {
-  _internal_set_ping_stddev_ms(value);
-  // @@protoc_insertion_point(field_set:CMsgServerNetworkStats.Player.ping_stddev_ms)
-}
-
 // optional int32 ping_avg_ms = 4;
 inline bool CMsgServerNetworkStats_Player::_internal_has_ping_avg_ms() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
 inline bool CMsgServerNetworkStats_Player::has_ping_avg_ms() const {
@@ -24509,7 +28114,7 @@ inline bool CMsgServerNetworkStats_Player::has_ping_avg_ms() const {
 }
 inline void CMsgServerNetworkStats_Player::clear_ping_avg_ms() {
   _impl_.ping_avg_ms_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
 }
 inline int32_t CMsgServerNetworkStats_Player::_internal_ping_avg_ms() const {
   return _impl_.ping_avg_ms_;
@@ -24519,7 +28124,7 @@ inline int32_t CMsgServerNetworkStats_Player::ping_avg_ms() const {
   return _internal_ping_avg_ms();
 }
 inline void CMsgServerNetworkStats_Player::_internal_set_ping_avg_ms(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000004u;
   _impl_.ping_avg_ms_ = value;
 }
 inline void CMsgServerNetworkStats_Player::set_ping_avg_ms(int32_t value) {
@@ -24529,7 +28134,7 @@ inline void CMsgServerNetworkStats_Player::set_ping_avg_ms(int32_t value) {
 
 // optional float packet_loss_pct = 5;
 inline bool CMsgServerNetworkStats_Player::_internal_has_packet_loss_pct() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
 inline bool CMsgServerNetworkStats_Player::has_packet_loss_pct() const {
@@ -24537,7 +28142,7 @@ inline bool CMsgServerNetworkStats_Player::has_packet_loss_pct() const {
 }
 inline void CMsgServerNetworkStats_Player::clear_packet_loss_pct() {
   _impl_.packet_loss_pct_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
 inline float CMsgServerNetworkStats_Player::_internal_packet_loss_pct() const {
   return _impl_.packet_loss_pct_;
@@ -24547,7 +28152,7 @@ inline float CMsgServerNetworkStats_Player::packet_loss_pct() const {
   return _internal_packet_loss_pct();
 }
 inline void CMsgServerNetworkStats_Player::_internal_set_packet_loss_pct(float value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000008u;
   _impl_.packet_loss_pct_ = value;
 }
 inline void CMsgServerNetworkStats_Player::set_packet_loss_pct(float value) {
@@ -24557,7 +28162,7 @@ inline void CMsgServerNetworkStats_Player::set_packet_loss_pct(float value) {
 
 // optional bool is_bot = 6;
 inline bool CMsgServerNetworkStats_Player::_internal_has_is_bot() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool CMsgServerNetworkStats_Player::has_is_bot() const {
@@ -24565,7 +28170,7 @@ inline bool CMsgServerNetworkStats_Player::has_is_bot() const {
 }
 inline void CMsgServerNetworkStats_Player::clear_is_bot() {
   _impl_.is_bot_ = false;
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline bool CMsgServerNetworkStats_Player::_internal_is_bot() const {
   return _impl_.is_bot_;
@@ -24575,12 +28180,96 @@ inline bool CMsgServerNetworkStats_Player::is_bot() const {
   return _internal_is_bot();
 }
 inline void CMsgServerNetworkStats_Player::_internal_set_is_bot(bool value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.is_bot_ = value;
 }
 inline void CMsgServerNetworkStats_Player::set_is_bot(bool value) {
   _internal_set_is_bot(value);
   // @@protoc_insertion_point(field_set:CMsgServerNetworkStats.Player.is_bot)
+}
+
+// optional float loss_in = 7;
+inline bool CMsgServerNetworkStats_Player::_internal_has_loss_in() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CMsgServerNetworkStats_Player::has_loss_in() const {
+  return _internal_has_loss_in();
+}
+inline void CMsgServerNetworkStats_Player::clear_loss_in() {
+  _impl_.loss_in_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline float CMsgServerNetworkStats_Player::_internal_loss_in() const {
+  return _impl_.loss_in_;
+}
+inline float CMsgServerNetworkStats_Player::loss_in() const {
+  // @@protoc_insertion_point(field_get:CMsgServerNetworkStats.Player.loss_in)
+  return _internal_loss_in();
+}
+inline void CMsgServerNetworkStats_Player::_internal_set_loss_in(float value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.loss_in_ = value;
+}
+inline void CMsgServerNetworkStats_Player::set_loss_in(float value) {
+  _internal_set_loss_in(value);
+  // @@protoc_insertion_point(field_set:CMsgServerNetworkStats.Player.loss_in)
+}
+
+// optional float loss_out = 8;
+inline bool CMsgServerNetworkStats_Player::_internal_has_loss_out() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CMsgServerNetworkStats_Player::has_loss_out() const {
+  return _internal_has_loss_out();
+}
+inline void CMsgServerNetworkStats_Player::clear_loss_out() {
+  _impl_.loss_out_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline float CMsgServerNetworkStats_Player::_internal_loss_out() const {
+  return _impl_.loss_out_;
+}
+inline float CMsgServerNetworkStats_Player::loss_out() const {
+  // @@protoc_insertion_point(field_get:CMsgServerNetworkStats.Player.loss_out)
+  return _internal_loss_out();
+}
+inline void CMsgServerNetworkStats_Player::_internal_set_loss_out(float value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.loss_out_ = value;
+}
+inline void CMsgServerNetworkStats_Player::set_loss_out(float value) {
+  _internal_set_loss_out(value);
+  // @@protoc_insertion_point(field_set:CMsgServerNetworkStats.Player.loss_out)
+}
+
+// optional int32 engine_latency_ms = 9;
+inline bool CMsgServerNetworkStats_Player::_internal_has_engine_latency_ms() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  return value;
+}
+inline bool CMsgServerNetworkStats_Player::has_engine_latency_ms() const {
+  return _internal_has_engine_latency_ms();
+}
+inline void CMsgServerNetworkStats_Player::clear_engine_latency_ms() {
+  _impl_.engine_latency_ms_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000080u;
+}
+inline int32_t CMsgServerNetworkStats_Player::_internal_engine_latency_ms() const {
+  return _impl_.engine_latency_ms_;
+}
+inline int32_t CMsgServerNetworkStats_Player::engine_latency_ms() const {
+  // @@protoc_insertion_point(field_get:CMsgServerNetworkStats.Player.engine_latency_ms)
+  return _internal_engine_latency_ms();
+}
+inline void CMsgServerNetworkStats_Player::_internal_set_engine_latency_ms(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_.engine_latency_ms_ = value;
+}
+inline void CMsgServerNetworkStats_Player::set_engine_latency_ms(int32_t value) {
+  _internal_set_engine_latency_ms(value);
+  // @@protoc_insertion_point(field_set:CMsgServerNetworkStats.Player.engine_latency_ms)
 }
 
 // -------------------------------------------------------------------
@@ -24935,60 +28624,60 @@ CMsgServerNetworkStats::ports() const {
   return _impl_.ports_;
 }
 
-// optional float avg_latency_out = 18;
-inline bool CMsgServerNetworkStats::_internal_has_avg_latency_out() const {
+// optional float avg_ping_ms = 18;
+inline bool CMsgServerNetworkStats::_internal_has_avg_ping_ms() const {
   bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
   return value;
 }
-inline bool CMsgServerNetworkStats::has_avg_latency_out() const {
-  return _internal_has_avg_latency_out();
+inline bool CMsgServerNetworkStats::has_avg_ping_ms() const {
+  return _internal_has_avg_ping_ms();
 }
-inline void CMsgServerNetworkStats::clear_avg_latency_out() {
-  _impl_.avg_latency_out_ = 0;
+inline void CMsgServerNetworkStats::clear_avg_ping_ms() {
+  _impl_.avg_ping_ms_ = 0;
   _impl_._has_bits_[0] &= ~0x00000800u;
 }
-inline float CMsgServerNetworkStats::_internal_avg_latency_out() const {
-  return _impl_.avg_latency_out_;
+inline float CMsgServerNetworkStats::_internal_avg_ping_ms() const {
+  return _impl_.avg_ping_ms_;
 }
-inline float CMsgServerNetworkStats::avg_latency_out() const {
-  // @@protoc_insertion_point(field_get:CMsgServerNetworkStats.avg_latency_out)
-  return _internal_avg_latency_out();
+inline float CMsgServerNetworkStats::avg_ping_ms() const {
+  // @@protoc_insertion_point(field_get:CMsgServerNetworkStats.avg_ping_ms)
+  return _internal_avg_ping_ms();
 }
-inline void CMsgServerNetworkStats::_internal_set_avg_latency_out(float value) {
+inline void CMsgServerNetworkStats::_internal_set_avg_ping_ms(float value) {
   _impl_._has_bits_[0] |= 0x00000800u;
-  _impl_.avg_latency_out_ = value;
+  _impl_.avg_ping_ms_ = value;
 }
-inline void CMsgServerNetworkStats::set_avg_latency_out(float value) {
-  _internal_set_avg_latency_out(value);
-  // @@protoc_insertion_point(field_set:CMsgServerNetworkStats.avg_latency_out)
+inline void CMsgServerNetworkStats::set_avg_ping_ms(float value) {
+  _internal_set_avg_ping_ms(value);
+  // @@protoc_insertion_point(field_set:CMsgServerNetworkStats.avg_ping_ms)
 }
 
-// optional float avg_latency_in = 19;
-inline bool CMsgServerNetworkStats::_internal_has_avg_latency_in() const {
+// optional float avg_engine_latency_out = 19;
+inline bool CMsgServerNetworkStats::_internal_has_avg_engine_latency_out() const {
   bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
   return value;
 }
-inline bool CMsgServerNetworkStats::has_avg_latency_in() const {
-  return _internal_has_avg_latency_in();
+inline bool CMsgServerNetworkStats::has_avg_engine_latency_out() const {
+  return _internal_has_avg_engine_latency_out();
 }
-inline void CMsgServerNetworkStats::clear_avg_latency_in() {
-  _impl_.avg_latency_in_ = 0;
+inline void CMsgServerNetworkStats::clear_avg_engine_latency_out() {
+  _impl_.avg_engine_latency_out_ = 0;
   _impl_._has_bits_[0] &= ~0x00001000u;
 }
-inline float CMsgServerNetworkStats::_internal_avg_latency_in() const {
-  return _impl_.avg_latency_in_;
+inline float CMsgServerNetworkStats::_internal_avg_engine_latency_out() const {
+  return _impl_.avg_engine_latency_out_;
 }
-inline float CMsgServerNetworkStats::avg_latency_in() const {
-  // @@protoc_insertion_point(field_get:CMsgServerNetworkStats.avg_latency_in)
-  return _internal_avg_latency_in();
+inline float CMsgServerNetworkStats::avg_engine_latency_out() const {
+  // @@protoc_insertion_point(field_get:CMsgServerNetworkStats.avg_engine_latency_out)
+  return _internal_avg_engine_latency_out();
 }
-inline void CMsgServerNetworkStats::_internal_set_avg_latency_in(float value) {
+inline void CMsgServerNetworkStats::_internal_set_avg_engine_latency_out(float value) {
   _impl_._has_bits_[0] |= 0x00001000u;
-  _impl_.avg_latency_in_ = value;
+  _impl_.avg_engine_latency_out_ = value;
 }
-inline void CMsgServerNetworkStats::set_avg_latency_in(float value) {
-  _internal_set_avg_latency_in(value);
-  // @@protoc_insertion_point(field_set:CMsgServerNetworkStats.avg_latency_in)
+inline void CMsgServerNetworkStats::set_avg_engine_latency_out(float value) {
+  _internal_set_avg_engine_latency_out(value);
+  // @@protoc_insertion_point(field_set:CMsgServerNetworkStats.avg_engine_latency_out)
 }
 
 // optional float avg_packets_out = 20;
@@ -26300,9 +29989,249 @@ inline void CSVCMsg_HltvFixupOperatorStatus::set_allocated_override_operator_nam
   // @@protoc_insertion_point(field_set_allocated:CSVCMsg_HltvFixupOperatorStatus.override_operator_name)
 }
 
+// -------------------------------------------------------------------
+
+// CMsgServerUserCmd
+
+// optional bytes data = 1;
+inline bool CMsgServerUserCmd::_internal_has_data() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CMsgServerUserCmd::has_data() const {
+  return _internal_has_data();
+}
+inline void CMsgServerUserCmd::clear_data() {
+  _impl_.data_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CMsgServerUserCmd::data() const {
+  // @@protoc_insertion_point(field_get:CMsgServerUserCmd.data)
+  return _internal_data();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgServerUserCmd::set_data(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgServerUserCmd.data)
+}
+inline std::string* CMsgServerUserCmd::mutable_data() {
+  std::string* _s = _internal_mutable_data();
+  // @@protoc_insertion_point(field_mutable:CMsgServerUserCmd.data)
+  return _s;
+}
+inline const std::string& CMsgServerUserCmd::_internal_data() const {
+  return _impl_.data_.Get();
+}
+inline void CMsgServerUserCmd::_internal_set_data(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.data_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgServerUserCmd::_internal_mutable_data() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.data_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgServerUserCmd::release_data() {
+  // @@protoc_insertion_point(field_release:CMsgServerUserCmd.data)
+  if (!_internal_has_data()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.data_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgServerUserCmd::set_allocated_data(std::string* data) {
+  if (data != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.data_.SetAllocated(data, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgServerUserCmd.data)
+}
+
+// optional int32 cmd_number = 2;
+inline bool CMsgServerUserCmd::_internal_has_cmd_number() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgServerUserCmd::has_cmd_number() const {
+  return _internal_has_cmd_number();
+}
+inline void CMsgServerUserCmd::clear_cmd_number() {
+  _impl_.cmd_number_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline int32_t CMsgServerUserCmd::_internal_cmd_number() const {
+  return _impl_.cmd_number_;
+}
+inline int32_t CMsgServerUserCmd::cmd_number() const {
+  // @@protoc_insertion_point(field_get:CMsgServerUserCmd.cmd_number)
+  return _internal_cmd_number();
+}
+inline void CMsgServerUserCmd::_internal_set_cmd_number(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.cmd_number_ = value;
+}
+inline void CMsgServerUserCmd::set_cmd_number(int32_t value) {
+  _internal_set_cmd_number(value);
+  // @@protoc_insertion_point(field_set:CMsgServerUserCmd.cmd_number)
+}
+
+// optional int32 player_slot = 3 [default = -1];
+inline bool CMsgServerUserCmd::_internal_has_player_slot() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CMsgServerUserCmd::has_player_slot() const {
+  return _internal_has_player_slot();
+}
+inline void CMsgServerUserCmd::clear_player_slot() {
+  _impl_.player_slot_ = -1;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline int32_t CMsgServerUserCmd::_internal_player_slot() const {
+  return _impl_.player_slot_;
+}
+inline int32_t CMsgServerUserCmd::player_slot() const {
+  // @@protoc_insertion_point(field_get:CMsgServerUserCmd.player_slot)
+  return _internal_player_slot();
+}
+inline void CMsgServerUserCmd::_internal_set_player_slot(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.player_slot_ = value;
+}
+inline void CMsgServerUserCmd::set_player_slot(int32_t value) {
+  _internal_set_player_slot(value);
+  // @@protoc_insertion_point(field_set:CMsgServerUserCmd.player_slot)
+}
+
+// optional int32 server_tick_executed = 4;
+inline bool CMsgServerUserCmd::_internal_has_server_tick_executed() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CMsgServerUserCmd::has_server_tick_executed() const {
+  return _internal_has_server_tick_executed();
+}
+inline void CMsgServerUserCmd::clear_server_tick_executed() {
+  _impl_.server_tick_executed_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline int32_t CMsgServerUserCmd::_internal_server_tick_executed() const {
+  return _impl_.server_tick_executed_;
+}
+inline int32_t CMsgServerUserCmd::server_tick_executed() const {
+  // @@protoc_insertion_point(field_get:CMsgServerUserCmd.server_tick_executed)
+  return _internal_server_tick_executed();
+}
+inline void CMsgServerUserCmd::_internal_set_server_tick_executed(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.server_tick_executed_ = value;
+}
+inline void CMsgServerUserCmd::set_server_tick_executed(int32_t value) {
+  _internal_set_server_tick_executed(value);
+  // @@protoc_insertion_point(field_set:CMsgServerUserCmd.server_tick_executed)
+}
+
+// optional int32 client_tick = 5;
+inline bool CMsgServerUserCmd::_internal_has_client_tick() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CMsgServerUserCmd::has_client_tick() const {
+  return _internal_has_client_tick();
+}
+inline void CMsgServerUserCmd::clear_client_tick() {
+  _impl_.client_tick_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline int32_t CMsgServerUserCmd::_internal_client_tick() const {
+  return _impl_.client_tick_;
+}
+inline int32_t CMsgServerUserCmd::client_tick() const {
+  // @@protoc_insertion_point(field_get:CMsgServerUserCmd.client_tick)
+  return _internal_client_tick();
+}
+inline void CMsgServerUserCmd::_internal_set_client_tick(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.client_tick_ = value;
+}
+inline void CMsgServerUserCmd::set_client_tick(int32_t value) {
+  _internal_set_client_tick(value);
+  // @@protoc_insertion_point(field_set:CMsgServerUserCmd.client_tick)
+}
+
+// -------------------------------------------------------------------
+
+// CSVCMsg_UserCommands
+
+// repeated .CMsgServerUserCmd commands = 1;
+inline int CSVCMsg_UserCommands::_internal_commands_size() const {
+  return _impl_.commands_.size();
+}
+inline int CSVCMsg_UserCommands::commands_size() const {
+  return _internal_commands_size();
+}
+inline void CSVCMsg_UserCommands::clear_commands() {
+  _impl_.commands_.Clear();
+}
+inline ::CMsgServerUserCmd* CSVCMsg_UserCommands::mutable_commands(int index) {
+  // @@protoc_insertion_point(field_mutable:CSVCMsg_UserCommands.commands)
+  return _impl_.commands_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgServerUserCmd >*
+CSVCMsg_UserCommands::mutable_commands() {
+  // @@protoc_insertion_point(field_mutable_list:CSVCMsg_UserCommands.commands)
+  return &_impl_.commands_;
+}
+inline const ::CMsgServerUserCmd& CSVCMsg_UserCommands::_internal_commands(int index) const {
+  return _impl_.commands_.Get(index);
+}
+inline const ::CMsgServerUserCmd& CSVCMsg_UserCommands::commands(int index) const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_UserCommands.commands)
+  return _internal_commands(index);
+}
+inline ::CMsgServerUserCmd* CSVCMsg_UserCommands::_internal_add_commands() {
+  return _impl_.commands_.Add();
+}
+inline ::CMsgServerUserCmd* CSVCMsg_UserCommands::add_commands() {
+  ::CMsgServerUserCmd* _add = _internal_add_commands();
+  // @@protoc_insertion_point(field_add:CSVCMsg_UserCommands.commands)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgServerUserCmd >&
+CSVCMsg_UserCommands::commands() const {
+  // @@protoc_insertion_point(field_list:CSVCMsg_UserCommands.commands)
+  return _impl_.commands_;
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

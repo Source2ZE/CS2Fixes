@@ -38,4 +38,10 @@ parser.options.add_argument('-s', '--sdks', default='all', dest='sdks',
                             'comma-delimited list of engine names (default: "all")')
 parser.options.add_argument('--targets', type=str, dest='targets', default=None,
                             help="Override the target architecture (use commas to separate multiple targets).")
+# AddressSanitizer Instructions:
+# Copy devtools/dlhook/libasan.so.dlhook.so to the server
+# Run server with LD_PRELOAD="/path/to/libasan.so.dlhook.so /usr/lib/clang/11/lib/linux/libclang_rt.asan-x86_64.so" (for SteamRT3)
+# Note this may break some std functionality
+parser.options.add_argument('--asan', action='store_const', const='1', dest='asan',
+                       help='Build for AddressSanitizer')
 parser.Configure()

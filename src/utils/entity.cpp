@@ -33,9 +33,7 @@ extern CGameEntitySystem *g_pEntitySystem;
 extern CGameConfig *g_GameConfig;
 extern CCSGameRules *g_pGameRules;
 
-class Z_CBaseEntity;
-
-Z_CBaseEntity *UTIL_FindPickerEntity(CBasePlayerController *pPlayer)
+CBaseEntity *UTIL_FindPickerEntity(CBasePlayerController *pPlayer)
 {
 	static int offset = g_GameConfig->GetOffset("CGameRules_FindPickerEntity");
 
@@ -45,23 +43,18 @@ Z_CBaseEntity *UTIL_FindPickerEntity(CBasePlayerController *pPlayer)
 		return nullptr;
 	}
 
-	return CALL_VIRTUAL(Z_CBaseEntity *, offset, g_pGameRules, pPlayer);
+	return CALL_VIRTUAL(CBaseEntity *, offset, g_pGameRules, pPlayer);
 }
 
-Z_CBaseEntity *UTIL_FindEntityByClassname(CEntityInstance *pStartEntity, const char *szName)
+CBaseEntity *UTIL_FindEntityByClassname(CEntityInstance *pStartEntity, const char *szName)
 {
 	return addresses::CGameEntitySystem_FindEntityByClassName(g_pEntitySystem, pStartEntity, szName);
 }
 
-Z_CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
+CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
 									   CEntityInstance *pSearchingEntity, CEntityInstance *pActivator, CEntityInstance *pCaller, IEntityFindFilter *pFilter)
 {
 	return addresses::CGameEntitySystem_FindEntityByName(g_pEntitySystem, pStartEntity, szName, pSearchingEntity, pActivator, pCaller, pFilter);
-}
-
-Z_CBaseEntity* CreateEntityByName(const char* className)
-{
-	return addresses::CreateEntityByName(className, -1);
 }
 
 void UTIL_AddEntityIOEvent(CEntityInstance *pTarget, const char *pszInput,

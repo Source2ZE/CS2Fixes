@@ -17,36 +17,39 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "cs_usercmd.pb.h"
 #include "networkbasetypes.pb.h"
 #include "usercmd.pb.h"
-#include "cs_usercmd.pb.h"
 
-#include "cdetour.h"
-#include "common.h"
-#include "module.h"
 #include "addresses.h"
+#include "cdetour.h"
 #include "commands.h"
-#include "detours.h"
+#include "common.h"
 #include "ctimer.h"
-#include "irecipientfilter.h"
+#include "customio.h"
+#include "detours.h"
+#include "entities.h"
+#include "entity/cbasemodelentity.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
-#include "entity/cbasemodelentity.h"
 #include "entity/ccsweaponbase.h"
-#include "entity/ctriggerpush.h"
+#include "entity/cenvhudhint.h"
 #include "entity/cgamerules.h"
+#include "entity/cpointviewcontrol.h"
 #include "entity/ctakedamageinfo.h"
+#include "entity/ctriggerpush.h"
 #include "entity/services.h"
-#include "playermanager.h"
-#include "igameevents.h"
 #include "gameconfig.h"
-#include "zombiereborn.h"
-#include "customio.h"
-#include "entities.h"
-#include "serversideclient.h"
-#include "networksystem/inetworkserializer.h"
+#include "igameevents.h"
+#include "irecipientfilter.h"
 #include "map_votes.h"
+#include "module.h"
+#include "networksystem/inetworkserializer.h"
+#include "playermanager.h"
+#include "serversideclient.h"
 #include "tier0/vprof.h"
+#include "zombiereborn.h"
+#include "buttonwatch.h"
 
 #include "tier0/memdbgon.h"
 
@@ -55,6 +58,7 @@ extern CGameEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
 extern CCSGameRules *g_pGameRules;
 extern CMapVoteSystem *g_pMapVoteSystem;
+extern CUtlVector<CServerSideClient*>* GetClientList();
 
 CUtlVector<CDetourBase *> g_vecDetours;
 
@@ -62,7 +66,6 @@ DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
 DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
-DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
@@ -71,21 +74,23 @@ DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer);
-DECLARE_DETOUR(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission);
-
-void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
-{
-	g_pGameRules = (CCSGameRules*)pThis;
-	CGameRules_Constructor(pThis);
-}
+DECLARE_DETOUR(GetFreeClient, Detour_GetFreeClient);
+DECLARE_DETOUR(CCSPlayerPawn_GetMaxSpeed, Detour_CCSPlayerPawn_GetMaxSpeed);
+DECLARE_DETOUR(FindUseEntity, Detour_FindUseEntity);
+DECLARE_DETOUR(TraceFunc, Detour_TraceFunc);
+DECLARE_DETOUR(TraceShape, Detour_TraceShape);
+DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition);
+DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
 
 static bool g_bBlockMolotovSelfDmg = false;
 static bool g_bBlockAllDamage = false;
+static bool g_bFixBlockDamage = false;
 
 FAKE_BOOL_CVAR(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", g_bBlockMolotovSelfDmg, false, false)
 FAKE_BOOL_CVAR(cs2f_block_all_dmg, "Whether to block all damage to players", g_bBlockAllDamage, false, false)
+FAKE_BOOL_CVAR(cs2f_fix_block_dmg, "Whether to fix block-damage on players", g_bFixBlockDamage, false, false)
 
-void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
+void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
 {
 #ifdef _DEBUG
 	Message("\n--------------------------------\n"
@@ -111,9 +116,24 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamage
 	CBaseEntity *pInflictor = inputInfo->m_hInflictor.Get();
 	const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 
-	// Prevent everything but nades from inflicting blast damage
-	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
-		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
+	// After Armory update, activator became attacker on block damage, which broke it..
+	if (g_bFixBlockDamage && inputInfo->m_AttackerInfo.m_bIsPawn && inputInfo->m_bitsDamageType ^ DMG_BULLET && inputInfo->m_hAttacker != pThis->GetHandle())
+	{
+		if (V_strcasecmp(pszInflictorClass, "func_movelinear") == 0
+			|| V_strcasecmp(pszInflictorClass, "func_mover") == 0
+			|| V_strcasecmp(pszInflictorClass, "func_door") == 0
+			|| V_strcasecmp(pszInflictorClass, "func_door_rotating") == 0
+			|| V_strcasecmp(pszInflictorClass, "func_rotating") == 0
+			|| V_strcasecmp(pszInflictorClass, "point_hurt") == 0)
+		{
+			inputInfo->m_AttackerInfo.m_bIsPawn = false;
+			inputInfo->m_AttackerInfo.m_bIsWorld = true;
+			inputInfo->m_hAttacker = inputInfo->m_hInflictor;
+
+			inputInfo->m_AttackerInfo.m_hAttackerPawn = CHandle<CCSPlayerPawn>(~0u);
+			inputInfo->m_AttackerInfo.m_nAttackerPlayerSlot = ~0;
+		}
+	}
 
 	// Prevent molly on self
 	if (g_bBlockMolotovSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
@@ -128,21 +148,8 @@ FAKE_BOOL_CVAR(cs2f_use_old_push, "Whether to use the old CSGO trigger_push beha
 static bool g_bLogPushes = false;
 FAKE_BOOL_CVAR(cs2f_log_pushes, "Whether to log pushes (cs2f_use_old_push must be enabled)", g_bLogPushes, false, false)
 
-static bool g_bPreventMultiPush = false;
-FAKE_BOOL_CVAR(cs2f_prevent_multi_push, "Whether to prevent pushes from affecting the same entity multiple times in a tick", g_bPreventMultiPush, false, false)
-
-std::unordered_set<uint64> g_PushEntSet;
-
-void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
+void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 {
-	// Fitting both handles into a single uint64
-	uint64 iPushID = ((uint64)pPush->GetHandle().ToInt() << 32) + pOther->GetHandle().ToInt();
-
-	// We're inserting the push ID into a set and if that fails it means this trigger already pushed the other ent in this tick
-	// The set is cleared on the next tick
-	if (g_bPreventMultiPush && !g_PushEntSet.insert(iPushID).second)
-		return;
-
 	// This trigger pushes only once (and kills itself) or pushes only on StartTouch, both of which are fine already
 	if (!g_bUseOldPush || pPush->m_spawnflags() & SF_TRIG_PUSH_ONCE || pPush->m_bTriggerOnStartTouch())
 	{
@@ -182,7 +189,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 
 	uint32 flags = pOther->m_fFlags();
 
-	if (flags & (FL_BASEVELOCITY))
+	if (flags & FL_BASEVELOCITY)
 	{
 		vecPush = vecPush + pOther->m_vecBaseVelocity();
 	}
@@ -201,12 +208,14 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 		Vector vecEntBaseVelocity = pOther->m_vecBaseVelocity;
 		Vector vecOrigPush = vecAbsDir * pPush->m_flSpeed();
 
-		Message("Pushing entity %i | frametime = %.3f | entity basevelocity = %.2f %.2f %.2f | original push velocity = %.2f %.2f %.2f | final push velocity = %.2f %.2f %.2f\n",
-			pOther->GetEntityIndex(),
-			gpGlobals->frametime,
-			vecEntBaseVelocity.x, vecEntBaseVelocity.y, vecEntBaseVelocity.z,
-			vecOrigPush.x, vecOrigPush.y, vecOrigPush.z,
-			vecPush.x, vecPush.y, vecPush.z);
+		Message("Pushing entity %i | frame = %i | tick = %i | entity basevelocity %s = %.2f %.2f %.2f | original push velocity = %.2f %.2f %.2f | final push velocity = %.2f %.2f %.2f\n",
+				pOther->GetEntityIndex(),
+				gpGlobals->framecount,
+				gpGlobals->tickcount,
+				(flags & FL_BASEVELOCITY) ? "WITH FLAG" : "",
+				vecEntBaseVelocity.x, vecEntBaseVelocity.y, vecEntBaseVelocity.z,
+				vecOrigPush.x, vecOrigPush.y, vecOrigPush.z,
+				vecPush.x, vecPush.y, vecPush.z);
 	}
 
 	pOther->m_vecBaseVelocity(vecPush);
@@ -245,8 +254,7 @@ void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPla
 	filteredText[uiFilteredTextLength] = '\0';
 
 	// Split console message into words seperated by the space character
-	CUtlVector<char*, CUtlMemory<char*, int>> words;
-	V_SplitString(filteredText, " ", words);
+	CSplitString words(filteredText, " ");
 
 	//Word count includes the first word "Console:" at index 0, first relevant word is at index 1
 	int iWordCount = words.Count();
@@ -296,9 +304,8 @@ void SayChatMessageWithTimer(IRecipientFilter &filter, const char *pText, CCSPla
 			}
 		}
 	}
-	words.PurgeAndDeleteElements();
 
-	float fCurrentRoundClock = g_pGameRules->m_iRoundTime - (gpGlobals->curtime - g_pGameRules->m_fRoundStartTime.Get().m_Value);
+	float fCurrentRoundClock = g_pGameRules->m_iRoundTime - (gpGlobals->curtime - g_pGameRules->m_fRoundStartTime.Get().GetTime());
 
 	// Only display trigger time if the timer is greater than 4 seconds, and time expires within the round
 	if ((uiTriggerTimerLength > 4) && (fCurrentRoundClock > uiTriggerTimerLength))
@@ -387,6 +394,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		Message("Invalid value type for input %s\n", pInputName->String());
 		return false;
 	}
+
 	if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
 	{
 		float flDuration = 0.f;
@@ -401,12 +409,62 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if (pPawn->IsPawn() && IgnitePawn(pPawn, flDuration, pPawn, pPawn))
 			return true;
 	}
-	else if (const auto pGameUI = reinterpret_cast<Z_CBaseEntity*>(pThis->m_pInstance)->AsGameUI())
+	else if (!V_strnicmp(pInputName->String(), "AddScore", 8))
+	{
+		int iScore = 0;
+
+		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			iScore = V_StringToInt32(value->m_pszString, 0);
+		else
+			iScore = value->m_int;
+
+		CCSPlayerPawn *pPawn = reinterpret_cast<CCSPlayerPawn *>(pThis->m_pInstance);
+
+		if (pPawn->IsPawn() && pPawn->GetOriginalController())
+		{
+			pPawn->GetOriginalController()->AddScore(iScore);
+			return true;
+		}
+	}
+    else if (!V_strcasecmp(pInputName->String(), "SetMessage"))
+	{
+		if (const auto pHudHint = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsHudHint())
+		{
+			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			{
+				pHudHint->m_iszMessage(GameEntitySystem()->AllocPooledString(value->m_pszString));
+			}
+			return true;
+		}
+	}
+	else if (!V_strcasecmp(pInputName->String(), "SetModel"))
+	{
+		if (const auto pModelEntity = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsBaseModelEntity())
+		{
+			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			{
+				pModelEntity->SetModel(value->m_pszString);
+			}
+			return true;
+		}
+	}
+	else if (const auto pGameUI = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsGameUI())
 	{
 		if (!V_strcasecmp(pInputName->String(), "Activate"))
-			return CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+			return CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator));
 		if (!V_strcasecmp(pInputName->String(), "Deactivate"))
-			return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<Z_CBaseEntity*>(pActivator));
+			return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator));
+	}
+	else if (const auto pViewControl = reinterpret_cast<CPointViewControl*>(pThis->m_pInstance)->AsPointViewControl())
+	{
+		if (!V_strcasecmp(pInputName->String(), "EnableCamera"))
+			return CPointViewControlHandler::OnEnable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator));
+		if (!V_strcasecmp(pInputName->String(), "DisableCamera"))
+			return CPointViewControlHandler::OnDisable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator));
+		if (!V_strcasecmp(pInputName->String(), "EnableCameraAll"))
+			return CPointViewControlHandler::OnEnableAll(pViewControl);
+		if (!V_strcasecmp(pInputName->String(), "DisableCameraAll"))
+			return CPointViewControlHandler::OnDisableAll(pViewControl);
 	}
 
 	VPROF_SCOPE_END();
@@ -458,9 +516,13 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices *pThis, void *pM
 static bool g_bDisableSubtick = false;
 FAKE_BOOL_CVAR(cs2f_disable_subtick_move, "Whether to disable subtick movement", g_bDisableSubtick, false, false)
 
+static bool g_bDisableSubtickShooting = false;
+FAKE_BOOL_CVAR(cs2f_disable_subtick_shooting, "Whether to disable subtick shooting", g_bDisableSubtickShooting, false, false)
+
 class CUserCmd
 {
 public:
+	[[maybe_unused]] char pad0[0x10];
 	CSGOUserCmdPB cmd;
 	[[maybe_unused]] char pad1[0x38];
 #ifdef PLATFORM_WINDOWS
@@ -468,26 +530,30 @@ public:
 #endif
 };
 
-void* FASTCALL Detour_ProcessUsercmds(CBasePlayerPawn *pPawn, CUserCmd *cmds, int numcmds, bool paused, float margin)
+void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController *pController, CUserCmd *cmds, int numcmds, bool paused, float margin)
 {
-	if (!g_bDisableSubtick)
-		return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
+	// Push fix only works properly if subtick movement is also disabled
+	if (!g_bDisableSubtick && !g_bUseOldPush)
+		return ProcessUsercmds(pController, cmds, numcmds, paused, margin);
 
 	VPROF_SCOPE_BEGIN("Detour_ProcessUsercmds");
 
-	static int offset = g_GameConfig->GetOffset("UsercmdOffset");
-
 	for (int i = 0; i < numcmds; i++)
 	{
-		CSGOUserCmdPB *pUserCmd = &cmds[i].cmd;
+		cmds[i].cmd.mutable_base()->mutable_subtick_moves()->Clear();
 
-		for (int j = 0; j < pUserCmd->mutable_base()->subtick_moves_size(); j++)
-			pUserCmd->mutable_base()->mutable_subtick_moves(j)->set_when(0.f);
+		if (g_bDisableSubtickShooting)
+		{
+			cmds[i].cmd.set_attack1_start_history_index(-1);
+			cmds[i].cmd.set_attack2_start_history_index(-1);
+			cmds[i].cmd.set_attack3_start_history_index(-1);
+			cmds[i].cmd.mutable_input_history()->Clear();
+		}
 	}
 
 	VPROF_SCOPE_END();
 
-	return ProcessUsercmds(pPawn, cmds, numcmds, paused, margin);
+	return ProcessUsercmds(pController, cmds, numcmds, paused, margin);
 }
 
 void FASTCALL Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
@@ -501,13 +567,148 @@ void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayer
 		CGamePlayerEquip_InputTriggerForActivatedPlayer(pEntity, pInput);
 }
 
-int64_t* FASTCALL Detour_CCSGameRules_GoToIntermission(int64_t unk1, char unk2)
+CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6)
 {
-	if (!g_pMapVoteSystem->IsIntermissionAllowed())
-		return nullptr;
+	// Check if there is still unused slots, this should never break so just fall back to original behaviour for ease (we don't have a CServerSideClient constructor)
+	if (gpGlobals->maxClients != GetClientList()->Count())
+		return GetFreeClient(unk1, unk2, unk3, unk4, unk5, unk6);
 
-	return CCSGameRules_GoToIntermission(unk1, unk2);
+	// Phantom client fix
+	for (int i = 0; i < GetClientList()->Count(); i++)
+	{
+		CServerSideClient* pClient = (*GetClientList())[i];
+
+		if (pClient && pClient->GetSignonState() < SIGNONSTATE_CONNECTED)
+			return pClient;
+	}
+
+	// Server is actually full for real
+	return nullptr;
 }
+
+float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
+{
+	auto flMaxSpeed = CCSPlayerPawn_GetMaxSpeed(pPawn);
+
+	const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
+	if (const auto pPlayer = pController != nullptr ? pController->GetZEPlayer() : nullptr)
+	{
+		flMaxSpeed *= pPlayer->GetMaxSpeed();
+	}
+
+	return flMaxSpeed;
+}
+
+bool g_bPreventUsingPlayers = false;
+FAKE_BOOL_CVAR(cs2f_prevent_using_players, "Whether to prevent +use from hitting players (0=can use players, 1=cannot use players)", g_bPreventUsingPlayers, false, false);
+
+bool g_bFindingUseEntity = false;
+int64 FASTCALL Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float a2)
+{
+	g_bFindingUseEntity = true;
+	int64 ent = FindUseEntity(pThis, a2);
+	g_bFindingUseEntity = false;
+	return ent;
+}
+
+bool FASTCALL Detour_TraceFunc(int64* a1, int* a2, float* a3, uint64 traceMask)
+{
+	if (g_bPreventUsingPlayers && g_bFindingUseEntity)
+	{
+		uint64 newMask = traceMask & ( ~(CONTENTS_PLAYER & CONTENTS_NPC) );
+		return TraceFunc(a1, a2, a3, newMask);
+	}
+
+	return TraceFunc(a1, a2, a3, traceMask);
+}
+
+bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceFilter* filter, int64 a6)
+{
+	if (g_bPreventUsingPlayers && g_bFindingUseEntity)
+	{
+		filter->DisableInteractsWithLayer(LAYER_INDEX_CONTENTS_PLAYER);
+		filter->DisableInteractsWithLayer(LAYER_INDEX_CONTENTS_NPC);
+	}
+
+	return TraceShape(a1, a2, a3, a4, filter, a6);
+}
+
+
+CDetour<decltype(Detour_CEntityIOOutput_FireOutputInternal)>* CEntityIOOutput_FireOutputInternal = nullptr;
+std::map<std::string, std::function<void(const CEntityIOOutput*, CEntityInstance*, CEntityInstance*, const CVariant*, float)>> mapIOFunctions{};
+void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
+{
+	for (const auto& [name, cb] : mapIOFunctions)
+		cb(pThis, pActivator, pCaller, value, flDelay);
+
+	(*CEntityIOOutput_FireOutputInternal)(pThis, pActivator, pCaller, value, flDelay);
+}
+
+// Tries to setup Detour_CEntityIOOutput_FireOutputInternal if it is not already setup. This is not
+// enabled unless a feature needs it, as the detour breaks CS# compatibility
+// Returns true if detour is usable, otherwise false.
+bool SetupFireOutputInternalDetour()
+{
+	if (CEntityIOOutput_FireOutputInternal != nullptr)
+		return true;
+
+	CEntityIOOutput_FireOutputInternal = new CDetour(Detour_CEntityIOOutput_FireOutputInternal, "CEntityIOOutput_FireOutputInternal");
+	if (!CEntityIOOutput_FireOutputInternal->CreateDetour(g_GameConfig))
+	{
+		Panic("Failed to detour CEntityIOOutput_FireOutputInternal\n");
+		delete CEntityIOOutput_FireOutputInternal;
+		CEntityIOOutput_FireOutputInternal = nullptr;
+		return false;
+	}
+	CEntityIOOutput_FireOutputInternal->EnableDetour();
+	return true;
+}
+
+#ifdef PLATFORM_WINDOWS
+Vector* FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn, Vector* pRet)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& origin = pPawn->GetEyePosition();
+        pRet->Init(origin.x, origin.y, origin.z);
+        return pRet;
+    }
+
+    return CBasePlayerPawn_GetEyePosition(pPawn, pRet);
+}
+QAngle* FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn, QAngle* pRet)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& angles = pPawn->v_angle();
+        pRet->Init(angles.x, angles.y, angles.z);
+        return pRet;
+    }
+
+    return CBasePlayerPawn_GetEyeAngles(pPawn, pRet);
+}
+#else
+Vector FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& origin = pPawn->GetEyePosition();
+        return origin;
+    }
+
+    return CBasePlayerPawn_GetEyePosition(pPawn);
+}
+QAngle FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn)
+{
+    if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+    {
+        const auto& angles = pPawn->v_angle();
+        return angles;
+    }
+
+    return CBasePlayerPawn_GetEyeAngles(pPawn);
+}
+#endif
 
 bool InitDetours(CGameConfig *gameConfig)
 {

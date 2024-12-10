@@ -25,6 +25,7 @@
 static uint64 g_iFlagsToRemove = (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY | FCVAR_MISSING0 | FCVAR_MISSING1 | FCVAR_MISSING2 | FCVAR_MISSING3);
 
 static constexpr const char *pUnCheatCvars[] = { "bot_stop", "bot_freeze", "bot_zombie" };
+static constexpr const char* pUnCheatCmds[] = { "report_entities", "endround" };
 
 void UnlockConVars()
 {
@@ -81,11 +82,20 @@ void UnlockConCommands()
 
 		hConCommandHandle.Set(hConCommandHandle.Get() + 1);
 
-		if (!pConCommand || pConCommand == pInvalidCommand || !(pConCommand->GetFlags() & g_iFlagsToRemove))
+		if (!pConCommand || pConCommand == pInvalidCommand)
 			continue;
 
-		pConCommand->RemoveFlags(g_iFlagsToRemove);
-		iUnhiddenConCommands++;
+		for (int i = 0; i < sizeof(pUnCheatCmds) / sizeof(*pUnCheatCmds); i++)
+		{
+			if (!V_strcmp(pConCommand->GetName(), pUnCheatCmds[i]))
+				pConCommand->RemoveFlags(FCVAR_CHEAT);
+		}
+
+		if (pConCommand->GetFlags() & g_iFlagsToRemove)
+		{
+			pConCommand->RemoveFlags(g_iFlagsToRemove);
+			iUnhiddenConCommands++;
+		}
 	} while (pConCommand && pConCommand != pInvalidCommand);
 
 	Message("Removed hidden flags from %d commands\n", iUnhiddenConCommands);

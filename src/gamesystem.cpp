@@ -27,6 +27,7 @@
 #include "adminsystem.h"
 #include "entities.h"
 #include "tier0/vprof.h"
+#include "idlemanager.h"
 
 #include "tier0/memdbgon.h"
 
@@ -89,6 +90,7 @@ GS_EVENT_MEMBER(CGameSystem, ServerPreEntityThink)
 {
 	VPROF_BUDGET("CGameSystem::ServerPreEntityThink", "CS2FixesPerFrame")
 	g_playerManager->FlashLightThink();
+	g_pIdleSystem->UpdateIdleTimes();
 	EntityHandler_OnGameFramePre(gpGlobals->m_bInSimulation, gpGlobals->tickcount);
 }
 

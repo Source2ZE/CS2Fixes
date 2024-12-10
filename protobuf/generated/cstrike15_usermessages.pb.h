@@ -74,6 +74,9 @@ extern CCSUsrMsg_CloseCaptionDefaultTypeInternal _CCSUsrMsg_CloseCaption_default
 class CCSUsrMsg_CloseCaptionDirect;
 struct CCSUsrMsg_CloseCaptionDirectDefaultTypeInternal;
 extern CCSUsrMsg_CloseCaptionDirectDefaultTypeInternal _CCSUsrMsg_CloseCaptionDirect_default_instance_;
+class CCSUsrMsg_CounterStrafe;
+struct CCSUsrMsg_CounterStrafeDefaultTypeInternal;
+extern CCSUsrMsg_CounterStrafeDefaultTypeInternal _CCSUsrMsg_CounterStrafe_default_instance_;
 class CCSUsrMsg_CurrentRoundOdds;
 struct CCSUsrMsg_CurrentRoundOddsDefaultTypeInternal;
 extern CCSUsrMsg_CurrentRoundOddsDefaultTypeInternal _CCSUsrMsg_CurrentRoundOdds_default_instance_;
@@ -83,6 +86,9 @@ extern CCSUsrMsg_CurrentTimescaleDefaultTypeInternal _CCSUsrMsg_CurrentTimescale
 class CCSUsrMsg_Damage;
 struct CCSUsrMsg_DamageDefaultTypeInternal;
 extern CCSUsrMsg_DamageDefaultTypeInternal _CCSUsrMsg_Damage_default_instance_;
+class CCSUsrMsg_DamagePrediction;
+struct CCSUsrMsg_DamagePredictionDefaultTypeInternal;
+extern CCSUsrMsg_DamagePredictionDefaultTypeInternal _CCSUsrMsg_DamagePrediction_default_instance_;
 class CCSUsrMsg_DeepStats;
 struct CCSUsrMsg_DeepStatsDefaultTypeInternal;
 extern CCSUsrMsg_DeepStatsDefaultTypeInternal _CCSUsrMsg_DeepStats_default_instance_;
@@ -315,9 +321,11 @@ template<> ::CCSUsrMsg_CallVoteFailed* Arena::CreateMaybeMessage<::CCSUsrMsg_Cal
 template<> ::CCSUsrMsg_ClientInfo* Arena::CreateMaybeMessage<::CCSUsrMsg_ClientInfo>(Arena*);
 template<> ::CCSUsrMsg_CloseCaption* Arena::CreateMaybeMessage<::CCSUsrMsg_CloseCaption>(Arena*);
 template<> ::CCSUsrMsg_CloseCaptionDirect* Arena::CreateMaybeMessage<::CCSUsrMsg_CloseCaptionDirect>(Arena*);
+template<> ::CCSUsrMsg_CounterStrafe* Arena::CreateMaybeMessage<::CCSUsrMsg_CounterStrafe>(Arena*);
 template<> ::CCSUsrMsg_CurrentRoundOdds* Arena::CreateMaybeMessage<::CCSUsrMsg_CurrentRoundOdds>(Arena*);
 template<> ::CCSUsrMsg_CurrentTimescale* Arena::CreateMaybeMessage<::CCSUsrMsg_CurrentTimescale>(Arena*);
 template<> ::CCSUsrMsg_Damage* Arena::CreateMaybeMessage<::CCSUsrMsg_Damage>(Arena*);
+template<> ::CCSUsrMsg_DamagePrediction* Arena::CreateMaybeMessage<::CCSUsrMsg_DamagePrediction>(Arena*);
 template<> ::CCSUsrMsg_DeepStats* Arena::CreateMaybeMessage<::CCSUsrMsg_DeepStats>(Arena*);
 template<> ::CCSUsrMsg_DesiredTimescale* Arena::CreateMaybeMessage<::CCSUsrMsg_DesiredTimescale>(Arena*);
 template<> ::CCSUsrMsg_DisconnectToLobby* Arena::CreateMaybeMessage<::CCSUsrMsg_DisconnectToLobby>(Arena*);
@@ -469,12 +477,13 @@ enum ECstrike15UserMessages : int {
   CS_UM_RoundEndReportData = 379,
   CS_UM_CurrentRoundOdds = 380,
   CS_UM_DeepStats = 381,
-  CS_UM_UtilMsg = 382,
-  CS_UM_ShootInfo = 383
+  CS_UM_ShootInfo = 383,
+  CS_UM_CounterStrafe = 385,
+  CS_UM_DamagePrediction = 386
 };
 bool ECstrike15UserMessages_IsValid(int value);
 constexpr ECstrike15UserMessages ECstrike15UserMessages_MIN = CS_UM_VGUIMenu;
-constexpr ECstrike15UserMessages ECstrike15UserMessages_MAX = CS_UM_ShootInfo;
+constexpr ECstrike15UserMessages ECstrike15UserMessages_MAX = CS_UM_DamagePrediction;
 constexpr int ECstrike15UserMessages_ARRAYSIZE = ECstrike15UserMessages_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ECstrike15UserMessages_descriptor();
@@ -516,7 +525,7 @@ inline bool ECSUsrMsg_DisconnectToLobby_Action_Parse(
 }
 // ===================================================================
 
-class CCSUsrMsg_VGUIMenu_Keys final :
+class CCSUsrMsg_VGUIMenu_Keys :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_VGUIMenu.Keys) */ {
  public:
   inline CCSUsrMsg_VGUIMenu_Keys() : CCSUsrMsg_VGUIMenu_Keys(nullptr) {}
@@ -701,7 +710,7 @@ class CCSUsrMsg_VGUIMenu_Keys final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_VGUIMenu final :
+class CCSUsrMsg_VGUIMenu :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_VGUIMenu) */ {
  public:
   inline CCSUsrMsg_VGUIMenu() : CCSUsrMsg_VGUIMenu(nullptr) {}
@@ -903,7 +912,7 @@ class CCSUsrMsg_VGUIMenu final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_Geiger final :
+class CCSUsrMsg_Geiger :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_Geiger) */ {
  public:
   inline CCSUsrMsg_Geiger() : CCSUsrMsg_Geiger(nullptr) {}
@@ -1063,7 +1072,7 @@ class CCSUsrMsg_Geiger final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_Train final :
+class CCSUsrMsg_Train :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_Train) */ {
  public:
   inline CCSUsrMsg_Train() : CCSUsrMsg_Train(nullptr) {}
@@ -1223,7 +1232,7 @@ class CCSUsrMsg_Train final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_HudText final :
+class CCSUsrMsg_HudText :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_HudText) */ {
  public:
   inline CCSUsrMsg_HudText() : CCSUsrMsg_HudText(nullptr) {}
@@ -1388,7 +1397,7 @@ class CCSUsrMsg_HudText final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_HudMsg final :
+class CCSUsrMsg_HudMsg :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_HudMsg) */ {
  public:
   inline CCSUsrMsg_HudMsg() : CCSUsrMsg_HudMsg(nullptr) {}
@@ -1703,7 +1712,7 @@ class CCSUsrMsg_HudMsg final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_Shake final :
+class CCSUsrMsg_Shake :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_Shake) */ {
  public:
   inline CCSUsrMsg_Shake() : CCSUsrMsg_Shake(nullptr) {}
@@ -1908,7 +1917,7 @@ class CCSUsrMsg_Shake final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_Fade final :
+class CCSUsrMsg_Fade :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_Fade) */ {
  public:
   inline CCSUsrMsg_Fade() : CCSUsrMsg_Fade(nullptr) {}
@@ -2118,7 +2127,7 @@ class CCSUsrMsg_Fade final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_Rumble final :
+class CCSUsrMsg_Rumble :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_Rumble) */ {
  public:
   inline CCSUsrMsg_Rumble() : CCSUsrMsg_Rumble(nullptr) {}
@@ -2308,7 +2317,7 @@ class CCSUsrMsg_Rumble final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_CloseCaption final :
+class CCSUsrMsg_CloseCaption :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_CloseCaption) */ {
  public:
   inline CCSUsrMsg_CloseCaption() : CCSUsrMsg_CloseCaption(nullptr) {}
@@ -2518,7 +2527,7 @@ class CCSUsrMsg_CloseCaption final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_CloseCaptionDirect final :
+class CCSUsrMsg_CloseCaptionDirect :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_CloseCaptionDirect) */ {
  public:
   inline CCSUsrMsg_CloseCaptionDirect() : CCSUsrMsg_CloseCaptionDirect(nullptr) {}
@@ -2708,7 +2717,7 @@ class CCSUsrMsg_CloseCaptionDirect final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_SendAudio final :
+class CCSUsrMsg_SendAudio :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_SendAudio) */ {
  public:
   inline CCSUsrMsg_SendAudio() : CCSUsrMsg_SendAudio(nullptr) {}
@@ -2873,7 +2882,7 @@ class CCSUsrMsg_SendAudio final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_RawAudio final :
+class CCSUsrMsg_RawAudio :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RawAudio) */ {
  public:
   inline CCSUsrMsg_RawAudio() : CCSUsrMsg_RawAudio(nullptr) {}
@@ -3083,7 +3092,7 @@ class CCSUsrMsg_RawAudio final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_VoiceMask_PlayerMask final :
+class CCSUsrMsg_VoiceMask_PlayerMask :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_VoiceMask.PlayerMask) */ {
  public:
   inline CCSUsrMsg_VoiceMask_PlayerMask() : CCSUsrMsg_VoiceMask_PlayerMask(nullptr) {}
@@ -3258,7 +3267,7 @@ class CCSUsrMsg_VoiceMask_PlayerMask final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_VoiceMask final :
+class CCSUsrMsg_VoiceMask :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_VoiceMask) */ {
  public:
   inline CCSUsrMsg_VoiceMask() : CCSUsrMsg_VoiceMask(nullptr) {}
@@ -3440,7 +3449,7 @@ class CCSUsrMsg_VoiceMask final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_Damage final :
+class CCSUsrMsg_Damage :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_Damage) */ {
  public:
   inline CCSUsrMsg_Damage() : CCSUsrMsg_Damage(nullptr) {}
@@ -3635,7 +3644,7 @@ class CCSUsrMsg_Damage final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_RadioText final :
+class CCSUsrMsg_RadioText :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RadioText) */ {
  public:
   inline CCSUsrMsg_RadioText() : CCSUsrMsg_RadioText(nullptr) {}
@@ -3856,7 +3865,7 @@ class CCSUsrMsg_RadioText final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_HintText final :
+class CCSUsrMsg_HintText :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_HintText) */ {
  public:
   inline CCSUsrMsg_HintText() : CCSUsrMsg_HintText(nullptr) {}
@@ -4021,7 +4030,7 @@ class CCSUsrMsg_HintText final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_KeyHintText final :
+class CCSUsrMsg_KeyHintText :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_KeyHintText) */ {
  public:
   inline CCSUsrMsg_KeyHintText() : CCSUsrMsg_KeyHintText(nullptr) {}
@@ -4191,7 +4200,7 @@ class CCSUsrMsg_KeyHintText final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate final :
+class CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ProcessSpottedEntityUpdate.SpottedEntityUpdate) */ {
  public:
   inline CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate() : CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate(nullptr) {}
@@ -4471,7 +4480,7 @@ class CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ProcessSpottedEntityUpdate final :
+class CCSUsrMsg_ProcessSpottedEntityUpdate :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ProcessSpottedEntityUpdate) */ {
  public:
   inline CCSUsrMsg_ProcessSpottedEntityUpdate() : CCSUsrMsg_ProcessSpottedEntityUpdate(nullptr) {}
@@ -4653,7 +4662,7 @@ class CCSUsrMsg_ProcessSpottedEntityUpdate final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_SendPlayerItemDrops final :
+class CCSUsrMsg_SendPlayerItemDrops :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_SendPlayerItemDrops) */ {
  public:
   inline CCSUsrMsg_SendPlayerItemDrops() : CCSUsrMsg_SendPlayerItemDrops(nullptr) {}
@@ -4817,7 +4826,7 @@ class CCSUsrMsg_SendPlayerItemDrops final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_SendPlayerItemFound final :
+class CCSUsrMsg_SendPlayerItemFound :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_SendPlayerItemFound) */ {
  public:
   inline CCSUsrMsg_SendPlayerItemFound() : CCSUsrMsg_SendPlayerItemFound(nullptr) {}
@@ -4997,7 +5006,7 @@ class CCSUsrMsg_SendPlayerItemFound final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ReloadEffect final :
+class CCSUsrMsg_ReloadEffect :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ReloadEffect) */ {
  public:
   inline CCSUsrMsg_ReloadEffect() : CCSUsrMsg_ReloadEffect(nullptr) {}
@@ -5217,7 +5226,7 @@ class CCSUsrMsg_ReloadEffect final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_WeaponSound final :
+class CCSUsrMsg_WeaponSound :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_WeaponSound) */ {
  public:
   inline CCSUsrMsg_WeaponSound() : CCSUsrMsg_WeaponSound(nullptr) {}
@@ -5472,7 +5481,7 @@ class CCSUsrMsg_WeaponSound final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_UpdateScreenHealthBar final :
+class CCSUsrMsg_UpdateScreenHealthBar :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_UpdateScreenHealthBar) */ {
  public:
   inline CCSUsrMsg_UpdateScreenHealthBar() : CCSUsrMsg_UpdateScreenHealthBar(nullptr) {}
@@ -5677,7 +5686,7 @@ class CCSUsrMsg_UpdateScreenHealthBar final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_EntityOutlineHighlight final :
+class CCSUsrMsg_EntityOutlineHighlight :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_EntityOutlineHighlight) */ {
  public:
   inline CCSUsrMsg_EntityOutlineHighlight() : CCSUsrMsg_EntityOutlineHighlight(nullptr) {}
@@ -5852,7 +5861,7 @@ class CCSUsrMsg_EntityOutlineHighlight final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_AdjustMoney final :
+class CCSUsrMsg_AdjustMoney :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_AdjustMoney) */ {
  public:
   inline CCSUsrMsg_AdjustMoney() : CCSUsrMsg_AdjustMoney(nullptr) {}
@@ -6012,7 +6021,7 @@ class CCSUsrMsg_AdjustMoney final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ReportHit final :
+class CCSUsrMsg_ReportHit :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ReportHit) */ {
  public:
   inline CCSUsrMsg_ReportHit() : CCSUsrMsg_ReportHit(nullptr) {}
@@ -6217,7 +6226,7 @@ class CCSUsrMsg_ReportHit final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_KillCam final :
+class CCSUsrMsg_KillCam :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_KillCam) */ {
  public:
   inline CCSUsrMsg_KillCam() : CCSUsrMsg_KillCam(nullptr) {}
@@ -6407,7 +6416,7 @@ class CCSUsrMsg_KillCam final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_DesiredTimescale final :
+class CCSUsrMsg_DesiredTimescale :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_DesiredTimescale) */ {
  public:
   inline CCSUsrMsg_DesiredTimescale() : CCSUsrMsg_DesiredTimescale(nullptr) {}
@@ -6612,7 +6621,7 @@ class CCSUsrMsg_DesiredTimescale final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_CurrentTimescale final :
+class CCSUsrMsg_CurrentTimescale :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_CurrentTimescale) */ {
  public:
   inline CCSUsrMsg_CurrentTimescale() : CCSUsrMsg_CurrentTimescale(nullptr) {}
@@ -6772,7 +6781,7 @@ class CCSUsrMsg_CurrentTimescale final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_AchievementEvent final :
+class CCSUsrMsg_AchievementEvent :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_AchievementEvent) */ {
  public:
   inline CCSUsrMsg_AchievementEvent() : CCSUsrMsg_AchievementEvent(nullptr) {}
@@ -6962,7 +6971,7 @@ class CCSUsrMsg_AchievementEvent final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_MatchEndConditions final :
+class CCSUsrMsg_MatchEndConditions :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_MatchEndConditions) */ {
  public:
   inline CCSUsrMsg_MatchEndConditions() : CCSUsrMsg_MatchEndConditions(nullptr) {}
@@ -7167,7 +7176,7 @@ class CCSUsrMsg_MatchEndConditions final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_PlayerStatsUpdate_Stat final :
+class CCSUsrMsg_PlayerStatsUpdate_Stat :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_PlayerStatsUpdate.Stat) */ {
  public:
   inline CCSUsrMsg_PlayerStatsUpdate_Stat() : CCSUsrMsg_PlayerStatsUpdate_Stat(nullptr) {}
@@ -7342,7 +7351,7 @@ class CCSUsrMsg_PlayerStatsUpdate_Stat final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_PlayerStatsUpdate final :
+class CCSUsrMsg_PlayerStatsUpdate :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_PlayerStatsUpdate) */ {
  public:
   inline CCSUsrMsg_PlayerStatsUpdate() : CCSUsrMsg_PlayerStatsUpdate(nullptr) {}
@@ -7554,7 +7563,7 @@ class CCSUsrMsg_PlayerStatsUpdate final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_QuestProgress final :
+class CCSUsrMsg_QuestProgress :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_QuestProgress) */ {
  public:
   inline CCSUsrMsg_QuestProgress() : CCSUsrMsg_QuestProgress(nullptr) {}
@@ -7759,7 +7768,7 @@ class CCSUsrMsg_QuestProgress final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ScoreLeaderboardData final :
+class CCSUsrMsg_ScoreLeaderboardData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ScoreLeaderboardData) */ {
  public:
   inline CCSUsrMsg_ScoreLeaderboardData() : CCSUsrMsg_ScoreLeaderboardData(nullptr) {}
@@ -7924,7 +7933,7 @@ class CCSUsrMsg_ScoreLeaderboardData final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_PlayerDecalDigitalSignature final :
+class CCSUsrMsg_PlayerDecalDigitalSignature :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_PlayerDecalDigitalSignature) */ {
  public:
   inline CCSUsrMsg_PlayerDecalDigitalSignature() : CCSUsrMsg_PlayerDecalDigitalSignature(nullptr) {}
@@ -8089,7 +8098,7 @@ class CCSUsrMsg_PlayerDecalDigitalSignature final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_XRankGet final :
+class CCSUsrMsg_XRankGet :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_XRankGet) */ {
  public:
   inline CCSUsrMsg_XRankGet() : CCSUsrMsg_XRankGet(nullptr) {}
@@ -8264,7 +8273,7 @@ class CCSUsrMsg_XRankGet final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_XRankUpd final :
+class CCSUsrMsg_XRankUpd :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_XRankUpd) */ {
  public:
   inline CCSUsrMsg_XRankUpd() : CCSUsrMsg_XRankUpd(nullptr) {}
@@ -8454,7 +8463,7 @@ class CCSUsrMsg_XRankUpd final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_CallVoteFailed final :
+class CCSUsrMsg_CallVoteFailed :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_CallVoteFailed) */ {
  public:
   inline CCSUsrMsg_CallVoteFailed() : CCSUsrMsg_CallVoteFailed(nullptr) {}
@@ -8629,7 +8638,7 @@ class CCSUsrMsg_CallVoteFailed final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_VoteStart final :
+class CCSUsrMsg_VoteStart :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_VoteStart) */ {
  public:
   inline CCSUsrMsg_VoteStart() : CCSUsrMsg_VoteStart(nullptr) {}
@@ -8909,7 +8918,7 @@ class CCSUsrMsg_VoteStart final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_VotePass final :
+class CCSUsrMsg_VotePass :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_VotePass) */ {
  public:
   inline CCSUsrMsg_VotePass() : CCSUsrMsg_VotePass(nullptr) {}
@@ -9124,7 +9133,7 @@ class CCSUsrMsg_VotePass final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_VoteFailed final :
+class CCSUsrMsg_VoteFailed :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_VoteFailed) */ {
  public:
   inline CCSUsrMsg_VoteFailed() : CCSUsrMsg_VoteFailed(nullptr) {}
@@ -9299,7 +9308,7 @@ class CCSUsrMsg_VoteFailed final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_VoteSetup final :
+class CCSUsrMsg_VoteSetup :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_VoteSetup) */ {
  public:
   inline CCSUsrMsg_VoteSetup() : CCSUsrMsg_VoteSetup(nullptr) {}
@@ -9469,7 +9478,7 @@ class CCSUsrMsg_VoteSetup final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_SendLastKillerDamageToClient final :
+class CCSUsrMsg_SendLastKillerDamageToClient :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_SendLastKillerDamageToClient) */ {
  public:
   inline CCSUsrMsg_SendLastKillerDamageToClient() : CCSUsrMsg_SendLastKillerDamageToClient(nullptr) {}
@@ -9704,7 +9713,7 @@ class CCSUsrMsg_SendLastKillerDamageToClient final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ServerRankUpdate_RankUpdate final :
+class CCSUsrMsg_ServerRankUpdate_RankUpdate :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ServerRankUpdate.RankUpdate) */ {
  public:
   inline CCSUsrMsg_ServerRankUpdate_RankUpdate() : CCSUsrMsg_ServerRankUpdate_RankUpdate(nullptr) {}
@@ -9939,7 +9948,7 @@ class CCSUsrMsg_ServerRankUpdate_RankUpdate final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ServerRankUpdate final :
+class CCSUsrMsg_ServerRankUpdate :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ServerRankUpdate) */ {
  public:
   inline CCSUsrMsg_ServerRankUpdate() : CCSUsrMsg_ServerRankUpdate(nullptr) {}
@@ -10105,7 +10114,7 @@ class CCSUsrMsg_ServerRankUpdate final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_XpUpdate final :
+class CCSUsrMsg_XpUpdate :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_XpUpdate) */ {
  public:
   inline CCSUsrMsg_XpUpdate() : CCSUsrMsg_XpUpdate(nullptr) {}
@@ -10270,7 +10279,7 @@ class CCSUsrMsg_XpUpdate final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ItemPickup final :
+class CCSUsrMsg_ItemPickup :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ItemPickup) */ {
  public:
   inline CCSUsrMsg_ItemPickup() : CCSUsrMsg_ItemPickup(nullptr) {}
@@ -10435,7 +10444,7 @@ class CCSUsrMsg_ItemPickup final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ShowMenu final :
+class CCSUsrMsg_ShowMenu :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ShowMenu) */ {
  public:
   inline CCSUsrMsg_ShowMenu() : CCSUsrMsg_ShowMenu(nullptr) {}
@@ -10630,7 +10639,7 @@ class CCSUsrMsg_ShowMenu final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_BarTime final :
+class CCSUsrMsg_BarTime :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_BarTime) */ {
  public:
   inline CCSUsrMsg_BarTime() : CCSUsrMsg_BarTime(nullptr) {}
@@ -10795,7 +10804,7 @@ class CCSUsrMsg_BarTime final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_AmmoDenied final :
+class CCSUsrMsg_AmmoDenied :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_AmmoDenied) */ {
  public:
   inline CCSUsrMsg_AmmoDenied() : CCSUsrMsg_AmmoDenied(nullptr) {}
@@ -10955,7 +10964,7 @@ class CCSUsrMsg_AmmoDenied final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_MarkAchievement final :
+class CCSUsrMsg_MarkAchievement :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_MarkAchievement) */ {
  public:
   inline CCSUsrMsg_MarkAchievement() : CCSUsrMsg_MarkAchievement(nullptr) {}
@@ -11120,7 +11129,7 @@ class CCSUsrMsg_MarkAchievement final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_MatchStatsUpdate final :
+class CCSUsrMsg_MatchStatsUpdate :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_MatchStatsUpdate) */ {
  public:
   inline CCSUsrMsg_MatchStatsUpdate() : CCSUsrMsg_MatchStatsUpdate(nullptr) {}
@@ -11285,7 +11294,7 @@ class CCSUsrMsg_MatchStatsUpdate final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ItemDrop final :
+class CCSUsrMsg_ItemDrop :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ItemDrop) */ {
  public:
   inline CCSUsrMsg_ItemDrop() : CCSUsrMsg_ItemDrop(nullptr) {}
@@ -11460,7 +11469,7 @@ class CCSUsrMsg_ItemDrop final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_GlowPropTurnOff final :
+class CCSUsrMsg_GlowPropTurnOff :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_GlowPropTurnOff) */ {
  public:
   inline CCSUsrMsg_GlowPropTurnOff() : CCSUsrMsg_GlowPropTurnOff(nullptr) {}
@@ -11620,7 +11629,7 @@ class CCSUsrMsg_GlowPropTurnOff final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_RoundBackupFilenames final :
+class CCSUsrMsg_RoundBackupFilenames :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RoundBackupFilenames) */ {
  public:
   inline CCSUsrMsg_RoundBackupFilenames() : CCSUsrMsg_RoundBackupFilenames(nullptr) {}
@@ -11835,7 +11844,7 @@ class CCSUsrMsg_RoundBackupFilenames final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_SSUI final :
+class CCSUsrMsg_SSUI :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_SSUI) */ {
  public:
   inline CCSUsrMsg_SSUI() : CCSUsrMsg_SSUI(nullptr) {}
@@ -12025,7 +12034,7 @@ class CCSUsrMsg_SSUI final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_SurvivalStats_Fact final :
+class CCSUsrMsg_SurvivalStats_Fact :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_SurvivalStats.Fact) */ {
  public:
   inline CCSUsrMsg_SurvivalStats_Fact() : CCSUsrMsg_SurvivalStats_Fact(nullptr) {}
@@ -12230,7 +12239,7 @@ class CCSUsrMsg_SurvivalStats_Fact final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_SurvivalStats_Placement final :
+class CCSUsrMsg_SurvivalStats_Placement :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_SurvivalStats.Placement) */ {
  public:
   inline CCSUsrMsg_SurvivalStats_Placement() : CCSUsrMsg_SurvivalStats_Placement(nullptr) {}
@@ -12420,7 +12429,7 @@ class CCSUsrMsg_SurvivalStats_Placement final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_SurvivalStats_Damage final :
+class CCSUsrMsg_SurvivalStats_Damage :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_SurvivalStats.Damage) */ {
  public:
   inline CCSUsrMsg_SurvivalStats_Damage() : CCSUsrMsg_SurvivalStats_Damage(nullptr) {}
@@ -12640,7 +12649,7 @@ class CCSUsrMsg_SurvivalStats_Damage final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_SurvivalStats final :
+class CCSUsrMsg_SurvivalStats :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_SurvivalStats) */ {
  public:
   inline CCSUsrMsg_SurvivalStats() : CCSUsrMsg_SurvivalStats(nullptr) {}
@@ -12879,7 +12888,7 @@ class CCSUsrMsg_SurvivalStats final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_EndOfMatchAllPlayersData_Accolade final :
+class CCSUsrMsg_EndOfMatchAllPlayersData_Accolade :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_EndOfMatchAllPlayersData.Accolade) */ {
  public:
   inline CCSUsrMsg_EndOfMatchAllPlayersData_Accolade() : CCSUsrMsg_EndOfMatchAllPlayersData_Accolade(nullptr) {}
@@ -13069,7 +13078,7 @@ class CCSUsrMsg_EndOfMatchAllPlayersData_Accolade final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData final :
+class CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_EndOfMatchAllPlayersData.PlayerData) */ {
  public:
   inline CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData() : CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData(nullptr) {}
@@ -13349,7 +13358,7 @@ class CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_EndOfMatchAllPlayersData final :
+class CCSUsrMsg_EndOfMatchAllPlayersData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_EndOfMatchAllPlayersData) */ {
  public:
   inline CCSUsrMsg_EndOfMatchAllPlayersData() : CCSUsrMsg_EndOfMatchAllPlayersData(nullptr) {}
@@ -13532,7 +13541,7 @@ class CCSUsrMsg_EndOfMatchAllPlayersData final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_RoundEndReportData_RerEvent_Victim final :
+class CCSUsrMsg_RoundEndReportData_RerEvent_Victim :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RoundEndReportData.RerEvent.Victim) */ {
  public:
   inline CCSUsrMsg_RoundEndReportData_RerEvent_Victim() : CCSUsrMsg_RoundEndReportData_RerEvent_Victim(nullptr) {}
@@ -13767,7 +13776,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent_Victim final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_RoundEndReportData_RerEvent_Objective final :
+class CCSUsrMsg_RoundEndReportData_RerEvent_Objective :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RoundEndReportData.RerEvent.Objective) */ {
  public:
   inline CCSUsrMsg_RoundEndReportData_RerEvent_Objective() : CCSUsrMsg_RoundEndReportData_RerEvent_Objective(nullptr) {}
@@ -13927,7 +13936,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent_Objective final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_RoundEndReportData_RerEvent_Damage final :
+class CCSUsrMsg_RoundEndReportData_RerEvent_Damage :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RoundEndReportData.RerEvent.Damage) */ {
  public:
   inline CCSUsrMsg_RoundEndReportData_RerEvent_Damage() : CCSUsrMsg_RoundEndReportData_RerEvent_Damage(nullptr) {}
@@ -14162,7 +14171,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent_Damage final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_RoundEndReportData_RerEvent final :
+class CCSUsrMsg_RoundEndReportData_RerEvent :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RoundEndReportData.RerEvent) */ {
  public:
   inline CCSUsrMsg_RoundEndReportData_RerEvent() : CCSUsrMsg_RoundEndReportData_RerEvent(nullptr) {}
@@ -14431,7 +14440,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_RoundEndReportData_InitialConditions final :
+class CCSUsrMsg_RoundEndReportData_InitialConditions :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RoundEndReportData.InitialConditions) */ {
  public:
   inline CCSUsrMsg_RoundEndReportData_InitialConditions() : CCSUsrMsg_RoundEndReportData_InitialConditions(nullptr) {}
@@ -14621,7 +14630,7 @@ class CCSUsrMsg_RoundEndReportData_InitialConditions final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_RoundEndReportData final :
+class CCSUsrMsg_RoundEndReportData :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RoundEndReportData) */ {
  public:
   inline CCSUsrMsg_RoundEndReportData() : CCSUsrMsg_RoundEndReportData(nullptr) {}
@@ -14809,7 +14818,7 @@ class CCSUsrMsg_RoundEndReportData final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_PostRoundDamageReport final :
+class CCSUsrMsg_PostRoundDamageReport :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_PostRoundDamageReport) */ {
  public:
   inline CCSUsrMsg_PostRoundDamageReport() : CCSUsrMsg_PostRoundDamageReport(nullptr) {}
@@ -15059,7 +15068,7 @@ class CCSUsrMsg_PostRoundDamageReport final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_CurrentRoundOdds final :
+class CCSUsrMsg_CurrentRoundOdds :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_CurrentRoundOdds) */ {
  public:
   inline CCSUsrMsg_CurrentRoundOdds() : CCSUsrMsg_CurrentRoundOdds(nullptr) {}
@@ -15219,7 +15228,7 @@ class CCSUsrMsg_CurrentRoundOdds final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_DeepStats final :
+class CCSUsrMsg_DeepStats :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_DeepStats) */ {
  public:
   inline CCSUsrMsg_DeepStats() : CCSUsrMsg_DeepStats(nullptr) {}
@@ -15384,7 +15393,7 @@ class CCSUsrMsg_DeepStats final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ShootInfo final :
+class CCSUsrMsg_ShootInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ShootInfo) */ {
  public:
   inline CCSUsrMsg_ShootInfo() : CCSUsrMsg_ShootInfo(nullptr) {}
@@ -15604,7 +15613,7 @@ class CCSUsrMsg_ShootInfo final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ResetHud final :
+class CCSUsrMsg_ResetHud :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ResetHud) */ {
  public:
   inline CCSUsrMsg_ResetHud() : CCSUsrMsg_ResetHud(nullptr) {}
@@ -15764,7 +15773,7 @@ class CCSUsrMsg_ResetHud final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_GameTitle final :
+class CCSUsrMsg_GameTitle :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_GameTitle) */ {
  public:
   inline CCSUsrMsg_GameTitle() : CCSUsrMsg_GameTitle(nullptr) {}
@@ -15924,7 +15933,7 @@ class CCSUsrMsg_GameTitle final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_RequestState final :
+class CCSUsrMsg_RequestState :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RequestState) */ {
  public:
   inline CCSUsrMsg_RequestState() : CCSUsrMsg_RequestState(nullptr) {}
@@ -16084,7 +16093,7 @@ class CCSUsrMsg_RequestState final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_StopSpectatorMode final :
+class CCSUsrMsg_StopSpectatorMode :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_StopSpectatorMode) */ {
  public:
   inline CCSUsrMsg_StopSpectatorMode() : CCSUsrMsg_StopSpectatorMode(nullptr) {}
@@ -16244,7 +16253,7 @@ class CCSUsrMsg_StopSpectatorMode final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_DisconnectToLobby final :
+class CCSUsrMsg_DisconnectToLobby :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_DisconnectToLobby) */ {
  public:
   inline CCSUsrMsg_DisconnectToLobby() : CCSUsrMsg_DisconnectToLobby(nullptr) {}
@@ -16404,7 +16413,7 @@ class CCSUsrMsg_DisconnectToLobby final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_WarmupHasEnded final :
+class CCSUsrMsg_WarmupHasEnded :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_WarmupHasEnded) */ {
  public:
   inline CCSUsrMsg_WarmupHasEnded() : CCSUsrMsg_WarmupHasEnded(nullptr) {}
@@ -16564,7 +16573,7 @@ class CCSUsrMsg_WarmupHasEnded final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ClientInfo final :
+class CCSUsrMsg_ClientInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ClientInfo) */ {
  public:
   inline CCSUsrMsg_ClientInfo() : CCSUsrMsg_ClientInfo(nullptr) {}
@@ -16724,7 +16733,7 @@ class CCSUsrMsg_ClientInfo final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_ServerRankRevealAll final :
+class CCSUsrMsg_ServerRankRevealAll :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ServerRankRevealAll) */ {
  public:
   inline CCSUsrMsg_ServerRankRevealAll() : CCSUsrMsg_ServerRankRevealAll(nullptr) {}
@@ -16904,7 +16913,7 @@ class CCSUsrMsg_ServerRankRevealAll final :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsgPreMatchSayText final :
+class CCSUsrMsgPreMatchSayText :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsgPreMatchSayText) */ {
  public:
   inline CCSUsrMsgPreMatchSayText() : CCSUsrMsgPreMatchSayText(nullptr) {}
@@ -17093,6 +17102,461 @@ class CCSUsrMsgPreMatchSayText final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr text_;
     uint32_t account_id_;
     bool all_chat_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cstrike15_5fusermessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CCSUsrMsg_CounterStrafe :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_CounterStrafe) */ {
+ public:
+  inline CCSUsrMsg_CounterStrafe() : CCSUsrMsg_CounterStrafe(nullptr) {}
+  ~CCSUsrMsg_CounterStrafe() override;
+  explicit PROTOBUF_CONSTEXPR CCSUsrMsg_CounterStrafe(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CCSUsrMsg_CounterStrafe(const CCSUsrMsg_CounterStrafe& from);
+  CCSUsrMsg_CounterStrafe(CCSUsrMsg_CounterStrafe&& from) noexcept
+    : CCSUsrMsg_CounterStrafe() {
+    *this = ::std::move(from);
+  }
+
+  inline CCSUsrMsg_CounterStrafe& operator=(const CCSUsrMsg_CounterStrafe& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CCSUsrMsg_CounterStrafe& operator=(CCSUsrMsg_CounterStrafe&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CCSUsrMsg_CounterStrafe& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CCSUsrMsg_CounterStrafe* internal_default_instance() {
+    return reinterpret_cast<const CCSUsrMsg_CounterStrafe*>(
+               &_CCSUsrMsg_CounterStrafe_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    86;
+
+  friend void swap(CCSUsrMsg_CounterStrafe& a, CCSUsrMsg_CounterStrafe& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CCSUsrMsg_CounterStrafe* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CCSUsrMsg_CounterStrafe* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CCSUsrMsg_CounterStrafe* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CCSUsrMsg_CounterStrafe>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CCSUsrMsg_CounterStrafe& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CCSUsrMsg_CounterStrafe& from) {
+    CCSUsrMsg_CounterStrafe::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CCSUsrMsg_CounterStrafe* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CCSUsrMsg_CounterStrafe";
+  }
+  protected:
+  explicit CCSUsrMsg_CounterStrafe(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPressToReleaseNsFieldNumber = 1,
+    kTotalKeysDownFieldNumber = 2,
+  };
+  // optional int32 press_to_release_ns = 1;
+  bool has_press_to_release_ns() const;
+  private:
+  bool _internal_has_press_to_release_ns() const;
+  public:
+  void clear_press_to_release_ns();
+  int32_t press_to_release_ns() const;
+  void set_press_to_release_ns(int32_t value);
+  private:
+  int32_t _internal_press_to_release_ns() const;
+  void _internal_set_press_to_release_ns(int32_t value);
+  public:
+
+  // optional int32 total_keys_down = 2;
+  bool has_total_keys_down() const;
+  private:
+  bool _internal_has_total_keys_down() const;
+  public:
+  void clear_total_keys_down();
+  int32_t total_keys_down() const;
+  void set_total_keys_down(int32_t value);
+  private:
+  int32_t _internal_total_keys_down() const;
+  void _internal_set_total_keys_down(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CCSUsrMsg_CounterStrafe)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    int32_t press_to_release_ns_;
+    int32_t total_keys_down_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cstrike15_5fusermessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CCSUsrMsg_DamagePrediction :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_DamagePrediction) */ {
+ public:
+  inline CCSUsrMsg_DamagePrediction() : CCSUsrMsg_DamagePrediction(nullptr) {}
+  ~CCSUsrMsg_DamagePrediction() override;
+  explicit PROTOBUF_CONSTEXPR CCSUsrMsg_DamagePrediction(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CCSUsrMsg_DamagePrediction(const CCSUsrMsg_DamagePrediction& from);
+  CCSUsrMsg_DamagePrediction(CCSUsrMsg_DamagePrediction&& from) noexcept
+    : CCSUsrMsg_DamagePrediction() {
+    *this = ::std::move(from);
+  }
+
+  inline CCSUsrMsg_DamagePrediction& operator=(const CCSUsrMsg_DamagePrediction& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CCSUsrMsg_DamagePrediction& operator=(CCSUsrMsg_DamagePrediction&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CCSUsrMsg_DamagePrediction& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CCSUsrMsg_DamagePrediction* internal_default_instance() {
+    return reinterpret_cast<const CCSUsrMsg_DamagePrediction*>(
+               &_CCSUsrMsg_DamagePrediction_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    87;
+
+  friend void swap(CCSUsrMsg_DamagePrediction& a, CCSUsrMsg_DamagePrediction& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CCSUsrMsg_DamagePrediction* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CCSUsrMsg_DamagePrediction* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CCSUsrMsg_DamagePrediction* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CCSUsrMsg_DamagePrediction>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CCSUsrMsg_DamagePrediction& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CCSUsrMsg_DamagePrediction& from) {
+    CCSUsrMsg_DamagePrediction::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CCSUsrMsg_DamagePrediction* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CCSUsrMsg_DamagePrediction";
+  }
+  protected:
+  explicit CCSUsrMsg_DamagePrediction(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kShootPosFieldNumber = 6,
+    kShootDirFieldNumber = 7,
+    kAimPunchFieldNumber = 8,
+    kCommandNumFieldNumber = 1,
+    kPelletIdxFieldNumber = 2,
+    kVictimSlotFieldNumber = 3,
+    kVictimStartingHealthFieldNumber = 4,
+    kVictimDamageFieldNumber = 5,
+  };
+  // optional .CMsgVector shoot_pos = 6;
+  bool has_shoot_pos() const;
+  private:
+  bool _internal_has_shoot_pos() const;
+  public:
+  void clear_shoot_pos();
+  const ::CMsgVector& shoot_pos() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_shoot_pos();
+  ::CMsgVector* mutable_shoot_pos();
+  void set_allocated_shoot_pos(::CMsgVector* shoot_pos);
+  private:
+  const ::CMsgVector& _internal_shoot_pos() const;
+  ::CMsgVector* _internal_mutable_shoot_pos();
+  public:
+  void unsafe_arena_set_allocated_shoot_pos(
+      ::CMsgVector* shoot_pos);
+  ::CMsgVector* unsafe_arena_release_shoot_pos();
+
+  // optional .CMsgQAngle shoot_dir = 7;
+  bool has_shoot_dir() const;
+  private:
+  bool _internal_has_shoot_dir() const;
+  public:
+  void clear_shoot_dir();
+  const ::CMsgQAngle& shoot_dir() const;
+  PROTOBUF_NODISCARD ::CMsgQAngle* release_shoot_dir();
+  ::CMsgQAngle* mutable_shoot_dir();
+  void set_allocated_shoot_dir(::CMsgQAngle* shoot_dir);
+  private:
+  const ::CMsgQAngle& _internal_shoot_dir() const;
+  ::CMsgQAngle* _internal_mutable_shoot_dir();
+  public:
+  void unsafe_arena_set_allocated_shoot_dir(
+      ::CMsgQAngle* shoot_dir);
+  ::CMsgQAngle* unsafe_arena_release_shoot_dir();
+
+  // optional .CMsgQAngle aim_punch = 8;
+  bool has_aim_punch() const;
+  private:
+  bool _internal_has_aim_punch() const;
+  public:
+  void clear_aim_punch();
+  const ::CMsgQAngle& aim_punch() const;
+  PROTOBUF_NODISCARD ::CMsgQAngle* release_aim_punch();
+  ::CMsgQAngle* mutable_aim_punch();
+  void set_allocated_aim_punch(::CMsgQAngle* aim_punch);
+  private:
+  const ::CMsgQAngle& _internal_aim_punch() const;
+  ::CMsgQAngle* _internal_mutable_aim_punch();
+  public:
+  void unsafe_arena_set_allocated_aim_punch(
+      ::CMsgQAngle* aim_punch);
+  ::CMsgQAngle* unsafe_arena_release_aim_punch();
+
+  // optional int32 command_num = 1;
+  bool has_command_num() const;
+  private:
+  bool _internal_has_command_num() const;
+  public:
+  void clear_command_num();
+  int32_t command_num() const;
+  void set_command_num(int32_t value);
+  private:
+  int32_t _internal_command_num() const;
+  void _internal_set_command_num(int32_t value);
+  public:
+
+  // optional int32 pellet_idx = 2;
+  bool has_pellet_idx() const;
+  private:
+  bool _internal_has_pellet_idx() const;
+  public:
+  void clear_pellet_idx();
+  int32_t pellet_idx() const;
+  void set_pellet_idx(int32_t value);
+  private:
+  int32_t _internal_pellet_idx() const;
+  void _internal_set_pellet_idx(int32_t value);
+  public:
+
+  // optional int32 victim_slot = 3;
+  bool has_victim_slot() const;
+  private:
+  bool _internal_has_victim_slot() const;
+  public:
+  void clear_victim_slot();
+  int32_t victim_slot() const;
+  void set_victim_slot(int32_t value);
+  private:
+  int32_t _internal_victim_slot() const;
+  void _internal_set_victim_slot(int32_t value);
+  public:
+
+  // optional int32 victim_starting_health = 4;
+  bool has_victim_starting_health() const;
+  private:
+  bool _internal_has_victim_starting_health() const;
+  public:
+  void clear_victim_starting_health();
+  int32_t victim_starting_health() const;
+  void set_victim_starting_health(int32_t value);
+  private:
+  int32_t _internal_victim_starting_health() const;
+  void _internal_set_victim_starting_health(int32_t value);
+  public:
+
+  // optional int32 victim_damage = 5;
+  bool has_victim_damage() const;
+  private:
+  bool _internal_has_victim_damage() const;
+  public:
+  void clear_victim_damage();
+  int32_t victim_damage() const;
+  void set_victim_damage(int32_t value);
+  private:
+  int32_t _internal_victim_damage() const;
+  void _internal_set_victim_damage(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CCSUsrMsg_DamagePrediction)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::CMsgVector* shoot_pos_;
+    ::CMsgQAngle* shoot_dir_;
+    ::CMsgQAngle* aim_punch_;
+    int32_t command_num_;
+    int32_t pellet_idx_;
+    int32_t victim_slot_;
+    int32_t victim_starting_health_;
+    int32_t victim_damage_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_cstrike15_5fusermessages_2eproto;
@@ -26819,9 +27283,478 @@ inline void CCSUsrMsgPreMatchSayText::set_all_chat(bool value) {
   // @@protoc_insertion_point(field_set:CCSUsrMsgPreMatchSayText.all_chat)
 }
 
+// -------------------------------------------------------------------
+
+// CCSUsrMsg_CounterStrafe
+
+// optional int32 press_to_release_ns = 1;
+inline bool CCSUsrMsg_CounterStrafe::_internal_has_press_to_release_ns() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_CounterStrafe::has_press_to_release_ns() const {
+  return _internal_has_press_to_release_ns();
+}
+inline void CCSUsrMsg_CounterStrafe::clear_press_to_release_ns() {
+  _impl_.press_to_release_ns_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline int32_t CCSUsrMsg_CounterStrafe::_internal_press_to_release_ns() const {
+  return _impl_.press_to_release_ns_;
+}
+inline int32_t CCSUsrMsg_CounterStrafe::press_to_release_ns() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_CounterStrafe.press_to_release_ns)
+  return _internal_press_to_release_ns();
+}
+inline void CCSUsrMsg_CounterStrafe::_internal_set_press_to_release_ns(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.press_to_release_ns_ = value;
+}
+inline void CCSUsrMsg_CounterStrafe::set_press_to_release_ns(int32_t value) {
+  _internal_set_press_to_release_ns(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_CounterStrafe.press_to_release_ns)
+}
+
+// optional int32 total_keys_down = 2;
+inline bool CCSUsrMsg_CounterStrafe::_internal_has_total_keys_down() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_CounterStrafe::has_total_keys_down() const {
+  return _internal_has_total_keys_down();
+}
+inline void CCSUsrMsg_CounterStrafe::clear_total_keys_down() {
+  _impl_.total_keys_down_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline int32_t CCSUsrMsg_CounterStrafe::_internal_total_keys_down() const {
+  return _impl_.total_keys_down_;
+}
+inline int32_t CCSUsrMsg_CounterStrafe::total_keys_down() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_CounterStrafe.total_keys_down)
+  return _internal_total_keys_down();
+}
+inline void CCSUsrMsg_CounterStrafe::_internal_set_total_keys_down(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.total_keys_down_ = value;
+}
+inline void CCSUsrMsg_CounterStrafe::set_total_keys_down(int32_t value) {
+  _internal_set_total_keys_down(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_CounterStrafe.total_keys_down)
+}
+
+// -------------------------------------------------------------------
+
+// CCSUsrMsg_DamagePrediction
+
+// optional int32 command_num = 1;
+inline bool CCSUsrMsg_DamagePrediction::_internal_has_command_num() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_DamagePrediction::has_command_num() const {
+  return _internal_has_command_num();
+}
+inline void CCSUsrMsg_DamagePrediction::clear_command_num() {
+  _impl_.command_num_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline int32_t CCSUsrMsg_DamagePrediction::_internal_command_num() const {
+  return _impl_.command_num_;
+}
+inline int32_t CCSUsrMsg_DamagePrediction::command_num() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_DamagePrediction.command_num)
+  return _internal_command_num();
+}
+inline void CCSUsrMsg_DamagePrediction::_internal_set_command_num(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.command_num_ = value;
+}
+inline void CCSUsrMsg_DamagePrediction::set_command_num(int32_t value) {
+  _internal_set_command_num(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_DamagePrediction.command_num)
+}
+
+// optional int32 pellet_idx = 2;
+inline bool CCSUsrMsg_DamagePrediction::_internal_has_pellet_idx() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_DamagePrediction::has_pellet_idx() const {
+  return _internal_has_pellet_idx();
+}
+inline void CCSUsrMsg_DamagePrediction::clear_pellet_idx() {
+  _impl_.pellet_idx_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline int32_t CCSUsrMsg_DamagePrediction::_internal_pellet_idx() const {
+  return _impl_.pellet_idx_;
+}
+inline int32_t CCSUsrMsg_DamagePrediction::pellet_idx() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_DamagePrediction.pellet_idx)
+  return _internal_pellet_idx();
+}
+inline void CCSUsrMsg_DamagePrediction::_internal_set_pellet_idx(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.pellet_idx_ = value;
+}
+inline void CCSUsrMsg_DamagePrediction::set_pellet_idx(int32_t value) {
+  _internal_set_pellet_idx(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_DamagePrediction.pellet_idx)
+}
+
+// optional int32 victim_slot = 3;
+inline bool CCSUsrMsg_DamagePrediction::_internal_has_victim_slot() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_DamagePrediction::has_victim_slot() const {
+  return _internal_has_victim_slot();
+}
+inline void CCSUsrMsg_DamagePrediction::clear_victim_slot() {
+  _impl_.victim_slot_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline int32_t CCSUsrMsg_DamagePrediction::_internal_victim_slot() const {
+  return _impl_.victim_slot_;
+}
+inline int32_t CCSUsrMsg_DamagePrediction::victim_slot() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_DamagePrediction.victim_slot)
+  return _internal_victim_slot();
+}
+inline void CCSUsrMsg_DamagePrediction::_internal_set_victim_slot(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.victim_slot_ = value;
+}
+inline void CCSUsrMsg_DamagePrediction::set_victim_slot(int32_t value) {
+  _internal_set_victim_slot(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_DamagePrediction.victim_slot)
+}
+
+// optional int32 victim_starting_health = 4;
+inline bool CCSUsrMsg_DamagePrediction::_internal_has_victim_starting_health() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_DamagePrediction::has_victim_starting_health() const {
+  return _internal_has_victim_starting_health();
+}
+inline void CCSUsrMsg_DamagePrediction::clear_victim_starting_health() {
+  _impl_.victim_starting_health_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline int32_t CCSUsrMsg_DamagePrediction::_internal_victim_starting_health() const {
+  return _impl_.victim_starting_health_;
+}
+inline int32_t CCSUsrMsg_DamagePrediction::victim_starting_health() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_DamagePrediction.victim_starting_health)
+  return _internal_victim_starting_health();
+}
+inline void CCSUsrMsg_DamagePrediction::_internal_set_victim_starting_health(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.victim_starting_health_ = value;
+}
+inline void CCSUsrMsg_DamagePrediction::set_victim_starting_health(int32_t value) {
+  _internal_set_victim_starting_health(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_DamagePrediction.victim_starting_health)
+}
+
+// optional int32 victim_damage = 5;
+inline bool CCSUsrMsg_DamagePrediction::_internal_has_victim_damage() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_DamagePrediction::has_victim_damage() const {
+  return _internal_has_victim_damage();
+}
+inline void CCSUsrMsg_DamagePrediction::clear_victim_damage() {
+  _impl_.victim_damage_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000080u;
+}
+inline int32_t CCSUsrMsg_DamagePrediction::_internal_victim_damage() const {
+  return _impl_.victim_damage_;
+}
+inline int32_t CCSUsrMsg_DamagePrediction::victim_damage() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_DamagePrediction.victim_damage)
+  return _internal_victim_damage();
+}
+inline void CCSUsrMsg_DamagePrediction::_internal_set_victim_damage(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_.victim_damage_ = value;
+}
+inline void CCSUsrMsg_DamagePrediction::set_victim_damage(int32_t value) {
+  _internal_set_victim_damage(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_DamagePrediction.victim_damage)
+}
+
+// optional .CMsgVector shoot_pos = 6;
+inline bool CCSUsrMsg_DamagePrediction::_internal_has_shoot_pos() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.shoot_pos_ != nullptr);
+  return value;
+}
+inline bool CCSUsrMsg_DamagePrediction::has_shoot_pos() const {
+  return _internal_has_shoot_pos();
+}
+inline const ::CMsgVector& CCSUsrMsg_DamagePrediction::_internal_shoot_pos() const {
+  const ::CMsgVector* p = _impl_.shoot_pos_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CCSUsrMsg_DamagePrediction::shoot_pos() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_DamagePrediction.shoot_pos)
+  return _internal_shoot_pos();
+}
+inline void CCSUsrMsg_DamagePrediction::unsafe_arena_set_allocated_shoot_pos(
+    ::CMsgVector* shoot_pos) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.shoot_pos_);
+  }
+  _impl_.shoot_pos_ = shoot_pos;
+  if (shoot_pos) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CCSUsrMsg_DamagePrediction.shoot_pos)
+}
+inline ::CMsgVector* CCSUsrMsg_DamagePrediction::release_shoot_pos() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgVector* temp = _impl_.shoot_pos_;
+  _impl_.shoot_pos_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CCSUsrMsg_DamagePrediction::unsafe_arena_release_shoot_pos() {
+  // @@protoc_insertion_point(field_release:CCSUsrMsg_DamagePrediction.shoot_pos)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgVector* temp = _impl_.shoot_pos_;
+  _impl_.shoot_pos_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CCSUsrMsg_DamagePrediction::_internal_mutable_shoot_pos() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.shoot_pos_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.shoot_pos_ = p;
+  }
+  return _impl_.shoot_pos_;
+}
+inline ::CMsgVector* CCSUsrMsg_DamagePrediction::mutable_shoot_pos() {
+  ::CMsgVector* _msg = _internal_mutable_shoot_pos();
+  // @@protoc_insertion_point(field_mutable:CCSUsrMsg_DamagePrediction.shoot_pos)
+  return _msg;
+}
+inline void CCSUsrMsg_DamagePrediction::set_allocated_shoot_pos(::CMsgVector* shoot_pos) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.shoot_pos_);
+  }
+  if (shoot_pos) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(shoot_pos));
+    if (message_arena != submessage_arena) {
+      shoot_pos = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, shoot_pos, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.shoot_pos_ = shoot_pos;
+  // @@protoc_insertion_point(field_set_allocated:CCSUsrMsg_DamagePrediction.shoot_pos)
+}
+
+// optional .CMsgQAngle shoot_dir = 7;
+inline bool CCSUsrMsg_DamagePrediction::_internal_has_shoot_dir() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.shoot_dir_ != nullptr);
+  return value;
+}
+inline bool CCSUsrMsg_DamagePrediction::has_shoot_dir() const {
+  return _internal_has_shoot_dir();
+}
+inline const ::CMsgQAngle& CCSUsrMsg_DamagePrediction::_internal_shoot_dir() const {
+  const ::CMsgQAngle* p = _impl_.shoot_dir_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgQAngle&>(
+      ::_CMsgQAngle_default_instance_);
+}
+inline const ::CMsgQAngle& CCSUsrMsg_DamagePrediction::shoot_dir() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_DamagePrediction.shoot_dir)
+  return _internal_shoot_dir();
+}
+inline void CCSUsrMsg_DamagePrediction::unsafe_arena_set_allocated_shoot_dir(
+    ::CMsgQAngle* shoot_dir) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.shoot_dir_);
+  }
+  _impl_.shoot_dir_ = shoot_dir;
+  if (shoot_dir) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CCSUsrMsg_DamagePrediction.shoot_dir)
+}
+inline ::CMsgQAngle* CCSUsrMsg_DamagePrediction::release_shoot_dir() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgQAngle* temp = _impl_.shoot_dir_;
+  _impl_.shoot_dir_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgQAngle* CCSUsrMsg_DamagePrediction::unsafe_arena_release_shoot_dir() {
+  // @@protoc_insertion_point(field_release:CCSUsrMsg_DamagePrediction.shoot_dir)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgQAngle* temp = _impl_.shoot_dir_;
+  _impl_.shoot_dir_ = nullptr;
+  return temp;
+}
+inline ::CMsgQAngle* CCSUsrMsg_DamagePrediction::_internal_mutable_shoot_dir() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.shoot_dir_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgQAngle>(GetArenaForAllocation());
+    _impl_.shoot_dir_ = p;
+  }
+  return _impl_.shoot_dir_;
+}
+inline ::CMsgQAngle* CCSUsrMsg_DamagePrediction::mutable_shoot_dir() {
+  ::CMsgQAngle* _msg = _internal_mutable_shoot_dir();
+  // @@protoc_insertion_point(field_mutable:CCSUsrMsg_DamagePrediction.shoot_dir)
+  return _msg;
+}
+inline void CCSUsrMsg_DamagePrediction::set_allocated_shoot_dir(::CMsgQAngle* shoot_dir) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.shoot_dir_);
+  }
+  if (shoot_dir) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(shoot_dir));
+    if (message_arena != submessage_arena) {
+      shoot_dir = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, shoot_dir, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.shoot_dir_ = shoot_dir;
+  // @@protoc_insertion_point(field_set_allocated:CCSUsrMsg_DamagePrediction.shoot_dir)
+}
+
+// optional .CMsgQAngle aim_punch = 8;
+inline bool CCSUsrMsg_DamagePrediction::_internal_has_aim_punch() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.aim_punch_ != nullptr);
+  return value;
+}
+inline bool CCSUsrMsg_DamagePrediction::has_aim_punch() const {
+  return _internal_has_aim_punch();
+}
+inline const ::CMsgQAngle& CCSUsrMsg_DamagePrediction::_internal_aim_punch() const {
+  const ::CMsgQAngle* p = _impl_.aim_punch_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgQAngle&>(
+      ::_CMsgQAngle_default_instance_);
+}
+inline const ::CMsgQAngle& CCSUsrMsg_DamagePrediction::aim_punch() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_DamagePrediction.aim_punch)
+  return _internal_aim_punch();
+}
+inline void CCSUsrMsg_DamagePrediction::unsafe_arena_set_allocated_aim_punch(
+    ::CMsgQAngle* aim_punch) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.aim_punch_);
+  }
+  _impl_.aim_punch_ = aim_punch;
+  if (aim_punch) {
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CCSUsrMsg_DamagePrediction.aim_punch)
+}
+inline ::CMsgQAngle* CCSUsrMsg_DamagePrediction::release_aim_punch() {
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  ::CMsgQAngle* temp = _impl_.aim_punch_;
+  _impl_.aim_punch_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgQAngle* CCSUsrMsg_DamagePrediction::unsafe_arena_release_aim_punch() {
+  // @@protoc_insertion_point(field_release:CCSUsrMsg_DamagePrediction.aim_punch)
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  ::CMsgQAngle* temp = _impl_.aim_punch_;
+  _impl_.aim_punch_ = nullptr;
+  return temp;
+}
+inline ::CMsgQAngle* CCSUsrMsg_DamagePrediction::_internal_mutable_aim_punch() {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  if (_impl_.aim_punch_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgQAngle>(GetArenaForAllocation());
+    _impl_.aim_punch_ = p;
+  }
+  return _impl_.aim_punch_;
+}
+inline ::CMsgQAngle* CCSUsrMsg_DamagePrediction::mutable_aim_punch() {
+  ::CMsgQAngle* _msg = _internal_mutable_aim_punch();
+  // @@protoc_insertion_point(field_mutable:CCSUsrMsg_DamagePrediction.aim_punch)
+  return _msg;
+}
+inline void CCSUsrMsg_DamagePrediction::set_allocated_aim_punch(::CMsgQAngle* aim_punch) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.aim_punch_);
+  }
+  if (aim_punch) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(aim_punch));
+    if (message_arena != submessage_arena) {
+      aim_punch = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, aim_punch, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  _impl_.aim_punch_ = aim_punch;
+  // @@protoc_insertion_point(field_set_allocated:CCSUsrMsg_DamagePrediction.aim_punch)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
