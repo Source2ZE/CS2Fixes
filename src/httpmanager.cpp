@@ -113,6 +113,21 @@ void HTTPManager::POST(const char* pszUrl, const char* pszText, CompletedCallbac
 	GenerateRequest(k_EHTTPMethodPOST, pszUrl, pszText, callback, headers);
 }
 
+void HTTPManager::PUT(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
+{
+	GenerateRequest(k_EHTTPMethodPUT, pszUrl, pszText, callback, headers);
+}
+
+void HTTPManager::PATCH(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
+{
+	GenerateRequest(k_EHTTPMethodPATCH, pszUrl, pszText, callback, headers);
+}
+
+void HTTPManager::DELETE(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
+{
+	GenerateRequest(k_EHTTPMethodDELETE, pszUrl, pszText, callback, headers);
+}
+
 void HTTPManager::GenerateRequest(EHTTPMethod method, const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
 {
 	//Message("Sending HTTP:\n%s\n", pszText);
@@ -120,7 +135,12 @@ void HTTPManager::GenerateRequest(EHTTPMethod method, const char* pszUrl, const 
 	int size = strlen(pszText);
 	//Message("HTTP request: %p\n", hReq);
 
-	if (method == k_EHTTPMethodPOST && !g_http->SetHTTPRequestRawPostBody(hReq, "application/json", (uint8*)pszText, size))
+	bool shouldHaveBody = method == k_EHTTPMethodPOST
+		|| method == k_EHTTPMethodPATCH
+		|| method == k_EHTTPMethodPUT
+		|| method == k_EHTTPMethodDELETE;
+
+	if (shouldHaveBody && !g_http->SetHTTPRequestRawPostBody(hReq, "application/json", (uint8*)pszText, size))
 	{
 		//Message("Failed to SetHTTPRequestRawPostBody\n");
 		return;
