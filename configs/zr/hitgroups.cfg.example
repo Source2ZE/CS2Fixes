@@ -1,130 +1,47 @@
-// SHORT DESCRIPTIONS
-//
 // Attribute:               Values:     Description:
 // ----------------------------------------------------------------------------
-// index                    number      The hitgroup index.
-// enabled                  1/0     	If enabled. The knockback will apply multiplier from knockback config.
 // knockback                decimal     The knockback multiplier for this hitgroup.
 
 "Hitgroups"
 {
 	"Generic"
 	{
-		// enabled
-		"enabled"	"1"
-		
-		// General
-		"index"		"0"
-
-		// Knockback
 		"knockback"	"1.0"
 	}
-
 	"Head"
 	{
-		// enabled
-		"enabled"	"1"
-
-		// General
-		"index"		"1"
-
-		// Knockback
 		"knockback"	"1.0"
 	}
-
 	"Chest"
 	{
-		// enabled
-		"enabled"	"1"
-
-		// General
-		"index"		"2"
-
-		// Knockback
 		"knockback"	"1.0"
 	}
-
 	"Stomach"
 	{
-		// enabled
-		"enabled"	"1"
-		
-		// General
-		"index"		"3"
-
-		// Knockback
 		"knockback"	"1.0"
 	}
-
 	"LeftArm"
 	{
-		// enabled
-		"enabled"	"1"
-		
-		// General
-		"index"		"4"
-
-		// Knockback
 		"knockback"	"1.0"
 	}
-
 	"RightArm"
 	{
-		// enabled
-		"enabled"	"1"
-		
-		// General
-		"index"		"5"
-
-		// Knockback
 		"knockback"	"1.0"
 	}
-
 	"LeftLeg"
 	{
-		// enabled
-		"enabled"	"1"
-		
-		// General
-		"index"		"6"
-
-		// Knockback
 		"knockback"	"1.0"
 	}
-
 	"RightLeg"
 	{
-		// enabled
-		"enabled"	"1"
-		
-		// General
-		"index"		"7"
-
-		// Knockback
 		"knockback"	"1.0"
 	}
-
 	"Neck"
 	{
-		// enabled
-		"enabled"	"1"
-		
-		// General
-		"index"		"8"
-
-		// Knockback
 		"knockback"	"1.0"
 	}
-	
 	"Gear"
 	{
-		// enabled
-		"enabled"	"1"
-		
-		// General
-		"index"		"10"
-
-		// Knockback
 		"knockback"	"1.0"
 	}
 }

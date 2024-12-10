@@ -213,14 +213,12 @@ public:
 	void ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pPawn);
 	void PrecacheModels(IEntityResourceManifest* pResourceManifest);
 	void GetZRClassList(int iTeam, CUtlVector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController = nullptr);
-	ZRZombieClass* GetPlayerClassIndex(CCSPlayerController *pController);
 private:
 	void ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
 	CUtlVector<std::shared_ptr<ZRZombieClass>> m_vecZombieDefaultClass;
 	CUtlVector<std::shared_ptr<ZRHumanClass>> m_vecHumanDefaultClass;
 	CUtlMap<uint32, std::shared_ptr<ZRZombieClass>> m_ZombieClassMap;
 	CUtlMap<uint32, std::shared_ptr<ZRHumanClass>> m_HumanClassMap;
-	ZRZombieClass *vecPlayerClassIndex[MAXPLAYERS];
 };
 
 class CZRRegenTimer : public CTimerBase
@@ -275,9 +273,9 @@ public:
 		m_HitgroupMap.SetLessFunc(DefLessFunc(uint32));
 	};
 	void LoadHitgroupConfig();
-	ZRHitgroup* FindHitgroupIndex(int iIndex);
+	std::shared_ptr<ZRHitgroup> FindHitgroupIndex(int iIndex);
 private:
-	CUtlMap<uint32, ZRHitgroup*> m_HitgroupMap;
+	CUtlMap<uint32, std::shared_ptr<ZRHitgroup>> m_HitgroupMap;
 };
 
 extern ZRWeaponConfig *g_pZRWeaponConfig;

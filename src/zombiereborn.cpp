@@ -682,13 +682,7 @@ void CZRPlayerClassManager::ApplyZombieClass(std::shared_ptr<ZRZombieClass> pCla
 	ApplyBaseClass(pClass, pPawn);
 	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
 	if (pController)
-	{
-		int iSlot = pController->GetPlayerSlot();
-		vecPlayerClassIndex[iSlot] = pClass;
-
-		//Message("Apply zombie class: %i to client with slot: %d\n", pClass, iSlot);
 		CZRRegenTimer::StartRegen(pClass->flHealthRegenInterval, pClass->iHealthRegenCount, pController);
-	}
 }
 
 void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pPawn)
@@ -734,14 +728,6 @@ void CZRPlayerClassManager::GetZRClassList(int iTeam, CUtlVector<std::shared_ptr
 				vecClasses.AddToTail(m_HumanClassMap[i]);
 		}
 	}
-}
-
-ZRZombieClass* CZRPlayerClassManager::GetPlayerClassIndex(CCSPlayerController *pController)
-{
-	int slot = pController->GetPlayerSlot();
-	//Message("CZRPlayerClassNameManager::GetPlayerClassIndex Player Slot: %d with class id: %i\n", slot, vecPlayerClassIndex[slot]);
-
-	return vecPlayerClassIndex[slot];
 }
 
 double CZRRegenTimer::s_flNextExecution;
@@ -847,9 +833,7 @@ void ZR_OnLevelInit()
 	});
 
 	g_pZRWeaponConfig->LoadWeaponConfig();
-
 	g_pZRHitgroupConfig->LoadHitgroupConfig();
-
 	SetupCTeams();
 }
 
@@ -870,7 +854,7 @@ void ZRWeaponConfig::LoadWeaponConfig()
 	{
 		const char *pszWeaponName = pKey->GetName();
 		bool bEnabled = pKey->GetBool("enabled", false);
-		float flKnockback= pKey->GetFloat("knockback", .2f);
+		float flKnockback = pKey->GetFloat("knockback", 1.0f);
 		Message("%s knockback: %f\n", pszWeaponName, flKnockback);
 		ZRWeapon *weapon = new ZRWeapon;
 		if (!bEnabled)
@@ -909,26 +893,47 @@ void ZRHitgroupConfig::LoadHitgroupConfig()
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
 		const char *pszHitgroupName = pKey->GetName();
-		bool bEnabled = pKey->GetBool("enabled", false);
-		int iIndex = pKey->GetInt("index");
-		float flKnockback= pKey->GetFloat("knockback", .2f);
-		
-		ZRHitgroup *hitgroup = new ZRHitgroup;
-		if (!bEnabled)
+		float flKnockback= pKey->GetFloat("knockback", 1.0f);
+		int iIndex = -1;
+
+		if (!V_strcasecmp(pszHitgroupName, "Generic"))
+			iIndex = 0;
+		else if (!V_strcasecmp(pszHitgroupName, "Head"))
+			iIndex = 1;
+		else if (!V_strcasecmp(pszHitgroupName, "Chest"))
+			iIndex = 2;
+		else if (!V_strcasecmp(pszHitgroupName, "Stomach"))
+			iIndex = 3;
+		else if (!V_strcasecmp(pszHitgroupName, "LeftArm"))
+			iIndex = 4;
+		else if (!V_strcasecmp(pszHitgroupName, "RightArm"))
+			iIndex = 5;
+		else if (!V_strcasecmp(pszHitgroupName, "LeftLeg"))
+			iIndex = 6;
+		else if (!V_strcasecmp(pszHitgroupName, "RightLeg"))
+			iIndex = 7;
+		else if (!V_strcasecmp(pszHitgroupName, "Neck"))
+			iIndex = 8;
+		else if (!V_strcasecmp(pszHitgroupName, "Gear"))
+			iIndex = 10;
+
+		if (iIndex == -1)
+		{
+			Panic("Failed to load hitgroup %s, invalid name!", pszHitgroupName);
 			continue;
+		}
+		
+		std::shared_ptr<ZRHitgroup> hitGroup = std::make_shared<ZRHitgroup>();
 
-		hitgroup->flKnockback = flKnockback;
-
-		m_HitgroupMap.Insert(iIndex, hitgroup);
-
-		Message("Hitgroup: %s with index: %d and knockback: %f and enable: %d and ?: %d\n", pszHitgroupName, iIndex, hitgroup->flKnockback, bEnabled, 
-		m_HitgroupMap[iIndex]);
+		hitGroup->flKnockback = flKnockback;
+		m_HitgroupMap.Insert(iIndex, hitGroup);
+		Message("Loaded hitgroup %s at index %d with %f knockback\n", pszHitgroupName, iIndex, hitGroup->flKnockback);
 	}
 
 	return;
 }
 
-ZRHitgroup* ZRHitgroupConfig::FindHitgroupIndex(int iIndex)
+std::shared_ptr<ZRHitgroup> ZRHitgroupConfig::FindHitgroupIndex(int iIndex)
 {
 	uint16 index = m_HitgroupMap.Find(iIndex);
 	//Message("We are finding hitgroup index with index: %d and index is: %d\n", iIndex, index);
@@ -1075,18 +1080,15 @@ void ZR_OnPlayerSpawn(CCSPlayerController* pController)
 void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon, int hitgroup, float classknockback)
 {
 	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
-	ZRHitgroup *pHitgroup = g_pZRHitgroupConfig->FindHitgroupIndex(hitgroup);
+	std::shared_ptr<ZRHitgroup> pHitgroup = g_pZRHitgroupConfig->FindHitgroupIndex(hitgroup);
 	// player shouldn't be able to pick up that weapon in the first place, but just in case
 	if (!pWeapon)
 		return;
 	float flWeaponKnockbackScale = pWeapon->flKnockback;
-	float flHitgroupKnockbackScale;
+	float flHitgroupKnockbackScale = 1.0f;
 
-	if(pHitgroup)
-	{
+	if (pHitgroup)
 		flHitgroupKnockbackScale = pHitgroup->flKnockback;
-	}
-	else flHitgroupKnockbackScale = 1.0;
 
 	Vector vecKnockback;
 	AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
@@ -1579,7 +1581,6 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent)
 	CCSPlayerController *pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 	const char* szWeapon = pEvent->GetString("weapon");
 	int iDmgHealth = pEvent->GetInt("dmg_health");
-
 	int iHitGroup = pEvent->GetInt("hitgroup");
 
 	// grenade and molotov knockbacks are handled by TakeDamage detours
@@ -1588,10 +1589,17 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent)
 
 	if (pAttackerController->m_iTeamNum() == CS_TEAM_CT && pVictimController->m_iTeamNum() == CS_TEAM_T)
 	{
-		ZRZombieClass *pClass = g_pZRPlayerClassManager->GetPlayerClassIndex(pVictimController);
+		float flClassKnockback = 1.0f;
 
-		//Message("victim class index is: %i with knockback value is: %.2f. Applying knockback.\n", pClass, pClass->flKnockback);
-		ZR_ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon, iHitGroup, pClass->flKnockback);
+		if (pVictimController->GetZEPlayer())
+		{
+			std::shared_ptr<ZRClass> activeClass = pVictimController->GetZEPlayer()->GetActiveZRClass();
+
+			if (activeClass && activeClass->iTeam == CS_TEAM_T)
+				flClassKnockback = static_pointer_cast<ZRZombieClass>(activeClass)->flKnockback;
+		}
+
+		ZR_ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon, iHitGroup, flClassKnockback);
 	}
 }
 
