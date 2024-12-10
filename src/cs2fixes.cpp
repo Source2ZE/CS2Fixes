@@ -323,6 +323,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	g_pUserPreferencesSystem = new CUserPreferencesSystem();
 	g_pUserPreferencesStorage = new CUserPreferencesREST();
 	g_pZRWeaponConfig = new ZRWeaponConfig();
+	g_pZRHitgroupConfig = new ZRHitgroupConfig();
 	g_pEntityListener = new CEntityListener();
 	g_pIdleSystem = new CIdleSystem();
 	g_pPanoramaVoteHandler = new CPanoramaVoteHandler();
@@ -412,6 +413,9 @@ bool CS2Fixes::Unload(char *error, size_t maxlen)
 
 	if (g_pZRWeaponConfig)
 		delete g_pZRWeaponConfig;
+	
+	if (g_pZRHitgroupConfig)
+		delete g_pZRHitgroupConfig;
 
 	if (g_pUserPreferencesSystem)
 		delete g_pUserPreferencesSystem;

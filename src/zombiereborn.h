@@ -144,10 +144,12 @@ struct ZRZombieClass : ZRClass
 {
 	int iHealthRegenCount;
 	float flHealthRegenInterval;
+	float flKnockback;
 	ZRZombieClass(std::shared_ptr<ZRZombieClass> pClass) :
 		ZRClass(pClass, CS_TEAM_T), 
 		iHealthRegenCount(pClass->iHealthRegenCount),
-		flHealthRegenInterval(pClass->flHealthRegenInterval){};
+		flHealthRegenInterval(pClass->flHealthRegenInterval),
+		flKnockback(pClass->flKnockback){};
 	ZRZombieClass(ordered_json jsonKeys, std::string szClassname);
 	void PrintInfo()
 	{
@@ -173,6 +175,7 @@ struct ZRZombieClass : ZRClass
 			"\tscale: %f\n"
 			"\tspeed: %f\n"
 			"\tgravity: %f\n"
+			"\tknockback: %f\n"
 			"\tadmin flag: %d\n"
 			"\thealth_regen_count: %d\n"
 			"\thealth_regen_interval: %f\n",
@@ -183,6 +186,7 @@ struct ZRZombieClass : ZRClass
 			flScale,
 			flSpeed,
 			flGravity,
+			flKnockback,
 			iAdminFlag,
 			iHealthRegenCount,
 			flHealthRegenInterval);
@@ -209,12 +213,14 @@ public:
 	void ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pPawn);
 	void PrecacheModels(IEntityResourceManifest* pResourceManifest);
 	void GetZRClassList(int iTeam, CUtlVector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController = nullptr);
+	ZRZombieClass* GetPlayerClassIndex(CCSPlayerController *pController);
 private:
 	void ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
 	CUtlVector<std::shared_ptr<ZRZombieClass>> m_vecZombieDefaultClass;
 	CUtlVector<std::shared_ptr<ZRHumanClass>> m_vecHumanDefaultClass;
 	CUtlMap<uint32, std::shared_ptr<ZRZombieClass>> m_ZombieClassMap;
 	CUtlMap<uint32, std::shared_ptr<ZRHumanClass>> m_HumanClassMap;
+	ZRZombieClass *vecPlayerClassIndex[MAXPLAYERS];
 };
 
 class CZRRegenTimer : public CTimerBase
@@ -242,6 +248,11 @@ struct ZRWeapon
 	float flKnockback;
 };
 
+struct ZRHitgroup
+{
+	float flKnockback;
+};
+
 class ZRWeaponConfig
 {
 public:
@@ -255,7 +266,22 @@ private:
 	CUtlMap<uint32, ZRWeapon*> m_WeaponMap;
 };
 
+
+class ZRHitgroupConfig
+{
+public:
+	ZRHitgroupConfig()
+	{
+		m_HitgroupMap.SetLessFunc(DefLessFunc(uint32));
+	};
+	void LoadHitgroupConfig();
+	ZRHitgroup* FindHitgroupIndex(int iIndex);
+private:
+	CUtlMap<uint32, ZRHitgroup*> m_HitgroupMap;
+};
+
 extern ZRWeaponConfig *g_pZRWeaponConfig;
+extern ZRHitgroupConfig *g_pZRHitgroupConfig;
 extern CZRPlayerClassManager* g_pZRPlayerClassManager;
 
 extern bool g_bEnableZR;
