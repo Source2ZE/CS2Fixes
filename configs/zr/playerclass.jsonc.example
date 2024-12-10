@@ -72,6 +72,7 @@
 			"scale": 1.05,
 			"speed": 1.0,
 			"gravity": 1.0,
+			"knockback": 1.0,
 			"admin_flag": "",
 			"health_regen_count": 250,
 			"health_regen_interval": 5.0

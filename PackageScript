@@ -64,6 +64,7 @@ builder.AddCopy(os.path.join(builder.sourcePath, 'cfg', MMSPlugin.plugin_name, '
 builder.AddCopy(os.path.join(builder.sourcePath, 'cfg', MMSPlugin.plugin_name, 'maps', 'de_somemap.cfg'), mapcfg_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'zr', 'playerclass.jsonc.example'), zr_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'zr', 'weapons.cfg.example'), zr_folder)
+builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'zr', 'hitgroups.cfg.example'), zr_folder)
 builder.AddCopy(os.path.join('gamedata', 'cs2fixes.games.txt'), gamedata_folder)
 
 # Add CS2Fixes-specific compiled asset files

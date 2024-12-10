@@ -69,6 +69,7 @@ static CHandle<CTeam> g_hTeamT;
 
 CZRPlayerClassManager* g_pZRPlayerClassManager = nullptr;
 ZRWeaponConfig *g_pZRWeaponConfig = nullptr;
+ZRHitgroupConfig *g_pZRHitgroupConfig = nullptr;
 
 bool g_bEnableZR = false;
 static float g_flMaxZteleDistance = 150.0f;
@@ -314,7 +315,8 @@ ZRHumanClass::ZRHumanClass(ordered_json jsonKeys, std::string szClassname) : ZRC
 ZRZombieClass::ZRZombieClass(ordered_json jsonKeys, std::string szClassname) :
 	ZRClass(jsonKeys, szClassname, CS_TEAM_T),
 	iHealthRegenCount(jsonKeys.value("health_regen_count", 0)),
-	flHealthRegenInterval(jsonKeys.value("health_regen_interval", 0)){};
+	flHealthRegenInterval(jsonKeys.value("health_regen_interval", 0)),
+	flKnockback(jsonKeys.value("knockback", 1.0)){};
 
 void ZRZombieClass::Override(ordered_json jsonKeys, std::string szClassname)
 {
@@ -323,6 +325,8 @@ void ZRZombieClass::Override(ordered_json jsonKeys, std::string szClassname)
 		iHealthRegenCount = jsonKeys["health_regen_count"].get<int>();
 	if (jsonKeys.contains("health_regen_interval"))
 		flHealthRegenInterval = jsonKeys["health_regen_interval"].get<float>();
+	if (jsonKeys.contains("knockback"))
+		flKnockback = jsonKeys["knockback"].get<float>();
 }
 
 bool ZRClass::IsApplicableTo(CCSPlayerController *pController)
@@ -450,6 +454,11 @@ void CZRPlayerClassManager::LoadPlayerClass()
 					Panic("%s has unspecified key: gravity\n", szClassName.c_str());
 					bMissingKey = true;
 				}
+				/*if (!jsonClass.contains("knockback"))
+				{
+					Warning("%s has unspecified key: knockback\n", szClassName.c_str());
+					bMissingKey = true;
+				}*/
 				if (!jsonClass.contains("admin_flag"))
 				{
 					Panic("%s has unspecified key: admin_flag\n", szClassName.c_str());
@@ -824,6 +833,7 @@ void ZR_OnLevelInit()
 	});
 
 	g_pZRWeaponConfig->LoadWeaponConfig();
+	g_pZRHitgroupConfig->LoadHitgroupConfig();
 	SetupCTeams();
 }
 
@@ -844,7 +854,7 @@ void ZRWeaponConfig::LoadWeaponConfig()
 	{
 		const char *pszWeaponName = pKey->GetName();
 		bool bEnabled = pKey->GetBool("enabled", false);
-		float flKnockback= pKey->GetFloat("knockback", 0.0f);
+		float flKnockback = pKey->GetFloat("knockback", 1.0f);
 		Message("%s knockback: %f\n", pszWeaponName, flKnockback);
 		ZRWeapon *weapon = new ZRWeapon;
 		if (!bEnabled)
@@ -863,6 +873,76 @@ ZRWeapon* ZRWeaponConfig::FindWeapon(const char *pszWeaponName)
 	uint16 index = m_WeaponMap.Find(hash_32_fnv1a_const(pszWeaponName));
 	if (m_WeaponMap.IsValidIndex(index))
 		return m_WeaponMap[index];
+
+	return nullptr;
+}
+
+void ZRHitgroupConfig::LoadHitgroupConfig()
+{
+	m_HitgroupMap.Purge();
+	KeyValues* pKV = new KeyValues("Hitgroups");
+	KeyValues::AutoDelete autoDelete(pKV);
+
+	const char *pszPath = "addons/cs2fixes/configs/zr/hitgroups.cfg";
+
+	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
+	{
+		Warning("Failed to load %s\n", pszPath);
+		return;
+	}
+	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+	{
+		const char *pszHitgroupName = pKey->GetName();
+		float flKnockback= pKey->GetFloat("knockback", 1.0f);
+		int iIndex = -1;
+
+		if (!V_strcasecmp(pszHitgroupName, "Generic"))
+			iIndex = 0;
+		else if (!V_strcasecmp(pszHitgroupName, "Head"))
+			iIndex = 1;
+		else if (!V_strcasecmp(pszHitgroupName, "Chest"))
+			iIndex = 2;
+		else if (!V_strcasecmp(pszHitgroupName, "Stomach"))
+			iIndex = 3;
+		else if (!V_strcasecmp(pszHitgroupName, "LeftArm"))
+			iIndex = 4;
+		else if (!V_strcasecmp(pszHitgroupName, "RightArm"))
+			iIndex = 5;
+		else if (!V_strcasecmp(pszHitgroupName, "LeftLeg"))
+			iIndex = 6;
+		else if (!V_strcasecmp(pszHitgroupName, "RightLeg"))
+			iIndex = 7;
+		else if (!V_strcasecmp(pszHitgroupName, "Neck"))
+			iIndex = 8;
+		else if (!V_strcasecmp(pszHitgroupName, "Gear"))
+			iIndex = 10;
+
+		if (iIndex == -1)
+		{
+			Panic("Failed to load hitgroup %s, invalid name!", pszHitgroupName);
+			continue;
+		}
+		
+		std::shared_ptr<ZRHitgroup> hitGroup = std::make_shared<ZRHitgroup>();
+
+		hitGroup->flKnockback = flKnockback;
+		m_HitgroupMap.Insert(iIndex, hitGroup);
+		Message("Loaded hitgroup %s at index %d with %f knockback\n", pszHitgroupName, iIndex, hitGroup->flKnockback);
+	}
+
+	return;
+}
+
+std::shared_ptr<ZRHitgroup> ZRHitgroupConfig::FindHitgroupIndex(int iIndex)
+{
+	uint16 index = m_HitgroupMap.Find(iIndex);
+	//Message("We are finding hitgroup index with index: %d and index is: %d\n", iIndex, index);
+
+	if (m_HitgroupMap.IsValidIndex(index))
+	{
+		//Message("We found valid index with (m_HitgroupMap[index]): %d\n", m_HitgroupMap[index]);
+		return m_HitgroupMap[index];
+	}
 
 	return nullptr;
 }
@@ -997,17 +1077,22 @@ void ZR_OnPlayerSpawn(CCSPlayerController* pController)
 	});
 }
 
-void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon)
+void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon, int hitgroup, float classknockback)
 {
 	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
+	std::shared_ptr<ZRHitgroup> pHitgroup = g_pZRHitgroupConfig->FindHitgroupIndex(hitgroup);
 	// player shouldn't be able to pick up that weapon in the first place, but just in case
 	if (!pWeapon)
 		return;
 	float flWeaponKnockbackScale = pWeapon->flKnockback;
-	
+	float flHitgroupKnockbackScale = 1.0f;
+
+	if (pHitgroup)
+		flHitgroupKnockbackScale = pHitgroup->flKnockback;
+
 	Vector vecKnockback;
 	AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
-	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale);
+	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale * flHitgroupKnockbackScale * classknockback);
 	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
@@ -1496,13 +1581,26 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent)
 	CCSPlayerController *pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 	const char* szWeapon = pEvent->GetString("weapon");
 	int iDmgHealth = pEvent->GetInt("dmg_health");
+	int iHitGroup = pEvent->GetInt("hitgroup");
 
 	// grenade and molotov knockbacks are handled by TakeDamage detours
 	if (!pAttackerController || !pVictimController || !V_strncmp(szWeapon, "inferno", 7) || !V_strncmp(szWeapon, "hegrenade", 9))
 		return;
 
 	if (pAttackerController->m_iTeamNum() == CS_TEAM_CT && pVictimController->m_iTeamNum() == CS_TEAM_T)
-		ZR_ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon);
+	{
+		float flClassKnockback = 1.0f;
+
+		if (pVictimController->GetZEPlayer())
+		{
+			std::shared_ptr<ZRClass> activeClass = pVictimController->GetZEPlayer()->GetActiveZRClass();
+
+			if (activeClass && activeClass->iTeam == CS_TEAM_T)
+				flClassKnockback = static_pointer_cast<ZRZombieClass>(activeClass)->flKnockback;
+		}
+
+		ZR_ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon, iHitGroup, flClassKnockback);
+	}
 }
 
 void ZR_OnPlayerDeath(IGameEvent* pEvent)
