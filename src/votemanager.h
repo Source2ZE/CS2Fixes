@@ -36,6 +36,7 @@ enum class EExtendState
 	IN_PROGRESS,
 	POST_EXTEND_COOLDOWN,
 	POST_EXTEND_NO_EXTENDS_LEFT,
+	POST_EXTEND_FAILED,
 	POST_LAST_ROUND_END,
 	POST_RTV,
 	NO_EXTENDS,
@@ -51,7 +52,6 @@ enum EExtendVoteMode
 
 extern ERTVState g_RTVState;
 extern EExtendState g_ExtendState;
-extern int g_iExtendsLeft;
 extern bool g_bVoteManagerEnable;
 
 void VoteManager_Init();

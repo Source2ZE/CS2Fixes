@@ -34,9 +34,10 @@ extern CCSGameRules* g_pGameRules;
 
 ERTVState g_RTVState = ERTVState::MAP_START;
 EExtendState g_ExtendState = EExtendState::MAP_START;
+int g_iExtends = 0;
 
 bool g_bVoteManagerEnable = false;
-int g_iExtendsLeft = 1;
+int g_iMaxExtends = 1;
 float g_flExtendSucceedRatio = 0.5f;
 int g_iExtendTimeToAdd = 20;
 float g_flRTVSucceedRatio = 0.6f;
@@ -53,7 +54,7 @@ float g_flRtvDelay = 300.0f;
 FAKE_BOOL_CVAR(cs2f_votemanager_enable, "Whether to enable votemanager features such as RTV and extends", g_bVoteManagerEnable, false, false)
 FAKE_FLOAT_CVAR(cs2f_extend_vote_delay, "If cs2f_extend_mode is 2, Time after map start until extend votes can be triggered", g_flExtendVoteDelay, 120.0f, false)
 FAKE_INT_CVAR(cs2f_extend_mode, "How extend votes are handled. (0=off, 1=only admins can start, 2=players can start with !ve, 3=auto start at given timeleft)", g_ExtendVoteMode, (int)EExtendVoteMode::EXTENDVOTE_ADMINONLY, false)
-FAKE_INT_CVAR(cs2f_extends, "Maximum extends per map", g_iExtendsLeft, 1, false)
+FAKE_INT_CVAR(cs2f_extends, "Maximum extends per map", g_iMaxExtends, 1, false)
 FAKE_FLOAT_CVAR(cs2f_extend_success_ratio, "Ratio needed to pass an extend vote", g_flExtendSucceedRatio, 0.5f, false)
 FAKE_INT_CVAR(cs2f_extend_time, "Time to add per extend in minutes", g_iExtendTimeToAdd, 20, false)
 FAKE_FLOAT_CVAR(cs2f_extend_vote_start_time, "If cs2f_extend_mode is 3, start an extend vote at this timeleft (minutes)", g_flExtendVoteStartTime, 4.0f, false)
@@ -71,6 +72,8 @@ void VoteManager_Init()
 	// Disable RTV and Extend votes after map has just started
 	g_RTVState = ERTVState::MAP_START;
 	g_ExtendState = EExtendState::MAP_START;
+
+	g_iExtends = 0;
 
 	new CTimer(g_flExtendVoteDelay, false, true, []()
 		{
@@ -110,7 +113,7 @@ float TimerCheckTimeleft()
 		return flExtendVoteTickrate;
 
 	// No more extends or map RTVd
-	if (g_iExtendsLeft <= 0 || g_ExtendState >= EExtendState::POST_EXTEND_NO_EXTENDS_LEFT)
+	if ((g_iMaxExtends - g_iExtends) <= 0 || g_ExtendState >= EExtendState::POST_EXTEND_NO_EXTENDS_LEFT)
 		return flExtendVoteTickrate;
 
 	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
@@ -401,6 +404,9 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 	case EExtendState::POST_EXTEND_NO_EXTENDS_LEFT:
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no extends left for the current map.");
 		return;
+	case EExtendState::POST_EXTEND_FAILED:
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "A previous extend vote already failed.");
+		return;
 	case EExtendState::POST_LAST_ROUND_END:
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is closed during next map selection.");
 		return;
@@ -491,7 +497,7 @@ CON_COMMAND_CHAT_FLAGS(adminve, "Start a vote extend immediately.", ADMFLAG_CHAN
 
 	if (g_ExtendState == EExtendState::IN_PROGRESS || bVoteStarting)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "An extend vote is already in progress.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "An extend vote is already in progress.");
 		return;
 	}
 
@@ -544,54 +550,22 @@ CON_COMMAND_CHAT_FLAGS(enablertv, "- Restore the ability for players to vote to 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "enabled vote for RTV.", pszCommandPlayerName);
 }
 
-CON_COMMAND_CHAT_FLAGS(addextend, "- Add another extend to the current map for players to vote", ADMFLAG_RCON)
-{
-	if (!g_bVoteManagerEnable)
-		return;
-
-	if (g_ExtendState == EExtendState::IN_PROGRESS)
-	{
-		if (player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait until the current vote has ended to add extends.");
-		else
-			ConMsg("Wait until the current vote has ended to add extends.");
-		return;
-	}
-
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
-
-	if (g_ExtendState == EExtendState::POST_EXTEND_NO_EXTENDS_LEFT || g_ExtendState == EExtendState::NO_EXTENDS)
-		g_ExtendState = EExtendState::EXTEND_ALLOWED;
-
-	g_iExtendsLeft += 1;
-
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "allowed for an additional extend.", pszCommandPlayerName);
-}
-
 CON_COMMAND_CHAT(extendsleft, "- Display amount of extends left for the current map")
 {
 	if (!g_bVoteManagerEnable)
 		return;
 
-	char message[64];
-
-	switch (g_iExtendsLeft)
+	if (g_iMaxExtends - g_iExtends <= 0)
 	{
-	case 0:
-		strcpy(message, "There are no extends left.");
-		break;
-	case 1:
-		strcpy(message, "There's 1 extend left");
-		break;
-	default:
-		V_snprintf(message, sizeof(message), "There are %i extends left.", g_iExtendsLeft);
-		break;
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no extends left, the map was already extended %i/%i times.", g_iExtends, g_iMaxExtends);
 	}
-
-	if (player)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s", message);
 	else
-		ConMsg("%s", message);
+	{
+		if (g_ExtendState == EExtendState::POST_EXTEND_FAILED)
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The map had %i/%i extends left, but the last extend vote failed.", g_iMaxExtends - g_iExtends, g_iMaxExtends);
+		else
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The map has %i/%i extends left.", g_iMaxExtends - g_iExtends, g_iMaxExtends);
+	}
 }
 
 CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
@@ -682,11 +656,11 @@ void VoteExtendHandler(YesNoVoteAction action, int param1, int param2)
 	{
 		if ((YesNoVoteEndReason)param1 == YesNoVoteEndReason::VoteEnd_Cancelled)
 		{
-			// Admin cancelled so stop further automatic votes
+			// Admin cancelled so stop further votes
 			// It will reenable if an admin manually calls a vote
 			if (g_ExtendVoteMode == EExtendVoteMode::EXTENDVOTE_AUTO)
 			{
-				g_ExtendState = EExtendState::POST_EXTEND_NO_EXTENDS_LEFT;
+				g_ExtendState = EExtendState::POST_EXTEND_FAILED;
 			}
 		}
 
@@ -710,8 +684,9 @@ bool VoteExtendEndCallback(YesNoVoteInfo info)
 	if (yes_percent >= g_flExtendSucceedRatio)
 	{
 		ExtendMap(g_iExtendTimeToAdd);
+		g_iExtends++;
 
-		if (g_iExtendsLeft == 1)
+		if (g_iMaxExtends - g_iExtends <= 0)
 			// there are no extends left after a successfull extend vote
 			g_ExtendState = EExtendState::POST_EXTEND_NO_EXTENDS_LEFT;
 		else
@@ -747,15 +722,13 @@ bool VoteExtendEndCallback(YesNoVoteInfo info)
 				pPlayer->SetExtendVote(false);
 		}
 
-		g_iExtendsLeft--;
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote succeeded! Current map has been extended by %i minutes.", g_iExtendTimeToAdd);
 
 		return true;
 	}
 
-	// Vote failed so we don't allow any more player initiated votes
-	g_ExtendState = EExtendState::POST_EXTEND_NO_EXTENDS_LEFT;
-	g_iExtendsLeft = 0;
+	// Vote failed so we don't allow any more votes
+	g_ExtendState = EExtendState::POST_EXTEND_FAILED;
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote failed! Further extend votes disabled!", g_iExtendTimeToAdd);
 
