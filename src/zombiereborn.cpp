@@ -860,7 +860,7 @@ void ZRWeaponConfig::LoadWeaponConfig()
 		bool bEnabled = pKey->GetBool("enabled", false);
 		float flKnockback = pKey->GetFloat("knockback", 1.0f);
 		Message("%s knockback: %f\n", pszWeaponName, flKnockback);
-		ZRWeapon *weapon = new ZRWeapon;
+		std::shared_ptr<ZRWeapon> weapon = std::make_shared<ZRWeapon>();
 		if (!bEnabled)
 			continue;
 
@@ -872,7 +872,7 @@ void ZRWeaponConfig::LoadWeaponConfig()
 	return;
 }
 
-ZRWeapon* ZRWeaponConfig::FindWeapon(const char *pszWeaponName)
+std::shared_ptr<ZRWeapon> ZRWeaponConfig::FindWeapon(const char *pszWeaponName)
 {
 	uint16 index = m_WeaponMap.Find(hash_32_fnv1a_const(pszWeaponName));
 	if (m_WeaponMap.IsValidIndex(index))
@@ -1083,7 +1083,7 @@ void ZR_OnPlayerSpawn(CCSPlayerController* pController)
 
 void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon, int hitgroup, float classknockback)
 {
-	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
+	std::shared_ptr<ZRWeapon> pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
 	std::shared_ptr<ZRHitgroup> pHitgroup = g_pZRHitgroupConfig->FindHitgroupIndex(hitgroup);
 	// player shouldn't be able to pick up that weapon in the first place, but just in case
 	if (!pWeapon)
@@ -1102,7 +1102,7 @@ void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamag
 
 void ZR_ApplyKnockbackExplosion(CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage, bool bMolotov)
 {
-	ZRWeapon *pWeapon = g_pZRWeaponConfig->FindWeapon(pProjectile->GetClassname());
+	std::shared_ptr<ZRWeapon> pWeapon = g_pZRWeaponConfig->FindWeapon(pProjectile->GetClassname());
 	if (!pWeapon)
 		return;
 	float flWeaponKnockbackScale = pWeapon->flKnockback;
