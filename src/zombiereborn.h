@@ -259,9 +259,9 @@ public:
 		m_WeaponMap.SetLessFunc(DefLessFunc(uint32));
 	};
 	void LoadWeaponConfig();
-	ZRWeapon* FindWeapon(const char *pszWeaponName);
+	std::shared_ptr<ZRWeapon> FindWeapon(const char *pszWeaponName);
 private:
-	CUtlMap<uint32, ZRWeapon*> m_WeaponMap;
+	CUtlMap<uint32, std::shared_ptr<ZRWeapon>> m_WeaponMap;
 };
 
 
