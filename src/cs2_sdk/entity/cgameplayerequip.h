@@ -26,13 +26,12 @@ class CGamePlayerEquip : public CBaseEntity
 {
 	DECLARE_SCHEMA_CLASS(CGamePlayerEquip)
 public:
+	static constexpr int MAX_EQUIPMENTS_SIZE = 32;
 
-    static constexpr int MAX_EQUIPMENTS_SIZE          = 32;
+	static constexpr int SF_PLAYEREQUIP_USEONLY = 0x0001;
+	static constexpr int SF_PLAYEREQUIP_STRIPFIRST = 0x0002;
 
-    static constexpr int SF_PLAYEREQUIP_USEONLY       = 0x0001;
-    static constexpr int SF_PLAYEREQUIP_STRIPFIRST    = 0x0002;
-
-    // TODO this flag copied from CSGO, and impl on FyS server. but CS2Fixes not support aws currently.
-    // Add it in the future.
-    static constexpr int SF_PLAYEREQUIP_ONLYSTRIPSAME = 0x0004; 
+	// TODO this flag copied from CSGO, and impl on FyS server. but CS2Fixes not support aws currently.
+	// Add it in the future.
+	static constexpr int SF_PLAYEREQUIP_ONLYSTRIPSAME = 0x0004;
 };

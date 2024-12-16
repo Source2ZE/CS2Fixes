@@ -28,25 +28,25 @@ class CCSPlayerPawn;
 
 namespace CGamePlayerEquipHandler
 {
-void Use(CGamePlayerEquip* pEntity, InputData_t* pInput);
-void TriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput);
-bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput);
+	void Use(CGamePlayerEquip* pEntity, InputData_t* pInput);
+	void TriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput);
+	bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput);
 } // namespace CGamePlayerEquipHandler
 
 namespace CGameUIHandler
 {
-bool OnActivate(CGameUI* pEntity, CBaseEntity* pActivator);
-bool OnDeactivate(CGameUI* pEntity, CBaseEntity* pActivator);
-void RunThink(int tick);
+	bool OnActivate(CGameUI* pEntity, CBaseEntity* pActivator);
+	bool OnDeactivate(CGameUI* pEntity, CBaseEntity* pActivator);
+	void RunThink(int tick);
 } // namespace CGameUIHandler
 
 namespace CPointViewControlHandler
 {
-bool OnEnable(CPointViewControl* pEntity, CBaseEntity* pActivator);
-bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator);
-bool OnEnableAll(CPointViewControl* pEntity);
-bool OnDisableAll(CPointViewControl* pEntity);
-bool IsViewControl(CCSPlayerPawn*);
+	bool OnEnable(CPointViewControl* pEntity, CBaseEntity* pActivator);
+	bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator);
+	bool OnEnableAll(CPointViewControl* pEntity);
+	bool OnDisableAll(CPointViewControl* pEntity);
+	bool IsViewControl(CCSPlayerPawn*);
 } // namespace CPointViewControlHandler
 
 void EntityHandler_OnGameFramePre(bool simulate, int tick);

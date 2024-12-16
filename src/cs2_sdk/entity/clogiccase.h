@@ -25,18 +25,18 @@
 class CLogicCase : public CBaseEntity
 {
 public:
-    DECLARE_SCHEMA_CLASS(CLogicCase)
+	DECLARE_SCHEMA_CLASS(CLogicCase)
 };
 
 class CGameUI : public CLogicCase
 {
 public:
-    static constexpr int SF_GAMEUI_FREEZE_PLAYER   = 32;
-    static constexpr int SF_GAMEUI_JUMP_DEACTIVATE = 256;
+	static constexpr int SF_GAMEUI_FREEZE_PLAYER = 32;
+	static constexpr int SF_GAMEUI_JUMP_DEACTIVATE = 256;
 
-    // TODO Hide Weapon requires more RE
-    static constexpr int SF_GAMEUI_HIDE_WEAPON = 64;
+	// TODO Hide Weapon requires more RE
+	static constexpr int SF_GAMEUI_HIDE_WEAPON = 64;
 
-    // TODO subtick problem
-    static constexpr int SF_GAMEUI_USE_DEACTIVATE = 128;
+	// TODO subtick problem
+	static constexpr int SF_GAMEUI_USE_DEACTIVATE = 128;
 };

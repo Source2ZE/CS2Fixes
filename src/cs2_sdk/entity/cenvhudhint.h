@@ -25,7 +25,7 @@
 class CEnvHudHint : public CBaseEntity
 {
 public:
-    DECLARE_SCHEMA_CLASS(CEnvHudHint)
+	DECLARE_SCHEMA_CLASS(CEnvHudHint)
 
-    SCHEMA_FIELD(CUtlSymbolLarge, m_iszMessage)
+	SCHEMA_FIELD(CUtlSymbolLarge, m_iszMessage)
 };

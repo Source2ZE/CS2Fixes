@@ -19,22 +19,22 @@
 
 #pragma once
 
-#include "platform.h"
+#include "../addresses.h"
 #include "datamap.h"
+#include "platform.h"
 #include "string_t.h"
 #include "variant.h"
-#include "../addresses.h"
 
 class CEntityInstance;
 class CBaseEntity;
 class CBasePlayerController;
 class IEntityFindFilter;
 
-CBaseEntity *UTIL_FindPickerEntity(CBasePlayerController *pPlayer);
-CBaseEntity *UTIL_FindEntityByClassname(CEntityInstance *pStart, const char *name);
-CBaseEntity *UTIL_FindEntityByName(CEntityInstance *pStartEntity, const char *szName,
-									CEntityInstance *pSearchingEntity = nullptr, CEntityInstance *pActivator = nullptr,
-									CEntityInstance *pCaller = nullptr, IEntityFindFilter *pFilter = nullptr);
+CBaseEntity* UTIL_FindPickerEntity(CBasePlayerController* pPlayer);
+CBaseEntity* UTIL_FindEntityByClassname(CEntityInstance* pStart, const char* name);
+CBaseEntity* UTIL_FindEntityByName(CEntityInstance* pStartEntity, const char* szName,
+								   CEntityInstance* pSearchingEntity = nullptr, CEntityInstance* pActivator = nullptr,
+								   CEntityInstance* pCaller = nullptr, IEntityFindFilter* pFilter = nullptr);
 
 template <typename T = CBaseEntity>
 T* CreateEntityByName(const char* className)
@@ -44,6 +44,6 @@ T* CreateEntityByName(const char* className)
 
 // Add an entity IO event to the event queue, just like a map would
 // The queue is processed after all entities are simulated every frame
-void UTIL_AddEntityIOEvent(CEntityInstance *pTarget, const char *pszInput,
-							CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr,
+void UTIL_AddEntityIOEvent(CEntityInstance* pTarget, const char* pszInput,
+						   CEntityInstance* pActivator = nullptr, CEntityInstance* pCaller = nullptr,
 						   variant_t value = variant_t(""), float flDelay = 0.0f);

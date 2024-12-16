@@ -43,7 +43,6 @@ private:
 	bool m_bOverrideName;
 };
 
-
 class CDiscordBotManager
 {
 public:

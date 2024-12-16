@@ -21,15 +21,14 @@
 #include "../common.h"
 #include "dbg.h"
 #include "interface.h"
-#include "strtools.h"
 #include "plat.h"
+#include "strtools.h"
 
 #include <string>
 #include <vector>
 
-
 #ifdef _WIN32
-#include <Psapi.h>
+	#include <Psapi.h>
 #endif
 
 enum SigError
@@ -67,6 +66,7 @@ public:
 
 		return nullptr;
 	}
+
 private:
 	byte* m_pBase;
 	size_t m_iSize;
@@ -78,7 +78,7 @@ private:
 class CModule
 {
 public:
-	CModule(const char *path, const char *module) :
+	CModule(const char* path, const char* module) :
 		m_pszModule(module), m_pszPath(path)
 	{
 		char szModule[MAX_PATH];
@@ -94,7 +94,7 @@ public:
 		MODULEINFO m_hModuleInfo;
 		GetModuleInformation(GetCurrentProcess(), m_hModule, &m_hModuleInfo, sizeof(m_hModuleInfo));
 
-		m_base = (void *)m_hModuleInfo.lpBaseOfDll;
+		m_base = (void*)m_hModuleInfo.lpBaseOfDll;
 		m_size = m_hModuleInfo.SizeOfImage;
 		InitializeSections();
 #else
@@ -102,16 +102,16 @@ public:
 			Error("Failed to get module info for %s, error %d\n", szModule, e);
 #endif
 
-		for(auto& section : m_sections)
+		for (auto& section : m_sections)
 			Message("Section %s base: 0x%p | size: %d\n", section.m_szName.c_str(), section.m_pBase, section.m_iSize);
 
 		Message("Initialized module %s base: 0x%p | size: %d\n", m_pszModule, m_base, m_size);
 	}
 
-	void *FindSignature(const byte *pData, size_t iSigLength, int &error)
+	void* FindSignature(const byte* pData, size_t iSigLength, int& error)
 	{
-		unsigned char *pMemory;
-		void *return_addr = nullptr;
+		unsigned char* pMemory;
+		void* return_addr = nullptr;
 		error = 0;
 
 		pMemory = (byte*)m_base;
@@ -130,7 +130,7 @@ public:
 						return return_addr;
 					}
 
-					return_addr = (void *)(pMemory + i);
+					return_addr = (void*)(pMemory + i);
 					break;
 				}
 			}
@@ -142,14 +142,14 @@ public:
 		return return_addr;
 	}
 
-	void *FindInterface(const char *name)
+	void* FindInterface(const char* name)
 	{
 		CreateInterfaceFn fn = (CreateInterfaceFn)dlsym(m_hModule, "CreateInterface");
 
 		if (!fn)
 			Error("Could not find CreateInterface in %s\n", m_pszModule);
 
-		void *pInterface = fn(name, nullptr);
+		void* pInterface = fn(name, nullptr);
 
 		if (!pInterface)
 			Error("Could not find %s in %s\n", name, m_pszModule);
@@ -162,10 +162,8 @@ public:
 	Section* GetSection(const std::string_view name)
 	{
 		for (auto& section : m_sections)
-		{
 			if (section.m_szName == name)
 				return &section;
-		}
 
 		return nullptr;
 	}
@@ -173,8 +171,9 @@ public:
 	void InitializeSections();
 #endif
 	void* FindVirtualTable(const std::string& name);
+
 public:
-	const char *m_pszModule;
+	const char* m_pszModule;
 	const char* m_pszPath;
 	HINSTANCE m_hModule;
 	void* m_base;

@@ -28,15 +28,15 @@ void RemoveTimers()
 
 void RemoveMapTimers()
 {
-    for (int i = g_timers.Tail(); i != g_timers.InvalidIndex();)
-    {
-        int prevIndex = i;
-        i = g_timers.Previous(i);
+	for (int i = g_timers.Tail(); i != g_timers.InvalidIndex();)
+	{
+		int prevIndex = i;
+		i = g_timers.Previous(i);
 
-        if(g_timers[prevIndex]->m_bPreserveMapChange)
-            continue;
+		if (g_timers[prevIndex]->m_bPreserveMapChange)
+			continue;
 
-        delete g_timers[prevIndex];
-        g_timers.Remove(prevIndex);
-    }
+		delete g_timers[prevIndex];
+		g_timers.Remove(prevIndex);
+	}
 }

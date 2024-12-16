@@ -30,7 +30,6 @@ void Plat_WriteMemory(void* pPatchAddress, uint8_t* pPatch, int iPatchSize)
 	WriteProcessMemory(GetCurrentProcess(), pPatchAddress, (void*)pPatch, iPatchSize, nullptr);
 }
 
-
 void CModule::InitializeSections()
 {
 	IMAGE_DOS_HEADER* pDosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(m_hModule);
@@ -83,7 +82,7 @@ void* CModule::FindVirtualTable(const std::string& name)
 	{
 		auto completeObjectLocatorHeader = (uintptr_t)completeObjectLocator - 0xC;
 		// check RTTI Complete Object Locator header, always 0x1
-		if(*(int32_t*)(completeObjectLocatorHeader) != 1)
+		if (*(int32_t*)(completeObjectLocatorHeader) != 1)
 			continue;
 
 		// check RTTI Complete Object Locator vtable offset

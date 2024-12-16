@@ -27,43 +27,43 @@
 
 class CPointViewControl : public CBaseEntity
 {
-    DECLARE_SCHEMA_CLASS(CPointViewControl)
+	DECLARE_SCHEMA_CLASS(CPointViewControl)
 
-    // hello, don't port my garbage code to cssharp :)
+	// hello, don't port my garbage code to cssharp :)
 
-    static constexpr int SF_POINT_VIEWCONTROL_FROZEN = 1 << 5;
-    static constexpr int SF_POINT_VIEWCONTROL_FOV    = 1 << 6;
-    static constexpr int SF_POINT_VIEWCONTROL_DISARM = 1 << 7;
+	static constexpr int SF_POINT_VIEWCONTROL_FROZEN = 1 << 5;
+	static constexpr int SF_POINT_VIEWCONTROL_FOV = 1 << 6;
+	static constexpr int SF_POINT_VIEWCONTROL_DISARM = 1 << 7;
 
 public:
-    [[nodiscard]] CBaseEntity* GetTargetCameraEntity()
-    {
-        const auto pTarget = UTIL_FindEntityByName(nullptr, m_target().String());
-        return pTarget && pTarget->m_pCollision() ? pTarget : nullptr;
-    }
+	[[nodiscard]] CBaseEntity* GetTargetCameraEntity()
+	{
+		const auto pTarget = UTIL_FindEntityByName(nullptr, m_target().String());
+		return pTarget && pTarget->m_pCollision() ? pTarget : nullptr;
+	}
 
-    [[nodiscard]] bool HasTargetCameraEntity()
-    {
-        return m_target().IsValid() && strlen(m_target().String()) >= 2;
-    }
+	[[nodiscard]] bool HasTargetCameraEntity()
+	{
+		return m_target().IsValid() && strlen(m_target().String()) >= 2;
+	}
 
-    [[nodiscard]] bool HasFrozen()
-    {
-        return !!(m_spawnflags() & SF_POINT_VIEWCONTROL_FROZEN);
-    }
+	[[nodiscard]] bool HasFrozen()
+	{
+		return !!(m_spawnflags() & SF_POINT_VIEWCONTROL_FROZEN);
+	}
 
-    [[nodiscard]] bool HasFOV()
-    {
-        return !!(m_spawnflags() & SF_POINT_VIEWCONTROL_FOV);
-    }
+	[[nodiscard]] bool HasFOV()
+	{
+		return !!(m_spawnflags() & SF_POINT_VIEWCONTROL_FOV);
+	}
 
-    [[nodiscard]] bool HasDisarm()
-    {
-        return !!(m_spawnflags() & SF_POINT_VIEWCONTROL_DISARM);
-    }
+	[[nodiscard]] bool HasDisarm()
+	{
+		return !!(m_spawnflags() & SF_POINT_VIEWCONTROL_DISARM);
+	}
 
-    [[nodiscard]] uint GetFOV()
-    {
-        return clamp(static_cast<uint>(m_iHealth()), 16, 179);
-    }
+	[[nodiscard]] uint GetFOV()
+	{
+		return clamp(static_cast<uint>(m_iHealth()), 16, 179);
+	}
 };

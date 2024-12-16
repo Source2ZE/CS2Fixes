@@ -41,7 +41,6 @@ private:
 	bool m_bInitMessage;
 };
 
-
 class CRecipientFilter : public IRecipientFilter
 {
 public:
@@ -51,17 +50,15 @@ public:
 		m_bInitMessage = false;
 	}
 
-	CRecipientFilter(IRecipientFilter *source, int iExcept = -1)
+	CRecipientFilter(IRecipientFilter* source, int iExcept = -1)
 	{
 		m_nBufType = source->GetNetworkBufType();
 		m_bInitMessage = source->IsInitMessage();
 		m_Recipients.RemoveAll();
 
 		for (int i = 0; i < source->GetRecipientCount(); i++)
-		{
 			if (source->GetRecipientIndex(i).Get() != iExcept)
 				m_Recipients.AddToTail(source->GetRecipientIndex(i));
-		}
 	}
 
 	~CRecipientFilter() override {}

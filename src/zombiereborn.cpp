@@ -20,26 +20,26 @@
 #include "usermessages.pb.h"
 
 #include "commands.h"
-#include "utils/entity.h"
-#include "playermanager.h"
 #include "ctimer.h"
-#include "eventlistener.h"
-#include "zombiereborn.h"
-#include "entity/cgamerules.h"
-#include "entity/services.h"
-#include "entity/cteam.h"
-#include "entity/cparticlesystem.h"
+#include "customio.h"
 #include "engine/igameeventsystem.h"
+#include "entity/cgamerules.h"
+#include "entity/cparticlesystem.h"
+#include "entity/cteam.h"
+#include "entity/services.h"
+#include "eventlistener.h"
+#include "leader.h"
 #include "networksystem/inetworkmessages.h"
+#include "playermanager.h"
 #include "recipientfilters.h"
 #include "serversideclient.h"
-#include "user_preferences.h"
-#include "customio.h"
-#include <sstream>
-#include "leader.h"
 #include "tier0/vprof.h"
-#include <fstream>
+#include "user_preferences.h"
+#include "utils/entity.h"
 #include "vendor/nlohmann/json.hpp"
+#include "zombiereborn.h"
+#include <fstream>
+#include <sstream>
 
 #include "tier0/memdbgon.h"
 
@@ -50,12 +50,12 @@ extern IVEngineServer2* g_pEngineServer2;
 extern CGlobalVars* gpGlobals;
 extern CCSGameRules* g_pGameRules;
 extern IGameEventManager2* g_gameEventManager;
-extern IGameEventSystem *g_gameEventSystem;
+extern IGameEventSystem* g_gameEventSystem;
 extern double g_flUniversalTime;
 
-void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bBroadcast);
+void ZR_Infect(CCSPlayerController* pAttackerController, CCSPlayerController* pVictimController, bool bBroadcast);
 bool ZR_CheckTeamWinConditions(int iTeamNum);
-void ZR_Cure(CCSPlayerController *pTargetController);
+void ZR_Cure(CCSPlayerController* pTargetController);
 void ZR_EndRoundAndAddTeamScore(int iTeamNum);
 void SetupCTeams();
 bool ZR_IsTeamAlive(int iTeamNum);
@@ -68,8 +68,8 @@ static CHandle<CTeam> g_hTeamCT;
 static CHandle<CTeam> g_hTeamT;
 
 CZRPlayerClassManager* g_pZRPlayerClassManager = nullptr;
-ZRWeaponConfig *g_pZRWeaponConfig = nullptr;
-ZRHitgroupConfig *g_pZRHitgroupConfig = nullptr;
+ZRWeaponConfig* g_pZRWeaponConfig = nullptr;
+ZRHitgroupConfig* g_pZRHitgroupConfig = nullptr;
 
 bool g_bEnableZR = false;
 static float g_flMaxZteleDistance = 150.0f;
@@ -135,7 +135,7 @@ FAKE_FLOAT_CVAR(zr_infect_shake_duration, "Duration of shaking effect", g_flInfe
 CON_COMMAND_F(zr_reload_classes, "Reload ZR player classes", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	g_pZRPlayerClassManager->LoadPlayerClass();
-	
+
 	Message("Reloaded ZR player classes.\n");
 }
 #endif
@@ -147,7 +147,7 @@ void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 
 	pResourceManifest->AddResource(g_szHumanWinOverlayParticle.c_str());
 	pResourceManifest->AddResource(g_szZombieWinOverlayParticle.c_str());
-	
+
 	pResourceManifest->AddResource(g_szHumanWinOverlayMaterial.c_str());
 	pResourceManifest->AddResource(g_szZombieWinOverlayMaterial.c_str());
 
@@ -162,10 +162,10 @@ void ZR_CreateOverlay(const char* pszOverlayParticlePath, float flAlpha, float f
 
 	pKeyValues->SetString("effect_name", pszOverlayParticlePath);
 	// these properties are mapped to control point position by the entity
-	pKeyValues->SetFloat("alphascale", flAlpha);		//17.x
-	pKeyValues->SetFloat("scale", flRadius);			//17.y
-	pKeyValues->SetFloat("selfillumscale", flLifeTime); //17.z
-	pKeyValues->SetColor("colortint", clrTint);			//16.xyz
+	pKeyValues->SetFloat("alphascale", flAlpha);		// 17.x
+	pKeyValues->SetFloat("scale", flRadius);			// 17.y
+	pKeyValues->SetFloat("selfillumscale", flLifeTime); // 17.z
+	pKeyValues->SetColor("colortint", clrTint);			// 16.xyz
 
 	pKeyValues->SetString("effect_textureOverride", pszMaterialOverride);
 
@@ -178,31 +178,29 @@ void ZR_CreateOverlay(const char* pszOverlayParticlePath, float flAlpha, float f
 ZRModelEntry::ZRModelEntry(std::shared_ptr<ZRModelEntry> modelEntry) :
 	szModelPath(modelEntry->szModelPath),
 	szColor(modelEntry->szColor)
+{
+	vecSkins.Purge();
+	FOR_EACH_VEC(modelEntry->vecSkins, i)
 	{
-		vecSkins.Purge();
-		FOR_EACH_VEC(modelEntry->vecSkins, i)
-		{
-			vecSkins.AddToTail(modelEntry->vecSkins[i]);
-		}
-	};
+		vecSkins.AddToTail(modelEntry->vecSkins[i]);
+	}
+};
 
 ZRModelEntry::ZRModelEntry(ordered_json jsonModelEntry) :
 	szModelPath(jsonModelEntry.value("modelname", "")),
 	szColor(jsonModelEntry.value("color", "255 255 255"))
-	{
-		vecSkins.Purge();
+{
+	vecSkins.Purge();
 
-		if (jsonModelEntry.contains("skins"))
-		{
-			if (jsonModelEntry["skins"].size() > 0) // single int or array of ints
-			{
-				for (auto& [key, skinIndex] : jsonModelEntry["skins"].items())
-					vecSkins.AddToTail(skinIndex);
-			}
-			return;
-		}
-		vecSkins.AddToTail(0); // key missing, set default
-	};
+	if (jsonModelEntry.contains("skins"))
+	{
+		if (jsonModelEntry["skins"].size() > 0) // single int or array of ints
+			for (auto& [key, skinIndex] : jsonModelEntry["skins"].items())
+				vecSkins.AddToTail(skinIndex);
+		return;
+	}
+	vecSkins.AddToTail(0); // key missing, set default
+};
 
 // seperate parsing to adminsystem's ParseFlags as making class 'z' flagged would make it available to players with non-zero flag
 uint64 ZRClass::ParseClassFlags(const char* pszFlags)
@@ -232,17 +230,16 @@ ZRClass::ZRClass(ordered_json jsonKeys, std::string szClassname, int iTeam) :
 	flSpeed(jsonKeys["speed"].get<float>()),
 	flGravity(jsonKeys["gravity"].get<float>()),
 	iAdminFlag(ParseClassFlags(
-		jsonKeys["admin_flag"].get<std::string>().c_str()
-	))
-	{
-		vecModels.Purge();
+		jsonKeys["admin_flag"].get<std::string>().c_str()))
+{
+	vecModels.Purge();
 
-		for (auto& [key, jsonModelEntry] : jsonKeys["models"].items())
-		{
-			std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(jsonModelEntry);
-			vecModels.AddToTail(modelEntry);
-		}
-	};
+	for (auto& [key, jsonModelEntry] : jsonKeys["models"].items())
+	{
+		std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(jsonModelEntry);
+		vecModels.AddToTail(modelEntry);
+	}
+};
 
 void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 {
@@ -259,13 +256,12 @@ void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 		flGravity = jsonKeys["gravity"].get<float>();
 	if (jsonKeys.contains("admin_flag"))
 		iAdminFlag = ParseClassFlags(
-			jsonKeys["admin_flag"].get<std::string>().c_str()
-		);
+			jsonKeys["admin_flag"].get<std::string>().c_str());
 
 	// no models entry key or it's empty, use model entries of base class
 	if (!jsonKeys.contains("models") || jsonKeys["models"].empty())
 		return;
-	
+
 	// one model entry in base and overriding class, apply model entry keys if defined
 	if (vecModels.Count() == 1 && jsonKeys["models"].size() == 1)
 	{
@@ -283,9 +279,9 @@ void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 
 		return;
 	}
-	
+
 	// more than one model entry in either base or child class, either override all entries or none
-	for (int i = jsonKeys["models"].size()-1; i >= 0; i--)
+	for (int i = jsonKeys["models"].size() - 1; i >= 0; i--)
 	{
 		if (jsonKeys["models"][i].size() < 3)
 		{
@@ -293,7 +289,7 @@ void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 			jsonKeys["models"].erase(i);
 		}
 	}
-	
+
 	if (jsonKeys["models"].empty())
 	{
 		Warning("No valid model entries remaining in child class %s, using model entries of base class %s\n",
@@ -310,7 +306,8 @@ void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 	}
 }
 
-ZRHumanClass::ZRHumanClass(ordered_json jsonKeys, std::string szClassname) : ZRClass(jsonKeys, szClassname, CS_TEAM_CT){};
+ZRHumanClass::ZRHumanClass(ordered_json jsonKeys, std::string szClassname) :
+	ZRClass(jsonKeys, szClassname, CS_TEAM_CT){};
 
 ZRZombieClass::ZRZombieClass(ordered_json jsonKeys, std::string szClassname) :
 	ZRClass(jsonKeys, szClassname, CS_TEAM_T),
@@ -329,7 +326,7 @@ void ZRZombieClass::Override(ordered_json jsonKeys, std::string szClassname)
 		flKnockback = jsonKeys["knockback"].get<float>();
 }
 
-bool ZRClass::IsApplicableTo(CCSPlayerController *pController)
+bool ZRClass::IsApplicableTo(CCSPlayerController* pController)
 {
 	if (!bEnabled) return false;
 	if (!V_stricmp(szClassName.c_str(), "MotherZombie")) return false;
@@ -365,7 +362,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 	m_vecZombieDefaultClass.Purge();
 	m_vecHumanDefaultClass.Purge();
 
-	const char *pszJsonPath = "addons/cs2fixes/configs/zr/playerclass.jsonc";
+	const char* pszJsonPath = "addons/cs2fixes/configs/zr/playerclass.jsonc";
 	char szPath[MAX_PATH];
 	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
 	std::ifstream jsoncFile(szPath);
@@ -492,10 +489,10 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 				if (bTeamDefault)
 					m_vecHumanDefaultClass.AddToTail(pHumanClass);
-				
+
 				pHumanClass->PrintInfo();
 			}
-			else 
+			else
 			{
 				std::shared_ptr<ZRZombieClass> pZombieClass;
 				if (!szBase.empty())
@@ -518,7 +515,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				m_ZombieClassMap.Insert(hash_32_fnv1a_const(szClassName.c_str()), pZombieClass);
 				if (bTeamDefault)
 					m_vecZombieDefaultClass.AddToTail(pZombieClass);
-				
+
 				pZombieClass->PrintInfo();
 			}
 
@@ -552,7 +549,7 @@ void CZRPlayerClassManager::ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSP
 	// I don't know why, I don't want to know why,
 	// I shouldn't have to wonder why, but for whatever reason
 	// this shit caused crashes on ROUND END or MAP CHANGE after the 26/04/2024 update
-	//pPawn->m_flVelocityModifier = pClass->flSpeed;
+	// pPawn->m_flVelocityModifier = pClass->flSpeed;
 	const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
 	if (const auto pPlayer = pController != nullptr ? pController->GetZEPlayer() : nullptr)
 	{
@@ -571,7 +568,7 @@ void CZRPlayerClassManager::ApplyBaseClassVisuals(std::shared_ptr<ZRClass> pClas
 	std::shared_ptr<ZRModelEntry> pModelEntry = pClass->GetRandomModelEntry();
 	Color clrRender;
 	V_StringToColor(pModelEntry->szColor.c_str(), clrRender);
-	
+
 	pPawn->SetModel(pModelEntry->szModelPath.c_str());
 	pPawn->m_clrRender = clrRender;
 	pPawn->AcceptInput("Skin", pModelEntry->GetRandomSkin());
@@ -598,22 +595,21 @@ std::shared_ptr<ZRHumanClass> CZRPlayerClassManager::GetHumanClass(const char* p
 void CZRPlayerClassManager::ApplyHumanClass(std::shared_ptr<ZRHumanClass> pClass, CCSPlayerPawn* pPawn)
 {
 	ApplyBaseClass(pClass, pPawn);
-	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
+	CCSPlayerController* pController = CCSPlayerController::FromPawn(pPawn);
 	if (pController)
 		CZRRegenTimer::StopRegen(pController);
-	
+
 	if (!g_bEnableLeader || !pController)
 		return;
-	
-	ZEPlayer *pPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
 
 	if (pPlayer && pPlayer->IsLeader())
 	{
 		CHandle<CCSPlayerPawn> hPawn = pPawn->GetHandle();
 
-		new CTimer(0.02f, false, false, [hPawn]()
-		{
-			CCSPlayerPawn *pPawn = hPawn.Get();
+		new CTimer(0.02f, false, false, [hPawn]() {
+			CCSPlayerPawn* pPawn = hPawn.Get();
 			if (pPawn)
 				Leader_ApplyLeaderVisuals(pPawn);
 			return -1.0f;
@@ -621,9 +617,9 @@ void CZRPlayerClassManager::ApplyHumanClass(std::shared_ptr<ZRHumanClass> pClass
 	}
 }
 
-void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn *pPawn)
+void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn* pPawn)
 {
-	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
+	CCSPlayerController* pController = CCSPlayerController::FromPawn(pPawn);
 	if (!pController) return;
 
 	// Get the human class user preference, or default if no class is set
@@ -633,21 +629,26 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn *pPa
 
 	// If the preferred human class exists and can be applied, override the default
 	uint16 index = m_HumanClassMap.Find(hash_32_fnv1a_const(sPreferredHumanClass));
-	if (m_HumanClassMap.IsValidIndex(index) && m_HumanClassMap[index]->IsApplicableTo(pController)) {
+	if (m_HumanClassMap.IsValidIndex(index) && m_HumanClassMap[index]->IsApplicableTo(pController))
+	{
 		humanClass = m_HumanClassMap[index];
-	} else if (m_vecHumanDefaultClass.Count()) {
+	}
+	else if (m_vecHumanDefaultClass.Count())
+	{
 		humanClass = m_vecHumanDefaultClass[rand() % m_vecHumanDefaultClass.Count()];
-	} else if (!humanClass) {
+	}
+	else if (!humanClass)
+	{
 		Warning("Missing default human class or valid preferences!\n");
 		return;
 	}
-	
+
 	ApplyHumanClass(humanClass, pPawn);
 }
 
-void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPawn *pPawn)
+void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPawn* pPawn)
 {
-	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
+	CCSPlayerController* pController = CCSPlayerController::FromPawn(pPawn);
 	if (!pController) return;
 
 	// Get the human class user preference, or default if no class is set
@@ -657,11 +658,16 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPa
 
 	// If the preferred human class exists and can be applied, override the default
 	uint16 index = m_HumanClassMap.Find(hash_32_fnv1a_const(sPreferredHumanClass));
-	if (m_HumanClassMap.IsValidIndex(index) && m_HumanClassMap[index]->IsApplicableTo(pController)) {
+	if (m_HumanClassMap.IsValidIndex(index) && m_HumanClassMap[index]->IsApplicableTo(pController))
+	{
 		humanClass = m_HumanClassMap[index];
-	} else if (m_vecHumanDefaultClass.Count()) {
+	}
+	else if (m_vecHumanDefaultClass.Count())
+	{
 		humanClass = m_vecHumanDefaultClass[rand() % m_vecHumanDefaultClass.Count()];
-	} else if (!humanClass) {
+	}
+	else if (!humanClass)
+	{
 		Warning("Missing default human class or valid preferences!\n");
 		return;
 	}
@@ -680,14 +686,14 @@ std::shared_ptr<ZRZombieClass> CZRPlayerClassManager::GetZombieClass(const char*
 void CZRPlayerClassManager::ApplyZombieClass(std::shared_ptr<ZRZombieClass> pClass, CCSPlayerPawn* pPawn)
 {
 	ApplyBaseClass(pClass, pPawn);
-	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
+	CCSPlayerController* pController = CCSPlayerController::FromPawn(pPawn);
 	if (pController)
 		CZRRegenTimer::StartRegen(pClass->flHealthRegenInterval, pClass->iHealthRegenCount, pController);
 }
 
-void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pPawn)
+void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn* pPawn)
 {
-	CCSPlayerController *pController = CCSPlayerController::FromPawn(pPawn);
+	CCSPlayerController* pController = CCSPlayerController::FromPawn(pPawn);
 	if (!pController) return;
 
 	// Get the zombie class user preference, or default if no class is set
@@ -697,15 +703,20 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pP
 
 	// If the preferred zombie class exists and can be applied, override the default
 	uint16 index = m_ZombieClassMap.Find(hash_32_fnv1a_const(sPreferredZombieClass));
-	if (m_ZombieClassMap.IsValidIndex(index) && m_ZombieClassMap[index]->IsApplicableTo(pController)) {
+	if (m_ZombieClassMap.IsValidIndex(index) && m_ZombieClassMap[index]->IsApplicableTo(pController))
+	{
 		zombieClass = m_ZombieClassMap[index];
-	} else if (m_vecZombieDefaultClass.Count()) {
+	}
+	else if (m_vecZombieDefaultClass.Count())
+	{
 		zombieClass = m_vecZombieDefaultClass[rand() % m_vecZombieDefaultClass.Count()];
-	} else if (!zombieClass) {
+	}
+	else if (!zombieClass)
+	{
 		Warning("Missing default zombie class or valid preferences!\n");
 		return;
 	}
-	
+
 	ApplyZombieClass(zombieClass, pPawn);
 }
 
@@ -731,11 +742,11 @@ void CZRPlayerClassManager::GetZRClassList(int iTeam, CUtlVector<std::shared_ptr
 }
 
 double CZRRegenTimer::s_flNextExecution;
-CZRRegenTimer *CZRRegenTimer::s_vecRegenTimers[MAXPLAYERS];
+CZRRegenTimer* CZRRegenTimer::s_vecRegenTimers[MAXPLAYERS];
 
 bool CZRRegenTimer::Execute()
 {
-	CCSPlayerPawn *pPawn = m_hPawnHandle.Get();
+	CCSPlayerPawn* pPawn = m_hPawnHandle.Get();
 	if (!pPawn || !pPawn->IsAlive())
 		return false;
 
@@ -748,10 +759,10 @@ bool CZRRegenTimer::Execute()
 	return true;
 }
 
-void CZRRegenTimer::StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController *pController)
+void CZRRegenTimer::StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController* pController)
 {
 	int slot = pController->GetPlayerSlot();
-	CZRRegenTimer *pTimer = s_vecRegenTimers[slot];
+	CZRRegenTimer* pTimer = s_vecRegenTimers[slot];
 	if (pTimer != nullptr)
 	{
 		pTimer->m_flInterval = flRegenInterval;
@@ -761,7 +772,7 @@ void CZRRegenTimer::StartRegen(float flRegenInterval, int iRegenAmount, CCSPlaye
 	s_vecRegenTimers[slot] = new CZRRegenTimer(flRegenInterval, iRegenAmount, pController->m_hPlayerPawn());
 }
 
-void CZRRegenTimer::StopRegen(CCSPlayerController *pController)
+void CZRRegenTimer::StopRegen(CCSPlayerController* pController)
 {
 	int slot = pController->GetPlayerSlot();
 	if (!s_vecRegenTimers[slot])
@@ -782,16 +793,14 @@ void CZRRegenTimer::Tick()
 	s_flNextExecution = g_flUniversalTime + 0.1f;
 	for (int i = MAXPLAYERS - 1; i >= 0; i--)
 	{
-		CZRRegenTimer *pTimer = s_vecRegenTimers[i];
+		CZRRegenTimer* pTimer = s_vecRegenTimers[i];
 		if (!pTimer)
-		{
 			continue;
-		}
-		
+
 		if (pTimer->m_flLastExecute == -1)
 			pTimer->m_flLastExecute = g_flUniversalTime;
 
-		// Timer execute 
+		// Timer execute
 		if (pTimer->m_flLastExecute + pTimer->m_flInterval <= g_flUniversalTime)
 		{
 			pTimer->Execute();
@@ -805,9 +814,7 @@ void CZRRegenTimer::RemoveAllTimers()
 	for (int i = MAXPLAYERS - 1; i >= 0; i--)
 	{
 		if (!s_vecRegenTimers[i])
-		{
 			continue;
-		}
 		delete s_vecRegenTimers[i];
 		s_vecRegenTimers[i] = nullptr;
 	}
@@ -818,8 +825,7 @@ void ZR_OnLevelInit()
 	g_ZRRoundState = EZRRoundState::ROUND_START;
 
 	// Delay one tick to override any .cfg's
-	new CTimer(0.02f, false, true, []()
-	{
+	new CTimer(0.02f, false, true, []() {
 		// Here we force some cvars that are necessary for the gamemode
 		g_pEngineServer2->ServerCommand("mp_give_player_c4 0");
 		g_pEngineServer2->ServerCommand("mp_friendlyfire 0");
@@ -847,7 +853,7 @@ void ZRWeaponConfig::LoadWeaponConfig()
 	KeyValues* pKV = new KeyValues("Weapons");
 	KeyValues::AutoDelete autoDelete(pKV);
 
-	const char *pszPath = "addons/cs2fixes/configs/zr/weapons.cfg";
+	const char* pszPath = "addons/cs2fixes/configs/zr/weapons.cfg";
 
 	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
 	{
@@ -856,7 +862,7 @@ void ZRWeaponConfig::LoadWeaponConfig()
 	}
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
-		const char *pszWeaponName = pKey->GetName();
+		const char* pszWeaponName = pKey->GetName();
 		bool bEnabled = pKey->GetBool("enabled", false);
 		float flKnockback = pKey->GetFloat("knockback", 1.0f);
 		Message("%s knockback: %f\n", pszWeaponName, flKnockback);
@@ -872,7 +878,7 @@ void ZRWeaponConfig::LoadWeaponConfig()
 	return;
 }
 
-std::shared_ptr<ZRWeapon> ZRWeaponConfig::FindWeapon(const char *pszWeaponName)
+std::shared_ptr<ZRWeapon> ZRWeaponConfig::FindWeapon(const char* pszWeaponName)
 {
 	uint16 index = m_WeaponMap.Find(hash_32_fnv1a_const(pszWeaponName));
 	if (m_WeaponMap.IsValidIndex(index))
@@ -887,7 +893,7 @@ void ZRHitgroupConfig::LoadHitgroupConfig()
 	KeyValues* pKV = new KeyValues("Hitgroups");
 	KeyValues::AutoDelete autoDelete(pKV);
 
-	const char *pszPath = "addons/cs2fixes/configs/zr/hitgroups.cfg";
+	const char* pszPath = "addons/cs2fixes/configs/zr/hitgroups.cfg";
 
 	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
 	{
@@ -896,8 +902,8 @@ void ZRHitgroupConfig::LoadHitgroupConfig()
 	}
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
-		const char *pszHitgroupName = pKey->GetName();
-		float flKnockback= pKey->GetFloat("knockback", 1.0f);
+		const char* pszHitgroupName = pKey->GetName();
+		float flKnockback = pKey->GetFloat("knockback", 1.0f);
 		int iIndex = -1;
 
 		if (!V_strcasecmp(pszHitgroupName, "Generic"))
@@ -926,7 +932,7 @@ void ZRHitgroupConfig::LoadHitgroupConfig()
 			Panic("Failed to load hitgroup %s, invalid name!", pszHitgroupName);
 			continue;
 		}
-		
+
 		std::shared_ptr<ZRHitgroup> hitGroup = std::make_shared<ZRHitgroup>();
 
 		hitGroup->flKnockback = flKnockback;
@@ -940,11 +946,11 @@ void ZRHitgroupConfig::LoadHitgroupConfig()
 std::shared_ptr<ZRHitgroup> ZRHitgroupConfig::FindHitgroupIndex(int iIndex)
 {
 	uint16 index = m_HitgroupMap.Find(iIndex);
-	//Message("We are finding hitgroup index with index: %d and index is: %d\n", iIndex, index);
+	// Message("We are finding hitgroup index with index: %d and index is: %d\n", iIndex, index);
 
 	if (m_HitgroupMap.IsValidIndex(index))
 	{
-		//Message("We found valid index with (m_HitgroupMap[index]): %d\n", m_HitgroupMap[index]);
+		// Message("We found valid index with (m_HitgroupMap[index]): %d\n", m_HitgroupMap[index]);
 		return m_HitgroupMap[index];
 	}
 
@@ -993,7 +999,7 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 		if (pController->m_iTeamNum() == CS_TEAM_T)
 			pController->SwitchTeam(CS_TEAM_CT);
 
-		CCSPlayerPawn *pPawn = pController->GetPlayerPawn();
+		CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
 
 		// Prevent damage that occurs between now and when the round restart is finished
 		// Somehow CT filtered nukes can apply damage during the round restart (all within CCSGameRules::RestartRound)
@@ -1017,16 +1023,10 @@ void SetupCTeams()
 {
 	CTeam* pTeam = nullptr;
 	while (nullptr != (pTeam = (CTeam*)UTIL_FindEntityByClassname(pTeam, "cs_team_manager")))
-	{
 		if (pTeam->m_iTeamNum() == CS_TEAM_CT)
-		{
 			g_hTeamCT = pTeam->GetHandle();
-		}
 		else if (pTeam->m_iTeamNum() == CS_TEAM_T)
-		{
 			g_hTeamT = pTeam->GetHandle();
-		}
-	}
 }
 
 void ZR_OnRoundStart(IGameEvent* pEvent)
@@ -1037,12 +1037,12 @@ void ZR_OnRoundStart(IGameEvent* pEvent)
 
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
-		CCSPlayerController *pController = CCSPlayerController::FromSlot(i);
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
 		if (!pController)
 			continue;
 
-		CCSPlayerPawn *pPawn = pController->GetPlayerPawn();
+		CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
 
 		// Now we can enable damage back
 		if (pPawn)
@@ -1057,7 +1057,7 @@ void ZR_OnPlayerSpawn(CCSPlayerController* pController)
 
 	// We're infecting this guy with a delay, disable all damage as they have 100 hp until then
 	// also set team immediately in case the spawn teleport is team filtered
-	if (bInfect) 
+	if (bInfect)
 	{
 		pController->GetPawn()->m_bTakesDamage(false);
 		pController->SwitchTeam(CS_TEAM_T);
@@ -1068,12 +1068,11 @@ void ZR_OnPlayerSpawn(CCSPlayerController* pController)
 	}
 
 	CHandle<CCSPlayerController> handle = pController->GetHandle();
-	new CTimer(0.05f, false, false, [handle, bInfect]()
-	{
+	new CTimer(0.05f, false, false, [handle, bInfect]() {
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
 		if (!pController)
 			return -1.0f;
-		if(bInfect)
+		if (bInfect)
 			ZR_Infect(pController, pController, true);
 		else
 			ZR_Cure(pController);
@@ -1081,7 +1080,7 @@ void ZR_OnPlayerSpawn(CCSPlayerController* pController)
 	});
 }
 
-void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamage, const char *szWeapon, int hitgroup, float classknockback)
+void ZR_ApplyKnockback(CCSPlayerPawn* pHuman, CCSPlayerPawn* pVictim, int iDamage, const char* szWeapon, int hitgroup, float classknockback)
 {
 	std::shared_ptr<ZRWeapon> pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
 	std::shared_ptr<ZRHitgroup> pHitgroup = g_pZRHitgroupConfig->FindHitgroupIndex(hitgroup);
@@ -1100,7 +1099,7 @@ void ZR_ApplyKnockback(CCSPlayerPawn *pHuman, CCSPlayerPawn *pVictim, int iDamag
 	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
-void ZR_ApplyKnockbackExplosion(CBaseEntity *pProjectile, CCSPlayerPawn *pVictim, int iDamage, bool bMolotov)
+void ZR_ApplyKnockbackExplosion(CBaseEntity* pProjectile, CCSPlayerPawn* pVictim, int iDamage, bool bMolotov)
 {
 	std::shared_ptr<ZRWeapon> pWeapon = g_pZRWeaponConfig->FindWeapon(pProjectile->GetClassname());
 	if (!pWeapon)
@@ -1119,9 +1118,9 @@ void ZR_ApplyKnockbackExplosion(CBaseEntity *pProjectile, CCSPlayerPawn *pVictim
 	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
-void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, const char *szWeapon)
+void ZR_FakePlayerDeath(CCSPlayerController* pAttackerController, CCSPlayerController* pVictimController, const char* szWeapon)
 {
-	IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_death");
+	IGameEvent* pEvent = g_gameEventManager->CreateEvent("player_death");
 
 	if (!pEvent)
 		return;
@@ -1136,12 +1135,12 @@ void ZR_FakePlayerDeath(CCSPlayerController *pAttackerController, CCSPlayerContr
 	g_gameEventManager->FireEvent(pEvent, false);
 }
 
-void ZR_StripAndGiveKnife(CCSPlayerPawn *pPawn)
+void ZR_StripAndGiveKnife(CCSPlayerPawn* pPawn)
 {
-	CCSPlayer_ItemServices *pItemServices = pPawn->m_pItemServices();
+	CCSPlayer_ItemServices* pItemServices = pPawn->m_pItemServices();
 	CCSPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices();
 
-	// it can sometimes be null when player joined on the very first round? 
+	// it can sometimes be null when player joined on the very first round?
 	if (!pItemServices || !pWeaponServices)
 		return;
 
@@ -1178,17 +1177,17 @@ void ZR_StripAndGiveKnife(CCSPlayerPawn *pPawn)
 	}
 }
 
-void ZR_Cure(CCSPlayerController *pTargetController)
+void ZR_Cure(CCSPlayerController* pTargetController)
 {
 	if (pTargetController->m_iTeamNum() == CS_TEAM_T)
 		pTargetController->SwitchTeam(CS_TEAM_CT);
 
-	ZEPlayer *pZEPlayer = pTargetController->GetZEPlayer();
+	ZEPlayer* pZEPlayer = pTargetController->GetZEPlayer();
 
 	if (pZEPlayer)
 		pZEPlayer->SetInfectState(false);
 
-	CCSPlayerPawn *pTargetPawn = (CCSPlayerPawn*)pTargetController->GetPawn();
+	CCSPlayerPawn* pTargetPawn = (CCSPlayerPawn*)pTargetController->GetPawn();
 	if (!pTargetPawn)
 		return;
 
@@ -1203,7 +1202,7 @@ float ZR_MoanTimer(ZEPlayerHandle hPlayer)
 	if (!hPlayer.Get()->IsInfected())
 		return -1.f;
 
-	CCSPlayerPawn *pPawn = CCSPlayerController::FromSlot(hPlayer.GetPlayerSlot())->GetPlayerPawn();
+	CCSPlayerPawn* pPawn = CCSPlayerController::FromSlot(hPlayer.GetPlayerSlot())->GetPlayerPawn();
 
 	if (!pPawn || pPawn->m_iTeamNum == CS_TEAM_CT)
 		return -1.f;
@@ -1217,12 +1216,12 @@ float ZR_MoanTimer(ZEPlayerHandle hPlayer)
 	return g_flMoanInterval + (rand() % 5);
 }
 
-void ZR_InfectShake(CCSPlayerController *pController)
+void ZR_InfectShake(CCSPlayerController* pController)
 {
 	if (!pController || !pController->IsConnected() || pController->IsBot() || !g_bInfectShake)
 		return;
 
-	INetworkMessageInternal *pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
+	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
 
 	auto data = pNetMsg->AllocateMessage()->ToPB<CUserMessageShake>();
 
@@ -1244,10 +1243,10 @@ std::vector<SpawnPoint*> ZR_GetSpawns()
 	std::vector<SpawnPoint*> spawns;
 
 	FOR_EACH_VEC(*ctSpawns, i)
-		spawns.push_back((*ctSpawns)[i]);
+	spawns.push_back((*ctSpawns)[i]);
 
 	FOR_EACH_VEC(*tSpawns, i)
-		spawns.push_back((*tSpawns)[i]);
+	spawns.push_back((*tSpawns)[i]);
 
 	if (!spawns.size())
 		Panic("There are no spawns!\n");
@@ -1255,7 +1254,7 @@ std::vector<SpawnPoint*> ZR_GetSpawns()
 	return spawns;
 }
 
-void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pVictimController, bool bDontBroadcast)
+void ZR_Infect(CCSPlayerController* pAttackerController, CCSPlayerController* pVictimController, bool bDontBroadcast)
 {
 	// This can be null if the victim disconnected right before getting hit AND someone joined in their place immediately, thus replacing the controller
 	if (!pVictimController)
@@ -1269,7 +1268,7 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 	if (!bDontBroadcast)
 		ZR_FakePlayerDeath(pAttackerController, pVictimController, "knife"); // or any other killicon
 
-	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
+	CCSPlayerPawn* pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
 	if (!pVictimPawn)
 		return;
 
@@ -1279,12 +1278,12 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 	pVictimPawn->EmitSound("zr.amb.scream");
 
 	ZR_StripAndGiveKnife(pVictimPawn);
-	
+
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultZombieClass(pVictimPawn);
 
 	ZR_InfectShake(pVictimController);
 
-	ZEPlayer *pZEPlayer = pVictimController->GetZEPlayer();
+	ZEPlayer* pZEPlayer = pVictimController->GetZEPlayer();
 
 	if (pZEPlayer && !pZEPlayer->IsInfected())
 	{
@@ -1295,9 +1294,9 @@ void ZR_Infect(CCSPlayerController *pAttackerController, CCSPlayerController *pV
 	}
 }
 
-void ZR_InfectMotherZombie(CCSPlayerController *pVictimController, std::vector<SpawnPoint*> spawns)
+void ZR_InfectMotherZombie(CCSPlayerController* pVictimController, std::vector<SpawnPoint*> spawns)
 {
-	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
+	CCSPlayerPawn* pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
 	if (!pVictimPawn)
 		return;
 
@@ -1324,7 +1323,7 @@ void ZR_InfectMotherZombie(CCSPlayerController *pVictimController, std::vector<S
 
 	ZR_InfectShake(pVictimController);
 
-	ZEPlayer *pZEPlayer = pVictimController->GetZEPlayer();
+	ZEPlayer* pZEPlayer = pVictimController->GetZEPlayer();
 
 	pZEPlayer->SetInfectState(true);
 
@@ -1363,13 +1362,13 @@ void ZR_InitialInfection()
 	// the num of mz to infect
 	int iMZToInfect = pCandidateControllers.Count() / g_iInfectSpawnMZRatio;
 	iMZToInfect = g_iInfectSpawnMinCount > iMZToInfect ? g_iInfectSpawnMinCount : iMZToInfect;
-	bool vecIsMZ[MAXPLAYERS] = { false };
+	bool vecIsMZ[MAXPLAYERS] = {false};
 
 	// get spawn points
 	std::vector<SpawnPoint*> spawns = ZR_GetSpawns();
 	if (g_iInfectSpawnType == EZRSpawnType::RESPAWN && !spawns.size())
 	{
-		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX"There are no spawns!");
+		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "There are no spawns!");
 		return;
 	}
 
@@ -1377,7 +1376,7 @@ void ZR_InitialInfection()
 	int iFailSafeCounter = 0;
 	while (iMZToInfect > 0)
 	{
-		//If we somehow don't have enough mother zombies after going through the players 5 times,
+		// If we somehow don't have enough mother zombies after going through the players 5 times,
 		if (iFailSafeCounter >= 5)
 		{
 			FOR_EACH_VEC(pCandidateControllers, i)
@@ -1411,7 +1410,7 @@ void ZR_InitialInfection()
 			CCSPlayerController* pController = (CCSPlayerController*)pSurvivorControllers[randomindex];
 			CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
 			ZEPlayer* pPlayer = pSurvivorControllers[randomindex]->GetZEPlayer();
-			//roll for immunity
+			// roll for immunity
 			if (rand() % 100 < pPlayer->GetImmunity())
 			{
 				pSurvivorControllers.FastRemove(randomindex);
@@ -1433,7 +1432,7 @@ void ZR_InitialInfection()
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 		if (!pPlayer || vecIsMZ[i])
 			continue;
-		
+
 		pPlayer->SetImmunity(pPlayer->GetImmunity() - g_iMZImmunityReduction);
 	}
 
@@ -1451,8 +1450,7 @@ void ZR_StartInitialCountdown()
 		V_swap(g_iInfectSpawnTimeMin, g_iInfectSpawnTimeMax);
 
 	g_iInfectionCountDown = g_iInfectSpawnTimeMin + (rand() % (g_iInfectSpawnTimeMax - g_iInfectSpawnTimeMin + 1));
-	new CTimer(0.0f, false, false, []()
-	{
+	new CTimer(0.0f, false, false, []() {
 		if (g_ZRRoundState != EZRRoundState::ROUND_START)
 			return -1.0f;
 		if (g_iInfectionCountDown <= 0)
@@ -1476,16 +1474,16 @@ void ZR_StartInitialCountdown()
 	});
 }
 
-bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, CCSPlayerPawn *pVictimPawn)
+bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo* pInfo, CCSPlayerPawn* pVictimPawn)
 {
 	CCSPlayerPawn* pAttackerPawn = (CCSPlayerPawn*)pInfo->m_hAttacker.Get();
 
 	if (!(pAttackerPawn && pVictimPawn && pAttackerPawn->IsPawn() && pVictimPawn->IsPawn()))
 		return false;
 
-	CCSPlayerController *pAttackerController = CCSPlayerController::FromPawn(pAttackerPawn);
-	CCSPlayerController *pVictimController = CCSPlayerController::FromPawn(pVictimPawn);
-	const char *pszAbilityClass = pInfo->m_hAbility.Get() ? pInfo->m_hAbility.Get()->GetClassname() : "";
+	CCSPlayerController* pAttackerController = CCSPlayerController::FromPawn(pAttackerPawn);
+	CCSPlayerController* pVictimController = CCSPlayerController::FromPawn(pVictimPawn);
+	const char* pszAbilityClass = pInfo->m_hAbility.Get() ? pInfo->m_hAbility.Get()->GetClassname() : "";
 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_T && pVictimPawn->m_iTeamNum() == CS_TEAM_CT && !V_strncmp(pszAbilityClass, "weapon_knife", 12))
 	{
 		ZR_Infect(pAttackerController, pVictimController, false);
@@ -1498,8 +1496,8 @@ bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, CCSPlayerPawn *pVictimPa
 	// grenade and molotov knockback
 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
 	{
-		CBaseEntity *pInflictor = pInfo->m_hInflictor.Get();
-		const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
+		CBaseEntity* pInflictor = pInfo->m_hInflictor.Get();
+		const char* pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 		// inflictor class from grenade damage is actually hegrenade_projectile
 		bool bGrenade = V_strncmp(pszInflictorClass, "hegrenade", 9) == 0;
 		bool bInferno = V_strncmp(pszInflictorClass, "inferno", 7) == 0;
@@ -1522,12 +1520,12 @@ bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, CCSPlayerPawn *pVictimPa
 }
 
 // return false to prevent player from picking it up
-bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
+bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
-	CCSPlayerPawn *pPawn = pWeaponServices->__m_pChainEntity();
+	CCSPlayerPawn* pPawn = pWeaponServices->__m_pChainEntity();
 	if (!pPawn)
 		return false;
-	const char *pszWeaponClassname = pPlayerWeapon->GetClassname();
+	const char* pszWeaponClassname = pPlayerWeapon->GetClassname();
 	if (pPawn->m_iTeamNum() == CS_TEAM_T && V_strncmp(pszWeaponClassname, "weapon_knife", 12) && V_strncmp(pszWeaponClassname, "weapon_c4", 9))
 		return false;
 	if (pPawn->m_iTeamNum() == CS_TEAM_CT && V_strlen(pszWeaponClassname) > 7 && !g_pZRWeaponConfig->FindWeapon(pszWeaponClassname + 7))
@@ -1573,8 +1571,7 @@ void SpawnPlayer(CCSPlayerController* pController)
 	}
 
 	CHandle<CCSPlayerController> handle = pController->GetHandle();
-	new CTimer(2.0f, false, false, [handle]()
-	{
+	new CTimer(2.0f, false, false, [handle]() {
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
 		if (!pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T)
 			return -1.0f;
@@ -1583,7 +1580,7 @@ void SpawnPlayer(CCSPlayerController* pController)
 	});
 }
 
-void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, uint64 xuid)
+void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid)
 {
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
 	if (!pController)
@@ -1592,7 +1589,7 @@ void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, 
 	SpawnPlayer(pController);
 }
 
-void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand &args)
+void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand& args)
 {
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
 	if (!pController)
@@ -1610,8 +1607,8 @@ void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand &args)
 
 void ZR_OnPlayerHurt(IGameEvent* pEvent)
 {
-	CCSPlayerController *pAttackerController = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
-	CCSPlayerController *pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
+	CCSPlayerController* pAttackerController = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
+	CCSPlayerController* pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 	const char* szWeapon = pEvent->GetString("weapon");
 	int iDmgHealth = pEvent->GetInt("dmg_health");
 	int iHitGroup = pEvent->GetInt("hitgroup");
@@ -1642,10 +1639,10 @@ void ZR_OnPlayerDeath(IGameEvent* pEvent)
 	if (pEvent->GetBool("infected"))
 		return;
 
-	CCSPlayerController *pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
+	CCSPlayerController* pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
 	if (!pVictimController)
 		return;
-	CCSPlayerPawn *pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
+	CCSPlayerPawn* pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
 	if (!pVictimPawn)
 		return;
 
@@ -1656,8 +1653,7 @@ void ZR_OnPlayerDeath(IGameEvent* pEvent)
 
 	// respawn player
 	CHandle<CCSPlayerController> handle = pVictimController->GetHandle();
-	new CTimer(g_flRespawnDelay < 0.0f ? 2.0f : g_flRespawnDelay, false, false, [handle]()
-	{
+	new CTimer(g_flRespawnDelay < 0.0f ? 2.0f : g_flRespawnDelay, false, false, [handle]() {
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
 		if (!pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T)
 			return -1.0f;
@@ -1674,8 +1670,7 @@ void ZR_OnRoundFreezeEnd(IGameEvent* pEvent)
 // there is probably a better way to check when time is running out...
 void ZR_OnRoundTimeWarning(IGameEvent* pEvent)
 {
-	new CTimer(10.0, false, false, []()
-	{
+	new CTimer(10.0, false, false, []() {
 		if (g_ZRRoundState == EZRRoundState::ROUND_END)
 			return -1.0f;
 		ZR_EndRoundAndAddTeamScore(g_iDefaultWinnerTeam);
@@ -1691,7 +1686,7 @@ bool ZR_IsTeamAlive(int iTeamNum)
 	{
 		if (!pPawn->IsAlive())
 			continue;
-		
+
 		if (pPawn->m_iTeamNum() == iTeamNum)
 			return true;
 	}
@@ -1772,7 +1767,7 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 			ZR_CreateOverlay(g_szHumanWinOverlayParticle.c_str(), 1.0f, g_flHumanWinOverlaySize, flRestartDelay, Color(255, 255, 255), g_szHumanWinOverlayMaterial.c_str());
 	}
 	else if (iTeamNum == CS_TEAM_T)
-	{	
+	{
 		if (!g_hTeamT.Get())
 		{
 			Panic("Cannot find CTeam for T!\n");
@@ -1806,35 +1801,34 @@ CON_COMMAND_CHAT(ztele, "- Teleport to spawn")
 	std::vector<SpawnPoint*> spawns = ZR_GetSpawns();
 	if (!spawns.size())
 	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX"There are no spawns!");
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "There are no spawns!");
 		return;
 	}
 
-	//Pick and get random spawnpoint
+	// Pick and get random spawnpoint
 	int randomindex = rand() % spawns.size();
 	CHandle<SpawnPoint> spawnHandle = spawns[randomindex]->GetHandle();
 
-	//Here's where the mess starts
-	CBasePlayerPawn *pPawn = player->GetPawn();
+	// Here's where the mess starts
+	CBasePlayerPawn* pPawn = player->GetPawn();
 
 	if (!pPawn)
 		return;
 
 	if (!pPawn->IsAlive())
 	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX"You cannot teleport when dead!");
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "You cannot teleport when dead!");
 		return;
 	}
 
-	//Get initial player position so we can do distance check
+	// Get initial player position so we can do distance check
 	Vector initialpos = pPawn->GetAbsOrigin();
 
-	ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX"Teleporting to spawn in 5 seconds.");
+	ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Teleporting to spawn in 5 seconds.");
 
 	CHandle<CCSPlayerPawn> pawnHandle = pPawn->GetHandle();
 
-	new CTimer(5.0f, false, false, [spawnHandle, pawnHandle, initialpos]()
-	{
+	new CTimer(5.0f, false, false, [spawnHandle, pawnHandle, initialpos]() {
 		CCSPlayerPawn* pPawn = pawnHandle.Get();
 		SpawnPoint* pSpawn = spawnHandle.Get();
 
@@ -1894,7 +1888,7 @@ CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:
 
 			const char* sTeamName = team == CS_TEAM_CT ? "Human" : "Zombie";
 			const char* sCurrentClass = g_pUserPreferencesSystem->GetPreference(iSlot, team == CS_TEAM_CT ? HUMAN_CLASS_KEY_NAME : ZOMBIE_CLASS_KEY_NAME);
-			
+
 			if (sCurrentClass[0] != '\0')
 				ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Your current %s class is: \x10%s\x1. Available classes:", sTeamName, sCurrentClass);
 			else
@@ -1903,7 +1897,7 @@ CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:
 			FOR_EACH_VEC(vecClasses, i)
 			{
 				if (vecClasses[i]->iTeam == team)
-					ClientPrint(player, HUD_PRINTTALK, "%i. %s", i+1, vecClasses[i]->szClassName.c_str());
+					ClientPrint(player, HUD_PRINTTALK, "%i. %s", i + 1, vecClasses[i]->szClassName.c_str());
 			}
 		}
 

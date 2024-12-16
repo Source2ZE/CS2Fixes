@@ -30,14 +30,14 @@ public:
 	GS_EVENT(BuildGameSessionManifest);
 	GS_EVENT(ServerPreEntityThink);
 	GS_EVENT(ServerPostEntityThink);
-	
+
 	void Shutdown() override
 	{
 		Message("CGameSystem::Shutdown\n");
 		delete sm_Factory;
 	}
 
-	void SetGameSystemGlobalPtrs(void *pValue) override
+	void SetGameSystemGlobalPtrs(void* pValue) override
 	{
 		if (sm_Factory)
 			sm_Factory->SetGlobalPtr(pValue);
@@ -48,7 +48,7 @@ public:
 		return sm_Factory->ShouldAutoAdd();
 	}
 
-	static IGameSystemFactory *sm_Factory;
+	static IGameSystemFactory* sm_Factory;
 };
 
 // Quick and dirty definition

@@ -18,16 +18,16 @@
  */
 
 #pragma once
-#include <platform.h>
 #include "globaltypes.h"
-#include <entity/ccsweaponbase.h>
 #include <entity/ccsplayerpawn.h>
+#include <entity/ccsweaponbase.h>
+#include <platform.h>
 
-#define AMMO_OFFSET_HEGRENADE		13
-#define AMMO_OFFSET_FLASHBANG		14
-#define AMMO_OFFSET_SMOKEGRENADE	15
-#define AMMO_OFFSET_MOLOTOV			16
-#define AMMO_OFFSET_DECOY			17
+#define AMMO_OFFSET_HEGRENADE 13
+#define AMMO_OFFSET_FLASHBANG 14
+#define AMMO_OFFSET_SMOKEGRENADE 15
+#define AMMO_OFFSET_MOLOTOV 16
+#define AMMO_OFFSET_DECOY 17
 
 class CBaseEntity;
 
@@ -65,7 +65,7 @@ public:
 
 	SCHEMA_FIELD(CCSPlayerPawn*, __m_pChainEntity)
 
-	CCSPlayerPawn *GetPawn() { return __m_pChainEntity; }
+	CCSPlayerPawn* GetPawn() { return __m_pChainEntity; }
 };
 
 class CPlayer_MovementServices : public CPlayerPawnComponent
@@ -155,15 +155,16 @@ class CCSPlayerController_InGameMoneyServices
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerController_InGameMoneyServices);
 
-    SCHEMA_FIELD(int, m_iAccount)
+	SCHEMA_FIELD(int, m_iAccount)
 };
 
 class CCSPlayer_ItemServices
 {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_ItemServices);
-	
+
 	virtual ~CCSPlayer_ItemServices() = 0;
+
 private:
 	virtual void unk_01() = 0;
 	virtual void unk_02() = 0;
@@ -182,12 +183,13 @@ private:
 	virtual void unk_15() = 0;
 	virtual void unk_16() = 0;
 	virtual CBaseEntity* _GiveNamedItem(const char* pchName) = 0;
+
 public:
-    virtual bool         GiveNamedItemBool(const char* pchName)      = 0;
-    virtual CBaseEntity* GiveNamedItem(const char* pchName)          = 0;
+	virtual bool GiveNamedItemBool(const char* pchName) = 0;
+	virtual CBaseEntity* GiveNamedItem(const char* pchName) = 0;
 	// Recommended to use CCSPlayer_WeaponServices::DropWeapon instead (parameter is ignored here)
-    virtual void         DropActiveWeapon(CBasePlayerWeapon* pWeapon) = 0;
-    virtual void         StripPlayerWeapons(bool removeSuit) = 0;
+	virtual void DropActiveWeapon(CBasePlayerWeapon* pWeapon) = 0;
+	virtual void StripPlayerWeapons(bool removeSuit) = 0;
 };
 
 // We need an exactly sized class to be able to iterate the vector, our schema system implementation can't do this
@@ -195,14 +197,14 @@ class WeaponPurchaseCount_t
 {
 private:
 	virtual void unk01() {};
-	uint64_t unk1 = 0; // 0x8
-	uint64_t unk2 = 0; // 0x10
-	uint64_t unk3 = 0; // 0x18
-	uint64_t unk4 = 0; // 0x20
+	uint64_t unk1 = 0;	// 0x8
+	uint64_t unk2 = 0;	// 0x10
+	uint64_t unk3 = 0;	// 0x18
+	uint64_t unk4 = 0;	// 0x20
 	uint64_t unk5 = -1; // 0x28
 public:
-	uint16_t m_nItemDefIndex; // 0x30	
-	uint16_t m_nCount; // 0x32
+	uint16_t m_nItemDefIndex; // 0x30
+	uint16_t m_nCount;		  // 0x32
 private:
 	uint32_t unk6 = 0;
 };
@@ -237,18 +239,18 @@ public:
 class CPlayer_CameraServices
 {
 public:
-    DECLARE_SCHEMA_CLASS(CPlayer_CameraServices)
+	DECLARE_SCHEMA_CLASS(CPlayer_CameraServices)
 
-    SCHEMA_FIELD(CHandle<CBaseEntity>, m_hViewEntity)
+	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hViewEntity)
 };
 
 class CCSPlayerBase_CameraServices : public CPlayer_CameraServices
 {
 public:
-    DECLARE_SCHEMA_CLASS(CCSPlayerBase_CameraServices)
+	DECLARE_SCHEMA_CLASS(CCSPlayerBase_CameraServices)
 
-    SCHEMA_FIELD(CHandle<CBaseEntity>, m_hZoomOwner)
-    SCHEMA_FIELD(uint, m_iFOV)
+	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hZoomOwner)
+	SCHEMA_FIELD(uint, m_iFOV)
 };
 
 class CCSPlayer_CameraServices : public CCSPlayerBase_CameraServices

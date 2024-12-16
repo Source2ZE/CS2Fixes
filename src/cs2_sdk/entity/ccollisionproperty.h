@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "cbaseentity.h"
+#include "schema.h"
 
 struct VPhysicsCollisionAttribute_t
 {

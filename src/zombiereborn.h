@@ -19,11 +19,11 @@
 
 #pragma once
 #include "adminsystem.h"
-#include "eventlistener.h"
 #include "ctimer.h"
-#include "gamesystem.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
+#include "eventlistener.h"
+#include "gamesystem.h"
 #include "vendor/nlohmann/json_fwd.hpp"
 
 using ordered_json = nlohmann::ordered_json;
@@ -59,7 +59,7 @@ struct ZRModelEntry
 	}
 };
 
-//everything that human and zombie share
+// everything that human and zombie share
 struct ZRClass
 {
 	int iTeam;
@@ -80,14 +80,14 @@ struct ZRClass
 		flSpeed(pClass->flSpeed),
 		flGravity(pClass->flGravity),
 		iAdminFlag(pClass->iAdminFlag)
+	{
+		vecModels.Purge();
+		FOR_EACH_VEC(pClass->vecModels, i)
 		{
-			vecModels.Purge();
-			FOR_EACH_VEC(pClass->vecModels, i)
-			{
-				std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(pClass->vecModels[i]);
-				vecModels.AddToTail(modelEntry);
-			}
-		};
+			std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(pClass->vecModels[i]);
+			vecModels.AddToTail(modelEntry);
+		}
+	};
 
 	ZRClass(ordered_json jsonKeys, std::string szClassname, int iTeam);
 	void PrintInfo()
@@ -125,7 +125,7 @@ struct ZRClass
 			iAdminFlag);
 	};
 	void Override(ordered_json jsonKeys, std::string szClassname);
-	bool IsApplicableTo(CCSPlayerController *pController);
+	bool IsApplicableTo(CCSPlayerController* pController);
 	uint64 ParseClassFlags(const char* pszFlags);
 	std::shared_ptr<ZRModelEntry> GetRandomModelEntry()
 	{
@@ -133,10 +133,10 @@ struct ZRClass
 	};
 };
 
-
 struct ZRHumanClass : ZRClass
 {
-	ZRHumanClass(std::shared_ptr<ZRHumanClass> pClass) : ZRClass(pClass, CS_TEAM_CT) {};
+	ZRHumanClass(std::shared_ptr<ZRHumanClass> pClass) :
+		ZRClass(pClass, CS_TEAM_CT){};
 	ZRHumanClass(ordered_json jsonKeys, std::string szClassname);
 };
 
@@ -146,7 +146,7 @@ struct ZRZombieClass : ZRClass
 	float flHealthRegenInterval;
 	float flKnockback;
 	ZRZombieClass(std::shared_ptr<ZRZombieClass> pClass) :
-		ZRClass(pClass, CS_TEAM_T), 
+		ZRClass(pClass, CS_TEAM_T),
 		iHealthRegenCount(pClass->iHealthRegenCount),
 		flHealthRegenInterval(pClass->flHealthRegenInterval),
 		flKnockback(pClass->flKnockback){};
@@ -206,13 +206,14 @@ public:
 	void ApplyBaseClassVisuals(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
 	std::shared_ptr<ZRHumanClass> GetHumanClass(const char* pszClassName);
 	void ApplyHumanClass(std::shared_ptr<ZRHumanClass> pClass, CCSPlayerPawn* pPawn);
-	void ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn *pPawn);
-	void ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPawn *pPawn);
+	void ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn* pPawn);
+	void ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPawn* pPawn);
 	std::shared_ptr<ZRZombieClass> GetZombieClass(const char* pszClassName);
 	void ApplyZombieClass(std::shared_ptr<ZRZombieClass> pClass, CCSPlayerPawn* pPawn);
-	void ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn *pPawn);
+	void ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn* pPawn);
 	void PrecacheModels(IEntityResourceManifest* pResourceManifest);
 	void GetZRClassList(int iTeam, CUtlVector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController = nullptr);
+
 private:
 	void ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
 	CUtlVector<std::shared_ptr<ZRZombieClass>> m_vecZombieDefaultClass;
@@ -225,18 +226,18 @@ class CZRRegenTimer : public CTimerBase
 {
 public:
 	CZRRegenTimer(float flRegenInterval, int iRegenAmount, CHandle<CCSPlayerPawn> hPawnHandle) :
-		CTimerBase(flRegenInterval, false, false), m_iRegenAmount(iRegenAmount), m_hPawnHandle(hPawnHandle) {};
+		CTimerBase(flRegenInterval, false, false), m_iRegenAmount(iRegenAmount), m_hPawnHandle(hPawnHandle){};
 
 	bool Execute();
-	static void StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController *pController);
-	static void StopRegen(CCSPlayerController *pController);
+	static void StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController* pController);
+	static void StopRegen(CCSPlayerController* pController);
 	static int GetIndex(CPlayerSlot slot);
 	static void Tick();
 	static void RemoveAllTimers();
 
 private:
 	static double s_flNextExecution;
-	static CZRRegenTimer *s_vecRegenTimers[MAXPLAYERS];
+	static CZRRegenTimer* s_vecRegenTimers[MAXPLAYERS];
 	int m_iRegenAmount;
 	CHandle<CCSPlayerPawn> m_hPawnHandle;
 };
@@ -259,11 +260,11 @@ public:
 		m_WeaponMap.SetLessFunc(DefLessFunc(uint32));
 	};
 	void LoadWeaponConfig();
-	std::shared_ptr<ZRWeapon> FindWeapon(const char *pszWeaponName);
+	std::shared_ptr<ZRWeapon> FindWeapon(const char* pszWeaponName);
+
 private:
 	CUtlMap<uint32, std::shared_ptr<ZRWeapon>> m_WeaponMap;
 };
-
 
 class ZRHitgroupConfig
 {
@@ -274,12 +275,13 @@ public:
 	};
 	void LoadHitgroupConfig();
 	std::shared_ptr<ZRHitgroup> FindHitgroupIndex(int iIndex);
+
 private:
 	CUtlMap<uint32, std::shared_ptr<ZRHitgroup>> m_HitgroupMap;
 };
 
-extern ZRWeaponConfig *g_pZRWeaponConfig;
-extern ZRHitgroupConfig *g_pZRHitgroupConfig;
+extern ZRWeaponConfig* g_pZRWeaponConfig;
+extern ZRHitgroupConfig* g_pZRHitgroupConfig;
 extern CZRPlayerClassManager* g_pZRPlayerClassManager;
 
 extern bool g_bEnableZR;
@@ -293,9 +295,9 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent);
 void ZR_OnPlayerDeath(IGameEvent* pEvent);
 void ZR_OnRoundFreezeEnd(IGameEvent* pEvent);
 void ZR_OnRoundTimeWarning(IGameEvent* pEvent);
-bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo *pInfo, CCSPlayerPawn *pVictimPawn);
-bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices *pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
+bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo* pInfo, CCSPlayerPawn* pVictimPawn);
+bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
 void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID);
-void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const *pszName, int type, uint64 xuid);
-void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand &args);
+void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid);
+void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand& args);
 void ZR_Precache(IEntityResourceManifest* pResourceManifest);

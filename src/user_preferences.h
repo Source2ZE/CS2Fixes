@@ -18,6 +18,7 @@
  */
 
 #pragma once
+#include "common.h"
 #include "utlmap.h"
 #include "utlstring.h"
 #undef snprintf
@@ -30,7 +31,6 @@ using json = nlohmann::json;
 
 #define MAX_PREFERENCE_LENGTH 128
 
-
 class CPreferenceValue
 {
 public:
@@ -41,7 +41,8 @@ public:
 	}
 	char* GetKey() { return m_sKey; };
 	char* GetValue() { return m_sValue; };
-	void SetKeyValue(const char* sKey, const char* sValue) {
+	void SetKeyValue(const char* sKey, const char* sValue)
+	{
 		V_strcpy(m_sKey, sKey);
 		V_strcpy(m_sValue, sValue);
 	}
@@ -55,17 +56,18 @@ class CUserPreferencesStorage
 {
 public:
 	virtual void LoadPreferences(uint64 iSteamId, StorageCallback cb) = 0;
-	virtual void StorePreferences(uint64 iSteamId, CUtlMap<uint32, CPreferenceValue> &preferences, StorageCallback cb) = 0;
+	virtual void StorePreferences(uint64 iSteamId, CUtlMap<uint32, CPreferenceValue>& preferences, StorageCallback cb) = 0;
 };
 
 class CUserPreferencesREST : public CUserPreferencesStorage
 {
 public:
 	void LoadPreferences(uint64 iSteamId, StorageCallback cb);
-	void StorePreferences(uint64 iSteamId, CUtlMap<uint32, CPreferenceValue> &preferences, StorageCallback cb);
+	void StorePreferences(uint64 iSteamId, CUtlMap<uint32, CPreferenceValue>& preferences, StorageCallback cb);
 	void SetPreferencesAPIUrl(const char* sUserPreferencesUrl) { V_strcpy(m_pszUserPreferencesUrl, sUserPreferencesUrl); };
-	const char* GetPreferencesAPIUrl() { return (const char*) m_pszUserPreferencesUrl; };
-	void JsonToPreferencesMap(json data, CUtlMap<uint32, CPreferenceValue> &preferences);
+	const char* GetPreferencesAPIUrl() { return (const char*)m_pszUserPreferencesUrl; };
+	void JsonToPreferencesMap(json data, CUtlMap<uint32, CPreferenceValue>& preferences);
+
 private:
 	char m_pszUserPreferencesUrl[256] = "";
 };
@@ -75,7 +77,8 @@ class CUserPreferencesSystem
 public:
 	CUserPreferencesSystem()
 	{
-		for (int i = 0; i < MAXPLAYERS; i++) {
+		for (int i = 0; i < MAXPLAYERS; i++)
+		{
 			m_mPreferencesMaps[i].SetLessFunc(DefLessFunc(uint32));
 			m_mPreferencesLoaded[i] = false;
 		}
@@ -90,9 +93,10 @@ public:
 	void SetPreferenceInt(int iSlot, const char* sKey, int iValue);
 	void SetPreferenceFloat(int iSlot, const char* sKey, float fValue);
 	bool CheckPreferencesLoaded(int iSlot);
-	bool PutPreferences(int iSlot, uint64 iSteamId, CUtlMap<uint32, CPreferenceValue> &preferenceData);
+	bool PutPreferences(int iSlot, uint64 iSteamId, CUtlMap<uint32, CPreferenceValue>& preferenceData);
 	void OnPutPreferences(int iSlot);
 	void PushPreferences(int iSlot);
+
 private:
 	CUtlMap<uint32, CPreferenceValue> m_mPreferencesMaps[MAXPLAYERS];
 	uint64 m_mUserSteamIds[MAXPLAYERS];

@@ -19,8 +19,8 @@
 
 #pragma once
 
+#include "../schema.h"
 #include "cbasemodelentity.h"
-#include"../schema.h"
 
 #define SF_TRIG_PUSH_ONCE 0x80
 
@@ -34,7 +34,7 @@ public:
 	SCHEMA_FIELD_POINTER(CUtlVector<CHandle<CBaseEntity>>, m_hTouchingEntities)
 	SCHEMA_FIELD(bool, m_bClientSidePredicted)
 
-	bool PassesTriggerFilters(CBaseEntity *pOther)
+	bool PassesTriggerFilters(CBaseEntity* pOther)
 	{
 		static int offset = g_GameConfig->GetOffset("PassesTriggerFilters");
 		return CALL_VIRTUAL(bool, offset, this, pOther);

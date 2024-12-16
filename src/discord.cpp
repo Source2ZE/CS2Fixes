@@ -17,17 +17,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "common.h"
 #include "discord.h"
 #include "KeyValues.h"
-#include "interfaces/interfaces.h"
+#include "common.h"
 #include "httpmanager.h"
+#include "interfaces/interfaces.h"
 #include "utlstring.h"
 
 #include "vendor/nlohmann/json.hpp"
 
 using json = nlohmann::json;
-
 
 CDiscordBotManager* g_pDiscordBotManager = nullptr;
 
@@ -44,27 +43,26 @@ CON_COMMAND_F(cs2f_debug_discord_messages, "Whether to include debug information
 
 void DiscordHttpCallback(HTTPRequestHandle request, json response)
 {
-	if (g_bDebugDiscordRequests) {
+	if (g_bDebugDiscordRequests)
 		Message("Discord post received response: %s\n", response.dump().c_str());
-	}
 }
 
-void CDiscordBotManager::PostDiscordMessage(const char* sDiscordBotName, const char* sMessage) {
+void CDiscordBotManager::PostDiscordMessage(const char* sDiscordBotName, const char* sMessage)
+{
 	FOR_EACH_VEC(m_vecDiscordBots, i)
 	{
 		CDiscordBot bot = m_vecDiscordBots[i];
 
-		if (g_bDebugDiscordRequests) {
+		if (g_bDebugDiscordRequests)
 			Message("The bot at %i is %s with %s webhook and %s avatar.\n", i, bot.GetName(), bot.GetWebhookUrl(), bot.GetAvatarUrl());
-		}
 
-		if (!V_stricmp(sDiscordBotName, bot.GetName())) {
+		if (!V_stricmp(sDiscordBotName, bot.GetName()))
 			bot.PostMessage(sMessage);
-		}
 	}
 }
 
-void CDiscordBot::PostMessage(const char* sMessage) {
+void CDiscordBot::PostMessage(const char* sMessage)
+{
 	json jRequestBody;
 
 	// Fill up the Json fields
@@ -78,9 +76,8 @@ void CDiscordBot::PostMessage(const char* sMessage) {
 
 	// Send the request
 	std::string sRequestBody = jRequestBody.dump();
-	if (g_bDebugDiscordRequests) {
+	if (g_bDebugDiscordRequests)
 		Message("Sending '%s' to %s.\n", sRequestBody.c_str(), GetWebhookUrl());
-	}
 	g_HTTPManager.POST(m_pszWebhookUrl, sRequestBody.c_str(), &DiscordHttpCallback);
 }
 

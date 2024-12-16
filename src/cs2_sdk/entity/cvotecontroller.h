@@ -20,7 +20,7 @@
 #pragma once
 
 #include "cbaseentity.h"
-//#include "util_shared.h"
+// #include "util_shared.h"
 
 class CVoteController : public CBaseEntity
 {
@@ -28,11 +28,11 @@ public:
 	DECLARE_SCHEMA_CLASS(CVoteController);
 
 	SCHEMA_FIELD(int, m_iActiveIssueIndex)
-		SCHEMA_FIELD(int, m_iOnlyTeamToVote)
-		SCHEMA_FIELD_POINTER(int, m_nVoteOptionCount)
-		SCHEMA_FIELD(int, m_nPotentialVotes)
-		SCHEMA_FIELD(bool, m_bIsYesNoVote)
-		SCHEMA_FIELD_POINTER(int, m_nVotesCast)
-		SCHEMA_FIELD(int, m_nHighestCountIndex)
-		SCHEMA_FIELD_POINTER(CUtlVector<const char* >, m_VoteOptions)
+	SCHEMA_FIELD(int, m_iOnlyTeamToVote)
+	SCHEMA_FIELD_POINTER(int, m_nVoteOptionCount)
+	SCHEMA_FIELD(int, m_nPotentialVotes)
+	SCHEMA_FIELD(bool, m_bIsYesNoVote)
+	SCHEMA_FIELD_POINTER(int, m_nVotesCast)
+	SCHEMA_FIELD(int, m_nHighestCountIndex)
+	SCHEMA_FIELD_POINTER(CUtlVector<const char*>, m_VoteOptions)
 };

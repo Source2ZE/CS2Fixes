@@ -19,18 +19,18 @@
 
 #pragma once
 
-#include "schema.h"
-#include "ccollisionproperty.h"
-#include "globaltypes.h"
-#include "ctakedamageinfo.h"
-#include "mathlib/vector.h"
-#include "ehandle.h"
-#include "../detours.h"
-#include "entitykeyvalues.h"
 #include "../../gameconfig.h"
+#include "../detours.h"
+#include "ccollisionproperty.h"
+#include "ctakedamageinfo.h"
+#include "ehandle.h"
+#include "entitykeyvalues.h"
+#include "globaltypes.h"
+#include "mathlib/vector.h"
+#include "schema.h"
 #include "tier1/utlstringtoken.h"
 
-extern CGameConfig *g_GameConfig;
+extern CGameConfig* g_GameConfig;
 
 class CGameUI;
 class CEnvHudHint;
@@ -41,9 +41,9 @@ class CGameSceneNode
 public:
 	DECLARE_SCHEMA_CLASS(CGameSceneNode)
 
-	SCHEMA_FIELD(CEntityInstance *, m_pOwner)
-	SCHEMA_FIELD(CGameSceneNode *, m_pParent)
-	SCHEMA_FIELD(CGameSceneNode *, m_pChild)
+	SCHEMA_FIELD(CEntityInstance*, m_pOwner)
+	SCHEMA_FIELD(CGameSceneNode*, m_pParent)
+	SCHEMA_FIELD(CGameSceneNode*, m_pChild)
 	SCHEMA_FIELD(CNetworkOriginCellCoordQuantizedVector, m_vecOrigin)
 	SCHEMA_FIELD(QAngle, m_angRotation)
 	SCHEMA_FIELD(float, m_flScale)
@@ -57,7 +57,7 @@ public:
 		matrix3x4_t mat;
 
 		// issues with this and im tired so hardcoded it
-		//AngleMatrix(this->m_angAbsRotation(), this->m_vecAbsOrigin(), mat);
+		// AngleMatrix(this->m_angAbsRotation(), this->m_vecAbsOrigin(), mat);
 
 		QAngle angles = this->m_angAbsRotation();
 		float sr, sp, sy, cr, cp, cy;
@@ -94,7 +94,7 @@ class CBodyComponent
 public:
 	DECLARE_SCHEMA_CLASS(CBodyComponent)
 
-	SCHEMA_FIELD(CGameSceneNode *, m_pSceneNode)
+	SCHEMA_FIELD(CGameSceneNode*, m_pSceneNode)
 };
 
 class CModelState
@@ -124,7 +124,7 @@ class CBaseEntity : public CEntityInstance
 public:
 	DECLARE_SCHEMA_CLASS(CBaseEntity)
 
-	SCHEMA_FIELD(CBodyComponent *, m_CBodyComponent)
+	SCHEMA_FIELD(CBodyComponent*, m_CBodyComponent)
 	SCHEMA_FIELD(CBitVec<64>, m_isSteadyState)
 	SCHEMA_FIELD(float, m_lastNetworkChange)
 	SCHEMA_FIELD_POINTER(CNetworkTransmitComponent, m_NetworkTransmitComponent)
@@ -164,17 +164,17 @@ public:
 	void SetAbsVelocity(Vector vecVelocity) { m_vecAbsVelocity = vecVelocity; }
 	void SetBaseVelocity(Vector vecVelocity) { m_vecBaseVelocity = vecVelocity; }
 
-	void SetName(const char *pName)
+	void SetName(const char* pName)
 	{
 		addresses::CEntityIdentity_SetEntityName(m_pEntity, pName);
 	}
 
-	void TakeDamage(CTakeDamageInfo &info)
+	void TakeDamage(CTakeDamageInfo& info)
 	{
 		Detour_CBaseEntity_TakeDamageOld(this, &info);
 	}
 
-	void Teleport(const Vector *position, const QAngle *angles, const Vector *velocity)
+	void Teleport(const Vector* position, const QAngle* angles, const Vector* velocity)
 	{
 		static int offset = g_GameConfig->GetOffset("Teleport");
 		CALL_VIRTUAL(void, offset, this, position, angles, velocity);
@@ -207,7 +207,7 @@ public:
 		return CALL_VIRTUAL(bool, offset, this);
 	}
 
-	void AcceptInput(const char *pInputName, variant_t value = variant_t(""), CEntityInstance *pActivator = nullptr, CEntityInstance *pCaller = nullptr)
+	void AcceptInput(const char* pInputName, variant_t value = variant_t(""), CEntityInstance* pActivator = nullptr, CEntityInstance* pCaller = nullptr)
 	{
 		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, &value, 0);
 	}
@@ -219,18 +219,18 @@ public:
 	// A double pointer to entity VData is available 4 bytes past m_nSubclassID, if applicable
 	CEntitySubclassVDataBase* GetVData() { return *(CEntitySubclassVDataBase**)((uint8*)(m_nSubclassID()) + 4); }
 
-	void DispatchSpawn(CEntityKeyValues *pEntityKeyValues = nullptr)
+	void DispatchSpawn(CEntityKeyValues* pEntityKeyValues = nullptr)
 	{
 		addresses::DispatchSpawn(this, pEntityKeyValues);
 	}
 
 	// Emit a sound event
-	void EmitSound(const char *pszSound, int nPitch = 100, float flVolume = 1.0, float flDelay = 0.0)
+	void EmitSound(const char* pszSound, int nPitch = 100, float flVolume = 1.0, float flDelay = 0.0)
 	{
 		addresses::CBaseEntity_EmitSoundParams(this, pszSound, nPitch, flVolume, flDelay);
 	}
 
-	SndOpEventGuid_t EmitSoundFilter(IRecipientFilter &filter, const char *pszSound, float flVolume = 1.0, float flPitch = 1.0)
+	SndOpEventGuid_t EmitSoundFilter(IRecipientFilter& filter, const char* pszSound, float flVolume = 1.0, float flPitch = 1.0)
 	{
 		EmitSound_t params;
 		params.m_pSoundName = pszSound;
@@ -240,14 +240,14 @@ public:
 		return addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
 	}
 
-	void DispatchParticle(const char *pszParticleName, IRecipientFilter *pFilter, ParticleAttachment_t nAttachType = PATTACH_POINT_FOLLOW, 
-		char iAttachmentPoint = 0, CUtlSymbolLarge iAttachmentName = "")
+	void DispatchParticle(const char* pszParticleName, IRecipientFilter* pFilter, ParticleAttachment_t nAttachType = PATTACH_POINT_FOLLOW,
+						  char iAttachmentPoint = 0, CUtlSymbolLarge iAttachmentName = "")
 	{
 		addresses::DispatchParticleEffect(pszParticleName, nAttachType, this, iAttachmentPoint, iAttachmentName, false, 0, pFilter, 0);
 	}
 
 	// This was needed so we can parent to nameless entities using pointers
-	void SetParent(CBaseEntity *pNewParent)
+	void SetParent(CBaseEntity* pNewParent)
 	{
 		addresses::CBaseEntity_SetParent(this, pNewParent, MakeStringToken(""), nullptr);
 	}
@@ -262,7 +262,7 @@ public:
 		addresses::CBaseEntity_SetMoveType(this, nMoveType, m_MoveCollide);
 	}
 
-	void SetGroundEntity(CBaseEntity *pGround)
+	void SetGroundEntity(CBaseEntity* pGround)
 	{
 		addresses::SetGroundEntity(this, pGround, nullptr);
 	}
@@ -271,7 +271,7 @@ public:
 
 	/* Begin Custom Entities Cast */
 
-	[[nodiscard]] CGameUI *AsGameUI()
+	[[nodiscard]] CGameUI* AsGameUI()
 	{
 		if (V_strcasecmp(GetClassname(), "logic_case") != 0)
 			return nullptr;
@@ -279,20 +279,20 @@ public:
 		const auto tag = m_iszPrivateVScripts.IsValid() ? m_iszPrivateVScripts.String() : nullptr;
 
 		if (tag && V_strcasecmp(tag, "game_ui") == 0)
-			return reinterpret_cast<CGameUI *>(this);
+			return reinterpret_cast<CGameUI*>(this);
 
 		return nullptr;
 	}
 
-	[[nodiscard]] CEnvHudHint *AsHudHint()
+	[[nodiscard]] CEnvHudHint* AsHudHint()
 	{
 		if (V_strcasecmp(GetClassname(), "env_hudhint") == 0)
-			return reinterpret_cast<CEnvHudHint *>(this);
+			return reinterpret_cast<CEnvHudHint*>(this);
 
 		return nullptr;
 	}
 
-	[[nodiscard]] CPointViewControl *AsPointViewControl()
+	[[nodiscard]] CPointViewControl* AsPointViewControl()
 	{
 		if (V_strcasecmp(GetClassname(), "logic_relay") != 0)
 			return nullptr;
@@ -300,7 +300,7 @@ public:
 		const auto tag = m_iszPrivateVScripts.IsValid() ? m_iszPrivateVScripts.String() : nullptr;
 
 		if (tag && V_strcasecmp(tag, "point_viewcontrol") == 0)
-			return reinterpret_cast<CPointViewControl *>(this);
+			return reinterpret_cast<CPointViewControl*>(this);
 
 		return nullptr;
 	}

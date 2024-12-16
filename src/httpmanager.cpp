@@ -27,8 +27,8 @@
 
 #include "httpmanager.h"
 #include "common.h"
-#include <string>
 #include "vendor/nlohmann/json.hpp"
+#include <string>
 
 extern ISteamHTTP* g_http;
 
@@ -115,25 +115,23 @@ void HTTPManager::POST(const char* pszUrl, const char* pszText, CompletedCallbac
 
 void HTTPManager::GenerateRequest(EHTTPMethod method, const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
 {
-	//Message("Sending HTTP:\n%s\n", pszText);
+	// Message("Sending HTTP:\n%s\n", pszText);
 	auto hReq = g_http->CreateHTTPRequest(method, pszUrl);
 	int size = strlen(pszText);
-	//Message("HTTP request: %p\n", hReq);
+	// Message("HTTP request: %p\n", hReq);
 
 	if (method == k_EHTTPMethodPOST && !g_http->SetHTTPRequestRawPostBody(hReq, "application/json", (uint8*)pszText, size))
 	{
-		//Message("Failed to SetHTTPRequestRawPostBody\n");
+		// Message("Failed to SetHTTPRequestRawPostBody\n");
 		return;
 	}
 
 	// Prevent HTTP error 411 (probably not necessary?)
-	//g_http->SetHTTPRequestHeaderValue(hReq, "Content-Length", std::to_string(size).c_str());
+	// g_http->SetHTTPRequestHeaderValue(hReq, "Content-Length", std::to_string(size).c_str());
 
 	if (headers != nullptr)
-	{
 		for (HTTPHeader header : *headers)
 			g_http->SetHTTPRequestHeaderValue(hReq, header.GetName(), header.GetValue());
-	}
 
 	SteamAPICall_t hCall;
 	g_http->SendHTTPRequest(hReq, &hCall);

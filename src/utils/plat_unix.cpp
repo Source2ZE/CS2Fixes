@@ -2,7 +2,7 @@
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2024 Source2ZE
- * 
+ *
  * DynLibUtils
  * Copyright (C) 2023 komashchenko (Phoenix)
  * =============================================================================
@@ -21,38 +21,37 @@
  */
 
 #ifdef __linux__
-#include "module.h"
-#include "plat.h"
-#include <dlfcn.h>
-#include <libgen.h>
-#include <stdio.h>
-#include <string.h>
-#include "sys/mman.h"
-#include <locale>
-#include <elf.h>
-#include <link.h>
-#include "dbg.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+	#include "dbg.h"
+	#include "module.h"
+	#include "plat.h"
+	#include "sys/mman.h"
+	#include <dlfcn.h>
+	#include <elf.h>
+	#include <fcntl.h>
+	#include <libgen.h>
+	#include <link.h>
+	#include <locale>
+	#include <stdio.h>
+	#include <string.h>
+	#include <sys/stat.h>
+	#include <sys/types.h>
 
-#include "tier0/memdbgon.h"
+	#include "tier0/memdbgon.h"
 
-#define PAGE_SIZE			4096
-#define PAGE_ALIGN_UP(x)	((x + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
+	#define PAGE_SIZE 4096
+	#define PAGE_ALIGN_UP(x) ((x + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
 
 struct ModuleInfo
 {
 	const char* path; // in
-	uint8_t* base; // out
-	uint size; // out
+	uint8_t* base;	  // out
+	uint size;		  // out
 };
 
 // https://github.com/alliedmodders/sourcemod/blob/master/core/logic/MemoryUtils.cpp#L502-L587
 // https://github.com/komashchenko/DynLibUtils/blob/5eb95475170becfcc64fd5d32d14ec2b76dcb6d4/module_linux.cpp#L95
 int GetModuleInformation(HINSTANCE hModule, void** base, size_t* length, std::vector<Section>& m_sections)
 {
-
 	link_map* lmap;
 	if (dlinfo(hModule, RTLD_DI_LINKMAP, &lmap) != 0)
 	{
@@ -76,7 +75,7 @@ int GetModuleInformation(HINSTANCE hModule, void** base, size_t* length, std::ve
 			ElfW(Ehdr)* ehdr = static_cast<ElfW(Ehdr)*>(map);
 			ElfW(Shdr)* shdrs = reinterpret_cast<ElfW(Shdr)*>(reinterpret_cast<uintptr_t>(ehdr) + ehdr->e_shoff);
 			const char* strTab = reinterpret_cast<const char*>(reinterpret_cast<uintptr_t>(ehdr) + shdrs[ehdr->e_shstrndx].sh_offset);
-	
+
 			for (auto i = 0; i < ehdr->e_phnum; ++i)
 			{
 				ElfW(Phdr)* phdr = reinterpret_cast<ElfW(Phdr)*>(reinterpret_cast<uintptr_t>(ehdr) + ehdr->e_phoff + i * ehdr->e_phentsize);
@@ -118,23 +117,23 @@ static int parse_prot(const char* s)
 	{
 		switch (*s)
 		{
-		case '-':
-			break;
-		case 'r':
-			prot |= PROT_READ;
-			break;
-		case 'w':
-			prot |= PROT_WRITE;
-			break;
-		case 'x':
-			prot |= PROT_EXEC;
-			break;
-		case 's':
-			break;
-		case 'p':
-			break;
-		default:
-			break;
+			case '-':
+				break;
+			case 'r':
+				prot |= PROT_READ;
+				break;
+			case 'w':
+				prot |= PROT_WRITE;
+				break;
+			case 'x':
+				prot |= PROT_EXEC;
+				break;
+			case 's':
+				break;
+			case 'p':
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -178,7 +177,7 @@ static int get_prot(void* pAddr, size_t nSize)
 		uintptr_t nStart = (uintptr_t)strtoul(start, nullptr, 16);
 		uintptr_t nEnd = (uintptr_t)strtoul(end, nullptr, 16);
 
-		if (nStart < nAddr && nEnd >(nAddr + nSize))
+		if (nStart < nAddr && nEnd > (nAddr + nSize))
 		{
 			fclose(f);
 			return parse_prot(prot);
@@ -239,7 +238,7 @@ void* CModule::FindVirtualTable(const std::string& name)
 
 	void* typeInfo = (void*)((uintptr_t)typeName - 0x8);
 
-	for (const auto& sectionName : { std::string_view(".data.rel.ro"), std::string_view(".data.rel.ro.local") })
+	for (const auto& sectionName : {std::string_view(".data.rel.ro"), std::string_view(".data.rel.ro.local")})
 	{
 		auto section = GetSection(sectionName);
 		if (!section)
@@ -248,14 +247,11 @@ void* CModule::FindVirtualTable(const std::string& name)
 		SignatureIterator sigIt3(section->m_pBase, section->m_iSize, (const byte*)&typeInfo, sizeof(void*));
 
 		while (void* vtable = sigIt3.FindNext(false))
-		{
-			if(*(int64_t*)((uintptr_t)vtable - 0x8) == 0)
+			if (*(int64_t*)((uintptr_t)vtable - 0x8) == 0)
 				return (void*)((uintptr_t)vtable + 0x8);
-		}
 	}
 
 	Warning("Failed to find vtable for %s\n", name.c_str());
 	return nullptr;
 }
 #endif
-

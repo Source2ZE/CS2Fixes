@@ -18,10 +18,10 @@
  */
 
 #pragma once
-#include <vector>
-#include <string>
-#include <cstdint>
 #include "metamod_oslink.h"
+#include <cstdint>
+#include <string>
+#include <vector>
 
 struct Section
 {
@@ -31,12 +31,12 @@ struct Section
 };
 
 #if defined(_WIN32)
-#define FASTCALL __fastcall
-#define THISCALL __thiscall
+	#define FASTCALL __fastcall
+	#define THISCALL __thiscall
 #else
-#define FASTCALL
-#define THISCALL
-#define strtok_s strtok_r
+	#define FASTCALL
+	#define THISCALL
+	#define strtok_s strtok_r
 #endif
 
 struct Module
@@ -53,11 +53,11 @@ int GetModuleInformation(HINSTANCE module, void** base, size_t* length, std::vec
 #endif
 
 #ifdef _WIN32
-#define MODULE_PREFIX ""
-#define MODULE_EXT ".dll"
+	#define MODULE_PREFIX ""
+	#define MODULE_EXT ".dll"
 #else
-#define MODULE_PREFIX "lib"
-#define MODULE_EXT ".so"
+	#define MODULE_PREFIX "lib"
+	#define MODULE_EXT ".so"
 #endif
 
-void Plat_WriteMemory(void* pPatchAddress, uint8_t *pPatch, int iPatchSize);
+void Plat_WriteMemory(void* pPatchAddress, uint8_t* pPatch, int iPatchSize);

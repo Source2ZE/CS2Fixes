@@ -70,5 +70,5 @@ public:
 		CALL_VIRTUAL(void, offset, this, bExplode, bForce);
 	}
 
-	CBasePlayerController *GetController() { return m_hController.Get(); }
+	CBasePlayerController* GetController() { return m_hController.Get(); }
 };

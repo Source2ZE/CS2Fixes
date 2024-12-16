@@ -2,12 +2,12 @@
 #define NETMESSAGES_H
 
 #ifdef _WIN32
-#pragma once
+	#pragma once
 #endif
 
-#include <networksystem/netmessage.h>
 #include <netmessages.pb.h>
 #include <networkbasetypes.pb.h>
+#include <networksystem/netmessage.h>
 #include <networksystem_protomessages.pb.h>
 
 class CNETMsg_Tick_t : public CNetMessagePB<CNETMsg_Tick>

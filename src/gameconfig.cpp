@@ -13,7 +13,7 @@ CGameConfig::~CGameConfig()
 	delete m_pKeyValues;
 }
 
-bool CGameConfig::Init(IFileSystem *filesystem, char *conf_error, int conf_error_size)
+bool CGameConfig::Init(IFileSystem* filesystem, char* conf_error, int conf_error_size)
 {
 	if (!m_pKeyValues->LoadFromFile(filesystem, m_szPath.c_str(), nullptr))
 	{
@@ -39,7 +39,7 @@ bool CGameConfig::Init(IFileSystem *filesystem, char *conf_error, int conf_error
 			}
 		}
 
-		KeyValues *signatures = game->FindKey("Signatures", false);
+		KeyValues* signatures = game->FindKey("Signatures", false);
 		if (signatures)
 		{
 			FOR_EACH_SUBKEY(signatures, it)
@@ -49,7 +49,7 @@ bool CGameConfig::Init(IFileSystem *filesystem, char *conf_error, int conf_error
 			}
 		}
 
-		KeyValues *patches = game->FindKey("Patches", false);
+		KeyValues* patches = game->FindKey("Patches", false);
 		if (patches)
 		{
 			FOR_EACH_SUBKEY(patches, it)
@@ -71,23 +71,19 @@ const std::string CGameConfig::GetPath()
 	return m_szPath;
 }
 
-const char *CGameConfig::GetSignature(const std::string& name)
+const char* CGameConfig::GetSignature(const std::string& name)
 {
 	auto it = m_umSignatures.find(name);
 	if (it == m_umSignatures.end())
-	{
 		return nullptr;
-	}
 	return it->second.c_str();
 }
 
-const char *CGameConfig::GetPatch(const std::string& name)
+const char* CGameConfig::GetPatch(const std::string& name)
 {
 	auto it = m_umPatches.find(name);
 	if (it == m_umPatches.end())
-	{
 		return nullptr;
-	}
 	return it->second.c_str();
 }
 
@@ -95,25 +91,21 @@ int CGameConfig::GetOffset(const std::string& name)
 {
 	auto it = m_umOffsets.find(name);
 	if (it == m_umOffsets.end())
-	{
 		return -1;
-	}
 	return it->second;
 }
 
-const char *CGameConfig::GetLibrary(const std::string& name)
+const char* CGameConfig::GetLibrary(const std::string& name)
 {
 	auto it = m_umLibraries.find(name);
 	if (it == m_umLibraries.end())
-	{
 		return nullptr;
-	}
 	return it->second.c_str();
 }
 
-CModule **CGameConfig::GetModule(const char *name)
+CModule** CGameConfig::GetModule(const char* name)
 {
-	const char *library = this->GetLibrary(name);
+	const char* library = this->GetLibrary(name);
 	if (!library)
 		return nullptr;
 
@@ -138,9 +130,9 @@ CModule **CGameConfig::GetModule(const char *name)
 	return nullptr;
 }
 
-bool CGameConfig::IsSymbol(const char *name)
+bool CGameConfig::IsSymbol(const char* name)
 {
-	const char *sigOrSymbol = this->GetSignature(name);
+	const char* sigOrSymbol = this->GetSignature(name);
 	if (!sigOrSymbol || strlen(sigOrSymbol) <= 0)
 	{
 		Panic("Missing signature or symbol\n", name);
@@ -149,9 +141,9 @@ bool CGameConfig::IsSymbol(const char *name)
 	return sigOrSymbol[0] == '@';
 }
 
-const char* CGameConfig::GetSymbol(const char *name)
+const char* CGameConfig::GetSymbol(const char* name)
 {
-	const char *symbol = this->GetSignature(name);
+	const char* symbol = this->GetSignature(name);
 
 	if (!symbol || strlen(symbol) <= 1)
 	{
@@ -161,19 +153,19 @@ const char* CGameConfig::GetSymbol(const char *name)
 	return symbol + 1;
 }
 
-void *CGameConfig::ResolveSignature(const char *name)
+void* CGameConfig::ResolveSignature(const char* name)
 {
-	CModule **module = this->GetModule(name);
+	CModule** module = this->GetModule(name);
 	if (!module || !(*module))
 	{
 		Panic("Invalid Module %s\n", name);
 		return nullptr;
 	}
 
-	void *address = nullptr;
+	void* address = nullptr;
 	if (this->IsSymbol(name))
 	{
-		const char *symbol = this->GetSymbol(name);
+		const char* symbol = this->GetSymbol(name);
 		if (!symbol)
 		{
 			Panic("Invalid symbol for %s\n", name);
@@ -183,7 +175,7 @@ void *CGameConfig::ResolveSignature(const char *name)
 	}
 	else
 	{
-		const char *signature = this->GetSignature(name);
+		const char* signature = this->GetSignature(name);
 		if (!signature)
 		{
 			Panic("Failed to find signature for %s\n", name);
@@ -191,7 +183,7 @@ void *CGameConfig::ResolveSignature(const char *name)
 		}
 
 		size_t iLength = 0;
-		byte *pSignature = HexToByte(signature, iLength);
+		byte* pSignature = HexToByte(signature, iLength);
 		if (!pSignature)
 			return nullptr;
 
@@ -212,44 +204,46 @@ void *CGameConfig::ResolveSignature(const char *name)
 }
 
 // Static functions
-std::string CGameConfig::GetDirectoryName(const std::string &directoryPathInput)
+std::string CGameConfig::GetDirectoryName(const std::string& directoryPathInput)
 {
-    std::string directoryPath = std::string(directoryPathInput);
+	std::string directoryPath = std::string(directoryPathInput);
 
-    size_t found = std::string(directoryPath).find_last_of("/\\");
-    if (found != std::string::npos)
-    {
-        return std::string(directoryPath, found + 1);
-    }
-    return "";
+	size_t found = std::string(directoryPath).find_last_of("/\\");
+	if (found != std::string::npos)
+		return std::string(directoryPath, found + 1);
+	return "";
 }
 
 int CGameConfig::HexStringToUint8Array(const char* hexString, uint8_t* byteArray, size_t maxBytes)
 {
-    if (!hexString) {
-        printf("Invalid hex string.\n");
+	if (!hexString)
+	{
+		printf("Invalid hex string.\n");
 		return -1;
 	}
 
-    size_t hexStringLength = strlen(hexString);
-    size_t byteCount = hexStringLength / 4; // Each "\\x" represents one byte.
+	size_t hexStringLength = strlen(hexString);
+	size_t byteCount = hexStringLength / 4; // Each "\\x" represents one byte.
 
-    if (hexStringLength % 4 != 0 || byteCount == 0 || byteCount > maxBytes) {
-        printf("Invalid hex string format or byte count.\n");
-        return -1; // Return an error code.
-    }
+	if (hexStringLength % 4 != 0 || byteCount == 0 || byteCount > maxBytes)
+	{
+		printf("Invalid hex string format or byte count.\n");
+		return -1; // Return an error code.
+	}
 
-    for (size_t i = 0; i < hexStringLength; i += 4) {
-        if (sscanf(hexString + i, "\\x%2hhX", &byteArray[i / 4]) != 1) {
-            printf("Failed to parse hex string at position %zu.\n", i);
-            return -1; // Return an error code.
-        }
-    }
+	for (size_t i = 0; i < hexStringLength; i += 4)
+	{
+		if (sscanf(hexString + i, "\\x%2hhX", &byteArray[i / 4]) != 1)
+		{
+			printf("Failed to parse hex string at position %zu.\n", i);
+			return -1; // Return an error code.
+		}
+	}
 
-    return byteCount; // Return the number of bytes successfully converted.
+	return byteCount; // Return the number of bytes successfully converted.
 }
 
-byte *CGameConfig::HexToByte(const char *src, size_t &length)
+byte* CGameConfig::HexToByte(const char* src, size_t& length)
 {
 	if (!src || strlen(src) <= 0)
 	{
@@ -258,12 +252,12 @@ byte *CGameConfig::HexToByte(const char *src, size_t &length)
 	}
 
 	length = strlen(src) / 4;
-	uint8_t *dest = new uint8_t[length];
+	uint8_t* dest = new uint8_t[length];
 	int byteCount = HexStringToUint8Array(src, dest, length);
 	if (byteCount <= 0)
 	{
 		Panic("Invalid hex format %s\n", src);
 		return nullptr;
 	}
-	return (byte *)dest;
+	return (byte*)dest;
 }

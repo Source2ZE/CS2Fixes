@@ -18,15 +18,15 @@
  */
 
 #pragma once
-#include "utils/entity.h"
-#include "playermanager.h"
+#include "adminsystem.h"
 #include "gamesystem.h"
 #include "igameevents.h"
-#include "adminsystem.h"
+#include "playermanager.h"
+#include "utils/entity.h"
 
- // Inside IsAdminFlagSet, checks for ADMFLAG_GENERIC.
- // Inside command permissions, checks for if leader system is enabled and player is leader
- // OR if player has ADMFLAG_GENERIC
+// Inside IsAdminFlagSet, checks for ADMFLAG_GENERIC.
+// Inside command permissions, checks for if leader system is enabled and player is leader
+// OR if player has ADMFLAG_GENERIC
 #define FLAG_LEADER (ADMFLAG_GENERIC | 1 << 31)
 
 struct ColorPreset
@@ -43,8 +43,8 @@ extern bool g_bEnableLeader;
 extern bool g_bLeaderActionsHumanOnly;
 extern std::string g_strMarkParticlePath;
 
-void Leader_ApplyLeaderVisuals(CCSPlayerPawn *pPawn);
-void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64 *clients, const CNetMessage *pData);
-void Leader_OnRoundStart(IGameEvent *pEvent);
-void Leader_BulletImpact(IGameEvent *pEvent);
-void Leader_Precache(IEntityResourceManifest *pResourceManifest);
+void Leader_ApplyLeaderVisuals(CCSPlayerPawn* pPawn);
+void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, const CNetMessage* pData);
+void Leader_OnRoundStart(IGameEvent* pEvent);
+void Leader_BulletImpact(IGameEvent* pEvent);
+void Leader_Precache(IEntityResourceManifest* pResourceManifest);

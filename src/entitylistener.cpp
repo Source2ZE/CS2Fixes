@@ -26,16 +26,16 @@
 #include "gameconfig.h"
 #include "plat.h"
 
-extern CGameConfig *g_GameConfig;
+extern CGameConfig* g_GameConfig;
 extern CCSGameRules* g_pGameRules;
 
 bool g_bGrenadeNoBlock = false;
 FAKE_BOOL_CVAR(cs2f_noblock_grenades, "Whether to use noblock on grenade projectiles", g_bGrenadeNoBlock, false, false)
 
-void Patch_GetHammerUniqueId(CEntityInstance *pEntity)
+void Patch_GetHammerUniqueId(CEntityInstance* pEntity)
 {
 	static int offset = g_GameConfig->GetOffset("GetHammerUniqueId");
-	void **vtable = *(void ***)pEntity;
+	void** vtable = *(void***)pEntity;
 
 	// xor al, al -> mov al, 1
 	// so it always returns true and allows hammerid to be copied into the schema prop
@@ -50,9 +50,7 @@ void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 #endif
 
 	if (g_bGrenadeNoBlock && V_stristr(pEntity->GetClassname(), "_projectile"))
-	{
 		reinterpret_cast<CBaseEntity*>(pEntity)->SetCollisionGroup(COLLISION_GROUP_DEBRIS);
-	}
 
 	EntityHandler_OnEntitySpawned(reinterpret_cast<CBaseEntity*>(pEntity));
 }

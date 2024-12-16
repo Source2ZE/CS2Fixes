@@ -47,13 +47,13 @@ public:
 	SCHEMA_FIELD(float, m_flColorTemperature) // default 6500
 	SCHEMA_FIELD(float, m_flBrightness)
 	SCHEMA_FIELD(float, m_flBrightnessScale)
-	SCHEMA_FIELD(int, m_nDirectLight) // Always set to 2 for dynamic
-	SCHEMA_FIELD(int, m_nCastShadows) // 0 = no, 1 = dynamic (and baked but pointless here)
+	SCHEMA_FIELD(int, m_nDirectLight)	// Always set to 2 for dynamic
+	SCHEMA_FIELD(int, m_nCastShadows)	// 0 = no, 1 = dynamic (and baked but pointless here)
 	SCHEMA_FIELD(int, m_nShadowMapSize) // Shadowmap size in pixels (512 is a good starting value)
 	SCHEMA_FIELD(int, m_nShadowPriority)
 	SCHEMA_FIELD(bool, m_bContactShadow)
 	SCHEMA_FIELD(float, m_flRange)
-	SCHEMA_FIELD(float, m_flSkirt) // Falloff over the range
+	SCHEMA_FIELD(float, m_flSkirt)	   // Falloff over the range
 	SCHEMA_FIELD(float, m_flSkirtNear) // Falloff from the source
 	SCHEMA_FIELD(float, m_flSoftX)
 	SCHEMA_FIELD(float, m_flSoftY)

@@ -18,11 +18,11 @@
  */
 
 #include "leader.h"
-#include "common.h"
 #include "commands.h"
+#include "common.h"
 #include "gameevents.pb.h"
-#include "zombiereborn.h"
 #include "networksystem/inetworkmessages.h"
+#include "zombiereborn.h"
 
 #include "tier0/memdbgon.h"
 
@@ -32,6 +32,7 @@ extern CGlobalVars* gpGlobals;
 extern IGameEventManager2* g_gameEventManager;
 
 // All colors MUST have 255 alpha
+// clang-format off
 std::map<std::string, ColorPreset> mapColorPresets = {
 	{"darkred",    ColorPreset("\x02", Color(255,   0,   0, 255), true)},
 	{"red",        ColorPreset("\x07", Color(255,  64,  64, 255), true)},
@@ -49,6 +50,7 @@ std::map<std::string, ColorPreset> mapColorPresets = {
 	{"white",      ColorPreset("\x01", Color(255, 255, 255, 255), true)},
 	{"pink",       ColorPreset(    "", Color(255, 192, 203, 255), false)}
 };
+// clang-format on
 
 CUtlVector<ZEPlayerHandle> g_vecLeaders;
 
@@ -76,7 +78,7 @@ FAKE_STRING_CVAR(cs2f_leader_model_path, "Path to player model to be used for le
 FAKE_STRING_CVAR(cs2f_leader_defend_particle, "Path to defend particle to be used with c_defend", g_strDefendParticlePath, false)
 FAKE_STRING_CVAR(cs2f_leader_mark_particle, "Path to particle to be used when a ct leader using player_ping", g_strMarkParticlePath, false)
 FAKE_BOOL_CVAR(cs2f_leader_can_target_players, "Whether a leader can target other players with leader commands (not including c_leader)", g_bLeaderCanTargetPlayers, false, false)
-FAKE_BOOL_CVAR(cs2f_leader_vote_multiple , "If true, players can vote up to cs2f_max_leaders leaders. If false, they may vote for a single leader", g_bLeaderVoteMultiple, true, false)
+FAKE_BOOL_CVAR(cs2f_leader_vote_multiple, "If true, players can vote up to cs2f_max_leaders leaders. If false, they may vote for a single leader", g_bLeaderVoteMultiple, true, false)
 
 static int g_iMaxLeaders = 3;
 static int g_iMaxMarkers = 6;
@@ -94,7 +96,7 @@ bool Leader_SetNewLeader(ZEPlayer* zpLeader, std::string strColor = "")
 {
 	CCSPlayerController* pLeader = CCSPlayerController::FromSlot(zpLeader->GetPlayerSlot());
 	CCSPlayerPawn* pawnLeader = (CCSPlayerPawn*)pLeader->GetPawn();
-	
+
 	if (zpLeader->IsLeader())
 		return false;
 
@@ -142,7 +144,7 @@ Color Leader_GetColor(std::string strColor, ZEPlayer* zpUser = nullptr, CCSPlaye
 		return zpUser->GetLeaderColor();
 	else if (pTarget && pTarget->m_iTeamNum == CS_TEAM_T)
 		return mapColorPresets["orange"].color;
-	
+
 	return mapColorPresets["blue"].color;
 }
 
@@ -159,10 +161,10 @@ std::pair<int, std::string> GetLeaders()
 			g_vecLeaders.Remove(i);
 			continue;
 		}
-		CCSPlayerController* pController = CCSPlayerController::FromSlot((CPlayerSlot) pLeader->GetPlayerSlot());
+		CCSPlayerController* pController = CCSPlayerController::FromSlot((CPlayerSlot)pLeader->GetPlayerSlot());
 		if (!pController)
 			continue;
-		
+
 		iLeaders++;
 		strLeaders.append(pController->GetPlayerName());
 		strLeaders.append(", ");
@@ -277,8 +279,7 @@ bool Leader_CreateDefendMarker(ZEPlayer* pPlayer, Color clrTint, int iDuration)
 
 	g_iMarkerCount++;
 
-	new CTimer(iDuration, false, false, []()
-	{
+	new CTimer(iDuration, false, false, []() {
 		if (g_iMarkerCount > 0)
 			g_iMarkerCount--;
 
@@ -312,7 +313,7 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, cons
 		return;
 
 	auto pPBData = pData->ToPB<CMsgSource1LegacyGameEvent>();
-	
+
 	static int player_ping_id = g_gameEventManager->LookupEventId("player_ping");
 
 	if (pPBData->eventid() != player_ping_id)
@@ -468,18 +469,14 @@ CON_COMMAND_CHAT_LEADER(glow, "[name] [color] - Toggle glow highlight on a playe
 		ZEPlayer* pPlayerTarget = pTarget->GetZEPlayer();
 
 		if (iNumClients == 1 && player == pTarget)
-		{
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s glow on yourself.",
 						pPlayerTarget->GetGlowModel() ? "Disabled" : "Enabled");
-		}
 		else if (iNumClients == 1)
-		{
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s %s glow on %s.",
 						   bIsAdmin ? "Admin" : "Leader",
 						   pszCommandPlayerName,
 						   pPlayerTarget->GetGlowModel() ? "disabled" : "enabled",
 						   pTarget->GetPlayerName());
-		}
 
 		if (!pPlayerTarget->GetGlowModel())
 		{
@@ -526,7 +523,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Leader voting is not open yet.");
 		return;
 	}
-	
+
 	if (GetLeaders().first > 0 && !g_bLeaderVoteMultiple)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There is already an active leader.");
@@ -572,7 +569,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 	}
 
 	int iLeaderVoteCount = pPlayerTarget->GetLeaderVoteCount();
-	int iNeededLeaderVoteCount = (int)(g_playerManager->GetOnlinePlayerCount(false) * g_flLeaderVoteRatio) + 1;;
+	int iNeededLeaderVoteCount = (int)(g_playerManager->GetOnlinePlayerCount(false) * g_flLeaderVoteRatio) + 1;
 
 	pPlayer->SetLeaderVoteTime(gpGlobals->curtime);
 
@@ -586,8 +583,8 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 	}
 
 	pPlayerTarget->AddLeaderVote(pPlayer);
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants %s to become a Leader (%i/%i votes).",\
-				player->GetPlayerName(), pTarget->GetPlayerName(), iLeaderVoteCount+1, iNeededLeaderVoteCount);
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants %s to become a Leader (%i/%i votes).",
+				   player->GetPlayerName(), pTarget->GetPlayerName(), iLeaderVoteCount + 1, iNeededLeaderVoteCount);
 }
 
 CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend marker on the target player")
@@ -604,7 +601,7 @@ CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend mar
 	if ((args.ArgC() >= 2 || (args.ArgC() == 2 && iDuration == -1)) && (bIsAdmin || g_bLeaderCanTargetPlayers))
 		pszTarget = args[1];
 	iDuration = (iDuration < 1) ? 30 : MIN(iDuration, 60);
-	
+
 	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, NO_MULTIPLE | NO_DEAD | NO_TERRORIST | NO_IMMUNITY, nType))
 		return;
 
@@ -616,11 +613,9 @@ CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend mar
 		if (player == pTarget)
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed a defend marker on your position lasting %i seconds.", iDuration);
 		else
-		{
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s placed a defend marker on %s's position lasting %i seconds.",
 						   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName,
 						   pTarget->GetPlayerName(), iDuration);
-		}
 	}
 }
 
@@ -648,10 +643,8 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 		if (pTarget == player)
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Disabled tracers for yourself.", pTarget->GetPlayerName());
 		else
-		{
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s disabled tracers for %s.",
 						   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName, pTarget->GetPlayerName());
-		}
 		pPlayerTarget->SetTracerColor(Color(0, 0, 0, 0));
 		return;
 	}
@@ -662,10 +655,8 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 	if (pTarget == player)
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Enabled tracers for yourself.", pTarget->GetPlayerName());
 	else
-	{
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s enabled tracers for %s.",
 					   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName, pTarget->GetPlayerName());
-	}
 }
 
 CON_COMMAND_CHAT(tracers, "- List all active player tracers")
@@ -703,18 +694,14 @@ CON_COMMAND_CHAT_LEADER(beacon, "[name] [color] - Toggle beacon on a player")
 		ZEPlayer* pPlayerTarget = pTarget->GetZEPlayer();
 
 		if (iNumClients == 1 && player == pTarget)
-		{
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s beacon on yourself.",
 						pPlayerTarget->GetBeaconParticle() ? "Disabled" : "Enabled");
-		}
 		else if (iNumClients == 1)
-		{
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s %s beacon on %s.",
 						   bIsAdmin ? "Admin" : "Leader",
 						   pszCommandPlayerName,
 						   pPlayerTarget->GetBeaconParticle() ? "disabled" : "enabled",
 						   pTarget->GetPlayerName());
-		}
 
 		if (!pPlayerTarget->GetBeaconParticle())
 		{
@@ -835,9 +822,7 @@ CON_COMMAND_CHAT(leadercolor, "[color] - List leader colors in chat or change yo
 
 	std::string strColors = "";
 	for (auto const& [strColorName, colorPreset] : mapColorPresets)
-	{
 		strColors.append(colorPreset.strChatColor + strColorName + "\x01, ");
-	}
 	if (strColors.length() > 2)
 		strColors = strColors.substr(0, strColors.length() - 2);
 
@@ -873,10 +858,8 @@ CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a playe
 	if (!Leader_SetNewLeader(pPlayerTarget, args.ArgC() < 3 ? "" : args[2]))
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is already a leader.", pTarget->GetPlayerName());
 	else
-	{
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s set %s as a leader.",
 					   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName, pTarget->GetPlayerName());
-	}
 }
 
 CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a player", ADMFLAG_GENERIC)

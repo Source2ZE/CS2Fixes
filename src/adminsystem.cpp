@@ -17,36 +17,35 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "adminsystem.h"
 #include "KeyValues.h"
-#include "interfaces/interfaces.h"
-#include "filesystem.h"
-#include "icvar.h"
-#include "playermanager.h"
 #include "commands.h"
 #include "ctimer.h"
 #include "detours.h"
 #include "discord.h"
-#include "utils/entity.h"
 #include "entity/cbaseentity.h"
-#include "entity/cparticlesystem.h"
 #include "entity/cgamerules.h"
+#include "entity/cparticlesystem.h"
+#include "filesystem.h"
 #include "gamesystem.h"
-#include "votemanager.h"
+#include "icvar.h"
+#include "interfaces/interfaces.h"
 #include "map_votes.h"
+#include "playermanager.h"
+#include "utils/entity.h"
+#include "votemanager.h"
 #include <vector>
 
-extern IVEngineServer2 *g_pEngineServer2;
-extern CGameEntitySystem *g_pEntitySystem;
-extern CGlobalVars *gpGlobals;
-extern CCSGameRules *g_pGameRules;
+extern IVEngineServer2* g_pEngineServer2;
+extern CGameEntitySystem* g_pEntitySystem;
+extern CGlobalVars* gpGlobals;
+extern CCSGameRules* g_pGameRules;
 
 CAdminSystem* g_pAdminSystem = nullptr;
 
-CUtlMap<uint32, CChatCommand *> g_CommandList(0, 0, DefLessFunc(uint32));
+CUtlMap<uint32, CChatCommand*> g_CommandList(0, 0, DefLessFunc(uint32));
 
-void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAdding, CInfractionBase::EInfractionType infType);
+void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAdding, CInfractionBase::EInfractionType infType);
 const char* GetActionPhrase(CInfractionBase::EInfractionType infType, GrammarTense iTense, bool bAdding);
 
 void PrintSingleAdminAction(const char* pszAdminName, const char* pszTargetName, const char* pszAction, const char* pszAction2 = "", const char* prefix = CHAT_PREFIX)
@@ -58,57 +57,57 @@ void PrintMultiAdminAction(ETargetType nType, const char* pszAdminName, const ch
 {
 	switch (nType)
 	{
-	case ETargetType::ALL:
-		PrintSingleAdminAction(pszAdminName, "everyone", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::SPECTATOR:
-		PrintSingleAdminAction(pszAdminName, "spectators", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::T:
-		PrintSingleAdminAction(pszAdminName, "terrorists", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::CT:
-		PrintSingleAdminAction(pszAdminName, "counter-terrorists", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::DEAD:
-		PrintSingleAdminAction(pszAdminName, "dead players", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::ALIVE:
-		PrintSingleAdminAction(pszAdminName, "alive players", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::BOT:
-		PrintSingleAdminAction(pszAdminName, "bots", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::HUMAN:
-		PrintSingleAdminAction(pszAdminName, "humans", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::ALL_BUT_SELF:
-		ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s everyone except %s%s.", prefix, pszAdminName, pszAction, pszAdminName, pszAction2);
-		break;
-	case ETargetType::ALL_BUT_RANDOM:
-		PrintSingleAdminAction(pszAdminName, "everyone except a random player", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::ALL_BUT_RANDOM_T:
-		PrintSingleAdminAction(pszAdminName, "everyone except a random terrorist", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::ALL_BUT_RANDOM_CT:
-		PrintSingleAdminAction(pszAdminName, "everyone except a random counter-terrorist", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::ALL_BUT_RANDOM_SPEC:
-		PrintSingleAdminAction(pszAdminName, "everyone except a random spectator", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::ALL_BUT_AIM:
-		PrintSingleAdminAction(pszAdminName, "everyone except a targetted player", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::ALL_BUT_SPECTATOR:
-		PrintSingleAdminAction(pszAdminName, "non-spectators", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::ALL_BUT_T:
-		PrintSingleAdminAction(pszAdminName, "non-terrorists", pszAction, pszAction2, prefix);
-		break;
-	case ETargetType::ALL_BUT_CT:
-		PrintSingleAdminAction(pszAdminName, "non-counter-terrorists", pszAction, pszAction2, prefix);
-		break;
+		case ETargetType::ALL:
+			PrintSingleAdminAction(pszAdminName, "everyone", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::SPECTATOR:
+			PrintSingleAdminAction(pszAdminName, "spectators", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::T:
+			PrintSingleAdminAction(pszAdminName, "terrorists", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::CT:
+			PrintSingleAdminAction(pszAdminName, "counter-terrorists", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::DEAD:
+			PrintSingleAdminAction(pszAdminName, "dead players", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::ALIVE:
+			PrintSingleAdminAction(pszAdminName, "alive players", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::BOT:
+			PrintSingleAdminAction(pszAdminName, "bots", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::HUMAN:
+			PrintSingleAdminAction(pszAdminName, "humans", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::ALL_BUT_SELF:
+			ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s everyone except %s%s.", prefix, pszAdminName, pszAction, pszAdminName, pszAction2);
+			break;
+		case ETargetType::ALL_BUT_RANDOM:
+			PrintSingleAdminAction(pszAdminName, "everyone except a random player", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::ALL_BUT_RANDOM_T:
+			PrintSingleAdminAction(pszAdminName, "everyone except a random terrorist", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::ALL_BUT_RANDOM_CT:
+			PrintSingleAdminAction(pszAdminName, "everyone except a random counter-terrorist", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::ALL_BUT_RANDOM_SPEC:
+			PrintSingleAdminAction(pszAdminName, "everyone except a random spectator", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::ALL_BUT_AIM:
+			PrintSingleAdminAction(pszAdminName, "everyone except a targetted player", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::ALL_BUT_SPECTATOR:
+			PrintSingleAdminAction(pszAdminName, "non-spectators", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::ALL_BUT_T:
+			PrintSingleAdminAction(pszAdminName, "non-terrorists", pszAction, pszAction2, prefix);
+			break;
+		case ETargetType::ALL_BUT_CT:
+			PrintSingleAdminAction(pszAdminName, "non-counter-terrorists", pszAction, pszAction2, prefix);
+			break;
 	}
 }
 
@@ -168,7 +167,7 @@ CON_COMMAND_CHAT_FLAGS(unban, "<steamid64> - Unban a player. Takes decimal STEAM
 	if (!bResult)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Couldn't find user with STEAMID64 <%llu> in ban infractions.", iTargetSteamId64);
-		return;		
+		return;
 	}
 
 	g_pAdminSystem->SaveInfractions();
@@ -212,13 +211,13 @@ CON_COMMAND_CHAT_FLAGS(kick, "<name> - Kick a player", ADMFLAG_KICK)
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
 
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
 		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 		ZEPlayer* pTargetPlayer = pTarget->GetZEPlayer();
-		
+
 		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot(), NETWORK_DISCONNECT_KICKED);
 
 		if (iNumClients == 1)
@@ -243,7 +242,7 @@ CON_COMMAND_CHAT_FLAGS(slay, "<name> - Slay a player", ADMFLAG_SLAY)
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD, nType))
 		return;
 
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -273,12 +272,12 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - Slap a player", ADMFLAG_SLAY)
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD, nType))
 		return;
 
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetEntityInstance((CEntityIndex)(pSlots[i] + 1));
-		CBasePlayerPawn *pPawn = pTarget->m_hPawn();
+		CBasePlayerController* pTarget = (CBasePlayerController*)g_pEntitySystem->GetEntityInstance((CEntityIndex)(pSlots[i] + 1));
+		CBasePlayerPawn* pPawn = pTarget->m_hPawn();
 
 		if (!pPawn)
 			continue;
@@ -290,12 +289,12 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - Slap a player", ADMFLAG_SLAY)
 		velocity.z += rand() % 200 + 100;
 		pPawn->SetAbsVelocity(velocity);
 
-		float flDamage = V_StringToFloat32 (args[2], 0);
-			
+		float flDamage = V_StringToFloat32(args[2], 0);
+
 		if (flDamage > 0)
 		{
 			// Default to the world
-			CBaseEntity *pAttacker = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(0));
+			CBaseEntity* pAttacker = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(0));
 
 			if (player)
 				pAttacker = player->GetPlayerPawn();
@@ -402,9 +401,9 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADM
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
 
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
-	constexpr const char *teams[] = {"none", "spectators", "terrorists", "counter-terrorists"};
+	constexpr const char* teams[] = {"none", "spectators", "terrorists", "counter-terrorists"};
 
 	char szAction[64];
 	V_snprintf(szAction, sizeof(szAction), " to %s", teams[iTeam]);
@@ -435,7 +434,7 @@ CON_COMMAND_CHAT_FLAGS(noclip, "[name] - Toggle noclip on a player", ADMFLAG_CHE
 		return;
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
-	CBasePlayerPawn *pPawn = pTarget->m_hPawn();
+	CBasePlayerPawn* pPawn = pTarget->m_hPawn();
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	if (!pPawn)
@@ -469,7 +468,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "<name> <input> [parameter] - Fire outputs at en
 
 	int iFoundEnts = 0;
 
-	CBaseEntity *pTarget = nullptr;
+	CBaseEntity* pTarget = nullptr;
 
 	// The idea here is to only use one of the targeting modes at once, prioritizing !picker then targetname/!self then classname
 	// Try picker first, FindEntityByName can also take !picker but it always uses player 0 so we have to do this ourselves
@@ -495,7 +494,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "<name> <input> [parameter] - Fire outputs at en
 			iFoundEnts++;
 		}
 	}
-	
+
 	if (!iFoundEnts)
 	{
 		while ((pTarget = UTIL_FindEntityByName(pTarget, args[1], player)))
@@ -539,7 +538,7 @@ CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <inpu> [parameter] - Fire outputs at
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CCSPlayerController *pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
 		if (!pTarget->GetPawn())
 			continue;
@@ -570,7 +569,7 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "<name> <input> [parameter] - Fire out
 
 	for (int i = 0; i < iNumClients; i++)
 	{
-		CCSPlayerController *pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 		pTarget->AcceptInput(args[2], args[3], player, player);
 		iFoundEnts++;
 	}
@@ -632,8 +631,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - Change map", ADMFLAG_CHANGEMAP)
 
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", pszMapName);
 
-		new CTimer(5.0f, false, true, [sCommand]()
-		{
+		new CTimer(5.0f, false, true, [sCommand]() {
 			g_pEngineServer2->ServerCommand(sCommand.c_str());
 			return -1.0f;
 		});
@@ -643,8 +641,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<mapname> - Change map", ADMFLAG_CHANGEMAP)
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", pszMapName);
 
-	new CTimer(5.0f, false, true, [sMapName]()
-	{
+	new CTimer(5.0f, false, true, [sMapName]() {
 		g_pEngineServer2->ChangeLevel(sMapName.c_str(), nullptr);
 		return -1.0f;
 	});
@@ -735,7 +732,7 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 
 	if (player == pTarget)
 	{
-	//Player is PMing themselves (bind to display message in chat probably), so no need to echo to all admins
+		// Player is PMing themselves (bind to display message in chat probably), so no need to echo to all admins
 		ClientPrint(player, HUD_PRINTTALK, "\x0A[SELF]\x0C %s\1: \x0B%s", pszName, strMessage.c_str());
 		return;
 	}
@@ -865,7 +862,6 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GE
 	ClientPrint(player, HUD_PRINTCONSOLE, "|----------------------|----------------------------------------------------|-------------------|");
 	for (auto [strPlayerName, strFlags, iSteamID] : rgNameSlotID)
 	{
-
 		if (strPlayerName.length() % 2 == 1)
 			strPlayerName = strPlayerName + ' ';
 		if (strPlayerName.length() < 20)
@@ -936,7 +932,7 @@ CON_COMMAND_CHAT(status, "<name> - Checks a player's active punishments. Non-adm
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
 	pTargetPlayer = pTarget->GetZEPlayer();
-		
+
 	if (!pTargetPlayer->IsMuted() && !pTargetPlayer->IsGagged())
 	{
 		if (pTarget == player)
@@ -1134,7 +1130,7 @@ bool CAdminSystem::LoadAdmins()
 	KeyValues* pKV = new KeyValues("admins");
 	KeyValues::AutoDelete autoDelete(pKV);
 
-	const char *pszPath = "addons/cs2fixes/configs/admins.cfg";
+	const char* pszPath = "addons/cs2fixes/configs/admins.cfg";
 
 	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
 	{
@@ -1143,9 +1139,9 @@ bool CAdminSystem::LoadAdmins()
 	}
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
-		const char *pszName = pKey->GetName();
-		const char *pszSteamID = pKey->GetString("steamid", nullptr);
-		const char *pszFlags = pKey->GetString("flags", nullptr);
+		const char* pszName = pKey->GetName();
+		const char* pszSteamID = pKey->GetString("steamid", nullptr);
+		const char* pszFlags = pKey->GetString("flags", nullptr);
 		int iImmunityLevel = pKey->GetInt("immunity", -1);
 
 		if (!pszSteamID)
@@ -1186,7 +1182,7 @@ bool CAdminSystem::LoadInfractions()
 	KeyValues* pKV = new KeyValues("infractions");
 	KeyValues::AutoDelete autoDelete(pKV);
 
-	const char *pszPath = "addons/cs2fixes/data/infractions.txt";
+	const char* pszPath = "addons/cs2fixes/data/infractions.txt";
 
 	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
 	{
@@ -1220,17 +1216,17 @@ bool CAdminSystem::LoadInfractions()
 
 		switch (iType)
 		{
-		case CInfractionBase::Ban:
-			AddInfraction(new CBanInfraction(iEndTime, iSteamId, true));
-			break;
-		case CInfractionBase::Mute:
-			AddInfraction(new CMuteInfraction(iEndTime, iSteamId, true));
-			break;
-		case CInfractionBase::Gag:
-			AddInfraction(new CGagInfraction(iEndTime, iSteamId, true));
-			break;
-		default:
-			Warning("Invalid infraction type %d\n", iType);
+			case CInfractionBase::Ban:
+				AddInfraction(new CBanInfraction(iEndTime, iSteamId, true));
+				break;
+			case CInfractionBase::Mute:
+				AddInfraction(new CMuteInfraction(iEndTime, iSteamId, true));
+				break;
+			case CInfractionBase::Gag:
+				AddInfraction(new CGagInfraction(iEndTime, iSteamId, true));
+				break;
+			default:
+				Warning("Invalid infraction type %d\n", iType);
 		}
 	}
 
@@ -1274,11 +1270,10 @@ void CAdminSystem::AddInfraction(CInfractionBase* infraction)
 	m_vecInfractions.AddToTail(infraction);
 }
 
-
 // This function can run at least twice when a player connects: Immediately upon client connection, and also upon getting authenticated by steam.
 // It's also run when we're periodically checking for infraction expiry in the case of mutes/gags.
 // This returns false only when called from ClientConnect and the player is banned in order to reject them.
-bool CAdminSystem::ApplyInfractions(ZEPlayer *player)
+bool CAdminSystem::ApplyInfractions(ZEPlayer* player)
 {
 	FOR_EACH_VEC(m_vecInfractions, i)
 	{
@@ -1303,14 +1298,14 @@ bool CAdminSystem::ApplyInfractions(ZEPlayer *player)
 		// We are called from ClientConnect and the player is banned, immediately reject them
 		if (!player->IsConnected() && m_vecInfractions[i]->GetType() == CInfractionBase::EInfractionType::Ban)
 			return false;
-		
+
 		m_vecInfractions[i]->ApplyInfraction(player);
 	}
 
 	return true;
 }
 
-bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EInfractionType type)
+bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer* player, CInfractionBase::EInfractionType type)
 {
 	FOR_EACH_VEC_BACK(m_vecInfractions, i)
 	{
@@ -1318,7 +1313,7 @@ bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer *player, CInfractionBase::EI
 		{
 			m_vecInfractions[i]->UndoInfraction(player);
 			m_vecInfractions.Remove(i);
-			
+
 			return true;
 		}
 	}
@@ -1333,7 +1328,7 @@ bool CAdminSystem::FindAndRemoveInfractionSteamId64(uint64 steamid64, CInfractio
 		if (m_vecInfractions[i]->GetSteamId64() == steamid64 && m_vecInfractions[i]->GetType() == type)
 		{
 			m_vecInfractions.Remove(i);
-			
+
 			return true;
 		}
 	}
@@ -1341,7 +1336,7 @@ bool CAdminSystem::FindAndRemoveInfractionSteamId64(uint64 steamid64, CInfractio
 	return false;
 }
 
-CAdmin *CAdminSystem::FindAdmin(uint64 iSteamID)
+CAdmin* CAdminSystem::FindAdmin(uint64 iSteamID)
 {
 	FOR_EACH_VEC(m_vecAdmins, i)
 	{
@@ -1376,10 +1371,8 @@ void CAdminSystem::AddDisconnectedPlayer(const char* pszName, uint64 xuid, const
 {
 	auto plyInfo = std::make_tuple(pszName, xuid, pszIP);
 	for (auto& dcPlyInfo : m_rgDCPly)
-	{
 		if (std::get<1>(dcPlyInfo) == std::get<1>(plyInfo))
 			return;
-	}
 	m_rgDCPly[m_iDCPlyIndex] = plyInfo;
 	m_iDCPlyIndex = (m_iDCPlyIndex + 1) % 20;
 }
@@ -1411,7 +1404,7 @@ void CAdminSystem::ShowDisconnectedPlayers(CCSPlayerController* const pAdmin)
 		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "No players have disconnected yet.");
 }
 
-void CBanInfraction::ApplyInfraction(ZEPlayer *player)
+void CBanInfraction::ApplyInfraction(ZEPlayer* player)
 {
 	g_pEngineServer2->DisconnectClient(player->GetPlayerSlot(), NETWORK_DISCONNECT_KICKBANADDED); // "Kicked and banned"
 }
@@ -1421,17 +1414,17 @@ void CMuteInfraction::ApplyInfraction(ZEPlayer* player)
 	player->SetMuted(true);
 }
 
-void CMuteInfraction::UndoInfraction(ZEPlayer *player)
+void CMuteInfraction::UndoInfraction(ZEPlayer* player)
 {
 	player->SetMuted(false);
 }
 
-void CGagInfraction::ApplyInfraction(ZEPlayer *player)
+void CGagInfraction::ApplyInfraction(ZEPlayer* player)
 {
 	player->SetGagged(true);
 }
 
-void CGagInfraction::UndoInfraction(ZEPlayer *player)
+void CGagInfraction::UndoInfraction(ZEPlayer* player)
 {
 	player->SetGagged(false);
 }
@@ -1475,7 +1468,7 @@ int ParseTimeInput(std::string strTime)
 	if (strNumbers.length() == 0)
 		return -1;
 	else if (strNumbers.length() > 9)
-	// Really high number, just return perma
+		// Really high number, just return perma
 		return 0;
 
 	// stoi should be exception safe here due to above checks
@@ -1524,7 +1517,7 @@ std::string GetReason(const CCommand& args, int iArgsBefore, bool bStripUnicode)
 
 	std::string strOutput = "";
 	if (bStripUnicode)
-		std::copy_if(strReason.cbegin(), strReason.cend(), std::back_inserter(strOutput), [](unsigned char c) {return c < 128; });
+		std::copy_if(strReason.cbegin(), strReason.cend(), std::back_inserter(strOutput), [](unsigned char c) { return c < 128; });
 	else
 		strOutput = strReason;
 
@@ -1537,7 +1530,7 @@ std::string GetReason(const CCommand& args, int iArgsBefore, bool bStripUnicode)
 	return strOutput;
 }
 
-void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAdding, CInfractionBase::EInfractionType infType)
+void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAdding, CInfractionBase::EInfractionType infType)
 {
 	if (args.ArgC() < 2 || (bAdding && args.ArgC() < 3))
 	{
@@ -1547,7 +1540,8 @@ void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAd
 	}
 
 	int iDuration = bAdding ? ParseTimeInput(args[2]) : 0;
-	if (bAdding && iDuration < 0) {
+	if (bAdding && iDuration < 0)
+	{
 		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "Invalid duration.");
 		return;
 	}
@@ -1576,7 +1570,7 @@ void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAd
 		return;
 	}
 
-	const char *pszCommandPlayerName = pAdmin ? pAdmin->GetPlayerName() : CONSOLE_NAME;
+	const char* pszCommandPlayerName = pAdmin ? pAdmin->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -1627,10 +1621,8 @@ void ParseInfraction(const CCommand &args, CCSPlayerController* pAdmin, bool bAd
 	}
 
 	if (iNumClients > 1)
-	{
 		PrintMultiAdminAction(nType, pszCommandPlayerName, GetActionPhrase(infType, GrammarTense::Past, bAdding),
 							  bAdding ? (" for " + FormatTime(iDuration, false)).c_str() : "");
-	}
 
 	g_pAdminSystem->SaveInfractions();
 }

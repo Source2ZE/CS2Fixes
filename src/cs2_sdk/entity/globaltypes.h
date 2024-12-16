@@ -18,9 +18,9 @@
  */
 
 #pragma once
-#include <platform.h>
 #include "schema.h"
 #include "soundflags.h"
+#include <platform.h>
 
 enum InputBitMask_t : uint64_t
 {
@@ -66,12 +66,12 @@ enum EInButtonState : uint32_t
 enum ParticleAttachment_t : uint32_t
 {
 	PATTACH_INVALID = 0xffffffff,
-	PATTACH_ABSORIGIN = 0x0,			// Spawn at entity origin
-	PATTACH_ABSORIGIN_FOLLOW = 0x1,		// Spawn at and follow entity origin
+	PATTACH_ABSORIGIN = 0x0,		// Spawn at entity origin
+	PATTACH_ABSORIGIN_FOLLOW = 0x1, // Spawn at and follow entity origin
 	PATTACH_CUSTOMORIGIN = 0x2,
 	PATTACH_CUSTOMORIGIN_FOLLOW = 0x3,
-	PATTACH_POINT = 0x4,				// Spawn at attachment point
-	PATTACH_POINT_FOLLOW = 0x5,			// Spawn at and follow attachment point
+	PATTACH_POINT = 0x4,		// Spawn at attachment point
+	PATTACH_POINT_FOLLOW = 0x5, // Spawn at and follow attachment point
 	PATTACH_EYES_FOLLOW = 0x6,
 	PATTACH_OVERHEAD_FOLLOW = 0x7,
 	PATTACH_WORLDORIGIN = 0x8,
@@ -151,14 +151,14 @@ struct EmitSound_t
 	{
 	}
 	int m_nChannel;
-	const char *m_pSoundName;
+	const char* m_pSoundName;
 	float m_flVolume;
 	soundlevel_t m_SoundLevel;
 	int m_nFlags;
 	int m_nPitch;
-	const Vector *m_pOrigin;
+	const Vector* m_pOrigin;
 	float m_flSoundTime;
-	float *m_pflSoundDuration;
+	float* m_pflSoundDuration;
 	bool m_bEmitCloseCaption;
 	bool m_bWarnOnMissingCloseCaption;
 	bool m_bWarnOnDirectWaveReference;

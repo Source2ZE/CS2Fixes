@@ -44,10 +44,10 @@ enum class EExtendState
 
 enum EExtendVoteMode
 {
-	EXTENDVOTE_OFF,			// No extend votes can be called
-	EXTENDVOTE_ADMINONLY,	// Only admins can initiate extend votes, all further options also include this
-	EXTENDVOTE_MANUAL,		// Extend votes are triggered by players typing !ve
-	EXTENDVOTE_AUTO,		// Extend votes can be triggered by !ve or when map timelimit reaches a given value
+	EXTENDVOTE_OFF,		  // No extend votes can be called
+	EXTENDVOTE_ADMINONLY, // Only admins can initiate extend votes, all further options also include this
+	EXTENDVOTE_MANUAL,	  // Extend votes are triggered by players typing !ve
+	EXTENDVOTE_AUTO,	  // Extend votes can be triggered by !ve or when map timelimit reaches a given value
 };
 
 extern ERTVState g_RTVState;

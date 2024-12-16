@@ -18,26 +18,27 @@
  */
 
 #pragma once
-#include <functional>
 #include "utllinkedlist.h"
+#include <functional>
 
 extern int g_iRoundNum;
 
-class CTimerBase {
+class CTimerBase
+{
 public:
-    CTimerBase(float flInitialInterval, bool bPreserveMapChange, bool bPreserveRoundChange) :
-        m_flInterval(flInitialInterval), m_bPreserveMapChange(bPreserveMapChange), m_bPreserveRoundChange(bPreserveRoundChange)
-    {
-        m_iRoundNum = g_iRoundNum;
-    }
+	CTimerBase(float flInitialInterval, bool bPreserveMapChange, bool bPreserveRoundChange) :
+		m_flInterval(flInitialInterval), m_bPreserveMapChange(bPreserveMapChange), m_bPreserveRoundChange(bPreserveRoundChange)
+	{
+		m_iRoundNum = g_iRoundNum;
+	}
 
-    virtual bool Execute() = 0;
+	virtual bool Execute() = 0;
 
-    float m_flInterval;
-    float m_flLastExecute = -1;
-    bool m_bPreserveMapChange;
-    bool m_bPreserveRoundChange;
-    int m_iRoundNum;
+	float m_flInterval;
+	float m_flLastExecute = -1;
+	bool m_bPreserveMapChange;
+	bool m_bPreserveRoundChange;
+	int m_iRoundNum;
 };
 
 extern CUtlLinkedList<CTimerBase*> g_timers;
@@ -47,22 +48,21 @@ extern CUtlLinkedList<CTimerBase*> g_timers;
 class CTimer : public CTimerBase
 {
 public:
-    CTimer(float flInitialInterval, bool bPreserveMapChange, bool bPreserveRoundChange, std::function<float()> func) :
+	CTimer(float flInitialInterval, bool bPreserveMapChange, bool bPreserveRoundChange, std::function<float()> func) :
 		CTimerBase(flInitialInterval, bPreserveMapChange, bPreserveRoundChange), m_func(func)
-    {
-        g_timers.AddToTail(this);
-    };
+	{
+		g_timers.AddToTail(this);
+	};
 
-    inline bool Execute() override
-    {
-	    m_flInterval = m_func();
+	inline bool Execute() override
+	{
+		m_flInterval = m_func();
 
-        return m_flInterval >= 0;
+		return m_flInterval >= 0;
 	}
 
-    std::function<float()> m_func;
+	std::function<float()> m_func;
 };
-
 
 void RemoveTimers();
 void RemoveMapTimers();
