@@ -268,6 +268,9 @@ void Leader_RemoveLeaderVisuals(CCSPlayerPawn* pPawn)
 
 bool Leader_CreateDefendMarker(ZEPlayer* pPlayer, Color clrTint, int iDuration)
 {
+	// CEntityKeyValues is broken after 2024-12-19 CS2 update, awaiting SDK update
+	return false;
+
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
 
@@ -402,6 +405,9 @@ void Leader_OnRoundStart(IGameEvent* pEvent)
 // revisit this later with a TempEnt implementation
 void Leader_BulletImpact(IGameEvent* pEvent)
 {
+	// CEntityKeyValues is broken after 2024-12-19 CS2 update, awaiting SDK update
+	return;
+
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(pEvent->GetPlayerSlot("userid"));
 
 	if (!pPlayer || pPlayer->GetTracerColor().a() < 255)
