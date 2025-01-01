@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023-2024 Source2ZE
+ * Copyright (C) 2023-2025 Source2ZE
  * Original code from D2Lobby2
  * Copyright (C) 2023 Nicholas Hastings
  * =============================================================================
