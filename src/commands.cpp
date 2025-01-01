@@ -497,7 +497,7 @@ bool g_bEnableHide = false;
 static int g_iDefaultHideDistance = 250;
 static int g_iMaxHideDistance = 2000;
 
-FAKE_BOOL_CVAR(cs2f_hide_enable, "Whether to enable hide", g_bEnableHide, false, false)
+FAKE_BOOL_CVAR(cs2f_hide_enable, "Whether to enable hide (WARNING: randomly crashes clients since 2023-12-13 CS2 update)", g_bEnableHide, false, false)
 FAKE_INT_CVAR(cs2f_hide_distance_default, "The default distance for hide", g_iDefaultHideDistance, 250, false)
 FAKE_INT_CVAR(cs2f_hide_distance_max, "The max distance for hide", g_iMaxHideDistance, 2000, false)
 
