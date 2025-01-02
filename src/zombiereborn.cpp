@@ -1118,7 +1118,7 @@ void ZR_ApplyKnockbackExplosion(CBaseEntity* pProjectile, CCSPlayerPawn* pVictim
 	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
-void ZR_FakePlayerDeath(CCSPlayerController* pAttackerController, CCSPlayerController* pVictimController, const char* szWeapon)
+void ZR_FakePlayerDeath(CCSPlayerController* pAttackerController, CCSPlayerController* pVictimController, const char* szWeapon, bool bDontBroadcast)
 {
 	IGameEvent* pEvent = g_gameEventManager->CreateEvent("player_death");
 
@@ -1132,7 +1132,7 @@ void ZR_FakePlayerDeath(CCSPlayerController* pAttackerController, CCSPlayerContr
 	pEvent->SetString("weapon", szWeapon);
 	pEvent->SetBool("infected", true);
 
-	g_gameEventManager->FireEvent(pEvent, false);
+	g_gameEventManager->FireEvent(pEvent, bDontBroadcast);
 }
 
 void ZR_StripAndGiveKnife(CCSPlayerPawn* pPawn)
@@ -1265,8 +1265,7 @@ void ZR_Infect(CCSPlayerController* pAttackerController, CCSPlayerController* pV
 
 	ZR_CheckTeamWinConditions(CS_TEAM_T);
 
-	if (!bDontBroadcast)
-		ZR_FakePlayerDeath(pAttackerController, pVictimController, "knife"); // or any other killicon
+	ZR_FakePlayerDeath(pAttackerController, pVictimController, "knife", bDontBroadcast); // or any other killicon
 
 	CCSPlayerPawn* pVictimPawn = (CCSPlayerPawn*)pVictimController->GetPawn();
 	if (!pVictimPawn)
@@ -1301,6 +1300,9 @@ void ZR_InfectMotherZombie(CCSPlayerController* pVictimController, std::vector<S
 		return;
 
 	pVictimController->SwitchTeam(CS_TEAM_T);
+
+	ZR_FakePlayerDeath(pVictimController, pVictimController, "knife", true); // not sent to clients
+
 	ZR_StripAndGiveKnife(pVictimPawn);
 
 	// pick random spawn point
