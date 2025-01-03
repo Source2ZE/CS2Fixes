@@ -97,7 +97,7 @@ public:
 	void PrintMapList(CCSPlayerController* pController);
 	bool IsMapIndexEnabled(int iMapIndex);
 	int GetTotalNominations(int iMapIndex);
-	std::pair<int, std::vector<int>> ForceNextMap(const char* sMapSubstring);
+	void ForceNextMap(CCSPlayerController* pController, const char* sMapSubstring);
 	int GetMapListSize() { return m_vecMapList.Count(); };
 	const char* GetMapName(int iMapIndex) { return m_vecMapList[iMapIndex].GetName(); };
 	uint64 GetMapWorkshopId(int iMapIndex) { return m_vecMapList[iMapIndex].GetWorkshopId(); };

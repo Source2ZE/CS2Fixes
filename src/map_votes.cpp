@@ -110,31 +110,7 @@ CON_COMMAND_CHAT_FLAGS(setnextmap, "[mapname] - Force next map (empty to clear f
 	if (!g_bVoteManagerEnable)
 		return;
 
-	int iPreviousNextMap = g_pMapVoteSystem->GetForcedNextMap();
-	std::pair<int, std::vector<int>> response = g_pMapVoteSystem->ForceNextMap(args.ArgC() < 2 ? "" : args[1]);
-
-	if (response.first == 0 && iPreviousNextMap == response.second[0])
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\x06%s\x01 is already the next map!", g_pMapVoteSystem->GetMapName(iPreviousNextMap));
-		return;
-	}
-
-	switch (response.first)
-	{
-		case -1:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching \x06%s\x01.", args[1]);
-			break;
-		case -3:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There is no next map to reset!");
-			break;
-		case -4:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Multiple maps matched \x06%s\x01, try being more specific:", args[1]);
-
-			for (int i = 0; i < response.second.size() && i < 5; i++)
-				ClientPrint(player, HUD_PRINTTALK, "- %s", g_pMapVoteSystem->GetMapName(response.second[i]));
-
-			break;
-	}
+	g_pMapVoteSystem->ForceNextMap(player, args.ArgC() < 2 ? "" : args[1]);
 }
 
 static int __cdecl OrderStringsLexicographically(const MapIndexPair* a, const MapIndexPair* b)
@@ -688,37 +664,52 @@ void CMapVoteSystem::PrintMapList(CCSPlayerController* pController)
 	}
 }
 
-std::pair<int, std::vector<int>> CMapVoteSystem::ForceNextMap(const char* sMapSubstring)
+void CMapVoteSystem::ForceNextMap(CCSPlayerController* pController, const char* sMapSubstring)
 {
 	if (sMapSubstring[0] == '\0')
 	{
-		if (m_iForcedNextMapIndex != -1)
+		if (m_iForcedNextMapIndex == -1)
+		{
+			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "There is no next map to reset!");
+		}
+		else
 		{
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01is no longer the forced next map.\n", m_vecMapList[m_iForcedNextMapIndex].GetName());
 			m_iForcedNextMapIndex = -1;
-			return std::make_pair(-2, std::vector<int>());
 		}
 
-		return std::make_pair(-3, std::vector<int>());
+		return;
 	}
 
 	std::vector<int> foundIndexes = GetMapIndexesFromSubstring(sMapSubstring);
 
 	if (foundIndexes.size() == 0)
-		return std::make_pair(-1, foundIndexes);
+	{
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching \x06%s\x01.", sMapSubstring);
+		return;
+	}
 
 	if (foundIndexes.size() > 1)
-		return std::make_pair(-4, foundIndexes);
+	{
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Multiple maps matched \x06%s\x01, try being more specific:", sMapSubstring);
+
+		for (int i = 0; i < foundIndexes.size() && i < 5; i++)
+			ClientPrint(pController, HUD_PRINTTALK, "- %s", GetMapName(foundIndexes[i]));
+
+		return;
+	}
 
 	int iFoundIndex = foundIndexes[0];
 
 	if (m_iForcedNextMapIndex == iFoundIndex)
-		return std::make_pair(0, foundIndexes);
+	{
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "\x06%s\x01 is already the next map!", GetMapName(m_iForcedNextMapIndex));
+		return;
+	}
 
 	// When found, print the map and store the forced map
 	m_iForcedNextMapIndex = iFoundIndex;
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01has been forced as the next map.\n", m_vecMapList[iFoundIndex].GetName());
-	return std::make_pair(0, foundIndexes);
 }
 
 static int __cdecl OrderMapsByWorkshopId(const CMapInfo* a, const CMapInfo* b)
