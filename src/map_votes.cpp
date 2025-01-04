@@ -104,6 +104,87 @@ CON_COMMAND_F(cs2f_vote_max_nominations, "Number of nominations to include per v
 	}
 }
 
+CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
+{
+	if (!g_bVoteManagerEnable)
+		return;
+
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !map <mapname>");
+		return;
+	}
+
+	std::string sMapInput = args[1];
+
+	for (int i = 0; sMapInput[i]; i++)
+	{
+		// Injection prevention, because we may pass user input to ServerCommand
+		if (sMapInput[i] == ';' || sMapInput[i] == '|')
+			return;
+
+		sMapInput[i] = tolower(sMapInput[i]);
+	}
+
+	const char* pszMapInput = sMapInput.c_str();
+
+	if (g_pEngineServer2->IsMapValid(pszMapInput))
+	{
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to \x06%s\x01...", pszMapInput);
+
+		new CTimer(5.0f, false, true, [sMapInput]() {
+			g_pEngineServer2->ChangeLevel(sMapInput.c_str(), nullptr);
+			return -1.0f;
+		});
+
+		return;
+	}
+
+	std::string sCommand;
+	std::vector<int> foundIndexes = g_pMapVoteSystem->GetMapIndexesFromSubstring(pszMapInput);
+	const char* pszMapName;
+
+	// Check if input is numeric (workshop ID)
+	// Not safe to expose to all admins until crashing on failed workshop addon downloads is fixed
+	if ((!player || player->GetZEPlayer()->IsAdminFlagSet(ADMFLAG_RCON)) && V_StringToUint64(pszMapInput, 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING) != 0)
+	{
+		sCommand = "host_workshop_map " + sMapInput;
+		pszMapName = sMapInput.c_str();
+	}
+	else if (foundIndexes.size() > 0)
+	{
+		if (foundIndexes.size() > 1)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Multiple maps matched \x06%s\x01, try being more specific:", pszMapInput);
+
+			for (int i = 0; i < foundIndexes.size() && i < 5; i++)
+				ClientPrint(player, HUD_PRINTTALK, "- %s", g_pMapVoteSystem->GetMapName(foundIndexes[i]));
+
+			return;
+		}
+
+		uint64 workshopId = g_pMapVoteSystem->GetMapWorkshopId(foundIndexes[0]);
+		pszMapName = g_pMapVoteSystem->GetMapName(foundIndexes[0]);
+
+		if (workshopId == 0)
+			sCommand = "map " + std::string(pszMapName);
+		else
+			sCommand = "host_workshop_map " + std::to_string(workshopId);
+	}
+	else
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching \x06%s\x01.", pszMapInput);
+		return;
+	}
+
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to \x06%s\x01...", pszMapName);
+
+	new CTimer(5.0f, false, true, [sCommand]() {
+		g_pEngineServer2->ServerCommand(sCommand.c_str());
+		return -1.0f;
+	});
+}
+
 // TODO: workshop id support for rcon admins?
 CON_COMMAND_CHAT_FLAGS(setnextmap, "[mapname] - Force next map (empty to clear forced next map)", ADMFLAG_CHANGEMAP)
 {
