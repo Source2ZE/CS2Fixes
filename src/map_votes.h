@@ -87,6 +87,7 @@ public:
 	void FinishVote();
 	bool RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
 	std::vector<int> GetMapIndexesFromSubstring(const char* sMapSubstring);
+	uint64 HandlePlayerMapLookup(CCSPlayerController* pController, const char* sMapSubstring, bool bAllowWorkshopID = false);
 	int GetMapIndexFromString(const char* sMapString);
 	int GetCooldownMap(int iMapIndex) { return m_vecMapList[iMapIndex].GetCooldown(); };
 	void PutMapOnCooldown(int iMapIndex) { m_vecMapList[iMapIndex].ResetCooldownToBase(); };
@@ -129,7 +130,8 @@ public:
 	int GetDefaultMapCooldown() { return m_iDefaultMapCooldown; }
 	void SetDefaultMapCooldown(int iMapCooldown) { m_iDefaultMapCooldown = iMapCooldown; }
 	void ClearInvalidNominations();
-	int GetForcedNextMap() { return m_iForcedNextMapIndex; }
+	uint64 GetForcedNextMap() { return m_iForcedNextMap; }
+	std::string GetForcedNextMapName() { return GetForcedNextMap() > GetMapListSize() ? std::to_string(GetForcedNextMap()) : GetMapName(GetForcedNextMap()); }
 
 private:
 	int WinningMapIndex();
@@ -142,12 +144,12 @@ private:
 
 	CUtlVector<CMapInfo> m_vecMapList;
 	int m_arrPlayerNominations[MAXPLAYERS];
-	int m_iForcedNextMapIndex = -1;
+	uint64 m_iForcedNextMap = -1; // Can be a map index or a workshop ID
 	int m_iDefaultMapCooldown = 10;
 	int m_iMaxNominatedMaps = 10;
 	int m_iRandomWinnerShift = 0;
 	int m_arrPlayerVotes[MAXPLAYERS];
-	int m_iCurrentMapIndex;
+	int m_iCurrentMapIndex = -1;
 	bool m_bIsVoteOngoing = false;
 	bool m_bMapListLoaded = false;
 	bool m_bIntermissionStarted = false;

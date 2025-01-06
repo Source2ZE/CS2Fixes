@@ -111,7 +111,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !map <mapname>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !map <name/id>");
 		return;
 	}
 
@@ -141,43 +141,29 @@ CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 	}
 
 	std::string sCommand;
-	std::vector<int> foundIndexes = g_pMapVoteSystem->GetMapIndexesFromSubstring(pszMapInput);
-	const char* pszMapName;
+	std::string sMapName;
+	uint64 iMap = g_pMapVoteSystem->HandlePlayerMapLookup(player, pszMapInput, true);
 
-	// Check if input is numeric (workshop ID)
-	// Not safe to expose to all admins until crashing on failed workshop addon downloads is fixed
-	if ((!player || player->GetZEPlayer()->IsAdminFlagSet(ADMFLAG_RCON)) && V_StringToUint64(pszMapInput, 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING) != 0)
+	if (iMap == -1)
+		return;
+
+	if (iMap > g_pMapVoteSystem->GetMapListSize())
 	{
-		sCommand = "host_workshop_map " + sMapInput;
-		pszMapName = sMapInput.c_str();
-	}
-	else if (foundIndexes.size() > 0)
-	{
-		if (foundIndexes.size() > 1)
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Multiple maps matched \x06%s\x01, try being more specific:", pszMapInput);
-
-			for (int i = 0; i < foundIndexes.size() && i < 5; i++)
-				ClientPrint(player, HUD_PRINTTALK, "- %s", g_pMapVoteSystem->GetMapName(foundIndexes[i]));
-
-			return;
-		}
-
-		uint64 workshopId = g_pMapVoteSystem->GetMapWorkshopId(foundIndexes[0]);
-		pszMapName = g_pMapVoteSystem->GetMapName(foundIndexes[0]);
-
-		if (workshopId == 0)
-			sCommand = "map " + std::string(pszMapName);
-		else
-			sCommand = "host_workshop_map " + std::to_string(workshopId);
+		sCommand = "host_workshop_map " + std::to_string(iMap);
+		sMapName = std::to_string(iMap);
 	}
 	else
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching \x06%s\x01.", pszMapInput);
-		return;
+		uint64 workshopId = g_pMapVoteSystem->GetMapWorkshopId(iMap);
+		sMapName = g_pMapVoteSystem->GetMapName(iMap);
+
+		if (workshopId == 0)
+			sCommand = "map " + sMapName;
+		else
+			sCommand = "host_workshop_map " + std::to_string(workshopId);
 	}
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to \x06%s\x01...", pszMapName);
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to \x06%s\x01...", sMapName.c_str());
 
 	new CTimer(5.0f, false, true, [sCommand]() {
 		g_pEngineServer2->ServerCommand(sCommand.c_str());
@@ -185,8 +171,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 	});
 }
 
-// TODO: workshop id support for rcon admins?
-CON_COMMAND_CHAT_FLAGS(setnextmap, "[mapname] - Force next map (empty to clear forced next map)", ADMFLAG_CHANGEMAP)
+CON_COMMAND_CHAT_FLAGS(setnextmap, "[name/id] - Force next map (empty to clear forced next map)", ADMFLAG_CHANGEMAP)
 {
 	if (!g_bVoteManagerEnable)
 		return;
@@ -281,7 +266,7 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 
 	m_bIsVoteOngoing = false;
 	m_bIntermissionStarted = false;
-	m_iForcedNextMapIndex = -1;
+	m_iForcedNextMap = -1;
 
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 		ClearPlayerInfo(i);
@@ -306,11 +291,16 @@ void CMapVoteSystem::StartVote()
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 		m_arrPlayerVotes[i] = -1;
 
-	// If we are forcing a map, just set all vote options to that map
-	if (m_iForcedNextMapIndex != -1)
+	// If we are forcing a map, just override all the vote options
+	if (m_iForcedNextMap != -1)
 	{
 		for (int i = 0; i < 10; i++)
-			g_pGameRules->m_nEndMatchMapGroupVoteOptions[i] = m_iForcedNextMapIndex;
+		{
+			if (m_iForcedNextMap > GetMapListSize())
+				g_pGameRules->m_nEndMatchMapGroupVoteOptions[i] = -1;
+			else
+				g_pGameRules->m_nEndMatchMapGroupVoteOptions[i] = m_iForcedNextMap;
+		}
 
 		new CTimer(6.0f, false, true, []() {
 			g_pMapVoteSystem->FinishVote();
@@ -404,26 +394,25 @@ void CMapVoteSystem::FinishVote()
 	// Get the winning map
 	bool bIsNextMapVoted = UpdateWinningMap();
 	int iNextMapVoteIndex = WinningMapIndex();
+	bool bIsNextMapForced = m_iForcedNextMap != -1;
+	char buffer[256];
+	uint64 iWinningMap; // Map index OR possibly workshop ID if next map was forced
 
-	// If we are forcing the map, show different text
-	bool bIsNextMapForced = m_iForcedNextMapIndex != -1;
 	if (bIsNextMapForced)
 	{
-		iNextMapVoteIndex = 0;
-		g_pGameRules->m_nEndMatchMapGroupVoteOptions[0] = m_iForcedNextMapIndex;
+		iWinningMap = m_iForcedNextMap;
+	}
+	else
+	{
 		g_pGameRules->m_nEndMatchMapVoteWinner = iNextMapVoteIndex;
+		iWinningMap = g_pGameRules->m_nEndMatchMapGroupVoteOptions[iNextMapVoteIndex];
 	}
 
-	// Print out the winning map
-	if (iNextMapVoteIndex < 0) iNextMapVoteIndex = -1;
-	g_pGameRules->m_nEndMatchMapVoteWinner = iNextMapVoteIndex;
-	int iWinningMap = g_pGameRules->m_nEndMatchMapGroupVoteOptions[iNextMapVoteIndex];
-	char buffer[256];
-
-	if (bIsNextMapVoted)
+	// Print out the map we're changing to
+	if (bIsNextMapForced)
+		V_snprintf(buffer, sizeof(buffer), "The vote was overriden. \x06%s\x01 will be the next map!\n", iWinningMap > GetMapListSize() ? std::to_string(iWinningMap).c_str() : GetMapName(iWinningMap));
+	else if (bIsNextMapVoted)
 		V_snprintf(buffer, sizeof(buffer), "The vote has ended. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
-	else if (bIsNextMapForced)
-		V_snprintf(buffer, sizeof(buffer), "The vote was overriden. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
 	else
 		V_snprintf(buffer, sizeof(buffer), "No map was chosen. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
 
@@ -431,20 +420,23 @@ void CMapVoteSystem::FinishVote()
 	Message(buffer);
 
 	// Print vote result information: how many votes did each map get?
-	int arrMapVotes[10] = {0};
-	Message("Map vote result --- total votes per map:\n");
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!bIsNextMapForced)
 	{
-		auto pController = CCSPlayerController::FromSlot(i);
-		int iPlayerVotedIndex = m_arrPlayerVotes[i];
-		if (pController && pController->IsConnected() && iPlayerVotedIndex >= 0)
-			arrMapVotes[iPlayerVotedIndex]++;
-	}
-	for (int i = 0; i < 10; i++)
-	{
-		int iMapIndex = g_pGameRules->m_nEndMatchMapGroupVoteOptions[i];
-		const char* sIsWinner = (i == iNextMapVoteIndex) ? "(WINNER)" : "";
-		Message("- %s got %d votes\n", GetMapName(iMapIndex), arrMapVotes[i]);
+		int arrMapVotes[10] = {0};
+		Message("Map vote result --- total votes per map:\n");
+		for (int i = 0; i < gpGlobals->maxClients; i++)
+		{
+			auto pController = CCSPlayerController::FromSlot(i);
+			int iPlayerVotedIndex = m_arrPlayerVotes[i];
+			if (pController && pController->IsConnected() && iPlayerVotedIndex >= 0)
+				arrMapVotes[iPlayerVotedIndex]++;
+		}
+		for (int i = 0; i < 10; i++)
+		{
+			int iMapIndex = g_pGameRules->m_nEndMatchMapGroupVoteOptions[i];
+			const char* sIsWinner = (i == iNextMapVoteIndex) ? "(WINNER)" : "";
+			Message("- %s got %d votes\n", GetMapName(iMapIndex), arrMapVotes[i]);
+		}
 	}
 
 	// Put the map on cooldown as we transition to the next map if map index is valid, also decrease cooldown remaining for others
@@ -460,7 +452,7 @@ void CMapVoteSystem::FinishVote()
 	// Wait a second and force-change the map
 	new CTimer(1.0, false, true, [iWinningMap]() {
 		char sChangeMapCmd[128];
-		uint64 workshopId = g_pMapVoteSystem->GetMapWorkshopId(iWinningMap);
+		uint64 workshopId = iWinningMap > g_pMapVoteSystem->GetMapListSize() ? iWinningMap : g_pMapVoteSystem->GetMapWorkshopId(iWinningMap);
 
 		if (workshopId == 0)
 			V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", g_pMapVoteSystem->GetMapName(iWinningMap));
@@ -585,6 +577,47 @@ std::vector<int> CMapVoteSystem::GetMapIndexesFromSubstring(const char* sMapSubs
 	return vecMaps;
 }
 
+uint64 CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, const char* sMapSubstring, bool bAllowWorkshopID)
+{
+	if (bAllowWorkshopID)
+	{
+		uint64 iWorkshopID = V_StringToUint64(sMapSubstring, 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING);
+
+		// Check if input is numeric (workshop ID)
+		// Not safe to expose to all admins until crashing on failed workshop addon downloads is fixed
+		if ((!pController || pController->GetZEPlayer()->IsAdminFlagSet(ADMFLAG_RCON)) && iWorkshopID != 0)
+		{
+			// Try to get a head start on downloading the map if needed
+			g_steamAPI.SteamUGC()->DownloadItem(iWorkshopID, false);
+
+			return iWorkshopID;
+		}
+	}
+
+	std::vector<int> foundIndexes = GetMapIndexesFromSubstring(sMapSubstring);
+
+	if (foundIndexes.size() > 0)
+	{
+		if (foundIndexes.size() > 1)
+		{
+			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Multiple maps matched \x06%s\x01, try being more specific:", sMapSubstring);
+
+			for (int i = 0; i < foundIndexes.size() && i < 5; i++)
+				ClientPrint(pController, HUD_PRINTTALK, "- %s", GetMapName(foundIndexes[i]));
+		}
+		else
+		{
+			return foundIndexes[0];
+		}
+	}
+	else
+	{
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching \x06%s\x01.", sMapSubstring);
+	}
+
+	return -1;
+}
+
 int CMapVoteSystem::GetMapIndexFromString(const char* sMapString)
 {
 	FOR_EACH_VEC(m_vecMapList, i)
@@ -640,27 +673,11 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 		return;
 	}
 
-	// We are not reseting the nomination: is the map found? is it valid?
-	std::vector<int> foundIndexes = GetMapIndexesFromSubstring(sMapSubstring);
-
-	if (foundIndexes.size() == 0)
-	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Cannot nominate \x06%s\x01 because no map matched.", sMapSubstring);
-		return;
-	}
-
-	if (foundIndexes.size() > 1)
-	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Multiple maps matched \x06%s\x01, try being more specific:", sMapSubstring);
-
-		for (int i = 0; i < foundIndexes.size() && i < 5; i++)
-			ClientPrint(pController, HUD_PRINTTALK, "- %s", GetMapName(foundIndexes[i]));
-
-		return;
-	}
-
-	int iFoundIndex = foundIndexes[0];
+	int iFoundIndex = HandlePlayerMapLookup(pController, sMapSubstring);
 	int iPlayerCount = g_playerManager->GetOnlinePlayerCount(false);
+
+	if (iFoundIndex == -1)
+		return;
 
 	if (!GetMapEnabledStatus(iFoundIndex))
 	{
@@ -749,48 +766,30 @@ void CMapVoteSystem::ForceNextMap(CCSPlayerController* pController, const char* 
 {
 	if (sMapSubstring[0] == '\0')
 	{
-		if (m_iForcedNextMapIndex == -1)
+		if (GetForcedNextMap() == -1)
 		{
 			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "There is no next map to reset!");
 		}
 		else
 		{
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01is no longer the forced next map.\n", m_vecMapList[m_iForcedNextMapIndex].GetName());
-			m_iForcedNextMapIndex = -1;
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01is no longer the forced next map.\n", GetForcedNextMapName().c_str());
+			m_iForcedNextMap = -1;
 		}
 
 		return;
 	}
 
-	std::vector<int> foundIndexes = GetMapIndexesFromSubstring(sMapSubstring);
+	uint64 iFoundMap = HandlePlayerMapLookup(pController, sMapSubstring, true);
 
-	if (foundIndexes.size() == 0)
+	if (GetForcedNextMap() == iFoundMap)
 	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching \x06%s\x01.", sMapSubstring);
-		return;
-	}
-
-	if (foundIndexes.size() > 1)
-	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Multiple maps matched \x06%s\x01, try being more specific:", sMapSubstring);
-
-		for (int i = 0; i < foundIndexes.size() && i < 5; i++)
-			ClientPrint(pController, HUD_PRINTTALK, "- %s", GetMapName(foundIndexes[i]));
-
-		return;
-	}
-
-	int iFoundIndex = foundIndexes[0];
-
-	if (m_iForcedNextMapIndex == iFoundIndex)
-	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "\x06%s\x01 is already the next map!", GetMapName(m_iForcedNextMapIndex));
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "\x06%s\x01 is already the next map!", GetForcedNextMapName().c_str());
 		return;
 	}
 
 	// When found, print the map and store the forced map
-	m_iForcedNextMapIndex = iFoundIndex;
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01has been forced as the next map.\n", m_vecMapList[iFoundIndex].GetName());
+	m_iForcedNextMap = iFoundMap;
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01has been forced as the next map.\n", GetForcedNextMapName().c_str());
 }
 
 static int __cdecl OrderMapsByWorkshopId(const CMapInfo* a, const CMapInfo* b)
