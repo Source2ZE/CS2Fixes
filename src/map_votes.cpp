@@ -197,6 +197,12 @@ CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 	if (!g_bVoteManagerEnable)
 		return;
 
+	if (g_pMapVoteSystem->GetForcedNextMap() != -1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Nominations are disabled because the next map has been forced to \x06%s\x01.", g_pMapVoteSystem->GetForcedNextMapName().c_str());
+		return;
+	}
+
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Current nominations:");
 	for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
 	{
@@ -233,6 +239,20 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 
 	for (auto pair : vecCooldowns)
 		ClientPrint(player, HUD_PRINTCONSOLE, "- %s (%d maps remaining)", pair.first.c_str(), pair.second);
+}
+
+CON_COMMAND_CHAT(nextmap, "- Check the next map if it was forced")
+{
+	if (!g_bVoteManagerEnable)
+		return;
+
+	if (g_pMapVoteSystem->GetForcedNextMap() == -1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Next map is pending vote, no map has been forced.");
+		return;
+	}
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Next map is \x06%s\x01.", g_pMapVoteSystem->GetForcedNextMapName().c_str());
 }
 
 GAME_EVENT_F(cs_win_panel_match)
@@ -295,12 +315,10 @@ void CMapVoteSystem::StartVote()
 	if (m_iForcedNextMap != -1)
 	{
 		for (int i = 0; i < 10; i++)
-		{
 			if (m_iForcedNextMap > GetMapListSize())
 				g_pGameRules->m_nEndMatchMapGroupVoteOptions[i] = -1;
 			else
 				g_pGameRules->m_nEndMatchMapGroupVoteOptions[i] = m_iForcedNextMap;
-		}
 
 		new CTimer(6.0f, false, true, []() {
 			g_pMapVoteSystem->FinishVote();
@@ -410,7 +428,7 @@ void CMapVoteSystem::FinishVote()
 
 	// Print out the map we're changing to
 	if (bIsNextMapForced)
-		V_snprintf(buffer, sizeof(buffer), "The vote was overriden. \x06%s\x01 will be the next map!\n", iWinningMap > GetMapListSize() ? std::to_string(iWinningMap).c_str() : GetMapName(iWinningMap));
+		V_snprintf(buffer, sizeof(buffer), "The vote was overriden. \x06%s\x01 will be the next map!\n", GetForcedNextMapName().c_str());
 	else if (bIsNextMapVoted)
 		V_snprintf(buffer, sizeof(buffer), "The vote has ended. \x06%s\x01 will be the next map!\n", GetMapName(iWinningMap));
 	else
@@ -646,15 +664,21 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 	if (!pPlayer)
 		return;
 
-	if (IsVoteOngoing())
+	if (GetMaxNominatedMaps() == 0)
 	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Nominations are currently disabled because the vote has already started.");
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Nominations are currently disabled.");
 		return;
 	}
 
-	if (GetForcedNextMap() != -1 || GetMaxNominatedMaps() == 0)
+	if (GetForcedNextMap() != -1)
 	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Nominations are currently disabled.");
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Nominations are disabled because the next map has been forced to \x06%s\x01.", GetForcedNextMapName().c_str());
+		return;
+	}
+
+	if (IsVoteOngoing())
+	{
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Nominations are disabled because the vote has already started.");
 		return;
 	}
 
