@@ -555,30 +555,31 @@ int CMapVoteSystem::WinningMapIndex()
 
 void CMapVoteSystem::GetNominatedMapsForVote(CUtlVector<int>& vecChosenNominatedMaps)
 {
-	int iNumDistinctMaps = 0;
-	CUtlVector<int> vecAvailableNominatedMaps;
+	std::unordered_map<int, int> mapAvailableNominatedMaps;
+
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
 		int iNominatedMapIndex = m_arrPlayerNominations[i];
 
 		// Introduce nominated map indexes and count the total number
 		if (iNominatedMapIndex != -1)
-		{
-			if (!vecAvailableNominatedMaps.HasElement(iNominatedMapIndex))
-				iNumDistinctMaps++;
-			vecAvailableNominatedMaps.AddToTail(iNominatedMapIndex);
-		}
+			++mapAvailableNominatedMaps[iNominatedMapIndex];
 	}
 
-	// Randomly select maps out of the set of nominated maps
-	// weighting by number of nominations, and returning a random order
-	int iMapsToIncludeInNominate = (iNumDistinctMaps < m_iMaxNominatedMaps) ? iNumDistinctMaps : m_iMaxNominatedMaps;
+	int iMapsToIncludeInNominate = (mapAvailableNominatedMaps.size() < m_iMaxNominatedMaps) ? mapAvailableNominatedMaps.size() : m_iMaxNominatedMaps;
+
+	// Select top maps by number of nominations
+	// TODO: maybe also randomize options when count matches? tried quickly doing this in sort function but it didn't seem very effective
 	while (vecChosenNominatedMaps.Count() < iMapsToIncludeInNominate)
 	{
-		int iMapToAdd = vecAvailableNominatedMaps[rand() % vecAvailableNominatedMaps.Count()];
-		vecChosenNominatedMaps.AddToTail(iMapToAdd);
-		while (vecAvailableNominatedMaps.HasElement(iMapToAdd))
-			vecAvailableNominatedMaps.FindAndRemove(iMapToAdd);
+		auto maxElement = std::max_element(
+			mapAvailableNominatedMaps.begin(), mapAvailableNominatedMaps.end(),
+			[](const std::pair<int, int>& p1, const std::pair<int, int>& p2) {
+				return p1.second < p2.second;
+			});
+
+		vecChosenNominatedMaps.AddToTail(maxElement->first);
+		mapAvailableNominatedMaps.erase(maxElement->first);
 	}
 }
 
