@@ -742,7 +742,7 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 	}
 
 	m_arrPlayerNominations[iSlot] = iFoundIndex;
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01was nominated by %s. It now has %d nominations.", GetMapName(iFoundIndex), pController->GetPlayerName(), GetTotalNominations(iFoundIndex));
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01was nominated by %s. It now has %d nomination%s.", GetMapName(iFoundIndex), pController->GetPlayerName(), GetTotalNominations(iFoundIndex), GetTotalNominations(iFoundIndex) > 1 ? "s" : "");
 	pPlayer->SetNominateTime(gpGlobals->curtime);
 }
 
