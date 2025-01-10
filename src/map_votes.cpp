@@ -31,6 +31,7 @@
 #include "utlvector.h"
 #include "votemanager.h"
 #include <playerslot.h>
+#include <random>
 #include <stdio.h>
 
 extern CGlobalVars* gpGlobals;
@@ -567,19 +568,35 @@ void CMapVoteSystem::GetNominatedMapsForVote(CUtlVector<int>& vecChosenNominated
 	}
 
 	int iMapsToIncludeInNominate = (mapAvailableNominatedMaps.size() < m_iMaxNominatedMaps) ? mapAvailableNominatedMaps.size() : m_iMaxNominatedMaps;
+	std::vector<int> vecTiedNominations;
+	auto rng = std::default_random_engine{std::random_device{}()};
 
 	// Select top maps by number of nominations
-	// TODO: maybe also randomize options when count matches? tried quickly doing this in sort function but it didn't seem very effective
 	while (vecChosenNominatedMaps.Count() < iMapsToIncludeInNominate)
 	{
-		auto maxElement = std::max_element(
-			mapAvailableNominatedMaps.begin(), mapAvailableNominatedMaps.end(),
-			[](const std::pair<int, int>& p1, const std::pair<int, int>& p2) {
-				return p1.second < p2.second;
-			});
+		if (vecTiedNominations.size() == 0)
+		{
+			// Find highest nomination count
+			int iMostNominations = std::max_element(
+									   mapAvailableNominatedMaps.begin(), mapAvailableNominatedMaps.end(),
+									   [](const std::pair<int, int>& p1, const std::pair<int, int>& p2) {
+										   return p1.second < p2.second;
+									   })
+									   ->second;
 
-		vecChosenNominatedMaps.AddToTail(maxElement->first);
-		mapAvailableNominatedMaps.erase(maxElement->first);
+			// Copy the most nominated maps to a new vector
+			for (auto pair : mapAvailableNominatedMaps)
+				if (pair.second == iMostNominations)
+					vecTiedNominations.push_back(pair.first);
+
+			// Randomize the vector order
+			std::ranges::shuffle(vecTiedNominations, rng);
+		}
+
+		// Pick map from front of vector, and remove from both sources
+		vecChosenNominatedMaps.AddToTail(vecTiedNominations.front());
+		mapAvailableNominatedMaps.erase(vecTiedNominations.front());
+		vecTiedNominations.erase(vecTiedNominations.begin());
 	}
 }
 
