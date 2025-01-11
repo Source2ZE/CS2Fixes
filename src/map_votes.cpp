@@ -204,15 +204,27 @@ CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 		return;
 	}
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Current nominations:");
+	std::unordered_map<int, int> mapNominatedMaps;
+
 	for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
 	{
 		if (!g_pMapVoteSystem->IsMapIndexEnabled(i)) continue;
 		int iNumNominations = g_pMapVoteSystem->GetTotalNominations(i);
 		if (iNumNominations == 0) continue;
-		const char* sMapName = g_pMapVoteSystem->GetMapName(i);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "- %s (%d times)\n", sMapName, iNumNominations);
+
+		mapNominatedMaps[i] = iNumNominations;
 	}
+
+	if (mapNominatedMaps.size() == 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No maps have been nominated yet!");
+		return;
+	}
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Current nominations:");
+
+	for (auto pair : mapNominatedMaps)
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "- %s (%d times)\n", g_pMapVoteSystem->GetMapName(pair.first), pair.second);
 }
 
 CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
@@ -223,9 +235,6 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 	int iMapCount = g_pMapVoteSystem->GetMapListSize();
 	std::vector<std::pair<std::string, int>> vecCooldowns;
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of maps in cooldown will be shown in console.");
-	ClientPrint(player, HUD_PRINTCONSOLE, "The list of maps in cooldown is:");
-
 	for (int iMapIndex = 0; iMapIndex < iMapCount; iMapIndex++)
 	{
 		int iCooldown = g_pMapVoteSystem->GetCooldownMap(iMapIndex);
@@ -233,6 +242,15 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 		if (iCooldown > 0 && g_pMapVoteSystem->GetMapEnabledStatus(iMapIndex))
 			vecCooldowns.push_back(std::make_pair(g_pMapVoteSystem->GetMapName(iMapIndex), iCooldown));
 	}
+
+	if (vecCooldowns.size() == 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no maps on cooldown!");
+		return;
+	}
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of maps in cooldown will be shown in console.");
+	ClientPrint(player, HUD_PRINTCONSOLE, "The list of maps in cooldown is:");
 
 	std::sort(vecCooldowns.begin(), vecCooldowns.end(), [](auto& left, auto& right) {
 		return left.second < right.second;
