@@ -29,7 +29,9 @@
 #include "strtools.h"
 #include "utlstring.h"
 #include "utlvector.h"
+#include "vendor/nlohmann/json.hpp"
 #include "votemanager.h"
+#include <fstream>
 #include <playerslot.h>
 #include <random>
 #include <stdio.h>
@@ -54,7 +56,11 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 		return;
 	}
 
-	g_pMapVoteSystem->LoadMapList();
+	if (!g_pMapVoteSystem->LoadMapList())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to reload map list!");
+		return;
+	}
 
 	// A CUtlStringList param is also expected, but we build it in our CreateWorkshopMapGroup pre-hook anyways
 	CALL_VIRTUAL(void, g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup"), g_pGameTypes, "workshop");
@@ -913,15 +919,29 @@ bool CMapVoteSystem::LoadMapList()
 {
 	// This is called when the Steam API is init'd, now is the time to register this
 	m_CallbackDownloadItemResult.Register(this, &CMapVoteSystem::OnMapDownloaded);
-
 	m_vecMapList.Purge();
-	KeyValues* pKV = new KeyValues("maplist");
-	KeyValues::AutoDelete autoDelete(pKV);
 
-	const char* pszPath = "addons/cs2fixes/configs/maplist.cfg";
-	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
+	const char* pszJsonPath = "addons/cs2fixes/configs/maplist.jsonc";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
+	std::ifstream jsonFile(szPath);
+
+	if (!jsonFile.is_open())
 	{
-		Panic("Failed to load %s\n", pszPath);
+		if (!ConvertMapListKVToJSON())
+		{
+			Panic("Failed to open %s and convert KV1 maplist.cfg to JSON format, map list not loaded!\n", pszJsonPath);
+			return false;
+		}
+
+		jsonFile.open(szPath);
+	}
+
+	ordered_json jsonMaps = ordered_json::parse(jsonFile, nullptr, false, true);
+
+	if (jsonMaps.is_discarded())
+	{
+		Panic("Failed parsing JSON from %s, map list not loaded!\n", pszJsonPath);
 		return false;
 	}
 
@@ -946,26 +966,40 @@ bool CMapVoteSystem::LoadMapList()
 		mapCooldowns[sMapName] = iCooldown;
 	}
 
-	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+	for (auto& [sSection, jsonSection] : jsonMaps.items())
 	{
-		const char* pszName = pKey->GetName();
-		std::string sName = pszName;
+		for (auto& [sEntry, jsonEntry] : jsonSection.items())
+		{
+			if (sSection == "Groups")
+			{
+				// TODO
+			}
+			else if (sSection == "Maps")
+			{
+				std::string sLowerName = sEntry;
 
-		for (int i = 0; sName[i]; i++)
-			sName[i] = tolower(sName[i]);
+				for (int i = 0; sLowerName[i]; i++)
+					sLowerName[i] = tolower(sLowerName[i]);
 
-		uint64 iWorkshopId = pKey->GetUint64("workshop_id");
-		bool bIsEnabled = pKey->GetBool("enabled", true);
-		int iMinPlayers = pKey->GetInt("min_players", 0);
-		int iMaxPlayers = pKey->GetInt("max_players", 64);
-		int iBaseCooldown = pKey->GetInt("cooldown", m_iDefaultMapCooldown);
-		int iCurrentCooldown = mapCooldowns[sName];
+				// Seems like uint64 needs special handling
+				uint64 iWorkshopId = 0;
 
-		if (iWorkshopId != 0)
-			QueueMapDownload(iWorkshopId);
+				if (jsonEntry.contains("workshop_id"))
+					iWorkshopId = jsonEntry["workshop_id"].get<uint64>();
 
-		// We just append the maps to the map list
-		m_vecMapList.AddToTail(CMapInfo(pszName, iWorkshopId, bIsEnabled, iMinPlayers, iMaxPlayers, iBaseCooldown, iCurrentCooldown));
+				bool bIsEnabled = jsonEntry.value("enabled", true);
+				int iMinPlayers = jsonEntry.value("min_players", 0);
+				int iMaxPlayers = jsonEntry.value("max_players", 64);
+				int iBaseCooldown = jsonEntry.value("cooldown", m_iDefaultMapCooldown);
+				int iCurrentCooldown = mapCooldowns[sLowerName];
+
+				if (iWorkshopId != 0)
+					QueueMapDownload(iWorkshopId);
+
+				// We just append the maps to the map list
+				m_vecMapList.AddToTail(CMapInfo(sEntry.c_str(), iWorkshopId, bIsEnabled, iMinPlayers, iMaxPlayers, iBaseCooldown, iCurrentCooldown));
+			}
+		}
 	}
 
 	new CTimer(0.f, true, true, []() {
@@ -1081,4 +1115,71 @@ void CMapVoteSystem::ClearInvalidNominations()
 			ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "Your nomination for \x06%s \x01has been removed because the player count requirements are no longer met.", GetMapName(iNominatedMapIndex));
 		}
 	}
+}
+
+// TODO: remove this once servers have been given at least a few months to update cs2fixes
+bool CMapVoteSystem::ConvertMapListKVToJSON()
+{
+	Message("Attempting to convert KV1 maplist.cfg to JSON format...\n");
+
+	const char* pszPath = "addons/cs2fixes/configs/maplist.cfg";
+
+	KeyValues* pKV = new KeyValues("maplist");
+	KeyValues::AutoDelete autoDelete(pKV);
+
+	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
+	{
+		Panic("Failed to load %s\n", pszPath);
+		return false;
+	}
+
+	ordered_json jsonMapList;
+
+	jsonMapList["Groups"] = ordered_json(ordered_json::value_t::object);
+
+	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+	{
+		ordered_json jsonMap;
+
+		if (pKey->FindKey("enabled"))
+			jsonMap["enabled"] = pKey->GetBool("enabled");
+		if (pKey->FindKey("workshop_id"))
+			jsonMap["workshop_id"] = pKey->GetUint64("workshop_id");
+		if (pKey->FindKey("min_players"))
+			jsonMap["min_players"] = pKey->GetInt("min_players");
+		if (pKey->FindKey("max_players"))
+			jsonMap["max_players"] = pKey->GetInt("max_players");
+		if (pKey->FindKey("cooldown"))
+			jsonMap["cooldown"] = pKey->GetInt("cooldown");
+
+		jsonMapList["Maps"][pKey->GetName()] = jsonMap;
+	}
+
+	const char* pszJsonPath = "addons/cs2fixes/configs/maplist.jsonc";
+	const char* pszKVConfigRenamePath = "addons/cs2fixes/configs/maplist_old.cfg";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
+	std::ofstream jsonFile(szPath);
+
+	if (!jsonFile.is_open())
+	{
+		Panic("Failed to open %s\n", pszJsonPath);
+		return false;
+	}
+
+	jsonFile << std::setfill('\t') << std::setw(1) << jsonMapList << std::endl;
+
+	char szKVRenamePath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszPath);
+	V_snprintf(szKVRenamePath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVConfigRenamePath);
+
+	std::rename(szPath, szKVRenamePath);
+
+	// remove old cfg example if it exists
+	const char* pszKVExamplePath = "addons/cs2fixes/configs/maplist.cfg.example";
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVExamplePath);
+	std::remove(szPath);
+
+	Message("Successfully converted KV1 maplist.cfg to JSON format at %s\n", pszJsonPath);
+	return true;
 }

@@ -25,9 +25,12 @@
 #include "utlqueue.h"
 #include "utlstring.h"
 #include "utlvector.h"
+#include "vendor/nlohmann/json_fwd.hpp"
 #include <playerslot.h>
 #include <string>
 #include <vector>
+
+using ordered_json = nlohmann::ordered_json;
 
 class CMapInfo
 {
@@ -132,6 +135,7 @@ public:
 	void ClearInvalidNominations();
 	uint64 GetForcedNextMap() { return m_iForcedNextMap; }
 	std::string GetForcedNextMapName() { return GetForcedNextMap() > GetMapListSize() ? std::to_string(GetForcedNextMap()) : GetMapName(GetForcedNextMap()); }
+	bool ConvertMapListKVToJSON();
 
 private:
 	int WinningMapIndex();
