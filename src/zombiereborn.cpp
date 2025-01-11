@@ -375,7 +375,13 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 	// Less code than constantly traversing the full class vectors, temporary lifetime anyways
 	std::set<std::string> setClassNames;
-	ordered_json jsonPlayerClasses = ordered_json::parse(jsoncFile, nullptr, true, true);
+	ordered_json jsonPlayerClasses = ordered_json::parse(jsoncFile, nullptr, false, true);
+
+	if (jsonPlayerClasses.is_discarded())
+	{
+		Panic("Failed parsing JSON from %s. Playerclasses not loaded\n", pszJsonPath);
+		return;
+	}
 
 	for (auto& [szTeamName, jsonTeamClasses] : jsonPlayerClasses.items())
 	{

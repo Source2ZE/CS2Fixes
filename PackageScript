@@ -59,7 +59,7 @@ mapcfg_folder = builder.AddFolder(os.path.join('cfg', MMSPlugin.plugin_name, 'ma
 gamedata_folder = builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'gamedata'))
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'admins.cfg.example'), configs_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'discordbots.cfg.example'), configs_folder)
-builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'maplist.cfg.example'), configs_folder)
+builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'maplist.jsonc.example'), configs_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'cfg', MMSPlugin.plugin_name, 'cs2fixes.cfg'), cfg_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'cfg', MMSPlugin.plugin_name, 'maps', 'de_somemap.cfg'), mapcfg_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'zr', 'playerclass.jsonc.example'), zr_folder)
