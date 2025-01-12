@@ -136,11 +136,12 @@ public:
 	uint64 GetForcedNextMap() { return m_iForcedNextMap; }
 	std::string GetForcedNextMapName() { return GetForcedNextMap() > GetMapListSize() ? std::to_string(GetForcedNextMap()) : GetMapName(GetForcedNextMap()); }
 	bool ConvertMapListKVToJSON();
+	std::unordered_map<int, int> GetNominatedMaps();
 
 private:
 	int WinningMapIndex();
 	bool UpdateWinningMap();
-	void GetNominatedMapsForVote(CUtlVector<int>& vecChosenNominatedMaps);
+	std::vector<int> GetNominatedMapsForVote();
 	bool WriteMapCooldownsToFile();
 
 	STEAM_GAMESERVER_CALLBACK_MANUAL(CMapVoteSystem, OnMapDownloaded, DownloadItemResult_t, m_CallbackDownloadItemResult);

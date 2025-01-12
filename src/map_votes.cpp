@@ -210,16 +210,7 @@ CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 		return;
 	}
 
-	std::unordered_map<int, int> mapNominatedMaps;
-
-	for (int i = 0; i < g_pMapVoteSystem->GetMapListSize(); i++)
-	{
-		if (!g_pMapVoteSystem->IsMapIndexEnabled(i)) continue;
-		int iNumNominations = g_pMapVoteSystem->GetTotalNominations(i);
-		if (iNumNominations == 0) continue;
-
-		mapNominatedMaps[i] = iNumNominations;
-	}
+	std::unordered_map<int, int> mapNominatedMaps = g_pMapVoteSystem->GetNominatedMaps();
 
 	if (mapNominatedMaps.size() == 0)
 	{
@@ -357,31 +348,30 @@ void CMapVoteSystem::StartVote()
 	m_iRandomWinnerShift = rand();
 
 	// Select random maps not in cooldown, not disabled, and not nominated
-	CUtlVector<int> vecPossibleMaps;
-	CUtlVector<int> vecIncludedMaps;
-	GetNominatedMapsForVote(vecIncludedMaps);
+	std::vector<int> vecPossibleMaps;
+	std::vector<int> vecIncludedMaps = GetNominatedMapsForVote();
 	for (int i = 0; i < m_vecMapList.Count(); i++)
 	{
 		if (!IsMapIndexEnabled(i)) continue;
-		if (vecIncludedMaps.HasElement(i)) continue;
-		vecPossibleMaps.AddToTail(i);
+		if (std::find(vecIncludedMaps.begin(), vecIncludedMaps.end(), i) != vecIncludedMaps.end()) continue;
+		vecPossibleMaps.push_back(i);
 	}
 
 	// Print all available maps out to console
-	FOR_EACH_VEC(vecPossibleMaps, i)
+	for (int i = 0; i < vecPossibleMaps.size(); i++)
 	{
 		int iPossibleMapIndex = vecPossibleMaps[i];
 		Message("The %d-th possible map index %d is %s\n", i, iPossibleMapIndex, m_vecMapList[iPossibleMapIndex].GetName());
 	}
 
 	// Set the maps in the vote: merge nominated and possible maps, then randomly sort
-	int iNumMapsInVote = vecPossibleMaps.Count() + vecIncludedMaps.Count();
+	int iNumMapsInVote = vecPossibleMaps.size() + vecIncludedMaps.size();
 	if (iNumMapsInVote >= 10) iNumMapsInVote = 10;
-	while (vecIncludedMaps.Count() < iNumMapsInVote && vecPossibleMaps.Count() > 0)
+	while (vecIncludedMaps.size() < iNumMapsInVote && vecPossibleMaps.size() > 0)
 	{
-		int iMapToAdd = vecPossibleMaps[rand() % vecPossibleMaps.Count()];
-		vecIncludedMaps.AddToTail(iMapToAdd);
-		vecPossibleMaps.FindAndRemove(iMapToAdd);
+		int iMapToAdd = vecPossibleMaps[rand() % vecPossibleMaps.size()];
+		vecIncludedMaps.push_back(iMapToAdd);
+		std::erase_if(vecPossibleMaps, [iMapToAdd](int i) { return i == iMapToAdd; });
 	}
 
 	// Randomly sort the chosen maps
@@ -389,9 +379,9 @@ void CMapVoteSystem::StartVote()
 	{
 		if (i < iNumMapsInVote)
 		{
-			int iMapToAdd = vecIncludedMaps[rand() % vecIncludedMaps.Count()];
+			int iMapToAdd = vecIncludedMaps[rand() % vecIncludedMaps.size()];
 			g_pGameRules->m_nEndMatchMapGroupVoteOptions[i] = iMapToAdd;
-			vecIncludedMaps.FindAndRemove(iMapToAdd);
+			std::erase_if(vecIncludedMaps, [iMapToAdd](int i) { return i == iMapToAdd; });
 		}
 		else
 		{
@@ -578,35 +568,45 @@ int CMapVoteSystem::WinningMapIndex()
 	return -1;
 }
 
-void CMapVoteSystem::GetNominatedMapsForVote(CUtlVector<int>& vecChosenNominatedMaps)
+std::unordered_map<int, int> CMapVoteSystem::GetNominatedMaps()
 {
-	std::unordered_map<int, int> mapAvailableNominatedMaps;
+	std::unordered_map<int, int> mapNominatedMaps;
 
 	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 		int iNominatedMapIndex = m_arrPlayerNominations[i];
 
 		// Introduce nominated map indexes and count the total number
-		if (iNominatedMapIndex != -1)
-			++mapAvailableNominatedMaps[iNominatedMapIndex];
+		if (iNominatedMapIndex != -1 && pController && pController->IsConnected() && IsMapIndexEnabled(iNominatedMapIndex))
+			++mapNominatedMaps[iNominatedMapIndex];
 	}
 
-	int iMapsToIncludeInNominate = (mapAvailableNominatedMaps.size() < m_iMaxNominatedMaps) ? mapAvailableNominatedMaps.size() : m_iMaxNominatedMaps;
-	std::vector<int> vecTiedNominations;
+	return mapNominatedMaps;
+}
+
+std::vector<int> CMapVoteSystem::GetNominatedMapsForVote()
+{
+	std::unordered_map<int, int> mapOriginalNominatedMaps = GetNominatedMaps(); // Original nominations map
+	std::unordered_map<int, int> mapAvailableNominatedMaps(mapOriginalNominatedMaps); // A copy of the map that we can remove from without worry
+	std::vector<int> vecTiedNominations; // Nominations with tied vote counts
+	std::vector<int> vecChosenNominatedMaps; // Final vector of chosen nominations
+	int iMapsToIncludeInNominate = (mapOriginalNominatedMaps.size() < m_iMaxNominatedMaps) ? mapOriginalNominatedMaps.size() : m_iMaxNominatedMaps;
+	int iMostNominations;
 	auto rng = std::default_random_engine{std::random_device{}()};
 
 	// Select top maps by number of nominations
-	while (vecChosenNominatedMaps.Count() < iMapsToIncludeInNominate)
+	while (vecChosenNominatedMaps.size() < iMapsToIncludeInNominate)
 	{
 		if (vecTiedNominations.size() == 0)
 		{
 			// Find highest nomination count
-			int iMostNominations = std::max_element(
-									   mapAvailableNominatedMaps.begin(), mapAvailableNominatedMaps.end(),
-									   [](const std::pair<int, int>& p1, const std::pair<int, int>& p2) {
-										   return p1.second < p2.second;
-									   })
-									   ->second;
+			iMostNominations = std::max_element(
+								   mapAvailableNominatedMaps.begin(), mapAvailableNominatedMaps.end(),
+								   [](const std::pair<int, int>& p1, const std::pair<int, int>& p2) {
+									   return p1.second < p2.second;
+								   })
+								   ->second;
 
 			// Copy the most nominated maps to a new vector
 			for (auto pair : mapAvailableNominatedMaps)
@@ -618,10 +618,40 @@ void CMapVoteSystem::GetNominatedMapsForVote(CUtlVector<int>& vecChosenNominated
 		}
 
 		// Pick map from front of vector, and remove from both sources
-		vecChosenNominatedMaps.AddToTail(vecTiedNominations.front());
+		vecChosenNominatedMaps.push_back(vecTiedNominations.front());
 		mapAvailableNominatedMaps.erase(vecTiedNominations.front());
 		vecTiedNominations.erase(vecTiedNominations.begin());
 	}
+
+	// Notify nomination owners about the state of their nominations
+	for (int i = 0; i < gpGlobals->maxClients; i++)
+	{
+		int iNominatedMapIndex = m_arrPlayerNominations[i];
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
+
+		if (!pController || !pController->IsConnected())
+			continue;
+
+		// Ignore unset nominations (negative index)
+		if (iNominatedMapIndex < 0)
+			continue;
+
+		int iVotes = mapOriginalNominatedMaps[iNominatedMapIndex];
+		// At this point, iMostNominations represents vote count of last map to make the map vote
+		int iVotesNeeded = iMostNominations - iVotes;
+
+		// Bad RNG, needed 1 more for guaranteed selection then
+		if (iVotesNeeded == 0)
+			iVotesNeeded = 1;
+
+		if (std::find(vecChosenNominatedMaps.begin(), vecChosenNominatedMaps.end(), iNominatedMapIndex) != vecChosenNominatedMaps.end())
+			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Your \x06%s\x01 nomination made it to the map vote with \x06%i vote%s\x01.", GetMapName(iNominatedMapIndex), iVotes, iVotes > 1 ? "s" : "");
+		else
+			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Your \x06%s\x01 nomination failed to make the map vote, it needed \x06%i more vote%s\x01 for a total of \x06%i votes\x01.",
+						GetMapName(iNominatedMapIndex), iVotesNeeded, iVotesNeeded > 1 ? "s" : "", iVotes + iVotesNeeded);
+	}
+
+	return vecChosenNominatedMaps;
 }
 
 std::vector<int> CMapVoteSystem::GetMapIndexesFromSubstring(const char* sMapSubstring)
@@ -783,7 +813,9 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 	}
 
 	m_arrPlayerNominations[iSlot] = iFoundIndex;
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01was nominated by %s. It now has %d nomination%s.", GetMapName(iFoundIndex), pController->GetPlayerName(), GetTotalNominations(iFoundIndex), GetTotalNominations(iFoundIndex) > 1 ? "s" : "");
+	int iNominations = GetTotalNominations(iFoundIndex);
+
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01was nominated by %s. It now has %d nomination%s.", GetMapName(iFoundIndex), pController->GetPlayerName(), iNominations, iNominations > 1 ? "s" : "");
 	pPlayer->SetNominateTime(gpGlobals->curtime);
 }
 
