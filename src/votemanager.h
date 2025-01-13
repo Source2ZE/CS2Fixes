@@ -68,6 +68,7 @@ public:
 	bool VoteExtendEndCallback(YesNoVoteInfo info);
 	void StartExtendVote(int iCaller);
 	void OnRoundEnd();
+	bool CheckRTVStatus();
 
 	ERTVState GetRTVState() { return m_RTVState; }
 	EExtendState GetExtendState() { return m_ExtendState; }
