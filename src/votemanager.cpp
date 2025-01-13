@@ -551,7 +551,7 @@ CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Timeleft: %i seconds", iSecondsLeft);
 }
 
-void CVoteManager::ExtendMap(int iMinutes)
+void CVoteManager::ExtendMap(int iMinutes, bool bAllowExtraTime)
 {
 	// CONVAR_TODO
 	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
@@ -560,17 +560,13 @@ void CVoteManager::ExtendMap(int iMinutes)
 	// HACK: values is actually the cvar value itself, hence this ugly cast.
 	float flTimelimit = *(float*)&cvar->values;
 
-	if (gpGlobals->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
+	if (bAllowExtraTime && gpGlobals->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
 		flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime) / 60.0f + iMinutes;
 	else
-	{
-		if (flTimelimit == 1)
-			flTimelimit = 0;
 		flTimelimit += iMinutes;
-	}
 
 	if (flTimelimit <= 0)
-		flTimelimit = 1;
+		flTimelimit = 0.01f;
 
 	char buf[32];
 	V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit);
