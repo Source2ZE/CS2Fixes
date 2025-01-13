@@ -230,12 +230,9 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 			return;
 	}
 
-	int iCurrentRTVCount = g_pVoteManager->GetCurrentRTVCount();
-	int iNeededRTVCount = g_pVoteManager->GetNeededRTVCount();
-
 	if (pPlayer->GetRTVVote())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already rocked the vote (%i voted, %i needed).", iCurrentRTVCount, iNeededRTVCount);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already rocked the vote (%i voted, %i needed).", g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
 		return;
 	}
 
@@ -246,41 +243,11 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 		return;
 	}
 
-	if (iCurrentRTVCount + 1 >= iNeededRTVCount)
-	{
-		g_pVoteManager->SetRTVState(ERTVState::POST_RTV_SUCCESSFULL);
-		g_pVoteManager->SetExtendState(EExtendState::POST_RTV);
-		// CONVAR_TODO
-		g_pEngineServer2->ServerCommand("mp_timelimit 0.01");
-
-		if (g_bRTVEndRound)
-		{
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! Ending the map now...");
-
-			new CTimer(3.0f, false, true, []() {
-				g_pGameRules->TerminateRound(5.0f, CSRoundEndReason::Draw);
-
-				return -1.0f;
-			});
-		}
-		else
-		{
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! This is the last round of the map!");
-		}
-
-		for (int i = 0; i < gpGlobals->maxClients; i++)
-		{
-			ZEPlayer* pPlayer2 = g_playerManager->GetPlayer(i);
-			if (pPlayer2)
-				pPlayer2->SetRTVVote(false);
-		}
-
-		return;
-	}
-
 	pPlayer->SetRTVVote(true);
 	pPlayer->SetRTVVoteTime(gpGlobals->curtime);
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i needed).", player->GetPlayerName(), iCurrentRTVCount + 1, iNeededRTVCount);
+
+	if (!g_pVoteManager->CheckRTVStatus())
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i needed).", player->GetPlayerName(), g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
 }
 
 CON_COMMAND_CHAT(unrtv, "- Remove your vote to end the current map sooner")
@@ -750,4 +717,47 @@ void CVoteManager::OnRoundEnd()
 		m_RTVState = ERTVState::POST_LAST_ROUND_END;
 		m_ExtendState = EExtendState::POST_LAST_ROUND_END;
 	}
+}
+
+bool CVoteManager::CheckRTVStatus()
+{
+	if (!g_bVoteManagerEnable || m_RTVState != ERTVState::RTV_ALLOWED)
+		return false;
+
+	int iCurrentRTVCount = GetCurrentRTVCount();
+	int iNeededRTVCount = GetNeededRTVCount();
+
+	if (iCurrentRTVCount >= iNeededRTVCount)
+	{
+		m_RTVState = ERTVState::POST_RTV_SUCCESSFULL;
+		m_ExtendState = EExtendState::POST_RTV;
+		// CONVAR_TODO
+		g_pEngineServer2->ServerCommand("mp_timelimit 0.01");
+
+		if (g_bRTVEndRound)
+		{
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! Ending the map now...");
+
+			new CTimer(3.0f, false, true, []() {
+				g_pGameRules->TerminateRound(5.0f, CSRoundEndReason::Draw);
+
+				return -1.0f;
+			});
+		}
+		else
+		{
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! This is the last round of the map!");
+		}
+
+		for (int i = 0; i < gpGlobals->maxClients; i++)
+		{
+			ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+			if (pPlayer)
+				pPlayer->SetRTVVote(false);
+		}
+
+		return true;
+	}
+
+	return false;
 }

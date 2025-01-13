@@ -34,6 +34,7 @@
 #include "user_preferences.h"
 #include "utils/entity.h"
 #include "utlstring.h"
+#include "votemanager.h"
 #include <../cs2fixes.h>
 
 #include "tier0/memdbgon.h"
@@ -643,6 +644,12 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
 	g_pMapVoteSystem->ClearInvalidNominations();
+
+	// One tick delay, to ensure player count decrements
+	new CTimer(0.01f, false, true, []() {
+		g_pVoteManager->CheckRTVStatus();
+		return -1.0f;
+	});
 
 	g_pPanoramaVoteHandler->RemovePlayerFromVote(slot.Get());
 }
