@@ -92,7 +92,7 @@ class MMSPluginConfig(object):
     if builder.options.targets:
       target_archs = builder.options.targets.split(',')
     else:
-      target_archs = ['x86', 'x86_64']
+      target_archs = ['x86_64']
 
     for arch in target_archs:
         try:
