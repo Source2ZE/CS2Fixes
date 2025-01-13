@@ -587,10 +587,10 @@ std::unordered_map<int, int> CMapVoteSystem::GetNominatedMaps()
 
 std::vector<int> CMapVoteSystem::GetNominatedMapsForVote()
 {
-	std::unordered_map<int, int> mapOriginalNominatedMaps = GetNominatedMaps(); // Original nominations map
+	std::unordered_map<int, int> mapOriginalNominatedMaps = GetNominatedMaps();		  // Original nominations map
 	std::unordered_map<int, int> mapAvailableNominatedMaps(mapOriginalNominatedMaps); // A copy of the map that we can remove from without worry
-	std::vector<int> vecTiedNominations; // Nominations with tied vote counts
-	std::vector<int> vecChosenNominatedMaps; // Final vector of chosen nominations
+	std::vector<int> vecTiedNominations;											  // Nominations with tied vote counts
+	std::vector<int> vecChosenNominatedMaps;										  // Final vector of chosen nominations
 	int iMapsToIncludeInNominate = (mapOriginalNominatedMaps.size() < m_iMaxNominatedMaps) ? mapOriginalNominatedMaps.size() : m_iMaxNominatedMaps;
 	int iMostNominations;
 	auto rng = std::default_random_engine{std::random_device{}()};
@@ -1035,7 +1035,7 @@ bool CMapVoteSystem::LoadMapList()
 	}
 
 	new CTimer(0.f, true, true, []() {
-		if (g_pMapVoteSystem->m_DownloadQueue.Count() == 0)
+		if (g_pMapVoteSystem->GetDownloadQueueSize() == 0)
 			return -1.f;
 
 		g_pMapVoteSystem->PrintDownloadProgress();
