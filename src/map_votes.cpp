@@ -186,11 +186,6 @@ CON_COMMAND_CHAT_FLAGS(setnextmap, "[name/id] - Force next map (empty to clear f
 	g_pMapVoteSystem->ForceNextMap(player, args.ArgC() < 2 ? "" : args[1]);
 }
 
-static int __cdecl OrderStringsLexicographically(const MapIndexPair* a, const MapIndexPair* b)
-{
-	return V_strcasecmp(a->name, b->name);
-}
-
 CON_COMMAND_CHAT(nominate, "[mapname] - Nominate a map (empty to clear nomination or list all maps)")
 {
 	if (!g_bVoteManagerEnable || !player)
@@ -249,7 +244,7 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of maps in cooldown will be shown in console.");
 	ClientPrint(player, HUD_PRINTCONSOLE, "The list of maps in cooldown is:");
 
-	std::sort(vecCooldowns.begin(), vecCooldowns.end(), [](auto& left, auto& right) {
+	std::sort(vecCooldowns.begin(), vecCooldowns.end(), [](auto left, auto right) {
 		return left.second < right.second;
 	});
 
@@ -285,13 +280,13 @@ GAME_EVENT_F(endmatch_mapvote_selecting_map)
 
 bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
 {
-	if (iMapIndex >= m_vecMapList.Count() || iMapIndex < 0) return false;
+	if (iMapIndex >= GetMapListSize() || iMapIndex < 0) return false;
 	if (GetCooldownMap(iMapIndex) > 0 || GetCurrentMapIndex() == iMapIndex) return false;
-	if (!m_vecMapList[iMapIndex].IsEnabled()) return false;
+	if (!m_vecMapList[iMapIndex]->IsEnabled()) return false;
 
 	int iOnlinePlayers = g_playerManager->GetOnlinePlayerCount(false);
-	bool bMeetsMaxPlayers = iOnlinePlayers <= m_vecMapList[iMapIndex].GetMaxPlayers();
-	bool bMeetsMinPlayers = iOnlinePlayers >= m_vecMapList[iMapIndex].GetMinPlayers();
+	bool bMeetsMaxPlayers = iOnlinePlayers <= GetMapMaxPlayers(iMapIndex);
+	bool bMeetsMinPlayers = iOnlinePlayers >= GetMapMinPlayers(iMapIndex);
 	return bMeetsMaxPlayers && bMeetsMinPlayers;
 }
 
@@ -350,18 +345,15 @@ void CMapVoteSystem::StartVote()
 	// Select random maps not in cooldown, not disabled, and not nominated
 	std::vector<int> vecPossibleMaps;
 	std::vector<int> vecIncludedMaps = GetNominatedMapsForVote();
-	for (int i = 0; i < m_vecMapList.Count(); i++)
-	{
-		if (!IsMapIndexEnabled(i)) continue;
-		if (std::find(vecIncludedMaps.begin(), vecIncludedMaps.end(), i) != vecIncludedMaps.end()) continue;
-		vecPossibleMaps.push_back(i);
-	}
+	for (int i = 0; i < GetMapListSize(); i++)
+		if (std::find(vecIncludedMaps.begin(), vecIncludedMaps.end(), i) == vecIncludedMaps.end())
+			vecPossibleMaps.push_back(i);
 
 	// Print all available maps out to console
 	for (int i = 0; i < vecPossibleMaps.size(); i++)
 	{
 		int iPossibleMapIndex = vecPossibleMaps[i];
-		Message("The %d-th possible map index %d is %s\n", i, iPossibleMapIndex, m_vecMapList[iPossibleMapIndex].GetName());
+		Message("The %d-th possible map index %d is %s\n", i, iPossibleMapIndex, GetMapName(iPossibleMapIndex));
 	}
 
 	// Set the maps in the vote: merge nominated and possible maps, then randomly sort
@@ -393,7 +385,7 @@ void CMapVoteSystem::StartVote()
 	for (int i = 0; i < iNumMapsInVote; i++)
 	{
 		int iMapIndex = g_pGameRules->m_nEndMatchMapGroupVoteOptions[i];
-		Message("The %d-th chosen map index %d is %s\n", i, iMapIndex, m_vecMapList[iMapIndex].GetName());
+		Message("The %d-th chosen map index %d is %s\n", i, iMapIndex, GetMapName(iMapIndex));
 	}
 
 	// Start the end-of-vote timer to finish the vote
@@ -505,7 +497,7 @@ bool CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption
 
 	// Filter out votes on invalid maps
 	int iMapIndexToVote = g_pGameRules->m_nEndMatchMapGroupVoteOptions[iVoteOption];
-	if (iMapIndexToVote < 0 || iMapIndexToVote >= m_vecMapList.Count()) return false;
+	if (iMapIndexToVote < 0 || iMapIndexToVote >= GetMapListSize()) return false;
 
 	// Set the vote for the player
 	int iSlot = pController->GetPlayerSlot();
@@ -658,11 +650,9 @@ std::vector<int> CMapVoteSystem::GetMapIndexesFromSubstring(const char* sMapSubs
 {
 	std::vector<int> vecMaps;
 
-	FOR_EACH_VEC(m_vecMapList, i)
-	{
-		if (V_stristr(m_vecMapList[i].GetName(), sMapSubstring))
+	for (int i = 0; i < GetMapListSize(); i++)
+		if (V_stristr(GetMapName(i), sMapSubstring))
 			vecMaps.push_back(i);
-	}
 
 	return vecMaps;
 }
@@ -710,11 +700,9 @@ uint64 CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, c
 
 int CMapVoteSystem::GetMapIndexFromString(const char* sMapString)
 {
-	FOR_EACH_VEC(m_vecMapList, i)
-	{
-		if (!V_strcasecmp(m_vecMapList[i].GetName(), sMapString))
+	for (int i = 0; i < GetMapListSize(); i++)
+		if (!V_strcasecmp(GetMapName(i), sMapString))
 			return i;
-	}
 
 	return -1;
 }
@@ -821,28 +809,24 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 
 void CMapVoteSystem::PrintMapList(CCSPlayerController* pController)
 {
-	CUtlVector<MapIndexPair> vecMapNames;
+	std::vector<std::pair<int, std::string>> vecSortedMaps;
 	int iPlayerCount = g_playerManager->GetOnlinePlayerCount(false);
 
 	for (int i = 0; i < GetMapListSize(); i++)
-	{
-		if (!GetMapEnabledStatus(i))
-			continue;
+		if (GetMapEnabledStatus(i))
+			vecSortedMaps.push_back(std::make_pair(i, GetMapName(i)));
 
-		MapIndexPair map;
-		map.name = GetMapName(i);
-		map.index = i;
-		vecMapNames.AddToTail(map);
-	}
+	std::sort(vecSortedMaps.begin(), vecSortedMaps.end(), [](auto left, auto right) {
+		return V_strcasecmp(right.second.c_str(), left.second.c_str()) > 0;
+	});
 
-	vecMapNames.Sort(OrderStringsLexicographically);
 	ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
 	ClientPrint(pController, HUD_PRINTCONSOLE, "The list of all maps is:");
 
-	FOR_EACH_VEC(vecMapNames, i)
+	for (std::pair<int, std::string> pair : vecSortedMaps)
 	{
-		const char* name = vecMapNames[i].name;
-		int mapIndex = vecMapNames[i].index;
+		int mapIndex = pair.first;
+		const char* name = pair.second.c_str();
 		int cooldown = GetCooldownMap(mapIndex);
 		int minPlayers = GetMapMinPlayers(mapIndex);
 		int maxPlayers = GetMapMaxPlayers(mapIndex);
@@ -888,19 +872,6 @@ void CMapVoteSystem::ForceNextMap(CCSPlayerController* pController, const char* 
 	// When found, print the map and store the forced map
 	m_iForcedNextMap = iFoundMap;
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01has been forced as the next map.\n", GetForcedNextMapName().c_str());
-}
-
-static int __cdecl OrderMapsByWorkshopId(const CMapInfo* a, const CMapInfo* b)
-{
-	int valueA = a->GetWorkshopId();
-	int valueB = b->GetWorkshopId();
-
-	if (valueA < valueB)
-		return -1;
-	else if (valueA == valueB)
-		return 0;
-	else
-		return 1;
 }
 
 void CMapVoteSystem::PrintDownloadProgress()
@@ -951,7 +922,7 @@ bool CMapVoteSystem::LoadMapList()
 {
 	// This is called when the Steam API is init'd, now is the time to register this
 	m_CallbackDownloadItemResult.Register(this, &CMapVoteSystem::OnMapDownloaded);
-	m_vecMapList.Purge();
+	m_vecMapList.clear();
 
 	const char* pszJsonPath = "addons/cs2fixes/configs/maplist.jsonc";
 	char szPath[MAX_PATH];
@@ -1029,7 +1000,7 @@ bool CMapVoteSystem::LoadMapList()
 					QueueMapDownload(iWorkshopId);
 
 				// We just append the maps to the map list
-				m_vecMapList.AddToTail(CMapInfo(sEntry.c_str(), iWorkshopId, bIsEnabled, iMinPlayers, iMaxPlayers, iBaseCooldown, iCurrentCooldown));
+				m_vecMapList.push_back(std::make_shared<CMapInfo>(sEntry.c_str(), iWorkshopId, bIsEnabled, iMinPlayers, iMaxPlayers, iBaseCooldown, iCurrentCooldown));
 			}
 		}
 	}
@@ -1043,18 +1014,15 @@ bool CMapVoteSystem::LoadMapList()
 		return 1.f;
 	});
 
-	// Sort the map list by the workshop id
-	m_vecMapList.Sort(OrderMapsByWorkshopId);
-
-	// Print all the maps to show the order
-	FOR_EACH_VEC(m_vecMapList, i)
+	// Print all the maps
+	for (int i = 0; i < GetMapListSize(); i++)
 	{
-		CMapInfo map = m_vecMapList[i];
+		std::shared_ptr<CMapInfo> map = m_vecMapList[i];
 
-		if (map.GetWorkshopId() == 0)
-			ConMsg("Map %d is %s, which is %s. MinPlayers: %d MaxPlayers: %d Cooldown: %d\n", i, map.GetName(), map.IsEnabled() ? "enabled" : "disabled", map.GetMinPlayers(), map.GetMaxPlayers(), map.GetBaseCooldown());
+		if (map->GetWorkshopId() == 0)
+			ConMsg("Map %d is %s, which is %s. MinPlayers: %d MaxPlayers: %d Cooldown: %d\n", i, map->GetName(), map->IsEnabled() ? "enabled" : "disabled", map->GetMinPlayers(), map->GetMaxPlayers(), map->GetBaseCooldown());
 		else
-			ConMsg("Map %d is %s with workshop id %llu, which is %s. MinPlayers: %d MaxPlayers: %d Cooldown: %d\n", i, map.GetName(), map.GetWorkshopId(), map.IsEnabled() ? "enabled" : "disabled", map.GetMinPlayers(), map.GetMaxPlayers(), map.GetBaseCooldown());
+			ConMsg("Map %d is %s with workshop id %llu, which is %s. MinPlayers: %d MaxPlayers: %d Cooldown: %d\n", i, map->GetName(), map->GetWorkshopId(), map->IsEnabled() ? "enabled" : "disabled", map->GetMinPlayers(), map->GetMaxPlayers(), map->GetBaseCooldown());
 	}
 
 	m_bMapListLoaded = true;
@@ -1088,11 +1056,8 @@ CUtlStringList CMapVoteSystem::CreateWorkshopMapGroup()
 
 void CMapVoteSystem::DecrementAllMapCooldowns()
 {
-	FOR_EACH_VEC(m_vecMapList, i)
-	{
-		CMapInfo* pMap = &m_vecMapList[i];
-		pMap->DecrementCooldown();
-	}
+	for (std::shared_ptr<CMapInfo> map : m_vecMapList)
+		map->DecrementCooldown();
 }
 
 bool CMapVoteSystem::WriteMapCooldownsToFile()
@@ -1102,10 +1067,10 @@ bool CMapVoteSystem::WriteMapCooldownsToFile()
 
 	const char* pszPath = "addons/cs2fixes/data/cooldowns.txt";
 
-	FOR_EACH_VEC(m_vecMapList, i)
+	for (std::shared_ptr<CMapInfo> map : m_vecMapList)
 	{
-		std::string mapName = m_vecMapList[i].GetName();
-		const int mapCooldown = m_vecMapList[i].GetCooldown();
+		std::string mapName = map->GetName();
+		const int mapCooldown = map->GetCooldown();
 
 		for (int i = 0; mapName[i]; i++)
 			mapName[i] = tolower(mapName[i]);

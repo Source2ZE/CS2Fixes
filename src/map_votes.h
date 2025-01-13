@@ -37,7 +37,7 @@ class CMapInfo
 public:
 	CMapInfo(const char* pszName, uint64 iWorkshopId, bool bIsEnabled, int iMinPlayers, int iMaxPlayers, int iBaseCooldown, int iCurrentCooldown)
 	{
-		V_strcpy(m_pszName, pszName);
+		m_strName = pszName;
 		m_iWorkshopId = iWorkshopId;
 		m_bIsEnabled = bIsEnabled;
 		m_iBaseCooldown = iBaseCooldown;
@@ -46,7 +46,7 @@ public:
 		m_iMaxPlayers = iMaxPlayers;
 	}
 
-	const char* GetName() { return (const char*)m_pszName; };
+	const char* GetName() { return m_strName.c_str(); };
 	uint64 GetWorkshopId() const { return m_iWorkshopId; };
 	bool IsEnabled() { return m_bIsEnabled; };
 	int GetBaseCooldown() { return m_iBaseCooldown; };
@@ -57,7 +57,7 @@ public:
 	int GetMaxPlayers() { return m_iMaxPlayers; };
 
 private:
-	char m_pszName[64];
+	std::string m_strName;
 	uint64 m_iWorkshopId;
 	bool m_bIsEnabled;
 	int m_iMinPlayers;
@@ -65,12 +65,6 @@ private:
 	int m_iBaseCooldown;
 	int m_iCurrentCooldown;
 };
-
-typedef struct
-{
-	const char* name;
-	int index;
-} MapIndexPair;
 
 class CMapVoteSystem
 {
@@ -92,8 +86,8 @@ public:
 	std::vector<int> GetMapIndexesFromSubstring(const char* sMapSubstring);
 	uint64 HandlePlayerMapLookup(CCSPlayerController* pController, const char* sMapSubstring, bool bAllowWorkshopID = false);
 	int GetMapIndexFromString(const char* sMapString);
-	int GetCooldownMap(int iMapIndex) { return m_vecMapList[iMapIndex].GetCooldown(); };
-	void PutMapOnCooldown(int iMapIndex) { m_vecMapList[iMapIndex].ResetCooldownToBase(); };
+	int GetCooldownMap(int iMapIndex) { return m_vecMapList[iMapIndex]->GetCooldown(); };
+	void PutMapOnCooldown(int iMapIndex) { m_vecMapList[iMapIndex]->ResetCooldownToBase(); };
 	void DecrementAllMapCooldowns();
 	void SetMaxNominatedMaps(int iMaxNominatedMaps) { m_iMaxNominatedMaps = iMaxNominatedMaps; };
 	int GetMaxNominatedMaps() { return m_iMaxNominatedMaps; };
@@ -102,9 +96,9 @@ public:
 	bool IsMapIndexEnabled(int iMapIndex);
 	int GetTotalNominations(int iMapIndex);
 	void ForceNextMap(CCSPlayerController* pController, const char* sMapSubstring);
-	int GetMapListSize() { return m_vecMapList.Count(); };
-	const char* GetMapName(int iMapIndex) { return m_vecMapList[iMapIndex].GetName(); };
-	uint64 GetMapWorkshopId(int iMapIndex) { return m_vecMapList[iMapIndex].GetWorkshopId(); };
+	int GetMapListSize() { return m_vecMapList.size(); };
+	const char* GetMapName(int iMapIndex) { return m_vecMapList[iMapIndex]->GetName(); };
+	uint64 GetMapWorkshopId(int iMapIndex) { return m_vecMapList[iMapIndex]->GetWorkshopId(); };
 	void ClearPlayerInfo(int iSlot);
 	bool IsVoteOngoing() { return m_bIsVoteOngoing; }
 	bool IsIntermissionAllowed();
@@ -127,9 +121,9 @@ public:
 	int GetDownloadQueueSize() { return m_DownloadQueue.Count(); }
 	int GetCurrentMapIndex() { return m_iCurrentMapIndex; }
 	void SetCurrentMapIndex(int iMapIndex) { m_iCurrentMapIndex = iMapIndex; }
-	int GetMapMinPlayers(int iMapIndex) { return m_vecMapList[iMapIndex].GetMinPlayers(); }
-	int GetMapMaxPlayers(int iMapIndex) { return m_vecMapList[iMapIndex].GetMaxPlayers(); }
-	bool GetMapEnabledStatus(int iMapIndex) { return m_vecMapList[iMapIndex].IsEnabled(); }
+	int GetMapMinPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMinPlayers(); }
+	int GetMapMaxPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMaxPlayers(); }
+	bool GetMapEnabledStatus(int iMapIndex) { return m_vecMapList[iMapIndex]->IsEnabled(); }
 	int GetDefaultMapCooldown() { return m_iDefaultMapCooldown; }
 	void SetDefaultMapCooldown(int iMapCooldown) { m_iDefaultMapCooldown = iMapCooldown; }
 	void ClearInvalidNominations();
@@ -147,7 +141,7 @@ private:
 	STEAM_GAMESERVER_CALLBACK_MANUAL(CMapVoteSystem, OnMapDownloaded, DownloadItemResult_t, m_CallbackDownloadItemResult);
 	CUtlQueue<PublishedFileId_t> m_DownloadQueue;
 
-	CUtlVector<CMapInfo> m_vecMapList;
+	std::vector<std::shared_ptr<CMapInfo>> m_vecMapList;
 	int m_arrPlayerNominations[MAXPLAYERS];
 	uint64 m_iForcedNextMap = -1; // Can be a map index or a workshop ID
 	int m_iDefaultMapCooldown = 10;
