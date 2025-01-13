@@ -318,10 +318,11 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	g_pAdminSystem = new CAdminSystem();
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
-	g_pZRPlayerClassManager = new CZRPlayerClassManager();
 	g_pMapVoteSystem = new CMapVoteSystem();
+	g_pVoteManager = new CVoteManager();
 	g_pUserPreferencesSystem = new CUserPreferencesSystem();
 	g_pUserPreferencesStorage = new CUserPreferencesREST();
+	g_pZRPlayerClassManager = new CZRPlayerClassManager();
 	g_pZRWeaponConfig = new ZRWeaponConfig();
 	g_pZRHitgroupConfig = new ZRHitgroupConfig();
 	g_pEntityListener = new CEntityListener();
@@ -384,6 +385,9 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	if (g_iGoToIntermissionId != -1)
 		SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
 
+	if (g_iCGamePlayerEquipUseId != -1)
+		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
+
 	ConVar_Unregister();
 
 	g_CommandList.Purge();
@@ -393,17 +397,29 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	RemoveTimers();
 	UnregisterEventListeners();
 
-	if (g_playerManager)
-		delete g_playerManager;
+	if (g_GameConfig)
+		delete g_GameConfig;
 
 	if (g_pAdminSystem)
 		delete g_pAdminSystem;
 
+	if (g_playerManager)
+		delete g_playerManager;
+
 	if (g_pDiscordBotManager)
 		delete g_pDiscordBotManager;
 
-	if (g_GameConfig)
-		delete g_GameConfig;
+	if (g_pMapVoteSystem)
+		delete g_pMapVoteSystem;
+
+	if (g_pVoteManager)
+		delete g_pVoteManager;
+
+	if (g_pUserPreferencesSystem)
+		delete g_pUserPreferencesSystem;
+
+	if (g_pUserPreferencesStorage)
+		delete g_pUserPreferencesStorage;
 
 	if (g_pZRPlayerClassManager)
 		delete g_pZRPlayerClassManager;
@@ -414,12 +430,6 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	if (g_pZRHitgroupConfig)
 		delete g_pZRHitgroupConfig;
 
-	if (g_pUserPreferencesSystem)
-		delete g_pUserPreferencesSystem;
-
-	if (g_pUserPreferencesStorage)
-		delete g_pUserPreferencesStorage;
-
 	if (g_pEntityListener)
 		delete g_pEntityListener;
 
@@ -428,9 +438,6 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	if (g_pPanoramaVoteHandler)
 		delete g_pPanoramaVoteHandler;
-
-	if (g_iCGamePlayerEquipUseId != -1)
-		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
 
 	return true;
 }
@@ -543,7 +550,7 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	RegisterEventListeners();
 
 	g_pPanoramaVoteHandler->Reset();
-	VoteManager_Init();
+	g_pVoteManager->VoteManager_Init();
 
 	g_pIdleSystem->Reset();
 }

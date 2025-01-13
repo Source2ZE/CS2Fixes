@@ -280,22 +280,7 @@ GAME_EVENT_F(round_start)
 GAME_EVENT_F(round_end)
 {
 	if (g_bVoteManagerEnable)
-	{
-		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
-
-		// CONVAR_TODO
-		// HACK: values is actually the cvar value itself, hence this ugly cast.
-		float flTimelimit = *(float*)&cvar->values;
-
-		int iTimeleft = (int)((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - gpGlobals->curtime);
-
-		// check for end of last round
-		if (iTimeleft <= 0)
-		{
-			g_RTVState = ERTVState::POST_LAST_ROUND_END;
-			g_ExtendState = EExtendState::POST_LAST_ROUND_END;
-		}
-	}
+		g_pVoteManager->OnRoundEnd();
 
 	if (!g_bEnableTopDefender)
 		return;
