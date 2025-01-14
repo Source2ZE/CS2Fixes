@@ -85,7 +85,6 @@ public:
 	bool RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
 	std::vector<int> GetMapIndexesFromSubstring(const char* sMapSubstring);
 	uint64 HandlePlayerMapLookup(CCSPlayerController* pController, const char* sMapSubstring, bool bAllowWorkshopID = false);
-	int GetMapIndexFromString(const char* sMapString);
 	int GetCooldownMap(int iMapIndex) { return m_vecMapList[iMapIndex]->GetCooldown(); };
 	void PutMapOnCooldown(int iMapIndex) { m_vecMapList[iMapIndex]->ResetCooldownToBase(); };
 	void DecrementAllMapCooldowns();
@@ -106,21 +105,11 @@ public:
 	CUtlStringList CreateWorkshopMapGroup();
 	void QueueMapDownload(PublishedFileId_t iWorkshopId);
 	void PrintDownloadProgress();
-	void SetCurrentWorkshopMap(uint64 iCurrentWorkshopMap)
-	{
-		m_iCurrentWorkshopMap = iCurrentWorkshopMap;
-		m_strCurrentMap = "";
-	}
-	void SetCurrentMap(std::string strCurrentMap)
-	{
-		m_iCurrentWorkshopMap = 0;
-		m_strCurrentMap = strCurrentMap;
-	}
+	void SetCurrentWorkshopMap(uint64 iCurrentWorkshopMap) { m_iCurrentWorkshopMap = iCurrentWorkshopMap; }
 	uint64 GetCurrentWorkshopMap() { return m_iCurrentWorkshopMap; }
-	const char* GetCurrentMap() { return m_strCurrentMap.c_str(); }
 	int GetDownloadQueueSize() { return m_DownloadQueue.Count(); }
 	int GetCurrentMapIndex() { return m_iCurrentMapIndex; }
-	void SetCurrentMapIndex(int iMapIndex) { m_iCurrentMapIndex = iMapIndex; }
+	void UpdateCurrentMapIndex();
 	int GetMapMinPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMinPlayers(); }
 	int GetMapMaxPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMaxPlayers(); }
 	bool GetMapEnabledStatus(int iMapIndex) { return m_vecMapList[iMapIndex]->IsEnabled(); }
@@ -131,6 +120,7 @@ public:
 	std::string GetForcedNextMapName() { return GetForcedNextMap() > GetMapListSize() ? std::to_string(GetForcedNextMap()) : GetMapName(GetForcedNextMap()); }
 	bool ConvertMapListKVToJSON();
 	std::unordered_map<int, int> GetNominatedMaps();
+	void ApplyGameSettings(KeyValues* pKV);
 
 private:
 	int WinningMapIndex();
@@ -153,7 +143,6 @@ private:
 	bool m_bMapListLoaded = false;
 	bool m_bIntermissionStarted = false;
 	uint64 m_iCurrentWorkshopMap = 0;
-	std::string m_strCurrentMap = "";
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;
