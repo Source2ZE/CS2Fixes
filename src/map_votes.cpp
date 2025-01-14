@@ -24,6 +24,7 @@
 #include "entity/cgamerules.h"
 #include "eventlistener.h"
 #include "idlemanager.h"
+#include "iserver.h"
 #include "playermanager.h"
 #include "steam/steam_gameserver.h"
 #include "strtools.h"
@@ -42,6 +43,7 @@ extern IVEngineServer2* g_pEngineServer2;
 extern CSteamGameServerAPIContext g_steamAPI;
 extern IGameTypes* g_pGameTypes;
 extern CIdleSystem* g_pIdleSystem;
+extern INetworkGameServer* g_pNetworkGameServer;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
@@ -70,8 +72,8 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 
 	if (g_pMapVoteSystem->GetCurrentWorkshopMap() != 0)
 		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", g_pMapVoteSystem->GetCurrentWorkshopMap());
-	else if (g_pMapVoteSystem->GetCurrentMap()[0] != '\0')
-		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", g_pMapVoteSystem->GetCurrentMap());
+	else
+		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", g_pNetworkGameServer->GetMapName());
 
 	g_pEngineServer2->ServerCommand(sChangeMapCmd);
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Map list reloaded!");
@@ -308,8 +310,6 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 
 		return -1.0f;
 	});
-
-	SetCurrentMapIndex(GetMapIndexFromString(pMapName));
 }
 
 void CMapVoteSystem::StartVote()
@@ -581,7 +581,7 @@ std::vector<int> CMapVoteSystem::GetNominatedMapsForVote()
 {
 	std::unordered_map<int, int> mapOriginalNominatedMaps = GetNominatedMaps();		  // Original nominations map
 	std::unordered_map<int, int> mapAvailableNominatedMaps(mapOriginalNominatedMaps); // A copy of the map that we can remove from without worry
-	std::vector<int> vecTiedNominations;											  // Nominations with tied vote counts
+	std::vector<int> vecTiedNominations;											  // Nominations with tied nom counts
 	std::vector<int> vecChosenNominatedMaps;										  // Final vector of chosen nominations
 	int iMapsToIncludeInNominate = (mapOriginalNominatedMaps.size() < m_iMaxNominatedMaps) ? mapOriginalNominatedMaps.size() : m_iMaxNominatedMaps;
 	int iMostNominations;
@@ -628,19 +628,19 @@ std::vector<int> CMapVoteSystem::GetNominatedMapsForVote()
 		if (iNominatedMapIndex < 0)
 			continue;
 
-		int iVotes = mapOriginalNominatedMaps[iNominatedMapIndex];
-		// At this point, iMostNominations represents vote count of last map to make the map vote
-		int iVotesNeeded = iMostNominations - iVotes;
+		int iNominations = mapOriginalNominatedMaps[iNominatedMapIndex];
+		// At this point, iMostNominations represents nomination count of last map to make the map vote
+		int iNominationsNeeded = iMostNominations - iNominations;
 
 		// Bad RNG, needed 1 more for guaranteed selection then
-		if (iVotesNeeded == 0)
-			iVotesNeeded = 1;
+		if (iNominationsNeeded == 0)
+			iNominationsNeeded = 1;
 
 		if (std::find(vecChosenNominatedMaps.begin(), vecChosenNominatedMaps.end(), iNominatedMapIndex) != vecChosenNominatedMaps.end())
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Your \x06%s\x01 nomination made it to the map vote with \x06%i vote%s\x01.", GetMapName(iNominatedMapIndex), iVotes, iVotes > 1 ? "s" : "");
+			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Your \x06%s\x01 nomination made it to the map vote with \x06%i nomination%s\x01.", GetMapName(iNominatedMapIndex), iNominations, iNominations > 1 ? "s" : "");
 		else
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Your \x06%s\x01 nomination failed to make the map vote, it needed \x06%i more vote%s\x01 for a total of \x06%i votes\x01.",
-						GetMapName(iNominatedMapIndex), iVotesNeeded, iVotesNeeded > 1 ? "s" : "", iVotes + iVotesNeeded);
+			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Your \x06%s\x01 nomination failed to make the map vote, it needed \x06%i more nomination%s\x01 for a total of \x06%i nominations\x01.",
+						GetMapName(iNominatedMapIndex), iNominationsNeeded, iNominationsNeeded > 1 ? "s" : "", iNominations + iNominationsNeeded);
 	}
 
 	return vecChosenNominatedMaps;
@@ -694,15 +694,6 @@ uint64 CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, c
 	{
 		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching \x06%s\x01.", sMapSubstring);
 	}
-
-	return -1;
-}
-
-int CMapVoteSystem::GetMapIndexFromString(const char* sMapString)
-{
-	for (int i = 0; i < GetMapListSize(); i++)
-		if (!V_strcasecmp(GetMapName(i), sMapString))
-			return i;
 
 	return -1;
 }
@@ -831,10 +822,10 @@ void CMapVoteSystem::PrintMapList(CCSPlayerController* pController)
 		int minPlayers = GetMapMinPlayers(mapIndex);
 		int maxPlayers = GetMapMaxPlayers(mapIndex);
 
-		if (cooldown > 0)
-			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - Cooldown: %d", name, cooldown);
-		else if (mapIndex == GetCurrentMapIndex())
+		if (mapIndex == GetCurrentMapIndex())
 			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - Current Map", name);
+		else if (cooldown > 0)
+			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - Cooldown: %d", name, cooldown);
 		else if (iPlayerCount < minPlayers)
 			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - +%d Players", name, minPlayers - iPlayerCount);
 		else if (iPlayerCount > maxPlayers)
@@ -1112,6 +1103,31 @@ void CMapVoteSystem::ClearInvalidNominations()
 			ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "Your nomination for \x06%s \x01has been removed because the player count requirements are no longer met.", GetMapName(iNominatedMapIndex));
 		}
 	}
+}
+
+void CMapVoteSystem::UpdateCurrentMapIndex()
+{
+	for (int i = 0; i < GetMapListSize(); i++)
+	{
+		if (!V_strcasecmp(GetMapName(i), g_pNetworkGameServer->GetMapName()) || GetCurrentWorkshopMap() == GetMapWorkshopId(i))
+		{
+			m_iCurrentMapIndex = i;
+			break;
+		}
+	}
+}
+
+void CMapVoteSystem::ApplyGameSettings(KeyValues* pKV)
+{
+	if (!g_bVoteManagerEnable)
+		return;
+
+	if (pKV->FindKey("launchoptions") && pKV->FindKey("launchoptions")->FindKey("customgamemode"))
+		SetCurrentWorkshopMap(pKV->FindKey("launchoptions")->GetUint64("customgamemode"));
+	else
+		SetCurrentWorkshopMap(0);
+
+	UpdateCurrentMapIndex();
 }
 
 // TODO: remove this once servers have been given at least a few months to update cs2fixes

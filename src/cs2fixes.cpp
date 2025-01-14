@@ -898,13 +898,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 
 void CS2Fixes::Hook_ApplyGameSettings(KeyValues* pKV)
 {
-	if (!pKV->FindKey("launchoptions"))
-		return;
-
-	if (pKV->FindKey("launchoptions")->FindKey("customgamemode"))
-		g_pMapVoteSystem->SetCurrentWorkshopMap(pKV->FindKey("launchoptions")->GetUint64("customgamemode"));
-	else if (pKV->FindKey("launchoptions")->FindKey("levelname"))
-		g_pMapVoteSystem->SetCurrentMap(pKV->FindKey("launchoptions")->GetString("levelname"));
+	g_pMapVoteSystem->ApplyGameSettings(pKV);
 }
 
 void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList)
