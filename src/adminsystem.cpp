@@ -218,7 +218,7 @@ CON_COMMAND_CHAT_FLAGS(kick, "<name> - Kick a player", ADMFLAG_KICK)
 		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 		ZEPlayer* pTargetPlayer = pTarget->GetZEPlayer();
 
-		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot(), NETWORK_DISCONNECT_KICKED);
+		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot(), NETWORK_DISCONNECT_KICKED, "Kicked by an admin");
 
 		if (iNumClients == 1)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "kicked");
@@ -1406,7 +1406,7 @@ void CAdminSystem::ShowDisconnectedPlayers(CCSPlayerController* const pAdmin)
 
 void CBanInfraction::ApplyInfraction(ZEPlayer* player)
 {
-	g_pEngineServer2->DisconnectClient(player->GetPlayerSlot(), NETWORK_DISCONNECT_KICKBANADDED); // "Kicked and banned"
+	g_pEngineServer2->DisconnectClient(player->GetPlayerSlot(), NETWORK_DISCONNECT_KICKBANADDED, "Banned by an admin"); // "Kicked and banned"
 }
 
 void CMuteInfraction::ApplyInfraction(ZEPlayer* player)

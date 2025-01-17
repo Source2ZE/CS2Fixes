@@ -81,7 +81,7 @@ void CIdleSystem::CheckForIdleClients()
 		if (iClientNum < g_iMinClientsForIdleKicks)
 			continue;
 
-		g_pEngineServer2->DisconnectClient(zPlayer->GetPlayerSlot(), NETWORK_DISCONNECT_KICKED_IDLE);
+		g_pEngineServer2->DisconnectClient(zPlayer->GetPlayerSlot(), NETWORK_DISCONNECT_KICKED_IDLE, "Auto kicked for being idle");
 	}
 }
 

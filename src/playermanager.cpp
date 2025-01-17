@@ -721,7 +721,7 @@ void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pRespons
 					if (!hPlayer.IsValid())
 						return -1.f;
 
-					g_pEngineServer2->DisconnectClient(hPlayer.GetPlayerSlot(), NETWORK_DISCONNECT_KICKED_NOSTEAMLOGIN);
+					g_pEngineServer2->DisconnectClient(hPlayer.GetPlayerSlot(), NETWORK_DISCONNECT_KICKED_NOSTEAMLOGIN, "Auto kicked for failed steam authentication");
 					return -1.f;
 				});
 			}
