@@ -90,6 +90,8 @@ public:
 	void DecrementAllMapCooldowns();
 	void SetMaxNominatedMaps(int iMaxNominatedMaps) { m_iMaxNominatedMaps = iMaxNominatedMaps; };
 	int GetMaxNominatedMaps() { return m_iMaxNominatedMaps; };
+	void SetMaxVoteMaps(int iMaxVoteMaps) { m_iMaxVoteMaps = iMaxVoteMaps; };
+	int GetMaxVoteMaps() { return m_iMaxVoteMaps; };
 	void AttemptNomination(CCSPlayerController* pController, const char* sMapSubstring);
 	void PrintMapList(CCSPlayerController* pController);
 	bool IsMapIndexEnabled(int iMapIndex);
@@ -109,7 +111,7 @@ public:
 	uint64 GetCurrentWorkshopMap() { return m_iCurrentWorkshopMap; }
 	int GetDownloadQueueSize() { return m_DownloadQueue.Count(); }
 	int GetCurrentMapIndex() { return m_iCurrentMapIndex; }
-	void UpdateCurrentMapIndex();
+	void UpdateCurrentMapIndex(const char* pszMapName);
 	int GetMapMinPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMinPlayers(); }
 	int GetMapMaxPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMaxPlayers(); }
 	bool GetMapEnabledStatus(int iMapIndex) { return m_vecMapList[iMapIndex]->IsEnabled(); }
@@ -136,6 +138,7 @@ private:
 	uint64 m_iForcedNextMap = -1; // Can be a map index or a workshop ID
 	int m_iDefaultMapCooldown = 10;
 	int m_iMaxNominatedMaps = 10;
+	int m_iMaxVoteMaps = 10;
 	int m_iRandomWinnerShift = 0;
 	int m_arrPlayerVotes[MAXPLAYERS];
 	int m_iCurrentMapIndex = -1;
@@ -143,6 +146,7 @@ private:
 	bool m_bMapListLoaded = false;
 	bool m_bIntermissionStarted = false;
 	uint64 m_iCurrentWorkshopMap = 0;
+	int m_iVoteSize = 0;
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;
