@@ -18,6 +18,8 @@
 
 #include <netmessages.pb.h>
 #include <network_connection.pb.h>
+#undef min
+#undef max
 
 class CHLTVServer;
 class INetMessage;

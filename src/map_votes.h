@@ -25,6 +25,7 @@
 #include "utlqueue.h"
 #include "utlstring.h"
 #include "utlvector.h"
+#undef snprintf
 #include "vendor/nlohmann/json_fwd.hpp"
 #include <playerslot.h>
 #include <string>

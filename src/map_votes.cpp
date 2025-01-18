@@ -30,6 +30,7 @@
 #include "strtools.h"
 #include "utlstring.h"
 #include "utlvector.h"
+#undef snprintf
 #include "vendor/nlohmann/json.hpp"
 #include "votemanager.h"
 #include <fstream>
