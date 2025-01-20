@@ -25,7 +25,9 @@
 #include "entity/cbaseplayercontroller.h"
 #include "entity/cgamerules.h"
 #include "eventlistener.h"
+#include "idlemanager.h"
 #include "leader.h"
+#include "map_votes.h"
 #include "networkstringtabledefs.h"
 #include "panoramavote.h"
 #include "recipientfilters.h"
@@ -350,4 +352,12 @@ GAME_EVENT_F(bullet_impact)
 GAME_EVENT_F(vote_cast)
 {
 	g_pPanoramaVoteHandler->VoteCast(pEvent);
+}
+
+GAME_EVENT_F(cs_win_panel_match)
+{
+	g_pIdleSystem->PauseIdleChecks();
+
+	if (!g_pMapVoteSystem->IsVoteOngoing())
+		g_pMapVoteSystem->StartVote();
 }

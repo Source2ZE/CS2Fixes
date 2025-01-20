@@ -23,7 +23,6 @@
 #include "ctimer.h"
 #include "entity/cgamerules.h"
 #include "eventlistener.h"
-#include "idlemanager.h"
 #include "iserver.h"
 #include "playermanager.h"
 #include "steam/steam_gameserver.h"
@@ -43,7 +42,6 @@ extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
 extern CSteamGameServerAPIContext g_steamAPI;
 extern IGameTypes* g_pGameTypes;
-extern CIdleSystem* g_pIdleSystem;
 extern INetworkGameServer* g_pNetworkGameServer;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
@@ -279,18 +277,6 @@ CON_COMMAND_CHAT(nextmap, "- Check the next map if it was forced")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Next map is \x06%s\x01.", g_pMapVoteSystem->GetForcedNextMapName().c_str());
 }
 
-GAME_EVENT_F(cs_win_panel_match)
-{
-	if (!g_pMapVoteSystem->IsVoteOngoing())
-		g_pMapVoteSystem->StartVote();
-}
-
-GAME_EVENT_F(endmatch_mapvote_selecting_map)
-{
-	if (g_bVoteManagerEnable)
-		g_pMapVoteSystem->FinishVote();
-}
-
 bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
 {
 	if (iMapIndex >= GetMapListSize() || iMapIndex < 0) return false;
@@ -327,7 +313,6 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 void CMapVoteSystem::StartVote()
 {
 	m_bIsVoteOngoing = true;
-	g_pIdleSystem->PauseIdleChecks();
 
 	// Select random maps that meet requirements to appear
 	std::vector<int> vecPossibleMaps;
