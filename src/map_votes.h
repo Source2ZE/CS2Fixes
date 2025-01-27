@@ -36,13 +36,12 @@ using ordered_json = nlohmann::ordered_json;
 class CMapInfo
 {
 public:
-	CMapInfo(const char* pszName, uint64 iWorkshopId, bool bIsEnabled, int iMinPlayers, int iMaxPlayers, int iBaseCooldown, int iCurrentCooldown)
+	CMapInfo(const char* pszName, uint64 iWorkshopId, bool bIsEnabled, int iMinPlayers, int iMaxPlayers, float fCustomCooldown)
 	{
 		m_strName = pszName;
 		m_iWorkshopId = iWorkshopId;
 		m_bIsEnabled = bIsEnabled;
-		m_iBaseCooldown = iBaseCooldown;
-		m_iCurrentCooldown = iCurrentCooldown;
+		m_fCustomCooldown = fCustomCooldown;
 		m_iMinPlayers = iMinPlayers;
 		m_iMaxPlayers = iMaxPlayers;
 	}
@@ -50,10 +49,7 @@ public:
 	const char* GetName() { return m_strName.c_str(); };
 	uint64 GetWorkshopId() const { return m_iWorkshopId; };
 	bool IsEnabled() { return m_bIsEnabled; };
-	int GetBaseCooldown() { return m_iBaseCooldown; };
-	int GetCooldown() { return m_iCurrentCooldown; };
-	void ResetCooldownToBase() { m_iCurrentCooldown = m_iBaseCooldown; };
-	void DecrementCooldown() { m_iCurrentCooldown = MAX(0, (m_iCurrentCooldown - 1)); }
+	float GetCustomCooldown() { return m_fCustomCooldown; };
 	int GetMinPlayers() { return m_iMinPlayers; };
 	int GetMaxPlayers() { return m_iMaxPlayers; };
 
@@ -63,8 +59,7 @@ private:
 	bool m_bIsEnabled;
 	int m_iMinPlayers;
 	int m_iMaxPlayers;
-	int m_iBaseCooldown;
-	int m_iCurrentCooldown;
+	float m_fCustomCooldown;
 };
 
 class CMapVoteSystem
@@ -86,9 +81,13 @@ public:
 	bool RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
 	std::vector<int> GetMapIndexesFromSubstring(const char* sMapSubstring);
 	uint64 HandlePlayerMapLookup(CCSPlayerController* pController, const char* sMapSubstring, bool bAllowWorkshopID = false);
-	int GetCooldownMap(int iMapIndex) { return m_vecMapList[iMapIndex]->GetCooldown(); };
-	void PutMapOnCooldown(int iMapIndex) { m_vecMapList[iMapIndex]->ResetCooldownToBase(); };
-	void DecrementAllMapCooldowns();
+	int GetMapIndexFromString(const char* pszMapString);
+	float GetMapCurrentCooldown(const char* pszMapName);
+	float GetMapCurrentCooldown(int iMapIndex) { return GetMapCurrentCooldown(GetMapName(iMapIndex)); };
+	std::string GetMapCooldownText(const char* pszMapName, bool bPlural);
+	std::string GetMapCooldownText(int iMapIndex, bool bPlural) { return GetMapCooldownText(GetMapName(iMapIndex), bPlural); };
+	float GetMapCustomCooldown(int iMapIndex) { return m_vecMapList[iMapIndex]->GetCustomCooldown(); };
+	void PutMapOnCooldown(const char* pszMapName, float fCooldown = 0.0f);
 	void SetMaxNominatedMaps(int iMaxNominatedMaps) { m_iMaxNominatedMaps = iMaxNominatedMaps; };
 	int GetMaxNominatedMaps() { return m_iMaxNominatedMaps; };
 	void SetMaxVoteMaps(int iMaxVoteMaps) { m_iMaxVoteMaps = iMaxVoteMaps; };
@@ -116,14 +115,18 @@ public:
 	int GetMapMinPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMinPlayers(); }
 	int GetMapMaxPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMaxPlayers(); }
 	bool GetMapEnabledStatus(int iMapIndex) { return m_vecMapList[iMapIndex]->IsEnabled(); }
-	int GetDefaultMapCooldown() { return m_iDefaultMapCooldown; }
-	void SetDefaultMapCooldown(int iMapCooldown) { m_iDefaultMapCooldown = iMapCooldown; }
+	float GetDefaultMapCooldown() { return m_fDefaultMapCooldown; }
+	void SetDefaultMapCooldown(float fMapCooldown) { m_fDefaultMapCooldown = fMapCooldown; }
 	void ClearInvalidNominations();
 	uint64 GetForcedNextMap() { return m_iForcedNextMap; }
 	std::string GetForcedNextMapName() { return GetForcedNextMap() > GetMapListSize() ? std::to_string(GetForcedNextMap()) : GetMapName(GetForcedNextMap()); }
 	bool ConvertMapListKVToJSON();
 	std::unordered_map<int, int> GetNominatedMaps();
 	void ApplyGameSettings(KeyValues* pKV);
+	void OnLevelShutdown();
+	std::unordered_map<std::string, time_t> GetMapCooldowns() { return m_mapCooldowns; }
+	std::string ConvertFloatToString(float fValue, int precision);
+	void SetDisabledCooldowns(bool bValue) { g_bDisableCooldowns = bValue; } // Can be used by custom fork features, e.g. an auto-restart
 
 private:
 	int WinningMapIndex();
@@ -135,9 +138,10 @@ private:
 	CUtlQueue<PublishedFileId_t> m_DownloadQueue;
 
 	std::vector<std::shared_ptr<CMapInfo>> m_vecMapList;
+	std::unordered_map<std::string, time_t> m_mapCooldowns;
 	int m_arrPlayerNominations[MAXPLAYERS];
 	uint64 m_iForcedNextMap = -1; // Can be a map index or a workshop ID
-	int m_iDefaultMapCooldown = 10;
+	float m_fDefaultMapCooldown = 6.0f;
 	int m_iMaxNominatedMaps = 10;
 	int m_iMaxVoteMaps = 10;
 	int m_iRandomWinnerShift = 0;
@@ -148,6 +152,7 @@ private:
 	bool m_bIntermissionStarted = false;
 	uint64 m_iCurrentWorkshopMap = 0;
 	int m_iVoteSize = 0;
+	bool g_bDisableCooldowns = false;
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;
