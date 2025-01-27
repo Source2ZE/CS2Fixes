@@ -78,14 +78,14 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Map list reloaded!");
 }
 
-CON_COMMAND_F(cs2f_vote_maps_cooldown, "Default number of maps to wait until a map can be voted / nominated again i.e. cooldown", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+CON_COMMAND_F(cs2f_vote_maps_cooldown, "Default number of hours until a map can be played again i.e. cooldown", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
-	int iCurrentCooldown = g_pMapVoteSystem->GetDefaultMapCooldown();
+	float fCurrentCooldown = g_pMapVoteSystem->GetDefaultMapCooldown();
 
 	if (args.ArgC() < 2)
-		Msg("%s %d\n", args[0], iCurrentCooldown);
+		Msg("%s %f\n", args[0], fCurrentCooldown);
 	else
-		g_pMapVoteSystem->SetDefaultMapCooldown(V_StringToInt32(args[1], iCurrentCooldown));
+		g_pMapVoteSystem->SetDefaultMapCooldown(V_StringToFloat32(args[1], fCurrentCooldown));
 }
 
 CON_COMMAND_F(cs2f_vote_max_nominations, "Number of nominations to include per vote, out of a maximum of 10", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
@@ -235,16 +235,11 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 	if (!g_bVoteManagerEnable)
 		return;
 
-	int iMapCount = g_pMapVoteSystem->GetMapListSize();
-	std::vector<std::pair<std::string, int>> vecCooldowns;
+	std::vector<std::pair<std::string, time_t>> vecCooldowns;
 
-	for (int iMapIndex = 0; iMapIndex < iMapCount; iMapIndex++)
-	{
-		int iCooldown = g_pMapVoteSystem->GetCooldownMap(iMapIndex);
-
-		if (iCooldown > 0 && g_pMapVoteSystem->GetMapEnabledStatus(iMapIndex))
-			vecCooldowns.push_back(std::make_pair(g_pMapVoteSystem->GetMapName(iMapIndex), iCooldown));
-	}
+	for (auto pair : g_pMapVoteSystem->GetMapCooldowns())
+		if (pair.second > std::time(0))
+			vecCooldowns.push_back(pair);
 
 	if (vecCooldowns.size() == 0)
 	{
@@ -260,7 +255,7 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 	});
 
 	for (auto pair : vecCooldowns)
-		ClientPrint(player, HUD_PRINTCONSOLE, "- %s (%d maps remaining)", pair.first.c_str(), pair.second);
+		ClientPrint(player, HUD_PRINTCONSOLE, "- %s (%s remaining)", pair.first.c_str(), g_pMapVoteSystem->GetMapCooldownText(pair.first.c_str(), true).c_str());
 }
 
 CON_COMMAND_CHAT(nextmap, "- Check the next map if it was forced")
@@ -280,7 +275,7 @@ CON_COMMAND_CHAT(nextmap, "- Check the next map if it was forced")
 bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
 {
 	if (iMapIndex >= GetMapListSize() || iMapIndex < 0) return false;
-	if (GetCooldownMap(iMapIndex) > 0 || GetCurrentMapIndex() == iMapIndex) return false;
+	if (GetMapCurrentCooldown(iMapIndex) > 0.0f || GetCurrentMapIndex() == iMapIndex) return false;
 	if (!m_vecMapList[iMapIndex]->IsEnabled()) return false;
 
 	int iOnlinePlayers = g_playerManager->GetOnlinePlayerCount(false);
@@ -493,16 +488,6 @@ void CMapVoteSystem::FinishVote()
 			Message("- %s got %d votes\n", GetMapName(iMapIndex), arrMapVotes[i]);
 		}
 	}
-
-	// Put the map on cooldown as we transition to the next map if map index is valid, also decrease cooldown remaining for others
-	// Map index will be invalid for any map not added to maplist.cfg
-	DecrementAllMapCooldowns();
-
-	int iMapIndex = GetCurrentMapIndex();
-	if (iMapIndex >= 0 && iMapIndex < GetMapListSize())
-		PutMapOnCooldown(iMapIndex);
-
-	WriteMapCooldownsToFile();
 
 	// Wait a second and force-change the map
 	new CTimer(1.0, false, true, [iWinningMap]() {
@@ -737,6 +722,15 @@ void CMapVoteSystem::ClearPlayerInfo(int iSlot)
 	m_arrPlayerVotes[iSlot] = -1;
 }
 
+int CMapVoteSystem::GetMapIndexFromString(const char* pszMapString)
+{
+	for (int i = 0; i < GetMapListSize(); i++)
+		if (!V_strcasecmp(GetMapName(i), pszMapString))
+			return i;
+
+	return -1;
+}
+
 void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const char* sMapSubstring)
 {
 	int iSlot = pController->GetPlayerSlot();
@@ -796,9 +790,9 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 		return;
 	}
 
-	if (GetCooldownMap(iFoundIndex) > 0)
+	if (GetMapCurrentCooldown(iFoundIndex) > 0.0f)
 	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Cannot nominate \x06%s\x01 because it's on a %i map cooldown.", GetMapName(iFoundIndex), GetCooldownMap(iFoundIndex));
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Cannot nominate \x06%s\x01 because it's on a %s cooldown.", GetMapName(iFoundIndex), GetMapCooldownText(iFoundIndex, false).c_str());
 		return;
 	}
 
@@ -848,14 +842,13 @@ void CMapVoteSystem::PrintMapList(CCSPlayerController* pController)
 	{
 		int mapIndex = pair.first;
 		const char* name = pair.second.c_str();
-		int cooldown = GetCooldownMap(mapIndex);
 		int minPlayers = GetMapMinPlayers(mapIndex);
 		int maxPlayers = GetMapMaxPlayers(mapIndex);
 
 		if (mapIndex == GetCurrentMapIndex())
 			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - Current Map", name);
-		else if (cooldown > 0)
-			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - Cooldown: %d", name, cooldown);
+		else if (GetMapCurrentCooldown(mapIndex) > 0.0f)
+			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - Cooldown: %s", name, GetMapCooldownText(mapIndex, true).c_str());
 		else if (iPlayerCount < minPlayers)
 			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - +%d Players", name, minPlayers - iPlayerCount);
 		else if (iPlayerCount > maxPlayers)
@@ -976,18 +969,17 @@ bool CMapVoteSystem::LoadMapList()
 	if (!pKVcooldowns->LoadFromFile(g_pFullFileSystem, pszCooldownFilePath))
 		Message("Failed to load cooldown file at %s - resetting all cooldowns to 0\n", pszCooldownFilePath);
 
-	// KV1 has some funny behaviour with capitalization, to ensure consistency we can't directly lookup case-sensitive key names
-	std::unordered_map<std::string, int> mapCooldowns;
-
 	for (KeyValues* pKey = pKVcooldowns->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
 		std::string sMapName = pKey->GetName();
-		int iCooldown = pKey->GetInt();
+		time_t timeCooldown = pKey->GetUint64();
 
+		// KV1 has some funny behaviour with capitalization, to ensure consistency we can't directly lookup case-sensitive key names
 		for (int i = 0; sMapName[i]; i++)
 			sMapName[i] = tolower(sMapName[i]);
 
-		mapCooldowns[sMapName] = iCooldown;
+		if (timeCooldown > std::time(0))
+			m_mapCooldowns[sMapName] = timeCooldown;
 	}
 
 	for (auto& [sSection, jsonSection] : jsonMaps.items())
@@ -1014,14 +1006,13 @@ bool CMapVoteSystem::LoadMapList()
 				bool bIsEnabled = jsonEntry.value("enabled", true);
 				int iMinPlayers = jsonEntry.value("min_players", 0);
 				int iMaxPlayers = jsonEntry.value("max_players", 64);
-				int iBaseCooldown = jsonEntry.value("cooldown", m_iDefaultMapCooldown);
-				int iCurrentCooldown = mapCooldowns[sLowerName];
+				float fCooldown = jsonEntry.value("cooldown", 0.0f);
 
 				if (iWorkshopId != 0)
 					QueueMapDownload(iWorkshopId);
 
 				// We just append the maps to the map list
-				m_vecMapList.push_back(std::make_shared<CMapInfo>(sEntry.c_str(), iWorkshopId, bIsEnabled, iMinPlayers, iMaxPlayers, iBaseCooldown, iCurrentCooldown));
+				m_vecMapList.push_back(std::make_shared<CMapInfo>(sEntry.c_str(), iWorkshopId, bIsEnabled, iMinPlayers, iMaxPlayers, fCooldown));
 			}
 		}
 	}
@@ -1041,9 +1032,9 @@ bool CMapVoteSystem::LoadMapList()
 		std::shared_ptr<CMapInfo> map = m_vecMapList[i];
 
 		if (map->GetWorkshopId() == 0)
-			ConMsg("Map %d is %s, which is %s. MinPlayers: %d MaxPlayers: %d Cooldown: %d\n", i, map->GetName(), map->IsEnabled() ? "enabled" : "disabled", map->GetMinPlayers(), map->GetMaxPlayers(), map->GetBaseCooldown());
+			ConMsg("Map %d is %s, which is %s. MinPlayers: %d MaxPlayers: %d Cooldown: %f\n", i, map->GetName(), map->IsEnabled() ? "enabled" : "disabled", map->GetMinPlayers(), map->GetMaxPlayers(), map->GetCustomCooldown());
 		else
-			ConMsg("Map %d is %s with workshop id %llu, which is %s. MinPlayers: %d MaxPlayers: %d Cooldown: %d\n", i, map->GetName(), map->GetWorkshopId(), map->IsEnabled() ? "enabled" : "disabled", map->GetMinPlayers(), map->GetMaxPlayers(), map->GetBaseCooldown());
+			ConMsg("Map %d is %s with workshop id %llu, which is %s. MinPlayers: %d MaxPlayers: %d Custom Cooldown: %.2f\n", i, map->GetName(), map->GetWorkshopId(), map->IsEnabled() ? "enabled" : "disabled", map->GetMinPlayers(), map->GetMaxPlayers(), map->GetCustomCooldown());
 	}
 
 	m_bMapListLoaded = true;
@@ -1075,12 +1066,6 @@ CUtlStringList CMapVoteSystem::CreateWorkshopMapGroup()
 	return mapList;
 }
 
-void CMapVoteSystem::DecrementAllMapCooldowns()
-{
-	for (std::shared_ptr<CMapInfo> map : m_vecMapList)
-		map->DecrementCooldown();
-}
-
 bool CMapVoteSystem::WriteMapCooldownsToFile()
 {
 	KeyValues* pKV = new KeyValues("cooldowns");
@@ -1088,17 +1073,9 @@ bool CMapVoteSystem::WriteMapCooldownsToFile()
 
 	const char* pszPath = "addons/cs2fixes/data/cooldowns.txt";
 
-	for (std::shared_ptr<CMapInfo> map : m_vecMapList)
-	{
-		std::string mapName = map->GetName();
-		const int mapCooldown = map->GetCooldown();
-
-		for (int i = 0; mapName[i]; i++)
-			mapName[i] = tolower(mapName[i]);
-
-		if (mapCooldown > 0)
-			pKV->AddInt(mapName.c_str(), mapCooldown);
-	}
+	for (std::pair<std::string, time_t> pair : m_mapCooldowns)
+		if (pair.second > std::time(0))
+			pKV->AddUint64(pair.first.c_str(), pair.second);
 
 	if (!pKV->SaveToFile(g_pFullFileSystem, pszPath))
 	{
@@ -1164,6 +1141,108 @@ void CMapVoteSystem::ApplyGameSettings(KeyValues* pKV)
 		UpdateCurrentMapIndex(pKV->FindKey("launchoptions")->GetString("levelname"));
 	else
 		UpdateCurrentMapIndex("MISSING_MAP");
+}
+
+void CMapVoteSystem::OnLevelShutdown()
+{
+	// Put the map on cooldown as we transition to the next map
+	PutMapOnCooldown(g_pNetworkGameServer->GetMapName());
+	WriteMapCooldownsToFile();
+}
+
+float CMapVoteSystem::GetMapCurrentCooldown(const char* pszMapName)
+{
+	std::string sMapName = pszMapName;
+	time_t timeCurrent = std::time(0);
+
+	for (int i = 0; sMapName[i]; i++)
+		sMapName[i] = tolower(sMapName[i]);
+
+	if (!m_mapCooldowns.contains(sMapName))
+		return 0.0f;
+
+	time_t timeCooldown = m_mapCooldowns[sMapName];
+
+	if (timeCooldown < timeCurrent)
+		return 0.0f;
+
+	// Return decimal hours
+	return (timeCooldown - timeCurrent) / 60.0f / 60.0f;
+}
+
+std::string CMapVoteSystem::ConvertFloatToString(float fValue, int precision)
+{
+	std::stringstream stream;
+	stream.precision(precision);
+	stream << std::fixed << fValue;
+	std::string str = stream.str();
+
+	// Ensure that there is a decimal point somewhere (there should be)
+	if (str.find('.') != std::string::npos)
+	{
+		// Remove trailing zeroes
+		str = str.substr(0, str.find_last_not_of('0') + 1);
+		// If the decimal point is now the last character, remove that as well
+		if (str.find('.') == str.size() - 1)
+			str = str.substr(0, str.size() - 1);
+	}
+
+	return str;
+}
+
+std::string CMapVoteSystem::GetMapCooldownText(const char* pszMapName, bool bPlural)
+{
+	float fCooldown = GetMapCurrentCooldown(pszMapName);
+	float fValue;
+	std::string response;
+
+	if (fCooldown > 23.99f)
+	{
+		fValue = roundf(fCooldown / 24 * 100) / 100;
+		response = ConvertFloatToString(fValue, 2) + " day";
+	}
+	else if (fCooldown <= 0.995f)
+	{
+		fValue = roundf(fCooldown * 60);
+		response = ConvertFloatToString(fValue, 0) + " minute";
+	}
+	else
+	{
+		fValue = roundf(fCooldown * 100) / 100;
+		response = ConvertFloatToString(fValue, 2) + " hour";
+	}
+
+	if (bPlural && fValue != 1.0f)
+		response += "s";
+
+	return response;
+}
+
+void CMapVoteSystem::PutMapOnCooldown(const char* pszMapName, float fCooldown)
+{
+	if (g_bDisableCooldowns)
+		return;
+
+	std::string sMapName = pszMapName;
+	int iMapIndex = GetMapIndexFromString(pszMapName);
+
+	for (int i = 0; sMapName[i]; i++)
+		sMapName[i] = tolower(sMapName[i]);
+
+	// If custom cooldown wasn't passed, use the normal cooldown for this map
+	if (fCooldown == 0.0f)
+	{
+		if (iMapIndex != -1 && GetMapCustomCooldown(iMapIndex) != 0.0f)
+			fCooldown = GetMapCustomCooldown(iMapIndex);
+		else
+			fCooldown = GetDefaultMapCooldown();
+	}
+
+	time_t timeCooldown = std::time(0) + (time_t)(fCooldown * 60 * 60);
+
+	// Ensure we don't overwrite a longer cooldown
+	if (!m_mapCooldowns.contains(sMapName) || m_mapCooldowns[sMapName] < timeCooldown)
+		m_mapCooldowns[sMapName] = timeCooldown;
 }
 
 // TODO: remove this once servers have been given at least a few months to update cs2fixes

@@ -1065,10 +1065,11 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 		ZR_OnLevelInit();
 }
 
-// Potentially might not work
 void CS2Fixes::OnLevelShutdown()
 {
 	Message("OnLevelShutdown()\n");
+
+	g_pMapVoteSystem->OnLevelShutdown();
 }
 
 bool CS2Fixes::Pause(char* error, size_t maxlen)
