@@ -236,8 +236,11 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 	std::vector<std::pair<std::string, time_t>> vecCooldowns;
 
 	for (auto pair : g_pMapVoteSystem->GetMapCooldowns())
-		if (pair.second > std::time(0))
+	{
+		// Only print maps that are added to maplist.cfg
+		if (pair.second > std::time(0) && g_pMapVoteSystem->GetMapIndexFromString(pair.first.c_str()) != -1)
 			vecCooldowns.push_back(pair);
+	}
 
 	if (vecCooldowns.size() == 0)
 	{
@@ -253,11 +256,7 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 	});
 
 	for (auto pair : vecCooldowns)
-	{
-		// Only print maps that are added to maplist.cfg
-		if (g_pMapVoteSystem->GetMapIndexFromString(pair.first.c_str()) != -1)
-			ClientPrint(player, HUD_PRINTCONSOLE, "- %s (%s remaining)", pair.first.c_str(), g_pMapVoteSystem->GetMapCooldownText(pair.first.c_str(), true).c_str());
-	}
+		ClientPrint(player, HUD_PRINTCONSOLE, "- %s (%s remaining)", pair.first.c_str(), g_pMapVoteSystem->GetMapCooldownText(pair.first.c_str(), true).c_str());
 }
 
 CON_COMMAND_CHAT(nextmap, "- Check the next map if it was forced")
