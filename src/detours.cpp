@@ -560,6 +560,10 @@ void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayer
 
 CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6)
 {
+	// Not sure if this function can even be called in this state, but if it is, we can't do shit anyways
+	if (!GetClientList())
+		return nullptr;
+
 	// Check if there is still unused slots, this should never break so just fall back to original behaviour for ease (we don't have a CServerSideClient constructor)
 	if (gpGlobals->maxClients != GetClientList()->Count())
 		return GetFreeClient(unk1, unk2, unk3, unk4, unk5, unk6);

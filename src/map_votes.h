@@ -132,11 +132,13 @@ public:
 	CUtlStringList CreateWorkshopMapGroup();
 	void QueueMapDownload(PublishedFileId_t iWorkshopId);
 	void PrintDownloadProgress();
+	void SetCurrentMapName(const char* pszCurrentMap) { m_strCurrentMap = pszCurrentMap; }
+	const char* GetCurrentMapName() { return m_strCurrentMap.c_str(); }
 	void SetCurrentWorkshopMap(uint64 iCurrentWorkshopMap) { m_iCurrentWorkshopMap = iCurrentWorkshopMap; }
 	uint64 GetCurrentWorkshopMap() { return m_iCurrentWorkshopMap; }
 	int GetDownloadQueueSize() { return m_DownloadQueue.Count(); }
 	int GetCurrentMapIndex() { return m_iCurrentMapIndex; }
-	void UpdateCurrentMapIndex(const char* pszMapName);
+	void UpdateCurrentMapIndex();
 	int GetMapMinPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMinPlayers(); }
 	int GetMapMaxPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMaxPlayers(); }
 	bool GetMapEnabledStatus(int iMapIndex) { return m_vecMapList[iMapIndex]->IsEnabled(); }
@@ -180,6 +182,7 @@ private:
 	bool m_bMapListLoaded = false;
 	bool m_bIntermissionStarted = false;
 	uint64 m_iCurrentWorkshopMap = 0;
+	std::string m_strCurrentMap = "MISSING_MAP";
 	int m_iVoteSize = 0;
 	bool g_bDisableCooldowns = false;
 };
