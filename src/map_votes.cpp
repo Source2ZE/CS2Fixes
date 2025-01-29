@@ -272,6 +272,11 @@ CON_COMMAND_CHAT(nextmap, "- Check the next map if it was forced")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Next map is \x06%s\x01.", g_pMapVoteSystem->GetForcedNextMapName().c_str());
 }
 
+CON_COMMAND_CHAT(maplist, "- List the maps in the server")
+{
+	g_pMapVoteSystem->PrintMapList(player);
+}
+
 bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
 {
 	if (iMapIndex >= GetMapListSize() || iMapIndex < 0) return false;
