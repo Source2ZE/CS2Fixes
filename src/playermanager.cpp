@@ -1613,6 +1613,9 @@ int CPlayerManager::GetOnlinePlayerCount(bool bCountBots)
 {
 	int iOnlinePlayers = 0;
 
+	if (!GetClientList())
+		return iOnlinePlayers;
+
 	for (int i = 0; i < GetClientList()->Count(); i++)
 	{
 		CServerSideClient* pClient = (*GetClientList())[i];

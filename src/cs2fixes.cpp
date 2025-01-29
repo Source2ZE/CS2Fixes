@@ -124,7 +124,6 @@ CS2Fixes g_CS2Fixes;
 
 IGameEventSystem* g_gameEventSystem = nullptr;
 IGameEventManager2* g_gameEventManager = nullptr;
-INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGameEntitySystem* g_pEntitySystem = nullptr;
 CEntityListener* g_pEntityListener = nullptr;
 CGlobalVars* gpGlobals = nullptr;
@@ -311,7 +310,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		RegisterEventListeners();
 		g_pEntitySystem = GameEntitySystem();
 		g_pEntitySystem->AddListenerEntity(g_pEntityListener);
-		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 		gpGlobals = g_pEngineServer2->GetServerGlobals();
 	}
 
@@ -535,7 +533,6 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession* pSession, const char* pszMapName)
 {
-	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	g_pEntitySystem = GameEntitySystem();
 	g_pEntitySystem->AddListenerEntity(g_pEntityListener);
 	gpGlobals = g_pEngineServer2->GetServerGlobals();
@@ -656,11 +653,11 @@ void CS2Fixes::AllPluginsLoaded()
 
 CUtlVector<CServerSideClient*>* GetClientList()
 {
-	if (!g_pNetworkGameServer)
+	if (!g_pNetworkServerService->GetIGameServer())
 		return nullptr;
 
 	static int offset = g_GameConfig->GetOffset("CNetworkGameServer_ClientList");
-	return (CUtlVector<CServerSideClient*>*)(&g_pNetworkGameServer[offset]);
+	return (CUtlVector<CServerSideClient*>*)(&g_pNetworkServerService->GetIGameServer()[offset]);
 }
 
 CServerSideClient* GetClientBySlot(CPlayerSlot slot)
@@ -676,6 +673,9 @@ CServerSideClient* GetClientBySlot(CPlayerSlot slot)
 void FullUpdateAllClients()
 {
 	auto pClients = GetClientList();
+
+	if (!pClients)
+		return;
 
 	FOR_EACH_VEC(*pClients, i)
 	(*pClients)[i]->ForceFullUpdate();

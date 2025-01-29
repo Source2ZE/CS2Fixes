@@ -42,7 +42,6 @@ extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
 extern CSteamGameServerAPIContext g_steamAPI;
 extern IGameTypes* g_pGameTypes;
-extern INetworkGameServer* g_pNetworkGameServer;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
@@ -57,7 +56,7 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 		return;
 	}
 
-	if (!g_pMapVoteSystem->LoadMapList())
+	if (!g_pMapVoteSystem->LoadMapList() || !V_strcmp(g_pMapVoteSystem->GetCurrentMapName(), "MISSING_MAP"))
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to reload map list!");
 		return;
@@ -72,7 +71,7 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 	if (g_pMapVoteSystem->GetCurrentWorkshopMap() != 0)
 		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", g_pMapVoteSystem->GetCurrentWorkshopMap());
 	else
-		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", g_pNetworkGameServer->GetMapName());
+		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", g_pMapVoteSystem->GetCurrentMapName());
 
 	g_pEngineServer2->ServerCommand(sChangeMapCmd);
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Map list reloaded!");
@@ -1125,11 +1124,11 @@ void CMapVoteSystem::ClearInvalidNominations()
 	}
 }
 
-void CMapVoteSystem::UpdateCurrentMapIndex(const char* pszMapName)
+void CMapVoteSystem::UpdateCurrentMapIndex()
 {
 	for (int i = 0; i < GetMapListSize(); i++)
 	{
-		if (!V_strcasecmp(GetMapName(i), pszMapName) || (GetCurrentWorkshopMap() != 0 && GetCurrentWorkshopMap() == GetMapWorkshopId(i)))
+		if (!V_strcasecmp(GetMapName(i), GetCurrentMapName()) || (GetCurrentWorkshopMap() != 0 && GetCurrentWorkshopMap() == GetMapWorkshopId(i)))
 		{
 			m_iCurrentMapIndex = i;
 			return;
@@ -1149,19 +1148,19 @@ void CMapVoteSystem::ApplyGameSettings(KeyValues* pKV)
 	else
 		SetCurrentWorkshopMap(0);
 
-	// g_pNetworkGameServer is randomly null at this point (environment specific?..), so just fall back to getting map name from KV
 	if (pKV->FindKey("launchoptions") && pKV->FindKey("launchoptions")->FindKey("levelname"))
-		UpdateCurrentMapIndex(pKV->FindKey("launchoptions")->GetString("levelname"));
+		SetCurrentMapName(pKV->FindKey("launchoptions")->GetString("levelname"));
 	else
-		UpdateCurrentMapIndex("MISSING_MAP");
+		SetCurrentMapName("MISSING_MAP");
 
+	UpdateCurrentMapIndex();
 	ProcessGroupCooldowns();
 }
 
 void CMapVoteSystem::OnLevelShutdown()
 {
 	// Put the map on cooldown as we transition to the next map
-	PutMapOnCooldown(g_pNetworkGameServer->GetMapName());
+	PutMapOnCooldown(GetCurrentMapName());
 
 	// Fully apply pending group cooldowns
 	for (auto pair : m_mapPendingCooldowns)
