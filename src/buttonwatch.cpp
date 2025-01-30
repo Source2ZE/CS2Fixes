@@ -96,7 +96,7 @@ bool IsButtonWatchEnabled()
 std::map<int, bool> mapRecentEnts;
 void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
 {
-	if (!IsButtonWatchEnabled() || V_stricmp(pThis->m_pDesc->m_pName, "OnPressed") || !pActivator || !((CBaseEntity*)pActivator)->IsPawn() || !pCaller || mapRecentEnts.contains(pCaller->GetEntityIndex().Get()))
+	if (!IsButtonWatchEnabled() || !GetGlobals() || V_stricmp(pThis->m_pDesc->m_pName, "OnPressed") || !pActivator || !((CBaseEntity*)pActivator)->IsPawn() || !pCaller || mapRecentEnts.contains(pCaller->GetEntityIndex().Get()))
 		return;
 
 	CCSPlayerController* ccsPlayer = CCSPlayerController::FromPawn(static_cast<CCSPlayerPawn*>(pActivator));
@@ -112,7 +112,7 @@ void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEnt
 
 	std::string strButton = std::to_string(pCaller->GetEntityIndex().Get()) + " " + std::string(((CBaseEntity*)pCaller)->GetName());
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* ccsPlayer = CCSPlayerController::FromSlot(i);
 		if (!ccsPlayer)

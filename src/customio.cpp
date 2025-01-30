@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 
 struct AddOutputKey_t
 {
@@ -414,13 +414,16 @@ FAKE_FLOAT_CVAR(cs2f_burn_interval, "The interval between burn damage ticks", g_
 
 bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor, CBaseEntity* pAttacker, CBaseEntity* pAbility, DamageTypes_t nDamageType)
 {
+	if (!GetGlobals())
+		return false;
+
 	auto pParticleEnt = reinterpret_cast<CParticleSystem*>(pPawn->m_hEffectEntity().Get());
 
 	// This guy is already burning, don't ignite again
 	if (pParticleEnt)
 	{
 		// Override the end time instead of just adding to it so players who get a ton of ignite inputs don't burn forever
-		pParticleEnt->m_flDissolveStartTime = gpGlobals->curtime + flDuration;
+		pParticleEnt->m_flDissolveStartTime = GetGlobals()->curtime + flDuration;
 		return true;
 	}
 
@@ -431,7 +434,7 @@ bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor,
 	pParticleEnt->m_bStartActive(true);
 	pParticleEnt->m_iszEffectName(g_sBurnParticle.c_str());
 	pParticleEnt->m_hControlPointEnts[0] = pPawn;
-	pParticleEnt->m_flDissolveStartTime = gpGlobals->curtime + flDuration; // Store the end time in the particle itself so we can increment if needed
+	pParticleEnt->m_flDissolveStartTime = GetGlobals()->curtime + flDuration; // Store the end time in the particle itself so we can increment if needed
 	pParticleEnt->Teleport(&vecOrigin, nullptr, nullptr);
 
 	pParticleEnt->DispatchSpawn();
@@ -448,7 +451,7 @@ bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor,
 	new CTimer(0.f, false, false, [hPawn, hInflictor, hAttacker, hAbility, nDamageType]() {
 		CCSPlayerPawn* pPawn = hPawn.Get();
 
-		if (!pPawn)
+		if (!pPawn || !GetGlobals())
 			return -1.f;
 
 		const auto pParticleEnt = reinterpret_cast<CParticleSystem*>(pPawn->m_hEffectEntity().Get());
@@ -463,7 +466,7 @@ bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor,
 			return -1.f;
 		}
 
-		if (pParticleEnt->m_flDissolveStartTime() <= gpGlobals->curtime || !pPawn->IsAlive())
+		if (pParticleEnt->m_flDissolveStartTime() <= GetGlobals()->curtime || !pPawn->IsAlive())
 		{
 			pParticleEnt->AcceptInput("Stop");
 			UTIL_AddEntityIOEvent(pParticleEnt, "Kill"); // Kill on the next frame

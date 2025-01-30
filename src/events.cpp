@@ -39,7 +39,7 @@
 extern IGameEventManager2* g_gameEventManager;
 extern IServerGameClients* g_pSource2GameClients;
 extern CGameEntitySystem* g_pEntitySystem;
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
 
@@ -263,10 +263,10 @@ GAME_EVENT_F(round_start)
 	if (g_bFullAllTalk)
 		g_pEngineServer2->ServerCommand("sv_full_alltalk 1");
 
-	if (!g_bEnableTopDefender)
+	if (!g_bEnableTopDefender || !GetGlobals())
 		return;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -284,12 +284,12 @@ GAME_EVENT_F(round_end)
 	if (g_bVoteManagerEnable)
 		g_pVoteManager->OnRoundEnd();
 
-	if (!g_bEnableTopDefender)
+	if (!g_bEnableTopDefender || !GetGlobals())
 		return;
 
 	CUtlVector<ZEPlayer*> sortedPlayers;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
