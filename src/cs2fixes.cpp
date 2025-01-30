@@ -147,6 +147,11 @@ CGameEntitySystem* GameEntitySystem()
 	return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(g_pGameResourceServiceServer) + offset);
 }
 
+INetworkGameServer* GetNetworkGameServer()
+{
+	return g_pNetworkServerService->GetIGameServer();
+}
+
 PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
 bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool late)
 {
@@ -653,11 +658,11 @@ void CS2Fixes::AllPluginsLoaded()
 
 CUtlVector<CServerSideClient*>* GetClientList()
 {
-	if (!g_pNetworkServerService->GetIGameServer())
+	if (!GetNetworkGameServer())
 		return nullptr;
 
 	static int offset = g_GameConfig->GetOffset("CNetworkGameServer_ClientList");
-	return (CUtlVector<CServerSideClient*>*)(&g_pNetworkServerService->GetIGameServer()[offset]);
+	return (CUtlVector<CServerSideClient*>*)(&GetNetworkGameServer()[offset]);
 }
 
 CServerSideClient* GetClientBySlot(CPlayerSlot slot)
