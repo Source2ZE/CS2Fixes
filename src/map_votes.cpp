@@ -37,7 +37,7 @@
 #include <random>
 #include <stdio.h>
 
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
 extern CSteamGameServerAPIContext g_steamAPI;
@@ -298,7 +298,7 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 	m_bIntermissionStarted = false;
 	m_iForcedNextMap = -1;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < MAXPLAYERS; i++)
 		ClearPlayerInfo(i);
 
 	// Delay one tick to override any .cfg's
@@ -367,7 +367,7 @@ void CMapVoteSystem::StartVote()
 		return;
 
 	// Reset the player vote counts as the vote just started
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < MAXPLAYERS; i++)
 		m_arrPlayerVotes[i] = -1;
 
 	// Print all available maps out to console
@@ -431,7 +431,11 @@ void CMapVoteSystem::StartVote()
 int CMapVoteSystem::GetTotalNominations(int iMapIndex)
 {
 	int iNumNominations = 0;
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+
+	if (!GetGlobals())
+		return iNumNominations;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		auto pController = CCSPlayerController::FromSlot(i);
 		if (pController && pController->IsConnected() && m_arrPlayerNominations[i] == iMapIndex)
@@ -460,6 +464,12 @@ void CMapVoteSystem::FinishVote()
 	}
 	else
 	{
+		if (iNextMapVoteIndex == -1)
+		{
+			Panic("Failed to count map votes, file a bug\n");
+			iNextMapVoteIndex = 0;
+		}
+
 		g_pGameRules->m_nEndMatchMapVoteWinner = iNextMapVoteIndex;
 		iWinningMap = g_pGameRules->m_nEndMatchMapGroupVoteOptions[iNextMapVoteIndex];
 	}
@@ -476,11 +486,11 @@ void CMapVoteSystem::FinishVote()
 	Message(buffer);
 
 	// Print vote result information: how many votes did each map get?
-	if (!bIsNextMapForced)
+	if (!bIsNextMapForced && GetGlobals())
 	{
 		int arrMapVotes[10] = {0};
 		Message("Map vote result --- total votes per map:\n");
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		for (int i = 0; i < GetGlobals()->maxClients; i++)
 		{
 			auto pController = CCSPlayerController::FromSlot(i);
 			int iPlayerVotedIndex = m_arrPlayerVotes[i];
@@ -547,9 +557,12 @@ bool CMapVoteSystem::UpdateWinningMap()
 
 int CMapVoteSystem::WinningMapIndex()
 {
+	if (!GetGlobals())
+		return -1;
+
 	// Count the votes of every player
 	int arrMapVotes[10] = {0};
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		auto pController = CCSPlayerController::FromSlot(i);
 		if (pController && pController->IsConnected() && m_arrPlayerVotes[i] >= 0)
@@ -584,7 +597,10 @@ std::unordered_map<int, int> CMapVoteSystem::GetNominatedMaps()
 {
 	std::unordered_map<int, int> mapNominatedMaps;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals())
+		return mapNominatedMaps;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 		int iNominatedMapIndex = m_arrPlayerNominations[i];
@@ -635,8 +651,11 @@ std::vector<int> CMapVoteSystem::GetNominatedMapsForVote()
 		vecTiedNominations.erase(vecTiedNominations.begin());
 	}
 
+	if (!GetGlobals())
+		return vecChosenNominatedMaps;
+
 	// Notify nomination owners about the state of their nominations
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		int iNominatedMapIndex = m_arrPlayerNominations[i];
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
@@ -750,7 +769,7 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 	int iSlot = pController->GetPlayerSlot();
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(iSlot);
 
-	if (!pPlayer)
+	if (!pPlayer || !GetGlobals())
 		return;
 
 	if (GetMaxNominatedMaps() == 0)
@@ -822,9 +841,9 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 		return;
 	}
 
-	if (pPlayer->GetNominateTime() + 60.0f > gpGlobals->curtime)
+	if (pPlayer->GetNominateTime() + 60.0f > GetGlobals()->curtime)
 	{
-		int iRemainingTime = (int)(pPlayer->GetNominateTime() + 60.0f - gpGlobals->curtime);
+		int iRemainingTime = (int)(pPlayer->GetNominateTime() + 60.0f - GetGlobals()->curtime);
 		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can nominate again.", iRemainingTime);
 		return;
 	}
@@ -833,7 +852,7 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 	int iNominations = GetTotalNominations(iFoundIndex);
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01was nominated by %s. It now has %d nomination%s.", GetMapName(iFoundIndex), pController->GetPlayerName(), iNominations, iNominations > 1 ? "s" : "");
-	pPlayer->SetNominateTime(gpGlobals->curtime);
+	pPlayer->SetNominateTime(GetGlobals()->curtime);
 }
 
 void CMapVoteSystem::PrintMapList(CCSPlayerController* pController)
@@ -1105,10 +1124,10 @@ bool CMapVoteSystem::WriteMapCooldownsToFile()
 
 void CMapVoteSystem::ClearInvalidNominations()
 {
-	if (!g_bVoteManagerEnable || m_bIsVoteOngoing)
+	if (!g_bVoteManagerEnable || m_bIsVoteOngoing || !GetGlobals())
 		return;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		int iNominatedMapIndex = m_arrPlayerNominations[i];
 

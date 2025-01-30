@@ -38,7 +38,7 @@
 
 extern IVEngineServer2* g_pEngineServer2;
 extern CGameEntitySystem* g_pEntitySystem;
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
 
 CAdminSystem* g_pAdminSystem = nullptr;
@@ -113,10 +113,10 @@ void PrintMultiAdminAction(ETargetType nType, const char* pszAdminName, const ch
 
 CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	if (!g_pAdminSystem->LoadAdmins())
+	if (!g_pAdminSystem->LoadAdmins() || !GetGlobals())
 		return;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -131,10 +131,10 @@ CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKE
 
 CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	if (!g_pAdminSystem->LoadInfractions())
+	if (!g_pAdminSystem->LoadInfractions() || !GetGlobals())
 		return;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -627,6 +627,9 @@ CON_COMMAND_CHAT_FLAGS(extend, "<minutes> - Extend current map (negative value r
 
 CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This will also show to all online admins", ADMFLAG_GENERIC)
 {
+	if (!GetGlobals())
+		return;
+
 	if (args.ArgC() < 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: /pm <name> <message>");
@@ -666,7 +669,7 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 		return;
 	}
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -684,9 +687,12 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 
 CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GENERIC)
 {
+	if (!GetGlobals())
+		return;
+
 	std::vector<std::tuple<std::string, std::string, uint64>> rgNameSlotID;
 
-	for (size_t i = 0; i < gpGlobals->maxClients; i++)
+	for (size_t i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* ccsPly = CCSPlayerController::FromSlot(i);
 

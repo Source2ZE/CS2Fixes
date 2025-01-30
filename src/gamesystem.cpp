@@ -31,7 +31,7 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern CGameConfig* g_GameConfig;
 
 CBaseGameSystemFactory** CBaseGameSystemFactory::sm_pFirst = nullptr;
@@ -91,7 +91,9 @@ GS_EVENT_MEMBER(CGameSystem, ServerPreEntityThink)
 	VPROF_BUDGET("CGameSystem::ServerPreEntityThink", "CS2FixesPerFrame")
 	g_playerManager->FlashLightThink();
 	g_pIdleSystem->UpdateIdleTimes();
-	EntityHandler_OnGameFramePre(gpGlobals->m_bInSimulation, gpGlobals->tickcount);
+
+	if (GetGlobals())
+		EntityHandler_OnGameFramePre(GetGlobals()->m_bInSimulation, GetGlobals()->tickcount);
 }
 
 // Called every frame after entities think
