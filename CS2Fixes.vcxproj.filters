@@ -364,5 +364,8 @@
     <ClInclude Include="src\cs2_sdk\entity\ctriggerteleport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\netmessages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

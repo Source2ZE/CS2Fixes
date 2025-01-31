@@ -22,7 +22,7 @@
 #include <vprof.h>
 
 extern IVEngineServer2* g_pEngineServer2;
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern CPlayerManager* g_playerManager;
 
 CIdleSystem* g_pIdleSystem = nullptr;
@@ -37,11 +37,11 @@ FAKE_BOOL_CVAR(cs2f_idle_kick_admins, "Whether to kick idle players with ADMFLAG
 
 void CIdleSystem::CheckForIdleClients()
 {
-	if (m_bPaused || g_fIdleKickTime <= 0.0f)
+	if (m_bPaused || g_fIdleKickTime <= 0.0f || !GetGlobals())
 		return;
 
 	int iClientNum = 0;
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* zPlayer = g_playerManager->GetPlayer(i);
 
@@ -51,7 +51,7 @@ void CIdleSystem::CheckForIdleClients()
 		iClientNum++;
 	}
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* zPlayer = g_playerManager->GetPlayer(i);
 
@@ -88,12 +88,12 @@ void CIdleSystem::CheckForIdleClients()
 // Logged inputs and time for the logged inputs are updated every time this function is run.
 void CIdleSystem::UpdateIdleTimes()
 {
-	if (g_fIdleKickTime <= 0.0f)
+	if (g_fIdleKickTime <= 0.0f || !GetGlobals())
 		return;
 
 	VPROF("CIdleSystem::UpdateIdleTimes");
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -129,7 +129,10 @@ void CIdleSystem::Reset()
 {
 	m_bPaused = false;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals())
+		return;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 

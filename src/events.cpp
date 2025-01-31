@@ -25,7 +25,9 @@
 #include "entity/cbaseplayercontroller.h"
 #include "entity/cgamerules.h"
 #include "eventlistener.h"
+#include "idlemanager.h"
 #include "leader.h"
+#include "map_votes.h"
 #include "networkstringtabledefs.h"
 #include "panoramavote.h"
 #include "recipientfilters.h"
@@ -37,7 +39,7 @@
 extern IGameEventManager2* g_gameEventManager;
 extern IServerGameClients* g_pSource2GameClients;
 extern CGameEntitySystem* g_pEntitySystem;
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
 
@@ -261,10 +263,10 @@ GAME_EVENT_F(round_start)
 	if (g_bFullAllTalk)
 		g_pEngineServer2->ServerCommand("sv_full_alltalk 1");
 
-	if (!g_bEnableTopDefender)
+	if (!g_bEnableTopDefender || !GetGlobals())
 		return;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -280,29 +282,14 @@ GAME_EVENT_F(round_start)
 GAME_EVENT_F(round_end)
 {
 	if (g_bVoteManagerEnable)
-	{
-		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
+		g_pVoteManager->OnRoundEnd();
 
-		// CONVAR_TODO
-		// HACK: values is actually the cvar value itself, hence this ugly cast.
-		float flTimelimit = *(float*)&cvar->values;
-
-		int iTimeleft = (int)((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - gpGlobals->curtime);
-
-		// check for end of last round
-		if (iTimeleft <= 0)
-		{
-			g_RTVState = ERTVState::POST_LAST_ROUND_END;
-			g_ExtendState = EExtendState::POST_LAST_ROUND_END;
-		}
-	}
-
-	if (!g_bEnableTopDefender)
+	if (!g_bEnableTopDefender || !GetGlobals())
 		return;
 
 	CUtlVector<ZEPlayer*> sortedPlayers;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -365,4 +352,12 @@ GAME_EVENT_F(bullet_impact)
 GAME_EVENT_F(vote_cast)
 {
 	g_pPanoramaVoteHandler->VoteCast(pEvent);
+}
+
+GAME_EVENT_F(cs_win_panel_match)
+{
+	g_pIdleSystem->PauseIdleChecks();
+
+	if (!g_pMapVoteSystem->IsVoteOngoing())
+		g_pMapVoteSystem->StartVote();
 }

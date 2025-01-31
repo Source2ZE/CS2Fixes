@@ -22,6 +22,7 @@
 #include "adminsystem.h"
 #include "common.h"
 #include "entities.h"
+#include "entity/cgamerules.h"
 #include "gameconfig.h"
 #include "idlemanager.h"
 #include "leader.h"
@@ -31,8 +32,9 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern CGameConfig* g_GameConfig;
+extern CCSGameRules* g_pGameRules;
 
 CBaseGameSystemFactory** CBaseGameSystemFactory::sm_pFirst = nullptr;
 
@@ -91,7 +93,9 @@ GS_EVENT_MEMBER(CGameSystem, ServerPreEntityThink)
 	VPROF_BUDGET("CGameSystem::ServerPreEntityThink", "CS2FixesPerFrame")
 	g_playerManager->FlashLightThink();
 	g_pIdleSystem->UpdateIdleTimes();
-	EntityHandler_OnGameFramePre(gpGlobals->m_bInSimulation, gpGlobals->tickcount);
+
+	if (GetGlobals())
+		EntityHandler_OnGameFramePre(GetGlobals()->m_bInSimulation, GetGlobals()->tickcount);
 }
 
 // Called every frame after entities think
@@ -99,4 +103,9 @@ GS_EVENT_MEMBER(CGameSystem, ServerPostEntityThink)
 {
 	VPROF_BUDGET("CGameSystem::ServerPostEntityThink", "CS2FixesPerFrame")
 	g_playerManager->UpdatePlayerStates();
+}
+
+GS_EVENT_MEMBER(CGameSystem, GameShutdown)
+{
+	g_pGameRules = nullptr;
 }

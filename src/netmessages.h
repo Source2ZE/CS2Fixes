@@ -9,6 +9,8 @@
 #include <networkbasetypes.pb.h>
 #include <networksystem/netmessage.h>
 #include <networksystem_protomessages.pb.h>
+#undef min
+#undef max
 
 class CNETMsg_Tick_t : public CNetMessagePB<CNETMsg_Tick>
 {

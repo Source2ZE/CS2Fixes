@@ -47,7 +47,7 @@ using ordered_json = nlohmann::ordered_json;
 
 extern CGameEntitySystem* g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
 extern IGameEventManager2* g_gameEventManager;
 extern IGameEventSystem* g_gameEventSystem;
@@ -375,7 +375,13 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 	// Less code than constantly traversing the full class vectors, temporary lifetime anyways
 	std::set<std::string> setClassNames;
-	ordered_json jsonPlayerClasses = ordered_json::parse(jsoncFile, nullptr, true, true);
+	ordered_json jsonPlayerClasses = ordered_json::parse(jsoncFile, nullptr, false, true);
+
+	if (jsonPlayerClasses.is_discarded())
+	{
+		Panic("Failed parsing JSON from %s. Playerclasses not loaded\n", pszJsonPath);
+		return;
+	}
 
 	for (auto& [szTeamName, jsonTeamClasses] : jsonPlayerClasses.items())
 	{
@@ -959,7 +965,10 @@ std::shared_ptr<ZRHitgroup> ZRHitgroupConfig::FindHitgroupIndex(int iIndex)
 
 void ZR_RespawnAll()
 {
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals())
+		return;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
@@ -988,7 +997,10 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 	g_ZRRoundState = EZRRoundState::ROUND_START;
 	ToggleRespawn(true, true);
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals())
+		return;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
@@ -1035,7 +1047,10 @@ void ZR_OnRoundStart(IGameEvent* pEvent)
 	SetupRespawnToggler();
 	CZRRegenTimer::RemoveAllTimers();
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals())
+		return;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
@@ -1241,9 +1256,13 @@ void ZR_InfectShake(CCSPlayerController* pController)
 
 std::vector<SpawnPoint*> ZR_GetSpawns()
 {
+	std::vector<SpawnPoint*> spawns;
+
+	if (!g_pGameRules)
+		return spawns;
+
 	CUtlVector<SpawnPoint*>* ctSpawns = g_pGameRules->m_CTSpawnPoints();
 	CUtlVector<SpawnPoint*>* tSpawns = g_pGameRules->m_TerroristSpawnPoints();
-	std::vector<SpawnPoint*> spawns;
 
 	FOR_EACH_VEC(*ctSpawns, i)
 	spawns.push_back((*ctSpawns)[i]);
@@ -1343,9 +1362,12 @@ void ZR_InfectMotherZombie(CCSPlayerController* pVictimController, std::vector<S
 // the variable gets decreased by 20 every round
 void ZR_InitialInfection()
 {
+	if (!GetGlobals())
+		return;
+
 	// mz infection candidates
 	CUtlVector<CCSPlayerController*> pCandidateControllers;
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 		if (!pController || !pController->IsConnected() || pController->m_iTeamNum() != CS_TEAM_CT)
@@ -1432,7 +1454,7 @@ void ZR_InitialInfection()
 	}
 
 	// reduce everyone's immunity except mz
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 		if (!pPlayer || vecIsMZ[i])
@@ -1570,6 +1592,9 @@ void SpawnPlayer(CCSPlayerController* pController)
 	// Make sure the round ends if spawning into an empty server
 	if (!ZR_IsTeamAlive(CS_TEAM_CT) && !ZR_IsTeamAlive(CS_TEAM_T) && g_ZRRoundState != EZRRoundState::ROUND_END)
 	{
+		if (!g_pGameRules)
+			return;
+
 		g_pGameRules->TerminateRound(1.0f, CSRoundEndReason::GameStart);
 		g_ZRRoundState = EZRRoundState::ROUND_END;
 		return;
@@ -1721,7 +1746,10 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 {
 	bool bServerIdle = true;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals() || !g_pGameRules)
+		return;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
