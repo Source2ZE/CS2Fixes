@@ -22,6 +22,7 @@
 #include "adminsystem.h"
 #include "common.h"
 #include "entities.h"
+#include "entity/cgamerules.h"
 #include "gameconfig.h"
 #include "idlemanager.h"
 #include "leader.h"
@@ -33,6 +34,7 @@
 
 extern CGlobalVars* GetGlobals();
 extern CGameConfig* g_GameConfig;
+extern CCSGameRules* g_pGameRules;
 
 CBaseGameSystemFactory** CBaseGameSystemFactory::sm_pFirst = nullptr;
 
@@ -101,4 +103,9 @@ GS_EVENT_MEMBER(CGameSystem, ServerPostEntityThink)
 {
 	VPROF_BUDGET("CGameSystem::ServerPostEntityThink", "CS2FixesPerFrame")
 	g_playerManager->UpdatePlayerStates();
+}
+
+GS_EVENT_MEMBER(CGameSystem, GameShutdown)
+{
+	g_pGameRules = nullptr;
 }

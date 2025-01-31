@@ -312,6 +312,9 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 
 void CMapVoteSystem::StartVote()
 {
+	if (!g_pGameRules)
+		return;
+
 	m_bIsVoteOngoing = true;
 
 	// Select random maps that meet requirements to appear
@@ -446,7 +449,8 @@ int CMapVoteSystem::GetTotalNominations(int iMapIndex)
 
 void CMapVoteSystem::FinishVote()
 {
-	if (!m_bIsVoteOngoing) return;
+	if (!m_bIsVoteOngoing || !g_pGameRules)
+		return;
 
 	// Clean up the ongoing voting state and variables
 	m_bIsVoteOngoing = false;
@@ -522,7 +526,7 @@ void CMapVoteSystem::FinishVote()
 bool CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption)
 {
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(iPlayerSlot);
-	if (!pController || !m_bIsVoteOngoing) return false;
+	if (!pController || !m_bIsVoteOngoing || !g_pGameRules) return false;
 	if (iVoteOption < 0 || iVoteOption >= m_iVoteSize) return false;
 
 	// Filter out votes on invalid maps
@@ -547,7 +551,7 @@ bool CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption
 bool CMapVoteSystem::UpdateWinningMap()
 {
 	int iWinningMapIndex = WinningMapIndex();
-	if (iWinningMapIndex >= 0)
+	if (iWinningMapIndex >= 0 && g_pGameRules)
 	{
 		g_pGameRules->m_nEndMatchMapVoteWinner = iWinningMapIndex;
 		return true;

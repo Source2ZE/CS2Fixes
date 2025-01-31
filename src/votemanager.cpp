@@ -294,7 +294,7 @@ CON_COMMAND_CHAT(unrtv, "- Remove your vote to end the current map sooner")
 
 CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 {
-	if (!g_bVoteManagerEnable || !GetGlobals())
+	if (!g_bVoteManagerEnable || !GetGlobals() || !g_pGameRules)
 		return;
 
 	if (!player)
@@ -525,7 +525,7 @@ CON_COMMAND_CHAT(extendsleft, "- Display amount of extends left for the current 
 
 CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 {
-	if (!GetGlobals())
+	if (!GetGlobals() || !g_pGameRules)
 		return;
 
 	if (!player)
@@ -566,7 +566,7 @@ CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 
 void CVoteManager::ExtendMap(int iMinutes, bool bAllowExtraTime)
 {
-	if (!GetGlobals())
+	if (!GetGlobals() || !g_pGameRules)
 		return;
 
 	// CONVAR_TODO
@@ -715,7 +715,7 @@ void CVoteManager::StartExtendVote(int iCaller)
 
 void CVoteManager::OnRoundEnd()
 {
-	if (!GetGlobals())
+	if (!GetGlobals() || !g_pGameRules)
 		return;
 
 	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
@@ -736,7 +736,7 @@ void CVoteManager::OnRoundEnd()
 
 bool CVoteManager::CheckRTVStatus()
 {
-	if (!g_bVoteManagerEnable || m_RTVState != ERTVState::RTV_ALLOWED)
+	if (!g_bVoteManagerEnable || m_RTVState != ERTVState::RTV_ALLOWED || !GetGlobals() || !g_pGameRules)
 		return false;
 
 	int iCurrentRTVCount = GetCurrentRTVCount();
@@ -763,9 +763,6 @@ bool CVoteManager::CheckRTVStatus()
 		{
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! This is the last round of the map!");
 		}
-
-		if (!GetGlobals())
-			return true;
 
 		for (int i = 0; i < GetGlobals()->maxClients; i++)
 		{

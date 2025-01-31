@@ -35,6 +35,9 @@ extern CCSGameRules* g_pGameRules;
 
 CBaseEntity* UTIL_FindPickerEntity(CBasePlayerController* pPlayer)
 {
+	if (!g_pGameRules)
+		return nullptr;
+
 	static int offset = g_GameConfig->GetOffset("CGameRules_FindPickerEntity");
 
 	if (offset < 0)
