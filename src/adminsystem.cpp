@@ -896,7 +896,8 @@ CON_COMMAND_CHAT_FLAGS(listdc, "- List recently disconnected players and their S
 
 CON_COMMAND_CHAT_FLAGS(endround, "- Immediately ends the round, client-side variant of endround", ADMFLAG_RCON)
 {
-	g_pGameRules->TerminateRound(0.0f, CSRoundEndReason::Draw);
+	if (g_pGameRules)
+		g_pGameRules->TerminateRound(0.0f, CSRoundEndReason::Draw);
 }
 
 CON_COMMAND_CHAT_FLAGS(money, "<name> <amount> - Set a player's amount of money", ADMFLAG_CHEATS)

@@ -30,6 +30,7 @@ public:
 	GS_EVENT(BuildGameSessionManifest);
 	GS_EVENT(ServerPreEntityThink);
 	GS_EVENT(ServerPostEntityThink);
+	GS_EVENT(GameShutdown);
 
 	void Shutdown() override
 	{

@@ -235,7 +235,7 @@ void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPla
 {
 	VPROF("SayChatMessageWithTimer");
 
-	if (!GetGlobals())
+	if (!GetGlobals() || !g_pGameRules)
 		return;
 
 	char buf[256];

@@ -1256,9 +1256,13 @@ void ZR_InfectShake(CCSPlayerController* pController)
 
 std::vector<SpawnPoint*> ZR_GetSpawns()
 {
+	std::vector<SpawnPoint*> spawns;
+
+	if (!g_pGameRules)
+		return spawns;
+
 	CUtlVector<SpawnPoint*>* ctSpawns = g_pGameRules->m_CTSpawnPoints();
 	CUtlVector<SpawnPoint*>* tSpawns = g_pGameRules->m_TerroristSpawnPoints();
-	std::vector<SpawnPoint*> spawns;
 
 	FOR_EACH_VEC(*ctSpawns, i)
 	spawns.push_back((*ctSpawns)[i]);
@@ -1588,6 +1592,9 @@ void SpawnPlayer(CCSPlayerController* pController)
 	// Make sure the round ends if spawning into an empty server
 	if (!ZR_IsTeamAlive(CS_TEAM_CT) && !ZR_IsTeamAlive(CS_TEAM_T) && g_ZRRoundState != EZRRoundState::ROUND_END)
 	{
+		if (!g_pGameRules)
+			return;
+
 		g_pGameRules->TerminateRound(1.0f, CSRoundEndReason::GameStart);
 		g_ZRRoundState = EZRRoundState::ROUND_END;
 		return;
@@ -1739,7 +1746,7 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 {
 	bool bServerIdle = true;
 
-	if (!GetGlobals())
+	if (!GetGlobals() || !g_pGameRules)
 		return;
 
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
