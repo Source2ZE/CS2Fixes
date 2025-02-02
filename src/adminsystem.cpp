@@ -733,7 +733,13 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GE
 			continue;
 		}
 
-		uint64 iSteamID = pPlayer->IsAuthenticated() ? pPlayer->GetSteamId64() : pPlayer->GetUnauthenticatedSteamId64();
+		if (!pPlayer->IsAuthenticated())
+		{
+			rgNameSlotID.push_back(std::tuple<std::string, std::string, uint64>(strName, "UNAUTHENTICATED", pPlayer->GetUnauthenticatedSteamId64()));
+			continue;
+		}
+
+		uint64 iSteamID = pPlayer->GetSteamId64();
 		uint64 iFlags = pPlayer->GetAdminFlags();
 		std::string strFlags = "";
 
@@ -795,7 +801,7 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GE
 			if (strFlags.length() > 1)
 				strFlags = strFlags.substr(2);
 			else
-				strFlags = "NONE";
+				strFlags = "-";
 		}
 
 		rgNameSlotID.push_back(std::tuple<std::string, std::string, uint64>(strName, strFlags, iSteamID));
@@ -807,6 +813,12 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GE
 		std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return c > 127 ? 127 : std::tolower(c); });
 		return f < s;
 	});
+
+	if (rgNameSlotID.size() == 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, "There are no clients currently online.");
+		return;
+	}
 
 	ClientPrint(player, HUD_PRINTCONSOLE, "c_who output: %i client%s", rgNameSlotID.size(), rgNameSlotID.size() == 1 ? "" : "s");
 	ClientPrint(player, HUD_PRINTCONSOLE, "|----------------------|----------------------------------------------------|-------------------|");
@@ -867,7 +879,8 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GE
 		}
 	}
 	ClientPrint(player, HUD_PRINTCONSOLE, "|----------------------|----------------------------------------------------|-------------------|");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Check console for output.");
+	if (player)
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Check console for output.");
 }
 
 CON_COMMAND_CHAT(status, "<name> - Checks a player's active punishments. Non-admins may only check their own punishments")
@@ -1349,8 +1362,9 @@ void CAdminSystem::ShowDisconnectedPlayers(CCSPlayerController* const pAdmin)
 				bAnyDCedPlayers = true;
 			}
 
-			std::string strTemp = std::get<0>(ply) + "\n\tSteam64 ID - " + std::to_string(std::get<1>(ply)) + "\n\tIP Address - " + std::get<2>(ply);
-			ClientPrint(pAdmin, HUD_PRINTCONSOLE, "%i. %s", i, strTemp.c_str());
+			ClientPrint(pAdmin, HUD_PRINTCONSOLE, "%i. %s", i, std::get<0>(ply).c_str());
+			ClientPrint(pAdmin, HUD_PRINTCONSOLE, "\tSteam64 ID - %s", std::to_string(std::get<1>(ply)).c_str());
+			ClientPrint(pAdmin, HUD_PRINTCONSOLE, "\tIP Address - %s", std::get<2>(ply).c_str());
 		}
 	}
 	if (!bAnyDCedPlayers)
