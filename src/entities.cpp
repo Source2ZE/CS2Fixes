@@ -151,7 +151,7 @@ namespace CGamePlayerEquipHandler
 
 		if (pszWeapon && V_strcmp(pszWeapon, "(null)"))
 		{
-			pItemServices->GiveNamedItem(pszWeapon);
+			pItemServices->GiveNamedItemAws(pszWeapon);
 			// Don't execute game function (we fixed string param)
 			return false;
 		}

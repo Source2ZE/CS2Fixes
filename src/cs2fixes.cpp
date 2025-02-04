@@ -32,6 +32,7 @@
 #include "entities.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/cgamerules.h"
+#include "entity/services.h"
 #include "entitylistener.h"
 #include "entitysystem.h"
 #include "eventlistener.h"
@@ -1062,6 +1063,8 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 
 	if (g_bEnableZR)
 		ZR_OnLevelInit();
+
+	CCSPlayer_ItemServices::ResetAwsProcessing();
 }
 
 // Potentially might not work
