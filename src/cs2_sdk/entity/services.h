@@ -277,6 +277,12 @@ public:
 	[[nodiscard]] static bool IsAwsProcessing() noexcept { return s_AwsChangingTeam; }
 	static void ResetAwsProcessing() { s_AwsChangingTeam = false; }
 
+	[[nodiscard]] static uint32_t GetItemGearSlot(const char* item) noexcept
+	{
+		const auto it = s_WeaponMap.find(item);
+		return it == s_WeaponMap.end() ? GEAR_SLOT_INVALID : it->second.m_eSlot;
+	}
+
 	CBaseEntity* GiveNamedItemAws(const char* item) noexcept
 	{
 		auto pPawn = reinterpret_cast<CBaseEntity*>(GetPawn());

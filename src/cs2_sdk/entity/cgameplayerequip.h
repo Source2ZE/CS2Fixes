@@ -30,8 +30,5 @@ public:
 
 	static constexpr int SF_PLAYEREQUIP_USEONLY = 0x0001;
 	static constexpr int SF_PLAYEREQUIP_STRIPFIRST = 0x0002;
-
-	// TODO this flag copied from CSGO, and impl on FyS server. but CS2Fixes not support aws currently.
-	// Add it in the future.
 	static constexpr int SF_PLAYEREQUIP_ONLYSTRIPSAME = 0x0004;
 };
