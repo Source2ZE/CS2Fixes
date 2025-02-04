@@ -300,7 +300,7 @@ public:
 			
 		const auto team = pPawn->m_iTeamNum();
 		s_AwsChangingTeam = true;
-		pPawn->m_iTeamNum(team);
+		pPawn->m_iTeamNum(it->second.m_iTeamNum);
 		const auto pWeapon = GiveNamedItem(item);
 		pPawn->m_iTeamNum(team);
 		s_AwsChangingTeam = false;
