@@ -1095,9 +1095,9 @@ CON_COMMAND_CHAT(http, "<get/post> <url> [content] - Test an HTTP request")
 	}
 
 	if (!V_strcmp(args[1], "get"))
-		g_HTTPManager.GET(args[2], &HttpCallback);
+		g_HTTPManager.Get(args[2], &HttpCallback);
 	else if (!V_strcmp(args[1], "post"))
-		g_HTTPManager.POST(args[2], args[3], &HttpCallback);
+		g_HTTPManager.Post(args[2], args[3], &HttpCallback);
 }
 
 CON_COMMAND_CHAT(discordbot, "<bot> <message> - Send a message to a discord webhook")

@@ -298,7 +298,7 @@ void CUserPreferencesREST::LoadPreferences(uint64 iSteamId, StorageCallback cb)
 	// Submit the request to pull the user data
 	char sUserPreferencesUrl[256];
 	V_snprintf(sUserPreferencesUrl, sizeof(sUserPreferencesUrl), "%s%llu", m_pszUserPreferencesUrl, iSteamId);
-	g_HTTPManager.GET(sUserPreferencesUrl, [iSteamId, cb](HTTPRequestHandle request, json data) {
+	g_HTTPManager.Get(sUserPreferencesUrl, [iSteamId, cb](HTTPRequestHandle request, json data) {
 #ifdef _DEBUG
 		Message("Executing storage callback during load for %llu\n", iSteamId);
 #endif
@@ -334,7 +334,7 @@ void CUserPreferencesREST::StorePreferences(uint64 iSteamId, CUtlMap<uint32, CPr
 
 	// Dump the Json object and submit the POST request
 	std::string sDumpedJson = sJsonObject.dump();
-	g_HTTPManager.POST(sUserPreferencesUrl, sDumpedJson.c_str(), [iSteamId, cb](HTTPRequestHandle request, json data) {
+	g_HTTPManager.Post(sUserPreferencesUrl, sDumpedJson.c_str(), [iSteamId, cb](HTTPRequestHandle request, json data) {
 #ifdef _DEBUG
 		Message("Executing storage callback during store for %llu\n", iSteamId);
 #endif
