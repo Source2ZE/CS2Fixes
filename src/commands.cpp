@@ -731,7 +731,7 @@ CON_COMMAND_CHAT(info, "<name> - Get a player's information")
 		return;
 
 	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
-	bool bIsAdmin = pPlayer ? pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC) : true;
+	bool bIsAdmin = pPlayer ? pPlayer->IsAdminFlagSet(ADMFLAG_RCON) : true;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
