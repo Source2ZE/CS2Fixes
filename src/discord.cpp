@@ -78,7 +78,7 @@ void CDiscordBot::PostMessage(const char* sMessage)
 	std::string sRequestBody = jRequestBody.dump();
 	if (g_bDebugDiscordRequests)
 		Message("Sending '%s' to %s.\n", sRequestBody.c_str(), GetWebhookUrl());
-	g_HTTPManager.POST(m_pszWebhookUrl, sRequestBody.c_str(), &DiscordHttpCallback);
+	g_HTTPManager.Post(m_pszWebhookUrl, sRequestBody.c_str(), &DiscordHttpCallback);
 }
 
 bool CDiscordBotManager::LoadDiscordBotsConfig()

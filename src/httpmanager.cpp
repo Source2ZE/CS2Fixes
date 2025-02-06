@@ -103,27 +103,27 @@ void HTTPManager::TrackedRequest::OnHTTPRequestCompleted(HTTPRequestCompleted_t*
 	delete this;
 }
 
-void HTTPManager::GET(const char* pszUrl, CompletedCallback callback, std::vector<HTTPHeader>* headers)
+void HTTPManager::Get(const char* pszUrl, CompletedCallback callback, std::vector<HTTPHeader>* headers)
 {
 	GenerateRequest(k_EHTTPMethodGET, pszUrl, "", callback, headers);
 }
 
-void HTTPManager::POST(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
+void HTTPManager::Post(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
 {
 	GenerateRequest(k_EHTTPMethodPOST, pszUrl, pszText, callback, headers);
 }
 
-void HTTPManager::PUT(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
+void HTTPManager::Put(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
 {
 	GenerateRequest(k_EHTTPMethodPUT, pszUrl, pszText, callback, headers);
 }
 
-void HTTPManager::PATCH(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
+void HTTPManager::Patch(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
 {
 	GenerateRequest(k_EHTTPMethodPATCH, pszUrl, pszText, callback, headers);
 }
 
-void HTTPManager::DELETE(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
+void HTTPManager::Delete(const char* pszUrl, const char* pszText, CompletedCallback callback, std::vector<HTTPHeader>* headers)
 {
 	GenerateRequest(k_EHTTPMethodDELETE, pszUrl, pszText, callback, headers);
 }
