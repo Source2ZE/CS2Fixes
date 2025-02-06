@@ -1076,12 +1076,17 @@ CON_COMMAND_CHAT(setinteraction, "<flags> - Set a player's interaction flags")
 	}
 }
 
-void HttpCallback(HTTPRequestHandle request, json response)
+void HttpCallbackSuccess(HTTPRequestHandle request, json response)
 {
 	ClientPrintAll(HUD_PRINTTALK, response.dump().c_str());
 }
 
-CON_COMMAND_CHAT(http, "<get/post> <url> [content] - Test an HTTP request")
+void HttpCallbackError(HTTPRequestHandle request, EHTTPStatusCode statusCode, json response)
+{
+	ClientPrintAll(HUD_PRINTTALK, response.dump().c_str());
+}
+
+CON_COMMAND_CHAT(http, "<get/post/patch/put/delete> <url> [content] - Test an HTTP request")
 {
 	if (!g_http)
 	{
@@ -1095,9 +1100,15 @@ CON_COMMAND_CHAT(http, "<get/post> <url> [content] - Test an HTTP request")
 	}
 
 	if (!V_strcmp(args[1], "get"))
-		g_HTTPManager.Get(args[2], &HttpCallback);
+		g_HTTPManager.Get(args[2], &HttpCallbackSuccess, &HttpCallbackError);
 	else if (!V_strcmp(args[1], "post"))
-		g_HTTPManager.Post(args[2], args[3], &HttpCallback);
+		g_HTTPManager.Post(args[2], args[3], &HttpCallbackSuccess, &HttpCallbackError);
+	else if (!V_strcmp(args[1], "patch"))
+		g_HTTPManager.Patch(args[2], args[3], &HttpCallbackSuccess, &HttpCallbackError);
+	else if (!V_strcmp(args[1], "put"))
+		g_HTTPManager.Put(args[2], args[3], &HttpCallbackSuccess, &HttpCallbackError);
+	else if (!V_strcmp(args[1], "delete"))
+		g_HTTPManager.Delete(args[2], args[3], &HttpCallbackSuccess, &HttpCallbackError);
 }
 
 CON_COMMAND_CHAT(discordbot, "<bot> <message> - Send a message to a discord webhook")
