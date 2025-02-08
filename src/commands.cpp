@@ -1088,11 +1088,6 @@ void HttpCallbackError(HTTPRequestHandle request, EHTTPStatusCode statusCode, js
 
 CON_COMMAND_CHAT(http, "<get/post/patch/put/delete> <url> [content] - Test an HTTP request")
 {
-	if (!g_http)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Steam HTTP interface is not available!");
-		return;
-	}
 	if (args.ArgC() < 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !http <get/post> <url> [content]");
