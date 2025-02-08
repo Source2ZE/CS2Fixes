@@ -143,6 +143,12 @@ void HTTPManager::GenerateRequest(EHTTPMethod method, const char* pszUrl, const 
 								  CompletedCallback callbackCompleted, ErrorCallback callbackError,
 								  std::vector<HTTPHeader>* headers)
 {
+	if (!g_http)
+	{
+		Panic("A web request was attempted before g_http was instantiated, returning early.\n");
+		return;
+	}
+
 	// Message("Sending HTTP:\n%s\n", pszText);
 	auto hReq = g_http->CreateHTTPRequest(method, pszUrl);
 	int size = strlen(pszText);
