@@ -186,7 +186,7 @@ private:
 extern CAdminSystem* g_pAdminSystem;
 
 // Given a formatted time entered by an admin, return the minutes
-int ParseTimeInput(std::string strTime);
+int ParseTimeInput(std::string strTime, int iDefaultValue = -1);
 
 // Given a time in seconds/minutes, returns a formatted string of the largest (floored) unit of time this exceeds, up to months.
 // Example: FormatTime(70) == "1 minute"

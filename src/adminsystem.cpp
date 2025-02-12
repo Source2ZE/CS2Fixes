@@ -1434,16 +1434,17 @@ std::string FormatTime(std::time_t wTime, bool bInSeconds)
 	return std::to_string(static_cast<int>(std::floor(wTime))) + " month" + (wTime >= 2 ? "s" : "");
 }
 
-int ParseTimeInput(std::string strTime)
+int ParseTimeInput(std::string strTime, int iDefaultValue)
 {
-	if (strTime.length() == 0 || std::find_if(strTime.begin(), strTime.end(), [](char c) { return c == '-'; }) != strTime.end())
+	// Check if first character is a minus sign, and just return negative 1 if so.
+	if (strTime.length() > 0 && std::find_if(strTime.begin(), strTime.begin() + 1, [](char c) { return c == '-'; }) != (strTime.begin() + 1))
 		return -1;
 
 	std::string strNumbers = "";
 	std::copy_if(strTime.begin(), strTime.end(), std::back_inserter(strNumbers), [](char c) { return std::isdigit(c); });
 
 	if (strNumbers.length() == 0)
-		return -1;
+		return iDefaultValue;
 	else if (strNumbers.length() > 9)
 		// Really high number, just return perma
 		return 0;
