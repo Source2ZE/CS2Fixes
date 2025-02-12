@@ -22,7 +22,7 @@
 
 #include "tier0/memdbgon.h"
 
-static uint64 g_iFlagsToRemove = (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY | FCVAR_MISSING0 | FCVAR_MISSING1 | FCVAR_MISSING2 | FCVAR_MISSING3);
+static uint64 g_iFlagsToRemove = (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY);
 
 static constexpr const char* pUnCheatCvars[] = {"bot_stop", "bot_freeze", "bot_zombie"};
 static constexpr const char* pUnCheatCmds[] = {"report_entities", "endround"};
