@@ -727,7 +727,7 @@ void CVoteManager::OnRoundEnd()
 	int iTimeleft = (int)((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - GetGlobals()->curtime);
 
 	// check for end of last round
-	if (iTimeleft <= 0)
+	if (iTimeleft < 0)
 	{
 		m_RTVState = ERTVState::POST_LAST_ROUND_END;
 		m_ExtendState = EExtendState::POST_LAST_ROUND_END;
