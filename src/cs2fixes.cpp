@@ -1082,7 +1082,8 @@ void CS2Fixes::OnLevelShutdown()
 {
 	Message("OnLevelShutdown()\n");
 
-	g_pMapVoteSystem->OnLevelShutdown();
+	if (g_bVoteManagerEnable)
+		g_pMapVoteSystem->OnLevelShutdown();
 }
 
 bool CS2Fixes::Pause(char* error, size_t maxlen)

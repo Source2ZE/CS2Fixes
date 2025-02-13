@@ -33,10 +33,10 @@
 
 using ordered_json = nlohmann::ordered_json;
 
-class CMapInfo
+class CMap
 {
 public:
-	CMapInfo(std::string sName, uint64 iWorkshopId, bool bIsEnabled, int iMinPlayers, int iMaxPlayers, float fCustomCooldown, std::vector<std::string> vecGroups)
+	CMap(std::string sName, uint64 iWorkshopId, bool bIsEnabled, int iMinPlayers, int iMaxPlayers, float fCustomCooldown, std::vector<std::string> vecGroups)
 	{
 		m_strName = sName;
 		m_iWorkshopId = iWorkshopId;
@@ -66,10 +66,10 @@ private:
 	std::vector<std::string> m_vecGroups;
 };
 
-class CGroupInfo
+class CGroup
 {
 public:
-	CGroupInfo(std::string sName, bool bIsEnabled, float fCooldown)
+	CGroup(std::string sName, bool bIsEnabled, float fCooldown)
 	{
 		m_strName = sName;
 		m_bIsEnabled = bIsEnabled;
@@ -84,6 +84,31 @@ private:
 	std::string m_strName;
 	bool m_bIsEnabled;
 	float m_fCooldown;
+};
+
+class CCooldown
+{
+public:
+	CCooldown(std::string sMapName)
+	{
+		m_strMapName = sMapName;
+		m_timeCooldown = 0;
+		m_fPendingCooldown = 0.0f;
+	}
+
+	const char* GetMapName() { return m_strMapName.c_str(); };
+	time_t GetTimeCooldown() { return m_timeCooldown; };
+	void SetTimeCooldown(time_t timeCooldown) { m_timeCooldown = timeCooldown; };
+	float GetPendingCooldown() { return m_fPendingCooldown; };
+	void SetPendingCooldown(float fPendingCooldown) { m_fPendingCooldown = fPendingCooldown; };
+	bool IsOnCooldown() { return GetCurrentCooldown() > 0.0f; }
+	bool IsPending() { return m_fPendingCooldown > 0.0f && m_fPendingCooldown == GetCurrentCooldown(); };
+	float GetCurrentCooldown();
+
+private:
+	std::string m_strMapName;
+	time_t m_timeCooldown;
+	float m_fPendingCooldown;
 };
 
 class CMapVoteSystem
@@ -106,9 +131,9 @@ public:
 	std::vector<int> GetMapIndexesFromSubstring(const char* sMapSubstring);
 	uint64 HandlePlayerMapLookup(CCSPlayerController* pController, const char* sMapSubstring, bool bAllowWorkshopID = false);
 	int GetMapIndexFromString(const char* pszMapString);
-	std::shared_ptr<CGroupInfo> GetGroupFromString(const char* pszName);
-	float GetMapCurrentCooldown(const char* pszMapName);
-	float GetMapCurrentCooldown(int iMapIndex) { return GetMapCurrentCooldown(GetMapName(iMapIndex)); };
+	std::shared_ptr<CGroup> GetGroupFromString(const char* pszName);
+	std::shared_ptr<CCooldown> GetMapCooldown(const char* pszMapName);
+	std::shared_ptr<CCooldown> GetMapCooldown(int iMapIndex) { return GetMapCooldown(GetMapName(iMapIndex)); };
 	std::string GetMapCooldownText(const char* pszMapName, bool bPlural);
 	std::string GetMapCooldownText(int iMapIndex, bool bPlural) { return GetMapCooldownText(GetMapName(iMapIndex), bPlural); };
 	float GetMapCustomCooldown(int iMapIndex) { return m_vecMapList[iMapIndex]->GetCustomCooldown(); };
@@ -151,7 +176,7 @@ public:
 	std::unordered_map<int, int> GetNominatedMaps();
 	void ApplyGameSettings(KeyValues* pKV);
 	void OnLevelShutdown();
-	std::unordered_map<std::string, time_t> GetMapCooldowns() { return m_mapCooldowns; }
+	std::vector<std::shared_ptr<CCooldown>> GetMapCooldowns() { return m_vecCooldowns; }
 	std::string ConvertFloatToString(float fValue, int precision);
 	std::string StringToLower(std::string sValue);
 	void SetDisabledCooldowns(bool bValue) { g_bDisableCooldowns = bValue; } // Can be used by custom fork features, e.g. an auto-restart
@@ -166,10 +191,9 @@ private:
 	STEAM_GAMESERVER_CALLBACK_MANUAL(CMapVoteSystem, OnMapDownloaded, DownloadItemResult_t, m_CallbackDownloadItemResult);
 	CUtlQueue<PublishedFileId_t> m_DownloadQueue;
 
-	std::vector<std::shared_ptr<CMapInfo>> m_vecMapList;
-	std::vector<std::shared_ptr<CGroupInfo>> m_vecGroups;
-	std::unordered_map<std::string, time_t> m_mapCooldowns;
-	std::unordered_map<std::string, float> m_mapPendingCooldowns;
+	std::vector<std::shared_ptr<CMap>> m_vecMapList;
+	std::vector<std::shared_ptr<CGroup>> m_vecGroups;
+	std::vector<std::shared_ptr<CCooldown>> m_vecCooldowns;
 	int m_arrPlayerNominations[MAXPLAYERS];
 	uint64 m_iForcedNextMap = -1; // Can be a map index or a workshop ID
 	float m_fDefaultMapCooldown = 6.0f;
