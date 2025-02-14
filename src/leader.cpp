@@ -422,7 +422,7 @@ void Leader_OnRoundStart(IGameEvent* pEvent)
 	// Apply visuals after in seperate for loop, since we have to worry about non-leaders
 	// that had visuals on being included in GetCount otherwise (which they shouldn't count
 	// towards since their visuals dont persist across round change).
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pLeader = CCSPlayerController::FromSlot((CPlayerSlot)i);
 		if (!pLeader)
