@@ -21,7 +21,7 @@
 
 #include "cbaseentity.h"
 
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 
 enum gear_slot_t : uint32_t
 {
@@ -97,8 +97,11 @@ public:
 
 	void Disarm()
 	{
-		m_nNextPrimaryAttackTick(MAX(m_nNextPrimaryAttackTick(), gpGlobals->tickcount + 24));
-		m_nNextSecondaryAttackTick(MAX(m_nNextSecondaryAttackTick(), gpGlobals->tickcount + 24));
+		if (!GetGlobals())
+			return;
+
+		m_nNextPrimaryAttackTick(MAX(m_nNextPrimaryAttackTick(), GetGlobals()->tickcount + 24));
+		m_nNextSecondaryAttackTick(MAX(m_nNextSecondaryAttackTick(), GetGlobals()->tickcount + 24));
 	}
 };
 

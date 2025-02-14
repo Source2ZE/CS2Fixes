@@ -511,10 +511,10 @@ namespace CPointViewControlHandler
 	{
 		const auto key = pEntity->GetHandle().ToInt();
 		const auto it = s_repository.find(key);
-		if (it == s_repository.end())
+		if (it == s_repository.end() || !GetGlobals())
 			return false;
 
-		for (auto i = 0; i < gpGlobals->maxClients; i++)
+		for (auto i = 0; i < GetGlobals()->maxClients; i++)
 		{
 			const auto pController = CCSPlayerController::FromSlot(i);
 			if (!pController || !pController->IsConnected() || pController->IsBot() || pController->m_bIsHLTV())

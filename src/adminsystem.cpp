@@ -38,7 +38,7 @@
 
 extern IVEngineServer2* g_pEngineServer2;
 extern CGameEntitySystem* g_pEntitySystem;
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
 
 CAdminSystem* g_pAdminSystem = nullptr;
@@ -113,10 +113,10 @@ void PrintMultiAdminAction(ETargetType nType, const char* pszAdminName, const ch
 
 CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	if (!g_pAdminSystem->LoadAdmins())
+	if (!g_pAdminSystem->LoadAdmins() || !GetGlobals())
 		return;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -131,10 +131,10 @@ CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKE
 
 CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-	if (!g_pAdminSystem->LoadInfractions())
+	if (!g_pAdminSystem->LoadInfractions() || !GetGlobals())
 		return;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -577,76 +577,6 @@ CON_COMMAND_CHAT_FLAGS(entfirecontroller, "<name> <input> [parameter] - Fire out
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i player controllers.", iFoundEnts);
 }
 
-CON_COMMAND_CHAT_FLAGS(map, "<mapname> - Change map", ADMFLAG_CHANGEMAP)
-{
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !map <mapname>");
-		return;
-	}
-
-	std::string sMapName = args[1];
-
-	for (int i = 0; sMapName[i]; i++)
-	{
-		// Injection prevention, because we may pass user input to ServerCommand
-		if (sMapName[i] == ';' || sMapName[i] == '|')
-			return;
-
-		sMapName[i] = tolower(sMapName[i]);
-	}
-
-	const char* pszMapName = sMapName.c_str();
-
-	if (!g_pEngineServer2->IsMapValid(pszMapName))
-	{
-		std::string sCommand;
-		std::vector<int> foundIndexes = g_pMapVoteSystem->GetMapIndexesFromSubstring(pszMapName);
-
-		// Check if input is numeric (workshop ID)
-		// Not safe to expose to all admins until crashing on failed workshop addon downloads is fixed
-		if ((!player || player->GetZEPlayer()->IsAdminFlagSet(ADMFLAG_RCON)) && V_StringToUint64(pszMapName, 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING) != 0)
-		{
-			sCommand = "host_workshop_map " + sMapName;
-		}
-		else if (g_bVoteManagerEnable && foundIndexes.size() > 0)
-		{
-			if (foundIndexes.size() > 1)
-			{
-				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Multiple maps matched \x06%s\x01, try being more specific:", pszMapName);
-
-				for (int i = 0; i < foundIndexes.size() && i < 5; i++)
-					ClientPrint(player, HUD_PRINTTALK, "- %s", g_pMapVoteSystem->GetMapName(foundIndexes[i]));
-
-				return;
-			}
-
-			sCommand = "host_workshop_map " + std::to_string(g_pMapVoteSystem->GetMapWorkshopId(foundIndexes[0]));
-		}
-		else
-		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching %s.", pszMapName);
-			return;
-		}
-
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", pszMapName);
-
-		new CTimer(5.0f, false, true, [sCommand]() {
-			g_pEngineServer2->ServerCommand(sCommand.c_str());
-			return -1.0f;
-		});
-
-		return;
-	}
-
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to %s...", pszMapName);
-
-	new CTimer(5.0f, false, true, [sMapName]() {
-		g_pEngineServer2->ChangeLevel(sMapName.c_str(), nullptr);
-		return -1.0f;
-	});
-}
-
 CON_COMMAND_CHAT_FLAGS(hsay, "<message> - Say something as a hud hint", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 2)
@@ -685,8 +615,7 @@ CON_COMMAND_CHAT_FLAGS(extend, "<minutes> - Extend current map (negative value r
 
 	int iExtendTime = V_StringToInt32(args[1], 0);
 
-	// Call the votemanager extend function so the extend vote can be checked
-	ExtendMap(iExtendTime);
+	g_pVoteManager->ExtendMap(iExtendTime);
 
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
@@ -698,6 +627,9 @@ CON_COMMAND_CHAT_FLAGS(extend, "<minutes> - Extend current map (negative value r
 
 CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This will also show to all online admins", ADMFLAG_GENERIC)
 {
+	if (!GetGlobals())
+		return;
+
 	if (args.ArgC() < 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: /pm <name> <message>");
@@ -737,7 +669,7 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 		return;
 	}
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -755,9 +687,12 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 
 CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GENERIC)
 {
+	if (!GetGlobals())
+		return;
+
 	std::vector<std::tuple<std::string, std::string, uint64>> rgNameSlotID;
 
-	for (size_t i = 0; i < gpGlobals->maxClients; i++)
+	for (size_t i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* ccsPly = CCSPlayerController::FromSlot(i);
 
@@ -961,7 +896,8 @@ CON_COMMAND_CHAT_FLAGS(listdc, "- List recently disconnected players and their S
 
 CON_COMMAND_CHAT_FLAGS(endround, "- Immediately ends the round, client-side variant of endround", ADMFLAG_RCON)
 {
-	g_pGameRules->TerminateRound(0.0f, CSRoundEndReason::Draw);
+	if (g_pGameRules)
+		g_pGameRules->TerminateRound(0.0f, CSRoundEndReason::Draw);
 }
 
 CON_COMMAND_CHAT_FLAGS(money, "<name> <amount> - Set a player's amount of money", ADMFLAG_CHEATS)
