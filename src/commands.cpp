@@ -279,7 +279,7 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 	}
 
 	player->m_pInGameMoneyServices->m_iAccount = money - weaponEntry.iPrice;
-	pItemServices->GiveNamedItem(weaponEntry.szClassName);
+	pItemServices->GiveNamedItemAws(weaponEntry.szClassName);
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have purchased %s for $%i", weaponEntry.szWeaponName, weaponEntry.iPrice);
 }
 

@@ -103,6 +103,35 @@ public:
 		m_nNextPrimaryAttackTick(MAX(m_nNextPrimaryAttackTick(), GetGlobals()->tickcount + 24));
 		m_nNextSecondaryAttackTick(MAX(m_nNextSecondaryAttackTick(), GetGlobals()->tickcount + 24));
 	}
+
+	const char* GetWeaponClassname() noexcept
+	{
+		const char* pszClassname = GetClassname();
+		if (V_StringHasPrefixCaseSensitive(pszClassname, "item_"))
+			return pszClassname;
+
+		switch (m_AttributeManager().m_Item().m_iItemDefinitionIndex)
+		{
+			case 23:
+				return "weapon_mp5sd";
+			case 41:
+				return "weapon_knifegg";
+			case 42:
+				return "weapon_knife";
+			case 59:
+				return "weapon_knife_t";
+			case 60:
+				return "weapon_m4a1_silencer";
+			case 61:
+				return "weapon_usp_silencer";
+			case 63:
+				return "weapon_cz75a";
+			case 64:
+				return "weapon_revolver";
+			default:
+				return pszClassname;
+		}
+	}
 };
 
 class CCSWeaponBase : public CBasePlayerWeapon
