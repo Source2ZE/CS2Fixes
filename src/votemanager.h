@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "panoramavote.h"
+
 enum class ERTVState
 {
 	MAP_START,
@@ -50,13 +52,39 @@ enum EExtendVoteMode
 	EXTENDVOTE_AUTO,	  // Extend votes can be triggered by !ve or when map timelimit reaches a given value
 };
 
-extern ERTVState g_RTVState;
-extern EExtendState g_ExtendState;
 extern bool g_bVoteManagerEnable;
 
-void VoteManager_Init();
-void SetExtendsLeft();
-void ExtendMap(int iMinutes);
+class CVoteManager
+{
+public:
+	void VoteManager_Init();
+	float TimerCheckTimeleft();
+	int GetCurrentRTVCount();
+	int GetNeededRTVCount();
+	int GetCurrentExtendCount();
+	int GetNeededExtendCount();
+	void ExtendMap(int iMinutes, bool bAllowExtraTime = true);
+	void VoteExtendHandler(YesNoVoteAction action, int param1, int param2);
+	bool VoteExtendEndCallback(YesNoVoteInfo info);
+	void StartExtendVote(int iCaller);
+	void OnRoundEnd();
+	bool CheckRTVStatus();
 
-float TimerCheckTimeleft();
-void StartExtendVote(int iCaller);
+	ERTVState GetRTVState() { return m_RTVState; }
+	EExtendState GetExtendState() { return m_ExtendState; }
+	int GetExtends() { return m_iExtends; }
+	bool IsVoteStarting() { return m_bVoteStarting; }
+	void SetRTVState(ERTVState RTVState) { m_RTVState = RTVState; }
+	void SetExtendState(EExtendState ExtendState) { m_ExtendState = ExtendState; }
+
+private:
+	ERTVState m_RTVState = ERTVState::MAP_START;
+	EExtendState m_ExtendState = EExtendState::MAP_START;
+	int m_iExtends = 0;
+	int m_iVoteEndTicks = 3;
+	int m_iVoteStartTicks = 3;
+	bool m_bVoteStarting = false;
+	const float m_flExtendVoteTickrate = 1.0f;
+};
+
+extern CVoteManager* g_pVoteManager;

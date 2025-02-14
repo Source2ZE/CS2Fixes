@@ -28,7 +28,7 @@
 
 extern IVEngineServer2* g_pEngineServer2;
 extern CGameEntitySystem* g_pEntitySystem;
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern IGameEventManager2* g_gameEventManager;
 
 // All colors MUST have 255 alpha
@@ -178,10 +178,13 @@ std::pair<int, std::string> GetLeaders()
 
 std::pair<int, std::string> GetCount(int iType)
 {
+	if (!GetGlobals())
+		return std::make_pair(0, "");
+
 	int iCount = 0;
 	std::string strPlayerNames = "";
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(CPlayerSlot(i));
 		if (!pPlayer)
@@ -376,7 +379,13 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, cons
 
 void Leader_OnRoundStart(IGameEvent* pEvent)
 {
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	g_bPingWithLeader = true;
+	g_iMarkerCount = 0;
+
+	if (!GetGlobals())
+		return;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pLeader = CCSPlayerController::FromSlot((CPlayerSlot)i);
 		if (!pLeader)
@@ -394,9 +403,6 @@ void Leader_OnRoundStart(IGameEvent* pEvent)
 		else
 			Leader_ApplyLeaderVisuals(pawnLeader);
 	}
-
-	g_bPingWithLeader = true;
-	g_iMarkerCount = 0;
 }
 
 // revisit this later with a TempEnt implementation
@@ -503,7 +509,7 @@ CON_COMMAND_CHAT(glows, "- List all active player glows")
 
 CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 {
-	if (!g_bEnableLeader)
+	if (!g_bEnableLeader || !GetGlobals())
 		return;
 
 	if (!player)
@@ -518,7 +524,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 		return;
 	}
 
-	if (gpGlobals->curtime < 60.0f)
+	if (GetGlobals()->curtime < 60.0f)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Leader voting is not open yet.");
 		return;
@@ -540,9 +546,9 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 	if (!pPlayer)
 		return;
 
-	if (pPlayer->GetLeaderVoteTime() + 30.0f > gpGlobals->curtime)
+	if (pPlayer->GetLeaderVoteTime() + 30.0f > GetGlobals()->curtime)
 	{
-		int iRemainingTime = (int)(pPlayer->GetLeaderVoteTime() + 30.0f - gpGlobals->curtime);
+		int iRemainingTime = (int)(pPlayer->GetLeaderVoteTime() + 30.0f - GetGlobals()->curtime);
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can !vl again.", iRemainingTime);
 		return;
 	}
@@ -571,7 +577,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 	int iLeaderVoteCount = pPlayerTarget->GetLeaderVoteCount();
 	int iNeededLeaderVoteCount = (int)(g_playerManager->GetOnlinePlayerCount(false) * g_flLeaderVoteRatio) + 1;
 
-	pPlayer->SetLeaderVoteTime(gpGlobals->curtime);
+	pPlayer->SetLeaderVoteTime(GetGlobals()->curtime);
 
 	if (iLeaderVoteCount + 1 >= iNeededLeaderVoteCount)
 	{

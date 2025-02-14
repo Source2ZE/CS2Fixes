@@ -279,6 +279,7 @@
     <ClInclude Include="src\utils\module.h" />
     <ClInclude Include="src\utils\plat.h" />
     <ClInclude Include="src\utils\virtual.h" />
+    <ClInclude Include="src\netmessages.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

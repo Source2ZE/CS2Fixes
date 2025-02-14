@@ -27,7 +27,7 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 
 using SchemaKeyValueMap_t = CUtlMap<uint32_t, SchemaKey>;
 using SchemaTableMap_t = CUtlMap<uint32_t, SchemaKeyValueMap_t*>;

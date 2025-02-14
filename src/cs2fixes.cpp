@@ -126,10 +126,8 @@ CS2Fixes g_CS2Fixes;
 
 IGameEventSystem* g_gameEventSystem = nullptr;
 IGameEventManager2* g_gameEventManager = nullptr;
-INetworkGameServer* g_pNetworkGameServer = nullptr;
 CGameEntitySystem* g_pEntitySystem = nullptr;
 CEntityListener* g_pEntityListener = nullptr;
-CGlobalVars* gpGlobals = nullptr;
 CPlayerManager* g_playerManager = nullptr;
 IVEngineServer2* g_pEngineServer2 = nullptr;
 CGameConfig* g_GameConfig = nullptr;
@@ -149,6 +147,18 @@ CGameEntitySystem* GameEntitySystem()
 {
 	static int offset = g_GameConfig->GetOffset("GameEntitySystem");
 	return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(g_pGameResourceServiceServer) + offset);
+}
+
+// Will return null between map end & new map startup, null check if necessary!
+INetworkGameServer* GetNetworkGameServer()
+{
+	return g_pNetworkServerService->GetIGameServer();
+}
+
+// Will return null between map end & new map startup, null check if necessary!
+CGlobalVars* GetGlobals()
+{
+	return g_pEngineServer2->GetServerGlobals();
 }
 
 PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
@@ -324,17 +334,16 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		RegisterEventListeners();
 		g_pEntitySystem = GameEntitySystem();
 		g_pEntitySystem->AddListenerEntity(g_pEntityListener);
-		g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
-		gpGlobals = g_pEngineServer2->GetServerGlobals();
 	}
 
 	g_pAdminSystem = new CAdminSystem();
 	g_playerManager = new CPlayerManager(late);
 	g_pDiscordBotManager = new CDiscordBotManager();
-	g_pZRPlayerClassManager = new CZRPlayerClassManager();
 	g_pMapVoteSystem = new CMapVoteSystem();
+	g_pVoteManager = new CVoteManager();
 	g_pUserPreferencesSystem = new CUserPreferencesSystem();
 	g_pUserPreferencesStorage = new CUserPreferencesREST();
+	g_pZRPlayerClassManager = new CZRPlayerClassManager();
 	g_pZRWeaponConfig = new ZRWeaponConfig();
 	g_pZRHitgroupConfig = new ZRHitgroupConfig();
 	g_pEntityListener = new CEntityListener();
@@ -397,6 +406,9 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	if (g_iGoToIntermissionId != -1)
 		SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
 
+	if (g_iCGamePlayerEquipUseId != -1)
+		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
+
 	ConVar_Unregister();
 
 	g_CommandList.Purge();
@@ -406,17 +418,29 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	RemoveTimers();
 	UnregisterEventListeners();
 
-	if (g_playerManager)
-		delete g_playerManager;
+	if (g_GameConfig)
+		delete g_GameConfig;
 
 	if (g_pAdminSystem)
 		delete g_pAdminSystem;
 
+	if (g_playerManager)
+		delete g_playerManager;
+
 	if (g_pDiscordBotManager)
 		delete g_pDiscordBotManager;
 
-	if (g_GameConfig)
-		delete g_GameConfig;
+	if (g_pMapVoteSystem)
+		delete g_pMapVoteSystem;
+
+	if (g_pVoteManager)
+		delete g_pVoteManager;
+
+	if (g_pUserPreferencesSystem)
+		delete g_pUserPreferencesSystem;
+
+	if (g_pUserPreferencesStorage)
+		delete g_pUserPreferencesStorage;
 
 	if (g_pZRPlayerClassManager)
 		delete g_pZRPlayerClassManager;
@@ -426,12 +450,6 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	if (g_pZRHitgroupConfig)
 		delete g_pZRHitgroupConfig;
-
-	if (g_pUserPreferencesSystem)
-		delete g_pUserPreferencesSystem;
-
-	if (g_pUserPreferencesStorage)
-		delete g_pUserPreferencesStorage;
 
 	if (g_pEntityListener)
 		delete g_pEntityListener;
@@ -500,14 +518,14 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 			if (pController)
 				ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "You are flooding the server!");
 		}
-		else if (bAdminChat) // Admin chat can be sent by anyone but only seen by admins, use flood protection here too
+		else if (bAdminChat && GetGlobals()) // Admin chat can be sent by anyone but only seen by admins, use flood protection here too
 		{
 			// HACK: At this point, we can safely modify the arg buffer as it won't be passed anywhere else
 			// The string here is originally ("@foo bar"), trim it to be (foo bar)
 			char* pszMessage = (char*)(args.ArgS() + 2);
 			pszMessage[V_strlen(pszMessage) - 1] = 0;
 
-			for (int i = 0; i < gpGlobals->maxClients; i++)
+			for (int i = 0; i < GetGlobals()->maxClients; i++)
 			{
 				ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -544,10 +562,8 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CComman
 
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession* pSession, const char* pszMapName)
 {
-	g_pNetworkGameServer = g_pNetworkServerService->GetIGameServer();
 	g_pEntitySystem = GameEntitySystem();
 	g_pEntitySystem->AddListenerEntity(g_pEntityListener);
-	gpGlobals = g_pEngineServer2->GetServerGlobals();
 
 	Message("Hook_StartupServer: %s\n", pszMapName);
 
@@ -559,7 +575,7 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	RegisterEventListeners();
 
 	g_pPanoramaVoteHandler->Reset();
-	VoteManager_Init();
+	g_pVoteManager->VoteManager_Init();
 
 	g_pIdleSystem->Reset();
 }
@@ -671,11 +687,11 @@ void CS2Fixes::AllPluginsLoaded()
 
 CUtlVector<CServerSideClient*>* GetClientList()
 {
-	if (!g_pNetworkGameServer)
+	if (!GetNetworkGameServer())
 		return nullptr;
 
 	static int offset = g_GameConfig->GetOffset("CNetworkGameServer_ClientList");
-	return (CUtlVector<CServerSideClient*>*)(&g_pNetworkGameServer[offset]);
+	return (CUtlVector<CServerSideClient*>*)(&GetNetworkGameServer()[offset]);
 }
 
 CServerSideClient* GetClientBySlot(CPlayerSlot slot)
@@ -691,6 +707,9 @@ CServerSideClient* GetClientBySlot(CPlayerSlot slot)
 void FullUpdateAllClients()
 {
 	auto pClients = GetClientList();
+
+	if (!pClients)
+		return;
 
 	FOR_EACH_VEC(*pClients, i)
 	(*pClients)[i]->ForceFullUpdate();
@@ -807,10 +826,13 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 
 	VPROF_BUDGET("CS2Fixes::Hook_GameFramePost", "CS2FixesPerFrame");
 
-	if (simulating && g_bHasTicked)
-		g_flUniversalTime += gpGlobals->curtime - g_flLastTickedTime;
+	if (!GetGlobals())
+		return;
 
-	g_flLastTickedTime = gpGlobals->curtime;
+	if (simulating && g_bHasTicked)
+		g_flUniversalTime += GetGlobals()->curtime - g_flLastTickedTime;
+
+	g_flLastTickedTime = GetGlobals()->curtime;
 	g_bHasTicked = true;
 
 	for (int i = g_timers.Tail(); i != g_timers.InvalidIndex();)
@@ -841,7 +863,7 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 	if (g_bEnableZR)
 		CZRRegenTimer::Tick();
 
-	EntityHandler_OnGameFramePost(simulating, gpGlobals->tickcount);
+	EntityHandler_OnGameFramePost(simulating, GetGlobals()->tickcount);
 }
 
 extern bool g_bFlashLightTransmitOthers;
@@ -849,7 +871,7 @@ extern bool g_bFlashLightTransmitOthers;
 void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts,
 								  const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities, bool bEnablePVSBits)
 {
-	if (!g_pEntitySystem)
+	if (!g_pEntitySystem || !GetGlobals())
 		return;
 
 	VPROF("CS2Fixes::Hook_CheckTransmit");
@@ -873,7 +895,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 		if (!pSelfZEPlayer)
 			continue;
 
-		for (int j = 0; j < gpGlobals->maxClients; j++)
+		for (int j = 0; j < GetGlobals()->maxClients; j++)
 		{
 			CCSPlayerController* pController = CCSPlayerController::FromSlot(j);
 			// Always transmit to themselves
@@ -913,13 +935,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 
 void CS2Fixes::Hook_ApplyGameSettings(KeyValues* pKV)
 {
-	if (!pKV->FindKey("launchoptions"))
-		return;
-
-	if (pKV->FindKey("launchoptions")->FindKey("customgamemode"))
-		g_pMapVoteSystem->SetCurrentWorkshopMap(pKV->FindKey("launchoptions")->GetUint64("customgamemode"));
-	else if (pKV->FindKey("launchoptions")->FindKey("levelname"))
-		g_pMapVoteSystem->SetCurrentMap(pKV->FindKey("launchoptions")->GetString("levelname"));
+	g_pMapVoteSystem->ApplyGameSettings(pKV);
 }
 
 void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList)
@@ -994,7 +1010,8 @@ void CS2Fixes::Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool u
 	// [Kxnrl]
 	// seems it sorted by flags?
 
-	std::srand(gpGlobals->tickcount);
+	if (GetGlobals())
+		std::srand(GetGlobals()->tickcount);
 
 	// Fisher-Yates shuffle
 
@@ -1032,7 +1049,7 @@ void CS2Fixes::Hook_CheckMovingGround(double frametime)
 	CCSPlayer_MovementServices* pMove = META_IFACEPTR(CCSPlayer_MovementServices);
 	CCSPlayerPawn* pPawn = pMove->GetPawn();
 
-	if (!pPawn)
+	if (!pPawn || !GetGlobals())
 		RETURN_META(MRES_IGNORED);
 
 	CCSPlayerController* pController = pPawn->GetOriginalController();
@@ -1046,10 +1063,10 @@ void CS2Fixes::Hook_CheckMovingGround(double frametime)
 
 	// The point of doing this is to avoid running the function (and applying/resetting basevelocity) multiple times per tick
 	// This can happen when the client or server lags
-	if (aPlayerTicks[iSlot] == gpGlobals->tickcount)
+	if (aPlayerTicks[iSlot] == GetGlobals()->tickcount)
 		RETURN_META(MRES_SUPERCEDE);
 
-	aPlayerTicks[iSlot] = gpGlobals->tickcount;
+	aPlayerTicks[iSlot] = GetGlobals()->tickcount;
 
 	RETURN_META(MRES_IGNORED);
 }
@@ -1090,10 +1107,12 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 	EntityHandler_OnLevelInit();
 }
 
-// Potentially might not work
 void CS2Fixes::OnLevelShutdown()
 {
 	Message("OnLevelShutdown()\n");
+
+	if (g_bVoteManagerEnable)
+		g_pMapVoteSystem->OnLevelShutdown();
 }
 
 bool CS2Fixes::Pause(char* error, size_t maxlen)

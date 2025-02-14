@@ -22,19 +22,16 @@
 #include "ctimer.h"
 #include "entity/cgamerules.h"
 #include "icvar.h"
-#include "panoramavote.h"
 #include "playermanager.h"
 
 #include "tier0/memdbgon.h"
 
 extern CGameEntitySystem* g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
 
-ERTVState g_RTVState = ERTVState::MAP_START;
-EExtendState g_ExtendState = EExtendState::MAP_START;
-int g_iExtends = 0;
+CVoteManager* g_pVoteManager = nullptr;
 
 bool g_bVoteManagerEnable = false;
 int g_iMaxExtends = 1;
@@ -42,12 +39,10 @@ float g_flExtendSucceedRatio = 0.5f;
 int g_iExtendTimeToAdd = 20;
 float g_flRTVSucceedRatio = 0.6f;
 bool g_bRTVEndRound = false;
-
 int g_ExtendVoteMode = (int)EExtendVoteMode::EXTENDVOTE_ADMINONLY;
 float g_flExtendVoteStartTime = 4.0f;
 float g_flExtendVoteDuration = 30.0f;
 float g_flExtendBeginRatio = 0.4f;
-
 float g_flExtendVoteDelay = 300.0f;
 float g_flRtvDelay = 300.0f;
 
@@ -65,52 +60,48 @@ FAKE_FLOAT_CVAR(cs2f_rtv_vote_delay, "Time after map start until RTV votes can b
 FAKE_FLOAT_CVAR(cs2f_rtv_success_ratio, "Ratio needed to pass RTV", g_flRTVSucceedRatio, 0.6f, false)
 FAKE_BOOL_CVAR(cs2f_rtv_endround, "Whether to immediately end the round when RTV succeeds", g_bRTVEndRound, false, false)
 
-static float flExtendVoteTickrate = 1.0f;
-
-void VoteManager_Init()
+void CVoteManager::VoteManager_Init()
 {
 	// Disable RTV and Extend votes after map has just started
-	g_RTVState = ERTVState::MAP_START;
-	g_ExtendState = EExtendState::MAP_START;
+	m_RTVState = ERTVState::MAP_START;
+	m_ExtendState = EExtendState::MAP_START;
 
-	g_iExtends = 0;
+	m_iExtends = 0;
 
-	new CTimer(g_flExtendVoteDelay, false, true, []() {
-		if (g_ExtendState < EExtendState::POST_EXTEND_NO_EXTENDS_LEFT)
-			g_ExtendState = EExtendState::EXTEND_ALLOWED;
+	new CTimer(g_flExtendVoteDelay, false, true, [this]() {
+		if (m_ExtendState < EExtendState::POST_EXTEND_NO_EXTENDS_LEFT)
+			m_ExtendState = EExtendState::EXTEND_ALLOWED;
 		return -1.0f;
 	});
 
-	new CTimer(g_flRtvDelay, false, true, []() {
-		if (g_RTVState != ERTVState::BLOCKED_BY_ADMIN)
-			g_RTVState = ERTVState::RTV_ALLOWED;
+	new CTimer(g_flRtvDelay, false, true, [this]() {
+		if (m_RTVState != ERTVState::BLOCKED_BY_ADMIN)
+			m_RTVState = ERTVState::RTV_ALLOWED;
 		return -1.0f;
 	});
 
-	new CTimer(flExtendVoteTickrate, false, true, TimerCheckTimeleft);
+	new CTimer(m_flExtendVoteTickrate, false, true, std::bind(&CVoteManager::TimerCheckTimeleft, this));
 }
 
-int iVoteStartTicks = 3;
-bool bVoteStarting = false;
-float TimerCheckTimeleft()
+float CVoteManager::TimerCheckTimeleft()
 {
-	if (!gpGlobals || !g_pGameRules)
-		return flExtendVoteTickrate;
+	if (!GetGlobals() || !g_pGameRules)
+		return m_flExtendVoteTickrate;
 
 	if (!g_bVoteManagerEnable)
-		return flExtendVoteTickrate;
+		return m_flExtendVoteTickrate;
 
 	// Auto votes disabled, dont stop the timer in case this changes mid-map
 	if (g_ExtendVoteMode != EExtendVoteMode::EXTENDVOTE_AUTO)
-		return flExtendVoteTickrate;
+		return m_flExtendVoteTickrate;
 
 	// Vote already happening
-	if (bVoteStarting || g_ExtendState == EExtendState::IN_PROGRESS)
-		return flExtendVoteTickrate;
+	if (m_bVoteStarting || m_ExtendState == EExtendState::IN_PROGRESS)
+		return m_flExtendVoteTickrate;
 
 	// No more extends or map RTVd
-	if ((g_iMaxExtends - g_iExtends) <= 0 || g_ExtendState >= EExtendState::POST_EXTEND_NO_EXTENDS_LEFT)
-		return flExtendVoteTickrate;
+	if ((g_iMaxExtends - m_iExtends) <= 0 || m_ExtendState >= EExtendState::POST_EXTEND_NO_EXTENDS_LEFT)
+		return m_flExtendVoteTickrate;
 
 	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
 	// CONVAR_TODO
@@ -118,39 +109,42 @@ float TimerCheckTimeleft()
 	float flTimelimit = *(float*)&cvar->values;
 
 	if (flTimelimit <= 0.0)
-		return flExtendVoteTickrate;
+		return m_flExtendVoteTickrate;
 
-	float flTimeleft = (g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - gpGlobals->curtime;
+	float flTimeleft = (g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - GetGlobals()->curtime;
 
 	// Not yet time to start a vote
 	if (flTimeleft > (g_flExtendVoteStartTime * 60.0))
-		return flExtendVoteTickrate;
+		return m_flExtendVoteTickrate;
 
-	bVoteStarting = true;
+	m_bVoteStarting = true;
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote starting in 10 seconds!");
 
-	new CTimer(7.0f, false, true, []() {
-		if (iVoteStartTicks == 0)
+	new CTimer(7.0f, false, true, [this]() {
+		if (m_iVoteStartTicks == 0)
 		{
-			iVoteStartTicks = 3;
-			StartExtendVote(VOTE_CALLER_SERVER);
-			bVoteStarting = false;
+			m_iVoteStartTicks = 3;
+			g_pVoteManager->StartExtendVote(VOTE_CALLER_SERVER);
+			m_bVoteStarting = false;
 			return -1.0f;
 		}
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote starting in %d....", iVoteStartTicks);
-		iVoteStartTicks--;
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote starting in %d....", m_iVoteStartTicks);
+		m_iVoteStartTicks--;
 		return 1.0f;
 	});
 
-	return flExtendVoteTickrate;
+	return m_flExtendVoteTickrate;
 }
 
-int GetCurrentRTVCount()
+int CVoteManager::GetCurrentRTVCount()
 {
 	int iVoteCount = 0;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals())
+		return iVoteCount;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -161,16 +155,19 @@ int GetCurrentRTVCount()
 	return iVoteCount;
 }
 
-int GetNeededRTVCount()
+int CVoteManager::GetNeededRTVCount()
 {
 	return (int)(g_playerManager->GetOnlinePlayerCount(false) * g_flRTVSucceedRatio) + 1;
 }
 
-int GetCurrentExtendCount()
+int CVoteManager::GetCurrentExtendCount()
 {
 	int iVoteCount = 0;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals())
+		return iVoteCount;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -181,12 +178,16 @@ int GetCurrentExtendCount()
 	return iVoteCount;
 }
 
-int GetNeededExtendCount()
+// TODO: wtf is going on here? function should be checked/tested, normally off our radar because not used in auto-extend mode
+int CVoteManager::GetNeededExtendCount()
 {
 	int iOnlinePlayers = 0.0f;
 	int iVoteCount = 0;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals())
+		return 0;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
@@ -203,7 +204,7 @@ int GetNeededExtendCount()
 
 CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_bVoteManagerEnable || !GetGlobals())
 		return;
 
 	if (!player)
@@ -223,7 +224,7 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 		return;
 	}
 
-	switch (g_RTVState)
+	switch (g_pVoteManager->GetRTVState())
 	{
 		case ERTVState::MAP_START:
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is not open yet.");
@@ -239,57 +240,24 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 			return;
 	}
 
-	int iCurrentRTVCount = GetCurrentRTVCount();
-	int iNeededRTVCount = GetNeededRTVCount();
-
 	if (pPlayer->GetRTVVote())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already rocked the vote (%i voted, %i needed).", iCurrentRTVCount, iNeededRTVCount);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already rocked the vote (%i voted, %i needed).", g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
 		return;
 	}
 
-	if (pPlayer->GetRTVVoteTime() + 60.0f > gpGlobals->curtime)
+	if (pPlayer->GetRTVVoteTime() + 60.0f > GetGlobals()->curtime)
 	{
-		int iRemainingTime = (int)(pPlayer->GetRTVVoteTime() + 60.0f - gpGlobals->curtime);
+		int iRemainingTime = (int)(pPlayer->GetRTVVoteTime() + 60.0f - GetGlobals()->curtime);
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can RTV again.", iRemainingTime);
 		return;
 	}
 
-	if (iCurrentRTVCount + 1 >= iNeededRTVCount)
-	{
-		g_RTVState = ERTVState::POST_RTV_SUCCESSFULL;
-		g_ExtendState = EExtendState::POST_RTV;
-		// CONVAR_TODO
-		g_pEngineServer2->ServerCommand("mp_timelimit 0.01");
-
-		if (g_bRTVEndRound)
-		{
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! Ending the map now...");
-
-			new CTimer(3.0f, false, true, []() {
-				g_pGameRules->TerminateRound(5.0f, CSRoundEndReason::Draw);
-
-				return -1.0f;
-			});
-		}
-		else
-		{
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! This is the last round of the map!");
-		}
-
-		for (int i = 0; i < gpGlobals->maxClients; i++)
-		{
-			ZEPlayer* pPlayer2 = g_playerManager->GetPlayer(i);
-			if (pPlayer2)
-				pPlayer2->SetRTVVote(false);
-		}
-
-		return;
-	}
-
 	pPlayer->SetRTVVote(true);
-	pPlayer->SetRTVVoteTime(gpGlobals->curtime);
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i needed).", player->GetPlayerName(), iCurrentRTVCount + 1, iNeededRTVCount);
+	pPlayer->SetRTVVoteTime(GetGlobals()->curtime);
+
+	if (!g_pVoteManager->CheckRTVStatus())
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i needed).", player->GetPlayerName(), g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
 }
 
 CON_COMMAND_CHAT(unrtv, "- Remove your vote to end the current map sooner")
@@ -326,7 +294,7 @@ CON_COMMAND_CHAT(unrtv, "- Remove your vote to end the current map sooner")
 
 CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_bVoteManagerEnable || !GetGlobals() || !g_pGameRules)
 		return;
 
 	if (!player)
@@ -345,7 +313,7 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 			return;
 		case EExtendVoteMode::EXTENDVOTE_AUTO:
 		{
-			if (g_ExtendState == EExtendState::EXTEND_ALLOWED)
+			if (g_pVoteManager->GetExtendState() == EExtendState::EXTEND_ALLOWED)
 			{
 				ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
 
@@ -355,7 +323,7 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 				if (flTimelimit <= 0.0)
 					return;
 
-				float flTimeleft = (g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - gpGlobals->curtime;
+				float flTimeleft = (g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - GetGlobals()->curtime;
 				int iTimeTillVote = (int)(flTimeleft - (g_flExtendVoteStartTime * 60.0));
 
 				div_t div = std::div(iTimeTillVote, 60);
@@ -382,7 +350,7 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 		return;
 	}
 
-	switch (g_ExtendState)
+	switch (g_pVoteManager->GetExtendState())
 	{
 		case EExtendState::MAP_START:
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is not open yet.");
@@ -410,8 +378,8 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 			return;
 	}
 
-	int iCurrentExtendCount = GetCurrentExtendCount();
-	int iNeededExtendCount = GetNeededExtendCount();
+	int iCurrentExtendCount = g_pVoteManager->GetCurrentExtendCount();
+	int iNeededExtendCount = g_pVoteManager->GetNeededExtendCount();
 
 	if (pPlayer->GetExtendVote())
 	{
@@ -419,22 +387,22 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 		return;
 	}
 
-	if (pPlayer->GetExtendVoteTime() + 60.0f > gpGlobals->curtime)
+	if (pPlayer->GetExtendVoteTime() + 60.0f > GetGlobals()->curtime)
 	{
-		int iRemainingTime = (int)(pPlayer->GetExtendVoteTime() + 60.0f - gpGlobals->curtime);
+		int iRemainingTime = (int)(pPlayer->GetExtendVoteTime() + 60.0f - GetGlobals()->curtime);
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can vote extend again.", iRemainingTime);
 		return;
 	}
 
 	if (iCurrentExtendCount + 1 >= iNeededExtendCount)
 	{
-		StartExtendVote(VOTE_CALLER_SERVER);
+		g_pVoteManager->StartExtendVote(VOTE_CALLER_SERVER);
 
 		return;
 	}
 
 	pPlayer->SetExtendVote(true);
-	pPlayer->SetExtendVoteTime(gpGlobals->curtime);
+	pPlayer->SetExtendVoteTime(GetGlobals()->curtime);
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to extend the map (%i voted, %i needed).", player->GetPlayerName(), iCurrentExtendCount + 1, iNeededExtendCount);
 }
 
@@ -487,7 +455,7 @@ CON_COMMAND_CHAT_FLAGS(adminve, "Start a vote extend immediately.", ADMFLAG_CHAN
 		return;
 	}
 
-	if (g_ExtendState == EExtendState::IN_PROGRESS || bVoteStarting)
+	if (g_pVoteManager->GetExtendState() == EExtendState::IN_PROGRESS || g_pVoteManager->IsVoteStarting())
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "An extend vote is already in progress.");
 		return;
@@ -497,7 +465,7 @@ CON_COMMAND_CHAT_FLAGS(adminve, "Start a vote extend immediately.", ADMFLAG_CHAN
 	if (player)
 		slot = player->GetPlayerSlot();
 
-	StartExtendVote(slot);
+	g_pVoteManager->StartExtendVote(slot);
 }
 
 CON_COMMAND_CHAT_FLAGS(disablertv, "- Disable the ability for players to vote to end current map sooner", ADMFLAG_CHANGEMAP)
@@ -505,7 +473,7 @@ CON_COMMAND_CHAT_FLAGS(disablertv, "- Disable the ability for players to vote to
 	if (!g_bVoteManagerEnable)
 		return;
 
-	if (g_RTVState == ERTVState::BLOCKED_BY_ADMIN)
+	if (g_pVoteManager->GetRTVState() == ERTVState::BLOCKED_BY_ADMIN)
 	{
 		if (player)
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is already disabled.");
@@ -516,7 +484,7 @@ CON_COMMAND_CHAT_FLAGS(disablertv, "- Disable the ability for players to vote to
 
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
-	g_RTVState = ERTVState::BLOCKED_BY_ADMIN;
+	g_pVoteManager->SetRTVState(ERTVState::BLOCKED_BY_ADMIN);
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "disabled vote for RTV.", pszCommandPlayerName);
 }
@@ -526,7 +494,7 @@ CON_COMMAND_CHAT_FLAGS(enablertv, "- Restore the ability for players to vote to 
 	if (!g_bVoteManagerEnable)
 		return;
 
-	if (g_RTVState == ERTVState::RTV_ALLOWED)
+	if (g_pVoteManager->GetRTVState() == ERTVState::RTV_ALLOWED)
 	{
 		if (player)
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is not disabled.");
@@ -537,7 +505,7 @@ CON_COMMAND_CHAT_FLAGS(enablertv, "- Restore the ability for players to vote to 
 
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
-	g_RTVState = ERTVState::RTV_ALLOWED;
+	g_pVoteManager->SetRTVState(ERTVState::RTV_ALLOWED);
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "enabled vote for RTV.", pszCommandPlayerName);
 }
@@ -547,16 +515,19 @@ CON_COMMAND_CHAT(extendsleft, "- Display amount of extends left for the current 
 	if (!g_bVoteManagerEnable)
 		return;
 
-	if (g_iMaxExtends - g_iExtends <= 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no extends left, the map was already extended %i/%i times.", g_iExtends, g_iMaxExtends);
-	else if (g_ExtendState == EExtendState::POST_EXTEND_FAILED)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The map had %i/%i extends left, but the last extend vote failed.", g_iMaxExtends - g_iExtends, g_iMaxExtends);
+	if (g_iMaxExtends - g_pVoteManager->GetExtends() <= 0)
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no extends left, the map was already extended %i/%i times.", g_pVoteManager->GetExtends(), g_iMaxExtends);
+	else if (g_pVoteManager->GetExtendState() == EExtendState::POST_EXTEND_FAILED)
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The map had %i/%i extends left, but the last extend vote failed.", g_iMaxExtends - g_pVoteManager->GetExtends(), g_iMaxExtends);
 	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The map has %i/%i extends left.", g_iMaxExtends - g_iExtends, g_iMaxExtends);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The map has %i/%i extends left.", g_iMaxExtends - g_pVoteManager->GetExtends(), g_iMaxExtends);
 }
 
 CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 {
+	if (!GetGlobals() || !g_pGameRules)
+		return;
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
@@ -575,7 +546,7 @@ CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 		return;
 	}
 
-	int iTimeleft = (int)((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - gpGlobals->curtime);
+	int iTimeleft = (int)((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - GetGlobals()->curtime);
 
 	if (iTimeleft < 0)
 	{
@@ -593,9 +564,11 @@ CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Timeleft: %i seconds", iSecondsLeft);
 }
 
-void ExtendMap(int iMinutes)
+void CVoteManager::ExtendMap(int iMinutes, bool bAllowExtraTime)
 {
-	// mimic behaviour of !extend
+	if (!GetGlobals() || !g_pGameRules)
+		return;
+
 	// CONVAR_TODO
 	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
 
@@ -603,17 +576,13 @@ void ExtendMap(int iMinutes)
 	// HACK: values is actually the cvar value itself, hence this ugly cast.
 	float flTimelimit = *(float*)&cvar->values;
 
-	if (gpGlobals->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
-		flTimelimit = (gpGlobals->curtime - g_pGameRules->m_flGameStartTime) / 60.0f + iMinutes;
+	if (bAllowExtraTime && GetGlobals()->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
+		flTimelimit = (GetGlobals()->curtime - g_pGameRules->m_flGameStartTime) / 60.0f + iMinutes;
 	else
-	{
-		if (flTimelimit == 1)
-			flTimelimit = 0;
 		flTimelimit += iMinutes;
-	}
 
 	if (flTimelimit <= 0)
-		flTimelimit = 1;
+		flTimelimit = 0.01f;
 
 	char buf[32];
 	V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit);
@@ -622,7 +591,7 @@ void ExtendMap(int iMinutes)
 	g_pEngineServer2->ServerCommand(buf);
 }
 
-void VoteExtendHandler(YesNoVoteAction action, int param1, int param2)
+void CVoteManager::VoteExtendHandler(YesNoVoteAction action, int param1, int param2)
 {
 	switch (action)
 	{
@@ -646,7 +615,7 @@ void VoteExtendHandler(YesNoVoteAction action, int param1, int param2)
 				// Admin cancelled so stop further votes
 				// It will reenable if an admin manually calls a vote
 				if (g_ExtendVoteMode == EExtendVoteMode::EXTENDVOTE_AUTO)
-					g_ExtendState = EExtendState::POST_EXTEND_FAILED;
+					m_ExtendState = EExtendState::POST_EXTEND_FAILED;
 			}
 
 			break;
@@ -655,7 +624,7 @@ void VoteExtendHandler(YesNoVoteAction action, int param1, int param2)
 }
 
 // return true to show vote pass, false to show fail
-bool VoteExtendEndCallback(YesNoVoteInfo info)
+bool CVoteManager::VoteExtendEndCallback(YesNoVoteInfo info)
 {
 	// ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Vote end: numvotes:%d yes:%d no:%d numclients:%d", info.num_votes, info.yes_votes, info.no_votes, info.num_clients);
 
@@ -669,36 +638,36 @@ bool VoteExtendEndCallback(YesNoVoteInfo info)
 	if (yes_percent >= g_flExtendSucceedRatio)
 	{
 		ExtendMap(g_iExtendTimeToAdd);
-		g_iExtends++;
+		m_iExtends++;
 
-		if (g_iMaxExtends - g_iExtends <= 0)
+		if (g_iMaxExtends - m_iExtends <= 0)
 			// there are no extends left after a successfull extend vote
-			g_ExtendState = EExtendState::POST_EXTEND_NO_EXTENDS_LEFT;
+			m_ExtendState = EExtendState::POST_EXTEND_NO_EXTENDS_LEFT;
 		else
 		{
 			// there's an extend left after a successfull extend vote
 			if (g_ExtendVoteMode == EExtendVoteMode::EXTENDVOTE_AUTO)
 			{
 				// small delay to allow cvar change to go through
-				new CTimer(0.1, false, true, []() {
-					g_ExtendState = EExtendState::EXTEND_ALLOWED;
+				new CTimer(0.1, false, true, [this]() {
+					m_ExtendState = EExtendState::EXTEND_ALLOWED;
 					return -1.0f;
 				});
 			}
 			else
 			{
-				g_ExtendState = EExtendState::POST_EXTEND_COOLDOWN;
+				m_ExtendState = EExtendState::POST_EXTEND_COOLDOWN;
 
 				// Allow another extend vote after added time lapses
-				new CTimer(g_iExtendTimeToAdd * 60.0f, false, true, []() {
-					if (g_ExtendState == EExtendState::POST_EXTEND_COOLDOWN)
-						g_ExtendState = EExtendState::EXTEND_ALLOWED;
+				new CTimer(g_iExtendTimeToAdd * 60.0f, false, true, [this]() {
+					if (m_ExtendState == EExtendState::POST_EXTEND_COOLDOWN)
+						m_ExtendState = EExtendState::EXTEND_ALLOWED;
 					return -1.0f;
 				});
 			}
 		}
 
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		for (int i = 0; i < MAXPLAYERS; i++)
 		{
 			ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 			if (pPlayer)
@@ -711,36 +680,99 @@ bool VoteExtendEndCallback(YesNoVoteInfo info)
 	}
 
 	// Vote failed so we don't allow any more votes
-	g_ExtendState = EExtendState::POST_EXTEND_FAILED;
+	m_ExtendState = EExtendState::POST_EXTEND_FAILED;
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote failed! Further extend votes disabled!", g_iExtendTimeToAdd);
 
 	return false;
 }
 
-static int iVoteEndTicks = 3;
-void StartExtendVote(int iCaller)
+void CVoteManager::StartExtendVote(int iCaller)
 {
-	if (g_ExtendState == EExtendState::IN_PROGRESS)
+	if (m_ExtendState == EExtendState::IN_PROGRESS)
 		return;
 
 	char sDetailStr[64];
 	V_snprintf(sDetailStr, sizeof(sDetailStr), "Vote to extend the map for another %d minutes", g_iExtendTimeToAdd);
 
-	g_ExtendState = EExtendState::IN_PROGRESS;
+	m_ExtendState = EExtendState::IN_PROGRESS;
 
-	g_pPanoramaVoteHandler->SendYesNoVoteToAll(g_flExtendVoteDuration, iCaller, "#SFUI_vote_passed_nextlevel_extend",
-											   sDetailStr, &VoteExtendEndCallback, &VoteExtendHandler);
+	g_pPanoramaVoteHandler->SendYesNoVoteToAll(g_flExtendVoteDuration, iCaller, "#SFUI_vote_passed_nextlevel_extend", sDetailStr,
+											   std::bind(&CVoteManager::VoteExtendEndCallback, this, std::placeholders::_1), std::bind(&CVoteManager::VoteExtendHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
-	new CTimer(g_flExtendVoteDuration - 3.0f, false, true, []() {
-		if (iVoteEndTicks == 0 || g_ExtendState != EExtendState::IN_PROGRESS)
+	new CTimer(g_flExtendVoteDuration - 3.0f, false, true, [this]() {
+		if (m_iVoteEndTicks == 0 || m_ExtendState != EExtendState::IN_PROGRESS)
 		{
-			iVoteEndTicks = 3;
+			m_iVoteEndTicks = 3;
 			return -1.0f;
 		}
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote ending in %d....", iVoteEndTicks);
-		iVoteEndTicks--;
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote ending in %d....", m_iVoteEndTicks);
+		m_iVoteEndTicks--;
 		return 1.0f;
 	});
+}
+
+void CVoteManager::OnRoundEnd()
+{
+	if (!GetGlobals() || !g_pGameRules)
+		return;
+
+	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
+
+	// CONVAR_TODO
+	// HACK: values is actually the cvar value itself, hence this ugly cast.
+	float flTimelimit = *(float*)&cvar->values;
+
+	int iTimeleft = (int)((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - GetGlobals()->curtime);
+
+	// check for end of last round
+	if (iTimeleft < 0)
+	{
+		m_RTVState = ERTVState::POST_LAST_ROUND_END;
+		m_ExtendState = EExtendState::POST_LAST_ROUND_END;
+	}
+}
+
+bool CVoteManager::CheckRTVStatus()
+{
+	if (!g_bVoteManagerEnable || m_RTVState != ERTVState::RTV_ALLOWED || !GetGlobals() || !g_pGameRules)
+		return false;
+
+	int iCurrentRTVCount = GetCurrentRTVCount();
+	int iNeededRTVCount = GetNeededRTVCount();
+
+	if (iCurrentRTVCount >= iNeededRTVCount)
+	{
+		m_RTVState = ERTVState::POST_RTV_SUCCESSFULL;
+		m_ExtendState = EExtendState::POST_RTV;
+		// CONVAR_TODO
+		g_pEngineServer2->ServerCommand("mp_timelimit 0.01");
+
+		if (g_bRTVEndRound)
+		{
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! Ending the map now...");
+
+			new CTimer(3.0f, false, true, []() {
+				g_pGameRules->TerminateRound(5.0f, CSRoundEndReason::Draw);
+
+				return -1.0f;
+			});
+		}
+		else
+		{
+			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! This is the last round of the map!");
+		}
+
+		for (int i = 0; i < GetGlobals()->maxClients; i++)
+		{
+			ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+			if (pPlayer)
+				pPlayer->SetRTVVote(false);
+		}
+
+		return true;
+	}
+
+	return false;
 }

@@ -34,13 +34,14 @@
 #include "user_preferences.h"
 #include "utils/entity.h"
 #include "utlstring.h"
+#include "votemanager.h"
 #include <../cs2fixes.h>
 
 #include "tier0/memdbgon.h"
 
 extern IVEngineServer2* g_pEngineServer2;
 extern CGameEntitySystem* g_pEntitySystem;
-extern CGlobalVars* gpGlobals;
+extern CGlobalVars* GetGlobals();
 extern IGameEventSystem* g_gameEventSystem;
 extern CUtlVector<CServerSideClient*>* GetClientList();
 
@@ -245,9 +246,10 @@ FAKE_STRING_CVAR(cs2f_beacon_particle, ".vpcf file to be precached and used for 
 
 bool ZEPlayer::IsFlooding()
 {
-	if (m_bGagged) return false;
+	if (m_bGagged || !GetGlobals())
+		return false;
 
-	float time = gpGlobals->curtime;
+	float time = GetGlobals()->curtime;
 	float newTime = time + g_flFloodInterval;
 
 	if (m_flLastTalkTime >= time)
@@ -644,6 +646,12 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
 	g_pMapVoteSystem->ClearInvalidNominations();
 
+	// One tick delay, to ensure player count decrements
+	new CTimer(0.01f, false, true, []() {
+		g_pVoteManager->CheckRTVStatus();
+		return -1.0f;
+	});
+
 	g_pPanoramaVoteHandler->RemovePlayerFromVote(slot.Get());
 }
 
@@ -656,7 +664,10 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot)
 
 void CPlayerManager::OnLateLoad()
 {
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals())
+		return;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
@@ -731,7 +742,10 @@ void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pRespons
 
 void CPlayerManager::CheckInfractions()
 {
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals())
+		return;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		if (m_vecPlayers[i] == nullptr || m_vecPlayers[i]->IsFakeClient())
 			continue;
@@ -748,12 +762,12 @@ FAKE_BOOL_CVAR(cs2f_flashlight_enable, "Whether to enable flashlights", g_bFlash
 
 void CPlayerManager::FlashLightThink()
 {
-	if (!g_bFlashLightEnable)
+	if (!g_bFlashLightEnable || !GetGlobals())
 		return;
 
 	VPROF("CPlayerManager::FlashLightThink");
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(i);
 
@@ -774,12 +788,12 @@ FAKE_BOOL_CVAR(cs2f_hide_teammates_only, "Whether to hide teammates only", g_bHi
 
 void CPlayerManager::CheckHideDistances()
 {
-	if (!g_pEntitySystem)
+	if (!g_pEntitySystem || !GetGlobals())
 		return;
 
 	VPROF("CPlayerManager::CheckHideDistances");
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		auto player = GetPlayer(i);
 
@@ -805,7 +819,7 @@ void CPlayerManager::CheckHideDistances()
 		auto vecPosition = pPawn->GetAbsOrigin();
 		int team = pController->m_iTeamNum;
 
-		for (int j = 0; j < gpGlobals->maxClients; j++)
+		for (int j = 0; j < GetGlobals()->maxClients; j++)
 		{
 			if (j == i)
 				continue;
@@ -840,7 +854,10 @@ extern bool g_bEnableHide;
 
 void CPlayerManager::UpdatePlayerStates()
 {
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (!GetGlobals())
+		return;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = GetPlayer(i);
 
@@ -880,12 +897,12 @@ FAKE_BOOL_CVAR(cs2f_infinite_reserve_ammo, "Whether to enable infinite reserve a
 void CPlayerManager::SetupInfiniteAmmo()
 {
 	new CTimer(5.0f, false, true, []() {
-		if (!g_bInfiniteAmmo)
+		if (!g_bInfiniteAmmo || !GetGlobals())
 			return 5.0f;
 
 		VPROF("CPlayerManager::InfiniteAmmoTimer");
 
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		for (int i = 0; i < GetGlobals()->maxClients; i++)
 		{
 			CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
@@ -968,6 +985,9 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 												  int& iNumClients, int* rgiClients, uint64 iBlockedFlags,
 												  ETargetType& nType)
 {
+	if (!GetGlobals())
+		return ETargetError::INVALID;
+
 	nType = ETargetType::NONE;
 	ZEPlayer* zpPlayer = pPlayer ? pPlayer->GetZEPlayer() : nullptr;
 	bool bTargetMultiple = false;
@@ -1215,7 +1235,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 	}
 	else if (bTargetMultiple)
 	{
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		for (int i = 0; i < GetGlobals()->maxClients; i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;
@@ -1232,7 +1252,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 
 		while (iNumClients == 0 && iAttempts < 10000)
 		{
-			int iSlot = rand() % (gpGlobals->maxClients - 1);
+			int iSlot = rand() % (GetGlobals()->maxClients - 1);
 
 			// Prevent infinite loop
 			iAttempts++;
@@ -1255,7 +1275,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 
 		while (iNumClients == 0 && iAttempts < 10000)
 		{
-			int iSlot = rand() % (gpGlobals->maxClients - 1);
+			int iSlot = rand() % (GetGlobals()->maxClients - 1);
 
 			// Prevent infinite loop
 			iAttempts++;
@@ -1276,7 +1296,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 		if (pRandomPlayer == nullptr)
 			return ETargetError::INVALID;
 
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		for (int i = 0; i < GetGlobals()->maxClients; i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;
@@ -1312,7 +1332,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 		CBaseEntity* entTarget = nullptr;
 		entTarget = UTIL_FindPickerEntity(pPlayer);
 
-		if (!entTarget->IsPawn())
+		if (!entTarget || !entTarget->IsPawn())
 			return ETargetError::INVALID;
 
 		CCSPlayerController* pAimed = CCSPlayerController::FromPawn(static_cast<CCSPlayerPawn*>(entTarget));
@@ -1323,7 +1343,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 
 		nType = ETargetType::ALL_BUT_AIM;
 
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		for (int i = 0; i < GetGlobals()->maxClients; i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;
@@ -1376,7 +1396,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 		if (bExactName)
 			pszTarget++;
 
-		for (int i = 0; i < gpGlobals->maxClients; i++)
+		for (int i = 0; i < GetGlobals()->maxClients; i++)
 		{
 			if (m_vecPlayers[i] == nullptr)
 				continue;
@@ -1497,7 +1517,7 @@ bool CPlayerManager::CanTargetPlayers(CCSPlayerController* pPlayer, const char* 
 
 ZEPlayer* CPlayerManager::GetPlayer(CPlayerSlot slot)
 {
-	if (slot.Get() < 0 || slot.Get() >= gpGlobals->maxClients)
+	if (slot.Get() < 0 || slot.Get() >= MAXPLAYERS)
 		return nullptr;
 
 	return m_vecPlayers[slot.Get()];
@@ -1513,7 +1533,7 @@ ZEPlayer* CPlayerManager::GetPlayerFromUserId(uint16 userid)
 {
 	uint8 index = userid & 0xFF;
 
-	if (index >= gpGlobals->maxClients)
+	if (index >= MAXPLAYERS)
 		return nullptr;
 
 	return m_vecPlayers[index];
@@ -1605,6 +1625,9 @@ void CPlayerManager::ResetPlayerFlags(int slot)
 int CPlayerManager::GetOnlinePlayerCount(bool bCountBots)
 {
 	int iOnlinePlayers = 0;
+
+	if (!GetClientList())
+		return iOnlinePlayers;
 
 	for (int i = 0; i < GetClientList()->Count(); i++)
 	{
