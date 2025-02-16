@@ -30,6 +30,8 @@ struct CTakeDamageInfoContainer;
 class CCSPlayer_MovementServices;
 class CServerSideClient;
 struct TouchLinked_t;
+class CCSPlayer_WeaponServices;
+class CBasePlayerWeapon;
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
 {
@@ -78,6 +80,7 @@ public: // hooks
 	QAngle Hook_GetEyeAngles();
 #endif
 	void Hook_CheckMovingGround(double frametime);
+	void Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity);
 	int Hook_LoadEventsFromFile(const char* filename, bool bSearchAll);
 
 public:

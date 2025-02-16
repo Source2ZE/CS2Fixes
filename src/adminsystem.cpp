@@ -26,6 +26,7 @@
 #include "entity/cbaseentity.h"
 #include "entity/cgamerules.h"
 #include "entity/cparticlesystem.h"
+#include "entwatch.h"
 #include "filesystem.h"
 #include "gamesystem.h"
 #include "icvar.h"
@@ -194,6 +195,22 @@ CON_COMMAND_CHAT_FLAGS(gag, "<name> <duration|0 (permanent)> - Gag a player", AD
 CON_COMMAND_CHAT_FLAGS(ungag, "<name> - Ungag a player", ADMFLAG_CHAT)
 {
 	ParseInfraction(args, player, false, CInfractionBase::EInfractionType::Gag);
+}
+
+CON_COMMAND_CHAT_FLAGS(eban, "<name> <duration|0 (permanent)> - Ban a player from picking up items", ADMFLAG_BAN)
+{
+	if (!g_bEnableEntWatch)
+		return;
+
+	ParseInfraction(args, player, true, CInfractionBase::EInfractionType::Eban);
+}
+
+CON_COMMAND_CHAT_FLAGS(eunban, "<name> - Unban a player from picking up items", ADMFLAG_BAN)
+{
+	if (!g_bEnableEntWatch)
+		return;
+
+	ParseInfraction(args, player, false, CInfractionBase::EInfractionType::Eban);
 }
 
 CON_COMMAND_CHAT_FLAGS(kick, "<name> - Kick a player", ADMFLAG_KICK)
@@ -1365,6 +1382,16 @@ void CGagInfraction::UndoInfraction(ZEPlayer* player)
 	player->SetGagged(false);
 }
 
+void CEbanInfraction::ApplyInfraction(ZEPlayer* player)
+{
+	player->SetEbanned(true);
+}
+
+void CEbanInfraction::UndoInfraction(ZEPlayer* player)
+{
+	player->SetEbanned(false);
+}
+
 std::string FormatTime(std::time_t wTime, bool bInSeconds)
 {
 	if (bInSeconds)
@@ -1529,6 +1556,9 @@ void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAd
 				case CInfractionBase::Ban:
 					infraction = new CBanInfraction(iDuration, zpTarget->GetSteamId64());
 					break;
+				case CInfractionBase::Eban:
+					infraction = new CEbanInfraction(iDuration, zpTarget->GetSteamId64());
+					break;
 				default:
 					// This should never be reached, since we it means we are trying to apply an unimplemented block type
 					ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "Improper block type... Send to a dev with the command used.");
@@ -1576,6 +1606,8 @@ const char* GetActionPhrase(CInfractionBase::EInfractionType infType, GrammarTen
 				return bAdding ? "mute" : "unmute";
 			case CInfractionBase::Gag:
 				return bAdding ? "gag" : "ungag";
+			case CInfractionBase::Eban:
+				return bAdding ? "eban" : "eunban";
 		}
 	}
 	else if (iTense == GrammarTense::Past)
@@ -1588,6 +1620,8 @@ const char* GetActionPhrase(CInfractionBase::EInfractionType infType, GrammarTen
 				return bAdding ? "muted" : "unmuted";
 			case CInfractionBase::Gag:
 				return bAdding ? "gagged" : "ungagged";
+			case CInfractionBase::Eban:
+				return bAdding ? "ebanned" : "unebanned";
 		}
 	}
 	else if (iTense == GrammarTense::Continuous)
@@ -1600,6 +1634,8 @@ const char* GetActionPhrase(CInfractionBase::EInfractionType infType, GrammarTen
 				return bAdding ? "muting" : "unmuting";
 			case CInfractionBase::Gag:
 				return bAdding ? "gagging" : "ungagging";
+			case CInfractionBase::Eban:
+				return bAdding ? "ebanning" : "unebanning";
 		}
 	}
 	return "";

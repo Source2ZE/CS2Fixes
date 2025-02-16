@@ -19,6 +19,7 @@
 
 #pragma once
 #include "globaltypes.h"
+#include "viewmodels.h"
 #include <entity/ccsplayerpawn.h>
 #include <entity/ccsweaponbase.h>
 #include <platform.h>
@@ -255,3 +256,27 @@ public:
 
 class CCSPlayer_CameraServices : public CCSPlayerBase_CameraServices
 {};
+
+class CPlayer_ViewModelServices : public CPlayerPawnComponent
+{
+public:
+	DECLARE_SCHEMA_CLASS(CPlayer_ViewModelServices)
+};
+
+class CCSPlayer_ViewModelServices : public CPlayer_ViewModelServices
+{
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayer_ViewModelServices)
+	SCHEMA_FIELD_POINTER(CHandle<CBaseViewModel>, m_hViewModel) // CHandle<CBaseViewModel> m_hViewModel[3]
+
+	CBaseViewModel* GetViewModel(int iIndex = 0)
+	{
+		return m_hViewModel()[iIndex].Get();
+	}
+
+	void SetViewModel(int iIndex, CBaseViewModel* pViewModel)
+	{
+		m_hViewModel()[iIndex].Set(pViewModel);
+		pViewModel->m_nViewModelIndex = iIndex;
+	}
+};
