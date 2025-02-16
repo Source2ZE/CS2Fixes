@@ -24,6 +24,7 @@
 #include "entities.h"
 #include "entity/cbaseplayercontroller.h"
 #include "entity/cgamerules.h"
+#include "entwatch.h"
 #include "eventlistener.h"
 #include "idlemanager.h"
 #include "leader.h"
@@ -113,6 +114,9 @@ GAME_EVENT_F(round_prestart)
 
 	if (g_bEnableZR)
 		ZR_OnRoundPrestart(pEvent);
+
+	if (g_bEnableEntWatch)
+		EW_RoundPreStart();
 }
 
 static bool g_bBlockTeamMessages = false;
@@ -227,6 +231,9 @@ GAME_EVENT_F(player_death)
 {
 	if (g_bEnableZR)
 		ZR_OnPlayerDeath(pEvent);
+
+	if (g_bEnableEntWatch)
+		EW_PlayerDeath(pEvent);
 
 	if (!g_bEnableTopDefender)
 		return;

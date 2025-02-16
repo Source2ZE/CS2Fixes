@@ -34,6 +34,7 @@
 #include "entity/cgamerules.h"
 #include "entitylistener.h"
 #include "entitysystem.h"
+#include "entwatch.h"
 #include "eventlistener.h"
 #include "gameconfig.h"
 #include "gameevents.pb.h"
@@ -119,6 +120,7 @@ SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
 SH_DECL_HOOK2(IGameEventManager2, LoadEventsFromFile, SH_NOATTRIB, 0, int, const char*, bool);
 SH_DECL_MANUALHOOK1_void(GoToIntermission, 0, 0, 0, bool);
 SH_DECL_MANUALHOOK2_void(PhysicsTouchShuffle, 0, 0, 0, CUtlVector<TouchLinked_t>*, bool);
+SH_DECL_MANUALHOOK3_void(DropWeapon, 0, 0, 0, CBasePlayerWeapon*, Vector*, Vector*);
 
 CS2Fixes g_CS2Fixes;
 
@@ -139,6 +141,7 @@ int g_iCheckMovingGroundId = -1;
 int g_iLoadEventsFromFileId = -1;
 int g_iGoToIntermissionId = -1;
 int g_iPhysicsTouchShuffle = -1;
+int g_iWeaponServiceDropWeaponId = -1;
 
 CGameEntitySystem* GameEntitySystem()
 {
@@ -289,6 +292,16 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	SH_MANUALHOOK_RECONFIGURE(PhysicsTouchShuffle, offset, 0, 0);
 	g_iPhysicsTouchShuffle = SH_ADD_MANUALDVPHOOK(PhysicsTouchShuffle, pCVPhys2WorldVTable, SH_MEMBER(this, &CS2Fixes::Hook_PhysicsTouchShuffle), true);
 
+	const auto pCCSPlayer_WeaponServicesVTable = modules::server->FindVirtualTable("CCSPlayer_WeaponServices");
+	offset = g_GameConfig->GetOffset("CCSPlayer_WeaponServices::DropWeapon");
+	if (offset == -1)
+	{
+		snprintf(error, maxlen, "Failed to find CCSPlayer_WeaponServices::DropWeapon\n");
+		bRequiredInitLoaded = false;
+	}
+	SH_MANUALHOOK_RECONFIGURE(DropWeapon, offset, 0, 0);
+	g_iWeaponServiceDropWeaponId = SH_ADD_MANUALDVPHOOK(DropWeapon, pCCSPlayer_WeaponServicesVTable, SH_MEMBER(this, &CS2Fixes::Hook_DropWeaponPost), true);
+
 	auto pCGameEventManagerVTable = (IGameEventManager2*)modules::server->FindVirtualTable("CGameEventManager");
 
 	g_iLoadEventsFromFileId = SH_ADD_DVPHOOK(IGameEventManager2, LoadEventsFromFile, pCGameEventManagerVTable, SH_MEMBER(this, &CS2Fixes::Hook_LoadEventsFromFile), false);
@@ -336,6 +349,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	g_pEntityListener = new CEntityListener();
 	g_pIdleSystem = new CIdleSystem();
 	g_pPanoramaVoteHandler = new CPanoramaVoteHandler();
+	g_pEWHandler = new CEWHandler();
 
 	RegisterWeaponCommands();
 
@@ -389,6 +403,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	SH_REMOVE_HOOK_ID(g_iOnTakeDamageAliveId);
 	SH_REMOVE_HOOK_ID(g_iCheckMovingGroundId);
 	SH_REMOVE_HOOK_ID(g_iPhysicsTouchShuffle);
+	SH_REMOVE_HOOK_ID(g_iWeaponServiceDropWeaponId);
 
 	if (g_iGoToIntermissionId != -1)
 		SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
@@ -446,6 +461,13 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	if (g_pPanoramaVoteHandler)
 		delete g_pPanoramaVoteHandler;
+
+	if (g_pEWHandler)
+	{
+		g_pEWHandler->RemoveAllUseHooks();
+		g_pEWHandler->RemoveAllTriggers();
+		delete g_pEWHandler;
+	}
 
 	return true;
 }
@@ -882,6 +904,15 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 
 			if (!g_bFlashLightTransmitOthers && pFlashLight)
 				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
+
+			if (g_bEnableEntWatch && g_pEWHandler->IsConfigLoaded())
+			{
+				// Don't transmit other players' entwatch hud
+				CPointWorldText* pHud = pController->IsConnected() ? g_playerManager->GetPlayer(j)->GetEntwatchHud() : nullptr;
+				if (pHud)
+					pInfo->m_pTransmitEntity->Clear(pHud->entindex());
+			}
+
 			// Always transmit other players if spectating
 			if (!g_bEnableHide || pSelfController->GetPawnState() == STATE_OBSERVER_MODE)
 				continue;
@@ -943,7 +974,16 @@ bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer* pInfoContainer)
 	// This is a shit place to be doing this, but player_death event is too late and there is no pre-hook alternative
 	// Check if this is going to kill the player
 	if (g_bDropMapWeapons && pPawn && pPawn->m_iHealth() <= 0)
+	{
+		if (g_bEnableEntWatch)
+		{
+			CCSPlayerController* pController = pPawn->GetOriginalController();
+			if (pController)
+				EW_PlayerDeathPre(pController);
+		}
+
 		pPawn->DropMapWeapons();
+	}
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
@@ -1046,6 +1086,17 @@ void CS2Fixes::Hook_CheckMovingGround(double frametime)
 	RETURN_META(MRES_IGNORED);
 }
 
+void CS2Fixes::Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity)
+{
+	if (g_bEnableEntWatch)
+	{
+		CCSPlayer_WeaponServices* pWeaponService = META_IFACEPTR(CCSPlayer_WeaponServices);
+		EW_DropWeapon(pWeaponService, pWeapon);
+	}
+
+	RETURN_META(MRES_IGNORED);
+}
+
 int CS2Fixes::Hook_LoadEventsFromFile(const char* filename, bool bSearchAll)
 {
 	ExecuteOnce(g_gameEventManager = META_IFACEPTR(IGameEventManager2));
@@ -1076,6 +1127,9 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 
 	if (g_bEnableZR)
 		ZR_OnLevelInit();
+
+	if (g_bEnableEntWatch)
+		EW_OnLevelInit(pMapName);
 }
 
 void CS2Fixes::OnLevelShutdown()

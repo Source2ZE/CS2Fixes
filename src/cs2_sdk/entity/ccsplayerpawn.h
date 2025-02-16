@@ -42,6 +42,7 @@ public:
 	SCHEMA_FIELD(QAngle, m_angEyeAngles)
 	SCHEMA_FIELD(CSPlayerState, m_iPlayerState)
 	SCHEMA_FIELD(CHandle<CCSPlayerController>, m_hOriginalController)
+	SCHEMA_FIELD(CCSPlayer_ViewModelServices*, m_pViewModelServices)
 
 	CCSPlayerController* GetOriginalController()
 	{

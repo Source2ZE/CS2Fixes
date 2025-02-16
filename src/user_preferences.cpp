@@ -20,6 +20,7 @@
 #include "user_preferences.h"
 #include "commands.h"
 #include "common.h"
+#include "entwatch.h"
 #include "httpmanager.h"
 #include "playermanager.h"
 #include "strtools.h"
@@ -133,6 +134,15 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	bool bNoShake = (bool)GetPreferenceInt(iSlot, NO_SHAKE_PREF_KEY_NAME, 0);
 	int iButtonWatchMode = GetPreferenceInt(iSlot, BUTTON_WATCH_PREF_KEY_NAME, 0);
 
+	// EntWatch
+	int iEntwatchMode = GetPreferenceInt(iSlot, EW_PREF_HUD_MODE, 0);
+	bool bEntwatchClantag = (bool)GetPreferenceInt(iSlot, EW_PREF_CLANTAG, 1);
+	float flEntwatchHudposX = GetPreferenceFloat(iSlot, EW_PREF_HUDPOS_X, EW_HUDPOS_X_DEFAULT);
+	float flEntwatchHudposY = GetPreferenceFloat(iSlot, EW_PREF_HUDPOS_Y, EW_HUDPOS_Y_DEFAULT);
+	Color ewHudColor;
+	V_StringToColor(g_pUserPreferencesSystem->GetPreference(iSlot, EW_PREF_HUDCOLOR, "255 255 255 255"), ewHudColor);
+	float flEntwatchHudSize = GetPreferenceFloat(iSlot, EW_PREF_HUDSIZE, EW_HUDSIZE_DEFAULT);
+
 	// Set the values that we just loaded --- the player is guaranteed available
 	g_playerManager->SetPlayerStopSound(iSlot, bStopSound);
 	g_playerManager->SetPlayerSilenceSound(iSlot, bSilenceSound);
@@ -143,6 +153,13 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	player->SetHideDistance(iHideDistance);
 	for (int i = 0; i < iButtonWatchMode; i++)
 		player->CycleButtonWatch();
+
+	// Set EntWatch
+	player->SetEntwatchHudMode(iEntwatchMode);
+	player->SetEntwatchClangtags(bEntwatchClantag);
+	player->SetEntwatchHudPos(flEntwatchHudposX, flEntwatchHudposY);
+	player->SetEntwatchHudColor(ewHudColor);
+	player->SetEntwatchHudSize(flEntwatchHudSize);
 }
 
 void CUserPreferencesSystem::PullPreferences(int iSlot)

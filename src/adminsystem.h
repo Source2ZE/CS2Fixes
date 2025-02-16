@@ -82,7 +82,8 @@ public:
 	{
 		Ban,
 		Mute,
-		Gag
+		Gag,
+		Eban,
 	};
 
 	virtual EInfractionType GetType() = 0;
@@ -124,6 +125,16 @@ public:
 	using CInfractionBase::CInfractionBase;
 
 	EInfractionType GetType() override { return Gag; }
+	void ApplyInfraction(ZEPlayer*) override;
+	void UndoInfraction(ZEPlayer*) override;
+};
+
+class CEbanInfraction : public CInfractionBase
+{
+public:
+	using CInfractionBase::CInfractionBase;
+
+	EInfractionType GetType() override { return Eban; }
 	void ApplyInfraction(ZEPlayer*) override;
 	void UndoInfraction(ZEPlayer*) override;
 };

@@ -252,6 +252,12 @@ public:
 		addresses::CBaseEntity_SetParent(this, pNewParent, MakeStringToken(""), nullptr);
 	}
 
+	void SetOwner(CBaseEntity* pNewOwner)
+	{
+		static int offset = g_GameConfig->GetOffset("CBaseEntity::SetOwner");
+		CALL_VIRTUAL(void, offset, this, pNewOwner);
+	}
+
 	void Remove()
 	{
 		addresses::UTIL_Remove(this);

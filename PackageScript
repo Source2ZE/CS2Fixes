@@ -54,6 +54,7 @@ with open(os.path.join(builder.buildPath, 'pdblog.txt'), 'wt') as fp:
 builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'data'))
 configs_folder = builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'configs'))
 zr_folder = builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'configs', 'zr'))
+ew_maps_folder = builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'configs', 'entwatch', 'maps'))
 cfg_folder = builder.AddFolder(os.path.join('cfg', MMSPlugin.plugin_name))
 mapcfg_folder = builder.AddFolder(os.path.join('cfg', MMSPlugin.plugin_name, 'maps'))
 gamedata_folder = builder.AddFolder(os.path.join('addons', MMSPlugin.plugin_name, 'gamedata'))
@@ -65,6 +66,7 @@ builder.AddCopy(os.path.join(builder.sourcePath, 'cfg', MMSPlugin.plugin_name, '
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'zr', 'playerclass.jsonc.example'), zr_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'zr', 'weapons.cfg.example'), zr_folder)
 builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'zr', 'hitgroups.cfg.example'), zr_folder)
+builder.AddCopy(os.path.join(builder.sourcePath, 'configs', 'entwatch', 'maps', 'example_config.jsonc'), ew_maps_folder)
 builder.AddCopy(os.path.join('gamedata', 'cs2fixes.games.txt'), gamedata_folder)
 
 # Add CS2Fixes-specific compiled asset files
