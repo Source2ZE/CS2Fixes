@@ -205,12 +205,10 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 	{
 		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
-		// CONVAR_TODO
-		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("ammo_grenade_limit_default"));
-		// HACK: values is actually the cvar value itself, hence this ugly cast.
-		int iGrenadeLimitDefault = *(int*)&cvar->values;
-		cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("ammo_grenade_limit_total"));
-		int iGrenadeLimitTotal = *(int*)&cvar->values;
+		static ConVarRefAbstract ammo_grenade_limit_default("ammo_grenade_limit_default"), ammo_grenade_limit_total("ammo_grenade_limit_total");
+
+		int iGrenadeLimitDefault = ammo_grenade_limit_default.GetInt();
+		int iGrenadeLimitTotal = ammo_grenade_limit_total.GetInt();
 
 		int iMatchingGrenades = GetGrenadeAmmo(pWeaponServices, weaponEntry);
 		int iTotalGrenades = GetGrenadeAmmoTotal(pWeaponServices);
@@ -305,12 +303,11 @@ void RegisterWeaponCommands()
 		for (std::string alias : weaponEntry.aliases)
 		{
 			new CChatCommand(alias.c_str(), ParseWeaponCommand, "- Buys this weapon", ADMFLAG_NONE, CMDFLAG_NOHELP);
-			ConCommandRefAbstract ref;
 
 			char cmdName[64];
 			V_snprintf(cmdName, sizeof(cmdName), "%s%s", COMMAND_PREFIX, alias.c_str());
 
-			new ConCommand(&ref, cmdName, WeaponCommandCallback, "Buys this weapon", FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);
+			new ConCommand(cmdName, WeaponCommandCallback, "Buys this weapon", FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);
 		}
 	}
 }

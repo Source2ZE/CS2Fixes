@@ -63,30 +63,15 @@ CMemPatch g_ToolsPatches[] =
 };
 #endif
 
-// CONVAR_TODO
-bool g_bEnableMovementUnlocker = true;
-
-CON_COMMAND_F(cs2f_movement_unlocker_enable, "Whether to enable movement unlocker", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-	{
-		Msg("%s %i\n", args[0], g_bEnableMovementUnlocker);
-		return;
-	}
-
-	bool bOld = g_bEnableMovementUnlocker;
-
-	g_bEnableMovementUnlocker = V_StringToBool(args[1], false);
-
-	if (g_bEnableMovementUnlocker != bOld)
+CConVar<bool> cs2f_movement_unlocker_enable("cs2f_movement_unlocker_enable", FCVAR_NONE, "Whether to enable movement unlocker", true, 
+	[](CConVar<bool> *cvar, CSplitScreenSlot slot, const bool *new_val, const bool *old_val)
 	{
 		// Movement unlocker is always the first patch
-		if (g_bEnableMovementUnlocker)
+		if (*new_val)
 			g_CommonPatches[0].PerformPatch(g_GameConfig);
 		else
 			g_CommonPatches[0].UndoPatch();
-	}
-}
+	});
 
 bool InitPatches(CGameConfig* g_GameConfig)
 {
