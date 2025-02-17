@@ -113,7 +113,7 @@ SH_DECL_HOOK8_void(IGameEventSystem, PostEventAbstract, SH_NOATTRIB, 0, CSplitSc
 	SH_DECL_HOOK3_void(INetworkServerService, StartupServer, SH_NOATTRIB, 0, const GameSessionConfiguration_t&, ISource2WorldSession*, const char*);
 SH_DECL_HOOK7_void(ISource2GameEntities, CheckTransmit, SH_NOATTRIB, 0, CCheckTransmitInfo**, int, CBitVec<16384>&, const Entity2Networkable_t**, const uint16*, int, bool);
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand&);
-SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, const CCommandContext&, const CCommand&);
+SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandRef, const CCommandContext&, const CCommand&);
 SH_DECL_MANUALHOOK1_void(CGamePlayerEquipUse, 0, 0, 0, InputData_t*);
 SH_DECL_MANUALHOOK1_void(CGamePlayerEquipPrecache, 0, 0, 0, void**);
 SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUtlStringList&);
@@ -487,7 +487,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	return true;
 }
 
-void CS2Fixes::Hook_DispatchConCommand(ConCommandHandle cmdHandle, const CCommandContext& ctx, const CCommand& args)
+void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandContext& ctx, const CCommand& args)
 {
 	VPROF_BUDGET("CS2Fixes::Hook_DispatchConCommand", "ConCommands");
 
@@ -784,10 +784,8 @@ void CS2Fixes::Hook_OnClientConnected(CPlayerSlot slot, const char* pszName, uin
 {
 	Message("Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 
-	// CONVAR_TODO
-	// HACK: values is actually the cvar value itself, hence this ugly cast.
-	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("tv_name"));
-	const char* pszTvName = *(const char**)&cvar->values;
+	static ConVarRefAbstract tv_name("tv_name");
+	const char* pszTvName = tv_name.GetString().Get();
 
 	// Ideally we would use CServerSideClient::IsHLTV().. but it doesn't work :(
 	if (bFakePlayer && V_strcmp(pszName, pszTvName))

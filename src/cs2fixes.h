@@ -64,7 +64,7 @@ public: // hooks
 	void Hook_ClientCommand(CPlayerSlot nSlot, const CCommand& _cmd);
 	void Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts,
 							const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities, bool bEnablePVSBits);
-	void Hook_DispatchConCommand(ConCommandHandle cmd, const CCommandContext& ctx, const CCommand& args);
+	void Hook_DispatchConCommand(ConCommandRef cmd, const CCommandContext& ctx, const CCommand& args);
 	void Hook_CGamePlayerEquipUse(class InputData_t*);
 	void Hook_CGamePlayerEquipPrecache(void**);
 	void Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);

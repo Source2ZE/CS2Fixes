@@ -34,30 +34,20 @@ void UnlockConVars()
 
 	int iUnhiddenConVars = 0;
 
-	ConVar* pCvar = nullptr;
-	ConVarHandle hCvarHandle;
-	hCvarHandle.Set(0);
-
-	// Can't use FindFirst/Next here as it would skip cvars with certain flags, so just loop through the handles
-	do
+	for (ConVarRefAbstract ref(ConVarRef((uint16)0)); ref.IsValidRef(); ref = ConVarRefAbstract(ConVarRef(ref.GetAccessIndex() + 1)))
 	{
-		pCvar = g_pCVar->GetConVar(hCvarHandle);
-
-		hCvarHandle.Set(hCvarHandle.Get() + 1);
-
-		if (!pCvar)
-			continue;
-
 		for (int i = 0; i < sizeof(pUnCheatCvars) / sizeof(*pUnCheatCvars); i++)
-			if (!V_strcmp(pCvar->m_pszName, pUnCheatCvars[i]))
-				pCvar->flags &= ~FCVAR_CHEAT;
+		{
+			if (!V_strcmp(ref.GetName(), pUnCheatCvars[i]))
+				ref.RemoveFlags(FCVAR_CHEAT);
+		}
 
-		if (!(pCvar->flags & g_iFlagsToRemove))
+		if (!ref.IsFlagSet(g_iFlagsToRemove))
 			continue;
 
-		pCvar->flags &= ~g_iFlagsToRemove;
+		ref.RemoveFlags(g_iFlagsToRemove);
 		iUnhiddenConVars++;
-	} while (pCvar);
+	}
 
 	Message("Removed hidden flags from %d convars\n", iUnhiddenConVars);
 }
@@ -69,114 +59,21 @@ void UnlockConCommands()
 
 	int iUnhiddenConCommands = 0;
 
-	ConCommand* pConCommand = nullptr;
-	ConCommand* pInvalidCommand = g_pCVar->GetCommand(ConCommandHandle());
-	ConCommandHandle hConCommandHandle;
-	hConCommandHandle.Set(0);
-
-	do
+	ConCommandData* data = g_pCVar->GetConCommandData(ConCommandRef());
+	for (ConCommandRef ref = ConCommandRef((uint16)0); ref.GetRawData() != data; ref = ConCommandRef(ref.GetAccessIndex() + 1))
 	{
-		pConCommand = g_pCVar->GetCommand(hConCommandHandle);
+		for (int i = 0; i < sizeof(pUnCheatCmds) / sizeof(*pUnCheatCmds); i++)
+		{
+			if (!V_strcmp(ref.GetName(), pUnCheatCmds[i]))
+				ref.RemoveFlags(FCVAR_CHEAT);
+		}
 
-		hConCommandHandle.Set(hConCommandHandle.Get() + 1);
-
-		if (!pConCommand || pConCommand == pInvalidCommand)
+		if (!ref.IsFlagSet(g_iFlagsToRemove))
 			continue;
 
-		for (int i = 0; i < sizeof(pUnCheatCmds) / sizeof(*pUnCheatCmds); i++)
-			if (!V_strcmp(pConCommand->GetName(), pUnCheatCmds[i]))
-				pConCommand->RemoveFlags(FCVAR_CHEAT);
-
-		if (pConCommand->GetFlags() & g_iFlagsToRemove)
-		{
-			pConCommand->RemoveFlags(g_iFlagsToRemove);
-			iUnhiddenConCommands++;
-		}
-	} while (pConCommand && pConCommand != pInvalidCommand);
+		ref.RemoveFlags(g_iFlagsToRemove);
+		iUnhiddenConCommands++;
+	}
 
 	Message("Removed hidden flags from %d commands\n", iUnhiddenConCommands);
-}
-
-CON_COMMAND_F(c_dump_cvars, "dump all cvars", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	ConVar* pCvar = nullptr;
-	ConVarHandle hCvarHandle;
-	hCvarHandle.Set(0);
-
-	do
-	{
-		pCvar = g_pCVar->GetConVar(hCvarHandle);
-
-		hCvarHandle.Set(hCvarHandle.Get() + 1);
-
-		if (pCvar)
-			switch (pCvar->m_eVarType)
-			{
-				case EConVarType_Bool:
-					Message("%s : bool : %s\n", pCvar->m_pszName, (bool)pCvar->values ? "true" : "false");
-					break;
-				case EConVarType_Int16:
-					Message("%s : int16 : %i\n", pCvar->m_pszName, *(int16*)&pCvar->values);
-					break;
-				case EConVarType_Int32:
-					Message("%s : int32 : %i\n", pCvar->m_pszName, *(int32*)&pCvar->values);
-					break;
-				case EConVarType_Int64:
-					Message("%s : int64 : %lli\n", pCvar->m_pszName, (int64)pCvar->values);
-					break;
-				case EConVarType_UInt16:
-					Message("%s : uint16 : %i\n", pCvar->m_pszName, *(uint16*)&pCvar->values);
-					break;
-				case EConVarType_UInt32:
-					Message("%s : uint32 : %i\n", pCvar->m_pszName, *(uint32*)&pCvar->values);
-					break;
-				case EConVarType_UInt64:
-					Message("%s : uint64 : %lli\n", pCvar->m_pszName, (uint64)pCvar->values);
-					break;
-				case EConVarType_Float32:
-					Message("%s : float32 : %.2f\n", pCvar->m_pszName, *(float32*)&pCvar->values);
-					break;
-				case EConVarType_Float64:
-					Message("%s : float64 : %.2f\n", pCvar->m_pszName, *(float64*)&pCvar->values);
-					break;
-				case EConVarType_String:
-					Message("%s : string : %s\n", pCvar->m_pszName, (char*)pCvar->values);
-					break;
-
-				case EConVarType_Color:
-					int color[4];
-					V_memcpy(&color, &pCvar->values, sizeof(color));
-					Message("%s : color : %.2f %.2f %.2f %.2f\n", pCvar->m_pszName, color[0], color[1], color[2], color[3]);
-					break;
-
-				case EConVarType_Vector2:
-					float vec2[2];
-					V_memcpy(&vec2, &pCvar->values, sizeof(vec2));
-					Message("%s : vector2 : %.2f %.2f\n", pCvar->m_pszName, vec2[0], vec2[1]);
-					break;
-
-				case EConVarType_Vector3:
-					float vec3[3];
-					V_memcpy(&vec3, &pCvar->values, sizeof(vec3));
-					Message("%s : vector3 : %.2f %.2f %.2f\n", pCvar->m_pszName, vec3[0], vec3[1], vec3[2]);
-					break;
-
-				case EConVarType_Vector4:
-					float vec4[4];
-					V_memcpy(&vec4, &pCvar->values, sizeof(vec4));
-					Message("%s : vector4 : %.2f %.2f %.2f %.2f\n", pCvar->m_pszName, vec4[0], vec4[1], vec4[2], vec4[3]);
-					break;
-
-				case EConVarType_Qangle:
-					float angle[3];
-					V_memcpy(&vec3, &pCvar->values, sizeof(angle));
-					Message("%s : qangle : %.2f %.2f %.2f\n", pCvar->m_pszName, angle[0], angle[1], angle[2]);
-					break;
-
-				default:
-					Message("%s : unknown type : %p\n", pCvar->m_pszName, (void*)pCvar->values);
-					break;
-			};
-
-	} while (pCvar);
 }

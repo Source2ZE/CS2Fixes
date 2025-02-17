@@ -103,10 +103,8 @@ float CVoteManager::TimerCheckTimeleft()
 	if ((g_iMaxExtends - m_iExtends) <= 0 || m_ExtendState >= EExtendState::POST_EXTEND_NO_EXTENDS_LEFT)
 		return m_flExtendVoteTickrate;
 
-	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
-	// CONVAR_TODO
-	// HACK: values is actually the cvar value itself, hence this ugly cast.
-	float flTimelimit = *(float*)&cvar->values;
+	static ConVarRefAbstract mp_timelimit("mp_timelimit");
+	float flTimelimit = mp_timelimit.GetFloat();
 
 	if (flTimelimit <= 0.0)
 		return m_flExtendVoteTickrate;
@@ -315,11 +313,8 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 		{
 			if (g_pVoteManager->GetExtendState() == EExtendState::EXTEND_ALLOWED)
 			{
-				ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
-
-				// CONVAR_TODO
-				// HACK: values is actually the cvar value itself, hence this ugly cast.
-				float flTimelimit = *(float*)&cvar->values;
+				static ConVarRefAbstract mp_timelimit("mp_timelimit");
+				float flTimelimit = mp_timelimit.GetFloat();
 				if (flTimelimit <= 0.0)
 					return;
 
@@ -534,11 +529,9 @@ CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 		return;
 	}
 
-	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
+	static ConVarRefAbstract mp_timelimit("mp_timelimit");
 
-	// CONVAR_TODO
-	// HACK: values is actually the cvar value itself, hence this ugly cast.
-	float flTimelimit = *(float*)&cvar->values;
+	float flTimelimit = mp_timelimit.GetFloat();
 
 	if (flTimelimit == 0.0f)
 	{
@@ -569,12 +562,8 @@ void CVoteManager::ExtendMap(int iMinutes, bool bAllowExtraTime)
 	if (!GetGlobals() || !g_pGameRules)
 		return;
 
-	// CONVAR_TODO
-	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
-
-	// CONVAR_TODO
-	// HACK: values is actually the cvar value itself, hence this ugly cast.
-	float flTimelimit = *(float*)&cvar->values;
+	static ConVarRefAbstract mp_timelimit("mp_timelimit");
+	float flTimelimit = mp_timelimit.GetFloat();
 
 	if (bAllowExtraTime && GetGlobals()->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
 		flTimelimit = (GetGlobals()->curtime - g_pGameRules->m_flGameStartTime) / 60.0f + iMinutes;
@@ -584,11 +573,7 @@ void CVoteManager::ExtendMap(int iMinutes, bool bAllowExtraTime)
 	if (flTimelimit <= 0)
 		flTimelimit = 0.01f;
 
-	char buf[32];
-	V_snprintf(buf, sizeof(buf), "mp_timelimit %.6f", flTimelimit);
-
-	// CONVAR_TODO
-	g_pEngineServer2->ServerCommand(buf);
+	mp_timelimit.SetFloat(flTimelimit);
 }
 
 void CVoteManager::VoteExtendHandler(YesNoVoteAction action, int param1, int param2)
@@ -718,11 +703,9 @@ void CVoteManager::OnRoundEnd()
 	if (!GetGlobals() || !g_pGameRules)
 		return;
 
-	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_timelimit"));
+	static ConVarRefAbstract mp_timelimit("mp_timelimit");
 
-	// CONVAR_TODO
-	// HACK: values is actually the cvar value itself, hence this ugly cast.
-	float flTimelimit = *(float*)&cvar->values;
+	float flTimelimit = mp_timelimit.GetFloat();
 
 	int iTimeleft = (int)((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - GetGlobals()->curtime);
 
@@ -746,8 +729,9 @@ bool CVoteManager::CheckRTVStatus()
 	{
 		m_RTVState = ERTVState::POST_RTV_SUCCESSFULL;
 		m_ExtendState = EExtendState::POST_RTV;
-		// CONVAR_TODO
-		g_pEngineServer2->ServerCommand("mp_timelimit 0.01");
+
+		static ConVarRefAbstract mp_timelimit("mp_timelimit");
+		mp_timelimit.SetFloat(0.01);
 
 		if (g_bRTVEndRound)
 		{
