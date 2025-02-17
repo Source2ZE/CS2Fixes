@@ -1173,10 +1173,8 @@ void ZR_StripAndGiveKnife(CCSPlayerPawn* pPawn)
 	{
 		pItemServices->GiveNamedItem("weapon_knife");
 
-		// CONVAR_TODO
-		ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_free_armor"));
-		// HACK: values is actually the cvar value itself, hence this ugly cast.
-		if (*(int*)&cvar->values > 0)
+		ConVarRefAbstract mp_free_armor("mp_free_armor");
+		if (mp_free_armor.GetBool())
 			pItemServices->GiveNamedItem("item_kevlar");
 	}
 
@@ -1779,10 +1777,8 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 			break;
 	}
 
-	// CONVAR_TODO
-	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_round_restart_delay"));
-	// HACK: values is actually the cvar value itself, hence this ugly cast.
-	float flRestartDelay = *(float*)&cvar->values;
+	static ConVarRefAbstract mp_round_restart_delay("mp_round_restart_delay");
+	float flRestartDelay = mp_round_restart_delay.GetFloat();
 
 	g_pGameRules->TerminateRound(flRestartDelay, iReason);
 	g_ZRRoundState = EZRRoundState::ROUND_END;

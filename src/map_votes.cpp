@@ -326,10 +326,9 @@ void CMapVoteSystem::StartVote()
 
 	m_iVoteSize = std::min((int)vecPossibleMaps.size(), GetMaxVoteMaps());
 	bool bAbort = false;
-	// CONVAR_TODO
-	ConVar* pVoteCvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_endmatch_votenextmap"));
-	// HACK: values is actually the cvar value itself, hence this ugly cast.
-	bool bVoteEnabled = *(bool*)&pVoteCvar->values;
+
+	static ConVarRefAbstract mp_endmatch_votenextmap("mp_endmatch_votenextmap");
+	bool bVoteEnabled = mp_endmatch_votenextmap.GetBool();
 
 	if (!bVoteEnabled)
 	{
@@ -423,9 +422,8 @@ void CMapVoteSystem::StartVote()
 	}
 
 	// Start the end-of-vote timer to finish the vote
-	// CONVAR_TODO
-	ConVar* pVoteTimeCvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_endmatch_votenextleveltime"));
-	float flVoteTime = *(float*)&pVoteTimeCvar->values;
+	static ConVarRefAbstract mp_endmatch_votenextleveltime("mp_endmatch_votenextleveltime");
+	float flVoteTime = mp_endmatch_votenextleveltime.GetFloat();
 	new CTimer(flVoteTime, false, true, []() {
 		g_pMapVoteSystem->FinishVote();
 		return -1.0;
