@@ -24,6 +24,7 @@
 #include "ctimer.h"
 #include "engine/igameeventsystem.h"
 #include "entity/ccsplayercontroller.h"
+#include "entwatch.h"
 #include "leader.h"
 #include "map_votes.h"
 #include "networksystem/inetworkmessages.h"
@@ -104,6 +105,13 @@ ZEPlayer* ZEPlayerHandle::Get() const
 void ZEPlayer::OnSpawn()
 {
 	SetSpeedMod(1.f);
+
+	ZEPlayerHandle handle = GetHandle();
+	new CTimer(0.0f, false, false, [handle] {
+		if (handle.Get())
+			handle.Get()->CreateEntwatchHud();
+		return -1.0f;
+	});
 }
 
 void ZEPlayer::OnAuthenticated()
@@ -581,6 +589,157 @@ void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
 	delete data;
 }
 
+CBaseViewModel* ZEPlayer::GetOrCreateCustomViewModel(CCSPlayerPawn* pPawn)
+{
+	CBaseViewModel* pViewmodel = pPawn->m_pViewModelServices()->GetViewModel(2);
+	if (pViewmodel)
+		return pViewmodel;
+
+	pViewmodel = CreateEntityByName<CBaseViewModel>("predicted_viewmodel");
+	if (!pViewmodel)
+		return nullptr;
+
+	pViewmodel->DispatchSpawn();
+	pViewmodel->SetOwner(pPawn);
+	pPawn->m_pViewModelServices()->SetViewModel(2, pViewmodel);
+
+	return pViewmodel;
+}
+
+void ZEPlayer::CreateEntwatchHud()
+{
+	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
+	if (!pController)
+		return;
+
+	CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
+	if (!pPawn)
+		return;
+
+	if (!pPawn->m_pViewModelServices())
+		return;
+
+	CBaseViewModel* pViewModel = GetOrCreateCustomViewModel(pPawn);
+	if (!pViewModel)
+	{
+		Panic("Failed to get or create custom viewmodel for entwatch hud.\n");
+		return;
+	}
+
+	CPointWorldText* pText = GetEntwatchHud();
+	if (pText)
+	{
+		pText->Remove();
+		pText = nullptr;
+	}
+
+	pText = CreateEntityByName<CPointWorldText>("point_worldtext");
+	pText->m_bEnabled(true);
+	pText->m_bFullbright(true);
+	pText->m_flFontSize(GetEntwatchHudSize());
+
+	Color col;
+	int a = m_colorEntwatchHud.a();
+	if (a == 255) // 254 allows it to be visible through some items
+		col.SetColor(m_colorEntwatchHud.r(), m_colorEntwatchHud.g(), m_colorEntwatchHud.b(), 254);
+	else
+		col.SetColor(m_colorEntwatchHud.r(), m_colorEntwatchHud.g(), m_colorEntwatchHud.b(), a);
+
+	pText->m_Color = col;
+
+	pText->m_flWorldUnitsPerPx(0.005f);
+	pText->m_nJustifyVertical(PointWorldTextJustifyVertical_t::POINT_WORLD_TEXT_JUSTIFY_VERTICAL_TOP);
+
+	V_strncpy(pText->m_FontName, "Verdana Bold", 64);
+
+	pText->SetMessage("");
+
+	pText->DispatchSpawn();
+	SetEntwatchHud(pText);
+
+	pText->AcceptInput("SetParent", "!activator", pViewModel);
+
+	Vector origin = pViewModel->GetAbsOrigin();
+	QAngle vmangles = pViewModel->GetAbsRotation();
+
+	Vector forward;
+	Vector right;
+	Vector up;
+	AngleVectors(vmangles, &forward, &right, &up);
+
+	origin += (forward * 7.0f);
+
+	// -x = move left,  +x = move right
+	origin += (right * GetEntwatchHudX());
+
+	// -y = move up,   +y = move down
+	origin -= (up * GetEntwatchHudY());
+
+	QAngle angles;
+	angles.x = 0.0f;
+	angles.y = AngleNormalize(vmangles.y - 90.0f);
+	angles.z = AngleNormalize(-vmangles.x + 90.0f);
+
+	pText->Teleport(&origin, &angles, nullptr);
+}
+
+int ZEPlayer::GetEntwatchHudMode()
+{
+	if (IsFakeClient())
+		return 0;
+	return m_iEntwatchHudMode;
+}
+
+void ZEPlayer::SetEntwatchHudMode(int iMode)
+{
+	m_iEntwatchHudMode = iMode;
+	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_HUD_MODE, m_iEntwatchHudMode);
+}
+
+void ZEPlayer::SetEntwatchClangtags(bool bStatus)
+{
+	m_bEntwatchClantags = bStatus;
+	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_CLANTAG, bStatus ? 1 : 0);
+}
+
+void ZEPlayer::SetEntwatchHudColor(Color colorHud)
+{
+	m_colorEntwatchHud = colorHud;
+	std::string strColor = std::to_string(colorHud.r()) + " " + std::to_string(colorHud.g()) + " " + std::to_string(colorHud.b()) + " " + std::to_string(colorHud.a());
+	g_pUserPreferencesSystem->SetPreference(m_slot.Get(), EW_PREF_HUDCOLOR, strColor.c_str());
+
+	CPointWorldText* pText = GetEntwatchHud();
+	if (pText)
+	{
+		Color c;
+		if (colorHud.a() == 255)
+			c.SetColor(colorHud.r(), colorHud.g(), colorHud.b(), 254);
+		else
+			c = colorHud;
+		pText->m_Color = c;
+	}
+}
+
+void ZEPlayer::SetEntwatchHudPos(float x, float y)
+{
+	m_flEntwatchHudX = x;
+	m_flEntwatchHudY = y;
+	g_pUserPreferencesSystem->SetPreferenceFloat(m_slot.Get(), EW_PREF_HUDPOS_X, m_flEntwatchHudX);
+	g_pUserPreferencesSystem->SetPreferenceFloat(m_slot.Get(), EW_PREF_HUDPOS_Y, m_flEntwatchHudY);
+
+	CreateEntwatchHud();
+}
+
+void ZEPlayer::SetEntwatchHudSize(float flSize)
+{
+	m_flEntwatchHudSize = flSize;
+	g_pUserPreferencesSystem->SetPreferenceFloat(m_slot.Get(), EW_PREF_HUDSIZE, m_flEntwatchHudSize);
+
+	CPointWorldText* pText = GetEntwatchHud();
+	if (pText)
+		pText->m_flFontSize = m_flEntwatchHudSize;
+}
+
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 {
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);
@@ -637,6 +796,9 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 
 	g_pUserPreferencesSystem->PushPreferences(slot.Get());
 	g_pUserPreferencesSystem->ClearPreferences(slot.Get());
+
+	if (g_bEnableEntWatch)
+		EW_PlayerDisconnect(slot.Get());
 
 	delete m_vecPlayers[slot.Get()];
 	m_vecPlayers[slot.Get()] = nullptr;

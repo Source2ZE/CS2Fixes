@@ -196,6 +196,7 @@
     <ClCompile Include="src\detours.cpp" />
     <ClCompile Include="src\discord.cpp" />
     <ClCompile Include="src\entities.cpp" />
+    <ClCompile Include="src\entwatch.cpp" />
     <ClCompile Include="src\events.cpp" />
     <ClCompile Include="src\gameconfig.cpp" />
     <ClCompile Include="src\gamesystem.cpp" />
@@ -223,10 +224,12 @@
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\cs2fixes.h" />
     <ClInclude Include="src\cs2_sdk\cschemasystem.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cbasebutton.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbaseentity.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbasemodelentity.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbaseplayercontroller.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbaseplayerpawn.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cbasetoggle.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbasetrigger.h" />
     <ClInclude Include="src\cs2_sdk\entity\ccollisionproperty.h" />
     <ClInclude Include="src\cs2_sdk\entity\ccsplayercontroller.h" />
@@ -237,9 +240,11 @@
     <ClInclude Include="src\cs2_sdk\entity\cgameplayerequip.h" />
     <ClInclude Include="src\cs2_sdk\entity\cgamerules.h" />
     <ClInclude Include="src\cs2_sdk\entity\clogiccase.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cmathcounter.h" />
     <ClInclude Include="src\cs2_sdk\entity\cparticlesystem.h" />
     <ClInclude Include="src\cs2_sdk\entity\cphysthruster.h" />
     <ClInclude Include="src\cs2_sdk\entity\cpointviewcontrol.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cpointworldtext.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h" />
     <ClInclude Include="src\cs2_sdk\entity\cteam.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctriggerpush.h" />
@@ -248,6 +253,7 @@
     <ClInclude Include="src\cs2_sdk\entity\globaltypes.h" />
     <ClInclude Include="src\cs2_sdk\entity\lights.h" />
     <ClInclude Include="src\cs2_sdk\entity\services.h" />
+    <ClInclude Include="src\cs2_sdk\entity\viewmodels.h" />
     <ClInclude Include="src\cs2_sdk\schema.h" />
     <ClInclude Include="src\cs2_sdk\entityio.h" />
     <ClInclude Include="src\cdetour.h" />
@@ -256,6 +262,7 @@
     <ClInclude Include="src\detours.h" />
     <ClInclude Include="src\discord.h" />
     <ClInclude Include="src\entities.h" />
+    <ClInclude Include="src\entwatch.h" />
     <ClInclude Include="src\eventlistener.h" />
     <ClInclude Include="src\gamesystem.h" />
     <ClInclude Include="src\gameconfig.h" />

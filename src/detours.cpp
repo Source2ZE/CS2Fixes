@@ -40,6 +40,7 @@
 #include "entity/ctakedamageinfo.h"
 #include "entity/ctriggerpush.h"
 #include "entity/services.h"
+#include "entwatch.h"
 #include "gameconfig.h"
 #include "igameevents.h"
 #include "irecipientfilter.h"
@@ -68,6 +69,7 @@ DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
+DECLARE_DETOUR(CCSPlayer_WeaponServices_EquipWeapon, Detour_CCSPlayer_WeaponServices_EquipWeapon);
 DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
 DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
 DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
@@ -372,7 +374,18 @@ bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* p
 	if (g_bEnableZR && !ZR_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
 		return false;
 
+	if (g_bEnableEntWatch && !EW_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
+		return false;
+
 	return CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon);
+}
+
+void FASTCALL Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
+{
+	if (g_bEnableEntWatch)
+		EW_Detour_CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
+
+	return CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
 }
 
 bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID)

@@ -24,6 +24,8 @@
 #include "services.h"
 
 extern bool g_bDropMapWeapons;
+void EW_PlayerDeathPre(CCSPlayerController* pController);
+extern bool g_bEnableEntWatch;
 
 class CBasePlayerPawn : public CBaseModelEntity
 {
@@ -64,7 +66,16 @@ public:
 	{
 		// CommitSuicide doesn't go through OnTakeDamage_Alive
 		if (g_bDropMapWeapons)
+		{
+			if (g_bEnableEntWatch)
+			{
+				CCSPlayerController* pController = reinterpret_cast<CCSPlayerController*>(m_hController().Get());
+				if (pController)
+					EW_PlayerDeathPre(pController);
+			}
+			
 			DropMapWeapons();
+		}
 
 		static int offset = g_GameConfig->GetOffset("CBasePlayerPawn_CommitSuicide");
 		CALL_VIRTUAL(void, offset, this, bExplode, bForce);
