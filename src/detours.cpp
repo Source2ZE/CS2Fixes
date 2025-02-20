@@ -735,5 +735,9 @@ bool InitDetours(CGameConfig* gameConfig)
 
 void FlushAllDetours()
 {
-	g_vecDetours.Purge();
+	FOR_EACH_VEC_BACK(g_vecDetours, i)
+	{
+		g_vecDetours[i]->FreeDetour();
+		g_vecDetours.FastRemove(i);
+	}
 }

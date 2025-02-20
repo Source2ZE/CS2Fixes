@@ -339,17 +339,10 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 	UnlockConVars();
 	UnlockConCommands();
-	ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
-
-	if (late)
-	{
-		RegisterEventListeners();
-		g_pEntitySystem = GameEntitySystem();
-		g_pEntitySystem->AddListenerEntity(g_pEntityListener);
-	}
+	META_CONVAR_REGISTER(FCVAR_RELEASE | FCVAR_GAMEDLL);
 
 	g_pAdminSystem = new CAdminSystem();
-	g_playerManager = new CPlayerManager(late);
+	g_playerManager = new CPlayerManager();
 	g_pDiscordBotManager = new CDiscordBotManager();
 	g_pMapVoteSystem = new CMapVoteSystem();
 	g_pVoteManager = new CVoteManager();
@@ -388,6 +381,30 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 	srand(time(0));
 
+	if (late)
+	{
+		RegisterEventListeners();
+		g_pEntitySystem = GameEntitySystem();
+		g_pEntitySystem->AddListenerEntity(g_pEntityListener);
+
+		g_playerManager->OnLateLoad();
+
+		g_pPanoramaVoteHandler->Reset();
+		g_pVoteManager->VoteManager_Init();
+
+		g_pIdleSystem->Reset();
+
+		g_steamAPI.Init();
+		g_http = g_steamAPI.SteamHTTP();
+
+		g_playerManager->OnSteamAPIActivated();
+
+		if (g_bVoteManagerEnable && !g_pMapVoteSystem->IsMapListLoaded())
+			g_pMapVoteSystem->LoadMapList();
+
+		Message("Plugin late load finished\n");
+	}
+
 	Message("Plugin successfully started!\n");
 
 	return true;
@@ -416,12 +433,8 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	SH_REMOVE_HOOK_ID(g_iCheckMovingGroundId);
 	SH_REMOVE_HOOK_ID(g_iPhysicsTouchShuffle);
 	SH_REMOVE_HOOK_ID(g_iWeaponServiceDropWeaponId);
-
-	if (g_iGoToIntermissionId != -1)
-		SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
-
-	if (g_iCGamePlayerEquipUseId != -1)
-		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
+	SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
+	SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
 
 	if (g_iCGamePlayerEquipPrecacheId != -1)
 		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipPrecacheId);
@@ -469,7 +482,10 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 		delete g_pZRHitgroupConfig;
 
 	if (g_pEntityListener)
+	{
+		g_pEntitySystem->RemoveListenerEntity(g_pEntityListener);
 		delete g_pEntityListener;
+	}
 
 	if (g_pIdleSystem)
 		delete g_pIdleSystem;
@@ -589,8 +605,6 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 		RemoveMapTimers();
 
 	g_bHasTicked = false;
-
-	RegisterEventListeners();
 
 	g_pPanoramaVoteHandler->Reset();
 	g_pVoteManager->VoteManager_Init();
@@ -1118,7 +1132,11 @@ void CS2Fixes::Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarge
 
 int CS2Fixes::Hook_LoadEventsFromFile(const char* filename, bool bSearchAll)
 {
-	ExecuteOnce(g_gameEventManager = META_IFACEPTR(IGameEventManager2));
+	ExecuteOnce
+	(
+		g_gameEventManager = META_IFACEPTR(IGameEventManager2);
+		RegisterEventListeners();
+	)
 
 	RETURN_META_VALUE(MRES_IGNORED, 0);
 }
