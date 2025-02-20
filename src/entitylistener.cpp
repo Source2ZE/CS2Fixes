@@ -30,8 +30,7 @@
 extern CGameConfig* g_GameConfig;
 extern CCSGameRules* g_pGameRules;
 
-bool g_bGrenadeNoBlock = false;
-FAKE_BOOL_CVAR(cs2f_noblock_grenades, "Whether to use noblock on grenade projectiles", g_bGrenadeNoBlock, false, false)
+CConVar<bool> g_cvarGrenadeNoBlock("cs2f_noblock_grenades", 0, "Whether to use noblock on grenade projectiles", false);
 
 void Patch_GetHammerUniqueId(CEntityInstance* pEntity)
 {
@@ -50,12 +49,12 @@ void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 	Message("Entity spawned: %s %s\n", pszClassName, ((CBaseEntity*)pEntity)->m_sUniqueHammerID().Get());
 #endif
 
-	if (g_bGrenadeNoBlock && V_stristr(pEntity->GetClassname(), "_projectile"))
+	if (g_cvarGrenadeNoBlock.Get() && V_stristr(pEntity->GetClassname(), "_projectile"))
 		reinterpret_cast<CBaseEntity*>(pEntity)->SetCollisionGroup(COLLISION_GROUP_DEBRIS);
 
 	EntityHandler_OnEntitySpawned(reinterpret_cast<CBaseEntity*>(pEntity));
 
-	if (g_bEnableEntWatch)
+	if (g_cvarEnableEntWatch.Get())
 		EW_OnEntitySpawned(pEntity);
 }
 

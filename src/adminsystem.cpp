@@ -199,7 +199,7 @@ CON_COMMAND_CHAT_FLAGS(ungag, "<name> - Ungag a player", ADMFLAG_CHAT)
 
 CON_COMMAND_CHAT_FLAGS(eban, "<name> <duration|0 (permanent)> - Ban a player from picking up items", ADMFLAG_BAN)
 {
-	if (!g_bEnableEntWatch)
+	if (!g_cvarEnableEntWatch.Get())
 		return;
 
 	ParseInfraction(args, player, true, CInfractionBase::EInfractionType::Eban);
@@ -207,7 +207,7 @@ CON_COMMAND_CHAT_FLAGS(eban, "<name> <duration|0 (permanent)> - Ban a player fro
 
 CON_COMMAND_CHAT_FLAGS(eunban, "<name> - Unban a player from picking up items", ADMFLAG_BAN)
 {
-	if (!g_bEnableEntWatch)
+	if (!g_cvarEnableEntWatch.Get())
 		return;
 
 	ParseInfraction(args, player, false, CInfractionBase::EInfractionType::Eban);

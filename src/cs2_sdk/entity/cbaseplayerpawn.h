@@ -23,9 +23,9 @@
 #include "cbasemodelentity.h"
 #include "services.h"
 
-extern bool g_bDropMapWeapons;
+extern CConVar<bool> g_cvarDropMapWeapons;
 void EW_PlayerDeathPre(CCSPlayerController* pController);
-extern bool g_bEnableEntWatch;
+extern CConVar<bool> g_cvarEnableEntWatch;
 
 class CBasePlayerPawn : public CBaseModelEntity
 {
@@ -72,9 +72,9 @@ public:
 	void CommitSuicide(bool bExplode, bool bForce)
 	{
 		// CommitSuicide doesn't go through OnTakeDamage_Alive
-		if (g_bDropMapWeapons)
+		if (g_cvarDropMapWeapons.Get())
 		{
-			if (g_bEnableEntWatch)
+			if (g_cvarEnableEntWatch.Get())
 			{
 				CCSPlayerController* pController = reinterpret_cast<CCSPlayerController*>(m_hController().Get());
 				if (pController)

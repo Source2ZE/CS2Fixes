@@ -399,7 +399,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 		g_playerManager->OnSteamAPIActivated();
 
-		if (g_bVoteManagerEnable && !g_pMapVoteSystem->IsMapListLoaded())
+		if (g_cvarVoteManagerEnable.Get() && !g_pMapVoteSystem->IsMapListLoaded())
 			g_pMapVoteSystem->LoadMapList();
 
 		Message("Plugin late load finished\n");
@@ -512,7 +512,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 
 	auto iCommandPlayerSlot = ctx.GetPlayerSlot();
 
-	if (!g_bEnableCommands)
+	if (!g_cvarEnableCommands.Get())
 		RETURN_META(MRES_IGNORED);
 
 	bool bSay = !V_strcmp(args.Arg(0), "say");
@@ -632,7 +632,7 @@ void CS2Fixes::Hook_GameServerSteamAPIActivated()
 
 	g_playerManager->OnSteamAPIActivated();
 
-	if (g_bVoteManagerEnable && !g_pMapVoteSystem->IsMapListLoaded())
+	if (g_cvarVoteManagerEnable.Get() && !g_pMapVoteSystem->IsMapListLoaded())
 		g_pMapVoteSystem->LoadMapList();
 
 	RETURN_META(MRES_IGNORED);
@@ -655,7 +655,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 
 	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
 
-	if (g_bEnableStopSound && info->m_MessageId == GE_FireBulletsId)
+	if (g_cvarEnableStopSound.Get() && info->m_MessageId == GE_FireBulletsId)
 	{
 		if (g_playerManager->GetSilenceSoundMask())
 		{
@@ -693,17 +693,17 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 	}
 	else if (info->m_MessageId == GE_Source1LegacyGameEvent)
 	{
-		if (g_bEnableLeader)
+		if (g_cvarEnableLeader.Get())
 			Leader_PostEventAbstract_Source1LegacyGameEvent(clients, pData);
 	}
 	else if (info->m_MessageId == UM_Shake)
 	{
 		auto pPBData = const_cast<CNetMessage*>(pData)->ToPB<CUserMessageShake>();
-		if (g_flMaxShakeAmp >= 0 && pPBData->amplitude() > g_flMaxShakeAmp)
-			pPBData->set_amplitude(g_flMaxShakeAmp);
+		if (g_cvarMaxShakeAmp.Get() >= 0 && pPBData->amplitude() > g_cvarMaxShakeAmp.Get())
+			pPBData->set_amplitude(g_cvarMaxShakeAmp.Get());
 
 		// remove client with noshake from the event
-		if (g_bEnableNoShake)
+		if (g_cvarEnableNoShake.Get())
 			*(uint64*)clients &= ~g_playerManager->GetNoShakeMask();
 	}
 }
@@ -764,7 +764,7 @@ void CS2Fixes::Hook_ClientCommand(CPlayerSlot slot, const CCommand& args)
 	Message("Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString());
 #endif
 
-	if (g_fIdleKickTime > 0.0f)
+	if (g_cvarIdleKickTime.Get() > 0.0f)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
 
@@ -772,7 +772,7 @@ void CS2Fixes::Hook_ClientCommand(CPlayerSlot slot, const CCommand& args)
 			pPlayer->UpdateLastInputTime();
 	}
 
-	if (g_bVoteManagerEnable && V_stricmp(args[0], "endmatch_votenextmap") == 0 && args.ArgC() == 2)
+	if (g_cvarVoteManagerEnable.Get() && V_stricmp(args[0], "endmatch_votenextmap") == 0 && args.ArgC() == 2)
 	{
 		if (g_pMapVoteSystem->RegisterPlayerVote(slot, atoi(args[1])))
 			RETURN_META(MRES_HANDLED);
@@ -780,7 +780,7 @@ void CS2Fixes::Hook_ClientCommand(CPlayerSlot slot, const CCommand& args)
 			RETURN_META(MRES_SUPERCEDE);
 	}
 
-	if (g_bEnableZR && slot != -1 && !V_strncmp(args.Arg(0), "jointeam", 8))
+	if (g_cvarEnableZR.Get() && slot != -1 && !V_strncmp(args.Arg(0), "jointeam", 8))
 	{
 		ZR_Hook_ClientCommand_JoinTeam(slot, args);
 		RETURN_META(MRES_SUPERCEDE);
@@ -826,7 +826,7 @@ void CS2Fixes::Hook_ClientPutInServer(CPlayerSlot slot, char const* pszName, int
 
 	g_playerManager->OnClientPutInServer(slot);
 
-	if (g_bEnableZR)
+	if (g_cvarEnableZR.Get())
 		ZR_Hook_ClientPutInServer(slot, pszName, type, xuid);
 }
 
@@ -890,13 +890,13 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 		}
 	}
 
-	if (g_bEnableZR)
+	if (g_cvarEnableZR.Get())
 		CZRRegenTimer::Tick();
 
 	EntityHandler_OnGameFramePost(simulating, GetGlobals()->tickcount);
 }
 
-extern bool g_bFlashLightTransmitOthers;
+extern CConVar<bool> g_cvarFlashLightTransmitOthers;
 
 void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts,
 								  const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities, bool bEnablePVSBits)
@@ -935,10 +935,10 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 			// Don't transmit other players' flashlights
 			CBarnLight* pFlashLight = pController->IsConnected() ? g_playerManager->GetPlayer(j)->GetFlashLight() : nullptr;
 
-			if (!g_bFlashLightTransmitOthers && pFlashLight)
+			if (!g_cvarFlashLightTransmitOthers.Get() && pFlashLight)
 				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
 
-			if (g_bEnableEntWatch && g_pEWHandler->IsConfigLoaded())
+			if (g_cvarEnableEntWatch.Get() && g_pEWHandler->IsConfigLoaded())
 			{
 				// Don't transmit other players' entwatch hud
 				CPointWorldText* pHud = pController->IsConnected() ? g_playerManager->GetPlayer(j)->GetEntwatchHud() : nullptr;
@@ -947,7 +947,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 			}
 
 			// Always transmit other players if spectating
-			if (!g_bEnableHide || pSelfController->GetPawnState() == STATE_OBSERVER_MODE)
+			if (!g_cvarEnableHide.Get() || pSelfController->GetPawnState() == STATE_OBSERVER_MODE)
 				continue;
 
 			// Get the actual pawn as the player could be currently spectating
@@ -979,7 +979,7 @@ void CS2Fixes::Hook_ApplyGameSettings(KeyValues* pKV)
 
 void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList)
 {
-	if (g_bVoteManagerEnable && g_pMapVoteSystem->IsMapListLoaded())
+	if (g_cvarVoteManagerEnable.Get() && g_pMapVoteSystem->IsMapListLoaded())
 		RETURN_META_MNEWPARAMS(MRES_HANDLED, CreateWorkshopMapGroup, (name, g_pMapVoteSystem->CreateWorkshopMapGroup()));
 	else
 		RETURN_META(MRES_IGNORED);
@@ -993,22 +993,20 @@ void CS2Fixes::Hook_GoToIntermission(bool bAbortedMatch)
 	RETURN_META(MRES_IGNORED);
 }
 
-bool g_bDropMapWeapons = false;
-
-FAKE_BOOL_CVAR(cs2f_drop_map_weapons, "Whether to force drop map-spawned weapons on death", g_bDropMapWeapons, false, false)
+CConVar<bool> g_cvarDropMapWeapons("cs2f_drop_map_weapons", 0, "Whether to force drop map-spawned weapons on death", false);
 
 bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer* pInfoContainer)
 {
 	CCSPlayerPawn* pPawn = META_IFACEPTR(CCSPlayerPawn);
 
-	if (g_bEnableZR && ZR_Hook_OnTakeDamage_Alive(pInfoContainer->pInfo, pPawn))
+	if (g_cvarEnableZR.Get() && ZR_Hook_OnTakeDamage_Alive(pInfoContainer->pInfo, pPawn))
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
 
 	// This is a shit place to be doing this, but player_death event is too late and there is no pre-hook alternative
 	// Check if this is going to kill the player
-	if (g_bDropMapWeapons && pPawn && pPawn->m_iHealth() <= 0)
+	if (g_cvarDropMapWeapons.Get() && pPawn && pPawn->m_iHealth() <= 0)
 	{
-		if (g_bEnableEntWatch)
+		if (g_cvarEnableEntWatch.Get())
 		{
 			CCSPlayerController* pController = pPawn->GetOriginalController();
 			if (pController)
@@ -1021,8 +1019,7 @@ bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer* pInfoContainer)
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
 
-bool g_bFixPhysicsPlayerShuffle = false;
-FAKE_BOOL_CVAR(cs2f_shuffle_player_physics_sim, "Whether to enable shuffle player list in physics simulate", g_bFixPhysicsPlayerShuffle, false, false);
+CConVar<bool> g_cvarFixPhysicsPlayerShuffle("cs2f_shuffle_player_physics_sim", 0, "Whether to enable shuffle player list in physics simulate", false);
 
 struct TouchLinked_t
 {
@@ -1052,7 +1049,7 @@ public:
 static_assert(sizeof(TouchLinked_t) == 240, "Touch_t size mismatch");
 void CS2Fixes::Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool unknown)
 {
-	if (!g_bFixPhysicsPlayerShuffle || g_SHPtr->GetStatus() == MRES_SUPERCEDE || pList->Count() <= 1)
+	if (!g_cvarFixPhysicsPlayerShuffle.Get() || g_SHPtr->GetStatus() == MRES_SUPERCEDE || pList->Count() <= 1)
 		return;
 
 	// [Kxnrl]
@@ -1121,7 +1118,7 @@ void CS2Fixes::Hook_CheckMovingGround(double frametime)
 
 void CS2Fixes::Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity)
 {
-	if (g_bEnableEntWatch)
+	if (g_cvarEnableEntWatch.Get())
 	{
 		CCSPlayer_WeaponServices* pWeaponService = META_IFACEPTR(CCSPlayer_WeaponServices);
 		EW_DropWeapon(pWeaponService, pWeapon);
@@ -1162,14 +1159,14 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 	g_playerManager->SetupInfiniteAmmo();
 	g_pMapVoteSystem->OnLevelInit(pMapName);
 
-	if (g_bEnableZR)
+	if (g_cvarEnableZR.Get())
 		ZR_OnLevelInit();
 
 	CCSPlayer_ItemServices::ResetAwsProcessing();
 
 	EntityHandler_OnLevelInit();
 
-	if (g_bEnableEntWatch)
+	if (g_cvarEnableEntWatch.Get())
 		EW_OnLevelInit(pMapName);
 }
 
@@ -1177,7 +1174,7 @@ void CS2Fixes::OnLevelShutdown()
 {
 	Message("OnLevelShutdown()\n");
 
-	if (g_bVoteManagerEnable)
+	if (g_cvarVoteManagerEnable.Get())
 		g_pMapVoteSystem->OnLevelShutdown();
 }
 

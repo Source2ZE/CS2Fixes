@@ -274,7 +274,6 @@ public:
 };
 
 extern CEWHandler* g_pEWHandler;
-extern bool g_bEnableEntWatch;
 
 void EW_OnLevelInit(const char* sMapName);
 void EW_RoundPreStart();

@@ -47,7 +47,7 @@ CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
 CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current map on completion", ADMFLAG_ROOT)
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_cvarVoteManagerEnable.Get())
 		return;
 
 	if (g_pMapVoteSystem->GetDownloadQueueSize() != 0)
@@ -123,7 +123,7 @@ CON_COMMAND_F(cs2f_vote_max_maps, "Number of total maps to include per vote, inc
 
 CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_cvarVoteManagerEnable.Get())
 		return;
 
 	if (args.ArgC() < 2)
@@ -188,7 +188,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 
 CON_COMMAND_CHAT_FLAGS(setnextmap, "[name/id] - Force next map (empty to clear forced next map)", ADMFLAG_CHANGEMAP)
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_cvarVoteManagerEnable.Get())
 		return;
 
 	g_pMapVoteSystem->ForceNextMap(player, args.ArgC() < 2 ? "" : args[1]);
@@ -196,7 +196,7 @@ CON_COMMAND_CHAT_FLAGS(setnextmap, "[name/id] - Force next map (empty to clear f
 
 CON_COMMAND_CHAT(nominate, "[mapname] - Nominate a map (empty to clear nomination or list all maps)")
 {
-	if (!g_bVoteManagerEnable || !player)
+	if (!g_cvarVoteManagerEnable.Get() || !player)
 		return;
 
 	g_pMapVoteSystem->AttemptNomination(player, args.ArgC() < 2 ? "" : args[1]);
@@ -204,7 +204,7 @@ CON_COMMAND_CHAT(nominate, "[mapname] - Nominate a map (empty to clear nominatio
 
 CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_cvarVoteManagerEnable.Get())
 		return;
 
 	if (g_pMapVoteSystem->GetForcedNextMap() != -1)
@@ -229,7 +229,7 @@ CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 
 CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_cvarVoteManagerEnable.Get())
 		return;
 
 	// Use a new vector, because we want to sort the command output
@@ -261,7 +261,7 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 
 CON_COMMAND_CHAT(nextmap, "- Check the next map if it was forced")
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_cvarVoteManagerEnable.Get())
 		return;
 
 	if (g_pMapVoteSystem->GetForcedNextMap() == -1)
@@ -292,7 +292,7 @@ bool CMapVoteSystem::IsMapIndexEnabled(int iMapIndex)
 
 void CMapVoteSystem::OnLevelInit(const char* pMapName)
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_cvarVoteManagerEnable.Get())
 		return;
 
 	m_bIsVoteOngoing = false;
@@ -366,7 +366,7 @@ void CMapVoteSystem::StartVote()
 	}
 
 	// We're checking this later, so we can always disable the map vote if mp_endmatch_votenextmap is disabled
-	if (!g_bVoteManagerEnable)
+	if (!g_cvarVoteManagerEnable.Get())
 		return;
 
 	// Reset the player vote counts as the vote just started
@@ -742,7 +742,7 @@ uint64 CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, c
 
 void CMapVoteSystem::ClearPlayerInfo(int iSlot)
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_cvarVoteManagerEnable.Get())
 		return;
 
 	m_arrPlayerNominations[iSlot] = -1;
@@ -1089,7 +1089,7 @@ bool CMapVoteSystem::LoadMapList()
 
 bool CMapVoteSystem::IsIntermissionAllowed()
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_cvarVoteManagerEnable.Get())
 		return true;
 
 	// We need to prevent "ending the map twice" as it messes with ongoing map votes
@@ -1133,7 +1133,7 @@ bool CMapVoteSystem::WriteMapCooldownsToFile()
 
 void CMapVoteSystem::ClearInvalidNominations()
 {
-	if (!g_bVoteManagerEnable || m_bIsVoteOngoing || !GetGlobals())
+	if (!g_cvarVoteManagerEnable.Get() || m_bIsVoteOngoing || !GetGlobals())
 		return;
 
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
@@ -1173,7 +1173,7 @@ void CMapVoteSystem::UpdateCurrentMapIndex()
 
 void CMapVoteSystem::ApplyGameSettings(KeyValues* pKV)
 {
-	if (!g_bVoteManagerEnable)
+	if (!g_cvarVoteManagerEnable.Get())
 		return;
 
 	if (pKV->FindKey("launchoptions") && pKV->FindKey("launchoptions")->FindKey("customgamemode"))

@@ -284,7 +284,7 @@ extern ZRWeaponConfig* g_pZRWeaponConfig;
 extern ZRHitgroupConfig* g_pZRHitgroupConfig;
 extern CZRPlayerClassManager* g_pZRPlayerClassManager;
 
-extern bool g_bEnableZR;
+extern CConVar<bool> g_cvarEnableZR;
 extern EZRRoundState g_ZRRoundState;
 
 void ZR_OnLevelInit();

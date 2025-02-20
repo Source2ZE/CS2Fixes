@@ -52,7 +52,7 @@ enum EExtendVoteMode
 	EXTENDVOTE_AUTO,	  // Extend votes can be triggered by !ve or when map timelimit reaches a given value
 };
 
-extern bool g_bVoteManagerEnable;
+extern CConVar<bool> g_cvarVoteManagerEnable;
 
 class CVoteManager
 {

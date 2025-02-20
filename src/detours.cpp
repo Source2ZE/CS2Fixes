@@ -84,13 +84,9 @@ DECLARE_DETOUR(TraceShape, Detour_TraceShape);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
 
-static bool g_bBlockMolotovSelfDmg = false;
-static bool g_bBlockAllDamage = false;
-static bool g_bFixBlockDamage = false;
-
-FAKE_BOOL_CVAR(cs2f_block_molotov_self_dmg, "Whether to block self-damage from molotovs", g_bBlockMolotovSelfDmg, false, false)
-FAKE_BOOL_CVAR(cs2f_block_all_dmg, "Whether to block all damage to players", g_bBlockAllDamage, false, false)
-FAKE_BOOL_CVAR(cs2f_fix_block_dmg, "Whether to fix block-damage on players", g_bFixBlockDamage, false, false)
+CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", 0, "Whether to block self-damage from molotovs", false);
+CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", 0, "Whether to block all damage to players", false);
+CConVar<bool> g_cvarFixBlockDamage("cs2f_fix_block_dmg", 0, "Whether to fix block-damage on players", false);
 
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* inputInfo)
 {
@@ -112,14 +108,14 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageIn
 #endif
 
 	// Block all player damage if desired
-	if (g_bBlockAllDamage && pThis->IsPawn())
+	if (g_cvarBlockAllDamage.Get() && pThis->IsPawn())
 		return;
 
 	CBaseEntity* pInflictor = inputInfo->m_hInflictor.Get();
 	const char* pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 
 	// After Armory update, activator became attacker on block damage, which broke it..
-	if (g_bFixBlockDamage && inputInfo->m_AttackerInfo.m_bIsPawn && inputInfo->m_bitsDamageType ^ DMG_BULLET && inputInfo->m_hAttacker != pThis->GetHandle())
+	if (g_cvarFixBlockDamage.Get() && inputInfo->m_AttackerInfo.m_bIsPawn && inputInfo->m_bitsDamageType ^ DMG_BULLET && inputInfo->m_hAttacker != pThis->GetHandle())
 	{
 		if (V_strcasecmp(pszInflictorClass, "func_movelinear") == 0
 			|| V_strcasecmp(pszInflictorClass, "func_mover") == 0
@@ -138,22 +134,19 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageIn
 	}
 
 	// Prevent molly on self
-	if (g_bBlockMolotovSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
+	if (g_cvarBlockMolotovSelfDmg.Get() && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
 		return;
 
 	CBaseEntity_TakeDamageOld(pThis, inputInfo);
 }
 
-static bool g_bUseOldPush = false;
-FAKE_BOOL_CVAR(cs2f_use_old_push, "Whether to use the old CSGO trigger_push behavior", g_bUseOldPush, false, false)
-
-static bool g_bLogPushes = false;
-FAKE_BOOL_CVAR(cs2f_log_pushes, "Whether to log pushes (cs2f_use_old_push must be enabled)", g_bLogPushes, false, false)
+CConVar<bool> g_cvarUseOldPush("cs2f_use_old_push", 0, "Whether to use the old CSGO trigger_push behavior", false);
+CConVar<bool> g_cvarLogPushes("cs2f_log_pushes", 0, "Whether to log pushes (cs2f_use_old_push must be enabled)", false);
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 {
 	// This trigger pushes only once (and kills itself) or pushes only on StartTouch, both of which are fine already
-	if (!g_bUseOldPush || pPush->m_spawnflags() & SF_TRIG_PUSH_ONCE || pPush->m_bTriggerOnStartTouch())
+	if (!g_cvarUseOldPush.Get() || pPush->m_spawnflags() & SF_TRIG_PUSH_ONCE || pPush->m_bTriggerOnStartTouch())
 	{
 		TriggerPush_Touch(pPush, pOther);
 		return;
@@ -203,7 +196,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 		pOther->Teleport(&origin, nullptr, nullptr);
 	}
 
-	if (g_bLogPushes && GetGlobals())
+	if (g_cvarLogPushes.Get() && GetGlobals())
 	{
 		Vector vecEntBaseVelocity = pOther->m_vecBaseVelocity;
 		Vector vecOrigPush = vecAbsDir * pPush->m_flSpeed();
@@ -330,16 +323,14 @@ void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPla
 	UTIL_SayTextFilter(filter, buf, pPlayer, eMessageType);
 }
 
-bool g_bEnableTriggerTimer = false;
-
-FAKE_BOOL_CVAR(cs2f_trigger_timer_enable, "Whether to process countdown messages said by Console (e.g. Hold for 10 seconds) and append the round time where the countdown resolves", g_bEnableTriggerTimer, false, false)
+CConVar<bool> g_cvarEnableTriggerTimer("cs2f_trigger_timer_enable", 0, "Whether to process countdown messages said by Console (e.g. Hold for 10 seconds) and append the round time where the countdown resolves", false);
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
 {
 	if (pPlayer)
 		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
 
-	if (g_bEnableTriggerTimer)
+	if (g_cvarEnableTriggerTimer.Get())
 		return SayChatMessageWithTimer(filter, pText, pPlayer, eMessageType);
 
 	char buf[256];
@@ -371,10 +362,10 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
-	if (g_bEnableZR && !ZR_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
+	if (g_cvarEnableZR.Get() && !ZR_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
 		return false;
 
-	if (g_bEnableEntWatch && !EW_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
+	if (g_cvarEnableEntWatch.Get() && !EW_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
 		return false;
 
 	return CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon);
@@ -382,7 +373,7 @@ bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* p
 
 void FASTCALL Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
-	if (g_bEnableEntWatch)
+	if (g_cvarEnableEntWatch.Get())
 		EW_Detour_CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
 
 	return CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
@@ -392,7 +383,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 {
 	VPROF_SCOPE_BEGIN("Detour_CEntityIdentity_AcceptInput");
 
-	if (g_bEnableZR)
+	if (g_cvarEnableZR.Get())
 		ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 
 	// Handle KeyValue(s)
@@ -480,13 +471,11 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
 
-bool g_bBlockNavLookup = false;
-
-FAKE_BOOL_CVAR(cs2f_block_nav_lookup, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", g_bBlockNavLookup, false, false)
+CConVar<bool> g_cvarBlockNavLookup("test_cvar_2", 0, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", false);
 
 void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7, int64_t unk8)
 {
-	if (g_bBlockNavLookup)
+	if (g_cvarBlockNavLookup.Get())
 		return nullptr;
 
 	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7, unk8);
@@ -520,11 +509,8 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pM
 	GetGlobals()->frametime = flStoreFrametime;
 }
 
-static bool g_bDisableSubtick = false;
-FAKE_BOOL_CVAR(cs2f_disable_subtick_move, "Whether to disable subtick movement", g_bDisableSubtick, false, false)
-
-static bool g_bDisableSubtickShooting = false;
-FAKE_BOOL_CVAR(cs2f_disable_subtick_shooting, "Whether to disable subtick shooting", g_bDisableSubtickShooting, false, false)
+CConVar<bool> g_cvarDisableSubtick("cs2f_disable_subtick_move", 0, "Whether to disable subtick movement", false);
+CConVar<bool> g_cvarDisableSubtickShooting("cs2f_disable_subtick_shooting", 0, "Whether to disable subtick shooting", false);
 
 class CUserCmd
 {
@@ -540,7 +526,7 @@ public:
 void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd* cmds, int numcmds, bool paused, float margin)
 {
 	// Push fix only works properly if subtick movement is also disabled
-	if (!g_bDisableSubtick && !g_bUseOldPush)
+	if (!g_cvarDisableSubtick.Get() && !g_cvarUseOldPush.Get())
 		return ProcessUsercmds(pController, cmds, numcmds, paused, margin);
 
 	VPROF_SCOPE_BEGIN("Detour_ProcessUsercmds");
@@ -549,7 +535,7 @@ void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd
 	{
 		cmds[i].cmd.mutable_base()->mutable_subtick_moves()->Clear();
 
-		if (g_bDisableSubtickShooting)
+		if (g_cvarDisableSubtickShooting.Get())
 		{
 			cmds[i].cmd.set_attack1_start_history_index(-1);
 			cmds[i].cmd.set_attack2_start_history_index(-1);
@@ -608,8 +594,7 @@ float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
 	return flMaxSpeed;
 }
 
-bool g_bPreventUsingPlayers = false;
-FAKE_BOOL_CVAR(cs2f_prevent_using_players, "Whether to prevent +use from hitting players (0=can use players, 1=cannot use players)", g_bPreventUsingPlayers, false, false);
+CConVar<bool> g_cvarPreventUsingPlayers("cs2f_prevent_using_players", 0, "Whether to prevent +use from hitting players (0=can use players, 1=cannot use players)", false);
 
 bool g_bFindingUseEntity = false;
 int64 FASTCALL Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float a2)
@@ -622,7 +607,7 @@ int64 FASTCALL Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float a2)
 
 bool FASTCALL Detour_TraceFunc(int64* a1, int* a2, float* a3, uint64 traceMask)
 {
-	if (g_bPreventUsingPlayers && g_bFindingUseEntity)
+	if (g_cvarPreventUsingPlayers.Get() && g_bFindingUseEntity)
 	{
 		uint64 newMask = traceMask & (~(CONTENTS_PLAYER & CONTENTS_NPC));
 		return TraceFunc(a1, a2, a3, newMask);
@@ -633,7 +618,7 @@ bool FASTCALL Detour_TraceFunc(int64* a1, int* a2, float* a3, uint64 traceMask)
 
 bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceFilter* filter, int64 a6)
 {
-	if (g_bPreventUsingPlayers && g_bFindingUseEntity)
+	if (g_cvarPreventUsingPlayers.Get() && g_bFindingUseEntity)
 	{
 		filter->DisableInteractsWithLayer(LAYER_INDEX_CONTENTS_PLAYER);
 		filter->DisableInteractsWithLayer(LAYER_INDEX_CONTENTS_NPC);

@@ -71,64 +71,39 @@ CZRPlayerClassManager* g_pZRPlayerClassManager = nullptr;
 ZRWeaponConfig* g_pZRWeaponConfig = nullptr;
 ZRHitgroupConfig* g_pZRHitgroupConfig = nullptr;
 
-bool g_bEnableZR = false;
-static float g_flMaxZteleDistance = 150.0f;
-static bool g_bZteleHuman = false;
-static float g_flKnockbackScale = 5.0f;
-static int g_iInfectSpawnType = EZRSpawnType::RESPAWN;
-static int g_iInfectSpawnTimeMin = 15;
-static int g_iInfectSpawnTimeMax = 15;
-static int g_iInfectSpawnMZRatio = 7;
-static int g_iInfectSpawnMinCount = 1;
-static float g_flRespawnDelay = 5.0;
-static int g_iDefaultWinnerTeam = CS_TEAM_SPECTATOR;
-static int g_iMZImmunityReduction = 20;
-static int g_iGroanChance = 5;
-static float g_flMoanInterval = 30.f;
-static bool g_bNapalmGrenades = true;
-static float g_flNapalmDuration = 5.f;
-static float g_flNapalmFullDamage = 50.f;
-
 static std::string g_szHumanWinOverlayParticle;
 static std::string g_szHumanWinOverlayMaterial;
-static float g_flHumanWinOverlaySize;
 
 static std::string g_szZombieWinOverlayParticle;
 static std::string g_szZombieWinOverlayMaterial;
-static float g_flZombieWinOverlaySize;
 
-static bool g_bInfectShake = true;
-static float g_flInfectShakeAmplitude = 15.f;
-static float g_flInfectShakeFrequency = 2.f;
-static float g_flInfectShakeDuration = 5.f;
-
-FAKE_BOOL_CVAR(zr_enable, "Whether to enable ZR features", g_bEnableZR, false, false)
-FAKE_FLOAT_CVAR(zr_ztele_max_distance, "Maximum distance players are allowed to move after starting ztele", g_flMaxZteleDistance, 150.0f, false)
-FAKE_BOOL_CVAR(zr_ztele_allow_humans, "Whether to allow humans to use ztele", g_bZteleHuman, false, false)
-FAKE_FLOAT_CVAR(zr_knockback_scale, "Global knockback scale", g_flKnockbackScale, 5.0f, false)
-FAKE_INT_CVAR(zr_infect_spawn_type, "Type of Mother Zombies Spawn [0 = MZ spawn where they stand, 1 = MZ get teleported back to spawn on being picked]", g_iInfectSpawnType, EZRSpawnType::RESPAWN, false)
-FAKE_INT_CVAR(zr_infect_spawn_time_min, "Minimum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMin, 15, false)
-FAKE_INT_CVAR(zr_infect_spawn_time_max, "Maximum time in which Mother Zombies should be picked, after round start", g_iInfectSpawnTimeMax, 15, false)
-FAKE_INT_CVAR(zr_infect_spawn_mz_ratio, "Ratio of all Players to Mother Zombies to be spawned at round start", g_iInfectSpawnMZRatio, 7, false)
-FAKE_INT_CVAR(zr_infect_spawn_mz_min_count, "Minimum amount of Mother Zombies to be spawned at round start", g_iInfectSpawnMinCount, 1, false)
-FAKE_FLOAT_CVAR(zr_respawn_delay, "Time before a zombie is automatically respawned, negative values (e.g. -1.0) disable this, note maps can still manually respawn at any time", g_flRespawnDelay, 5.0f, false)
-FAKE_INT_CVAR(zr_default_winner_team, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", g_iDefaultWinnerTeam, CS_TEAM_SPECTATOR, false)
-FAKE_INT_CVAR(zr_mz_immunity_reduction, "How much mz immunity to reduce for each player per round (0-100)", g_iMZImmunityReduction, 20, false)
-FAKE_INT_CVAR(zr_sounds_groan_chance, "How likely should a zombie groan whenever they take damage (1 / N)", g_iGroanChance, 5, false)
-FAKE_FLOAT_CVAR(zr_sounds_moan_interval, "How often in seconds should zombies moan", g_flMoanInterval, 5.f, false)
-FAKE_BOOL_CVAR(zr_napalm_enable, "Whether to use napalm grenades", g_bNapalmGrenades, true, false)
-FAKE_FLOAT_CVAR(zr_napalm_burn_duration, "How long in seconds should zombies burn from napalm grenades", g_flNapalmDuration, 5.f, false)
-FAKE_FLOAT_CVAR(zr_napalm_full_damage, "The amount of damage needed to apply full burn duration for napalm grenades (max grenade damage is 99)", g_flNapalmFullDamage, 50.f, false)
+CConVar<bool> g_cvarEnableZR("zr_enable", 0, "Whether to enable ZR features", false);
+CConVar<float> g_cvarMaxZteleDistance("zr_ztele_max_distance", 0, "Maximum distance players are allowed to move after starting ztele", 150.0f, true, 0.0f, false, 0.0f);
+CConVar<bool> g_cvarZteleHuman("zr_ztele_allow_humans", 0, "Whether to allow humans to use ztele", false);
+CConVar<float> g_cvarKnockbackScale("zr_knockback_scale", 0, "Global knockback scale", 5.0f);
+CConVar<int> g_cvarInfectSpawnType("zr_infect_spawn_type", 0, "Type of Mother Zombies Spawn [0 = MZ spawn where they stand, 1 = MZ get teleported back to spawn on being picked]", (int)EZRSpawnType::RESPAWN, true, 0, true, 1);
+CConVar<int> g_cvarInfectSpawnTimeMin("zr_infect_spawn_time_min", 0, "Minimum time in which Mother Zombies should be picked, after round start", 15, true, 0, false, 0);
+CConVar<int> g_cvarInfectSpawnTimeMax("zr_infect_spawn_time_max", 0, "Maximum time in which Mother Zombies should be picked, after round start", 15, true, 1, false, 0);
+CConVar<int> g_cvarInfectSpawnMZRatio("zr_infect_spawn_mz_ratio", 0, "Ratio of all Players to Mother Zombies to be spawned at round start", 7, true, 1, true, 64);
+CConVar<int> g_cvarInfectSpawnMinCount("zr_infect_spawn_mz_min_count", 0, "Minimum amount of Mother Zombies to be spawned at round start", 1, true, 0, false, 0);
+CConVar<float> g_cvarRespawnDelay("zr_respawn_delay", 0, "Time before a zombie is automatically respawned, -1 disables this. Note that maps can still manually respawn at any time", 5.0f, true, -1.0f, false, 0.0f);
+CConVar<int> g_cvarDefaultWinnerTeam("zr_default_winner_team", 0, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", CS_TEAM_SPECTATOR, true, 1, true, 3);
+CConVar<int> g_cvarMZImmunityReduction("zr_mz_immunity_reduction", 0, "How much mz immunity to reduce for each player per round (0-100)", 20, true, 0, true, 100);
+CConVar<int> g_cvarGroanChance("zr_sounds_groan_chance", 0, "How likely should a zombie groan whenever they take damage (1 / N)", 5, true, 1, false, 0);
+CConVar<float> g_cvarMoanInterval("zr_sounds_moan_interval", 0, "How often in seconds should zombies moan", 5.0f, true, 0.0f, false, 0.0f);
+CConVar<bool> g_cvarNapalmGrenades("zr_napalm_enable", 0, "Whether to use napalm grenades", true);
+CConVar<float> g_cvarNapalmDuration("zr_napalm_burn_duration", 0, "How long in seconds should zombies burn from napalm grenades", 5.0f, true, 0.0f, false, 0.0f);
+CConVar<float> g_cvarNapalmFullDamage("zr_napalm_full_damage", 0, "The amount of damage needed to apply full burn duration for napalm grenades (max grenade damage is 99)", 50.0f, true, 0.0f, true, 99.0f);
 FAKE_STRING_CVAR(zr_human_win_overlay_particle, "Screenspace particle to display when human win", g_szHumanWinOverlayParticle, false)
 FAKE_STRING_CVAR(zr_human_win_overlay_material, "Material override for human's win overlay particle", g_szHumanWinOverlayMaterial, false)
-FAKE_FLOAT_CVAR(zr_human_win_overlay_size, "Size of human's win overlay particle", g_flHumanWinOverlaySize, 5.0f, false)
+CConVar<float> g_cvarHumanWinOverlaySize("zr_human_win_overlay_size", 0, "Size of human's win overlay particle", 5.0f, true, 0.0f, true, 64.0f);
 FAKE_STRING_CVAR(zr_zombie_win_overlay_particle, "Screenspace particle to display when zombie win", g_szZombieWinOverlayParticle, false)
 FAKE_STRING_CVAR(zr_zombie_win_overlay_material, "Material override for zombie's win overlay particle", g_szZombieWinOverlayMaterial, false)
-FAKE_FLOAT_CVAR(zr_zombie_win_overlay_size, "Size of zombie's win overlay particle", g_flZombieWinOverlaySize, 5.0f, false)
-FAKE_BOOL_CVAR(zr_infect_shake, "Whether to shake a player's view on infect", g_bInfectShake, true, false);
-FAKE_FLOAT_CVAR(zr_infect_shake_amp, "Amplitude of shaking effect", g_flInfectShakeAmplitude, 15.f, false);
-FAKE_FLOAT_CVAR(zr_infect_shake_frequency, "Frequency of shaking effect", g_flInfectShakeFrequency, 2.f, false);
-FAKE_FLOAT_CVAR(zr_infect_shake_duration, "Duration of shaking effect", g_flInfectShakeDuration, 5.f, false);
+CConVar<float> g_cvarZombieWinOverlaySize("zr_zombie_win_overlay_size", 0, "Size of zombie's win overlay particle", 5.0f, true, 0.0f, true, 64.0f);
+CConVar<bool> g_cvarInfectShake("zr_infect_shake", 0, "Whether to shake a player's view on infect", true);
+CConVar<float> g_cvarInfectShakeAmplitude("zr_infect_shake_amp", 0, "Amplitude of shaking effect", 15.0f, true, 0.0f, true, 16.0f);
+CConVar<float> g_cvarInfectShakeFrequency("zr_infect_shake_frequency", 0, "Frequency of shaking effect", 2.0f, true, 0.0f, false, 0.0f);
+CConVar<float> g_cvarInfectShakeDuration("zr_infect_shake_duration", 0, "Duration of shaking effect", 5.0f, true, 0.0f, false, 0.0f);
 
 // meant only for offline config validation and can easily cause issues when used on live server
 #ifdef _DEBUG
@@ -605,7 +580,7 @@ void CZRPlayerClassManager::ApplyHumanClass(std::shared_ptr<ZRHumanClass> pClass
 	if (pController)
 		CZRRegenTimer::StopRegen(pController);
 
-	if (!g_bEnableLeader || !pController)
+	if (!g_cvarEnableLeader.Get() || !pController)
 		return;
 
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
@@ -1110,7 +1085,7 @@ void ZR_ApplyKnockback(CCSPlayerPawn* pHuman, CCSPlayerPawn* pVictim, int iDamag
 
 	Vector vecKnockback;
 	AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
-	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale * flHitgroupKnockbackScale * classknockback);
+	vecKnockback *= (iDamage * g_cvarKnockbackScale.Get() * flWeaponKnockbackScale * flHitgroupKnockbackScale * classknockback);
 	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
@@ -1129,7 +1104,7 @@ void ZR_ApplyKnockbackExplosion(CBaseEntity* pProjectile, CCSPlayerPawn* pVictim
 	if (bMolotov)
 		vecKnockback.z = 0;
 
-	vecKnockback *= (iDamage * g_flKnockbackScale * flWeaponKnockbackScale);
+	vecKnockback *= (iDamage * g_cvarKnockbackScale.Get() * flWeaponKnockbackScale);
 	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
@@ -1225,25 +1200,25 @@ float ZR_MoanTimer(ZEPlayerHandle hPlayer)
 
 	// This guy is dead but still infected, and corpses are quiet
 	if (!pPawn->IsAlive())
-		return g_flMoanInterval + (rand() % 5);
+		return g_cvarMoanInterval.Get() + (rand() % 5);
 
 	pPawn->EmitSound("zr.amb.zombie_voice_idle");
 
-	return g_flMoanInterval + (rand() % 5);
+	return g_cvarMoanInterval.Get() + (rand() % 5);
 }
 
 void ZR_InfectShake(CCSPlayerController* pController)
 {
-	if (!pController || !pController->IsConnected() || pController->IsBot() || !g_bInfectShake)
+	if (!pController || !pController->IsConnected() || pController->IsBot() || !g_cvarInfectShake.Get())
 		return;
 
 	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
 
 	auto data = pNetMsg->AllocateMessage()->ToPB<CUserMessageShake>();
 
-	data->set_duration(g_flInfectShakeDuration);
-	data->set_frequency(g_flInfectShakeFrequency);
-	data->set_amplitude(g_flInfectShakeAmplitude);
+	data->set_duration(g_cvarInfectShakeDuration.Get());
+	data->set_frequency(g_cvarInfectShakeFrequency.Get());
+	data->set_amplitude(g_cvarInfectShakeAmplitude.Get());
 	data->set_command(0);
 
 	CSingleRecipientFilter filter(pController->GetPlayerSlot());
@@ -1309,7 +1284,7 @@ void ZR_Infect(CCSPlayerController* pAttackerController, CCSPlayerController* pV
 		pZEPlayer->SetInfectState(true);
 
 		ZEPlayerHandle hPlayer = pZEPlayer->GetHandle();
-		new CTimer(g_flMoanInterval + (rand() % 5), false, false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
+		new CTimer(g_cvarMoanInterval.Get() + (rand() % 5), false, false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
 	}
 }
 
@@ -1326,7 +1301,7 @@ void ZR_InfectMotherZombie(CCSPlayerController* pVictimController, std::vector<S
 	ZR_StripAndGiveKnife(pVictimPawn);
 
 	// pick random spawn point
-	if (g_iInfectSpawnType == EZRSpawnType::RESPAWN)
+	if (g_cvarInfectSpawnType.Get() == (int)EZRSpawnType::RESPAWN)
 	{
 		int randomindex = rand() % spawns.size();
 		Vector origin = spawns[randomindex]->GetAbsOrigin();
@@ -1350,7 +1325,7 @@ void ZR_InfectMotherZombie(CCSPlayerController* pVictimController, std::vector<S
 	pZEPlayer->SetInfectState(true);
 
 	ZEPlayerHandle hPlayer = pZEPlayer->GetHandle();
-	new CTimer(g_flMoanInterval + (rand() % 5), false, false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
+	new CTimer(g_cvarMoanInterval.Get() + (rand() % 5), false, false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
 }
 
 // make players who've been picked as MZ recently less likely to be picked again
@@ -1378,20 +1353,20 @@ void ZR_InitialInfection()
 		pCandidateControllers.AddToTail(pController);
 	}
 
-	if (g_iInfectSpawnMZRatio <= 0)
+	if (g_cvarInfectSpawnMZRatio.Get() <= 0)
 	{
 		Warning("Invalid Mother Zombie Ratio!!!");
 		return;
 	}
 
 	// the num of mz to infect
-	int iMZToInfect = pCandidateControllers.Count() / g_iInfectSpawnMZRatio;
-	iMZToInfect = g_iInfectSpawnMinCount > iMZToInfect ? g_iInfectSpawnMinCount : iMZToInfect;
+	int iMZToInfect = pCandidateControllers.Count() / g_cvarInfectSpawnMZRatio.Get();
+	iMZToInfect = g_cvarInfectSpawnMinCount.Get() > iMZToInfect ? g_cvarInfectSpawnMinCount.Get() : iMZToInfect;
 	bool vecIsMZ[MAXPLAYERS] = {false};
 
 	// get spawn points
 	std::vector<SpawnPoint*> spawns = ZR_GetSpawns();
-	if (g_iInfectSpawnType == EZRSpawnType::RESPAWN && !spawns.size())
+	if (g_cvarInfectSpawnType.Get() == (int)EZRSpawnType::RESPAWN && !spawns.size())
 	{
 		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "There are no spawns!");
 		return;
@@ -1458,10 +1433,10 @@ void ZR_InitialInfection()
 		if (!pPlayer || vecIsMZ[i])
 			continue;
 
-		pPlayer->SetImmunity(pPlayer->GetImmunity() - g_iMZImmunityReduction);
+		pPlayer->SetImmunity(pPlayer->GetImmunity() - g_cvarMZImmunityReduction.Get());
 	}
 
-	if (g_flRespawnDelay < 0.0f)
+	if (g_cvarRespawnDelay.Get() < 0.0f)
 		g_bRespawnEnabled = false;
 
 	ClientPrintAll(HUD_PRINTCENTER, "First infection has started!");
@@ -1471,10 +1446,10 @@ void ZR_InitialInfection()
 
 void ZR_StartInitialCountdown()
 {
-	if (g_iInfectSpawnTimeMin > g_iInfectSpawnTimeMax)
-		V_swap(g_iInfectSpawnTimeMin, g_iInfectSpawnTimeMax);
+	if (g_cvarInfectSpawnTimeMin.Get() > g_cvarInfectSpawnTimeMax.Get())
+		g_cvarInfectSpawnTimeMin.Set(g_cvarInfectSpawnTimeMax.Get());
 
-	g_iInfectionCountDown = g_iInfectSpawnTimeMin + (rand() % (g_iInfectSpawnTimeMax - g_iInfectSpawnTimeMin + 1));
+	g_iInfectionCountDown = g_cvarInfectSpawnTimeMin.Get() + (rand() % (g_cvarInfectSpawnTimeMax.Get() - g_cvarInfectSpawnTimeMin.Get() + 1));
 	new CTimer(0.0f, false, false, []() {
 		if (g_ZRRoundState != EZRRoundState::ROUND_START)
 			return -1.0f;
@@ -1515,7 +1490,7 @@ bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo* pInfo, CCSPlayerPawn* pVictimPa
 		return true; // nullify the damage
 	}
 
-	if (g_iGroanChance && pVictimPawn->m_iTeamNum() == CS_TEAM_T && (rand() % g_iGroanChance) == 1)
+	if (g_cvarGroanChance.Get() && pVictimPawn->m_iTeamNum() == CS_TEAM_T && (rand() % g_cvarGroanChance.Get()) == 1)
 		pVictimPawn->EmitSound("zr.amb.zombie_pain");
 
 	// grenade and molotov knockback
@@ -1527,11 +1502,11 @@ bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo* pInfo, CCSPlayerPawn* pVictimPa
 		bool bGrenade = V_strncmp(pszInflictorClass, "hegrenade", 9) == 0;
 		bool bInferno = V_strncmp(pszInflictorClass, "inferno", 7) == 0;
 
-		if (g_bNapalmGrenades && bGrenade)
+		if (g_cvarNapalmGrenades.Get() && bGrenade)
 		{
 			// Scale burn duration by damage, so nades from farther away burn zombies for less time
-			float flDuration = (pInfo->m_flDamage / g_flNapalmFullDamage) * g_flNapalmDuration;
-			flDuration = clamp(flDuration, 0.f, g_flNapalmDuration);
+			float flDuration = (pInfo->m_flDamage / g_cvarNapalmFullDamage.Get()) * g_cvarNapalmDuration.Get();
+			flDuration = clamp(flDuration, 0.0f, g_cvarNapalmDuration.Get());
 
 			// Can't use the same inflictor here as it'll end up calling this again each burn damage tick
 			// DMG_BURN makes loud noises so use DMG_FALL instead which is completely silent
@@ -1681,7 +1656,7 @@ void ZR_OnPlayerDeath(IGameEvent* pEvent)
 
 	// respawn player
 	CHandle<CCSPlayerController> handle = pVictimController->GetHandle();
-	new CTimer(g_flRespawnDelay < 0.0f ? 2.0f : g_flRespawnDelay, false, false, [handle]() {
+	new CTimer(g_cvarRespawnDelay.Get() < 0.0f ? 2.0f : g_cvarRespawnDelay.Get(), false, false, [handle]() {
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
 		if (!pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T)
 			return -1.0f;
@@ -1701,7 +1676,7 @@ void ZR_OnRoundTimeWarning(IGameEvent* pEvent)
 	new CTimer(10.0, false, false, []() {
 		if (g_ZRRoundState == EZRRoundState::ROUND_END)
 			return -1.0f;
-		ZR_EndRoundAndAddTeamScore(g_iDefaultWinnerTeam);
+		ZR_EndRoundAndAddTeamScore(g_cvarDefaultWinnerTeam.Get());
 		return -1.0f;
 	});
 }
@@ -1793,7 +1768,7 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 		}
 		g_hTeamCT->m_iScore = g_hTeamCT->m_iScore() + 1;
 		if (!g_szHumanWinOverlayParticle.empty())
-			ZR_CreateOverlay(g_szHumanWinOverlayParticle.c_str(), 1.0f, g_flHumanWinOverlaySize, flRestartDelay, Color(255, 255, 255), g_szHumanWinOverlayMaterial.c_str());
+			ZR_CreateOverlay(g_szHumanWinOverlayParticle.c_str(), 1.0f, g_cvarHumanWinOverlaySize.Get(), flRestartDelay, Color(255, 255, 255), g_szHumanWinOverlayMaterial.c_str());
 	}
 	else if (iTeamNum == CS_TEAM_T)
 	{
@@ -1804,14 +1779,14 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 		}
 		g_hTeamT->m_iScore = g_hTeamT->m_iScore() + 1;
 		if (!g_szZombieWinOverlayParticle.empty())
-			ZR_CreateOverlay(g_szZombieWinOverlayParticle.c_str(), 1.0f, g_flZombieWinOverlaySize, flRestartDelay, Color(255, 255, 255), g_szZombieWinOverlayMaterial.c_str());
+			ZR_CreateOverlay(g_szZombieWinOverlayParticle.c_str(), 1.0f, g_cvarZombieWinOverlaySize.Get(), flRestartDelay, Color(255, 255, 255), g_szZombieWinOverlayMaterial.c_str());
 	}
 }
 
 CON_COMMAND_CHAT(ztele, "- Teleport to spawn")
 {
 	// Silently return so the command is completely hidden
-	if (!g_bEnableZR)
+	if (!g_cvarEnableZR.Get())
 		return;
 
 	if (!player)
@@ -1821,7 +1796,7 @@ CON_COMMAND_CHAT(ztele, "- Teleport to spawn")
 	}
 
 	// Check if command is enabled for humans
-	if (!g_bZteleHuman && player->m_iTeamNum() == CS_TEAM_CT)
+	if (!g_cvarZteleHuman.Get() && player->m_iTeamNum() == CS_TEAM_CT)
 	{
 		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "You cannot use this command as a human.");
 		return;
@@ -1866,7 +1841,7 @@ CON_COMMAND_CHAT(ztele, "- Teleport to spawn")
 
 		Vector endpos = pPawn->GetAbsOrigin();
 
-		if (initialpos.DistTo(endpos) < g_flMaxZteleDistance)
+		if (initialpos.DistTo(endpos) < g_cvarMaxZteleDistance.Get())
 		{
 			Vector origin = pSpawn->GetAbsOrigin();
 			QAngle rotation = pSpawn->GetAbsRotation();
@@ -1886,7 +1861,7 @@ CON_COMMAND_CHAT(ztele, "- Teleport to spawn")
 CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:R classes")
 {
 	// Silently return so the command is completely hidden
-	if (!g_bEnableZR)
+	if (!g_cvarEnableZR.Get())
 		return;
 
 	if (!player)
@@ -1954,7 +1929,7 @@ CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:
 CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 {
 	// Silently return so the command is completely hidden
-	if (!g_bEnableZR)
+	if (!g_cvarEnableZR.Get())
 		return;
 
 	if (args.ArgC() < 2)
@@ -1979,7 +1954,7 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 	std::vector<SpawnPoint*> spawns = ZR_GetSpawns();
 
-	if (g_iInfectSpawnType == EZRSpawnType::RESPAWN && !spawns.size())
+	if (g_cvarInfectSpawnType.Get() == (int)EZRSpawnType::RESPAWN && !spawns.size())
 	{
 		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "There are no spawns!");
 		return;
@@ -2004,7 +1979,7 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 	// Note we skip MZ immunity when first infection is manually triggered
 	if (g_ZRRoundState == EZRRoundState::ROUND_START)
 	{
-		if (g_flRespawnDelay < 0.0f)
+		if (g_cvarRespawnDelay.Get() < 0.0f)
 			g_bRespawnEnabled = false;
 
 		g_ZRRoundState = EZRRoundState::POST_INFECTION;
@@ -2014,7 +1989,7 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 {
 	// Silently return so the command is completely hidden
-	if (!g_bEnableZR)
+	if (!g_cvarEnableZR.Get())
 		return;
 
 	if (args.ArgC() < 2)

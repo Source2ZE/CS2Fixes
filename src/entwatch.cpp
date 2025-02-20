@@ -81,17 +81,11 @@ SH_DECL_MANUALHOOK1_void(CTriggerMultiple_StartTouch, 0, 0, 0, CBaseEntity*);
 SH_DECL_MANUALHOOK1_void(CTriggerMultiple_Touch, 0, 0, 0, CBaseEntity*);
 SH_DECL_MANUALHOOK1_void(CTriggerMultiple_EndTouch, 0, 0, 0, CBaseEntity*);
 
-bool g_bEnableEntWatch = false;
-FAKE_BOOL_CVAR(entwatch_enable, "INCOMPATIBLE WITH CS#. Whether to enable EntWatch features", g_bEnableEntWatch, false, false)
+CConVar<bool> g_cvarEnableEntWatch("entwatch_enable", 0, "INCOMPATIBLE WITH CS#. Whether to enable EntWatch features", false);
+CConVar<bool> g_cvarEnableFiltering("entwatch_auto_filter", 0, "Whether to automatically block non-item holders from triggering uses", true);
+CConVar<bool> g_cvarUseEntwatchClantag("entwatch_clantag", 0, "Whether to set item holder's clantag and set score", true);
 
-bool g_bEnableFiltering = true;
-FAKE_BOOL_CVAR(entwatch_auto_filter, "Whether to automatically block non-item holders from triggering uses", g_bEnableFiltering, true, false)
-
-bool g_bUseEntwatchClantag = true;
-FAKE_BOOL_CVAR(entwatch_clantag, "Whether to set item holder's clantag and set score", g_bUseEntwatchClantag, true, false)
-
-int g_iItemHolderScore = 9999;
-FAKE_INT_CVAR(entwatch_score, "Score to give item holders (0 = dont change score at all) Requires entwatch_clantag 1", g_iItemHolderScore, 9999, false);
+CConVar<int> g_cvarItemHolderScore("entwatch_score", 0, "Score to give item holders (0 = dont change score at all) Requires entwatch_clantag 1", 9999, true, 0, false, 0);
 
 void EWItemHandler::SetDefaultValues()
 {
@@ -726,7 +720,7 @@ void EWItemInstance::Pickup(int slot)
 		Message(EW_PREFIX "%s [%llu] has picked up %s (weaponid:%d)\n", pController->GetPlayerName(), pPlayer->GetUnauthenticatedSteamId64(), szItemName.c_str(), iWeaponEnt);
 
 	// Set clantag
-	if (g_bUseEntwatchClantag && bShowHud)
+	if (g_cvarUseEntwatchClantag.Get() && bShowHud)
 	{
 		// Only set clantag if owner doesnt already have one set
 		bool bShouldSetClantag = true;
@@ -745,9 +739,9 @@ void EWItemInstance::Pickup(int slot)
 		{
 			bHasThisClantag = true;
 			pController->m_szClan(sClantag);
-			if (g_iItemHolderScore > -1)
+			if (g_cvarItemHolderScore.Get() > -1)
 			{
-				int score = pController->m_iScore + g_iItemHolderScore;
+				int score = pController->m_iScore + g_cvarItemHolderScore.Get();
 				pController->m_iScore = score;
 			}
 
@@ -768,7 +762,7 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 		return;
 	}
 
-	if (g_bUseEntwatchClantag && bShowHud && bHasThisClantag)
+	if (g_cvarUseEntwatchClantag.Get() && bShowHud && bHasThisClantag)
 	{
 		bool bSetAnotherClantag = false;
 
@@ -791,9 +785,9 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 
 		if (!bSetAnotherClantag)
 		{
-			if (g_iItemHolderScore != 0)
+			if (g_cvarItemHolderScore.Get() != 0)
 			{
-				int score = pController->m_iScore - g_iItemHolderScore;
+				int score = pController->m_iScore - g_cvarItemHolderScore.Get();
 				pController->m_iScore = score;
 			}
 
@@ -1305,7 +1299,7 @@ void CEWHandler::RemoveHandler(CBaseEntity* pEnt)
 void CEWHandler::ResetAllClantags()
 {
 	// Reset item holders scores to what they should be
-	if (g_iItemHolderScore != 0)
+	if (g_cvarItemHolderScore.Get() != 0)
 	{
 		for (int i = 0; i < (vecItems).size(); i++)
 		{
@@ -1315,7 +1309,7 @@ void CEWHandler::ResetAllClantags()
 				if (!pOwner)
 					continue;
 
-				int score = pOwner->m_iScore - g_iItemHolderScore;
+				int score = pOwner->m_iScore - g_cvarItemHolderScore.Get();
 				pOwner->m_iScore = score;
 				vecItems[i]->bHasThisClantag = false;
 			}
@@ -1332,10 +1326,10 @@ void CEWHandler::ResetAllClantags()
 		if (!pController)
 			continue;
 
-		// Bring score down below g_iItemHolderScore so new item holders show above
-		if (pController->m_iScore >= g_iItemHolderScore)
+		// Bring score down below entwatch_score so new item holders show above
+		if (pController->m_iScore >= g_cvarItemHolderScore.Get())
 		{
-			int score = pController->m_iScore % g_iItemHolderScore;
+			int score = pController->m_iScore % g_cvarItemHolderScore.Get();
 			pController->m_iScore = score;
 		}
 
@@ -1757,7 +1751,7 @@ void CEWHandler::Hook_Use(InputData_t* pInput)
 
 	// Prevent uses from non item owners if we are filtering
 	META_RES resVal = MRES_IGNORED;
-	if (g_bEnableFiltering)
+	if (g_cvarEnableFiltering.Get())
 		resVal = MRES_SUPERCEDE;
 
 	CBaseEntity* pActivator = pInput->pActivator;
@@ -2211,7 +2205,7 @@ int GetTemplateSuffixNumber(const char* szName)
 
 CON_COMMAND_CHAT_FLAGS(ew_reload, "Reloads the current map's entwatch config", ADMFLAG_CONFIG)
 {
-	if (!g_bEnableEntWatch || !GetGlobals())
+	if (!g_cvarEnableEntWatch.Get() || !GetGlobals())
 		return;
 	if (!g_pEWHandler)
 	{
@@ -2233,7 +2227,7 @@ CON_COMMAND_CHAT_FLAGS(ew_reload, "Reloads the current map's entwatch config", A
 
 CON_COMMAND_CHAT_FLAGS(etransfer, "Transfer an EntWatch item", ADMFLAG_GENERIC)
 {
-	if (!g_bEnableEntWatch || !GetGlobals())
+	if (!g_cvarEnableEntWatch.Get() || !GetGlobals())
 		return;
 
 	if (!g_pEWHandler->IsConfigLoaded())
@@ -2476,7 +2470,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "Transfer an EntWatch item", ADMFLAG_GENERIC)
 
 CON_COMMAND_CHAT(ew_dump, "Prints the currently loaded config to console")
 {
-	if (!g_bEnableEntWatch)
+	if (!g_cvarEnableEntWatch.Get())
 		return;
 
 	if (!g_pEWHandler)
@@ -2490,7 +2484,7 @@ CON_COMMAND_CHAT(ew_dump, "Prints the currently loaded config to console")
 
 CON_COMMAND_CHAT(etag, "Toggle EntWatch clantags on the scoreboard")
 {
-	if (!g_bEnableEntWatch)
+	if (!g_cvarEnableEntWatch.Get())
 		return;
 
 	if (!player)
@@ -2518,7 +2512,7 @@ CON_COMMAND_CHAT(etag, "Toggle EntWatch clantags on the scoreboard")
 
 CON_COMMAND_CHAT(hud, "Toggle EntWatch HUD")
 {
-	if (!g_bEnableEntWatch)
+	if (!g_cvarEnableEntWatch.Get())
 		return;
 
 	if (!player)
@@ -2554,7 +2548,7 @@ CON_COMMAND_CHAT(hud, "Toggle EntWatch HUD")
 
 CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
 {
-	if (!g_bEnableEntWatch)
+	if (!g_cvarEnableEntWatch.Get())
 		return;
 
 	if (!player)
@@ -2586,7 +2580,7 @@ CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
 
 CON_COMMAND_CHAT(hudcolor, "<r> <g> <b> [a] - Set color (and transparency) of the Entwatch hud")
 {
-	if (!g_bEnableEntWatch)
+	if (!g_cvarEnableEntWatch.Get())
 		return;
 
 	if (!player)
@@ -2632,7 +2626,7 @@ CON_COMMAND_CHAT(hudcolor, "<r> <g> <b> [a] - Set color (and transparency) of th
 
 CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
 {
-	if (!g_bEnableEntWatch)
+	if (!g_cvarEnableEntWatch.Get())
 		return;
 
 	if (!player)
