@@ -39,8 +39,8 @@ struct ColorPreset
 extern std::map<std::string, ColorPreset> mapColorPresets;
 extern CUtlVector<ZEPlayerHandle> g_vecLeaders;
 
-extern bool g_bEnableLeader;
-extern bool g_bLeaderActionsHumanOnly;
+extern CConVar<bool> g_cvarEnableLeader;
+extern CConVar<bool> g_cvarLeaderActionsHumanOnly;
 extern std::string g_strMarkParticlePath;
 
 void Leader_ApplyLeaderVisuals(CCSPlayerPawn* pPawn);

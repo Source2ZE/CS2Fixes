@@ -403,14 +403,9 @@ bool CustomIO_HandleInput(CEntityInstance* pInstance,
 std::string g_sBurnParticle = "particles/burning_fx/burning_character_b.vpcf";
 FAKE_STRING_CVAR(cs2f_burn_particle, "The particle to use for burning entities", g_sBurnParticle, false);
 
-float g_flBurnDamage = 1.f;
-FAKE_FLOAT_CVAR(cs2f_burn_damage, "The amount of each burn damage ticks", g_flBurnDamage, 1.f, false);
-
-float g_flBurnSlowdown = 0.6f;
-FAKE_FLOAT_CVAR(cs2f_burn_slowdown, "The slowdown of each burn damage tick as a multiplier of base speed", g_flBurnSlowdown, 0.6f, false);
-
-float g_flBurnInterval = 0.3f;
-FAKE_FLOAT_CVAR(cs2f_burn_interval, "The interval between burn damage ticks", g_flBurnInterval, 0.3f, false);
+CConVar<float> g_cvarBurnDamage("cs2f_burn_damage", 0, "The amount of each burn damage ticks", 1.0f, true, 0.0f, false, 0.0f);
+CConVar<float> g_cvarBurnSlowdown("cs2f_burn_slowdown", 0, "The slowdown of each burn damage tick as a multiplier of base speed", 0.6f, true, 0.0f, true, 1.0f);
+CConVar<float> g_cvarBurnInterval("cs2f_burn_interval", 0, "The interval between burn damage ticks", 0.3f, true, 0.0f, false, 0.0f);
 
 bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor, CBaseEntity* pAttacker, CBaseEntity* pAbility, DamageTypes_t nDamageType)
 {
@@ -474,7 +469,7 @@ bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor,
 			return -1.f;
 		}
 
-		CTakeDamageInfo info(hInflictor, hAttacker, hAbility, g_flBurnDamage, nDamageType);
+		CTakeDamageInfo info(hInflictor, hAttacker, hAbility, g_cvarBurnDamage.Get(), nDamageType);
 
 		// Damage doesn't apply if the inflictor is null
 		if (!hInflictor.Get())
@@ -482,9 +477,9 @@ bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor,
 
 		pPawn->TakeDamage(info);
 
-		pPawn->m_flVelocityModifier = g_flBurnSlowdown;
+		pPawn->m_flVelocityModifier = g_cvarBurnSlowdown.Get();
 
-		return g_flBurnInterval;
+		return g_cvarBurnInterval.Get();
 	});
 
 	return true;

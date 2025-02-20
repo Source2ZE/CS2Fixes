@@ -27,17 +27,13 @@ extern CPlayerManager* g_playerManager;
 
 CIdleSystem* g_pIdleSystem = nullptr;
 
-float g_fIdleKickTime = 0.0f;
-static int g_iMinClientsForIdleKicks = 0;
-static bool g_bKickAdmins = true;
-
-FAKE_FLOAT_CVAR(cs2f_idle_kick_time, "Amount of minutes before kicking idle players. 0 to disable afk kicking.", g_fIdleKickTime, 0.0f, false)
-FAKE_INT_CVAR(cs2f_idle_kick_min_players, "Minimum amount of connected clients to kick idle players.", g_iMinClientsForIdleKicks, 0, false)
-FAKE_BOOL_CVAR(cs2f_idle_kick_admins, "Whether to kick idle players with ADMFLAG_GENERIC", g_bKickAdmins, true, false)
+CConVar<float> g_cvarIdleKickTime("cs2f_idle_kick_time", 0, "Amount of minutes before kicking idle players. 0 to disable afk kicking.", 0.0f, true, 0.0f, false, 0.0f);
+CConVar<int> g_cvarMinClientsForIdleKicks("cs2f_idle_kick_min_players", 0, "Minimum amount of connected clients to kick idle players.", 0, true, 0, true, 64);
+CConVar<bool> g_cvarKickAdmins("cs2f_idle_kick_admins", 0, "Whether to kick idle players with ADMFLAG_GENERIC", true);
 
 void CIdleSystem::CheckForIdleClients()
 {
-	if (m_bPaused || g_fIdleKickTime <= 0.0f || !GetGlobals())
+	if (m_bPaused || g_cvarIdleKickTime.Get() <= 0.0f || !GetGlobals())
 		return;
 
 	int iClientNum = 0;
@@ -58,14 +54,14 @@ void CIdleSystem::CheckForIdleClients()
 		if (!zPlayer || zPlayer->IsFakeClient())
 			continue;
 
-		if (zPlayer->IsAuthenticated() && !g_bKickAdmins)
+		if (zPlayer->IsAuthenticated() && !g_cvarKickAdmins.Get())
 		{
 			auto admin = g_pAdminSystem->FindAdmin(zPlayer->GetSteamId64());
 			if (admin && admin->GetFlags() & ADMFLAG_GENERIC)
 				continue;
 		}
 
-		time_t iIdleTimeLeft = (g_fIdleKickTime * 60) - (std::time(0) - zPlayer->GetLastInputTime());
+		time_t iIdleTimeLeft = (g_cvarIdleKickTime.Get() * 60) - (std::time(0) - zPlayer->GetLastInputTime());
 
 		if (iIdleTimeLeft > 0)
 		{
@@ -78,7 +74,7 @@ void CIdleSystem::CheckForIdleClients()
 			continue;
 		}
 
-		if (iClientNum < g_iMinClientsForIdleKicks)
+		if (iClientNum < g_cvarMinClientsForIdleKicks.Get())
 			continue;
 
 		g_pEngineServer2->DisconnectClient(zPlayer->GetPlayerSlot(), NETWORK_DISCONNECT_KICKED_IDLE, "Auto kicked for being idle");
@@ -88,7 +84,7 @@ void CIdleSystem::CheckForIdleClients()
 // Logged inputs and time for the logged inputs are updated every time this function is run.
 void CIdleSystem::UpdateIdleTimes()
 {
-	if (g_fIdleKickTime <= 0.0f || !GetGlobals())
+	if (g_cvarIdleKickTime.Get() <= 0.0f || !GetGlobals())
 		return;
 
 	VPROF("CIdleSystem::UpdateIdleTimes");

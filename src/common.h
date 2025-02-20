@@ -60,15 +60,6 @@ void Panic(const char*, ...);
 			variable_name = V_StringTo##variable_type(args[1], variable_default);                                       \
 	}
 
-#define FAKE_INT_CVAR(name, description, variable_name, variable_default, protect) \
-	FAKE_CVAR(name, description, variable_name, Int32, % i, variable_default, protect)
-
-#define FAKE_BOOL_CVAR(name, description, variable_name, variable_default, protect) \
-	FAKE_CVAR(name, description, variable_name, Bool, % i, variable_default, protect)
-
-#define FAKE_FLOAT_CVAR(name, description, variable_name, variable_default, protect) \
-	FAKE_CVAR(name, description, variable_name, Float32, % f, variable_default, protect)
-
 // assumes std::string variable
 #define FAKE_STRING_CVAR(name, description, variable_name, protect)                                                     \
 	CON_COMMAND_F(name, description, FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | (protect ? FCVAR_PROTECTED : FCVAR_NONE)) \

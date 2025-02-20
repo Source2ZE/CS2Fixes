@@ -53,15 +53,9 @@ extern CGameEntitySystem* g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
 
-bool g_bEnableCommands;
-bool g_bEnableAdminCommands;
-
-FAKE_BOOL_CVAR(cs2f_commands_enable, "Whether to enable chat commands", g_bEnableCommands, false, 0)
-FAKE_BOOL_CVAR(cs2f_admin_commands_enable, "Whether to enable admin chat commands", g_bEnableAdminCommands, false, 0)
-
-bool g_bEnableWeapons = false;
-
-FAKE_BOOL_CVAR(cs2f_weapons_enable, "Whether to enable weapon commands", g_bEnableWeapons, false, false)
+CConVar<bool> g_cvarEnableCommands("cs2f_commands_enable", 0, "Whether to enable chat commands", false);
+CConVar<bool> g_cvarEnableAdminCommands("cs2f_admin_commands_enable", 0, "Whether to enable admin chat commands", false);
+CConVar<bool> g_cvarEnableWeapons("cs2f_weapons_enable", 0, "Whether to enable weapon commands", false);
 
 int GetGrenadeAmmo(CCSPlayer_WeaponServices* pWeaponServices, const WeaponInfo_t* pWeaponInfo)
 {
@@ -104,7 +98,7 @@ int GetGrenadeAmmoTotal(CCSPlayer_WeaponServices* pWeaponServices)
 
 void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 {
-	if (!g_bEnableWeapons || !player || !player->m_hPawn())
+	if (!g_cvarEnableWeapons.Get() || !player || !player->m_hPawn())
 		return;
 
 	VPROF("ParseWeaponCommand");
@@ -313,7 +307,7 @@ bool CChatCommand::CheckCommandAccess(CCSPlayerController* pPlayer, uint64 flags
 
 	if ((flags & FLAG_LEADER) == FLAG_LEADER)
 	{
-		if (!g_bEnableLeader)
+		if (!g_cvarEnableLeader.Get())
 			return false;
 		if (!pZEPlayer->IsAdminFlagSet(FLAG_LEADER))
 		{
@@ -322,7 +316,7 @@ bool CChatCommand::CheckCommandAccess(CCSPlayerController* pPlayer, uint64 flags
 				ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You must be a leader to use this command.");
 				return false;
 			}
-			else if (g_bLeaderActionsHumanOnly && pPlayer->m_iTeamNum != CS_TEAM_CT)
+			else if (g_cvarLeaderActionsHumanOnly.Get() && pPlayer->m_iTeamNum != CS_TEAM_CT)
 			{
 				ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You must be a human to use this command.");
 				return false;
@@ -393,13 +387,11 @@ void ClientPrint(CCSPlayerController* player, int hud_dest, const char* msg, ...
 	delete data;
 }
 
-bool g_bEnableStopSound = false;
-
-FAKE_BOOL_CVAR(cs2f_stopsound_enable, "Whether to enable stopsound", g_bEnableStopSound, false, false)
+CConVar<bool> g_cvarEnableStopSound("cs2f_stopsound_enable", 0, "Whether to enable stopsound", false);
 
 CON_COMMAND_CHAT(stopsound, "- Toggle weapon sounds")
 {
-	if (!g_bEnableStopSound)
+	if (!g_cvarEnableStopSound.Get())
 		return;
 
 	if (!player)
@@ -435,13 +427,11 @@ CON_COMMAND_CHAT(toggledecals, "- Toggle world decals, if you're into having 10 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s world decals.", bSet ? "disabled" : "enabled");
 }
 
-bool g_bEnableNoShake = false;
-FAKE_BOOL_CVAR(cs2f_noshake_enable, "Whether to enable noshake command", g_bEnableNoShake, false, false)
-float g_flMaxShakeAmp = -1.0;
-FAKE_FLOAT_CVAR(cs2f_maximum_shake_amplitude, "Shaking Amplitude bigger than this will be clamped", g_flMaxShakeAmp, -1.0, false)
+CConVar<bool> g_cvarEnableNoShake("cs2f_noshake_enable", 0, "Whether to enable noshake command", false);
+CConVar<float> g_cvarMaxShakeAmp("cs2f_maximum_shake_amplitude", 0, "Shaking Amplitude bigger than this will be clamped", -1.0f, true, -1.0f, true, 16.0f);
 CON_COMMAND_CHAT(noshake, "- toggle noshake")
 {
-	if (!g_bEnableNoShake)
+	if (!g_cvarEnableNoShake.Get())
 		return;
 
 	if (!player)
@@ -457,18 +447,14 @@ CON_COMMAND_CHAT(noshake, "- toggle noshake")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s noshake.", bSet ? "enabled" : "disabled");
 }
 
-bool g_bEnableHide = false;
-static int g_iDefaultHideDistance = 250;
-static int g_iMaxHideDistance = 2000;
-
-FAKE_BOOL_CVAR(cs2f_hide_enable, "Whether to enable hide (WARNING: randomly crashes clients since 2023-12-13 CS2 update)", g_bEnableHide, false, false)
-FAKE_INT_CVAR(cs2f_hide_distance_default, "The default distance for hide", g_iDefaultHideDistance, 250, false)
-FAKE_INT_CVAR(cs2f_hide_distance_max, "The max distance for hide", g_iMaxHideDistance, 2000, false)
+CConVar<bool> g_cvarEnableHide("cs2f_hide_enable", 0, "Whether to enable hide (WARNING: randomly crashes clients since 2023-12-13 CS2 update)", false);
+CConVar<int> g_cvarDefaultHideDistance("cs2f_hide_distance_default", 0, "The default distance for hide", 250, true, 0, false, 0);
+CConVar<int> g_cvarMaxHideDistance("cs2f_hide_distance_max", 0, "The max distance for hide", 2000, true, 0, false, 0);
 
 CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 {
 	// Silently return so the command is completely hidden
-	if (!g_bEnableHide)
+	if (!g_cvarEnableHide.Get())
 		return;
 
 	if (!player)
@@ -480,13 +466,13 @@ CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 	int distance;
 
 	if (args.ArgC() < 2)
-		distance = g_iDefaultHideDistance;
+		distance = g_cvarDefaultHideDistance.Get();
 	else
 		distance = V_StringToInt32(args[1], -1);
 
-	if (distance > g_iMaxHideDistance || distance < 0)
+	if (distance > g_cvarMaxHideDistance.Get() || distance < 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only hide players between 0 and %i units away.", g_iMaxHideDistance);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only hide players between 0 and %i units away.", g_cvarMaxHideDistance.Get());
 		return;
 	}
 

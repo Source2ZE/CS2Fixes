@@ -57,42 +57,28 @@ CUtlVector<ZEPlayerHandle> g_vecLeaders;
 static int g_iMarkerCount = 0;
 static bool g_bPingWithLeader = true;
 
-// 'CONVARS'
-bool g_bEnableLeader = false;
-static float g_flLeaderVoteRatio = 0.15;
-bool g_bLeaderActionsHumanOnly = true;
-bool g_bLeaderMarkerHumanOnly = true;
-static bool g_bMuteNonLeaderPings = true;
+// CONVARS
 static std::string g_strLeaderModelPath = "";
 static std::string g_strDefendParticlePath = "particles/cs2fixes/leader_defend_mark.vpcf";
 std::string g_strMarkParticlePath = "particles/cs2fixes/leader_defend_mark.vpcf";
-static bool g_bLeaderCanTargetPlayers = false;
-static bool g_bLeaderVoteMultiple = true;
-static int g_iLeaderExtraScore = 20000;
 
-FAKE_BOOL_CVAR(cs2f_leader_enable, "Whether to enable Leader features", g_bEnableLeader, false, false)
-FAKE_FLOAT_CVAR(cs2f_leader_vote_ratio, "Vote ratio needed for player to become a leader", g_flLeaderVoteRatio, 0.2f, false)
-FAKE_BOOL_CVAR(cs2f_leader_actions_ct_only, "Whether to allow leader actions (like !beacon) only from human team", g_bLeaderActionsHumanOnly, true, false)
-FAKE_BOOL_CVAR(cs2f_leader_marker_ct_only, "Whether to have zombie leaders' player_pings spawn in particle markers or not", g_bLeaderMarkerHumanOnly, true, false)
-FAKE_BOOL_CVAR(cs2f_leader_mute_player_pings, "Whether to mute player pings made by non-leaders", g_bMuteNonLeaderPings, true, false)
+CConVar<bool> g_cvarEnableLeader("cs2f_leader_enable", 0, "Whether to enable Leader features", false);
+CConVar<float> g_cvarlLeaderVoteRatio("cs2f_leader_vote_ratio", 0, "Vote ratio needed for player to become a leader", 0.2f, true, 0.0f, true, 1.0f);
+CConVar<bool> g_cvarLeaderActionsHumanOnly("cs2f_leader_actions_ct_only", 0, "Whether to allow leader actions (like !beacon) only from human team", true);
+CConVar<bool> g_cvarLeaderMarkerHumanOnly("cs2f_leader_marker_ct_only", 0, "Whether to have zombie leaders' player_pings spawn in particle markers or not", true);
+CConVar<bool> g_cvarMuteNonLeaderPings("cs2f_leader_mute_player_pings", 0, "Whether to mute player pings made by non-leaders", true);
 FAKE_STRING_CVAR(cs2f_leader_model_path, "Path to player model to be used for leaders", g_strLeaderModelPath, false)
 FAKE_STRING_CVAR(cs2f_leader_defend_particle, "Path to defend particle to be used with c_defend", g_strDefendParticlePath, false)
 FAKE_STRING_CVAR(cs2f_leader_mark_particle, "Path to particle to be used when a ct leader using player_ping", g_strMarkParticlePath, false)
-FAKE_BOOL_CVAR(cs2f_leader_can_target_players, "Whether a leader can target other players with leader commands (not including c_leader)", g_bLeaderCanTargetPlayers, false, false)
-FAKE_BOOL_CVAR(cs2f_leader_vote_multiple, "If true, players can vote up to cs2f_max_leaders leaders. If false, they may vote for a single leader", g_bLeaderVoteMultiple, true, false)
-FAKE_INT_CVAR(cs2f_leader_extra_score, "Extra score to give a leader to affect their position on the scoreboard", g_iLeaderExtraScore, 20000, false)
+CConVar<bool> g_cvarLeaderCanTargetPlayers("cs2f_leader_can_target_players", 0, "Whether a leader can target other players with leader commands (not including c_leader)", false);
+CConVar<bool> g_cvarLeaderVoteMultiple("cs2f_leader_vote_multiple", 0, "If true, players can vote up to cs2f_max_leaders leaders. If false, they may vote for a single leader", true);
+CConVar<int> g_cvarLeaderExtraScore("Extra score to give a leader to affect their position on the scoreboard", 0, "Description", 20000, true, 0, false, 0);
 
-static int g_iMaxLeaders = 3;
-static int g_iMaxMarkers = 6;
-static int g_iMaxGlows = 3;
-static int g_iMaxTracers = 3;
-static int g_iMaxBeacons = 3;
-
-FAKE_INT_CVAR(cs2f_leader_max_leaders, "Max amount of leaders set via c_vl or a leader using c_leader (doesn't impact admins)", g_iMaxLeaders, 3, false)
-FAKE_INT_CVAR(cs2f_leader_max_markers, "Max amount of markers set by leaders (doesn't impact admins)", g_iMaxMarkers, 6, false)
-FAKE_INT_CVAR(cs2f_leader_max_glows, "Max amount of glows set by leaders (doesn't impact admins)", g_iMaxGlows, 3, false)
-FAKE_INT_CVAR(cs2f_leader_max_tracers, "Max amount of tracers set by leaders (doesn't impact admins)", g_iMaxTracers, 3, false)
-FAKE_INT_CVAR(cs2f_leader_max_beacons, "Max amount of beacons set by leaders (doesn't impact admins)", g_iMaxBeacons, 3, false)
+CConVar<int> g_cvarMaxLeaders("cs2f_leader_max_leaders", 0, "Max amount of leaders set via c_vl or a leader using c_leader (doesn't impact admins)", 3, true, 0, true, 64);
+CConVar<int> g_cvarMaxMarkers("cs2f_leader_max_markers", 0, "Max amount of markers set by leaders (doesn't impact admins)", 6, true, 0, false, 0);
+CConVar<int> g_cvarMaxGlows("cs2f_leader_max_glows", 0, "Max amount of glows set by leaders (doesn't impact admins)", 3, true, 0, true, 64);
+CConVar<int> g_cvarMaxTracers("cs2f_leader_max_tracers", 0, "Max amount of tracers set by leaders (doesn't impact admins)", 3, true, 0, true, 64);
+CConVar<int> g_cvarMaxBeacons("cs2f_leader_max_beacons", 0, "Max amount of beacons set by leaders (doesn't impact admins)", 3, true, 0, true, 64);
 
 Color Leader_GetColor(std::string strColor, ZEPlayer* zpUser = nullptr, CCSPlayerController* pTarget = nullptr)
 {
@@ -196,7 +182,7 @@ bool Leader_SetNewLeader(ZEPlayer* zpLeader, std::string strColor = "")
 	if (zpLeader->IsLeader())
 		return false;
 
-	pLeader->m_iScore() = pLeader->m_iScore() + g_iLeaderExtraScore;
+	pLeader->m_iScore() = pLeader->m_iScore() + g_cvarLeaderExtraScore.Get();
 	zpLeader->SetLeader(true);
 	Color color = Color(0, 0, 0, 0);
 
@@ -220,7 +206,7 @@ bool Leader_SetNewLeader(ZEPlayer* zpLeader, std::string strColor = "")
 	}
 
 	zpLeader->SetLeaderColor(color);
-	if (GetCount(LeaderVisual::Beacon).first < g_iMaxBeacons)
+	if (GetCount(LeaderVisual::Beacon).first < g_cvarMaxBeacons.Get())
 		zpLeader->SetBeaconColor(color);
 
 	if (pawnLeader)
@@ -253,7 +239,7 @@ void Leader_ApplyLeaderVisuals(CCSPlayerPawn* pPawn)
 		Color colorBeacon = zpLeader->GetBeaconColor();
 		if (zpLeader->GetBeaconParticle())
 			zpLeader->EndBeacon();
-		if (GetCount(LeaderVisual::Beacon).first < g_iMaxBeacons)
+		if (GetCount(LeaderVisual::Beacon).first < g_cvarMaxBeacons.Get())
 			zpLeader->StartBeacon(colorBeacon, zpLeader->GetHandle());
 	}
 
@@ -262,11 +248,11 @@ void Leader_ApplyLeaderVisuals(CCSPlayerPawn* pPawn)
 		Color colorGlow = zpLeader->GetGlowColor();
 		if (zpLeader->GetGlowModel())
 			zpLeader->EndGlow();
-		if (GetCount(LeaderVisual::Glow).first < g_iMaxGlows)
+		if (GetCount(LeaderVisual::Glow).first < g_cvarMaxGlows.Get())
 			zpLeader->StartGlow(colorGlow, 0);
 	}
 
-	if (zpLeader->GetTracerColor().a() == 255 && GetCount(LeaderVisual::Tracer).first > g_iMaxTracers)
+	if (zpLeader->GetTracerColor().a() == 255 && GetCount(LeaderVisual::Tracer).first > g_cvarMaxTracers.Get())
 		zpLeader->SetTracerColor(Color(0, 0, 0, 0));
 }
 
@@ -291,7 +277,7 @@ bool Leader_CreateDefendMarker(ZEPlayer* pPlayer, Color clrTint, int iDuration)
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
 
-	if (g_iMarkerCount >= g_iMaxMarkers)
+	if (g_iMarkerCount >= g_cvarMaxMarkers.Get() && !pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC))
 	{
 		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Too many defend markers already active!");
 		return false;
@@ -329,7 +315,7 @@ bool Leader_CreateDefendMarker(ZEPlayer* pPlayer, Color clrTint, int iDuration)
 
 void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, const CNetMessage* pData)
 {
-	if (!g_bEnableLeader)
+	if (!g_cvarEnableLeader.Get())
 		return;
 
 	auto pPBData = pData->ToPB<CMsgSource1LegacyGameEvent>();
@@ -355,7 +341,7 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, cons
 
 	if (bNoHumanLeaders)
 	{
-		if (g_bMuteNonLeaderPings)
+		if (g_cvarMuteNonLeaderPings.Get())
 			*(uint64*)clients = 0;
 
 		return;
@@ -370,7 +356,7 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, cons
 	g_gameEventManager->FreeEvent(pEvent);
 
 	// Add a mark particle to CT leader pings
-	if (pPlayer->IsLeader() && (pController->m_iTeamNum == CS_TEAM_CT || !g_bLeaderMarkerHumanOnly))
+	if (pPlayer->IsLeader() && (pController->m_iTeamNum == CS_TEAM_CT || !g_cvarLeaderMarkerHumanOnly.Get()))
 	{
 		Vector vecOrigin = pEntity->GetAbsOrigin();
 		vecOrigin.z += 10;
@@ -381,7 +367,7 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, cons
 
 	if (pController->m_iTeamNum == CS_TEAM_T || g_bPingWithLeader)
 	{
-		if (g_bMuteNonLeaderPings)
+		if (g_cvarMuteNonLeaderPings.Get())
 			*(uint64*)clients = 0;
 
 		return;
@@ -500,7 +486,7 @@ CON_COMMAND_CHAT_LEADER(glow, "[name] [color] - Toggle glow highlight on a playe
 	if (!bIsAdmin)
 		iTargetFlags |= NO_MULTIPLE | NO_TERRORIST;
 	const char* pszTarget = "@me";
-	if (args.ArgC() >= 2 && (bIsAdmin || g_bLeaderCanTargetPlayers))
+	if (args.ArgC() >= 2 && (bIsAdmin || g_cvarLeaderCanTargetPlayers.Get()))
 		pszTarget = args[1];
 
 	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, iTargetFlags, nType))
@@ -514,7 +500,7 @@ CON_COMMAND_CHAT_LEADER(glow, "[name] [color] - Toggle glow highlight on a playe
 
 		if (bEnablingGlow)
 		{
-			if (!bIsAdmin && GetCount(LeaderVisual::Glow).first >= g_iMaxGlows)
+			if (!bIsAdmin && GetCount(LeaderVisual::Glow).first >= g_cvarMaxGlows.Get())
 			{
 				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The max number of glows is already enabled.");
 				return;
@@ -553,7 +539,7 @@ CON_COMMAND_CHAT(glows, "- List all active player glows")
 
 CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 {
-	if (!g_bEnableLeader || !GetGlobals())
+	if (!g_cvarEnableLeader.Get() || !GetGlobals())
 		return;
 
 	if (!player)
@@ -574,13 +560,13 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 		return;
 	}
 
-	if (GetLeaders().first > 0 && !g_bLeaderVoteMultiple)
+	if (GetLeaders().first > 0 && !g_cvarLeaderVoteMultiple.Get())
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There is already an active leader.");
 		return;
 	}
 
-	if (GetLeaders().first >= g_iMaxLeaders)
+	if (GetLeaders().first >= g_cvarMaxLeaders.Get())
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The max amount of leaders has already been reached.");
 		return;
@@ -619,7 +605,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 	}
 
 	int iLeaderVoteCount = pPlayerTarget->GetLeaderVoteCount();
-	int iNeededLeaderVoteCount = (int)(g_playerManager->GetOnlinePlayerCount(false) * g_flLeaderVoteRatio) + 1;
+	int iNeededLeaderVoteCount = (int)(g_playerManager->GetOnlinePlayerCount(false) * g_cvarlLeaderVoteRatio.Get()) + 1;
 
 	pPlayer->SetLeaderVoteTime(GetGlobals()->curtime);
 
@@ -648,7 +634,7 @@ CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend mar
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
 	const char* pszTarget = "@me";
-	if ((args.ArgC() >= 2 || (args.ArgC() == 2 && iDuration == -1)) && (bIsAdmin || g_bLeaderCanTargetPlayers))
+	if ((args.ArgC() >= 2 || (args.ArgC() == 2 && iDuration == -1)) && (bIsAdmin || g_cvarLeaderCanTargetPlayers.Get()))
 		pszTarget = args[1];
 	iDuration = (iDuration < 1) ? 30 : MIN(iDuration, 60);
 
@@ -679,7 +665,7 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
 	const char* pszTarget = "@me";
-	if (args.ArgC() >= 2 && (bIsAdmin || g_bLeaderCanTargetPlayers))
+	if (args.ArgC() >= 2 && (bIsAdmin || g_cvarLeaderCanTargetPlayers.Get()))
 		pszTarget = args[1];
 
 	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, NO_DEAD | NO_TERRORIST | NO_MULTIPLE, nType))
@@ -699,7 +685,7 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 		return;
 	}
 
-	if (!bIsAdmin && GetCount(LeaderVisual::Tracer).first >= g_iMaxTracers)
+	if (!bIsAdmin && GetCount(LeaderVisual::Tracer).first >= g_cvarMaxTracers.Get())
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The max number of tracers is already enabled.");
 		return;
@@ -738,7 +724,7 @@ CON_COMMAND_CHAT_LEADER(beacon, "[name] [color] - Toggle beacon on a player")
 	if (!bIsAdmin)
 		iTargetFlags |= NO_TERRORIST | NO_MULTIPLE;
 	const char* pszTarget = "@me";
-	if (args.ArgC() >= 2 && (bIsAdmin || g_bLeaderCanTargetPlayers))
+	if (args.ArgC() >= 2 && (bIsAdmin || g_cvarLeaderCanTargetPlayers.Get()))
 		pszTarget = args[1];
 
 	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, iTargetFlags, nType))
@@ -752,7 +738,7 @@ CON_COMMAND_CHAT_LEADER(beacon, "[name] [color] - Toggle beacon on a player")
 
 		if (bEnablingBeacon)
 		{
-			if (!bIsAdmin && GetCount(LeaderVisual::Beacon).first >= g_iMaxBeacons)
+			if (!bIsAdmin && GetCount(LeaderVisual::Beacon).first >= g_cvarMaxBeacons.Get())
 			{
 				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The max number of beacons is already enabled.");
 				return;
@@ -803,7 +789,7 @@ CON_COMMAND_CHAT_LEADER(disablepings, "- Disable non-leaders pings")
 
 CON_COMMAND_CHAT(leaders, "- List all current leaders")
 {
-	if (!g_bEnableLeader)
+	if (!g_cvarEnableLeader.Get())
 		return;
 
 	std::pair<int, std::string> leaders = GetLeaders();
@@ -816,12 +802,12 @@ CON_COMMAND_CHAT(leaders, "- List all current leaders")
 
 CON_COMMAND_CHAT(leaderhelp, "- List leader commands in chat")
 {
-	if (!g_bEnableLeader)
+	if (!g_cvarEnableLeader.Get())
 		return;
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "List of leader commands:");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!leader [name] [color] - Give another player leader status");
-	if (g_bLeaderCanTargetPlayers)
+	if (g_cvarLeaderCanTargetPlayers.Get())
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!beacon <name> [color] - Toggle beacon on a player");
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!tracer <name> [color] - Toggle projectile tracers on a player");
@@ -842,7 +828,7 @@ CON_COMMAND_CHAT(leaderhelp, "- List leader commands in chat")
 
 CON_COMMAND_CHAT(leadercolor, "[color] - List leader colors in chat or change your leader color")
 {
-	if (!g_bEnableLeader)
+	if (!g_cvarEnableLeader.Get())
 		return;
 
 	ZEPlayer* zpPlayer = player ? player->GetZEPlayer() : nullptr;
@@ -897,7 +883,7 @@ CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a playe
 	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
 	bool bIsAdmin = pPlayer ? pPlayer->IsAdminFlagSet(FLAG_LEADER) : true;
 
-	if (!bIsAdmin && GetLeaders().first >= g_iMaxLeaders)
+	if (!bIsAdmin && GetLeaders().first >= g_cvarMaxLeaders.Get())
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The max amount of leaders has already been reached.");
 		return;
@@ -927,7 +913,7 @@ CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a playe
 
 CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a player", ADMFLAG_GENERIC)
 {
-	if (!g_bEnableLeader)
+	if (!g_cvarEnableLeader.Get())
 		return;
 
 	if (args.ArgC() < 2)
@@ -955,7 +941,7 @@ CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a playe
 		return;
 	}
 
-	pTarget->m_iScore() = pTarget->m_iScore() - g_iLeaderExtraScore;
+	pTarget->m_iScore() = pTarget->m_iScore() - g_cvarLeaderExtraScore.Get();
 	pPlayerTarget->SetLeader(false);
 	pPlayerTarget->SetLeaderColor(Color(0, 0, 0, 0));
 	pPlayerTarget->SetTracerColor(Color(0, 0, 0, 0));
@@ -982,7 +968,7 @@ CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a playe
 
 CON_COMMAND_CHAT(resign, "- Remove leader status from yourself")
 {
-	if (!g_bEnableLeader)
+	if (!g_cvarEnableLeader.Get())
 		return;
 
 	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
@@ -1001,7 +987,7 @@ CON_COMMAND_CHAT(resign, "- Remove leader status from yourself")
 		return;
 	}
 
-	player->m_iScore() = player->m_iScore() - g_iLeaderExtraScore;
+	player->m_iScore() = player->m_iScore() - g_cvarLeaderExtraScore.Get();
 	pPlayer->SetLeader(false);
 	pPlayer->SetLeaderColor(Color(0, 0, 0, 0));
 	pPlayer->SetTracerColor(Color(0, 0, 0, 0));

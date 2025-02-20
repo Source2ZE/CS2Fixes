@@ -18,8 +18,9 @@
  */
 
 #pragma once
+#include "convar.h"
 
-extern float g_fIdleKickTime;
+extern CConVar<float> g_cvarIdleKickTime;
 
 class CIdleSystem
 {
