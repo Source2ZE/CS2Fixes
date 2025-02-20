@@ -141,8 +141,11 @@ void CDetour<T>::FreeDetour()
 		DisableDetour();
 
 	int error = funchook_destroy(m_hook);
+	m_hook = nullptr;
 
-	if (error != 0)
+	if (error == 0)
+		Message("Removed detour %s\n", m_pszName);
+	else
 		Warning("funchook_destroy error for %s: %d %s\n", m_pszName, error, funchook_error_message(m_hook));
 }
 

@@ -387,16 +387,13 @@ private:
 class CPlayerManager
 {
 public:
-	CPlayerManager(bool late = false)
+	CPlayerManager()
 	{
 		V_memset(m_vecPlayers, 0, sizeof(m_vecPlayers));
 		m_nUsingStopSound = -1; // On by default
 		m_nUsingSilenceSound = 0;
 		m_nUsingStopDecals = -1; // On by default
 		m_nUsingNoShake = 0;
-
-		if (late)
-			OnLateLoad();
 	}
 
 	bool OnClientConnected(CPlayerSlot slot, uint64 xuid, const char* pszNetworkID);
