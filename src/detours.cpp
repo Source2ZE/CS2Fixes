@@ -84,9 +84,9 @@ DECLARE_DETOUR(TraceShape, Detour_TraceShape);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
 
-CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", 0, "Whether to block self-damage from molotovs", false);
-CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", 0, "Whether to block all damage to players", false);
-CConVar<bool> g_cvarFixBlockDamage("cs2f_fix_block_dmg", 0, "Whether to fix block-damage on players", false);
+CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
+CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
+CConVar<bool> g_cvarFixBlockDamage("cs2f_fix_block_dmg", FCVAR_NONE, "Whether to fix block-damage on players", false);
 
 void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* inputInfo)
 {
@@ -140,8 +140,8 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageIn
 	CBaseEntity_TakeDamageOld(pThis, inputInfo);
 }
 
-CConVar<bool> g_cvarUseOldPush("cs2f_use_old_push", 0, "Whether to use the old CSGO trigger_push behavior", false);
-CConVar<bool> g_cvarLogPushes("cs2f_log_pushes", 0, "Whether to log pushes (cs2f_use_old_push must be enabled)", false);
+CConVar<bool> g_cvarUseOldPush("cs2f_use_old_push", FCVAR_NONE, "Whether to use the old CSGO trigger_push behavior", false);
+CConVar<bool> g_cvarLogPushes("cs2f_log_pushes", FCVAR_NONE, "Whether to log pushes (cs2f_use_old_push must be enabled)", false);
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 {
@@ -323,7 +323,7 @@ void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPla
 	UTIL_SayTextFilter(filter, buf, pPlayer, eMessageType);
 }
 
-CConVar<bool> g_cvarEnableTriggerTimer("cs2f_trigger_timer_enable", 0, "Whether to process countdown messages said by Console (e.g. Hold for 10 seconds) and append the round time where the countdown resolves", false);
+CConVar<bool> g_cvarEnableTriggerTimer("cs2f_trigger_timer_enable", FCVAR_NONE, "Whether to process countdown messages said by Console (e.g. Hold for 10 seconds) and append the round time where the countdown resolves", false);
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
 {
@@ -471,7 +471,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
 
-CConVar<bool> g_cvarBlockNavLookup("test_cvar_2", 0, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", false);
+CConVar<bool> g_cvarBlockNavLookup("test_cvar_2", FCVAR_NONE, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", false);
 
 void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7, int64_t unk8)
 {
@@ -509,8 +509,8 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pM
 	GetGlobals()->frametime = flStoreFrametime;
 }
 
-CConVar<bool> g_cvarDisableSubtick("cs2f_disable_subtick_move", 0, "Whether to disable subtick movement", false);
-CConVar<bool> g_cvarDisableSubtickShooting("cs2f_disable_subtick_shooting", 0, "Whether to disable subtick shooting", false);
+CConVar<bool> g_cvarDisableSubtick("cs2f_disable_subtick_move", FCVAR_NONE, "Whether to disable subtick movement", false);
+CConVar<bool> g_cvarDisableSubtickShooting("cs2f_disable_subtick_shooting", FCVAR_NONE, "Whether to disable subtick shooting", false);
 
 class CUserCmd
 {
@@ -594,7 +594,7 @@ float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
 	return flMaxSpeed;
 }
 
-CConVar<bool> g_cvarPreventUsingPlayers("cs2f_prevent_using_players", 0, "Whether to prevent +use from hitting players (0=can use players, 1=cannot use players)", false);
+CConVar<bool> g_cvarPreventUsingPlayers("cs2f_prevent_using_players", FCVAR_NONE, "Whether to prevent +use from hitting players (0=can use players, 1=cannot use players)", false);
 
 bool g_bFindingUseEntity = false;
 int64 FASTCALL Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float a2)

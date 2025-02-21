@@ -81,11 +81,11 @@ SH_DECL_MANUALHOOK1_void(CTriggerMultiple_StartTouch, 0, 0, 0, CBaseEntity*);
 SH_DECL_MANUALHOOK1_void(CTriggerMultiple_Touch, 0, 0, 0, CBaseEntity*);
 SH_DECL_MANUALHOOK1_void(CTriggerMultiple_EndTouch, 0, 0, 0, CBaseEntity*);
 
-CConVar<bool> g_cvarEnableEntWatch("entwatch_enable", 0, "INCOMPATIBLE WITH CS#. Whether to enable EntWatch features", false);
-CConVar<bool> g_cvarEnableFiltering("entwatch_auto_filter", 0, "Whether to automatically block non-item holders from triggering uses", true);
-CConVar<bool> g_cvarUseEntwatchClantag("entwatch_clantag", 0, "Whether to set item holder's clantag and set score", true);
+CConVar<bool> g_cvarEnableEntWatch("entwatch_enable", FCVAR_NONE, "INCOMPATIBLE WITH CS#. Whether to enable EntWatch features", false);
+CConVar<bool> g_cvarEnableFiltering("entwatch_auto_filter", FCVAR_NONE, "Whether to automatically block non-item holders from triggering uses", true);
+CConVar<bool> g_cvarUseEntwatchClantag("entwatch_clantag", FCVAR_NONE, "Whether to set item holder's clantag and set score", true);
 
-CConVar<int> g_cvarItemHolderScore("entwatch_score", 0, "Score to give item holders (0 = dont change score at all) Requires entwatch_clantag 1", 9999, true, 0, false, 0);
+CConVar<int> g_cvarItemHolderScore("entwatch_score", FCVAR_NONE, "Score to give item holders (0 = dont change score at all) Requires entwatch_clantag 1", 9999, true, 0, false, 0);
 
 void EWItemHandler::SetDefaultValues()
 {

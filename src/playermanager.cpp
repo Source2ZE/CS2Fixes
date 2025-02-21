@@ -46,8 +46,8 @@ extern CGlobalVars* GetGlobals();
 extern IGameEventSystem* g_gameEventSystem;
 extern CUtlVector<CServerSideClient*>* GetClientList();
 
-CConVar<int> g_cvarAdminImmunityTargetting("cs2f_admin_immunity", 0, "Mode for which admin immunity system targetting allows: 0 - strictly lower, 1 - equal to or lower, 2 - ignore immunity levels", 0, true, 0, true, 2);
-CConVar<bool> g_cvarEnableMapSteamIds("cs2f_map_steamids_enable", 0, "Whether to make Steam ID's available to maps", false);
+CConVar<int> g_cvarAdminImmunityTargetting("cs2f_admin_immunity", FCVAR_NONE, "Mode for which admin immunity system targetting allows: 0 - strictly lower, 1 - equal to or lower, 2 - ignore immunity levels", 0, true, 0, true, 2);
+CConVar<bool> g_cvarEnableMapSteamIds("cs2f_map_steamids_enable", FCVAR_NONE, "Whether to make Steam ID's available to maps", false);
 
 ZEPlayerHandle::ZEPlayerHandle() :
 	m_Index(INVALID_ZEPLAYERHANDLE_INDEX){};
@@ -167,10 +167,10 @@ void ZEPlayer::SetHideDistance(int distance)
 static Color g_clrFlashLightColor(255, 255, 255);
 static std::string g_sFlashLightAttachment = "axis_of_intent";
 
-CConVar<bool> g_cvarFlashLightShadows("cs2f_flashlight_shadows", 0, "Whether to enable flashlight shadows", true);
-CConVar<bool> g_cvarFlashLightTransmitOthers("cs2f_flashlight_transmit_others", 0, "Whether to transmit other player's flashlights, recommended to have shadows off for this", true);
-CConVar<float> g_cvarFlashLightBrightness("cs2f_flashlight_brightness", 0, "How bright should flashlights be", 1.0f);
-CConVar<float> g_cvarFlashLightDistance("cs2f_flashlight_distance", 0, "How far flashlights should be from the player's head", 54.0f); // The minimum distance such that an awp wouldn't block the light
+CConVar<bool> g_cvarFlashLightShadows("cs2f_flashlight_shadows", FCVAR_NONE, "Whether to enable flashlight shadows", true);
+CConVar<bool> g_cvarFlashLightTransmitOthers("cs2f_flashlight_transmit_others", FCVAR_NONE, "Whether to transmit other player's flashlights, recommended to have shadows off for this", true);
+CConVar<float> g_cvarFlashLightBrightness("cs2f_flashlight_brightness", FCVAR_NONE, "How bright should flashlights be", 1.0f);
+CConVar<float> g_cvarFlashLightDistance("cs2f_flashlight_distance", FCVAR_NONE, "How far flashlights should be from the player's head", 54.0f); // The minimum distance such that an awp wouldn't block the light
 FAKE_COLOR_CVAR(cs2f_flashlight_color, "What color to use for flashlights", g_clrFlashLightColor, false)
 FAKE_STRING_CVAR(cs2f_flashlight_attachment, "Which attachment to parent a flashlight to. "
 											 "If the player model is not properly setup, you might have to use clip_limit here instead",
@@ -237,9 +237,9 @@ void ZEPlayer::ToggleFlashLight()
 
 static std::string g_sBeaconParticle = "particles/cs2fixes/player_beacon.vpcf";
 
-CConVar<float> g_cvarFloodInterval("cs2f_flood_interval", 0, "Amount of time allowed between chat messages acquiring flood tokens", 0.75f, true, 0.0f, false, 0.0f);
-CConVar<int> g_cvarMaxFloodTokens("cs2f_max_flood_tokens", 0, "Maximum number of flood tokens allowed before chat messages are blocked", 3, true, 0, false, 0);
-CConVar<float> g_cvarFloodCooldown("cs2f_flood_cooldown", 0, "Amount of time to block messages for when a player floods", 3.0f, true, 0.0f, false, 0.0f);
+CConVar<float> g_cvarFloodInterval("cs2f_flood_interval", FCVAR_NONE, "Amount of time allowed between chat messages acquiring flood tokens", 0.75f, true, 0.0f, false, 0.0f);
+CConVar<int> g_cvarMaxFloodTokens("cs2f_max_flood_tokens", FCVAR_NONE, "Maximum number of flood tokens allowed before chat messages are blocked", 3, true, 0, false, 0);
+CConVar<float> g_cvarFloodCooldown("cs2f_flood_cooldown", FCVAR_NONE, "Amount of time to block messages for when a player floods", 3.0f, true, 0.0f, false, 0.0f);
 FAKE_STRING_CVAR(cs2f_beacon_particle, ".vpcf file to be precached and used for beacon", g_sBeaconParticle, false)
 
 bool ZEPlayer::IsFlooding()
@@ -835,7 +835,7 @@ void CPlayerManager::OnSteamAPIActivated()
 	m_CallbackValidateAuthTicketResponse.Register(this, &CPlayerManager::OnValidateAuthTicket);
 }
 
-CConVar<int> g_cvarDelayAuthFailKick("cs2f_delay_auth_fail_kick", 0, "How long in seconds to delay kicking players when their Steam authentication fails, use with sv_steamauth_enforce 0", 0, true, 0, false, 0);
+CConVar<int> g_cvarDelayAuthFailKick("cs2f_delay_auth_fail_kick", FCVAR_NONE, "How long in seconds to delay kicking players when their Steam authentication fails, use with sv_steamauth_enforce 0", 0, true, 0, false, 0);
 
 void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pResponse)
 {
@@ -907,7 +907,7 @@ void CPlayerManager::CheckInfractions()
 	g_pAdminSystem->SaveInfractions();
 }
 
-CConVar<bool> g_cvarFlashLightEnable("cs2f_flashlight_enable", 0, "Whether to enable flashlights", false);
+CConVar<bool> g_cvarFlashLightEnable("cs2f_flashlight_enable", FCVAR_NONE, "Whether to enable flashlights", false);
 
 void CPlayerManager::FlashLightThink()
 {
@@ -931,7 +931,7 @@ void CPlayerManager::FlashLightThink()
 	}
 }
 
-CConVar<bool> g_cvarHideTeammatesOnly("cs2f_hide_teammates_only", 0, "Whether to hide teammates only", false);
+CConVar<bool> g_cvarHideTeammatesOnly("cs2f_hide_teammates_only", FCVAR_NONE, "Whether to hide teammates only", false);
 
 void CPlayerManager::CheckHideDistances()
 {
@@ -1038,7 +1038,7 @@ void CPlayerManager::UpdatePlayerStates()
 	}
 }
 
-CConVar<bool> g_cvarInfiniteAmmo("cs2f_infinite_reserve_ammo", 0, "Whether to enable infinite reserve ammo on weapons", false);
+CConVar<bool> g_cvarInfiniteAmmo("cs2f_infinite_reserve_ammo", FCVAR_NONE, "Whether to enable infinite reserve ammo on weapons", false);
 
 void CPlayerManager::SetupInfiniteAmmo()
 {

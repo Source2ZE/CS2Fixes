@@ -27,9 +27,9 @@ extern CPlayerManager* g_playerManager;
 
 CIdleSystem* g_pIdleSystem = nullptr;
 
-CConVar<float> g_cvarIdleKickTime("cs2f_idle_kick_time", 0, "Amount of minutes before kicking idle players. 0 to disable afk kicking.", 0.0f, true, 0.0f, false, 0.0f);
-CConVar<int> g_cvarMinClientsForIdleKicks("cs2f_idle_kick_min_players", 0, "Minimum amount of connected clients to kick idle players.", 0, true, 0, true, 64);
-CConVar<bool> g_cvarKickAdmins("cs2f_idle_kick_admins", 0, "Whether to kick idle players with ADMFLAG_GENERIC", true);
+CConVar<float> g_cvarIdleKickTime("cs2f_idle_kick_time", FCVAR_NONE, "Amount of minutes before kicking idle players. 0 to disable afk kicking.", 0.0f, true, 0.0f, false, 0.0f);
+CConVar<int> g_cvarMinClientsForIdleKicks("cs2f_idle_kick_min_players", FCVAR_NONE, "Minimum amount of connected clients to kick idle players.", 0, true, 0, true, 64);
+CConVar<bool> g_cvarKickAdmins("cs2f_idle_kick_admins", FCVAR_NONE, "Whether to kick idle players with ADMFLAG_GENERIC", true);
 
 void CIdleSystem::CheckForIdleClients()
 {

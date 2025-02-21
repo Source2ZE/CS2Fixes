@@ -403,9 +403,9 @@ bool CustomIO_HandleInput(CEntityInstance* pInstance,
 std::string g_sBurnParticle = "particles/burning_fx/burning_character_b.vpcf";
 FAKE_STRING_CVAR(cs2f_burn_particle, "The particle to use for burning entities", g_sBurnParticle, false);
 
-CConVar<float> g_cvarBurnDamage("cs2f_burn_damage", 0, "The amount of each burn damage ticks", 1.0f, true, 0.0f, false, 0.0f);
-CConVar<float> g_cvarBurnSlowdown("cs2f_burn_slowdown", 0, "The slowdown of each burn damage tick as a multiplier of base speed", 0.6f, true, 0.0f, true, 1.0f);
-CConVar<float> g_cvarBurnInterval("cs2f_burn_interval", 0, "The interval between burn damage ticks", 0.3f, true, 0.0f, false, 0.0f);
+CConVar<float> g_cvarBurnDamage("cs2f_burn_damage", FCVAR_NONE, "The amount of each burn damage ticks", 1.0f, true, 0.0f, false, 0.0f);
+CConVar<float> g_cvarBurnSlowdown("cs2f_burn_slowdown", FCVAR_NONE, "The slowdown of each burn damage tick as a multiplier of base speed", 0.6f, true, 0.0f, true, 1.0f);
+CConVar<float> g_cvarBurnInterval("cs2f_burn_interval", FCVAR_NONE, "The interval between burn damage ticks", 0.3f, true, 0.0f, false, 0.0f);
 
 bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor, CBaseEntity* pAttacker, CBaseEntity* pAbility, DamageTypes_t nDamageType)
 {

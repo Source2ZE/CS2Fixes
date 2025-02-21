@@ -33,18 +33,18 @@ extern CCSGameRules* g_pGameRules;
 
 CVoteManager* g_pVoteManager = nullptr;
 
-CConVar<bool> g_cvarVoteManagerEnable("cs2f_votemanager_enable", 0, "Whether to enable votemanager features such as RTV and extends", false);
-CConVar<float> g_cvarExtendVoteDelay("cs2f_extend_vote_delay", 0, "If cs2f_extend_mode is 2, Time after map start until extend votes can be triggered", 120.0f, true, 0.0f, false, 0.0f);
-CConVar<int> g_cvarExtendVoteMode("cs2f_extend_mode", 0, "How extend votes are handled. (0=off, 1=only admins can start, 2=players can start with !ve, 3=auto start at given timeleft)", (int)EExtendVoteMode::EXTENDVOTE_ADMINONLY, true, 0, true, 3);
-CConVar<int> g_cvarMaxExtends("cs2f_extends", 0, "Maximum extends per map", 1, true, 0, false, 0);
-CConVar<float> g_cvarExtendSucceedRatio("cs2f_extend_success_ratio", 0, "Ratio needed to pass an extend vote", 0.5f, true, 0.0f, true, 1.0f);
-CConVar<int> g_cvarExtendTimeToAdd("cs2f_extend_time", 0, "Time to add per extend in minutes", 20, true, 0, false, 0);
-CConVar<float> g_cvarExtendVoteStartTime("cs2f_extend_vote_start_time", 0, "If cs2f_extend_mode is 3, start an extend vote at this timeleft (minutes)", 3.0f, true, 0.0f, false, 0.0f);
-CConVar<float> g_cvarExtendVoteDuration("cs2f_extend_vote_duration", 0, "Time to leave the extend vote active for (seconds)", 30.0f, true, 5.0f, false, 60.0f);
-CConVar<float> g_cvarExtendBeginRatio("cs2f_extend_begin_ratio", 0, "If cs2f_extend_mode is >= 2, Ratio needed to begin an extend vote", 0.4f, true, 0.0f, true, 1.0f);
-CConVar<float> g_cvarRtvDelay("cs2f_rtv_vote_delay", 0, "Time after map start until RTV votes can be cast", 120.f, true, 0.0f, false, 0.0f);
-CConVar<float> g_cvarRTVSucceedRatio("cs2f_rtv_success_ratio", 0, "Ratio needed to pass RTV", 0.6f, true, 0.0f, true, 1.0f);
-CConVar<bool> g_cvarRTVEndRound("cs2f_rtv_endround", 0, "Whether to immediately end the round when RTV succeeds", false);
+CConVar<bool> g_cvarVoteManagerEnable("cs2f_votemanager_enable", FCVAR_NONE, "Whether to enable votemanager features such as RTV and extends", false);
+CConVar<float> g_cvarExtendVoteDelay("cs2f_extend_vote_delay", FCVAR_NONE, "If cs2f_extend_mode is 2, Time after map start until extend votes can be triggered", 120.0f, true, 0.0f, false, 0.0f);
+CConVar<int> g_cvarExtendVoteMode("cs2f_extend_mode", FCVAR_NONE, "How extend votes are handled. (0=off, 1=only admins can start, 2=players can start with !ve, 3=auto start at given timeleft)", (int)EExtendVoteMode::EXTENDVOTE_ADMINONLY, true, 0, true, 3);
+CConVar<int> g_cvarMaxExtends("cs2f_extends", FCVAR_NONE, "Maximum extends per map", 1, true, 0, false, 0);
+CConVar<float> g_cvarExtendSucceedRatio("cs2f_extend_success_ratio", FCVAR_NONE, "Ratio needed to pass an extend vote", 0.5f, true, 0.0f, true, 1.0f);
+CConVar<int> g_cvarExtendTimeToAdd("cs2f_extend_time", FCVAR_NONE, "Time to add per extend in minutes", 20, true, 0, false, 0);
+CConVar<float> g_cvarExtendVoteStartTime("cs2f_extend_vote_start_time", FCVAR_NONE, "If cs2f_extend_mode is 3, start an extend vote at this timeleft (minutes)", 3.0f, true, 0.0f, false, 0.0f);
+CConVar<float> g_cvarExtendVoteDuration("cs2f_extend_vote_duration", FCVAR_NONE, "Time to leave the extend vote active for (seconds)", 30.0f, true, 5.0f, false, 60.0f);
+CConVar<float> g_cvarExtendBeginRatio("cs2f_extend_begin_ratio", FCVAR_NONE, "If cs2f_extend_mode is >= 2, Ratio needed to begin an extend vote", 0.4f, true, 0.0f, true, 1.0f);
+CConVar<float> g_cvarRtvDelay("cs2f_rtv_vote_delay", FCVAR_NONE, "Time after map start until RTV votes can be cast", 120.f, true, 0.0f, false, 0.0f);
+CConVar<float> g_cvarRTVSucceedRatio("cs2f_rtv_success_ratio", FCVAR_NONE, "Ratio needed to pass RTV", 0.6f, true, 0.0f, true, 1.0f);
+CConVar<bool> g_cvarRTVEndRound("cs2f_rtv_endround", FCVAR_NONE, "Whether to immediately end the round when RTV succeeds", false);
 
 void CVoteManager::VoteManager_Init()
 {

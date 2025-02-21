@@ -53,9 +53,9 @@ extern CGameEntitySystem* g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
 
-CConVar<bool> g_cvarEnableCommands("cs2f_commands_enable", 0, "Whether to enable chat commands", false);
-CConVar<bool> g_cvarEnableAdminCommands("cs2f_admin_commands_enable", 0, "Whether to enable admin chat commands", false);
-CConVar<bool> g_cvarEnableWeapons("cs2f_weapons_enable", 0, "Whether to enable weapon commands", false);
+CConVar<bool> g_cvarEnableCommands("cs2f_commands_enable", FCVAR_NONE, "Whether to enable chat commands", false);
+CConVar<bool> g_cvarEnableAdminCommands("cs2f_admin_commands_enable", FCVAR_NONE, "Whether to enable admin chat commands", false);
+CConVar<bool> g_cvarEnableWeapons("cs2f_weapons_enable", FCVAR_NONE, "Whether to enable weapon commands", false);
 
 int GetGrenadeAmmo(CCSPlayer_WeaponServices* pWeaponServices, const WeaponInfo_t* pWeaponInfo)
 {
@@ -387,7 +387,7 @@ void ClientPrint(CCSPlayerController* player, int hud_dest, const char* msg, ...
 	delete data;
 }
 
-CConVar<bool> g_cvarEnableStopSound("cs2f_stopsound_enable", 0, "Whether to enable stopsound", false);
+CConVar<bool> g_cvarEnableStopSound("cs2f_stopsound_enable", FCVAR_NONE, "Whether to enable stopsound", false);
 
 CON_COMMAND_CHAT(stopsound, "- Toggle weapon sounds")
 {
@@ -427,8 +427,8 @@ CON_COMMAND_CHAT(toggledecals, "- Toggle world decals, if you're into having 10 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s world decals.", bSet ? "disabled" : "enabled");
 }
 
-CConVar<bool> g_cvarEnableNoShake("cs2f_noshake_enable", 0, "Whether to enable noshake command", false);
-CConVar<float> g_cvarMaxShakeAmp("cs2f_maximum_shake_amplitude", 0, "Shaking Amplitude bigger than this will be clamped", -1.0f, true, -1.0f, true, 16.0f);
+CConVar<bool> g_cvarEnableNoShake("cs2f_noshake_enable", FCVAR_NONE, "Whether to enable noshake command", false);
+CConVar<float> g_cvarMaxShakeAmp("cs2f_maximum_shake_amplitude", FCVAR_NONE, "Shaking Amplitude bigger than this will be clamped", -1.0f, true, -1.0f, true, 16.0f);
 CON_COMMAND_CHAT(noshake, "- toggle noshake")
 {
 	if (!g_cvarEnableNoShake.Get())
@@ -447,9 +447,9 @@ CON_COMMAND_CHAT(noshake, "- toggle noshake")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s noshake.", bSet ? "enabled" : "disabled");
 }
 
-CConVar<bool> g_cvarEnableHide("cs2f_hide_enable", 0, "Whether to enable hide (WARNING: randomly crashes clients since 2023-12-13 CS2 update)", false);
-CConVar<int> g_cvarDefaultHideDistance("cs2f_hide_distance_default", 0, "The default distance for hide", 250, true, 0, false, 0);
-CConVar<int> g_cvarMaxHideDistance("cs2f_hide_distance_max", 0, "The max distance for hide", 2000, true, 0, false, 0);
+CConVar<bool> g_cvarEnableHide("cs2f_hide_enable", FCVAR_NONE, "Whether to enable hide (WARNING: randomly crashes clients since 2023-12-13 CS2 update)", false);
+CConVar<int> g_cvarDefaultHideDistance("cs2f_hide_distance_default", FCVAR_NONE, "The default distance for hide", 250, true, 0, false, 0);
+CConVar<int> g_cvarMaxHideDistance("cs2f_hide_distance_max", FCVAR_NONE, "The max distance for hide", 2000, true, 0, false, 0);
 
 CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 {
