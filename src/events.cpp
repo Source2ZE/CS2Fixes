@@ -76,7 +76,7 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
-CConVar<bool> g_cvarPurgeEntityNames("Whether to purge the EntityNames stringtable on new rounds", 0, "Description", false);
+CConVar<bool> g_cvarPurgeEntityNames("Whether to purge the EntityNames stringtable on new rounds", FCVAR_NONE, "Description", false);
 
 extern void FullUpdateAllClients();
 
@@ -118,7 +118,7 @@ GAME_EVENT_F(round_prestart)
 		EW_RoundPreStart();
 }
 
-CConVar<bool> g_cvarBlockTeamMessages("cs2f_block_team_messages", 0, "Whether to block team join messages", false);
+CConVar<bool> g_cvarBlockTeamMessages("cs2f_block_team_messages", FCVAR_NONE, "Whether to block team join messages", false);
 
 GAME_EVENT_F(player_team)
 {
@@ -127,7 +127,7 @@ GAME_EVENT_F(player_team)
 		pEvent->SetBool("silent", true);
 }
 
-CConVar<bool> g_cvarNoblock("cs2f_noblock_enable", 0, "Whether to use player noblock, which sets debris collision on every player", false);
+CConVar<bool> g_cvarNoblock("cs2f_noblock_enable", FCVAR_NONE, "Whether to use player noblock, which sets debris collision on every player", false);
 
 GAME_EVENT_F(player_spawn)
 {
@@ -194,7 +194,7 @@ GAME_EVENT_F(player_spawn)
 	});
 }
 
-CConVar<bool> g_cvarEnableTopDefender("cs2f_topdefender_enable", 0, "Whether to use TopDefender", false);
+CConVar<bool> g_cvarEnableTopDefender("cs2f_topdefender_enable", FCVAR_NONE, "Whether to use TopDefender", false);
 
 GAME_EVENT_F(player_hurt)
 {
@@ -246,7 +246,7 @@ GAME_EVENT_F(player_death)
 	pPlayer->SetTotalKills(pPlayer->GetTotalKills() + 1);
 }
 
-CConVar<bool> g_cvarFullAllTalk("cs2f_full_alltalk", 0, "Whether to enforce sv_full_alltalk 1", false);
+CConVar<bool> g_cvarFullAllTalk("cs2f_full_alltalk", FCVAR_NONE, "Whether to enforce sv_full_alltalk 1", false);
 
 GAME_EVENT_F(round_start)
 {

@@ -62,23 +62,23 @@ static std::string g_strLeaderModelPath = "";
 static std::string g_strDefendParticlePath = "particles/cs2fixes/leader_defend_mark.vpcf";
 std::string g_strMarkParticlePath = "particles/cs2fixes/leader_defend_mark.vpcf";
 
-CConVar<bool> g_cvarEnableLeader("cs2f_leader_enable", 0, "Whether to enable Leader features", false);
-CConVar<float> g_cvarlLeaderVoteRatio("cs2f_leader_vote_ratio", 0, "Vote ratio needed for player to become a leader", 0.2f, true, 0.0f, true, 1.0f);
-CConVar<bool> g_cvarLeaderActionsHumanOnly("cs2f_leader_actions_ct_only", 0, "Whether to allow leader actions (like !beacon) only from human team", true);
-CConVar<bool> g_cvarLeaderMarkerHumanOnly("cs2f_leader_marker_ct_only", 0, "Whether to have zombie leaders' player_pings spawn in particle markers or not", true);
-CConVar<bool> g_cvarMuteNonLeaderPings("cs2f_leader_mute_player_pings", 0, "Whether to mute player pings made by non-leaders", true);
+CConVar<bool> g_cvarEnableLeader("cs2f_leader_enable", FCVAR_NONE, "Whether to enable Leader features", false);
+CConVar<float> g_cvarlLeaderVoteRatio("cs2f_leader_vote_ratio", FCVAR_NONE, "Vote ratio needed for player to become a leader", 0.2f, true, 0.0f, true, 1.0f);
+CConVar<bool> g_cvarLeaderActionsHumanOnly("cs2f_leader_actions_ct_only", FCVAR_NONE, "Whether to allow leader actions (like !beacon) only from human team", true);
+CConVar<bool> g_cvarLeaderMarkerHumanOnly("cs2f_leader_marker_ct_only", FCVAR_NONE, "Whether to have zombie leaders' player_pings spawn in particle markers or not", true);
+CConVar<bool> g_cvarMuteNonLeaderPings("cs2f_leader_mute_player_pings", FCVAR_NONE, "Whether to mute player pings made by non-leaders", true);
 FAKE_STRING_CVAR(cs2f_leader_model_path, "Path to player model to be used for leaders", g_strLeaderModelPath, false)
 FAKE_STRING_CVAR(cs2f_leader_defend_particle, "Path to defend particle to be used with c_defend", g_strDefendParticlePath, false)
 FAKE_STRING_CVAR(cs2f_leader_mark_particle, "Path to particle to be used when a ct leader using player_ping", g_strMarkParticlePath, false)
-CConVar<bool> g_cvarLeaderCanTargetPlayers("cs2f_leader_can_target_players", 0, "Whether a leader can target other players with leader commands (not including c_leader)", false);
-CConVar<bool> g_cvarLeaderVoteMultiple("cs2f_leader_vote_multiple", 0, "If true, players can vote up to cs2f_max_leaders leaders. If false, they may vote for a single leader", true);
-CConVar<int> g_cvarLeaderExtraScore("Extra score to give a leader to affect their position on the scoreboard", 0, "Description", 20000, true, 0, false, 0);
+CConVar<bool> g_cvarLeaderCanTargetPlayers("cs2f_leader_can_target_players", FCVAR_NONE, "Whether a leader can target other players with leader commands (not including c_leader)", false);
+CConVar<bool> g_cvarLeaderVoteMultiple("cs2f_leader_vote_multiple", FCVAR_NONE, "If true, players can vote up to cs2f_max_leaders leaders. If false, they may vote for a single leader", true);
+CConVar<int> g_cvarLeaderExtraScore("Extra score to give a leader to affect their position on the scoreboard", FCVAR_NONE, "Description", 20000, true, 0, false, 0);
 
-CConVar<int> g_cvarMaxLeaders("cs2f_leader_max_leaders", 0, "Max amount of leaders set via c_vl or a leader using c_leader (doesn't impact admins)", 3, true, 0, true, 64);
-CConVar<int> g_cvarMaxMarkers("cs2f_leader_max_markers", 0, "Max amount of markers set by leaders (doesn't impact admins)", 6, true, 0, false, 0);
-CConVar<int> g_cvarMaxGlows("cs2f_leader_max_glows", 0, "Max amount of glows set by leaders (doesn't impact admins)", 3, true, 0, true, 64);
-CConVar<int> g_cvarMaxTracers("cs2f_leader_max_tracers", 0, "Max amount of tracers set by leaders (doesn't impact admins)", 3, true, 0, true, 64);
-CConVar<int> g_cvarMaxBeacons("cs2f_leader_max_beacons", 0, "Max amount of beacons set by leaders (doesn't impact admins)", 3, true, 0, true, 64);
+CConVar<int> g_cvarMaxLeaders("cs2f_leader_max_leaders", FCVAR_NONE, "Max amount of leaders set via c_vl or a leader using c_leader (doesn't impact admins)", 3, true, 0, true, 64);
+CConVar<int> g_cvarMaxMarkers("cs2f_leader_max_markers", FCVAR_NONE, "Max amount of markers set by leaders (doesn't impact admins)", 6, true, 0, false, 0);
+CConVar<int> g_cvarMaxGlows("cs2f_leader_max_glows", FCVAR_NONE, "Max amount of glows set by leaders (doesn't impact admins)", 3, true, 0, true, 64);
+CConVar<int> g_cvarMaxTracers("cs2f_leader_max_tracers", FCVAR_NONE, "Max amount of tracers set by leaders (doesn't impact admins)", 3, true, 0, true, 64);
+CConVar<int> g_cvarMaxBeacons("cs2f_leader_max_beacons", FCVAR_NONE, "Max amount of beacons set by leaders (doesn't impact admins)", 3, true, 0, true, 64);
 
 Color Leader_GetColor(std::string strColor, ZEPlayer* zpUser = nullptr, CCSPlayerController* pTarget = nullptr)
 {

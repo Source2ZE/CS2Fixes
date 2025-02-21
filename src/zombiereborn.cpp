@@ -77,33 +77,33 @@ static std::string g_szHumanWinOverlayMaterial;
 static std::string g_szZombieWinOverlayParticle;
 static std::string g_szZombieWinOverlayMaterial;
 
-CConVar<bool> g_cvarEnableZR("zr_enable", 0, "Whether to enable ZR features", false);
-CConVar<float> g_cvarMaxZteleDistance("zr_ztele_max_distance", 0, "Maximum distance players are allowed to move after starting ztele", 150.0f, true, 0.0f, false, 0.0f);
-CConVar<bool> g_cvarZteleHuman("zr_ztele_allow_humans", 0, "Whether to allow humans to use ztele", false);
-CConVar<float> g_cvarKnockbackScale("zr_knockback_scale", 0, "Global knockback scale", 5.0f);
-CConVar<int> g_cvarInfectSpawnType("zr_infect_spawn_type", 0, "Type of Mother Zombies Spawn [0 = MZ spawn where they stand, 1 = MZ get teleported back to spawn on being picked]", (int)EZRSpawnType::RESPAWN, true, 0, true, 1);
-CConVar<int> g_cvarInfectSpawnTimeMin("zr_infect_spawn_time_min", 0, "Minimum time in which Mother Zombies should be picked, after round start", 15, true, 0, false, 0);
-CConVar<int> g_cvarInfectSpawnTimeMax("zr_infect_spawn_time_max", 0, "Maximum time in which Mother Zombies should be picked, after round start", 15, true, 1, false, 0);
-CConVar<int> g_cvarInfectSpawnMZRatio("zr_infect_spawn_mz_ratio", 0, "Ratio of all Players to Mother Zombies to be spawned at round start", 7, true, 1, true, 64);
-CConVar<int> g_cvarInfectSpawnMinCount("zr_infect_spawn_mz_min_count", 0, "Minimum amount of Mother Zombies to be spawned at round start", 1, true, 0, false, 0);
-CConVar<float> g_cvarRespawnDelay("zr_respawn_delay", 0, "Time before a zombie is automatically respawned, -1 disables this. Note that maps can still manually respawn at any time", 5.0f, true, -1.0f, false, 0.0f);
-CConVar<int> g_cvarDefaultWinnerTeam("zr_default_winner_team", 0, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", CS_TEAM_SPECTATOR, true, 1, true, 3);
-CConVar<int> g_cvarMZImmunityReduction("zr_mz_immunity_reduction", 0, "How much mz immunity to reduce for each player per round (0-100)", 20, true, 0, true, 100);
-CConVar<int> g_cvarGroanChance("zr_sounds_groan_chance", 0, "How likely should a zombie groan whenever they take damage (1 / N)", 5, true, 1, false, 0);
-CConVar<float> g_cvarMoanInterval("zr_sounds_moan_interval", 0, "How often in seconds should zombies moan", 5.0f, true, 0.0f, false, 0.0f);
-CConVar<bool> g_cvarNapalmGrenades("zr_napalm_enable", 0, "Whether to use napalm grenades", true);
-CConVar<float> g_cvarNapalmDuration("zr_napalm_burn_duration", 0, "How long in seconds should zombies burn from napalm grenades", 5.0f, true, 0.0f, false, 0.0f);
-CConVar<float> g_cvarNapalmFullDamage("zr_napalm_full_damage", 0, "The amount of damage needed to apply full burn duration for napalm grenades (max grenade damage is 99)", 50.0f, true, 0.0f, true, 99.0f);
+CConVar<bool> g_cvarEnableZR("zr_enable", FCVAR_NONE, "Whether to enable ZR features", false);
+CConVar<float> g_cvarMaxZteleDistance("zr_ztele_max_distance", FCVAR_NONE, "Maximum distance players are allowed to move after starting ztele", 150.0f, true, 0.0f, false, 0.0f);
+CConVar<bool> g_cvarZteleHuman("zr_ztele_allow_humans", FCVAR_NONE, "Whether to allow humans to use ztele", false);
+CConVar<float> g_cvarKnockbackScale("zr_knockback_scale", FCVAR_NONE, "Global knockback scale", 5.0f);
+CConVar<int> g_cvarInfectSpawnType("zr_infect_spawn_type", FCVAR_NONE, "Type of Mother Zombies Spawn [0 = MZ spawn where they stand, 1 = MZ get teleported back to spawn on being picked]", (int)EZRSpawnType::RESPAWN, true, 0, true, 1);
+CConVar<int> g_cvarInfectSpawnTimeMin("zr_infect_spawn_time_min", FCVAR_NONE, "Minimum time in which Mother Zombies should be picked, after round start", 15, true, 0, false, 0);
+CConVar<int> g_cvarInfectSpawnTimeMax("zr_infect_spawn_time_max", FCVAR_NONE, "Maximum time in which Mother Zombies should be picked, after round start", 15, true, 1, false, 0);
+CConVar<int> g_cvarInfectSpawnMZRatio("zr_infect_spawn_mz_ratio", FCVAR_NONE, "Ratio of all Players to Mother Zombies to be spawned at round start", 7, true, 1, true, 64);
+CConVar<int> g_cvarInfectSpawnMinCount("zr_infect_spawn_mz_min_count", FCVAR_NONE, "Minimum amount of Mother Zombies to be spawned at round start", 1, true, 0, false, 0);
+CConVar<float> g_cvarRespawnDelay("zr_respawn_delay", FCVAR_NONE, "Time before a zombie is automatically respawned, -1 disables this. Note that maps can still manually respawn at any time", 5.0f, true, -1.0f, false, 0.0f);
+CConVar<int> g_cvarDefaultWinnerTeam("zr_default_winner_team", FCVAR_NONE, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", CS_TEAM_SPECTATOR, true, 1, true, 3);
+CConVar<int> g_cvarMZImmunityReduction("zr_mz_immunity_reduction", FCVAR_NONE, "How much mz immunity to reduce for each player per round (0-100)", 20, true, 0, true, 100);
+CConVar<int> g_cvarGroanChance("zr_sounds_groan_chance", FCVAR_NONE, "How likely should a zombie groan whenever they take damage (1 / N)", 5, true, 1, false, 0);
+CConVar<float> g_cvarMoanInterval("zr_sounds_moan_interval", FCVAR_NONE, "How often in seconds should zombies moan", 5.0f, true, 0.0f, false, 0.0f);
+CConVar<bool> g_cvarNapalmGrenades("zr_napalm_enable", FCVAR_NONE, "Whether to use napalm grenades", true);
+CConVar<float> g_cvarNapalmDuration("zr_napalm_burn_duration", FCVAR_NONE, "How long in seconds should zombies burn from napalm grenades", 5.0f, true, 0.0f, false, 0.0f);
+CConVar<float> g_cvarNapalmFullDamage("zr_napalm_full_damage", FCVAR_NONE, "The amount of damage needed to apply full burn duration for napalm grenades (max grenade damage is 99)", 50.0f, true, 0.0f, true, 99.0f);
 FAKE_STRING_CVAR(zr_human_win_overlay_particle, "Screenspace particle to display when human win", g_szHumanWinOverlayParticle, false)
 FAKE_STRING_CVAR(zr_human_win_overlay_material, "Material override for human's win overlay particle", g_szHumanWinOverlayMaterial, false)
-CConVar<float> g_cvarHumanWinOverlaySize("zr_human_win_overlay_size", 0, "Size of human's win overlay particle", 5.0f, true, 0.0f, true, 64.0f);
+CConVar<float> g_cvarHumanWinOverlaySize("zr_human_win_overlay_size", FCVAR_NONE, "Size of human's win overlay particle", 5.0f, true, 0.0f, true, 64.0f);
 FAKE_STRING_CVAR(zr_zombie_win_overlay_particle, "Screenspace particle to display when zombie win", g_szZombieWinOverlayParticle, false)
 FAKE_STRING_CVAR(zr_zombie_win_overlay_material, "Material override for zombie's win overlay particle", g_szZombieWinOverlayMaterial, false)
-CConVar<float> g_cvarZombieWinOverlaySize("zr_zombie_win_overlay_size", 0, "Size of zombie's win overlay particle", 5.0f, true, 0.0f, true, 64.0f);
-CConVar<bool> g_cvarInfectShake("zr_infect_shake", 0, "Whether to shake a player's view on infect", true);
-CConVar<float> g_cvarInfectShakeAmplitude("zr_infect_shake_amp", 0, "Amplitude of shaking effect", 15.0f, true, 0.0f, true, 16.0f);
-CConVar<float> g_cvarInfectShakeFrequency("zr_infect_shake_frequency", 0, "Frequency of shaking effect", 2.0f, true, 0.0f, false, 0.0f);
-CConVar<float> g_cvarInfectShakeDuration("zr_infect_shake_duration", 0, "Duration of shaking effect", 5.0f, true, 0.0f, false, 0.0f);
+CConVar<float> g_cvarZombieWinOverlaySize("zr_zombie_win_overlay_size", FCVAR_NONE, "Size of zombie's win overlay particle", 5.0f, true, 0.0f, true, 64.0f);
+CConVar<bool> g_cvarInfectShake("zr_infect_shake", FCVAR_NONE, "Whether to shake a player's view on infect", true);
+CConVar<float> g_cvarInfectShakeAmplitude("zr_infect_shake_amp", FCVAR_NONE, "Amplitude of shaking effect", 15.0f, true, 0.0f, true, 16.0f);
+CConVar<float> g_cvarInfectShakeFrequency("zr_infect_shake_frequency", FCVAR_NONE, "Frequency of shaking effect", 2.0f, true, 0.0f, false, 0.0f);
+CConVar<float> g_cvarInfectShakeDuration("zr_infect_shake_duration", FCVAR_NONE, "Duration of shaking effect", 5.0f, true, 0.0f, false, 0.0f);
 
 // meant only for offline config validation and can easily cause issues when used on live server
 #ifdef _DEBUG

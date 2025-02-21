@@ -993,7 +993,7 @@ void CS2Fixes::Hook_GoToIntermission(bool bAbortedMatch)
 	RETURN_META(MRES_IGNORED);
 }
 
-CConVar<bool> g_cvarDropMapWeapons("cs2f_drop_map_weapons", 0, "Whether to force drop map-spawned weapons on death", false);
+CConVar<bool> g_cvarDropMapWeapons("cs2f_drop_map_weapons", FCVAR_NONE, "Whether to force drop map-spawned weapons on death", false);
 
 bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer* pInfoContainer)
 {
@@ -1019,7 +1019,7 @@ bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer* pInfoContainer)
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
 
-CConVar<bool> g_cvarFixPhysicsPlayerShuffle("cs2f_shuffle_player_physics_sim", 0, "Whether to enable shuffle player list in physics simulate", false);
+CConVar<bool> g_cvarFixPhysicsPlayerShuffle("cs2f_shuffle_player_physics_sim", FCVAR_NONE, "Whether to enable shuffle player list in physics simulate", false);
 
 struct TouchLinked_t
 {
