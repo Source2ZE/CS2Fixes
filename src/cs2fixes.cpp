@@ -601,6 +601,8 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 
 	Message("Hook_StartupServer: %s\n", pszMapName);
 
+	RegisterEventListeners();
+
 	if (g_bHasTicked)
 		RemoveMapTimers();
 
@@ -1129,11 +1131,7 @@ void CS2Fixes::Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarge
 
 int CS2Fixes::Hook_LoadEventsFromFile(const char* filename, bool bSearchAll)
 {
-	ExecuteOnce
-	(
-		g_gameEventManager = META_IFACEPTR(IGameEventManager2);
-		RegisterEventListeners();
-	)
+	ExecuteOnce(g_gameEventManager = META_IFACEPTR(IGameEventManager2))
 
 	RETURN_META_VALUE(MRES_IGNORED, 0);
 }
