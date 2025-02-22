@@ -39,7 +39,7 @@ extern CCSGameRules* g_pGameRules;
 CBaseGameSystemFactory** CBaseGameSystemFactory::sm_pFirst = nullptr;
 
 CGameSystem g_GameSystem;
-IGameSystemFactory* CGameSystem::sm_Factory = nullptr;
+CGameSystemStaticCustomFactory<CGameSystem>* CGameSystem::sm_Factory = nullptr;
 
 // This mess is needed to get the pointer to sm_pFirst so we can insert game systems
 bool InitGameSystems()
@@ -63,7 +63,84 @@ bool InitGameSystems()
 	CBaseGameSystemFactory::sm_pFirst = (CBaseGameSystemFactory**)(ptr + offset);
 
 	// And insert the game system(s)
-	CGameSystem::sm_Factory = new CGameSystemStaticFactory<CGameSystem>("CS2Fixes_GameSystem", &g_GameSystem);
+	CGameSystem::sm_Factory = new CGameSystemStaticCustomFactory<CGameSystem>("CS2Fixes_GameSystem", &g_GameSystem);
+
+	return true;
+}
+
+bool UnregisterGameSystem()
+{
+	// This signature directly points to the instruction referencing sm_pEventDispatcher, and the opcode is 3 bytes so we skip those
+	uint8* ptr = (uint8*)g_GameConfig->ResolveSignature("IGameSystem_LoopPostInitAllSystems_pEventDispatcher") + 3;
+
+	if (!ptr)
+	{
+		Panic("Failed to UnregisterGameSystem, see warnings above.\n");
+		return false;
+	}
+
+	uint32 offset = *(uint32*)ptr;
+
+	// Go to the next instruction, which is the starting point of the relative jump
+	ptr += 4;
+
+	CGameSystemEventDispatcher **ppDispatchers = (CGameSystemEventDispatcher**)(ptr + offset);
+
+	// Here the opcode is 2 bytes as it's moving a dword, not a qword, but that's the start of a vector object
+	ptr = (uint8*)g_GameConfig->ResolveSignature("IGameSystem_LoopDestroyAllSystems_s_GameSystems") + 2;
+
+	if (!ptr)
+	{
+		Panic("Failed to UnregisterGameSystem, see warnings above.\n");
+		return false;
+	}
+
+	offset = *(uint32*)ptr;
+
+	ptr += 4;
+
+	CUtlVector<AddedGameSystem_t>* pGameSystems = (CUtlVector<AddedGameSystem_t>*)(ptr + offset);
+
+	auto *pDispatcher = *ppDispatchers;
+
+	if (!pDispatcher || !pGameSystems)
+	{
+		Panic("Gamesystems and/or dispatchers is null, server is probably shutting down\n");
+		return false;
+	}
+
+	auto &funcListeners = *pDispatcher->m_funcListeners;
+	auto &gameSystems = *pGameSystems;
+
+	FOR_EACH_VEC_BACK(gameSystems, i)
+	{
+		if (&g_GameSystem == gameSystems[i].m_pGameSystem)
+		{
+			gameSystems.FastRemove(i);
+			break;
+		}
+	}
+
+	FOR_EACH_VEC_BACK(funcListeners, i)
+	{
+		auto &vecListeners = funcListeners[i];
+
+		FOR_EACH_VEC_BACK(vecListeners, j)
+		{
+			if (&g_GameSystem == vecListeners[j])
+			{
+				vecListeners.FastRemove(j);
+
+				break;
+			}
+		}
+
+		if (!vecListeners.Count())
+			funcListeners.FastRemove(i);
+	}
+
+	CGameSystem::sm_Factory->DestroyGameSystem(&g_GameSystem);
+	CGameSystem::sm_Factory->Destroy();
 
 	return true;
 }
