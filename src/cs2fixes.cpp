@@ -441,6 +441,8 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	ConVar_Unregister();
 
+	UnregisterGameSystem();
+
 	g_CommandList.Purge();
 
 	FlushAllDetours();
