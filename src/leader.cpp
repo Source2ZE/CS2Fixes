@@ -59,7 +59,7 @@ static bool g_bPingWithLeader = true;
 
 // CONVARS
 CConVar<bool> g_cvarEnableLeader("cs2f_leader_enable", FCVAR_NONE, "Whether to enable Leader features", false);
-CConVar<float> g_cvarlLeaderVoteRatio("cs2f_leader_vote_ratio", FCVAR_NONE, "Vote ratio needed for player to become a leader", 0.2f, true, 0.0f, true, 1.0f);
+CConVar<float> g_cvarlLeaderVoteRatio("cs2f_leader_vote_ratio", FCVAR_NONE, "Vote ratio needed for player to become a leader", 0.15f, true, 0.0f, true, 1.0f);
 CConVar<bool> g_cvarLeaderActionsHumanOnly("cs2f_leader_actions_ct_only", FCVAR_NONE, "Whether to allow leader actions (like !beacon) only from human team", true);
 CConVar<bool> g_cvarLeaderMarkerHumanOnly("cs2f_leader_marker_ct_only", FCVAR_NONE, "Whether to have zombie leaders' player_pings spawn in particle markers or not", true);
 CConVar<bool> g_cvarMuteNonLeaderPings("cs2f_leader_mute_player_pings", FCVAR_NONE, "Whether to mute player pings made by non-leaders", true);
