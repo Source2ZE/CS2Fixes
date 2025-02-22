@@ -63,7 +63,7 @@ CMemPatch g_ToolsPatches[] =
 };
 #endif
 
-CConVar<bool> cs2f_movement_unlocker_enable("cs2f_movement_unlocker_enable", FCVAR_NONE, "Whether to enable movement unlocker", true, 
+CConVar<bool> cs2f_movement_unlocker_enable("cs2f_movement_unlocker_enable", FCVAR_NONE, "Whether to enable movement unlocker", false, 
 	[](CConVar<bool> *cvar, CSplitScreenSlot slot, const bool *new_val, const bool *old_val)
 	{
 		// Movement unlocker is always the first patch

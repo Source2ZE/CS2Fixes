@@ -400,7 +400,7 @@ bool CustomIO_HandleInput(CEntityInstance* pInstance,
 	return false;
 }
 
-CConVar<CUtlString> g_cvarBurnParticle("cs2f_burn_particle", FCVAR_NONE, "The particle to use for burning entities", "particles/burning_fx/burning_character_b.vpcf");
+CConVar<CUtlString> g_cvarBurnParticle("cs2f_burn_particle", FCVAR_NONE, "The particle to use for burning entities", "particles/cs2fixes/napalm_fire.vpcf");
 CConVar<float> g_cvarBurnDamage("cs2f_burn_damage", FCVAR_NONE, "The amount of each burn damage ticks", 1.0f, true, 0.0f, false, 0.0f);
 CConVar<float> g_cvarBurnSlowdown("cs2f_burn_slowdown", FCVAR_NONE, "The slowdown of each burn damage tick as a multiplier of base speed", 0.6f, true, 0.0f, true, 1.0f);
 CConVar<float> g_cvarBurnInterval("cs2f_burn_interval", FCVAR_NONE, "The interval between burn damage ticks", 0.3f, true, 0.0f, false, 0.0f);
