@@ -68,7 +68,7 @@ bool InitGameSystems()
 	return true;
 }
 
-extern std::string g_sBurnParticle;
+extern CConVar<CUtlString> g_cvarBurnParticle;
 
 GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
 {
@@ -84,7 +84,7 @@ GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
 	PrecacheBeaconParticle(pResourceManifest);
 	Leader_Precache(pResourceManifest);
 
-	pResourceManifest->AddResource(g_sBurnParticle.c_str());
+	pResourceManifest->AddResource(g_cvarBurnParticle.Get().String());
 }
 
 // Called every frame before entities think

@@ -30,20 +30,11 @@ using json = nlohmann::json;
 
 CDiscordBotManager* g_pDiscordBotManager = nullptr;
 
-// TODO: CVAR
-static bool g_bDebugDiscordRequests = false;
-
-CON_COMMAND_F(cs2f_debug_discord_messages, "Whether to include debug information for Discord requests.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	if (args.ArgC() < 2)
-		Msg("%s %i\n", args[0], g_bDebugDiscordRequests);
-	else
-		g_bDebugDiscordRequests = V_StringToBool(args[1], false);
-}
+CConVar<bool> g_cvarDebugDiscordRequests("cs2f_debug_discord_messages", FCVAR_NONE, "Whether to include debug information for Discord requests", false);
 
 void DiscordHttpCallback(HTTPRequestHandle request, json response)
 {
-	if (g_bDebugDiscordRequests)
+	if (g_cvarDebugDiscordRequests.Get())
 		Message("Discord post received response: %s\n", response.dump().c_str());
 }
 
@@ -53,7 +44,7 @@ void CDiscordBotManager::PostDiscordMessage(const char* sDiscordBotName, const c
 	{
 		CDiscordBot bot = m_vecDiscordBots[i];
 
-		if (g_bDebugDiscordRequests)
+		if (g_cvarDebugDiscordRequests.Get())
 			Message("The bot at %i is %s with %s webhook and %s avatar.\n", i, bot.GetName(), bot.GetWebhookUrl(), bot.GetAvatarUrl());
 
 		if (!V_stricmp(sDiscordBotName, bot.GetName()))
@@ -76,7 +67,7 @@ void CDiscordBot::PostMessage(const char* sMessage)
 
 	// Send the request
 	std::string sRequestBody = jRequestBody.dump();
-	if (g_bDebugDiscordRequests)
+	if (g_cvarDebugDiscordRequests.Get())
 		Message("Sending '%s' to %s.\n", sRequestBody.c_str(), GetWebhookUrl());
 	g_HTTPManager.Post(m_pszWebhookUrl, sRequestBody.c_str(), &DiscordHttpCallback);
 }

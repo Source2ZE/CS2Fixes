@@ -77,49 +77,9 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Map list reloaded!");
 }
 
-CON_COMMAND_F(cs2f_vote_maps_cooldown, "Default number of hours until a map can be played again i.e. cooldown", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	float fCurrentCooldown = g_pMapVoteSystem->GetDefaultMapCooldown();
-
-	if (args.ArgC() < 2)
-		Msg("%s %f\n", args[0], fCurrentCooldown);
-	else
-		g_pMapVoteSystem->SetDefaultMapCooldown(V_StringToFloat32(args[1], fCurrentCooldown));
-}
-
-CON_COMMAND_F(cs2f_vote_max_nominations, "Number of nominations to include per vote, out of a maximum of 10", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	int iMaxNominatedMaps = g_pMapVoteSystem->GetMaxNominatedMaps();
-
-	if (args.ArgC() < 2)
-		Msg("%s %d\n", args[0], iMaxNominatedMaps);
-	else
-	{
-		int iValue = V_StringToInt32(args[1], iMaxNominatedMaps);
-
-		if (iValue < 0 || iValue > 10)
-			Msg("Value must be between 0-10!\n");
-		else
-			g_pMapVoteSystem->SetMaxNominatedMaps(iValue);
-	}
-}
-
-CON_COMMAND_F(cs2f_vote_max_maps, "Number of total maps to include per vote, including nominations, out of a maximum of 10", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	int iMaxVoteMaps = g_pMapVoteSystem->GetMaxVoteMaps();
-
-	if (args.ArgC() < 2)
-		Msg("%s %d\n", args[0], iMaxVoteMaps);
-	else
-	{
-		int iValue = V_StringToInt32(args[1], iMaxVoteMaps);
-
-		if (iValue < 2 || iValue > 10)
-			Msg("Value must be between 2-10!\n");
-		else
-			g_pMapVoteSystem->SetMaxVoteMaps(iValue);
-	}
-}
+CConVar<float> g_cvarVoteMapsCooldown("cs2f_vote_maps_cooldown", FCVAR_NONE, "Default number of hours until a map can be played again i.e. cooldown", 6.0f);
+CConVar<int> g_cvarVoteMaxNominations("cs2f_vote_max_nominations", FCVAR_NONE, "Number of nominations to include per vote, out of a maximum of 10", 10, true, 0, true, 10);
+CConVar<int> g_cvarVoteMaxMaps("cs2f_vote_max_maps", FCVAR_NONE, "Number of total maps to include per vote, including nominations, out of a maximum of 10", 10, true, 2, true, 10);
 
 CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 {
@@ -324,7 +284,7 @@ void CMapVoteSystem::StartVote()
 		if (IsMapIndexEnabled(i))
 			vecPossibleMaps.push_back(i);
 
-	m_iVoteSize = std::min((int)vecPossibleMaps.size(), GetMaxVoteMaps());
+	m_iVoteSize = std::min((int)vecPossibleMaps.size(), g_cvarVoteMaxMaps.Get());
 	bool bAbort = false;
 
 	static ConVarRefAbstract mp_endmatch_votenextmap("mp_endmatch_votenextmap");
@@ -622,7 +582,7 @@ std::vector<int> CMapVoteSystem::GetNominatedMapsForVote()
 	std::unordered_map<int, int> mapAvailableNominatedMaps(mapOriginalNominatedMaps); // A copy of the map that we can remove from without worry
 	std::vector<int> vecTiedNominations;											  // Nominations with tied nom counts
 	std::vector<int> vecChosenNominatedMaps;										  // Final vector of chosen nominations
-	int iMapsToIncludeInNominate = std::min({(int)mapOriginalNominatedMaps.size(), GetMaxNominatedMaps(), GetMaxVoteMaps()});
+	int iMapsToIncludeInNominate = std::min({(int)mapOriginalNominatedMaps.size(), g_cvarVoteMaxNominations.Get(), g_cvarVoteMaxMaps.Get()});
 	int iMostNominations;
 	auto rng = std::default_random_engine{std::random_device{}()};
 
@@ -775,7 +735,7 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 	if (!pPlayer || !GetGlobals())
 		return;
 
-	if (GetMaxNominatedMaps() == 0)
+	if (g_cvarVoteMaxNominations.Get() == 0)
 	{
 		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Nominations are currently disabled.");
 		return;
@@ -1280,7 +1240,7 @@ void CMapVoteSystem::PutMapOnCooldown(const char* pszMapName, float fCooldown)
 		if (iMapIndex != -1 && GetMapCustomCooldown(iMapIndex) != 0.0f)
 			fCooldown = GetMapCustomCooldown(iMapIndex);
 		else
-			fCooldown = GetDefaultMapCooldown();
+			fCooldown = g_cvarVoteMapsCooldown.Get();
 	}
 
 	time_t timeCooldown = std::time(0) + (time_t)(fCooldown * 60 * 60);
@@ -1323,7 +1283,7 @@ void CMapVoteSystem::ProcessGroupCooldowns()
 		{
 			if (iCurrentMapIndex != i && GetMapEnabledStatus(i) && m_vecMapList[i]->HasGroup(groupName))
 			{
-				float fCooldown = pGroup->GetCooldown() == 0.0f ? GetDefaultMapCooldown() : pGroup->GetCooldown();
+				float fCooldown = pGroup->GetCooldown() == 0.0f ? g_cvarVoteMapsCooldown.Get() : pGroup->GetCooldown();
 				std::shared_ptr<CCooldown> pCooldown = GetMapCooldown(i);
 
 				// Ensure we don't overwrite a longer cooldown

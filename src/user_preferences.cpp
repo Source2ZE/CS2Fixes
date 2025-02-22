@@ -33,24 +33,7 @@ using json = nlohmann::json;
 CUserPreferencesStorage* g_pUserPreferencesStorage = nullptr;
 CUserPreferencesSystem* g_pUserPreferencesSystem = nullptr;
 
-// CONVAR_TODO
-CON_COMMAND_F(cs2f_user_prefs_api, "API for user preferences, currently a REST API.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | FCVAR_PROTECTED)
-{
-	if (!g_pUserPreferencesSystem || !g_pUserPreferencesStorage)
-	{
-		Message("The user preferences subsystem is not enabled.");
-		return;
-	}
-
-	CUserPreferencesREST* restStorageSystem = (CUserPreferencesREST*)g_pUserPreferencesStorage;
-	if (args.ArgC() < 2)
-		Message("Usage: %s <url>. Current value: %s\n", args[0], restStorageSystem->GetPreferencesAPIUrl());
-	else
-	{
-		Message("Setting preferences URL to %s\n", args[1]);
-		restStorageSystem->SetPreferencesAPIUrl(args[1]);
-	}
-}
+CConVar<CUtlString> g_cvarUserPrefsAPI("cs2f_user_prefs_api", FCVAR_PROTECTED, "API for user preferences, currently a REST API", "");
 
 CON_COMMAND_CHAT_FLAGS(pullprefs, "- Pull preferences.", ADMFLAG_ROOT)
 {
@@ -293,11 +276,12 @@ void CUserPreferencesREST::LoadPreferences(uint64 iSteamId, StorageCallback cb)
 #ifdef _DEBUG
 	Message("Loading data for %llu\n", iSteamId);
 #endif
-	if (m_pszUserPreferencesUrl[0] == '\0') return;
+	if (g_cvarUserPrefsAPI.Get().Length() == 0)
+		return;
 
 	// Submit the request to pull the user data
 	char sUserPreferencesUrl[256];
-	V_snprintf(sUserPreferencesUrl, sizeof(sUserPreferencesUrl), "%s%llu", m_pszUserPreferencesUrl, iSteamId);
+	V_snprintf(sUserPreferencesUrl, sizeof(sUserPreferencesUrl), "%s%llu", g_cvarUserPrefsAPI.Get().String(), iSteamId);
 	g_HTTPManager.Get(sUserPreferencesUrl, [iSteamId, cb](HTTPRequestHandle request, json data) {
 #ifdef _DEBUG
 		Message("Executing storage callback during load for %llu\n", iSteamId);
@@ -314,7 +298,8 @@ void CUserPreferencesREST::StorePreferences(uint64 iSteamId, CUtlMap<uint32, CPr
 #ifdef _DEBUG
 	Message("Storing data for %llu\n", iSteamId);
 #endif
-	if (m_pszUserPreferencesUrl[0] == '\0') return;
+	if (g_cvarUserPrefsAPI.Get().Length() == 0)
+		return;
 
 	// Create the JSON object with all key-value pairs
 	json sJsonObject = json::object();
@@ -330,7 +315,7 @@ void CUserPreferencesREST::StorePreferences(uint64 iSteamId, CUtlMap<uint32, CPr
 
 	// Prepare the API URL to send the request to
 	char sUserPreferencesUrl[256];
-	V_snprintf(sUserPreferencesUrl, sizeof(sUserPreferencesUrl), "%s%llu", m_pszUserPreferencesUrl, iSteamId);
+	V_snprintf(sUserPreferencesUrl, sizeof(sUserPreferencesUrl), "%s%llu", g_cvarUserPrefsAPI.Get().String(), iSteamId);
 
 	// Dump the Json object and submit the POST request
 	std::string sDumpedJson = sJsonObject.dump();

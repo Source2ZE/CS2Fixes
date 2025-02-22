@@ -64,12 +64,7 @@ class CUserPreferencesREST : public CUserPreferencesStorage
 public:
 	void LoadPreferences(uint64 iSteamId, StorageCallback cb);
 	void StorePreferences(uint64 iSteamId, CUtlMap<uint32, CPreferenceValue>& preferences, StorageCallback cb);
-	void SetPreferencesAPIUrl(const char* sUserPreferencesUrl) { V_strcpy(m_pszUserPreferencesUrl, sUserPreferencesUrl); };
-	const char* GetPreferencesAPIUrl() { return (const char*)m_pszUserPreferencesUrl; };
 	void JsonToPreferencesMap(json data, CUtlMap<uint32, CPreferenceValue>& preferences);
-
-private:
-	char m_pszUserPreferencesUrl[256] = "";
 };
 
 class CUserPreferencesSystem
