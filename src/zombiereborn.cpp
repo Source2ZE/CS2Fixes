@@ -71,12 +71,6 @@ CZRPlayerClassManager* g_pZRPlayerClassManager = nullptr;
 ZRWeaponConfig* g_pZRWeaponConfig = nullptr;
 ZRHitgroupConfig* g_pZRHitgroupConfig = nullptr;
 
-static std::string g_szHumanWinOverlayParticle;
-static std::string g_szHumanWinOverlayMaterial;
-
-static std::string g_szZombieWinOverlayParticle;
-static std::string g_szZombieWinOverlayMaterial;
-
 CConVar<bool> g_cvarEnableZR("zr_enable", FCVAR_NONE, "Whether to enable ZR features", false);
 CConVar<float> g_cvarMaxZteleDistance("zr_ztele_max_distance", FCVAR_NONE, "Maximum distance players are allowed to move after starting ztele", 150.0f, true, 0.0f, false, 0.0f);
 CConVar<bool> g_cvarZteleHuman("zr_ztele_allow_humans", FCVAR_NONE, "Whether to allow humans to use ztele", false);
@@ -94,11 +88,11 @@ CConVar<float> g_cvarMoanInterval("zr_sounds_moan_interval", FCVAR_NONE, "How of
 CConVar<bool> g_cvarNapalmGrenades("zr_napalm_enable", FCVAR_NONE, "Whether to use napalm grenades", true);
 CConVar<float> g_cvarNapalmDuration("zr_napalm_burn_duration", FCVAR_NONE, "How long in seconds should zombies burn from napalm grenades", 5.0f, true, 0.0f, false, 0.0f);
 CConVar<float> g_cvarNapalmFullDamage("zr_napalm_full_damage", FCVAR_NONE, "The amount of damage needed to apply full burn duration for napalm grenades (max grenade damage is 99)", 50.0f, true, 0.0f, true, 99.0f);
-FAKE_STRING_CVAR(zr_human_win_overlay_particle, "Screenspace particle to display when human win", g_szHumanWinOverlayParticle, false)
-FAKE_STRING_CVAR(zr_human_win_overlay_material, "Material override for human's win overlay particle", g_szHumanWinOverlayMaterial, false)
+CConVar<CUtlString> g_cvarHumanWinOverlayParticle("zr_human_win_overlay_particle", FCVAR_NONE, "Screenspace particle to display when human win", "");
+CConVar<CUtlString> g_cvarHumanWinOverlayMaterial("zr_human_win_overlay_material", FCVAR_NONE, "Material override for human's win overlay particle", "");
 CConVar<float> g_cvarHumanWinOverlaySize("zr_human_win_overlay_size", FCVAR_NONE, "Size of human's win overlay particle", 5.0f, true, 0.0f, true, 64.0f);
-FAKE_STRING_CVAR(zr_zombie_win_overlay_particle, "Screenspace particle to display when zombie win", g_szZombieWinOverlayParticle, false)
-FAKE_STRING_CVAR(zr_zombie_win_overlay_material, "Material override for zombie's win overlay particle", g_szZombieWinOverlayMaterial, false)
+CConVar<CUtlString> g_cvarZombieWinOverlayParticle("zr_zombie_win_overlay_particle", FCVAR_NONE, "Screenspace particle to display when zombie win", "");
+CConVar<CUtlString> g_cvarZombieWinOverlayMaterial("zr_zombie_win_overlay_material", FCVAR_NONE, "Material override for zombie's win overlay particle", "");
 CConVar<float> g_cvarZombieWinOverlaySize("zr_zombie_win_overlay_size", FCVAR_NONE, "Size of zombie's win overlay particle", 5.0f, true, 0.0f, true, 64.0f);
 CConVar<bool> g_cvarInfectShake("zr_infect_shake", FCVAR_NONE, "Whether to shake a player's view on infect", true);
 CConVar<float> g_cvarInfectShakeAmplitude("zr_infect_shake_amp", FCVAR_NONE, "Amplitude of shaking effect", 15.0f, true, 0.0f, true, 16.0f);
@@ -120,11 +114,11 @@ void ZR_Precache(IEntityResourceManifest* pResourceManifest)
 	g_pZRPlayerClassManager->LoadPlayerClass();
 	g_pZRPlayerClassManager->PrecacheModels(pResourceManifest);
 
-	pResourceManifest->AddResource(g_szHumanWinOverlayParticle.c_str());
-	pResourceManifest->AddResource(g_szZombieWinOverlayParticle.c_str());
+	pResourceManifest->AddResource(g_cvarHumanWinOverlayParticle.Get().String());
+	pResourceManifest->AddResource(g_cvarZombieWinOverlayParticle.Get().String());
 
-	pResourceManifest->AddResource(g_szHumanWinOverlayMaterial.c_str());
-	pResourceManifest->AddResource(g_szZombieWinOverlayMaterial.c_str());
+	pResourceManifest->AddResource(g_cvarHumanWinOverlayMaterial.Get().String());
+	pResourceManifest->AddResource(g_cvarZombieWinOverlayMaterial.Get().String());
 
 	pResourceManifest->AddResource("soundevents/soundevents_zr.vsndevts");
 }
@@ -1767,8 +1761,10 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 			return;
 		}
 		g_hTeamCT->m_iScore = g_hTeamCT->m_iScore() + 1;
-		if (!g_szHumanWinOverlayParticle.empty())
-			ZR_CreateOverlay(g_szHumanWinOverlayParticle.c_str(), 1.0f, g_cvarHumanWinOverlaySize.Get(), flRestartDelay, Color(255, 255, 255), g_szHumanWinOverlayMaterial.c_str());
+		if (g_cvarHumanWinOverlayParticle.Get().Length() != 0)
+			ZR_CreateOverlay(g_cvarHumanWinOverlayParticle.Get().String(), 1.0f,
+							 g_cvarHumanWinOverlaySize.Get(), flRestartDelay,
+							 Color(255, 255, 255), g_cvarHumanWinOverlayMaterial.Get().String());
 	}
 	else if (iTeamNum == CS_TEAM_T)
 	{
@@ -1778,8 +1774,10 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 			return;
 		}
 		g_hTeamT->m_iScore = g_hTeamT->m_iScore() + 1;
-		if (!g_szZombieWinOverlayParticle.empty())
-			ZR_CreateOverlay(g_szZombieWinOverlayParticle.c_str(), 1.0f, g_cvarZombieWinOverlaySize.Get(), flRestartDelay, Color(255, 255, 255), g_szZombieWinOverlayMaterial.c_str());
+		if (g_cvarZombieWinOverlayParticle.Get().Length() != 0)
+			ZR_CreateOverlay(g_cvarZombieWinOverlayParticle.Get().String(), 1.0f,
+							 g_cvarZombieWinOverlaySize.Get(), flRestartDelay,
+							 Color(255, 255, 255), g_cvarZombieWinOverlayMaterial.Get().String());
 	}
 }
 

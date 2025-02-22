@@ -32,19 +32,17 @@
 #include "entity/clogiccase.h"
 #include "entity/cpointviewcontrol.h"
 
-CON_COMMAND_F(cs2f_enable_button_watch, "INCOMPATIBLE WITH CS#. Whether to enable button watch or not.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY | FCVAR_PROTECTED)
-{
-	if (args.ArgC() < 2)
-	{
-		Msg("%s %i\n", args[0], IsButtonWatchEnabled());
-		return;
-	}
 
-	if (!V_StringToBool(args[1], false) || !SetupFireOutputInternalDetour())
-		mapIOFunctions.erase("buttonwatch");
-	else if (!IsButtonWatchEnabled())
-		mapIOFunctions["buttonwatch"] = ButtonWatch;
-}
+CConVar<bool> g_cvarEnableButtonWatch("cs2f_enable_button_watch", FCVAR_NONE, "INCOMPATIBLE WITH CS#. Whether to enable button watch or not.", false,
+	[](CConVar<bool>* cvar, CSplitScreenSlot slot, const bool* new_val, const bool* old_val) {
+		if (!(*new_val) || !SetupFireOutputInternalDetour())
+		{
+			mapIOFunctions.erase("buttonwatch");
+			cvar->Set(false);
+		}
+		else if (!IsButtonWatchEnabled())
+			mapIOFunctions["buttonwatch"] = ButtonWatch;
+	});
 
 CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
 {

@@ -41,7 +41,7 @@ extern CUtlVector<ZEPlayerHandle> g_vecLeaders;
 
 extern CConVar<bool> g_cvarEnableLeader;
 extern CConVar<bool> g_cvarLeaderActionsHumanOnly;
-extern std::string g_strMarkParticlePath;
+extern CConVar<CUtlString> g_cvarMarkParticlePath;
 
 void Leader_ApplyLeaderVisuals(CCSPlayerPawn* pPawn);
 void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, const CNetMessage* pData);

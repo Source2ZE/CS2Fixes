@@ -58,18 +58,14 @@ static int g_iMarkerCount = 0;
 static bool g_bPingWithLeader = true;
 
 // CONVARS
-static std::string g_strLeaderModelPath = "";
-static std::string g_strDefendParticlePath = "particles/cs2fixes/leader_defend_mark.vpcf";
-std::string g_strMarkParticlePath = "particles/cs2fixes/leader_defend_mark.vpcf";
-
 CConVar<bool> g_cvarEnableLeader("cs2f_leader_enable", FCVAR_NONE, "Whether to enable Leader features", false);
 CConVar<float> g_cvarlLeaderVoteRatio("cs2f_leader_vote_ratio", FCVAR_NONE, "Vote ratio needed for player to become a leader", 0.2f, true, 0.0f, true, 1.0f);
 CConVar<bool> g_cvarLeaderActionsHumanOnly("cs2f_leader_actions_ct_only", FCVAR_NONE, "Whether to allow leader actions (like !beacon) only from human team", true);
 CConVar<bool> g_cvarLeaderMarkerHumanOnly("cs2f_leader_marker_ct_only", FCVAR_NONE, "Whether to have zombie leaders' player_pings spawn in particle markers or not", true);
 CConVar<bool> g_cvarMuteNonLeaderPings("cs2f_leader_mute_player_pings", FCVAR_NONE, "Whether to mute player pings made by non-leaders", true);
-FAKE_STRING_CVAR(cs2f_leader_model_path, "Path to player model to be used for leaders", g_strLeaderModelPath, false)
-FAKE_STRING_CVAR(cs2f_leader_defend_particle, "Path to defend particle to be used with c_defend", g_strDefendParticlePath, false)
-FAKE_STRING_CVAR(cs2f_leader_mark_particle, "Path to particle to be used when a ct leader using player_ping", g_strMarkParticlePath, false)
+CConVar<CUtlString> g_cvarLeaderModelPath("cs2f_leader_model_path", FCVAR_NONE, "Path to player model to be used for leaders", "");
+CConVar<CUtlString> g_cvarDefendParticlePath("cs2f_leader_defend_particle", FCVAR_NONE, "Path to defend particle to be used with c_defend", "particles/cs2fixes/leader_defend_mark.vpcf");
+CConVar<CUtlString> g_cvarMarkParticlePath("cs2f_leader_mark_particle", FCVAR_NONE, "Path to particle to be used when a ct leader using player_ping", "particles/cs2fixes/leader_defend_mark.vpcf");
 CConVar<bool> g_cvarLeaderCanTargetPlayers("cs2f_leader_can_target_players", FCVAR_NONE, "Whether a leader can target other players with leader commands (not including c_leader)", false);
 CConVar<bool> g_cvarLeaderVoteMultiple("cs2f_leader_vote_multiple", FCVAR_NONE, "If true, players can vote up to cs2f_max_leaders leaders. If false, they may vote for a single leader", true);
 CConVar<int> g_cvarLeaderExtraScore("Extra score to give a leader to affect their position on the scoreboard", FCVAR_NONE, "Description", 20000, true, 0, false, 0);
@@ -225,9 +221,9 @@ void Leader_ApplyLeaderVisuals(CCSPlayerPawn* pPawn)
 	if (!zpLeader || !zpLeader->IsLeader() || pLeader->m_iTeamNum != CS_TEAM_CT)
 		return;
 
-	if (!g_strLeaderModelPath.empty())
+	if (g_cvarLeaderModelPath.Get().Length() != 0)
 	{
-		pPawn->SetModel(g_strLeaderModelPath.c_str());
+		pPawn->SetModel(g_cvarLeaderModelPath.Get().String());
 		pPawn->AcceptInput("Skin", 0);
 	}
 
@@ -299,7 +295,7 @@ bool Leader_CreateDefendMarker(ZEPlayer* pPlayer, Color clrTint, int iDuration)
 
 	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
 
-	pKeyValues->SetString("effect_name", g_strDefendParticlePath.c_str());
+	pKeyValues->SetString("effect_name", g_cvarDefendParticlePath.Get().String());
 	pKeyValues->SetInt("tint_cp", 1);
 	pKeyValues->SetColor("tint_cp_color", clrTint);
 	pKeyValues->SetVector("origin", vecOrigin);
@@ -466,11 +462,11 @@ void Leader_BulletImpact(IGameEvent* pEvent)
 
 void Leader_Precache(IEntityResourceManifest* pResourceManifest)
 {
-	if (!g_strLeaderModelPath.empty())
-		pResourceManifest->AddResource(g_strLeaderModelPath.c_str());
+	if (g_cvarLeaderModelPath.Get().Length() != 0)
+		pResourceManifest->AddResource(g_cvarLeaderModelPath.Get().String());
 	pResourceManifest->AddResource("particles/cs2fixes/leader_tracer.vpcf");
-	pResourceManifest->AddResource(g_strDefendParticlePath.c_str());
-	pResourceManifest->AddResource(g_strMarkParticlePath.c_str());
+	pResourceManifest->AddResource(g_cvarDefendParticlePath.Get().String());
+	pResourceManifest->AddResource(g_cvarMarkParticlePath.Get().String());
 }
 
 CON_COMMAND_CHAT_LEADER(glow, "[name] [color] - Toggle glow highlight on a player")

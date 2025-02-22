@@ -164,17 +164,12 @@ void ZEPlayer::SetHideDistance(int distance)
 	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), HIDE_DISTANCE_PREF_KEY_NAME, distance);
 }
 
-static Color g_clrFlashLightColor(255, 255, 255);
-static std::string g_sFlashLightAttachment = "axis_of_intent";
-
 CConVar<bool> g_cvarFlashLightShadows("cs2f_flashlight_shadows", FCVAR_NONE, "Whether to enable flashlight shadows", true);
 CConVar<bool> g_cvarFlashLightTransmitOthers("cs2f_flashlight_transmit_others", FCVAR_NONE, "Whether to transmit other player's flashlights, recommended to have shadows off for this", true);
 CConVar<float> g_cvarFlashLightBrightness("cs2f_flashlight_brightness", FCVAR_NONE, "How bright should flashlights be", 1.0f);
 CConVar<float> g_cvarFlashLightDistance("cs2f_flashlight_distance", FCVAR_NONE, "How far flashlights should be from the player's head", 54.0f); // The minimum distance such that an awp wouldn't block the light
-FAKE_COLOR_CVAR(cs2f_flashlight_color, "What color to use for flashlights", g_clrFlashLightColor, false)
-FAKE_STRING_CVAR(cs2f_flashlight_attachment, "Which attachment to parent a flashlight to. "
-											 "If the player model is not properly setup, you might have to use clip_limit here instead",
-				 g_sFlashLightAttachment, false)
+CConVar<Color> g_cvarFlashLightColor("cs2f_flashlight_color", FCVAR_NONE, "What color to use for flashlights", Color(255, 255, 255));
+CConVar<CUtlString> g_cvarFlashLightAttachment("cs2f_flashlight_attachment", FCVAR_NONE, "Which attachment to parent a flashlight to. If the player model is not properly setup, you might have to use clip_limit here instead", "axis_of_intent");
 
 void ZEPlayer::SpawnFlashLight()
 {
@@ -193,7 +188,7 @@ void ZEPlayer::SpawnFlashLight()
 	CBarnLight* pLight = CreateEntityByName<CBarnLight>("light_barn");
 
 	pLight->m_bEnabled = true;
-	pLight->m_Color->SetColor(g_clrFlashLightColor[0], g_clrFlashLightColor[1], g_clrFlashLightColor[2]);
+	pLight->m_Color->SetColor(g_cvarFlashLightColor.Get().r(), g_cvarFlashLightColor.Get().g(), g_cvarFlashLightColor.Get().b());
 	pLight->m_flBrightness = g_cvarFlashLightBrightness.Get();
 	pLight->m_flRange = 2048.0f;
 	pLight->m_flSoftX = 1.0f;
@@ -212,7 +207,7 @@ void ZEPlayer::SpawnFlashLight()
 	pLight->DispatchSpawn(pKeyValues);
 
 	pLight->SetParent(pPawn);
-	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_sFlashLightAttachment.c_str());
+	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
 
 	SetFlashLight(pLight);
 }
@@ -235,12 +230,10 @@ void ZEPlayer::ToggleFlashLight()
 	pLight->AcceptInput(pLight->m_bEnabled() ? "Disable" : "Enable");
 }
 
-static std::string g_sBeaconParticle = "particles/cs2fixes/player_beacon.vpcf";
-
 CConVar<float> g_cvarFloodInterval("cs2f_flood_interval", FCVAR_NONE, "Amount of time allowed between chat messages acquiring flood tokens", 0.75f, true, 0.0f, false, 0.0f);
 CConVar<int> g_cvarMaxFloodTokens("cs2f_max_flood_tokens", FCVAR_NONE, "Maximum number of flood tokens allowed before chat messages are blocked", 3, true, 0, false, 0);
 CConVar<float> g_cvarFloodCooldown("cs2f_flood_cooldown", FCVAR_NONE, "Amount of time to block messages for when a player floods", 3.0f, true, 0.0f, false, 0.0f);
-FAKE_STRING_CVAR(cs2f_beacon_particle, ".vpcf file to be precached and used for beacon", g_sBeaconParticle, false)
+CConVar<CUtlString> g_cvarBeaconParticle("cs2f_beacon_particle", FCVAR_NONE, ".vpcf file to be precached and used for beacon", "particles/cs2fixes/player_beacon.vpcf");
 
 bool ZEPlayer::IsFlooding()
 {
@@ -274,7 +267,7 @@ bool ZEPlayer::IsFlooding()
 
 void PrecacheBeaconParticle(IEntityResourceManifest* pResourceManifest)
 {
-	pResourceManifest->AddResource(g_sBeaconParticle.c_str());
+	pResourceManifest->AddResource(g_cvarBeaconParticle.Get().String());
 }
 
 void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
@@ -291,7 +284,7 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
 
 	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
 
-	pKeyValues->SetString("effect_name", g_sBeaconParticle.c_str());
+	pKeyValues->SetString("effect_name", g_cvarBeaconParticle.Get().String());
 	pKeyValues->SetInt("tint_cp", 1);
 	pKeyValues->SetVector("origin", vecAbsOrigin);
 	pKeyValues->SetBool("start_active", true);
@@ -372,7 +365,7 @@ void ZEPlayer::CreateMark(float fDuration, Vector vecOrigin)
 	CParticleSystem* pMarker = CreateEntityByName<CParticleSystem>("info_particle_system");
 	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
 
-	pKeyValues->SetString("effect_name", g_strMarkParticlePath.c_str());
+	pKeyValues->SetString("effect_name", g_cvarMarkParticlePath.Get().String());
 	pKeyValues->SetInt("tint_cp", 1);
 	pKeyValues->SetColor("tint_cp_color", GetLeaderColor());
 	pKeyValues->SetVector("origin", vecOrigin);
