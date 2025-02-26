@@ -213,7 +213,7 @@ namespace CGamePlayerEquipHandler
 			if (val && strlen(val) > 1)
 			{
 				const auto slot = CCSPlayer_ItemServices::GetItemGearSlot(val);
-				if (slot != GEAR_SLOT_INVALID)
+				if (slot != GEAR_SLOT_INVALID && slot != GEAR_SLOT_UTILITY)
 					list.emplace(slot);
 			}
 		}

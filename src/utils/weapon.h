@@ -29,15 +29,18 @@ struct WeaponInfo_t
 	gear_slot_t m_eSlot;
 	int32_t m_nPrice;
 	int32_t m_nMaxAmount;
+	const char* m_pClass;
 	const char* m_pName;
 	std::vector<std::string> m_vecAliases;
 
-	WeaponInfo_t(int16_t defIndex, int8_t team, gear_slot_t slot, int32_t price = 0, const char* name = nullptr, const std::vector<std::string>& aliases = {}, int32_t maxAmount = 0) :
+	WeaponInfo_t(const char* classname, int16_t defIndex, int8_t team, gear_slot_t slot, int32_t price = 0, const char* name = nullptr, const std::vector<std::string>& aliases = {}, int32_t maxAmount = 0) :
 		m_iItemDefinitionIndex(defIndex), m_iTeamNum(team), m_eSlot(slot), m_nPrice(price),
-		m_nMaxAmount(maxAmount), m_pName(name), m_vecAliases(aliases)
+		m_nMaxAmount(maxAmount), m_pClass(classname), m_pName(name), m_vecAliases(aliases)
 	{}
 };
 
 const WeaponInfo_t* FindWeaponInfoByClass(const char* pClass);
 const WeaponInfo_t* FindWeaponInfoByClassCaseInsensitive(const char* pClass);
 const WeaponInfo_t* FindWeaponInfoByAlias(const char* pAlias);
+
+std::vector<std::pair<std::string, std::vector<std::string>>> GenerateWeaponCommands();

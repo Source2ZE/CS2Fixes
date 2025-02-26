@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -94,17 +94,6 @@ private:
 	std::string m_sDescription;
 	uint64 m_nAdminFlags;
 	uint64 m_nCmdFlags;
-};
-
-struct WeaponMapEntry_t
-{
-	std::vector<std::string> aliases;
-	const char* szClassName;
-	const char* szWeaponName;
-	int iPrice;
-	uint16 iItemDefIndex;
-	gear_slot_t iGearSlot;
-	int maxAmount = 0;
 };
 
 void RegisterWeaponCommands();
