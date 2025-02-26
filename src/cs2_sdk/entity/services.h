@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -20,6 +20,8 @@
 #pragma once
 #include "globaltypes.h"
 #include "viewmodels.h"
+#include "weapon.h"
+
 #include <entity/ccsplayerpawn.h>
 #include <entity/ccsweaponbase.h>
 #include <platform.h>
@@ -158,89 +160,6 @@ public:
 	SCHEMA_FIELD(int, m_iAccount)
 };
 
-struct WeaponInfo_t
-{
-	int32_t m_iItemDefinitionIndex;
-	int32_t m_iTeamNum;
-	uint32_t m_eSlot;
-
-	WeaponInfo_t(int32_t index, int32_t team, uint32_t slot) :
-		m_iItemDefinitionIndex(index), m_iTeamNum(team), m_eSlot(slot) {}
-};
-static std::unordered_map<std::string, WeaponInfo_t> s_WeaponMap = {
-	{"weapon_deagle",				  {1, 0, GEAR_SLOT_PISTOL}	  },
-	{"weapon_elite",				 {2, 0, GEAR_SLOT_PISTOL}	 },
-	{"weapon_fiveseven",			 {3, 3, GEAR_SLOT_PISTOL}	 },
-	{"weapon_glock",				 {4, 2, GEAR_SLOT_PISTOL}	 },
-	{"weapon_ak47",					{7, 2, GEAR_SLOT_RIFLE}	   },
-	{"weapon_aug",				   {8, 3, GEAR_SLOT_RIFLE}	  },
-	{"weapon_awp",				   {9, 0, GEAR_SLOT_RIFLE}	  },
-	{"weapon_famas",				 {10, 3, GEAR_SLOT_RIFLE}	 },
-	{"weapon_g3sg1",				 {11, 2, GEAR_SLOT_RIFLE}	 },
-	{"weapon_galilar",			   {13, 2, GEAR_SLOT_RIFLE}   },
-	{"weapon_m249",					{14, 0, GEAR_SLOT_RIFLE}	},
-	{"weapon_m4a1",					{16, 3, GEAR_SLOT_RIFLE}	},
-	{"weapon_mac10",				 {17, 2, GEAR_SLOT_RIFLE}	 },
-	{"weapon_p90",				   {19, 0, GEAR_SLOT_RIFLE}   },
-	{"weapon_mp5sd",				 {23, 0, GEAR_SLOT_RIFLE}	 },
-	{"weapon_ump45",				 {24, 0, GEAR_SLOT_RIFLE}	 },
-	{"weapon_xm1014",				  {25, 0, GEAR_SLOT_RIFLE}	  },
-	{"weapon_bizon",				 {26, 0, GEAR_SLOT_RIFLE}	 },
-	{"weapon_mag7",					{27, 3, GEAR_SLOT_RIFLE}	},
-	{"weapon_negev",				 {28, 0, GEAR_SLOT_RIFLE}	 },
-	{"weapon_sawedoff",				{29, 2, GEAR_SLOT_RIFLE}	},
-	{"weapon_tec9",					{30, 2, GEAR_SLOT_RIFLE}	},
-	{"weapon_taser",				 {31, 0, GEAR_SLOT_KNIFE}	 },
-	{"weapon_hkp2000",			   {32, 3, GEAR_SLOT_PISTOL}	},
-	{"weapon_mp7",				   {33, 0, GEAR_SLOT_RIFLE}   },
-	{"weapon_mp9",				   {34, 0, GEAR_SLOT_RIFLE}   },
-	{"weapon_nova",					{35, 0, GEAR_SLOT_RIFLE}	},
-	{"weapon_p250",					{36, 0, GEAR_SLOT_PISTOL}	 },
-	{"weapon_scar20",				  {38, 3, GEAR_SLOT_RIFLE}	  },
-	{"weapon_sg556",				 {39, 2, GEAR_SLOT_RIFLE}	 },
-	{"weapon_ssg08",				 {40, 0, GEAR_SLOT_RIFLE}	 },
-	{"weapon_knifegg",			   {41, 0, GEAR_SLOT_KNIFE}   },
-	{"weapon_knife",				 {42, 0, GEAR_SLOT_KNIFE}	 },
-	{"weapon_flashbang",			 {43, 0, GEAR_SLOT_GRENADES}},
-	{"weapon_hegrenade",			 {44, 0, GEAR_SLOT_GRENADES}},
-	{"weapon_smokegrenade",			{45, 0, GEAR_SLOT_GRENADES}},
-	{"weapon_molotov",			   {46, 0, GEAR_SLOT_GRENADES}},
-	{"weapon_decoy",				 {47, 0, GEAR_SLOT_GRENADES}},
-	{"weapon_incgrenade",			  {48, 0, GEAR_SLOT_GRENADES}},
-	{"weapon_c4",					{49, 0, GEAR_SLOT_C4}	   },
-	{"weapon_knife_t",			   {59, 0, GEAR_SLOT_KNIFE}   },
-	{"weapon_m4a1_silencer",		 {60, 3, GEAR_SLOT_RIFLE}	 },
-	{"weapon_usp_silencer",			{61, 3, GEAR_SLOT_PISTOL}	 },
-	{"weapon_cz75a",				 {63, 0, GEAR_SLOT_PISTOL}  },
-	{"weapon_revolver",				{64, 0, GEAR_SLOT_PISTOL}	 },
-	{"weapon_bayonet",			   {500, 0, GEAR_SLOT_KNIFE}	},
-	{"weapon_knife_css",			 {503, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_flip",			  {505, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_gut",			 {506, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_karambit",		  {507, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_m9_bayonet",		{508, 0, GEAR_SLOT_KNIFE}	 },
-	{"weapon_knife_tactical",		  {509, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_falchion",		  {512, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_survival_bowie",	{514, 0, GEAR_SLOT_KNIFE}	 },
-	{"weapon_knife_butterfly",	   {515, 0, GEAR_SLOT_KNIFE}	},
-	{"weapon_knife_push",			  {516, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_cord",			  {517, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_canis",		   {518, 0, GEAR_SLOT_KNIFE}	},
-	{"weapon_knife_ursus",		   {519, 0, GEAR_SLOT_KNIFE}	},
-	{"weapon_knife_gypsy_jackknife", {520, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_outdoor",		 {521, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_stiletto",		  {522, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_widowmaker",		{523, 0, GEAR_SLOT_KNIFE}	 },
-	{"weapon_knife_skeleton",		  {525, 0, GEAR_SLOT_KNIFE}  },
-	{"weapon_knife_kukri",		   {526, 0, GEAR_SLOT_KNIFE}	},
-
-	// Gears
-	{"item_kevlar",					{0, 0, GEAR_SLOT_INVALID}	 },
-	{"item_assaultsuit",			 {0, 0, GEAR_SLOT_INVALID}  },
-	{"item_heavyassaultsuit",		  {0, 0, GEAR_SLOT_INVALID}  },
-	{"item_defuser",				 {0, 0, GEAR_SLOT_INVALID}  },
-	{"ammo_50ae",					{0, 0, GEAR_SLOT_INVALID}  },
-};
 static bool s_AwsChangingTeam;
 
 class CCSPlayer_ItemServices : public CPlayerPawnComponent
@@ -279,10 +198,12 @@ public:
 	[[nodiscard]] static bool IsAwsProcessing() noexcept { return s_AwsChangingTeam; }
 	static void ResetAwsProcessing() { s_AwsChangingTeam = false; }
 
-	[[nodiscard]] static uint32_t GetItemGearSlot(const char* item) noexcept
+	[[nodiscard]] static gear_slot_t GetItemGearSlot(const char* item) noexcept
 	{
-		const auto it = s_WeaponMap.find(item);
-		return it == s_WeaponMap.end() ? GEAR_SLOT_INVALID : it->second.m_eSlot;
+		if (const auto pInfo = FindWeaponInfoByClass(item))
+			return pInfo->m_eSlot;
+
+		return GEAR_SLOT_INVALID;
 	}
 
 	CBaseEntity* GiveNamedItemAws(const char* item) noexcept
@@ -291,18 +212,18 @@ public:
 		if (!pPawn || pPawn->m_iTeamNum() != CS_TEAM_CT) // only for CT
 			return GiveNamedItem(item);
 
-		const auto it = s_WeaponMap.find(item);
-		if (it == s_WeaponMap.end())
+		const auto pInfo = FindWeaponInfoByClass(item);
+		if (!pInfo)
 			return GiveNamedItem(item);
 
-		if (it->second.m_iTeamNum == 0
-			|| !(it->second.m_eSlot == GEAR_SLOT_RIFLE || it->second.m_eSlot == GEAR_SLOT_PISTOL)
-			|| it->second.m_iTeamNum == pPawn->m_iTeamNum())
+		if (pInfo->m_iTeamNum == 0
+			|| !(pInfo->m_eSlot == GEAR_SLOT_RIFLE || pInfo->m_eSlot == GEAR_SLOT_PISTOL)
+			|| pInfo->m_iTeamNum == pPawn->m_iTeamNum())
 			return GiveNamedItem(item);
 			
 		const auto team = pPawn->m_iTeamNum();
 		s_AwsChangingTeam = true;
-		pPawn->m_iTeamNum(it->second.m_iTeamNum);
+		pPawn->m_iTeamNum(pInfo->m_iTeamNum);
 		const auto pWeapon = GiveNamedItem(item);
 		pPawn->m_iTeamNum(team);
 		s_AwsChangingTeam = false;

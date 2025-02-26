@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -131,7 +131,7 @@ namespace CGamePlayerEquipHandler
 		}
 		else if (flags & ::CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			const auto pair = s_PlayerEquipMap.find(pEntity->GetName());
+			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
 			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
 				StripPlayer(pPawn, pair->second);
 		}
@@ -150,7 +150,7 @@ namespace CGamePlayerEquipHandler
 		}
 		else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			const auto pair = s_PlayerEquipMap.find(pEntity->GetName());
+			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
 			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
 			{
 				CCSPlayerPawn* pPawn = nullptr;
