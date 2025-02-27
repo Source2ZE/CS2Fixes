@@ -85,3 +85,4 @@ QAngle* FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*, QAngle*);
 Vector FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn*);
 QAngle FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*);
 #endif
+void FASTCALL Detour_CBaseFilter_InputTestActivator(CBaseEntity* pThis, InputData_t& inputdata);

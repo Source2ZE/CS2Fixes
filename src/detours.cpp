@@ -83,6 +83,7 @@ DECLARE_DETOUR(TraceFunc, Detour_TraceFunc);
 DECLARE_DETOUR(TraceShape, Detour_TraceShape);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
+DECLARE_DETOUR(CBaseFilter_InputTestActivator, Detour_CBaseFilter_InputTestActivator);
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
@@ -702,6 +703,15 @@ QAngle FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn)
 	return CBasePlayerPawn_GetEyeAngles(pPawn);
 }
 #endif
+
+void FASTCALL Detour_CBaseFilter_InputTestActivator(CBaseEntity* pThis, InputData_t& inputdata)
+{
+	// If null activator (player disconnected & pawn removed), block the real function from executing and crashing the server
+	if (!inputdata.pActivator)
+		return;
+
+	CBaseFilter_InputTestActivator(pThis, inputdata);
+}
 
 bool InitDetours(CGameConfig* gameConfig)
 {
