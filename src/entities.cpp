@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -35,15 +35,6 @@
 // #define ENTITY_HANDLER_ASSERTION
 
 extern CCSGameRules* g_pGameRules;
-
-class InputData_t
-{
-public:
-	CBaseEntity* pActivator;
-	CBaseEntity* pCaller;
-	variant_t value;
-	int nOutputID;
-};
 
 static bool StripPlayer(CCSPlayerPawn* pPawn)
 {

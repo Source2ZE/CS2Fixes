@@ -60,3 +60,12 @@ public:
 	EntityIOConnection_t* m_pConnections;
 	EntityIOOutputDesc_t* m_pDesc;
 };
+
+class InputData_t
+{
+public:
+	CBaseEntity* pActivator;
+	CBaseEntity* pCaller;
+	variant_t value;
+	int nOutputID;
+};

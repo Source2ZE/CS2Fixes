@@ -48,15 +48,6 @@
 
 #include "tier0/memdbgon.h"
 
-class InputData_t
-{
-public:
-	CBaseEntity* pActivator;
-	CBaseEntity* pCaller;
-	variant_t value;
-	int nOutputID;
-};
-
 extern CGlobalVars* GetGlobals();
 extern IGameEventManager2* g_gameEventManager;
 extern IGameEventSystem* g_gameEventSystem;
