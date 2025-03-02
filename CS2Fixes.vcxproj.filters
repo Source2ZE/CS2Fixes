@@ -180,7 +180,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\weapon.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -392,7 +392,7 @@
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\weapon.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

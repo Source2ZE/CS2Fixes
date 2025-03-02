@@ -160,9 +160,15 @@ public:
 	SCHEMA_FIELD(int, m_iAccount)
 };
 
-static bool s_AwsChangingTeam;
+class CPlayer_ItemServices : public CPlayerPawnComponent
+{
+public:
+	DECLARE_SCHEMA_CLASS(CPlayer_ItemServices);
+};
 
-class CCSPlayer_ItemServices : public CPlayerPawnComponent
+static bool g_bAwsChangingTeam = false;
+
+class CCSPlayer_ItemServices : public CPlayer_ItemServices
 {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_ItemServices);
@@ -195,8 +201,9 @@ public:
 	virtual void DropActiveWeapon(CBasePlayerWeapon* pWeapon) = 0;
 	virtual void StripPlayerWeapons(bool removeSuit) = 0;
 
-	[[nodiscard]] static bool IsAwsProcessing() noexcept { return s_AwsChangingTeam; }
-	static void ResetAwsProcessing() { s_AwsChangingTeam = false; }
+	// Custom functions
+	[[nodiscard]] static bool IsAwsProcessing() noexcept { return g_bAwsChangingTeam; }
+	static void ResetAwsProcessing() { g_bAwsChangingTeam = false; }
 
 	[[nodiscard]] static gear_slot_t GetItemGearSlot(const char* item) noexcept
 	{
@@ -222,11 +229,11 @@ public:
 			return GiveNamedItem(item);
 			
 		const auto team = pPawn->m_iTeamNum();
-		s_AwsChangingTeam = true;
+		g_bAwsChangingTeam = true;
 		pPawn->m_iTeamNum(pInfo->m_iTeamNum);
 		const auto pWeapon = GiveNamedItem(item);
 		pPawn->m_iTeamNum(team);
-		s_AwsChangingTeam = false;
+		g_bAwsChangingTeam = false;
 		return pWeapon;
 	}
 };
