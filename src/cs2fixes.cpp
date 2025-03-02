@@ -424,6 +424,9 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	if (g_iCGamePlayerEquipUseId != -1)
 		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
 
+	if (g_iCGamePlayerEquipPrecacheId != -1)
+		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipPrecacheId);
+
 	ConVar_Unregister();
 
 	g_CommandList.Purge();
@@ -474,12 +477,6 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	if (g_pPanoramaVoteHandler)
 		delete g_pPanoramaVoteHandler;
-
-	if (g_iCGamePlayerEquipUseId != -1)
-		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
-
-	if (g_iCGamePlayerEquipPrecacheId != -1)
-		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipPrecacheId);
 
 	if (g_pEWHandler)
 	{
