@@ -267,7 +267,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	SH_MANUALHOOK_RECONFIGURE(CGamePlayerEquipPrecache, offset, 0, 0);
 	g_iCGamePlayerEquipPrecacheId = SH_ADD_MANUALDVPHOOK(CGamePlayerEquipPrecache, pCGamePlayerEquipVTable, SH_MEMBER(this, &CS2Fixes::Hook_CGamePlayerEquipPrecache), true);
 
-
 	const auto pCCSPlayerPawnVTable = modules::server->FindVirtualTable("CCSPlayerPawn");
 	if (!pCCSPlayerPawnVTable)
 	{
@@ -1156,7 +1155,6 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 
 	if (g_bEnableEntWatch)
 		EW_OnLevelInit(pMapName);
-
 }
 
 void CS2Fixes::OnLevelShutdown()

@@ -73,7 +73,7 @@ public:
 				if (pController)
 					EW_PlayerDeathPre(pController);
 			}
-			
+
 			DropMapWeapons();
 		}
 

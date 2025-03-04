@@ -206,11 +206,11 @@ public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_ItemServices);
 
 private:
-	virtual CBaseEntity* _GiveNamedItem(const char* pchName) = 0;
+	virtual CBasePlayerWeapon* _GiveNamedItem(const char* pchName) = 0;
 
 public:
 	virtual bool GiveNamedItemBool(const char* pchName) = 0;
-	virtual CBaseEntity* GiveNamedItem(const char* pchName) = 0;
+	virtual CBasePlayerWeapon* GiveNamedItem(const char* pchName) = 0;
 	// Recommended to use CCSPlayer_WeaponServices::DropWeapon instead (parameter is ignored here)
 	virtual void DropActiveWeapon(CBasePlayerWeapon* pWeapon) = 0;
 	virtual void StripPlayerWeapons(bool removeSuit) = 0;
@@ -227,7 +227,7 @@ public:
 		return GEAR_SLOT_INVALID;
 	}
 
-	CBaseEntity* GiveNamedItemAws(const char* item) noexcept
+	CBasePlayerWeapon* GiveNamedItemAws(const char* item) noexcept
 	{
 		auto pPawn = reinterpret_cast<CBaseEntity*>(GetPawn());
 		if (!pPawn || pPawn->m_iTeamNum() != CS_TEAM_CT) // only for CT
@@ -241,7 +241,7 @@ public:
 			|| !(pInfo->m_eSlot == GEAR_SLOT_RIFLE || pInfo->m_eSlot == GEAR_SLOT_PISTOL)
 			|| pInfo->m_iTeamNum == pPawn->m_iTeamNum())
 			return GiveNamedItem(item);
-			
+
 		const auto team = pPawn->m_iTeamNum();
 		g_bAwsChangingTeam = true;
 		pPawn->m_iTeamNum(pInfo->m_iTeamNum);
