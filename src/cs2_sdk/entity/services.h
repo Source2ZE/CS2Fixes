@@ -62,6 +62,24 @@ public:
 
 class CPlayerPawnComponent
 {
+	virtual ~CPlayerPawnComponent() = 0;
+	virtual void unk_01() = 0;
+	virtual void unk_02() = 0;
+	virtual void unk_03() = 0;
+	virtual void unk_04() = 0;
+	virtual void unk_05() = 0;
+	virtual void unk_06() = 0;
+	virtual void unk_07() = 0;
+	virtual void unk_08() = 0;
+	virtual void unk_09() = 0;
+	virtual void unk_10() = 0;
+	virtual void unk_11() = 0;
+	virtual void unk_12() = 0;
+	virtual void unk_13() = 0;
+	virtual void unk_14() = 0;
+	virtual void unk_15() = 0;
+	virtual void unk_16() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CPlayerPawnComponent);
 
@@ -72,6 +90,8 @@ public:
 
 class CPlayer_MovementServices : public CPlayerPawnComponent
 {
+	virtual ~CPlayer_MovementServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices);
 
@@ -89,6 +109,8 @@ public:
 
 class CPlayer_MovementServices_Humanoid : public CPlayer_MovementServices
 {
+	virtual ~CPlayer_MovementServices_Humanoid() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_MovementServices_Humanoid);
 
@@ -101,6 +123,8 @@ public:
 
 class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
 {
+	virtual ~CCSPlayer_MovementServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_MovementServices);
 
@@ -113,6 +137,8 @@ public:
 
 class CPlayer_WeaponServices : public CPlayerPawnComponent
 {
+	virtual ~CPlayer_WeaponServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_WeaponServices);
 
@@ -123,6 +149,8 @@ public:
 
 class CCSPlayer_WeaponServices : public CPlayer_WeaponServices
 {
+	virtual ~CCSPlayer_WeaponServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_WeaponServices);
 
@@ -162,6 +190,8 @@ public:
 
 class CPlayer_ItemServices : public CPlayerPawnComponent
 {
+	virtual ~CPlayer_ItemServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_ItemServices);
 };
@@ -170,28 +200,12 @@ static bool g_bAwsChangingTeam = false;
 
 class CCSPlayer_ItemServices : public CPlayer_ItemServices
 {
+	virtual ~CCSPlayer_ItemServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_ItemServices);
 
-	virtual ~CCSPlayer_ItemServices() = 0;
-
 private:
-	virtual void unk_01() = 0;
-	virtual void unk_02() = 0;
-	virtual void unk_03() = 0;
-	virtual void unk_04() = 0;
-	virtual void unk_05() = 0;
-	virtual void unk_06() = 0;
-	virtual void unk_07() = 0;
-	virtual void unk_08() = 0;
-	virtual void unk_09() = 0;
-	virtual void unk_10() = 0;
-	virtual void unk_11() = 0;
-	virtual void unk_12() = 0;
-	virtual void unk_13() = 0;
-	virtual void unk_14() = 0;
-	virtual void unk_15() = 0;
-	virtual void unk_16() = 0;
 	virtual CBaseEntity* _GiveNamedItem(const char* pchName) = 0;
 
 public:
@@ -263,16 +277,20 @@ public:
 	SCHEMA_FIELD_POINTER(CUtlVector<WeaponPurchaseCount_t>, m_weaponPurchases)
 };
 
-class CCSPlayer_ActionTrackingServices
+class CCSPlayer_ActionTrackingServices : CPlayerPawnComponent
 {
+	virtual ~CCSPlayer_ActionTrackingServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_ActionTrackingServices)
 
 	SCHEMA_FIELD(WeaponPurchaseTracker_t, m_weaponPurchasesThisRound)
 };
 
-class CPlayer_ObserverServices
+class CPlayer_ObserverServices : public CPlayerPawnComponent
 {
+	virtual ~CPlayer_ObserverServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_ObserverServices)
 
@@ -282,8 +300,10 @@ public:
 	SCHEMA_FIELD(bool, m_bForcedObserverMode)
 };
 
-class CPlayer_CameraServices
+class CPlayer_CameraServices : public CPlayerPawnComponent
 {
+	virtual ~CPlayer_CameraServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_CameraServices)
 
@@ -293,6 +313,8 @@ public:
 class CCSPlayerBase_CameraServices : public CPlayer_CameraServices
 {
 public:
+	virtual ~CCSPlayerBase_CameraServices() = 0;
+
 	DECLARE_SCHEMA_CLASS(CCSPlayerBase_CameraServices)
 
 	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hZoomOwner)
@@ -300,16 +322,22 @@ public:
 };
 
 class CCSPlayer_CameraServices : public CCSPlayerBase_CameraServices
-{};
+{
+	virtual ~CCSPlayer_CameraServices() = 0;
+};
 
 class CPlayer_ViewModelServices : public CPlayerPawnComponent
 {
+	virtual ~CPlayer_ViewModelServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_ViewModelServices)
 };
 
 class CCSPlayer_ViewModelServices : public CPlayer_ViewModelServices
 {
+	virtual ~CCSPlayer_ViewModelServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayer_ViewModelServices)
 	SCHEMA_FIELD_POINTER(CHandle<CBaseViewModel>, m_hViewModel) // CHandle<CBaseViewModel> m_hViewModel[3]
