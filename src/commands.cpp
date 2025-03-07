@@ -216,8 +216,13 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 		}
 	}
 
-	player->m_pInGameMoneyServices->m_iAccount = money - pWeaponInfo->m_nPrice;
 	CBasePlayerWeapon* pWeapon = pItemServices->GiveNamedItemAws(pWeaponInfo->m_pClass);
+
+	// Normally shouldn't be possible, but avoid crashes in some edge cases
+	if (!pWeapon)
+		return;
+
+	player->m_pInGameMoneyServices->m_iAccount = money - pWeaponInfo->m_nPrice;
 
 	// If the weapon spawn goes through AWS, it needs to be reselected with a 1 tick delay (some fuckery with team change?)
 	if (pWeaponInfo->m_eSlot == GEAR_SLOT_RIFLE || pWeaponInfo->m_eSlot == GEAR_SLOT_PISTOL)
