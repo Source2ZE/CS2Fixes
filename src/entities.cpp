@@ -186,7 +186,9 @@ namespace CGamePlayerEquipHandler
 		}
 		else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			// TODO
+			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
+			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
+				StripPlayer(pPawn, pair->second);
 		}
 
 		const auto pItemServices = pPawn->m_pItemServices();
