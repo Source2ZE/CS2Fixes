@@ -64,6 +64,7 @@ static void StripPlayer(CCSPlayerPawn* pPawn, const std::unordered_set<uint32_t>
 		return;
 
 	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponService->m_hMyWeapons();
+	std::vector<CBasePlayerWeapon*> vecWeaponsToRemove;
 
 	FOR_EACH_VEC(*weapons, i)
 	{
@@ -76,9 +77,15 @@ static void StripPlayer(CCSPlayerPawn* pPawn, const std::unordered_set<uint32_t>
 
 		if (slots.contains(slot))
 		{
-			pWeaponService->DropWeapon(weapon);
-			weapon->Remove();
+			// Queue for removal after, don't modify this vector while we're iterating it
+			vecWeaponsToRemove.push_back(weapon);
 		}
+	}
+
+	for (CBasePlayerWeapon* pWeapon : vecWeaponsToRemove)
+	{
+		pWeaponService->DropWeapon(pWeapon);
+		pWeapon->Remove();
 	}
 }
 
