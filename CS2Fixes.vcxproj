@@ -216,6 +216,7 @@
     <ClCompile Include="src\utils\entity.cpp" />
     <ClCompile Include="src\utils\plat_unix.cpp" />
     <ClCompile Include="src\utils\plat_win.cpp" />
+    <ClCompile Include="src\utils\weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\buttonwatch.h" />
@@ -287,6 +288,7 @@
     <ClInclude Include="src\utils\plat.h" />
     <ClInclude Include="src\utils\virtual.h" />
     <ClInclude Include="src\netmessages.h" />
+    <ClInclude Include="src\utils\weapon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

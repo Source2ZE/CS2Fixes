@@ -32,6 +32,7 @@
 #include "entities.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/cgamerules.h"
+#include "entity/services.h"
 #include "entitylistener.h"
 #include "entitysystem.h"
 #include "entwatch.h"
@@ -114,6 +115,7 @@ SH_DECL_HOOK7_void(ISource2GameEntities, CheckTransmit, SH_NOATTRIB, 0, CCheckTr
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand&);
 SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandHandle, const CCommandContext&, const CCommand&);
 SH_DECL_MANUALHOOK1_void(CGamePlayerEquipUse, 0, 0, 0, InputData_t*);
+SH_DECL_MANUALHOOK1_void(CGamePlayerEquipPrecache, 0, 0, 0, void**);
 SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUtlStringList&);
 SH_DECL_MANUALHOOK1(OnTakeDamage_Alive, 0, 0, 0, bool, CTakeDamageInfoContainer*);
 SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
@@ -135,6 +137,7 @@ ISteamHTTP* g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules* g_pGameRules = nullptr;
 int g_iCGamePlayerEquipUseId = -1;
+int g_iCGamePlayerEquipPrecacheId = -1;
 int g_iCreateWorkshopMapGroupId = -1;
 int g_iOnTakeDamageAliveId = -1;
 int g_iCheckMovingGroundId = -1;
@@ -254,6 +257,15 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 	SH_MANUALHOOK_RECONFIGURE(CGamePlayerEquipUse, offset, 0, 0);
 	g_iCGamePlayerEquipUseId = SH_ADD_MANUALDVPHOOK(CGamePlayerEquipUse, pCGamePlayerEquipVTable, SH_MEMBER(this, &CS2Fixes::Hook_CGamePlayerEquipUse), false);
+
+	offset = g_GameConfig->GetOffset("CBaseEntity::Precache");
+	if (offset == -1)
+	{
+		snprintf(error, maxlen, "Failed to find CBaseEntity::Precache\n");
+		bRequiredInitLoaded = false;
+	}
+	SH_MANUALHOOK_RECONFIGURE(CGamePlayerEquipPrecache, offset, 0, 0);
+	g_iCGamePlayerEquipPrecacheId = SH_ADD_MANUALDVPHOOK(CGamePlayerEquipPrecache, pCGamePlayerEquipVTable, SH_MEMBER(this, &CS2Fixes::Hook_CGamePlayerEquipPrecache), true);
 
 	const auto pCCSPlayerPawnVTable = modules::server->FindVirtualTable("CCSPlayerPawn");
 	if (!pCCSPlayerPawnVTable)
@@ -410,6 +422,9 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	if (g_iCGamePlayerEquipUseId != -1)
 		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
+
+	if (g_iCGamePlayerEquipPrecacheId != -1)
+		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipPrecacheId);
 
 	ConVar_Unregister();
 
@@ -587,6 +602,12 @@ class CGamePlayerEquip;
 void CS2Fixes::Hook_CGamePlayerEquipUse(InputData_t* pInput)
 {
 	CGamePlayerEquipHandler::Use(META_IFACEPTR(CGamePlayerEquip), pInput);
+	RETURN_META(MRES_IGNORED);
+}
+void CS2Fixes::Hook_CGamePlayerEquipPrecache(void** param)
+{
+	const auto kv = reinterpret_cast<CEntityKeyValues*>(*param);
+	CGamePlayerEquipHandler::OnPrecache(META_IFACEPTR(CGamePlayerEquip), kv);
 	RETURN_META(MRES_IGNORED);
 }
 
@@ -1127,6 +1148,10 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 
 	if (g_bEnableZR)
 		ZR_OnLevelInit();
+
+	CCSPlayer_ItemServices::ResetAwsProcessing();
+
+	EntityHandler_OnLevelInit();
 
 	if (g_bEnableEntWatch)
 		EW_OnLevelInit(pMapName);

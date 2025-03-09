@@ -374,6 +374,11 @@
 				"windows"		"88"
 				"linux"			"80"
 			}
+			"CBaseEntity::Precache"
+			{
+				"windows"		"4"
+				"linux"			"5"
+			}
 			"CBaseEntity::Use"
 			{
 				"windows"		"140"

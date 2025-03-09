@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -29,6 +29,9 @@
 #include "entity/clogiccase.h"
 #include "entity/cpointviewcontrol.h"
 
+#include <unordered_map>
+#include <unordered_set>
+
 // #define ENTITY_HANDLER_ASSERTION
 
 extern CCSGameRules* g_pGameRules;
@@ -42,7 +45,7 @@ public:
 	int nOutputID;
 };
 
-inline bool StripPlayer(CCSPlayerPawn* pPawn)
+static bool StripPlayer(CCSPlayerPawn* pPawn)
 {
 	const auto pItemServices = pPawn->m_pItemServices();
 
@@ -54,8 +57,40 @@ inline bool StripPlayer(CCSPlayerPawn* pPawn)
 	return true;
 }
 
+static void StripPlayer(CCSPlayerPawn* pPawn, const std::unordered_set<uint32_t>& slots)
+{
+	const auto pWeaponService = pPawn->m_pWeaponServices();
+	if (!pWeaponService)
+		return;
+
+	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponService->m_hMyWeapons();
+	std::vector<CBasePlayerWeapon*> vecWeaponsToRemove;
+
+	FOR_EACH_VEC(*weapons, i)
+	{
+		CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+
+		if (!weapon)
+			continue;
+
+		const auto slot = weapon->GetWeaponVData()->m_GearSlot();
+
+		if (slots.contains(slot))
+		{
+			// Queue for removal after, don't modify this vector while we're iterating it
+			vecWeaponsToRemove.push_back(weapon);
+		}
+	}
+
+	for (CBasePlayerWeapon* pWeapon : vecWeaponsToRemove)
+	{
+		pWeaponService->DropWeapon(pWeapon);
+		pWeapon->Remove();
+	}
+}
+
 // Must be called in GameFramePre
-inline void DelayInput(CBaseEntity* pCaller, const char* input, const char* param = "")
+static void DelayInput(CBaseEntity* pCaller, const char* input, const char* param = "")
 {
 	const auto eh = pCaller->GetHandle();
 
@@ -68,7 +103,7 @@ inline void DelayInput(CBaseEntity* pCaller, const char* input, const char* para
 }
 
 // Must be called in GameFramePre
-inline void DelayInput(CBaseEntity* pCaller, CBaseEntity* pActivator, const char* input, const char* param = "")
+static void DelayInput(CBaseEntity* pCaller, CBaseEntity* pActivator, const char* input, const char* param = "")
 {
 	const auto eh = pCaller->GetHandle();
 	const auto ph = pActivator->GetHandle();
@@ -84,6 +119,8 @@ inline void DelayInput(CBaseEntity* pCaller, CBaseEntity* pActivator, const char
 
 namespace CGamePlayerEquipHandler
 {
+	static std::unordered_map<std::string, std::unordered_set<uint32_t>> s_PlayerEquipMap;
+
 	void Use(CGamePlayerEquip* pEntity, InputData_t* pInput)
 	{
 		const auto pCaller = pInput->pActivator;
@@ -97,12 +134,13 @@ namespace CGamePlayerEquipHandler
 
 		if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_STRIPFIRST)
 		{
-			if (!StripPlayer(pPawn))
-				return;
+			StripPlayer(pPawn);
 		}
 		else if (flags & ::CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			// TODO support strip same flags
+			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
+			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
+				StripPlayer(pPawn, pair->second);
 		}
 	}
 
@@ -119,7 +157,14 @@ namespace CGamePlayerEquipHandler
 		}
 		else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			// TODO support strip same flags
+			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
+			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
+			{
+				CCSPlayerPawn* pPawn = nullptr;
+				while ((pPawn = reinterpret_cast<CCSPlayerPawn*>(UTIL_FindEntityByClassname(pPawn, "player"))) != nullptr)
+					if (pPawn->IsPawn() && pPawn->IsAlive())
+						StripPlayer(pPawn, pair->second);
+			}
 		}
 	}
 
@@ -141,7 +186,9 @@ namespace CGamePlayerEquipHandler
 		}
 		else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			// TODO
+			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
+			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
+				StripPlayer(pPawn, pair->second);
 		}
 
 		const auto pItemServices = pPawn->m_pItemServices();
@@ -151,12 +198,42 @@ namespace CGamePlayerEquipHandler
 
 		if (pszWeapon && V_strcmp(pszWeapon, "(null)"))
 		{
-			pItemServices->GiveNamedItem(pszWeapon);
+			pItemServices->GiveNamedItemAws(pszWeapon);
 			// Don't execute game function (we fixed string param)
 			return false;
 		}
 
 		return true;
+	}
+
+	void OnPrecache(CGamePlayerEquip* pEntity, const CEntityKeyValues* kv)
+	{
+		const auto pName = pEntity->GetName();
+		if (!pName || !pName[0])
+			return;
+
+		auto list = std::unordered_set<uint32_t>();
+
+		for (auto i = 0; i < CGamePlayerEquip::MAX_EQUIPMENTS_SIZE; i++)
+		{
+			char key[32];
+			snprintf(key, sizeof(key), "weapon%d", i);
+			const auto val = kv->GetString(key);
+			if (val && strlen(val) > 1)
+			{
+				const auto slot = CCSPlayer_ItemServices::GetItemGearSlot(val);
+				if (slot != GEAR_SLOT_INVALID && slot != GEAR_SLOT_UTILITY)
+					list.emplace(slot);
+			}
+		}
+
+		if (!list.empty())
+			s_PlayerEquipMap[std::string(pName)] = list;
+	}
+
+	void Shutdown()
+	{
+		s_PlayerEquipMap.clear();
 	}
 } // namespace CGamePlayerEquipHandler
 
@@ -688,4 +765,9 @@ void EntityHandler_OnRoundRestart()
 void EntityHandler_OnEntitySpawned(CBaseEntity* pEntity)
 {
 	CPointViewControlHandler::OnCreated(pEntity);
+}
+
+void EntityHandler_OnLevelInit()
+{
+	CGamePlayerEquipHandler::Shutdown();
 }

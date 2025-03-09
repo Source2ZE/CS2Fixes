@@ -35,6 +35,7 @@ extern CGameConfig* g_GameConfig;
 class CGameUI;
 class CEnvHudHint;
 class CPointViewControl;
+class CBasePlayerWeapon;
 
 class CGameSceneNode
 {
@@ -316,6 +317,13 @@ public:
 		if (const auto pCollision = this->m_pCollision())
 			return reinterpret_cast<CBaseModelEntity*>(this);
 
+		return nullptr;
+	}
+
+	[[nodiscard]] CBasePlayerWeapon* AsBasePlayerWeapon()
+	{
+		if (V_StringHasPrefixCaseSensitive(GetClassname(), "weapon_"))
+			return reinterpret_cast<CBasePlayerWeapon*>(this);
 		return nullptr;
 	}
 
