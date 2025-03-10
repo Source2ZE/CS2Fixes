@@ -84,6 +84,7 @@ DECLARE_DETOUR(TraceShape, Detour_TraceShape);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition);
 DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
 DECLARE_DETOUR(CBaseFilter_InputTestActivator, Detour_CBaseFilter_InputTestActivator);
+DECLARE_DETOUR(GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan);
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
@@ -711,6 +712,24 @@ void FASTCALL Detour_CBaseFilter_InputTestActivator(CBaseEntity* pThis, InputDat
 		return;
 
 	CBaseFilter_InputTestActivator(pThis, inputdata);
+}
+
+CConVar<bool> g_cvarFixGameBans("cs2f_fix_game_bans", FCVAR_NONE, "Whether to fix CS2 game bans spreading to all new joining players", false);
+
+void FASTCALL Detour_GameSystem_Think_CheckSteamBan()
+{
+	// Implementation shared by @aiolos1045
+	GameSystem_Think_CheckSteamBan();
+
+	if (!g_cvarFixGameBans.Get())
+		return;
+
+	CUtlMap<uint32, CGcBanInformation_t, uint32>* pMap = addresses::sm_mapGcBanInformation;
+	unsigned int count = pMap->Count();
+
+	// After player has been kicked, remove any ban entries, to prevent spreading to all new joining players
+	if (count > 0)
+		pMap->RemoveAll();
 }
 
 bool InitDetours(CGameConfig* gameConfig)
