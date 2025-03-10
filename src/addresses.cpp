@@ -73,5 +73,29 @@ bool addresses::Initialize(CGameConfig* g_GameConfig)
 	RESOLVE_SIG(g_GameConfig, "CTakeDamageInfo", addresses::CTakeDamageInfo_Constructor);
 	RESOLVE_SIG(g_GameConfig, "CNetworkStringTable_DeleteAllStrings", addresses::CNetworkStringTable_DeleteAllStrings);
 
+	return InitializeBanMap(g_GameConfig);
+}
+
+bool addresses::InitializeBanMap(CGameConfig* g_GameConfig)
+{
+	// This signature directly points to the instruction referencing sm_mapGcBanInformation, and the opcode is 3 bytes so we skip those
+	uint8* pAddr = (uint8*)g_GameConfig->ResolveSignature("CCSGameRules__sm_mapGcBanInformation") + 3;
+
+	if (!pAddr)
+		return false;
+
+	// Grab the offset as 4 bytes
+	uint32 offset = *(uint32*)pAddr;
+
+	// Go to the next instruction, which is what the relative address is based off
+	pAddr += 4;
+
+	// Get the real address
+	addresses::sm_mapGcBanInformation = (decltype(addresses::sm_mapGcBanInformation))(pAddr + offset);
+
+	if (!addresses::sm_mapGcBanInformation)
+		return false;
+
+	Message("Found %s at 0x%p\n", "CCSGameRules__sm_mapGcBanInformation", addresses::sm_mapGcBanInformation);
 	return true;
 }
