@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -77,12 +77,14 @@ struct AttackerInfo_t
 	int m_iTeamChecked;
 	int m_nTeam;
 };
+static_assert(sizeof(AttackerInfo_t) == 20);
 
 // No idea what this is meant to have, but OnTakeDamage_Alive expects this and we only care about pInfo
 struct CTakeDamageInfoContainer
 {
 	CTakeDamageInfo* pInfo;
 };
+class CGameTrace;
 
 class CTakeDamageInfo
 {
@@ -100,50 +102,42 @@ public:
 		addresses::CTakeDamageInfo_Constructor(this, pInflictor, pAttacker, pAbility, &vec3_origin, &vec3_origin, flDamage, bitsDamageType, 0, nullptr);
 	}
 
-	Vector m_vecDamageForce;
-	Vector m_vecDamagePosition;
-	Vector m_vecReportedPosition;
-	Vector m_vecDamageDirection;
-	CHandle<CBaseEntity> m_hInflictor;
-	CHandle<CBaseEntity> m_hAttacker;
-	CHandle<CBaseEntity> m_hAbility;
-	float m_flDamage;
-	float m_flTotalledDamage;
-	float m_flTotalledDamageAbsorbed;
-	DamageTypes_t m_bitsDamageType;
-	int32_t m_iDamageCustom;
-	uint8_t m_iAmmoType;
+	Vector m_vecDamageForce;		   // 0x8  |  8
+	Vector m_vecDamagePosition;		   // 0x14 | 20
+	Vector m_vecReportedPosition;	   // 0x20 | 32
+	Vector m_vecDamageDirection;	   // 0x2c | 44
+	CHandle<CBaseEntity> m_hInflictor; // 0x38 | 56
+	CHandle<CBaseEntity> m_hAttacker;  // 0x3c | 60
+	CHandle<CBaseEntity> m_hAbility;   // 0x40 | 64
+	float m_flDamage;				   // 0x44 | 68
+	float m_flTotalledDamage;		   // 0x48 | 72
+	float m_flTotalledDamageAbsorbed;  // 0x4c | 76
+	int32_t m_bitsDamageType;		   // 0x50 | 80
+	int32_t m_iDamageCustom;		   // 0x54 | 84
+	int8_t m_iAmmoType;				   // 0x58 | 88
 
 private:
-	[[maybe_unused]] uint8_t __pad0059[0xf];
+	[[maybe_unused]] uint8_t _x51[15]; // 0x59
 
 public:
-	float m_flOriginalDamage;
-	bool m_bShouldBleed;
-	bool m_bShouldSpark;
+	float m_flOriginalDamage; // 0x68 | 104
+	bool m_bShouldBleed;	  // 0x6c | 108
+	bool m_bShouldSpark;	  // 0x6d | 109
 
 private:
-	[[maybe_unused]] uint8_t __pad006e[0x2];
+	[[maybe_unused]] uint8_t _x66[0x2]; // 0x66
 
 public:
-	float m_flDamageAbsorbed;
+	float m_flDamageAbsorbed;					// 0x70 | 112
+	CGameTrace* m_pTrace;						// 0x78 | 120
+	TakeDamageFlags_t m_nDamageFlags;			// 0x80 | 128
+	int32_t m_nNumObjectsPenetrated;			// 0x88 | 136
+	float m_flFriendlyFireDamageReductionRatio; // 0x8c | 140
+	void* m_hScriptInstance;					// 0x90 | 144
+	AttackerInfo_t m_AttackerInfo;				// 0x98 | 152
+	bool m_bInTakeDamageFlow;					// 0xac | 172
 
 private:
-	[[maybe_unused]] uint8_t __pad0074[0x8];
-
-public:
-	TakeDamageFlags_t m_nDamageFlags;
-
-private:
-	[[maybe_unused]] uint8_t __pad0084[0x4];
-
-public:
-	int32_t m_nNumObjectsPenetrated;
-	float m_flFriendlyFireDamageReductionRatio;
-	uint64_t m_hScriptInstance;
-	AttackerInfo_t m_AttackerInfo;
-	bool m_bInTakeDamageFlow;
-
-private:
-	[[maybe_unused]] uint8_t __pad00ad[0x4];
+	[[maybe_unused]] int32_t m_nUnknown2; // 0xa0 | 176
 };
+static_assert(sizeof(CTakeDamageInfo) == 184);
