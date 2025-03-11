@@ -1612,10 +1612,6 @@ void ZR_OnPlayerTakeDamage(CCSPlayerPawn* pVictimPawn, const CTakeDamageInfo* pI
 	if (!pVictimController || !pVictimController->IsConnected())
 		return;
 
-	const auto pAbility = pInfo->m_hAbility.Get();
-	if (!pAbility)
-		return;
-
 	if (!pInfo->m_AttackerInfo.m_bIsPawn)
 		return;
 
@@ -1623,14 +1619,18 @@ void ZR_OnPlayerTakeDamage(CCSPlayerPawn* pVictimPawn, const CTakeDamageInfo* pI
 	if (!pKillerPawn || !pKillerPawn->IsPawn()) // I don't know why this maybe non-pawn entity??
 		return;
 
+	const auto pAbility = pInfo->m_hAbility.Get();
+	if (!pAbility)
+		return;
+
 	const char* pszWeapon = pAbility->GetClassname();
 
-	if (!V_strncasecmp(pAbility->GetClassname(), "weapon_", 7))
+	if (!V_strncasecmp(pszWeapon, "weapon_", 7))
 		pszWeapon = reinterpret_cast<CBasePlayerWeapon*>(pAbility)->GetWeaponClassname();
 
 	if (pKillerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
 	{
-		float flClassKnockback = 1.0f;
+		auto flClassKnockback = 1.0f;
 
 		if (pVictimController->GetZEPlayer())
 		{

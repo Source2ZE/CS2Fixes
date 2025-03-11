@@ -112,9 +112,9 @@ public:
 	float m_flDamage;				   // 0x44 | 68
 	float m_flTotalledDamage;		   // 0x48 | 72
 	float m_flTotalledDamageAbsorbed;  // 0x4c | 76
-	int32_t m_bitsDamageType;		   // 0x50 | 80
+	DamageTypes_t m_bitsDamageType;	   // 0x50 | 80
 	int32_t m_iDamageCustom;		   // 0x54 | 84
-	int8_t m_iAmmoType;				   // 0x58 | 88
+	uint8_t m_iAmmoType;			   // 0x58 | 88
 
 private:
 	[[maybe_unused]] uint8_t _x51[15]; // 0x59
