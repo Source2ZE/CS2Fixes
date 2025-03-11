@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -92,7 +92,7 @@ FAKE_BOOL_CVAR(cs2f_block_molotov_self_dmg, "Whether to block self-damage from m
 FAKE_BOOL_CVAR(cs2f_block_all_dmg, "Whether to block all damage to players", g_bBlockAllDamage, false, false)
 FAKE_BOOL_CVAR(cs2f_fix_block_dmg, "Whether to fix block-damage on players", g_bFixBlockDamage, false, false)
 
-void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* inputInfo)
+int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* inputInfo)
 {
 #ifdef _DEBUG
 	Message("\n--------------------------------\n"
@@ -113,7 +113,7 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageIn
 
 	// Block all player damage if desired
 	if (g_bBlockAllDamage && pThis->IsPawn())
-		return;
+		return 0;
 
 	CBaseEntity* pInflictor = inputInfo->m_hInflictor.Get();
 	const char* pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
@@ -139,9 +139,14 @@ void FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageIn
 
 	// Prevent molly on self
 	if (g_bBlockMolotovSelfDmg && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
-		return;
+		return 0;
 
-	CBaseEntity_TakeDamageOld(pThis, inputInfo);
+	const auto damage = CBaseEntity_TakeDamageOld(pThis, inputInfo);
+
+	if (damage > 0 && g_bEnableZR && pThis->IsPawn())
+		ZR_OnPlayerTakeDamage(reinterpret_cast<CCSPlayerPawn*>(pThis), inputInfo, static_cast<int32>(damage));
+
+	return damage;
 }
 
 static bool g_bUseOldPush = false;

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -205,9 +205,6 @@ FAKE_BOOL_CVAR(cs2f_topdefender_enable, "Whether to use TopDefender", g_bEnableT
 
 GAME_EVENT_F(player_hurt)
 {
-	if (g_bEnableZR)
-		ZR_OnPlayerHurt(pEvent);
-
 	if (!g_bEnableTopDefender)
 		return;
 
