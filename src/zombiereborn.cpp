@@ -101,7 +101,7 @@ CConVar<float> g_cvarInfectShakeDuration("zr_infect_shake_duration", FCVAR_NONE,
 
 // meant only for offline config validation and can easily cause issues when used on live server
 #ifdef _DEBUG
-CON_COMMAND_F(zr_reload_classes, "Reload ZR player classes", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+CON_COMMAND_F(zr_reload_classes, "- Reload ZR player classes", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	g_pZRPlayerClassManager->LoadPlayerClass();
 
