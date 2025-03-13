@@ -112,7 +112,7 @@ void PrintMultiAdminAction(ETargetType nType, const char* pszAdminName, const ch
 	}
 }
 
-CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+CON_COMMAND_F(c_reload_admins, "- Reload admin config", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	if (!g_pAdminSystem->LoadAdmins() || !GetGlobals())
 		return;
@@ -130,7 +130,7 @@ CON_COMMAND_F(c_reload_admins, "Reload admin config", FCVAR_SPONLY | FCVAR_LINKE
 	Message("Admins reloaded\n");
 }
 
-CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+CON_COMMAND_F(c_reload_infractions, "- Reload infractions file", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	if (!g_pAdminSystem->LoadInfractions() || !GetGlobals())
 		return;
@@ -536,7 +536,7 @@ CON_COMMAND_CHAT_FLAGS(entfire, "<name> <input> [parameter] - Fire outputs at en
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Input successful on %i entities.", iFoundEnts);
 }
 
-CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <inpu> [parameter] - Fire outputs at player pawns", ADMFLAG_RCON)
+CON_COMMAND_CHAT_FLAGS(entfirepawn, "<name> <input> [parameter] - Fire outputs at player pawns", ADMFLAG_RCON)
 {
 	if (args.ArgC() < 3)
 	{

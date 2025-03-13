@@ -2194,7 +2194,7 @@ int GetTemplateSuffixNumber(const char* szName)
 	return -1;
 }
 
-CON_COMMAND_CHAT_FLAGS(ew_reload, "Reloads the current map's entwatch config", ADMFLAG_CONFIG)
+CON_COMMAND_CHAT_FLAGS(ew_reload, "- Reloads the current map's entwatch config", ADMFLAG_CONFIG)
 {
 	if (!g_cvarEnableEntWatch.Get() || !GetGlobals())
 		return;
@@ -2216,7 +2216,7 @@ CON_COMMAND_CHAT_FLAGS(ew_reload, "Reloads the current map's entwatch config", A
 	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Config reloaded successfully.");
 }
 
-CON_COMMAND_CHAT_FLAGS(etransfer, "Transfer an EntWatch item", ADMFLAG_GENERIC)
+CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an EntWatch item", ADMFLAG_GENERIC)
 {
 	if (!g_cvarEnableEntWatch.Get() || !GetGlobals())
 		return;
@@ -2459,7 +2459,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "Transfer an EntWatch item", ADMFLAG_GENERIC)
 	g_pEWHandler->mapTransfers[player->GetPlayerSlot()] = transferInfo;
 }
 
-CON_COMMAND_CHAT(ew_dump, "Prints the currently loaded config to console")
+CON_COMMAND_CHAT(ew_dump, "- Prints the currently loaded config to console")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
@@ -2473,7 +2473,7 @@ CON_COMMAND_CHAT(ew_dump, "Prints the currently loaded config to console")
 	g_pEWHandler->PrintLoadedConfig(player->GetPlayerSlot());
 }
 
-CON_COMMAND_CHAT(etag, "Toggle EntWatch clantags on the scoreboard")
+CON_COMMAND_CHAT(etag, "- Toggle EntWatch clantags on the scoreboard")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
@@ -2501,7 +2501,7 @@ CON_COMMAND_CHAT(etag, "Toggle EntWatch clantags on the scoreboard")
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "You have\x07 Disabled\x01 EntWatch clantag updates");
 }
 
-CON_COMMAND_CHAT(hud, "Toggle EntWatch HUD")
+CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;

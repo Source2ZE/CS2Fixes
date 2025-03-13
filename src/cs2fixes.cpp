@@ -752,7 +752,7 @@ void FullUpdateAllClients()
 }
 
 // Because sv_fullupdate doesn't work
-CON_COMMAND_F(cs2f_fullupdate, "Force a full update for all clients.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+CON_COMMAND_F(cs2f_fullupdate, "- Force a full update for all clients.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
 {
 	FullUpdateAllClients();
 }
