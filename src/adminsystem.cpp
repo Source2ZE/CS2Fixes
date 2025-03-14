@@ -702,6 +702,18 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 	Message("[PM to %s] %s: %s\n", pTarget->GetPlayerName(), pszName, strMessage.c_str());
 }
 
+size_t CountCharacters(const std::string& str)
+{
+	size_t count = 0;
+	for (size_t i = 0; i < str.length(); ++i)
+	{
+		// Check if byte is a UTF-8 lead byte (indicating a new character)
+		if ((str[i] & 0xC0) != 0x80)
+			++count;
+	}
+	return count;
+}
+
 CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GENERIC)
 {
 	if (!GetGlobals())
@@ -724,8 +736,8 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GE
 		std::string strName = ccsPly->GetPlayerName();
 		if (strName.length() == 0)
 			strName = "< blank >";
-		else if (strName.length() > 20)
-			strName = strName.substr(0, 17) + "...";
+		else if (CountCharacters(strName) > 20)
+			strName = strName.substr(0, 17) + "..."; // This may extra shorten unicode character names, but whatever
 
 		if (pPlayer->IsFakeClient())
 		{
@@ -826,10 +838,10 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GE
 	ClientPrint(player, HUD_PRINTCONSOLE, "|----------------------|----------------------------------------------------|-------------------|");
 	for (auto [strPlayerName, strFlags, iSteamID] : rgNameSlotID)
 	{
-		if (strPlayerName.length() % 2 == 1)
+		if (CountCharacters(strPlayerName) % 2 == 1)
 			strPlayerName = strPlayerName + ' ';
-		if (strPlayerName.length() < 20)
-			strPlayerName = std::string((20 - strPlayerName.length()) / 2, ' ') + strPlayerName + std::string((20 - strPlayerName.length()) / 2, ' ');
+		if (CountCharacters(strPlayerName) < 20)
+			strPlayerName = std::string((20 - CountCharacters(strPlayerName)) / 2, ' ') + strPlayerName + std::string((20 - CountCharacters(strPlayerName)) / 2, ' ');
 
 		if (strFlags.length() <= 50)
 		{
