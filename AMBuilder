@@ -64,6 +64,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/events.cpp',
     'src/utils/entity.cpp',
     'src/utils/weapon.cpp',
+    'src/cs2_sdk/entity/services.cpp',
     'src/cs2_sdk/schema.cpp',
     'src/ctimer.cpp',
     'src/panoramavote.cpp',

@@ -217,6 +217,7 @@
     <ClCompile Include="src\utils\plat_unix.cpp" />
     <ClCompile Include="src\utils\plat_win.cpp" />
     <ClCompile Include="src\utils\weapon.cpp" />
+    <ClCompile Include="src\cs2_sdk\entity\services.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\buttonwatch.h" />

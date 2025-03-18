@@ -216,28 +216,9 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 	player->m_pInGameMoneyServices->m_iAccount = money - pWeaponInfo->m_nPrice;
 
-	// If the weapon spawn goes through AWS, it needs to be reselected with a 1 tick delay (some fuckery with team change?)
+	// If the weapon spawn goes through AWS, it needs to be manually selected because some fuckery with team change causes it to be initially spawned dropped in-world
 	if (pWeaponInfo->m_eSlot == GEAR_SLOT_RIFLE || pWeaponInfo->m_eSlot == GEAR_SLOT_PISTOL)
-	{
-		CHandle<CBasePlayerWeapon> hWeapon = pWeapon->GetHandle();
-		CHandle<CCSPlayerPawn> hPawn = pPawn->GetHandle();
-
-		new CTimer(0.0f, false, false, [hWeapon, hPawn]() {
-			CBasePlayerWeapon* pWeapon = hWeapon.Get();
-			CCSPlayerPawn* pPawn = hPawn.Get();
-
-			if (!pWeapon || !pPawn)
-				return -1.0f;
-
-			CCSPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
-
-			if (!pWeaponServices)
-				return -1.0f;
-
-			pWeaponServices->SelectItem(pWeapon);
-			return -1.0f;
-		});
-	}
+		pWeaponServices->SelectItem(pWeapon);
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have purchased %s for $%i", pWeaponInfo->m_pName, pWeaponInfo->m_nPrice);
 }

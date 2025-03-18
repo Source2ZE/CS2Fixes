@@ -22,7 +22,6 @@
 #include "viewmodels.h"
 #include "weapon.h"
 
-#include <entity/ccsplayerpawn.h>
 #include <entity/ccsweaponbase.h>
 #include <platform.h>
 #include <unordered_map>
@@ -178,6 +177,11 @@ public:
 		static int offset = g_GameConfig->GetOffset("CCSPlayer_WeaponServices::SelectItem");
 		CALL_VIRTUAL(void, offset, this, pWeapon, unk1);
 	}
+
+	void EquipWeapon(CBasePlayerWeapon* pWeapon)
+	{
+		addresses::CCSPlayer_WeaponServices_EquipWeapon(this, pWeapon);
+	}
 };
 
 class CCSPlayerController_InGameMoneyServices
@@ -218,38 +222,8 @@ public:
 	// Custom functions
 	[[nodiscard]] static bool IsAwsProcessing() noexcept { return g_bAwsChangingTeam; }
 	static void ResetAwsProcessing() { g_bAwsChangingTeam = false; }
-
-	[[nodiscard]] static gear_slot_t GetItemGearSlot(const char* item) noexcept
-	{
-		if (const auto pInfo = FindWeaponInfoByClass(item))
-			return pInfo->m_eSlot;
-
-		return GEAR_SLOT_INVALID;
-	}
-
-	CBasePlayerWeapon* GiveNamedItemAws(const char* item) noexcept
-	{
-		auto pPawn = reinterpret_cast<CBaseEntity*>(GetPawn());
-		if (!pPawn || pPawn->m_iTeamNum() != CS_TEAM_CT) // only for CT
-			return GiveNamedItem(item);
-
-		const auto pInfo = FindWeaponInfoByClass(item);
-		if (!pInfo)
-			return GiveNamedItem(item);
-
-		if (pInfo->m_iTeamNum == 0
-			|| !(pInfo->m_eSlot == GEAR_SLOT_RIFLE || pInfo->m_eSlot == GEAR_SLOT_PISTOL)
-			|| pInfo->m_iTeamNum == pPawn->m_iTeamNum())
-			return GiveNamedItem(item);
-
-		const auto team = pPawn->m_iTeamNum();
-		g_bAwsChangingTeam = true;
-		pPawn->m_iTeamNum(pInfo->m_iTeamNum);
-		const auto pWeapon = GiveNamedItem(item);
-		pPawn->m_iTeamNum(team);
-		g_bAwsChangingTeam = false;
-		return pWeapon;
-	}
+	[[nodiscard]] static gear_slot_t GetItemGearSlot(const char* item) noexcept;
+	CBasePlayerWeapon* GiveNamedItemAws(const char* item) noexcept;
 };
 
 // We need an exactly sized class to be able to iterate the vector, our schema system implementation can't do this

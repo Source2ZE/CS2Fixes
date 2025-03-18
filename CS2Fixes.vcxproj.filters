@@ -182,6 +182,9 @@
     <ClCompile Include="src\utils\weapon.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\cs2_sdk\entity\services.cpp">
+      <Filter>Source Files\cs2_sdk\entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
