@@ -504,7 +504,7 @@ void PrintHelp(CCSPlayerController* player)
 		{
 			CChatCommand* cmd = g_CommandList[i];
 			uint64 flags = cmd->GetAdminFlags();
-			
+
 			if ((pZEPlayer->IsAdminFlagSet(flags) || ((flags & FLAG_LEADER) == FLAG_LEADER && pZEPlayer->IsLeader()))
 				&& !cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
 				rgstrCommands.push_back(std::string("!") + cmd->GetName() + " " + cmd->GetDescription());
