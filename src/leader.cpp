@@ -420,7 +420,7 @@ void Leader_OnRoundStart(IGameEvent* pEvent)
 		if (zpLeader && zpLeader->IsLeader())
 			Leader_ApplyLeaderVisuals(pawnLeader);
 	}
-	
+
 	g_bPingWithLeader = true;
 	g_iMarkerCount = 0;
 }

@@ -37,10 +37,8 @@ void UnlockConVars()
 	for (ConVarRefAbstract ref(ConVarRef((uint16)0)); ref.IsValidRef(); ref = ConVarRefAbstract(ConVarRef(ref.GetAccessIndex() + 1)))
 	{
 		for (int i = 0; i < sizeof(pUnCheatCvars) / sizeof(*pUnCheatCvars); i++)
-		{
 			if (!V_strcmp(ref.GetName(), pUnCheatCvars[i]))
 				ref.RemoveFlags(FCVAR_CHEAT);
-		}
 
 		if (!ref.IsFlagSet(g_iFlagsToRemove))
 			continue;
@@ -63,10 +61,8 @@ void UnlockConCommands()
 	for (ConCommandRef ref = ConCommandRef((uint16)0); ref.GetRawData() != data; ref = ConCommandRef(ref.GetAccessIndex() + 1))
 	{
 		for (int i = 0; i < sizeof(pUnCheatCmds) / sizeof(*pUnCheatCmds); i++)
-		{
 			if (!V_strcmp(ref.GetName(), pUnCheatCmds[i]))
 				ref.RemoveFlags(FCVAR_CHEAT);
-		}
 
 		if (!ref.IsFlagSet(g_iFlagsToRemove))
 			continue;

@@ -84,7 +84,7 @@ bool UnregisterGameSystem()
 	// Go to the next instruction, which is the starting point of the relative jump
 	ptr += 4;
 
-	CGameSystemEventDispatcher **ppDispatchers = (CGameSystemEventDispatcher**)(ptr + offset);
+	CGameSystemEventDispatcher** ppDispatchers = (CGameSystemEventDispatcher**)(ptr + offset);
 
 	// Here the opcode is 2 bytes as it's moving a dword, not a qword, but that's the start of a vector object
 	ptr = (uint8*)g_GameConfig->ResolveSignature("IGameSystem_LoopDestroyAllSystems_s_GameSystems") + 2;
@@ -101,7 +101,7 @@ bool UnregisterGameSystem()
 
 	CUtlVector<AddedGameSystem_t>* pGameSystems = (CUtlVector<AddedGameSystem_t>*)(ptr + offset);
 
-	auto *pDispatcher = *ppDispatchers;
+	auto* pDispatcher = *ppDispatchers;
 
 	if (!pDispatcher || !pGameSystems)
 	{
@@ -109,8 +109,8 @@ bool UnregisterGameSystem()
 		return false;
 	}
 
-	auto &funcListeners = *pDispatcher->m_funcListeners;
-	auto &gameSystems = *pGameSystems;
+	auto& funcListeners = *pDispatcher->m_funcListeners;
+	auto& gameSystems = *pGameSystems;
 
 	FOR_EACH_VEC_BACK(gameSystems, i)
 	{
@@ -123,7 +123,7 @@ bool UnregisterGameSystem()
 
 	FOR_EACH_VEC_BACK(funcListeners, i)
 	{
-		auto &vecListeners = funcListeners[i];
+		auto& vecListeners = funcListeners[i];
 
 		FOR_EACH_VEC_BACK(vecListeners, j)
 		{

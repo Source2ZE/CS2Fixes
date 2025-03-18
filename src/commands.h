@@ -36,7 +36,6 @@ class CChatCommand;
 
 extern CUtlMap<uint32, CChatCommand*> g_CommandList;
 
-
 extern CConVar<bool> g_cvarEnableCommands;
 extern CConVar<bool> g_cvarEnableAdminCommands;
 
@@ -111,7 +110,7 @@ void ParseChatCommand(const char*, CCSPlayerController*);
                                                                                                                                        \
 		name##_chat_command(args, pController);                                                                                        \
 	}                                                                                                                                  \
-	static ConCommand name##_command(COMMAND_PREFIX #name, name##_con_callback,                                           \
+	static ConCommand name##_command(COMMAND_PREFIX #name, name##_con_callback,                                                        \
 									 description, FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);                                 \
 	void name##_callback(const CCommand& args, CCSPlayerController* player)
 

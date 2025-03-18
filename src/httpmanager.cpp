@@ -155,9 +155,9 @@ void HTTPManager::GenerateRequest(EHTTPMethod method, const char* pszUrl, const 
 	// Message("HTTP request: %p\n", hReq);
 
 	bool shouldHaveBody = method == k_EHTTPMethodPOST
-		|| method == k_EHTTPMethodPATCH
-		|| method == k_EHTTPMethodPUT
-		|| method == k_EHTTPMethodDELETE;
+						  || method == k_EHTTPMethodPATCH
+						  || method == k_EHTTPMethodPUT
+						  || method == k_EHTTPMethodDELETE;
 
 	if (shouldHaveBody && !g_http->SetHTTPRequestRawPostBody(hReq, "application/json", (uint8*)pszText, size))
 	{
