@@ -68,7 +68,7 @@ CConVar<CUtlString> g_cvarDefendParticlePath("cs2f_leader_defend_particle", FCVA
 CConVar<CUtlString> g_cvarMarkParticlePath("cs2f_leader_mark_particle", FCVAR_NONE, "Path to particle to be used when a ct leader using player_ping", "particles/cs2fixes/leader_defend_mark.vpcf");
 CConVar<bool> g_cvarLeaderCanTargetPlayers("cs2f_leader_can_target_players", FCVAR_NONE, "Whether a leader can target other players with leader commands (not including c_leader)", false);
 CConVar<bool> g_cvarLeaderVoteMultiple("cs2f_leader_vote_multiple", FCVAR_NONE, "If true, players can vote up to cs2f_max_leaders leaders. If false, they may vote for a single leader", true);
-CConVar<int> g_cvarLeaderExtraScore("Extra score to give a leader to affect their position on the scoreboard", FCVAR_NONE, "Description", 20000, true, 0, false, 0);
+CConVar<int> g_cvarLeaderExtraScore("cs2f_leader_extra_score", FCVAR_NONE, "Extra score to give a leader to affect their position on the scoreboard", 20000, true, 0, false, 0);
 
 CConVar<int> g_cvarMaxLeaders("cs2f_leader_max_leaders", FCVAR_NONE, "Max amount of leaders set via c_vl or a leader using c_leader (doesn't impact admins)", 3, true, 0, true, 64);
 CConVar<int> g_cvarMaxMarkers("cs2f_leader_max_markers", FCVAR_NONE, "Max amount of markers set by leaders (doesn't impact admins)", 6, true, 0, false, 0);

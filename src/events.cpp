@@ -76,7 +76,7 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
-CConVar<bool> g_cvarPurgeEntityNames("Whether to purge the EntityNames stringtable on new rounds", FCVAR_NONE, "Description", false);
+CConVar<bool> g_cvarPurgeEntityNames("cs2f_purge_entity_strings", FCVAR_NONE, "Whether to purge the EntityNames stringtable on new rounds", false);
 
 extern void FullUpdateAllClients();
 
