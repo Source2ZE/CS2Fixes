@@ -45,6 +45,10 @@ extern IGameTypes* g_pGameTypes;
 
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
+CConVar<float> g_cvarVoteMapsCooldown("cs2f_vote_maps_cooldown", FCVAR_NONE, "Default number of hours until a map can be played again i.e. cooldown", 6.0f);
+CConVar<int> g_cvarVoteMaxNominations("cs2f_vote_max_nominations", FCVAR_NONE, "Number of nominations to include per vote, out of a maximum of 10", 10, true, 0, true, 10);
+CConVar<int> g_cvarVoteMaxMaps("cs2f_vote_max_maps", FCVAR_NONE, "Number of total maps to include per vote, including nominations, out of a maximum of 10", 10, true, 2, true, 10);
+
 CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current map on completion", ADMFLAG_ROOT)
 {
 	if (!g_cvarVoteManagerEnable.Get())
@@ -76,10 +80,6 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 	g_pEngineServer2->ServerCommand(sChangeMapCmd);
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Map list reloaded!");
 }
-
-CConVar<float> g_cvarVoteMapsCooldown("cs2f_vote_maps_cooldown", FCVAR_NONE, "Default number of hours until a map can be played again i.e. cooldown", 6.0f);
-CConVar<int> g_cvarVoteMaxNominations("cs2f_vote_max_nominations", FCVAR_NONE, "Number of nominations to include per vote, out of a maximum of 10", 10, true, 0, true, 10);
-CConVar<int> g_cvarVoteMaxMaps("cs2f_vote_max_maps", FCVAR_NONE, "Number of total maps to include per vote, including nominations, out of a maximum of 10", 10, true, 2, true, 10);
 
 CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 {
