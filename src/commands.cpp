@@ -478,37 +478,100 @@ CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding players within %i units.", distance);
 }
 
-void PrintHelp(CCSPlayerController* player)
+void PrintHelp(const CCommand& args, CCSPlayerController* player)
 {
 	std::vector<std::string> rgstrCommands;
-	if (!player)
+	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands is:");
-
-		FOR_EACH_VEC(g_CommandList, i)
+		if (!player)
 		{
-			CChatCommand* cmd = g_CommandList[i];
+			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands is:");
 
-			if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
-				rgstrCommands.push_back(std::string("c_") + cmd->GetName() + " " + cmd->GetDescription());
+			FOR_EACH_VEC(g_CommandList, i)
+			{
+				CChatCommand* cmd = g_CommandList[i];
+
+				if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
+					rgstrCommands.push_back(std::string("c_") + cmd->GetName() + " " + cmd->GetDescription());
+			}
+		}
+		else
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all available commands will be shown in console.");
+			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands you can use is:");
+
+			ZEPlayer* pZEPlayer = player->GetZEPlayer();
+
+			FOR_EACH_VEC(g_CommandList, i)
+			{
+				CChatCommand* cmd = g_CommandList[i];
+				uint64 flags = cmd->GetAdminFlags();
+
+				if ((pZEPlayer->IsAdminFlagSet(flags) || ((flags & FLAG_LEADER) == FLAG_LEADER && pZEPlayer->IsLeader()))
+					&& !cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
+					rgstrCommands.push_back(std::string("!") + cmd->GetName() + " " + cmd->GetDescription());
+			}
 		}
 	}
 	else
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all available commands will be shown in console.");
-		ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands you can use is:");
+		const char* pszSearchTerm = args[1];
+		bool bOnlyCheckStart = false;
 
-		ZEPlayer* pZEPlayer = player->GetZEPlayer();
-
-		FOR_EACH_VEC(g_CommandList, i)
+		// If a user's search starts with a prefix needed to actually use a command,
+		// assume that they only want to see commands starting with that substring
+		if (V_strnicmp(args[1], "c_", 2) == 0)
 		{
-			CChatCommand* cmd = g_CommandList[i];
-			uint64 flags = cmd->GetAdminFlags();
-
-			if ((pZEPlayer->IsAdminFlagSet(flags) || ((flags & FLAG_LEADER) == FLAG_LEADER && pZEPlayer->IsLeader()))
-				&& !cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
-				rgstrCommands.push_back(std::string("!") + cmd->GetName() + " " + cmd->GetDescription());
+			bOnlyCheckStart = true;
+			pszSearchTerm++;
+			pszSearchTerm++;
 		}
+		else if (V_strnicmp(args[1], "!", 1) == 0 || V_strnicmp(args[1], "/", 1) == 0)
+		{
+			bOnlyCheckStart = true;
+			pszSearchTerm++;
+		}
+
+		if (!player)
+		{
+			FOR_EACH_VEC(g_CommandList, i)
+			{
+				CChatCommand* cmd = g_CommandList[i];
+
+				if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP)
+					&& ((!bOnlyCheckStart && V_stristr(cmd->GetName(), pszSearchTerm))
+						|| (bOnlyCheckStart && V_strnicmp(cmd->GetName(), pszSearchTerm, strlen(pszSearchTerm)) == 0)))
+					rgstrCommands.push_back(std::string("c_") + cmd->GetName() + " " + cmd->GetDescription());
+			}
+		}
+		else
+		{
+			ZEPlayer* pZEPlayer = player->GetZEPlayer();
+
+			FOR_EACH_VEC(g_CommandList, i)
+			{
+				CChatCommand* cmd = g_CommandList[i];
+				uint64 flags = cmd->GetAdminFlags();
+
+				if ((pZEPlayer->IsAdminFlagSet(flags) || ((flags & FLAG_LEADER) == FLAG_LEADER && pZEPlayer->IsLeader()))
+					&& !cmd->IsCommandFlagSet(CMDFLAG_NOHELP)
+					&& ((!bOnlyCheckStart && V_stristr(cmd->GetName(), pszSearchTerm))
+						|| (bOnlyCheckStart && V_strnicmp(cmd->GetName(), pszSearchTerm, strlen(pszSearchTerm)) == 0)))
+					rgstrCommands.push_back(std::string("!") + cmd->GetName() + " " + cmd->GetDescription());
+			}
+		}
+
+		if (rgstrCommands.size() == 0)
+		{
+			ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "No commands matched \"%s\".", args[1]);
+			if (player)
+				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No commands matched \"%s\".", args[1]);
+			return;
+		}
+
+		ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands matching \"%s\" is:", args[1]);
+		if (player)
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all commands matching \"%s\" will be shown in console.", args[1]);
 	}
 
 	std::sort(rgstrCommands.begin(), rgstrCommands.end());
@@ -522,83 +585,12 @@ void PrintHelp(CCSPlayerController* player)
 
 CON_COMMAND_CHAT(help, "- Display list of commands in console")
 {
-	PrintHelp(player);
+	PrintHelp(args, player);
 }
 
 CON_COMMAND_CHAT(find, "<text> - Search for specific commands and list them in console")
 {
-	if (args.ArgC() < 2)
-	{
-		PrintHelp(player);
-		return;
-	}
-
-	const char* pszSearchTerm = args[1];
-	bool bOnlyCheckStart = false;
-
-	// If a user's search starts with a prefix needed to actually use a command,
-	// assume that they only want to see commands starting with that substring
-	if (V_strnicmp(args[1], "c_", 2) == 0)
-	{
-		bOnlyCheckStart = true;
-		pszSearchTerm++;
-		pszSearchTerm++;
-	}
-	else if (V_strnicmp(args[1], "!", 1) == 0 || V_strnicmp(args[1], "/", 1) == 0)
-	{
-		bOnlyCheckStart = true;
-		pszSearchTerm++;
-	}
-
-	std::vector<std::string> rgstrCommands;
-	if (!player)
-	{
-		FOR_EACH_VEC(g_CommandList, i)
-		{
-			CChatCommand* cmd = g_CommandList[i];
-
-			if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP)
-				&& ((!bOnlyCheckStart && V_stristr(cmd->GetName(), pszSearchTerm))
-					|| (bOnlyCheckStart && V_strnicmp(cmd->GetName(), pszSearchTerm, strlen(pszSearchTerm)) == 0)))
-				rgstrCommands.push_back(std::string("c_") + cmd->GetName() + " " + cmd->GetDescription());
-		}
-	}
-	else
-	{
-		ZEPlayer* pZEPlayer = player->GetZEPlayer();
-
-		FOR_EACH_VEC(g_CommandList, i)
-		{
-			CChatCommand* cmd = g_CommandList[i];
-			uint64 flags = cmd->GetAdminFlags();
-
-			if ((pZEPlayer->IsAdminFlagSet(flags) || ((flags & FLAG_LEADER) == FLAG_LEADER && pZEPlayer->IsLeader()))
-				&& !cmd->IsCommandFlagSet(CMDFLAG_NOHELP)
-				&& ((!bOnlyCheckStart && V_stristr(cmd->GetName(), pszSearchTerm))
-					|| (bOnlyCheckStart && V_strnicmp(cmd->GetName(), pszSearchTerm, strlen(pszSearchTerm)) == 0)))
-				rgstrCommands.push_back(std::string("!") + cmd->GetName() + " " + cmd->GetDescription());
-		}
-	}
-
-	if (rgstrCommands.size() == 0)
-	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "No commands matched \"%s\".", args[1]);
-		if (player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No commands matched \"%s\".", args[1]);
-		return;
-	}
-
-	ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands matching \"%s\" is:", args[1]);
-	if (player)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all commands matching \"%s\" will be shown in console.", args[1]);
-
-	std::sort(rgstrCommands.begin(), rgstrCommands.end());
-
-	for (const auto& strCommand : rgstrCommands)
-		ClientPrint(player, HUD_PRINTCONSOLE, strCommand.c_str());
-
-	if (player)
-		ClientPrint(player, HUD_PRINTCONSOLE, "! can be replaced with / for a silent chat command, or c_ for console usage");
+	PrintHelp(args, player);
 }
 
 CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
