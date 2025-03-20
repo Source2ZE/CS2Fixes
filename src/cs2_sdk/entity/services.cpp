@@ -20,6 +20,8 @@
 #include "services.h"
 #include "ccsplayerpawn.h"
 
+bool g_bAwsChangingTeam = false;
+
 [[nodiscard]] gear_slot_t CCSPlayer_ItemServices::GetItemGearSlot(const char* item) noexcept
 {
 	if (const auto pInfo = FindWeaponInfoByClass(item))
@@ -53,7 +55,7 @@ CBasePlayerWeapon* CCSPlayer_ItemServices::GiveNamedItemAws(const char* item) no
 	pPawn->m_iTeamNum(pInfo->m_iTeamNum);
 	const auto pWeapon = GiveNamedItem(item);
 
-	// Forcibly equip the weapon, for some reason, doing team changes here causes GiveNamedItem to spawn the weapon dropped in-world? Which meant other players could pick up the weapon instead
+	// Forcibly equip the weapon, because it spawns dropped in-world due to ZR enforcing mp_weapons_allow_* cvars against T's, which meant other players could pick up the weapon instead
 	pWeaponServices->EquipWeapon(pWeapon);
 
 	pPawn->m_iTeamNum(team);
