@@ -32,6 +32,8 @@
 #define AMMO_OFFSET_MOLOTOV 16
 #define AMMO_OFFSET_DECOY 17
 
+extern bool g_bAwsChangingTeam;
+
 struct CSPerRoundStats_t
 {
 public:
@@ -199,8 +201,6 @@ class CPlayer_ItemServices : public CPlayerPawnComponent
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_ItemServices);
 };
-
-static bool g_bAwsChangingTeam = false;
 
 class CCSPlayer_ItemServices : public CPlayer_ItemServices
 {
