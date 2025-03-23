@@ -584,7 +584,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 				pszMessage += 1;
 
 			// Host_Say at some point removes the trailing " for whatever reason, so we only remove if it was never called
-			if (bSilent && pszMessage[V_strlen(pszMessage) - 1] == '"')
+			if ((bGagged || bSilent || bFlooding) && pszMessage[V_strlen(pszMessage) - 1] == '"')
 				pszMessage[V_strlen(pszMessage) - 1] = '\0';
 
 			ParseChatCommand(pszMessage, pController);
