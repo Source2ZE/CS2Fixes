@@ -947,6 +947,19 @@ void ZR_RespawnAll()
 	}
 }
 
+static bool g_bNemesisMode = false;
+CON_COMMAND_F(zr_nemesis_mode, "Whether to enable Nemesis mode (CTs die but do not swap teams when stabbed)", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	if (args.ArgC() < 2)
+	{
+		Msg("zr_nemesis_mode %b\n", g_bNemesisMode);
+		return;
+	}
+	g_bNemesisMode = V_StringToBool(args[1], false);
+	if (g_bEnableZR && !g_bNemesisMode && g_bRespawnEnabled)
+		ZR_RespawnAll(); // Respawn all dead CTs that hadn't swapped teams
+}
+
 void ToggleRespawn(bool force = false, bool value = false)
 {
 	if ((!force && !g_bRespawnEnabled) || (force && value))
@@ -1037,7 +1050,7 @@ void ZR_OnRoundStart(IGameEvent* pEvent)
 void ZR_OnPlayerSpawn(CCSPlayerController* pController)
 {
 	// delay infection a bit
-	bool bInfect = g_ZRRoundState == EZRRoundState::POST_INFECTION;
+	bool bInfect = g_ZRRoundState == EZRRoundState::POST_INFECTION && (!g_bNemesisMode || pController->m_iTeamNum == CS_TEAM_T);
 
 	// We're infecting this guy with a delay, disable all damage as they have 100 hp until then
 	// also set team immediately in case the spawn teleport is team filtered
@@ -1480,7 +1493,10 @@ bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo* pInfo, CCSPlayerPawn* pVictimPa
 	const char* pszAbilityClass = pInfo->m_hAbility.Get() ? pInfo->m_hAbility.Get()->GetClassname() : "";
 	if (pAttackerPawn->m_iTeamNum() == CS_TEAM_T && pVictimPawn->m_iTeamNum() == CS_TEAM_CT && !V_strncmp(pszAbilityClass, "weapon_knife", 12))
 	{
-		ZR_Infect(pAttackerController, pVictimController, false);
+		if (g_bNemesisMode)
+			pVictimPawn->m_iHealth(0);
+		else
+			ZR_Infect(pAttackerController, pVictimController, false);
 		return true; // nullify the damage
 	}
 
@@ -1652,7 +1668,8 @@ void ZR_OnPlayerDeath(IGameEvent* pEvent)
 	CHandle<CCSPlayerController> handle = pVictimController->GetHandle();
 	new CTimer(g_cvarRespawnDelay.Get() < 0.0f ? 2.0f : g_cvarRespawnDelay.Get(), false, false, [handle]() {
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
-		if (!pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T)
+		if (!pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T ||
+			(g_bNemesisMode && pController->m_iTeamNum == CS_TEAM_CT && g_ZRRoundState == EZRRoundState::POST_INFECTION))
 			return -1.0f;
 		pController->Respawn();
 		return -1.0f;
@@ -1694,6 +1711,10 @@ bool ZR_IsTeamAlive(int iTeamNum)
 bool ZR_CheckTeamWinConditions(int iTeamNum)
 {
 	if (g_ZRRoundState == EZRRoundState::ROUND_END || (iTeamNum == CS_TEAM_CT && g_bRespawnEnabled) || (iTeamNum != CS_TEAM_T && iTeamNum != CS_TEAM_CT))
+		return false;
+
+	ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_respawn_on_death_ct"));
+	if (iTeamNum == CS_TEAM_T && g_bNemesisMode && *(bool*)&cvar->values)
 		return false;
 
 	// check the opposite team
