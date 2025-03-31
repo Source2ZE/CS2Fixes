@@ -167,11 +167,12 @@ enum ENetworkDisconnectionReason : int {
   NETWORK_DISCONNECT_KICKED_NOSTEAMLOGIN = 160,
   NETWORK_DISCONNECT_KICKED_NOSTEAMTICKET = 161,
   NETWORK_DISCONNECT_KICKED_INPUTAUTOMATION = 162,
-  NETWORK_DISCONNECT_KICKED_VACNETABNORMALBEHAVIOR = 163
+  NETWORK_DISCONNECT_KICKED_VACNETABNORMALBEHAVIOR = 163,
+  NETWORK_DISCONNECT_KICKED_INSECURECLIENT = 164
 };
 bool ENetworkDisconnectionReason_IsValid(int value);
 constexpr ENetworkDisconnectionReason ENetworkDisconnectionReason_MIN = NETWORK_DISCONNECT_INVALID;
-constexpr ENetworkDisconnectionReason ENetworkDisconnectionReason_MAX = NETWORK_DISCONNECT_KICKED_VACNETABNORMALBEHAVIOR;
+constexpr ENetworkDisconnectionReason ENetworkDisconnectionReason_MAX = NETWORK_DISCONNECT_KICKED_INSECURECLIENT;
 constexpr int ENetworkDisconnectionReason_ARRAYSIZE = ENetworkDisconnectionReason_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ENetworkDisconnectionReason_descriptor();

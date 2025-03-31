@@ -79,6 +79,12 @@ extern CDemoFullPacketDefaultTypeInternal _CDemoFullPacket_default_instance_;
 class CDemoPacket;
 struct CDemoPacketDefaultTypeInternal;
 extern CDemoPacketDefaultTypeInternal _CDemoPacket_default_instance_;
+class CDemoRecovery;
+struct CDemoRecoveryDefaultTypeInternal;
+extern CDemoRecoveryDefaultTypeInternal _CDemoRecovery_default_instance_;
+class CDemoRecovery_DemoInitialSpawnGroupEntry;
+struct CDemoRecovery_DemoInitialSpawnGroupEntryDefaultTypeInternal;
+extern CDemoRecovery_DemoInitialSpawnGroupEntryDefaultTypeInternal _CDemoRecovery_DemoInitialSpawnGroupEntry_default_instance_;
 class CDemoSaveGame;
 struct CDemoSaveGameDefaultTypeInternal;
 extern CDemoSaveGameDefaultTypeInternal _CDemoSaveGame_default_instance_;
@@ -133,6 +139,8 @@ template<> ::CDemoFileHeader* Arena::CreateMaybeMessage<::CDemoFileHeader>(Arena
 template<> ::CDemoFileInfo* Arena::CreateMaybeMessage<::CDemoFileInfo>(Arena*);
 template<> ::CDemoFullPacket* Arena::CreateMaybeMessage<::CDemoFullPacket>(Arena*);
 template<> ::CDemoPacket* Arena::CreateMaybeMessage<::CDemoPacket>(Arena*);
+template<> ::CDemoRecovery* Arena::CreateMaybeMessage<::CDemoRecovery>(Arena*);
+template<> ::CDemoRecovery_DemoInitialSpawnGroupEntry* Arena::CreateMaybeMessage<::CDemoRecovery_DemoInitialSpawnGroupEntry>(Arena*);
 template<> ::CDemoSaveGame* Arena::CreateMaybeMessage<::CDemoSaveGame>(Arena*);
 template<> ::CDemoSendTables* Arena::CreateMaybeMessage<::CDemoSendTables>(Arena*);
 template<> ::CDemoSpawnGroups* Arena::CreateMaybeMessage<::CDemoSpawnGroups>(Arena*);
@@ -169,7 +177,8 @@ enum EDemoCommands : int {
   DEM_SpawnGroups = 15,
   DEM_AnimationData = 16,
   DEM_AnimationHeader = 17,
-  DEM_Max = 18,
+  DEM_Recovery = 18,
+  DEM_Max = 19,
   DEM_IsCompressed = 64
 };
 bool EDemoCommands_IsValid(int value);
@@ -5123,6 +5132,368 @@ class CDemoSpawnGroups :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_demo_2eproto;
 };
+// -------------------------------------------------------------------
+
+class CDemoRecovery_DemoInitialSpawnGroupEntry :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoRecovery.DemoInitialSpawnGroupEntry) */ {
+ public:
+  inline CDemoRecovery_DemoInitialSpawnGroupEntry() : CDemoRecovery_DemoInitialSpawnGroupEntry(nullptr) {}
+  ~CDemoRecovery_DemoInitialSpawnGroupEntry() override;
+  explicit PROTOBUF_CONSTEXPR CDemoRecovery_DemoInitialSpawnGroupEntry(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CDemoRecovery_DemoInitialSpawnGroupEntry(const CDemoRecovery_DemoInitialSpawnGroupEntry& from);
+  CDemoRecovery_DemoInitialSpawnGroupEntry(CDemoRecovery_DemoInitialSpawnGroupEntry&& from) noexcept
+    : CDemoRecovery_DemoInitialSpawnGroupEntry() {
+    *this = ::std::move(from);
+  }
+
+  inline CDemoRecovery_DemoInitialSpawnGroupEntry& operator=(const CDemoRecovery_DemoInitialSpawnGroupEntry& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CDemoRecovery_DemoInitialSpawnGroupEntry& operator=(CDemoRecovery_DemoInitialSpawnGroupEntry&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CDemoRecovery_DemoInitialSpawnGroupEntry& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CDemoRecovery_DemoInitialSpawnGroupEntry* internal_default_instance() {
+    return reinterpret_cast<const CDemoRecovery_DemoInitialSpawnGroupEntry*>(
+               &_CDemoRecovery_DemoInitialSpawnGroupEntry_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    25;
+
+  friend void swap(CDemoRecovery_DemoInitialSpawnGroupEntry& a, CDemoRecovery_DemoInitialSpawnGroupEntry& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CDemoRecovery_DemoInitialSpawnGroupEntry* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CDemoRecovery_DemoInitialSpawnGroupEntry* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CDemoRecovery_DemoInitialSpawnGroupEntry* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CDemoRecovery_DemoInitialSpawnGroupEntry>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CDemoRecovery_DemoInitialSpawnGroupEntry& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CDemoRecovery_DemoInitialSpawnGroupEntry& from) {
+    CDemoRecovery_DemoInitialSpawnGroupEntry::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CDemoRecovery_DemoInitialSpawnGroupEntry* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CDemoRecovery.DemoInitialSpawnGroupEntry";
+  }
+  protected:
+  explicit CDemoRecovery_DemoInitialSpawnGroupEntry(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSpawngrouphandleFieldNumber = 1,
+    kWasCreatedFieldNumber = 2,
+  };
+  // optional uint32 spawngrouphandle = 1;
+  bool has_spawngrouphandle() const;
+  private:
+  bool _internal_has_spawngrouphandle() const;
+  public:
+  void clear_spawngrouphandle();
+  uint32_t spawngrouphandle() const;
+  void set_spawngrouphandle(uint32_t value);
+  private:
+  uint32_t _internal_spawngrouphandle() const;
+  void _internal_set_spawngrouphandle(uint32_t value);
+  public:
+
+  // optional bool was_created = 2;
+  bool has_was_created() const;
+  private:
+  bool _internal_has_was_created() const;
+  public:
+  void clear_was_created();
+  bool was_created() const;
+  void set_was_created(bool value);
+  private:
+  bool _internal_was_created() const;
+  void _internal_set_was_created(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CDemoRecovery.DemoInitialSpawnGroupEntry)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    uint32_t spawngrouphandle_;
+    bool was_created_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_demo_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CDemoRecovery :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CDemoRecovery) */ {
+ public:
+  inline CDemoRecovery() : CDemoRecovery(nullptr) {}
+  ~CDemoRecovery() override;
+  explicit PROTOBUF_CONSTEXPR CDemoRecovery(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CDemoRecovery(const CDemoRecovery& from);
+  CDemoRecovery(CDemoRecovery&& from) noexcept
+    : CDemoRecovery() {
+    *this = ::std::move(from);
+  }
+
+  inline CDemoRecovery& operator=(const CDemoRecovery& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CDemoRecovery& operator=(CDemoRecovery&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CDemoRecovery& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CDemoRecovery* internal_default_instance() {
+    return reinterpret_cast<const CDemoRecovery*>(
+               &_CDemoRecovery_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    26;
+
+  friend void swap(CDemoRecovery& a, CDemoRecovery& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CDemoRecovery* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CDemoRecovery* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CDemoRecovery* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CDemoRecovery>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CDemoRecovery& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CDemoRecovery& from) {
+    CDemoRecovery::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CDemoRecovery* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CDemoRecovery";
+  }
+  protected:
+  explicit CDemoRecovery(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef CDemoRecovery_DemoInitialSpawnGroupEntry DemoInitialSpawnGroupEntry;
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSpawnGroupMessageFieldNumber = 2,
+    kInitialSpawnGroupFieldNumber = 1,
+  };
+  // optional bytes spawn_group_message = 2;
+  bool has_spawn_group_message() const;
+  private:
+  bool _internal_has_spawn_group_message() const;
+  public:
+  void clear_spawn_group_message();
+  const std::string& spawn_group_message() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_spawn_group_message(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_spawn_group_message();
+  PROTOBUF_NODISCARD std::string* release_spawn_group_message();
+  void set_allocated_spawn_group_message(std::string* spawn_group_message);
+  private:
+  const std::string& _internal_spawn_group_message() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_spawn_group_message(const std::string& value);
+  std::string* _internal_mutable_spawn_group_message();
+  public:
+
+  // optional .CDemoRecovery.DemoInitialSpawnGroupEntry initial_spawn_group = 1;
+  bool has_initial_spawn_group() const;
+  private:
+  bool _internal_has_initial_spawn_group() const;
+  public:
+  void clear_initial_spawn_group();
+  const ::CDemoRecovery_DemoInitialSpawnGroupEntry& initial_spawn_group() const;
+  PROTOBUF_NODISCARD ::CDemoRecovery_DemoInitialSpawnGroupEntry* release_initial_spawn_group();
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* mutable_initial_spawn_group();
+  void set_allocated_initial_spawn_group(::CDemoRecovery_DemoInitialSpawnGroupEntry* initial_spawn_group);
+  private:
+  const ::CDemoRecovery_DemoInitialSpawnGroupEntry& _internal_initial_spawn_group() const;
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* _internal_mutable_initial_spawn_group();
+  public:
+  void unsafe_arena_set_allocated_initial_spawn_group(
+      ::CDemoRecovery_DemoInitialSpawnGroupEntry* initial_spawn_group);
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* unsafe_arena_release_initial_spawn_group();
+
+  // @@protoc_insertion_point(class_scope:CDemoRecovery)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr spawn_group_message_;
+    ::CDemoRecovery_DemoInitialSpawnGroupEntry* initial_spawn_group_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_demo_2eproto;
+};
 // ===================================================================
 
 
@@ -8865,9 +9236,235 @@ CDemoSpawnGroups::mutable_msgs() {
   return &_impl_.msgs_;
 }
 
+// -------------------------------------------------------------------
+
+// CDemoRecovery_DemoInitialSpawnGroupEntry
+
+// optional uint32 spawngrouphandle = 1;
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_has_spawngrouphandle() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::has_spawngrouphandle() const {
+  return _internal_has_spawngrouphandle();
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::clear_spawngrouphandle() {
+  _impl_.spawngrouphandle_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline uint32_t CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_spawngrouphandle() const {
+  return _impl_.spawngrouphandle_;
+}
+inline uint32_t CDemoRecovery_DemoInitialSpawnGroupEntry::spawngrouphandle() const {
+  // @@protoc_insertion_point(field_get:CDemoRecovery.DemoInitialSpawnGroupEntry.spawngrouphandle)
+  return _internal_spawngrouphandle();
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_set_spawngrouphandle(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.spawngrouphandle_ = value;
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::set_spawngrouphandle(uint32_t value) {
+  _internal_set_spawngrouphandle(value);
+  // @@protoc_insertion_point(field_set:CDemoRecovery.DemoInitialSpawnGroupEntry.spawngrouphandle)
+}
+
+// optional bool was_created = 2;
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_has_was_created() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::has_was_created() const {
+  return _internal_has_was_created();
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::clear_was_created() {
+  _impl_.was_created_ = false;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_was_created() const {
+  return _impl_.was_created_;
+}
+inline bool CDemoRecovery_DemoInitialSpawnGroupEntry::was_created() const {
+  // @@protoc_insertion_point(field_get:CDemoRecovery.DemoInitialSpawnGroupEntry.was_created)
+  return _internal_was_created();
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::_internal_set_was_created(bool value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.was_created_ = value;
+}
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::set_was_created(bool value) {
+  _internal_set_was_created(value);
+  // @@protoc_insertion_point(field_set:CDemoRecovery.DemoInitialSpawnGroupEntry.was_created)
+}
+
+// -------------------------------------------------------------------
+
+// CDemoRecovery
+
+// optional .CDemoRecovery.DemoInitialSpawnGroupEntry initial_spawn_group = 1;
+inline bool CDemoRecovery::_internal_has_initial_spawn_group() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.initial_spawn_group_ != nullptr);
+  return value;
+}
+inline bool CDemoRecovery::has_initial_spawn_group() const {
+  return _internal_has_initial_spawn_group();
+}
+inline void CDemoRecovery::clear_initial_spawn_group() {
+  if (_impl_.initial_spawn_group_ != nullptr) _impl_.initial_spawn_group_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const ::CDemoRecovery_DemoInitialSpawnGroupEntry& CDemoRecovery::_internal_initial_spawn_group() const {
+  const ::CDemoRecovery_DemoInitialSpawnGroupEntry* p = _impl_.initial_spawn_group_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CDemoRecovery_DemoInitialSpawnGroupEntry&>(
+      ::_CDemoRecovery_DemoInitialSpawnGroupEntry_default_instance_);
+}
+inline const ::CDemoRecovery_DemoInitialSpawnGroupEntry& CDemoRecovery::initial_spawn_group() const {
+  // @@protoc_insertion_point(field_get:CDemoRecovery.initial_spawn_group)
+  return _internal_initial_spawn_group();
+}
+inline void CDemoRecovery::unsafe_arena_set_allocated_initial_spawn_group(
+    ::CDemoRecovery_DemoInitialSpawnGroupEntry* initial_spawn_group) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.initial_spawn_group_);
+  }
+  _impl_.initial_spawn_group_ = initial_spawn_group;
+  if (initial_spawn_group) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CDemoRecovery.initial_spawn_group)
+}
+inline ::CDemoRecovery_DemoInitialSpawnGroupEntry* CDemoRecovery::release_initial_spawn_group() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* temp = _impl_.initial_spawn_group_;
+  _impl_.initial_spawn_group_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CDemoRecovery_DemoInitialSpawnGroupEntry* CDemoRecovery::unsafe_arena_release_initial_spawn_group() {
+  // @@protoc_insertion_point(field_release:CDemoRecovery.initial_spawn_group)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* temp = _impl_.initial_spawn_group_;
+  _impl_.initial_spawn_group_ = nullptr;
+  return temp;
+}
+inline ::CDemoRecovery_DemoInitialSpawnGroupEntry* CDemoRecovery::_internal_mutable_initial_spawn_group() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.initial_spawn_group_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CDemoRecovery_DemoInitialSpawnGroupEntry>(GetArenaForAllocation());
+    _impl_.initial_spawn_group_ = p;
+  }
+  return _impl_.initial_spawn_group_;
+}
+inline ::CDemoRecovery_DemoInitialSpawnGroupEntry* CDemoRecovery::mutable_initial_spawn_group() {
+  ::CDemoRecovery_DemoInitialSpawnGroupEntry* _msg = _internal_mutable_initial_spawn_group();
+  // @@protoc_insertion_point(field_mutable:CDemoRecovery.initial_spawn_group)
+  return _msg;
+}
+inline void CDemoRecovery::set_allocated_initial_spawn_group(::CDemoRecovery_DemoInitialSpawnGroupEntry* initial_spawn_group) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.initial_spawn_group_;
+  }
+  if (initial_spawn_group) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(initial_spawn_group);
+    if (message_arena != submessage_arena) {
+      initial_spawn_group = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, initial_spawn_group, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.initial_spawn_group_ = initial_spawn_group;
+  // @@protoc_insertion_point(field_set_allocated:CDemoRecovery.initial_spawn_group)
+}
+
+// optional bytes spawn_group_message = 2;
+inline bool CDemoRecovery::_internal_has_spawn_group_message() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CDemoRecovery::has_spawn_group_message() const {
+  return _internal_has_spawn_group_message();
+}
+inline void CDemoRecovery::clear_spawn_group_message() {
+  _impl_.spawn_group_message_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CDemoRecovery::spawn_group_message() const {
+  // @@protoc_insertion_point(field_get:CDemoRecovery.spawn_group_message)
+  return _internal_spawn_group_message();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CDemoRecovery::set_spawn_group_message(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.spawn_group_message_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CDemoRecovery.spawn_group_message)
+}
+inline std::string* CDemoRecovery::mutable_spawn_group_message() {
+  std::string* _s = _internal_mutable_spawn_group_message();
+  // @@protoc_insertion_point(field_mutable:CDemoRecovery.spawn_group_message)
+  return _s;
+}
+inline const std::string& CDemoRecovery::_internal_spawn_group_message() const {
+  return _impl_.spawn_group_message_.Get();
+}
+inline void CDemoRecovery::_internal_set_spawn_group_message(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.spawn_group_message_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CDemoRecovery::_internal_mutable_spawn_group_message() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.spawn_group_message_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CDemoRecovery::release_spawn_group_message() {
+  // @@protoc_insertion_point(field_release:CDemoRecovery.spawn_group_message)
+  if (!_internal_has_spawn_group_message()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.spawn_group_message_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.spawn_group_message_.IsDefault()) {
+    _impl_.spawn_group_message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CDemoRecovery::set_allocated_spawn_group_message(std::string* spawn_group_message) {
+  if (spawn_group_message != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.spawn_group_message_.SetAllocated(spawn_group_message, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.spawn_group_message_.IsDefault()) {
+    _impl_.spawn_group_message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CDemoRecovery.spawn_group_message)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

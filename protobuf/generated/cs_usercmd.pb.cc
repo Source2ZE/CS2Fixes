@@ -85,7 +85,9 @@ PROTOBUF_CONSTEXPR CSGOUserCmdPB::CSGOUserCmdPB(
   , /*decltype(_impl_.input_history_)*/{}
   , /*decltype(_impl_.base_)*/nullptr
   , /*decltype(_impl_.left_hand_desired_)*/false
-  , /*decltype(_impl_.is_predicting_damage_)*/false
+  , /*decltype(_impl_.is_predicting_body_shot_fx_)*/false
+  , /*decltype(_impl_.is_predicting_head_shot_fx_)*/false
+  , /*decltype(_impl_.is_predicting_kill_ragdolls_)*/false
   , /*decltype(_impl_.attack3_start_history_index_)*/-1
   , /*decltype(_impl_.attack1_start_history_index_)*/-1
   , /*decltype(_impl_.attack2_start_history_index_)*/-1} {}
@@ -171,20 +173,24 @@ const uint32_t TableStruct_cs_5fusercmd_2eproto::offsets[] PROTOBUF_SECTION_VARI
   PROTOBUF_FIELD_OFFSET(::CSGOUserCmdPB, _impl_.attack2_start_history_index_),
   PROTOBUF_FIELD_OFFSET(::CSGOUserCmdPB, _impl_.attack3_start_history_index_),
   PROTOBUF_FIELD_OFFSET(::CSGOUserCmdPB, _impl_.left_hand_desired_),
-  PROTOBUF_FIELD_OFFSET(::CSGOUserCmdPB, _impl_.is_predicting_damage_),
+  PROTOBUF_FIELD_OFFSET(::CSGOUserCmdPB, _impl_.is_predicting_body_shot_fx_),
+  PROTOBUF_FIELD_OFFSET(::CSGOUserCmdPB, _impl_.is_predicting_head_shot_fx_),
+  PROTOBUF_FIELD_OFFSET(::CSGOUserCmdPB, _impl_.is_predicting_kill_ragdolls_),
   0,
   ~0u,
-  4,
+  6,
+  7,
   5,
-  3,
   1,
   2,
+  3,
+  4,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 9, -1, sizeof(::CSGOInterpolationInfoPB)},
   { 12, 19, -1, sizeof(::CSGOInterpolationInfoPB_CL)},
   { 20, 41, -1, sizeof(::CSGOInputHistoryEntryPB)},
-  { 56, 69, -1, sizeof(::CSGOUserCmdPB)},
+  { 56, 71, -1, sizeof(::CSGOUserCmdPB)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -214,14 +220,17 @@ const char descriptor_table_protodef_cs_5fusercmd_2eproto[] PROTOBUF_SECTION_VAR
   "Vector\022*\n\025target_head_pos_check\030C \001(\0132\013."
   "CMsgVector\022)\n\024target_abs_pos_check\030D \001(\013"
   "2\013.CMsgVector\022)\n\024target_abs_ang_check\030E "
-  "\001(\0132\013.CMsgQAngle\"\241\002\n\rCSGOUserCmdPB\022\035\n\004ba"
+  "\001(\0132\013.CMsgQAngle\"\376\002\n\rCSGOUserCmdPB\022\035\n\004ba"
   "se\030\001 \001(\0132\017.CBaseUserCmdPB\022/\n\rinput_histo"
   "ry\030\002 \003(\0132\030.CSGOInputHistoryEntryPB\022\'\n\033at"
   "tack1_start_history_index\030\006 \001(\005:\002-1\022\'\n\033a"
   "ttack2_start_history_index\030\007 \001(\005:\002-1\022\'\n\033"
   "attack3_start_history_index\030\010 \001(\005:\002-1\022 \n"
-  "\021left_hand_desired\030\t \001(\010:\005false\022#\n\024is_pr"
-  "edicting_damage\030\n \001(\010:\005false"
+  "\021left_hand_desired\030\t \001(\010:\005false\022)\n\032is_pr"
+  "edicting_body_shot_fx\030\013 \001(\010:\005false\022)\n\032is"
+  "_predicting_head_shot_fx\030\014 \001(\010:\005false\022*\n"
+  "\033is_predicting_kill_ragdolls\030\r \001(\010:\005fals"
+  "e"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_cs_5fusercmd_2eproto_deps[2] = {
   &::descriptor_table_networkbasetypes_2eproto,
@@ -229,7 +238,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_cs_5fusercmd_2eprot
 };
 static ::_pbi::once_flag descriptor_table_cs_5fusercmd_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cs_5fusercmd_2eproto = {
-    false, false, 1068, descriptor_table_protodef_cs_5fusercmd_2eproto,
+    false, false, 1161, descriptor_table_protodef_cs_5fusercmd_2eproto,
     "cs_usercmd.proto",
     &descriptor_table_cs_5fusercmd_2eproto_once, descriptor_table_cs_5fusercmd_2eproto_deps, 2, 4,
     schemas, file_default_instances, TableStruct_cs_5fusercmd_2eproto::offsets,
@@ -1483,19 +1492,25 @@ class CSGOUserCmdPB::_Internal {
     (*has_bits)[0] |= 1u;
   }
   static void set_has_attack1_start_history_index(HasBits* has_bits) {
-    (*has_bits)[0] |= 16u;
+    (*has_bits)[0] |= 64u;
   }
   static void set_has_attack2_start_history_index(HasBits* has_bits) {
-    (*has_bits)[0] |= 32u;
+    (*has_bits)[0] |= 128u;
   }
   static void set_has_attack3_start_history_index(HasBits* has_bits) {
-    (*has_bits)[0] |= 8u;
+    (*has_bits)[0] |= 32u;
   }
   static void set_has_left_hand_desired(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
   }
-  static void set_has_is_predicting_damage(HasBits* has_bits) {
+  static void set_has_is_predicting_body_shot_fx(HasBits* has_bits) {
     (*has_bits)[0] |= 4u;
+  }
+  static void set_has_is_predicting_head_shot_fx(HasBits* has_bits) {
+    (*has_bits)[0] |= 8u;
+  }
+  static void set_has_is_predicting_kill_ragdolls(HasBits* has_bits) {
+    (*has_bits)[0] |= 16u;
   }
 };
 
@@ -1522,7 +1537,9 @@ CSGOUserCmdPB::CSGOUserCmdPB(const CSGOUserCmdPB& from)
     , decltype(_impl_.input_history_){from._impl_.input_history_}
     , decltype(_impl_.base_){nullptr}
     , decltype(_impl_.left_hand_desired_){}
-    , decltype(_impl_.is_predicting_damage_){}
+    , decltype(_impl_.is_predicting_body_shot_fx_){}
+    , decltype(_impl_.is_predicting_head_shot_fx_){}
+    , decltype(_impl_.is_predicting_kill_ragdolls_){}
     , decltype(_impl_.attack3_start_history_index_){}
     , decltype(_impl_.attack1_start_history_index_){}
     , decltype(_impl_.attack2_start_history_index_){}};
@@ -1547,7 +1564,9 @@ inline void CSGOUserCmdPB::SharedCtor(
     , decltype(_impl_.input_history_){arena}
     , decltype(_impl_.base_){nullptr}
     , decltype(_impl_.left_hand_desired_){false}
-    , decltype(_impl_.is_predicting_damage_){false}
+    , decltype(_impl_.is_predicting_body_shot_fx_){false}
+    , decltype(_impl_.is_predicting_head_shot_fx_){false}
+    , decltype(_impl_.is_predicting_kill_ragdolls_){false}
     , decltype(_impl_.attack3_start_history_index_){-1}
     , decltype(_impl_.attack1_start_history_index_){-1}
     , decltype(_impl_.attack2_start_history_index_){-1}
@@ -1586,9 +1605,9 @@ void CSGOUserCmdPB::Clear() {
     _impl_.base_->Clear();
   }
   ::memset(&_impl_.left_hand_desired_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.is_predicting_damage_) -
-      reinterpret_cast<char*>(&_impl_.left_hand_desired_)) + sizeof(_impl_.is_predicting_damage_));
-  if (cached_has_bits & 0x00000038u) {
+      reinterpret_cast<char*>(&_impl_.is_predicting_kill_ragdolls_) -
+      reinterpret_cast<char*>(&_impl_.left_hand_desired_)) + sizeof(_impl_.is_predicting_kill_ragdolls_));
+  if (cached_has_bits & 0x000000e0u) {
     _impl_.attack3_start_history_index_ = -1;
     _impl_.attack1_start_history_index_ = -1;
     _impl_.attack2_start_history_index_ = -1;
@@ -1661,11 +1680,29 @@ const char* CSGOUserCmdPB::_InternalParse(const char* ptr, ::_pbi::ParseContext*
         } else
           goto handle_unusual;
         continue;
-      // optional bool is_predicting_damage = 10 [default = false];
-      case 10:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
-          _Internal::set_has_is_predicting_damage(&has_bits);
-          _impl_.is_predicting_damage_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+      // optional bool is_predicting_body_shot_fx = 11 [default = false];
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 88)) {
+          _Internal::set_has_is_predicting_body_shot_fx(&has_bits);
+          _impl_.is_predicting_body_shot_fx_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool is_predicting_head_shot_fx = 12 [default = false];
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
+          _Internal::set_has_is_predicting_head_shot_fx(&has_bits);
+          _impl_.is_predicting_head_shot_fx_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool is_predicting_kill_ragdolls = 13 [default = false];
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 104)) {
+          _Internal::set_has_is_predicting_kill_ragdolls(&has_bits);
+          _impl_.is_predicting_kill_ragdolls_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1717,19 +1754,19 @@ uint8_t* CSGOUserCmdPB::_InternalSerialize(
   }
 
   // optional int32 attack1_start_history_index = 6 [default = -1];
-  if (cached_has_bits & 0x00000010u) {
+  if (cached_has_bits & 0x00000040u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(6, this->_internal_attack1_start_history_index(), target);
   }
 
   // optional int32 attack2_start_history_index = 7 [default = -1];
-  if (cached_has_bits & 0x00000020u) {
+  if (cached_has_bits & 0x00000080u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(7, this->_internal_attack2_start_history_index(), target);
   }
 
   // optional int32 attack3_start_history_index = 8 [default = -1];
-  if (cached_has_bits & 0x00000008u) {
+  if (cached_has_bits & 0x00000020u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(8, this->_internal_attack3_start_history_index(), target);
   }
@@ -1740,10 +1777,22 @@ uint8_t* CSGOUserCmdPB::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(9, this->_internal_left_hand_desired(), target);
   }
 
-  // optional bool is_predicting_damage = 10 [default = false];
+  // optional bool is_predicting_body_shot_fx = 11 [default = false];
   if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(10, this->_internal_is_predicting_damage(), target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(11, this->_internal_is_predicting_body_shot_fx(), target);
+  }
+
+  // optional bool is_predicting_head_shot_fx = 12 [default = false];
+  if (cached_has_bits & 0x00000008u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(12, this->_internal_is_predicting_head_shot_fx(), target);
+  }
+
+  // optional bool is_predicting_kill_ragdolls = 13 [default = false];
+  if (cached_has_bits & 0x00000010u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(13, this->_internal_is_predicting_kill_ragdolls(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1770,7 +1819,7 @@ size_t CSGOUserCmdPB::ByteSizeLong() const {
   }
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
+  if (cached_has_bits & 0x000000ffu) {
     // optional .CBaseUserCmdPB base = 1;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
@@ -1783,23 +1832,33 @@ size_t CSGOUserCmdPB::ByteSizeLong() const {
       total_size += 1 + 1;
     }
 
-    // optional bool is_predicting_damage = 10 [default = false];
+    // optional bool is_predicting_body_shot_fx = 11 [default = false];
     if (cached_has_bits & 0x00000004u) {
       total_size += 1 + 1;
     }
 
-    // optional int32 attack3_start_history_index = 8 [default = -1];
+    // optional bool is_predicting_head_shot_fx = 12 [default = false];
     if (cached_has_bits & 0x00000008u) {
+      total_size += 1 + 1;
+    }
+
+    // optional bool is_predicting_kill_ragdolls = 13 [default = false];
+    if (cached_has_bits & 0x00000010u) {
+      total_size += 1 + 1;
+    }
+
+    // optional int32 attack3_start_history_index = 8 [default = -1];
+    if (cached_has_bits & 0x00000020u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attack3_start_history_index());
     }
 
     // optional int32 attack1_start_history_index = 6 [default = -1];
-    if (cached_has_bits & 0x00000010u) {
+    if (cached_has_bits & 0x00000040u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attack1_start_history_index());
     }
 
     // optional int32 attack2_start_history_index = 7 [default = -1];
-    if (cached_has_bits & 0x00000020u) {
+    if (cached_has_bits & 0x00000080u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attack2_start_history_index());
     }
 
@@ -1824,7 +1883,7 @@ void CSGOUserCmdPB::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::
 
   _this->_impl_.input_history_.MergeFrom(from._impl_.input_history_);
   cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
+  if (cached_has_bits & 0x000000ffu) {
     if (cached_has_bits & 0x00000001u) {
       _this->_internal_mutable_base()->::CBaseUserCmdPB::MergeFrom(
           from._internal_base());
@@ -1833,15 +1892,21 @@ void CSGOUserCmdPB::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::
       _this->_impl_.left_hand_desired_ = from._impl_.left_hand_desired_;
     }
     if (cached_has_bits & 0x00000004u) {
-      _this->_impl_.is_predicting_damage_ = from._impl_.is_predicting_damage_;
+      _this->_impl_.is_predicting_body_shot_fx_ = from._impl_.is_predicting_body_shot_fx_;
     }
     if (cached_has_bits & 0x00000008u) {
-      _this->_impl_.attack3_start_history_index_ = from._impl_.attack3_start_history_index_;
+      _this->_impl_.is_predicting_head_shot_fx_ = from._impl_.is_predicting_head_shot_fx_;
     }
     if (cached_has_bits & 0x00000010u) {
-      _this->_impl_.attack1_start_history_index_ = from._impl_.attack1_start_history_index_;
+      _this->_impl_.is_predicting_kill_ragdolls_ = from._impl_.is_predicting_kill_ragdolls_;
     }
     if (cached_has_bits & 0x00000020u) {
+      _this->_impl_.attack3_start_history_index_ = from._impl_.attack3_start_history_index_;
+    }
+    if (cached_has_bits & 0x00000040u) {
+      _this->_impl_.attack1_start_history_index_ = from._impl_.attack1_start_history_index_;
+    }
+    if (cached_has_bits & 0x00000080u) {
       _this->_impl_.attack2_start_history_index_ = from._impl_.attack2_start_history_index_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -1866,8 +1931,8 @@ void CSGOUserCmdPB::InternalSwap(CSGOUserCmdPB* other) {
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   _impl_.input_history_.InternalSwap(&other->_impl_.input_history_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CSGOUserCmdPB, _impl_.is_predicting_damage_)
-      + sizeof(CSGOUserCmdPB::_impl_.is_predicting_damage_)
+      PROTOBUF_FIELD_OFFSET(CSGOUserCmdPB, _impl_.is_predicting_kill_ragdolls_)
+      + sizeof(CSGOUserCmdPB::_impl_.is_predicting_kill_ragdolls_)
       - PROTOBUF_FIELD_OFFSET(CSGOUserCmdPB, _impl_.base_)>(
           reinterpret_cast<char*>(&_impl_.base_),
           reinterpret_cast<char*>(&other->_impl_.base_));

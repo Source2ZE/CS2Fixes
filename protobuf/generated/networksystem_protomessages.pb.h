@@ -358,8 +358,27 @@ class NetMessageConnectionClosed :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kMessageFieldNumber = 2,
     kReasonFieldNumber = 1,
   };
+  // optional string message = 2;
+  bool has_message() const;
+  private:
+  bool _internal_has_message() const;
+  public:
+  void clear_message();
+  const std::string& message() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_message(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_message();
+  PROTOBUF_NODISCARD std::string* release_message();
+  void set_allocated_message(std::string* message);
+  private:
+  const std::string& _internal_message() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_message(const std::string& value);
+  std::string* _internal_mutable_message();
+  public:
+
   // optional uint32 reason = 1;
   bool has_reason() const;
   private:
@@ -383,6 +402,7 @@ class NetMessageConnectionClosed :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
     uint32_t reason_;
   };
   union { Impl_ _impl_; };
@@ -518,8 +538,27 @@ class NetMessageConnectionCrashed :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kMessageFieldNumber = 2,
     kReasonFieldNumber = 1,
   };
+  // optional string message = 2;
+  bool has_message() const;
+  private:
+  bool _internal_has_message() const;
+  public:
+  void clear_message();
+  const std::string& message() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_message(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_message();
+  PROTOBUF_NODISCARD std::string* release_message();
+  void set_allocated_message(std::string* message);
+  private:
+  const std::string& _internal_message() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_message(const std::string& value);
+  std::string* _internal_mutable_message();
+  public:
+
   // optional uint32 reason = 1;
   bool has_reason() const;
   private:
@@ -543,6 +582,7 @@ class NetMessageConnectionCrashed :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
     uint32_t reason_;
   };
   union { Impl_ _impl_; };
@@ -843,7 +883,7 @@ inline void NetMessageSplitscreenUserChanged::set_slot(uint32_t value) {
 
 // optional uint32 reason = 1;
 inline bool NetMessageConnectionClosed::_internal_has_reason() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
 inline bool NetMessageConnectionClosed::has_reason() const {
@@ -851,7 +891,7 @@ inline bool NetMessageConnectionClosed::has_reason() const {
 }
 inline void NetMessageConnectionClosed::clear_reason() {
   _impl_.reason_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000001u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
 }
 inline uint32_t NetMessageConnectionClosed::_internal_reason() const {
   return _impl_.reason_;
@@ -861,12 +901,80 @@ inline uint32_t NetMessageConnectionClosed::reason() const {
   return _internal_reason();
 }
 inline void NetMessageConnectionClosed::_internal_set_reason(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_._has_bits_[0] |= 0x00000002u;
   _impl_.reason_ = value;
 }
 inline void NetMessageConnectionClosed::set_reason(uint32_t value) {
   _internal_set_reason(value);
   // @@protoc_insertion_point(field_set:NetMessageConnectionClosed.reason)
+}
+
+// optional string message = 2;
+inline bool NetMessageConnectionClosed::_internal_has_message() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool NetMessageConnectionClosed::has_message() const {
+  return _internal_has_message();
+}
+inline void NetMessageConnectionClosed::clear_message() {
+  _impl_.message_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& NetMessageConnectionClosed::message() const {
+  // @@protoc_insertion_point(field_get:NetMessageConnectionClosed.message)
+  return _internal_message();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void NetMessageConnectionClosed::set_message(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.message_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:NetMessageConnectionClosed.message)
+}
+inline std::string* NetMessageConnectionClosed::mutable_message() {
+  std::string* _s = _internal_mutable_message();
+  // @@protoc_insertion_point(field_mutable:NetMessageConnectionClosed.message)
+  return _s;
+}
+inline const std::string& NetMessageConnectionClosed::_internal_message() const {
+  return _impl_.message_.Get();
+}
+inline void NetMessageConnectionClosed::_internal_set_message(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.message_.Set(value, GetArenaForAllocation());
+}
+inline std::string* NetMessageConnectionClosed::_internal_mutable_message() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.message_.Mutable(GetArenaForAllocation());
+}
+inline std::string* NetMessageConnectionClosed::release_message() {
+  // @@protoc_insertion_point(field_release:NetMessageConnectionClosed.message)
+  if (!_internal_has_message()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.message_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.message_.IsDefault()) {
+    _impl_.message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void NetMessageConnectionClosed::set_allocated_message(std::string* message) {
+  if (message != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.message_.SetAllocated(message, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.message_.IsDefault()) {
+    _impl_.message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:NetMessageConnectionClosed.message)
 }
 
 // -------------------------------------------------------------------
@@ -875,7 +983,7 @@ inline void NetMessageConnectionClosed::set_reason(uint32_t value) {
 
 // optional uint32 reason = 1;
 inline bool NetMessageConnectionCrashed::_internal_has_reason() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
 inline bool NetMessageConnectionCrashed::has_reason() const {
@@ -883,7 +991,7 @@ inline bool NetMessageConnectionCrashed::has_reason() const {
 }
 inline void NetMessageConnectionCrashed::clear_reason() {
   _impl_.reason_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000001u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
 }
 inline uint32_t NetMessageConnectionCrashed::_internal_reason() const {
   return _impl_.reason_;
@@ -893,12 +1001,80 @@ inline uint32_t NetMessageConnectionCrashed::reason() const {
   return _internal_reason();
 }
 inline void NetMessageConnectionCrashed::_internal_set_reason(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_._has_bits_[0] |= 0x00000002u;
   _impl_.reason_ = value;
 }
 inline void NetMessageConnectionCrashed::set_reason(uint32_t value) {
   _internal_set_reason(value);
   // @@protoc_insertion_point(field_set:NetMessageConnectionCrashed.reason)
+}
+
+// optional string message = 2;
+inline bool NetMessageConnectionCrashed::_internal_has_message() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool NetMessageConnectionCrashed::has_message() const {
+  return _internal_has_message();
+}
+inline void NetMessageConnectionCrashed::clear_message() {
+  _impl_.message_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& NetMessageConnectionCrashed::message() const {
+  // @@protoc_insertion_point(field_get:NetMessageConnectionCrashed.message)
+  return _internal_message();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void NetMessageConnectionCrashed::set_message(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.message_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:NetMessageConnectionCrashed.message)
+}
+inline std::string* NetMessageConnectionCrashed::mutable_message() {
+  std::string* _s = _internal_mutable_message();
+  // @@protoc_insertion_point(field_mutable:NetMessageConnectionCrashed.message)
+  return _s;
+}
+inline const std::string& NetMessageConnectionCrashed::_internal_message() const {
+  return _impl_.message_.Get();
+}
+inline void NetMessageConnectionCrashed::_internal_set_message(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.message_.Set(value, GetArenaForAllocation());
+}
+inline std::string* NetMessageConnectionCrashed::_internal_mutable_message() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.message_.Mutable(GetArenaForAllocation());
+}
+inline std::string* NetMessageConnectionCrashed::release_message() {
+  // @@protoc_insertion_point(field_release:NetMessageConnectionCrashed.message)
+  if (!_internal_has_message()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.message_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.message_.IsDefault()) {
+    _impl_.message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void NetMessageConnectionCrashed::set_allocated_message(std::string* message) {
+  if (message != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.message_.SetAllocated(message, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.message_.IsDefault()) {
+    _impl_.message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:NetMessageConnectionCrashed.message)
 }
 
 // -------------------------------------------------------------------
