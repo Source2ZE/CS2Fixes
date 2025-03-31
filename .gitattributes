@@ -1,1 +1,3 @@
 docker-entrypoint.sh text eol=lf
+clang-format.sh text eol=lf
+protobuf/protocompile.sh text eol=lf

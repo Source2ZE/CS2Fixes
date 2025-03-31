@@ -121,6 +121,9 @@ extern CMsgServerPeerDefaultTypeInternal _CMsgServerPeer_default_instance_;
 class CMsgServerUserCmd;
 struct CMsgServerUserCmdDefaultTypeInternal;
 extern CMsgServerUserCmdDefaultTypeInternal _CMsgServerUserCmd_default_instance_;
+class CMsgSource2NetworkFlowQuality;
+struct CMsgSource2NetworkFlowQualityDefaultTypeInternal;
+extern CMsgSource2NetworkFlowQualityDefaultTypeInternal _CMsgSource2NetworkFlowQuality_default_instance_;
 class CMsgSource2SystemSpecs;
 struct CMsgSource2SystemSpecsDefaultTypeInternal;
 extern CMsgSource2SystemSpecsDefaultTypeInternal _CMsgSource2SystemSpecs_default_instance_;
@@ -303,6 +306,7 @@ template<> ::CMsgServerNetworkStats_Player* Arena::CreateMaybeMessage<::CMsgServ
 template<> ::CMsgServerNetworkStats_Port* Arena::CreateMaybeMessage<::CMsgServerNetworkStats_Port>(Arena*);
 template<> ::CMsgServerPeer* Arena::CreateMaybeMessage<::CMsgServerPeer>(Arena*);
 template<> ::CMsgServerUserCmd* Arena::CreateMaybeMessage<::CMsgServerUserCmd>(Arena*);
+template<> ::CMsgSource2NetworkFlowQuality* Arena::CreateMaybeMessage<::CMsgSource2NetworkFlowQuality>(Arena*);
 template<> ::CMsgSource2SystemSpecs* Arena::CreateMaybeMessage<::CMsgSource2SystemSpecs>(Arena*);
 template<> ::CMsgSource2VProfLiteReport* Arena::CreateMaybeMessage<::CMsgSource2VProfLiteReport>(Arena*);
 template<> ::CMsgSource2VProfLiteReportItem* Arena::CreateMaybeMessage<::CMsgSource2VProfLiteReportItem>(Arena*);
@@ -3994,12 +3998,21 @@ class CMsgSource2VProfLiteReportItem :
     kNameFieldNumber = 1,
     kActiveSamplesFieldNumber = 2,
     kUsecMaxFieldNumber = 3,
+    kActiveSamples1SecmaxFieldNumber = 4,
     kUsecAvgActiveFieldNumber = 11,
     kUsecP50ActiveFieldNumber = 12,
     kUsecP99ActiveFieldNumber = 13,
     kUsecAvgAllFieldNumber = 21,
     kUsecP50AllFieldNumber = 22,
     kUsecP99AllFieldNumber = 23,
+    kUsec1SecmaxAvgActiveFieldNumber = 31,
+    kUsec1SecmaxP50ActiveFieldNumber = 32,
+    kUsec1SecmaxP95ActiveFieldNumber = 33,
+    kUsec1SecmaxP99ActiveFieldNumber = 34,
+    kUsec1SecmaxAvgAllFieldNumber = 41,
+    kUsec1SecmaxP50AllFieldNumber = 42,
+    kUsec1SecmaxP95AllFieldNumber = 43,
+    kUsec1SecmaxP99AllFieldNumber = 44,
   };
   // optional string name = 1;
   bool has_name() const;
@@ -4043,6 +4056,19 @@ class CMsgSource2VProfLiteReportItem :
   private:
   uint32_t _internal_usec_max() const;
   void _internal_set_usec_max(uint32_t value);
+  public:
+
+  // optional uint32 active_samples_1secmax = 4;
+  bool has_active_samples_1secmax() const;
+  private:
+  bool _internal_has_active_samples_1secmax() const;
+  public:
+  void clear_active_samples_1secmax();
+  uint32_t active_samples_1secmax() const;
+  void set_active_samples_1secmax(uint32_t value);
+  private:
+  uint32_t _internal_active_samples_1secmax() const;
+  void _internal_set_active_samples_1secmax(uint32_t value);
   public:
 
   // optional uint32 usec_avg_active = 11;
@@ -4123,6 +4149,110 @@ class CMsgSource2VProfLiteReportItem :
   void _internal_set_usec_p99_all(uint32_t value);
   public:
 
+  // optional uint32 usec_1secmax_avg_active = 31;
+  bool has_usec_1secmax_avg_active() const;
+  private:
+  bool _internal_has_usec_1secmax_avg_active() const;
+  public:
+  void clear_usec_1secmax_avg_active();
+  uint32_t usec_1secmax_avg_active() const;
+  void set_usec_1secmax_avg_active(uint32_t value);
+  private:
+  uint32_t _internal_usec_1secmax_avg_active() const;
+  void _internal_set_usec_1secmax_avg_active(uint32_t value);
+  public:
+
+  // optional uint32 usec_1secmax_p50_active = 32;
+  bool has_usec_1secmax_p50_active() const;
+  private:
+  bool _internal_has_usec_1secmax_p50_active() const;
+  public:
+  void clear_usec_1secmax_p50_active();
+  uint32_t usec_1secmax_p50_active() const;
+  void set_usec_1secmax_p50_active(uint32_t value);
+  private:
+  uint32_t _internal_usec_1secmax_p50_active() const;
+  void _internal_set_usec_1secmax_p50_active(uint32_t value);
+  public:
+
+  // optional uint32 usec_1secmax_p95_active = 33;
+  bool has_usec_1secmax_p95_active() const;
+  private:
+  bool _internal_has_usec_1secmax_p95_active() const;
+  public:
+  void clear_usec_1secmax_p95_active();
+  uint32_t usec_1secmax_p95_active() const;
+  void set_usec_1secmax_p95_active(uint32_t value);
+  private:
+  uint32_t _internal_usec_1secmax_p95_active() const;
+  void _internal_set_usec_1secmax_p95_active(uint32_t value);
+  public:
+
+  // optional uint32 usec_1secmax_p99_active = 34;
+  bool has_usec_1secmax_p99_active() const;
+  private:
+  bool _internal_has_usec_1secmax_p99_active() const;
+  public:
+  void clear_usec_1secmax_p99_active();
+  uint32_t usec_1secmax_p99_active() const;
+  void set_usec_1secmax_p99_active(uint32_t value);
+  private:
+  uint32_t _internal_usec_1secmax_p99_active() const;
+  void _internal_set_usec_1secmax_p99_active(uint32_t value);
+  public:
+
+  // optional uint32 usec_1secmax_avg_all = 41;
+  bool has_usec_1secmax_avg_all() const;
+  private:
+  bool _internal_has_usec_1secmax_avg_all() const;
+  public:
+  void clear_usec_1secmax_avg_all();
+  uint32_t usec_1secmax_avg_all() const;
+  void set_usec_1secmax_avg_all(uint32_t value);
+  private:
+  uint32_t _internal_usec_1secmax_avg_all() const;
+  void _internal_set_usec_1secmax_avg_all(uint32_t value);
+  public:
+
+  // optional uint32 usec_1secmax_p50_all = 42;
+  bool has_usec_1secmax_p50_all() const;
+  private:
+  bool _internal_has_usec_1secmax_p50_all() const;
+  public:
+  void clear_usec_1secmax_p50_all();
+  uint32_t usec_1secmax_p50_all() const;
+  void set_usec_1secmax_p50_all(uint32_t value);
+  private:
+  uint32_t _internal_usec_1secmax_p50_all() const;
+  void _internal_set_usec_1secmax_p50_all(uint32_t value);
+  public:
+
+  // optional uint32 usec_1secmax_p95_all = 43;
+  bool has_usec_1secmax_p95_all() const;
+  private:
+  bool _internal_has_usec_1secmax_p95_all() const;
+  public:
+  void clear_usec_1secmax_p95_all();
+  uint32_t usec_1secmax_p95_all() const;
+  void set_usec_1secmax_p95_all(uint32_t value);
+  private:
+  uint32_t _internal_usec_1secmax_p95_all() const;
+  void _internal_set_usec_1secmax_p95_all(uint32_t value);
+  public:
+
+  // optional uint32 usec_1secmax_p99_all = 44;
+  bool has_usec_1secmax_p99_all() const;
+  private:
+  bool _internal_has_usec_1secmax_p99_all() const;
+  public:
+  void clear_usec_1secmax_p99_all();
+  uint32_t usec_1secmax_p99_all() const;
+  void set_usec_1secmax_p99_all(uint32_t value);
+  private:
+  uint32_t _internal_usec_1secmax_p99_all() const;
+  void _internal_set_usec_1secmax_p99_all(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CMsgSource2VProfLiteReportItem)
  private:
   class _Internal;
@@ -4136,12 +4266,21 @@ class CMsgSource2VProfLiteReportItem :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     uint32_t active_samples_;
     uint32_t usec_max_;
+    uint32_t active_samples_1secmax_;
     uint32_t usec_avg_active_;
     uint32_t usec_p50_active_;
     uint32_t usec_p99_active_;
     uint32_t usec_avg_all_;
     uint32_t usec_p50_all_;
     uint32_t usec_p99_all_;
+    uint32_t usec_1secmax_avg_active_;
+    uint32_t usec_1secmax_p50_active_;
+    uint32_t usec_1secmax_p95_active_;
+    uint32_t usec_1secmax_p99_active_;
+    uint32_t usec_1secmax_avg_all_;
+    uint32_t usec_1secmax_p50_all_;
+    uint32_t usec_1secmax_p95_all_;
+    uint32_t usec_1secmax_p99_all_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_netmessages_2eproto;
@@ -4348,6 +4487,586 @@ class CMsgSource2VProfLiteReport :
 };
 // -------------------------------------------------------------------
 
+class CMsgSource2NetworkFlowQuality :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSource2NetworkFlowQuality) */ {
+ public:
+  inline CMsgSource2NetworkFlowQuality() : CMsgSource2NetworkFlowQuality(nullptr) {}
+  ~CMsgSource2NetworkFlowQuality() override;
+  explicit PROTOBUF_CONSTEXPR CMsgSource2NetworkFlowQuality(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgSource2NetworkFlowQuality(const CMsgSource2NetworkFlowQuality& from);
+  CMsgSource2NetworkFlowQuality(CMsgSource2NetworkFlowQuality&& from) noexcept
+    : CMsgSource2NetworkFlowQuality() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgSource2NetworkFlowQuality& operator=(const CMsgSource2NetworkFlowQuality& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgSource2NetworkFlowQuality& operator=(CMsgSource2NetworkFlowQuality&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgSource2NetworkFlowQuality& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgSource2NetworkFlowQuality* internal_default_instance() {
+    return reinterpret_cast<const CMsgSource2NetworkFlowQuality*>(
+               &_CMsgSource2NetworkFlowQuality_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    18;
+
+  friend void swap(CMsgSource2NetworkFlowQuality& a, CMsgSource2NetworkFlowQuality& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgSource2NetworkFlowQuality* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgSource2NetworkFlowQuality* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgSource2NetworkFlowQuality* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgSource2NetworkFlowQuality>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgSource2NetworkFlowQuality& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgSource2NetworkFlowQuality& from) {
+    CMsgSource2NetworkFlowQuality::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgSource2NetworkFlowQuality* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgSource2NetworkFlowQuality";
+  }
+  protected:
+  explicit CMsgSource2NetworkFlowQuality(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kBytesTotalFieldNumber = 5,
+    kDurationFieldNumber = 1,
+    kBytesSecP95FieldNumber = 10,
+    kBytesTotalReliableFieldNumber = 6,
+    kBytesTotalVoiceFieldNumber = 7,
+    kBytesSecP99FieldNumber = 11,
+    kEnginemsgsTotalFieldNumber = 20,
+    kEnginemsgsSecP95FieldNumber = 21,
+    kEnginemsgsSecP99FieldNumber = 22,
+    kTicksTotalFieldNumber = 40,
+    kTicksGoodFieldNumber = 41,
+    kTicksGoodAlmostLateFieldNumber = 42,
+    kTicksFixedDroppedFieldNumber = 43,
+    kTicksFixedLateFieldNumber = 44,
+    kTicksBadDroppedFieldNumber = 45,
+    kTicksBadLateFieldNumber = 46,
+    kTicksBadOtherFieldNumber = 47,
+    kTickMissrateSamplesTotalFieldNumber = 50,
+    kTickMissrateSamplesPerfectFieldNumber = 51,
+    kTickMissrateSamplesPerfectnetFieldNumber = 52,
+    kTickMissratenetP75X10FieldNumber = 53,
+    kTickMissratenetP95X10FieldNumber = 54,
+    kTickMissratenetP99X10FieldNumber = 55,
+    kRecvmarginP1FieldNumber = 61,
+    kRecvmarginP5FieldNumber = 62,
+    kRecvmarginP25FieldNumber = 63,
+    kRecvmarginP50FieldNumber = 64,
+    kRecvmarginP75FieldNumber = 65,
+    kRecvmarginP95FieldNumber = 66,
+  };
+  // optional uint64 bytes_total = 5;
+  bool has_bytes_total() const;
+  private:
+  bool _internal_has_bytes_total() const;
+  public:
+  void clear_bytes_total();
+  uint64_t bytes_total() const;
+  void set_bytes_total(uint64_t value);
+  private:
+  uint64_t _internal_bytes_total() const;
+  void _internal_set_bytes_total(uint64_t value);
+  public:
+
+  // optional uint32 duration = 1;
+  bool has_duration() const;
+  private:
+  bool _internal_has_duration() const;
+  public:
+  void clear_duration();
+  uint32_t duration() const;
+  void set_duration(uint32_t value);
+  private:
+  uint32_t _internal_duration() const;
+  void _internal_set_duration(uint32_t value);
+  public:
+
+  // optional uint32 bytes_sec_p95 = 10;
+  bool has_bytes_sec_p95() const;
+  private:
+  bool _internal_has_bytes_sec_p95() const;
+  public:
+  void clear_bytes_sec_p95();
+  uint32_t bytes_sec_p95() const;
+  void set_bytes_sec_p95(uint32_t value);
+  private:
+  uint32_t _internal_bytes_sec_p95() const;
+  void _internal_set_bytes_sec_p95(uint32_t value);
+  public:
+
+  // optional uint64 bytes_total_reliable = 6;
+  bool has_bytes_total_reliable() const;
+  private:
+  bool _internal_has_bytes_total_reliable() const;
+  public:
+  void clear_bytes_total_reliable();
+  uint64_t bytes_total_reliable() const;
+  void set_bytes_total_reliable(uint64_t value);
+  private:
+  uint64_t _internal_bytes_total_reliable() const;
+  void _internal_set_bytes_total_reliable(uint64_t value);
+  public:
+
+  // optional uint64 bytes_total_voice = 7;
+  bool has_bytes_total_voice() const;
+  private:
+  bool _internal_has_bytes_total_voice() const;
+  public:
+  void clear_bytes_total_voice();
+  uint64_t bytes_total_voice() const;
+  void set_bytes_total_voice(uint64_t value);
+  private:
+  uint64_t _internal_bytes_total_voice() const;
+  void _internal_set_bytes_total_voice(uint64_t value);
+  public:
+
+  // optional uint32 bytes_sec_p99 = 11;
+  bool has_bytes_sec_p99() const;
+  private:
+  bool _internal_has_bytes_sec_p99() const;
+  public:
+  void clear_bytes_sec_p99();
+  uint32_t bytes_sec_p99() const;
+  void set_bytes_sec_p99(uint32_t value);
+  private:
+  uint32_t _internal_bytes_sec_p99() const;
+  void _internal_set_bytes_sec_p99(uint32_t value);
+  public:
+
+  // optional uint32 enginemsgs_total = 20;
+  bool has_enginemsgs_total() const;
+  private:
+  bool _internal_has_enginemsgs_total() const;
+  public:
+  void clear_enginemsgs_total();
+  uint32_t enginemsgs_total() const;
+  void set_enginemsgs_total(uint32_t value);
+  private:
+  uint32_t _internal_enginemsgs_total() const;
+  void _internal_set_enginemsgs_total(uint32_t value);
+  public:
+
+  // optional uint32 enginemsgs_sec_p95 = 21;
+  bool has_enginemsgs_sec_p95() const;
+  private:
+  bool _internal_has_enginemsgs_sec_p95() const;
+  public:
+  void clear_enginemsgs_sec_p95();
+  uint32_t enginemsgs_sec_p95() const;
+  void set_enginemsgs_sec_p95(uint32_t value);
+  private:
+  uint32_t _internal_enginemsgs_sec_p95() const;
+  void _internal_set_enginemsgs_sec_p95(uint32_t value);
+  public:
+
+  // optional uint32 enginemsgs_sec_p99 = 22;
+  bool has_enginemsgs_sec_p99() const;
+  private:
+  bool _internal_has_enginemsgs_sec_p99() const;
+  public:
+  void clear_enginemsgs_sec_p99();
+  uint32_t enginemsgs_sec_p99() const;
+  void set_enginemsgs_sec_p99(uint32_t value);
+  private:
+  uint32_t _internal_enginemsgs_sec_p99() const;
+  void _internal_set_enginemsgs_sec_p99(uint32_t value);
+  public:
+
+  // optional uint32 ticks_total = 40;
+  bool has_ticks_total() const;
+  private:
+  bool _internal_has_ticks_total() const;
+  public:
+  void clear_ticks_total();
+  uint32_t ticks_total() const;
+  void set_ticks_total(uint32_t value);
+  private:
+  uint32_t _internal_ticks_total() const;
+  void _internal_set_ticks_total(uint32_t value);
+  public:
+
+  // optional uint32 ticks_good = 41;
+  bool has_ticks_good() const;
+  private:
+  bool _internal_has_ticks_good() const;
+  public:
+  void clear_ticks_good();
+  uint32_t ticks_good() const;
+  void set_ticks_good(uint32_t value);
+  private:
+  uint32_t _internal_ticks_good() const;
+  void _internal_set_ticks_good(uint32_t value);
+  public:
+
+  // optional uint32 ticks_good_almost_late = 42;
+  bool has_ticks_good_almost_late() const;
+  private:
+  bool _internal_has_ticks_good_almost_late() const;
+  public:
+  void clear_ticks_good_almost_late();
+  uint32_t ticks_good_almost_late() const;
+  void set_ticks_good_almost_late(uint32_t value);
+  private:
+  uint32_t _internal_ticks_good_almost_late() const;
+  void _internal_set_ticks_good_almost_late(uint32_t value);
+  public:
+
+  // optional uint32 ticks_fixed_dropped = 43;
+  bool has_ticks_fixed_dropped() const;
+  private:
+  bool _internal_has_ticks_fixed_dropped() const;
+  public:
+  void clear_ticks_fixed_dropped();
+  uint32_t ticks_fixed_dropped() const;
+  void set_ticks_fixed_dropped(uint32_t value);
+  private:
+  uint32_t _internal_ticks_fixed_dropped() const;
+  void _internal_set_ticks_fixed_dropped(uint32_t value);
+  public:
+
+  // optional uint32 ticks_fixed_late = 44;
+  bool has_ticks_fixed_late() const;
+  private:
+  bool _internal_has_ticks_fixed_late() const;
+  public:
+  void clear_ticks_fixed_late();
+  uint32_t ticks_fixed_late() const;
+  void set_ticks_fixed_late(uint32_t value);
+  private:
+  uint32_t _internal_ticks_fixed_late() const;
+  void _internal_set_ticks_fixed_late(uint32_t value);
+  public:
+
+  // optional uint32 ticks_bad_dropped = 45;
+  bool has_ticks_bad_dropped() const;
+  private:
+  bool _internal_has_ticks_bad_dropped() const;
+  public:
+  void clear_ticks_bad_dropped();
+  uint32_t ticks_bad_dropped() const;
+  void set_ticks_bad_dropped(uint32_t value);
+  private:
+  uint32_t _internal_ticks_bad_dropped() const;
+  void _internal_set_ticks_bad_dropped(uint32_t value);
+  public:
+
+  // optional uint32 ticks_bad_late = 46;
+  bool has_ticks_bad_late() const;
+  private:
+  bool _internal_has_ticks_bad_late() const;
+  public:
+  void clear_ticks_bad_late();
+  uint32_t ticks_bad_late() const;
+  void set_ticks_bad_late(uint32_t value);
+  private:
+  uint32_t _internal_ticks_bad_late() const;
+  void _internal_set_ticks_bad_late(uint32_t value);
+  public:
+
+  // optional uint32 ticks_bad_other = 47;
+  bool has_ticks_bad_other() const;
+  private:
+  bool _internal_has_ticks_bad_other() const;
+  public:
+  void clear_ticks_bad_other();
+  uint32_t ticks_bad_other() const;
+  void set_ticks_bad_other(uint32_t value);
+  private:
+  uint32_t _internal_ticks_bad_other() const;
+  void _internal_set_ticks_bad_other(uint32_t value);
+  public:
+
+  // optional uint32 tick_missrate_samples_total = 50;
+  bool has_tick_missrate_samples_total() const;
+  private:
+  bool _internal_has_tick_missrate_samples_total() const;
+  public:
+  void clear_tick_missrate_samples_total();
+  uint32_t tick_missrate_samples_total() const;
+  void set_tick_missrate_samples_total(uint32_t value);
+  private:
+  uint32_t _internal_tick_missrate_samples_total() const;
+  void _internal_set_tick_missrate_samples_total(uint32_t value);
+  public:
+
+  // optional uint32 tick_missrate_samples_perfect = 51;
+  bool has_tick_missrate_samples_perfect() const;
+  private:
+  bool _internal_has_tick_missrate_samples_perfect() const;
+  public:
+  void clear_tick_missrate_samples_perfect();
+  uint32_t tick_missrate_samples_perfect() const;
+  void set_tick_missrate_samples_perfect(uint32_t value);
+  private:
+  uint32_t _internal_tick_missrate_samples_perfect() const;
+  void _internal_set_tick_missrate_samples_perfect(uint32_t value);
+  public:
+
+  // optional uint32 tick_missrate_samples_perfectnet = 52;
+  bool has_tick_missrate_samples_perfectnet() const;
+  private:
+  bool _internal_has_tick_missrate_samples_perfectnet() const;
+  public:
+  void clear_tick_missrate_samples_perfectnet();
+  uint32_t tick_missrate_samples_perfectnet() const;
+  void set_tick_missrate_samples_perfectnet(uint32_t value);
+  private:
+  uint32_t _internal_tick_missrate_samples_perfectnet() const;
+  void _internal_set_tick_missrate_samples_perfectnet(uint32_t value);
+  public:
+
+  // optional uint32 tick_missratenet_p75_x10 = 53;
+  bool has_tick_missratenet_p75_x10() const;
+  private:
+  bool _internal_has_tick_missratenet_p75_x10() const;
+  public:
+  void clear_tick_missratenet_p75_x10();
+  uint32_t tick_missratenet_p75_x10() const;
+  void set_tick_missratenet_p75_x10(uint32_t value);
+  private:
+  uint32_t _internal_tick_missratenet_p75_x10() const;
+  void _internal_set_tick_missratenet_p75_x10(uint32_t value);
+  public:
+
+  // optional uint32 tick_missratenet_p95_x10 = 54;
+  bool has_tick_missratenet_p95_x10() const;
+  private:
+  bool _internal_has_tick_missratenet_p95_x10() const;
+  public:
+  void clear_tick_missratenet_p95_x10();
+  uint32_t tick_missratenet_p95_x10() const;
+  void set_tick_missratenet_p95_x10(uint32_t value);
+  private:
+  uint32_t _internal_tick_missratenet_p95_x10() const;
+  void _internal_set_tick_missratenet_p95_x10(uint32_t value);
+  public:
+
+  // optional uint32 tick_missratenet_p99_x10 = 55;
+  bool has_tick_missratenet_p99_x10() const;
+  private:
+  bool _internal_has_tick_missratenet_p99_x10() const;
+  public:
+  void clear_tick_missratenet_p99_x10();
+  uint32_t tick_missratenet_p99_x10() const;
+  void set_tick_missratenet_p99_x10(uint32_t value);
+  private:
+  uint32_t _internal_tick_missratenet_p99_x10() const;
+  void _internal_set_tick_missratenet_p99_x10(uint32_t value);
+  public:
+
+  // optional sint32 recvmargin_p1 = 61;
+  bool has_recvmargin_p1() const;
+  private:
+  bool _internal_has_recvmargin_p1() const;
+  public:
+  void clear_recvmargin_p1();
+  int32_t recvmargin_p1() const;
+  void set_recvmargin_p1(int32_t value);
+  private:
+  int32_t _internal_recvmargin_p1() const;
+  void _internal_set_recvmargin_p1(int32_t value);
+  public:
+
+  // optional sint32 recvmargin_p5 = 62;
+  bool has_recvmargin_p5() const;
+  private:
+  bool _internal_has_recvmargin_p5() const;
+  public:
+  void clear_recvmargin_p5();
+  int32_t recvmargin_p5() const;
+  void set_recvmargin_p5(int32_t value);
+  private:
+  int32_t _internal_recvmargin_p5() const;
+  void _internal_set_recvmargin_p5(int32_t value);
+  public:
+
+  // optional sint32 recvmargin_p25 = 63;
+  bool has_recvmargin_p25() const;
+  private:
+  bool _internal_has_recvmargin_p25() const;
+  public:
+  void clear_recvmargin_p25();
+  int32_t recvmargin_p25() const;
+  void set_recvmargin_p25(int32_t value);
+  private:
+  int32_t _internal_recvmargin_p25() const;
+  void _internal_set_recvmargin_p25(int32_t value);
+  public:
+
+  // optional sint32 recvmargin_p50 = 64;
+  bool has_recvmargin_p50() const;
+  private:
+  bool _internal_has_recvmargin_p50() const;
+  public:
+  void clear_recvmargin_p50();
+  int32_t recvmargin_p50() const;
+  void set_recvmargin_p50(int32_t value);
+  private:
+  int32_t _internal_recvmargin_p50() const;
+  void _internal_set_recvmargin_p50(int32_t value);
+  public:
+
+  // optional sint32 recvmargin_p75 = 65;
+  bool has_recvmargin_p75() const;
+  private:
+  bool _internal_has_recvmargin_p75() const;
+  public:
+  void clear_recvmargin_p75();
+  int32_t recvmargin_p75() const;
+  void set_recvmargin_p75(int32_t value);
+  private:
+  int32_t _internal_recvmargin_p75() const;
+  void _internal_set_recvmargin_p75(int32_t value);
+  public:
+
+  // optional sint32 recvmargin_p95 = 66;
+  bool has_recvmargin_p95() const;
+  private:
+  bool _internal_has_recvmargin_p95() const;
+  public:
+  void clear_recvmargin_p95();
+  int32_t recvmargin_p95() const;
+  void set_recvmargin_p95(int32_t value);
+  private:
+  int32_t _internal_recvmargin_p95() const;
+  void _internal_set_recvmargin_p95(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgSource2NetworkFlowQuality)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    uint64_t bytes_total_;
+    uint32_t duration_;
+    uint32_t bytes_sec_p95_;
+    uint64_t bytes_total_reliable_;
+    uint64_t bytes_total_voice_;
+    uint32_t bytes_sec_p99_;
+    uint32_t enginemsgs_total_;
+    uint32_t enginemsgs_sec_p95_;
+    uint32_t enginemsgs_sec_p99_;
+    uint32_t ticks_total_;
+    uint32_t ticks_good_;
+    uint32_t ticks_good_almost_late_;
+    uint32_t ticks_fixed_dropped_;
+    uint32_t ticks_fixed_late_;
+    uint32_t ticks_bad_dropped_;
+    uint32_t ticks_bad_late_;
+    uint32_t ticks_bad_other_;
+    uint32_t tick_missrate_samples_total_;
+    uint32_t tick_missrate_samples_perfect_;
+    uint32_t tick_missrate_samples_perfectnet_;
+    uint32_t tick_missratenet_p75_x10_;
+    uint32_t tick_missratenet_p95_x10_;
+    uint32_t tick_missratenet_p99_x10_;
+    int32_t recvmargin_p1_;
+    int32_t recvmargin_p5_;
+    int32_t recvmargin_p25_;
+    int32_t recvmargin_p50_;
+    int32_t recvmargin_p75_;
+    int32_t recvmargin_p95_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
 class CCLCMsg_Diagnostic :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCLCMsg_Diagnostic) */ {
  public:
@@ -4403,7 +5122,7 @@ class CCLCMsg_Diagnostic :
                &_CCLCMsg_Diagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    19;
 
   friend void swap(CCLCMsg_Diagnostic& a, CCLCMsg_Diagnostic& b) {
     a.Swap(&b);
@@ -4588,7 +5307,7 @@ class CSource2Metrics_MatchPerfSummary_Notification_Client :
                &_CSource2Metrics_MatchPerfSummary_Notification_Client_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    20;
 
   friend void swap(CSource2Metrics_MatchPerfSummary_Notification_Client& a, CSource2Metrics_MatchPerfSummary_Notification_Client& b) {
     a.Swap(&b);
@@ -4803,7 +5522,7 @@ class CSource2Metrics_MatchPerfSummary_Notification :
                &_CSource2Metrics_MatchPerfSummary_Notification_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    20;
+    21;
 
   friend void swap(CSource2Metrics_MatchPerfSummary_Notification& a, CSource2Metrics_MatchPerfSummary_Notification& b) {
     a.Swap(&b);
@@ -5060,7 +5779,7 @@ class CSVCMsg_ServerInfo :
                &_CSVCMsg_ServerInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    22;
 
   friend void swap(CSVCMsg_ServerInfo& a, CSVCMsg_ServerInfo& b) {
     a.Swap(&b);
@@ -5480,7 +6199,7 @@ class CSVCMsg_ClassInfo_class_t :
                &_CSVCMsg_ClassInfo_class_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    23;
 
   friend void swap(CSVCMsg_ClassInfo_class_t& a, CSVCMsg_ClassInfo_class_t& b) {
     a.Swap(&b);
@@ -5660,7 +6379,7 @@ class CSVCMsg_ClassInfo :
                &_CSVCMsg_ClassInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    23;
+    24;
 
   friend void swap(CSVCMsg_ClassInfo& a, CSVCMsg_ClassInfo& b) {
     a.Swap(&b);
@@ -5842,7 +6561,7 @@ class CSVCMsg_SetPause :
                &_CSVCMsg_SetPause_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    24;
+    25;
 
   friend void swap(CSVCMsg_SetPause& a, CSVCMsg_SetPause& b) {
     a.Swap(&b);
@@ -6002,7 +6721,7 @@ class CSVCMsg_VoiceInit :
                &_CSVCMsg_VoiceInit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    25;
+    26;
 
   friend void swap(CSVCMsg_VoiceInit& a, CSVCMsg_VoiceInit& b) {
     a.Swap(&b);
@@ -6197,7 +6916,7 @@ class CSVCMsg_Print :
                &_CSVCMsg_Print_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    26;
+    27;
 
   friend void swap(CSVCMsg_Print& a, CSVCMsg_Print& b) {
     a.Swap(&b);
@@ -6362,7 +7081,7 @@ class CSVCMsg_Sounds_sounddata_t :
                &_CSVCMsg_Sounds_sounddata_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    27;
+    28;
 
   friend void swap(CSVCMsg_Sounds_sounddata_t& a, CSVCMsg_Sounds_sounddata_t& b) {
     a.Swap(&b);
@@ -6792,7 +7511,7 @@ class CSVCMsg_Sounds :
                &_CSVCMsg_Sounds_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    28;
+    29;
 
   friend void swap(CSVCMsg_Sounds& a, CSVCMsg_Sounds& b) {
     a.Swap(&b);
@@ -6974,7 +7693,7 @@ class CSVCMsg_Prefetch :
                &_CSVCMsg_Prefetch_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    29;
+    30;
 
   friend void swap(CSVCMsg_Prefetch& a, CSVCMsg_Prefetch& b) {
     a.Swap(&b);
@@ -7149,7 +7868,7 @@ class CSVCMsg_SetView :
                &_CSVCMsg_SetView_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    30;
+    31;
 
   friend void swap(CSVCMsg_SetView& a, CSVCMsg_SetView& b) {
     a.Swap(&b);
@@ -7324,7 +8043,7 @@ class CSVCMsg_FixAngle :
                &_CSVCMsg_FixAngle_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    31;
+    32;
 
   friend void swap(CSVCMsg_FixAngle& a, CSVCMsg_FixAngle& b) {
     a.Swap(&b);
@@ -7504,7 +8223,7 @@ class CSVCMsg_CrosshairAngle :
                &_CSVCMsg_CrosshairAngle_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    32;
+    33;
 
   friend void swap(CSVCMsg_CrosshairAngle& a, CSVCMsg_CrosshairAngle& b) {
     a.Swap(&b);
@@ -7669,7 +8388,7 @@ class CSVCMsg_BSPDecal :
                &_CSVCMsg_BSPDecal_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    33;
+    34;
 
   friend void swap(CSVCMsg_BSPDecal& a, CSVCMsg_BSPDecal& b) {
     a.Swap(&b);
@@ -7894,7 +8613,7 @@ class CSVCMsg_SplitScreen :
                &_CSVCMsg_SplitScreen_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    34;
+    35;
 
   friend void swap(CSVCMsg_SplitScreen& a, CSVCMsg_SplitScreen& b) {
     a.Swap(&b);
@@ -8084,7 +8803,7 @@ class CSVCMsg_GetCvarValue :
                &_CSVCMsg_GetCvarValue_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    35;
+    36;
 
   friend void swap(CSVCMsg_GetCvarValue& a, CSVCMsg_GetCvarValue& b) {
     a.Swap(&b);
@@ -8264,7 +8983,7 @@ class CSVCMsg_Menu :
                &_CSVCMsg_Menu_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    36;
+    37;
 
   friend void swap(CSVCMsg_Menu& a, CSVCMsg_Menu& b) {
     a.Swap(&b);
@@ -8444,7 +9163,7 @@ class CSVCMsg_UserMessage :
                &_CSVCMsg_UserMessage_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    37;
+    38;
 
   friend void swap(CSVCMsg_UserMessage& a, CSVCMsg_UserMessage& b) {
     a.Swap(&b);
@@ -8639,7 +9358,7 @@ class CSVCMsg_SendTable_sendprop_t :
                &_CSVCMsg_SendTable_sendprop_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    38;
+    39;
 
   friend void swap(CSVCMsg_SendTable_sendprop_t& a, CSVCMsg_SendTable_sendprop_t& b) {
     a.Swap(&b);
@@ -8929,7 +9648,7 @@ class CSVCMsg_SendTable :
                &_CSVCMsg_SendTable_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    39;
+    40;
 
   friend void swap(CSVCMsg_SendTable& a, CSVCMsg_SendTable& b) {
     a.Swap(&b);
@@ -9146,7 +9865,7 @@ class CSVCMsg_GameEventList_key_t :
                &_CSVCMsg_GameEventList_key_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    40;
+    41;
 
   friend void swap(CSVCMsg_GameEventList_key_t& a, CSVCMsg_GameEventList_key_t& b) {
     a.Swap(&b);
@@ -9326,7 +10045,7 @@ class CSVCMsg_GameEventList_descriptor_t :
                &_CSVCMsg_GameEventList_descriptor_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    41;
+    42;
 
   friend void swap(CSVCMsg_GameEventList_descriptor_t& a, CSVCMsg_GameEventList_descriptor_t& b) {
     a.Swap(&b);
@@ -9526,7 +10245,7 @@ class CSVCMsg_GameEventList :
                &_CSVCMsg_GameEventList_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    42;
+    43;
 
   friend void swap(CSVCMsg_GameEventList& a, CSVCMsg_GameEventList& b) {
     a.Swap(&b);
@@ -9693,7 +10412,7 @@ class CSVCMsg_PacketEntities_alternate_baseline_t :
                &_CSVCMsg_PacketEntities_alternate_baseline_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    43;
+    44;
 
   friend void swap(CSVCMsg_PacketEntities_alternate_baseline_t& a, CSVCMsg_PacketEntities_alternate_baseline_t& b) {
     a.Swap(&b);
@@ -9868,7 +10587,7 @@ class CSVCMsg_PacketEntities_non_transmitted_entities_t :
                &_CSVCMsg_PacketEntities_non_transmitted_entities_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    44;
+    45;
 
   friend void swap(CSVCMsg_PacketEntities_non_transmitted_entities_t& a, CSVCMsg_PacketEntities_non_transmitted_entities_t& b) {
     a.Swap(&b);
@@ -10048,7 +10767,7 @@ class CSVCMsg_PacketEntities :
                &_CSVCMsg_PacketEntities_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    45;
+    46;
 
   friend void swap(CSVCMsg_PacketEntities& a, CSVCMsg_PacketEntities& b) {
     a.Swap(&b);
@@ -10546,7 +11265,7 @@ class CSVCMsg_TempEntities :
                &_CSVCMsg_TempEntities_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    46;
+    47;
 
   friend void swap(CSVCMsg_TempEntities& a, CSVCMsg_TempEntities& b) {
     a.Swap(&b);
@@ -10741,7 +11460,7 @@ class CSVCMsg_CreateStringTable :
                &_CSVCMsg_CreateStringTable_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    47;
+    48;
 
   friend void swap(CSVCMsg_CreateStringTable& a, CSVCMsg_CreateStringTable& b) {
     a.Swap(&b);
@@ -11046,7 +11765,7 @@ class CSVCMsg_UpdateStringTable :
                &_CSVCMsg_UpdateStringTable_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    48;
+    49;
 
   friend void swap(CSVCMsg_UpdateStringTable& a, CSVCMsg_UpdateStringTable& b) {
     a.Swap(&b);
@@ -11241,7 +11960,7 @@ class CSVCMsg_VoiceData :
                &_CSVCMsg_VoiceData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    49;
+    50;
 
   friend void swap(CSVCMsg_VoiceData& a, CSVCMsg_VoiceData& b) {
     a.Swap(&b);
@@ -11496,7 +12215,7 @@ class CSVCMsg_PacketReliable :
                &_CSVCMsg_PacketReliable_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    50;
+    51;
 
   friend void swap(CSVCMsg_PacketReliable& a, CSVCMsg_PacketReliable& b) {
     a.Swap(&b);
@@ -11686,7 +12405,7 @@ class CSVCMsg_FullFrameSplit :
                &_CSVCMsg_FullFrameSplit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    51;
+    52;
 
   friend void swap(CSVCMsg_FullFrameSplit& a, CSVCMsg_FullFrameSplit& b) {
     a.Swap(&b);
@@ -11896,7 +12615,7 @@ class CSVCMsg_HLTVStatus :
                &_CSVCMsg_HLTVStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    52;
+    53;
 
   friend void swap(CSVCMsg_HLTVStatus& a, CSVCMsg_HLTVStatus& b) {
     a.Swap(&b);
@@ -12106,7 +12825,7 @@ class CSVCMsg_ServerSteamID :
                &_CSVCMsg_ServerSteamID_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    53;
+    54;
 
   friend void swap(CSVCMsg_ServerSteamID& a, CSVCMsg_ServerSteamID& b) {
     a.Swap(&b);
@@ -12266,7 +12985,7 @@ class CSVCMsg_CmdKeyValues :
                &_CSVCMsg_CmdKeyValues_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    54;
+    55;
 
   friend void swap(CSVCMsg_CmdKeyValues& a, CSVCMsg_CmdKeyValues& b) {
     a.Swap(&b);
@@ -12431,7 +13150,7 @@ class CSVCMsg_RconServerDetails :
                &_CSVCMsg_RconServerDetails_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    55;
+    56;
 
   friend void swap(CSVCMsg_RconServerDetails& a, CSVCMsg_RconServerDetails& b) {
     a.Swap(&b);
@@ -12616,7 +13335,7 @@ class CMsgIPCAddress :
                &_CMsgIPCAddress_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    56;
+    57;
 
   friend void swap(CMsgIPCAddress& a, CMsgIPCAddress& b) {
     a.Swap(&b);
@@ -12791,7 +13510,7 @@ class CMsgServerPeer :
                &_CMsgServerPeer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    57;
+    58;
 
   friend void swap(CMsgServerPeer& a, CMsgServerPeer& b) {
     a.Swap(&b);
@@ -13031,7 +13750,7 @@ class CSVCMsg_PeerList :
                &_CSVCMsg_PeerList_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    58;
+    59;
 
   friend void swap(CSVCMsg_PeerList& a, CSVCMsg_PeerList& b) {
     a.Swap(&b);
@@ -13195,7 +13914,7 @@ class CSVCMsg_ClearAllStringTables :
                &_CSVCMsg_ClearAllStringTables_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    59;
+    60;
 
   friend void swap(CSVCMsg_ClearAllStringTables& a, CSVCMsg_ClearAllStringTables& b) {
     a.Swap(&b);
@@ -13375,7 +14094,7 @@ class ProtoFlattenedSerializerField_t_polymorphic_field_t :
                &_ProtoFlattenedSerializerField_t_polymorphic_field_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    60;
+    61;
 
   friend void swap(ProtoFlattenedSerializerField_t_polymorphic_field_t& a, ProtoFlattenedSerializerField_t_polymorphic_field_t& b) {
     a.Swap(&b);
@@ -13550,7 +14269,7 @@ class ProtoFlattenedSerializerField_t :
                &_ProtoFlattenedSerializerField_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    61;
+    62;
 
   friend void swap(ProtoFlattenedSerializerField_t& a, ProtoFlattenedSerializerField_t& b) {
     a.Swap(&b);
@@ -13882,7 +14601,7 @@ class ProtoFlattenedSerializer_t :
                &_ProtoFlattenedSerializer_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    62;
+    63;
 
   friend void swap(ProtoFlattenedSerializer_t& a, ProtoFlattenedSerializer_t& b) {
     a.Swap(&b);
@@ -14081,7 +14800,7 @@ class CSVCMsg_FlattenedSerializer :
                &_CSVCMsg_FlattenedSerializer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    63;
+    64;
 
   friend void swap(CSVCMsg_FlattenedSerializer& a, CSVCMsg_FlattenedSerializer& b) {
     a.Swap(&b);
@@ -14291,7 +15010,7 @@ class CSVCMsg_StopSound :
                &_CSVCMsg_StopSound_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    64;
+    65;
 
   friend void swap(CSVCMsg_StopSound& a, CSVCMsg_StopSound& b) {
     a.Swap(&b);
@@ -14451,7 +15170,7 @@ class CBidirMsg_RebroadcastGameEvent :
                &_CBidirMsg_RebroadcastGameEvent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    65;
+    66;
 
   friend void swap(CBidirMsg_RebroadcastGameEvent& a, CBidirMsg_RebroadcastGameEvent& b) {
     a.Swap(&b);
@@ -14656,7 +15375,7 @@ class CBidirMsg_RebroadcastSource :
                &_CBidirMsg_RebroadcastSource_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    66;
+    67;
 
   friend void swap(CBidirMsg_RebroadcastSource& a, CBidirMsg_RebroadcastSource& b) {
     a.Swap(&b);
@@ -14816,7 +15535,7 @@ class CMsgServerNetworkStats_Port :
                &_CMsgServerNetworkStats_Port_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    67;
+    68;
 
   friend void swap(CMsgServerNetworkStats_Port& a, CMsgServerNetworkStats_Port& b) {
     a.Swap(&b);
@@ -14996,7 +15715,7 @@ class CMsgServerNetworkStats_Player :
                &_CMsgServerNetworkStats_Player_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    68;
+    69;
 
   friend void swap(CMsgServerNetworkStats_Player& a, CMsgServerNetworkStats_Player& b) {
     a.Swap(&b);
@@ -15266,7 +15985,7 @@ class CMsgServerNetworkStats :
                &_CMsgServerNetworkStats_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    69;
+    70;
 
   friend void swap(CMsgServerNetworkStats& a, CMsgServerNetworkStats& b) {
     a.Swap(&b);
@@ -15799,7 +16518,7 @@ class CSVCMsg_HltvReplay :
                &_CSVCMsg_HltvReplay_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    70;
+    71;
 
   friend void swap(CSVCMsg_HltvReplay& a, CSVCMsg_HltvReplay& b) {
     a.Swap(&b);
@@ -16064,7 +16783,7 @@ class CCLCMsg_HltvReplay :
                &_CCLCMsg_HltvReplay_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    71;
+    72;
 
   friend void swap(CCLCMsg_HltvReplay& a, CCLCMsg_HltvReplay& b) {
     a.Swap(&b);
@@ -16284,7 +17003,7 @@ class CSVCMsg_Broadcast_Command :
                &_CSVCMsg_Broadcast_Command_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    72;
+    73;
 
   friend void swap(CSVCMsg_Broadcast_Command& a, CSVCMsg_Broadcast_Command& b) {
     a.Swap(&b);
@@ -16449,7 +17168,7 @@ class CCLCMsg_HltvFixupOperatorTick :
                &_CCLCMsg_HltvFixupOperatorTick_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    73;
+    74;
 
   friend void swap(CCLCMsg_HltvFixupOperatorTick& a, CCLCMsg_HltvFixupOperatorTick& b) {
     a.Swap(&b);
@@ -16734,7 +17453,7 @@ class CSVCMsg_HltvFixupOperatorStatus :
                &_CSVCMsg_HltvFixupOperatorStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    74;
+    75;
 
   friend void swap(CSVCMsg_HltvFixupOperatorStatus& a, CSVCMsg_HltvFixupOperatorStatus& b) {
     a.Swap(&b);
@@ -16914,7 +17633,7 @@ class CMsgServerUserCmd :
                &_CMsgServerUserCmd_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    75;
+    76;
 
   friend void swap(CMsgServerUserCmd& a, CMsgServerUserCmd& b) {
     a.Swap(&b);
@@ -17139,7 +17858,7 @@ class CSVCMsg_UserCommands :
                &_CSVCMsg_UserCommands_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    76;
+    77;
 
   friend void swap(CSVCMsg_UserCommands& a, CSVCMsg_UserCommands& b) {
     a.Swap(&b);
@@ -19507,6 +20226,34 @@ inline void CMsgSource2VProfLiteReportItem::set_active_samples(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.active_samples)
 }
 
+// optional uint32 active_samples_1secmax = 4;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_active_samples_1secmax() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_active_samples_1secmax() const {
+  return _internal_has_active_samples_1secmax();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_active_samples_1secmax() {
+  _impl_.active_samples_1secmax_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_active_samples_1secmax() const {
+  return _impl_.active_samples_1secmax_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::active_samples_1secmax() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.active_samples_1secmax)
+  return _internal_active_samples_1secmax();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_active_samples_1secmax(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.active_samples_1secmax_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_active_samples_1secmax(uint32_t value) {
+  _internal_set_active_samples_1secmax(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.active_samples_1secmax)
+}
+
 // optional uint32 usec_max = 3;
 inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_max() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
@@ -19537,7 +20284,7 @@ inline void CMsgSource2VProfLiteReportItem::set_usec_max(uint32_t value) {
 
 // optional uint32 usec_avg_active = 11;
 inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_avg_active() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool CMsgSource2VProfLiteReportItem::has_usec_avg_active() const {
@@ -19545,7 +20292,7 @@ inline bool CMsgSource2VProfLiteReportItem::has_usec_avg_active() const {
 }
 inline void CMsgSource2VProfLiteReportItem::clear_usec_avg_active() {
   _impl_.usec_avg_active_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_avg_active() const {
   return _impl_.usec_avg_active_;
@@ -19555,7 +20302,7 @@ inline uint32_t CMsgSource2VProfLiteReportItem::usec_avg_active() const {
   return _internal_usec_avg_active();
 }
 inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_avg_active(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.usec_avg_active_ = value;
 }
 inline void CMsgSource2VProfLiteReportItem::set_usec_avg_active(uint32_t value) {
@@ -19565,7 +20312,7 @@ inline void CMsgSource2VProfLiteReportItem::set_usec_avg_active(uint32_t value) 
 
 // optional uint32 usec_p50_active = 12;
 inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_p50_active() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool CMsgSource2VProfLiteReportItem::has_usec_p50_active() const {
@@ -19573,7 +20320,7 @@ inline bool CMsgSource2VProfLiteReportItem::has_usec_p50_active() const {
 }
 inline void CMsgSource2VProfLiteReportItem::clear_usec_p50_active() {
   _impl_.usec_p50_active_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
 inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_p50_active() const {
   return _impl_.usec_p50_active_;
@@ -19583,7 +20330,7 @@ inline uint32_t CMsgSource2VProfLiteReportItem::usec_p50_active() const {
   return _internal_usec_p50_active();
 }
 inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_p50_active(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.usec_p50_active_ = value;
 }
 inline void CMsgSource2VProfLiteReportItem::set_usec_p50_active(uint32_t value) {
@@ -19593,7 +20340,7 @@ inline void CMsgSource2VProfLiteReportItem::set_usec_p50_active(uint32_t value) 
 
 // optional uint32 usec_p99_active = 13;
 inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_p99_active() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool CMsgSource2VProfLiteReportItem::has_usec_p99_active() const {
@@ -19601,7 +20348,7 @@ inline bool CMsgSource2VProfLiteReportItem::has_usec_p99_active() const {
 }
 inline void CMsgSource2VProfLiteReportItem::clear_usec_p99_active() {
   _impl_.usec_p99_active_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_p99_active() const {
   return _impl_.usec_p99_active_;
@@ -19611,7 +20358,7 @@ inline uint32_t CMsgSource2VProfLiteReportItem::usec_p99_active() const {
   return _internal_usec_p99_active();
 }
 inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_p99_active(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.usec_p99_active_ = value;
 }
 inline void CMsgSource2VProfLiteReportItem::set_usec_p99_active(uint32_t value) {
@@ -19621,7 +20368,7 @@ inline void CMsgSource2VProfLiteReportItem::set_usec_p99_active(uint32_t value) 
 
 // optional uint32 usec_avg_all = 21;
 inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_avg_all() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
 inline bool CMsgSource2VProfLiteReportItem::has_usec_avg_all() const {
@@ -19629,7 +20376,7 @@ inline bool CMsgSource2VProfLiteReportItem::has_usec_avg_all() const {
 }
 inline void CMsgSource2VProfLiteReportItem::clear_usec_avg_all() {
   _impl_.usec_avg_all_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
 inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_avg_all() const {
   return _impl_.usec_avg_all_;
@@ -19639,7 +20386,7 @@ inline uint32_t CMsgSource2VProfLiteReportItem::usec_avg_all() const {
   return _internal_usec_avg_all();
 }
 inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_avg_all(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   _impl_.usec_avg_all_ = value;
 }
 inline void CMsgSource2VProfLiteReportItem::set_usec_avg_all(uint32_t value) {
@@ -19649,7 +20396,7 @@ inline void CMsgSource2VProfLiteReportItem::set_usec_avg_all(uint32_t value) {
 
 // optional uint32 usec_p50_all = 22;
 inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_p50_all() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   return value;
 }
 inline bool CMsgSource2VProfLiteReportItem::has_usec_p50_all() const {
@@ -19657,7 +20404,7 @@ inline bool CMsgSource2VProfLiteReportItem::has_usec_p50_all() const {
 }
 inline void CMsgSource2VProfLiteReportItem::clear_usec_p50_all() {
   _impl_.usec_p50_all_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
 }
 inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_p50_all() const {
   return _impl_.usec_p50_all_;
@@ -19667,7 +20414,7 @@ inline uint32_t CMsgSource2VProfLiteReportItem::usec_p50_all() const {
   return _internal_usec_p50_all();
 }
 inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_p50_all(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] |= 0x00000100u;
   _impl_.usec_p50_all_ = value;
 }
 inline void CMsgSource2VProfLiteReportItem::set_usec_p50_all(uint32_t value) {
@@ -19677,7 +20424,7 @@ inline void CMsgSource2VProfLiteReportItem::set_usec_p50_all(uint32_t value) {
 
 // optional uint32 usec_p99_all = 23;
 inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_p99_all() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
   return value;
 }
 inline bool CMsgSource2VProfLiteReportItem::has_usec_p99_all() const {
@@ -19685,7 +20432,7 @@ inline bool CMsgSource2VProfLiteReportItem::has_usec_p99_all() const {
 }
 inline void CMsgSource2VProfLiteReportItem::clear_usec_p99_all() {
   _impl_.usec_p99_all_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00000200u;
 }
 inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_p99_all() const {
   return _impl_.usec_p99_all_;
@@ -19695,12 +20442,236 @@ inline uint32_t CMsgSource2VProfLiteReportItem::usec_p99_all() const {
   return _internal_usec_p99_all();
 }
 inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_p99_all(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_._has_bits_[0] |= 0x00000200u;
   _impl_.usec_p99_all_ = value;
 }
 inline void CMsgSource2VProfLiteReportItem::set_usec_p99_all(uint32_t value) {
   _internal_set_usec_p99_all(value);
   // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_p99_all)
+}
+
+// optional uint32 usec_1secmax_avg_active = 31;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_1secmax_avg_active() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_1secmax_avg_active() const {
+  return _internal_has_usec_1secmax_avg_active();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_1secmax_avg_active() {
+  _impl_.usec_1secmax_avg_active_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000400u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_1secmax_avg_active() const {
+  return _impl_.usec_1secmax_avg_active_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_1secmax_avg_active() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_1secmax_avg_active)
+  return _internal_usec_1secmax_avg_active();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_1secmax_avg_active(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_.usec_1secmax_avg_active_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_1secmax_avg_active(uint32_t value) {
+  _internal_set_usec_1secmax_avg_active(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_1secmax_avg_active)
+}
+
+// optional uint32 usec_1secmax_p50_active = 32;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_1secmax_p50_active() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_1secmax_p50_active() const {
+  return _internal_has_usec_1secmax_p50_active();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_1secmax_p50_active() {
+  _impl_.usec_1secmax_p50_active_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_1secmax_p50_active() const {
+  return _impl_.usec_1secmax_p50_active_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_1secmax_p50_active() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_1secmax_p50_active)
+  return _internal_usec_1secmax_p50_active();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_1secmax_p50_active(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_.usec_1secmax_p50_active_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_1secmax_p50_active(uint32_t value) {
+  _internal_set_usec_1secmax_p50_active(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_1secmax_p50_active)
+}
+
+// optional uint32 usec_1secmax_p95_active = 33;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_1secmax_p95_active() const {
+  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_1secmax_p95_active() const {
+  return _internal_has_usec_1secmax_p95_active();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_1secmax_p95_active() {
+  _impl_.usec_1secmax_p95_active_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00001000u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_1secmax_p95_active() const {
+  return _impl_.usec_1secmax_p95_active_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_1secmax_p95_active() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_1secmax_p95_active)
+  return _internal_usec_1secmax_p95_active();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_1secmax_p95_active(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00001000u;
+  _impl_.usec_1secmax_p95_active_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_1secmax_p95_active(uint32_t value) {
+  _internal_set_usec_1secmax_p95_active(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_1secmax_p95_active)
+}
+
+// optional uint32 usec_1secmax_p99_active = 34;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_1secmax_p99_active() const {
+  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_1secmax_p99_active() const {
+  return _internal_has_usec_1secmax_p99_active();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_1secmax_p99_active() {
+  _impl_.usec_1secmax_p99_active_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00002000u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_1secmax_p99_active() const {
+  return _impl_.usec_1secmax_p99_active_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_1secmax_p99_active() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_1secmax_p99_active)
+  return _internal_usec_1secmax_p99_active();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_1secmax_p99_active(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_.usec_1secmax_p99_active_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_1secmax_p99_active(uint32_t value) {
+  _internal_set_usec_1secmax_p99_active(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_1secmax_p99_active)
+}
+
+// optional uint32 usec_1secmax_avg_all = 41;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_1secmax_avg_all() const {
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_1secmax_avg_all() const {
+  return _internal_has_usec_1secmax_avg_all();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_1secmax_avg_all() {
+  _impl_.usec_1secmax_avg_all_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00004000u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_1secmax_avg_all() const {
+  return _impl_.usec_1secmax_avg_all_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_1secmax_avg_all() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_1secmax_avg_all)
+  return _internal_usec_1secmax_avg_all();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_1secmax_avg_all(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00004000u;
+  _impl_.usec_1secmax_avg_all_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_1secmax_avg_all(uint32_t value) {
+  _internal_set_usec_1secmax_avg_all(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_1secmax_avg_all)
+}
+
+// optional uint32 usec_1secmax_p50_all = 42;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_1secmax_p50_all() const {
+  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_1secmax_p50_all() const {
+  return _internal_has_usec_1secmax_p50_all();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_1secmax_p50_all() {
+  _impl_.usec_1secmax_p50_all_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00008000u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_1secmax_p50_all() const {
+  return _impl_.usec_1secmax_p50_all_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_1secmax_p50_all() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_1secmax_p50_all)
+  return _internal_usec_1secmax_p50_all();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_1secmax_p50_all(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00008000u;
+  _impl_.usec_1secmax_p50_all_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_1secmax_p50_all(uint32_t value) {
+  _internal_set_usec_1secmax_p50_all(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_1secmax_p50_all)
+}
+
+// optional uint32 usec_1secmax_p95_all = 43;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_1secmax_p95_all() const {
+  bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_1secmax_p95_all() const {
+  return _internal_has_usec_1secmax_p95_all();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_1secmax_p95_all() {
+  _impl_.usec_1secmax_p95_all_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00010000u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_1secmax_p95_all() const {
+  return _impl_.usec_1secmax_p95_all_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_1secmax_p95_all() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_1secmax_p95_all)
+  return _internal_usec_1secmax_p95_all();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_1secmax_p95_all(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00010000u;
+  _impl_.usec_1secmax_p95_all_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_1secmax_p95_all(uint32_t value) {
+  _internal_set_usec_1secmax_p95_all(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_1secmax_p95_all)
+}
+
+// optional uint32 usec_1secmax_p99_all = 44;
+inline bool CMsgSource2VProfLiteReportItem::_internal_has_usec_1secmax_p99_all() const {
+  bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
+  return value;
+}
+inline bool CMsgSource2VProfLiteReportItem::has_usec_1secmax_p99_all() const {
+  return _internal_has_usec_1secmax_p99_all();
+}
+inline void CMsgSource2VProfLiteReportItem::clear_usec_1secmax_p99_all() {
+  _impl_.usec_1secmax_p99_all_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00020000u;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::_internal_usec_1secmax_p99_all() const {
+  return _impl_.usec_1secmax_p99_all_;
+}
+inline uint32_t CMsgSource2VProfLiteReportItem::usec_1secmax_p99_all() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2VProfLiteReportItem.usec_1secmax_p99_all)
+  return _internal_usec_1secmax_p99_all();
+}
+inline void CMsgSource2VProfLiteReportItem::_internal_set_usec_1secmax_p99_all(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00020000u;
+  _impl_.usec_1secmax_p99_all_ = value;
+}
+inline void CMsgSource2VProfLiteReportItem::set_usec_1secmax_p99_all(uint32_t value) {
+  _internal_set_usec_1secmax_p99_all(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReportItem.usec_1secmax_p99_all)
 }
 
 // -------------------------------------------------------------------
@@ -19863,6 +20834,822 @@ inline void CMsgSource2VProfLiteReport::_internal_set_discarded_frames(uint32_t 
 inline void CMsgSource2VProfLiteReport::set_discarded_frames(uint32_t value) {
   _internal_set_discarded_frames(value);
   // @@protoc_insertion_point(field_set:CMsgSource2VProfLiteReport.discarded_frames)
+}
+
+// -------------------------------------------------------------------
+
+// CMsgSource2NetworkFlowQuality
+
+// optional uint32 duration = 1;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_duration() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_duration() const {
+  return _internal_has_duration();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_duration() {
+  _impl_.duration_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_duration() const {
+  return _impl_.duration_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::duration() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.duration)
+  return _internal_duration();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_duration(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.duration_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_duration(uint32_t value) {
+  _internal_set_duration(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.duration)
+}
+
+// optional uint64 bytes_total = 5;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_bytes_total() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_bytes_total() const {
+  return _internal_has_bytes_total();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_bytes_total() {
+  _impl_.bytes_total_ = uint64_t{0u};
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline uint64_t CMsgSource2NetworkFlowQuality::_internal_bytes_total() const {
+  return _impl_.bytes_total_;
+}
+inline uint64_t CMsgSource2NetworkFlowQuality::bytes_total() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.bytes_total)
+  return _internal_bytes_total();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_bytes_total(uint64_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.bytes_total_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_bytes_total(uint64_t value) {
+  _internal_set_bytes_total(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.bytes_total)
+}
+
+// optional uint64 bytes_total_reliable = 6;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_bytes_total_reliable() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_bytes_total_reliable() const {
+  return _internal_has_bytes_total_reliable();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_bytes_total_reliable() {
+  _impl_.bytes_total_reliable_ = uint64_t{0u};
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline uint64_t CMsgSource2NetworkFlowQuality::_internal_bytes_total_reliable() const {
+  return _impl_.bytes_total_reliable_;
+}
+inline uint64_t CMsgSource2NetworkFlowQuality::bytes_total_reliable() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.bytes_total_reliable)
+  return _internal_bytes_total_reliable();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_bytes_total_reliable(uint64_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.bytes_total_reliable_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_bytes_total_reliable(uint64_t value) {
+  _internal_set_bytes_total_reliable(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.bytes_total_reliable)
+}
+
+// optional uint64 bytes_total_voice = 7;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_bytes_total_voice() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_bytes_total_voice() const {
+  return _internal_has_bytes_total_voice();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_bytes_total_voice() {
+  _impl_.bytes_total_voice_ = uint64_t{0u};
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline uint64_t CMsgSource2NetworkFlowQuality::_internal_bytes_total_voice() const {
+  return _impl_.bytes_total_voice_;
+}
+inline uint64_t CMsgSource2NetworkFlowQuality::bytes_total_voice() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.bytes_total_voice)
+  return _internal_bytes_total_voice();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_bytes_total_voice(uint64_t value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.bytes_total_voice_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_bytes_total_voice(uint64_t value) {
+  _internal_set_bytes_total_voice(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.bytes_total_voice)
+}
+
+// optional uint32 bytes_sec_p95 = 10;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_bytes_sec_p95() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_bytes_sec_p95() const {
+  return _internal_has_bytes_sec_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_bytes_sec_p95() {
+  _impl_.bytes_sec_p95_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_bytes_sec_p95() const {
+  return _impl_.bytes_sec_p95_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::bytes_sec_p95() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.bytes_sec_p95)
+  return _internal_bytes_sec_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_bytes_sec_p95(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.bytes_sec_p95_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_bytes_sec_p95(uint32_t value) {
+  _internal_set_bytes_sec_p95(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.bytes_sec_p95)
+}
+
+// optional uint32 bytes_sec_p99 = 11;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_bytes_sec_p99() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_bytes_sec_p99() const {
+  return _internal_has_bytes_sec_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_bytes_sec_p99() {
+  _impl_.bytes_sec_p99_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_bytes_sec_p99() const {
+  return _impl_.bytes_sec_p99_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::bytes_sec_p99() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.bytes_sec_p99)
+  return _internal_bytes_sec_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_bytes_sec_p99(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.bytes_sec_p99_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_bytes_sec_p99(uint32_t value) {
+  _internal_set_bytes_sec_p99(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.bytes_sec_p99)
+}
+
+// optional uint32 enginemsgs_total = 20;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_enginemsgs_total() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_enginemsgs_total() const {
+  return _internal_has_enginemsgs_total();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_enginemsgs_total() {
+  _impl_.enginemsgs_total_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_enginemsgs_total() const {
+  return _impl_.enginemsgs_total_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::enginemsgs_total() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.enginemsgs_total)
+  return _internal_enginemsgs_total();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_enginemsgs_total(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.enginemsgs_total_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_enginemsgs_total(uint32_t value) {
+  _internal_set_enginemsgs_total(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.enginemsgs_total)
+}
+
+// optional uint32 enginemsgs_sec_p95 = 21;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_enginemsgs_sec_p95() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_enginemsgs_sec_p95() const {
+  return _internal_has_enginemsgs_sec_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_enginemsgs_sec_p95() {
+  _impl_.enginemsgs_sec_p95_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_enginemsgs_sec_p95() const {
+  return _impl_.enginemsgs_sec_p95_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::enginemsgs_sec_p95() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.enginemsgs_sec_p95)
+  return _internal_enginemsgs_sec_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_enginemsgs_sec_p95(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_.enginemsgs_sec_p95_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_enginemsgs_sec_p95(uint32_t value) {
+  _internal_set_enginemsgs_sec_p95(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.enginemsgs_sec_p95)
+}
+
+// optional uint32 enginemsgs_sec_p99 = 22;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_enginemsgs_sec_p99() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_enginemsgs_sec_p99() const {
+  return _internal_has_enginemsgs_sec_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_enginemsgs_sec_p99() {
+  _impl_.enginemsgs_sec_p99_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_enginemsgs_sec_p99() const {
+  return _impl_.enginemsgs_sec_p99_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::enginemsgs_sec_p99() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.enginemsgs_sec_p99)
+  return _internal_enginemsgs_sec_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_enginemsgs_sec_p99(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_.enginemsgs_sec_p99_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_enginemsgs_sec_p99(uint32_t value) {
+  _internal_set_enginemsgs_sec_p99(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.enginemsgs_sec_p99)
+}
+
+// optional uint32 ticks_total = 40;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_total() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_ticks_total() const {
+  return _internal_has_ticks_total();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_ticks_total() {
+  _impl_.ticks_total_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000200u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_total() const {
+  return _impl_.ticks_total_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::ticks_total() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.ticks_total)
+  return _internal_ticks_total();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_total(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_.ticks_total_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_ticks_total(uint32_t value) {
+  _internal_set_ticks_total(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.ticks_total)
+}
+
+// optional uint32 ticks_good = 41;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_good() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_ticks_good() const {
+  return _internal_has_ticks_good();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_ticks_good() {
+  _impl_.ticks_good_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000400u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_good() const {
+  return _impl_.ticks_good_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::ticks_good() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.ticks_good)
+  return _internal_ticks_good();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_good(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_.ticks_good_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_ticks_good(uint32_t value) {
+  _internal_set_ticks_good(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.ticks_good)
+}
+
+// optional uint32 ticks_good_almost_late = 42;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_good_almost_late() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_ticks_good_almost_late() const {
+  return _internal_has_ticks_good_almost_late();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_ticks_good_almost_late() {
+  _impl_.ticks_good_almost_late_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_good_almost_late() const {
+  return _impl_.ticks_good_almost_late_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::ticks_good_almost_late() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.ticks_good_almost_late)
+  return _internal_ticks_good_almost_late();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_good_almost_late(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_.ticks_good_almost_late_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_ticks_good_almost_late(uint32_t value) {
+  _internal_set_ticks_good_almost_late(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.ticks_good_almost_late)
+}
+
+// optional uint32 ticks_fixed_dropped = 43;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_fixed_dropped() const {
+  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_ticks_fixed_dropped() const {
+  return _internal_has_ticks_fixed_dropped();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_ticks_fixed_dropped() {
+  _impl_.ticks_fixed_dropped_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00001000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_fixed_dropped() const {
+  return _impl_.ticks_fixed_dropped_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::ticks_fixed_dropped() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.ticks_fixed_dropped)
+  return _internal_ticks_fixed_dropped();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_fixed_dropped(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00001000u;
+  _impl_.ticks_fixed_dropped_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_ticks_fixed_dropped(uint32_t value) {
+  _internal_set_ticks_fixed_dropped(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.ticks_fixed_dropped)
+}
+
+// optional uint32 ticks_fixed_late = 44;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_fixed_late() const {
+  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_ticks_fixed_late() const {
+  return _internal_has_ticks_fixed_late();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_ticks_fixed_late() {
+  _impl_.ticks_fixed_late_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00002000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_fixed_late() const {
+  return _impl_.ticks_fixed_late_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::ticks_fixed_late() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.ticks_fixed_late)
+  return _internal_ticks_fixed_late();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_fixed_late(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_.ticks_fixed_late_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_ticks_fixed_late(uint32_t value) {
+  _internal_set_ticks_fixed_late(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.ticks_fixed_late)
+}
+
+// optional uint32 ticks_bad_dropped = 45;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_bad_dropped() const {
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_ticks_bad_dropped() const {
+  return _internal_has_ticks_bad_dropped();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_ticks_bad_dropped() {
+  _impl_.ticks_bad_dropped_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00004000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_bad_dropped() const {
+  return _impl_.ticks_bad_dropped_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::ticks_bad_dropped() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.ticks_bad_dropped)
+  return _internal_ticks_bad_dropped();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_bad_dropped(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00004000u;
+  _impl_.ticks_bad_dropped_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_ticks_bad_dropped(uint32_t value) {
+  _internal_set_ticks_bad_dropped(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.ticks_bad_dropped)
+}
+
+// optional uint32 ticks_bad_late = 46;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_bad_late() const {
+  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_ticks_bad_late() const {
+  return _internal_has_ticks_bad_late();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_ticks_bad_late() {
+  _impl_.ticks_bad_late_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00008000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_bad_late() const {
+  return _impl_.ticks_bad_late_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::ticks_bad_late() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.ticks_bad_late)
+  return _internal_ticks_bad_late();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_bad_late(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00008000u;
+  _impl_.ticks_bad_late_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_ticks_bad_late(uint32_t value) {
+  _internal_set_ticks_bad_late(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.ticks_bad_late)
+}
+
+// optional uint32 ticks_bad_other = 47;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_bad_other() const {
+  bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_ticks_bad_other() const {
+  return _internal_has_ticks_bad_other();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_ticks_bad_other() {
+  _impl_.ticks_bad_other_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00010000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_bad_other() const {
+  return _impl_.ticks_bad_other_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::ticks_bad_other() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.ticks_bad_other)
+  return _internal_ticks_bad_other();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_bad_other(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00010000u;
+  _impl_.ticks_bad_other_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_ticks_bad_other(uint32_t value) {
+  _internal_set_ticks_bad_other(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.ticks_bad_other)
+}
+
+// optional uint32 tick_missrate_samples_total = 50;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missrate_samples_total() const {
+  bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_tick_missrate_samples_total() const {
+  return _internal_has_tick_missrate_samples_total();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_tick_missrate_samples_total() {
+  _impl_.tick_missrate_samples_total_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00020000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missrate_samples_total() const {
+  return _impl_.tick_missrate_samples_total_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::tick_missrate_samples_total() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.tick_missrate_samples_total)
+  return _internal_tick_missrate_samples_total();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missrate_samples_total(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00020000u;
+  _impl_.tick_missrate_samples_total_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_tick_missrate_samples_total(uint32_t value) {
+  _internal_set_tick_missrate_samples_total(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.tick_missrate_samples_total)
+}
+
+// optional uint32 tick_missrate_samples_perfect = 51;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missrate_samples_perfect() const {
+  bool value = (_impl_._has_bits_[0] & 0x00040000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_tick_missrate_samples_perfect() const {
+  return _internal_has_tick_missrate_samples_perfect();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_tick_missrate_samples_perfect() {
+  _impl_.tick_missrate_samples_perfect_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00040000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missrate_samples_perfect() const {
+  return _impl_.tick_missrate_samples_perfect_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::tick_missrate_samples_perfect() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.tick_missrate_samples_perfect)
+  return _internal_tick_missrate_samples_perfect();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missrate_samples_perfect(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00040000u;
+  _impl_.tick_missrate_samples_perfect_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_tick_missrate_samples_perfect(uint32_t value) {
+  _internal_set_tick_missrate_samples_perfect(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.tick_missrate_samples_perfect)
+}
+
+// optional uint32 tick_missrate_samples_perfectnet = 52;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missrate_samples_perfectnet() const {
+  bool value = (_impl_._has_bits_[0] & 0x00080000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_tick_missrate_samples_perfectnet() const {
+  return _internal_has_tick_missrate_samples_perfectnet();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_tick_missrate_samples_perfectnet() {
+  _impl_.tick_missrate_samples_perfectnet_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00080000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missrate_samples_perfectnet() const {
+  return _impl_.tick_missrate_samples_perfectnet_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::tick_missrate_samples_perfectnet() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.tick_missrate_samples_perfectnet)
+  return _internal_tick_missrate_samples_perfectnet();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missrate_samples_perfectnet(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00080000u;
+  _impl_.tick_missrate_samples_perfectnet_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_tick_missrate_samples_perfectnet(uint32_t value) {
+  _internal_set_tick_missrate_samples_perfectnet(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.tick_missrate_samples_perfectnet)
+}
+
+// optional uint32 tick_missratenet_p75_x10 = 53;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missratenet_p75_x10() const {
+  bool value = (_impl_._has_bits_[0] & 0x00100000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_tick_missratenet_p75_x10() const {
+  return _internal_has_tick_missratenet_p75_x10();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_tick_missratenet_p75_x10() {
+  _impl_.tick_missratenet_p75_x10_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00100000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missratenet_p75_x10() const {
+  return _impl_.tick_missratenet_p75_x10_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::tick_missratenet_p75_x10() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.tick_missratenet_p75_x10)
+  return _internal_tick_missratenet_p75_x10();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missratenet_p75_x10(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00100000u;
+  _impl_.tick_missratenet_p75_x10_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_tick_missratenet_p75_x10(uint32_t value) {
+  _internal_set_tick_missratenet_p75_x10(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.tick_missratenet_p75_x10)
+}
+
+// optional uint32 tick_missratenet_p95_x10 = 54;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missratenet_p95_x10() const {
+  bool value = (_impl_._has_bits_[0] & 0x00200000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_tick_missratenet_p95_x10() const {
+  return _internal_has_tick_missratenet_p95_x10();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_tick_missratenet_p95_x10() {
+  _impl_.tick_missratenet_p95_x10_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00200000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missratenet_p95_x10() const {
+  return _impl_.tick_missratenet_p95_x10_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::tick_missratenet_p95_x10() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.tick_missratenet_p95_x10)
+  return _internal_tick_missratenet_p95_x10();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missratenet_p95_x10(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00200000u;
+  _impl_.tick_missratenet_p95_x10_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_tick_missratenet_p95_x10(uint32_t value) {
+  _internal_set_tick_missratenet_p95_x10(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.tick_missratenet_p95_x10)
+}
+
+// optional uint32 tick_missratenet_p99_x10 = 55;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missratenet_p99_x10() const {
+  bool value = (_impl_._has_bits_[0] & 0x00400000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_tick_missratenet_p99_x10() const {
+  return _internal_has_tick_missratenet_p99_x10();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_tick_missratenet_p99_x10() {
+  _impl_.tick_missratenet_p99_x10_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00400000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missratenet_p99_x10() const {
+  return _impl_.tick_missratenet_p99_x10_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::tick_missratenet_p99_x10() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.tick_missratenet_p99_x10)
+  return _internal_tick_missratenet_p99_x10();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missratenet_p99_x10(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00400000u;
+  _impl_.tick_missratenet_p99_x10_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_tick_missratenet_p99_x10(uint32_t value) {
+  _internal_set_tick_missratenet_p99_x10(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.tick_missratenet_p99_x10)
+}
+
+// optional sint32 recvmargin_p1 = 61;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p1() const {
+  bool value = (_impl_._has_bits_[0] & 0x00800000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p1() const {
+  return _internal_has_recvmargin_p1();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p1() {
+  _impl_.recvmargin_p1_ = 0;
+  _impl_._has_bits_[0] &= ~0x00800000u;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p1() const {
+  return _impl_.recvmargin_p1_;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p1() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.recvmargin_p1)
+  return _internal_recvmargin_p1();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p1(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00800000u;
+  _impl_.recvmargin_p1_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p1(int32_t value) {
+  _internal_set_recvmargin_p1(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.recvmargin_p1)
+}
+
+// optional sint32 recvmargin_p5 = 62;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p5() const {
+  bool value = (_impl_._has_bits_[0] & 0x01000000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p5() const {
+  return _internal_has_recvmargin_p5();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p5() {
+  _impl_.recvmargin_p5_ = 0;
+  _impl_._has_bits_[0] &= ~0x01000000u;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p5() const {
+  return _impl_.recvmargin_p5_;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p5() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.recvmargin_p5)
+  return _internal_recvmargin_p5();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p5(int32_t value) {
+  _impl_._has_bits_[0] |= 0x01000000u;
+  _impl_.recvmargin_p5_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p5(int32_t value) {
+  _internal_set_recvmargin_p5(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.recvmargin_p5)
+}
+
+// optional sint32 recvmargin_p25 = 63;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p25() const {
+  bool value = (_impl_._has_bits_[0] & 0x02000000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p25() const {
+  return _internal_has_recvmargin_p25();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p25() {
+  _impl_.recvmargin_p25_ = 0;
+  _impl_._has_bits_[0] &= ~0x02000000u;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p25() const {
+  return _impl_.recvmargin_p25_;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p25() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.recvmargin_p25)
+  return _internal_recvmargin_p25();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p25(int32_t value) {
+  _impl_._has_bits_[0] |= 0x02000000u;
+  _impl_.recvmargin_p25_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p25(int32_t value) {
+  _internal_set_recvmargin_p25(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.recvmargin_p25)
+}
+
+// optional sint32 recvmargin_p50 = 64;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p50() const {
+  bool value = (_impl_._has_bits_[0] & 0x04000000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p50() const {
+  return _internal_has_recvmargin_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p50() {
+  _impl_.recvmargin_p50_ = 0;
+  _impl_._has_bits_[0] &= ~0x04000000u;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p50() const {
+  return _impl_.recvmargin_p50_;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p50() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.recvmargin_p50)
+  return _internal_recvmargin_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p50(int32_t value) {
+  _impl_._has_bits_[0] |= 0x04000000u;
+  _impl_.recvmargin_p50_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p50(int32_t value) {
+  _internal_set_recvmargin_p50(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.recvmargin_p50)
+}
+
+// optional sint32 recvmargin_p75 = 65;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p75() const {
+  bool value = (_impl_._has_bits_[0] & 0x08000000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p75() const {
+  return _internal_has_recvmargin_p75();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p75() {
+  _impl_.recvmargin_p75_ = 0;
+  _impl_._has_bits_[0] &= ~0x08000000u;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p75() const {
+  return _impl_.recvmargin_p75_;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p75() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.recvmargin_p75)
+  return _internal_recvmargin_p75();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p75(int32_t value) {
+  _impl_._has_bits_[0] |= 0x08000000u;
+  _impl_.recvmargin_p75_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p75(int32_t value) {
+  _internal_set_recvmargin_p75(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.recvmargin_p75)
+}
+
+// optional sint32 recvmargin_p95 = 66;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p95() const {
+  bool value = (_impl_._has_bits_[0] & 0x10000000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p95() const {
+  return _internal_has_recvmargin_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p95() {
+  _impl_.recvmargin_p95_ = 0;
+  _impl_._has_bits_[0] &= ~0x10000000u;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p95() const {
+  return _impl_.recvmargin_p95_;
+}
+inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p95() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.recvmargin_p95)
+  return _internal_recvmargin_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p95(int32_t value) {
+  _impl_._has_bits_[0] |= 0x10000000u;
+  _impl_.recvmargin_p95_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p95(int32_t value) {
+  _internal_set_recvmargin_p95(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.recvmargin_p95)
 }
 
 // -------------------------------------------------------------------
@@ -30220,6 +32007,8 @@ CSVCMsg_UserCommands::commands() const {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -28,7 +28,7 @@ static constexpr ::_pb::Message* const* file_default_instances = nullptr;
 
 const char descriptor_table_protodef_network_5fconnection_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\030network_connection.proto\032 google/proto"
-  "buf/descriptor.proto*\314L\n\033ENetworkDisconn"
+  "buf/descriptor.proto*\250M\n\033ENetworkDisconn"
   "ectionReason\022\036\n\032NETWORK_DISCONNECT_INVAL"
   "ID\020\000\022\037\n\033NETWORK_DISCONNECT_SHUTDOWN\020\001\022F\n"
   "%NETWORK_DISCONNECT_DISCONNECT_BY_USER\020\002"
@@ -273,18 +273,20 @@ const char descriptor_table_protodef_network_5fconnection_2eproto[] PROTOBUF_SEC
   "DisconnectReason_InputAutomation_Detail\022"
   "j\n0NETWORK_DISCONNECT_KICKED_VACNETABNOR"
   "MALBEHAVIOR\020\243\001\0323\242\324\030/#Player_DisconnectRe"
-  "ason_VacNetAbnormalBehavior:E\n\030network_c"
-  "onnection_token\022!.google.protobuf.EnumVa"
-  "lueOptions\030\304\212\003 \001(\t:L\n\037network_connection"
-  "_detail_token\022!.google.protobuf.EnumValu"
-  "eOptions\030\305\212\003 \001(\t"
+  "ason_VacNetAbnormalBehavior\022Z\n(NETWORK_D"
+  "ISCONNECT_KICKED_INSECURECLIENT\020\244\001\032+\242\324\030\'"
+  "#Player_DisconnectReason_InsecureClient:"
+  "E\n\030network_connection_token\022!.google.pro"
+  "tobuf.EnumValueOptions\030\304\212\003 \001(\t:L\n\037networ"
+  "k_connection_detail_token\022!.google.proto"
+  "buf.EnumValueOptions\030\305\212\003 \001(\t"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_network_5fconnection_2eproto_deps[1] = {
   &::descriptor_table_google_2fprotobuf_2fdescriptor_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_network_5fconnection_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_network_5fconnection_2eproto = {
-    false, false, 10016, descriptor_table_protodef_network_5fconnection_2eproto,
+    false, false, 10108, descriptor_table_protodef_network_5fconnection_2eproto,
     "network_connection.proto",
     &descriptor_table_network_5fconnection_2eproto_once, descriptor_table_network_5fconnection_2eproto_deps, 1, 0,
     schemas, file_default_instances, TableStruct_network_5fconnection_2eproto::offsets,
@@ -423,6 +425,7 @@ bool ENetworkDisconnectionReason_IsValid(int value) {
     case 161:
     case 162:
     case 163:
+    case 164:
       return true;
     default:
       return false;

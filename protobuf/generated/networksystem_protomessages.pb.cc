@@ -38,6 +38,7 @@ PROTOBUF_CONSTEXPR NetMessageConnectionClosed::NetMessageConnectionClosed(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.message_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.reason_)*/0u} {}
 struct NetMessageConnectionClosedDefaultTypeInternal {
   PROTOBUF_CONSTEXPR NetMessageConnectionClosedDefaultTypeInternal()
@@ -52,6 +53,7 @@ PROTOBUF_CONSTEXPR NetMessageConnectionCrashed::NetMessageConnectionCrashed(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.message_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.reason_)*/0u} {}
 struct NetMessageConnectionCrashedDefaultTypeInternal {
   PROTOBUF_CONSTEXPR NetMessageConnectionCrashedDefaultTypeInternal()
@@ -104,6 +106,8 @@ const uint32_t TableStruct_networksystem_5fprotomessages_2eproto::offsets[] PROT
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::NetMessageConnectionClosed, _impl_.reason_),
+  PROTOBUF_FIELD_OFFSET(::NetMessageConnectionClosed, _impl_.message_),
+  1,
   0,
   PROTOBUF_FIELD_OFFSET(::NetMessageConnectionCrashed, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::NetMessageConnectionCrashed, _internal_metadata_),
@@ -112,6 +116,8 @@ const uint32_t TableStruct_networksystem_5fprotomessages_2eproto::offsets[] PROT
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::NetMessageConnectionCrashed, _impl_.reason_),
+  PROTOBUF_FIELD_OFFSET(::NetMessageConnectionCrashed, _impl_.message_),
+  1,
   0,
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::NetMessagePacketStart, _internal_metadata_),
@@ -128,10 +134,10 @@ const uint32_t TableStruct_networksystem_5fprotomessages_2eproto::offsets[] PROT
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 7, -1, sizeof(::NetMessageSplitscreenUserChanged)},
-  { 8, 15, -1, sizeof(::NetMessageConnectionClosed)},
-  { 16, 23, -1, sizeof(::NetMessageConnectionCrashed)},
-  { 24, -1, -1, sizeof(::NetMessagePacketStart)},
-  { 30, -1, -1, sizeof(::NetMessagePacketEnd)},
+  { 8, 16, -1, sizeof(::NetMessageConnectionClosed)},
+  { 18, 26, -1, sizeof(::NetMessageConnectionCrashed)},
+  { 28, -1, -1, sizeof(::NetMessagePacketStart)},
+  { 34, -1, -1, sizeof(::NetMessagePacketEnd)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -145,14 +151,15 @@ static const ::_pb::Message* const file_default_instances[] = {
 const char descriptor_table_protodef_networksystem_5fprotomessages_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n!networksystem_protomessages.proto\"0\n N"
   "etMessageSplitscreenUserChanged\022\014\n\004slot\030"
-  "\001 \001(\r\",\n\032NetMessageConnectionClosed\022\016\n\006r"
-  "eason\030\001 \001(\r\"-\n\033NetMessageConnectionCrash"
-  "ed\022\016\n\006reason\030\001 \001(\r\"\027\n\025NetMessagePacketSt"
-  "art\"\025\n\023NetMessagePacketEnd"
+  "\001 \001(\r\"=\n\032NetMessageConnectionClosed\022\016\n\006r"
+  "eason\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\">\n\033NetMessa"
+  "geConnectionCrashed\022\016\n\006reason\030\001 \001(\r\022\017\n\007m"
+  "essage\030\002 \001(\t\"\027\n\025NetMessagePacketStart\"\025\n"
+  "\023NetMessagePacketEnd"
   ;
 static ::_pbi::once_flag descriptor_table_networksystem_5fprotomessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_networksystem_5fprotomessages_2eproto = {
-    false, false, 226, descriptor_table_protodef_networksystem_5fprotomessages_2eproto,
+    false, false, 260, descriptor_table_protodef_networksystem_5fprotomessages_2eproto,
     "networksystem_protomessages.proto",
     &descriptor_table_networksystem_5fprotomessages_2eproto_once, nullptr, 0, 5,
     schemas, file_default_instances, TableStruct_networksystem_5fprotomessages_2eproto::offsets,
@@ -363,6 +370,9 @@ class NetMessageConnectionClosed::_Internal {
  public:
   using HasBits = decltype(std::declval<NetMessageConnectionClosed>()._impl_._has_bits_);
   static void set_has_reason(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+  static void set_has_message(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
 };
@@ -379,9 +389,18 @@ NetMessageConnectionClosed::NetMessageConnectionClosed(const NetMessageConnectio
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){from._impl_._has_bits_}
     , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.message_){}
     , decltype(_impl_.reason_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_message()) {
+    _this->_impl_.message_.Set(from._internal_message(), 
+      _this->GetArenaForAllocation());
+  }
   _this->_impl_.reason_ = from._impl_.reason_;
   // @@protoc_insertion_point(copy_constructor:NetMessageConnectionClosed)
 }
@@ -393,8 +412,13 @@ inline void NetMessageConnectionClosed::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){}
     , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.message_){}
     , decltype(_impl_.reason_){0u}
   };
+  _impl_.message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 NetMessageConnectionClosed::~NetMessageConnectionClosed() {
@@ -408,6 +432,7 @@ NetMessageConnectionClosed::~NetMessageConnectionClosed() {
 
 inline void NetMessageConnectionClosed::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.message_.Destroy();
 }
 
 void NetMessageConnectionClosed::SetCachedSize(int size) const {
@@ -420,6 +445,10 @@ void NetMessageConnectionClosed::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    _impl_.message_.ClearNonDefaultToEmpty();
+  }
   _impl_.reason_ = 0u;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -438,6 +467,18 @@ const char* NetMessageConnectionClosed::_InternalParse(const char* ptr, ::_pbi::
           _Internal::set_has_reason(&has_bits);
           _impl_.reason_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string message = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_message();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "NetMessageConnectionClosed.message");
+          #endif  // !NDEBUG
         } else
           goto handle_unusual;
         continue;
@@ -473,9 +514,19 @@ uint8_t* NetMessageConnectionClosed::_InternalSerialize(
 
   cached_has_bits = _impl_._has_bits_[0];
   // optional uint32 reason = 1;
-  if (cached_has_bits & 0x00000001u) {
+  if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_reason(), target);
+  }
+
+  // optional string message = 2;
+  if (cached_has_bits & 0x00000001u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "NetMessageConnectionClosed.message");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_message(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -494,12 +545,21 @@ size_t NetMessageConnectionClosed::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // optional uint32 reason = 1;
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_reason());
-  }
+  if (cached_has_bits & 0x00000003u) {
+    // optional string message = 2;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_message());
+    }
 
+    // optional uint32 reason = 1;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_reason());
+    }
+
+  }
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -518,8 +578,15 @@ void NetMessageConnectionClosed::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_has_reason()) {
-    _this->_internal_set_reason(from._internal_reason());
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_message(from._internal_message());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_impl_.reason_ = from._impl_.reason_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -537,8 +604,14 @@ bool NetMessageConnectionClosed::IsInitialized() const {
 
 void NetMessageConnectionClosed::InternalSwap(NetMessageConnectionClosed* other) {
   using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.message_, lhs_arena,
+      &other->_impl_.message_, rhs_arena
+  );
   swap(_impl_.reason_, other->_impl_.reason_);
 }
 
@@ -554,6 +627,9 @@ class NetMessageConnectionCrashed::_Internal {
  public:
   using HasBits = decltype(std::declval<NetMessageConnectionCrashed>()._impl_._has_bits_);
   static void set_has_reason(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+  static void set_has_message(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
 };
@@ -570,9 +646,18 @@ NetMessageConnectionCrashed::NetMessageConnectionCrashed(const NetMessageConnect
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){from._impl_._has_bits_}
     , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.message_){}
     , decltype(_impl_.reason_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_message()) {
+    _this->_impl_.message_.Set(from._internal_message(), 
+      _this->GetArenaForAllocation());
+  }
   _this->_impl_.reason_ = from._impl_.reason_;
   // @@protoc_insertion_point(copy_constructor:NetMessageConnectionCrashed)
 }
@@ -584,8 +669,13 @@ inline void NetMessageConnectionCrashed::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){}
     , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.message_){}
     , decltype(_impl_.reason_){0u}
   };
+  _impl_.message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 NetMessageConnectionCrashed::~NetMessageConnectionCrashed() {
@@ -599,6 +689,7 @@ NetMessageConnectionCrashed::~NetMessageConnectionCrashed() {
 
 inline void NetMessageConnectionCrashed::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.message_.Destroy();
 }
 
 void NetMessageConnectionCrashed::SetCachedSize(int size) const {
@@ -611,6 +702,10 @@ void NetMessageConnectionCrashed::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    _impl_.message_.ClearNonDefaultToEmpty();
+  }
   _impl_.reason_ = 0u;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -629,6 +724,18 @@ const char* NetMessageConnectionCrashed::_InternalParse(const char* ptr, ::_pbi:
           _Internal::set_has_reason(&has_bits);
           _impl_.reason_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string message = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_message();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "NetMessageConnectionCrashed.message");
+          #endif  // !NDEBUG
         } else
           goto handle_unusual;
         continue;
@@ -664,9 +771,19 @@ uint8_t* NetMessageConnectionCrashed::_InternalSerialize(
 
   cached_has_bits = _impl_._has_bits_[0];
   // optional uint32 reason = 1;
-  if (cached_has_bits & 0x00000001u) {
+  if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_reason(), target);
+  }
+
+  // optional string message = 2;
+  if (cached_has_bits & 0x00000001u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "NetMessageConnectionCrashed.message");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_message(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -685,12 +802,21 @@ size_t NetMessageConnectionCrashed::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // optional uint32 reason = 1;
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_reason());
-  }
+  if (cached_has_bits & 0x00000003u) {
+    // optional string message = 2;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_message());
+    }
 
+    // optional uint32 reason = 1;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_reason());
+    }
+
+  }
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -709,8 +835,15 @@ void NetMessageConnectionCrashed::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_has_reason()) {
-    _this->_internal_set_reason(from._internal_reason());
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_message(from._internal_message());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_impl_.reason_ = from._impl_.reason_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -728,8 +861,14 @@ bool NetMessageConnectionCrashed::IsInitialized() const {
 
 void NetMessageConnectionCrashed::InternalSwap(NetMessageConnectionCrashed* other) {
   using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.message_, lhs_arena,
+      &other->_impl_.message_, rhs_arena
+  );
   swap(_impl_.reason_, other->_impl_.reason_);
 }
 

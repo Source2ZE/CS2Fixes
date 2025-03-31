@@ -411,7 +411,37 @@ struct CDemoSpawnGroupsDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CDemoSpawnGroupsDefaultTypeInternal _CDemoSpawnGroups_default_instance_;
-static ::_pb::Metadata file_level_metadata_demo_2eproto[25];
+PROTOBUF_CONSTEXPR CDemoRecovery_DemoInitialSpawnGroupEntry::CDemoRecovery_DemoInitialSpawnGroupEntry(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.spawngrouphandle_)*/0u
+  , /*decltype(_impl_.was_created_)*/false} {}
+struct CDemoRecovery_DemoInitialSpawnGroupEntryDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CDemoRecovery_DemoInitialSpawnGroupEntryDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CDemoRecovery_DemoInitialSpawnGroupEntryDefaultTypeInternal() {}
+  union {
+    CDemoRecovery_DemoInitialSpawnGroupEntry _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CDemoRecovery_DemoInitialSpawnGroupEntryDefaultTypeInternal _CDemoRecovery_DemoInitialSpawnGroupEntry_default_instance_;
+PROTOBUF_CONSTEXPR CDemoRecovery::CDemoRecovery(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.spawn_group_message_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.initial_spawn_group_)*/nullptr} {}
+struct CDemoRecoveryDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CDemoRecoveryDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CDemoRecoveryDefaultTypeInternal() {}
+  union {
+    CDemoRecovery _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CDemoRecoveryDefaultTypeInternal _CDemoRecovery_default_instance_;
+static ::_pb::Metadata file_level_metadata_demo_2eproto[27];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_demo_2eproto[1];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_demo_2eproto = nullptr;
 
@@ -711,6 +741,26 @@ const uint32_t TableStruct_demo_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pro
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CDemoSpawnGroups, _impl_.msgs_),
+  PROTOBUF_FIELD_OFFSET(::CDemoRecovery_DemoInitialSpawnGroupEntry, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CDemoRecovery_DemoInitialSpawnGroupEntry, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CDemoRecovery_DemoInitialSpawnGroupEntry, _impl_.spawngrouphandle_),
+  PROTOBUF_FIELD_OFFSET(::CDemoRecovery_DemoInitialSpawnGroupEntry, _impl_.was_created_),
+  0,
+  1,
+  PROTOBUF_FIELD_OFFSET(::CDemoRecovery, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CDemoRecovery, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CDemoRecovery, _impl_.initial_spawn_group_),
+  PROTOBUF_FIELD_OFFSET(::CDemoRecovery, _impl_.spawn_group_message_),
+  1,
+  0,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 21, -1, sizeof(::CDemoFileHeader)},
@@ -738,6 +788,8 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 272, -1, -1, sizeof(::CDemoStop)},
   { 278, 286, -1, sizeof(::CDemoUserCmd)},
   { 288, -1, -1, sizeof(::CDemoSpawnGroups)},
+  { 295, 303, -1, sizeof(::CDemoRecovery_DemoInitialSpawnGroupEntry)},
+  { 305, 313, -1, sizeof(::CDemoRecovery)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -766,6 +818,8 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CDemoStop_default_instance_._instance,
   &::_CDemoUserCmd_default_instance_._instance,
   &::_CDemoSpawnGroups_default_instance_._instance,
+  &::_CDemoRecovery_DemoInitialSpawnGroupEntry_default_instance_._instance,
+  &::_CDemoRecovery_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_demo_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -824,24 +878,29 @@ const char descriptor_table_protodef_demo_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\0132\032.CDemoStringTables.items_t\022\023\n\013table_f"
   "lags\030\004 \001(\005\"\013\n\tCDemoStop\"0\n\014CDemoUserCmd\022"
   "\022\n\ncmd_number\030\001 \001(\005\022\014\n\004data\030\002 \001(\014\" \n\020CDe"
-  "moSpawnGroups\022\014\n\004msgs\030\003 \003(\014*\264\003\n\rEDemoCom"
-  "mands\022\026\n\tDEM_Error\020\377\377\377\377\377\377\377\377\377\001\022\014\n\010DEM_Sto"
-  "p\020\000\022\022\n\016DEM_FileHeader\020\001\022\020\n\014DEM_FileInfo\020"
-  "\002\022\020\n\014DEM_SyncTick\020\003\022\022\n\016DEM_SendTables\020\004\022"
-  "\021\n\rDEM_ClassInfo\020\005\022\024\n\020DEM_StringTables\020\006"
-  "\022\016\n\nDEM_Packet\020\007\022\024\n\020DEM_SignonPacket\020\010\022\022"
-  "\n\016DEM_ConsoleCmd\020\t\022\022\n\016DEM_CustomData\020\n\022\033"
-  "\n\027DEM_CustomDataCallbacks\020\013\022\017\n\013DEM_UserC"
-  "md\020\014\022\022\n\016DEM_FullPacket\020\r\022\020\n\014DEM_SaveGame"
-  "\020\016\022\023\n\017DEM_SpawnGroups\020\017\022\025\n\021DEM_Animation"
-  "Data\020\020\022\027\n\023DEM_AnimationHeader\020\021\022\013\n\007DEM_M"
-  "ax\020\022\022\024\n\020DEM_IsCompressed\020@"
+  "moSpawnGroups\022\014\n\004msgs\030\003 \003(\014\"\301\001\n\rCDemoRec"
+  "overy\022F\n\023initial_spawn_group\030\001 \001(\0132).CDe"
+  "moRecovery.DemoInitialSpawnGroupEntry\022\033\n"
+  "\023spawn_group_message\030\002 \001(\014\032K\n\032DemoInitia"
+  "lSpawnGroupEntry\022\030\n\020spawngrouphandle\030\001 \001"
+  "(\r\022\023\n\013was_created\030\002 \001(\010*\306\003\n\rEDemoCommand"
+  "s\022\026\n\tDEM_Error\020\377\377\377\377\377\377\377\377\377\001\022\014\n\010DEM_Stop\020\000\022"
+  "\022\n\016DEM_FileHeader\020\001\022\020\n\014DEM_FileInfo\020\002\022\020\n"
+  "\014DEM_SyncTick\020\003\022\022\n\016DEM_SendTables\020\004\022\021\n\rD"
+  "EM_ClassInfo\020\005\022\024\n\020DEM_StringTables\020\006\022\016\n\n"
+  "DEM_Packet\020\007\022\024\n\020DEM_SignonPacket\020\010\022\022\n\016DE"
+  "M_ConsoleCmd\020\t\022\022\n\016DEM_CustomData\020\n\022\033\n\027DE"
+  "M_CustomDataCallbacks\020\013\022\017\n\013DEM_UserCmd\020\014"
+  "\022\022\n\016DEM_FullPacket\020\r\022\020\n\014DEM_SaveGame\020\016\022\023"
+  "\n\017DEM_SpawnGroups\020\017\022\025\n\021DEM_AnimationData"
+  "\020\020\022\027\n\023DEM_AnimationHeader\020\021\022\020\n\014DEM_Recov"
+  "ery\020\022\022\013\n\007DEM_Max\020\023\022\024\n\020DEM_IsCompressed\020@"
   ;
 static ::_pbi::once_flag descriptor_table_demo_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_demo_2eproto = {
-    false, false, 2666, descriptor_table_protodef_demo_2eproto,
+    false, false, 2880, descriptor_table_protodef_demo_2eproto,
     "demo.proto",
-    &descriptor_table_demo_2eproto_once, nullptr, 0, 25,
+    &descriptor_table_demo_2eproto_once, nullptr, 0, 27,
     schemas, file_default_instances, TableStruct_demo_2eproto::offsets,
     file_level_metadata_demo_2eproto, file_level_enum_descriptors_demo_2eproto,
     file_level_service_descriptors_demo_2eproto,
@@ -878,6 +937,7 @@ bool EDemoCommands_IsValid(int value) {
     case 16:
     case 17:
     case 18:
+    case 19:
     case 64:
       return true;
     default:
@@ -7834,6 +7894,508 @@ void CDemoSpawnGroups::InternalSwap(CDemoSpawnGroups* other) {
       file_level_metadata_demo_2eproto[24]);
 }
 
+// ===================================================================
+
+class CDemoRecovery_DemoInitialSpawnGroupEntry::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CDemoRecovery_DemoInitialSpawnGroupEntry>()._impl_._has_bits_);
+  static void set_has_spawngrouphandle(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_was_created(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+};
+
+CDemoRecovery_DemoInitialSpawnGroupEntry::CDemoRecovery_DemoInitialSpawnGroupEntry(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CDemoRecovery.DemoInitialSpawnGroupEntry)
+}
+CDemoRecovery_DemoInitialSpawnGroupEntry::CDemoRecovery_DemoInitialSpawnGroupEntry(const CDemoRecovery_DemoInitialSpawnGroupEntry& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CDemoRecovery_DemoInitialSpawnGroupEntry* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.spawngrouphandle_){}
+    , decltype(_impl_.was_created_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.spawngrouphandle_, &from._impl_.spawngrouphandle_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.was_created_) -
+    reinterpret_cast<char*>(&_impl_.spawngrouphandle_)) + sizeof(_impl_.was_created_));
+  // @@protoc_insertion_point(copy_constructor:CDemoRecovery.DemoInitialSpawnGroupEntry)
+}
+
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.spawngrouphandle_){0u}
+    , decltype(_impl_.was_created_){false}
+  };
+}
+
+CDemoRecovery_DemoInitialSpawnGroupEntry::~CDemoRecovery_DemoInitialSpawnGroupEntry() {
+  // @@protoc_insertion_point(destructor:CDemoRecovery.DemoInitialSpawnGroupEntry)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CDemoRecovery_DemoInitialSpawnGroupEntry::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void CDemoRecovery_DemoInitialSpawnGroupEntry::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CDemoRecovery_DemoInitialSpawnGroupEntry::Clear() {
+// @@protoc_insertion_point(message_clear_start:CDemoRecovery.DemoInitialSpawnGroupEntry)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    ::memset(&_impl_.spawngrouphandle_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.was_created_) -
+        reinterpret_cast<char*>(&_impl_.spawngrouphandle_)) + sizeof(_impl_.was_created_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CDemoRecovery_DemoInitialSpawnGroupEntry::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional uint32 spawngrouphandle = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _Internal::set_has_spawngrouphandle(&has_bits);
+          _impl_.spawngrouphandle_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool was_created = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _Internal::set_has_was_created(&has_bits);
+          _impl_.was_created_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CDemoRecovery_DemoInitialSpawnGroupEntry::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CDemoRecovery.DemoInitialSpawnGroupEntry)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional uint32 spawngrouphandle = 1;
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_spawngrouphandle(), target);
+  }
+
+  // optional bool was_created = 2;
+  if (cached_has_bits & 0x00000002u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(2, this->_internal_was_created(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CDemoRecovery.DemoInitialSpawnGroupEntry)
+  return target;
+}
+
+size_t CDemoRecovery_DemoInitialSpawnGroupEntry::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CDemoRecovery.DemoInitialSpawnGroupEntry)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    // optional uint32 spawngrouphandle = 1;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_spawngrouphandle());
+    }
+
+    // optional bool was_created = 2;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += 1 + 1;
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CDemoRecovery_DemoInitialSpawnGroupEntry::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CDemoRecovery_DemoInitialSpawnGroupEntry::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CDemoRecovery_DemoInitialSpawnGroupEntry::GetClassData() const { return &_class_data_; }
+
+
+void CDemoRecovery_DemoInitialSpawnGroupEntry::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CDemoRecovery_DemoInitialSpawnGroupEntry*>(&to_msg);
+  auto& from = static_cast<const CDemoRecovery_DemoInitialSpawnGroupEntry&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CDemoRecovery.DemoInitialSpawnGroupEntry)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_impl_.spawngrouphandle_ = from._impl_.spawngrouphandle_;
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_impl_.was_created_ = from._impl_.was_created_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CDemoRecovery_DemoInitialSpawnGroupEntry::CopyFrom(const CDemoRecovery_DemoInitialSpawnGroupEntry& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CDemoRecovery.DemoInitialSpawnGroupEntry)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CDemoRecovery_DemoInitialSpawnGroupEntry::IsInitialized() const {
+  return true;
+}
+
+void CDemoRecovery_DemoInitialSpawnGroupEntry::InternalSwap(CDemoRecovery_DemoInitialSpawnGroupEntry* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(CDemoRecovery_DemoInitialSpawnGroupEntry, _impl_.was_created_)
+      + sizeof(CDemoRecovery_DemoInitialSpawnGroupEntry::_impl_.was_created_)
+      - PROTOBUF_FIELD_OFFSET(CDemoRecovery_DemoInitialSpawnGroupEntry, _impl_.spawngrouphandle_)>(
+          reinterpret_cast<char*>(&_impl_.spawngrouphandle_),
+          reinterpret_cast<char*>(&other->_impl_.spawngrouphandle_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CDemoRecovery_DemoInitialSpawnGroupEntry::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_demo_2eproto_getter, &descriptor_table_demo_2eproto_once,
+      file_level_metadata_demo_2eproto[25]);
+}
+
+// ===================================================================
+
+class CDemoRecovery::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CDemoRecovery>()._impl_._has_bits_);
+  static const ::CDemoRecovery_DemoInitialSpawnGroupEntry& initial_spawn_group(const CDemoRecovery* msg);
+  static void set_has_initial_spawn_group(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+  static void set_has_spawn_group_message(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+};
+
+const ::CDemoRecovery_DemoInitialSpawnGroupEntry&
+CDemoRecovery::_Internal::initial_spawn_group(const CDemoRecovery* msg) {
+  return *msg->_impl_.initial_spawn_group_;
+}
+CDemoRecovery::CDemoRecovery(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CDemoRecovery)
+}
+CDemoRecovery::CDemoRecovery(const CDemoRecovery& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CDemoRecovery* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.spawn_group_message_){}
+    , decltype(_impl_.initial_spawn_group_){nullptr}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.spawn_group_message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.spawn_group_message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_spawn_group_message()) {
+    _this->_impl_.spawn_group_message_.Set(from._internal_spawn_group_message(), 
+      _this->GetArenaForAllocation());
+  }
+  if (from._internal_has_initial_spawn_group()) {
+    _this->_impl_.initial_spawn_group_ = new ::CDemoRecovery_DemoInitialSpawnGroupEntry(*from._impl_.initial_spawn_group_);
+  }
+  // @@protoc_insertion_point(copy_constructor:CDemoRecovery)
+}
+
+inline void CDemoRecovery::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.spawn_group_message_){}
+    , decltype(_impl_.initial_spawn_group_){nullptr}
+  };
+  _impl_.spawn_group_message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.spawn_group_message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+CDemoRecovery::~CDemoRecovery() {
+  // @@protoc_insertion_point(destructor:CDemoRecovery)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CDemoRecovery::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.spawn_group_message_.Destroy();
+  if (this != internal_default_instance()) delete _impl_.initial_spawn_group_;
+}
+
+void CDemoRecovery::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CDemoRecovery::Clear() {
+// @@protoc_insertion_point(message_clear_start:CDemoRecovery)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _impl_.spawn_group_message_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000002u) {
+      GOOGLE_DCHECK(_impl_.initial_spawn_group_ != nullptr);
+      _impl_.initial_spawn_group_->Clear();
+    }
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CDemoRecovery::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional .CDemoRecovery.DemoInitialSpawnGroupEntry initial_spawn_group = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_initial_spawn_group(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bytes spawn_group_message = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_spawn_group_message();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CDemoRecovery::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CDemoRecovery)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional .CDemoRecovery.DemoInitialSpawnGroupEntry initial_spawn_group = 1;
+  if (cached_has_bits & 0x00000002u) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(1, _Internal::initial_spawn_group(this),
+        _Internal::initial_spawn_group(this).GetCachedSize(), target, stream);
+  }
+
+  // optional bytes spawn_group_message = 2;
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->WriteBytesMaybeAliased(
+        2, this->_internal_spawn_group_message(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CDemoRecovery)
+  return target;
+}
+
+size_t CDemoRecovery::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CDemoRecovery)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    // optional bytes spawn_group_message = 2;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+          this->_internal_spawn_group_message());
+    }
+
+    // optional .CDemoRecovery.DemoInitialSpawnGroupEntry initial_spawn_group = 1;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *_impl_.initial_spawn_group_);
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CDemoRecovery::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CDemoRecovery::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CDemoRecovery::GetClassData() const { return &_class_data_; }
+
+
+void CDemoRecovery::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CDemoRecovery*>(&to_msg);
+  auto& from = static_cast<const CDemoRecovery&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CDemoRecovery)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_spawn_group_message(from._internal_spawn_group_message());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_internal_mutable_initial_spawn_group()->::CDemoRecovery_DemoInitialSpawnGroupEntry::MergeFrom(
+          from._internal_initial_spawn_group());
+    }
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CDemoRecovery::CopyFrom(const CDemoRecovery& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CDemoRecovery)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CDemoRecovery::IsInitialized() const {
+  return true;
+}
+
+void CDemoRecovery::InternalSwap(CDemoRecovery* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.spawn_group_message_, lhs_arena,
+      &other->_impl_.spawn_group_message_, rhs_arena
+  );
+  swap(_impl_.initial_spawn_group_, other->_impl_.initial_spawn_group_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CDemoRecovery::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_demo_2eproto_getter, &descriptor_table_demo_2eproto_once,
+      file_level_metadata_demo_2eproto[26]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::CDemoFileHeader*
@@ -7935,6 +8497,14 @@ Arena::CreateMaybeMessage< ::CDemoUserCmd >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::CDemoSpawnGroups*
 Arena::CreateMaybeMessage< ::CDemoSpawnGroups >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CDemoSpawnGroups >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CDemoRecovery_DemoInitialSpawnGroupEntry*
+Arena::CreateMaybeMessage< ::CDemoRecovery_DemoInitialSpawnGroupEntry >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CDemoRecovery_DemoInitialSpawnGroupEntry >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CDemoRecovery*
+Arena::CreateMaybeMessage< ::CDemoRecovery >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CDemoRecovery >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 
