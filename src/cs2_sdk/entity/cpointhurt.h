@@ -22,23 +22,12 @@
 #include "../schema.h"
 #include "cbaseentity.h"
 
-class CLogicCase : public CBaseEntity
+class CPointHurt : public CBaseEntity
 {
 public:
-	DECLARE_SCHEMA_CLASS(CLogicCase)
+	DECLARE_SCHEMA_CLASS(CPointHurt);
 
-	SCHEMA_FIELD_POINTER(CUtlSymbolLarge, m_nCase)
-};
-
-class CGameUI : public CLogicCase
-{
-public:
-	static constexpr int SF_GAMEUI_FREEZE_PLAYER = 32;
-	static constexpr int SF_GAMEUI_JUMP_DEACTIVATE = 256;
-
-	// TODO Hide Weapon requires more RE
-	static constexpr int SF_GAMEUI_HIDE_WEAPON = 64;
-
-	// TODO subtick problem
-	static constexpr int SF_GAMEUI_USE_DEACTIVATE = 128;
+	SCHEMA_FIELD(int, m_nDamage)
+	SCHEMA_FIELD(int, m_bitsDamageType)
+	SCHEMA_FIELD(float, m_flRadius)
 };
