@@ -43,7 +43,7 @@ static std::unordered_map<std::string, WeaponInfo_t> s_WeaponMap = {
 	{"weapon_mag7",					{"weapon_mag7", 27, 3, GEAR_SLOT_RIFLE, 1300, "MAG-7", {"mag7", "mag"}}						   },
 	{"weapon_negev",				 {"weapon_negev", 28, 0, GEAR_SLOT_RIFLE, 1700, "Negev", {"negev"}}								   },
 	{"weapon_sawedoff",				{"weapon_sawedoff", 29, 2, GEAR_SLOT_RIFLE, 1100, "Sawed-Off", {"sawedoff"}}						},
-	{"weapon_tec9",					{"weapon_tec9", 30, 2, GEAR_SLOT_RIFLE, 500, "Tec-9", {"tec9"}}								   },
+	{"weapon_tec9",					{"weapon_tec9", 30, 2, GEAR_SLOT_PISTOL, 500, "Tec-9", {"tec9"}}									},
 	{"weapon_hkp2000",			   {"weapon_hkp2000", 32, 3, GEAR_SLOT_PISTOL, 200, "P2000", {"p2000"}}							   },
 	{"weapon_mp7",				   {"weapon_mp7", 33, 0, GEAR_SLOT_RIFLE, 1500, "MP7", {"mp7"}}									   },
 	{"weapon_mp9",				   {"weapon_mp9", 34, 0, GEAR_SLOT_RIFLE, 1250, "MP9", {"mp9"}}									   },
