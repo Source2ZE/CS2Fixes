@@ -623,14 +623,18 @@ CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend mar
 {
 	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
 	bool bIsAdmin = pPlayer ? pPlayer->IsAdminFlagSet(FLAG_LEADER) : true;
-	int iDuration = args.ArgC() != 2 ? -1 : V_StringToInt32(args[1], -1);
+	int iDuration = -1;
+	if (args.ArgC() == 2)
+		iDuration = V_StringToInt32(args[1], -1);
+	else if (args.ArgC() > 2)
+		iDuration = V_StringToInt32(args[2], -1);
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
 	const char* pszTarget = "@me";
-	if ((args.ArgC() >= 2 || (args.ArgC() == 2 && iDuration == -1)) && (bIsAdmin || g_cvarLeaderCanTargetPlayers.Get()))
+	if ((args.ArgC() > 2 || (args.ArgC() == 2 && iDuration == -1)) && (bIsAdmin || g_cvarLeaderCanTargetPlayers.Get()))
 		pszTarget = args[1];
 	iDuration = (iDuration < 1) ? 30 : MIN(iDuration, 60);
 
