@@ -24,7 +24,6 @@
 #include <ISmmPlugin.h>
 #include <iplayerinfo.h>
 #include <iserver.h>
-#include <sh_vector.h>
 
 struct CTakeDamageInfoContainer;
 class CCSPlayer_MovementServices;

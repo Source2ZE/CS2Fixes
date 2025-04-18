@@ -292,7 +292,7 @@ class MMSPluginConfig(object):
     cxx.cxxincludes += [
       os.path.join(context.currentSourcePath),
       os.path.join(mms_core_path),	
-      os.path.join(mms_core_path, 'sourcehook'),
+      os.path.join(mms_core_path, 'khook', 'include'),
     ]
 
     defines = []

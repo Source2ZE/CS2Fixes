@@ -44,6 +44,7 @@
 #include "icvar.h"
 #include "idlemanager.h"
 #include "interface.h"
+#include "khook.hpp"
 #include "leader.h"
 #include "map_votes.h"
 #include "networkstringtabledefs.h"
@@ -98,7 +99,8 @@ void Panic(const char* msg, ...)
 class GameSessionConfiguration_t
 {};
 
-SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
+KHook::VirtualMemberHook<bool, bool, bool> GameFrameHook(&IServerGameDLL::GameFrame, DISABLE_ME_SOMEHOW, &CS2Fixes::Hook_GameFramePost);
+//SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
 SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIActivated, SH_NOATTRIB, 0);
 SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIDeactivated, SH_NOATTRIB, 0);
 SH_DECL_HOOK1_void(IServerGameDLL, ApplyGameSettings, SH_NOATTRIB, 0, KeyValues*);
@@ -860,7 +862,7 @@ void CS2Fixes::Hook_ClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReas
 	g_playerManager->OnClientDisconnect(slot);
 }
 
-void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTick)
+KHook::HookAction<void> CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTick)
 {
 	/**
 	 * simulating:
@@ -872,7 +874,7 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 	VPROF_BUDGET("CS2Fixes::Hook_GameFramePost", "CS2FixesPerFrame");
 
 	if (!GetGlobals())
-		return;
+		return {KHook::Action::Ignore};
 
 	if (simulating && g_bHasTicked)
 		g_flUniversalTime += GetGlobals()->curtime - g_flLastTickedTime;
@@ -909,6 +911,8 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 		CZRRegenTimer::Tick();
 
 	EntityHandler_OnGameFramePost(simulating, GetGlobals()->tickcount);
+
+	return {KHook::Action::Ignore};
 }
 
 extern CConVar<bool> g_cvarFlashLightTransmitOthers;
