@@ -99,8 +99,7 @@ void Panic(const char* msg, ...)
 class GameSessionConfiguration_t
 {};
 
-KHook::VirtualMemberHook<bool, bool, bool> GameFrameHook(&IServerGameDLL::GameFrame, DISABLE_ME_SOMEHOW, &CS2Fixes::Hook_GameFramePost);
-//SH_DECL_HOOK3_void(IServerGameDLL, GameFrame, SH_NOATTRIB, 0, bool, bool, bool);
+KHook::Virtual gameFrameHook(&IServerGameDLL::GameFrame, &g_CS2Fixes, 0, &CS2Fixes::Hook_GameFramePost);
 SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIActivated, SH_NOATTRIB, 0);
 SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIDeactivated, SH_NOATTRIB, 0);
 SH_DECL_HOOK1_void(IServerGameDLL, ApplyGameSettings, SH_NOATTRIB, 0, KeyValues*);
@@ -211,7 +210,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	int offset = g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup");
 	SH_MANUALHOOK_RECONFIGURE(CreateWorkshopMapGroup, offset, 0, 0);
 
-	SH_ADD_HOOK(IServerGameDLL, GameFrame, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameFramePost), true);
+	gameFrameHook.Add(g_pSource2Server, true);
 	SH_ADD_HOOK(IServerGameDLL, GameServerSteamAPIActivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIActivated), false);
 	SH_ADD_HOOK(IServerGameDLL, GameServerSteamAPIDeactivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIDeactivated), false);
 	SH_ADD_HOOK(IServerGameDLL, ApplyGameSettings, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_ApplyGameSettings), false);
@@ -414,7 +413,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 bool CS2Fixes::Unload(char* error, size_t maxlen)
 {
-	SH_REMOVE_HOOK(IServerGameDLL, GameFrame, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameFramePost), true);
+	gameFrameHook.Remove(g_pSource2Server, true);
 	SH_REMOVE_HOOK(IServerGameDLL, GameServerSteamAPIActivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIActivated), false);
 	SH_REMOVE_HOOK(IServerGameDLL, GameServerSteamAPIDeactivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIDeactivated), false);
 	SH_REMOVE_HOOK(IServerGameDLL, ApplyGameSettings, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_ApplyGameSettings), false);
@@ -862,7 +861,7 @@ void CS2Fixes::Hook_ClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReas
 	g_playerManager->OnClientDisconnect(slot);
 }
 
-KHook::HookAction<void> CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTick)
+KHook::Return<void> CS2Fixes::Hook_GameFramePost(IServerGameDLL* pThis, bool simulating, bool bFirstTick, bool bLastTick)
 {
 	/**
 	 * simulating:
