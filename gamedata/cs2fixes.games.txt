@@ -45,20 +45,6 @@
 				"windows"		"\x76\x2A\xF2\x0F\x10\x4F\x2A\x41\x0F\x28\xC1\x0F\x28\xD1\xF3\x0F\x59\xC0"
 				"linux"			"\x0F\x87\x2A\x2A\x2A\x2A\x49\x8B\x7C\x24\x2A\xE8\x2A\x2A\x2A\x2A\x66\x0F\xEF\xED\x66\x0F\xD6\x85"
 			}
-			// Check vauff's pin in #scripting
-			"ClientMovementUnlock"
-			{
-				"library"		"client"
-				"windows"		"\x76\x2A\xF2\x0F\x10\x4F\x2A\x41\x0F\x28\xC1\x0F\x28\xD1\xF3\x0F\x59\xC0"
-				"linux"			"\x0F\x87\x2A\x2A\x2A\x2A\x49\x8B\x7D\x30\xE8\x2A\x2A\x2A\x2A\x66\x0F\xEF\xED\x66\x0F\xD6\x85\x2A\x2A\x2A\x2A"
-			}
-			// String: "Noise removal", there should be 3 customermachine checks
-			"HammerNoCustomerMachine"
-			{
-				"library"		"hammer"
-				"windows"		"\xFF\x15\x2A\x2A\x2A\x2A\x84\xC0\x0F\x85\x2A\x2A\x2A\x2A\xB9"
-				"linux"			""
-			}
 			// String: "CCSPlayerPawnBase::SwitchTeam", just keep in mind this is actually CCSPlayerController::SwitchTeam
 			"CCSPlayerController_SwitchTeam"
 			{
@@ -584,18 +570,6 @@
 			{
 				"windows"		"\x49\x89\xF8\x90"
 				"linux"			"\x48\x89\xDA\x90\x90"
-			}
-			// Client
-			"ClientMovementUnlock"
-			{
-				"windows"		"\xEB"
-				"linux"			"\x90\x90\x90\x90\x90\x90"
-			}
-			// Hammer
-			"HammerNoCustomerMachine"
-			{
-				"windows"		"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90"
-				"linux"			""
 			}
 		}
 	}
