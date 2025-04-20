@@ -44,7 +44,6 @@
 #include "icvar.h"
 #include "idlemanager.h"
 #include "interface.h"
-#include "khook.hpp"
 #include "leader.h"
 #include "map_votes.h"
 #include "networkstringtabledefs.h"
@@ -99,31 +98,30 @@ void Panic(const char* msg, ...)
 class GameSessionConfiguration_t
 {};
 
-KHook::Virtual gameFrameHook(&IServerGameDLL::GameFrame, &g_CS2Fixes, 0, &CS2Fixes::Hook_GameFramePost);
-SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIActivated, SH_NOATTRIB, 0);
-SH_DECL_HOOK0_void(IServerGameDLL, GameServerSteamAPIDeactivated, SH_NOATTRIB, 0);
-SH_DECL_HOOK1_void(IServerGameDLL, ApplyGameSettings, SH_NOATTRIB, 0, KeyValues*);
-SH_DECL_HOOK4_void(IServerGameClients, ClientActive, SH_NOATTRIB, 0, CPlayerSlot, bool, const char*, uint64);
-SH_DECL_HOOK5_void(IServerGameClients, ClientDisconnect, SH_NOATTRIB, 0, CPlayerSlot, ENetworkDisconnectionReason, const char*, uint64, const char*);
-SH_DECL_HOOK4_void(IServerGameClients, ClientPutInServer, SH_NOATTRIB, 0, CPlayerSlot, char const*, int, uint64);
-SH_DECL_HOOK1_void(IServerGameClients, ClientSettingsChanged, SH_NOATTRIB, 0, CPlayerSlot);
-SH_DECL_HOOK6_void(IServerGameClients, OnClientConnected, SH_NOATTRIB, 0, CPlayerSlot, const char*, uint64, const char*, const char*, bool);
-SH_DECL_HOOK6(IServerGameClients, ClientConnect, SH_NOATTRIB, 0, bool, CPlayerSlot, const char*, uint64, const char*, bool, CBufferString*);
-SH_DECL_HOOK8_void(IGameEventSystem, PostEventAbstract, SH_NOATTRIB, 0, CSplitScreenSlot, bool, int, const uint64*,
-				   INetworkMessageInternal*, const CNetMessage*, unsigned long, NetChannelBufType_t)
-	SH_DECL_HOOK3_void(INetworkServerService, StartupServer, SH_NOATTRIB, 0, const GameSessionConfiguration_t&, ISource2WorldSession*, const char*);
-SH_DECL_HOOK7_void(ISource2GameEntities, CheckTransmit, SH_NOATTRIB, 0, CCheckTransmitInfo**, int, CBitVec<16384>&, const Entity2Networkable_t**, const uint16*, int, bool);
-SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand&);
-SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandRef, const CCommandContext&, const CCommand&);
-SH_DECL_MANUALHOOK1_void(CGamePlayerEquipUse, 0, 0, 0, InputData_t*);
-SH_DECL_MANUALHOOK1_void(CGamePlayerEquipPrecache, 0, 0, 0, void**);
-SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUtlStringList&);
-SH_DECL_MANUALHOOK1(OnTakeDamage_Alive, 0, 0, 0, bool, CTakeDamageInfoContainer*);
-SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
-SH_DECL_HOOK2(IGameEventManager2, LoadEventsFromFile, SH_NOATTRIB, 0, int, const char*, bool);
-SH_DECL_MANUALHOOK1_void(GoToIntermission, 0, 0, 0, bool);
-SH_DECL_MANUALHOOK2_void(PhysicsTouchShuffle, 0, 0, 0, CUtlVector<TouchLinked_t>*, bool);
-SH_DECL_MANUALHOOK3_void(DropWeapon, 0, 0, 0, CBasePlayerWeapon*, Vector*, Vector*);
+KHook::Virtual gameFrameHook(&IServerGameDLL::GameFrame, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_GameFrame_Post);
+KHook::Virtual gameServerSteamAPIActivatedHook(&IServerGameDLL::GameServerSteamAPIActivated, &g_CS2Fixes, &CS2Fixes::Hook_GameServerSteamAPIActivated, nullptr);
+KHook::Virtual gameServerSteamAPIDeactivatedHook(&IServerGameDLL::GameServerSteamAPIDeactivated, &g_CS2Fixes, &CS2Fixes::Hook_GameServerSteamAPIDeactivated, nullptr);
+KHook::Virtual applyGameSettingsHook(&IServerGameDLL::ApplyGameSettings, &g_CS2Fixes, &CS2Fixes::Hook_ApplyGameSettings, nullptr);
+KHook::Virtual clientActiveHook(&IServerGameClients::ClientActive, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_ClientActive_Post);
+KHook::Virtual clientDisconnectHook(&IServerGameClients::ClientDisconnect, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_ClientDisconnect_Post);
+KHook::Virtual clientPutInServerHook(&IServerGameClients::ClientPutInServer, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_ClientPutInServer_Post);
+KHook::Virtual clientSettingsChangedHook(&IServerGameClients::ClientSettingsChanged, &g_CS2Fixes, &CS2Fixes::Hook_ClientSettingsChanged, nullptr);
+KHook::Virtual onClientConnectedHook(&IServerGameClients::OnClientConnected, &g_CS2Fixes, &CS2Fixes::Hook_OnClientConnected, nullptr);
+KHook::Virtual clientConnectHook(&IServerGameClients::ClientConnect, &g_CS2Fixes, &CS2Fixes::Hook_ClientConnect, nullptr);
+KHook::Virtual clientCommandHook(&IServerGameClients::ClientCommand, &g_CS2Fixes, &CS2Fixes::Hook_ClientCommand, nullptr);
+KHook::Virtual postEventAbstractHook(&IGameEventSystem::PostEventAbstract, &g_CS2Fixes, &CS2Fixes::Hook_PostEventAbstract, nullptr);
+KHook::Virtual startupServerHook(&INetworkServerService::StartupServer, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_StartupServer_Post);
+KHook::Virtual checkTransmitHook(&ISource2GameEntities::CheckTransmit, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_CheckTransmit_Post);
+KHook::Virtual dispatchConCommandHook(&ICvar::DispatchConCommand, &g_CS2Fixes, &CS2Fixes::Hook_DispatchConCommand, nullptr);
+KHook::Virtual loadEventsFromFileHook(&IGameEventManager2::LoadEventsFromFile, &g_CS2Fixes, &CS2Fixes::Hook_LoadEventsFromFile, nullptr);
+KHook::Virtual playerEquipUseHook(&g_CS2Fixes, &CS2Fixes::Hook_PlayerEquipUse, nullptr);
+KHook::Virtual playerEquipPrecacheHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_PlayerEquipPrecache_Post);
+KHook::Virtual createWorkshopMapGroupHook(&g_CS2Fixes, &CS2Fixes::Hook_CreateWorkshopMapGroup, nullptr);
+KHook::Virtual onTakeDamageAliveHook(&g_CS2Fixes, &CS2Fixes::Hook_OnTakeDamage_Alive, nullptr);
+KHook::Virtual checkMovingGroundHook(&g_CS2Fixes, &CS2Fixes::Hook_CheckMovingGround, nullptr);
+KHook::Virtual goToIntermissionHook(&g_CS2Fixes, &CS2Fixes::Hook_GoToIntermission, nullptr);
+KHook::Virtual physicsTouchShuffleHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_PhysicsTouchShuffle_Post);
+KHook::Virtual dropWeaponHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_DropWeapon_Post);
 
 CS2Fixes g_CS2Fixes;
 
@@ -137,15 +135,13 @@ CGameConfig* g_GameConfig = nullptr;
 ISteamHTTP* g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules* g_pGameRules = nullptr; // Will be null between map end & new map startup, null check if necessary!
-int g_iCGamePlayerEquipUseId = -1;
-int g_iCGamePlayerEquipPrecacheId = -1;
-int g_iCreateWorkshopMapGroupId = -1;
-int g_iOnTakeDamageAliveId = -1;
-int g_iCheckMovingGroundId = -1;
-int g_iLoadEventsFromFileId = -1;
-int g_iGoToIntermissionId = -1;
-int g_iPhysicsTouchShuffle = -1;
-int g_iWeaponServiceDropWeaponId = -1;
+IGameEventManager2* g_pCGameEventManagerVTable = nullptr;
+CGamePlayerEquip* g_pCGamePlayerEquipVTable = nullptr;
+CCSPlayerPawn* g_pCCSPlayerPawnVTable = nullptr;
+CCSPlayer_MovementServices* g_pCCSPlayer_MovementServicesVTable = nullptr;
+CCSGameRules* g_pCCSGameRulesVTable = nullptr;
+CVPhys2World* g_pCVPhys2WorldVTable = nullptr;
+CCSPlayer_WeaponServices* g_pCCSPlayer_WeaponServicesVTable = nullptr;
 
 CGameEntitySystem* GameEntitySystem()
 {
@@ -207,27 +203,21 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		return false;
 	}
 
-	int offset = g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup");
-	SH_MANUALHOOK_RECONFIGURE(CreateWorkshopMapGroup, offset, 0, 0);
-
-	gameFrameHook.Add(g_pSource2Server, true);
-	SH_ADD_HOOK(IServerGameDLL, GameServerSteamAPIActivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIActivated), false);
-	SH_ADD_HOOK(IServerGameDLL, GameServerSteamAPIDeactivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIDeactivated), false);
-	SH_ADD_HOOK(IServerGameDLL, ApplyGameSettings, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_ApplyGameSettings), false);
-	SH_ADD_HOOK(IServerGameClients, ClientActive, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientActive), true);
-	SH_ADD_HOOK(IServerGameClients, ClientDisconnect, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientDisconnect), true);
-	SH_ADD_HOOK(IServerGameClients, ClientPutInServer, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientPutInServer), true);
-	SH_ADD_HOOK(IServerGameClients, ClientSettingsChanged, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientSettingsChanged), false);
-	SH_ADD_HOOK(IServerGameClients, OnClientConnected, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_OnClientConnected), false);
-	SH_ADD_HOOK(IServerGameClients, ClientConnect, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientConnect), false);
-	SH_ADD_HOOK(IServerGameClients, ClientCommand, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientCommand), false);
-	SH_ADD_HOOK(IGameEventSystem, PostEventAbstract, g_gameEventSystem, SH_MEMBER(this, &CS2Fixes::Hook_PostEvent), false);
-	SH_ADD_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
-	SH_ADD_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
-	SH_ADD_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
-	g_iCreateWorkshopMapGroupId = SH_ADD_MANUALVPHOOK(CreateWorkshopMapGroup, g_pGameTypes, SH_MEMBER(this, &CS2Fixes::Hook_CreateWorkshopMapGroup), false);
-
-	META_CONPRINTF("All hooks started!\n");
+	gameFrameHook.Add(g_pSource2Server);
+	gameServerSteamAPIActivatedHook.Add(g_pSource2Server);
+	gameServerSteamAPIDeactivatedHook.Add(g_pSource2Server);
+	applyGameSettingsHook.Add(g_pSource2Server);
+	clientActiveHook.Add(g_pSource2GameClients);
+	clientDisconnectHook.Add(g_pSource2GameClients);
+	clientPutInServerHook.Add(g_pSource2GameClients);
+	clientSettingsChangedHook.Add(g_pSource2GameClients);
+	onClientConnectedHook.Add(g_pSource2GameClients);
+	clientConnectHook.Add(g_pSource2GameClients);
+	clientCommandHook.Add(g_pSource2GameClients);
+	postEventAbstractHook.Add(g_gameEventSystem);
+	startupServerHook.Add(g_pNetworkServerService);
+	checkTransmitHook.Add(g_pSource2GameEntities);
+	dispatchConCommandHook.Add(g_pCVar);
 
 	bool bRequiredInitLoaded = true;
 
@@ -243,98 +233,150 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (!InitGameSystems())
 		bRequiredInitLoaded = false;
 
-	const auto pCGamePlayerEquipVTable = modules::server->FindVirtualTable("CGamePlayerEquip");
-	if (!pCGamePlayerEquipVTable)
+	g_pCGameEventManagerVTable = (IGameEventManager2*)modules::server->FindVirtualTable("CGameEventManager");
+
+	if (!g_pCGameEventManagerVTable)
 	{
-		snprintf(error, maxlen, "Failed to find CGamePlayerEquip vtable\n");
+		Panic("Failed to find CGameEventManager vtable\n");
 		bRequiredInitLoaded = false;
 	}
 
-	offset = g_GameConfig->GetOffset("CBaseEntity::Use");
-	if (offset == -1)
+	loadEventsFromFileHook.Add(g_pCGameEventManagerVTable);
+
+	g_pCGamePlayerEquipVTable = (CGamePlayerEquip*)modules::server->FindVirtualTable("CGamePlayerEquip");
+	if (!g_pCGamePlayerEquipVTable)
 	{
-		snprintf(error, maxlen, "Failed to find CBaseEntity::Use\n");
+		Panic("Failed to find CGamePlayerEquip vtable\n");
 		bRequiredInitLoaded = false;
 	}
-	SH_MANUALHOOK_RECONFIGURE(CGamePlayerEquipUse, offset, 0, 0);
-	g_iCGamePlayerEquipUseId = SH_ADD_MANUALDVPHOOK(CGamePlayerEquipUse, pCGamePlayerEquipVTable, SH_MEMBER(this, &CS2Fixes::Hook_CGamePlayerEquipUse), false);
+
+	int offset = g_GameConfig->GetOffset("CBaseEntity::Use");
+
+	if (offset == -1)
+	{
+		Panic("Failed to find CBaseEntity::Use\n");
+		bRequiredInitLoaded = false;
+	}
+
+	playerEquipUseHook.SetIndex(offset);
+	playerEquipUseHook.Add(g_pCGamePlayerEquipVTable);
 
 	offset = g_GameConfig->GetOffset("CBaseEntity::Precache");
 	if (offset == -1)
 	{
-		snprintf(error, maxlen, "Failed to find CBaseEntity::Precache\n");
+		Panic("Failed to find CBaseEntity::Precache\n");
 		bRequiredInitLoaded = false;
 	}
-	SH_MANUALHOOK_RECONFIGURE(CGamePlayerEquipPrecache, offset, 0, 0);
-	g_iCGamePlayerEquipPrecacheId = SH_ADD_MANUALDVPHOOK(CGamePlayerEquipPrecache, pCGamePlayerEquipVTable, SH_MEMBER(this, &CS2Fixes::Hook_CGamePlayerEquipPrecache), true);
 
-	const auto pCCSPlayerPawnVTable = modules::server->FindVirtualTable("CCSPlayerPawn");
-	if (!pCCSPlayerPawnVTable)
+	playerEquipPrecacheHook.SetIndex(offset);
+	playerEquipPrecacheHook.Add(g_pCGamePlayerEquipVTable);
+
+	offset = g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup");
+
+	if (offset == -1)
 	{
-		snprintf(error, maxlen, "Failed to find CCSPlayerPawn vtable\n");
+		Panic("Failed to find IGameTypes_CreateWorkshopMapGroup\n");
+		bRequiredInitLoaded = false;
+	}
+
+	createWorkshopMapGroupHook.SetIndex(offset);
+	createWorkshopMapGroupHook.Add(g_pGameTypes);
+
+	g_pCCSPlayerPawnVTable = (CCSPlayerPawn*)modules::server->FindVirtualTable("CCSPlayerPawn");
+
+	if (!g_pCCSPlayerPawnVTable)
+	{
+		Panic("Failed to find CCSPlayerPawn vtable\n");
 		bRequiredInitLoaded = false;
 	}
 
 	offset = g_GameConfig->GetOffset("CBasePlayerPawn::OnTakeDamage_Alive");
 	if (offset == -1)
 	{
-		snprintf(error, maxlen, "Failed to find CBasePlayerPawn::OnTakeDamage_Alive\n");
+		Panic("Failed to find CBasePlayerPawn::OnTakeDamage_Alive\n");
 		bRequiredInitLoaded = false;
 	}
-	SH_MANUALHOOK_RECONFIGURE(OnTakeDamage_Alive, offset, 0, 0);
-	g_iOnTakeDamageAliveId = SH_ADD_MANUALDVPHOOK(OnTakeDamage_Alive, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_OnTakeDamage_Alive), false);
 
-	const auto pCCSPlayer_MovementServicesVTable = modules::server->FindVirtualTable("CCSPlayer_MovementServices");
+	onTakeDamageAliveHook.SetIndex(offset);
+	onTakeDamageAliveHook.Add(g_pCCSPlayerPawnVTable);
+
+	g_pCCSPlayer_MovementServicesVTable = (CCSPlayer_MovementServices*)modules::server->FindVirtualTable("CCSPlayer_MovementServices");
+
+	if (!g_pCCSPlayer_MovementServicesVTable)
+	{
+		Panic("Failed to find CCSPlayer_MovementServices vtable\n");
+		bRequiredInitLoaded = false;
+	}
+
 	offset = g_GameConfig->GetOffset("CCSPlayer_MovementServices::CheckMovingGround");
 	if (offset == -1)
 	{
-		snprintf(error, maxlen, "Failed to find CCSPlayer_MovementServices::CheckMovingGround\n");
+		Panic("Failed to find CCSPlayer_MovementServices::CheckMovingGround\n");
 		bRequiredInitLoaded = false;
 	}
-	SH_MANUALHOOK_RECONFIGURE(CheckMovingGround, offset, 0, 0);
-	g_iCheckMovingGroundId = SH_ADD_MANUALDVPHOOK(CheckMovingGround, pCCSPlayer_MovementServicesVTable, SH_MEMBER(this, &CS2Fixes::Hook_CheckMovingGround), false);
 
-	auto pCVPhys2WorldVTable = modules::vphysics2->FindVirtualTable("CVPhys2World");
+	checkMovingGroundHook.SetIndex(offset);
+	checkMovingGroundHook.Add(g_pCCSPlayer_MovementServicesVTable);
+
+	g_pCCSGameRulesVTable = (CCSGameRules*)modules::server->FindVirtualTable("CCSGameRules");
+
+	if (!g_pCCSGameRulesVTable)
+	{
+		Panic("Failed to find CCSGameRules vtable\n");
+		bRequiredInitLoaded = false;
+	}
+
+	offset = g_GameConfig->GetOffset("CCSGameRules_GoToIntermission");
+	if (offset == -1)
+	{
+		Panic("Failed to find CCSGameRules_GoToIntermission\n");
+		bRequiredInitLoaded = false;
+	}
+
+	goToIntermissionHook.SetIndex(offset);
+	goToIntermissionHook.Add(g_pCCSGameRulesVTable);
+
+	g_pCVPhys2WorldVTable = (CVPhys2World*)modules::vphysics2->FindVirtualTable("CVPhys2World");
+
+	if (!g_pCVPhys2WorldVTable)
+	{
+		Panic("Failed to find CVPhys2World vtable\n");
+		bRequiredInitLoaded = false;
+	}
 
 	offset = g_GameConfig->GetOffset("CVPhys2World::GetTouchingList");
 	if (offset == -1)
 	{
-		snprintf(error, maxlen, "Failed to find CVPhys2World::GetTouchingList\n");
+		Panic("Failed to find CVPhys2World::GetTouchingList\n");
 		bRequiredInitLoaded = false;
 	}
-	SH_MANUALHOOK_RECONFIGURE(PhysicsTouchShuffle, offset, 0, 0);
-	g_iPhysicsTouchShuffle = SH_ADD_MANUALDVPHOOK(PhysicsTouchShuffle, pCVPhys2WorldVTable, SH_MEMBER(this, &CS2Fixes::Hook_PhysicsTouchShuffle), true);
 
-	const auto pCCSPlayer_WeaponServicesVTable = modules::server->FindVirtualTable("CCSPlayer_WeaponServices");
+	physicsTouchShuffleHook.SetIndex(offset);
+	physicsTouchShuffleHook.Add(g_pCVPhys2WorldVTable);
+
+	g_pCCSPlayer_WeaponServicesVTable = (CCSPlayer_WeaponServices*)modules::server->FindVirtualTable("CCSPlayer_WeaponServices");
+
+	if (!g_pCCSPlayer_WeaponServicesVTable)
+	{
+		Panic("Failed to find CCSPlayer_WeaponServices vtable\n");
+		bRequiredInitLoaded = false;
+	}
+
 	offset = g_GameConfig->GetOffset("CCSPlayer_WeaponServices::DropWeapon");
 	if (offset == -1)
 	{
-		snprintf(error, maxlen, "Failed to find CCSPlayer_WeaponServices::DropWeapon\n");
+		Panic("Failed to find CCSPlayer_WeaponServices::DropWeapon\n");
 		bRequiredInitLoaded = false;
 	}
-	SH_MANUALHOOK_RECONFIGURE(DropWeapon, offset, 0, 0);
-	g_iWeaponServiceDropWeaponId = SH_ADD_MANUALDVPHOOK(DropWeapon, pCCSPlayer_WeaponServicesVTable, SH_MEMBER(this, &CS2Fixes::Hook_DropWeaponPost), true);
 
-	auto pCGameEventManagerVTable = (IGameEventManager2*)modules::server->FindVirtualTable("CGameEventManager");
-
-	g_iLoadEventsFromFileId = SH_ADD_DVPHOOK(IGameEventManager2, LoadEventsFromFile, pCGameEventManagerVTable, SH_MEMBER(this, &CS2Fixes::Hook_LoadEventsFromFile), false);
+	dropWeaponHook.SetIndex(offset);
+	dropWeaponHook.Add(g_pCCSPlayer_WeaponServicesVTable);
 
 	if (!bRequiredInitLoaded)
 	{
 		snprintf(error, maxlen, "One or more address lookups, patches or detours failed, please refer to startup logs for more information");
 		return false;
 	}
-
-	auto pCCSGameRulesVTable = modules::server->FindVirtualTable("CCSGameRules");
-
-	offset = g_GameConfig->GetOffset("CCSGameRules_GoToIntermission");
-	if (offset == -1)
-	{
-		snprintf(error, maxlen, "Failed to find CCSGameRules::GoToIntermission\n");
-		bRequiredInitLoaded = false;
-	}
-	SH_MANUALHOOK_RECONFIGURE(GoToIntermission, offset, 0, 0);
-	g_iGoToIntermissionId = SH_ADD_MANUALDVPHOOK(GoToIntermission, pCCSGameRulesVTable, SH_MEMBER(this, &CS2Fixes::Hook_GoToIntermission), false);
 
 	Message("All hooks started!\n");
 
@@ -413,32 +455,30 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 bool CS2Fixes::Unload(char* error, size_t maxlen)
 {
-	gameFrameHook.Remove(g_pSource2Server, true);
-	SH_REMOVE_HOOK(IServerGameDLL, GameServerSteamAPIActivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIActivated), false);
-	SH_REMOVE_HOOK(IServerGameDLL, GameServerSteamAPIDeactivated, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_GameServerSteamAPIDeactivated), false);
-	SH_REMOVE_HOOK(IServerGameDLL, ApplyGameSettings, g_pSource2Server, SH_MEMBER(this, &CS2Fixes::Hook_ApplyGameSettings), false);
-	SH_REMOVE_HOOK(IServerGameClients, ClientActive, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientActive), true);
-	SH_REMOVE_HOOK(IServerGameClients, ClientDisconnect, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientDisconnect), true);
-	SH_REMOVE_HOOK(IServerGameClients, ClientPutInServer, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientPutInServer), true);
-	SH_REMOVE_HOOK(IServerGameClients, ClientSettingsChanged, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientSettingsChanged), false);
-	SH_REMOVE_HOOK(IServerGameClients, OnClientConnected, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_OnClientConnected), false);
-	SH_REMOVE_HOOK(IServerGameClients, ClientConnect, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientConnect), false);
-	SH_REMOVE_HOOK(IServerGameClients, ClientCommand, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientCommand), false);
-	SH_REMOVE_HOOK(IGameEventSystem, PostEventAbstract, g_gameEventSystem, SH_MEMBER(this, &CS2Fixes::Hook_PostEvent), false);
-	SH_REMOVE_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
-	SH_REMOVE_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
-	SH_REMOVE_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
-	SH_REMOVE_HOOK_ID(g_iLoadEventsFromFileId);
-	SH_REMOVE_HOOK_ID(g_iCreateWorkshopMapGroupId);
-	SH_REMOVE_HOOK_ID(g_iOnTakeDamageAliveId);
-	SH_REMOVE_HOOK_ID(g_iCheckMovingGroundId);
-	SH_REMOVE_HOOK_ID(g_iPhysicsTouchShuffle);
-	SH_REMOVE_HOOK_ID(g_iWeaponServiceDropWeaponId);
-	SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
-	SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
-
-	if (g_iCGamePlayerEquipPrecacheId != -1)
-		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipPrecacheId);
+	gameFrameHook.Remove(g_pSource2Server);
+	gameServerSteamAPIActivatedHook.Remove(g_pSource2Server);
+	gameServerSteamAPIDeactivatedHook.Remove(g_pSource2Server);
+	applyGameSettingsHook.Remove(g_pSource2Server);
+	clientActiveHook.Remove(g_pSource2GameClients);
+	clientDisconnectHook.Remove(g_pSource2GameClients);
+	clientPutInServerHook.Remove(g_pSource2GameClients);
+	clientSettingsChangedHook.Remove(g_pSource2GameClients);
+	onClientConnectedHook.Remove(g_pSource2GameClients);
+	clientConnectHook.Remove(g_pSource2GameClients);
+	clientCommandHook.Remove(g_pSource2GameClients);
+	postEventAbstractHook.Remove(g_gameEventSystem);
+	startupServerHook.Remove(g_pNetworkServerService);
+	checkTransmitHook.Remove(g_pSource2GameEntities);
+	dispatchConCommandHook.Remove(g_pCVar);
+	loadEventsFromFileHook.Remove(g_pCGameEventManagerVTable);
+	playerEquipUseHook.Remove(g_pCGamePlayerEquipVTable);
+	playerEquipPrecacheHook.Remove(g_pCGamePlayerEquipVTable);
+	createWorkshopMapGroupHook.Remove(g_pGameTypes);
+	onTakeDamageAliveHook.Remove(g_pCCSPlayerPawnVTable);
+	checkMovingGroundHook.Remove(g_pCCSPlayer_MovementServicesVTable);
+	goToIntermissionHook.Remove(g_pCCSGameRulesVTable);
+	physicsTouchShuffleHook.Remove(g_pCVPhys2WorldVTable);
+	dropWeaponHook.Remove(g_pCCSPlayer_WeaponServicesVTable);
 
 	ConVar_Unregister();
 
@@ -506,17 +546,17 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	return true;
 }
 
-void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandContext& ctx, const CCommand& args)
+KHook::Return<void> CS2Fixes::Hook_DispatchConCommand(ICvar* pThis, ConCommandRef cmdHandle, const CCommandContext& ctx, const CCommand& args)
 {
 	VPROF_BUDGET("CS2Fixes::Hook_DispatchConCommand", "ConCommands");
 
 	if (!g_pEntitySystem)
-		RETURN_META(MRES_IGNORED);
+		return {KHook::Action::Ignore};
 
 	auto iCommandPlayerSlot = ctx.GetPlayerSlot();
 
 	if (!g_cvarEnableCommands.Get())
-		RETURN_META(MRES_IGNORED);
+		return {KHook::Action::Ignore};
 
 	bool bSay = !V_strcmp(args.Arg(0), "say");
 	bool bTeamSay = !V_strcmp(args.Arg(0), "say_team");
@@ -547,8 +587,8 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 
 		if (!bGagged && !bSilent && !bFlooding)
 		{
-			SH_CALL(g_pCVar, &ICvar::DispatchConCommand)
-			(cmdHandle, ctx, args);
+			auto originalFunc = *(std::function<void(ConCommandRef, const CCommandContext&, const CCommand&)>*)KHook::GetOriginalFunction();
+			originalFunc(cmdHandle, ctx, args);
 		}
 		else if (bFlooding)
 		{
@@ -591,13 +631,13 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 			ParseChatCommand(pszMessage, pController);
 		}
 
-		RETURN_META(MRES_SUPERCEDE);
+		return {KHook::Action::Supercede};
 	}
 
-	RETURN_META(MRES_IGNORED);
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession* pSession, const char* pszMapName)
+KHook::Return<void> CS2Fixes::Hook_StartupServer_Post(INetworkServerService* pThis, const GameSessionConfiguration_t& config, ISource2WorldSession* pSession, const char* pszMapName)
 {
 	g_pEntitySystem = GameEntitySystem();
 	g_pEntitySystem->AddListenerEntity(g_pEntityListener);
@@ -615,22 +655,25 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	g_pVoteManager->VoteManager_Init();
 
 	g_pIdleSystem->Reset();
+
+	return {KHook::Action::Ignore};
 }
 
-class CGamePlayerEquip;
-void CS2Fixes::Hook_CGamePlayerEquipUse(InputData_t* pInput)
+KHook::Return<void> CS2Fixes::Hook_PlayerEquipUse(CGamePlayerEquip* pThis, InputData_t* pInput)
 {
-	CGamePlayerEquipHandler::Use(META_IFACEPTR(CGamePlayerEquip), pInput);
-	RETURN_META(MRES_IGNORED);
+	CGamePlayerEquipHandler::Use(pThis, pInput);
+
+	return {KHook::Action::Ignore};
 }
-void CS2Fixes::Hook_CGamePlayerEquipPrecache(void** param)
+KHook::Return<void> CS2Fixes::Hook_PlayerEquipPrecache_Post(CGamePlayerEquip* pThis, void** param)
 {
 	const auto kv = reinterpret_cast<CEntityKeyValues*>(*param);
-	CGamePlayerEquipHandler::OnPrecache(META_IFACEPTR(CGamePlayerEquip), kv);
-	RETURN_META(MRES_IGNORED);
+	CGamePlayerEquipHandler::OnPrecache(pThis, kv);
+
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_GameServerSteamAPIActivated()
+KHook::Return<void> CS2Fixes::Hook_GameServerSteamAPIActivated(IServerGameDLL* pThis)
 {
 	g_steamAPI.Init();
 	g_http = g_steamAPI.SteamHTTP();
@@ -640,24 +683,20 @@ void CS2Fixes::Hook_GameServerSteamAPIActivated()
 	if (g_cvarVoteManagerEnable.Get() && !g_pMapVoteSystem->IsMapListLoaded())
 		g_pMapVoteSystem->LoadMapList();
 
-	RETURN_META(MRES_IGNORED);
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_GameServerSteamAPIDeactivated()
+KHook::Return<void> CS2Fixes::Hook_GameServerSteamAPIDeactivated(IServerGameDLL* pThis)
 {
 	g_http = nullptr;
 
-	RETURN_META(MRES_IGNORED);
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
+KHook::Return<void> CS2Fixes::Hook_PostEventAbstract(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
 							  INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
 	// Message( "Hook_PostEvent(%d, %d, %d, %lli)\n", nSlot, bLocalOnly, nClientCount, clients );
-	// Need to explicitly get a pointer to the right function as it's overloaded and SH_CALL can't resolve that
-	static void (IGameEventSystem::*PostEventAbstract)(CSplitScreenSlot, bool, int, const uint64*,
-													   INetworkMessageInternal*, const CNetMessage*, unsigned long, NetChannelBufType_t) = &IGameEventSystem::PostEventAbstract;
-
 	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
 
 	if (g_cvarEnableStopSound.Get() && info->m_MessageId == GE_FireBulletsId)
@@ -680,8 +719,8 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 
 			uint64 clientMask = *(uint64*)clients & g_playerManager->GetSilenceSoundMask();
 
-			SH_CALL(g_gameEventSystem, PostEventAbstract)
-			(nSlot, bLocalOnly, nClientCount, &clientMask, pEvent, msg, nSize, bufType);
+			auto originalFunc = *(std::function<void(CSplitScreenSlot, bool, int, const uint64*, INetworkMessageInternal*, const CNetMessage*, unsigned long, NetChannelBufType_t)>*)KHook::GetOriginalFunction();
+			originalFunc(nSlot, bLocalOnly, nClientCount, &clientMask, pEvent, msg, nSize, bufType);
 
 			msg->set_weapon_id(weapon_id);
 			msg->set_sound_type(sound_type);
@@ -722,6 +761,8 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 			*(uint64*)clients &= ~g_playerManager->GetSilenceSoundMask();
 		}
 	}
+
+	return {KHook::Action::Ignore};
 }
 
 void CS2Fixes::AllPluginsLoaded()
@@ -769,12 +810,14 @@ CON_COMMAND_F(cs2f_fullupdate, "- Force a full update for all clients.", FCVAR_L
 	FullUpdateAllClients();
 }
 
-void CS2Fixes::Hook_ClientActive(CPlayerSlot slot, bool bLoadGame, const char* pszName, uint64 xuid)
+KHook::Return<void> CS2Fixes::Hook_ClientActive_Post(IServerGameClients* pThis, CPlayerSlot slot, bool bLoadGame, const char* pszName, uint64 xuid)
 {
 	Message("Hook_ClientActive(%d, %d, \"%s\", %lli)\n", slot, bLoadGame, pszName, xuid);
+
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_ClientCommand(CPlayerSlot slot, const CCommand& args)
+KHook::Return<void> CS2Fixes::Hook_ClientCommand(IServerGameClients* pThis, CPlayerSlot slot, const CCommand& args)
 {
 #ifdef _DEBUG
 	Message("Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString());
@@ -791,26 +834,30 @@ void CS2Fixes::Hook_ClientCommand(CPlayerSlot slot, const CCommand& args)
 	if (g_cvarVoteManagerEnable.Get() && V_stricmp(args[0], "endmatch_votenextmap") == 0 && args.ArgC() == 2)
 	{
 		if (g_pMapVoteSystem->RegisterPlayerVote(slot, atoi(args[1])))
-			RETURN_META(MRES_HANDLED);
+			return {KHook::Action::Ignore};
 		else
-			RETURN_META(MRES_SUPERCEDE);
+			return {KHook::Action::Supercede};
 	}
 
 	if (g_cvarEnableZR.Get() && slot != -1 && !V_strncmp(args.Arg(0), "jointeam", 8))
 	{
 		ZR_Hook_ClientCommand_JoinTeam(slot, args);
-		RETURN_META(MRES_SUPERCEDE);
+		return {KHook::Action::Supercede};
 	}
+
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_ClientSettingsChanged(CPlayerSlot slot)
+KHook::Return<void> CS2Fixes::Hook_ClientSettingsChanged(IServerGameClients* pThis, CPlayerSlot slot)
 {
 #ifdef _DEBUG
 	Message("Hook_ClientSettingsChanged(%d)\n", slot);
 #endif
+
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_OnClientConnected(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer)
+KHook::Return<void> CS2Fixes::Hook_OnClientConnected(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer)
 {
 	Message("Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer);
 
@@ -820,48 +867,55 @@ void CS2Fixes::Hook_OnClientConnected(CPlayerSlot slot, const char* pszName, uin
 	// Ideally we would use CServerSideClient::IsHLTV().. but it doesn't work :(
 	if (bFakePlayer && V_strcmp(pszName, pszTvName))
 		g_playerManager->OnBotConnected(slot);
+
+	return {KHook::Action::Ignore};
 }
 
-bool CS2Fixes::Hook_ClientConnect(CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason)
+KHook::Return<bool> CS2Fixes::Hook_ClientConnect(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason)
 {
 	Message("Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->Get());
 
 	// Player is banned
 	if (!g_playerManager->OnClientConnected(slot, xuid, pszNetworkID))
-		RETURN_META_VALUE(MRES_SUPERCEDE, false);
+		return {KHook::Action::Supercede, false};
 
-	RETURN_META_VALUE(MRES_IGNORED, true);
+	// TODO: verify true return isn't needed
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_ClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid)
+KHook::Return<void> CS2Fixes::Hook_ClientPutInServer_Post(IServerGameClients* pThis, CPlayerSlot slot, char const* pszName, int type, uint64 xuid)
 {
 	Message("Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, type, xuid);
 
 	if (!g_playerManager->GetPlayer(slot))
-		return;
+		return {KHook::Action::Ignore};
 
 	g_playerManager->OnClientPutInServer(slot);
 
 	if (g_cvarEnableZR.Get())
 		ZR_Hook_ClientPutInServer(slot, pszName, type, xuid);
+
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_ClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
+KHook::Return<void> CS2Fixes::Hook_ClientDisconnect_Post(IServerGameClients* pThis, CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
 {
 	Message("Hook_ClientDisconnect(%d, %d, \"%s\", %lli)\n", slot, reason, pszName, xuid);
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
 
 	if (!pPlayer)
-		return;
+		return {KHook::Action::Ignore};
 
 	// Dont add to c_listdc clients that are downloading MultiAddonManager stuff or were present during a map change
 	if (reason != NETWORK_DISCONNECT_LOOPSHUTDOWN && reason != NETWORK_DISCONNECT_SHUTDOWN)
 		g_pAdminSystem->AddDisconnectedPlayer(pszName, xuid, pPlayer ? pPlayer->GetIpAddress() : "");
 
 	g_playerManager->OnClientDisconnect(slot);
+
+	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> CS2Fixes::Hook_GameFramePost(IServerGameDLL* pThis, bool simulating, bool bFirstTick, bool bLastTick)
+KHook::Return<void> CS2Fixes::Hook_GameFrame_Post(IServerGameDLL* pThis, bool simulating, bool bFirstTick, bool bLastTick)
 {
 	/**
 	 * simulating:
@@ -916,7 +970,7 @@ KHook::Return<void> CS2Fixes::Hook_GameFramePost(IServerGameDLL* pThis, bool sim
 
 extern CConVar<bool> g_cvarFlashLightTransmitOthers;
 
-void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts,
+KHook::Return<void> CS2Fixes::Hook_CheckTransmit_Post(ISource2GameEntities* pThis, CCheckTransmitInfo** ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts,
 								  const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities, bool bEnablePVSBits)
 {
 	if (!g_pEntitySystem || !GetGlobals())
@@ -988,40 +1042,43 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 		if (pGlowModel)
 			pInfo->m_pTransmitEntity->Clear(pGlowModel->entindex());
 	}
+
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_ApplyGameSettings(KeyValues* pKV)
+KHook::Return<void> CS2Fixes::Hook_ApplyGameSettings(IServerGameDLL* pThis, KeyValues* pKV)
 {
 	g_pMapVoteSystem->ApplyGameSettings(pKV);
+
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList)
+KHook::Return<void> CS2Fixes::Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* name, CUtlStringList& mapList)
 {
+	// TODO: does this even work? just guessing how param override might work in khook..
 	if (g_cvarVoteManagerEnable.Get() && g_pMapVoteSystem->IsMapListLoaded())
-		RETURN_META_MNEWPARAMS(MRES_HANDLED, CreateWorkshopMapGroup, (name, g_pMapVoteSystem->CreateWorkshopMapGroup()));
-	else
-		RETURN_META(MRES_IGNORED);
+		mapList = g_pMapVoteSystem->CreateWorkshopMapGroup();
+
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_GoToIntermission(bool bAbortedMatch)
+KHook::Return<void> CS2Fixes::Hook_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch)
 {
 	if (!g_pMapVoteSystem->IsIntermissionAllowed())
-		RETURN_META(MRES_SUPERCEDE);
+		return {KHook::Action::Supercede};
 
 	if (g_cvarVoteManagerEnable.Get())
 		g_pVoteManager->OnIntermission();
 
-	RETURN_META(MRES_IGNORED);
+	return {KHook::Action::Ignore};
 }
 
 CConVar<bool> g_cvarDropMapWeapons("cs2f_drop_map_weapons", FCVAR_NONE, "Whether to force drop map-spawned weapons on death", false);
 
-bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer* pInfoContainer)
+KHook::Return<bool> CS2Fixes::Hook_OnTakeDamage_Alive(CCSPlayerPawn* pPawn, CTakeDamageInfoContainer* pInfoContainer)
 {
-	CCSPlayerPawn* pPawn = META_IFACEPTR(CCSPlayerPawn);
-
 	if (g_cvarEnableZR.Get() && ZR_Hook_OnTakeDamage_Alive(pInfoContainer->pInfo, pPawn))
-		RETURN_META_VALUE(MRES_SUPERCEDE, false);
+		return {KHook::Action::Supercede, false};
 
 	// This is a shit place to be doing this, but player_death event is too late and there is no pre-hook alternative
 	// Check if this is going to kill the player
@@ -1037,7 +1094,8 @@ bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer* pInfoContainer)
 		pPawn->DropMapWeapons();
 	}
 
-	RETURN_META_VALUE(MRES_IGNORED, true);
+	// TODO: verify true return isn't needed
+	return {KHook::Action::Ignore};
 }
 
 CConVar<bool> g_cvarFixPhysicsPlayerShuffle("cs2f_shuffle_player_physics_sim", FCVAR_NONE, "Whether to enable shuffle player list in physics simulate", false);
@@ -1068,9 +1126,9 @@ public:
 	}
 };
 static_assert(sizeof(TouchLinked_t) == 240, "Touch_t size mismatch");
-void CS2Fixes::Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool unknown)
+KHook::Return<void> CS2Fixes::Hook_PhysicsTouchShuffle_Post(CVPhys2World* pThis, CUtlVector<TouchLinked_t>* pList, bool unknown)
 {
-	if (!g_cvarFixPhysicsPlayerShuffle.Get() || g_SHPtr->GetStatus() == MRES_SUPERCEDE || pList->Count() <= 1)
+	if (!g_cvarFixPhysicsPlayerShuffle.Get() || pList->Count() <= 1)
 		return;
 
 	// [Kxnrl]
@@ -1108,20 +1166,21 @@ void CS2Fixes::Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool u
 		pList->AddToTail(link);
 	for (const auto& link : unTouchLinks)
 		pList->AddToTail(link);
+
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_CheckMovingGround(double frametime)
+KHook::Return<void> CS2Fixes::Hook_CheckMovingGround(CCSPlayer_MovementServices* pThis, double frametime)
 {
-	CCSPlayer_MovementServices* pMove = META_IFACEPTR(CCSPlayer_MovementServices);
-	CCSPlayerPawn* pPawn = pMove->GetPawn();
+	CCSPlayerPawn* pPawn = pThis->GetPawn();
 
 	if (!pPawn || !GetGlobals())
-		RETURN_META(MRES_IGNORED);
+		return {KHook::Action::Ignore};
 
 	CCSPlayerController* pController = pPawn->GetOriginalController();
 
 	if (!pController)
-		RETURN_META(MRES_IGNORED);
+		return {KHook::Action::Ignore};
 
 	int iSlot = pController->GetPlayerSlot();
 
@@ -1130,29 +1189,27 @@ void CS2Fixes::Hook_CheckMovingGround(double frametime)
 	// The point of doing this is to avoid running the function (and applying/resetting basevelocity) multiple times per tick
 	// This can happen when the client or server lags
 	if (aPlayerTicks[iSlot] == GetGlobals()->tickcount)
-		RETURN_META(MRES_SUPERCEDE);
+		return {KHook::Action::Supercede};
 
 	aPlayerTicks[iSlot] = GetGlobals()->tickcount;
 
-	RETURN_META(MRES_IGNORED);
+	return {KHook::Action::Ignore};
 }
 
-void CS2Fixes::Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity)
+KHook::Return<void> CS2Fixes::Hook_DropWeapon_Post(CCSPlayer_WeaponServices* pThis, CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity)
 {
 	if (g_cvarEnableEntWatch.Get())
-	{
-		CCSPlayer_WeaponServices* pWeaponService = META_IFACEPTR(CCSPlayer_WeaponServices);
-		EW_DropWeapon(pWeaponService, pWeapon);
-	}
+		EW_DropWeapon(pThis, pWeapon);
 
-	RETURN_META(MRES_IGNORED);
+	return {KHook::Action::Ignore};
 }
 
-int CS2Fixes::Hook_LoadEventsFromFile(const char* filename, bool bSearchAll)
+KHook::Return<int> CS2Fixes::Hook_LoadEventsFromFile(IGameEventManager2* pThis, const char* filename, bool bSearchAll)
 {
-	ExecuteOnce(g_gameEventManager = META_IFACEPTR(IGameEventManager2));
+	ExecuteOnce(g_gameEventManager = pThis);
 
-	RETURN_META_VALUE(MRES_IGNORED, 0);
+	// TODO: verify 0 return isn't needed
+	return {KHook::Action::Ignore};
 }
 
 void CS2Fixes::OnLevelInit(char const* pMapName,
