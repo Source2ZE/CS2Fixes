@@ -632,6 +632,12 @@ CON_COMMAND_CHAT_FLAGS(extend, "<minutes> - Extend current map (negative value r
 
 	int iExtendTime = V_StringToInt32(args[1], 0);
 
+	if (iExtendTime == 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Remaining map time has not been changed");
+		return;
+	}
+
 	g_pVoteManager->ExtendMap(iExtendTime);
 
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;

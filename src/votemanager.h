@@ -63,7 +63,7 @@ public:
 	int GetNeededRTVCount();
 	int GetCurrentExtendCount();
 	int GetNeededExtendCount();
-	void ExtendMap(int iMinutes, bool bAllowExtraTime = true);
+	void ExtendMap(int iMinutes, bool bIncrementiExtends = false, bool bAllowExtraTime = true);
 	void VoteExtendHandler(YesNoVoteAction action, int param1, int param2);
 	bool VoteExtendEndCallback(YesNoVoteInfo info);
 	void StartExtendVote(int iCaller);

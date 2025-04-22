@@ -543,7 +543,7 @@ CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Timeleft: %i seconds", iSecondsLeft);
 }
 
-void CVoteManager::ExtendMap(int iMinutes, bool bAllowExtraTime)
+void CVoteManager::ExtendMap(int iMinutes, bool bIncrementiExtends, bool bAllowExtraTime)
 {
 	if (!GetGlobals() || !g_pGameRules)
 		return;
@@ -551,7 +551,7 @@ void CVoteManager::ExtendMap(int iMinutes, bool bAllowExtraTime)
 	static ConVarRefAbstract mp_timelimit("mp_timelimit");
 	float flTimelimit = mp_timelimit.GetFloat();
 
-	if (bAllowExtraTime && GetGlobals()->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
+	if (bAllowExtraTime && iMinutes > 0 && GetGlobals()->curtime - g_pGameRules->m_flGameStartTime > flTimelimit * 60)
 		flTimelimit = (GetGlobals()->curtime - g_pGameRules->m_flGameStartTime) / 60.0f + iMinutes;
 	else
 		flTimelimit += iMinutes;
@@ -560,6 +560,18 @@ void CVoteManager::ExtendMap(int iMinutes, bool bAllowExtraTime)
 		flTimelimit = 0.01f;
 
 	mp_timelimit.SetFloat(flTimelimit);
+
+	if (bIncrementiExtends)
+	{
+		m_iExtends++;
+
+		for (int i = 0; i < MAXPLAYERS; i++)
+		{
+			ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+			if (pPlayer)
+				pPlayer->SetExtendVote(false);
+		}
+	}
 }
 
 void CVoteManager::VoteExtendHandler(YesNoVoteAction action, int param1, int param2)
@@ -608,8 +620,7 @@ bool CVoteManager::VoteExtendEndCallback(YesNoVoteInfo info)
 
 	if (yes_percent >= g_cvarExtendSucceedRatio.Get())
 	{
-		ExtendMap(g_cvarExtendTimeToAdd.Get());
-		m_iExtends++;
+		ExtendMap(g_cvarExtendTimeToAdd.Get(), true);
 
 		if (g_cvarMaxExtends.Get() - m_iExtends <= 0)
 			// there are no extends left after a successfull extend vote
@@ -636,13 +647,6 @@ bool CVoteManager::VoteExtendEndCallback(YesNoVoteInfo info)
 					return -1.0f;
 				});
 			}
-		}
-
-		for (int i = 0; i < MAXPLAYERS; i++)
-		{
-			ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
-			if (pPlayer)
-				pPlayer->SetExtendVote(false);
 		}
 
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote succeeded! Current map has been extended by %i minutes.", g_cvarExtendTimeToAdd.Get());
