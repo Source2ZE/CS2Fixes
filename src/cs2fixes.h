@@ -32,7 +32,10 @@ class CServerSideClient;
 struct TouchLinked_t;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
-//class CGamePlayerEquip; TODO: does this still need forward definition?
+class IGameEventSystem;
+class CGamePlayerEquip;
+class CCSGameRules;
+class CCSPlayerPawn;
 class CVPhys2World;
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener
