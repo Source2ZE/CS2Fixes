@@ -509,12 +509,6 @@ CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 	if (!GetGlobals() || !g_pGameRules)
 		return;
 
-	if (!player)
-	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
-		return;
-	}
-
 	static ConVarRefAbstract mp_timelimit("mp_timelimit");
 
 	float flTimelimit = mp_timelimit.GetFloat();
