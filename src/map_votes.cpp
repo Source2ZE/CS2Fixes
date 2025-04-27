@@ -1157,8 +1157,13 @@ void CMapVoteSystem::OnLevelShutdown()
 
 	// Fully apply pending group cooldowns
 	for (std::shared_ptr<CCooldown> pCooldown : m_vecCooldowns)
+	{
 		if (pCooldown->GetPendingCooldown() > 0.0f)
+		{
 			PutMapOnCooldown(pCooldown->GetMapName(), pCooldown->GetPendingCooldown());
+			pCooldown->SetPendingCooldown(0.0f);
+		}
+	}
 
 	WriteMapCooldownsToFile();
 }
@@ -1248,12 +1253,7 @@ void CMapVoteSystem::PutMapOnCooldown(const char* pszMapName, float fCooldown)
 
 	// Ensure we don't overwrite a longer cooldown
 	if (pCooldown->GetTimeCooldown() < timeCooldown)
-	{
 		pCooldown->SetTimeCooldown(timeCooldown);
-
-		// Pending cooldown should be invalidated at this point
-		pCooldown->SetPendingCooldown(0.0f);
-	}
 }
 
 void CMapVoteSystem::ProcessGroupCooldowns()
