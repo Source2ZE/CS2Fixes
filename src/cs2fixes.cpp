@@ -113,15 +113,15 @@ KHook::Virtual postEventAbstractHook(&IGameEventSystem::PostEventAbstract, &g_CS
 KHook::Virtual startupServerHook(&INetworkServerService::StartupServer, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_StartupServer_Post);
 KHook::Virtual checkTransmitHook(&ISource2GameEntities::CheckTransmit, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_CheckTransmit_Post);
 KHook::Virtual dispatchConCommandHook(&ICvar::DispatchConCommand, &g_CS2Fixes, &CS2Fixes::Hook_DispatchConCommand, nullptr);
-KHook::Virtual loadEventsFromFileHook(&IGameEventManager2::LoadEventsFromFile, &g_CS2Fixes, &CS2Fixes::Hook_LoadEventsFromFile, nullptr);
-KHook::Virtual playerEquipUseHook(&g_CS2Fixes, &CS2Fixes::Hook_PlayerEquipUse, nullptr);
-KHook::Virtual playerEquipPrecacheHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_PlayerEquipPrecache_Post);
 KHook::Virtual createWorkshopMapGroupHook(&g_CS2Fixes, &CS2Fixes::Hook_CreateWorkshopMapGroup, nullptr);
-KHook::Virtual onTakeDamageAliveHook(&g_CS2Fixes, &CS2Fixes::Hook_OnTakeDamage_Alive, nullptr);
-KHook::Virtual checkMovingGroundHook(&g_CS2Fixes, &CS2Fixes::Hook_CheckMovingGround, nullptr);
-KHook::Virtual goToIntermissionHook(&g_CS2Fixes, &CS2Fixes::Hook_GoToIntermission, nullptr);
-KHook::Virtual physicsTouchShuffleHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_PhysicsTouchShuffle_Post);
-KHook::Virtual dropWeaponHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_DropWeapon_Post);
+KHook::Member loadEventsFromFileHook(&g_CS2Fixes, &CS2Fixes::Hook_LoadEventsFromFile, nullptr);
+KHook::Member playerEquipUseHook(&g_CS2Fixes, &CS2Fixes::Hook_PlayerEquipUse, nullptr);
+KHook::Member playerEquipPrecacheHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_PlayerEquipPrecache_Post);
+KHook::Member onTakeDamageAliveHook(&g_CS2Fixes, &CS2Fixes::Hook_OnTakeDamage_Alive, nullptr);
+KHook::Member checkMovingGroundHook(&g_CS2Fixes, &CS2Fixes::Hook_CheckMovingGround, nullptr);
+KHook::Member goToIntermissionHook(&g_CS2Fixes, &CS2Fixes::Hook_GoToIntermission, nullptr);
+KHook::Member physicsTouchShuffleHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_PhysicsTouchShuffle_Post);
+KHook::Member dropWeaponHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_DropWeapon_Post);
 
 CS2Fixes g_CS2Fixes;
 
@@ -135,13 +135,6 @@ CGameConfig* g_GameConfig = nullptr;
 ISteamHTTP* g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules* g_pGameRules = nullptr; // Will be null between map end & new map startup, null check if necessary!
-IGameEventManager2* g_pCGameEventManagerVTable = nullptr;
-CGamePlayerEquip* g_pCGamePlayerEquipVTable = nullptr;
-CCSPlayerPawn* g_pCCSPlayerPawnVTable = nullptr;
-CCSPlayer_MovementServices* g_pCCSPlayer_MovementServicesVTable = nullptr;
-CCSGameRules* g_pCCSGameRulesVTable = nullptr;
-CVPhys2World* g_pCVPhys2WorldVTable = nullptr;
-CCSPlayer_WeaponServices* g_pCCSPlayer_WeaponServicesVTable = nullptr;
 
 CGameEntitySystem* GameEntitySystem()
 {
@@ -233,45 +226,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (!InitGameSystems())
 		bRequiredInitLoaded = false;
 
-	g_pCGameEventManagerVTable = (IGameEventManager2*)modules::server->FindVirtualTable("CGameEventManager");
-
-	if (!g_pCGameEventManagerVTable)
-	{
-		Panic("Failed to find CGameEventManager vtable\n");
-		bRequiredInitLoaded = false;
-	}
-
-	loadEventsFromFileHook.Add(g_pCGameEventManagerVTable);
-
-	g_pCGamePlayerEquipVTable = (CGamePlayerEquip*)modules::server->FindVirtualTable("CGamePlayerEquip");
-	if (!g_pCGamePlayerEquipVTable)
-	{
-		Panic("Failed to find CGamePlayerEquip vtable\n");
-		bRequiredInitLoaded = false;
-	}
-
-	int offset = g_GameConfig->GetOffset("CBaseEntity::Use");
-
-	if (offset == -1)
-	{
-		Panic("Failed to find CBaseEntity::Use\n");
-		bRequiredInitLoaded = false;
-	}
-
-	playerEquipUseHook.SetIndex(offset);
-	playerEquipUseHook.Add(g_pCGamePlayerEquipVTable);
-
-	offset = g_GameConfig->GetOffset("CBaseEntity::Precache");
-	if (offset == -1)
-	{
-		Panic("Failed to find CBaseEntity::Precache\n");
-		bRequiredInitLoaded = false;
-	}
-
-	playerEquipPrecacheHook.SetIndex(offset);
-	playerEquipPrecacheHook.Add(g_pCGamePlayerEquipVTable);
-
-	offset = g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup");
+	int offset = g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup");
 
 	if (offset == -1)
 	{
@@ -282,9 +237,53 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	createWorkshopMapGroupHook.SetIndex(offset);
 	createWorkshopMapGroupHook.Add(g_pGameTypes);
 
-	g_pCCSPlayerPawnVTable = (CCSPlayerPawn*)modules::server->FindVirtualTable("CCSPlayerPawn");
+	void** pCGameEventManagerVTable = modules::server->FindVirtualTable("CGameEventManager");
 
-	if (!g_pCCSPlayerPawnVTable)
+	if (!pCGameEventManagerVTable)
+	{
+		Panic("Failed to find CGameEventManager vtable\n");
+		bRequiredInitLoaded = false;
+	}
+
+	offset = KHook::GetVtableIndex(&IGameEventManager2::LoadEventsFromFile);
+
+	if (offset == -1)
+	{
+		Panic("Failed to find offset for IGameEventManager2::LoadEventsFromFile\n");
+		bRequiredInitLoaded = false;
+	}
+
+	loadEventsFromFileHook.Configure(pCGameEventManagerVTable[offset]);
+
+	void** pCGamePlayerEquipVTable = modules::server->FindVirtualTable("CGamePlayerEquip");
+	if (!pCGamePlayerEquipVTable)
+	{
+		Panic("Failed to find CGamePlayerEquip vtable\n");
+		bRequiredInitLoaded = false;
+	}
+
+	offset = g_GameConfig->GetOffset("CBaseEntity::Use");
+
+	if (offset == -1)
+	{
+		Panic("Failed to find CBaseEntity::Use\n");
+		bRequiredInitLoaded = false;
+	}
+
+	playerEquipUseHook.Configure(pCGamePlayerEquipVTable[offset]);
+
+	offset = g_GameConfig->GetOffset("CBaseEntity::Precache");
+	if (offset == -1)
+	{
+		Panic("Failed to find CBaseEntity::Precache\n");
+		bRequiredInitLoaded = false;
+	}
+
+	playerEquipPrecacheHook.Configure(pCGamePlayerEquipVTable[offset]);
+
+	void** pCCSPlayerPawnVTable = modules::server->FindVirtualTable("CCSPlayerPawn");
+
+	if (!pCCSPlayerPawnVTable)
 	{
 		Panic("Failed to find CCSPlayerPawn vtable\n");
 		bRequiredInitLoaded = false;
@@ -297,12 +296,11 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 
-	onTakeDamageAliveHook.SetIndex(offset);
-	onTakeDamageAliveHook.Add(g_pCCSPlayerPawnVTable);
+	onTakeDamageAliveHook.Configure(pCCSPlayerPawnVTable[offset]);
 
-	g_pCCSPlayer_MovementServicesVTable = (CCSPlayer_MovementServices*)modules::server->FindVirtualTable("CCSPlayer_MovementServices");
+	void** pCCSPlayer_MovementServicesVTable = modules::server->FindVirtualTable("CCSPlayer_MovementServices");
 
-	if (!g_pCCSPlayer_MovementServicesVTable)
+	if (!pCCSPlayer_MovementServicesVTable)
 	{
 		Panic("Failed to find CCSPlayer_MovementServices vtable\n");
 		bRequiredInitLoaded = false;
@@ -315,12 +313,11 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 
-	checkMovingGroundHook.SetIndex(offset);
-	checkMovingGroundHook.Add(g_pCCSPlayer_MovementServicesVTable);
+	checkMovingGroundHook.Configure(pCCSPlayer_MovementServicesVTable[offset]);
 
-	g_pCCSGameRulesVTable = (CCSGameRules*)modules::server->FindVirtualTable("CCSGameRules");
+	void** pCCSGameRulesVTable = modules::server->FindVirtualTable("CCSGameRules");
 
-	if (!g_pCCSGameRulesVTable)
+	if (!pCCSGameRulesVTable)
 	{
 		Panic("Failed to find CCSGameRules vtable\n");
 		bRequiredInitLoaded = false;
@@ -333,12 +330,11 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 
-	goToIntermissionHook.SetIndex(offset);
-	goToIntermissionHook.Add(g_pCCSGameRulesVTable);
+	goToIntermissionHook.Configure(pCCSGameRulesVTable[offset]);
 
-	g_pCVPhys2WorldVTable = (CVPhys2World*)modules::vphysics2->FindVirtualTable("CVPhys2World");
+	void** pCVPhys2WorldVTable = modules::vphysics2->FindVirtualTable("CVPhys2World");
 
-	if (!g_pCVPhys2WorldVTable)
+	if (!pCVPhys2WorldVTable)
 	{
 		Panic("Failed to find CVPhys2World vtable\n");
 		bRequiredInitLoaded = false;
@@ -351,12 +347,11 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 
-	physicsTouchShuffleHook.SetIndex(offset);
-	physicsTouchShuffleHook.Add(g_pCVPhys2WorldVTable);
+	physicsTouchShuffleHook.Configure(pCVPhys2WorldVTable[offset]);
 
-	g_pCCSPlayer_WeaponServicesVTable = (CCSPlayer_WeaponServices*)modules::server->FindVirtualTable("CCSPlayer_WeaponServices");
+	void** pCCSPlayer_WeaponServicesVTable = modules::server->FindVirtualTable("CCSPlayer_WeaponServices");
 
-	if (!g_pCCSPlayer_WeaponServicesVTable)
+	if (!pCCSPlayer_WeaponServicesVTable)
 	{
 		Panic("Failed to find CCSPlayer_WeaponServices vtable\n");
 		bRequiredInitLoaded = false;
@@ -369,8 +364,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 
-	dropWeaponHook.SetIndex(offset);
-	dropWeaponHook.Add(g_pCCSPlayer_WeaponServicesVTable);
+	dropWeaponHook.Configure(pCCSPlayer_WeaponServicesVTable[offset]);
 
 	if (!bRequiredInitLoaded)
 	{
@@ -470,15 +464,15 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	startupServerHook.Remove(g_pNetworkServerService);
 	checkTransmitHook.Remove(g_pSource2GameEntities);
 	dispatchConCommandHook.Remove(g_pCVar);
-	loadEventsFromFileHook.Remove(g_pCGameEventManagerVTable);
-	playerEquipUseHook.Remove(g_pCGamePlayerEquipVTable);
-	playerEquipPrecacheHook.Remove(g_pCGamePlayerEquipVTable);
 	createWorkshopMapGroupHook.Remove(g_pGameTypes);
-	onTakeDamageAliveHook.Remove(g_pCCSPlayerPawnVTable);
-	checkMovingGroundHook.Remove(g_pCCSPlayer_MovementServicesVTable);
-	goToIntermissionHook.Remove(g_pCCSGameRulesVTable);
-	physicsTouchShuffleHook.Remove(g_pCVPhys2WorldVTable);
-	dropWeaponHook.Remove(g_pCCSPlayer_WeaponServicesVTable);
+	loadEventsFromFileHook.~Member();
+	playerEquipUseHook.~Member();
+	playerEquipPrecacheHook.~Member();
+	onTakeDamageAliveHook.~Member();
+	checkMovingGroundHook.~Member();
+	goToIntermissionHook.~Member();
+	physicsTouchShuffleHook.~Member();
+	dropWeaponHook.~Member();
 
 	ConVar_Unregister();
 

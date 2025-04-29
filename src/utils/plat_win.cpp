@@ -48,7 +48,7 @@ void CModule::InitializeSections()
 	}
 }
 
-void* CModule::FindVirtualTable(const std::string& name)
+void** CModule::FindVirtualTable(const std::string& name)
 {
 	auto runTimeData = GetSection(".data");
 	auto readOnlyData = GetSection(".rdata");
@@ -98,7 +98,7 @@ void* CModule::FindVirtualTable(const std::string& name)
 			return nullptr;
 		}
 
-		return (void*)((uintptr_t)vtable + 0x8);
+		return (void**)((uintptr_t)vtable + 0x8);
 	}
 
 	Warning("Failed to find RTTI Complete Object Locator for %s\n", name.c_str());

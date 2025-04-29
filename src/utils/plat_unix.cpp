@@ -205,7 +205,7 @@ void Plat_WriteMemory(void* pPatchAddress, uint8_t* pPatch, int iPatchSize)
 	result = mprotect(align_addr, align_size, old_prot);
 }
 
-void* CModule::FindVirtualTable(const std::string& name)
+void** CModule::FindVirtualTable(const std::string& name)
 {
 	auto readOnlyData = GetSection(".rodata");
 	auto readOnlyRelocations = GetSection(".data.rel.ro");
@@ -248,7 +248,7 @@ void* CModule::FindVirtualTable(const std::string& name)
 
 		while (void* vtable = sigIt3.FindNext(false))
 			if (*(int64_t*)((uintptr_t)vtable - 0x8) == 0)
-				return (void*)((uintptr_t)vtable + 0x8);
+				return (void**)((uintptr_t)vtable + 0x8);
 	}
 
 	Warning("Failed to find vtable for %s\n", name.c_str());
