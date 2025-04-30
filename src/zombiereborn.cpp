@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -276,13 +276,13 @@ void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 }
 
 ZRHumanClass::ZRHumanClass(ordered_json jsonKeys, std::string szClassname) :
-	ZRClass(jsonKeys, szClassname, CS_TEAM_CT){};
+	ZRClass(jsonKeys, szClassname, CS_TEAM_CT) {};
 
 ZRZombieClass::ZRZombieClass(ordered_json jsonKeys, std::string szClassname) :
 	ZRClass(jsonKeys, szClassname, CS_TEAM_T),
 	iHealthRegenCount(jsonKeys.value("health_regen_count", 0)),
 	flHealthRegenInterval(jsonKeys.value("health_regen_interval", 0)),
-	flKnockback(jsonKeys.value("knockback", 1.0)){};
+	flKnockback(jsonKeys.value("knockback", 1.0)) {};
 
 void ZRZombieClass::Override(ordered_json jsonKeys, std::string szClassname)
 {
@@ -1066,7 +1066,10 @@ void ZR_OnPlayerSpawn(CCSPlayerController* pController)
 
 void ZR_ApplyKnockback(CCSPlayerPawn* pHuman, CCSPlayerPawn* pVictim, int iDamage, const char* szWeapon, int hitgroup, float classknockback)
 {
-	std::shared_ptr<ZRWeapon> pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
+	if (V_strlen(szWeapon) <= 7)
+		return;
+
+	std::shared_ptr<ZRWeapon> pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon + 7);
 	std::shared_ptr<ZRHitgroup> pHitgroup = g_pZRHitgroupConfig->FindHitgroupIndex(hitgroup);
 	// player shouldn't be able to pick up that weapon in the first place, but just in case
 	if (!pWeapon)
@@ -1602,21 +1605,35 @@ void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand& args)
 		SpawnPlayer(pController);
 }
 
-void ZR_OnPlayerHurt(IGameEvent* pEvent)
+void ZR_OnPlayerTakeDamage(CCSPlayerPawn* pVictimPawn, const CTakeDamageInfo* pInfo, const int32 damage)
 {
-	CCSPlayerController* pAttackerController = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
-	CCSPlayerController* pVictimController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
-	const char* szWeapon = pEvent->GetString("weapon");
-	int iDmgHealth = pEvent->GetInt("dmg_health");
-	int iHitGroup = pEvent->GetInt("hitgroup");
-
-	// grenade and molotov knockbacks are handled by TakeDamage detours
-	if (!pAttackerController || !pVictimController || !V_strncmp(szWeapon, "inferno", 7) || !V_strncmp(szWeapon, "hegrenade", 9))
+	// bullet only
+	if ((pInfo->m_bitsDamageType & DMG_BULLET) == 0 || !pInfo->m_pTrace || !pInfo->m_pTrace->m_pHitbox)
 		return;
 
-	if (pAttackerController->m_iTeamNum() == CS_TEAM_CT && pVictimController->m_iTeamNum() == CS_TEAM_T)
+	const auto pVictimController = reinterpret_cast<CCSPlayerController*>(pVictimPawn->GetController());
+	if (!pVictimController || !pVictimController->IsConnected())
+		return;
+
+	if (!pInfo->m_AttackerInfo.m_bIsPawn)
+		return;
+
+	const auto pKillerPawn = pInfo->m_AttackerInfo.m_hAttackerPawn.Get();
+	if (!pKillerPawn || !pKillerPawn->IsPawn()) // I don't know why this maybe non-pawn entity??
+		return;
+
+	const auto pAbility = pInfo->m_hAbility.Get();
+	if (!pAbility)
+		return;
+
+	const char* pszWeapon = pAbility->GetClassname();
+
+	if (!V_strncasecmp(pszWeapon, "weapon_", 7))
+		pszWeapon = reinterpret_cast<CBasePlayerWeapon*>(pAbility)->GetWeaponClassname();
+
+	if (pKillerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
 	{
-		float flClassKnockback = 1.0f;
+		auto flClassKnockback = 1.0f;
 
 		if (pVictimController->GetZEPlayer())
 		{
@@ -1626,7 +1643,7 @@ void ZR_OnPlayerHurt(IGameEvent* pEvent)
 				flClassKnockback = static_pointer_cast<ZRZombieClass>(activeClass)->flKnockback;
 		}
 
-		ZR_ApplyKnockback((CCSPlayerPawn*)pAttackerController->GetPawn(), (CCSPlayerPawn*)pVictimController->GetPawn(), iDmgHealth, szWeapon, iHitGroup, flClassKnockback);
+		ZR_ApplyKnockback(pKillerPawn, pVictimPawn, damage, pszWeapon, pInfo->m_pTrace->m_pHitbox->m_nGroupId, flClassKnockback);
 	}
 }
 
