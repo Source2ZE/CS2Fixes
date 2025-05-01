@@ -56,21 +56,21 @@ extern CCSGameRules* g_pGameRules;
 
 CEWHandler* g_pEWHandler = nullptr;
 
-SH_DECL_MANUALHOOK1_void(CBaseButton_Use, 0, 0, 0, InputData_t*);
-SH_DECL_MANUALHOOK1_void(CPhysBox_Use, 0, 0, 0, InputData_t*);
-SH_DECL_MANUALHOOK1_void(CRotButton_Use, 0, 0, 0, InputData_t*);
-SH_DECL_MANUALHOOK1_void(CMomentaryRotButton_Use, 0, 0, 0, InputData_t*);
-SH_DECL_MANUALHOOK1_void(CPhysicalButton_Use, 0, 0, 0, InputData_t*);
+KHook::Member baseButtonUseHook(g_pEWHandler, &CEWHandler::Hook_Use, nullptr);
+KHook::Member physBoxUseHook(g_pEWHandler, &CEWHandler::Hook_Use, nullptr);
+KHook::Member rotButtonUseHook(g_pEWHandler, &CEWHandler::Hook_Use, nullptr);
+KHook::Member momentaryRotButtonUseHook(g_pEWHandler, &CEWHandler::Hook_Use, nullptr);
+KHook::Member physicalButtonUseHook(g_pEWHandler, &CEWHandler::Hook_Use, nullptr);
 
-SH_DECL_MANUALHOOK1_void(CTriggerTeleport_StartTouch, 0, 0, 0, CBaseEntity*);
-SH_DECL_MANUALHOOK1_void(CTriggerTeleport_Touch, 0, 0, 0, CBaseEntity*);
-SH_DECL_MANUALHOOK1_void(CTriggerTeleport_EndTouch, 0, 0, 0, CBaseEntity*);
-SH_DECL_MANUALHOOK1_void(CTriggerOnce_StartTouch, 0, 0, 0, CBaseEntity*);
-SH_DECL_MANUALHOOK1_void(CTriggerOnce_Touch, 0, 0, 0, CBaseEntity*);
-SH_DECL_MANUALHOOK1_void(CTriggerOnce_EndTouch, 0, 0, 0, CBaseEntity*);
-SH_DECL_MANUALHOOK1_void(CTriggerMultiple_StartTouch, 0, 0, 0, CBaseEntity*);
-SH_DECL_MANUALHOOK1_void(CTriggerMultiple_Touch, 0, 0, 0, CBaseEntity*);
-SH_DECL_MANUALHOOK1_void(CTriggerMultiple_EndTouch, 0, 0, 0, CBaseEntity*);
+KHook::Member triggerTeleportStartTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
+KHook::Member triggerOnceStartTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
+KHook::Member triggerMultipleStartTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
+KHook::Member triggerTeleportTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
+KHook::Member triggerOnceTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
+KHook::Member triggerMultipleTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
+KHook::Member triggerTeleportEndTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
+KHook::Member triggerOnceEndTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
+KHook::Member triggerMultipleEndTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
 
 CConVar<bool> g_cvarEnableEntWatch("entwatch_enable", FCVAR_NONE, "INCOMPATIBLE WITH CS#. Whether to enable EntWatch features", false);
 CConVar<bool> g_cvarEnableFiltering("entwatch_auto_filter", FCVAR_NONE, "Whether to automatically block non-item holders from triggering uses", true);
@@ -211,7 +211,7 @@ void EWItemHandler::RegisterEntity(CBaseEntity* pEntity)
 	switch (type)
 	{
 		case Button:
-			g_pEWHandler->AddUseHook(pEntity);
+			g_pEWHandler->vecUseHookedEntities.push_back(pEntity->GetHandle());
 			break;
 		case CounterDown:
 		case CounterUp:
@@ -636,7 +636,7 @@ bool EWItemInstance::RemoveHandler(CBaseEntity* pEnt)
 		if (vecHandlers[i]->iEntIndex == pEnt->entindex())
 		{
 			if (vecHandlers[i]->type == EWHandlerType::Button)
-				g_pEWHandler->RemoveUseHook(pEnt);
+				g_pEWHandler->RemoveUseEntity(pEnt);
 			vecHandlers[i]->iEntIndex = -1;
 			return true;
 		}
@@ -895,8 +895,8 @@ void CEWHandler::UnLoadConfig()
 			vecItems[i]->vecHandlers[j]->RemoveHook();
 	vecItems.clear();
 
-	RemoveAllUseHooks();
-	RemoveAllTriggers();
+	vecUseHookedEntities.clear();
+	vecHookedTriggers.clear();
 
 	bConfigLoaded = false;
 }
@@ -1146,7 +1146,7 @@ bool CEWHandler::RegisterTrigger(CBaseEntity* pEnt)
 			if (strcmp(sHammerid, pItem->vecTriggers[j].c_str()))
 				continue;
 
-			AddTouchHook(pEnt);
+			vecHookedTriggers.push_back(pEnt->GetHandle());
 
 			return true;
 		}
@@ -1154,74 +1154,93 @@ bool CEWHandler::RegisterTrigger(CBaseEntity* pEnt)
 	return false;
 }
 
-void CEWHandler::AddTouchHook(CBaseEntity* pEnt)
+void CEWHandler::CreateHooks()
 {
-	static int startOffset = g_GameConfig->GetOffset("CBaseEntity::StartTouch");
-	static int touchOffset = g_GameConfig->GetOffset("CBaseEntity::Touch");
-	static int endOffset = g_GameConfig->GetOffset("CBaseEntity::EndTouch");
+	void** pCBaseButtonVTable = modules::server->FindVirtualTable("CBaseButton");
+	void** pCPhysBoxVTable = modules::server->FindVirtualTable("CPhysBox");
+	void** pCRotButtonVTable = modules::server->FindVirtualTable("CRotButton");
+	void** pCMomentaryRotButtonVTable = modules::server->FindVirtualTable("CMomentaryRotButton");
+	void** pCPhysicalButtonVTable = modules::server->FindVirtualTable("CPhysicalButton");
+	void** pCTriggerTeleportVTable = modules::server->FindVirtualTable("CTriggerTeleport");
+	void** pCTriggerOnceVTable = modules::server->FindVirtualTable("CTriggerOnce");
+	void** pCTriggerMultipleVTable = modules::server->FindVirtualTable("CTriggerMultiple");
 
-	if (!V_strcmp(pEnt->GetClassname(), "trigger_teleport"))
+	int offset = g_GameConfig->GetOffset("CBaseEntity::Use");
+
+	if (offset == -1)
 	{
-		if (iTriggerTeleportTouchHooks[0] == -1)
-		{
-			const auto pTeleport_VTable = modules::server->FindVirtualTable("CTriggerTeleport");
-
-			SH_MANUALHOOK_RECONFIGURE(CTriggerTeleport_StartTouch, startOffset, 0, 0);
-			iTriggerTeleportTouchHooks[0] = SH_ADD_MANUALDVPHOOK(CTriggerTeleport_StartTouch, pTeleport_VTable, SH_MEMBER(this, &CEWHandler::Hook_Touch), false);
-
-			SH_MANUALHOOK_RECONFIGURE(CTriggerTeleport_Touch, touchOffset, 0, 0);
-			iTriggerTeleportTouchHooks[1] = SH_ADD_MANUALDVPHOOK(CTriggerTeleport_Touch, pTeleport_VTable, SH_MEMBER(this, &CEWHandler::Hook_Touch), false);
-
-			SH_MANUALHOOK_RECONFIGURE(CTriggerTeleport_EndTouch, endOffset, 0, 0);
-			iTriggerTeleportTouchHooks[2] = SH_ADD_MANUALDVPHOOK(CTriggerTeleport_EndTouch, pTeleport_VTable, SH_MEMBER(this, &CEWHandler::Hook_Touch), false);
-		}
-	}
-	else if (!V_strcmp(pEnt->GetClassname(), "trigger_multiple"))
-	{
-		if (iTriggerMultipleTouchHooks[0] == -1)
-		{
-			const auto pMultiple_VTable = modules::server->FindVirtualTable("CTriggerMultiple");
-
-			SH_MANUALHOOK_RECONFIGURE(CTriggerMultiple_StartTouch, startOffset, 0, 0);
-			iTriggerMultipleTouchHooks[0] = SH_ADD_MANUALDVPHOOK(CTriggerMultiple_StartTouch, pMultiple_VTable, SH_MEMBER(this, &CEWHandler::Hook_Touch), false);
-
-			SH_MANUALHOOK_RECONFIGURE(CTriggerMultiple_Touch, touchOffset, 0, 0);
-			iTriggerMultipleTouchHooks[1] = SH_ADD_MANUALDVPHOOK(CTriggerMultiple_Touch, pMultiple_VTable, SH_MEMBER(this, &CEWHandler::Hook_Touch), false);
-
-			SH_MANUALHOOK_RECONFIGURE(CTriggerMultiple_EndTouch, endOffset, 0, 0);
-			iTriggerMultipleTouchHooks[2] = SH_ADD_MANUALDVPHOOK(CTriggerMultiple_EndTouch, pMultiple_VTable, SH_MEMBER(this, &CEWHandler::Hook_Touch), false);
-		}
-	}
-	else if (!V_strcmp(pEnt->GetClassname(), "trigger_once"))
-	{
-		if (iTriggerOnceTouchHooks[0] == -1)
-		{
-			const auto pOnce_VTable = modules::server->FindVirtualTable("CTriggerOnce");
-
-			SH_MANUALHOOK_RECONFIGURE(CTriggerOnce_StartTouch, startOffset, 0, 0);
-			iTriggerOnceTouchHooks[0] = SH_ADD_MANUALDVPHOOK(CTriggerOnce_StartTouch, pOnce_VTable, SH_MEMBER(this, &CEWHandler::Hook_Touch), false);
-
-			SH_MANUALHOOK_RECONFIGURE(CTriggerOnce_Touch, touchOffset, 0, 0);
-			iTriggerOnceTouchHooks[1] = SH_ADD_MANUALDVPHOOK(CTriggerOnce_Touch, pOnce_VTable, SH_MEMBER(this, &CEWHandler::Hook_Touch), false);
-
-			SH_MANUALHOOK_RECONFIGURE(CTriggerOnce_EndTouch, endOffset, 0, 0);
-			iTriggerOnceTouchHooks[2] = SH_ADD_MANUALDVPHOOK(CTriggerOnce_EndTouch, pOnce_VTable, SH_MEMBER(this, &CEWHandler::Hook_Touch), false);
-		}
+		Panic("Failed to find CBaseEntity::Use offset\n");
+		return;
 	}
 
-	vecHookedTriggers.push_back(pEnt->GetHandle());
+	baseButtonUseHook.Configure(pCBaseButtonVTable[offset]);
+	physBoxUseHook.Configure(pCPhysBoxVTable[offset]);
+	rotButtonUseHook.Configure(pCRotButtonVTable[offset]);
+	momentaryRotButtonUseHook.Configure(pCMomentaryRotButtonVTable[offset]);
+	physicalButtonUseHook.Configure(pCPhysicalButtonVTable[offset]);
+
+	offset = g_GameConfig->GetOffset("CBaseEntity::StartTouch");
+
+	if (offset == -1)
+	{
+		Panic("Failed to find CBaseEntity::StartTouch offset\n");
+		return;
+	}
+
+	triggerTeleportStartTouchHook.Configure(pCTriggerTeleportVTable[offset]);
+	triggerOnceStartTouchHook.Configure(pCTriggerOnceVTable[offset]);
+	triggerMultipleStartTouchHook.Configure(pCTriggerMultipleVTable[offset]);
+
+	offset = g_GameConfig->GetOffset("CBaseEntity::Touch");
+
+	if (offset == -1)
+	{
+		Panic("Failed to find CBaseEntity::Touch offset\n");
+		return;
+	}
+
+	triggerTeleportTouchHook.Configure(pCTriggerTeleportVTable[offset]);
+	triggerOnceTouchHook.Configure(pCTriggerOnceVTable[offset]);
+	triggerMultipleTouchHook.Configure(pCTriggerMultipleVTable[offset]);
+
+	offset = g_GameConfig->GetOffset("CBaseEntity::EndTouch");
+
+	if (offset == -1)
+	{
+		Panic("Failed to find CBaseEntity::EndTouch offset\n");
+		return;
+	}
+
+	triggerTeleportEndTouchHook.Configure(pCTriggerTeleportVTable[offset]);
+	triggerOnceEndTouchHook.Configure(pCTriggerOnceVTable[offset]);
+	triggerMultipleEndTouchHook.Configure(pCTriggerMultipleVTable[offset]);
 }
 
-void CEWHandler::Hook_Touch(CBaseEntity* pOther)
+void CEWHandler::RemoveHooks()
 {
-	CBaseEntity* pEntity = META_IFACEPTR(CBaseEntity);
-	if (!pEntity)
-		RETURN_META(MRES_IGNORED);
+	baseButtonUseHook.~Member();
+	physBoxUseHook.~Member();
+	rotButtonUseHook.~Member();
+	momentaryRotButtonUseHook.~Member();
+	physicalButtonUseHook.~Member();
 
+	triggerTeleportStartTouchHook.~Member();
+	triggerOnceStartTouchHook.~Member();
+	triggerMultipleStartTouchHook.~Member();
+	triggerTeleportTouchHook.~Member();
+	triggerOnceTouchHook.~Member();
+	triggerMultipleTouchHook.~Member();
+	triggerTeleportEndTouchHook.~Member();
+	triggerOnceEndTouchHook.~Member();
+	triggerMultipleEndTouchHook.~Member();
+}
+
+KHook::Return<void> CEWHandler::Hook_Touch(CBaseEntity* pThis, CBaseEntity* pOther)
+{
 	bool bFound = false;
 	for (int i = 0; i < (vecHookedTriggers).size(); i++)
 	{
-		if (vecHookedTriggers[i] == pEntity->GetHandle())
+		if (vecHookedTriggers[i] == pThis->GetHandle())
 		{
 			bFound = true;
 			break;
@@ -1229,24 +1248,24 @@ void CEWHandler::Hook_Touch(CBaseEntity* pOther)
 	}
 
 	if (!bFound)
-		RETURN_META(MRES_IGNORED);
+		return {KHook::Action::Ignore};
 
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pOther;
 	if (!pPawn)
-		RETURN_META(MRES_IGNORED);
+		return {KHook::Action::Ignore};
 
 	CCSPlayerController* pController = pPawn->GetOriginalController();
 	if (!pController)
-		RETURN_META(MRES_IGNORED);
+		return {KHook::Action::Ignore};
 
 	ZEPlayer* zpPlayer = pController->GetZEPlayer();
 	if (!zpPlayer)
-		RETURN_META(MRES_IGNORED);
+		return {KHook::Action::Ignore};
 
 	if (zpPlayer->IsEbanned())
-		RETURN_META(MRES_SUPERCEDE);
+		return {KHook::Action::Supercede};
 
-	RETURN_META(MRES_IGNORED);
+	return {KHook::Action::Ignore};
 }
 
 bool CEWHandler::RemoveTrigger(CBaseEntity* pEnt)
@@ -1261,23 +1280,6 @@ bool CEWHandler::RemoveTrigger(CBaseEntity* pEnt)
 		}
 	}
 	return false;
-}
-
-void CEWHandler::RemoveAllTriggers()
-{
-	Message("[EntWatch] Fully unhooking touch hooks\n");
-	for (int i = 0; i < 3; i++)
-	{
-		SH_REMOVE_HOOK_ID(iTriggerTeleportTouchHooks[i]);
-		iTriggerTeleportTouchHooks[i] = -1;
-
-		SH_REMOVE_HOOK_ID(iTriggerMultipleTouchHooks[i]);
-		iTriggerMultipleTouchHooks[i] = -1;
-
-		SH_REMOVE_HOOK_ID(iTriggerOnceTouchHooks[i]);
-		iTriggerOnceTouchHooks[i] = -1;
-	}
-	vecHookedTriggers.clear();
 }
 
 void CEWHandler::RemoveHandler(CBaseEntity* pEnt)
@@ -1611,65 +1613,7 @@ void CEWHandler::Transfer(CCSPlayerController* pCaller, int iItemInstance, CHand
 	}
 }
 
-void CEWHandler::AddUseHook(CBaseEntity* pEnt)
-{
-	static int offset = g_GameConfig->GetOffset("CBaseEntity::Use");
-	if (offset == -1)
-	{
-		Panic("Failed to find CBaseEntity::Use offset in entwatch.cpp::AddUseHook() !!\n");
-		return;
-	}
-
-	if (!V_strcmp(pEnt->GetClassname(), "func_button"))
-	{
-		if (iBaseBtnUseHookId == -1)
-		{
-			const auto pBaseButton_VTable = modules::server->FindVirtualTable("CBaseButton");
-			SH_MANUALHOOK_RECONFIGURE(CBaseButton_Use, offset, 0, 0);
-			iBaseBtnUseHookId = SH_ADD_MANUALDVPHOOK(CBaseButton_Use, pBaseButton_VTable, SH_MEMBER(this, &CEWHandler::Hook_Use), false);
-		}
-	}
-	else if (!V_strcmp(pEnt->GetClassname(), "func_physbox"))
-	{
-		if (iPhysboxUseHookId == -1)
-		{
-			const auto pPhysbox_VTable = modules::server->FindVirtualTable("CPhysBox");
-			SH_MANUALHOOK_RECONFIGURE(CPhysBox_Use, offset, 0, 0);
-			iPhysboxUseHookId = SH_ADD_MANUALDVPHOOK(CPhysBox_Use, pPhysbox_VTable, SH_MEMBER(this, &CEWHandler::Hook_Use), false);
-		}
-	}
-	else if (!V_strcmp(pEnt->GetClassname(), "func_rot_button"))
-	{
-		if (iRotBtnUseHookId == -1)
-		{
-			const auto pCRotButton_VTable = modules::server->FindVirtualTable("CRotButton");
-			SH_MANUALHOOK_RECONFIGURE(CRotButton_Use, offset, 0, 0);
-			iRotBtnUseHookId = SH_ADD_MANUALDVPHOOK(CRotButton_Use, pCRotButton_VTable, SH_MEMBER(this, &CEWHandler::Hook_Use), false);
-		}
-	}
-	else if (!V_strcmp(pEnt->GetClassname(), "momentary_rot_button"))
-	{
-		if (iMomRotBtnUseHookId == -1)
-		{
-			const auto pCMomentaryRotButton_VTable = modules::server->FindVirtualTable("CMomentaryRotButton");
-			SH_MANUALHOOK_RECONFIGURE(CMomentaryRotButton_Use, offset, 0, 0);
-			iMomRotBtnUseHookId = SH_ADD_MANUALDVPHOOK(CMomentaryRotButton_Use, pCMomentaryRotButton_VTable, SH_MEMBER(this, &CEWHandler::Hook_Use), false);
-		}
-	}
-	else if (!V_strcmp(pEnt->GetClassname(), "func_physical_button"))
-	{
-		if (iPhysicalBtnUseHookId == -1)
-		{
-			const auto pCPhysicalButton_VTable = modules::server->FindVirtualTable("CPhysicalButton");
-			SH_MANUALHOOK_RECONFIGURE(CPhysicalButton_Use, offset, 0, 0);
-			iPhysicalBtnUseHookId = SH_ADD_MANUALDVPHOOK(CPhysicalButton_Use, pCPhysicalButton_VTable, SH_MEMBER(this, &CEWHandler::Hook_Use), false);
-		}
-	}
-
-	vecUseHookedEntities.push_back(pEnt->GetHandle());
-}
-
-void CEWHandler::RemoveUseHook(CBaseEntity* pEnt)
+void CEWHandler::RemoveUseEntity(CBaseEntity* pEnt)
 {
 	for (int i = 0; i < (vecUseHookedEntities).size(); i++)
 	{
@@ -1681,39 +1625,13 @@ void CEWHandler::RemoveUseHook(CBaseEntity* pEnt)
 	}
 }
 
-void CEWHandler::RemoveAllUseHooks()
-{
-	Message("[EntWatch] Fully unhooking use hooks\n");
-
-	SH_REMOVE_HOOK_ID(iBaseBtnUseHookId);
-	iBaseBtnUseHookId = -1;
-
-	SH_REMOVE_HOOK_ID(iPhysboxUseHookId);
-	iPhysboxUseHookId = -1;
-
-	SH_REMOVE_HOOK_ID(iRotBtnUseHookId);
-	iRotBtnUseHookId = -1;
-
-	SH_REMOVE_HOOK_ID(iMomRotBtnUseHookId);
-	iMomRotBtnUseHookId = -1;
-
-	SH_REMOVE_HOOK_ID(iPhysicalBtnUseHookId);
-	iPhysicalBtnUseHookId = -1;
-
-	vecUseHookedEntities.clear();
-}
-
-void CEWHandler::Hook_Use(InputData_t* pInput)
+KHook::Return<void> CEWHandler::Hook_Use(CBaseEntity* pThis, InputData_t* pInput)
 {
 	// Message("#####    USE HOOK    #####\n");
-	CBaseEntity* pEntity = META_IFACEPTR(CBaseEntity);
-	if (!pEntity)
-		RETURN_META(MRES_IGNORED);
-
 	bool bFound = false;
 	for (int i = 0; i < (vecUseHookedEntities).size(); i++)
 	{
-		if (vecUseHookedEntities[i] == pEntity->GetHandle())
+		if (vecUseHookedEntities[i] == pThis->GetHandle())
 		{
 			bFound = true;
 			break;
@@ -1721,9 +1639,9 @@ void CEWHandler::Hook_Use(InputData_t* pInput)
 	}
 
 	if (!bFound)
-		RETURN_META(MRES_IGNORED);
+		return {KHook::Action::Ignore};
 
-	int index = pEntity->entindex();
+	int index = pThis->entindex();
 	int itemIndex = -1;
 	int handlerIndex = -1;
 	for (int i = 0; i < (vecItems).size(); i++)
@@ -1738,32 +1656,32 @@ void CEWHandler::Hook_Use(InputData_t* pInput)
 	}
 
 	if (itemIndex == -1 || handlerIndex == -1)
-		RETURN_META(MRES_IGNORED);
+		return {KHook::Action::Ignore};
 
 	// Prevent uses from non item owners if we are filtering
-	META_RES resVal = MRES_IGNORED;
+	KHook::Return<void> returnVal = {KHook::Action::Ignore};
 	if (g_cvarEnableFiltering.Get())
-		resVal = MRES_SUPERCEDE;
+		returnVal = {KHook::Action::Supercede};
 
 	CBaseEntity* pActivator = pInput->pActivator;
 
 	if (!pActivator || !pActivator->IsPawn())
-		RETURN_META(resVal);
+		return returnVal;
 
 	std::shared_ptr<EWItemInstance> pItem = vecItems[itemIndex];
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pActivator;
 	CCSPlayerController* pController = pPawn->GetOriginalController();
 
 	if (!pController || pController->GetPlayerSlot() != pItem->iOwnerSlot)
-		RETURN_META(resVal);
+		return returnVal;
 
-	const char* classname = pEntity->GetClassname();
+	const char* classname = pThis->GetClassname();
 
 	if (!strcmp(classname, "func_button") || !strcmp(classname, "func_rot_button") || !strcmp(classname, "momentary_rot_button") || !strcmp(classname, "func_physical_button"))
 	{
-		CBaseButton* pButton = (CBaseButton*)pEntity;
+		CBaseButton* pButton = (CBaseButton*)pThis;
 		if (pButton->m_bLocked || pButton->m_bDisabled)
-			RETURN_META(resVal);
+			return returnVal;
 	}
 
 	//
@@ -1771,7 +1689,7 @@ void CEWHandler::Hook_Use(InputData_t* pInput)
 	// This is just to prevent unnecessary stuff with buttons like movement
 	//
 
-	RETURN_META(MRES_IGNORED);
+	return {KHook::Action::Ignore};
 }
 
 // Update cd and uses of all held items

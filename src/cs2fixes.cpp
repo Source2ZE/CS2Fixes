@@ -393,6 +393,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	g_pPanoramaVoteHandler = new CPanoramaVoteHandler();
 	g_pEWHandler = new CEWHandler();
 
+	g_pEWHandler->CreateHooks();
 	RegisterWeaponCommands();
 
 	// Check hide distance
@@ -532,8 +533,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	if (g_pEWHandler)
 	{
-		g_pEWHandler->RemoveAllUseHooks();
-		g_pEWHandler->RemoveAllTriggers();
+		g_pEWHandler->RemoveHooks();
 		delete g_pEWHandler;
 	}
 

@@ -25,6 +25,7 @@
 #include "entity/ccsplayerpawn.h"
 #include "eventlistener.h"
 #include "gamesystem.h"
+#include "khook.hpp"
 #include "vendor/nlohmann/json_fwd.hpp"
 
 using ordered_json = nlohmann::ordered_json;
@@ -202,20 +203,10 @@ public:
 	{
 		bConfigLoaded = false;
 		m_bHudTicking = false;
-
-		iBaseBtnUseHookId = -1;
-		iPhysboxUseHookId = -1;
-		iPhysicalBtnUseHookId = -1;
-		iRotBtnUseHookId = -1;
-		iMomRotBtnUseHookId = -1;
-
-		for (int i = 0; i < 3; i++)
-		{
-			iTriggerTeleportTouchHooks[i] = -1;
-			iTriggerMultipleTouchHooks[i] = -1;
-			iTriggerOnceTouchHooks[i] = -1;
-		}
 	}
+
+	void CreateHooks();
+	void RemoveHooks();
 
 	bool bConfigLoaded;
 	bool IsConfigLoaded() { return bConfigLoaded; }
@@ -235,10 +226,8 @@ public:
 
 	void RegisterHandler(CBaseEntity* pEnt);
 	bool RegisterTrigger(CBaseEntity* pEnt);
-	void AddTouchHook(CBaseEntity* pEnt);
-	void Hook_Touch(CBaseEntity* pOther);
+	KHook::Return<void> Hook_Touch(CBaseEntity* pThis, CBaseEntity* pOther);
 	bool RemoveTrigger(CBaseEntity* pEnt);
-	void RemoveAllTriggers();
 	void RemoveHandler(CBaseEntity* pEnt);
 	void ResetAllClantags();
 
@@ -248,25 +237,14 @@ public:
 	void PlayerDrop(EWDropReason reason, int iItemInstance, CCSPlayerController* pController);
 	void Transfer(CCSPlayerController* pCaller, int iItemInstance, CHandle<CCSPlayerController> hReceiver);
 
-	void AddUseHook(CBaseEntity* pEnt);
-	void RemoveUseHook(CBaseEntity* pEnt);
-	void RemoveAllUseHooks();
-	void Hook_Use(InputData_t* pInput);
+	void RemoveUseEntity(CBaseEntity* pEnt);
+	KHook::Return<void> Hook_Use(CBaseEntity* pThis, InputData_t* pInput);
 
 	std::map<uint32, std::shared_ptr<EWItem>> mapItemConfig; /* items defined in the config */
 	std::vector<std::shared_ptr<EWItemInstance>> vecItems;	 /* all items found spawned */
 
 	std::vector<CHandle<CBaseEntity>> vecHookedTriggers;
-	int iTriggerTeleportTouchHooks[3];
-	int iTriggerMultipleTouchHooks[3];
-	int iTriggerOnceTouchHooks[3];
-
 	std::vector<CHandle<CBaseEntity>> vecUseHookedEntities;
-	int iBaseBtnUseHookId;
-	int iPhysboxUseHookId;
-	int iPhysicalBtnUseHookId;
-	int iRotBtnUseHookId;
-	int iMomRotBtnUseHookId;
 
 	bool m_bHudTicking;
 
