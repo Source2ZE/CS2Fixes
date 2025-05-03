@@ -67,4 +67,6 @@ public:
 	{
 		return reinterpret_cast<CCSPlayer_CameraServices*>(m_pCameraServices());
 	}
+
+	void FixPlayerModelAnimations();
 };
