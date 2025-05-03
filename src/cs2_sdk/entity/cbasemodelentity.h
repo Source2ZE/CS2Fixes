@@ -34,10 +34,7 @@ public:
 	SCHEMA_FIELD(float, m_flDissolveStartTime)
 	SCHEMA_FIELD(Vector, m_vecViewOffset)
 
-	void SetModel(const char* szModel)
-	{
-		addresses::CBaseModelEntity_SetModel(this, szModel);
-	}
+	void SetModel(const char* szModel);
 
 	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup)
 	{
