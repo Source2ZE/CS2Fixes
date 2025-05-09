@@ -125,19 +125,24 @@ public:
 	bool m_bShouldSpark;	  // 0x6d | 109
 
 private:
-	[[maybe_unused]] uint8_t _x66[0x2]; // 0x66
+	[[maybe_unused]] uint8_t _x6e[0x2]; // 0x6e
 
 public:
 	float m_flDamageAbsorbed;					// 0x70 | 112
 	CGameTrace* m_pTrace;						// 0x78 | 120
 	TakeDamageFlags_t m_nDamageFlags;			// 0x80 | 128
-	int32_t m_nNumObjectsPenetrated;			// 0x88 | 136
-	float m_flFriendlyFireDamageReductionRatio; // 0x8c | 140
-	void* m_hScriptInstance;					// 0x90 | 144
-	AttackerInfo_t m_AttackerInfo;				// 0x98 | 152
-	bool m_bInTakeDamageFlow;					// 0xac | 172
+	int32_t m_nNumObjectsPenetrated;			// 0x84 | 132
+	float m_flFriendlyFireDamageReductionRatio; // 0x88 | 136
 
 private:
-	[[maybe_unused]] int32_t m_nUnknown2; // 0xa0 | 176
+	[[maybe_unused]] uint8_t _x8c[0x58]; // 0x8c
+
+public:
+	void* m_hScriptInstance;	   // 0xe8 | 232
+	AttackerInfo_t m_AttackerInfo; // 0xf0 | 240
+	bool m_bInTakeDamageFlow;	   // 0x104 | 260
+
+private:
+	[[maybe_unused]] int32_t m_nUnknown2; // 0x108 | 264
 };
-static_assert(sizeof(CTakeDamageInfo) == 184);
+static_assert(sizeof(CTakeDamageInfo) == 272);
