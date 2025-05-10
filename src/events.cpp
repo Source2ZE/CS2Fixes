@@ -277,9 +277,6 @@ GAME_EVENT_F(round_start)
 
 GAME_EVENT_F(round_end)
 {
-	if (g_cvarVoteManagerEnable.Get())
-		g_pVoteManager->OnRoundEnd();
-
 	if (!g_cvarEnableTopDefender.Get() || !GetGlobals())
 		return;
 
