@@ -67,7 +67,7 @@ public:
 	void VoteExtendHandler(YesNoVoteAction action, int param1, int param2);
 	bool VoteExtendEndCallback(YesNoVoteInfo info);
 	void StartExtendVote(int iCaller);
-	void OnRoundEnd();
+	void OnIntermission();
 	bool CheckRTVStatus();
 
 	ERTVState GetRTVState() { return m_RTVState; }

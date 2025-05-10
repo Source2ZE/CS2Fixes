@@ -1005,6 +1005,9 @@ void CS2Fixes::Hook_GoToIntermission(bool bAbortedMatch)
 	if (!g_pMapVoteSystem->IsIntermissionAllowed())
 		RETURN_META(MRES_SUPERCEDE);
 
+	if (g_cvarVoteManagerEnable.Get())
+		g_pVoteManager->OnIntermission();
+
 	RETURN_META(MRES_IGNORED);
 }
 
