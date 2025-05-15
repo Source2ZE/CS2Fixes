@@ -1028,6 +1028,135 @@ CON_COMMAND_CHAT_FLAGS(setpos, "<x y z> - Set your origin", ADMFLAG_CHEATS)
 	PrintSingleAdminAction(player->GetPlayerName(), szOrigin, "teleported to");
 }
 
+CON_COMMAND_CHAT_FLAGS(strip, "<name> - Strip all the weapons/items of a player", ADMFLAG_CHEATS)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !strip <name>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+	ETargetType nType;
+
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_SPECTATOR, nType))
+		return;
+
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		CCSPlayerPawn* pPawn = pTarget->GetPlayerPawn();
+
+		if (!pPawn)
+			continue;
+
+		CCSPlayer_ItemServices* pItemServices = pPawn->m_pItemServices();
+
+		if (!pItemServices)
+			return;
+
+		pItemServices->StripPlayerWeapons(true);
+
+		if (iNumClients == 1)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "stripped", "");
+	}
+
+	if (iNumClients > 1)
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "stripped", "");
+}
+
+CON_COMMAND_CHAT_FLAGS(give, "<name> <weapon> - Give a weapon/item to a player", ADMFLAG_CHEATS)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !give <name> <weapon>");
+		return;
+	}
+
+	const WeaponInfo_t* pWeaponInfo = FindWeaponInfoByClassCaseInsensitive(args[2]);
+
+	if (!pWeaponInfo)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not a valid weapon class.", args[2]);
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+	ETargetType nType;
+
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_SPECTATOR | NO_TERRORIST, nType))
+		return;
+
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+
+	char szAction[64];
+	V_snprintf(szAction, sizeof(szAction), "given %s to", args[2]);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		CCSPlayerPawn* pPawn = pTarget->GetPlayerPawn();
+
+		if (!pPawn)
+			continue;
+
+		CCSPlayer_ItemServices* pItemServices = pPawn->m_pItemServices;
+		CCSPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices;
+
+		if (!pItemServices || !pWeaponServices)
+			return;
+
+		if (pWeaponInfo->m_eSlot == GEAR_SLOT_RIFLE || pWeaponInfo->m_eSlot == GEAR_SLOT_PISTOL)
+		{
+			CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
+
+			FOR_EACH_VEC(*weapons, i)
+			{
+				CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+
+				if (!weapon)
+					continue;
+
+				if (weapon->GetWeaponVData()->m_GearSlot() == pWeaponInfo->m_eSlot)
+				{
+					pWeaponServices->DropWeapon(weapon);
+					break;
+				}
+			}
+		}
+
+		CBasePlayerWeapon* pWeapon = pItemServices->GiveNamedItemAws(pWeaponInfo->m_pClass);
+
+		if (!pWeapon)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to give %s, something went wrong.", pWeaponInfo->m_pClass);
+			return;
+		}
+
+		// If the weapon spawn goes through AWS, it needs to be manually selected because it spawns dropped in-world due to ZR enforcing mp_weapons_allow_* cvars against T's
+		if (pWeaponInfo->m_eSlot == GEAR_SLOT_RIFLE || pWeaponInfo->m_eSlot == GEAR_SLOT_PISTOL)
+			pWeaponServices->SelectItem(pWeapon);
+
+		if (iNumClients == 1)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), szAction, "");
+	}
+
+	if (iNumClients > 1)
+		PrintMultiAdminAction(nType, pszCommandPlayerName, szAction, "");
+}
+
 #ifdef _DEBUG
 CON_COMMAND_CHAT_FLAGS(add_dc, "<name> <SteamID 64> <IP Address> - Adds a fake player to disconnected player list for testing", ADMFLAG_GENERIC)
 {
