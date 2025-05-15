@@ -52,6 +52,7 @@ extern IGameEventSystem* g_gameEventSystem;
 extern CGameEntitySystem* g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
+extern CConVar<CUtlString> g_cvarFlashLightAttachment;
 
 CConVar<bool> g_cvarEnableCommands("cs2f_commands_enable", FCVAR_NONE, "Whether to enable chat commands", false);
 CConVar<bool> g_cvarEnableAdminCommands("cs2f_admin_commands_enable", FCVAR_NONE, "Whether to enable admin chat commands", false);
@@ -800,10 +801,8 @@ CON_COMMAND_CHAT(fl, "- Flashlight")
 
 	pLight->DispatchSpawn(pKeyValues);
 
-	variant_t val("!player");
-	pLight->AcceptInput("SetParent", &val);
-	variant_t val2("clip_limit");
-	pLight->AcceptInput("SetParentAttachmentMaintainOffset", &val2);
+	pLight->SetParent(pPawn);
+	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
 }
 
 CON_COMMAND_CHAT(say, "<message> - Say something using console")
