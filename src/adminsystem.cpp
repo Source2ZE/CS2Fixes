@@ -395,53 +395,6 @@ CON_COMMAND_CHAT_FLAGS(bring, "<name> - Bring a player", ADMFLAG_SLAY)
 		PrintMultiAdminAction(nType, player->GetPlayerName(), "brought");
 }
 
-CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADMFLAG_SLAY)
-{
-	if (args.ArgC() < 3)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !setteam <name> <team (0-3)>");
-		return;
-	}
-
-	int iTeam = V_StringToInt32(args[2], -1);
-
-	if (iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid team specified, range is 0-3.");
-		return;
-	}
-
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
-	ETargetType nType;
-
-	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
-		return;
-
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
-
-	constexpr const char* teams[] = {"none", "spectators", "terrorists", "counter-terrorists"};
-
-	char szAction[64];
-	V_snprintf(szAction, sizeof(szAction), " to %s", teams[iTeam]);
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
-
-		if (!pTarget)
-			continue;
-
-		pTarget->SwitchTeam(iTeam);
-
-		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "moved", szAction);
-	}
-
-	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
-}
-
 CON_COMMAND_CHAT_FLAGS(noclip, "[name] - Toggle noclip on a player", ADMFLAG_CHEATS)
 {
 	int iNumClients = 0;
@@ -1094,6 +1047,53 @@ CON_COMMAND_CHAT_FLAGS(add_dc, "<name> <SteamID 64> <IP Address> - Adds a fake p
 	uint64 iSteamID = std::stoll(strSteamID);
 
 	g_pAdminSystem->AddDisconnectedPlayer(args[1], iSteamID, args[3]);
+}
+
+CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADMFLAG_CHEATS)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !setteam <name> <team (0-3)>");
+		return;
+	}
+
+	int iTeam = V_StringToInt32(args[2], -1);
+
+	if (iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid team specified, range is 0-3.");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+	ETargetType nType;
+
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
+		return;
+
+	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+
+	constexpr const char* teams[] = {"none", "spectators", "terrorists", "counter-terrorists"};
+
+	char szAction[64];
+	V_snprintf(szAction, sizeof(szAction), " to %s", teams[iTeam]);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		pTarget->SwitchTeam(iTeam);
+
+		if (iNumClients == 1)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "moved", szAction);
+	}
+
+	if (iNumClients > 1)
+		PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
 }
 #endif
 
