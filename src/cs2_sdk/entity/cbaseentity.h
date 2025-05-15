@@ -154,6 +154,7 @@ public:
 	SCHEMA_FIELD(CUtlString, m_sUniqueHammerID);
 	SCHEMA_FIELD(CUtlSymbolLarge, m_target);
 	SCHEMA_FIELD(CUtlSymbolLarge, m_iGlobalname);
+	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hOwnerEntity)
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 
