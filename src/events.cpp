@@ -140,8 +140,6 @@ GAME_EVENT_F(player_spawn)
 	if (pPlayer)
 		pPlayer->SetMaxSpeed(1.f);
 
-	if (g_cvarEnableZR.Get())
-		ZR_OnPlayerSpawn(pController);
 
 	if (pController->IsConnected())
 		pController->GetZEPlayer()->OnSpawn();
