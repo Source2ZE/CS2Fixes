@@ -111,6 +111,8 @@ GAME_EVENT_F(round_prestart)
 	while ((pShake = UTIL_FindEntityByClassname(pShake, "env_shake")))
 		pShake->AcceptInput("StopShake");
 
+	if (g_cvarEnableZR.Get())
+		ZR_OnRoundPrestart(pEvent);
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_RoundPreStart();
@@ -140,6 +142,8 @@ GAME_EVENT_F(player_spawn)
 	if (pPlayer)
 		pPlayer->SetMaxSpeed(1.f);
 
+	if (g_cvarEnableZR.Get())
+		ZR_OnPlayerSpawn(pController);
 
 	if (pController->IsConnected())
 		pController->GetZEPlayer()->OnSpawn();
@@ -215,6 +219,8 @@ GAME_EVENT_F(player_hurt)
 
 GAME_EVENT_F(player_death)
 {
+	if (g_cvarEnableZR.Get())
+		ZR_OnPlayerDeath(pEvent);
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_PlayerDeath(pEvent);
@@ -243,7 +249,6 @@ GAME_EVENT_F(round_start)
 {
 	g_pPanoramaVoteHandler->Init();
 
-	if (g_cvarEnableZR.Get())
 		ZR_OnRoundStart(pEvent);
 
 	if (g_cvarEnableLeader.Get())
@@ -320,10 +325,14 @@ GAME_EVENT_F(round_end)
 
 GAME_EVENT_F(round_freeze_end)
 {
+	if (g_cvarEnableZR.Get())
+		ZR_OnRoundFreezeEnd(pEvent);
 }
 
 GAME_EVENT_F(round_time_warning)
 {
+	if (g_cvarEnableZR.Get())
+		ZR_OnRoundTimeWarning(pEvent);
 }
 
 GAME_EVENT_F(bullet_impact)

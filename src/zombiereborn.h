@@ -287,4 +287,17 @@ extern CZRPlayerClassManager* g_pZRPlayerClassManager;
 extern CConVar<bool> g_cvarEnableZR;
 extern EZRRoundState g_ZRRoundState;
 
+void ZR_OnLevelInit();
+void ZR_OnRoundPrestart(IGameEvent* pEvent);
 void ZR_OnRoundStart(IGameEvent* pEvent);
+void ZR_OnPlayerSpawn(CCSPlayerController* pController);
+void ZR_OnPlayerTakeDamage(CCSPlayerPawn* pVictimPawn, const CTakeDamageInfo* pInfo, const int32 damage);
+void ZR_OnPlayerDeath(IGameEvent* pEvent);
+void ZR_OnRoundFreezeEnd(IGameEvent* pEvent);
+void ZR_OnRoundTimeWarning(IGameEvent* pEvent);
+bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo* pInfo, CCSPlayerPawn* pVictimPawn);
+bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
+void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID);
+void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid);
+void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand& args);
+void ZR_Precache(IEntityResourceManifest* pResourceManifest);
