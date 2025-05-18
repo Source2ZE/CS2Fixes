@@ -794,12 +794,6 @@ void CS2Fixes::Hook_ClientCommand(CPlayerSlot slot, const CCommand& args)
 		else
 			RETURN_META(MRES_SUPERCEDE);
 	}
-
-	if (g_cvarEnableZR.Get() && slot != -1 && !V_strncmp(args.Arg(0), "jointeam", 8))
-	{
-		ZR_Hook_ClientCommand_JoinTeam(slot, args);
-		RETURN_META(MRES_SUPERCEDE);
-	}
 }
 
 void CS2Fixes::Hook_ClientSettingsChanged(CPlayerSlot slot)
@@ -841,8 +835,6 @@ void CS2Fixes::Hook_ClientPutInServer(CPlayerSlot slot, char const* pszName, int
 
 	g_playerManager->OnClientPutInServer(slot);
 
-	if (g_cvarEnableZR.Get())
-		ZR_Hook_ClientPutInServer(slot, pszName, type, xuid);
 }
 
 void CS2Fixes::Hook_ClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID)
@@ -1017,8 +1009,6 @@ bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer* pInfoContainer)
 {
 	CCSPlayerPawn* pPawn = META_IFACEPTR(CCSPlayerPawn);
 
-	if (g_cvarEnableZR.Get() && ZR_Hook_OnTakeDamage_Alive(pInfoContainer->pInfo, pPawn))
-		RETURN_META_VALUE(MRES_SUPERCEDE, false);
 
 	// This is a shit place to be doing this, but player_death event is too late and there is no pre-hook alternative
 	// Check if this is going to kill the player
@@ -1173,8 +1163,6 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 	g_playerManager->SetupInfiniteAmmo();
 	g_pMapVoteSystem->OnLevelInit(pMapName);
 
-	if (g_cvarEnableZR.Get())
-		ZR_OnLevelInit();
 
 	CCSPlayer_ItemServices::ResetAwsProcessing();
 
