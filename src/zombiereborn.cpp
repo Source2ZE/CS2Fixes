@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -1527,7 +1527,7 @@ void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLar
 	if (!relay || pThis != relay->m_pEntity)
 		return;
 
-	ClientPrintAll(HUD_PRINTCENTER, "核爆");
+	ClientPrintAll(HUD_PRINTCENTER, ">>> 核爆 <<<");
 }
 
 void SpawnPlayer(CCSPlayerController* pController)
