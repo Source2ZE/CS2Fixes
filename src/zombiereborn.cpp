@@ -1527,16 +1527,7 @@ void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLar
 	if (!relay || pThis != relay->m_pEntity)
 		return;
 
-	if (!V_strcasecmp(inputName, "Trigger"))
-		ToggleRespawn();
-	else if (!V_strcasecmp(inputName, "Enable") && !g_bRespawnEnabled)
-		ToggleRespawn(true, true);
-	else if (!V_strcasecmp(inputName, "Disable") && g_bRespawnEnabled)
-		ToggleRespawn(true, false);
-	else
-		return;
-
-	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Respawning is %s!", g_bRespawnEnabled ? "enabled" : "disabled");
+	ClientPrintAll(HUD_PRINTCENTER, "核爆");
 }
 
 void SpawnPlayer(CCSPlayerController* pController)
