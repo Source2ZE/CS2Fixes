@@ -1,5 +1,5 @@
 # CS2Fixes
-
+独立修改版本
 CS2Fixes is a Metamod plugin with fixes and features aimed but not limited to zombie escape. This project also serves as a good example and help for source2mod and other developers.
 
 ## Installation
