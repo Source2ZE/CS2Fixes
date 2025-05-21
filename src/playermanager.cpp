@@ -206,8 +206,17 @@ void ZEPlayer::SpawnFlashLight()
 
 	pLight->DispatchSpawn(pKeyValues);
 
-	pLight->SetParent(pPawn);
-	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
+	// Use custom viewmodel if possible
+	CBaseViewModel* pViewModel = pPawn->m_pViewModelServices() ? GetOrCreateCustomViewModel(pPawn) : nullptr;
+	if (!pViewModel)
+	{
+		pLight->SetParent(pPawn);
+		pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
+	}
+	else
+	{
+		pLight->SetParent(pViewModel);
+	}
 
 	SetFlashLight(pLight);
 }
