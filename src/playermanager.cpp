@@ -808,11 +808,11 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	ResetPlayerFlags(slot.Get());
 
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
-	g_pMapVoteSystem->ClearInvalidNominations();
 
 	// One tick delay, to ensure player count decrements
 	new CTimer(0.01f, false, true, []() {
 		g_pVoteManager->CheckRTVStatus();
+		g_pMapVoteSystem->ClearInvalidNominations();
 		return -1.0f;
 	});
 
