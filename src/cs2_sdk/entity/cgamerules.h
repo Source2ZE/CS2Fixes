@@ -71,6 +71,8 @@ public:
 	SCHEMA_FIELD(bool, m_bFreezePeriod)
 	SCHEMA_FIELD_POINTER(CUtlVector<SpawnPoint*>, m_CTSpawnPoints)
 	SCHEMA_FIELD_POINTER(CUtlVector<SpawnPoint*>, m_TerroristSpawnPoints)
+	SCHEMA_FIELD(int, m_iMaxNumTerrorists)
+	SCHEMA_FIELD(int, m_iMaxNumCTs)
 
 	void TerminateRound(float flDelay, CSRoundEndReason reason)
 	{

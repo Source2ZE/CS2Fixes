@@ -963,6 +963,13 @@ void ToggleRespawn(bool force = false, bool value = false)
 
 void ZR_OnRoundPrestart(IGameEvent* pEvent)
 {
+	// Gamerules may not be available earlier, so easiest to just enforce this here
+	if (g_pGameRules)
+	{
+		g_pGameRules->m_iMaxNumCTs = 64;
+		g_pGameRules->m_iMaxNumTerrorists = 64;
+	}
+
 	g_ZRRoundState = EZRRoundState::ROUND_START;
 	ToggleRespawn(true, true);
 
