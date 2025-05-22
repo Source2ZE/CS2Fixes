@@ -480,7 +480,7 @@ void EWItem::ParseColor(std::string value)
 	else if (value == "darkred")
 	{
 		V_strcpy(sChatColor, "\x02");
-		colorGlow = Color(255, 0, 0, 255);
+		colorGlow = Color(220, 0, 0, 255);
 	}
 	else if (value == "team")
 	{
@@ -490,17 +490,17 @@ void EWItem::ParseColor(std::string value)
 	else if (value == "green")
 	{
 		V_strcpy(sChatColor, "\x04");
-		colorGlow = Color(60, 255, 60, 255);
+		colorGlow = Color(30, 255, 30, 255);
 	}
 	else if (value == "lightgreen")
 	{
 		V_strcpy(sChatColor, "\x05");
-		colorGlow = Color(188, 255, 145, 255);
+		colorGlow = Color(178, 255, 145, 255);
 	}
 	else if (value == "olive")
 	{
 		V_strcpy(sChatColor, "\x06");
-		colorGlow = Color(165, 255, 73, 255);
+		colorGlow = Color(184, 220, 63, 255);
 	}
 	else if (value == "red")
 	{
@@ -515,7 +515,7 @@ void EWItem::ParseColor(std::string value)
 	else if (value == "yellow")
 	{
 		V_strcpy(sChatColor, "\x09");
-		colorGlow = Color(250, 250, 55, 255);
+		colorGlow = Color(250, 250, 25, 255);
 	}
 	else if (value == "silver")
 	{
@@ -525,12 +525,12 @@ void EWItem::ParseColor(std::string value)
 	else if (value == "blue")
 	{
 		V_strcpy(sChatColor, "\x0B");
-		colorGlow = Color(94, 152, 216, 255);
+		colorGlow = Color(114, 188, 255, 255);
 	}
 	else if (value == "darkblue")
 	{
 		V_strcpy(sChatColor, "\x0C");
-		colorGlow = Color(75, 100, 255, 255);
+		colorGlow = Color(45, 75, 255, 255);
 	}
 	// \x0D is the same as \x0A
 	else if (value == "purple" || value == "pink")
@@ -541,12 +541,12 @@ void EWItem::ParseColor(std::string value)
 	else if (value == "red2")
 	{
 		V_strcpy(sChatColor, "\x0F");
-		colorGlow = Color(230, 75, 75, 255);
+		colorGlow = Color(230, 120, 120, 255);
 	}
 	else if (value == "orange" || value == "gold")
 	{
 		V_strcpy(sChatColor, "\x10");
-		colorGlow = Color(225, 175, 56, 255);
+		colorGlow = Color(235, 145, 46, 255);
 	}
 }
 
