@@ -75,8 +75,8 @@ SH_DECL_MANUALHOOK1_void(CTriggerMultiple_EndTouch, 0, 0, 0, CBaseEntity*);
 CConVar<bool> g_cvarEnableEntWatch("entwatch_enable", FCVAR_NONE, "INCOMPATIBLE WITH CS#. Whether to enable EntWatch features", false);
 CConVar<bool> g_cvarEnableFiltering("entwatch_auto_filter", FCVAR_NONE, "Whether to automatically block non-item holders from triggering uses", true);
 CConVar<bool> g_cvarUseEntwatchClantag("entwatch_clantag", FCVAR_NONE, "Whether to set item holder's clantag and set score", true);
-
 CConVar<int> g_cvarItemHolderScore("entwatch_score", FCVAR_NONE, "Score to give item holders (0 = dont change score at all) Requires entwatch_clantag 1", 9999, true, 0, false, 0);
+CConVar<bool> g_cvarItemDroppedGlow("entwatch_glow", FCVAR_NONE, "Whether to make dropped items glow", true);
 
 void EWItemHandler::SetDefaultValues()
 {
@@ -473,36 +473,81 @@ void EWItem::SetDefaultValues()
 void EWItem::ParseColor(std::string value)
 {
 	if (value == "white" || value == "default")
+	{
 		V_strcpy(sChatColor, "\x01");
+		colorGlow = Color(255, 255, 255, 255);
+	}
 	else if (value == "darkred")
+	{
 		V_strcpy(sChatColor, "\x02");
+		colorGlow = Color(255, 0, 0, 255);
+	}
 	else if (value == "team")
+	{
 		V_strcpy(sChatColor, "\x03");
+		colorGlow = Color(184, 130, 242, 255);
+	}
 	else if (value == "green")
+	{
 		V_strcpy(sChatColor, "\x04");
+		colorGlow = Color(60, 255, 60, 255);
+	}
 	else if (value == "lightgreen")
+	{
 		V_strcpy(sChatColor, "\x05");
+		colorGlow = Color(188, 255, 145, 255);
+	}
 	else if (value == "olive")
+	{
 		V_strcpy(sChatColor, "\x06");
+		colorGlow = Color(165, 255, 73, 255);
+	}
 	else if (value == "red")
+	{
 		V_strcpy(sChatColor, "\x07");
+		colorGlow = Color(255, 65, 65, 255);
+	}
 	else if (value == "gray" || value == "grey")
+	{
 		V_strcpy(sChatColor, "\x08");
+		colorGlow = Color(175, 180, 180, 255);
+	}
 	else if (value == "yellow")
+	{
 		V_strcpy(sChatColor, "\x09");
+		colorGlow = Color(250, 250, 55, 255);
+	}
 	else if (value == "silver")
+	{
 		V_strcpy(sChatColor, "\x0A");
+		colorGlow = Color(165, 180, 210, 255);
+	}
 	else if (value == "blue")
+	{
 		V_strcpy(sChatColor, "\x0B");
+		colorGlow = Color(94, 152, 216, 255);
+	}
 	else if (value == "darkblue")
+	{
 		V_strcpy(sChatColor, "\x0C");
+		colorGlow = Color(75, 100, 255, 255);
+	}
 	// \x0D is the same as \x0A
 	else if (value == "purple" || value == "pink")
+	{
 		V_strcpy(sChatColor, "\x0E");
+		colorGlow = Color(210, 43, 229, 255);
+	}
 	else if (value == "red2")
+	{
 		V_strcpy(sChatColor, "\x0F");
+		colorGlow = Color(230, 75, 75, 255);
+	}
 	else if (value == "orange" || value == "gold")
+	{
 		V_strcpy(sChatColor, "\x10");
+		colorGlow = Color(225, 175, 56, 255);
+	}
 }
 
 EWItem::EWItem(std::shared_ptr<EWItem> pItem)
@@ -512,6 +557,7 @@ EWItem::EWItem(std::shared_ptr<EWItem> pItem)
 	szShortName = pItem->szShortName;
 	szHammerid = pItem->szHammerid;
 	V_strcpy(sChatColor, pItem->sChatColor);
+	colorGlow = pItem->colorGlow;
 	bShowPickup = pItem->bShowPickup;
 	bShowHud = pItem->bShowHud;
 	transfer = pItem->transfer;
@@ -740,6 +786,8 @@ void EWItemInstance::Pickup(int slot)
 		}
 	}
 
+	EndGlow();
+
 	if (bShowPickup)
 		ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05has picked up %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
 }
@@ -849,6 +897,10 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 			break;
 	}
 
+	// Start glowing
+	if (g_cvarItemDroppedGlow.Get() && reason != EWDropReason::Deleted && bAllowDrop)
+		StartGlow();
+
 	iOwnerSlot = -1;
 }
 
@@ -875,6 +927,38 @@ std::string EWItemInstance::GetHandlerStateText()
 	}
 	// Message("%s Item handler text: %s\n", szItemName.c_str(), sText.c_str());
 	return sText;
+}
+
+void EWItemInstance::StartGlow()
+{
+	CBasePlayerWeapon* pItemWeapon = (CBasePlayerWeapon*)g_pEntitySystem->GetEntityInstance((CEntityIndex)iWeaponEnt);
+	if (!pItemWeapon)
+	{
+		Message("Error getting weapon entity while creating item glow.");
+		return;
+	}
+
+	const char* pszModelName = pItemWeapon->GetModelName();
+	CBaseModelEntity* pModelGlow = CreateEntityByName<CBaseModelEntity>("prop_physics");
+	CEntityKeyValues* pKeyValuesGlow = new CEntityKeyValues();
+	pKeyValuesGlow->SetString("model", pszModelName);
+	pKeyValuesGlow->SetInt64("spawnflags", 256U);
+	pKeyValuesGlow->SetColor("glowcolor", colorGlow);
+	pKeyValuesGlow->SetInt("glowrange", 1000);
+	pKeyValuesGlow->SetInt("glowteam", -1);
+	pKeyValuesGlow->SetInt("glowstate", 3);
+	pKeyValuesGlow->SetInt("renderamt", 1);
+	pModelGlow->DispatchSpawn(pKeyValuesGlow);
+
+	pModelGlow->AcceptInput("FollowEntity", "!activator", pItemWeapon);
+	m_hGlowModel.Set(pModelGlow);
+}
+
+void EWItemInstance::EndGlow()
+{
+	CBaseModelEntity* pGlowModel = m_hGlowModel.Get();
+	if (pGlowModel)
+		addresses::UTIL_Remove(pGlowModel);
 }
 
 void CEWHandler::UnLoadConfig()
