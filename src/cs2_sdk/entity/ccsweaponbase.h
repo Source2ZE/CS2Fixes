@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "cbaseentity.h"
+#include "cbasemodelentity.h"
 
 extern CGlobalVars* GetGlobals();
 
@@ -61,7 +61,7 @@ public:
 	SCHEMA_FIELD(CEconItemView, m_Item)
 };
 
-class CEconEntity : public CBaseEntity
+class CEconEntity : public CBaseModelEntity
 {
 public:
 	DECLARE_SCHEMA_CLASS(CEconEntity)

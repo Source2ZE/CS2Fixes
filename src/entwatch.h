@@ -136,6 +136,7 @@ struct EWItem
 	std::string szShortName; /* Name to show on hud/scoreboard */
 	std::string szHammerid;	 /* Hammerid of the weapon */
 	char sChatColor[2];
+	Color colorGlow;
 	bool bShowPickup;										 /* Whether to show pickup/drop messages in chat */
 	bool bShowHud;											 /* Whether to show this item on hud/scoreboard */
 	EWAutoConfigOption transfer;							 /* Can this item be transferred */
@@ -161,6 +162,8 @@ struct EWItemInstance : EWItem /* Current instance of defined items */
 	bool bHasThisClantag;
 	int iTeamNum;
 	std::string sLastOwnerName; // For etransfer info
+	bool bShouldGlow;
+	CHandle<CBaseModelEntity> m_hGlowModel;
 
 public:
 	EWItemInstance(int iWeapon, std::shared_ptr<EWItem> pItem) :
@@ -171,7 +174,8 @@ public:
 		bAllowDrop(true),
 		sClantag(""),
 		bHasThisClantag(false),
-		iTeamNum(CS_TEAM_NONE){};
+		iTeamNum(CS_TEAM_NONE),
+		bShouldGlow(false) {};
 	bool RegisterHandler(CBaseEntity* pEnt, int iHandlerTemplateNum);
 	bool RemoveHandler(CBaseEntity* pEnt);
 	int FindHandlerByEntIndex(int indexToFind);
@@ -180,6 +184,8 @@ public:
 	void Pickup(int slot);
 	void Drop(EWDropReason reason, CCSPlayerController* pController);
 	std::string GetHandlerStateText();
+	void StartGlow();
+	void EndGlow();
 };
 
 struct ETransferInfo
