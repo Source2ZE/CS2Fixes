@@ -169,6 +169,7 @@ CConVar<bool> g_cvarFlashLightTransmitOthers("cs2f_flashlight_transmit_others", 
 CConVar<float> g_cvarFlashLightBrightness("cs2f_flashlight_brightness", FCVAR_NONE, "How bright should flashlights be", 1.0f);
 CConVar<float> g_cvarFlashLightDistance("cs2f_flashlight_distance", FCVAR_NONE, "How far flashlights should be from the player's head", 54.0f); // The minimum distance such that an awp wouldn't block the light
 CConVar<Color> g_cvarFlashLightColor("cs2f_flashlight_color", FCVAR_NONE, "What color to use for flashlights", Color(255, 255, 255));
+CConVar<bool> g_cvarFlashLightUseAttachment("cs2f_flashlight_use_attachment", FCVAR_NONE, "Whether to parent flashlights to an attachment or a viewmodel (1=use attachment, 0=use viewmodel)", false);
 CConVar<CUtlString> g_cvarFlashLightAttachment("cs2f_flashlight_attachment", FCVAR_NONE, "Which attachment to parent a flashlight to. If the player model is not properly setup, you might have to use clip_limit here instead", "axis_of_intent");
 
 void ZEPlayer::SpawnFlashLight()
@@ -177,6 +178,13 @@ void ZEPlayer::SpawnFlashLight()
 		return;
 
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)CCSPlayerController::FromSlot(GetPlayerSlot())->GetPawn();
+
+	// Ensure custom viewmodel exists if needed
+	if (!g_cvarFlashLightUseAttachment.Get())
+	{
+		if (!pPawn->m_pViewModelServices() || !GetOrCreateCustomViewModel(pPawn))
+			return;
+	}
 
 	Vector origin = pPawn->GetAbsOrigin();
 	Vector forward;
@@ -206,8 +214,19 @@ void ZEPlayer::SpawnFlashLight()
 
 	pLight->DispatchSpawn(pKeyValues);
 
-	pLight->SetParent(pPawn);
-	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
+	if (g_cvarFlashLightUseAttachment.Get())
+	{
+		pLight->SetParent(pPawn);
+		pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
+	}
+	else
+	{
+		CBaseViewModel* pViewModel = GetOrCreateCustomViewModel(pPawn);
+		if (!pViewModel)
+			return;
+		
+		pLight->SetParent(pViewModel);
+	}
 
 	SetFlashLight(pLight);
 }
