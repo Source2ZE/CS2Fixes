@@ -76,7 +76,31 @@ CConVar<bool> g_cvarEnableEntWatch("entwatch_enable", FCVAR_NONE, "INCOMPATIBLE 
 CConVar<bool> g_cvarEnableFiltering("entwatch_auto_filter", FCVAR_NONE, "Whether to automatically block non-item holders from triggering uses", true);
 CConVar<bool> g_cvarUseEntwatchClantag("entwatch_clantag", FCVAR_NONE, "Whether to set item holder's clantag and set score", true);
 CConVar<int> g_cvarItemHolderScore("entwatch_score", FCVAR_NONE, "Score to give item holders (0 = dont change score at all) Requires entwatch_clantag 1", 9999, true, 0, false, 0);
-CConVar<bool> g_cvarItemDroppedGlow("entwatch_glow", FCVAR_NONE, "Whether to make dropped items glow", true);
+
+void ItemGlowDistanceChanged(CConVar<int>* ref, CSplitScreenSlot nSlot, const int* pNewValue, const int* pOldValue)
+{
+	if (!g_pEWHandler || !g_pEWHandler->IsConfigLoaded() || g_pEWHandler->vecItems.size() < 1)
+		return;
+
+	int newValue = *pNewValue;
+	for (int i = 0; i < g_pEWHandler->vecItems.size(); i++)
+	{
+		std::shared_ptr<EWItemInstance> item = g_pEWHandler->vecItems[i];
+		if (item->m_hGlowModel.Get())
+		{
+			CBaseModelEntity* pGlow = item->m_hGlowModel.Get();
+			if (newValue > 0)
+				pGlow->m_Glow().m_nGlowRange = newValue;
+			else
+				addresses::UTIL_Remove(pGlow);
+		}
+		else if (item->bShouldGlow && newValue > 0)
+		{
+			item->StartGlow();
+		}
+	}
+}
+CConVar<int> g_cvarItemDroppedGlow("entwatch_glow", FCVAR_NONE, "Distance that dropped item weapon glow will be visible (0 = disabled)", 1000, true, 0, false, 0, ItemGlowDistanceChanged);
 
 void EWItemHandler::SetDefaultValues()
 {
@@ -786,6 +810,7 @@ void EWItemInstance::Pickup(int slot)
 		}
 	}
 
+	bShouldGlow = false;
 	EndGlow();
 
 	if (bShowPickup)
@@ -800,6 +825,9 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 		iOwnerSlot = -1;
 		return;
 	}
+
+	if (bAllowDrop)
+		bShouldGlow = true;
 
 	if (g_cvarUseEntwatchClantag.Get() && bShowHud && bHasThisClantag)
 	{
@@ -893,12 +921,14 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 			}
 			break;
 		case EWDropReason::Deleted:
+			bShouldGlow = false;
+			break;
 		default:
 			break;
 	}
 
 	// Start glowing
-	if (g_cvarItemDroppedGlow.Get() && reason != EWDropReason::Deleted && bAllowDrop)
+	if (g_cvarItemDroppedGlow.Get() > 0 && reason != EWDropReason::Deleted && bAllowDrop)
 		StartGlow();
 
 	iOwnerSlot = -1;
@@ -944,7 +974,7 @@ void EWItemInstance::StartGlow()
 	pKeyValuesGlow->SetString("model", pszModelName);
 	pKeyValuesGlow->SetInt64("spawnflags", 256U);
 	pKeyValuesGlow->SetColor("glowcolor", colorGlow);
-	pKeyValuesGlow->SetInt("glowrange", 1000);
+	pKeyValuesGlow->SetInt("glowrange", g_cvarItemDroppedGlow.Get());
 	pKeyValuesGlow->SetInt("glowteam", -1);
 	pKeyValuesGlow->SetInt("glowstate", 3);
 	pKeyValuesGlow->SetInt("renderamt", 1);

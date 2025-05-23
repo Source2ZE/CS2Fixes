@@ -162,6 +162,7 @@ struct EWItemInstance : EWItem /* Current instance of defined items */
 	bool bHasThisClantag;
 	int iTeamNum;
 	std::string sLastOwnerName; // For etransfer info
+	bool bShouldGlow;
 	CHandle<CBaseModelEntity> m_hGlowModel;
 
 public:
@@ -173,7 +174,8 @@ public:
 		bAllowDrop(true),
 		sClantag(""),
 		bHasThisClantag(false),
-		iTeamNum(CS_TEAM_NONE){};
+		iTeamNum(CS_TEAM_NONE),
+		bShouldGlow(false) {};
 	bool RegisterHandler(CBaseEntity* pEnt, int iHandlerTemplateNum);
 	bool RemoveHandler(CBaseEntity* pEnt);
 	int FindHandlerByEntIndex(int indexToFind);
