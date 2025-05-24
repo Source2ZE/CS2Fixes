@@ -1165,7 +1165,8 @@ void CMapVoteSystem::OnLevelShutdown()
 		}
 	}
 
-	WriteMapCooldownsToFile();
+	if (IsMapListLoaded())
+		WriteMapCooldownsToFile();
 }
 
 std::string CMapVoteSystem::ConvertFloatToString(float fValue, int precision)
