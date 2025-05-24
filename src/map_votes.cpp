@@ -583,7 +583,7 @@ std::vector<int> CMapVoteSystem::GetNominatedMapsForVote()
 	std::vector<int> vecTiedNominations;											  // Nominations with tied nom counts
 	std::vector<int> vecChosenNominatedMaps;										  // Final vector of chosen nominations
 	int iMapsToIncludeInNominate = std::min({(int)mapOriginalNominatedMaps.size(), g_cvarVoteMaxNominations.Get(), g_cvarVoteMaxMaps.Get()});
-	int iMostNominations;
+	int iMostNominations = 0;
 	auto rng = std::default_random_engine{std::random_device{}()};
 
 	// Select top maps by number of nominations
