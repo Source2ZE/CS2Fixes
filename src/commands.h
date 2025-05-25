@@ -40,6 +40,7 @@ extern CConVar<bool> g_cvarEnableCommands;
 extern CConVar<bool> g_cvarEnableAdminCommands;
 
 extern CConVar<bool> g_cvarEnableHide;
+extern CConVar<int> g_cvarHiddenTeam;
 extern CConVar<bool> g_cvarEnableStopSound;
 extern CConVar<bool> g_cvarEnableNoShake;
 extern CConVar<float> g_cvarMaxShakeAmp;

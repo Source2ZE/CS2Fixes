@@ -431,6 +431,51 @@ CON_COMMAND_CHAT(noshake, "- toggle noshake")
 CConVar<bool> g_cvarEnableHide("cs2f_hide_enable", FCVAR_NONE, "Whether to enable hide (WARNING: randomly crashes clients since 2023-12-13 CS2 update)", false);
 CConVar<int> g_cvarDefaultHideDistance("cs2f_hide_distance_default", FCVAR_NONE, "The default distance for hide", 250, true, 0, false, 0);
 CConVar<int> g_cvarMaxHideDistance("cs2f_hide_distance_max", FCVAR_NONE, "The max distance for hide", 2000, true, 0, false, 0);
+CConVar<int> g_cvarHiddenTeam("cs2f_hidden_team", FCVAR_NONE, "Which team is hidden (0 = none, 2 = T, 3 = CT)", 0, true, 0, true, 3);
+
+CON_COMMAND_CHAT(hideteam, "<ct/t/off> - Hide an entire team from everyone")
+{
+	if (!g_cvarEnableHide.Get())
+		return;
+
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !hideteam <ct/t/off>");
+		return;
+	}
+
+	const char* teamArg = args[1];
+	int teamToHide = 0;
+
+	if (V_strcasecmp(teamArg, "ct") == 0)
+	{
+		teamToHide = 3; // CS_TEAM_CT
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Counter-Terrorists are now hidden from everyone.");
+	}
+	else if (V_strcasecmp(teamArg, "t") == 0)
+	{
+		teamToHide = 2; // CS_TEAM_T
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Terrorists are now hidden from everyone.");
+	}
+	else if (V_strcasecmp(teamArg, "off") == 0)
+	{
+		teamToHide = 0;
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Team hiding disabled.");
+	}
+	else
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid team. Use: ct, t, or off");
+		return;
+	}
+
+	g_cvarHiddenTeam.Set(teamToHide);
+}
 
 CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 {
