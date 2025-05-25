@@ -984,26 +984,25 @@ void CPlayerManager::CheckHideDistances()
 
 			CCSPlayerController* pTargetController = CCSPlayerController::FromSlot(j);
 
+			// TODO: Unhide dead pawns if/when valve fixes the crash
 			if (pTargetController)
 			{
 				auto pTargetPawn = pTargetController->GetPawn();
 
 				if (pTargetPawn)
 				{
-					bool shouldTransmit = false;
+					bool transmitValue = false;
 
-					// If this target player's team is the hidden team, don't transmit
 					if (hiddenTeam > 0 && pTargetController->m_iTeamNum == hiddenTeam)
 					{
-						shouldTransmit = true;
+						transmitValue = true;
 					}
-					// Otherwise use distance-based hiding if player has set a hide distance
 					else if (hideDistance > 0 && (!g_cvarHideTeammatesOnly.Get() || pTargetController->m_iTeamNum == team))
 					{
-						shouldTransmit = pTargetPawn->GetAbsOrigin().DistToSqr(vecPosition) <= hideDistance * hideDistance;
+						transmitValue = pTargetPawn->GetAbsOrigin().DistToSqr(vecPosition) <= hideDistance * hideDistance;
 					}
 
-					player->SetTransmit(j, shouldTransmit);
+					player->SetTransmit(j, transmitValue);
 				}
 			}
 		}
