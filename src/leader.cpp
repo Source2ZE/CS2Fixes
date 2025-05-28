@@ -357,7 +357,16 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, cons
 		Vector vecOrigin = pEntity->GetAbsOrigin();
 		vecOrigin.z += 10;
 
-		pPlayer->CreateMark(15, vecOrigin); // 6.1 seconds is time of default ping if you want it to match
+		pPlayer->CreateMark(6.1, vecOrigin); // 6.1 seconds is time of default ping if you want it to match
+
+		CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
+		if (pPawn && pPawn->m_pPingServices)
+		{
+			// Remove ping cooldown for leaders so they can spam it if needed
+			// Still prints the cooldown message to the player though
+			for (int i = 0; i < 5; i++)
+				pPawn->m_pPingServices->m_flPlayerPingTokens[i] = 0;
+		}
 		return;
 	}
 
