@@ -412,7 +412,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
 			flDuration = V_StringToFloat32(value->m_pszString, 0.f);
 		else
-			flDuration = value->m_float;
+			flDuration = value->m_float32;
 
 		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
@@ -426,7 +426,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
 			iScore = V_StringToInt32(value->m_pszString, 0);
 		else
-			iScore = value->m_int;
+			iScore = value->m_int32;
 
 		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
