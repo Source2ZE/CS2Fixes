@@ -487,6 +487,7 @@ void EWItem::SetDefaultValues()
 	szShortName = "";
 	/* no default hammerid */
 	V_strcpy(sChatColor, "\x01");
+	colorGlow = Color(255, 255, 255, 255);
 	bShowPickup = true;
 	bShowHud = true;
 	transfer = EWCfg_Auto;
