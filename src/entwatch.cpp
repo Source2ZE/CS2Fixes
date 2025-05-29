@@ -2155,7 +2155,7 @@ void EW_FireOutput(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CE
 
 			// Message("Output for item %s (instance:%d)  handler:%d outputname:%s\n", g_pEWHandler->vecItems[i]->szItemName, i, j, pThis->m_pDesc->m_pName);
 			if (handler->type == EWHandlerType::CounterDown || handler->type == EWHandlerType::CounterUp)
-				handler->Use(value->m_float);
+				handler->Use(value->m_float32);
 			else
 				handler->Use(0.0);
 		}
