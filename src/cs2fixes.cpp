@@ -740,41 +740,44 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 			soundEventHashes.insert(GetSoundEventHash("Weapon_Revolver.Prepare"));
 		);
 
-		if (soundEventHashes.contains(msg->soundevent_hash()))
+		if (!soundEventHashes.contains(msg->soundevent_hash()))
+			return;
+
+		uint64 stopSoundMask = g_playerManager->GetStopSoundMask();
+		uint64 silenceSoundMask = g_playerManager->GetSilenceSoundMask();
+
+		if (!msg->has_source_entity_index())
+			return;
+
+		CBaseEntity* pSourceEntity = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(msg->source_entity_index()));
+		int playerSlot = -1;
+
+		if (!pSourceEntity)
+			return;
+
+		if (!V_strcasecmp(pSourceEntity->GetClassname(), "player"))
 		{
-			uint64 stopSoundMask = g_playerManager->GetStopSoundMask();
-			uint64 silenceSoundMask = g_playerManager->GetSilenceSoundMask();
-
-			if (msg->has_source_entity_index())
-			{
-				CBaseEntity* pSourceEntity = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(msg->source_entity_index()));
-				int playerSlot = -1;
-
-				if (!V_strcasecmp(pSourceEntity->GetClassname(), "player"))
-				{
-					playerSlot = ((CCSPlayerPawn*)pSourceEntity)->GetController()->GetPlayerSlot();
-				}
-				else if (!V_strncasecmp(pSourceEntity->GetClassname(), "weapon_", 7))
-				{
-					CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pSourceEntity->m_hOwnerEntity().Get();
-
-					if (pPawn && pPawn->IsPawn())
-						playerSlot = pPawn->GetController()->GetPlayerSlot();
-				}
-
-				// Remove player who triggered this sound from masks
-				// Because some of these sounds never get played locally (Zoom's, Knife Hit/Stab)
-				if (playerSlot != -1 && g_playerManager->IsPlayerUsingStopSound(playerSlot))
-					stopSoundMask &= ~((uint64)1 << playerSlot);
-
-				if (playerSlot != -1 && g_playerManager->IsPlayerUsingSilenceSound(playerSlot))
-					silenceSoundMask &= ~((uint64)1 << playerSlot);
-			}
-
-			// Filter out people using stop/silence sound from hearing this sound from other players
-			*(uint64*)clients &= ~stopSoundMask;
-			*(uint64*)clients &= ~silenceSoundMask;
+			playerSlot = ((CCSPlayerPawn*)pSourceEntity)->GetController()->GetPlayerSlot();
 		}
+		else if (!V_strncasecmp(pSourceEntity->GetClassname(), "weapon_", 7))
+		{
+			CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pSourceEntity->m_hOwnerEntity().Get();
+
+			if (pPawn && pPawn->IsPawn())
+				playerSlot = pPawn->GetController()->GetPlayerSlot();
+		}
+
+		// Remove player who triggered this sound from masks
+		// Because some of these sounds never get played locally (Zoom's, Knife Hit/Stab)
+		if (playerSlot != -1 && g_playerManager->IsPlayerUsingStopSound(playerSlot))
+			stopSoundMask &= ~((uint64)1 << playerSlot);
+
+		if (playerSlot != -1 && g_playerManager->IsPlayerUsingSilenceSound(playerSlot))
+			silenceSoundMask &= ~((uint64)1 << playerSlot);
+
+		// Filter out people using stop/silence sound from hearing this sound from other players
+		*(uint64*)clients &= ~stopSoundMask;
+		*(uint64*)clients &= ~silenceSoundMask;
 	}
 }
 
