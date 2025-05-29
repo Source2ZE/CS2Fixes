@@ -100,7 +100,8 @@ void ItemGlowDistanceChanged(CConVar<int>* ref, CSplitScreenSlot nSlot, const in
 		}
 	}
 }
-CConVar<int> g_cvarItemDroppedGlow("entwatch_glow", FCVAR_NONE, "Distance that dropped item weapon glow will be visible (0 = disabled)", 1000, true, 0, false, 0, ItemGlowDistanceChanged);
+CConVar<int> g_cvarItemDroppedGlow("entwatch_glow", FCVAR_NONE, "Distance that dropped item weapon glow will be visible (0 = glow disabled)", 1000, true, 0, false, 0, ItemGlowDistanceChanged);
+CConVar<bool> g_cvarItemDroppedGlowTeam("entwatch_glow_team", FCVAR_NONE, "Whether dropped item glow is only visible to the team the item belongs to (0 = glow to all players)", false);
 
 void EWItemHandler::SetDefaultValues()
 {
@@ -961,7 +962,16 @@ std::string EWItemInstance::GetHandlerStateText()
 
 void EWItemInstance::StartGlow()
 {
-	CBasePlayerWeapon* pItemWeapon = (CBasePlayerWeapon*)g_pEntitySystem->GetEntityInstance((CEntityIndex)iWeaponEnt);
+	if (IsEmpty())
+		return;
+
+	if (!GetGlobals())
+	{
+		Message("Failed to get globals while glowing dropped item\n");
+		return;
+	}
+
+	CCSWeaponBase* pItemWeapon = (CCSWeaponBase*)g_pEntitySystem->GetEntityInstance((CEntityIndex)iWeaponEnt);
 	if (!pItemWeapon)
 	{
 		Message("Error getting weapon entity while creating item glow.");
@@ -975,10 +985,12 @@ void EWItemInstance::StartGlow()
 	pKeyValuesGlow->SetInt64("spawnflags", 256U);
 	pKeyValuesGlow->SetColor("glowcolor", colorGlow);
 	pKeyValuesGlow->SetInt("glowrange", g_cvarItemDroppedGlow.Get());
-	pKeyValuesGlow->SetInt("glowteam", -1);
 	pKeyValuesGlow->SetInt("glowstate", 3);
 	pKeyValuesGlow->SetInt("renderamt", 1);
 	pModelGlow->DispatchSpawn(pKeyValuesGlow);
+
+	int glowteam = g_cvarItemDroppedGlowTeam.Get() ? iTeamNum : -1;
+	pModelGlow->m_Glow().m_iGlowTeam = glowteam;
 
 	pModelGlow->AcceptInput("FollowEntity", "!activator", pItemWeapon);
 	m_hGlowModel.Set(pModelGlow);
@@ -989,6 +1001,49 @@ void EWItemInstance::EndGlow()
 	CBaseModelEntity* pGlowModel = m_hGlowModel.Get();
 	if (pGlowModel)
 		addresses::UTIL_Remove(pGlowModel);
+}
+
+bool EWItemInstance::IsEmpty()
+{
+	// Empty items don't glow when dropped, so have to be careful since some items can recharge
+	// Only return true if ALL handlers that appear in any way (chat/ui) are empty (non-counter max-uses)
+	// If it has no visible handlers, its not empty
+	// 
+	// TODO: maybe add an optional config setting for whether a handler is rechargable (depends if people complain)
+
+	if (vecHandlers.size() < 1)
+		return false;
+
+	// True until proven otherwise
+	bool bAllInvisible = true;
+	bool bAllEmpty = true;
+
+	for (int i = 0; i < vecHandlers.size(); i++)
+	{
+		// Any visible counter or non-maxuses handlers are never empty
+		if ((vecHandlers[i]->bShowHud || vecHandlers[i]->bShowUse) && vecHandlers[i]->szOutput != "")
+		{
+			if (vecHandlers[i]->IsCounter() || vecHandlers[i]->mode != EWHandlerMode::MaxUses)
+			{
+				return false;
+			}
+
+			// Maxuses handler (can be empty)
+			// Check if it is empty
+			bAllInvisible = false;
+			if (vecHandlers[i]->iCurrentUses < vecHandlers[i]->iMaxUses)
+				bAllEmpty = false;
+		}
+		else
+		{
+			// Invisible handler / no ouput
+		}
+	}
+
+	if (bAllInvisible)
+		return false;
+
+	return bAllEmpty;
 }
 
 void CEWHandler::UnLoadConfig()

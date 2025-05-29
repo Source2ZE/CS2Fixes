@@ -115,6 +115,7 @@ struct EWItemHandler
 	float flLastUsed;	  // For tracking cd on the hud
 	float flLastShownUse; // To prevent too much chat spam
 
+	bool IsCounter() { return (type == EWHandlerType::CounterDown || type == EWHandlerType::CounterUp); }
 	void SetDefaultValues();
 	void Print();
 
@@ -186,6 +187,7 @@ public:
 	std::string GetHandlerStateText();
 	void StartGlow();
 	void EndGlow();
+	bool IsEmpty();
 };
 
 struct ETransferInfo
