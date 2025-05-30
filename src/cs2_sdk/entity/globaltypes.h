@@ -224,5 +224,8 @@ public:
 	SCHEMA_FIELD(int, m_nGlowRangeMin)
 	SCHEMA_FIELD(Color, m_glowColorOverride)
 	SCHEMA_FIELD(bool, m_bFlashing)
+	SCHEMA_FIELD(float, m_flGlowTime)
+	SCHEMA_FIELD(float, m_flGlowStartTime)
+	SCHEMA_FIELD(bool, m_bEligibleForScreenHighlight)
 	SCHEMA_FIELD(bool, m_bGlowing)
 };
