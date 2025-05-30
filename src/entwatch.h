@@ -164,7 +164,6 @@ struct EWItemInstance : EWItem /* Current instance of defined items */
 	int iTeamNum;
 	std::string sLastOwnerName; // For etransfer info
 	bool bShouldGlow;
-	CHandle<CBaseModelEntity> m_hGlowModel;
 
 public:
 	EWItemInstance(int iWeapon, std::shared_ptr<EWItem> pItem) :

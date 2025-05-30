@@ -86,13 +86,16 @@ void ItemGlowDistanceChanged(CConVar<int>* ref, CSplitScreenSlot nSlot, const in
 	for (int i = 0; i < g_pEWHandler->vecItems.size(); i++)
 	{
 		std::shared_ptr<EWItemInstance> item = g_pEWHandler->vecItems[i];
-		if (item->m_hGlowModel.Get())
+		CCSWeaponBase* pItemWeapon = (CCSWeaponBase*)g_pEntitySystem->GetEntityInstance((CEntityIndex)item->iWeaponEnt);
+		if (!pItemWeapon)
+			continue;
+
+		if (pItemWeapon->m_Glow().m_bGlowing)
 		{
-			CBaseModelEntity* pGlow = item->m_hGlowModel.Get();
 			if (newValue > 0)
-				pGlow->m_Glow().m_nGlowRange = newValue;
+				pItemWeapon->m_Glow().m_nGlowRange = newValue;
 			else
-				addresses::UTIL_Remove(pGlow);
+				item->EndGlow();
 		}
 		else if (item->bShouldGlow && newValue > 0)
 		{
@@ -975,33 +978,45 @@ void EWItemInstance::StartGlow()
 	CCSWeaponBase* pItemWeapon = (CCSWeaponBase*)g_pEntitySystem->GetEntityInstance((CEntityIndex)iWeaponEnt);
 	if (!pItemWeapon)
 	{
-		Message("Error getting weapon entity while creating item glow.");
+		Message("Error getting weapon entity while creating item glow.\n");
 		return;
 	}
 
-	const char* pszModelName = pItemWeapon->GetModelName();
-	CBaseModelEntity* pModelGlow = CreateEntityByName<CBaseModelEntity>("prop_physics");
-	CEntityKeyValues* pKeyValuesGlow = new CEntityKeyValues();
-	pKeyValuesGlow->SetString("model", pszModelName);
-	pKeyValuesGlow->SetInt64("spawnflags", 256U);
-	pKeyValuesGlow->SetColor("glowcolor", colorGlow);
-	pKeyValuesGlow->SetInt("glowrange", g_cvarItemDroppedGlow.Get());
-	pKeyValuesGlow->SetInt("glowstate", 3);
-	pKeyValuesGlow->SetInt("renderamt", 1);
-	pModelGlow->DispatchSpawn(pKeyValuesGlow);
+	// Stupid, needs to be delayed and have a random alpha
+	CHandle<CCSWeaponBase> hWep = pItemWeapon->GetHandle();
+	new CTimer(0.1f, false, false, [this, hWep] {
+		CCSWeaponBase* pWep = hWep.Get();
+		if (pWep && this)
+		{
+			Color clr = Color(this->colorGlow.r(), this->colorGlow.g(), this->colorGlow.b(), (230 + (rand()%(255-230))));
+			pWep->m_Glow().m_glowColorOverride = clr;
 
-	int glowteam = g_cvarItemDroppedGlowTeam.Get() ? iTeamNum : -1;
-	pModelGlow->m_Glow().m_iGlowTeam = glowteam;
+			int team = g_cvarItemDroppedGlowTeam.Get() ? iTeamNum : -1;
+			pWep->m_Glow().m_iGlowTeam = team;
 
-	pModelGlow->AcceptInput("FollowEntity", "!activator", pItemWeapon);
-	m_hGlowModel.Set(pModelGlow);
+			pWep->m_Glow().m_iGlowType = 3;
+			pWep->m_Glow().m_flGlowStartTime = GetGlobals()->curtime;
+			pWep->m_Glow().m_flGlowTime = 0;
+			pWep->m_Glow().m_nGlowRange = g_cvarItemDroppedGlow.Get();
+			pWep->m_Glow().m_bGlowing = true;
+		}
+		return -1.0f;
+	});
 }
 
 void EWItemInstance::EndGlow()
 {
-	CBaseModelEntity* pGlowModel = m_hGlowModel.Get();
-	if (pGlowModel)
-		addresses::UTIL_Remove(pGlowModel);
+	CCSWeaponBase* pItemWeapon = (CCSWeaponBase*)g_pEntitySystem->GetEntityInstance((CEntityIndex)iWeaponEnt);
+	if (pItemWeapon)
+	{
+		pItemWeapon->m_Glow().m_glowColorOverride = Color(0, 0, 0, 0);
+		pItemWeapon->m_Glow().m_iGlowType = 0;
+		pItemWeapon->m_Glow().m_iGlowTeam = -1;
+		pItemWeapon->m_Glow().m_flGlowStartTime = 0;
+		pItemWeapon->m_Glow().m_flGlowTime = 0;
+		pItemWeapon->m_Glow().m_nGlowRange = 0;
+		pItemWeapon->m_Glow().m_bGlowing = false;
+	}
 }
 
 bool EWItemInstance::IsEmpty()
