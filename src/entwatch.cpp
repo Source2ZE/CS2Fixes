@@ -981,15 +981,13 @@ void EWItemInstance::StartGlow()
 		Message("Error getting weapon entity while creating item glow.\n");
 		return;
 	}
-
-	// Stupid, needs to be delayed and have a random alpha
+	
 	CHandle<CCSWeaponBase> hWep = pItemWeapon->GetHandle();
 	new CTimer(0.1f, false, false, [this, hWep] {
 		CCSWeaponBase* pWep = hWep.Get();
 		if (pWep && this)
 		{
-			Color clr = Color(this->colorGlow.r(), this->colorGlow.g(), this->colorGlow.b(), (230 + (rand()%(255-230))));
-			pWep->m_Glow().m_glowColorOverride = clr;
+			pWep->m_Glow().m_glowColorOverride = this->colorGlow;
 
 			int team = g_cvarItemDroppedGlowTeam.Get() ? iTeamNum : -1;
 			pWep->m_Glow().m_iGlowTeam = team;
