@@ -1463,8 +1463,15 @@ void ZR_StartInitialCountdown()
 		{
 			char message[256];
 			V_snprintf(message, sizeof(message), "First infection in \7%i %s\1!", g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
+			if (g_cvarInfectSpawnWarning.Get())
+			{
+				char hudmessage[256];
+				V_snprintf(hudmessage, sizeof(hudmessage), "First infection in %i %s\nZombies will be spawning between humans!", g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
+				ClientPrintAll(HUD_PRINTCENTER, hudmessage);
+			}
+			else
+				ClientPrintAll(HUD_PRINTCENTER, message);
 
-			ClientPrintAll(HUD_PRINTCENTER, message);
 			if (g_iInfectionCountDown % 5 == 0)
 				ClientPrintAll(HUD_PRINTTALK, "%s%s", ZR_PREFIX, message);
 		}
