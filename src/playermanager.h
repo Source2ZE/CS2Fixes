@@ -195,6 +195,7 @@ public:
 		m_flEntwatchHudY = -2.0f;
 		m_flEntwatchHudSize = 60.0f;
 		m_bShowDamage = true;
+		m_bIsFired = false;
 	}
 
 	~ZEPlayer()
@@ -264,7 +265,9 @@ public:
 	void SetEntwatchHudColor(Color colorHud);
 	void SetEntwatchHudPos(float x, float y);
 	void SetEntwatchHudSize(float flSize);
-	void SetShowDamageStatus(bool status);
+	void SetShowDamageStatus(bool bStatus);
+	void SetDamageDealtStatus(bool bStatus) { m_bIsFired = bStatus; }
+	void SetDamageDealt(int iClient, int iDamage) { m_iDamageDealt[iClient] = iDamage; }
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -315,6 +318,8 @@ public:
 	float GetEntwatchHudY() { return m_flEntwatchHudY; }
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
 	bool GetShowDamageStatus() { return m_bShowDamage; }
+	bool GetDamageDealtStatus() { return m_bIsFired; }
+	int GetDamageDealt(int iTarget) { return m_iDamageDealt[iTarget]; }
 
 	void OnSpawn();
 	void OnAuthenticated();
@@ -387,6 +392,8 @@ private:
 	float m_flEntwatchHudY;
 	float m_flEntwatchHudSize;
 	bool m_bShowDamage;
+	bool m_bIsFired;
+	int m_iDamageDealt[MAXPLAYERS+1];
 };
 
 class CPlayerManager

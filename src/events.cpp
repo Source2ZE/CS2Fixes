@@ -216,7 +216,61 @@ GAME_EVENT_F(player_hurt)
 	int iDamage = pEvent->GetInt("dmg_health");
 	if (g_cvarEnableShowDamage.Get() && pPlayer->GetShowDamageStatus())
 	{
-		ClientPrint(pAttacker, HUD_PRINTCENTER, "You did %i damage to %s\nHealth remaining: %i", iDamage, pVictim->GetPlayerName(), pEvent->GetInt("health"));
+		int iTarget = pVictim->GetPlayerSlot();
+		if (!pPlayer->GetDamageDealtStatus())
+		{
+			ZEPlayerHandle hPlayer = pPlayer->GetHandle(); 
+			pPlayer->SetDamageDealtStatus(true);
+			pPlayer->SetDamageDealt(iTarget, iDamage);
+
+			// Because shotguns shoot pellets that each triggers player_hurt event
+			// we add up all damage dealt in one frame and display it next frame
+			new CTimer(0.f, false, false, [hPlayer]() {
+				ZEPlayer* pClient = hPlayer.Get();
+				if (!pClient)
+					return -1.0;
+
+				pClient->SetDamageDealtStatus(false);
+				CCSPlayerController* pAttacker = CCSPlayerController::FromSlot(pClient->GetPlayerSlot());
+				if (!pAttacker)
+					return -1.0;
+
+				if (!GetGlobals())
+					return -1.0;
+
+				// We want to display the highest damage done in a shot
+				int iDamage = 0, iSlot = 0;
+				for (int i = 0; i < GetGlobals()->maxClients; i++)
+				{
+					int iCurrentDamage = pClient->GetDamageDealt(i);
+					if (iCurrentDamage > iDamage)
+					{
+						iDamage = iCurrentDamage;
+						iSlot = i;
+					}
+
+					// We reset damage array
+					pClient->SetDamageDealt(i, 0);
+				}
+
+				CCSPlayerController* pVictim = CCSPlayerController::FromSlot(CPlayerSlot(iSlot));
+				if (!pVictim)
+					return -1.0;
+
+				CCSPlayerPawn* pVictimPawn = pVictim->GetPlayerPawn();
+				if (!pVictimPawn)
+					return -1.0;
+
+				int iHealth = pVictimPawn->m_iHealth();
+				if (iHealth > 0)
+					ClientPrint(pAttacker, HUD_PRINTCENTER, "You did %i damage to %s\nHealth remaining: %i", iDamage, pVictim->GetPlayerName(), iHealth);
+				else
+					ClientPrint(pAttacker, HUD_PRINTCENTER, "You killed %s", pVictim->GetPlayerName());
+				return -1.0;
+			});
+		}
+		else
+			pPlayer->SetDamageDealt(iTarget, pPlayer->GetDamageDealt(iTarget) + iDamage);
 	}
 
 	if (g_cvarEnableTopDefender.Get())
