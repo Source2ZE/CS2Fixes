@@ -428,7 +428,7 @@ CON_COMMAND_CHAT(noshake, "- toggle noshake")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s noshake.", bSet ? "enabled" : "disabled");
 }
 
-CConVar<bool> g_cvarEnableShowDamage("cs2f_showdamage_enable", FCVAR_NONE, "Whether to enable ShowDamage", false);
+CConVar<bool> g_cvarEnableShowDamage("cs2f_showdamage_enable", FCVAR_NONE, "Whether to use ShowDamage", false);
 CON_COMMAND_CHAT(showdamage, "- Toggle show damage")
 {
 	if (!g_cvarEnableShowDamage.Get())
