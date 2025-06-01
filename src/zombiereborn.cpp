@@ -1464,9 +1464,7 @@ void ZR_StartInitialCountdown()
 			char message[256];
 			V_snprintf(message, sizeof(message), "First infection in \7%i %s\1!", g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
 			if (g_cvarInfectSpawnWarning.Get())
-			{
 				ClientPrintAll(HUD_PRINTCENTER, "First infection in %i %s\nZombies will be spawning between humans!", g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
-			}
 			else
 				ClientPrintAll(HUD_PRINTCENTER, message);
 
