@@ -50,6 +50,7 @@
 #define SOUND_STATUS_PREF_KEY_NAME "sound_status"
 #define NO_SHAKE_PREF_KEY_NAME "no_shake"
 #define BUTTON_WATCH_PREF_KEY_NAME "button_watch"
+#define SHOW_DAMAGE_PREF_KEY_NAME "show_damage"
 #define INVALID_ZEPLAYERHANDLE_INDEX 0u
 
 static uint32 iZEPlayerHandleSerial = 0u; // this should actually be 3 bytes large, but no way enough players join in servers lifespan for this to be an issue
@@ -193,6 +194,7 @@ public:
 		m_flEntwatchHudX = -7.5f;
 		m_flEntwatchHudY = -2.0f;
 		m_flEntwatchHudSize = 60.0f;
+		m_bShowDamage = true;
 	}
 
 	~ZEPlayer()
@@ -262,6 +264,7 @@ public:
 	void SetEntwatchHudColor(Color colorHud);
 	void SetEntwatchHudPos(float x, float y);
 	void SetEntwatchHudSize(float flSize);
+	void SetShowDamageStatus(bool status);
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -311,6 +314,7 @@ public:
 	float GetEntwatchHudX() { return m_flEntwatchHudX; }
 	float GetEntwatchHudY() { return m_flEntwatchHudY; }
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
+	bool GetShowDamageStatus() { return m_bShowDamage; }
 
 	void OnSpawn();
 	void OnAuthenticated();
@@ -382,6 +386,7 @@ private:
 	float m_flEntwatchHudX;
 	float m_flEntwatchHudY;
 	float m_flEntwatchHudSize;
+	bool m_bShowDamage;
 };
 
 class CPlayerManager

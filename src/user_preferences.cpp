@@ -116,6 +116,7 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	bool bHideDecals = (bool)GetPreferenceInt(iSlot, DECAL_PREF_KEY_NAME, 1);
 	bool bNoShake = (bool)GetPreferenceInt(iSlot, NO_SHAKE_PREF_KEY_NAME, 0);
 	int iButtonWatchMode = GetPreferenceInt(iSlot, BUTTON_WATCH_PREF_KEY_NAME, 0);
+	bool bShowDamage = (bool)GetPreferenceInt(iSlot, SHOW_DAMAGE_PREF_KEY_NAME, 1);
 
 	// EntWatch
 	int iEntwatchMode = GetPreferenceInt(iSlot, EW_PREF_HUD_MODE, 0);
@@ -136,6 +137,7 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	player->SetHideDistance(iHideDistance);
 	for (int i = 0; i < iButtonWatchMode; i++)
 		player->CycleButtonWatch();
+	player->SetShowDamageStatus(bShowDamage);
 
 	// Set EntWatch
 	player->SetEntwatchHudMode(iEntwatchMode);

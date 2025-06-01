@@ -742,6 +742,12 @@ void ZEPlayer::SetEntwatchHudSize(float flSize)
 		pText->m_flFontSize = m_flEntwatchHudSize;
 }
 
+void ZEPlayer::SetShowDamageStatus(bool status)
+{
+	m_bShowDamage = status;
+	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), SHOW_DAMAGE_PREF_KEY_NAME, m_bShowDamage ? 1 : 0);
+}
+
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 {
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);

@@ -198,7 +198,7 @@ CConVar<bool> g_cvarEnableTopDefender("cs2f_topdefender_enable", FCVAR_NONE, "Wh
 
 GAME_EVENT_F(player_hurt)
 {
-	if (!g_cvarEnableTopDefender.Get())
+	if (!g_cvarEnableTopDefender.Get() && !g_cvarEnableShowDamage.Get())
 		return;
 
 	CCSPlayerController* pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
@@ -213,8 +213,17 @@ GAME_EVENT_F(player_hurt)
 	if (!pPlayer)
 		return;
 
-	pPlayer->SetTotalDamage(pPlayer->GetTotalDamage() + pEvent->GetInt("dmg_health"));
-	pPlayer->SetTotalHits(pPlayer->GetTotalHits() + 1);
+	int iDamage = pEvent->GetInt("dmg_health");
+	if (g_cvarEnableShowDamage.Get() && pPlayer->GetShowDamageStatus())
+	{
+		ClientPrint(pAttacker, HUD_PRINTCENTER, "You did %i damage to %s\nHealth remaining: %i", iDamage, pVictim->GetPlayerName(), pEvent->GetInt("health"));
+	}
+
+	if (g_cvarEnableTopDefender.Get())
+	{
+		pPlayer->SetTotalDamage(pPlayer->GetTotalDamage() + iDamage);
+		pPlayer->SetTotalHits(pPlayer->GetTotalHits() + 1);
+	}
 }
 
 GAME_EVENT_F(player_death)
