@@ -982,14 +982,19 @@ void EWItemInstance::StartGlow()
 		return;
 	}
 	
+	int r = colorGlow.r();
+	int g = colorGlow.g();
+	int b = colorGlow.b();
+	int a = colorGlow.a();
+	int iTeam = iTeamNum;
 	CHandle<CCSWeaponBase> hWep = pItemWeapon->GetHandle();
-	new CTimer(0.1f, false, false, [this, hWep] {
+	new CTimer(0.1f, false, false, [hWep, iTeam, r, g, b, a] {
 		CCSWeaponBase* pWep = hWep.Get();
-		if (pWep && this)
+		if (pWep)
 		{
-			pWep->m_Glow().m_glowColorOverride = this->colorGlow;
+			pWep->m_Glow().m_glowColorOverride = Color(r, g, b, a);
 
-			int team = g_cvarItemDroppedGlowTeam.Get() ? iTeamNum : -1;
+			int team = g_cvarItemDroppedGlowTeam.Get() ? iTeam : -1;
 			pWep->m_Glow().m_iGlowTeam = team;
 
 			pWep->m_Glow().m_iGlowType = 3;
