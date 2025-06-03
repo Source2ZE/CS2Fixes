@@ -75,8 +75,36 @@ SH_DECL_MANUALHOOK1_void(CTriggerMultiple_EndTouch, 0, 0, 0, CBaseEntity*);
 CConVar<bool> g_cvarEnableEntWatch("entwatch_enable", FCVAR_NONE, "INCOMPATIBLE WITH CS#. Whether to enable EntWatch features", false);
 CConVar<bool> g_cvarEnableFiltering("entwatch_auto_filter", FCVAR_NONE, "Whether to automatically block non-item holders from triggering uses", true);
 CConVar<bool> g_cvarUseEntwatchClantag("entwatch_clantag", FCVAR_NONE, "Whether to set item holder's clantag and set score", true);
-
 CConVar<int> g_cvarItemHolderScore("entwatch_score", FCVAR_NONE, "Score to give item holders (0 = dont change score at all) Requires entwatch_clantag 1", 9999, true, 0, false, 0);
+
+void ItemGlowDistanceChanged(CConVar<int>* ref, CSplitScreenSlot nSlot, const int* pNewValue, const int* pOldValue)
+{
+	if (!g_pEWHandler || !g_pEWHandler->IsConfigLoaded() || g_pEWHandler->vecItems.size() < 1)
+		return;
+
+	int newValue = *pNewValue;
+	for (int i = 0; i < g_pEWHandler->vecItems.size(); i++)
+	{
+		std::shared_ptr<EWItemInstance> item = g_pEWHandler->vecItems[i];
+		CCSWeaponBase* pItemWeapon = (CCSWeaponBase*)g_pEntitySystem->GetEntityInstance((CEntityIndex)item->iWeaponEnt);
+		if (!pItemWeapon)
+			continue;
+
+		if (pItemWeapon->m_Glow().m_bGlowing)
+		{
+			if (newValue > 0)
+				pItemWeapon->m_Glow().m_nGlowRange = newValue;
+			else
+				item->EndGlow();
+		}
+		else if (item->bShouldGlow && newValue > 0)
+		{
+			item->StartGlow();
+		}
+	}
+}
+CConVar<int> g_cvarItemDroppedGlow("entwatch_glow", FCVAR_NONE, "Distance that dropped item weapon glow will be visible (0 = glow disabled)", 1000, true, 0, false, 0, ItemGlowDistanceChanged);
+CConVar<bool> g_cvarItemDroppedGlowTeam("entwatch_glow_team", FCVAR_NONE, "Whether dropped item glow is only visible to the team the item belongs to (0 = glow to all players)", false);
 
 void EWItemHandler::SetDefaultValues()
 {
@@ -462,6 +490,7 @@ void EWItem::SetDefaultValues()
 	szShortName = "";
 	/* no default hammerid */
 	V_strcpy(sChatColor, "\x01");
+	colorGlow = Color(255, 255, 255, 255);
 	bShowPickup = true;
 	bShowHud = true;
 	transfer = EWCfg_Auto;
@@ -473,36 +502,81 @@ void EWItem::SetDefaultValues()
 void EWItem::ParseColor(std::string value)
 {
 	if (value == "white" || value == "default")
+	{
 		V_strcpy(sChatColor, "\x01");
+		colorGlow = Color(255, 255, 255, 255);
+	}
 	else if (value == "darkred")
+	{
 		V_strcpy(sChatColor, "\x02");
+		colorGlow = Color(220, 0, 0, 255);
+	}
 	else if (value == "team")
+	{
 		V_strcpy(sChatColor, "\x03");
+		colorGlow = Color(184, 130, 242, 255);
+	}
 	else if (value == "green")
+	{
 		V_strcpy(sChatColor, "\x04");
+		colorGlow = Color(30, 255, 30, 255);
+	}
 	else if (value == "lightgreen")
+	{
 		V_strcpy(sChatColor, "\x05");
+		colorGlow = Color(178, 255, 145, 255);
+	}
 	else if (value == "olive")
+	{
 		V_strcpy(sChatColor, "\x06");
+		colorGlow = Color(184, 220, 63, 255);
+	}
 	else if (value == "red")
+	{
 		V_strcpy(sChatColor, "\x07");
+		colorGlow = Color(255, 65, 65, 255);
+	}
 	else if (value == "gray" || value == "grey")
+	{
 		V_strcpy(sChatColor, "\x08");
+		colorGlow = Color(175, 180, 180, 255);
+	}
 	else if (value == "yellow")
+	{
 		V_strcpy(sChatColor, "\x09");
+		colorGlow = Color(250, 250, 25, 255);
+	}
 	else if (value == "silver")
+	{
 		V_strcpy(sChatColor, "\x0A");
+		colorGlow = Color(165, 180, 210, 255);
+	}
 	else if (value == "blue")
+	{
 		V_strcpy(sChatColor, "\x0B");
+		colorGlow = Color(114, 188, 255, 255);
+	}
 	else if (value == "darkblue")
+	{
 		V_strcpy(sChatColor, "\x0C");
+		colorGlow = Color(45, 75, 255, 255);
+	}
 	// \x0D is the same as \x0A
 	else if (value == "purple" || value == "pink")
+	{
 		V_strcpy(sChatColor, "\x0E");
+		colorGlow = Color(210, 43, 229, 255);
+	}
 	else if (value == "red2")
+	{
 		V_strcpy(sChatColor, "\x0F");
+		colorGlow = Color(230, 120, 120, 255);
+	}
 	else if (value == "orange" || value == "gold")
+	{
 		V_strcpy(sChatColor, "\x10");
+		colorGlow = Color(235, 145, 46, 255);
+	}
 }
 
 EWItem::EWItem(std::shared_ptr<EWItem> pItem)
@@ -512,6 +586,7 @@ EWItem::EWItem(std::shared_ptr<EWItem> pItem)
 	szShortName = pItem->szShortName;
 	szHammerid = pItem->szHammerid;
 	V_strcpy(sChatColor, pItem->sChatColor);
+	colorGlow = pItem->colorGlow;
 	bShowPickup = pItem->bShowPickup;
 	bShowHud = pItem->bShowHud;
 	transfer = pItem->transfer;
@@ -740,6 +815,9 @@ void EWItemInstance::Pickup(int slot)
 		}
 	}
 
+	bShouldGlow = false;
+	EndGlow();
+
 	if (bShowPickup)
 		ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05has picked up %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
 }
@@ -752,6 +830,9 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 		iOwnerSlot = -1;
 		return;
 	}
+
+	if (bAllowDrop)
+		bShouldGlow = true;
 
 	if (g_cvarUseEntwatchClantag.Get() && bShowHud && bHasThisClantag)
 	{
@@ -845,9 +926,15 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 			}
 			break;
 		case EWDropReason::Deleted:
+			bShouldGlow = false;
+			break;
 		default:
 			break;
 	}
+
+	// Start glowing
+	if (g_cvarItemDroppedGlow.Get() > 0 && reason != EWDropReason::Deleted && bAllowDrop)
+		StartGlow();
 
 	iOwnerSlot = -1;
 }
@@ -875,6 +962,107 @@ std::string EWItemInstance::GetHandlerStateText()
 	}
 	// Message("%s Item handler text: %s\n", szItemName.c_str(), sText.c_str());
 	return sText;
+}
+
+void EWItemInstance::StartGlow()
+{
+	if (IsEmpty())
+		return;
+
+	if (!GetGlobals())
+	{
+		Message("Failed to get globals while glowing dropped item\n");
+		return;
+	}
+
+	CCSWeaponBase* pItemWeapon = (CCSWeaponBase*)g_pEntitySystem->GetEntityInstance((CEntityIndex)iWeaponEnt);
+	if (!pItemWeapon)
+	{
+		Message("Error getting weapon entity while creating item glow.\n");
+		return;
+	}
+	
+	int r = colorGlow.r();
+	int g = colorGlow.g();
+	int b = colorGlow.b();
+	int a = colorGlow.a();
+	int iTeam = iTeamNum;
+	CHandle<CCSWeaponBase> hWep = pItemWeapon->GetHandle();
+	new CTimer(0.1f, false, false, [hWep, iTeam, r, g, b, a] {
+		CCSWeaponBase* pWep = hWep.Get();
+		if (pWep)
+		{
+			pWep->m_Glow().m_glowColorOverride = Color(r, g, b, a);
+
+			int team = g_cvarItemDroppedGlowTeam.Get() ? iTeam : -1;
+			pWep->m_Glow().m_iGlowTeam = team;
+
+			pWep->m_Glow().m_iGlowType = 3;
+			pWep->m_Glow().m_flGlowStartTime = GetGlobals()->curtime;
+			pWep->m_Glow().m_flGlowTime = 0;
+			pWep->m_Glow().m_nGlowRange = g_cvarItemDroppedGlow.Get();
+			pWep->m_Glow().m_bGlowing = true;
+		}
+		return -1.0f;
+	});
+}
+
+void EWItemInstance::EndGlow()
+{
+	CCSWeaponBase* pItemWeapon = (CCSWeaponBase*)g_pEntitySystem->GetEntityInstance((CEntityIndex)iWeaponEnt);
+	if (pItemWeapon)
+	{
+		pItemWeapon->m_Glow().m_glowColorOverride = Color(0, 0, 0, 0);
+		pItemWeapon->m_Glow().m_iGlowType = 0;
+		pItemWeapon->m_Glow().m_iGlowTeam = -1;
+		pItemWeapon->m_Glow().m_flGlowStartTime = 0;
+		pItemWeapon->m_Glow().m_flGlowTime = 0;
+		pItemWeapon->m_Glow().m_nGlowRange = 0;
+		pItemWeapon->m_Glow().m_bGlowing = false;
+	}
+}
+
+bool EWItemInstance::IsEmpty()
+{
+	// Empty items don't glow when dropped, so have to be careful since some items can recharge
+	// Only return true if ALL handlers that appear in any way (chat/ui) are empty (non-counter max-uses)
+	// If it has no visible handlers, its not empty
+	// 
+	// TODO: maybe add an optional config setting for whether a handler is rechargable (depends if people complain)
+
+	if (vecHandlers.size() < 1)
+		return false;
+
+	// True until proven otherwise
+	bool bAllInvisible = true;
+	bool bAllEmpty = true;
+
+	for (int i = 0; i < vecHandlers.size(); i++)
+	{
+		// Any visible counter or non-maxuses handlers are never empty
+		if ((vecHandlers[i]->bShowHud || vecHandlers[i]->bShowUse) && vecHandlers[i]->szOutput != "")
+		{
+			if (vecHandlers[i]->IsCounter() || vecHandlers[i]->mode != EWHandlerMode::MaxUses)
+			{
+				return false;
+			}
+
+			// Maxuses handler (can be empty)
+			// Check if it is empty
+			bAllInvisible = false;
+			if (vecHandlers[i]->iCurrentUses < vecHandlers[i]->iMaxUses)
+				bAllEmpty = false;
+		}
+		else
+		{
+			// Invisible handler / no ouput
+		}
+	}
+
+	if (bAllInvisible)
+		return false;
+
+	return bAllEmpty;
 }
 
 void CEWHandler::UnLoadConfig()
