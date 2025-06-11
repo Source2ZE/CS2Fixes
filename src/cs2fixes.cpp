@@ -40,6 +40,7 @@
 #include "gameconfig.h"
 #include "gameevents.pb.h"
 #include "gamesystem.h"
+#include "gamesystems/spawngroup_manager.h"
 #include "httpmanager.h"
 #include "icvar.h"
 #include "idlemanager.h"
@@ -123,6 +124,7 @@ SH_DECL_HOOK2(IGameEventManager2, LoadEventsFromFile, SH_NOATTRIB, 0, int, const
 SH_DECL_MANUALHOOK1_void(GoToIntermission, 0, 0, 0, bool);
 SH_DECL_MANUALHOOK2_void(PhysicsTouchShuffle, 0, 0, 0, CUtlVector<TouchLinked_t>*, bool);
 SH_DECL_MANUALHOOK3_void(DropWeapon, 0, 0, 0, CBasePlayerWeapon*, Vector*, Vector*);
+SH_DECL_HOOK1_void(CSpawnGroupMgrGameSystem, SetActiveSpawnGroup, SH_NOATTRIB, 0, SpawnGroupHandle_t);
 
 CS2Fixes g_CS2Fixes;
 
@@ -136,6 +138,7 @@ CGameConfig* g_GameConfig = nullptr;
 ISteamHTTP* g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules* g_pGameRules = nullptr; // Will be null between map end & new map startup, null check if necessary!
+CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr = nullptr;
 int g_iCGamePlayerEquipUseId = -1;
 int g_iCGamePlayerEquipPrecacheId = -1;
 int g_iCreateWorkshopMapGroupId = -1;
@@ -145,6 +148,7 @@ int g_iLoadEventsFromFileId = -1;
 int g_iGoToIntermissionId = -1;
 int g_iPhysicsTouchShuffle = -1;
 int g_iWeaponServiceDropWeaponId = -1;
+int g_iReleaseSpawnGroupId = -1;
 
 CGameEntitySystem* GameEntitySystem()
 {
@@ -335,6 +339,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	SH_MANUALHOOK_RECONFIGURE(GoToIntermission, offset, 0, 0);
 	g_iGoToIntermissionId = SH_ADD_MANUALDVPHOOK(GoToIntermission, pCCSGameRulesVTable, SH_MEMBER(this, &CS2Fixes::Hook_GoToIntermission), false);
 
+	auto pCSpawnGroupMgrGameSystem = (CSpawnGroupMgrGameSystem*)modules::server->FindVirtualTable("CSpawnGroupMgrGameSystem");
+	g_iReleaseSpawnGroupId = SH_ADD_DVPHOOK(CSpawnGroupMgrGameSystem, SetActiveSpawnGroup, pCSpawnGroupMgrGameSystem, SH_MEMBER(this, &CS2Fixes::Hook_SetActiveSpawnGroup), true);
+
 	Message("All hooks started!\n");
 
 	UnlockConVars();
@@ -435,6 +442,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	SH_REMOVE_HOOK_ID(g_iWeaponServiceDropWeaponId);
 	SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
 	SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
+	SH_REMOVE_HOOK_ID(g_iReleaseSpawnGroupId);
 
 	if (g_iCGamePlayerEquipPrecacheId != -1)
 		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipPrecacheId);
@@ -998,6 +1006,11 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 		if (!pSelfZEPlayer)
 			continue;
 
+		auto pClient = GetClientBySlot(iPlayerSlot);
+
+		if (pClient && pSelfZEPlayer->IsAdminFlagSet(ADMFLAG_ROOT))
+			ClientPrint(pSelfController, HUD_PRINTCENTER, "Client loaded SpawnGroups: %d", pClient->m_vecLoadedSpawnGroups.Count());
+
 		for (int j = 0; j < GetGlobals()->maxClients; j++)
 		{
 			CCSPlayerController* pController = CCSPlayerController::FromSlot(j);
@@ -1208,6 +1221,31 @@ int CS2Fixes::Hook_LoadEventsFromFile(const char* filename, bool bSearchAll)
 	ExecuteOnce(g_gameEventManager = META_IFACEPTR(IGameEventManager2));
 
 	RETURN_META_VALUE(MRES_IGNORED, 0);
+}
+
+void CS2Fixes::Hook_SetActiveSpawnGroup(SpawnGroupHandle_t h)
+{
+	g_pSpawnGroupMgr = META_IFACEPTR(CSpawnGroupMgrGameSystem);
+
+	RETURN_META(MRES_IGNORED);
+}
+
+CON_COMMAND_F(c_clean_client_spawngroups, "", FCVAR_SPONLY)
+{
+	CUtlVector<SpawnGroupHandle_t> vecActualSpawnGroups;
+	addresses::GetSpawnGroups(g_pSpawnGroupMgr, &vecActualSpawnGroups);
+
+	auto pClients = GetClientList();
+
+	FOR_EACH_VEC(*pClients, i)
+	{
+		auto pClient = (*pClients)[i];
+
+		if (!pClient || pClient->m_vecLoadedSpawnGroups.Count() == vecActualSpawnGroups.Count())
+			continue;
+
+		pClient->m_vecLoadedSpawnGroups = vecActualSpawnGroups;
+	}
 }
 
 void CS2Fixes::OnLevelInit(char const* pMapName,

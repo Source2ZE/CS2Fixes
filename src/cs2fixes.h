@@ -83,6 +83,7 @@ public: // hooks
 	void Hook_CheckMovingGround(double frametime);
 	void Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity);
 	int Hook_LoadEventsFromFile(const char* filename, bool bSearchAll);
+	void Hook_SetActiveSpawnGroup(SpawnGroupHandle_t h);
 
 public:
 	const char* GetAuthor();
