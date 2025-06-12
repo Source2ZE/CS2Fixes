@@ -29,7 +29,7 @@ class CHLTVServer;
 class INetMessage;
 class CNetworkGameServerBase;
 class CNetworkGameServer;
-struct CUtlSlot;
+class CUtlSlot;
 
 struct HltvReplayStats_t
 {
@@ -92,7 +92,7 @@ public:
 	// ...
 };
 
-struct CUtlSlot
+class CUtlSlot
 {
 	CUtlVectorMT<CUtlVector<CUtlSignaller_Base*>, CCopyableLock<CThreadFastMutex> > m_ConnectedSignallers;
 
@@ -391,7 +391,7 @@ public:
 	CClientFrameManager m_FrameManager; // 3568
 
 private:
-	[[maybe_used]] char pad3856[8]; // 3856
+	[[maybe_unused]] char pad3856[8]; // 3856
 
 public:
 	float m_flLastClientCommandQuotaStart = 0.0f;	  // 3864
@@ -412,7 +412,7 @@ public:
 	void* m_pLastJob;								  // 4000
 
 private:
-	[[maybe_used]] char pad3984[8]; // 4008
+	[[maybe_unused]] char pad3984[8]; // 4008
 };
 
 // not full class reversed
@@ -439,7 +439,7 @@ public:
 	bool m_bUnkBool3 = false; // 3019
 
 private:
-	[[maybe_used]] char pad3976[0x24]; // 3020
+	[[maybe_unused]] char pad3976[0x24]; // 3020
 };
 
 #endif // SERVERSIDECLIENT_H

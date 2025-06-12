@@ -35,6 +35,7 @@
 extern CGlobalVars* GetGlobals();
 extern CGameConfig* g_GameConfig;
 extern CCSGameRules* g_pGameRules;
+extern int g_iSpawnGroupLoads;
 
 CBaseGameSystemFactory** CBaseGameSystemFactory::sm_pFirst = nullptr;
 
@@ -185,4 +186,9 @@ GS_EVENT_MEMBER(CGameSystem, ServerPostEntityThink)
 GS_EVENT_MEMBER(CGameSystem, GameShutdown)
 {
 	g_pGameRules = nullptr;
+}
+
+GS_EVENT_MEMBER(CGameSystem, PostSpawnGroupLoad)
+{
+	g_iSpawnGroupLoads++;
 }

@@ -27,6 +27,7 @@
 #include "entwatch.h"
 #include "eventlistener.h"
 #include "idlemanager.h"
+#include "iserver.h"
 #include "leader.h"
 #include "map_votes.h"
 #include "networkstringtabledefs.h"
@@ -43,6 +44,8 @@ extern CGameEntitySystem* g_pEntitySystem;
 extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
 extern IVEngineServer2* g_pEngineServer2;
+extern INetworkGameServer* GetNetworkGameServer();
+extern int g_iSpawnGroupLoads;
 
 extern int g_iRoundNum;
 
@@ -277,6 +280,28 @@ GAME_EVENT_F(round_start)
 
 GAME_EVENT_F(round_end)
 {
+	if (GetNetworkGameServer())
+	{
+		int iHighestCheckTransmitSpawnGroupCount = 0;
+		int iHighestClientSpawnGroupCount = 0;
+
+		for (int i = 0; i < GetGlobals()->maxClients; i++)
+		{
+			ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+			if (!pPlayer)
+				continue;
+
+			if (pPlayer->GetCheckTransmitSpawnGroupCount() > iHighestCheckTransmitSpawnGroupCount)
+				iHighestCheckTransmitSpawnGroupCount = pPlayer->GetCheckTransmitSpawnGroupCount();
+
+			if (pPlayer->GetClientSpawnGroupCount() > iHighestClientSpawnGroupCount)
+				iHighestClientSpawnGroupCount = pPlayer->GetClientSpawnGroupCount();
+		}
+
+		Message("PostSpawnGroupLoad count for %s at round_end: %i Highest counts CCheckTransmitInfo->m_vecSpawnGroups: %i CServerSideClient->m_vecLoadedSpawnGroups: %i\n", GetNetworkGameServer()->GetMapName(), g_iSpawnGroupLoads, iHighestCheckTransmitSpawnGroupCount, iHighestClientSpawnGroupCount);
+	}
+
 	if (!g_cvarEnableTopDefender.Get() || !GetGlobals())
 		return;
 

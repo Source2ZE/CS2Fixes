@@ -53,6 +53,10 @@ extern CGameEntitySystem* g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
 extern CConVar<CUtlString> g_cvarFlashLightAttachment;
+extern INetworkGameServer* GetNetworkGameServer();
+extern int g_iSpawnGroupLoads;
+extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
+extern CUtlVector<CServerSideClient*>* GetClientList();
 
 CConVar<bool> g_cvarEnableCommands("cs2f_commands_enable", FCVAR_NONE, "Whether to enable chat commands", false);
 CConVar<bool> g_cvarEnableAdminCommands("cs2f_admin_commands_enable", FCVAR_NONE, "Whether to enable admin chat commands", false);
@@ -740,6 +744,48 @@ CON_COMMAND_CHAT(showteam, "<name> - Get a player's current team")
 		default:
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not on a team.", pTarget->GetPlayerName());
 	}
+}
+
+
+CON_COMMAND_CHAT_FLAGS(spawngroups, "Debug spawngroup info", ADMFLAG_ROOT)
+{
+	if (!GetNetworkGameServer())
+		return;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+		if (!pPlayer)
+			continue;
+
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Slot %i counts CCheckTransmitInfo->m_vecSpawnGroups: %i CServerSideClient->m_vecLoadedSpawnGroups: %i", i, pPlayer->GetCheckTransmitSpawnGroupCount(), pPlayer->GetClientSpawnGroupCount());
+	}
+
+	ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "PostSpawnGroupLoad count for %s: %i", GetNetworkGameServer()->GetMapName(), g_iSpawnGroupLoads);
+}
+
+CON_COMMAND_CHAT_FLAGS(clean_client_spawngroups, "Clean client spawngroups", ADMFLAG_ROOT)
+{
+	if (!g_pSpawnGroupMgr)
+		return;
+
+	CUtlVector<SpawnGroupHandle_t> vecActualSpawnGroups;
+	addresses::GetSpawnGroups(g_pSpawnGroupMgr, &vecActualSpawnGroups);
+
+	auto pClients = GetClientList();
+
+	FOR_EACH_VEC(*pClients, i)
+	{
+		auto pClient = (*pClients)[i];
+
+		if (!pClient || pClient->m_vecLoadedSpawnGroups.Count() == vecActualSpawnGroups.Count())
+			continue;
+
+		pClient->m_vecLoadedSpawnGroups = vecActualSpawnGroups;
+	}
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Cleaned client spawngroups.");
 }
 
 #if _DEBUG

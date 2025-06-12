@@ -193,6 +193,8 @@ public:
 		m_flEntwatchHudX = -7.5f;
 		m_flEntwatchHudY = -2.0f;
 		m_flEntwatchHudSize = 60.0f;
+		m_iCheckTransmitSpawnGroupCount = 0;
+		m_iClientSpawnGroupCount = 0;
 	}
 
 	~ZEPlayer()
@@ -262,6 +264,8 @@ public:
 	void SetEntwatchHudColor(Color colorHud);
 	void SetEntwatchHudPos(float x, float y);
 	void SetEntwatchHudSize(float flSize);
+	void SetCheckTransmitSpawnGroupCount(int iCheckTransmitSpawnGroupCount) { m_iCheckTransmitSpawnGroupCount = iCheckTransmitSpawnGroupCount; }
+	void SetClientSpawnGroupCount(int iClientSpawnGroupCount) { m_iClientSpawnGroupCount = iClientSpawnGroupCount; }
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -311,6 +315,8 @@ public:
 	float GetEntwatchHudX() { return m_flEntwatchHudX; }
 	float GetEntwatchHudY() { return m_flEntwatchHudY; }
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
+	int GetCheckTransmitSpawnGroupCount() { return m_iCheckTransmitSpawnGroupCount; }
+	int GetClientSpawnGroupCount() { return m_iClientSpawnGroupCount; }
 
 	void OnSpawn();
 	void OnAuthenticated();
@@ -382,6 +388,8 @@ private:
 	float m_flEntwatchHudX;
 	float m_flEntwatchHudY;
 	float m_flEntwatchHudSize;
+	int m_iCheckTransmitSpawnGroupCount;
+	int m_iClientSpawnGroupCount;
 };
 
 class CPlayerManager

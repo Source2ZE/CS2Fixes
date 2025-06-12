@@ -40,7 +40,6 @@
 #include "gameconfig.h"
 #include "gameevents.pb.h"
 #include "gamesystem.h"
-#include "gamesystems/spawngroup_manager.h"
 #include "httpmanager.h"
 #include "icvar.h"
 #include "idlemanager.h"
@@ -69,6 +68,7 @@ double g_flUniversalTime;
 float g_flLastTickedTime;
 bool g_bHasTicked;
 int g_iRoundNum = 0;
+int g_iSpawnGroupLoads = 0;
 
 void Message(const char* msg, ...)
 {
@@ -124,7 +124,7 @@ SH_DECL_HOOK2(IGameEventManager2, LoadEventsFromFile, SH_NOATTRIB, 0, int, const
 SH_DECL_MANUALHOOK1_void(GoToIntermission, 0, 0, 0, bool);
 SH_DECL_MANUALHOOK2_void(PhysicsTouchShuffle, 0, 0, 0, CUtlVector<TouchLinked_t>*, bool);
 SH_DECL_MANUALHOOK3_void(DropWeapon, 0, 0, 0, CBasePlayerWeapon*, Vector*, Vector*);
-SH_DECL_HOOK1_void(CSpawnGroupMgrGameSystem, SetActiveSpawnGroup, SH_NOATTRIB, 0, SpawnGroupHandle_t);
+SH_DECL_HOOK1_void(IServer, SetGameSpawnGroupMgr, SH_NOATTRIB, 0, IGameSpawnGroupMgr*);
 
 CS2Fixes g_CS2Fixes;
 
@@ -138,7 +138,7 @@ CGameConfig* g_GameConfig = nullptr;
 ISteamHTTP* g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules* g_pGameRules = nullptr; // Will be null between map end & new map startup, null check if necessary!
-CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr = nullptr;
+CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr = nullptr; // Will be null between map end & new map startup, null check if necessary!
 int g_iCGamePlayerEquipUseId = -1;
 int g_iCGamePlayerEquipPrecacheId = -1;
 int g_iCreateWorkshopMapGroupId = -1;
@@ -148,7 +148,7 @@ int g_iLoadEventsFromFileId = -1;
 int g_iGoToIntermissionId = -1;
 int g_iPhysicsTouchShuffle = -1;
 int g_iWeaponServiceDropWeaponId = -1;
-int g_iReleaseSpawnGroupId = -1;
+int g_iSetGameSpawnGroupMgrId = -1;
 
 CGameEntitySystem* GameEntitySystem()
 {
@@ -339,9 +339,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	SH_MANUALHOOK_RECONFIGURE(GoToIntermission, offset, 0, 0);
 	g_iGoToIntermissionId = SH_ADD_MANUALDVPHOOK(GoToIntermission, pCCSGameRulesVTable, SH_MEMBER(this, &CS2Fixes::Hook_GoToIntermission), false);
 
-	auto pCSpawnGroupMgrGameSystem = (CSpawnGroupMgrGameSystem*)modules::server->FindVirtualTable("CSpawnGroupMgrGameSystem");
-	g_iReleaseSpawnGroupId = SH_ADD_DVPHOOK(CSpawnGroupMgrGameSystem, SetActiveSpawnGroup, pCSpawnGroupMgrGameSystem, SH_MEMBER(this, &CS2Fixes::Hook_SetActiveSpawnGroup), true);
-
 	Message("All hooks started!\n");
 
 	UnlockConVars();
@@ -442,7 +439,9 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	SH_REMOVE_HOOK_ID(g_iWeaponServiceDropWeaponId);
 	SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
 	SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
-	SH_REMOVE_HOOK_ID(g_iReleaseSpawnGroupId);
+
+	if (g_iSetGameSpawnGroupMgrId != -1)
+		SH_REMOVE_HOOK_ID(g_iSetGameSpawnGroupMgrId);
 
 	if (g_iCGamePlayerEquipPrecacheId != -1)
 		SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipPrecacheId);
@@ -608,6 +607,9 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 {
 	g_pEntitySystem = GameEntitySystem();
 	g_pEntitySystem->AddListenerEntity(g_pEntityListener);
+
+	if (g_pNetworkServerService->GetIGameServer())
+		g_iSetGameSpawnGroupMgrId = SH_ADD_HOOK(IServer, SetGameSpawnGroupMgr, g_pNetworkServerService->GetIGameServer(), SH_MEMBER(this, &CS2Fixes::Hook_SetGameSpawnGroupMgr), false);
 
 	Message("Hook_StartupServer: %s\n", pszMapName);
 
@@ -990,6 +992,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 	for (int i = 0; i < infoCount; i++)
 	{
 		auto& pInfo = ppInfoList[i];
+		CUtlVector<SpawnGroupHandle_t> m_vecSpawnGroups = *((uint8*)pInfo + 40);
 
 		// the offset happens to have a player index here,
 		// though this is probably part of the client class that contains the CCheckTransmitInfo
@@ -1006,10 +1009,13 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 		if (!pSelfZEPlayer)
 			continue;
 
+		if (m_vecSpawnGroups.Count() != pSelfZEPlayer->GetCheckTransmitSpawnGroupCount())
+			pSelfZEPlayer->SetCheckTransmitSpawnGroupCount(m_vecSpawnGroups.Count());
+
 		auto pClient = GetClientBySlot(iPlayerSlot);
 
-		if (pClient && pSelfZEPlayer->IsAdminFlagSet(ADMFLAG_ROOT))
-			ClientPrint(pSelfController, HUD_PRINTCENTER, "Client loaded SpawnGroups: %d", pClient->m_vecLoadedSpawnGroups.Count());
+		if (pClient && pClient->m_vecLoadedSpawnGroups.Count() != pSelfZEPlayer->GetClientSpawnGroupCount())
+			pSelfZEPlayer->SetClientSpawnGroupCount(pClient->m_vecLoadedSpawnGroups.Count());
 
 		for (int j = 0; j < GetGlobals()->maxClients; j++)
 		{
@@ -1223,29 +1229,10 @@ int CS2Fixes::Hook_LoadEventsFromFile(const char* filename, bool bSearchAll)
 	RETURN_META_VALUE(MRES_IGNORED, 0);
 }
 
-void CS2Fixes::Hook_SetActiveSpawnGroup(SpawnGroupHandle_t h)
+void CS2Fixes::Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr)
 {
-	g_pSpawnGroupMgr = META_IFACEPTR(CSpawnGroupMgrGameSystem);
-
-	RETURN_META(MRES_IGNORED);
-}
-
-CON_COMMAND_F(c_clean_client_spawngroups, "", FCVAR_SPONLY)
-{
-	CUtlVector<SpawnGroupHandle_t> vecActualSpawnGroups;
-	addresses::GetSpawnGroups(g_pSpawnGroupMgr, &vecActualSpawnGroups);
-
-	auto pClients = GetClientList();
-
-	FOR_EACH_VEC(*pClients, i)
-	{
-		auto pClient = (*pClients)[i];
-
-		if (!pClient || pClient->m_vecLoadedSpawnGroups.Count() == vecActualSpawnGroups.Count())
-			continue;
-
-		pClient->m_vecLoadedSpawnGroups = vecActualSpawnGroups;
-	}
+	// This also resets our stored pointer on deletion, since null gets passed into this function, nice!
+	g_pSpawnGroupMgr = (CSpawnGroupMgrGameSystem*)pSpawnGroupMgr;
 }
 
 void CS2Fixes::OnLevelInit(char const* pMapName,
@@ -1283,6 +1270,8 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 void CS2Fixes::OnLevelShutdown()
 {
 	Message("OnLevelShutdown()\n");
+
+	g_iSpawnGroupLoads = 0;
 
 	if (g_cvarVoteManagerEnable.Get())
 		g_pMapVoteSystem->OnLevelShutdown();
