@@ -328,7 +328,9 @@ public:
 	int m_nDeltaTick;									   // 324
 	int m_UnkVariable3;									   // 328
 	int m_nStringTableAckTick;							   // 332
+#ifdef PLATFORM_WINDOWS
 	int m_UnkVariable4;									   // 336
+#endif
 	CUtlVector<SpawnGroupHandle_t> m_vecLoadedSpawnGroups; // 352
 	CFrameSnapshot* m_pLastSnapshot;					   // last send snapshot
 	CMsgPlayerInfo m_playerInfo;						   // 376
