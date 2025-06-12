@@ -22,6 +22,7 @@
 
 #include "adminsystem.h"
 #include "appframework/IAppSystem.h"
+#include "cchecktransmitinfo.h"
 #include "commands.h"
 #include "common.h"
 #include "cs_gameevents.pb.h"
@@ -992,7 +993,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 	for (int i = 0; i < infoCount; i++)
 	{
 		auto& pInfo = ppInfoList[i];
-		CUtlVector<SpawnGroupHandle_t> m_vecSpawnGroups = *((uint8*)pInfo + 40);
+		int iSpawnGroupCount = ((CCheckTransmitInfoExtended*&)pInfo)->m_vecUnkSpawnGroups.Count();
 
 		// the offset happens to have a player index here,
 		// though this is probably part of the client class that contains the CCheckTransmitInfo
@@ -1009,8 +1010,8 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 		if (!pSelfZEPlayer)
 			continue;
 
-		if (m_vecSpawnGroups.Count() != pSelfZEPlayer->GetCheckTransmitSpawnGroupCount())
-			pSelfZEPlayer->SetCheckTransmitSpawnGroupCount(m_vecSpawnGroups.Count());
+		if (iSpawnGroupCount != pSelfZEPlayer->GetCheckTransmitSpawnGroupCount())
+			pSelfZEPlayer->SetCheckTransmitSpawnGroupCount(iSpawnGroupCount);
 
 		auto pClient = GetClientBySlot(iPlayerSlot);
 

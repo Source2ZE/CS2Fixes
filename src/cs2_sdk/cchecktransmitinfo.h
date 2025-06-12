@@ -1,0 +1,36 @@
+/**
+ * =============================================================================
+ * CS2Fixes
+ * Copyright (C) 2023-2025 Source2ZE
+ * =============================================================================
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, version 3.0, as published by the
+ * Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#pragma once
+#include "bitvec.h"
+#include "const.h"
+
+// https://github.com/Wend4r/sourcesdk/blob/d84ab2a1944cc5f6e57256c1c052c272761908e2/public/iservernetworkable.h#L45
+class CCheckTransmitInfoExtended
+{
+public:
+	CBitVec<MAX_EDICTS>* m_pTransmitEntity;
+	CBitVec<MAX_EDICTS>* m_pTransmitNonPlayers;
+	CBitVec<MAX_EDICTS>* m_pUnkBitVec2;
+	CBitVec<MAX_EDICTS>* m_pUnkBitVec3;
+	CBitVec<MAX_EDICTS>* m_pTransmitAlways;
+	CUtlVector<int> m_vecUnkSpawnGroups;
+
+	// NOTE: This is incomplete
+};

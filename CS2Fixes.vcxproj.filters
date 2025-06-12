@@ -217,6 +217,9 @@
     <ClInclude Include="src\cs2_sdk\entityio.h">
       <Filter>Header Files\cs2_sdk</Filter>
     </ClInclude>
+    <ClInclude Include="src\cs2_sdk\cchecktransmitinfo.h">
+      <Filter>Header Files\cs2_sdk</Filter>
+    </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cbaseplayercontroller.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
