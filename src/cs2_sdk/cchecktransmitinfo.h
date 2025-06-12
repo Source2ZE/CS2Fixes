@@ -20,6 +20,7 @@
 #pragma once
 #include "bitvec.h"
 #include "const.h"
+#include "gamesystems/spawngroup_manager.h"
 
 // https://github.com/Wend4r/sourcesdk/blob/d84ab2a1944cc5f6e57256c1c052c272761908e2/public/iservernetworkable.h#L45
 class CCheckTransmitInfoExtended
@@ -30,7 +31,7 @@ public:
 	CBitVec<MAX_EDICTS>* m_pUnkBitVec2;
 	CBitVec<MAX_EDICTS>* m_pUnkBitVec3;
 	CBitVec<MAX_EDICTS>* m_pTransmitAlways;
-	CUtlVector<int> m_vecUnkSpawnGroups;
+	CUtlVector<SpawnGroupHandle_t> m_vecSpawnGroups;
 
 	// NOTE: This is incomplete
 };

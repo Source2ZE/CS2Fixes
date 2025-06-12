@@ -993,7 +993,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 	for (int i = 0; i < infoCount; i++)
 	{
 		auto& pInfo = ppInfoList[i];
-		int iSpawnGroupCount = ((CCheckTransmitInfoExtended*&)pInfo)->m_vecUnkSpawnGroups.Count();
+		int iSpawnGroupCount = ((CCheckTransmitInfoExtended*&)pInfo)->m_vecSpawnGroups.Count();
 
 		// the offset happens to have a player index here,
 		// though this is probably part of the client class that contains the CCheckTransmitInfo
