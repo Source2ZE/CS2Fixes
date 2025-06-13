@@ -71,38 +71,6 @@ public:
 	int m_nCurBit;
 }; // sizeof 40
 
-struct CUtlSignaller_Base
-{
-	CUtlDelegate<void(CUtlSlot*)> m_SlotDeletionDelegate;
-};
-
-enum CopiedLockState_t : int32
-{
-	CLS_NOCOPY = 0,
-	CLS_UNLOCKED = 1,
-	CLS_LOCKED_BY_COPYING_THREAD = 2,
-};
-
-template <class MUTEX, CopiedLockState_t L = CLS_UNLOCKED>
-class CCopyableLock : public MUTEX
-{
-	typedef MUTEX BaseClass;
-
-public:
-	// ...
-};
-
-class CUtlSlot
-{
-	CUtlVectorMT<CUtlVector<CUtlSignaller_Base*>, CCopyableLock<CThreadFastMutex> > m_ConnectedSignallers;
-
-	void* m_pData;
-
-#ifdef __linux__
-	uint32 m_nData2;
-	int16 m_nData2_2;
-#endif
-};
 
 abstract_class INetworkChannelNotify
 {
@@ -110,7 +78,7 @@ public:
 	virtual void OnShutdownChannel(INetChannel * pChannel) = 0;
 };
 
-class CServerSideClientBase : public CUtlSlot, public INetworkChannelNotify, public INetworkMessageProcessingPreFilter
+class CServerSideClientBase : public INetworkChannelNotify, public INetworkMessageProcessingPreFilter
 {
 public:
 	virtual ~CServerSideClientBase() = 0;
@@ -285,6 +253,12 @@ public:																				 // INetworkMessageProcessingPreFilter
 	virtual bool FilterMessage(const CNetMessage* pData, INetChannel* pChannel) = 0; // "Client %d(%s) tried to send a RebroadcastSourceId msg.\n"
 
 public:
+	CUtlString m_unk16;				   // 16
+	[[maybe_unused]] char pad24[0x16]; // 24
+#ifdef __linux__
+	[[maybe_unused]] char pad46[0x10]; // 46
+#endif
+	void (*RebroadcastSource)(int msgID);
 	CUtlString m_UserIDString;					  // 72
 	CUtlString m_Name;							  // 80
 	CPlayerSlot m_nClientSlot;					  // 88
@@ -319,7 +293,7 @@ public:
 	bool m_bIsReplay;			 // 299
 
 private:
-	[[maybe_unused]] char pad29[0xA];
+	[[maybe_unused]] char pad29[0x12];
 
 public:
 	uint32 m_nSendtableCRC;								   // 312
@@ -328,9 +302,7 @@ public:
 	int m_nDeltaTick;									   // 324
 	int m_UnkVariable3;									   // 328
 	int m_nStringTableAckTick;							   // 332
-#ifdef PLATFORM_WINDOWS
 	int m_UnkVariable4;									   // 336
-#endif
 	CUtlVector<SpawnGroupHandle_t> m_vecLoadedSpawnGroups; // 352
 	CFrameSnapshot* m_pLastSnapshot;					   // last send snapshot
 	CMsgPlayerInfo m_playerInfo;						   // 376
