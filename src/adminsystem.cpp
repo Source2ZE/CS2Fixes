@@ -1627,7 +1627,10 @@ std::string GetReason(const CCommand& args, int iArgsBefore, bool bStripUnicode)
 {
 	if (args.ArgC() <= iArgsBefore + 1)
 		return "";
-	std::string strReason = args.ArgS();
+	std::string strTemp = args.ArgS();
+	std::string strReason = "";
+	// Remove all double quotes
+	std::copy_if(strTemp.cbegin(), strTemp.cend(), std::back_inserter(strReason), [](unsigned char c) { return c != '\"'; });
 
 	for (size_t i = 1; i <= iArgsBefore; i++)
 	{
