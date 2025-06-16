@@ -57,8 +57,28 @@ CUtlVector<ZEPlayerHandle> g_vecLeaders;
 static int g_iMarkerCount = 0;
 static bool g_bPingWithLeader = true;
 
+static void RemoveLeader(CCSPlayerController* ccsPly);
+
 // CONVARS
-CConVar<bool> g_cvarEnableLeader("cs2f_leader_enable", FCVAR_NONE, "Whether to enable Leader features", false);
+CConVar<bool> g_cvarEnableLeader(
+	"cs2f_leader_enable", FCVAR_NONE, "Whether to enable Leader features", false,
+	[](CConVar<bool>* cvar, CSplitScreenSlot slot, const bool* new_val, const bool* old_val) {
+		if ((new_val && *new_val) || !GetGlobals())
+			return;
+
+		// Remove all active leaders if disabling convar
+		for (int i = 0; i < GetGlobals()->maxClients; i++)
+		{
+			CCSPlayerController* ccsPly = CCSPlayerController::FromSlot(i);
+			ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+			if (!ccsPly || !pPlayer || !pPlayer->IsLeader())
+				continue;
+
+			RemoveLeader(ccsPly);
+		}
+	});
+
 CConVar<float> g_cvarlLeaderVoteRatio("cs2f_leader_vote_ratio", FCVAR_NONE, "Vote ratio needed for player to become a leader", 0.15f, true, 0.0f, true, 1.0f);
 CConVar<bool> g_cvarLeaderActionsHumanOnly("cs2f_leader_actions_ct_only", FCVAR_NONE, "Whether to allow leader actions (like !beacon) only from human team", true);
 CConVar<bool> g_cvarLeaderMarkerHumanOnly("cs2f_leader_marker_ct_only", FCVAR_NONE, "Whether to have zombie leaders' player_pings spawn in particle markers or not", true);
@@ -91,7 +111,7 @@ Color Leader_GetColor(std::string strColor, ZEPlayer* zpUser = nullptr, CCSPlaye
 }
 
 // This also wipes any invalid entries from g_vecLeaders
-std::pair<int, std::string> GetLeaders()
+static std::pair<int, std::string> GetLeaders()
 {
 	int iLeaders = 0;
 	std::string strLeaders = "";
@@ -170,7 +190,7 @@ std::pair<int, std::string> GetCount(LeaderVisual iType)
 		return std::make_pair(iCount, strPlayerNames.substr(0, strPlayerNames.length() - 2));
 }
 
-bool Leader_SetNewLeader(ZEPlayer* zpLeader, std::string strColor = "")
+static bool Leader_SetNewLeader(ZEPlayer* zpLeader, std::string strColor = "")
 {
 	CCSPlayerController* pLeader = CCSPlayerController::FromSlot(zpLeader->GetPlayerSlot());
 	CCSPlayerPawn* pawnLeader = (CCSPlayerPawn*)pLeader->GetPawn();
@@ -252,7 +272,7 @@ void Leader_ApplyLeaderVisuals(CCSPlayerPawn* pPawn)
 		zpLeader->SetTracerColor(Color(0, 0, 0, 0));
 }
 
-void Leader_RemoveLeaderVisuals(CCSPlayerPawn* pPawn)
+static void Leader_RemoveLeaderVisuals(CCSPlayerPawn* pPawn)
 {
 	g_pZRPlayerClassManager->ApplyPreferredOrDefaultHumanClassVisuals(pPawn);
 
@@ -268,7 +288,37 @@ void Leader_RemoveLeaderVisuals(CCSPlayerPawn* pPawn)
 		zpLeader->EndGlow();
 }
 
-bool Leader_CreateDefendMarker(ZEPlayer* pPlayer, Color clrTint, int iDuration)
+static void RemoveLeader(CCSPlayerController* ccsLeader)
+{
+	if (!ccsLeader)
+		return;
+
+	ZEPlayer* zpLeader = ccsLeader->GetZEPlayer();
+
+	if (!zpLeader || !zpLeader->IsLeader())
+		return;
+
+	ccsLeader->m_iScore() = ccsLeader->m_iScore() - g_cvarLeaderExtraScore.Get();
+	zpLeader->SetLeader(false);
+	zpLeader->SetLeaderColor(Color(0, 0, 0, 0));
+	zpLeader->SetTracerColor(Color(0, 0, 0, 0));
+	zpLeader->SetBeaconColor(Color(0, 0, 0, 0));
+	zpLeader->SetGlowColor(Color(0, 0, 0, 0));
+	FOR_EACH_VEC_BACK(g_vecLeaders, i)
+	{
+		if (g_vecLeaders[i] == zpLeader)
+		{
+			g_vecLeaders.Remove(i);
+			break;
+		}
+	}
+
+	CCSPlayerPawn* pLeader = (ccsLeader->m_iTeamNum != CS_TEAM_CT || !ccsLeader->IsAlive()) ? nullptr : (CCSPlayerPawn*)ccsLeader->GetPawn();
+	if (pLeader)
+		Leader_RemoveLeaderVisuals(pLeader);
+}
+
+static bool Leader_CreateDefendMarker(ZEPlayer* pPlayer, Color clrTint, int iDuration)
 {
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
@@ -950,24 +1000,7 @@ CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a playe
 		return;
 	}
 
-	pTarget->m_iScore() = pTarget->m_iScore() - g_cvarLeaderExtraScore.Get();
-	pPlayerTarget->SetLeader(false);
-	pPlayerTarget->SetLeaderColor(Color(0, 0, 0, 0));
-	pPlayerTarget->SetTracerColor(Color(0, 0, 0, 0));
-	pPlayerTarget->SetBeaconColor(Color(0, 0, 0, 0));
-	pPlayerTarget->SetGlowColor(Color(0, 0, 0, 0));
-	FOR_EACH_VEC_BACK(g_vecLeaders, i)
-	{
-		if (g_vecLeaders[i] == pPlayerTarget)
-		{
-			g_vecLeaders.Remove(i);
-			break;
-		}
-	}
-
-	CCSPlayerPawn* pPawn = (pTarget->m_iTeamNum != CS_TEAM_CT || !pTarget->IsAlive()) ? nullptr : (CCSPlayerPawn*)pTarget->GetPawn();
-	if (pPawn)
-		Leader_RemoveLeaderVisuals(pPawn);
+	RemoveLeader(pTarget);
 
 	if (player == pTarget)
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s resigned from being a leader.", player->GetPlayerName());
@@ -996,24 +1029,7 @@ CON_COMMAND_CHAT(resign, "- Remove leader status from yourself")
 		return;
 	}
 
-	player->m_iScore() = player->m_iScore() - g_cvarLeaderExtraScore.Get();
-	pPlayer->SetLeader(false);
-	pPlayer->SetLeaderColor(Color(0, 0, 0, 0));
-	pPlayer->SetTracerColor(Color(0, 0, 0, 0));
-	pPlayer->SetBeaconColor(Color(0, 0, 0, 0));
-	pPlayer->SetGlowColor(Color(0, 0, 0, 0));
-	FOR_EACH_VEC_BACK(g_vecLeaders, i)
-	{
-		if (g_vecLeaders[i] == pPlayer)
-		{
-			g_vecLeaders.Remove(i);
-			break;
-		}
-	}
-
-	CCSPlayerPawn* pPawn = (player->m_iTeamNum != CS_TEAM_CT || !player->IsAlive()) ? nullptr : (CCSPlayerPawn*)player->GetPawn();
-	if (pPawn)
-		Leader_RemoveLeaderVisuals(pPawn);
+	RemoveLeader(player);
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s resigned from being a leader.", player->GetPlayerName());
 }
