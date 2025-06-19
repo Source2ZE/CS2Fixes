@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -251,10 +251,10 @@ namespace CGameUIHandler
 
 	static std::unordered_map<uint32, CGameUIState> s_repository;
 
-	inline uint64 GetButtons(CPlayer_MovementServices* pMovement)
+	inline uint64 GetButtons(CPlayer_MovementServices* pMovement, int key = 0)
 	{
 		const auto buttonStates = pMovement->m_nButtons().m_pButtonStates();
-		const auto buttons = buttonStates[0];
+		const auto buttons = buttonStates[key];
 		return buttons;
 	}
 
@@ -266,8 +266,9 @@ namespace CGameUIHandler
 
 		const auto spawnFlags = pEntity->m_spawnflags();
 		const auto buttons = GetButtons(pMovement);
+		const auto scrolls = GetButtons(pMovement, 2);
 
-		if ((spawnFlags & CGameUI::SF_GAMEUI_JUMP_DEACTIVATE) != 0 && (buttons & IN_JUMP) != 0)
+		if (((spawnFlags & CGameUI::SF_GAMEUI_JUMP_DEACTIVATE) != 0) && ((buttons & IN_JUMP) != 0 || (scrolls & IN_JUMP) != 0))
 		{
 			DelayInput(pEntity, pPlayer, "Deactivate");
 			return BAD_BUTTONS;
