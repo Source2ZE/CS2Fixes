@@ -45,6 +45,7 @@ extern CGameEntitySystem* g_pEntitySystem;
 extern CGlobalVars* GetGlobals();
 extern IGameEventSystem* g_gameEventSystem;
 extern CUtlVector<CServerSideClient*>* GetClientList();
+extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
 
 CConVar<int> g_cvarAdminImmunityTargetting("cs2f_admin_immunity", FCVAR_NONE, "Mode for which admin immunity system targetting allows: 0 - strictly lower, 1 - equal to or lower, 2 - ignore immunity levels", 0, true, 0, true, 2);
 CConVar<bool> g_cvarEnableMapSteamIds("cs2f_map_steamids_enable", FCVAR_NONE, "Whether to make Steam ID's available to maps", false);
@@ -824,6 +825,17 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot)
 	ZEPlayer* pPlayer = m_vecPlayers[slot.Get()];
 
 	pPlayer->SetInGame(true);
+
+	if (!g_pSpawnGroupMgr)
+		return;
+
+	CUtlVector<SpawnGroupHandle_t> vecActualSpawnGroups;
+	addresses::GetSpawnGroups(g_pSpawnGroupMgr, &vecActualSpawnGroups);
+
+	CServerSideClient* pClient = GetClientBySlot(slot);
+
+	if (pClient && pClient->m_vecLoadedSpawnGroups.Count() != vecActualSpawnGroups.Count())
+		pClient->m_vecLoadedSpawnGroups = vecActualSpawnGroups;
 }
 
 void CPlayerManager::OnLateLoad()
