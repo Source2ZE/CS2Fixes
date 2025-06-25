@@ -304,11 +304,11 @@ void CMapVoteSystem::StartVote()
 
 		bAbort = true;
 	}
-	else if (m_iVoteSize < 2)
+	else if (m_iVoteSize < 2 && g_cvarVoteManagerEnable.Get())
 	{
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Not enough maps available for map vote, aborting! Please have an admin loosen map limits.");
 		Message("Not enough maps available for map vote, aborting!\n");
-		g_pEngineServer2->ServerCommand("mp_match_end_changelevel 1"); // Allow game to auto-switch map again
+		g_pEngineServer2->ServerCommand("mp_match_end_changelevel 1"); // Allow game to auto-switch map again, as of 2025-05-07 CS2 update this may CRASH due to a CS2 bug, probably worth revisiting this if Valve never fixes it
 		m_bIsVoteOngoing = false;
 		bAbort = true;
 	}
