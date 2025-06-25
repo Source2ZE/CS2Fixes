@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "gamesystems/spawngroup_manager.h"
 #include "igameevents.h"
 #include "networksystem/inetworkserializer.h"
 #include <ISmmPlugin.h>
@@ -83,6 +84,7 @@ public: // hooks
 	void Hook_CheckMovingGround(double frametime);
 	void Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity);
 	int Hook_LoadEventsFromFile(const char* filename, bool bSearchAll);
+	void Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr);
 
 public:
 	const char* GetAuthor();

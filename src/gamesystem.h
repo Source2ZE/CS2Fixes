@@ -68,6 +68,7 @@ public:
 	GS_EVENT(ServerPreEntityThink);
 	GS_EVENT(ServerPostEntityThink);
 	GS_EVENT(GameShutdown);
+	GS_EVENT(PostSpawnGroupLoad);
 
 	void Shutdown() override
 	{

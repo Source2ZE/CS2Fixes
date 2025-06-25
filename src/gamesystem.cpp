@@ -35,6 +35,8 @@
 extern CGlobalVars* GetGlobals();
 extern CGameConfig* g_GameConfig;
 extern CCSGameRules* g_pGameRules;
+extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
+extern CUtlVector<CServerSideClient*>* GetClientList();
 
 CBaseGameSystemFactory** CBaseGameSystemFactory::sm_pFirst = nullptr;
 
@@ -185,4 +187,27 @@ GS_EVENT_MEMBER(CGameSystem, ServerPostEntityThink)
 GS_EVENT_MEMBER(CGameSystem, GameShutdown)
 {
 	g_pGameRules = nullptr;
+}
+
+GS_EVENT_MEMBER(CGameSystem, PostSpawnGroupLoad)
+{
+	if (!g_pSpawnGroupMgr)
+		return;
+
+	CUtlVector<SpawnGroupHandle_t> vecActualSpawnGroups;
+	addresses::GetSpawnGroups(g_pSpawnGroupMgr, &vecActualSpawnGroups);
+
+	auto pClients = GetClientList();
+
+	// Ensure clients have no leaked spawngroups every time a new one loads
+	// Due to a timing problem for leaked spawngroups with this callback, clients may have one lingering, this is fine since it'll still be taken care of next time a spawngroup loads
+	FOR_EACH_VEC(*pClients, i)
+	{
+		auto pClient = (*pClients)[i];
+
+		if (!pClient || pClient->m_vecLoadedSpawnGroups.Count() == vecActualSpawnGroups.Count())
+			continue;
+
+		pClient->m_vecLoadedSpawnGroups = vecActualSpawnGroups;
+	}
 }
