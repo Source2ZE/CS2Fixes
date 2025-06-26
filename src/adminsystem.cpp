@@ -35,7 +35,11 @@
 #include "playermanager.h"
 #include "utils/entity.h"
 #include "votemanager.h"
+#include <fstream>
 #include <vector>
+
+#undef snprintf
+#include "vendor/nlohmann/json.hpp"
 
 extern IVEngineServer2* g_pEngineServer2;
 extern CGameEntitySystem* g_pEntitySystem;
@@ -1237,9 +1241,9 @@ CAdminSystem::CAdminSystem()
 	m_iDCPlyIndex = 0;
 }
 
-bool CAdminSystem::LoadAdmins()
+// TODO: Remove this once servers have been given a few months to update cs2fixes
+bool CAdminSystem::ConvertAdminsKVToJSON()
 {
-	m_vecAdmins.Purge();
 	KeyValues* pKV = new KeyValues("admins");
 	KeyValues::AutoDelete autoDelete(pKV);
 
@@ -1250,42 +1254,162 @@ bool CAdminSystem::LoadAdmins()
 		Warning("Failed to load %s\n", pszPath);
 		return false;
 	}
+
+	ordered_json jAdmins;
+
+	jAdmins["Admins"] = ordered_json(ordered_json::value_t::object);
+
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
-		const char* pszName = pKey->GetName();
-		const char* pszSteamID = pKey->GetString("steamid", nullptr);
-		const char* pszFlags = pKey->GetString("flags", nullptr);
-		int iImmunityLevel = pKey->GetInt("immunity", -1);
+		ordered_json jAdmin;
 
-		if (!pszSteamID)
+		if (!pKey->FindKey("steamid"))
 		{
-			Warning("Admin entry %s is missing 'steam' key\n", pszName);
+			Warning("Admin entry %s is missing 'steam' key\n", pKey->GetName());
 			return false;
 		}
 
-		if (!pszFlags)
-		{
-			Warning("Admin entry %s is missing 'flags' key\n", pszName);
-			return false;
-		}
+		jAdmin["name"] = pKey->GetName();
 
-		if (iImmunityLevel < 0)
-		{
-			Warning("Admin entry %s is missing 'immunity' key\n", pszName);
-			iImmunityLevel = 0; // Zero is default immunity, so set that if not given
-		}
+		if (pKey->FindKey("flags"))
+			jAdmin["flags"] = pKey->GetString("flags", nullptr);
 
-		ConMsg("Loaded admin %s\n", pszName);
-		ConMsg(" - Steam ID: %5s\n", pszSteamID);
-		ConMsg(" - Flags: %5s\n", pszFlags);
-		ConMsg(" - Immunity: %i\n", iImmunityLevel);
+		if (pKey->FindKey("immunity"))
+			jAdmin["immunity"] = pKey->GetInt("immunity", 0);
 
-		uint64 iFlags = ParseFlags(pszFlags);
-
-		// Let's just use steamID64 for now
-		m_vecAdmins.AddToTail(CAdmin(pszName, atoll(pszSteamID), iFlags, iImmunityLevel));
+		jAdmins["Admins"][pKey->GetString("steamid", "")] = jAdmin;
 	}
 
+	const char* pszJsonPath = "addons/cs2fixes/configs/admins.jsonc";
+	const char* pszKVConfigRenamePath = "addons/cs2fixes/configs/admins_old.cfg";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
+	std::ofstream jsonFile(szPath);
+
+	if (!jsonFile.is_open())
+	{
+		Panic("Failed to open %s\n", pszJsonPath);
+		return false;
+	}
+
+	jsonFile << std::setfill('\t') << std::setw(1) << jAdmins << std::endl;
+
+	char szKVRenamePath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszPath);
+	V_snprintf(szKVRenamePath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVConfigRenamePath);
+
+	std::rename(szPath, szKVRenamePath);
+
+	// remove old cfg example if it exists
+	const char* pszKVExamplePath = "addons/cs2fixes/configs/admins.cfg.example";
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVExamplePath);
+	std::remove(szPath);
+
+	Message("Successfully converted KV1 admins.cfg to JSON format at %s\n", pszJsonPath);
+	return true;
+}
+
+bool CAdminSystem::LoadAdmins()
+{
+	m_mapAdmins.clear();
+	m_mapAdminGroups.clear();
+
+	const char* pszJsonPath = "addons/cs2fixes/configs/admins.jsonc";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
+	std::ifstream jsonFile(szPath);
+
+	if (!jsonFile.is_open())
+	{
+		if (!ConvertAdminsKVToJSON())
+		{
+			Panic("Failed to open %s and convert KV1 admins.cfg to JSON format, admins are not loaded!\n", pszJsonPath);
+			return false;
+		}
+
+		jsonFile.open(szPath);
+	}
+
+	ordered_json jAdminConfig = ordered_json::parse(jsonFile, nullptr, false, true);
+
+	if (jAdminConfig.is_discarded())
+	{
+		Panic("Failed parsing JSON from %s, admins are not loaded!\n", pszJsonPath);
+		return false;
+	}
+
+	ordered_json jAdmins = jAdminConfig.value("Admins", ordered_json());
+
+	if (jAdmins.empty())
+	{
+		Panic("Failed parsing JSON from %s, admins are not loaded!\n", pszJsonPath);
+		return false;
+	}
+
+	ordered_json jGroups = jAdminConfig.value("Groups", ordered_json());
+	for (auto it = jGroups.cbegin(); it != jGroups.cend(); ++it)
+	{
+		const json& jGroup = it.value();
+
+		if (jGroup.contains("immunity") && !jGroup["immunity"].is_number())
+		{
+			Panic("Group '%s' has non-numeric 'immunity' field\n", it.key().c_str());
+			return false;
+		}
+
+		CAdminBase group = CAdminBase(ParseFlags(jGroup.value("flags", "")), jGroup.value("immunity", 0));
+		m_mapAdminGroups.emplace(it.key(), group);
+
+		ConMsg("Loaded group %s\n", it.key().c_str());
+		ConMsg(" - Flags: %s\n", StringifyFlags(group.GetFlags()).c_str());
+		ConMsg(" - Immunity: %i\n", group.GetImmunity());
+	}
+
+	for (auto it = jAdmins.cbegin(); it != jAdmins.cend(); ++it)
+	{
+		const json& jAdmin = it.value();
+
+		if (jAdmin.contains("immunity") && !jAdmin["immunity"].is_number())
+		{
+			Panic("Admin '%s' has non-numeric 'immunity' field\n", it.key().c_str());
+			return false;
+		}
+
+		uint64 iFlags = ParseFlags(jAdmin.value("flags", ""));
+		int iImmunity = jAdmin.value("immunity", 0);
+
+		ordered_json jInheritedGroups = jAdmin.value("groups", ordered_json());
+		for (const auto& groupName : jInheritedGroups)
+		{
+			if (!groupName.is_string())
+			{
+				Panic("Admin '%s' has invalid group name in 'groups' array\n", it.key().c_str());
+				return false;
+			}
+
+			const std::string& name = groupName.get<std::string>();
+
+			auto jt = m_mapAdminGroups.find(name);
+			if (jt == m_mapAdminGroups.end())
+			{
+				Panic("Admin '%s' has invalid group name '%s'\n", it.key().c_str(), name.c_str());
+				return false;
+			}
+
+			const CAdminBase& group = jt->second;
+
+			iFlags |= group.GetFlags();
+			iImmunity = std::max(iImmunity, group.GetImmunity());
+		}
+
+		CAdmin admin = CAdmin(jAdmin.value("name", ""), iFlags, iImmunity);
+		m_mapAdmins.emplace(atoll(it.key().c_str()), admin);
+
+		ConMsg("Loaded admin %s\n", it.key().c_str());
+		ConMsg(" - Name: %s\n", admin.GetName().c_str());
+		ConMsg(" - Flags: %s\n", StringifyFlags(admin.GetFlags()).c_str());
+		ConMsg(" - Immunity: %i\n", admin.GetImmunity());
+	}
 	return true;
 }
 
@@ -1451,23 +1575,20 @@ bool CAdminSystem::FindAndRemoveInfractionSteamId64(uint64 steamid64, CInfractio
 
 CAdmin* CAdminSystem::FindAdmin(uint64 iSteamID)
 {
-	FOR_EACH_VEC(m_vecAdmins, i)
-	{
-		if (m_vecAdmins[i].GetSteamID() == iSteamID)
-			return &m_vecAdmins[i];
-	}
+	auto it = m_mapAdmins.find(iSteamID);
+	if (it == m_mapAdmins.end())
+		return nullptr;
 
-	return nullptr;
+	return &it->second;
 }
 
-uint64 CAdminSystem::ParseFlags(const char* pszFlags)
+uint64 CAdminSystem::ParseFlags(std::string strFlags)
 {
 	uint64 flags = 0;
-	size_t length = V_strlen(pszFlags);
 
-	for (size_t i = 0; i < length; i++)
+	for (size_t i = 0; i < strFlags.length(); i++)
 	{
-		char c = tolower(pszFlags[i]);
+		char c = tolower(strFlags[i]);
 		if (c < 'a' || c > 'z')
 			continue;
 
@@ -1478,6 +1599,20 @@ uint64 CAdminSystem::ParseFlags(const char* pszFlags)
 	}
 
 	return flags;
+}
+
+std::string CAdminSystem::StringifyFlags(uint64 iFlags)
+{
+	if (iFlags == static_cast<uint64>(-1))
+		return "z"; // root / all permissions
+
+	std::string strFlags;
+
+	for (int i = 0; i < 25; ++i) // 'a' to 'y'
+		if (iFlags & (static_cast<uint64>(1) << i))
+			strFlags += static_cast<char>('a' + i);
+
+	return strFlags;
 }
 
 void CAdminSystem::AddDisconnectedPlayer(const char* pszName, uint64 xuid, const char* pszIP)
