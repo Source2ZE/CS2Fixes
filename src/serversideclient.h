@@ -71,7 +71,6 @@ public:
 	int m_nCurBit;
 }; // sizeof 40
 
-
 abstract_class INetworkChannelNotify
 {
 public:

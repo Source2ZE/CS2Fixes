@@ -647,9 +647,9 @@ std::vector<int> CMapVoteSystem::GetMapIndexesFromSubstring(const char* sMapSubs
 	return vecMaps;
 }
 
-uint64 CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, const char* sMapSubstring, bool bAllowWorkshopID)
+uint64 CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, const char* sMapSubstring, bool bAdmin)
 {
-	if (bAllowWorkshopID)
+	if (bAdmin)
 	{
 		uint64 iWorkshopID = V_StringToUint64(sMapSubstring, 0, NULL, NULL, PARSING_FLAG_SKIP_WARNING);
 
@@ -665,6 +665,17 @@ uint64 CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, c
 	}
 
 	std::vector<int> foundIndexes = GetMapIndexesFromSubstring(sMapSubstring);
+
+	// Don't list disabled maps in non-admin commands
+	if (!bAdmin)
+	{
+		for (int iIndex : foundIndexes)
+		{
+			// Only erase if vector has multiple elements, so we can still give "map disabled" output in single-match scenarios
+			if (!GetMapEnabledStatus(iIndex) && foundIndexes.size() > 1)
+				foundIndexes.erase(std::remove(foundIndexes.begin(), foundIndexes.end(), iIndex), foundIndexes.end());
+		}
+	}
 
 	if (foundIndexes.size() > 0)
 	{
