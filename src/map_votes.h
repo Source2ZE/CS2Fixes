@@ -175,6 +175,7 @@ public:
 	std::string StringToLower(std::string sValue);
 	void SetDisabledCooldowns(bool bValue) { g_bDisableCooldowns = bValue; } // Can be used by custom fork features, e.g. an auto-restart
 	void ProcessGroupCooldowns();
+	void ReloadCurrentMap();
 
 private:
 	int WinningMapIndex();
