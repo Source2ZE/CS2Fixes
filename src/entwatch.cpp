@@ -91,16 +91,12 @@ void ItemGlowDistanceChanged(CConVar<int>* ref, CSplitScreenSlot nSlot, const in
 			continue;
 
 		if (pItemWeapon->m_Glow().m_bGlowing)
-		{
 			if (newValue > 0)
 				pItemWeapon->m_Glow().m_nGlowRange = newValue;
 			else
 				item->EndGlow();
-		}
 		else if (item->bShouldGlow && newValue > 0)
-		{
 			item->StartGlow();
-		}
 	}
 }
 CConVar<int> g_cvarItemDroppedGlow("entwatch_glow", FCVAR_NONE, "Distance that dropped item weapon glow will be visible (0 = glow disabled)", 1000, true, 0, false, 0, ItemGlowDistanceChanged);
@@ -981,7 +977,7 @@ void EWItemInstance::StartGlow()
 		Message("Error getting weapon entity while creating item glow.\n");
 		return;
 	}
-	
+
 	int r = colorGlow.r();
 	int g = colorGlow.g();
 	int b = colorGlow.b();
@@ -1027,7 +1023,7 @@ bool EWItemInstance::IsEmpty()
 	// Empty items don't glow when dropped, so have to be careful since some items can recharge
 	// Only return true if ALL handlers that appear in any way (chat/ui) are empty (non-counter max-uses)
 	// If it has no visible handlers, its not empty
-	// 
+	//
 	// TODO: maybe add an optional config setting for whether a handler is rechargable (depends if people complain)
 
 	if (vecHandlers.size() < 1)
@@ -1043,9 +1039,7 @@ bool EWItemInstance::IsEmpty()
 		if ((vecHandlers[i]->bShowHud || vecHandlers[i]->bShowUse) && vecHandlers[i]->szOutput != "")
 		{
 			if (vecHandlers[i]->IsCounter() || vecHandlers[i]->mode != EWHandlerMode::MaxUses)
-			{
 				return false;
-			}
 
 			// Maxuses handler (can be empty)
 			// Check if it is empty

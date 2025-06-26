@@ -225,7 +225,7 @@ void ZEPlayer::SpawnFlashLight()
 		CBaseViewModel* pViewModel = GetOrCreateCustomViewModel(pPawn);
 		if (!pViewModel)
 			return;
-		
+
 		pLight->SetParent(pViewModel);
 	}
 

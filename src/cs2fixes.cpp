@@ -136,7 +136,7 @@ IVEngineServer2* g_pEngineServer2 = nullptr;
 CGameConfig* g_GameConfig = nullptr;
 ISteamHTTP* g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
-CCSGameRules* g_pGameRules = nullptr; // Will be null between map end & new map startup, null check if necessary!
+CCSGameRules* g_pGameRules = nullptr;				  // Will be null between map end & new map startup, null check if necessary!
 CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr = nullptr; // Will be null between map end & new map startup, null check if necessary!
 int g_iCGamePlayerEquipUseId = -1;
 int g_iCGamePlayerEquipPrecacheId = -1;
@@ -747,8 +747,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 			soundEventHashes.insert(GetSoundEventHash("Weapon_AWP.Zoom"));
 			soundEventHashes.insert(GetSoundEventHash("Weapon_AWP.ZoomOut"));
 			soundEventHashes.insert(GetSoundEventHash("Weapon_Revolver.Prepare"));
-			soundEventHashes.insert(GetSoundEventHash("Weapon.AutoSemiAutoSwitch"));
-		);
+			soundEventHashes.insert(GetSoundEventHash("Weapon.AutoSemiAutoSwitch")););
 
 		if (!soundEventHashes.contains(msg->soundevent_hash()))
 			return;
