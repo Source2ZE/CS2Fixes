@@ -872,6 +872,9 @@ void CMapVoteSystem::ForceNextMap(CCSPlayerController* pController, const char* 
 
 	uint64 iFoundMap = HandlePlayerMapLookup(pController, sMapSubstring, true);
 
+	if (iFoundMap == -1)
+		return;
+
 	if (GetForcedNextMap() == iFoundMap)
 	{
 		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "\x06%s\x01 is already the next map!", GetForcedNextMapName().c_str());
