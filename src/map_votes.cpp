@@ -70,14 +70,8 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 	CALL_VIRTUAL(void, g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup"), g_pGameTypes, "workshop");
 
 	// Updating the mapgroup requires reloading the map for everything to load properly
-	char sChangeMapCmd[128] = "";
+	g_pMapVoteSystem->ReloadCurrentMap();
 
-	if (g_pMapVoteSystem->GetCurrentWorkshopMap() != 0)
-		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", g_pMapVoteSystem->GetCurrentWorkshopMap());
-	else
-		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", g_pMapVoteSystem->GetCurrentMapName());
-
-	g_pEngineServer2->ServerCommand(sChangeMapCmd);
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Map list reloaded!");
 }
 
@@ -273,7 +267,7 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 
 void CMapVoteSystem::StartVote()
 {
-	if (!g_pGameRules)
+	if (!g_cvarVoteManagerEnable.Get() || !g_pGameRules)
 		return;
 
 	m_bIsVoteOngoing = true;
@@ -287,15 +281,7 @@ void CMapVoteSystem::StartVote()
 	m_iVoteSize = std::min((int)vecPossibleMaps.size(), g_cvarVoteMaxMaps.Get());
 	bool bAbort = false;
 
-	static ConVarRefAbstract mp_endmatch_votenextmap("mp_endmatch_votenextmap");
-	bool bVoteEnabled = mp_endmatch_votenextmap.GetBool();
-
-	if (!bVoteEnabled)
-	{
-		m_bIsVoteOngoing = false;
-		bAbort = true;
-	}
-	else if (m_iForcedNextMap != -1)
+	if (m_iForcedNextMap != -1)
 	{
 		new CTimer(6.0f, false, true, []() {
 			g_pMapVoteSystem->FinishVote();
@@ -304,13 +290,19 @@ void CMapVoteSystem::StartVote()
 
 		bAbort = true;
 	}
-	else if (m_iVoteSize < 2 && g_cvarVoteManagerEnable.Get())
+	else if (m_iVoteSize < 2)
 	{
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Not enough maps available for map vote, aborting! Please have an admin loosen map limits.");
 		Message("Not enough maps available for map vote, aborting!\n");
-		g_pEngineServer2->ServerCommand("mp_match_end_changelevel 1"); // Allow game to auto-switch map again, as of 2025-05-07 CS2 update this may CRASH due to a CS2 bug, probably worth revisiting this if Valve never fixes it
 		m_bIsVoteOngoing = false;
 		bAbort = true;
+
+		// Reload the current map as a fallback
+		// Previously we fell back to game behaviour which could choose a random map in mapgroup, but a crash bug with default map changes was introduced in 2025-05-07 CS2 update
+		new CTimer(6.0f, false, true, []() {
+			g_pMapVoteSystem->ReloadCurrentMap();
+			return -1.0f;
+		});
 	}
 
 	if (bAbort)
@@ -324,10 +316,6 @@ void CMapVoteSystem::StartVote()
 
 		return;
 	}
-
-	// We're checking this later, so we can always disable the map vote if mp_endmatch_votenextmap is disabled
-	if (!g_cvarVoteManagerEnable.Get())
-		return;
 
 	// Reset the player vote counts as the vote just started
 	for (int i = 0; i < MAXPLAYERS; i++)
@@ -1323,6 +1311,18 @@ float CCooldown::GetCurrentCooldown()
 		fRemainingTime = fCurrentRemainingTime;
 
 	return fRemainingTime;
+}
+
+void CMapVoteSystem::ReloadCurrentMap()
+{
+	char sChangeMapCmd[128] = "";
+
+	if (GetCurrentWorkshopMap() != 0)
+		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", GetCurrentWorkshopMap());
+	else
+		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", GetCurrentMapName());
+
+	g_pEngineServer2->ServerCommand(sChangeMapCmd);
 }
 
 // TODO: remove this once servers have been given at least a few months to update cs2fixes
