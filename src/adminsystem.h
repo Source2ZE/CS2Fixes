@@ -146,7 +146,9 @@ public:
 		m_iFlags(iFlags), m_iAdminImmunity(iAdminImmunity)
 	{}
 
+	void SetFlags(uint64 iFlags) { m_iFlags = iFlags; };
 	uint64 GetFlags() const { return m_iFlags; }
+	void SetImmunity(std::uint16_t iAdminImmunity) {m_iAdminImmunity = static_cast<int>(iAdminImmunity); }
 	int GetImmunity() const { return m_iAdminImmunity; }
 
 private:
@@ -157,14 +159,17 @@ private:
 class CAdmin : public CAdminBase
 {
 public:
-	CAdmin(std::string strName, uint64 iFlags, int iAdminImmunity) :
-		CAdminBase(iFlags, iAdminImmunity), m_strName(strName)
+	CAdmin(std::string strName, uint64 iFlags, int iAdminImmunity, uint64 iSteamID) :
+		CAdminBase(iFlags, iAdminImmunity), m_strName(strName), m_iSteamID(iSteamID)
 	{}
 
 	std::string GetName() { return m_strName; }
+	void SetFlags(uint64 iFlags);
+	void SetImmunity(std::uint16_t iAdminImmunity);
 
 private:
 	std::string m_strName;
+	uint64 m_iSteamID;
 };
 
 class CAdminSystem

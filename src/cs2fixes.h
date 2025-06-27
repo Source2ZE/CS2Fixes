@@ -20,6 +20,7 @@
 #pragma once
 
 #include "gamesystems/spawngroup_manager.h"
+#include "public/ics2fixes.h"
 #include "igameevents.h"
 #include "networksystem/inetworkserializer.h"
 #include <ISmmPlugin.h>
@@ -34,7 +35,7 @@ struct TouchLinked_t;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
 
-class CS2Fixes : public ISmmPlugin, public IMetamodListener
+class CS2Fixes : public ISmmPlugin, public IMetamodListener, public ICS2Fixes
 {
 public:
 	bool Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool late);
@@ -85,6 +86,13 @@ public: // hooks
 	void Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity);
 	int Hook_LoadEventsFromFile(const char* filename, bool bSearchAll);
 	void Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr);
+
+public: // MetaMod API
+	void* OnMetamodQuery(const char* iface, int* ret);
+	std::uint64_t GetAdminFlags(std::uint64_t iSteam64ID) const override;
+	void SetAdminFlags(std::uint64_t iSteam64ID, std::uint64_t iFlags) override;
+	int GetAdminImmunity(std::uint64_t iSteam64ID) const override;
+	void SetAdminImmunity(std::uint64_t iSteam64ID, std::uint16_t iImmunity) override;
 
 public:
 	const char* GetAuthor();
