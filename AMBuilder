@@ -27,6 +27,7 @@ for sdk_target in MMSPlugin.sdk_targets:
   binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath, 'src', 'cs2_sdk'),
     os.path.join(builder.sourcePath, 'src', 'utils'),
+    os.path.join(builder.sourcePath, 'public'),
     os.path.join(builder.sourcePath, 'sdk', 'thirdparty', 'protobuf-3.21.8', 'src'),
     os.path.join(builder.sourcePath, 'vendor', 'funchook', 'include'),
   ]

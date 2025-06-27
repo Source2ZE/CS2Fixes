@@ -1225,6 +1225,68 @@ void CS2Fixes::Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr)
 	g_pSpawnGroupMgr = (CSpawnGroupMgrGameSystem*)pSpawnGroupMgr;
 }
 
+void* CS2Fixes::OnMetamodQuery(const char* iface, int* ret)
+{
+	if (V_strcmp(iface, CS2FIXES_INTERFACE))
+	{
+		if (ret)
+			*ret = META_IFACE_FAILED;
+
+		return nullptr;
+	}
+
+	if (ret)
+		*ret = META_IFACE_OK;
+
+	return static_cast<ICS2Fixes*>(&g_CS2Fixes);
+}
+
+std::uint64_t CS2Fixes::GetAdminFlags(std::uint64_t iSteam64ID) const
+{
+	if (!g_pAdminSystem)
+		return 0;
+
+	const CAdmin* admin = g_pAdminSystem->FindAdmin(static_cast<uint64>(iSteam64ID));
+	if (!admin)
+		return 0;
+
+	return admin->GetFlags();
+}
+
+void CS2Fixes::SetAdminFlags(std::uint64_t iSteam64ID, std::uint64_t iFlags)
+{
+	if (!g_pAdminSystem)
+		return;
+
+	CAdmin* admin = g_pAdminSystem->FindAdmin(static_cast<uint64>(iSteam64ID));
+	
+	if (admin)
+		admin->SetFlags(static_cast<uint64>(iFlags));
+}
+
+int CS2Fixes::GetAdminImmunity(std::uint64_t iSteam64ID) const
+{
+	if (!g_pAdminSystem)
+		return -1;
+
+	const CAdmin* admin = g_pAdminSystem->FindAdmin(static_cast<uint64>(iSteam64ID));
+	if (!admin)
+		return -1;
+
+	return admin->GetImmunity();
+}
+
+void CS2Fixes::SetAdminImmunity(std::uint64_t iSteam64ID, std::uint16_t iImmunity)
+{
+	if (!g_pAdminSystem)
+		return;
+
+	CAdmin* admin = g_pAdminSystem->FindAdmin(static_cast<uint64>(iSteam64ID));
+
+	if (admin)
+		admin->SetImmunity(iImmunity);
+}
+
 void CS2Fixes::OnLevelInit(char const* pMapName,
 						   char const* pMapEntities,
 						   char const* pOldLevel,

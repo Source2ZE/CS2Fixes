@@ -45,6 +45,7 @@ extern IVEngineServer2* g_pEngineServer2;
 extern CGameEntitySystem* g_pEntitySystem;
 extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
+extern CPlayerManager* g_playerManager;
 
 CAdminSystem* g_pAdminSystem = nullptr;
 
@@ -1230,6 +1231,36 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADM
 }
 #endif
 
+void CAdmin::SetFlags(uint64 iFlags)
+{
+	CAdminBase::SetFlags(iFlags);
+
+	if (!GetGlobals())
+		return;
+
+	ZEPlayer* zpAdmin = g_playerManager->GetPlayerFromSteamId(m_iSteamID);
+	if (!zpAdmin) // Authentication is checked in GetPlayerFromSteamId, so dont need to redo it here
+		return;
+
+	zpAdmin->SetAdminFlags(iFlags);
+}
+
+void CAdmin::SetImmunity(std::uint16_t iAdminImmunity)
+{
+	if (iAdminImmunity > INT_MAX)
+		iAdminImmunity = INT_MAX;
+	CAdminBase::SetImmunity(iAdminImmunity);
+
+	if (!GetGlobals())
+		return;
+
+	ZEPlayer* zpAdmin = g_playerManager->GetPlayerFromSteamId(m_iSteamID);
+	if (!zpAdmin) // Authentication is checked in GetPlayerFromSteamId, so dont need to redo it here
+		return;
+
+	zpAdmin->SetAdminImmunity(static_cast<int>(iAdminImmunity)); // should be safe to cast, as range for std::uint16_t is [0, INT_MAX]
+}
+
 CAdminSystem::CAdminSystem()
 {
 	LoadAdmins();
@@ -1402,8 +1433,9 @@ bool CAdminSystem::LoadAdmins()
 			iImmunity = std::max(iImmunity, group.GetImmunity());
 		}
 
-		CAdmin admin = CAdmin(jAdmin.value("name", ""), iFlags, iImmunity);
-		m_mapAdmins.emplace(atoll(it.key().c_str()), admin);
+		uint64 iSteamID = atoll(it.key().c_str());
+		CAdmin admin = CAdmin(jAdmin.value("name", ""), iFlags, iImmunity, iSteamID);
+		m_mapAdmins.emplace(iSteamID, admin);
 
 		ConMsg("Loaded admin %s\n", it.key().c_str());
 		ConMsg(" - Name: %s\n", admin.GetName().c_str());
