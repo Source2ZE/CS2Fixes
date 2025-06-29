@@ -1253,38 +1253,36 @@ std::uint64_t CS2Fixes::GetAdminFlags(std::uint64_t iSteam64ID) const
 	return admin->GetFlags();
 }
 
-void CS2Fixes::SetAdminFlags(std::uint64_t iSteam64ID, std::uint64_t iFlags)
+bool CS2Fixes::SetAdminFlags(std::uint64_t iSteam64ID, std::uint64_t iFlags)
 {
 	if (!g_pAdminSystem)
-		return;
+		return false;
 
 	CAdmin* admin = g_pAdminSystem->FindAdmin(static_cast<uint64>(iSteam64ID));
-	
-	if (admin)
-		admin->SetFlags(static_cast<uint64>(iFlags));
+	g_pAdminSystem->AddOrUpdateAdmin(static_cast<uint64>(iSteam64ID), iFlags, admin ? admin->GetImmunity() : 0);
+	return true;
 }
 
 int CS2Fixes::GetAdminImmunity(std::uint64_t iSteam64ID) const
 {
 	if (!g_pAdminSystem)
-		return -1;
+		return 0;
 
 	const CAdmin* admin = g_pAdminSystem->FindAdmin(static_cast<uint64>(iSteam64ID));
 	if (!admin)
-		return -1;
+		return 0;
 
 	return admin->GetImmunity();
 }
 
-void CS2Fixes::SetAdminImmunity(std::uint64_t iSteam64ID, std::uint16_t iImmunity)
+bool CS2Fixes::SetAdminImmunity(std::uint64_t iSteam64ID, std::uint16_t iImmunity)
 {
 	if (!g_pAdminSystem)
-		return;
+		return false;
 
 	CAdmin* admin = g_pAdminSystem->FindAdmin(static_cast<uint64>(iSteam64ID));
-
-	if (admin)
-		admin->SetImmunity(iImmunity);
+	g_pAdminSystem->AddOrUpdateAdmin(static_cast<uint64>(iSteam64ID), admin ? admin->GetFlags() : 0, iImmunity);
+	return true;
 }
 
 void CS2Fixes::OnLevelInit(char const* pMapName,

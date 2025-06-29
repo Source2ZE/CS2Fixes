@@ -177,6 +177,7 @@ class CAdminSystem
 public:
 	CAdminSystem();
 	bool LoadAdmins();
+	void AddOrUpdateAdmin(uint64 iSteamID, uint64 iFlags = 0, int iAdminImmunity = 0);
 	bool LoadInfractions();
 	void AddInfraction(CInfractionBase*);
 	void SaveInfractions();
