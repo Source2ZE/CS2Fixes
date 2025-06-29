@@ -1445,6 +1445,22 @@ bool CAdminSystem::LoadAdmins()
 	return true;
 }
 
+// If an admin with this iSteamID already exists, just update Flags and Immunity.
+void CAdminSystem::AddOrUpdateAdmin(uint64 iSteamID, uint64 iFlags, int iAdminImmunity)
+{
+	CAdmin* admin = FindAdmin(iSteamID);
+	if (!admin)
+	{
+		m_mapAdmins.emplace(iSteamID, CAdmin("< blank >", iFlags, iAdminImmunity, iSteamID));
+		admin = FindAdmin(iSteamID);
+	}
+	
+	// Set these even if we created a new admin with the flags, as these have
+	// extra logic to apply new values to the player if they are currently online
+	admin->SetFlags(iFlags);
+	admin->SetImmunity(iAdminImmunity);
+}
+
 bool CAdminSystem::LoadInfractions()
 {
 	m_vecInfractions.PurgeAndDeleteElements();

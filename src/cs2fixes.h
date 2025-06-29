@@ -90,9 +90,9 @@ public: // hooks
 public: // MetaMod API
 	void* OnMetamodQuery(const char* iface, int* ret);
 	std::uint64_t GetAdminFlags(std::uint64_t iSteam64ID) const override;
-	void SetAdminFlags(std::uint64_t iSteam64ID, std::uint64_t iFlags) override;
+	bool SetAdminFlags(std::uint64_t iSteam64ID, std::uint64_t iFlags) override;
 	int GetAdminImmunity(std::uint64_t iSteam64ID) const override;
-	void SetAdminImmunity(std::uint64_t iSteam64ID, std::uint16_t iImmunity) override;
+	bool SetAdminImmunity(std::uint64_t iSteam64ID, std::uint16_t iImmunity) override;
 
 public:
 	const char* GetAuthor();
