@@ -61,7 +61,6 @@ void SetupCTeams();
 bool ZR_IsTeamAlive(int iTeamNum);
 
 EZRRoundState g_ZRRoundState = EZRRoundState::ROUND_START;
-static int g_iInfectionCountDown = 0;
 static bool g_bRespawnEnabled = true;
 static CHandle<CBaseEntity> g_hRespawnToggler;
 static CHandle<CTeam> g_hTeamCT;
@@ -1453,10 +1452,15 @@ void ZR_StartInitialCountdown()
 	if (g_cvarInfectSpawnTimeMin.Get() > g_cvarInfectSpawnTimeMax.Get())
 		g_cvarInfectSpawnTimeMin.Set(g_cvarInfectSpawnTimeMax.Get());
 
-	g_iInfectionCountDown = g_cvarInfectSpawnTimeMin.Get() + (rand() % (g_cvarInfectSpawnTimeMax.Get() - g_cvarInfectSpawnTimeMin.Get() + 1));
-	new CTimer(0.0f, false, false, []() {
+	int iRand = rand();
+	auto iSecondsElapsed = std::make_shared<int>(0);
+	new CTimer(0.0f, false, false, [iRand, iSecondsElapsed]() {
 		if (g_ZRRoundState != EZRRoundState::ROUND_START)
 			return -1.0f;
+
+		int g_iInfectionCountDown = g_cvarInfectSpawnTimeMin.Get() + (iRand % (g_cvarInfectSpawnTimeMax.Get() - g_cvarInfectSpawnTimeMin.Get() + 1));
+		g_iInfectionCountDown -= *iSecondsElapsed;
+
 		if (g_iInfectionCountDown <= 0)
 		{
 			ZR_InitialInfection();
@@ -1472,7 +1476,7 @@ void ZR_StartInitialCountdown()
 			if (g_iInfectionCountDown % 5 == 0)
 				ClientPrintAll(HUD_PRINTTALK, "%s%s", ZR_PREFIX, message);
 		}
-		g_iInfectionCountDown--;
+		(*iSecondsElapsed)++;
 
 		return 1.0f;
 	});
