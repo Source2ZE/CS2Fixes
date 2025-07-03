@@ -999,6 +999,7 @@ bool CMapVoteSystem::LoadMapList()
 					iWorkshopId = jsonEntry["workshop_id"].get<uint64>();
 
 				bool bIsEnabled = jsonEntry.value("enabled", true);
+				std::string strDisplayName = jsonEntry.value("display_name", "");
 				int iMinPlayers = jsonEntry.value("min_players", 0);
 				int iMaxPlayers = jsonEntry.value("max_players", 64);
 				float fCooldown = jsonEntry.value("cooldown", 0.0f);
@@ -1012,7 +1013,7 @@ bool CMapVoteSystem::LoadMapList()
 					QueueMapDownload(iWorkshopId);
 
 				// We just append the maps to the map list
-				m_vecMapList.push_back(std::make_shared<CMap>(sEntry, iWorkshopId, bIsEnabled, iMinPlayers, iMaxPlayers, fCooldown, vecGroups));
+				m_vecMapList.push_back(std::make_shared<CMap>(sEntry, strDisplayName, iWorkshopId, bIsEnabled, iMinPlayers, iMaxPlayers, fCooldown, vecGroups));
 			}
 		}
 	}
@@ -1068,7 +1069,7 @@ CUtlStringList CMapVoteSystem::CreateWorkshopMapGroup()
 	CUtlStringList mapList;
 
 	for (int i = 0; i < GetMapListSize(); i++)
-		mapList.CopyAndAddToTail(GetMapName(i));
+		mapList.CopyAndAddToTail(GetMapDisplayName(i));
 
 	return mapList;
 }
