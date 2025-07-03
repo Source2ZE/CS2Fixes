@@ -1275,7 +1275,7 @@ int CS2Fixes::GetAdminImmunity(std::uint64_t iSteam64ID) const
 	return admin->GetImmunity();
 }
 
-bool CS2Fixes::SetAdminImmunity(std::uint64_t iSteam64ID, std::uint16_t iImmunity)
+bool CS2Fixes::SetAdminImmunity(std::uint64_t iSteam64ID, std::uint32_t iImmunity)
 {
 	if (!g_pAdminSystem)
 		return false;

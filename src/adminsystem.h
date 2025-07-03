@@ -148,7 +148,7 @@ public:
 
 	void SetFlags(uint64 iFlags) { m_iFlags = iFlags; };
 	uint64 GetFlags() const { return m_iFlags; }
-	void SetImmunity(std::uint16_t iAdminImmunity) {m_iAdminImmunity = static_cast<int>(iAdminImmunity); }
+	void SetImmunity(std::uint32_t iAdminImmunity) {m_iAdminImmunity = static_cast<int>(iAdminImmunity); }
 	int GetImmunity() const { return m_iAdminImmunity; }
 
 private:
@@ -165,7 +165,7 @@ public:
 
 	std::string GetName() { return m_strName; }
 	void SetFlags(uint64 iFlags);
-	void SetImmunity(std::uint16_t iAdminImmunity);
+	void SetImmunity(std::uint32_t iAdminImmunity);
 
 private:
 	std::string m_strName;

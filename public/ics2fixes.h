@@ -46,6 +46,7 @@ public:
 
 	// Sets a player's immunity level. This will be overwritten if the plugin is reloaded
 	// or an admin uses c_reload_admins as it does not alter the config file.
+	// iImmunity's max value is INT_MAX and will be defaulted to INT_MAX if higher
 	// Returns false if unable to modify the admin (internal admin system is not set up yet)
-	virtual bool SetAdminImmunity(std::uint64_t iSteam64ID, std::uint16_t iImmunity) = 0;
+	virtual bool SetAdminImmunity(std::uint64_t iSteam64ID, std::uint32_t iImmunity) = 0;
 };
