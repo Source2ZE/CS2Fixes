@@ -1245,7 +1245,7 @@ void CAdmin::SetFlags(uint64 iFlags)
 	zpAdmin->SetAdminFlags(iFlags);
 }
 
-void CAdmin::SetImmunity(std::uint16_t iAdminImmunity)
+void CAdmin::SetImmunity(std::uint32_t iAdminImmunity)
 {
 	if (iAdminImmunity > INT_MAX)
 		iAdminImmunity = INT_MAX;
@@ -1258,7 +1258,7 @@ void CAdmin::SetImmunity(std::uint16_t iAdminImmunity)
 	if (!zpAdmin) // Authentication is checked in GetPlayerFromSteamId, so dont need to redo it here
 		return;
 
-	zpAdmin->SetAdminImmunity(static_cast<int>(iAdminImmunity)); // should be safe to cast, as range for std::uint16_t is [0, INT_MAX]
+	zpAdmin->SetAdminImmunity(static_cast<int>(iAdminImmunity)); // should be safe to cast, as range for std::uint32_t is [0, INT_MAX]
 }
 
 CAdminSystem::CAdminSystem()
