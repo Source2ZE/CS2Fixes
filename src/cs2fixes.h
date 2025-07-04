@@ -20,9 +20,9 @@
 #pragma once
 
 #include "gamesystems/spawngroup_manager.h"
-#include "public/ics2fixes.h"
 #include "igameevents.h"
 #include "networksystem/inetworkserializer.h"
+#include "public/ics2fixes.h"
 #include <ISmmPlugin.h>
 #include <iplayerinfo.h>
 #include <iserver.h>

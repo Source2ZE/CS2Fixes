@@ -148,7 +148,7 @@ public:
 
 	void SetFlags(uint64 iFlags) { m_iFlags = iFlags; };
 	uint64 GetFlags() const { return m_iFlags; }
-	void SetImmunity(std::uint32_t iAdminImmunity) {m_iAdminImmunity = static_cast<int>(iAdminImmunity); }
+	void SetImmunity(std::uint32_t iAdminImmunity) { m_iAdminImmunity = static_cast<int>(iAdminImmunity); }
 	int GetImmunity() const { return m_iAdminImmunity; }
 
 private:
@@ -190,7 +190,7 @@ public:
 	void AddDisconnectedPlayer(const char* pszName, uint64 xuid, const char* pszIP);
 	void ShowDisconnectedPlayers(CCSPlayerController* const pAdmin);
 
-	//TODO: Remove this once servers have been given a few months to update cs2fixes
+	// TODO: Remove this once servers have been given a few months to update cs2fixes
 	bool ConvertAdminsKVToJSON();
 
 private:
