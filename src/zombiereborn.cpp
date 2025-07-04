@@ -1618,8 +1618,8 @@ void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand& args)
 
 void ZR_OnPlayerTakeDamage(CCSPlayerPawn* pVictimPawn, const CTakeDamageInfo* pInfo, const int32 damage)
 {
-	// bullet only
-	if ((pInfo->m_bitsDamageType & DMG_BULLET) == 0 || !pInfo->m_pTrace || !pInfo->m_pTrace->m_pHitbox)
+	// bullet & knife only
+	if ((!(pInfo->m_bitsDamageType & DMG_BULLET) && !(pInfo->m_bitsDamageType & DMG_SLASH)) || !pInfo->m_pTrace || !pInfo->m_pTrace->m_pHitbox)
 		return;
 
 	const auto pVictimController = reinterpret_cast<CCSPlayerController*>(pVictimPawn->GetController());
