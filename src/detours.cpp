@@ -450,7 +450,14 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if (const auto pModelEntity = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsBaseModelEntity())
 		{
 			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			{
+				// Player color may have been changed by zclass/server customization, so reset it first
+				// This also means if maps want to change player color, it needs to be done after the SetModel input
+				if (pModelEntity->IsPawn())
+					pModelEntity->m_clrRender = Color(255, 255, 255, 255);
+
 				pModelEntity->SetModel(value->m_pszString);
+			}
 			return true;
 		}
 	}
