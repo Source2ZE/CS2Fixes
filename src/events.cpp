@@ -173,25 +173,6 @@ GAME_EVENT_F(player_spawn)
 
 		return -1.0f;
 	});
-
-	// And this needs even more delay..? Don't even know if this is enough, bug can't be reproduced
-	new CTimer(0.1f, false, false, [hController]() {
-		CCSPlayerController* pController = hController.Get();
-
-		if (!pController)
-			return -1.0f;
-
-		CBasePlayerPawn* pPawn = pController->GetPawn();
-
-		if (pPawn)
-		{
-			// Fix new haunted CS2 bug? https://www.reddit.com/r/cs2/comments/1glvg9s/thank_you_for_choosing_anubis_airlines/
-			// We've seen this several times across different maps at this point
-			pPawn->m_vecAbsVelocity = Vector(0, 0, 0);
-		}
-
-		return -1.0f;
-	});
 }
 
 CConVar<bool> g_cvarEnableTopDefender("cs2f_topdefender_enable", FCVAR_NONE, "Whether to use TopDefender", false);
