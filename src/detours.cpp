@@ -454,7 +454,10 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 				// Player color may have been changed by zclass/server customization, so reset it first
 				// This also means if maps want to change player color, it needs to be done after the SetModel input
 				if (pModelEntity->IsPawn())
-					pModelEntity->m_clrRender = Color(255, 255, 255, 255);
+				{
+					int originalAlpha = pModelEntity->m_clrRender().a();
+					pModelEntity->m_clrRender = Color(255, 255, 255, originalAlpha);
+				}
 
 				pModelEntity->SetModel(value->m_pszString);
 			}
