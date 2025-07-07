@@ -1,0 +1,11 @@
+{
+	"name": "cs2fixes",
+	"alias": "cs2fixes",
+	"display_name": "CS2Fixes",
+	"description": "A Metamod plugin with fixes and features aimed but not limited to zombie escape",
+	"author": "xen, Poggu, Vauff, Ice, lonefang, Kxnrl, tilgep, EasterLee and various contributors",
+	"url": "https://github.com/Source2ZE/CS2Fixes",
+	"log_tag": "CS2Fixes",
+	"license": "GPL v3 License",
+	"version": "{{parsed-version}}"
+}

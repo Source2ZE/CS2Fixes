@@ -2,27 +2,11 @@
 import os
 import subprocess
 
-MMSPlugin.plugin_name = 'cs2fixes'
-MMSPlugin.plugin_alias = 'cs2fixes'
-
 for sdk_target in MMSPlugin.sdk_targets:
   sdk = sdk_target.sdk
   cxx = sdk_target.cxx
 
-  binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
-  
-  try:
-    version = subprocess.check_output(['git', 'describe', '--tags', '--long']).decode('ascii').strip()
-  except subprocess.SubprocessError as e:
-    version = "1.7-dev"
-    print("git describe failed as there are no tags")
-	
-  print(f'Setting version to "{version}"')
-	
-  binary.compiler.defines += ['CS2FIXES_VERSION="' + version + '"']
-
-  if binary.compiler.behavior == 'gcc':
-    binary.compiler.cxxflags += ['-Wno-invalid-offsetof']
+  binary = MMSPlugin.HL2Library(builder, cxx, f'{MMSPlugin.metadata["name"]}.{sdk["name"]}', sdk)
 
   binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath, 'src', 'cs2_sdk'),
@@ -50,7 +34,6 @@ for sdk_target in MMSPlugin.sdk_targets:
       os.path.join(builder.sourcePath, 'sdk', 'lib', 'public', 'win64', 'steam_api64.lib')
     ]
     binary.sources += ['src/utils/plat_win.cpp']
-
 
   binary.sources += [
     'src/cs2fixes.cpp',
