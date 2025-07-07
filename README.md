@@ -43,7 +43,7 @@ Copy the contents of `dockerbuild/package/` to your server's `game/csgo/` direct
 
 #### Linux
 ```bash
-export MMSOURCE112=/path/to/metamod
+export MMSOURCE_DEV=/path/to/metamod
 export HL2SDKCS2=/path/to/sdk/submodule
 
 mkdir build && cd build
@@ -56,7 +56,7 @@ ambuild
 Make sure to run in "x64 Native Tools Command Prompt for VS"
 
 ```bash
-set MMSOURCE112=\path\to\metamod
+set MMSOURCE_DEV=\path\to\metamod
 set HL2SDKCS2=\path\to\sdk\submodule
 
 mkdir build && cd build

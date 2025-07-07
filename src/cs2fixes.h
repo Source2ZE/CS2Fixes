@@ -23,6 +23,7 @@
 #include "igameevents.h"
 #include "networksystem/inetworkserializer.h"
 #include "public/ics2fixes.h"
+#include "version_gen.h"
 #include <ISmmPlugin.h>
 #include <iplayerinfo.h>
 #include <iserver.h>
@@ -95,14 +96,14 @@ public: // MetaMod API
 	bool SetAdminImmunity(std::uint64_t iSteam64ID, std::uint32_t iImmunity) override;
 
 public:
-	const char* GetAuthor();
-	const char* GetName();
-	const char* GetDescription();
-	const char* GetURL();
-	const char* GetLicense();
-	const char* GetVersion();
-	const char* GetDate();
-	const char* GetLogTag();
+	const char* GetAuthor() { return PLUGIN_AUTHOR; }
+	const char* GetName() { return PLUGIN_DISPLAY_NAME; }
+	const char* GetDescription() { return PLUGIN_DESCRIPTION; }
+	const char* GetURL() { return PLUGIN_URL; }
+	const char* GetLicense() { return PLUGIN_LICENSE; }
+	const char* GetVersion() { return PLUGIN_FULL_VERSION; }
+	const char* GetDate() { return __DATE__; }
+	const char* GetLogTag() { return PLUGIN_LOGTAG; }
 };
 
 extern CS2Fixes g_CS2Fixes;
