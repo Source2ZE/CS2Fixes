@@ -406,5 +406,8 @@
     <ClInclude Include="src\utils\weapon.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\version_gen_placeholder.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

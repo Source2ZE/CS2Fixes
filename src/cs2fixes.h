@@ -23,11 +23,16 @@
 #include "igameevents.h"
 #include "networksystem/inetworkserializer.h"
 #include "public/ics2fixes.h"
-#include "version_gen.h"
 #include <ISmmPlugin.h>
 #include <iplayerinfo.h>
 #include <iserver.h>
 #include <sh_vector.h>
+
+#ifdef AMBUILD
+	#include "version_gen.h"
+#else
+	#include "version_gen_placeholder.h"
+#endif
 
 struct CTakeDamageInfoContainer;
 class CCSPlayer_MovementServices;

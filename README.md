@@ -33,7 +33,7 @@ Requires Docker to be installed. Produces Linux builds only.
 docker compose up
 ```
 
-Copy the contents of `dockerbuild/package/` to your server's `game/csgo/` directory.
+Copy the contents of `dockerbuild/package/cs2/` to your server's `game/csgo/` directory.
 
 ### Manual
 
@@ -64,4 +64,4 @@ py ../configure.py --enable-optimize --sdks cs2
 ambuild
 ```
 
-Copy the contents of `build/package/` to your server's `game/csgo/` directory.
+Copy the contents of `build/package/cs2/` to your server's `game/csgo/` directory.
