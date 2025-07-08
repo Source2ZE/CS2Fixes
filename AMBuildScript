@@ -12,7 +12,7 @@ def additionalLibs(context, binary, sdk):
 
 def additionalDefines(context, binary, sdk):
   return [
-    # 'EXAMPLE_DEFINE=2'
+    'AMBUILD=1'
   ]
 
 def additionalIncludes(context, binary, sdk):
