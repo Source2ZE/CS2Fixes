@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -121,6 +121,17 @@ const WeaponInfo_t* FindWeaponInfoByAlias(const char* pAlias)
 		for (const auto& alias : info.m_vecAliases)
 			if (V_stricmp(pAlias, alias.c_str()) == 0)
 				return &info;
+	}
+
+	return nullptr;
+}
+
+const WeaponInfo_t* FindWeaponInfoByItemDefIndex(int16_t iItemDefinitionIndex)
+{
+	for (const auto& info : s_WeaponMap | std::views::values)
+	{
+		if (iItemDefinitionIndex == info.m_iItemDefinitionIndex)
+			return &info;
 	}
 
 	return nullptr;

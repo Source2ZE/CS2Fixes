@@ -211,15 +211,11 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 	CBasePlayerWeapon* pWeapon = pItemServices->GiveNamedItemAws(pWeaponInfo->m_pClass);
 
-	// Normally shouldn't be possible, but avoid crashes in some edge cases
+	// Normally shouldn't be possible, but avoid issues in some edge cases
 	if (!pWeapon)
 		return;
 
 	player->m_pInGameMoneyServices->m_iAccount = money - pWeaponInfo->m_nPrice;
-
-	// If the weapon spawn goes through AWS, it needs to be manually selected because it spawns dropped in-world due to ZR enforcing mp_weapons_allow_* cvars against T's
-	if (pWeaponInfo->m_eSlot == GEAR_SLOT_RIFLE || pWeaponInfo->m_eSlot == GEAR_SLOT_PISTOL)
-		pWeaponServices->SelectItem(pWeapon);
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have purchased %s for $%i", pWeaponInfo->m_pName, pWeaponInfo->m_nPrice);
 }

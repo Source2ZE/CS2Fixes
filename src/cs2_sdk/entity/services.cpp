@@ -53,10 +53,8 @@ CBasePlayerWeapon* CCSPlayer_ItemServices::GiveNamedItemAws(const char* item) no
 	const auto team = pPawn->m_iTeamNum();
 	g_bAwsChangingTeam = true;
 	pPawn->m_iTeamNum(pInfo->m_iTeamNum);
-	const auto pWeapon = GiveNamedItem(item);
 
-	// Forcibly equip the weapon, because it spawns dropped in-world due to ZR enforcing mp_weapons_allow_* cvars against T's, which meant other players could pick up the weapon instead
-	pWeaponServices->EquipWeapon(pWeapon);
+	const auto pWeapon = GiveNamedItem(item);
 
 	pPawn->m_iTeamNum(team);
 	g_bAwsChangingTeam = false;
