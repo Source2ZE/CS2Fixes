@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -58,9 +58,9 @@ static std::unordered_map<std::string, WeaponInfo_t> s_WeaponMap = {
 	{"weapon_revolver",				{"weapon_revolver", 64, 0, GEAR_SLOT_PISTOL, 600, "R8 Revolver", {"r8revolver", "revolver", "r8"}}},
 
 	{"weapon_flashbang",			 {"weapon_flashbang", 43, 0, GEAR_SLOT_GRENADES}													},
-	{"weapon_hegrenade",			 {"weapon_hegrenade", 44, 0, GEAR_SLOT_GRENADES, 300, "HE Grenade", {"hegrenade", "he"}, 1}		   },
+	{"weapon_hegrenade",			 {"weapon_hegrenade", 44, 0, GEAR_SLOT_GRENADES, 300, "HE Grenade", {"hegrenade", "he"}}			},
 	{"weapon_smokegrenade",			{"weapon_smokegrenade", 45, 0, GEAR_SLOT_GRENADES}												  },
-	{"weapon_molotov",			   {"weapon_molotov", 46, 0, GEAR_SLOT_GRENADES, 400, "Molotov", {"molotov"}, 1}						},
+	{"weapon_molotov",			   {"weapon_molotov", 46, 0, GEAR_SLOT_GRENADES, 400, "Molotov", {"molotov"}}						 },
 	{"weapon_decoy",				 {"weapon_decoy", 47, 0, GEAR_SLOT_GRENADES}														},
 	{"weapon_incgrenade",			  {"weapon_incgrenade", 48, 0, GEAR_SLOT_GRENADES}												  },
 
@@ -129,10 +129,8 @@ const WeaponInfo_t* FindWeaponInfoByAlias(const char* pAlias)
 const WeaponInfo_t* FindWeaponInfoByItemDefIndex(int16_t iItemDefinitionIndex)
 {
 	for (const auto& info : s_WeaponMap | std::views::values)
-	{
 		if (iItemDefinitionIndex == info.m_iItemDefinitionIndex)
 			return &info;
-	}
 
 	return nullptr;
 }
