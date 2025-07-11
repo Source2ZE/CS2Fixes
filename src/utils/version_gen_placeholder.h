@@ -17,12 +17,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define PLUGIN_NAME           "cs2fixes"
-#define PLUGIN_ALIAS          "cs2fixes"
-#define PLUGIN_DISPLAY_NAME   "CS2Fixes"
-#define PLUGIN_DESCRIPTION    ""
-#define PLUGIN_AUTHOR         ""
-#define PLUGIN_URL            ""
-#define PLUGIN_LOGTAG         "CS2Fixes"
-#define PLUGIN_LICENSE        ""
-#define PLUGIN_FULL_VERSION   "DEV-untracked";
+#define PLUGIN_NAME "cs2fixes"
+#define PLUGIN_ALIAS "cs2fixes"
+#define PLUGIN_DISPLAY_NAME "CS2Fixes"
+#define PLUGIN_DESCRIPTION ""
+#define PLUGIN_AUTHOR ""
+#define PLUGIN_URL ""
+#define PLUGIN_LOGTAG "CS2Fixes"
+#define PLUGIN_LICENSE ""
+#define PLUGIN_FULL_VERSION "DEV-untracked";
