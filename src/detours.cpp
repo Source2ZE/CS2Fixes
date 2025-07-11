@@ -85,6 +85,7 @@ DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosi
 DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
 DECLARE_DETOUR(CBaseFilter_InputTestActivator, Detour_CBaseFilter_InputTestActivator);
 DECLARE_DETOUR(GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan);
+DECLARE_DETOUR(CCSPlayer_ItemServices_CanAcquire, Detour_CCSPlayer_ItemServices_CanAcquire);
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
@@ -369,9 +370,6 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
-	if (g_cvarEnableZR.Get() && !ZR_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
-		return false;
-
 	if (g_cvarEnableEntWatch.Get() && !EW_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
 		return false;
 
@@ -745,6 +743,19 @@ void FASTCALL Detour_GameSystem_Think_CheckSteamBan()
 	// After player has been kicked, remove any ban entries, to prevent spreading to all new joining players
 	if (count > 0)
 		pMap->RemoveAll();
+}
+
+AcquireResult FASTCALL Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices* pItemServices, CEconItemView* pEconItem, AcquireMethod iAcquireMethod, uint64_t unk4)
+{
+	if (g_cvarEnableZR.Get())
+	{
+		AcquireResult zrResult = ZR_Detour_CCSPlayer_ItemServices_CanAcquire(pItemServices, pEconItem);
+
+		if (zrResult != AcquireResult::Allowed)
+			return zrResult;
+	}
+
+	return CCSPlayer_ItemServices_CanAcquire(pItemServices, pEconItem, iAcquireMethod, unk4);
 }
 
 bool InitDetours(CGameConfig* gameConfig)
