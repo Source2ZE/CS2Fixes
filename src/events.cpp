@@ -128,6 +128,7 @@ GAME_EVENT_F(player_team)
 }
 
 CConVar<bool> g_cvarNoblock("cs2f_noblock_enable", FCVAR_NONE, "Whether to use player noblock, which sets debris collision on every player", false);
+CConVar<int> g_cvarFreeArmor("cs2f_free_armor", FCVAR_NONE, "Whether kevlar (1+) and/or helmet (2) are given automatically", 0, true, 0, true, 2);
 
 GAME_EVENT_F(player_spawn)
 {
@@ -173,6 +174,22 @@ GAME_EVENT_F(player_spawn)
 
 		return -1.0f;
 	});
+
+	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
+
+	if (!pPawn)
+		return;
+
+	CCSPlayer_ItemServices* pItemServices = pPawn->m_pItemServices();
+
+	if (!pItemServices)
+		return;
+
+	// Dumb workaround for mp_free_armor breaking kevlar rebuys in buy menu
+	if (g_cvarFreeArmor.GetInt() == 1)
+		pItemServices->GiveNamedItem("item_kevlar");
+	else if (g_cvarFreeArmor.GetInt() == 2)
+		pItemServices->GiveNamedItem("item_assaultsuit");
 }
 
 CConVar<bool> g_cvarEnableTopDefender("cs2f_topdefender_enable", FCVAR_NONE, "Whether to use TopDefender", false);
