@@ -52,6 +52,7 @@ extern CCSGameRules* g_pGameRules;
 extern IGameEventManager2* g_gameEventManager;
 extern IGameEventSystem* g_gameEventSystem;
 extern double g_flUniversalTime;
+extern CConVar<bool> g_cvarFreeArmor;
 
 void ZR_Infect(CCSPlayerController* pAttackerController, CCSPlayerController* pVictimController, bool bBroadcast);
 bool ZR_CheckTeamWinConditions(int iTeamNum);
@@ -849,6 +850,11 @@ void ZRWeaponConfig::LoadWeaponConfig()
 
 std::shared_ptr<ZRWeapon> ZRWeaponConfig::FindWeapon(const char* pszWeaponName)
 {
+	if (V_strlen(pszWeaponName) > 7 && !V_strncasecmp(pszWeaponName, "weapon_", 7))
+		pszWeaponName = pszWeaponName + 7;
+	else if (V_strlen(pszWeaponName) > 5 && !V_strncasecmp(pszWeaponName, "item_", 5))
+		pszWeaponName = pszWeaponName + 5;
+
 	uint16 index = m_WeaponMap.Find(hash_32_fnv1a_const(pszWeaponName));
 	if (m_WeaponMap.IsValidIndex(index))
 		return m_WeaponMap[index];
@@ -1067,10 +1073,7 @@ void ZR_OnPlayerSpawn(CCSPlayerController* pController)
 
 void ZR_ApplyKnockback(CCSPlayerPawn* pHuman, CCSPlayerPawn* pVictim, int iDamage, const char* szWeapon, int hitgroup, float classknockback)
 {
-	if (V_strlen(szWeapon) <= 7)
-		return;
-
-	std::shared_ptr<ZRWeapon> pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon + 7);
+	std::shared_ptr<ZRWeapon> pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
 	std::shared_ptr<ZRHitgroup> pHitgroup = g_pZRHitgroupConfig->FindHitgroupIndex(hitgroup);
 	// player shouldn't be able to pick up that weapon in the first place, but just in case
 	if (!pWeapon)
@@ -1147,8 +1150,11 @@ void ZR_StripAndGiveKnife(CCSPlayerPawn* pPawn)
 		pItemServices->GiveNamedItem("weapon_knife");
 
 		ConVarRefAbstract mp_free_armor("mp_free_armor");
-		if (mp_free_armor.GetBool())
+
+		if (mp_free_armor.GetInt() == 1 || g_cvarFreeArmor.GetInt() == 1)
 			pItemServices->GiveNamedItem("item_kevlar");
+		else if (mp_free_armor.GetInt() == 2 || g_cvarFreeArmor.GetInt() == 2)
+			pItemServices->GiveNamedItem("item_assaultsuit");
 	}
 
 	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
@@ -1537,7 +1543,7 @@ AcquireResult ZR_Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices
 
 	if (pPawn->m_iTeamNum() == CS_TEAM_T && !CCSPlayer_ItemServices::IsAwsProcessing() && V_strncmp(pWeaponInfo->m_pClass, "weapon_knife", 12) && V_strncmp(pWeaponInfo->m_pClass, "weapon_c4", 9))
 		return AcquireResult::NotAllowedByTeam;
-	if (pPawn->m_iTeamNum() == CS_TEAM_CT && V_strlen(pWeaponInfo->m_pClass) > 7 && !g_pZRWeaponConfig->FindWeapon(pWeaponInfo->m_pClass + 7))
+	if (pPawn->m_iTeamNum() == CS_TEAM_CT && !g_pZRWeaponConfig->FindWeapon(pWeaponInfo->m_pClass))
 		return AcquireResult::NotAllowedByProhibition;
 
 	// doesn't guarantee the player will acquire the weapon, it just allows the original function to run

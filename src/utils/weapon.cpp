@@ -90,10 +90,10 @@ static std::unordered_map<std::string, WeaponInfo_t> s_WeaponMap = {
 	{"weapon_knife_skeleton",		  {"weapon_knife", 525, 0, GEAR_SLOT_KNIFE}														   },
 	{"weapon_knife_kukri",		   {"weapon_knife", 526, 0, GEAR_SLOT_KNIFE}															},
 
-	{"item_kevlar",					{"item_kevlar", 0, 0, GEAR_SLOT_UTILITY, 650, "Kevlar Vest", {"kevlar"}}							},
-	{"item_assaultsuit",			 {"item_assaultsuit", 0, 0, GEAR_SLOT_UTILITY}													  },
-	{"item_heavyassaultsuit",		  {"item_heavyassaultsuit", 0, 0, GEAR_SLOT_UTILITY}												},
-	{"item_defuser",				 {"item_defuser", 0, 0, GEAR_SLOT_UTILITY}														  },
+	{"item_kevlar",					{"item_kevlar", 50, 0, GEAR_SLOT_UTILITY, 650, "Kevlar Vest", {"kevlar"}}						 },
+	{"item_assaultsuit",			 {"item_assaultsuit", 51, 0, GEAR_SLOT_UTILITY}													   },
+	{"item_heavyassaultsuit",		  {"item_heavyassaultsuit", 52, 0, GEAR_SLOT_UTILITY}												 },
+	{"item_defuser",				 {"item_defuser", 55, 0, GEAR_SLOT_UTILITY}														   },
 	{"ammo_50ae",					{"ammo_50ae", 0, 0, GEAR_SLOT_UTILITY}															},
 };
 
