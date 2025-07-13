@@ -510,15 +510,8 @@ void split(const std::string& s, char delim, Out result)
 
 void CZRPlayerClassManager::ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn)
 {
-	std::shared_ptr<ZRModelEntry> pModelEntry = pClass->GetRandomModelEntry();
-	Color clrRender;
-	V_StringToColor(pModelEntry->szColor.c_str(), clrRender);
-
 	pPawn->m_iMaxHealth = pClass->iHealth;
 	pPawn->m_iHealth = pClass->iHealth;
-	pPawn->SetModel(pModelEntry->szModelPath.c_str());
-	pPawn->m_clrRender = clrRender;
-	pPawn->AcceptInput("Skin", pModelEntry->GetRandomSkin());
 	pPawn->m_flGravityScale = pClass->flGravity;
 
 	// I don't know why, I don't want to know why,
@@ -527,14 +520,9 @@ void CZRPlayerClassManager::ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSP
 	// pPawn->m_flVelocityModifier = pClass->flSpeed;
 	const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
 	if (const auto pPlayer = pController != nullptr ? pController->GetZEPlayer() : nullptr)
-	{
 		pPlayer->SetMaxSpeed(pClass->flSpeed);
-		pPlayer->SetActiveZRClass(pClass);
-		pPlayer->SetActiveZRModel(pModelEntry);
-	}
 
-	// This has to be done a bit later
-	UTIL_AddEntityIOEvent(pPawn, "SetScale", nullptr, nullptr, pClass->flScale);
+	ApplyBaseClassVisuals(pClass, pPawn);
 }
 
 // only changes that should not (directly) affect gameplay
