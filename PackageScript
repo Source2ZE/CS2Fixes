@@ -124,8 +124,8 @@ for task in MMSPlugin.binaries:
   builder.AddCopy(os.path.join('gamedata', 'cs2fixes.games.txt'), gamedata_folder)
 
   particles_cs2f_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'particles', MMSPlugin.metadata['name']))
-  builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'player_beacon.vpcf_c'), particles_cs2f_folder)
-  builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'player_beacon_tint.vpcf_c'), particles_cs2f_folder)
+  builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'admin_beacon.vpcf_c'), particles_cs2f_folder)
+  builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'admin_beacon_inner.vpcf_c'), particles_cs2f_folder)
   builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'leader_defend_mark.vpcf_c'), particles_cs2f_folder)
   builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'leader_defend_mark_ground.vpcf_c'), particles_cs2f_folder)
   builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'leader_tracer.vpcf_c'), particles_cs2f_folder)
