@@ -33,6 +33,18 @@
 	{
 		"enabled"		"0"
 	}
+	"kevlar"
+	{
+		"enabled"		"1"
+	}
+	"assaultsuit"
+	{
+		"enabled"		"0"
+	}
+	"defuser"
+	{
+		"enabled"		"0"
+	}
 	
 	// Grenade
 	"decoy"

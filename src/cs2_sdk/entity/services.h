@@ -327,3 +327,14 @@ public:
 		pViewModel->m_nViewModelIndex = iIndex;
 	}
 };
+
+class CCSPlayer_PingServices : public CPlayerPawnComponent
+{
+	virtual ~CCSPlayer_PingServices() = 0;
+
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayer_PingServices);
+
+	SCHEMA_FIELD_POINTER(GameTime_t, m_flPlayerPingTokens)
+	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hPlayerPing)
+};

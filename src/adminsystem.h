@@ -139,23 +139,37 @@ public:
 	void UndoInfraction(ZEPlayer*) override;
 };
 
-class CAdmin
+class CAdminBase
 {
 public:
-	CAdmin(const char* pszName, uint64 iSteamID, uint64 iFlags, int iAdminImmunity) :
-		m_pszName(pszName), m_iSteamID(iSteamID), m_iFlags(iFlags), m_iAdminImmunity(iAdminImmunity)
+	CAdminBase(uint64 iFlags, int iAdminImmunity) :
+		m_iFlags(iFlags), m_iAdminImmunity(iAdminImmunity)
 	{}
 
-	const char* GetName() { return m_pszName; }
-	uint64 GetSteamID() { return m_iSteamID; }
-	uint64 GetFlags() { return m_iFlags; }
-	int GetImmunity() { return m_iAdminImmunity; }
+	void SetFlags(uint64 iFlags) { m_iFlags = iFlags; };
+	uint64 GetFlags() const { return m_iFlags; }
+	void SetImmunity(std::uint32_t iAdminImmunity) { m_iAdminImmunity = static_cast<int>(iAdminImmunity); }
+	int GetImmunity() const { return m_iAdminImmunity; }
 
 private:
-	const char* m_pszName;
-	uint64 m_iSteamID;
 	uint64 m_iFlags;
 	int m_iAdminImmunity;
+};
+
+class CAdmin : public CAdminBase
+{
+public:
+	CAdmin(std::string strName, uint64 iFlags, int iAdminImmunity, uint64 iSteamID) :
+		CAdminBase(iFlags, iAdminImmunity), m_strName(strName), m_iSteamID(iSteamID)
+	{}
+
+	std::string GetName() { return m_strName; }
+	void SetFlags(uint64 iFlags);
+	void SetImmunity(std::uint32_t iAdminImmunity);
+
+private:
+	std::string m_strName;
+	uint64 m_iSteamID;
 };
 
 class CAdminSystem
@@ -163,6 +177,7 @@ class CAdminSystem
 public:
 	CAdminSystem();
 	bool LoadAdmins();
+	void AddOrUpdateAdmin(uint64 iSteamID, uint64 iFlags = 0, int iAdminImmunity = 0);
 	bool LoadInfractions();
 	void AddInfraction(CInfractionBase*);
 	void SaveInfractions();
@@ -170,12 +185,17 @@ public:
 	bool FindAndRemoveInfraction(ZEPlayer* player, CInfractionBase::EInfractionType type);
 	bool FindAndRemoveInfractionSteamId64(uint64 steamid64, CInfractionBase::EInfractionType type);
 	CAdmin* FindAdmin(uint64 iSteamID);
-	uint64 ParseFlags(const char* pszFlags);
+	uint64 ParseFlags(std::string strFlags);
+	std::string StringifyFlags(uint64 iFlags);
 	void AddDisconnectedPlayer(const char* pszName, uint64 xuid, const char* pszIP);
 	void ShowDisconnectedPlayers(CCSPlayerController* const pAdmin);
 
+	// TODO: Remove this once servers have been given a few months to update cs2fixes
+	bool ConvertAdminsKVToJSON();
+
 private:
-	CUtlVector<CAdmin> m_vecAdmins;
+	std::map<std::string, CAdminBase> m_mapAdminGroups;
+	std::map<uint64, CAdmin> m_mapAdmins;
 	CUtlVector<CInfractionBase*> m_vecInfractions;
 
 	// Implemented as a circular buffer.
