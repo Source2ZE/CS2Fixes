@@ -28,6 +28,7 @@
 #include "entity/cteam.h"
 #include "entity/services.h"
 #include "eventlistener.h"
+#include "hud_manager.h"
 #include "leader.h"
 #include "networksystem/inetworkmessages.h"
 #include "playermanager.h"
@@ -1431,7 +1432,7 @@ void ZR_InitialInfection()
 	if (g_cvarRespawnDelay.Get() < 0.0f)
 		g_bRespawnEnabled = false;
 
-	ClientPrintAll(HUD_PRINTCENTER, "First infection has started!");
+	SendHudMessageAll(4, 2, "First infection has started!");
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "First infection has started! Good luck, survivors!");
 	g_ZRRoundState = EZRRoundState::POST_INFECTION;
 }
@@ -1458,12 +1459,10 @@ void ZR_StartInitialCountdown()
 
 		if (g_iInfectionCountDown <= 60)
 		{
-			char message[256];
-			V_snprintf(message, sizeof(message), "First infection in \7%i %s\1!", g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
+			SendHudMessageAll(2, 2, "First infection in <span color='#00FF00'>%i %s</span>!", g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
 
-			ClientPrintAll(HUD_PRINTCENTER, message);
 			if (g_iInfectionCountDown % 5 == 0)
-				ClientPrintAll(HUD_PRINTTALK, "%s%s", ZR_PREFIX, message);
+				ClientPrintAll(HUD_PRINTTALK, "%sFirst infection in \7%i %s\1!", ZR_PREFIX, g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
 		}
 		(*iSecondsElapsed)++;
 

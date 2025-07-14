@@ -41,6 +41,7 @@
 #include "gameevents.pb.h"
 #include "gamesystem.h"
 #include "httpmanager.h"
+#include "hud_manager.h"
 #include "icvar.h"
 #include "idlemanager.h"
 #include "interface.h"
@@ -1315,6 +1316,8 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_OnLevelInit(pMapName);
+
+	StartFlashingFixTimer();
 }
 
 void CS2Fixes::OnLevelShutdown()

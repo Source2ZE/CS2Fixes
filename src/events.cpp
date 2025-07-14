@@ -26,6 +26,7 @@
 #include "entity/cgamerules.h"
 #include "entwatch.h"
 #include "eventlistener.h"
+#include "hud_manager.h"
 #include "idlemanager.h"
 #include "leader.h"
 #include "map_votes.h"
@@ -257,6 +258,10 @@ GAME_EVENT_F(round_start)
 	if (g_cvarFullAllTalk.Get())
 		g_pEngineServer2->ServerCommand("sv_full_alltalk 1");
 
+	// Ensure there's no warmup, because mp_warmup_online_enabled gets randomly ignored for some reason, this is a problem with cs2f_fix_hud_flashing
+	if (g_cvarFixHudFlashing.Get() && g_pGameRules && g_pGameRules->m_bWarmupPeriod)
+		g_pEngineServer2->ServerCommand("mp_warmup_end");
+
 	if (!g_cvarEnableTopDefender.Get() || !GetGlobals())
 		return;
 
@@ -275,6 +280,9 @@ GAME_EVENT_F(round_start)
 
 GAME_EVENT_F(round_end)
 {
+	if (g_cvarFixHudFlashing.Get() && g_pGameRules)
+		g_pGameRules->m_bGameRestart = false;
+
 	if (!g_cvarEnableTopDefender.Get() || !GetGlobals())
 		return;
 
