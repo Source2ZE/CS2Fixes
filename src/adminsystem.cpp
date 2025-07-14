@@ -29,6 +29,7 @@
 #include "entwatch.h"
 #include "filesystem.h"
 #include "gamesystem.h"
+#include "hud_manager.h"
 #include "icvar.h"
 #include "interfaces/interfaces.h"
 #include "map_votes.h"
@@ -560,7 +561,7 @@ CON_COMMAND_CHAT_FLAGS(hsay, "<message> - Say something as a hud hint", ADMFLAG_
 		return;
 	}
 
-	ClientPrintAll(HUD_PRINTCENTER, "%s", args.ArgS());
+	SendHudMessageAll(10, 99, "<span class='fontSize-l'><span color='#FFFFFF'>ADMIN: </span><span color='#D11313'>%s</span></span>", args.ArgS());
 }
 
 CON_COMMAND_CHAT_FLAGS(rcon, "<command> - Send a command to server console", ADMFLAG_RCON)
