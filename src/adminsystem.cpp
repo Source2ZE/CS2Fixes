@@ -1098,7 +1098,7 @@ CON_COMMAND_CHAT_FLAGS(give, "<name> <weapon> - Give a weapon/item to a player",
 	int pSlots[MAXPLAYERS];
 	ETargetType nType;
 
-	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_SPECTATOR | NO_TERRORIST, nType))
+	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_SPECTATOR, nType))
 		return;
 
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
