@@ -94,13 +94,48 @@ public:
 		if (!IsController())
 			return;
 
+		// disable hide particle on self for opposite team & enable hide particle on self for teammate
+		ZEPlayer* pZEPlayer = GetZEPlayer();
+		if (g_bHideParticleReady && pZEPlayer)
+		{
+			if (iTeam == CS_TEAM_SPECTATOR)
+				pZEPlayer->ResetTransparencyMask(true);
+			else if (iTeam == CS_TEAM_CT || iTeam == CS_TEAM_T)
+			{
+				for (int i = 0; i < GetGlobals()->maxClients; i++)
+				{
+					if (i == GetPlayerSlot())
+						continue;
+
+					if (!g_playerManager->IsPlayerUsingTransparency(i))
+						continue;
+
+					CCSPlayerController* pPeerController = CCSPlayerController::FromSlot(i);
+
+					if (!pPeerController || pPeerController->m_bIsHLTV)
+						continue;
+					ZEPlayer* pZEPeerPlayer = pPeerController->GetZEPlayer();
+					if (pZEPeerPlayer)
+						pZEPeerPlayer->SetPeerTransparency(pPeerController->m_iTeamNum() == iTeam, GetPlayerSlot());
+				}
+
+				// enable hide particle on others for self
+				if (g_playerManager->IsPlayerUsingTransparency(GetPlayerSlot()))
+				{
+					pZEPlayer->ResetTransparencyMask(true);
+					pZEPlayer->SetTeamTransparency(true, iTeam);
+				}
+			}
+		}
+
 		if (iTeam == CS_TEAM_SPECTATOR)
 			ChangeTeam(iTeam);
 		else
 			addresses::CCSPlayerController_SwitchTeam(this, iTeam);
 	}
 
-	void Respawn()
+	void
+	Respawn()
 	{
 		CCSPlayerPawn* pPawn = GetPlayerPawn();
 		if (!pPawn || pPawn->IsAlive())

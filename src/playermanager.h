@@ -193,6 +193,7 @@ public:
 		m_flEntwatchHudX = -7.5f;
 		m_flEntwatchHudY = -2.0f;
 		m_flEntwatchHudSize = 60.0f;
+		m_nTransparencyMask = 0;
 	}
 
 	~ZEPlayer()
@@ -262,6 +263,9 @@ public:
 	void SetEntwatchHudColor(Color colorHud);
 	void SetEntwatchHudPos(float x, float y);
 	void SetEntwatchHudSize(float flSize);
+	void SetPeerTransparency(bool bEnabled, CPlayerSlot slot);
+	void SetTeamTransparency(bool bEnabled, int iTeam);
+	void ResetTransparencyMask(bool bClearParticles);
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -311,6 +315,7 @@ public:
 	float GetEntwatchHudX() { return m_flEntwatchHudX; }
 	float GetEntwatchHudY() { return m_flEntwatchHudY; }
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
+	bool GetPeerTransparency(CPlayerSlot slot);
 
 	void OnSpawn();
 	void OnAuthenticated();
@@ -382,6 +387,7 @@ private:
 	float m_flEntwatchHudX;
 	float m_flEntwatchHudY;
 	float m_flEntwatchHudSize;
+	uint64 m_nTransparencyMask;
 };
 
 class CPlayerManager
@@ -394,6 +400,7 @@ public:
 		m_nUsingSilenceSound = 0;
 		m_nUsingStopDecals = -1; // On by default
 		m_nUsingNoShake = 0;
+		m_nUsingTransparency = 0;
 	}
 
 	bool OnClientConnected(CPlayerSlot slot, uint64 xuid, const char* pszNetworkID);
@@ -406,6 +413,7 @@ public:
 	void FlashLightThink();
 	void CheckHideDistances();
 	void SetupInfiniteAmmo();
+	void SetupHideParticle();
 	CPlayerSlot GetSlotFromUserId(uint16 userid);
 	ZEPlayer* GetPlayerFromUserId(uint16 userid);
 	ZEPlayer* GetPlayerFromSteamId(uint64 steamid);
@@ -421,11 +429,13 @@ public:
 	uint64 GetSilenceSoundMask() { return m_nUsingSilenceSound; }
 	uint64 GetStopDecalsMask() { return m_nUsingStopDecals; }
 	uint64 GetNoShakeMask() { return m_nUsingNoShake; }
+	uint64 GetTransparencyMask() { return m_nUsingTransparency; }
 
 	void SetPlayerStopSound(int slot, bool set);
 	void SetPlayerSilenceSound(int slot, bool set);
 	void SetPlayerStopDecals(int slot, bool set);
 	void SetPlayerNoShake(int slot, bool set);
+	void SetPlayerTransparency(int slot, bool set);
 
 	void ResetPlayerFlags(int slot);
 
@@ -433,6 +443,7 @@ public:
 	bool IsPlayerUsingSilenceSound(int slot) { return m_nUsingSilenceSound & ((uint64)1 << slot); }
 	bool IsPlayerUsingStopDecals(int slot) { return m_nUsingStopDecals & ((uint64)1 << slot); }
 	bool IsPlayerUsingNoShake(int slot) { return m_nUsingNoShake & ((uint64)1 << slot); }
+	bool IsPlayerUsingTransparency(int slot) { return m_nUsingTransparency & ((uint64)1 << slot); }
 
 	void UpdatePlayerStates();
 	int GetOnlinePlayerCount(bool bCountBots);
@@ -446,8 +457,10 @@ private:
 	uint64 m_nUsingSilenceSound;
 	uint64 m_nUsingStopDecals;
 	uint64 m_nUsingNoShake;
+	uint64 m_nUsingTransparency;
 };
 
 extern CPlayerManager* g_playerManager;
+extern bool g_bHideParticleReady;
 
 void PrecacheBeaconParticle(IEntityResourceManifest* pResourceManifest);

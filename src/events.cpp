@@ -259,6 +259,11 @@ GAME_EVENT_F(round_start)
 	if (g_cvarFullAllTalk.Get())
 		g_pEngineServer2->ServerCommand("sv_full_alltalk 1");
 
+	new CTimer(1.0f, false, false, [] {
+		g_playerManager->SetupHideParticle();
+		return -1.0f;
+	});
+
 	if (!g_cvarEnableTopDefender.Get() || !GetGlobals())
 		return;
 
@@ -277,6 +282,8 @@ GAME_EVENT_F(round_start)
 
 GAME_EVENT_F(round_end)
 {
+	g_bHideParticleReady = false;
+
 	if (!g_cvarEnableTopDefender.Get() || !GetGlobals())
 		return;
 
