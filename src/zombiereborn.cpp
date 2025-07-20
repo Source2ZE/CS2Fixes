@@ -1465,7 +1465,7 @@ void ZR_StartInitialCountdown()
 			char classicSpawnMsg[256];
 
 			if (g_cvarInfectSpawnWarning.Get() && g_cvarInfectSpawnType.Get() == (int)EZRSpawnType::IN_PLACE)
-				V_snprintf(classicSpawnMsg, sizeof(classicSpawnMsg), "<span color='#940000'>WARNING: </span><span color='#FF3333'>Zombies will spawn between humans!</span><br><br>");
+				V_snprintf(classicSpawnMsg, sizeof(classicSpawnMsg), "<span color='#940000'>WARNING: </span><span color='#FF3333'>Zombies will spawn between humans!</span><br>\u00A0<br>");
 			else
 				V_snprintf(classicSpawnMsg, sizeof(classicSpawnMsg), "");
 
