@@ -98,7 +98,7 @@ CConVar<bool> g_cvarInfectShake("zr_infect_shake", FCVAR_NONE, "Whether to shake
 CConVar<float> g_cvarInfectShakeAmplitude("zr_infect_shake_amp", FCVAR_NONE, "Amplitude of shaking effect", 15.0f, true, 0.0f, true, 16.0f);
 CConVar<float> g_cvarInfectShakeFrequency("zr_infect_shake_frequency", FCVAR_NONE, "Frequency of shaking effect", 2.0f, true, 0.0f, false, 0.0f);
 CConVar<float> g_cvarInfectShakeDuration("zr_infect_shake_duration", FCVAR_NONE, "Duration of shaking effect", 5.0f, true, 0.0f, false, 0.0f);
-CConVar<bool> g_cvarEnableDamageCash("zr_damagecash_enable", FCVAR_NONE, "Enable cash damage on zombie or not", false);
+CConVar<float> g_cvarDamageCashScale("zr_damage_cash_scale", FCVAR_NONE, "Multiplier cash per money when damage to zombie (e.g. 0.0) disabled this.", 0.0f, true, 0.0f, false, 100.0f);
 
 // meant only for offline config validation and can easily cause issues when used on live server
 #ifdef _DEBUG
@@ -1635,12 +1635,13 @@ void ZR_OnPlayerTakeDamage(CCSPlayerPawn* pVictimPawn, const CTakeDamageInfo* pI
 	if (pKillerPawn->m_iTeamNum() == CS_TEAM_CT && pVictimPawn->m_iTeamNum() == CS_TEAM_T)
 	{
 		auto flClassKnockback = 1.0f;
+		float flCashScale = g_cvarDamageCashScale.Get();
 
-		if(g_cvarEnableDamageCash.Get())
+		if(flCashScale > 0)
 		{
 			const auto pKillerController = pKillerPawn->GetOriginalController();
 			int money = pKillerController->m_pInGameMoneyServices->m_iAccount;
-			pKillerController->m_pInGameMoneyServices->m_iAccount = money + damage;
+			pKillerController->m_pInGameMoneyServices->m_iAccount = money + (damage * flCashScale);
 		}
 
 		if (pVictimController->GetZEPlayer())
