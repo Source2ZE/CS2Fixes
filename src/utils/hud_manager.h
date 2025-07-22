@@ -53,5 +53,6 @@ void SendHudMessage(ZEPlayer* pPlayer, int iDuration, int iPriority, const char*
 void SendHudMessageAll(int iDuration, int iPriority, const char* pszMessage, ...);
 
 void StartFlashingFixTimer();
+std::string EscapeHTMLSpecialCharacters(std::string strMsg);
 
 extern CConVar<bool> g_cvarFixHudFlashing;

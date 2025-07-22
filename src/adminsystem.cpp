@@ -561,7 +561,9 @@ CON_COMMAND_CHAT_FLAGS(hsay, "<message> - Say something as a hud hint", ADMFLAG_
 		return;
 	}
 
-	SendHudMessageAll(10, 99, "<span class='fontSize-l'><span color='#FFFFFF'>ADMIN: </span><span color='#D11313'>%s</span></span>", args.ArgS());
+	SendHudMessageAll(
+		10, 99, "<span class='fontSize-l'><span color='#FFFFFF'>ADMIN: </span><span color='#D11313'>%s</span></span>",
+		EscapeHTMLSpecialCharacters(args.ArgS()).c_str());
 }
 
 CON_COMMAND_CHAT_FLAGS(rcon, "<command> - Send a command to server console", ADMFLAG_RCON)
