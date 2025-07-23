@@ -1257,7 +1257,7 @@ void CAdmin::SetImmunity(std::uint32_t iAdminImmunity)
 	if (!zpAdmin) // Authentication is checked in GetPlayerFromSteamId, so dont need to redo it here
 		return;
 
-	zpAdmin->SetAdminImmunity(static_cast<int>(iAdminImmunity)); // should be safe to cast, as range for std::uint32_t is [0, INT_MAX]
+	zpAdmin->SetAdminImmunity(static_cast<int>(iAdminImmunity)); // should be safe to cast due to earlier check
 }
 
 CAdminSystem::CAdminSystem()

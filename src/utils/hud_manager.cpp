@@ -150,8 +150,8 @@ void StartFlashingFixTimer()
 std::string EscapeHTMLSpecialCharacters(std::string strMsg)
 {
 	// Always replace & first, as it is used in html escaped characters (so dont want to replace inside an escape)
-	for (size_t pos = 0; (pos = strMsg.find('&', pos)) != std::string::npos; pos += 5)
-		strMsg.replace(pos, 1, "&amp;");
+	for (size_t iPos = 0; (iPos = strMsg.find('&', iPos)) != std::string::npos; iPos += 5)
+		strMsg.replace(iPos, 1, "&amp;");
 
 	std::unordered_map<std::string, std::string> mapReplacements{
 		{"<", "&lt;"},
@@ -160,9 +160,9 @@ std::string EscapeHTMLSpecialCharacters(std::string strMsg)
 		{"\'", "&apos;"}
 	};
 
-	for (const auto& [badChar, escapedChar] : mapReplacements)
-		for (size_t pos = 0; (pos = strMsg.find(badChar, pos)) != std::string::npos; pos += escapedChar.length())
-			strMsg.replace(pos, 1, escapedChar);
+	for (const auto& [strBadChar, strEscapedChar] : mapReplacements)
+		for (size_t iPos = 0; (iPos = strMsg.find(strBadChar, iPos)) != std::string::npos; iPos += strEscapedChar.length())
+			strMsg.replace(iPos, strBadChar.length(), strEscapedChar);
 
 	return strMsg;
 }
