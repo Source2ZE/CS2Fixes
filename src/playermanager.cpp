@@ -37,7 +37,7 @@
 #include "utlstring.h"
 #include "votemanager.h"
 #include <../cs2fixes.h>
-#include <format>
+#include <stdio.h>
 
 #include "tier0/memdbgon.h"
 
@@ -292,8 +292,9 @@ void PrecacheBeaconParticle(IEntityResourceManifest* pResourceManifest)
 	pResourceManifest->AddResource(g_cvarBeaconParticle.Get().String());
 	for (int i = 0; i < 64; i++)
 	{
-		std::string filePath = std::format("particles/hide2/player_hide_branch_{}.vpcf", i);
-		pResourceManifest->AddResource(filePath.c_str());
+		char filePath[100];
+		sprintf(filePath, "particles/hide2/player_hide_branch_%d.vpcf", i);
+		pResourceManifest->AddResource(filePath);
 	}
 }
 
@@ -761,7 +762,8 @@ void ZEPlayer::SetPeerTransparency(bool bEnabled, CPlayerSlot slot)
 	if (bEnabled == isTransparent) return;
 
 	CSingleRecipientFilter filter(GetPlayerSlot());
-	std::string filePath = std::format("particles/hide2/player_hide_branch_{}.vpcf", slot.Get());
+	char filePath[100];
+	sprintf(filePath, "particles/hide2/player_hide_branch_%d.vpcf", slot.Get());
 
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
 	CCSPlayerController* pPeerController = CCSPlayerController::FromSlot(slot);
@@ -769,8 +771,8 @@ void ZEPlayer::SetPeerTransparency(bool bEnabled, CPlayerSlot slot)
 	{
 		if (!pController)
 			return;
-		pController->DispatchParticle(filePath.c_str(), &filter);
-		pController->DispatchParticle(filePath.c_str(), &filter);
+		pController->DispatchParticle(filePath, &filter);
+		pController->DispatchParticle(filePath, &filter);
 		return;
 	}
 	CCSPlayerPawn* pPawn = pPeerController->GetPlayerPawn();
@@ -778,20 +780,20 @@ void ZEPlayer::SetPeerTransparency(bool bEnabled, CPlayerSlot slot)
 	{
 		if (!pController)
 			return;
-		pController->DispatchParticle(filePath.c_str(), &filter);
-		pController->DispatchParticle(filePath.c_str(), &filter);
+		pController->DispatchParticle(filePath, &filter);
+		pController->DispatchParticle(filePath, &filter);
 		return;
 	}
 
-	pPawn->DispatchParticle(filePath.c_str(), &filter);
+	pPawn->DispatchParticle(filePath, &filter);
 	if (!bEnabled)
-		pPawn->DispatchParticle(filePath.c_str(), &filter);
+		pPawn->DispatchParticle(filePath, &filter);
 
 	if (bEnabled)
 		m_nTransparencyMask |= ((uint64)1 << slot.Get());
 	else
 		m_nTransparencyMask &= ~((uint64)1 << slot.Get());
-	Message("Dispatched Particle %s on %d for %d\n", filePath.c_str(), slot.Get(), GetPlayerSlot());
+	Message("Dispatched Particle %s on %d for %d\n", filePath, slot.Get(), GetPlayerSlot());
 }
 
 void ZEPlayer::SetTeamTransparency(bool bEnabled, int iTeam)
