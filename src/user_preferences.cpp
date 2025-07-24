@@ -115,6 +115,7 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	bool bSilenceSound = (bool)(iSoundStatus & 2);
 	bool bHideDecals = (bool)GetPreferenceInt(iSlot, DECAL_PREF_KEY_NAME, 1);
 	bool bNoShake = (bool)GetPreferenceInt(iSlot, NO_SHAKE_PREF_KEY_NAME, 0);
+	bool bTransparency = (bool)GetPreferenceInt(iSlot, TRANSPARENCY_PREF_KEY_NAME, 0);
 	int iButtonWatchMode = GetPreferenceInt(iSlot, BUTTON_WATCH_PREF_KEY_NAME, 0);
 
 	// EntWatch
@@ -131,6 +132,7 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	g_playerManager->SetPlayerSilenceSound(iSlot, bSilenceSound);
 	g_playerManager->SetPlayerStopDecals(iSlot, bHideDecals);
 	g_playerManager->SetPlayerNoShake(iSlot, bNoShake);
+	g_playerManager->SetPlayerTransparency(iSlot, bTransparency);
 
 	ZEPlayer* player = g_playerManager->GetPlayer(CPlayerSlot(iSlot));
 	player->SetHideDistance(iHideDistance);

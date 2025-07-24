@@ -49,6 +49,7 @@
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
 #define SOUND_STATUS_PREF_KEY_NAME "sound_status"
 #define NO_SHAKE_PREF_KEY_NAME "no_shake"
+#define TRANSPARENCY_PREF_KEY_NAME "transparency"
 #define BUTTON_WATCH_PREF_KEY_NAME "button_watch"
 #define INVALID_ZEPLAYERHANDLE_INDEX 0u
 
@@ -194,6 +195,7 @@ public:
 		m_flEntwatchHudY = -2.0f;
 		m_flEntwatchHudSize = 60.0f;
 		m_nTransparencyMask = 0;
+		m_nTransparencyQueue = 0;
 	}
 
 	~ZEPlayer()
@@ -263,6 +265,8 @@ public:
 	void SetEntwatchHudColor(Color colorHud);
 	void SetEntwatchHudPos(float x, float y);
 	void SetEntwatchHudSize(float flSize);
+	void QueuePeerTransparency(bool bEnabled, CPlayerSlot slot);
+	void ApplyPeerTransparencyFromQueue();
 	void SetPeerTransparency(bool bEnabled, CPlayerSlot slot);
 	void SetTeamTransparency(bool bEnabled, int iTeam);
 	void ResetTransparencyMask(bool bClearParticles);
@@ -315,7 +319,8 @@ public:
 	float GetEntwatchHudX() { return m_flEntwatchHudX; }
 	float GetEntwatchHudY() { return m_flEntwatchHudY; }
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
-	bool GetPeerTransparency(CPlayerSlot slot);
+	bool GetPeerTransparency(CPlayerSlot slot) { return m_nTransparencyMask & ((uint64)1 << slot.Get()); }
+	bool GetPeerTransparencyQueue(CPlayerSlot slot) { return m_nTransparencyQueue & ((uint64)1 << slot.Get()); }
 
 	void OnSpawn();
 	void OnAuthenticated();
@@ -388,6 +393,7 @@ private:
 	float m_flEntwatchHudY;
 	float m_flEntwatchHudSize;
 	uint64 m_nTransparencyMask;
+	uint64 m_nTransparencyQueue;
 };
 
 class CPlayerManager
@@ -413,7 +419,7 @@ public:
 	void FlashLightThink();
 	void CheckHideDistances();
 	void SetupInfiniteAmmo();
-	void SetupHideParticle();
+	void SetupTransparencyParticle();
 	CPlayerSlot GetSlotFromUserId(uint16 userid);
 	ZEPlayer* GetPlayerFromUserId(uint16 userid);
 	ZEPlayer* GetPlayerFromSteamId(uint64 steamid);
@@ -461,6 +467,6 @@ private:
 };
 
 extern CPlayerManager* g_playerManager;
-extern bool g_bHideParticleReady;
+extern bool g_bTransparencyParticleReady;
 
 void PrecacheBeaconParticle(IEntityResourceManifest* pResourceManifest);

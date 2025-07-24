@@ -478,13 +478,17 @@ CConVar<int> g_cvarMaxHideDistance("cs2f_hide_distance_max", FCVAR_NONE, "The ma
 // 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding players within %i units.", distance);
 // }
 
-CON_COMMAND_CHAT(hide, "Hide nearby players")
+CConVar<bool> g_cvarEnableTransparency("cs2f_transparency_enable", FCVAR_NONE, "Whether to enable player transparency particle", false);
+
+CON_COMMAND_CHAT(transparency, "Hide nearby players with ***particle***")
 {
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
 		return;
 	}
+	if (!g_cvarEnableTransparency.Get())
+		return;
 	ZEPlayer* pZEPlayer = player->GetZEPlayer();
 	int iPlayer = player->GetPlayerSlot();
 	bool bTransparencySet = g_playerManager->IsPlayerUsingTransparency(iPlayer);
@@ -497,39 +501,6 @@ CON_COMMAND_CHAT(hide, "Hide nearby players")
 		pZEPlayer->ResetTransparencyMask(true);
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding players is now disabled.");
 	}
-}
-
-CON_COMMAND_CHAT(hide_clear, "Hide nearby players")
-{
-	if (!player)
-	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
-		return;
-	}
-	ZEPlayer* pZEPlayer = player->GetZEPlayer();
-	int iPlayer = player->GetPlayerSlot();
-	bool bTransparencySet = g_playerManager->IsPlayerUsingTransparency(iPlayer);
-
-	pZEPlayer->ResetTransparencyMask(true);
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Cleared");
-}
-
-CON_COMMAND_CHAT(hide_team, "Hide nearby players")
-{
-	if (!player)
-	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
-		return;
-	}
-
-	ZEPlayer* pZEPlayer = player->GetZEPlayer();
-	int iPlayer = player->GetPlayerSlot();
-	bool bTransparencySet = g_playerManager->IsPlayerUsingTransparency(iPlayer);
-
-	if (args.ArgC() < 2 && !bTransparencySet)
-		return;
-	pZEPlayer->SetTeamTransparency(true, atoi(args[1]));
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding team.");
 }
 
 void PrintHelp(const CCommand& args, CCSPlayerController* player)

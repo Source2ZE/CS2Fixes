@@ -96,7 +96,7 @@ public:
 
 		// disable hide particle on self for opposite team & enable hide particle on self for teammate
 		ZEPlayer* pZEPlayer = GetZEPlayer();
-		if (g_bHideParticleReady && pZEPlayer)
+		if (g_bTransparencyParticleReady && pZEPlayer)
 		{
 			if (iTeam == CS_TEAM_SPECTATOR)
 				pZEPlayer->ResetTransparencyMask(true);
@@ -116,7 +116,7 @@ public:
 						continue;
 					ZEPlayer* pZEPeerPlayer = pPeerController->GetZEPlayer();
 					if (pZEPeerPlayer)
-						pZEPeerPlayer->SetPeerTransparency(pPeerController->m_iTeamNum() == iTeam, GetPlayerSlot());
+						pZEPeerPlayer->QueuePeerTransparency(pPeerController->m_iTeamNum() == iTeam, GetPlayerSlot());
 				}
 
 				// enable hide particle on others for self

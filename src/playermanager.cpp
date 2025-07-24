@@ -47,7 +47,7 @@ extern CGlobalVars* GetGlobals();
 extern IGameEventSystem* g_gameEventSystem;
 extern CUtlVector<CServerSideClient*>* GetClientList();
 
-bool g_bHideParticleReady = false;
+bool g_bTransparencyParticleReady = false;
 
 CConVar<int> g_cvarAdminImmunityTargetting("cs2f_admin_immunity", FCVAR_NONE, "Mode for which admin immunity system targetting allows: 0 - strictly lower, 1 - equal to or lower, 2 - ignore immunity levels", 0, true, 0, true, 2);
 CConVar<bool> g_cvarEnableMapSteamIds("cs2f_map_steamids_enable", FCVAR_NONE, "Whether to make Steam ID's available to maps", false);
@@ -751,15 +751,30 @@ void ZEPlayer::SetEntwatchHudSize(float flSize)
 		pText->m_flFontSize = m_flEntwatchHudSize;
 }
 
-bool ZEPlayer::GetPeerTransparency(CPlayerSlot slot)
+void ZEPlayer::QueuePeerTransparency(bool bEnabled, CPlayerSlot slot)
 {
-	return m_nTransparencyMask & ((uint64)1 << slot.Get());
+	if (bEnabled)
+		m_nTransparencyQueue |= ((uint64)1 << slot.Get());
+	else
+		m_nTransparencyQueue &= ~((uint64)1 << slot.Get());
 }
 
+void ZEPlayer::ApplyPeerTransparencyFromQueue()
+{
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
+	{
+		if (i == GetPlayerSlot().Get())
+			continue;
+		SetPeerTransparency(GetPeerTransparencyQueue(i), i);
+	}
+}
+
+// dispatch one to toggle, dispatch two to always disable
 void ZEPlayer::SetPeerTransparency(bool bEnabled, CPlayerSlot slot)
 {
 	bool isTransparent = GetPeerTransparency(slot);
-	if (bEnabled == isTransparent) return;
+	if (bEnabled == isTransparent)
+		return;
 
 	CSingleRecipientFilter filter(GetPlayerSlot());
 	char filePath[100];
@@ -793,7 +808,7 @@ void ZEPlayer::SetPeerTransparency(bool bEnabled, CPlayerSlot slot)
 		m_nTransparencyMask |= ((uint64)1 << slot.Get());
 	else
 		m_nTransparencyMask &= ~((uint64)1 << slot.Get());
-	Message("Dispatched Particle %s on %d for %d\n", filePath, slot.Get(), GetPlayerSlot());
+	// Message("Dispatched Particle %s on %d for %d\n", filePath, slot.Get(), GetPlayerSlot());
 }
 
 void ZEPlayer::SetTeamTransparency(bool bEnabled, int iTeam)
@@ -814,7 +829,7 @@ void ZEPlayer::SetTeamTransparency(bool bEnabled, int iTeam)
 
 		CCSPlayerPawn* pPawn = pPeerController->GetPlayerPawn();
 		if (pPawn)
-			SetPeerTransparency(bEnabled, i);
+			QueuePeerTransparency(bEnabled, i);
 	}
 }
 
@@ -826,13 +841,17 @@ void ZEPlayer::ResetTransparencyMask(bool bClearParticles)
 		{
 			if (i == GetPlayerSlot().Get())
 				continue;
-			SetPeerTransparency(false, i);
+			QueuePeerTransparency(false, i);
 		}
 	}
-	m_nTransparencyMask = 0;
+	else
+	{
+		m_nTransparencyQueue = 0;
+		m_nTransparencyMask = 0;
+	}
 }
 
-void CPlayerManager::SetupHideParticle()
+void CPlayerManager::SetupTransparencyParticle()
 {
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
@@ -845,7 +864,15 @@ void CPlayerManager::SetupHideParticle()
 			pPlayer->SetTeamTransparency(true, -1);
 	}
 
-	g_bHideParticleReady = true;
+	g_bTransparencyParticleReady = true;
+	new CTimer(0.3f, false, false, []() {
+		for (int i = 0; i < GetGlobals()->maxClients; i++)
+		{
+			ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+			if (pPlayer) pPlayer->ApplyPeerTransparencyFromQueue();
+		}
+		return 0.3f;
+	});
 }
 
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
@@ -1893,14 +1920,13 @@ void CPlayerManager::SetPlayerTransparency(int slot, bool set)
 	else
 		m_nUsingTransparency &= ~((uint64)1 << slot);
 
-	// TODO: User Pref
 	// Set the user prefs if the player is ingame
-	// ZEPlayer* pPlayer = m_vecPlayers[slot];
-	// if (!pPlayer) return;
+	ZEPlayer* pPlayer = m_vecPlayers[slot];
+	if (!pPlayer) return;
 
-	// uint64 iSlotMask = (uint64)1 << slot;
-	// int iNoShakePreferenceStatus = (m_nUsingNoShake & iSlotMask) ? 1 : 0;
-	// g_pUserPreferencesSystem->SetPreferenceInt(slot, NO_SHAKE_PREF_KEY_NAME, iNoShakePreferenceStatus);
+	uint64 iSlotMask = (uint64)1 << slot;
+	int iTransparencyPreferenceStatus = (m_nUsingTransparency & iSlotMask) ? 1 : 0;
+	g_pUserPreferencesSystem->SetPreferenceInt(slot, TRANSPARENCY_PREF_KEY_NAME, iTransparencyPreferenceStatus);
 }
 
 void CPlayerManager::ResetPlayerFlags(int slot)
