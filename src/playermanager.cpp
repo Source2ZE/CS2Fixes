@@ -294,7 +294,7 @@ void PrecacheBeaconParticle(IEntityResourceManifest* pResourceManifest)
 	for (int i = 0; i < 64; i++)
 	{
 		char filePath[100];
-		sprintf(filePath, "particles/hide2/player_hide_branch_%d.vpcf", i);
+		sprintf(filePath, "particles/cs2fixes/hide2/player_hide_branch_%d.vpcf", i);
 		pResourceManifest->AddResource(filePath);
 	}
 }
@@ -789,7 +789,7 @@ void ZEPlayer::SetPeerTransparency(bool bEnabled, CPlayerSlot slot)
 
 	CSingleRecipientFilter filter(GetPlayerSlot());
 	char filePath[100];
-	sprintf(filePath, "particles/hide2/player_hide_branch_%d.vpcf", slot.Get());
+	sprintf(filePath, "particles/cs2fixes/hide2/player_hide_branch_%d.vpcf", slot.Get());
 
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
 	CCSPlayerController* pPeerController = CCSPlayerController::FromSlot(slot);
