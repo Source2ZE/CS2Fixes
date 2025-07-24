@@ -34,12 +34,12 @@ extern CGlobalVars* GetGlobals();
 CConVar<bool> g_cvarFixHudFlashing("cs2f_fix_hud_flashing", FCVAR_NONE, "Whether to fix hud flashing using a workaround, this BREAKS warmup so pick one or the other", false);
 static std::vector<std::shared_ptr<CHudMessage>> g_vecHudMessages;
 
-bool ShouldDisplayForPlayer(ZEPlayerHandle hPlayer, int iPriority)
+bool ShouldDisplayForPlayer(ZEPlayerHandle hPlayer, EHudPriority ePriority)
 {
 	for (std::shared_ptr<CHudMessage> pHudMessage : g_vecHudMessages)
 	{
 		// Require higher priority to block, so if priority matches most recent message takes precedence
-		if (pHudMessage->HasRecipient(hPlayer) && pHudMessage->GetPriority() > iPriority)
+		if (pHudMessage->HasRecipient(hPlayer) && pHudMessage->GetPriority() > ePriority)
 			return false;
 	}
 
@@ -88,7 +88,7 @@ void CreateHudMessage(std::shared_ptr<CHudMessage> pHudMessage)
 	g_gameEventManager->FreeEvent(pEvent);
 }
 
-void SendHudMessage(ZEPlayer* pPlayer, int iDuration, int iPriority, const char* pszMessage, ...)
+void SendHudMessage(ZEPlayer* pPlayer, int iDuration, EHudPriority ePriority, const char* pszMessage, ...)
 {
 	va_list args;
 	va_start(args, pszMessage);
@@ -98,13 +98,13 @@ void SendHudMessage(ZEPlayer* pPlayer, int iDuration, int iPriority, const char*
 
 	va_end(args);
 
-	std::shared_ptr<CHudMessage> pHudMessage = std::make_shared<CHudMessage>(buf, iDuration, iPriority);
+	std::shared_ptr<CHudMessage> pHudMessage = std::make_shared<CHudMessage>(buf, iDuration, ePriority);
 
 	pHudMessage->AddRecipient(pPlayer->GetHandle());
 	CreateHudMessage(pHudMessage);
 }
 
-void SendHudMessageAll(int iDuration, int iPriority, const char* pszMessage, ...)
+void SendHudMessageAll(int iDuration, EHudPriority ePriority, const char* pszMessage, ...)
 {
 	if (!GetGlobals())
 		return;
@@ -117,7 +117,7 @@ void SendHudMessageAll(int iDuration, int iPriority, const char* pszMessage, ...
 
 	va_end(args);
 
-	std::shared_ptr<CHudMessage> pHudMessage = std::make_shared<CHudMessage>(buf, iDuration, iPriority);
+	std::shared_ptr<CHudMessage> pHudMessage = std::make_shared<CHudMessage>(buf, iDuration, ePriority);
 
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{

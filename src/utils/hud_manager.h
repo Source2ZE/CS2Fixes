@@ -23,19 +23,25 @@
 #include <string>
 #include <vector>
 
+enum class EHudPriority
+{
+	InfectionCountdown = 2,
+	AdminHSay = 99
+};
+
 class CHudMessage
 {
 public:
-	CHudMessage(std::string sMessage, int iDuration, int iPriority)
+	CHudMessage(std::string sMessage, int iDuration, EHudPriority ePriority)
 	{
 		m_strMessage = sMessage;
 		m_iDuration = iDuration;
-		m_iPriority = iPriority;
+		m_ePriority = ePriority;
 	}
 
 	const char* GetMessage() { return m_strMessage.c_str(); };
 	int GetDuration() { return m_iDuration; };
-	int GetPriority() { return m_iPriority; };
+	EHudPriority GetPriority() { return m_ePriority; };
 	std::vector<ZEPlayerHandle> GetRecipients() { return m_vecRecipients; };
 	bool HasRecipient(ZEPlayerHandle hPlayer) { return std::find(m_vecRecipients.begin(), m_vecRecipients.end(), hPlayer) != m_vecRecipients.end(); };
 	void AddRecipient(ZEPlayerHandle hPlayer) { m_vecRecipients.push_back(hPlayer); };
@@ -43,14 +49,14 @@ public:
 private:
 	std::string m_strMessage;
 	int m_iDuration;
-	int m_iPriority;
+	EHudPriority m_ePriority;
 	std::vector<ZEPlayerHandle> m_vecRecipients;
 };
 
 // When multiple hud messages are active, whichever one has highest priority one will display
 // Note this is a basic implementation (TODO: is this worth expanding?), so e.g. a previously sent lower priority message will not display once a higher priority one expires
-void SendHudMessage(ZEPlayer* pPlayer, int iDuration, int iPriority, const char* pszMessage, ...);
-void SendHudMessageAll(int iDuration, int iPriority, const char* pszMessage, ...);
+void SendHudMessage(ZEPlayer* pPlayer, int iDuration, EHudPriority ePriority, const char* pszMessage, ...);
+void SendHudMessageAll(int iDuration, EHudPriority ePriority, const char* pszMessage, ...);
 
 void StartFlashingFixTimer();
 std::string EscapeHTMLSpecialCharacters(std::string strMsg);
