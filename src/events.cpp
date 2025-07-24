@@ -286,11 +286,6 @@ GAME_EVENT_F(round_start)
 
 GAME_EVENT_F(round_end)
 {
-	if (g_cvarFixHudFlashing.Get() && g_pGameRules)
-		g_pGameRules->m_bGameRestart = false;
-
-	g_bTransparencyParticleReady = false;
-
 	if (!g_cvarEnableTopDefender.Get() || !GetGlobals())
 		return;
 
