@@ -42,5 +42,6 @@ struct WeaponInfo_t
 const WeaponInfo_t* FindWeaponInfoByClass(const char* pClass);
 const WeaponInfo_t* FindWeaponInfoByClassCaseInsensitive(const char* pClass);
 const WeaponInfo_t* FindWeaponInfoByAlias(const char* pAlias);
+const WeaponInfo_t* FindWeaponInfoByItemDefIndex(int16_t iItemDefinitionIndex);
 
 std::vector<std::pair<std::string, std::vector<std::string>>> GenerateWeaponCommands();

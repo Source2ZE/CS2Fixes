@@ -2,31 +2,16 @@
 import os
 import subprocess
 
-MMSPlugin.plugin_name = 'cs2fixes'
-MMSPlugin.plugin_alias = 'cs2fixes'
-
 for sdk_target in MMSPlugin.sdk_targets:
   sdk = sdk_target.sdk
   cxx = sdk_target.cxx
 
-  binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
-  
-  try:
-    version = subprocess.check_output(['git', 'describe', '--tags', '--long']).decode('ascii').strip()
-  except subprocess.SubprocessError as e:
-    version = "1.7-dev"
-    print("git describe failed as there are no tags")
-	
-  print(f'Setting version to "{version}"')
-	
-  binary.compiler.defines += ['CS2FIXES_VERSION="' + version + '"']
-
-  if binary.compiler.behavior == 'gcc':
-    binary.compiler.cxxflags += ['-Wno-invalid-offsetof']
+  binary = MMSPlugin.HL2Library(builder, cxx, f'{MMSPlugin.metadata["name"]}.{sdk["name"]}', sdk)
 
   binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath, 'src', 'cs2_sdk'),
     os.path.join(builder.sourcePath, 'src', 'utils'),
+    os.path.join(builder.sourcePath, 'public'),
     os.path.join(builder.sourcePath, 'sdk', 'thirdparty', 'protobuf-3.21.8', 'src'),
     os.path.join(builder.sourcePath, 'vendor', 'funchook', 'include'),
   ]
@@ -50,7 +35,6 @@ for sdk_target in MMSPlugin.sdk_targets:
     ]
     binary.sources += ['src/utils/plat_win.cpp']
 
-
   binary.sources += [
     'src/cs2fixes.cpp',
     'src/mempatch.cpp',
@@ -64,6 +48,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/events.cpp',
     'src/utils/entity.cpp',
     'src/utils/weapon.cpp',
+    'src/utils/hud_manager.cpp',
     'src/cs2_sdk/entity/services.cpp',
     'src/cs2_sdk/entity/ccsplayerpawn.cpp',
     'src/cs2_sdk/entity/cbasemodelentity.cpp',

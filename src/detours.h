@@ -36,6 +36,7 @@ class CGameRules;
 class CTakeDamageInfo;
 class CCSPlayer_WeaponServices;
 class CCSPlayer_MovementServices;
+class CCSPlayer_ItemServices;
 class CBasePlayerWeapon;
 class INetworkMessageInternal;
 class IEngineServiceMgr;
@@ -50,6 +51,28 @@ class CCSPlayer_UseServices;
 class CTraceFilter;
 class Vector;
 class QAngle;
+class CEconItemView;
+
+enum class AcquireMethod
+{
+	PickUp,
+	Buy,
+};
+
+enum class AcquireResult
+{
+	Allowed,
+	InvalidItem,
+	AlreadyOwned,
+	AlreadyPurchased,
+	ReachedGrenadeTypeLimit,
+	ReachedGrenadeTotalLimit,
+	NotAllowedByTeam,
+	NotAllowedByMap,
+	NotAllowedByMode,
+	NotAllowedForPurchase,
+	NotAllowedByProhibition,
+};
 
 bool InitDetours(CGameConfig* gameConfig);
 void FlushAllDetours();
@@ -87,3 +110,4 @@ QAngle FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*);
 #endif
 void FASTCALL Detour_CBaseFilter_InputTestActivator(CBaseEntity* pThis, InputData_t& inputdata);
 void FASTCALL Detour_GameSystem_Think_CheckSteamBan();
+AcquireResult FASTCALL Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices* pItemServices, CEconItemView* pEconItem, AcquireMethod iAcquireMethod, uint64_t unk4);

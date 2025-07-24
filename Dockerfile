@@ -11,6 +11,6 @@ RUN git config --global --add safe.directory /app
 
 COPY ./docker-entrypoint.sh ./
 ENV HL2SDKCS2=/app/source/sdk
-ENV MMSOURCE112=/app/metamod-source
+ENV MMSOURCE_DEV=/app/metamod-source
 WORKDIR /app/source
 CMD [ "/bin/bash", "./docker-entrypoint.sh" ]

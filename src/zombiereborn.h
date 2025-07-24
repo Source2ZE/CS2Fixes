@@ -136,7 +136,7 @@ struct ZRClass
 struct ZRHumanClass : ZRClass
 {
 	ZRHumanClass(std::shared_ptr<ZRHumanClass> pClass) :
-		ZRClass(pClass, CS_TEAM_CT) {};
+		ZRClass(pClass, CS_TEAM_CT){};
 	ZRHumanClass(ordered_json jsonKeys, std::string szClassname);
 };
 
@@ -149,7 +149,7 @@ struct ZRZombieClass : ZRClass
 		ZRClass(pClass, CS_TEAM_T),
 		iHealthRegenCount(pClass->iHealthRegenCount),
 		flHealthRegenInterval(pClass->flHealthRegenInterval),
-		flKnockback(pClass->flKnockback) {};
+		flKnockback(pClass->flKnockback){};
 	ZRZombieClass(ordered_json jsonKeys, std::string szClassname);
 	void PrintInfo()
 	{
@@ -226,7 +226,7 @@ class CZRRegenTimer : public CTimerBase
 {
 public:
 	CZRRegenTimer(float flRegenInterval, int iRegenAmount, CHandle<CCSPlayerPawn> hPawnHandle) :
-		CTimerBase(flRegenInterval, false, false), m_iRegenAmount(iRegenAmount), m_hPawnHandle(hPawnHandle) {};
+		CTimerBase(flRegenInterval, false, false), m_iRegenAmount(iRegenAmount), m_hPawnHandle(hPawnHandle){};
 
 	bool Execute();
 	static void StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController* pController);
@@ -296,7 +296,7 @@ void ZR_OnPlayerDeath(IGameEvent* pEvent);
 void ZR_OnRoundFreezeEnd(IGameEvent* pEvent);
 void ZR_OnRoundTimeWarning(IGameEvent* pEvent);
 bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo* pInfo, CCSPlayerPawn* pVictimPawn);
-bool ZR_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
+AcquireResult ZR_Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices* pItemServices, CEconItemView* pEconItem);
 void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID);
 void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid);
 void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand& args);
