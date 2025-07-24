@@ -58,9 +58,9 @@ static std::unordered_map<std::string, WeaponInfo_t> s_WeaponMap = {
 	{"weapon_revolver",				{"weapon_revolver", 64, 0, GEAR_SLOT_PISTOL, 600, "R8 Revolver", {"r8revolver", "revolver", "r8"}}},
 
 	{"weapon_flashbang",			 {"weapon_flashbang", 43, 0, GEAR_SLOT_GRENADES}													},
-	{"weapon_hegrenade",			 {"weapon_hegrenade", 44, 0, GEAR_SLOT_GRENADES, 300, "HE Grenade", {"hegrenade", "he"}, 1}		   },
+	{"weapon_hegrenade",			 {"weapon_hegrenade", 44, 0, GEAR_SLOT_GRENADES, 300, "HE Grenade", {"hegrenade", "he"}}			},
 	{"weapon_smokegrenade",			{"weapon_smokegrenade", 45, 0, GEAR_SLOT_GRENADES}												  },
-	{"weapon_molotov",			   {"weapon_molotov", 46, 0, GEAR_SLOT_GRENADES, 400, "Molotov", {"molotov"}, 1}						},
+	{"weapon_molotov",			   {"weapon_molotov", 46, 0, GEAR_SLOT_GRENADES, 400, "Molotov", {"molotov"}}						 },
 	{"weapon_decoy",				 {"weapon_decoy", 47, 0, GEAR_SLOT_GRENADES}														},
 	{"weapon_incgrenade",			  {"weapon_incgrenade", 48, 0, GEAR_SLOT_GRENADES}												  },
 
@@ -90,10 +90,10 @@ static std::unordered_map<std::string, WeaponInfo_t> s_WeaponMap = {
 	{"weapon_knife_skeleton",		  {"weapon_knife", 525, 0, GEAR_SLOT_KNIFE}														   },
 	{"weapon_knife_kukri",		   {"weapon_knife", 526, 0, GEAR_SLOT_KNIFE}															},
 
-	{"item_kevlar",					{"item_kevlar", 0, 0, GEAR_SLOT_UTILITY, 650, "Kevlar Vest", {"kevlar"}}							},
-	{"item_assaultsuit",			 {"item_assaultsuit", 0, 0, GEAR_SLOT_UTILITY}													  },
-	{"item_heavyassaultsuit",		  {"item_heavyassaultsuit", 0, 0, GEAR_SLOT_UTILITY}												},
-	{"item_defuser",				 {"item_defuser", 0, 0, GEAR_SLOT_UTILITY}														  },
+	{"item_kevlar",					{"item_kevlar", 50, 0, GEAR_SLOT_UTILITY, 650, "Kevlar Vest", {"kevlar"}}						 },
+	{"item_assaultsuit",			 {"item_assaultsuit", 51, 0, GEAR_SLOT_UTILITY}													   },
+	{"item_heavyassaultsuit",		  {"item_heavyassaultsuit", 52, 0, GEAR_SLOT_UTILITY}												 },
+	{"item_defuser",				 {"item_defuser", 55, 0, GEAR_SLOT_UTILITY}														   },
 	{"ammo_50ae",					{"ammo_50ae", 0, 0, GEAR_SLOT_UTILITY}															},
 };
 
@@ -122,6 +122,15 @@ const WeaponInfo_t* FindWeaponInfoByAlias(const char* pAlias)
 			if (V_stricmp(pAlias, alias.c_str()) == 0)
 				return &info;
 	}
+
+	return nullptr;
+}
+
+const WeaponInfo_t* FindWeaponInfoByItemDefIndex(int16_t iItemDefinitionIndex)
+{
+	for (const auto& info : s_WeaponMap | std::views::values)
+		if (iItemDefinitionIndex == info.m_iItemDefinitionIndex)
+			return &info;
 
 	return nullptr;
 }

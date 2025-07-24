@@ -36,9 +36,10 @@ using ordered_json = nlohmann::ordered_json;
 class CMap
 {
 public:
-	CMap(std::string sName, uint64 iWorkshopId, bool bIsEnabled, int iMinPlayers, int iMaxPlayers, float fCustomCooldown, std::vector<std::string> vecGroups)
+	CMap(std::string sName, std::string sDisplayName, uint64 iWorkshopId, bool bIsEnabled, int iMinPlayers, int iMaxPlayers, float fCustomCooldown, std::vector<std::string> vecGroups)
 	{
 		m_strName = sName;
+		m_strDisplayName = sDisplayName;
 		m_iWorkshopId = iWorkshopId;
 		m_bIsEnabled = bIsEnabled;
 		m_fCustomCooldown = fCustomCooldown;
@@ -48,6 +49,7 @@ public:
 	}
 
 	const char* GetName() { return m_strName.c_str(); };
+	const char* GetDisplayName() { return m_strDisplayName.empty() ? m_strName.c_str() : m_strDisplayName.c_str(); };
 	uint64 GetWorkshopId() const { return m_iWorkshopId; };
 	bool IsEnabled() { return m_bIsEnabled; };
 	float GetCustomCooldown() { return m_fCustomCooldown; };
@@ -58,6 +60,7 @@ public:
 
 private:
 	std::string m_strName;
+	std::string m_strDisplayName;
 	uint64 m_iWorkshopId;
 	bool m_bIsEnabled;
 	int m_iMinPlayers;
@@ -129,7 +132,7 @@ public:
 	void FinishVote();
 	bool RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
 	std::vector<int> GetMapIndexesFromSubstring(const char* sMapSubstring);
-	uint64 HandlePlayerMapLookup(CCSPlayerController* pController, const char* sMapSubstring, bool bAllowWorkshopID = false);
+	uint64 HandlePlayerMapLookup(CCSPlayerController* pController, const char* sMapSubstring, bool bAdmin = false);
 	int GetMapIndexFromString(const char* pszMapString);
 	std::shared_ptr<CGroup> GetGroupFromString(const char* pszName);
 	std::shared_ptr<CCooldown> GetMapCooldown(const char* pszMapName);
@@ -145,6 +148,7 @@ public:
 	void ForceNextMap(CCSPlayerController* pController, const char* sMapSubstring);
 	int GetMapListSize() { return m_vecMapList.size(); };
 	const char* GetMapName(int iMapIndex) { return m_vecMapList[iMapIndex]->GetName(); };
+	const char* GetMapDisplayName(int iMapIndex) { return m_vecMapList[iMapIndex]->GetDisplayName(); };
 	uint64 GetMapWorkshopId(int iMapIndex) { return m_vecMapList[iMapIndex]->GetWorkshopId(); };
 	void ClearPlayerInfo(int iSlot);
 	bool IsVoteOngoing() { return m_bIsVoteOngoing; }
@@ -175,6 +179,7 @@ public:
 	std::string StringToLower(std::string sValue);
 	void SetDisabledCooldowns(bool bValue) { g_bDisableCooldowns = bValue; } // Can be used by custom fork features, e.g. an auto-restart
 	void ProcessGroupCooldowns();
+	void ReloadCurrentMap();
 
 private:
 	int WinningMapIndex();

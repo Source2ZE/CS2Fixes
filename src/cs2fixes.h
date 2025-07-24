@@ -19,12 +19,20 @@
 
 #pragma once
 
+#include "gamesystems/spawngroup_manager.h"
 #include "igameevents.h"
 #include "networksystem/inetworkserializer.h"
+#include "public/ics2fixes.h"
 #include <ISmmPlugin.h>
 #include <iplayerinfo.h>
 #include <iserver.h>
 #include <sh_vector.h>
+
+#ifdef AMBUILD
+	#include "version_gen.h"
+#else
+	#include "version_gen_placeholder.h"
+#endif
 
 struct CTakeDamageInfoContainer;
 class CCSPlayer_MovementServices;
@@ -33,7 +41,7 @@ struct TouchLinked_t;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
 
-class CS2Fixes : public ISmmPlugin, public IMetamodListener
+class CS2Fixes : public ISmmPlugin, public IMetamodListener, public ICS2Fixes
 {
 public:
 	bool Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool late);
@@ -83,16 +91,24 @@ public: // hooks
 	void Hook_CheckMovingGround(double frametime);
 	void Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity);
 	int Hook_LoadEventsFromFile(const char* filename, bool bSearchAll);
+	void Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr);
+
+public: // MetaMod API
+	void* OnMetamodQuery(const char* iface, int* ret);
+	std::uint64_t GetAdminFlags(std::uint64_t iSteam64ID) const override;
+	bool SetAdminFlags(std::uint64_t iSteam64ID, std::uint64_t iFlags) override;
+	int GetAdminImmunity(std::uint64_t iSteam64ID) const override;
+	bool SetAdminImmunity(std::uint64_t iSteam64ID, std::uint32_t iImmunity) override;
 
 public:
-	const char* GetAuthor();
-	const char* GetName();
-	const char* GetDescription();
-	const char* GetURL();
-	const char* GetLicense();
-	const char* GetVersion();
-	const char* GetDate();
-	const char* GetLogTag();
+	const char* GetAuthor() { return PLUGIN_AUTHOR; }
+	const char* GetName() { return PLUGIN_DISPLAY_NAME; }
+	const char* GetDescription() { return PLUGIN_DESCRIPTION; }
+	const char* GetURL() { return PLUGIN_URL; }
+	const char* GetLicense() { return PLUGIN_LICENSE; }
+	const char* GetVersion() { return PLUGIN_FULL_VERSION; }
+	const char* GetDate() { return __DATE__; }
+	const char* GetLogTag() { return PLUGIN_LOGTAG; }
 };
 
 extern CS2Fixes g_CS2Fixes;

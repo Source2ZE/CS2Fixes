@@ -57,6 +57,7 @@ class CTakeDamageInfo;
 class INetworkStringTable;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
+class CSpawnGroupMgrGameSystem;
 
 struct EmitSound_t;
 struct SndOpEventGuid_t;
@@ -108,4 +109,5 @@ namespace addresses
 													   const Vector* vecDamageForce, const Vector* vecDamagePosition, float flDamage, int bitsDamageType, int iCustomDamage, void* a10);
 	inline void(FASTCALL* CNetworkStringTable_DeleteAllStrings)(INetworkStringTable* pThis);
 	inline void(FASTCALL* CCSPlayer_WeaponServices_EquipWeapon)(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
+	inline void(FASTCALL* GetSpawnGroups)(CSpawnGroupMgrGameSystem* pSpawnGroupMgr, CUtlVector<SpawnGroupHandle_t>* pList);
 } // namespace addresses

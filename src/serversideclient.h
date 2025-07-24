@@ -11,6 +11,10 @@
 #include <inetchannel.h>
 #include <playerslot.h>
 // #include <protocol.h> // @Wend4r: use <netmessages.pb.h> instead.
+#include "circularbuffer.h"
+#include "networksystem/inetworksystem.h"
+#include "threadtools.h"
+#include "tier1/netadr.h"
 #include <entity2/entityidentity.h>
 #include <networksystem/inetworksystem.h>
 #include <steam/steamclientpublic.h>
@@ -25,6 +29,7 @@ class CHLTVServer;
 class INetMessage;
 class CNetworkGameServerBase;
 class CNetworkGameServer;
+class CUtlSlot;
 
 struct HltvReplayStats_t
 {
@@ -66,11 +71,14 @@ public:
 	int m_nCurBit;
 }; // sizeof 40
 
-// class CServerSideClientBase: CUtlSlot, INetworkChannelNotify, INetworkMessageProcessingPreFilter;
-class CServerSideClientBase
+abstract_class INetworkChannelNotify
 {
-	virtual void UnkDestructor() = 0;
+public:
+	virtual void OnShutdownChannel(INetChannel * pChannel) = 0;
+};
 
+class CServerSideClientBase : public INetworkChannelNotify, public INetworkMessageProcessingPreFilter
+{
 public:
 	virtual ~CServerSideClientBase() = 0;
 
@@ -102,7 +110,7 @@ public:
 
 	virtual void Clear() = 0;
 
-	virtual void ExecuteStringCommand(const CNETMsg_StringCmd& msg) = 0;
+	virtual bool ExecuteStringCommand(const CNETMsg_StringCmd_t& msg) = 0; // "false" trigger an anti spam counter to kick a client.
 	virtual void SendNetMessage(const CNetMessage* pData, NetChannelBufType_t bufType) = 0;
 
 #ifdef LINUX
@@ -111,48 +119,22 @@ private:
 #endif
 
 public:
-	virtual void ClientPrintf(const char*, ...) = 0;
+	virtual void ClientPrintf(PRINTF_FORMAT_STRING const char*, ...) = 0;
 
-	bool IsConnected() const
-	{
-		return m_nSignonState >= SIGNONSTATE_CONNECTED;
-	}
-	bool IsSpawned() const
-	{
-		return m_nSignonState >= SIGNONSTATE_NEW;
-	}
-	bool IsActive() const
-	{
-		return m_nSignonState == SIGNONSTATE_FULL;
-	}
-	virtual bool IsFakeClient() const
-	{
-		return m_bFakePlayer;
-	}
+	bool IsConnected() const { return m_nSignonState >= SIGNONSTATE_CONNECTED; }
+	bool IsInGame() const { return m_nSignonState == SIGNONSTATE_FULL; }
+	bool IsSpawned() const { return m_nSignonState >= SIGNONSTATE_NEW; }
+	bool IsActive() const { return m_nSignonState == SIGNONSTATE_FULL; }
+	virtual bool IsFakeClient() const { return m_bFakePlayer; }
 	virtual bool IsHLTV() = 0;
 
 	// Is an actual human player or splitscreen player (not a bot and not a HLTV slot)
-	virtual bool IsHumanPlayer() const
-	{
-		return false;
-	}
-	virtual bool IsHearingClient(CPlayerSlot nSlot) const
-	{
-		return false;
-	}
-	virtual bool IsLowViolenceClient() const
-	{
-		return m_bLowViolence;
-	}
+	virtual bool IsHumanPlayer() const { return false; }
+	virtual bool IsHearingClient(CPlayerSlot nSlot) const { return false; }
+	virtual bool IsLowViolenceClient() const { return m_bLowViolence; }
 
-	virtual bool IsSplitScreenUser() const
-	{
-		return m_bSplitScreenUser;
-	}
-	int GetClientPlatform() const
-	{
-		return m_ClientPlatform;
-	} // CrossPlayPlatform_t
+	virtual bool IsSplitScreenUser() const { return m_bSplitScreenUser; }
+	int GetClientPlatform() const { return m_ClientPlatform; } // CrossPlayPlatform_t
 
 public: // Message Handlers
 	virtual bool ProcessTick(const CNETMsg_Tick_t& msg) = 0;
@@ -207,16 +189,15 @@ public:
 	virtual bool UpdateAcknowledgedFramecount(int tick) = 0;
 	void ForceFullUpdate()
 	{
-		UpdateAcknowledgedFramecount(-1);
+		// This seems to be wrong and crashes linux, plus I can't be bothered to check the vtable
+		// UpdateAcknowledgedFramecount(-1);
+		m_nDeltaTick = -1;
 	}
 
 	virtual bool ShouldSendMessages() = 0;
 	virtual void UpdateSendState() = 0;
 
-	virtual const CMsgPlayerInfo& GetPlayerInfo() const
-	{
-		return m_playerInfo;
-	}
+	virtual const CMsgPlayerInfo& GetPlayerInfo() const { return m_playerInfo; }
 
 	virtual void UpdateUserSettings() = 0;
 	virtual void ResetUserSettings() = 0;
@@ -232,26 +213,14 @@ public:
 	virtual void SetName(const char* name) = 0;
 	virtual void SetUserCVar(const char* cvar, const char* value) = 0;
 
-	int GetSignonState() const
-	{
-		return m_nSignonState;
-	}
+	SignonState_t GetSignonState() const { return m_nSignonState; }
 
 	virtual void FreeBaselines() = 0;
 
-	bool IsFullyAuthenticated(void)
-	{
-		return m_bFullyAuthenticated;
-	}
-	void SetFullyAuthenticated(void)
-	{
-		m_bFullyAuthenticated = true;
-	}
+	bool IsFullyAuthenticated(void) { return m_bFullyAuthenticated; }
+	void SetFullyAuthenticated(void) { m_bFullyAuthenticated = true; }
 
-	virtual CServerSideClientBase* GetSplitScreenOwner()
-	{
-		return m_pAttachedTo;
-	}
+	virtual CServerSideClientBase* GetSplitScreenOwner() { return m_pAttachedTo; }
 
 	virtual int GetNumPlayers() = 0;
 
@@ -279,14 +248,16 @@ public:
 	virtual bool ProcessSignonStateMsg(int state) = 0;
 	virtual void PerformDisconnection(ENetworkDisconnectionReason reason) = 0;
 
+public:																				 // INetworkMessageProcessingPreFilter
+	virtual bool FilterMessage(const CNetMessage* pData, INetChannel* pChannel) = 0; // "Client %d(%s) tried to send a RebroadcastSourceId msg.\n"
+
 public:
-	[[maybe_unused]] void* m_pVT1;	   // INetworkMessageProcessingPreFilter
 	CUtlString m_unk16;				   // 16
 	[[maybe_unused]] char pad24[0x16]; // 24
 #ifdef __linux__
 	[[maybe_unused]] char pad46[0x10]; // 46
 #endif
-	void (*RebroadcastSource)(int msgID);		  // 64
+	void (*RebroadcastSource)(int msgID);
 	CUtlString m_UserIDString;					  // 72
 	CUtlString m_Name;							  // 80
 	CPlayerSlot m_nClientSlot;					  // 88
@@ -295,7 +266,7 @@ public:
 	INetChannel* m_NetChannel;					  // 104
 	uint8 m_nUnkVariable;						  // 112
 	bool m_bMarkedToKick;						  // 113
-	int32 m_nSignonState;						  // 116
+	SignonState_t m_nSignonState;				  // 116
 	bool m_bSplitScreenUser;					  // 120
 	bool m_bSplitAllowFastDisconnect;			  // 121
 	int m_nSplitScreenPlayerSlot;				  // 124
@@ -306,48 +277,79 @@ public:
 	bool m_bFakePlayer;							  // 176
 	bool m_bSendingSnapshot;					  // 177
 	[[maybe_unused]] char pad6[0x5];
-	CPlayerUserId m_UserID; // 184
-	bool m_bReceivedPacket; // 186
-	CSteamID m_SteamID;		// 187
-	CSteamID m_UnkSteamID;	// 195
-	CSteamID m_UnkSteamID2; // 203 from auth ticket
-	CSteamID m_nFriendsID;	// 211
-	ns_address m_nAddr;		// 220
-	ns_address m_nAddr2;	// 252
-	KeyValues* m_ConVars;	// 288
-	bool m_bConVarsChanged; // 296
-	bool m_bConVarsInited;	// 297
-	bool m_bIsHLTV;			// 298
-	bool m_bIsReplay;		// 299
-	[[maybe_unused]] char pad29[0xA];
-	uint32 m_nSendtableCRC;					  // 312
-	int m_ClientPlatform;					  // 316
-	int m_nSignonTick;						  // 320
-	int m_nDeltaTick;						  // 324
-	int m_UnkVariable3;						  // 328
-	int m_nStringTableAckTick;				  // 332
-	int m_UnkVariable4;						  // 336
-	CFrameSnapshot* m_pLastSnapshot;		  // 344
-	CUtlVector<void*> m_vecLoadedSpawnGroups; // 352
-	CMsgPlayerInfo m_playerInfo;			  // 376
-	CFrameSnapshot* m_pBaseline;			  // 432
-	int m_nBaselineUpdateTick;				  // 440
-	CBitVec<MAX_EDICTS> m_BaselinesSent;	  // 444
-	int m_nBaselineUsed;					  // 2492
-	int m_nLoadingProgress;					  // 2496
-	int m_nForceWaitForTick;				  // 2500
-	bool m_bLowViolence;					  // 2504
-	bool m_bSomethingWithAddressType;		  // 2505
-	bool m_bFullyAuthenticated;				  // 2506
-	bool m_bUnkBool2507;					  // 2507
-	float m_fNextMessageTime;				  // 2508
-	float m_fSnapshotInterval;				  // 2512
-	float m_fAuthenticatedTime;				  // 2516
-	[[maybe_unused]] char pad168[0x124];	  // 2520
-	[[maybe_unused]] char pad1658[0x24];	  // 2816 something in CServerSideClientBase::ExecuteStringCommand
-	CNetworkStatTrace m_Trace;				  // 2848
-	int m_spamCommandsCount;				  // 2888 if the value is greater than 16, the player will be kicked with reason 39
-	double m_lastExecutedCommand;			  // 2896 if command executed more than once per second, ++m_spamCommandCount
+	CPlayerUserId m_UserID = -1; // 184
+	bool m_bReceivedPacket;		 // true, if client received a packet after the last send packet
+	CSteamID m_SteamID;			 // 187
+	CSteamID m_UnkSteamID;		 // 195
+	CSteamID m_UnkSteamID2;		 // 203 from auth ticket
+	CSteamID m_nFriendsID;		 // 211
+	ns_address m_nAddr;			 // 220
+	ns_address m_nAddr2;		 // 252
+	KeyValues* m_ConVars;		 // 288
+	bool m_bConVarsChanged;		 // 296
+	bool m_bConVarsInited;		 // 297
+	bool m_bIsHLTV;				 // 298
+	bool m_bIsReplay;			 // 299
+
+private:
+	[[maybe_unused]] char pad29[0x12];
+
+public:
+	uint32 m_nSendtableCRC;								   // 312
+	int m_ClientPlatform;								   // 316
+	int m_nSignonTick;									   // 320
+	int m_nDeltaTick;									   // 324
+	int m_UnkVariable3;									   // 328
+	int m_nStringTableAckTick;							   // 332
+	int m_UnkVariable4;									   // 336
+	CUtlVector<SpawnGroupHandle_t> m_vecLoadedSpawnGroups; // 352
+	CFrameSnapshot* m_pLastSnapshot;					   // last send snapshot
+	CMsgPlayerInfo m_playerInfo;						   // 376
+	CFrameSnapshot* m_pBaseline;						   // 432
+	int m_nBaselineUpdateTick;							   // 440
+	CBitVec<MAX_EDICTS> m_BaselinesSent;				   // 444
+	int m_nBaselineUsed;								   // 0/1 toggling flag, singaling client what baseline to use
+	int m_nLoadingProgress;								   // 0..100 progress, only valid during loading
+
+	// This is used when we send out a nodelta packet to put the client in a state where we wait
+	// until we get an ack from them on this packet.
+	// This is for 3 reasons:
+	// 1. A client requesting a nodelta packet means they're screwed so no point in deluging them with data.
+	//    Better to send the uncompressed data at a slow rate until we hear back from them (if at all).
+	// 2. Since the nodelta packet deletes all client entities, we can't ever delta from a packet previous to it.
+	// 3. It can eat up a lot of CPU on the server to keep building nodelta packets while waiting for
+	//    a client to get back on its feet.
+	int m_nForceWaitForTick = -1;
+
+	CCircularBuffer m_UnkBuffer = {1024};	 // 2504 (24 bytes)
+	bool m_bLowViolence = false;			 // true if client is in low-violence mode (L4D server needs to know)
+	bool m_bSomethingWithAddressType = true; // 2529
+	bool m_bFullyAuthenticated = false;		 // 2530
+	bool m_bUnk1 = false;					 // 2531
+	int m_nUnk;
+
+	// The datagram is written to after every frame, but only cleared
+	// when it is sent out to the client.  overflow is tolerated.
+
+	// Time when we should send next world state update ( datagram )
+	float m_fNextMessageTime = 0.0f;
+	float m_fAuthenticatedTime = -1.0f;
+
+	// Default time to wait for next message
+	float m_fSnapshotInterval = 0.0f;
+
+private:
+	// CSVCMsg_PacketEntities_t m_packetmsg;  // 2552
+	[[maybe_unused]] char pad2552[0x138]; // 2552
+
+public:
+	CNetworkStatTrace m_Trace;			// 2864
+	int m_spamCommandsCount = 0;		// 2904 if the value is greater than 16, the player will be kicked with reason 39
+	int m_unknown = 0;					// 2908
+	double m_lastExecutedCommand = 0.0; // 2912 if command executed more than once per second, ++m_spamCommandCount
+
+private:
+	[[maybe_unused]] char pad2920[0x20]; // 2920
 };
 
 class CServerSideClient : public CServerSideClientBase
@@ -356,26 +358,34 @@ public:
 	virtual ~CServerSideClient() = 0;
 
 public:
-	CPlayerBitVec m_VoiceStreams;				   // 2904
-	CPlayerBitVec m_VoiceProximity;				   // 2912
-	CCheckTransmitInfo m_PackInfo;				   // 2920
-	CClientFrameManager m_FrameManager;			   // 3520
-	CClientFrame* m_pCurrentFrame;				   // 3808
-	float m_flLastClientCommandQuotaStart;		   // 3816
-	float m_flTimeClientBecameFullyConnected;	   // 3820
-	bool m_bVoiceLoopback;						   // 3824
-	int m_nHltvReplayDelay;						   // 3828
-	CHLTVServer* m_pHltvReplayServer;			   // 3832
-	int m_nHltvReplayStopAt;					   // 3840
-	int m_nHltvReplayStartAt;					   // 3844
-	int m_nHltvReplaySlowdownBeginAt;			   // 3848
-	int m_nHltvReplaySlowdownEndAt;				   // 3852
-	float m_flHltvReplaySlowdownRate;			   // 3856
-	int m_nHltvLastSendTick;					   // 3860
-	float m_flHltvLastReplayRequestTime;		   // 3864
-	CUtlVector<INetMessage*> m_HltvQueuedMessages; // 3872
-	HltvReplayStats_t m_HltvReplayStats;		   // 3896
-	void* m_pLastJob;							   // 3952
+	CPlayerBitVec m_VoiceStreams;		// 2952
+	CPlayerBitVec m_VoiceProximity;		// 2960
+	CCheckTransmitInfo m_PackInfo;		// 2968
+	CClientFrameManager m_FrameManager; // 3568
+
+private:
+	[[maybe_unused]] char pad3856[8]; // 3856
+
+public:
+	float m_flLastClientCommandQuotaStart = 0.0f;	  // 3864
+	float m_flTimeClientBecameFullyConnected = -1.0f; // 3868
+	bool m_bVoiceLoopback = false;					  // 3872
+	bool m_bUnk10 = false;							  // 3873
+	int m_nHltvReplayDelay = 0;						  // 3876
+	CHLTVServer* m_pHltvReplayServer;				  // 3880
+	int m_nHltvReplayStopAt;						  // 3888
+	int m_nHltvReplayStartAt;						  // 3892
+	int m_nHltvReplaySlowdownBeginAt;				  // 3896
+	int m_nHltvReplaySlowdownEndAt;					  // 3900
+	float m_flHltvReplaySlowdownRate;				  // 3904
+	int m_nHltvLastSendTick;						  // 3908
+	float m_flHltvLastReplayRequestTime;			  // 3912
+	CUtlVector<INetMessage*> m_HltvQueuedMessages;	  // 3920
+	HltvReplayStats_t m_HltvReplayStats;			  // 3944
+	void* m_pLastJob;								  // 4000
+
+private:
+	[[maybe_unused]] char pad3984[8]; // 4008
 };
 
 // not full class reversed
@@ -385,20 +395,24 @@ public:
 	virtual ~CHLTVClient() = 0;
 
 public:
-	CNetworkGameServerBase* m_pHLTV;	// 2904
-	CUtlString m_szPassword;			// 2912
-	CUtlString m_szChatGroup;			// 2920
-	double m_fLastSendTime;				// 2928
-	double m_flLastChatTime;			// 2936
-	int m_nLastSendTick;				// 2944
-	[[maybe_unused]] char pad2948[0x4]; // 2948
-	int m_nFullFrameTime;				// 2952
-	[[maybe_unused]] char pad2956[0x4]; // 2956
-	[[maybe_unused]] char pad2960[0x4]; // 2960
-	bool m_bNoChat;						// 2964
-	bool m_bUnkBool;					// 2965
-	bool m_bUnkBool2;					// 2966
-	bool m_bUnkBool3;					// 2967
-}; // sizeof 3008
+	CNetworkGameServerBase* m_pHLTV; // 2960
+	CUtlString m_szPassword;		 // 2968
+	CUtlString m_szChatGroup;		 // 2976 // "all" or "group%d"
+	double m_fLastSendTime = 0.0;	 // 2984
+	double m_flLastChatTime = 0.0;	 // 2992
+	int m_nLastSendTick = 0;		 // 2996
+	int m_unknown2 = 0;				 // 3000
+	int m_nFullFrameTime = 0;		 // 3008
+	int m_unknown3 = 0;				 // 3012
+
+public:
+	bool m_bNoChat = false;	  // 3016
+	bool m_bUnkBool = false;  // 3017
+	bool m_bUnkBool2 = false; // 3018
+	bool m_bUnkBool3 = false; // 3019
+
+private:
+	[[maybe_unused]] char pad3976[0x24]; // 3020
+};
 
 #endif // SERVERSIDECLIENT_H

@@ -79,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}
-          path: CS2Fixes/build/package
+          path: CS2Fixes/build/package/cs2
 
   release:
     name: Release

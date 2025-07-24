@@ -43,6 +43,7 @@ public:
 	SCHEMA_FIELD(CSPlayerState, m_iPlayerState)
 	SCHEMA_FIELD(CHandle<CCSPlayerController>, m_hOriginalController)
 	SCHEMA_FIELD(CCSPlayer_ViewModelServices*, m_pViewModelServices)
+	SCHEMA_FIELD(CCSPlayer_PingServices*, m_pPingServices)
 
 	CCSPlayerController* GetOriginalController()
 	{

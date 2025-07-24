@@ -52,6 +52,7 @@ extern IGameEventSystem* g_gameEventSystem;
 extern CGameEntitySystem* g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
+extern CConVar<CUtlString> g_cvarFlashLightAttachment;
 
 CConVar<bool> g_cvarEnableCommands("cs2f_commands_enable", FCVAR_NONE, "Whether to enable chat commands", false);
 CConVar<bool> g_cvarEnableAdminCommands("cs2f_admin_commands_enable", FCVAR_NONE, "Whether to enable admin chat commands", false);
@@ -135,13 +136,14 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 		return;
 	}
 
+	static ConVarRefAbstract ammo_grenade_limit_default("ammo_grenade_limit_default"), ammo_grenade_limit_total("ammo_grenade_limit_total"), mp_weapons_allow_typecount("mp_weapons_allow_typecount");
+
+	int iGrenadeLimitDefault = ammo_grenade_limit_default.GetInt();
+	int iGrenadeLimitTotal = ammo_grenade_limit_total.GetInt();
+	int iWeaponLimit = mp_weapons_allow_typecount.GetInt();
+
 	if (pWeaponInfo->m_eSlot == GEAR_SLOT_GRENADES)
 	{
-		static ConVarRefAbstract ammo_grenade_limit_default("ammo_grenade_limit_default"), ammo_grenade_limit_total("ammo_grenade_limit_total");
-
-		int iGrenadeLimitDefault = ammo_grenade_limit_default.GetInt();
-		int iGrenadeLimitTotal = ammo_grenade_limit_total.GetInt();
-
 		int iMatchingGrenades = GetGrenadeAmmo(pWeaponServices, pWeaponInfo);
 		int iTotalGrenades = GetGrenadeAmmoTotal(pWeaponServices);
 
@@ -158,35 +160,42 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 		}
 	}
 
+	int maxAmount;
+
 	if (pWeaponInfo->m_nMaxAmount)
+		maxAmount = pWeaponInfo->m_nMaxAmount;
+	else if (pWeaponInfo->m_eSlot == GEAR_SLOT_GRENADES)
+		maxAmount = iGrenadeLimitDefault;
+	else
+		maxAmount = iWeaponLimit == -1 ? 9999 : iWeaponLimit;
+
+	CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
+	bool found = false;
+	FOR_EACH_VEC(*weaponPurchases, i)
 	{
-		CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
-		bool found = false;
-		FOR_EACH_VEC(*weaponPurchases, i)
+		WeaponPurchaseCount_t& purchase = (*weaponPurchases)[i];
+		if (purchase.m_nItemDefIndex == pWeaponInfo->m_iItemDefinitionIndex)
 		{
-			WeaponPurchaseCount_t& purchase = (*weaponPurchases)[i];
-			if (purchase.m_nItemDefIndex == pWeaponInfo->m_iItemDefinitionIndex)
+			// Note ammo_grenade_limit_total is not followed here, only for checking inventory space
+			if (purchase.m_nCount >= maxAmount)
 			{
-				if (purchase.m_nCount >= pWeaponInfo->m_nMaxAmount)
-				{
-					ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot buy any more %s (Max %i)", pWeaponInfo->m_pName, pWeaponInfo->m_nMaxAmount);
-					return;
-				}
-				purchase.m_nCount += 1;
-				found = true;
-				break;
+				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot buy any more %s (Max %i)", pWeaponInfo->m_pName, maxAmount);
+				return;
 			}
+			purchase.m_nCount += 1;
+			found = true;
+			break;
 		}
+	}
 
-		if (!found)
-		{
-			WeaponPurchaseCount_t purchase = {};
+	if (!found)
+	{
+		WeaponPurchaseCount_t purchase = {};
 
-			purchase.m_nCount = 1;
-			purchase.m_nItemDefIndex = pWeaponInfo->m_iItemDefinitionIndex;
+		purchase.m_nCount = 1;
+		purchase.m_nItemDefIndex = pWeaponInfo->m_iItemDefinitionIndex;
 
-			weaponPurchases->AddToTail(purchase);
-		}
+		weaponPurchases->AddToTail(purchase);
 	}
 
 	if (pWeaponInfo->m_eSlot == GEAR_SLOT_RIFLE || pWeaponInfo->m_eSlot == GEAR_SLOT_PISTOL)
@@ -210,15 +219,11 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 	CBasePlayerWeapon* pWeapon = pItemServices->GiveNamedItemAws(pWeaponInfo->m_pClass);
 
-	// Normally shouldn't be possible, but avoid crashes in some edge cases
+	// Normally shouldn't be possible, but avoid issues in some edge cases
 	if (!pWeapon)
 		return;
 
 	player->m_pInGameMoneyServices->m_iAccount = money - pWeaponInfo->m_nPrice;
-
-	// If the weapon spawn goes through AWS, it needs to be manually selected because it spawns dropped in-world due to ZR enforcing mp_weapons_allow_* cvars against T's
-	if (pWeaponInfo->m_eSlot == GEAR_SLOT_RIFLE || pWeaponInfo->m_eSlot == GEAR_SLOT_PISTOL)
-		pWeaponServices->SelectItem(pWeapon);
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have purchased %s for $%i", pWeaponInfo->m_pName, pWeaponInfo->m_nPrice);
 }
@@ -800,10 +805,8 @@ CON_COMMAND_CHAT(fl, "- Flashlight")
 
 	pLight->DispatchSpawn(pKeyValues);
 
-	variant_t val("!player");
-	pLight->AcceptInput("SetParent", &val);
-	variant_t val2("clip_limit");
-	pLight->AcceptInput("SetParentAttachmentMaintainOffset", &val2);
+	pLight->SetParent(pPawn);
+	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
 }
 
 CON_COMMAND_CHAT(say, "<message> - Say something using console")

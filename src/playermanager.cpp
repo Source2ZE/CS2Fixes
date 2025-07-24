@@ -45,6 +45,7 @@ extern CGameEntitySystem* g_pEntitySystem;
 extern CGlobalVars* GetGlobals();
 extern IGameEventSystem* g_gameEventSystem;
 extern CUtlVector<CServerSideClient*>* GetClientList();
+extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
 
 CConVar<int> g_cvarAdminImmunityTargetting("cs2f_admin_immunity", FCVAR_NONE, "Mode for which admin immunity system targetting allows: 0 - strictly lower, 1 - equal to or lower, 2 - ignore immunity levels", 0, true, 0, true, 2);
 CConVar<bool> g_cvarEnableMapSteamIds("cs2f_map_steamids_enable", FCVAR_NONE, "Whether to make Steam ID's available to maps", false);
@@ -224,7 +225,7 @@ void ZEPlayer::SpawnFlashLight()
 		CBaseViewModel* pViewModel = GetOrCreateCustomViewModel(pPawn);
 		if (!pViewModel)
 			return;
-		
+
 		pLight->SetParent(pViewModel);
 	}
 
@@ -252,7 +253,7 @@ void ZEPlayer::ToggleFlashLight()
 CConVar<float> g_cvarFloodInterval("cs2f_flood_interval", FCVAR_NONE, "Amount of time allowed between chat messages acquiring flood tokens", 0.75f, true, 0.0f, false, 0.0f);
 CConVar<int> g_cvarMaxFloodTokens("cs2f_max_flood_tokens", FCVAR_NONE, "Maximum number of flood tokens allowed before chat messages are blocked", 3, true, 0, false, 0);
 CConVar<float> g_cvarFloodCooldown("cs2f_flood_cooldown", FCVAR_NONE, "Amount of time to block messages for when a player floods", 3.0f, true, 0.0f, false, 0.0f);
-CConVar<CUtlString> g_cvarBeaconParticle("cs2f_beacon_particle", FCVAR_NONE, ".vpcf file to be precached and used for beacon", "particles/cs2fixes/player_beacon.vpcf");
+CConVar<CUtlString> g_cvarBeaconParticle("cs2f_beacon_particle", FCVAR_NONE, ".vpcf file to be precached and used for beacon", "particles/cs2fixes/admin_beacon.vpcf");
 
 bool ZEPlayer::IsFlooding()
 {
@@ -306,7 +307,7 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
 	pKeyValues->SetString("effect_name", g_cvarBeaconParticle.Get().String());
 	pKeyValues->SetInt("tint_cp", 1);
 	pKeyValues->SetVector("origin", vecAbsOrigin);
-	pKeyValues->SetBool("start_active", true);
+	pKeyValues->SetBool("start_active", false);
 
 	particle->m_clrTint->SetRawColor(color.GetRawColor());
 
@@ -324,7 +325,7 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
 	if (pGiver && pGiver->IsLeader())
 		bLeaderBeacon = true;
 
-	new CTimer(1.0f, false, false, [hPlayer, hParticle, hGiver, iTeamNum, bLeaderBeacon]() {
+	new CTimer(0.0f, false, false, [hPlayer, hParticle, hGiver, iTeamNum, bLeaderBeacon]() {
 		CParticleSystem* pParticle = hParticle.Get();
 
 		if (!hPlayer.IsValid() || !pParticle)
@@ -337,6 +338,16 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
 			addresses::UTIL_Remove(pParticle);
 			return -1.0f;
 		}
+
+		pParticle->AcceptInput("Start");
+
+		// delayed DestroyImmediately input so particle effect can be replayed (and default particle doesn't bug out)
+		new CTimer(0.5f, false, false, [hParticle]() {
+			CParticleSystem* particle = hParticle.Get();
+			if (particle)
+				particle->AcceptInput("DestroyImmediately");
+			return -1.0f;
+		});
 
 		if (!bLeaderBeacon)
 			return 1.0f;
@@ -808,11 +819,11 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	ResetPlayerFlags(slot.Get());
 
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
-	g_pMapVoteSystem->ClearInvalidNominations();
 
 	// One tick delay, to ensure player count decrements
 	new CTimer(0.01f, false, true, []() {
 		g_pVoteManager->CheckRTVStatus();
+		g_pMapVoteSystem->ClearInvalidNominations();
 		return -1.0f;
 	});
 
@@ -824,6 +835,17 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot)
 	ZEPlayer* pPlayer = m_vecPlayers[slot.Get()];
 
 	pPlayer->SetInGame(true);
+
+	if (!g_pSpawnGroupMgr)
+		return;
+
+	CUtlVector<SpawnGroupHandle_t> vecActualSpawnGroups;
+	addresses::GetSpawnGroups(g_pSpawnGroupMgr, &vecActualSpawnGroups);
+
+	CServerSideClient* pClient = GetClientBySlot(slot);
+
+	if (pClient && pClient->m_vecLoadedSpawnGroups.Count() != vecActualSpawnGroups.Count())
+		pClient->m_vecLoadedSpawnGroups = vecActualSpawnGroups;
 }
 
 void CPlayerManager::OnLateLoad()
