@@ -262,6 +262,12 @@ GAME_EVENT_F(round_start)
 	if (g_cvarFixHudFlashing.Get() && g_pGameRules && g_pGameRules->m_bWarmupPeriod)
 		g_pEngineServer2->ServerCommand("mp_warmup_end");
 
+	if (g_cvarEnableTransparency.Get())
+		new CTimer(1.0f, false, false, [] {
+			g_playerManager->SetupTransparencyParticle();
+			return -1.0f;
+		});
+
 	if (!g_cvarEnableTopDefender.Get() || !GetGlobals())
 		return;
 
@@ -282,6 +288,8 @@ GAME_EVENT_F(round_end)
 {
 	if (g_cvarFixHudFlashing.Get() && g_pGameRules)
 		g_pGameRules->m_bGameRestart = false;
+
+	g_bTransparencyParticleReady = false;
 
 	if (!g_cvarEnableTopDefender.Get() || !GetGlobals())
 		return;
