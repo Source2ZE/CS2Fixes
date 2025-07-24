@@ -562,7 +562,7 @@ CON_COMMAND_CHAT_FLAGS(hsay, "<message> - Say something as a hud hint", ADMFLAG_
 	}
 
 	SendHudMessageAll(
-		10, 99, "<span class='fontSize-l'><span color='#FFFFFF'>ADMIN: </span><span color='#D11313'>%s</span></span>",
+		10, EHudPriority::AdminHSay, "<span class='fontSize-l'><span color='#FFFFFF'>ADMIN: </span><span color='#D11313'>%s</span></span>",
 		EscapeHTMLSpecialCharacters(args.ArgS()).c_str());
 }
 
