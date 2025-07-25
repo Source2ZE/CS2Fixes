@@ -1653,7 +1653,7 @@ void ZR_OnPlayerTakeDamage(CCSPlayerPawn* pVictimPawn, const CTakeDamageInfo* pI
 		auto flClassKnockback = 1.0f;
 		float flCashScale = g_cvarDamageCashScale.Get();
 
-		if(flCashScale > 0)
+		if (flCashScale > 0)
 		{
 			const auto pKillerController = pKillerPawn->GetOriginalController();
 			int money = pKillerController->m_pInGameMoneyServices->m_iAccount;

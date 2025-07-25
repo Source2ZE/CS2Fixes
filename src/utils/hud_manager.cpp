@@ -32,6 +32,8 @@ extern IGameEventSystem* g_gameEventSystem;
 extern CGlobalVars* GetGlobals();
 
 CConVar<bool> g_cvarFixHudFlashing("cs2f_fix_hud_flashing", FCVAR_NONE, "Whether to fix hud flashing using a workaround, this BREAKS warmup so pick one or the other", false);
+CConVar<bool> g_cvarDisableHudOutsideRound("cs2f_disable_hud_outside_round", FCVAR_NONE, "Whether to disable hud messages that would flash when a round is not ongoing, since flashing fix cannot run then", false);
+CConVar<int> g_cvarHudDurationLeeway("cs2f_hud_duration_leeway", FCVAR_NONE, "Extra seconds duration to leave hud messages visible (without priority), reduces transition flashes between different priority messages", 2);
 static std::vector<std::shared_ptr<CHudMessage>> g_vecHudMessages;
 
 bool ShouldDisplayForPlayer(ZEPlayerHandle hPlayer, EHudPriority ePriority)
@@ -48,13 +50,16 @@ bool ShouldDisplayForPlayer(ZEPlayerHandle hPlayer, EHudPriority ePriority)
 
 void CreateHudMessage(std::shared_ptr<CHudMessage> pHudMessage)
 {
+	if (g_cvarDisableHudOutsideRound.Get() && !g_pGameRules->m_bGameRestart())
+		return;
+
 	IGameEvent* pEvent = g_gameEventManager->CreateEvent("show_survival_respawn_status");
 
 	if (!pEvent)
 		return;
 
 	pEvent->SetString("loc_token", pHudMessage->GetMessage());
-	pEvent->SetInt("duration", pHudMessage->GetDuration());
+	pEvent->SetInt("duration", pHudMessage->GetDuration() + g_cvarHudDurationLeeway.Get());
 	pEvent->SetInt("userid", -1);
 
 	INetworkMessageInternal* pMsg = g_pNetworkMessages->FindNetworkMessageById(GE_Source1LegacyGameEvent);
@@ -154,8 +159,8 @@ std::string EscapeHTMLSpecialCharacters(std::string strMsg)
 		strMsg.replace(iPos, 1, "&amp;");
 
 	std::unordered_map<std::string, std::string> mapReplacements{
-		{"<", "&lt;"},
-		{">", "&gt;"},
+		{"<",  "&lt;"	},
+		{">",  "&gt;"	},
 		{"\"", "&quot;"},
 		{"\'", "&apos;"}
 	};
