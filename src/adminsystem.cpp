@@ -1693,7 +1693,10 @@ void CAdminSystem::ShowDisconnectedPlayers(CCSPlayerController* const pAdmin)
 
 			ClientPrint(pAdmin, HUD_PRINTCONSOLE, "%i. %s", i, std::get<0>(ply).c_str());
 			ClientPrint(pAdmin, HUD_PRINTCONSOLE, "\tSteam64 ID - %s", std::to_string(std::get<1>(ply)).c_str());
-			ClientPrint(pAdmin, HUD_PRINTCONSOLE, "\tIP Address - %s", std::get<2>(ply).c_str());
+
+			ZEPlayer* zpAdmin = pAdmin->GetZEPlayer();
+			if (zpAdmin && zpAdmin->IsAdminFlagSet(ADMFLAG_RCON))
+				ClientPrint(pAdmin, HUD_PRINTCONSOLE, "\tIP Address - %s", std::get<2>(ply).c_str());
 		}
 	}
 	if (!bAnyDCedPlayers)
