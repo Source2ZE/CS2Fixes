@@ -51,7 +51,7 @@
 		// 
 		//  // If at least 1 group is added above, these are all optional fields.
 		//	"flags": "abcdefg", // Permission flags. Combines with any flags defined in user's groups
-		//	"immunity": "1" // Non-negative value. Takes highest value from here or any of user's groups
+		//	"immunity": 1 // Non-negative value. Takes highest value from here or any of user's groups
 		//}
 	}
 }
