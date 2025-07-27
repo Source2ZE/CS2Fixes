@@ -56,7 +56,6 @@ extern double g_flUniversalTime;
 extern CConVar<int> g_cvarFreeArmor;
 
 void ZR_Infect(CCSPlayerController* pAttackerController, CCSPlayerController* pVictimController, bool bBroadcast);
-bool ZR_CheckTeamWinConditions(int iTeamNum);
 void ZR_Cure(CCSPlayerController* pTargetController);
 void ZR_EndRoundAndAddTeamScore(int iTeamNum);
 void SetupCTeams();
