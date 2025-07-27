@@ -145,7 +145,7 @@ enum LeaderVisual
 	Tracer
 };
 
-std::pair<int, std::string> GetCount(LeaderVisual iType)
+static std::pair<int, std::string> GetCount(LeaderVisual iType)
 {
 	if (!GetGlobals())
 		return std::make_pair(0, "");
@@ -170,7 +170,7 @@ std::pair<int, std::string> GetCount(LeaderVisual iType)
 					continue;
 				break;
 			case LeaderVisual::Tracer:
-				if (zpPlayer->GetTracerColor().a() < 255)
+				if (pPlayer->m_iTeamNum != CS_TEAM_CT || zpPlayer->GetTracerColor().a() < 255)
 					continue;
 				break;
 			case LeaderVisual::Beacon:
