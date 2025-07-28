@@ -1944,7 +1944,8 @@ void CPlayerManager::SetPlayerTransparency(int slot, bool set)
 
 	// Set the user prefs if the player is ingame
 	ZEPlayer* pPlayer = m_vecPlayers[slot];
-	if (!pPlayer) return;
+	if (!pPlayer)
+		return;
 
 	uint64 iSlotMask = (uint64)1 << slot;
 	int iTransparencyPreferenceStatus = (m_nUsingTransparency & iSlotMask) ? 1 : 0;

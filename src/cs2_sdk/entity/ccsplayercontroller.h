@@ -134,8 +134,7 @@ public:
 			addresses::CCSPlayerController_SwitchTeam(this, iTeam);
 	}
 
-	void
-	Respawn()
+	void Respawn()
 	{
 		CCSPlayerPawn* pPawn = GetPlayerPawn();
 		if (!pPawn || pPawn->IsAlive())
