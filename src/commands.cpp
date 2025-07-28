@@ -437,51 +437,51 @@ CConVar<bool> g_cvarEnableHide("cs2f_hide_enable", FCVAR_NONE, "Whether to enabl
 CConVar<int> g_cvarDefaultHideDistance("cs2f_hide_distance_default", FCVAR_NONE, "The default distance for hide", 250, true, 0, false, 0);
 CConVar<int> g_cvarMaxHideDistance("cs2f_hide_distance_max", FCVAR_NONE, "The max distance for hide", 2000, true, 0, false, 0);
 
-// CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
-// {
-// 	// Silently return so the command is completely hidden
-// 	if (!g_cvarEnableHide.Get())
-// 		return;
+CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
+{
+	// Silently return so the command is completely hidden
+	if (!g_cvarEnableHide.Get())
+		return;
 
-// 	if (!player)
-// 	{
-// 		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
-// 		return;
-// 	}
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
 
-// 	int distance;
+	int distance;
 
-// 	if (args.ArgC() < 2)
-// 		distance = g_cvarDefaultHideDistance.Get();
-// 	else
-// 		distance = V_StringToInt32(args[1], -1);
+	if (args.ArgC() < 2)
+		distance = g_cvarDefaultHideDistance.Get();
+	else
+		distance = V_StringToInt32(args[1], -1);
 
-// 	if (distance > g_cvarMaxHideDistance.Get() || distance < 0)
-// 	{
-// 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only hide players between 0 and %i units away.", g_cvarMaxHideDistance.Get());
-// 		return;
-// 	}
+	if (distance > g_cvarMaxHideDistance.Get() || distance < 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only hide players between 0 and %i units away.", g_cvarMaxHideDistance.Get());
+		return;
+	}
 
-// 	ZEPlayer* pZEPlayer = player->GetZEPlayer();
+	ZEPlayer* pZEPlayer = player->GetZEPlayer();
 
-// 	// Something has to really go wrong for this to happen
-// 	if (!pZEPlayer)
-// 	{
-// 		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
-// 		return;
-// 	}
+	// Something has to really go wrong for this to happen
+	if (!pZEPlayer)
+	{
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
+		return;
+	}
 
-// 	// allows for toggling hide by turning off when hide distance matches.
-// 	if (pZEPlayer->GetHideDistance() == distance)
-// 		distance = 0;
+	// allows for toggling hide by turning off when hide distance matches.
+	if (pZEPlayer->GetHideDistance() == distance)
+		distance = 0;
 
-// 	pZEPlayer->SetHideDistance(distance);
+	pZEPlayer->SetHideDistance(distance);
 
-// 	if (distance == 0)
-// 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding players is now disabled.");
-// 	else
-// 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding players within %i units.", distance);
-// }
+	if (distance == 0)
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding players is now disabled.");
+	else
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding players within %i units.", distance);
+}
 
 CConVar<bool> g_cvarEnableTransparency("cs2f_transparency_enable", FCVAR_NONE, "Whether to enable player transparency particle", false);
 
