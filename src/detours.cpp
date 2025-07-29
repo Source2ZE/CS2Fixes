@@ -77,7 +77,11 @@ DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer);
 DECLARE_DETOUR(GetFreeClient, Detour_GetFreeClient);
+#ifdef __linux__
+// Inlined by MSVC as of 2025-07-28 CS2 update
+// TODO: Find some alternative that supports Windows
 DECLARE_DETOUR(CCSPlayerPawn_GetMaxSpeed, Detour_CCSPlayerPawn_GetMaxSpeed);
+#endif
 DECLARE_DETOUR(FindUseEntity, Detour_FindUseEntity);
 DECLARE_DETOUR(TraceFunc, Detour_TraceFunc);
 DECLARE_DETOUR(TraceShape, Detour_TraceShape);
@@ -598,6 +602,7 @@ CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* un
 	return nullptr;
 }
 
+#ifdef __linux__
 float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
 {
 	auto flMaxSpeed = CCSPlayerPawn_GetMaxSpeed(pPawn);
@@ -608,6 +613,7 @@ float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
 
 	return flMaxSpeed;
 }
+#endif
 
 CConVar<bool> g_cvarPreventUsingPlayers("cs2f_prevent_using_players", FCVAR_NONE, "Whether to prevent +use from hitting players (0=can use players, 1=cannot use players)", false);
 

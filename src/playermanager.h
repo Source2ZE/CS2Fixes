@@ -251,7 +251,7 @@ public:
 	void SetSpeedMod(float flSpeedMod) { m_flSpeedMod = flSpeedMod; }
 	void SetLastInputs(uint64 iLastInputs) { m_iLastInputs = iLastInputs; }
 	void UpdateLastInputTime() { m_iLastInputTime = std::time(0); }
-	void SetMaxSpeed(float flMaxSpeed) { m_flMaxSpeed = flMaxSpeed; }
+	void SetMaxSpeed(float flMaxSpeed) { m_flMaxSpeed = flMaxSpeed; } // BROKEN ON WINDOWS
 	void CycleButtonWatch();
 	void ReplicateConVar(const char* pszName, const char* pszValue);
 	void SetActiveZRClass(std::shared_ptr<ZRClass> pZRModel) { m_pActiveZRClass = pZRModel; }
