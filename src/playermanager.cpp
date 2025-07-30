@@ -590,7 +590,7 @@ void ZEPlayer::CreateEntwatchHud()
 	////////////////////////
 	return;
 	////////////////////////
-
+	/*
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
 	if (!pController)
 		return;
@@ -631,10 +631,10 @@ void ZEPlayer::CreateEntwatchHud()
 	pText->DispatchSpawn();
 	SetEntwatchHud(pText);
 
-	//pText->AcceptInput("SetParent", "!activator", pViewModel);
+	pText->AcceptInput("SetParent", "!activator", pViewModel);
 
-	//Vector origin = pViewModel->GetAbsOrigin();
-	//QAngle vmangles = pViewModel->GetAbsRotation();
+	Vector origin = pViewModel->GetAbsOrigin();
+	QAngle vmangles = pViewModel->GetAbsRotation();
 
 	Vector forward;
 	Vector right;
@@ -655,6 +655,7 @@ void ZEPlayer::CreateEntwatchHud()
 	angles.z = AngleNormalize(-vmangles.x + 90.0f);
 
 	pText->Teleport(&origin, &angles, nullptr);
+	*/
 }
 
 int ZEPlayer::GetEntwatchHudMode()
