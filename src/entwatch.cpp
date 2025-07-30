@@ -1956,9 +1956,14 @@ void CEWHandler::Hook_Use(InputData_t* pInput)
 	RETURN_META(MRES_IGNORED);
 }
 
+// CURRENTLY DISABLED WHILE HUD IS NOT IMPLEMENTED
 // Update cd and uses of all held items
 float EW_UpdateHud()
 {
+	////////////////////////
+	return -1.0f;
+	////////////////////////
+
 	if (!GetGlobals())
 		return EW_HUD_TICKRATE;
 

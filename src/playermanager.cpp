@@ -180,13 +180,6 @@ void ZEPlayer::SpawnFlashLight()
 
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)CCSPlayerController::FromSlot(GetPlayerSlot())->GetPawn();
 
-	// Ensure custom viewmodel exists if needed
-	if (!g_cvarFlashLightUseAttachment.Get())
-	{
-		if (!pPawn->m_pViewModelServices() || !GetOrCreateCustomViewModel(pPawn))
-			return;
-	}
-
 	Vector origin = pPawn->GetAbsOrigin();
 	Vector forward;
 	AngleVectors(pPawn->m_angEyeAngles(), &forward);
@@ -214,20 +207,9 @@ void ZEPlayer::SpawnFlashLight()
 	pKeyValues->SetString("lightcookie", "materials/effects/lightcookies/flashlight.vtex");
 
 	pLight->DispatchSpawn(pKeyValues);
-
-	if (g_cvarFlashLightUseAttachment.Get())
-	{
-		pLight->SetParent(pPawn);
-		pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
-	}
-	else
-	{
-		CBaseViewModel* pViewModel = GetOrCreateCustomViewModel(pPawn);
-		if (!pViewModel)
-			return;
-
-		pLight->SetParent(pViewModel);
-	}
+	
+	pLight->SetParent(pPawn);
+	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
 
 	SetFlashLight(pLight);
 }
@@ -602,25 +584,13 @@ void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
 	delete data;
 }
 
-CBaseViewModel* ZEPlayer::GetOrCreateCustomViewModel(CCSPlayerPawn* pPawn)
-{
-	CBaseViewModel* pViewmodel = pPawn->m_pViewModelServices()->GetViewModel(2);
-	if (pViewmodel)
-		return pViewmodel;
-
-	pViewmodel = CreateEntityByName<CBaseViewModel>("predicted_viewmodel");
-	if (!pViewmodel)
-		return nullptr;
-
-	pViewmodel->DispatchSpawn();
-	pViewmodel->SetOwner(pPawn);
-	pPawn->m_pViewModelServices()->SetViewModel(2, pViewmodel);
-
-	return pViewmodel;
-}
-
+// CURRENTLY DOES NOTHING 
 void ZEPlayer::CreateEntwatchHud()
 {
+	////////////////////////
+	return;
+	////////////////////////
+
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
 	if (!pController)
 		return;
@@ -628,16 +598,7 @@ void ZEPlayer::CreateEntwatchHud()
 	CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
 	if (!pPawn)
 		return;
-
-	if (!pPawn->m_pViewModelServices())
-		return;
-
-	CBaseViewModel* pViewModel = GetOrCreateCustomViewModel(pPawn);
-	if (!pViewModel)
-	{
-		Panic("Failed to get or create custom viewmodel for entwatch hud.\n");
-		return;
-	}
+	
 
 	CPointWorldText* pText = GetEntwatchHud();
 	if (pText)
@@ -670,10 +631,10 @@ void ZEPlayer::CreateEntwatchHud()
 	pText->DispatchSpawn();
 	SetEntwatchHud(pText);
 
-	pText->AcceptInput("SetParent", "!activator", pViewModel);
+	//pText->AcceptInput("SetParent", "!activator", pViewModel);
 
-	Vector origin = pViewModel->GetAbsOrigin();
-	QAngle vmangles = pViewModel->GetAbsRotation();
+	//Vector origin = pViewModel->GetAbsOrigin();
+	//QAngle vmangles = pViewModel->GetAbsRotation();
 
 	Vector forward;
 	Vector right;
