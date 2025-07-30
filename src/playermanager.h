@@ -303,7 +303,6 @@ public:
 	std::shared_ptr<ZRClass> GetActiveZRClass() { return m_pActiveZRClass; }
 	std::shared_ptr<ZRModelEntry> GetActiveZRModel() { return m_pActiveZRModel; }
 	int GetButtonWatchMode();
-	CBaseViewModel* GetOrCreateCustomViewModel(CCSPlayerPawn* pPawn);
 	int GetEntwatchHudMode();
 	bool GetEntwatchClangtags() { return m_bEntwatchClantags; }
 	CPointWorldText* GetEntwatchHud() { return m_hEntwatchHud.Get(); }
