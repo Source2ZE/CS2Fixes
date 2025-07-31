@@ -39,11 +39,11 @@
 				"linux"			"\x55\x48\x8D\x87\x2A\x2A\x2A\x2A\x48\x89\xE5\x41\x57\x41\x56\x49\x89\xD6"
 			}
 			// Check vauff's pin in #scripting
-			"ServerMovementUnlock" //TODO
+			"ServerMovementUnlock"
 			{
 				"library"		"server"
-				"windows"		"\x76\x2A\xF2\x0F\x10\x4F\x2A\x41\x0F\x28\xC1\x0F\x28\xD1\xF3\x0F\x59\xC0"
-				"linux"			"\x0F\x87\x2A\x2A\x2A\x2A\x49\x8B\x7C\x24\x2A\xE8\x2A\x2A\x2A\x2A\x66\x0F\xEF\xED\x66\x0F\xD6\x85"
+				"windows"		"\x76\x2A\xF2\x0F\x10\x4E\x2A\x41\x0F\x28\xD2\x0F\x28\xC1"
+				"linux"			"\x0F\x87\x2A\x2A\x2A\x2A\x49\x8B\x7C\x24\x2A\x48\x85\xFF"
 			}
 			// String: "CCSPlayerPawnBase::SwitchTeam", just keep in mind this is actually CCSPlayerController::SwitchTeam
 			"CCSPlayerController_SwitchTeam"
@@ -211,11 +211,11 @@
 				"linux"			"\x55\x48\x89\xF2\x48\x89\xE5\x41\x55\x41\x54\x53"
 			}
 			// "Error - cannot add bots after game is over."
-			"BotNavIgnore" //TODO
+			"BotNavIgnore"
 			{
 				"library"		"server"
 				"windows"		"\x0F\x84\x2A\x2A\x2A\x2A\x80\xB8\x2A\x2A\x2A\x2A\x00\x0F\x84\x2A\x2A\x2A\x2A\x80\x3D\x2A\x2A\x2A\x2A\x00\x74\x15"
-				"linux"			"\x48\x85\xC0\x74\x2E\x80\xB8\x2A\x2A\x2A\x2A\x00\x74\x25"
+				"linux"			"\x0F\x84\x2A\x2A\x2A\x2A\x44\x0F\xB6\xB0\x2A\x2A\x2A\x2A\x45\x84\xF6\x0F\x84"
 			}
 			// next to "soundname", in windows it's the last referenced sub while in linux it's right after
 			// this is a vscript binding though so it may be removed in the future?
@@ -268,13 +268,13 @@
 				"windows"		"\x48\x89\x5C\x24\x2A\x48\x89\x6C\x24\x2A\x48\x89\x74\x24\x2A\x48\x89\x7C\x24\x2A\x41\x56\x48\x83\xEC\x2A\x41\x0F\xB6\xF0"
 				"linux"			"\x55\x48\x89\xE5\x41\x57\x41\x56\x41\x55\x41\x89\xD5\x41\x54\x53\x48\x89\xFB\x48\x83\xEC\x2A\x40\x38\xB7"
 			}
-			// CBaseEntity::Use is at vtable offsets 139/140 for linux/windows
+			// Use CBaseEntity::Use offset
 			// This signature points directly to the instruction to patch
-			"CPhysBox_Use" //TODO
+			"CPhysBox_Use"
 			{
 				"library"		"server"
 				"windows"		"\x4C\x8B\x43\x2A\x48\x8D\x8F\x2A\x2A\x2A\x2A\x48\x8B\x13\xE8\x2A\x2A\x2A\x2A\x48\x8B\x5C\x24\x2A\x48\x83\xC4\x2A\x5F\xC3\xCC\xCC\xCC\xCC\x40\x53"
-				"linux"			"\x49\x8B\x54\x24\x08\x48\x8D\x4D\xE0\x48\xC7\x45\x2A\x2A\x2A\x2A\x2A"
+				"linux"			"\x49\x8B\x54\x24\x2A\x45\x31\xC9\x45\x31\xC0\xC7\x45\x2A\x2A\x2A\x2A\x2A\x49\x8B\x34\x24\x48\x8D\x4D\x2A\x66\x0F\xEF\xC0\x48\xC7\x45\x2A\x2A\x2A\x2A\x2A\x48\x8D\xBB\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\xF6\x45\x2A\x2A\x74\x2A\x48\x8B\x05\x2A\x2A\x2A\x2A\x48\x8B\x75\x2A\x48\x8B\x38\x48\x8B\x07\xFF\x50\x2A\x48\x83\xC4"
 			}
 			"CTakeDamageInfo"
 			{
@@ -388,97 +388,114 @@
 		}
 		"Offsets"
 		{
-			"GameEntitySystem"
-			{
-				"windows"		"88"
-				"linux"			"80"
-			}
 			"CBaseEntity::Precache"
 			{
 				"windows"		"4"
 				"linux"			"5"
 			}
+			"CBaseEntity::SetOwner"
+			{
+				"windows"		"50"
+				"linux"			"49"
+			}
+			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
+			"CCSPlayerController_ChangeTeam"
+			{
+				"windows"		"107"
+				"linux"			"106"
+			}
+			"GetHammerUniqueId"
+			{
+				"windows"		"116"
+				"linux"			"115"
+			}
 			"CBaseEntity::Use"
 			{
-				"windows"		"140"
-				"linux"			"139"
+				"windows"		"148"
+				"linux"			"147"
 			}
 			"CBaseEntity::StartTouch"
 			{
-				"windows"		"143"
-				"linux"			"142"
+				"windows"		"151"
+				"linux"			"150"
 			}
 			"CBaseEntity::Touch"
 			{
-				"windows"		"144"
-				"linux"			"143"
+				"windows"		"152"
+				"linux"			"151"
 			}
 			"CBaseEntity::EndTouch"
 			{
-				"windows"		"145"
-				"linux"			"144"
+				"windows"		"153"
+				"linux"			"152"
 			}
 			"Teleport"
 			{
-				"windows"		"157"
-				"linux"			"156"
-			}
-			"CollisionRulesChanged"
-			{
-				"windows"		"179"
-				"linux"			"178"
+				"windows"		"166"
+				"linux"			"165"
 			}
 			// For these two, look for the names, you'll find vscript bindings
 			// Scroll down to where the var + 64 gets set to a function, that calls the offset we want
 			"IsPlayerPawn"
 			{
-				"windows"		"161"
-				"linux"			"160"
+				"windows"		"172"
+				"linux"			"171"
 			}
 			"IsPlayerController"
 			{
-				"windows"		"162"
-				"linux"			"161"
+				"windows"		"173"
+				"linux"			"172"
 			}
-			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
-			"CCSPlayerController_ChangeTeam"
+			"CollisionRulesChanged"
 			{
-				"windows"		"100"
-				"linux"			"99"
+				"windows"		"190"
+				"linux"			"189"
+			}
+			"CCSPlayerController_Respawn"
+			{
+				"windows"		"276"
+				"linux"			"278"
+			}
+			// CBaseTrigger
+			"PassesTriggerFilters"
+			{
+				"windows"		"269"
+				"linux"			"270"
+			}
+			// Long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
+			"CBasePlayerPawn::OnTakeDamage_Alive"
+			{
+				"windows"		"252"
+				"linux"			"253"
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
 			// return (*(*v9 + 2976LL))(v9, v27, 0LL);
 			// 2976 (372 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"		"380"
-				"linux"			"380"
+				"windows"		"404"
+				"linux"			"404"
+			}
+			"GameEntitySystem" //TODO, no idea how to check this
+			{
+				"windows"		"88"
+				"linux"			"80"
 			}
 			// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 			"CGameRules_FindPickerEntity"
 			{
-				"windows"		"27"
-				"linux"			"28"
+				"windows"		"25"
+				"linux"			"26"
 			}
-			"PassesTriggerFilters"
+			"CCSGameRules_GoToIntermission"
 			{
-				"windows"		"263"
-				"linux"			"264"
-			}
-			"CCSPlayerController_Respawn"
-			{
-				"windows"		"257"
-				"linux"			"259"
-			}
-			"GetHammerUniqueId"
-			{
-				"windows"		"109"
-				"linux"			"108"
+				"windows"		"125"
+				"linux"			"126"
 			}
 			"CheckTransmitPlayerSlot"
 			{
-				"windows"		"584"
-				"linux"			"584"
+				"windows"		"576"
+				"linux"			"576"
 			}
 			// engine
 			// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) ), note that this is a CUtlVector
@@ -493,17 +510,11 @@
 				"windows"		"37"
 				"linux"			"38"
 			}
-			// Long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
-			"CBasePlayerPawn::OnTakeDamage_Alive"
-			{
-				"windows"		"236"
-				"linux"			"237"
-			}
 			// There's no easy way to find this, but it's a function that checks entity flags (0x370) and ends by calling RemoveFlag with 0x800000 (FL_BASEVELOCITY)
 			"CCSPlayer_MovementServices::CheckMovingGround"
 			{
-				"windows"		"34"
-				"linux"			"35"
+				"windows"		"35"
+				"linux"			"36"
 			}
 			"CCSPlayer_WeaponServices::DropWeapon"
 			{
@@ -515,22 +526,11 @@
 				"windows"		"24"
 				"linux"			"25"
 			}
-			"CCSGameRules_GoToIntermission"
-			{
-				"windows"		"128"
-				"linux"			"129"
-			}
-
 			// server.dll -> xref 'sv_phys_stop_at_collision' first __fastcall
 			"CVPhys2World::GetTouchingList"
 			{
-				"windows"    "23"
-				"linux"      "24"
-			}
-			"CBaseEntity::SetOwner"
-			{
-				"windows"    "46" // 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 4C 8B 05 ? ? ? ? 48 8B D9
-				"linux"      "45"
+				"windows"		"122"
+				"linux"			"122"
 			}
 		}
 		"Patches"
@@ -555,7 +555,7 @@
 			"BotNavIgnore"
 			{
 				"windows"		"\xE9\x2C\x00\x00\x00\x90"
-				"linux"			"\xE9\x15\x00\x00\x00"
+				"linux"			"\xE9\x25\x00\x00\x00\x90"
 			}
 			// Make func_physbox pass itself as the caller in OnPlayerUse
 			// pCaller = inputdata->pCaller ->  pCaller = this
