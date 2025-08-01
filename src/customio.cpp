@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -269,7 +269,7 @@ static void AddOutputCustom_Gravity(CBaseEntity* pInstance,
 {
 	const auto value = Q_atof(vecArgs[1].c_str());
 
-	pInstance->m_flGravityScale = value;
+	pInstance->SetGravityScale(value);
 
 #ifdef _DEBUG
 	Message("Set gravity to %f for %s\n", value, pInstance->GetName());
