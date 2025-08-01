@@ -1137,7 +1137,7 @@ public:
 	CBaseHandle TargetHandle;
 
 private:
-	uint8_t padding_1[208];
+	uint8_t padding_1[224];
 
 public:
 	[[nodiscard]] bool IsUnTouching() const
@@ -1150,7 +1150,7 @@ public:
 		return (!!(TouchFlags & 4)) || (!!(TouchFlags & 8));
 	}
 };
-static_assert(sizeof(TouchLinked_t) == 240, "Touch_t size mismatch");
+static_assert(sizeof(TouchLinked_t) == 256, "Touch_t size mismatch");
 void CS2Fixes::Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool unknown)
 {
 	if (!g_cvarFixPhysicsPlayerShuffle.Get() || g_SHPtr->GetStatus() == MRES_SUPERCEDE || pList->Count() <= 1)
