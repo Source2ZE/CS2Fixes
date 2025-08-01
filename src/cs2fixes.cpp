@@ -621,7 +621,18 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession* pSession, const char* pszMapName)
 {
 	g_pEntitySystem = GameEntitySystem();
-	g_pEntitySystem->AddListenerEntity(g_pEntityListener);
+
+	// Temporary hack until CGameEntitySystem is updated in the sdk
+#ifdef PLATFORM_LINUX
+	int offset = 8512;
+#else
+	int offset = 8480;
+#endif
+
+	auto pListeners = (CUtlVector<IEntityListener*>*)((byte*)g_pEntitySystem + offset);
+
+	if (pListeners->Find(g_pEntityListener) == -1)
+		pListeners->AddToTail(g_pEntityListener);
 
 	if (g_pNetworkServerService->GetIGameServer())
 		g_iSetGameSpawnGroupMgrId = SH_ADD_HOOK(IServer, SetGameSpawnGroupMgr, g_pNetworkServerService->GetIGameServer(), SH_MEMBER(this, &CS2Fixes::Hook_SetGameSpawnGroupMgr), false);
