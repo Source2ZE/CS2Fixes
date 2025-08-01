@@ -38,11 +38,6 @@ CMemPatch g_CommonPatches[] =
 		CMemPatch("WaterLevelGravity", "WaterLevelGravity"),
 		CMemPatch("CPhysBox_Use", "CPhysBox_Use"),
 		CMemPatch("BotNavIgnore", "BotNavIgnore"),
-#ifndef _WIN32
-		// Linux checks for the nav mesh in each bot_add command, so we patch 3 times
-		CMemPatch("BotNavIgnore", "BotNavIgnore"),
-		CMemPatch("BotNavIgnore", "BotNavIgnore"),
-#endif
 };
 
 CConVar<bool> cs2f_movement_unlocker_enable("cs2f_movement_unlocker_enable", FCVAR_NONE, "Whether to enable movement unlocker", false,
