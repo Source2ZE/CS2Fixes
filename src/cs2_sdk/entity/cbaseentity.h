@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -273,6 +273,11 @@ public:
 	void SetGroundEntity(CBaseEntity* pGround)
 	{
 		addresses::SetGroundEntity(this, pGround, nullptr);
+	}
+
+	void SetGravityScale(float flGravityScale)
+	{
+		addresses::SetGravityScale(this, flGravityScale);
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }

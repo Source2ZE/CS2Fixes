@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -514,7 +514,7 @@ void CZRPlayerClassManager::ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSP
 {
 	pPawn->m_iMaxHealth = pClass->iHealth;
 	pPawn->m_iHealth = pClass->iHealth;
-	pPawn->m_flGravityScale = pClass->flGravity;
+	pPawn->SetGravityScale(pClass->flGravity);
 
 	// I don't know why, I don't want to know why,
 	// I shouldn't have to wonder why, but for whatever reason
