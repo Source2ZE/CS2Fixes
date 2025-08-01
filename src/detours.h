@@ -89,7 +89,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* inputInfo);
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices*, CBasePlayerWeapon*);
 void FASTCALL Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServices*, CBasePlayerWeapon*);
-bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID);
+bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID, void*);
 void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7, int64_t unk8);
 void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pMove);
 void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd* cmds, int numcmds, bool paused, float margin);
@@ -100,7 +100,7 @@ float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn*);
 int64 FASTCALL Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float);
 bool FASTCALL Detour_TraceFunc(int64*, int*, float*, uint64);
 bool FASTCALL Detour_TraceShape(int64*, int64, int64, int64, CTraceFilter*, int64);
-void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay);
+void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay, void*, void*);
 #ifdef PLATFORM_WINDOWS
 Vector* FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn*, Vector*);
 QAngle* FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*, QAngle*);

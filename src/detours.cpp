@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -388,7 +388,7 @@ void FASTCALL Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServic
 	return CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
 }
 
-bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID)
+bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID, void* a7)
 {
 	VPROF_SCOPE_BEGIN("Detour_CEntityIdentity_AcceptInput");
 
@@ -487,7 +487,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 
 	VPROF_SCOPE_END();
 
-	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID, a7);
 }
 
 CConVar<bool> g_cvarBlockNavLookup("cs2f_block_nav_lookup", FCVAR_NONE, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", false);
@@ -650,12 +650,12 @@ bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceF
 
 CDetour<decltype(Detour_CEntityIOOutput_FireOutputInternal)>* CEntityIOOutput_FireOutputInternal = nullptr;
 std::map<std::string, std::function<void(const CEntityIOOutput*, CEntityInstance*, CEntityInstance*, const CVariant*, float)>> mapIOFunctions{};
-void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
+void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay, void* a6, void* a7)
 {
 	for (const auto& [name, cb] : mapIOFunctions)
 		cb(pThis, pActivator, pCaller, value, flDelay);
 
-	(*CEntityIOOutput_FireOutputInternal)(pThis, pActivator, pCaller, value, flDelay);
+	(*CEntityIOOutput_FireOutputInternal)(pThis, pActivator, pCaller, value, flDelay, a6, a7);
 }
 
 // Tries to setup Detour_CEntityIOOutput_FireOutputInternal if it is not already setup. This is not
