@@ -196,7 +196,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 
 	uint32 flags = pOther->m_fFlags();
 
-	if (flags & FL_BASEVELOCITY)
+	if (flags & (1 << 23)) // TODO: is FL_BASEVELOCITY really gone?
 		vecPush = vecPush + pOther->m_vecBaseVelocity();
 
 	if (vecPush.z > 0 && (flags & FL_ONGROUND))
@@ -217,7 +217,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 				pOther->GetEntityIndex(),
 				GetGlobals()->framecount,
 				GetGlobals()->tickcount,
-				(flags & FL_BASEVELOCITY) ? "WITH FLAG" : "",
+				(flags & (1 << 23)) ? "WITH FLAG" : "",
 				vecEntBaseVelocity.x, vecEntBaseVelocity.y, vecEntBaseVelocity.z,
 				vecOrigPush.x, vecOrigPush.y, vecOrigPush.z,
 				vecPush.x, vecPush.y, vecPush.z);
@@ -225,7 +225,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 
 	pOther->m_vecBaseVelocity(vecPush);
 
-	flags |= (FL_BASEVELOCITY);
+	flags |= (1 << 23); // TODO: is FL_BASEVELOCITY really gone?
 	pOther->m_fFlags(flags);
 }
 
