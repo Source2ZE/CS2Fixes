@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -131,14 +131,17 @@ SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char
 	return tableMap->Element(memberIndex);
 }
 
-void EntityNetworkStateChanged(uintptr_t entityInstance, uint nOffset)
+void NetworkStateChanged(uintptr_t chainEntity, uint32_t offset, uint32_t nArrayIndex, uint32_t nPathIndex)
 {
-	reinterpret_cast<CEntityInstance*>(entityInstance)->NetworkStateChanged(nOffset);
+	CNetworkStateChangedInfo info(offset, nArrayIndex, nPathIndex);
+
+	addresses::NetworkStateChanged(reinterpret_cast<void*>(chainEntity), info);
 }
 
-void ChainNetworkStateChanged(uintptr_t networkVarChainer, uint nLocalOffset)
+void SetStateChanged(uintptr_t pEntity, uint32_t offset, uint32_t nArrayIndex, uint32_t nPathIndex)
 {
-	CEntityInstance* pEntity = *reinterpret_cast<CEntityInstance**>(networkVarChainer);
-	if (pEntity && (pEntity->m_pEntity->m_flags & EF_IS_CONSTRUCTION_IN_PROGRESS) == 0)
-		pEntity->NetworkStateChanged(nLocalOffset, -1, *reinterpret_cast<ChangeAccessorFieldPathIndex_t*>(networkVarChainer + 32));
+	CNetworkStateChangedInfo info(offset, nArrayIndex, nPathIndex);
+
+	static auto fnOffset = g_GameConfig->GetOffset("CBaseEntity::StateChanged");
+	CALL_VIRTUAL(void, fnOffset, (void*)pEntity, &info);
 }

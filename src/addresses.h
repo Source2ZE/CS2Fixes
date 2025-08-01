@@ -58,7 +58,7 @@ class INetworkStringTable;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
 class CSpawnGroupMgrGameSystem;
-
+class CNetworkStateChangedInfo;
 struct EmitSound_t;
 struct SndOpEventGuid_t;
 
@@ -85,7 +85,7 @@ namespace addresses
 	inline void(FASTCALL* CBaseModelEntity_SetModel)(CBaseModelEntity* pModel, const char* szModel);
 	inline void(FASTCALL* UTIL_Remove)(CEntityInstance*);
 
-	
+	inline void(FASTCALL* NetworkStateChanged)(void* chainEntity, CNetworkStateChangedInfo& info);
 
 	inline void(FASTCALL* CEntitySystem_AddEntityIOEvent)(CEntitySystem* pEntitySystem, CEntityInstance* pTarget, const char* pszInput,
 														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, int outputID);
