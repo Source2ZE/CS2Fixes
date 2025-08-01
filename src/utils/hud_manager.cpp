@@ -50,6 +50,9 @@ bool ShouldDisplayForPlayer(ZEPlayerHandle hPlayer, EHudPriority ePriority)
 
 void CreateHudMessage(std::shared_ptr<CHudMessage> pHudMessage)
 {
+	if (!g_pGameRules)
+		return;
+
 	if (g_cvarDisableHudOutsideRound.Get() && !g_pGameRules->m_bGameRestart())
 		return;
 
