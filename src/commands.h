@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -34,8 +34,6 @@ typedef void (*FnChatCommandCallback_t)(const CCommand& args, CCSPlayerControlle
 
 class CChatCommand;
 
-extern CUtlMap<uint32, CChatCommand*> g_CommandList;
-
 extern CConVar<bool> g_cvarEnableCommands;
 extern CConVar<bool> g_cvarEnableAdminCommands;
 
@@ -43,6 +41,13 @@ extern CConVar<bool> g_cvarEnableHide;
 extern CConVar<bool> g_cvarEnableStopSound;
 extern CConVar<bool> g_cvarEnableNoShake;
 extern CConVar<float> g_cvarMaxShakeAmp;
+
+// We need to use a helper function to avoid command macros accessing command list before its initialized
+static std::map<uint32, CChatCommand*> CommandList()
+{
+	static std::map<uint32, CChatCommand*> commandList;
+	return commandList;
+}
 
 void ClientPrintAll(int destination, const char* msg, ...);
 void ClientPrint(CCSPlayerController* player, int destination, const char* msg, ...);
@@ -54,7 +59,7 @@ public:
 	CChatCommand(const char* cmd, FnChatCommandCallback_t callback, const char* description, uint64 adminFlags = ADMFLAG_NONE, uint64 cmdFlags = CMDFLAG_NONE) :
 		m_pfnCallback(callback), m_sName(cmd), m_sDescription(description), m_nAdminFlags(adminFlags), m_nCmdFlags(cmdFlags)
 	{
-		g_CommandList.Insert(hash_32_fnv1a_const(cmd), this);
+		CommandList().insert(std::make_pair(hash_32_fnv1a_const(cmd), this));
 	}
 
 	void operator()(const CCommand& args, CCSPlayerController* player)

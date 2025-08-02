@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -466,7 +466,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	UnregisterGameSystem();
 
-	g_CommandList.Purge();
+	CommandList().clear();
 
 	FlushAllDetours();
 	UndoPatches();
