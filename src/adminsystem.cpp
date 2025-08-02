@@ -50,8 +50,6 @@ extern CPlayerManager* g_playerManager;
 
 CAdminSystem* g_pAdminSystem = nullptr;
 
-CUtlMap<uint32, CChatCommand*> g_CommandList(0, 0, DefLessFunc(uint32));
-
 void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAdding, CInfractionBase::EInfractionType infType);
 const char* GetActionPhrase(CInfractionBase::EInfractionType infType, GrammarTense iTense, bool bAdding);
 

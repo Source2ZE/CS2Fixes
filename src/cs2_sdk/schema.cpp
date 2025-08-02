@@ -29,8 +29,8 @@
 
 extern CGlobalVars* GetGlobals();
 
-using SchemaKeyValueMap_t = CUtlMap<uint32_t, SchemaKey>;
-using SchemaTableMap_t = CUtlMap<uint32_t, SchemaKeyValueMap_t*>;
+using SchemaKeyValueMap_t = std::map<uint32_t, SchemaKey>;
+using SchemaTableMap_t = std::map<uint32_t, SchemaKeyValueMap_t>;
 
 static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 {
@@ -55,8 +55,8 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 
 	if (!pClassInfo)
 	{
-		SchemaKeyValueMap_t* map = new SchemaKeyValueMap_t(0, 0, DefLessFunc(uint32_t));
-		tableMap->Insert(classKey, map);
+		SchemaKeyValueMap_t map;
+		tableMap->insert(std::make_pair(classKey, map));
 
 		Warning("InitSchemaFieldsForClass(): '%s' was not found!\n", className);
 		return false;
@@ -65,9 +65,8 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 	short fieldsSize = pClassInfo->m_nFieldCount;
 	SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
 
-	SchemaKeyValueMap_t* keyValueMap = new SchemaKeyValueMap_t(0, 0, DefLessFunc(uint32_t));
-	keyValueMap->EnsureCapacity(fieldsSize);
-	tableMap->Insert(classKey, keyValueMap);
+	SchemaKeyValueMap_t keyValueMap;
+	tableMap->insert(std::make_pair(classKey, keyValueMap));
 
 	for (int i = 0; i < fieldsSize; ++i)
 	{
@@ -77,7 +76,12 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 		Message("%s::%s found at -> 0x%X - %llx\n", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
 #endif
 
-		keyValueMap->Insert(hash_32_fnv1a_const(field.m_pszName), {field.m_nSingleInheritanceOffset, IsFieldNetworked(field)});
+		std::pair<uint32_t, SchemaKey> keyValuePair;
+		keyValuePair.first = hash_32_fnv1a_const(field.m_pszName);
+		keyValuePair.second.offset = field.m_nSingleInheritanceOffset;
+		keyValuePair.second.networked = IsFieldNetworked(field);
+
+		keyValueMap.insert(keyValuePair);
 	}
 
 	return true;
@@ -110,9 +114,9 @@ int16_t schema::FindChainOffset(const char* className)
 
 SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char* memberName, uint32_t memberKey)
 {
-	static SchemaTableMap_t schemaTableMap(0, 0, DefLessFunc(uint32_t));
-	int16_t tableMapIndex = schemaTableMap.Find(classKey);
-	if (!schemaTableMap.IsValidIndex(tableMapIndex))
+	static SchemaTableMap_t schemaTableMap;
+
+	if (!schemaTableMap.contains(classKey))
 	{
 		if (InitSchemaFieldsForClass(&schemaTableMap, className, classKey))
 			return GetOffset(className, classKey, memberName, memberKey);
@@ -120,15 +124,15 @@ SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char
 		return {0, 0};
 	}
 
-	SchemaKeyValueMap_t* tableMap = schemaTableMap[tableMapIndex];
-	int16_t memberIndex = tableMap->Find(memberKey);
-	if (!tableMap->IsValidIndex(memberIndex))
+	SchemaKeyValueMap_t tableMap = schemaTableMap[classKey];
+
+	if (!tableMap.contains(memberKey))
 	{
 		Warning("schema::GetOffset(): '%s' was not found in '%s'!\n", memberName, className);
 		return {0, 0};
 	}
 
-	return tableMap->Element(memberIndex);
+	return tableMap[memberKey];
 }
 
 void NetworkStateChanged(uintptr_t chainEntity, uint32_t offset, uint32_t nArrayIndex, uint32_t nPathIndex)

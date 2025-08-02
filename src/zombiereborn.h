@@ -197,11 +197,6 @@ struct ZRZombieClass : ZRClass
 class CZRPlayerClassManager
 {
 public:
-	CZRPlayerClassManager()
-	{
-		m_ZombieClassMap.SetLessFunc(DefLessFunc(uint32));
-		m_HumanClassMap.SetLessFunc(DefLessFunc(uint32));
-	};
 	void LoadPlayerClass();
 	void ApplyBaseClassVisuals(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
 	std::shared_ptr<ZRHumanClass> GetHumanClass(const char* pszClassName);
@@ -218,8 +213,8 @@ private:
 	void ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
 	CUtlVector<std::shared_ptr<ZRZombieClass>> m_vecZombieDefaultClass;
 	CUtlVector<std::shared_ptr<ZRHumanClass>> m_vecHumanDefaultClass;
-	CUtlMap<uint32, std::shared_ptr<ZRZombieClass>> m_ZombieClassMap;
-	CUtlMap<uint32, std::shared_ptr<ZRHumanClass>> m_HumanClassMap;
+	std::map<uint32, std::shared_ptr<ZRZombieClass>> m_ZombieClassMap;
+	std::map<uint32, std::shared_ptr<ZRHumanClass>> m_HumanClassMap;
 };
 
 class CZRRegenTimer : public CTimerBase
@@ -255,29 +250,21 @@ struct ZRHitgroup
 class ZRWeaponConfig
 {
 public:
-	ZRWeaponConfig()
-	{
-		m_WeaponMap.SetLessFunc(DefLessFunc(uint32));
-	};
 	void LoadWeaponConfig();
 	std::shared_ptr<ZRWeapon> FindWeapon(const char* pszWeaponName);
 
 private:
-	CUtlMap<uint32, std::shared_ptr<ZRWeapon>> m_WeaponMap;
+	std::map<uint32, std::shared_ptr<ZRWeapon>> m_WeaponMap;
 };
 
 class ZRHitgroupConfig
 {
 public:
-	ZRHitgroupConfig()
-	{
-		m_HitgroupMap.SetLessFunc(DefLessFunc(uint32));
-	};
 	void LoadHitgroupConfig();
 	std::shared_ptr<ZRHitgroup> FindHitgroupIndex(int iIndex);
 
 private:
-	CUtlMap<uint32, std::shared_ptr<ZRHitgroup>> m_HitgroupMap;
+	std::map<uint32, std::shared_ptr<ZRHitgroup>> m_HitgroupMap;
 };
 
 extern ZRWeaponConfig* g_pZRWeaponConfig;

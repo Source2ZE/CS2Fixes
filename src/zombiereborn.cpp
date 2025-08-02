@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -309,18 +309,22 @@ bool ZRClass::IsApplicableTo(CCSPlayerController* pController)
 
 void CZRPlayerClassManager::PrecacheModels(IEntityResourceManifest* pResourceManifest)
 {
-	FOR_EACH_MAP_FAST(m_ZombieClassMap, i)
+	for (auto pair : m_ZombieClassMap)
 	{
-		FOR_EACH_VEC(m_ZombieClassMap[i]->vecModels, j)
+		std::shared_ptr<ZRZombieClass> zmClass = pair.second;
+
+		FOR_EACH_VEC(zmClass->vecModels, i)
 		{
-			pResourceManifest->AddResource(m_ZombieClassMap[i]->vecModels[j]->szModelPath.c_str());
+			pResourceManifest->AddResource(zmClass->vecModels[i]->szModelPath.c_str());
 		}
 	}
-	FOR_EACH_MAP_FAST(m_HumanClassMap, i)
+	for (auto pair : m_HumanClassMap)
 	{
-		FOR_EACH_VEC(m_HumanClassMap[i]->vecModels, j)
+		std::shared_ptr<ZRHumanClass> hClass = pair.second;
+
+		FOR_EACH_VEC(hClass->vecModels, j)
 		{
-			pResourceManifest->AddResource(m_HumanClassMap[i]->vecModels[j]->szModelPath.c_str());
+			pResourceManifest->AddResource(hClass->vecModels[j]->szModelPath.c_str());
 		}
 	}
 }
@@ -328,8 +332,8 @@ void CZRPlayerClassManager::PrecacheModels(IEntityResourceManifest* pResourceMan
 void CZRPlayerClassManager::LoadPlayerClass()
 {
 	Message("Loading PlayerClass...\n");
-	m_ZombieClassMap.Purge();
-	m_HumanClassMap.Purge();
+	m_ZombieClassMap.clear();
+	m_HumanClassMap.clear();
 	m_vecZombieDefaultClass.Purge();
 	m_vecHumanDefaultClass.Purge();
 
@@ -462,7 +466,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				else
 					pHumanClass = std::make_shared<ZRHumanClass>(jsonClass, szClassName);
 
-				m_HumanClassMap.Insert(hash_32_fnv1a_const(szClassName.c_str()), pHumanClass);
+				m_HumanClassMap.insert(std::make_pair(hash_32_fnv1a_const(szClassName.c_str()), pHumanClass));
 
 				if (bTeamDefault)
 					m_vecHumanDefaultClass.AddToTail(pHumanClass);
@@ -489,7 +493,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				else
 					pZombieClass = std::make_shared<ZRZombieClass>(jsonClass, szClassName);
 
-				m_ZombieClassMap.Insert(hash_32_fnv1a_const(szClassName.c_str()), pZombieClass);
+				m_ZombieClassMap.insert(std::make_pair(hash_32_fnv1a_const(szClassName.c_str()), pZombieClass));
 				if (bTeamDefault)
 					m_vecZombieDefaultClass.AddToTail(pZombieClass);
 
@@ -551,10 +555,12 @@ void CZRPlayerClassManager::ApplyBaseClassVisuals(std::shared_ptr<ZRClass> pClas
 
 std::shared_ptr<ZRHumanClass> CZRPlayerClassManager::GetHumanClass(const char* pszClassName)
 {
-	uint16 index = m_HumanClassMap.Find(hash_32_fnv1a_const(pszClassName));
-	if (!m_HumanClassMap.IsValidIndex(index))
+	uint32 nameHash = hash_32_fnv1a_const(pszClassName);
+
+	if (!m_HumanClassMap.contains(nameHash))
 		return nullptr;
-	return m_HumanClassMap[index];
+
+	return m_HumanClassMap[nameHash];
 }
 
 void CZRPlayerClassManager::ApplyHumanClass(std::shared_ptr<ZRHumanClass> pClass, CCSPlayerPawn* pPawn)
@@ -591,12 +597,12 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn* pPa
 	int iSlot = pController->GetPlayerSlot();
 	std::shared_ptr<ZRHumanClass> humanClass = nullptr;
 	const char* sPreferredHumanClass = g_pUserPreferencesSystem->GetPreference(iSlot, HUMAN_CLASS_KEY_NAME);
+	uint32 nameHash = hash_32_fnv1a_const(sPreferredHumanClass);
 
 	// If the preferred human class exists and can be applied, override the default
-	uint16 index = m_HumanClassMap.Find(hash_32_fnv1a_const(sPreferredHumanClass));
-	if (m_HumanClassMap.IsValidIndex(index) && m_HumanClassMap[index]->IsApplicableTo(pController))
+	if (m_HumanClassMap.contains(nameHash) && m_HumanClassMap[nameHash]->IsApplicableTo(pController))
 	{
-		humanClass = m_HumanClassMap[index];
+		humanClass = m_HumanClassMap[nameHash];
 	}
 	else if (m_vecHumanDefaultClass.Count())
 	{
@@ -620,12 +626,12 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPa
 	int iSlot = pController->GetPlayerSlot();
 	std::shared_ptr<ZRHumanClass> humanClass = nullptr;
 	const char* sPreferredHumanClass = g_pUserPreferencesSystem->GetPreference(iSlot, HUMAN_CLASS_KEY_NAME);
+	uint32 nameHash = hash_32_fnv1a_const(sPreferredHumanClass);
 
 	// If the preferred human class exists and can be applied, override the default
-	uint16 index = m_HumanClassMap.Find(hash_32_fnv1a_const(sPreferredHumanClass));
-	if (m_HumanClassMap.IsValidIndex(index) && m_HumanClassMap[index]->IsApplicableTo(pController))
+	if (m_HumanClassMap.contains(nameHash) && m_HumanClassMap[nameHash]->IsApplicableTo(pController))
 	{
-		humanClass = m_HumanClassMap[index];
+		humanClass = m_HumanClassMap[nameHash];
 	}
 	else if (m_vecHumanDefaultClass.Count())
 	{
@@ -642,10 +648,12 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPa
 
 std::shared_ptr<ZRZombieClass> CZRPlayerClassManager::GetZombieClass(const char* pszClassName)
 {
-	uint16 index = m_ZombieClassMap.Find(hash_32_fnv1a_const(pszClassName));
-	if (!m_ZombieClassMap.IsValidIndex(index))
+	uint32 nameHash = hash_32_fnv1a_const(pszClassName);
+
+	if (!m_ZombieClassMap.contains(nameHash))
 		return nullptr;
-	return m_ZombieClassMap[index];
+
+	return m_ZombieClassMap[nameHash];
 }
 
 void CZRPlayerClassManager::ApplyZombieClass(std::shared_ptr<ZRZombieClass> pClass, CCSPlayerPawn* pPawn)
@@ -665,12 +673,12 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn* pP
 	int iSlot = pController->GetPlayerSlot();
 	std::shared_ptr<ZRZombieClass> zombieClass = nullptr;
 	const char* sPreferredZombieClass = g_pUserPreferencesSystem->GetPreference(iSlot, ZOMBIE_CLASS_KEY_NAME);
+	uint32 nameHash = hash_32_fnv1a_const(sPreferredZombieClass);
 
 	// If the preferred zombie class exists and can be applied, override the default
-	uint16 index = m_ZombieClassMap.Find(hash_32_fnv1a_const(sPreferredZombieClass));
-	if (m_ZombieClassMap.IsValidIndex(index) && m_ZombieClassMap[index]->IsApplicableTo(pController))
+	if (m_ZombieClassMap.contains(nameHash) && m_ZombieClassMap[nameHash]->IsApplicableTo(pController))
 	{
-		zombieClass = m_ZombieClassMap[index];
+		zombieClass = m_ZombieClassMap[nameHash];
 	}
 	else if (m_vecZombieDefaultClass.Count())
 	{
@@ -689,19 +697,23 @@ void CZRPlayerClassManager::GetZRClassList(int iTeam, CUtlVector<std::shared_ptr
 {
 	if (iTeam == CS_TEAM_T || iTeam == CS_TEAM_NONE)
 	{
-		FOR_EACH_MAP_FAST(m_ZombieClassMap, i)
+		for (auto pair : m_ZombieClassMap)
 		{
-			if (!pController || m_ZombieClassMap[i]->IsApplicableTo(pController))
-				vecClasses.AddToTail(m_ZombieClassMap[i]);
+			std::shared_ptr<ZRZombieClass> zmClass = pair.second;
+
+			if (!pController || zmClass->IsApplicableTo(pController))
+				vecClasses.AddToTail(zmClass);
 		}
 	}
 
 	if (iTeam == CS_TEAM_CT || iTeam == CS_TEAM_NONE)
 	{
-		FOR_EACH_MAP_FAST(m_HumanClassMap, i)
+		for (auto pair : m_HumanClassMap)
 		{
-			if (!pController || m_HumanClassMap[i]->IsApplicableTo(pController))
-				vecClasses.AddToTail(m_HumanClassMap[i]);
+			std::shared_ptr<ZRHumanClass> hClass = pair.second;
+
+			if (!pController || hClass->IsApplicableTo(pController))
+				vecClasses.AddToTail(hClass);
 		}
 	}
 }
@@ -809,7 +821,7 @@ void ZR_OnLevelInit()
 
 void ZRWeaponConfig::LoadWeaponConfig()
 {
-	m_WeaponMap.Purge();
+	m_WeaponMap.clear();
 	KeyValues* pKV = new KeyValues("Weapons");
 	KeyValues::AutoDelete autoDelete(pKV);
 
@@ -832,7 +844,7 @@ void ZRWeaponConfig::LoadWeaponConfig()
 
 		weapon->flKnockback = flKnockback;
 
-		m_WeaponMap.Insert(hash_32_fnv1a_const(pszWeaponName), weapon);
+		m_WeaponMap.insert(std::make_pair(hash_32_fnv1a_const(pszWeaponName), weapon));
 	}
 
 	return;
@@ -845,16 +857,17 @@ std::shared_ptr<ZRWeapon> ZRWeaponConfig::FindWeapon(const char* pszWeaponName)
 	else if (V_strlen(pszWeaponName) > 5 && !V_strncasecmp(pszWeaponName, "item_", 5))
 		pszWeaponName = pszWeaponName + 5;
 
-	uint16 index = m_WeaponMap.Find(hash_32_fnv1a_const(pszWeaponName));
-	if (m_WeaponMap.IsValidIndex(index))
-		return m_WeaponMap[index];
+	uint32 nameHash = hash_32_fnv1a_const(pszWeaponName);
+
+	if (m_WeaponMap.contains(nameHash))
+		return m_WeaponMap[nameHash];
 
 	return nullptr;
 }
 
 void ZRHitgroupConfig::LoadHitgroupConfig()
 {
-	m_HitgroupMap.Purge();
+	m_HitgroupMap.clear();
 	KeyValues* pKV = new KeyValues("Hitgroups");
 	KeyValues::AutoDelete autoDelete(pKV);
 
@@ -901,7 +914,7 @@ void ZRHitgroupConfig::LoadHitgroupConfig()
 		std::shared_ptr<ZRHitgroup> hitGroup = std::make_shared<ZRHitgroup>();
 
 		hitGroup->flKnockback = flKnockback;
-		m_HitgroupMap.Insert(iIndex, hitGroup);
+		m_HitgroupMap.insert(std::make_pair(iIndex, hitGroup));
 		Message("Loaded hitgroup %s at index %d with %f knockback\n", pszHitgroupName, iIndex, hitGroup->flKnockback);
 	}
 
@@ -910,13 +923,12 @@ void ZRHitgroupConfig::LoadHitgroupConfig()
 
 std::shared_ptr<ZRHitgroup> ZRHitgroupConfig::FindHitgroupIndex(int iIndex)
 {
-	uint16 index = m_HitgroupMap.Find(iIndex);
 	// Message("We are finding hitgroup index with index: %d and index is: %d\n", iIndex, index);
 
-	if (m_HitgroupMap.IsValidIndex(index))
+	if (m_HitgroupMap.contains(iIndex))
 	{
 		// Message("We found valid index with (m_HitgroupMap[index]): %d\n", m_HitgroupMap[index]);
-		return m_HitgroupMap[index];
+		return m_HitgroupMap[iIndex];
 	}
 
 	return nullptr;

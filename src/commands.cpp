@@ -273,10 +273,10 @@ void ParseChatCommand(const char* pMessage, CCSPlayerController* pController)
 	for (int i = 0; name[i]; i++)
 		name[i] = tolower(name[i]);
 
-	uint16 index = g_CommandList.Find(hash_32_fnv1a_const(name.c_str()));
+	uint32 nameHash = hash_32_fnv1a_const(name.c_str());
 
-	if (g_CommandList.IsValidIndex(index))
-		(*g_CommandList[index])(args, pController);
+	if (CommandList().contains(nameHash))
+		(*CommandList()[nameHash])(args, pController);
 }
 
 bool CChatCommand::CheckCommandAccess(CCSPlayerController* pPlayer, uint64 flags)
@@ -492,9 +492,9 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 		{
 			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands is:");
 
-			FOR_EACH_VEC(g_CommandList, i)
+			for (auto cmdPair : CommandList())
 			{
-				CChatCommand* cmd = g_CommandList[i];
+				CChatCommand* cmd = cmdPair.second;
 
 				if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
 					rgstrCommands.push_back(std::string("c_") + cmd->GetName() + " " + cmd->GetDescription());
@@ -507,9 +507,9 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 
 			ZEPlayer* pZEPlayer = player->GetZEPlayer();
 
-			FOR_EACH_VEC(g_CommandList, i)
+			for (auto cmdPair : CommandList())
 			{
-				CChatCommand* cmd = g_CommandList[i];
+				CChatCommand* cmd = cmdPair.second;
 				uint64 flags = cmd->GetAdminFlags();
 
 				if ((pZEPlayer->IsAdminFlagSet(flags) || ((flags & FLAG_LEADER) == FLAG_LEADER && pZEPlayer->IsLeader()))
@@ -539,9 +539,9 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 
 		if (!player)
 		{
-			FOR_EACH_VEC(g_CommandList, i)
+			for (auto cmdPair : CommandList())
 			{
-				CChatCommand* cmd = g_CommandList[i];
+				CChatCommand* cmd = cmdPair.second;
 
 				if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP)
 					&& ((!bOnlyCheckStart && V_stristr(cmd->GetName(), pszSearchTerm))
@@ -553,9 +553,9 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 		{
 			ZEPlayer* pZEPlayer = player->GetZEPlayer();
 
-			FOR_EACH_VEC(g_CommandList, i)
+			for (auto cmdPair : CommandList())
 			{
-				CChatCommand* cmd = g_CommandList[i];
+				CChatCommand* cmd = cmdPair.second;
 				uint64 flags = cmd->GetAdminFlags();
 
 				if ((pZEPlayer->IsAdminFlagSet(flags) || ((flags & FLAG_LEADER) == FLAG_LEADER && pZEPlayer->IsLeader()))
