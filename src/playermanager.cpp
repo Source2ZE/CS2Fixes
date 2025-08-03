@@ -107,8 +107,10 @@ void ZEPlayer::OnSpawn()
 	ZEPlayerHandle handle = GetHandle();
 	new CTimer(0.0f, false, false, [handle] {
 		if (handle.Get())
+		{
 			handle.Get()->CreatePointOrient();
 			handle.Get()->CreateEntwatchHud();
+		}
 		return -1.0f;
 	});
 }
