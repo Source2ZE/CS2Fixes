@@ -43,11 +43,7 @@ extern CConVar<bool> g_cvarEnableNoShake;
 extern CConVar<float> g_cvarMaxShakeAmp;
 
 // We need to use a helper function to avoid command macros accessing command list before its initialized
-static std::map<uint32, CChatCommand*> CommandList()
-{
-	static std::map<uint32, CChatCommand*> commandList;
-	return commandList;
-}
+extern std::map<uint32, CChatCommand*> &CommandList();
 
 void ClientPrintAll(int destination, const char* msg, ...);
 void ClientPrint(CCSPlayerController* player, int destination, const char* msg, ...);
