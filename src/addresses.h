@@ -58,7 +58,7 @@ class INetworkStringTable;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
 class CSpawnGroupMgrGameSystem;
-class CNetworkStateChangedInfo;
+struct CNetworkStateChangedInfo;
 struct EmitSound_t;
 struct SndOpEventGuid_t;
 
