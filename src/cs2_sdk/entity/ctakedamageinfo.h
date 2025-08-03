@@ -102,47 +102,50 @@ public:
 		addresses::CTakeDamageInfo_Constructor(this, pInflictor, pAttacker, pAbility, &vec3_origin, &vec3_origin, flDamage, bitsDamageType, 0, nullptr);
 	}
 
-	Vector m_vecDamageForce;		   // 0x8  |  8
-	Vector m_vecDamagePosition;		   // 0x14 | 20
-	Vector m_vecReportedPosition;	   // 0x20 | 32
-	Vector m_vecDamageDirection;	   // 0x2c | 44
-	CHandle<CBaseEntity> m_hInflictor; // 0x38 | 56
-	CHandle<CBaseEntity> m_hAttacker;  // 0x3c | 60
-	CHandle<CBaseEntity> m_hAbility;   // 0x40 | 64
-	float m_flDamage;				   // 0x44 | 68
-	float m_flTotalledDamage;		   // 0x48 | 72
-	float m_flTotalledDamageAbsorbed;  // 0x4c | 76
-	DamageTypes_t m_bitsDamageType;	   // 0x50 | 80
-	int32_t m_iDamageCustom;		   // 0x54 | 84
-	uint8_t m_iAmmoType;			   // 0x58 | 88
+	Vector m_vecDamageForce;	  // 0x8  |  8
+	Vector m_vecDamagePosition;	  // 0x14 | 20
+	Vector m_vecReportedPosition; // 0x20 | 32
+	Vector m_vecDamageDirection;  // 0x2c | 44
+	CBaseHandle m_hInflictor;	  // 0x38 | 56
+	CBaseHandle m_hAttacker;	  // 0x3c | 60
+	CBaseHandle m_hAbility;		  // 0x40 | 64
+	float m_flDamage;			  // 0x44 | 68
+	float m_flTotalledDamage;	  // 0x48 | 72
+	int32_t m_bitsDamageType;	  // 0x4c | 76
+	int32_t m_iDamageCustom;	  // 0x50 | 80
+	int8_t m_iAmmoType;			  // 0x54 | 84
 
 private:
-	[[maybe_unused]] uint8_t _x51[15]; // 0x59
+	[[maybe_unused]] uint8_t m_nUnknown0[0xb]; // 0x55 | 85
 
 public:
-	float m_flOriginalDamage; // 0x68 | 104
-	bool m_bShouldBleed;	  // 0x6c | 108
-	bool m_bShouldSpark;	  // 0x6d | 109
+	float m_flOriginalDamage; // 0x60 | 96
+	bool m_bShouldBleed;	  // 0x64 | 100
+	bool m_bShouldSpark;	  // 0x65 | 101
 
 private:
-	[[maybe_unused]] uint8_t _x6e[0x2]; // 0x6e
+	[[maybe_unused]] uint8_t m_nUnknown1[0x2]; // 0x66
 
 public:
-	float m_flDamageAbsorbed;					// 0x70 | 112
-	CGameTrace* m_pTrace;						// 0x78 | 120
-	TakeDamageFlags_t m_nDamageFlags;			// 0x80 | 128
-	int32_t m_nNumObjectsPenetrated;			// 0x84 | 132
-	float m_flFriendlyFireDamageReductionRatio; // 0x88 | 136
+	float m_flDamageAbsorbed;		  // 0x68 | 104
+	CGameTrace* m_pTrace;			  // 0x70 | 112
+	TakeDamageFlags_t m_nDamageFlags; // 0x78 | 120
 
 private:
-	[[maybe_unused]] uint8_t _x8c[0x58]; // 0x8c
+	[[maybe_unused]] uint8_t m_sDamageSourceName[0x8]; // 0x80 | 128
 
 public:
-	void* m_hScriptInstance;	   // 0xe8 | 232
-	AttackerInfo_t m_AttackerInfo; // 0xf0 | 240
-	bool m_bInTakeDamageFlow;	   // 0x104 | 260
+	HitGroup_t m_iHitGroupId;					// 0x88 | 136
+	int32_t m_nNumObjectsPenetrated;			// 0x8c | 140
+	float m_flFriendlyFireDamageReductionRatio; // 0x90 | 144
+private:
+	uint8_t m_nUnknown2[0x5C]; // 0x94 | 148
+public:
+	void* m_hScriptInstance;	   // 0xf0 | 240
+	AttackerInfo_t m_AttackerInfo; // 0xf8 | 248
+	bool m_bInTakeDamageFlow;	   // 0x104 | 268
 
 private:
-	[[maybe_unused]] int32_t m_nUnknown2; // 0x108 | 264
+	[[maybe_unused]] int32_t m_nUnknown3; // 0x108 | 272
 };
-static_assert(sizeof(CTakeDamageInfo) == 272);
+static_assert(sizeof(CTakeDamageInfo) == 280);
