@@ -259,6 +259,12 @@ void RegisterWeaponCommands()
 	}
 }
 
+std::map<uint32, CChatCommand*>& CommandList()
+{
+	static std::map<uint32, CChatCommand*> commandList;
+	return commandList;
+}
+
 void ParseChatCommand(const char* pMessage, CCSPlayerController* pController)
 {
 	if (!pController || !pController->IsConnected())
