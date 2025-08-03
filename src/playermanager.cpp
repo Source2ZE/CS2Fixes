@@ -107,6 +107,7 @@ void ZEPlayer::OnSpawn()
 	ZEPlayerHandle handle = GetHandle();
 	new CTimer(0.0f, false, false, [handle] {
 		if (handle.Get())
+			handle.Get()->CreatePointOrient();
 			handle.Get()->CreateEntwatchHud();
 		return -1.0f;
 	});
@@ -583,13 +584,39 @@ void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
 	delete data;
 }
 
-// CURRENTLY DOES NOTHING 
+void ZEPlayer::CreatePointOrient()
+{
+	CPointOrient* pOrient = GetPointOrient();
+	if (pOrient)
+	{
+		pOrient->Remove();
+		pOrient = nullptr;
+	}
+
+	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
+	if (!pController)
+		return;
+
+	CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
+	if (!pPawn)
+		return;
+
+	pOrient = CreateEntityByName<CPointOrient>("point_orient");
+	pOrient->m_bActive(true);
+	pOrient->m_nGoalDirection(PointOrientGoalDirectionType_t::eEyesForward);
+
+	pOrient->DispatchSpawn();
+	SetPointOrient(pOrient);
+
+	Vector origin = pPawn->GetEyePosition();
+	pOrient->Teleport(&origin, nullptr, nullptr);
+
+	pOrient->AcceptInput("SetParent", "!activator", pPawn);
+	pOrient->AcceptInput("SetTarget", "!activator", pPawn);
+}
+
 void ZEPlayer::CreateEntwatchHud()
 {
-	////////////////////////
-	return;
-	////////////////////////
-	/*
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
 	if (!pController)
 		return;
@@ -598,6 +625,9 @@ void ZEPlayer::CreateEntwatchHud()
 	if (!pPawn)
 		return;
 	
+	CPointOrient* pOrient = GetPointOrient();
+	if (!pOrient)
+		return;
 
 	CPointWorldText* pText = GetEntwatchHud();
 	if (pText)
@@ -630,10 +660,10 @@ void ZEPlayer::CreateEntwatchHud()
 	pText->DispatchSpawn();
 	SetEntwatchHud(pText);
 
-	pText->AcceptInput("SetParent", "!activator", pViewModel);
+	pText->AcceptInput("SetParent", "!activator", pOrient);
 
-	Vector origin = pViewModel->GetAbsOrigin();
-	QAngle vmangles = pViewModel->GetAbsRotation();
+	Vector origin = pOrient->GetAbsOrigin();
+	QAngle vmangles = pOrient->GetAbsRotation();
 
 	Vector forward;
 	Vector right;
@@ -654,7 +684,6 @@ void ZEPlayer::CreateEntwatchHud()
 	angles.z = AngleNormalize(-vmangles.x + 90.0f);
 
 	pText->Teleport(&origin, &angles, nullptr);
-	*/
 }
 
 int ZEPlayer::GetEntwatchHudMode()
