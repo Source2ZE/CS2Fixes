@@ -46,7 +46,7 @@ CBaseEntity* UTIL_FindPickerEntity(CBasePlayerController* pPlayer)
 		return nullptr;
 	}
 
-	return CALL_VIRTUAL(CBaseEntity*, offset, g_pGameRules, pPlayer);
+	return CALL_VIRTUAL(CBaseEntity*, offset, g_pGameRules, pPlayer, nullptr);
 }
 
 CBaseEntity* UTIL_FindEntityByClassname(CEntityInstance* pStartEntity, const char* szName)
