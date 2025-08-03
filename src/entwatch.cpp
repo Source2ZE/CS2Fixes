@@ -76,6 +76,7 @@ CConVar<bool> g_cvarEnableEntWatch("entwatch_enable", FCVAR_NONE, "INCOMPATIBLE 
 CConVar<bool> g_cvarEnableFiltering("entwatch_auto_filter", FCVAR_NONE, "Whether to automatically block non-item holders from triggering uses", true);
 CConVar<bool> g_cvarUseEntwatchClantag("entwatch_clantag", FCVAR_NONE, "Whether to set item holder's clantag and set score", true);
 CConVar<int> g_cvarItemHolderScore("entwatch_score", FCVAR_NONE, "Score to give item holders (0 = dont change score at all) Requires entwatch_clantag 1", 9999, true, 0, false, 0);
+CConVar<bool> g_cvarEnableEntwatchHud("entwatch_hud", FCVAR_NONE, "Whether to enable the EntWatch hud and related commands", true);
 
 void ItemGlowDistanceChanged(CConVar<int>* ref, CSplitScreenSlot nSlot, const int* pNewValue, const int* pOldValue)
 {
@@ -1620,7 +1621,7 @@ void CEWHandler::PlayerPickup(CCSPlayerPawn* pPawn, int iItemInstance)
 
 	item->Pickup(pPawn->m_hOriginalController->GetPlayerSlot());
 
-	if (!m_bHudTicking)
+	if (g_cvarEnableEntwatchHud.Get() && !m_bHudTicking)
 	{
 		m_bHudTicking = true;
 		new CTimer(EW_HUD_TICKRATE, false, false, [] {
@@ -1956,14 +1957,9 @@ void CEWHandler::Hook_Use(InputData_t* pInput)
 	RETURN_META(MRES_IGNORED);
 }
 
-// CURRENTLY DISABLED WHILE HUD IS NOT IMPLEMENTED
 // Update cd and uses of all held items
 float EW_UpdateHud()
 {
-	////////////////////////
-	return -1.0f;
-	////////////////////////
-
 	if (!GetGlobals())
 		return EW_HUD_TICKRATE;
 
@@ -2693,6 +2689,12 @@ CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
 	if (!g_cvarEnableEntWatch.Get())
 		return;
 
+	if (!g_cvarEnableEntwatchHud.Get())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		return;
+	}
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Only usable in game.");
@@ -2729,6 +2731,12 @@ CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
 	if (!g_cvarEnableEntWatch.Get())
 		return;
 
+	if (!g_cvarEnableEntwatchHud.Get())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		return;
+	}
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
@@ -2760,6 +2768,12 @@ CON_COMMAND_CHAT(hudcolor, "<r> <g> <b> [a] - Set color (and transparency) of th
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
+
+	if (!g_cvarEnableEntwatchHud.Get())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		return;
+	}
 
 	if (!player)
 	{
@@ -2806,6 +2820,12 @@ CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
+
+	if (!g_cvarEnableEntwatchHud.Get())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		return;
+	}
 
 	if (!player)
 	{
