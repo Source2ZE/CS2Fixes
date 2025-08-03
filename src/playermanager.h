@@ -23,7 +23,6 @@
 #include "entity/cparticlesystem.h"
 #include "entity/cpointworldtext.h"
 #include "entity/lights.h"
-#include "entity/viewmodels.h"
 #include "gamesystem.h"
 #include "steam/isteamuser.h"
 #include "steam/steam_api_common.h"

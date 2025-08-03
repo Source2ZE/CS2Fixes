@@ -400,9 +400,6 @@
     <ClInclude Include="src\cs2_sdk\entity\cbasetoggle.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\cs2_sdk\entity\viewmodels.h">
-      <Filter>Header Files\cs2_sdk\entity</Filter>
-    </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cpointhurt.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
