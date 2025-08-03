@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -388,7 +388,7 @@ void FASTCALL Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServic
 	return CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
 }
 
-bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID, void* a7)
+bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID)
 {
 	VPROF_SCOPE_BEGIN("Detour_CEntityIdentity_AcceptInput");
 
@@ -487,7 +487,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 
 	VPROF_SCOPE_END();
 
-	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID, a7);
+	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 }
 
 CConVar<bool> g_cvarBlockNavLookup("cs2f_block_nav_lookup", FCVAR_NONE, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", false);
