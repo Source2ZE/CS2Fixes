@@ -118,7 +118,7 @@ int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageI
 	if (g_cvarBlockAllDamage.Get() && pThis->IsPawn())
 		return 0;
 
-	CBaseEntity* pInflictor = inputInfo->m_hInflictor.Get();
+	CEntityInstance* pInflictor = inputInfo->m_hInflictor.Get();
 	const char* pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 
 	// After Armory update, activator became attacker on block damage, which broke it..
