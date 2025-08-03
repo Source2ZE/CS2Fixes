@@ -43,7 +43,7 @@ static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 	return false;
 }
 
-static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* className, uint32_t classKey)
+static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap, const char* className, uint32_t classKey)
 {
 	CSchemaSystemTypeScope* pType = g_pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
 
@@ -55,7 +55,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 	if (!pClassInfo)
 	{
 		SchemaKeyValueMap_t map;
-		tableMap->insert(std::make_pair(classKey, map));
+		tableMap.insert(std::make_pair(classKey, map));
 
 		Warning("InitSchemaFieldsForClass(): '%s' was not found!\n", className);
 		return false;
@@ -64,8 +64,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t* tableMap, const char* cla
 	short fieldsSize = pClassInfo->m_nFieldCount;
 	SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
 
-	SchemaKeyValueMap_t keyValueMap;
-	tableMap->insert(std::make_pair(classKey, keyValueMap));
+	SchemaKeyValueMap_t &keyValueMap = tableMap.insert(std::make_pair(classKey, SchemaKeyValueMap_t())).first->second;
 
 	for (int i = 0; i < fieldsSize; ++i)
 	{
@@ -117,7 +116,7 @@ SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char
 
 	if (!schemaTableMap.contains(classKey))
 	{
-		if (InitSchemaFieldsForClass(&schemaTableMap, className, classKey))
+		if (InitSchemaFieldsForClass(schemaTableMap, className, classKey))
 			return GetOffset(className, classKey, memberName, memberKey);
 
 		return {0, 0};
