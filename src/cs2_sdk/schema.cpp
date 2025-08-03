@@ -23,7 +23,6 @@
 #include "entity/cbaseentity.h"
 #include "plat.h"
 #include "schemasystem/schemasystem.h"
-#include "tier1/utlmap.h"
 
 #include "tier0/memdbgon.h"
 
