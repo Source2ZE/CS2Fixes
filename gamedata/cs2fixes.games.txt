@@ -1,4 +1,4 @@
-﻿"Games"
+"Games"
 {
 	"csgo"
 	{
@@ -503,11 +503,10 @@
 				"windows"		"125"
 				"linux"			"126"
 			}
-			// ISource2GameEntities
-			"ISource2GameEntities::CheckTransmit"
+			"CheckTransmitPlayerSlot"
 			{
-				"windows"		"12"
-				"linux"			"13"
+				"windows"		"576"
+				"linux"			"576"
 			}
 			// engine
 			// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) ), note that this is a CUtlVector
