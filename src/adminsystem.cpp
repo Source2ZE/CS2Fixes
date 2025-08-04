@@ -47,6 +47,7 @@ extern CGameEntitySystem* g_pEntitySystem;
 extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
 extern CPlayerManager* g_playerManager;
+extern CUtlVector<CServerSideClient*>* GetClientList();
 
 CAdminSystem* g_pAdminSystem = nullptr;
 
@@ -113,6 +114,25 @@ void PrintMultiAdminAction(ETargetType nType, const char* pszAdminName, const ch
 		case ETargetType::ALL_BUT_CT:
 			PrintSingleAdminAction(pszAdminName, "non-counter-terrorists", pszAction, pszAction2, prefix);
 			break;
+	}
+}
+
+CON_COMMAND_CHAT_FLAGS(debugclientlist, "- Debug client list", ADMFLAG_ROOT)
+{
+	if (!GetClientList())
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, "GetClientList() is null!");
+		return;
+	}
+
+	for (int i = 0; i < GetClientList()->Count(); i++)
+	{
+		CServerSideClient* pClient = (*GetClientList())[i];
+
+		if (!pClient)
+			continue;
+
+		ClientPrint(player, HUD_PRINTCONSOLE, "slot: %i address: %s signonstate: %i spawngroups: %i name: %s", pClient->GetPlayerSlot().Get(), pClient->GetRemoteAddress()->ToString(), pClient->GetSignonState(), pClient->m_vecLoadedSpawnGroups.Count(), pClient->GetClientName());
 	}
 }
 
