@@ -20,6 +20,21 @@ PROTOBUF_PRAGMA_INIT_SEG
 namespace _pb = ::PROTOBUF_NAMESPACE_ID;
 namespace _pbi = _pb::internal;
 
+PROTOBUF_CONSTEXPR C2S_CONNECT_SameProcessCheck::C2S_CONNECT_SameProcessCheck(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.localhost_process_id_)*/uint64_t{0u}
+  , /*decltype(_impl_.key_)*/uint64_t{0u}} {}
+struct C2S_CONNECT_SameProcessCheckDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C2S_CONNECT_SameProcessCheckDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~C2S_CONNECT_SameProcessCheckDefaultTypeInternal() {}
+  union {
+    C2S_CONNECT_SameProcessCheck _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C2S_CONNECT_SameProcessCheckDefaultTypeInternal _C2S_CONNECT_SameProcessCheck_default_instance_;
 PROTOBUF_CONSTEXPR C2S_CONNECT_Message::C2S_CONNECT_Message(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
@@ -28,6 +43,7 @@ PROTOBUF_CONSTEXPR C2S_CONNECT_Message::C2S_CONNECT_Message(
   , /*decltype(_impl_.encrypted_password_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.auth_steam_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.challenge_context_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.localhost_same_process_check_)*/nullptr
   , /*decltype(_impl_.host_version_)*/0u
   , /*decltype(_impl_.auth_protocol_)*/0u
   , /*decltype(_impl_.reservation_cookie_)*/uint64_t{0u}
@@ -46,7 +62,8 @@ PROTOBUF_CONSTEXPR C2S_CONNECTION_Message::C2S_CONNECTION_Message(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.addon_name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}} {}
+  , /*decltype(_impl_.addon_name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.localhost_same_process_check_)*/nullptr} {}
 struct C2S_CONNECTION_MessageDefaultTypeInternal {
   PROTOBUF_CONSTEXPR C2S_CONNECTION_MessageDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -56,11 +73,21 @@ struct C2S_CONNECTION_MessageDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C2S_CONNECTION_MessageDefaultTypeInternal _C2S_CONNECTION_Message_default_instance_;
-static ::_pb::Metadata file_level_metadata_connectionless_5fnetmessages_2eproto[2];
+static ::_pb::Metadata file_level_metadata_connectionless_5fnetmessages_2eproto[3];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_connectionless_5fnetmessages_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_connectionless_5fnetmessages_2eproto = nullptr;
 
 const uint32_t TableStruct_connectionless_5fnetmessages_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+  PROTOBUF_FIELD_OFFSET(::C2S_CONNECT_SameProcessCheck, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::C2S_CONNECT_SameProcessCheck, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::C2S_CONNECT_SameProcessCheck, _impl_.localhost_process_id_),
+  PROTOBUF_FIELD_OFFSET(::C2S_CONNECT_SameProcessCheck, _impl_.key_),
+  0,
+  1,
   PROTOBUF_FIELD_OFFSET(::C2S_CONNECT_Message, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::C2S_CONNECT_Message, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -76,15 +103,17 @@ const uint32_t TableStruct_connectionless_5fnetmessages_2eproto::offsets[] PROTO
   PROTOBUF_FIELD_OFFSET(::C2S_CONNECT_Message, _impl_.splitplayers_),
   PROTOBUF_FIELD_OFFSET(::C2S_CONNECT_Message, _impl_.auth_steam_),
   PROTOBUF_FIELD_OFFSET(::C2S_CONNECT_Message, _impl_.challenge_context_),
-  3,
+  PROTOBUF_FIELD_OFFSET(::C2S_CONNECT_Message, _impl_.localhost_same_process_check_),
   4,
-  6,
   5,
   7,
+  6,
+  8,
   0,
   ~0u,
   1,
   2,
+  3,
   PROTOBUF_FIELD_OFFSET(::C2S_CONNECTION_Message, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::C2S_CONNECTION_Message, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -92,38 +121,47 @@ const uint32_t TableStruct_connectionless_5fnetmessages_2eproto::offsets[] PROTO
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::C2S_CONNECTION_Message, _impl_.addon_name_),
+  PROTOBUF_FIELD_OFFSET(::C2S_CONNECTION_Message, _impl_.localhost_same_process_check_),
   0,
+  1,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, 15, -1, sizeof(::C2S_CONNECT_Message)},
-  { 24, 31, -1, sizeof(::C2S_CONNECTION_Message)},
+  { 0, 8, -1, sizeof(::C2S_CONNECT_SameProcessCheck)},
+  { 10, 26, -1, sizeof(::C2S_CONNECT_Message)},
+  { 36, 44, -1, sizeof(::C2S_CONNECTION_Message)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
+  &::_C2S_CONNECT_SameProcessCheck_default_instance_._instance,
   &::_C2S_CONNECT_Message_default_instance_._instance,
   &::_C2S_CONNECTION_Message_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_connectionless_5fnetmessages_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n connectionless_netmessages.proto\032\021netm"
-  "essages.proto\"\214\002\n\023C2S_CONNECT_Message\022\024\n"
-  "\014host_version\030\001 \001(\r\022\025\n\rauth_protocol\030\002 \001"
-  "(\r\022\030\n\020challenge_number\030\003 \001(\r\022\032\n\022reservat"
-  "ion_cookie\030\004 \001(\006\022\024\n\014low_violence\030\005 \001(\010\022\032"
-  "\n\022encrypted_password\030\006 \001(\014\0221\n\014splitplaye"
-  "rs\030\007 \003(\0132\033.CCLCMsg_SplitPlayerConnect\022\022\n"
-  "\nauth_steam\030\010 \001(\014\022\031\n\021challenge_context\030\t"
-  " \001(\t\",\n\026C2S_CONNECTION_Message\022\022\n\naddon_"
-  "name\030\001 \001(\t"
+  "essages.proto\"I\n\034C2S_CONNECT_SameProcess"
+  "Check\022\034\n\024localhost_process_id\030\001 \001(\004\022\013\n\003k"
+  "ey\030\002 \001(\004\"\321\002\n\023C2S_CONNECT_Message\022\024\n\014host"
+  "_version\030\001 \001(\r\022\025\n\rauth_protocol\030\002 \001(\r\022\030\n"
+  "\020challenge_number\030\003 \001(\r\022\032\n\022reservation_c"
+  "ookie\030\004 \001(\006\022\024\n\014low_violence\030\005 \001(\010\022\032\n\022enc"
+  "rypted_password\030\006 \001(\014\0221\n\014splitplayers\030\007 "
+  "\003(\0132\033.CCLCMsg_SplitPlayerConnect\022\022\n\nauth"
+  "_steam\030\010 \001(\014\022\031\n\021challenge_context\030\t \001(\t\022"
+  "C\n\034localhost_same_process_check\030\n \001(\0132\035."
+  "C2S_CONNECT_SameProcessCheck\"q\n\026C2S_CONN"
+  "ECTION_Message\022\022\n\naddon_name\030\001 \001(\t\022C\n\034lo"
+  "calhost_same_process_check\030\002 \001(\0132\035.C2S_C"
+  "ONNECT_SameProcessCheck"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_connectionless_5fnetmessages_2eproto_deps[1] = {
   &::descriptor_table_netmessages_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_connectionless_5fnetmessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_connectionless_5fnetmessages_2eproto = {
-    false, false, 370, descriptor_table_protodef_connectionless_5fnetmessages_2eproto,
+    false, false, 583, descriptor_table_protodef_connectionless_5fnetmessages_2eproto,
     "connectionless_netmessages.proto",
-    &descriptor_table_connectionless_5fnetmessages_2eproto_once, descriptor_table_connectionless_5fnetmessages_2eproto_deps, 1, 2,
+    &descriptor_table_connectionless_5fnetmessages_2eproto_once, descriptor_table_connectionless_5fnetmessages_2eproto_deps, 1, 3,
     schemas, file_default_instances, TableStruct_connectionless_5fnetmessages_2eproto::offsets,
     file_level_metadata_connectionless_5fnetmessages_2eproto, file_level_enum_descriptors_connectionless_5fnetmessages_2eproto,
     file_level_service_descriptors_connectionless_5fnetmessages_2eproto,
@@ -137,23 +175,260 @@ PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 static ::_pbi::AddDescriptorsRunner dynamic_in
 
 // ===================================================================
 
+class C2S_CONNECT_SameProcessCheck::_Internal {
+ public:
+  using HasBits = decltype(std::declval<C2S_CONNECT_SameProcessCheck>()._impl_._has_bits_);
+  static void set_has_localhost_process_id(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_key(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+};
+
+C2S_CONNECT_SameProcessCheck::C2S_CONNECT_SameProcessCheck(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:C2S_CONNECT_SameProcessCheck)
+}
+C2S_CONNECT_SameProcessCheck::C2S_CONNECT_SameProcessCheck(const C2S_CONNECT_SameProcessCheck& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  C2S_CONNECT_SameProcessCheck* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.localhost_process_id_){}
+    , decltype(_impl_.key_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.localhost_process_id_, &from._impl_.localhost_process_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.key_) -
+    reinterpret_cast<char*>(&_impl_.localhost_process_id_)) + sizeof(_impl_.key_));
+  // @@protoc_insertion_point(copy_constructor:C2S_CONNECT_SameProcessCheck)
+}
+
+inline void C2S_CONNECT_SameProcessCheck::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.localhost_process_id_){uint64_t{0u}}
+    , decltype(_impl_.key_){uint64_t{0u}}
+  };
+}
+
+C2S_CONNECT_SameProcessCheck::~C2S_CONNECT_SameProcessCheck() {
+  // @@protoc_insertion_point(destructor:C2S_CONNECT_SameProcessCheck)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void C2S_CONNECT_SameProcessCheck::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void C2S_CONNECT_SameProcessCheck::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void C2S_CONNECT_SameProcessCheck::Clear() {
+// @@protoc_insertion_point(message_clear_start:C2S_CONNECT_SameProcessCheck)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    ::memset(&_impl_.localhost_process_id_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.key_) -
+        reinterpret_cast<char*>(&_impl_.localhost_process_id_)) + sizeof(_impl_.key_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* C2S_CONNECT_SameProcessCheck::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional uint64 localhost_process_id = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _Internal::set_has_localhost_process_id(&has_bits);
+          _impl_.localhost_process_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint64 key = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _Internal::set_has_key(&has_bits);
+          _impl_.key_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* C2S_CONNECT_SameProcessCheck::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:C2S_CONNECT_SameProcessCheck)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional uint64 localhost_process_id = 1;
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_localhost_process_id(), target);
+  }
+
+  // optional uint64 key = 2;
+  if (cached_has_bits & 0x00000002u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_key(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:C2S_CONNECT_SameProcessCheck)
+  return target;
+}
+
+size_t C2S_CONNECT_SameProcessCheck::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:C2S_CONNECT_SameProcessCheck)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    // optional uint64 localhost_process_id = 1;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_localhost_process_id());
+    }
+
+    // optional uint64 key = 2;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_key());
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C2S_CONNECT_SameProcessCheck::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    C2S_CONNECT_SameProcessCheck::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C2S_CONNECT_SameProcessCheck::GetClassData() const { return &_class_data_; }
+
+
+void C2S_CONNECT_SameProcessCheck::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<C2S_CONNECT_SameProcessCheck*>(&to_msg);
+  auto& from = static_cast<const C2S_CONNECT_SameProcessCheck&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:C2S_CONNECT_SameProcessCheck)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_impl_.localhost_process_id_ = from._impl_.localhost_process_id_;
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_impl_.key_ = from._impl_.key_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void C2S_CONNECT_SameProcessCheck::CopyFrom(const C2S_CONNECT_SameProcessCheck& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:C2S_CONNECT_SameProcessCheck)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool C2S_CONNECT_SameProcessCheck::IsInitialized() const {
+  return true;
+}
+
+void C2S_CONNECT_SameProcessCheck::InternalSwap(C2S_CONNECT_SameProcessCheck* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(C2S_CONNECT_SameProcessCheck, _impl_.key_)
+      + sizeof(C2S_CONNECT_SameProcessCheck::_impl_.key_)
+      - PROTOBUF_FIELD_OFFSET(C2S_CONNECT_SameProcessCheck, _impl_.localhost_process_id_)>(
+          reinterpret_cast<char*>(&_impl_.localhost_process_id_),
+          reinterpret_cast<char*>(&other->_impl_.localhost_process_id_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata C2S_CONNECT_SameProcessCheck::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_connectionless_5fnetmessages_2eproto_getter, &descriptor_table_connectionless_5fnetmessages_2eproto_once,
+      file_level_metadata_connectionless_5fnetmessages_2eproto[0]);
+}
+
+// ===================================================================
+
 class C2S_CONNECT_Message::_Internal {
  public:
   using HasBits = decltype(std::declval<C2S_CONNECT_Message>()._impl_._has_bits_);
   static void set_has_host_version(HasBits* has_bits) {
-    (*has_bits)[0] |= 8u;
-  }
-  static void set_has_auth_protocol(HasBits* has_bits) {
     (*has_bits)[0] |= 16u;
   }
-  static void set_has_challenge_number(HasBits* has_bits) {
-    (*has_bits)[0] |= 64u;
-  }
-  static void set_has_reservation_cookie(HasBits* has_bits) {
+  static void set_has_auth_protocol(HasBits* has_bits) {
     (*has_bits)[0] |= 32u;
   }
-  static void set_has_low_violence(HasBits* has_bits) {
+  static void set_has_challenge_number(HasBits* has_bits) {
     (*has_bits)[0] |= 128u;
+  }
+  static void set_has_reservation_cookie(HasBits* has_bits) {
+    (*has_bits)[0] |= 64u;
+  }
+  static void set_has_low_violence(HasBits* has_bits) {
+    (*has_bits)[0] |= 256u;
   }
   static void set_has_encrypted_password(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
@@ -164,8 +439,16 @@ class C2S_CONNECT_Message::_Internal {
   static void set_has_challenge_context(HasBits* has_bits) {
     (*has_bits)[0] |= 4u;
   }
+  static const ::C2S_CONNECT_SameProcessCheck& localhost_same_process_check(const C2S_CONNECT_Message* msg);
+  static void set_has_localhost_same_process_check(HasBits* has_bits) {
+    (*has_bits)[0] |= 8u;
+  }
 };
 
+const ::C2S_CONNECT_SameProcessCheck&
+C2S_CONNECT_Message::_Internal::localhost_same_process_check(const C2S_CONNECT_Message* msg) {
+  return *msg->_impl_.localhost_same_process_check_;
+}
 void C2S_CONNECT_Message::clear_splitplayers() {
   _impl_.splitplayers_.Clear();
 }
@@ -185,6 +468,7 @@ C2S_CONNECT_Message::C2S_CONNECT_Message(const C2S_CONNECT_Message& from)
     , decltype(_impl_.encrypted_password_){}
     , decltype(_impl_.auth_steam_){}
     , decltype(_impl_.challenge_context_){}
+    , decltype(_impl_.localhost_same_process_check_){nullptr}
     , decltype(_impl_.host_version_){}
     , decltype(_impl_.auth_protocol_){}
     , decltype(_impl_.reservation_cookie_){}
@@ -216,6 +500,9 @@ C2S_CONNECT_Message::C2S_CONNECT_Message(const C2S_CONNECT_Message& from)
     _this->_impl_.challenge_context_.Set(from._internal_challenge_context(), 
       _this->GetArenaForAllocation());
   }
+  if (from._internal_has_localhost_same_process_check()) {
+    _this->_impl_.localhost_same_process_check_ = new ::C2S_CONNECT_SameProcessCheck(*from._impl_.localhost_same_process_check_);
+  }
   ::memcpy(&_impl_.host_version_, &from._impl_.host_version_,
     static_cast<size_t>(reinterpret_cast<char*>(&_impl_.low_violence_) -
     reinterpret_cast<char*>(&_impl_.host_version_)) + sizeof(_impl_.low_violence_));
@@ -233,6 +520,7 @@ inline void C2S_CONNECT_Message::SharedCtor(
     , decltype(_impl_.encrypted_password_){}
     , decltype(_impl_.auth_steam_){}
     , decltype(_impl_.challenge_context_){}
+    , decltype(_impl_.localhost_same_process_check_){nullptr}
     , decltype(_impl_.host_version_){0u}
     , decltype(_impl_.auth_protocol_){0u}
     , decltype(_impl_.reservation_cookie_){uint64_t{0u}}
@@ -268,6 +556,7 @@ inline void C2S_CONNECT_Message::SharedDtor() {
   _impl_.encrypted_password_.Destroy();
   _impl_.auth_steam_.Destroy();
   _impl_.challenge_context_.Destroy();
+  if (this != internal_default_instance()) delete _impl_.localhost_same_process_check_;
 }
 
 void C2S_CONNECT_Message::SetCachedSize(int size) const {
@@ -282,7 +571,7 @@ void C2S_CONNECT_Message::Clear() {
 
   _impl_.splitplayers_.Clear();
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
+  if (cached_has_bits & 0x0000000fu) {
     if (cached_has_bits & 0x00000001u) {
       _impl_.encrypted_password_.ClearNonDefaultToEmpty();
     }
@@ -292,12 +581,17 @@ void C2S_CONNECT_Message::Clear() {
     if (cached_has_bits & 0x00000004u) {
       _impl_.challenge_context_.ClearNonDefaultToEmpty();
     }
+    if (cached_has_bits & 0x00000008u) {
+      GOOGLE_DCHECK(_impl_.localhost_same_process_check_ != nullptr);
+      _impl_.localhost_same_process_check_->Clear();
+    }
   }
-  if (cached_has_bits & 0x000000f8u) {
+  if (cached_has_bits & 0x000000f0u) {
     ::memset(&_impl_.host_version_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.low_violence_) -
-        reinterpret_cast<char*>(&_impl_.host_version_)) + sizeof(_impl_.low_violence_));
+        reinterpret_cast<char*>(&_impl_.challenge_number_) -
+        reinterpret_cast<char*>(&_impl_.host_version_)) + sizeof(_impl_.challenge_number_));
   }
+  _impl_.low_violence_ = false;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -397,6 +691,14 @@ const char* C2S_CONNECT_Message::_InternalParse(const char* ptr, ::_pbi::ParseCo
         } else
           goto handle_unusual;
         continue;
+      // optional .C2S_CONNECT_SameProcessCheck localhost_same_process_check = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
+          ptr = ctx->ParseMessage(_internal_mutable_localhost_same_process_check(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -429,31 +731,31 @@ uint8_t* C2S_CONNECT_Message::_InternalSerialize(
 
   cached_has_bits = _impl_._has_bits_[0];
   // optional uint32 host_version = 1;
-  if (cached_has_bits & 0x00000008u) {
+  if (cached_has_bits & 0x00000010u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_host_version(), target);
   }
 
   // optional uint32 auth_protocol = 2;
-  if (cached_has_bits & 0x00000010u) {
+  if (cached_has_bits & 0x00000020u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_auth_protocol(), target);
   }
 
   // optional uint32 challenge_number = 3;
-  if (cached_has_bits & 0x00000040u) {
+  if (cached_has_bits & 0x00000080u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_challenge_number(), target);
   }
 
   // optional fixed64 reservation_cookie = 4;
-  if (cached_has_bits & 0x00000020u) {
+  if (cached_has_bits & 0x00000040u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteFixed64ToArray(4, this->_internal_reservation_cookie(), target);
   }
 
   // optional bool low_violence = 5;
-  if (cached_has_bits & 0x00000080u) {
+  if (cached_has_bits & 0x00000100u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteBoolToArray(5, this->_internal_low_violence(), target);
   }
@@ -486,6 +788,13 @@ uint8_t* C2S_CONNECT_Message::_InternalSerialize(
       "C2S_CONNECT_Message.challenge_context");
     target = stream->WriteStringMaybeAliased(
         9, this->_internal_challenge_context(), target);
+  }
+
+  // optional .C2S_CONNECT_SameProcessCheck localhost_same_process_check = 10;
+  if (cached_has_bits & 0x00000008u) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(10, _Internal::localhost_same_process_check(this),
+        _Internal::localhost_same_process_check(this).GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -534,32 +843,39 @@ size_t C2S_CONNECT_Message::ByteSizeLong() const {
           this->_internal_challenge_context());
     }
 
-    // optional uint32 host_version = 1;
+    // optional .C2S_CONNECT_SameProcessCheck localhost_same_process_check = 10;
     if (cached_has_bits & 0x00000008u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *_impl_.localhost_same_process_check_);
+    }
+
+    // optional uint32 host_version = 1;
+    if (cached_has_bits & 0x00000010u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_host_version());
     }
 
     // optional uint32 auth_protocol = 2;
-    if (cached_has_bits & 0x00000010u) {
+    if (cached_has_bits & 0x00000020u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_auth_protocol());
     }
 
     // optional fixed64 reservation_cookie = 4;
-    if (cached_has_bits & 0x00000020u) {
+    if (cached_has_bits & 0x00000040u) {
       total_size += 1 + 8;
     }
 
     // optional uint32 challenge_number = 3;
-    if (cached_has_bits & 0x00000040u) {
+    if (cached_has_bits & 0x00000080u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_challenge_number());
     }
 
-    // optional bool low_violence = 5;
-    if (cached_has_bits & 0x00000080u) {
-      total_size += 1 + 1;
-    }
-
   }
+  // optional bool low_violence = 5;
+  if (cached_has_bits & 0x00000100u) {
+    total_size += 1 + 1;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -591,21 +907,25 @@ void C2S_CONNECT_Message::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, co
       _this->_internal_set_challenge_context(from._internal_challenge_context());
     }
     if (cached_has_bits & 0x00000008u) {
-      _this->_impl_.host_version_ = from._impl_.host_version_;
+      _this->_internal_mutable_localhost_same_process_check()->::C2S_CONNECT_SameProcessCheck::MergeFrom(
+          from._internal_localhost_same_process_check());
     }
     if (cached_has_bits & 0x00000010u) {
-      _this->_impl_.auth_protocol_ = from._impl_.auth_protocol_;
+      _this->_impl_.host_version_ = from._impl_.host_version_;
     }
     if (cached_has_bits & 0x00000020u) {
-      _this->_impl_.reservation_cookie_ = from._impl_.reservation_cookie_;
+      _this->_impl_.auth_protocol_ = from._impl_.auth_protocol_;
     }
     if (cached_has_bits & 0x00000040u) {
-      _this->_impl_.challenge_number_ = from._impl_.challenge_number_;
+      _this->_impl_.reservation_cookie_ = from._impl_.reservation_cookie_;
     }
     if (cached_has_bits & 0x00000080u) {
-      _this->_impl_.low_violence_ = from._impl_.low_violence_;
+      _this->_impl_.challenge_number_ = from._impl_.challenge_number_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  if (cached_has_bits & 0x00000100u) {
+    _this->_internal_set_low_violence(from._internal_low_violence());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -643,15 +963,15 @@ void C2S_CONNECT_Message::InternalSwap(C2S_CONNECT_Message* other) {
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(C2S_CONNECT_Message, _impl_.low_violence_)
       + sizeof(C2S_CONNECT_Message::_impl_.low_violence_)
-      - PROTOBUF_FIELD_OFFSET(C2S_CONNECT_Message, _impl_.host_version_)>(
-          reinterpret_cast<char*>(&_impl_.host_version_),
-          reinterpret_cast<char*>(&other->_impl_.host_version_));
+      - PROTOBUF_FIELD_OFFSET(C2S_CONNECT_Message, _impl_.localhost_same_process_check_)>(
+          reinterpret_cast<char*>(&_impl_.localhost_same_process_check_),
+          reinterpret_cast<char*>(&other->_impl_.localhost_same_process_check_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata C2S_CONNECT_Message::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_connectionless_5fnetmessages_2eproto_getter, &descriptor_table_connectionless_5fnetmessages_2eproto_once,
-      file_level_metadata_connectionless_5fnetmessages_2eproto[0]);
+      file_level_metadata_connectionless_5fnetmessages_2eproto[1]);
 }
 
 // ===================================================================
@@ -662,8 +982,16 @@ class C2S_CONNECTION_Message::_Internal {
   static void set_has_addon_name(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
+  static const ::C2S_CONNECT_SameProcessCheck& localhost_same_process_check(const C2S_CONNECTION_Message* msg);
+  static void set_has_localhost_same_process_check(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
 };
 
+const ::C2S_CONNECT_SameProcessCheck&
+C2S_CONNECTION_Message::_Internal::localhost_same_process_check(const C2S_CONNECTION_Message* msg) {
+  return *msg->_impl_.localhost_same_process_check_;
+}
 C2S_CONNECTION_Message::C2S_CONNECTION_Message(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
@@ -676,7 +1004,8 @@ C2S_CONNECTION_Message::C2S_CONNECTION_Message(const C2S_CONNECTION_Message& fro
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){from._impl_._has_bits_}
     , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.addon_name_){}};
+    , decltype(_impl_.addon_name_){}
+    , decltype(_impl_.localhost_same_process_check_){nullptr}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   _impl_.addon_name_.InitDefault();
@@ -686,6 +1015,9 @@ C2S_CONNECTION_Message::C2S_CONNECTION_Message(const C2S_CONNECTION_Message& fro
   if (from._internal_has_addon_name()) {
     _this->_impl_.addon_name_.Set(from._internal_addon_name(), 
       _this->GetArenaForAllocation());
+  }
+  if (from._internal_has_localhost_same_process_check()) {
+    _this->_impl_.localhost_same_process_check_ = new ::C2S_CONNECT_SameProcessCheck(*from._impl_.localhost_same_process_check_);
   }
   // @@protoc_insertion_point(copy_constructor:C2S_CONNECTION_Message)
 }
@@ -698,6 +1030,7 @@ inline void C2S_CONNECTION_Message::SharedCtor(
       decltype(_impl_._has_bits_){}
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.addon_name_){}
+    , decltype(_impl_.localhost_same_process_check_){nullptr}
   };
   _impl_.addon_name_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -717,6 +1050,7 @@ C2S_CONNECTION_Message::~C2S_CONNECTION_Message() {
 inline void C2S_CONNECTION_Message::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.addon_name_.Destroy();
+  if (this != internal_default_instance()) delete _impl_.localhost_same_process_check_;
 }
 
 void C2S_CONNECTION_Message::SetCachedSize(int size) const {
@@ -730,8 +1064,14 @@ void C2S_CONNECTION_Message::Clear() {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    _impl_.addon_name_.ClearNonDefaultToEmpty();
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _impl_.addon_name_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000002u) {
+      GOOGLE_DCHECK(_impl_.localhost_same_process_check_ != nullptr);
+      _impl_.localhost_same_process_check_->Clear();
+    }
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -753,6 +1093,14 @@ const char* C2S_CONNECTION_Message::_InternalParse(const char* ptr, ::_pbi::Pars
           #ifndef NDEBUG
           ::_pbi::VerifyUTF8(str, "C2S_CONNECTION_Message.addon_name");
           #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional .C2S_CONNECT_SameProcessCheck localhost_same_process_check = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_localhost_same_process_check(), ptr);
+          CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
@@ -797,6 +1145,13 @@ uint8_t* C2S_CONNECTION_Message::_InternalSerialize(
         1, this->_internal_addon_name(), target);
   }
 
+  // optional .C2S_CONNECT_SameProcessCheck localhost_same_process_check = 2;
+  if (cached_has_bits & 0x00000002u) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(2, _Internal::localhost_same_process_check(this),
+        _Internal::localhost_same_process_check(this).GetCachedSize(), target, stream);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -813,14 +1168,23 @@ size_t C2S_CONNECTION_Message::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // optional string addon_name = 1;
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_addon_name());
-  }
+  if (cached_has_bits & 0x00000003u) {
+    // optional string addon_name = 1;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_addon_name());
+    }
 
+    // optional .C2S_CONNECT_SameProcessCheck localhost_same_process_check = 2;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *_impl_.localhost_same_process_check_);
+    }
+
+  }
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -839,8 +1203,15 @@ void C2S_CONNECTION_Message::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg,
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_has_addon_name()) {
-    _this->_internal_set_addon_name(from._internal_addon_name());
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_addon_name(from._internal_addon_name());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_internal_mutable_localhost_same_process_check()->::C2S_CONNECT_SameProcessCheck::MergeFrom(
+          from._internal_localhost_same_process_check());
+    }
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -866,16 +1237,21 @@ void C2S_CONNECTION_Message::InternalSwap(C2S_CONNECTION_Message* other) {
       &_impl_.addon_name_, lhs_arena,
       &other->_impl_.addon_name_, rhs_arena
   );
+  swap(_impl_.localhost_same_process_check_, other->_impl_.localhost_same_process_check_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata C2S_CONNECTION_Message::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_connectionless_5fnetmessages_2eproto_getter, &descriptor_table_connectionless_5fnetmessages_2eproto_once,
-      file_level_metadata_connectionless_5fnetmessages_2eproto[1]);
+      file_level_metadata_connectionless_5fnetmessages_2eproto[2]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
+template<> PROTOBUF_NOINLINE ::C2S_CONNECT_SameProcessCheck*
+Arena::CreateMaybeMessage< ::C2S_CONNECT_SameProcessCheck >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::C2S_CONNECT_SameProcessCheck >(arena);
+}
 template<> PROTOBUF_NOINLINE ::C2S_CONNECT_Message*
 Arena::CreateMaybeMessage< ::C2S_CONNECT_Message >(Arena* arena) {
   return Arena::CreateMessageInternal< ::C2S_CONNECT_Message >(arena);

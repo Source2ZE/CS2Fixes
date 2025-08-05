@@ -179,6 +179,9 @@ extern CCSUsrMsg_RadioTextDefaultTypeInternal _CCSUsrMsg_RadioText_default_insta
 class CCSUsrMsg_RawAudio;
 struct CCSUsrMsg_RawAudioDefaultTypeInternal;
 extern CCSUsrMsg_RawAudioDefaultTypeInternal _CCSUsrMsg_RawAudio_default_instance_;
+class CCSUsrMsg_RecurringMissionSchema;
+struct CCSUsrMsg_RecurringMissionSchemaDefaultTypeInternal;
+extern CCSUsrMsg_RecurringMissionSchemaDefaultTypeInternal _CCSUsrMsg_RecurringMissionSchema_default_instance_;
 class CCSUsrMsg_ReloadEffect;
 struct CCSUsrMsg_ReloadEffectDefaultTypeInternal;
 extern CCSUsrMsg_ReloadEffectDefaultTypeInternal _CCSUsrMsg_ReloadEffect_default_instance_;
@@ -356,6 +359,7 @@ template<> ::CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate* Arena::Cr
 template<> ::CCSUsrMsg_QuestProgress* Arena::CreateMaybeMessage<::CCSUsrMsg_QuestProgress>(Arena*);
 template<> ::CCSUsrMsg_RadioText* Arena::CreateMaybeMessage<::CCSUsrMsg_RadioText>(Arena*);
 template<> ::CCSUsrMsg_RawAudio* Arena::CreateMaybeMessage<::CCSUsrMsg_RawAudio>(Arena*);
+template<> ::CCSUsrMsg_RecurringMissionSchema* Arena::CreateMaybeMessage<::CCSUsrMsg_RecurringMissionSchema>(Arena*);
 template<> ::CCSUsrMsg_ReloadEffect* Arena::CreateMaybeMessage<::CCSUsrMsg_ReloadEffect>(Arena*);
 template<> ::CCSUsrMsg_ReportHit* Arena::CreateMaybeMessage<::CCSUsrMsg_ReportHit>(Arena*);
 template<> ::CCSUsrMsg_RequestState* Arena::CreateMaybeMessage<::CCSUsrMsg_RequestState>(Arena*);
@@ -479,11 +483,12 @@ enum ECstrike15UserMessages : int {
   CS_UM_DeepStats = 381,
   CS_UM_ShootInfo = 383,
   CS_UM_CounterStrafe = 385,
-  CS_UM_DamagePrediction = 386
+  CS_UM_DamagePrediction = 386,
+  CS_UM_RecurringMissionSchema = 387
 };
 bool ECstrike15UserMessages_IsValid(int value);
 constexpr ECstrike15UserMessages ECstrike15UserMessages_MIN = CS_UM_VGUIMenu;
-constexpr ECstrike15UserMessages ECstrike15UserMessages_MAX = CS_UM_DamagePrediction;
+constexpr ECstrike15UserMessages ECstrike15UserMessages_MAX = CS_UM_RecurringMissionSchema;
 constexpr int ECstrike15UserMessages_ARRAYSIZE = ECstrike15UserMessages_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ECstrike15UserMessages_descriptor();
@@ -17561,6 +17566,186 @@ class CCSUsrMsg_DamagePrediction :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_cstrike15_5fusermessages_2eproto;
 };
+// -------------------------------------------------------------------
+
+class CCSUsrMsg_RecurringMissionSchema :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RecurringMissionSchema) */ {
+ public:
+  inline CCSUsrMsg_RecurringMissionSchema() : CCSUsrMsg_RecurringMissionSchema(nullptr) {}
+  ~CCSUsrMsg_RecurringMissionSchema() override;
+  explicit PROTOBUF_CONSTEXPR CCSUsrMsg_RecurringMissionSchema(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CCSUsrMsg_RecurringMissionSchema(const CCSUsrMsg_RecurringMissionSchema& from);
+  CCSUsrMsg_RecurringMissionSchema(CCSUsrMsg_RecurringMissionSchema&& from) noexcept
+    : CCSUsrMsg_RecurringMissionSchema() {
+    *this = ::std::move(from);
+  }
+
+  inline CCSUsrMsg_RecurringMissionSchema& operator=(const CCSUsrMsg_RecurringMissionSchema& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CCSUsrMsg_RecurringMissionSchema& operator=(CCSUsrMsg_RecurringMissionSchema&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CCSUsrMsg_RecurringMissionSchema& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CCSUsrMsg_RecurringMissionSchema* internal_default_instance() {
+    return reinterpret_cast<const CCSUsrMsg_RecurringMissionSchema*>(
+               &_CCSUsrMsg_RecurringMissionSchema_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    88;
+
+  friend void swap(CCSUsrMsg_RecurringMissionSchema& a, CCSUsrMsg_RecurringMissionSchema& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CCSUsrMsg_RecurringMissionSchema* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CCSUsrMsg_RecurringMissionSchema* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CCSUsrMsg_RecurringMissionSchema* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CCSUsrMsg_RecurringMissionSchema>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CCSUsrMsg_RecurringMissionSchema& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CCSUsrMsg_RecurringMissionSchema& from) {
+    CCSUsrMsg_RecurringMissionSchema::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CCSUsrMsg_RecurringMissionSchema* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CCSUsrMsg_RecurringMissionSchema";
+  }
+  protected:
+  explicit CCSUsrMsg_RecurringMissionSchema(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMissionSchemaFieldNumber = 2,
+    kPeriodFieldNumber = 1,
+  };
+  // optional bytes mission_schema = 2;
+  bool has_mission_schema() const;
+  private:
+  bool _internal_has_mission_schema() const;
+  public:
+  void clear_mission_schema();
+  const std::string& mission_schema() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_mission_schema(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_mission_schema();
+  PROTOBUF_NODISCARD std::string* release_mission_schema();
+  void set_allocated_mission_schema(std::string* mission_schema);
+  private:
+  const std::string& _internal_mission_schema() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_mission_schema(const std::string& value);
+  std::string* _internal_mutable_mission_schema();
+  public:
+
+  // optional uint32 period = 1;
+  bool has_period() const;
+  private:
+  bool _internal_has_period() const;
+  public:
+  void clear_period();
+  uint32_t period() const;
+  void set_period(uint32_t value);
+  private:
+  uint32_t _internal_period() const;
+  void _internal_set_period(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CCSUsrMsg_RecurringMissionSchema)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr mission_schema_;
+    uint32_t period_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cstrike15_5fusermessages_2eproto;
+};
 // ===================================================================
 
 
@@ -27748,9 +27933,111 @@ inline void CCSUsrMsg_DamagePrediction::set_allocated_aim_punch(::CMsgQAngle* ai
   // @@protoc_insertion_point(field_set_allocated:CCSUsrMsg_DamagePrediction.aim_punch)
 }
 
+// -------------------------------------------------------------------
+
+// CCSUsrMsg_RecurringMissionSchema
+
+// optional uint32 period = 1;
+inline bool CCSUsrMsg_RecurringMissionSchema::_internal_has_period() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_RecurringMissionSchema::has_period() const {
+  return _internal_has_period();
+}
+inline void CCSUsrMsg_RecurringMissionSchema::clear_period() {
+  _impl_.period_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline uint32_t CCSUsrMsg_RecurringMissionSchema::_internal_period() const {
+  return _impl_.period_;
+}
+inline uint32_t CCSUsrMsg_RecurringMissionSchema::period() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_RecurringMissionSchema.period)
+  return _internal_period();
+}
+inline void CCSUsrMsg_RecurringMissionSchema::_internal_set_period(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.period_ = value;
+}
+inline void CCSUsrMsg_RecurringMissionSchema::set_period(uint32_t value) {
+  _internal_set_period(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_RecurringMissionSchema.period)
+}
+
+// optional bytes mission_schema = 2;
+inline bool CCSUsrMsg_RecurringMissionSchema::_internal_has_mission_schema() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_RecurringMissionSchema::has_mission_schema() const {
+  return _internal_has_mission_schema();
+}
+inline void CCSUsrMsg_RecurringMissionSchema::clear_mission_schema() {
+  _impl_.mission_schema_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CCSUsrMsg_RecurringMissionSchema::mission_schema() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_RecurringMissionSchema.mission_schema)
+  return _internal_mission_schema();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CCSUsrMsg_RecurringMissionSchema::set_mission_schema(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.mission_schema_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_RecurringMissionSchema.mission_schema)
+}
+inline std::string* CCSUsrMsg_RecurringMissionSchema::mutable_mission_schema() {
+  std::string* _s = _internal_mutable_mission_schema();
+  // @@protoc_insertion_point(field_mutable:CCSUsrMsg_RecurringMissionSchema.mission_schema)
+  return _s;
+}
+inline const std::string& CCSUsrMsg_RecurringMissionSchema::_internal_mission_schema() const {
+  return _impl_.mission_schema_.Get();
+}
+inline void CCSUsrMsg_RecurringMissionSchema::_internal_set_mission_schema(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.mission_schema_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CCSUsrMsg_RecurringMissionSchema::_internal_mutable_mission_schema() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.mission_schema_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CCSUsrMsg_RecurringMissionSchema::release_mission_schema() {
+  // @@protoc_insertion_point(field_release:CCSUsrMsg_RecurringMissionSchema.mission_schema)
+  if (!_internal_has_mission_schema()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.mission_schema_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.mission_schema_.IsDefault()) {
+    _impl_.mission_schema_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CCSUsrMsg_RecurringMissionSchema::set_allocated_mission_schema(std::string* mission_schema) {
+  if (mission_schema != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.mission_schema_.SetAllocated(mission_schema, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.mission_schema_.IsDefault()) {
+    _impl_.mission_schema_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CCSUsrMsg_RecurringMissionSchema.mission_schema)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -28,6 +28,7 @@
 #include <google/protobuf/generated_message_reflection.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/descriptor.pb.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
@@ -46,6 +47,32 @@ extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table
 PROTOBUF_NAMESPACE_OPEN
 PROTOBUF_NAMESPACE_CLOSE
 
+enum EProtoDebugVisiblity : int {
+  k_EProtoDebugVisibility_Always = 0,
+  k_EProtoDebugVisibility_Server = 70,
+  k_EProtoDebugVisibility_ValveServer = 80,
+  k_EProtoDebugVisibility_GC = 90,
+  k_EProtoDebugVisibility_Never = 100
+};
+bool EProtoDebugVisiblity_IsValid(int value);
+constexpr EProtoDebugVisiblity EProtoDebugVisiblity_MIN = k_EProtoDebugVisibility_Always;
+constexpr EProtoDebugVisiblity EProtoDebugVisiblity_MAX = k_EProtoDebugVisibility_Never;
+constexpr int EProtoDebugVisiblity_ARRAYSIZE = EProtoDebugVisiblity_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EProtoDebugVisiblity_descriptor();
+template<typename T>
+inline const std::string& EProtoDebugVisiblity_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, EProtoDebugVisiblity>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function EProtoDebugVisiblity_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    EProtoDebugVisiblity_descriptor(), enum_t_value);
+}
+inline bool EProtoDebugVisiblity_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, EProtoDebugVisiblity* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<EProtoDebugVisiblity>(
+    EProtoDebugVisiblity_descriptor(), name, value);
+}
 // ===================================================================
 
 
@@ -79,6 +106,10 @@ static const int kSteamlearnCountFieldNumber = 61006;
 extern ::PROTOBUF_NAMESPACE_ID::internal::ExtensionIdentifier< ::PROTOBUF_NAMESPACE_ID::FieldOptions,
     ::PROTOBUF_NAMESPACE_ID::internal::PrimitiveTypeTraits< uint32_t >, 13, false >
   steamlearn_count;
+static const int kDebugprintVisibilityFieldNumber = 61007;
+extern ::PROTOBUF_NAMESPACE_ID::internal::ExtensionIdentifier< ::PROTOBUF_NAMESPACE_ID::FieldOptions,
+    ::PROTOBUF_NAMESPACE_ID::internal::EnumTypeTraits< ::EProtoDebugVisiblity, ::EProtoDebugVisiblity_IsValid>, 14, false >
+  debugprint_visibility;
 static const int kSchemaFriendlyNameFieldNumber = 1000;
 extern ::PROTOBUF_NAMESPACE_ID::internal::ExtensionIdentifier< ::PROTOBUF_NAMESPACE_ID::EnumValueOptions,
     ::PROTOBUF_NAMESPACE_ID::internal::StringTypeTraits, 9, false >
@@ -104,6 +135,16 @@ extern ::PROTOBUF_NAMESPACE_ID::internal::ExtensionIdentifier< ::PROTOBUF_NAMESP
 
 // @@protoc_insertion_point(namespace_scope)
 
+
+PROTOBUF_NAMESPACE_OPEN
+
+template <> struct is_proto_enum< ::EProtoDebugVisiblity> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::EProtoDebugVisiblity>() {
+  return ::EProtoDebugVisiblity_descriptor();
+}
+
+PROTOBUF_NAMESPACE_CLOSE
 
 // @@protoc_insertion_point(global_scope)
 
