@@ -389,6 +389,8 @@ class CSubtickMoveStep :
     kWhenFieldNumber = 3,
     kAnalogForwardDeltaFieldNumber = 4,
     kAnalogLeftDeltaFieldNumber = 5,
+    kAnalogPitchDeltaFieldNumber = 6,
+    kAnalogYawDeltaFieldNumber = 7,
   };
   // optional uint64 button = 1;
   bool has_button() const;
@@ -455,6 +457,32 @@ class CSubtickMoveStep :
   void _internal_set_analog_left_delta(float value);
   public:
 
+  // optional float analog_pitch_delta = 6;
+  bool has_analog_pitch_delta() const;
+  private:
+  bool _internal_has_analog_pitch_delta() const;
+  public:
+  void clear_analog_pitch_delta();
+  float analog_pitch_delta() const;
+  void set_analog_pitch_delta(float value);
+  private:
+  float _internal_analog_pitch_delta() const;
+  void _internal_set_analog_pitch_delta(float value);
+  public:
+
+  // optional float analog_yaw_delta = 7;
+  bool has_analog_yaw_delta() const;
+  private:
+  bool _internal_has_analog_yaw_delta() const;
+  public:
+  void clear_analog_yaw_delta();
+  float analog_yaw_delta() const;
+  void set_analog_yaw_delta(float value);
+  private:
+  float _internal_analog_yaw_delta() const;
+  void _internal_set_analog_yaw_delta(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CSubtickMoveStep)
  private:
   class _Internal;
@@ -470,6 +498,8 @@ class CSubtickMoveStep :
     float when_;
     float analog_forward_delta_;
     float analog_left_delta_;
+    float analog_pitch_delta_;
+    float analog_yaw_delta_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_usercmd_2eproto;
@@ -618,6 +648,7 @@ class CBaseUserCmdPB :
     kRandomSeedFieldNumber = 10,
     kMousedxFieldNumber = 11,
     kMousedyFieldNumber = 12,
+    kPredictionOffsetTicksX256FieldNumber = 17,
     kConsumedServerAngleChangesFieldNumber = 20,
     kCmdFlagsFieldNumber = 21,
     kPawnEntityHandleFieldNumber = 14,
@@ -824,6 +855,19 @@ class CBaseUserCmdPB :
   void _internal_set_mousedy(int32_t value);
   public:
 
+  // optional uint32 prediction_offset_ticks_x256 = 17;
+  bool has_prediction_offset_ticks_x256() const;
+  private:
+  bool _internal_has_prediction_offset_ticks_x256() const;
+  public:
+  void clear_prediction_offset_ticks_x256();
+  uint32_t prediction_offset_ticks_x256() const;
+  void set_prediction_offset_ticks_x256(uint32_t value);
+  private:
+  uint32_t _internal_prediction_offset_ticks_x256() const;
+  void _internal_set_prediction_offset_ticks_x256(uint32_t value);
+  public:
+
   // optional uint32 consumed_server_angle_changes = 20;
   bool has_consumed_server_angle_changes() const;
   private:
@@ -887,6 +931,7 @@ class CBaseUserCmdPB :
     int32_t random_seed_;
     int32_t mousedx_;
     int32_t mousedy_;
+    uint32_t prediction_offset_ticks_x256_;
     uint32_t consumed_server_angle_changes_;
     int32_t cmd_flags_;
     uint32_t pawn_entity_handle_;
@@ -1298,6 +1343,62 @@ inline void CSubtickMoveStep::set_analog_left_delta(float value) {
   // @@protoc_insertion_point(field_set:CSubtickMoveStep.analog_left_delta)
 }
 
+// optional float analog_pitch_delta = 6;
+inline bool CSubtickMoveStep::_internal_has_analog_pitch_delta() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CSubtickMoveStep::has_analog_pitch_delta() const {
+  return _internal_has_analog_pitch_delta();
+}
+inline void CSubtickMoveStep::clear_analog_pitch_delta() {
+  _impl_.analog_pitch_delta_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline float CSubtickMoveStep::_internal_analog_pitch_delta() const {
+  return _impl_.analog_pitch_delta_;
+}
+inline float CSubtickMoveStep::analog_pitch_delta() const {
+  // @@protoc_insertion_point(field_get:CSubtickMoveStep.analog_pitch_delta)
+  return _internal_analog_pitch_delta();
+}
+inline void CSubtickMoveStep::_internal_set_analog_pitch_delta(float value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.analog_pitch_delta_ = value;
+}
+inline void CSubtickMoveStep::set_analog_pitch_delta(float value) {
+  _internal_set_analog_pitch_delta(value);
+  // @@protoc_insertion_point(field_set:CSubtickMoveStep.analog_pitch_delta)
+}
+
+// optional float analog_yaw_delta = 7;
+inline bool CSubtickMoveStep::_internal_has_analog_yaw_delta() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CSubtickMoveStep::has_analog_yaw_delta() const {
+  return _internal_has_analog_yaw_delta();
+}
+inline void CSubtickMoveStep::clear_analog_yaw_delta() {
+  _impl_.analog_yaw_delta_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline float CSubtickMoveStep::_internal_analog_yaw_delta() const {
+  return _impl_.analog_yaw_delta_;
+}
+inline float CSubtickMoveStep::analog_yaw_delta() const {
+  // @@protoc_insertion_point(field_get:CSubtickMoveStep.analog_yaw_delta)
+  return _internal_analog_yaw_delta();
+}
+inline void CSubtickMoveStep::_internal_set_analog_yaw_delta(float value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.analog_yaw_delta_ = value;
+}
+inline void CSubtickMoveStep::set_analog_yaw_delta(float value) {
+  _internal_set_analog_yaw_delta(value);
+  // @@protoc_insertion_point(field_set:CSubtickMoveStep.analog_yaw_delta)
+}
+
 // -------------------------------------------------------------------
 
 // CBaseUserCmdPB
@@ -1356,6 +1457,34 @@ inline void CBaseUserCmdPB::_internal_set_client_tick(int32_t value) {
 inline void CBaseUserCmdPB::set_client_tick(int32_t value) {
   _internal_set_client_tick(value);
   // @@protoc_insertion_point(field_set:CBaseUserCmdPB.client_tick)
+}
+
+// optional uint32 prediction_offset_ticks_x256 = 17;
+inline bool CBaseUserCmdPB::_internal_has_prediction_offset_ticks_x256() const {
+  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  return value;
+}
+inline bool CBaseUserCmdPB::has_prediction_offset_ticks_x256() const {
+  return _internal_has_prediction_offset_ticks_x256();
+}
+inline void CBaseUserCmdPB::clear_prediction_offset_ticks_x256() {
+  _impl_.prediction_offset_ticks_x256_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00002000u;
+}
+inline uint32_t CBaseUserCmdPB::_internal_prediction_offset_ticks_x256() const {
+  return _impl_.prediction_offset_ticks_x256_;
+}
+inline uint32_t CBaseUserCmdPB::prediction_offset_ticks_x256() const {
+  // @@protoc_insertion_point(field_get:CBaseUserCmdPB.prediction_offset_ticks_x256)
+  return _internal_prediction_offset_ticks_x256();
+}
+inline void CBaseUserCmdPB::_internal_set_prediction_offset_ticks_x256(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_.prediction_offset_ticks_x256_ = value;
+}
+inline void CBaseUserCmdPB::set_prediction_offset_ticks_x256(uint32_t value) {
+  _internal_set_prediction_offset_ticks_x256(value);
+  // @@protoc_insertion_point(field_set:CBaseUserCmdPB.prediction_offset_ticks_x256)
 }
 
 // optional .CInButtonStatePB buttons_pb = 3;
@@ -1761,7 +1890,7 @@ inline void CBaseUserCmdPB::set_mousedy(int32_t value) {
 
 // optional uint32 pawn_entity_handle = 14 [default = 16777215];
 inline bool CBaseUserCmdPB::_internal_has_pawn_entity_handle() const {
-  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_pawn_entity_handle() const {
@@ -1769,7 +1898,7 @@ inline bool CBaseUserCmdPB::has_pawn_entity_handle() const {
 }
 inline void CBaseUserCmdPB::clear_pawn_entity_handle() {
   _impl_.pawn_entity_handle_ = 16777215u;
-  _impl_._has_bits_[0] &= ~0x00008000u;
+  _impl_._has_bits_[0] &= ~0x00010000u;
 }
 inline uint32_t CBaseUserCmdPB::_internal_pawn_entity_handle() const {
   return _impl_.pawn_entity_handle_;
@@ -1779,7 +1908,7 @@ inline uint32_t CBaseUserCmdPB::pawn_entity_handle() const {
   return _internal_pawn_entity_handle();
 }
 inline void CBaseUserCmdPB::_internal_set_pawn_entity_handle(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00008000u;
+  _impl_._has_bits_[0] |= 0x00010000u;
   _impl_.pawn_entity_handle_ = value;
 }
 inline void CBaseUserCmdPB::set_pawn_entity_handle(uint32_t value) {
@@ -1897,7 +2026,7 @@ inline void CBaseUserCmdPB::set_allocated_move_crc(std::string* move_crc) {
 
 // optional uint32 consumed_server_angle_changes = 20;
 inline bool CBaseUserCmdPB::_internal_has_consumed_server_angle_changes() const {
-  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_consumed_server_angle_changes() const {
@@ -1905,7 +2034,7 @@ inline bool CBaseUserCmdPB::has_consumed_server_angle_changes() const {
 }
 inline void CBaseUserCmdPB::clear_consumed_server_angle_changes() {
   _impl_.consumed_server_angle_changes_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00002000u;
+  _impl_._has_bits_[0] &= ~0x00004000u;
 }
 inline uint32_t CBaseUserCmdPB::_internal_consumed_server_angle_changes() const {
   return _impl_.consumed_server_angle_changes_;
@@ -1915,7 +2044,7 @@ inline uint32_t CBaseUserCmdPB::consumed_server_angle_changes() const {
   return _internal_consumed_server_angle_changes();
 }
 inline void CBaseUserCmdPB::_internal_set_consumed_server_angle_changes(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_._has_bits_[0] |= 0x00004000u;
   _impl_.consumed_server_angle_changes_ = value;
 }
 inline void CBaseUserCmdPB::set_consumed_server_angle_changes(uint32_t value) {
@@ -1925,7 +2054,7 @@ inline void CBaseUserCmdPB::set_consumed_server_angle_changes(uint32_t value) {
 
 // optional int32 cmd_flags = 21;
 inline bool CBaseUserCmdPB::_internal_has_cmd_flags() const {
-  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_cmd_flags() const {
@@ -1933,7 +2062,7 @@ inline bool CBaseUserCmdPB::has_cmd_flags() const {
 }
 inline void CBaseUserCmdPB::clear_cmd_flags() {
   _impl_.cmd_flags_ = 0;
-  _impl_._has_bits_[0] &= ~0x00004000u;
+  _impl_._has_bits_[0] &= ~0x00008000u;
 }
 inline int32_t CBaseUserCmdPB::_internal_cmd_flags() const {
   return _impl_.cmd_flags_;
@@ -1943,7 +2072,7 @@ inline int32_t CBaseUserCmdPB::cmd_flags() const {
   return _internal_cmd_flags();
 }
 inline void CBaseUserCmdPB::_internal_set_cmd_flags(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00004000u;
+  _impl_._has_bits_[0] |= 0x00008000u;
   _impl_.cmd_flags_ = value;
 }
 inline void CBaseUserCmdPB::set_cmd_flags(int32_t value) {

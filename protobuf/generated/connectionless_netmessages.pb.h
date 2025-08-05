@@ -51,12 +51,191 @@ extern C2S_CONNECTION_MessageDefaultTypeInternal _C2S_CONNECTION_Message_default
 class C2S_CONNECT_Message;
 struct C2S_CONNECT_MessageDefaultTypeInternal;
 extern C2S_CONNECT_MessageDefaultTypeInternal _C2S_CONNECT_Message_default_instance_;
+class C2S_CONNECT_SameProcessCheck;
+struct C2S_CONNECT_SameProcessCheckDefaultTypeInternal;
+extern C2S_CONNECT_SameProcessCheckDefaultTypeInternal _C2S_CONNECT_SameProcessCheck_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::C2S_CONNECTION_Message* Arena::CreateMaybeMessage<::C2S_CONNECTION_Message>(Arena*);
 template<> ::C2S_CONNECT_Message* Arena::CreateMaybeMessage<::C2S_CONNECT_Message>(Arena*);
+template<> ::C2S_CONNECT_SameProcessCheck* Arena::CreateMaybeMessage<::C2S_CONNECT_SameProcessCheck>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
+
+class C2S_CONNECT_SameProcessCheck :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:C2S_CONNECT_SameProcessCheck) */ {
+ public:
+  inline C2S_CONNECT_SameProcessCheck() : C2S_CONNECT_SameProcessCheck(nullptr) {}
+  ~C2S_CONNECT_SameProcessCheck() override;
+  explicit PROTOBUF_CONSTEXPR C2S_CONNECT_SameProcessCheck(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C2S_CONNECT_SameProcessCheck(const C2S_CONNECT_SameProcessCheck& from);
+  C2S_CONNECT_SameProcessCheck(C2S_CONNECT_SameProcessCheck&& from) noexcept
+    : C2S_CONNECT_SameProcessCheck() {
+    *this = ::std::move(from);
+  }
+
+  inline C2S_CONNECT_SameProcessCheck& operator=(const C2S_CONNECT_SameProcessCheck& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C2S_CONNECT_SameProcessCheck& operator=(C2S_CONNECT_SameProcessCheck&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C2S_CONNECT_SameProcessCheck& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C2S_CONNECT_SameProcessCheck* internal_default_instance() {
+    return reinterpret_cast<const C2S_CONNECT_SameProcessCheck*>(
+               &_C2S_CONNECT_SameProcessCheck_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    0;
+
+  friend void swap(C2S_CONNECT_SameProcessCheck& a, C2S_CONNECT_SameProcessCheck& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C2S_CONNECT_SameProcessCheck* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C2S_CONNECT_SameProcessCheck* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C2S_CONNECT_SameProcessCheck* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C2S_CONNECT_SameProcessCheck>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C2S_CONNECT_SameProcessCheck& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C2S_CONNECT_SameProcessCheck& from) {
+    C2S_CONNECT_SameProcessCheck::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C2S_CONNECT_SameProcessCheck* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "C2S_CONNECT_SameProcessCheck";
+  }
+  protected:
+  explicit C2S_CONNECT_SameProcessCheck(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kLocalhostProcessIdFieldNumber = 1,
+    kKeyFieldNumber = 2,
+  };
+  // optional uint64 localhost_process_id = 1;
+  bool has_localhost_process_id() const;
+  private:
+  bool _internal_has_localhost_process_id() const;
+  public:
+  void clear_localhost_process_id();
+  uint64_t localhost_process_id() const;
+  void set_localhost_process_id(uint64_t value);
+  private:
+  uint64_t _internal_localhost_process_id() const;
+  void _internal_set_localhost_process_id(uint64_t value);
+  public:
+
+  // optional uint64 key = 2;
+  bool has_key() const;
+  private:
+  bool _internal_has_key() const;
+  public:
+  void clear_key();
+  uint64_t key() const;
+  void set_key(uint64_t value);
+  private:
+  uint64_t _internal_key() const;
+  void _internal_set_key(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:C2S_CONNECT_SameProcessCheck)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    uint64_t localhost_process_id_;
+    uint64_t key_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_connectionless_5fnetmessages_2eproto;
+};
+// -------------------------------------------------------------------
 
 class C2S_CONNECT_Message :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:C2S_CONNECT_Message) */ {
@@ -113,7 +292,7 @@ class C2S_CONNECT_Message :
                &_C2S_CONNECT_Message_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    0;
+    1;
 
   friend void swap(C2S_CONNECT_Message& a, C2S_CONNECT_Message& b) {
     a.Swap(&b);
@@ -190,6 +369,7 @@ class C2S_CONNECT_Message :
     kEncryptedPasswordFieldNumber = 6,
     kAuthSteamFieldNumber = 8,
     kChallengeContextFieldNumber = 9,
+    kLocalhostSameProcessCheckFieldNumber = 10,
     kHostVersionFieldNumber = 1,
     kAuthProtocolFieldNumber = 2,
     kReservationCookieFieldNumber = 4,
@@ -267,6 +447,24 @@ class C2S_CONNECT_Message :
   inline PROTOBUF_ALWAYS_INLINE void _internal_set_challenge_context(const std::string& value);
   std::string* _internal_mutable_challenge_context();
   public:
+
+  // optional .C2S_CONNECT_SameProcessCheck localhost_same_process_check = 10;
+  bool has_localhost_same_process_check() const;
+  private:
+  bool _internal_has_localhost_same_process_check() const;
+  public:
+  void clear_localhost_same_process_check();
+  const ::C2S_CONNECT_SameProcessCheck& localhost_same_process_check() const;
+  PROTOBUF_NODISCARD ::C2S_CONNECT_SameProcessCheck* release_localhost_same_process_check();
+  ::C2S_CONNECT_SameProcessCheck* mutable_localhost_same_process_check();
+  void set_allocated_localhost_same_process_check(::C2S_CONNECT_SameProcessCheck* localhost_same_process_check);
+  private:
+  const ::C2S_CONNECT_SameProcessCheck& _internal_localhost_same_process_check() const;
+  ::C2S_CONNECT_SameProcessCheck* _internal_mutable_localhost_same_process_check();
+  public:
+  void unsafe_arena_set_allocated_localhost_same_process_check(
+      ::C2S_CONNECT_SameProcessCheck* localhost_same_process_check);
+  ::C2S_CONNECT_SameProcessCheck* unsafe_arena_release_localhost_same_process_check();
 
   // optional uint32 host_version = 1;
   bool has_host_version() const;
@@ -347,6 +545,7 @@ class C2S_CONNECT_Message :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr encrypted_password_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr auth_steam_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr challenge_context_;
+    ::C2S_CONNECT_SameProcessCheck* localhost_same_process_check_;
     uint32_t host_version_;
     uint32_t auth_protocol_;
     uint64_t reservation_cookie_;
@@ -413,7 +612,7 @@ class C2S_CONNECTION_Message :
                &_C2S_CONNECTION_Message_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    2;
 
   friend void swap(C2S_CONNECTION_Message& a, C2S_CONNECTION_Message& b) {
     a.Swap(&b);
@@ -487,6 +686,7 @@ class C2S_CONNECTION_Message :
 
   enum : int {
     kAddonNameFieldNumber = 1,
+    kLocalhostSameProcessCheckFieldNumber = 2,
   };
   // optional string addon_name = 1;
   bool has_addon_name() const;
@@ -506,6 +706,24 @@ class C2S_CONNECTION_Message :
   std::string* _internal_mutable_addon_name();
   public:
 
+  // optional .C2S_CONNECT_SameProcessCheck localhost_same_process_check = 2;
+  bool has_localhost_same_process_check() const;
+  private:
+  bool _internal_has_localhost_same_process_check() const;
+  public:
+  void clear_localhost_same_process_check();
+  const ::C2S_CONNECT_SameProcessCheck& localhost_same_process_check() const;
+  PROTOBUF_NODISCARD ::C2S_CONNECT_SameProcessCheck* release_localhost_same_process_check();
+  ::C2S_CONNECT_SameProcessCheck* mutable_localhost_same_process_check();
+  void set_allocated_localhost_same_process_check(::C2S_CONNECT_SameProcessCheck* localhost_same_process_check);
+  private:
+  const ::C2S_CONNECT_SameProcessCheck& _internal_localhost_same_process_check() const;
+  ::C2S_CONNECT_SameProcessCheck* _internal_mutable_localhost_same_process_check();
+  public:
+  void unsafe_arena_set_allocated_localhost_same_process_check(
+      ::C2S_CONNECT_SameProcessCheck* localhost_same_process_check);
+  ::C2S_CONNECT_SameProcessCheck* unsafe_arena_release_localhost_same_process_check();
+
   // @@protoc_insertion_point(class_scope:C2S_CONNECTION_Message)
  private:
   class _Internal;
@@ -517,6 +735,7 @@ class C2S_CONNECTION_Message :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr addon_name_;
+    ::C2S_CONNECT_SameProcessCheck* localhost_same_process_check_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_connectionless_5fnetmessages_2eproto;
@@ -530,11 +749,71 @@ class C2S_CONNECTION_Message :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// C2S_CONNECT_SameProcessCheck
+
+// optional uint64 localhost_process_id = 1;
+inline bool C2S_CONNECT_SameProcessCheck::_internal_has_localhost_process_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool C2S_CONNECT_SameProcessCheck::has_localhost_process_id() const {
+  return _internal_has_localhost_process_id();
+}
+inline void C2S_CONNECT_SameProcessCheck::clear_localhost_process_id() {
+  _impl_.localhost_process_id_ = uint64_t{0u};
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline uint64_t C2S_CONNECT_SameProcessCheck::_internal_localhost_process_id() const {
+  return _impl_.localhost_process_id_;
+}
+inline uint64_t C2S_CONNECT_SameProcessCheck::localhost_process_id() const {
+  // @@protoc_insertion_point(field_get:C2S_CONNECT_SameProcessCheck.localhost_process_id)
+  return _internal_localhost_process_id();
+}
+inline void C2S_CONNECT_SameProcessCheck::_internal_set_localhost_process_id(uint64_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.localhost_process_id_ = value;
+}
+inline void C2S_CONNECT_SameProcessCheck::set_localhost_process_id(uint64_t value) {
+  _internal_set_localhost_process_id(value);
+  // @@protoc_insertion_point(field_set:C2S_CONNECT_SameProcessCheck.localhost_process_id)
+}
+
+// optional uint64 key = 2;
+inline bool C2S_CONNECT_SameProcessCheck::_internal_has_key() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool C2S_CONNECT_SameProcessCheck::has_key() const {
+  return _internal_has_key();
+}
+inline void C2S_CONNECT_SameProcessCheck::clear_key() {
+  _impl_.key_ = uint64_t{0u};
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline uint64_t C2S_CONNECT_SameProcessCheck::_internal_key() const {
+  return _impl_.key_;
+}
+inline uint64_t C2S_CONNECT_SameProcessCheck::key() const {
+  // @@protoc_insertion_point(field_get:C2S_CONNECT_SameProcessCheck.key)
+  return _internal_key();
+}
+inline void C2S_CONNECT_SameProcessCheck::_internal_set_key(uint64_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.key_ = value;
+}
+inline void C2S_CONNECT_SameProcessCheck::set_key(uint64_t value) {
+  _internal_set_key(value);
+  // @@protoc_insertion_point(field_set:C2S_CONNECT_SameProcessCheck.key)
+}
+
+// -------------------------------------------------------------------
+
 // C2S_CONNECT_Message
 
 // optional uint32 host_version = 1;
 inline bool C2S_CONNECT_Message::_internal_has_host_version() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool C2S_CONNECT_Message::has_host_version() const {
@@ -542,7 +821,7 @@ inline bool C2S_CONNECT_Message::has_host_version() const {
 }
 inline void C2S_CONNECT_Message::clear_host_version() {
   _impl_.host_version_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline uint32_t C2S_CONNECT_Message::_internal_host_version() const {
   return _impl_.host_version_;
@@ -552,7 +831,7 @@ inline uint32_t C2S_CONNECT_Message::host_version() const {
   return _internal_host_version();
 }
 inline void C2S_CONNECT_Message::_internal_set_host_version(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.host_version_ = value;
 }
 inline void C2S_CONNECT_Message::set_host_version(uint32_t value) {
@@ -562,7 +841,7 @@ inline void C2S_CONNECT_Message::set_host_version(uint32_t value) {
 
 // optional uint32 auth_protocol = 2;
 inline bool C2S_CONNECT_Message::_internal_has_auth_protocol() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool C2S_CONNECT_Message::has_auth_protocol() const {
@@ -570,7 +849,7 @@ inline bool C2S_CONNECT_Message::has_auth_protocol() const {
 }
 inline void C2S_CONNECT_Message::clear_auth_protocol() {
   _impl_.auth_protocol_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
 inline uint32_t C2S_CONNECT_Message::_internal_auth_protocol() const {
   return _impl_.auth_protocol_;
@@ -580,7 +859,7 @@ inline uint32_t C2S_CONNECT_Message::auth_protocol() const {
   return _internal_auth_protocol();
 }
 inline void C2S_CONNECT_Message::_internal_set_auth_protocol(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.auth_protocol_ = value;
 }
 inline void C2S_CONNECT_Message::set_auth_protocol(uint32_t value) {
@@ -590,7 +869,7 @@ inline void C2S_CONNECT_Message::set_auth_protocol(uint32_t value) {
 
 // optional uint32 challenge_number = 3;
 inline bool C2S_CONNECT_Message::_internal_has_challenge_number() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
 inline bool C2S_CONNECT_Message::has_challenge_number() const {
@@ -598,7 +877,7 @@ inline bool C2S_CONNECT_Message::has_challenge_number() const {
 }
 inline void C2S_CONNECT_Message::clear_challenge_number() {
   _impl_.challenge_number_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
 inline uint32_t C2S_CONNECT_Message::_internal_challenge_number() const {
   return _impl_.challenge_number_;
@@ -608,7 +887,7 @@ inline uint32_t C2S_CONNECT_Message::challenge_number() const {
   return _internal_challenge_number();
 }
 inline void C2S_CONNECT_Message::_internal_set_challenge_number(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   _impl_.challenge_number_ = value;
 }
 inline void C2S_CONNECT_Message::set_challenge_number(uint32_t value) {
@@ -618,7 +897,7 @@ inline void C2S_CONNECT_Message::set_challenge_number(uint32_t value) {
 
 // optional fixed64 reservation_cookie = 4;
 inline bool C2S_CONNECT_Message::_internal_has_reservation_cookie() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool C2S_CONNECT_Message::has_reservation_cookie() const {
@@ -626,7 +905,7 @@ inline bool C2S_CONNECT_Message::has_reservation_cookie() const {
 }
 inline void C2S_CONNECT_Message::clear_reservation_cookie() {
   _impl_.reservation_cookie_ = uint64_t{0u};
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline uint64_t C2S_CONNECT_Message::_internal_reservation_cookie() const {
   return _impl_.reservation_cookie_;
@@ -636,7 +915,7 @@ inline uint64_t C2S_CONNECT_Message::reservation_cookie() const {
   return _internal_reservation_cookie();
 }
 inline void C2S_CONNECT_Message::_internal_set_reservation_cookie(uint64_t value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.reservation_cookie_ = value;
 }
 inline void C2S_CONNECT_Message::set_reservation_cookie(uint64_t value) {
@@ -646,7 +925,7 @@ inline void C2S_CONNECT_Message::set_reservation_cookie(uint64_t value) {
 
 // optional bool low_violence = 5;
 inline bool C2S_CONNECT_Message::_internal_has_low_violence() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   return value;
 }
 inline bool C2S_CONNECT_Message::has_low_violence() const {
@@ -654,7 +933,7 @@ inline bool C2S_CONNECT_Message::has_low_violence() const {
 }
 inline void C2S_CONNECT_Message::clear_low_violence() {
   _impl_.low_violence_ = false;
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
 }
 inline bool C2S_CONNECT_Message::_internal_low_violence() const {
   return _impl_.low_violence_;
@@ -664,7 +943,7 @@ inline bool C2S_CONNECT_Message::low_violence() const {
   return _internal_low_violence();
 }
 inline void C2S_CONNECT_Message::_internal_set_low_violence(bool value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] |= 0x00000100u;
   _impl_.low_violence_ = value;
 }
 inline void C2S_CONNECT_Message::set_low_violence(bool value) {
@@ -913,6 +1192,96 @@ inline void C2S_CONNECT_Message::set_allocated_challenge_context(std::string* ch
   // @@protoc_insertion_point(field_set_allocated:C2S_CONNECT_Message.challenge_context)
 }
 
+// optional .C2S_CONNECT_SameProcessCheck localhost_same_process_check = 10;
+inline bool C2S_CONNECT_Message::_internal_has_localhost_same_process_check() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.localhost_same_process_check_ != nullptr);
+  return value;
+}
+inline bool C2S_CONNECT_Message::has_localhost_same_process_check() const {
+  return _internal_has_localhost_same_process_check();
+}
+inline void C2S_CONNECT_Message::clear_localhost_same_process_check() {
+  if (_impl_.localhost_same_process_check_ != nullptr) _impl_.localhost_same_process_check_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline const ::C2S_CONNECT_SameProcessCheck& C2S_CONNECT_Message::_internal_localhost_same_process_check() const {
+  const ::C2S_CONNECT_SameProcessCheck* p = _impl_.localhost_same_process_check_;
+  return p != nullptr ? *p : reinterpret_cast<const ::C2S_CONNECT_SameProcessCheck&>(
+      ::_C2S_CONNECT_SameProcessCheck_default_instance_);
+}
+inline const ::C2S_CONNECT_SameProcessCheck& C2S_CONNECT_Message::localhost_same_process_check() const {
+  // @@protoc_insertion_point(field_get:C2S_CONNECT_Message.localhost_same_process_check)
+  return _internal_localhost_same_process_check();
+}
+inline void C2S_CONNECT_Message::unsafe_arena_set_allocated_localhost_same_process_check(
+    ::C2S_CONNECT_SameProcessCheck* localhost_same_process_check) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.localhost_same_process_check_);
+  }
+  _impl_.localhost_same_process_check_ = localhost_same_process_check;
+  if (localhost_same_process_check) {
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:C2S_CONNECT_Message.localhost_same_process_check)
+}
+inline ::C2S_CONNECT_SameProcessCheck* C2S_CONNECT_Message::release_localhost_same_process_check() {
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::C2S_CONNECT_SameProcessCheck* temp = _impl_.localhost_same_process_check_;
+  _impl_.localhost_same_process_check_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::C2S_CONNECT_SameProcessCheck* C2S_CONNECT_Message::unsafe_arena_release_localhost_same_process_check() {
+  // @@protoc_insertion_point(field_release:C2S_CONNECT_Message.localhost_same_process_check)
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::C2S_CONNECT_SameProcessCheck* temp = _impl_.localhost_same_process_check_;
+  _impl_.localhost_same_process_check_ = nullptr;
+  return temp;
+}
+inline ::C2S_CONNECT_SameProcessCheck* C2S_CONNECT_Message::_internal_mutable_localhost_same_process_check() {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  if (_impl_.localhost_same_process_check_ == nullptr) {
+    auto* p = CreateMaybeMessage<::C2S_CONNECT_SameProcessCheck>(GetArenaForAllocation());
+    _impl_.localhost_same_process_check_ = p;
+  }
+  return _impl_.localhost_same_process_check_;
+}
+inline ::C2S_CONNECT_SameProcessCheck* C2S_CONNECT_Message::mutable_localhost_same_process_check() {
+  ::C2S_CONNECT_SameProcessCheck* _msg = _internal_mutable_localhost_same_process_check();
+  // @@protoc_insertion_point(field_mutable:C2S_CONNECT_Message.localhost_same_process_check)
+  return _msg;
+}
+inline void C2S_CONNECT_Message::set_allocated_localhost_same_process_check(::C2S_CONNECT_SameProcessCheck* localhost_same_process_check) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.localhost_same_process_check_;
+  }
+  if (localhost_same_process_check) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(localhost_same_process_check);
+    if (message_arena != submessage_arena) {
+      localhost_same_process_check = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, localhost_same_process_check, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  _impl_.localhost_same_process_check_ = localhost_same_process_check;
+  // @@protoc_insertion_point(field_set_allocated:C2S_CONNECT_Message.localhost_same_process_check)
+}
+
 // -------------------------------------------------------------------
 
 // C2S_CONNECTION_Message
@@ -985,9 +1354,101 @@ inline void C2S_CONNECTION_Message::set_allocated_addon_name(std::string* addon_
   // @@protoc_insertion_point(field_set_allocated:C2S_CONNECTION_Message.addon_name)
 }
 
+// optional .C2S_CONNECT_SameProcessCheck localhost_same_process_check = 2;
+inline bool C2S_CONNECTION_Message::_internal_has_localhost_same_process_check() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.localhost_same_process_check_ != nullptr);
+  return value;
+}
+inline bool C2S_CONNECTION_Message::has_localhost_same_process_check() const {
+  return _internal_has_localhost_same_process_check();
+}
+inline void C2S_CONNECTION_Message::clear_localhost_same_process_check() {
+  if (_impl_.localhost_same_process_check_ != nullptr) _impl_.localhost_same_process_check_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const ::C2S_CONNECT_SameProcessCheck& C2S_CONNECTION_Message::_internal_localhost_same_process_check() const {
+  const ::C2S_CONNECT_SameProcessCheck* p = _impl_.localhost_same_process_check_;
+  return p != nullptr ? *p : reinterpret_cast<const ::C2S_CONNECT_SameProcessCheck&>(
+      ::_C2S_CONNECT_SameProcessCheck_default_instance_);
+}
+inline const ::C2S_CONNECT_SameProcessCheck& C2S_CONNECTION_Message::localhost_same_process_check() const {
+  // @@protoc_insertion_point(field_get:C2S_CONNECTION_Message.localhost_same_process_check)
+  return _internal_localhost_same_process_check();
+}
+inline void C2S_CONNECTION_Message::unsafe_arena_set_allocated_localhost_same_process_check(
+    ::C2S_CONNECT_SameProcessCheck* localhost_same_process_check) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.localhost_same_process_check_);
+  }
+  _impl_.localhost_same_process_check_ = localhost_same_process_check;
+  if (localhost_same_process_check) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:C2S_CONNECTION_Message.localhost_same_process_check)
+}
+inline ::C2S_CONNECT_SameProcessCheck* C2S_CONNECTION_Message::release_localhost_same_process_check() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::C2S_CONNECT_SameProcessCheck* temp = _impl_.localhost_same_process_check_;
+  _impl_.localhost_same_process_check_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::C2S_CONNECT_SameProcessCheck* C2S_CONNECTION_Message::unsafe_arena_release_localhost_same_process_check() {
+  // @@protoc_insertion_point(field_release:C2S_CONNECTION_Message.localhost_same_process_check)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::C2S_CONNECT_SameProcessCheck* temp = _impl_.localhost_same_process_check_;
+  _impl_.localhost_same_process_check_ = nullptr;
+  return temp;
+}
+inline ::C2S_CONNECT_SameProcessCheck* C2S_CONNECTION_Message::_internal_mutable_localhost_same_process_check() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.localhost_same_process_check_ == nullptr) {
+    auto* p = CreateMaybeMessage<::C2S_CONNECT_SameProcessCheck>(GetArenaForAllocation());
+    _impl_.localhost_same_process_check_ = p;
+  }
+  return _impl_.localhost_same_process_check_;
+}
+inline ::C2S_CONNECT_SameProcessCheck* C2S_CONNECTION_Message::mutable_localhost_same_process_check() {
+  ::C2S_CONNECT_SameProcessCheck* _msg = _internal_mutable_localhost_same_process_check();
+  // @@protoc_insertion_point(field_mutable:C2S_CONNECTION_Message.localhost_same_process_check)
+  return _msg;
+}
+inline void C2S_CONNECTION_Message::set_allocated_localhost_same_process_check(::C2S_CONNECT_SameProcessCheck* localhost_same_process_check) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.localhost_same_process_check_;
+  }
+  if (localhost_same_process_check) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(localhost_same_process_check);
+    if (message_arena != submessage_arena) {
+      localhost_same_process_check = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, localhost_same_process_check, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.localhost_same_process_check_ = localhost_same_process_check;
+  // @@protoc_insertion_point(field_set_allocated:C2S_CONNECTION_Message.localhost_same_process_check)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 
