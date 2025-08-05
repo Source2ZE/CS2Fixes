@@ -64,7 +64,7 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap, const char* cla
 	short fieldsSize = pClassInfo->m_nFieldCount;
 	SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
 
-	SchemaKeyValueMap_t &keyValueMap = tableMap.insert(std::make_pair(classKey, SchemaKeyValueMap_t())).first->second;
+	SchemaKeyValueMap_t& keyValueMap = tableMap.insert(std::make_pair(classKey, SchemaKeyValueMap_t())).first->second;
 
 	for (int i = 0; i < fieldsSize; ++i)
 	{

@@ -328,14 +328,14 @@ private:
 	[[maybe_unused]] char pad273[0x28];
 
 public:
-	bool m_bConVarsChanged;		 // 296
-	bool m_bIsHLTV;				 // 298
+	bool m_bConVarsChanged; // 296
+	bool m_bIsHLTV;			// 298
 
 private:
 	[[maybe_unused]] char pad29[0xB];
 
 public:
-	uint32 m_nSendtableCRC;								   // 312
+	uint32 m_nSendtableCRC; // 312
 	uint32 m_uChallengeNumber;
 	int m_nSignonTick;									   // 320
 	int m_nDeltaTick;									   // 324
