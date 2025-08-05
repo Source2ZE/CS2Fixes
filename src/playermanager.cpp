@@ -209,7 +209,7 @@ void ZEPlayer::SpawnFlashLight()
 	pKeyValues->SetString("lightcookie", "materials/effects/lightcookies/flashlight.vtex");
 
 	pLight->DispatchSpawn(pKeyValues);
-	
+
 	pLight->SetParent(pPawn);
 	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
 
@@ -626,7 +626,7 @@ void ZEPlayer::CreateEntwatchHud()
 	CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
 	if (!pPawn)
 		return;
-	
+
 	CPointOrient* pOrient = GetPointOrient();
 	if (!pOrient)
 		return;

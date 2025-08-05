@@ -155,7 +155,7 @@ bool CPanoramaVoteHandler::IsVoteInProgress()
 	return m_bIsVoteInProgress;
 }
 
-bool CPanoramaVoteHandler::SendYesNoVote(float flDuration, int iCaller, const char* sVoteTitle, const char* sDetailStr, IRecipientFilter* pFilter, YesNoVoteResult resultCallback, YesNoVoteHandler handler = nullptr)
+bool CPanoramaVoteHandler::SendYesNoVote(float flDuration, int iCaller, const char* sVoteTitle, const char* sDetailStr, CRecipientFilter* pFilter, YesNoVoteResult resultCallback, YesNoVoteHandler handler = nullptr)
 {
 	if (!hVoteController.Get() || m_bIsVoteInProgress)
 		return false;
@@ -228,7 +228,7 @@ void CPanoramaVoteHandler::SendVoteStartUM(IRecipientFilter* pFilter)
 	delete data;
 }
 
-void CPanoramaVoteHandler::InitVoters(IRecipientFilter* pFilter)
+void CPanoramaVoteHandler::InitVoters(CRecipientFilter* pFilter)
 {
 	// Clear any old info
 	m_iVoterCount = 0;
@@ -245,10 +245,8 @@ void CPanoramaVoteHandler::InitVoters(IRecipientFilter* pFilter)
 
 	const uint64 x = *reinterpret_cast<const uint64*>(&pFilter->GetRecipients());
 	for (int i = 0, j = 0; i < MAXPLAYERS; i++)
-	{
 		if (x & (static_cast<unsigned long long>(1u) << i))
 			m_iVoters[j] = i;
-	}
 }
 
 void CPanoramaVoteHandler::CheckForEarlyVoteClose()

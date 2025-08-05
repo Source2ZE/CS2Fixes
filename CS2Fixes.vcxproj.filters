@@ -328,9 +328,6 @@
     <ClInclude Include="src\cs2_sdk\entity\cparticlesystem.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\cs2_sdk\cschemasystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cbasetrigger.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
@@ -355,8 +352,11 @@
     <ClInclude Include="src\patches.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\serversideclient.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\cs2_sdk\serversideclient.h">
+      <Filter>Header Files\cs2_sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cs2_sdk\clientframe.h">
+      <Filter>Header Files\cs2_sdk</Filter>
     </ClInclude>
     <ClInclude Include="src\entities.h">
       <Filter>Header Files</Filter>
@@ -377,13 +377,13 @@
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cpointviewcontrol.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\ctriggerteleport.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\netmessages.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\cs2_sdk\netmessages.h">
+      <Filter>Header Files\cs2_sdk</Filter>
     </ClInclude>
     <ClInclude Include="src\entwatch.h">
       <Filter>Header Files</Filter>
@@ -401,6 +401,9 @@
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cpointhurt.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\cpointorient.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\weapon.h">

@@ -228,7 +228,6 @@
     <ClInclude Include="src\commands.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\cs2fixes.h" />
-    <ClInclude Include="src\cs2_sdk\cschemasystem.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbasebutton.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbaseentity.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbasemodelentity.h" />
@@ -259,6 +258,7 @@
     <ClInclude Include="src\cs2_sdk\entity\lights.h" />
     <ClInclude Include="src\cs2_sdk\entity\services.h" />
     <ClInclude Include="src\cs2_sdk\entity\cpointhurt.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cpointorient.h" />
     <ClInclude Include="src\cs2_sdk\schema.h" />
     <ClInclude Include="src\cs2_sdk\entityio.h" />
     <ClInclude Include="src\cdetour.h" />
@@ -279,7 +279,8 @@
     <ClInclude Include="src\patches.h" />
     <ClInclude Include="src\playermanager.h" />
     <ClInclude Include="src\recipientfilters.h" />
-    <ClInclude Include="src\serversideclient.h" />
+    <ClInclude Include="src\cs2_sdk\serversideclient.h" />
+    <ClInclude Include="src\cs2_sdk\clientframe.h" />
     <ClInclude Include="src\utils\plat_win.h" />
     <ClInclude Include="src\votemanager.h" />
     <ClInclude Include="src\map_votes.h" />
@@ -291,7 +292,7 @@
     <ClInclude Include="src\utils\module.h" />
     <ClInclude Include="src\utils\plat.h" />
     <ClInclude Include="src\utils\virtual.h" />
-    <ClInclude Include="src\netmessages.h" />
+    <ClInclude Include="src\cs2_sdk\netmessages.h" />
     <ClInclude Include="src\utils\weapon.h" />
     <ClInclude Include="src\utils\version_gen_placeholder.h" />
     <ClInclude Include="src\utils\hud_manager.h" />
