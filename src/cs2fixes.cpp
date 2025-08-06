@@ -1115,7 +1115,7 @@ void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringLis
 
 void CS2Fixes::Hook_GoToIntermission(bool bAbortedMatch)
 {
-	if (!g_pMapVoteSystem->IsIntermissionAllowed())
+	if (!g_pMapVoteSystem->IsIntermissionAllowed(false) && g_cvarVoteManagerEnable.Get())
 		RETURN_META(MRES_SUPERCEDE);
 
 	if (g_cvarVoteManagerEnable.Get())

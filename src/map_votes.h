@@ -152,7 +152,7 @@ public:
 	uint64 GetMapWorkshopId(int iMapIndex) { return m_vecMapList[iMapIndex]->GetWorkshopId(); };
 	void ClearPlayerInfo(int iSlot);
 	bool IsVoteOngoing() { return m_bIsVoteOngoing; }
-	bool IsIntermissionAllowed();
+	bool IsIntermissionAllowed(bool bCheckOnly = true);
 	bool IsMapListLoaded() { return m_bMapListLoaded; }
 	CUtlStringList CreateWorkshopMapGroup();
 	void QueueMapDownload(PublishedFileId_t iWorkshopId);
