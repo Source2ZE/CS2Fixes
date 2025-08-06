@@ -18,9 +18,9 @@
  */
 
 #include "entities.h"
-
 #include "ctimer.h"
 #include "entity.h"
+
 #include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
@@ -33,6 +33,8 @@
 #include <unordered_set>
 
 // #define ENTITY_HANDLER_ASSERTION
+
+static constexpr uint32_t ENTITY_MURMURHASH_SEED = 0x97984357;
 
 extern CCSGameRules* g_pGameRules;
 
@@ -107,6 +109,48 @@ static void DelayInput(CBaseEntity* pCaller, CBaseEntity* pActivator, const char
 		return -1.f;
 	});
 }
+
+namespace CTriggerGravityHandler
+{
+	static std::unordered_map<uint32_t, float> s_gravityMap;
+
+	void OnPrecache(CBaseEntity* pEntity, const CEntityKeyValues* kv)
+	{
+		const auto pGravity = kv->GetKeyValue("gravity");
+		const auto pHammerId = kv->GetKeyValue("hammerUniqueId");
+		if (!pGravity || !pHammerId)
+			return;
+
+		const auto flGravity = pGravity->GetFloat();
+		const auto pszHammerId = pHammerId->GetString();
+		const auto hEntity = MurmurHash2LowerCase(pszHammerId, ENTITY_MURMURHASH_SEED);
+
+		s_gravityMap[hEntity] = flGravity;
+	}
+
+	void GravityTouching(CBaseEntity* pEntity, CBaseEntity* pOther)
+	{
+		const auto& sUniqueHammerID = pEntity->m_sUniqueHammerID();
+		if (sUniqueHammerID.IsEmpty())
+			return;
+
+		const auto hEntity = MurmurHash2LowerCase(sUniqueHammerID.Get(), ENTITY_MURMURHASH_SEED);
+		const auto gravity = s_gravityMap.find(hEntity);
+		if (gravity != s_gravityMap.end() && pOther->IsPawn() && pOther->IsAlive())
+			pOther->SetGravityScale(gravity->second);
+	}
+
+	void OnEndTouch(CBaseEntity* pEntity, CBaseEntity* pOther)
+	{
+		if (pOther->IsPawn())
+			pOther->SetGravityScale(1);
+	}
+
+	static void Shutdown()
+	{
+		s_gravityMap.clear();
+	}
+} // namespace CTriggerGravityHandler
 
 namespace CGamePlayerEquipHandler
 {
@@ -222,7 +266,7 @@ namespace CGamePlayerEquipHandler
 			s_PlayerEquipMap[std::string(pName)] = list;
 	}
 
-	void Shutdown()
+	static void Shutdown()
 	{
 		s_PlayerEquipMap.clear();
 	}
@@ -761,5 +805,6 @@ void EntityHandler_OnEntitySpawned(CBaseEntity* pEntity)
 
 void EntityHandler_OnLevelInit()
 {
+	CTriggerGravityHandler::Shutdown();
 	CGamePlayerEquipHandler::Shutdown();
 }

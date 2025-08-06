@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -76,6 +76,7 @@ DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer);
+DECLARE_DETOUR(CTriggerGravity_GravityTouch, Detour_CTriggerGravity_GravityTouch);
 DECLARE_DETOUR(GetFreeClient, Detour_GetFreeClient);
 #ifdef __linux__
 // Inlined by MSVC as of 2025-07-28 CS2 update
@@ -577,6 +578,11 @@ void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayer
 {
 	if (CGamePlayerEquipHandler::TriggerForActivatedPlayer(pEntity, pInput))
 		CGamePlayerEquip_InputTriggerForActivatedPlayer(pEntity, pInput);
+}
+
+void FASTCALL Detour_CTriggerGravity_GravityTouch(CBaseEntity* pEntity, CBaseEntity* pOther)
+{
+	CTriggerGravityHandler::GravityTouching(pEntity, pOther);
 }
 
 CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6)
