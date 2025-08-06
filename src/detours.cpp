@@ -58,7 +58,6 @@ extern CGlobalVars* GetGlobals();
 extern CGameEntitySystem* g_pEntitySystem;
 extern IGameEventManager2* g_gameEventManager;
 extern CCSGameRules* g_pGameRules;
-extern CMapVoteSystem* g_pMapVoteSystem;
 extern CUtlVector<CServerSideClient*>* GetClientList();
 
 CUtlVector<CDetourBase*> g_vecDetours;

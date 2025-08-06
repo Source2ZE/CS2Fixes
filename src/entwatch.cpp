@@ -33,6 +33,7 @@
 #include "eventlistener.h"
 #include "gameevents.pb.h"
 #include "leader.h"
+#include "map_votes.h"
 #include "networksystem/inetworkmessages.h"
 #include "playermanager.h"
 #include "recipientfilters.h"
@@ -808,7 +809,7 @@ void EWItemInstance::Pickup(int slot)
 				pController->m_iScore = score;
 			}
 
-			EW_SendBeginNewMatchEvent();
+			EW_UpdateClientClanTags();
 		}
 	}
 
@@ -863,7 +864,7 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 			pController->m_szClan("");
 		}
 
-		EW_SendBeginNewMatchEvent();
+		EW_UpdateClientClanTags();
 	}
 
 	char sPlayerInfo[64];
@@ -1510,7 +1511,7 @@ void CEWHandler::ResetAllClantags()
 		pController->m_szClan("");
 	}
 
-	EW_SendBeginNewMatchEvent();
+	EW_UpdateClientClanTags();
 }
 
 int CEWHandler::RegisterItem(CBasePlayerWeapon* pWeapon)
@@ -2271,15 +2272,21 @@ void EW_PlayerDisconnect(int slot)
 	g_pEWHandler->PlayerDrop(EWDropReason::Disconnect, -1, pController);
 }
 
-void EW_SendBeginNewMatchEvent()
+// An event needs to be sent to force clients to see up to date clantags
+void EW_UpdateClientClanTags()
 {
-	if (!GetGlobals())
+	// Cannot send this event during map vote, as it breaks voting client side
+	if (!GetGlobals() || !g_pMapVoteSystem->IsIntermissionAllowed())
 		return;
 
-	IGameEvent* pEvent = g_gameEventManager->CreateEvent("begin_new_match");
+	static IGameEvent* pEvent = nullptr;
+
+	if (!pEvent)
+		pEvent = g_gameEventManager->CreateEvent("nextlevel_changed");
+
 	if (!pEvent)
 	{
-		Panic("Failed to create begin_new_match event\n");
+		Panic("Failed to create nextlevel_changed event\n");
 		return;
 	}
 

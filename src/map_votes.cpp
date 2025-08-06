@@ -1050,17 +1050,17 @@ bool CMapVoteSystem::LoadMapList()
 	return true;
 }
 
-bool CMapVoteSystem::IsIntermissionAllowed()
+bool CMapVoteSystem::IsIntermissionAllowed(bool bCheckOnly)
 {
-	if (!g_cvarVoteManagerEnable.Get())
-		return true;
-
 	// We need to prevent "ending the map twice" as it messes with ongoing map votes
 	// This seems to be a CS2 bug that occurs when the round ends while already on the map end screen
 	if (m_bIntermissionStarted)
 		return false;
 
-	m_bIntermissionStarted = true;
+	// Should be false in GoToIntermission hook, true if checking anywhere else
+	if (!bCheckOnly)
+		m_bIntermissionStarted = true;
+
 	return true;
 }
 

@@ -56,7 +56,10 @@ void CreateHudMessage(std::shared_ptr<CHudMessage> pHudMessage)
 	if (g_cvarDisableHudOutsideRound.Get() && !g_pGameRules->m_bGameRestart())
 		return;
 
-	IGameEvent* pEvent = g_gameEventManager->CreateEvent("show_survival_respawn_status");
+	static IGameEvent* pEvent = nullptr;
+
+	if (!pEvent)
+		pEvent = g_gameEventManager->CreateEvent("show_survival_respawn_status");
 
 	if (!pEvent)
 		return;
@@ -68,10 +71,7 @@ void CreateHudMessage(std::shared_ptr<CHudMessage> pHudMessage)
 	INetworkMessageInternal* pMsg = g_pNetworkMessages->FindNetworkMessageById(GE_Source1LegacyGameEvent);
 
 	if (!pMsg)
-	{
-		g_gameEventManager->FreeEvent(pEvent);
 		return;
-	}
 
 	CNetMessagePB<CMsgSource1LegacyGameEvent>* data = pMsg->AllocateMessage()->ToPB<CMsgSource1LegacyGameEvent>();
 	CRecipientFilter filter;
@@ -93,7 +93,6 @@ void CreateHudMessage(std::shared_ptr<CHudMessage> pHudMessage)
 	g_gameEventManager->SerializeEvent(pEvent, data);
 	g_gameEventSystem->PostEventAbstract(-1, false, &filter, pMsg, data, 0);
 	delete data;
-	g_gameEventManager->FreeEvent(pEvent);
 }
 
 void SendHudMessage(ZEPlayer* pPlayer, int iDuration, EHudPriority ePriority, const char* pszMessage, ...)
