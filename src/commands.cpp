@@ -662,9 +662,9 @@ CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 		CPlayer_ObserverServices* pObserverServices = pPlayer->GetPawn()->m_pObserverServices();
 		if (!pObserverServices)
 			return -1.0f;
-		pObserverServices->m_iObserverMode.Set(OBS_MODE_IN_EYE);
-		pObserverServices->m_iObserverLastMode.Set(OBS_MODE_ROAMING);
-		pObserverServices->m_hObserverTarget.Set(pTargetPlayer->GetPawn());
+		pObserverServices->m_iObserverMode = OBS_MODE_IN_EYE;
+		pObserverServices->m_iObserverLastMode = OBS_MODE_ROAMING;
+		pObserverServices->m_hObserverTarget = pTargetPlayer->GetPawn();
 		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "Spectating player %s.", pTargetPlayer->GetPlayerName());
 		return -1.0f;
 	});

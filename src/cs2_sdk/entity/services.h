@@ -83,9 +83,9 @@ class CPlayerPawnComponent
 public:
 	DECLARE_SCHEMA_CLASS(CPlayerPawnComponent);
 
-	SCHEMA_FIELD(CCSPlayerPawn*, __m_pChainEntity)
+	SCHEMA_FIELD(CNetworkVarChainer, __m_pChainEntity)
 
-	CCSPlayerPawn* GetPawn() { return __m_pChainEntity; }
+	CCSPlayerPawn* GetPawn() { return reinterpret_cast<CCSPlayerPawn*>(__m_pChainEntity().m_pEntity); }
 };
 
 class CPlayer_MovementServices : public CPlayerPawnComponent

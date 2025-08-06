@@ -1512,7 +1512,7 @@ bool ZR_Hook_OnTakeDamage_Alive(CTakeDamageInfo* pInfo, CCSPlayerPawn* pVictimPa
 // can prevent purchasing and picking it up
 AcquireResult ZR_Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices* pItemServices, CEconItemView* pEconItem)
 {
-	CCSPlayerPawn* pPawn = pItemServices->__m_pChainEntity();
+	CCSPlayerPawn* pPawn = pItemServices->GetPawn();
 
 	if (!pPawn)
 		return AcquireResult::Allowed;

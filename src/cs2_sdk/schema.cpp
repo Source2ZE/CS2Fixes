@@ -85,29 +85,11 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap, const char* cla
 	return true;
 }
 
-int16_t schema::FindChainOffset(const char* className)
+static constexpr uint32_t g_ChainKey = hash_32_fnv1a_const("__m_pChainEntity");
+
+int16_t schema::FindChainOffset(const char* className, uint32_t classNameHash)
 {
-	CSchemaSystemTypeScope* pType = g_pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
-
-	if (!pType)
-		return false;
-
-	SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className).Get();
-
-	do
-	{
-		SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
-		short fieldsSize = pClassInfo->m_nFieldCount;
-		for (int i = 0; i < fieldsSize; ++i)
-		{
-			SchemaClassFieldData_t& field = pFields[i];
-
-			if (V_strcmp(field.m_pszName, "__m_pChainEntity") == 0)
-				return field.m_nSingleInheritanceOffset;
-		}
-	} while ((pClassInfo = pClassInfo->m_pBaseClasses ? pClassInfo->m_pBaseClasses->m_pClass : nullptr) != nullptr);
-
-	return 0;
+	return schema::GetOffset(className, classNameHash, "__m_pChainEntity", g_ChainKey).offset;
 }
 
 SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char* memberName, uint32_t memberKey)
@@ -126,24 +108,31 @@ SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char
 
 	if (!tableMap.contains(memberKey))
 	{
-		Warning("schema::GetOffset(): '%s' was not found in '%s'!\n", memberName, className);
+		if (memberKey != g_ChainKey)
+			Warning("schema::GetOffset(): '%s' was not found in '%s'!\n", memberName, className);
+
 		return {0, 0};
 	}
 
 	return tableMap[memberKey];
 }
 
-void NetworkStateChanged(uintptr_t chainEntity, uint32_t offset, uint32_t nArrayIndex, uint32_t nPathIndex)
+void NetworkVarStateChanged(uintptr_t pNetworkVar, uint32_t nOffset, uint32 nNetworkStateChangedOffset)
 {
-	CNetworkStateChangedInfo info(offset, nArrayIndex, nPathIndex);
-
-	addresses::NetworkStateChanged(reinterpret_cast<void*>(chainEntity), info);
+	NetworkStateChangedData data(nOffset);
+	CALL_VIRTUAL(void, nNetworkStateChangedOffset, (void*)pNetworkVar, &data);
 }
 
-void SetStateChanged(uintptr_t pEntity, uint32_t offset, uint32_t nArrayIndex, uint32_t nPathIndex)
+void EntityNetworkStateChanged(uintptr_t pEntity, uint nOffset)
 {
-	CNetworkStateChangedInfo info(offset, nArrayIndex, nPathIndex);
+	NetworkStateChangedData data(nOffset);
+	reinterpret_cast<CEntityInstance*>(pEntity)->NetworkStateChanged(NetworkStateChangedData(nOffset));
+}
 
-	static auto fnOffset = g_GameConfig->GetOffset("CBaseEntity::StateChanged");
-	CALL_VIRTUAL(void, fnOffset, (void*)pEntity, &info);
+void ChainNetworkStateChanged(uintptr_t pNetworkVarChainer, uint nLocalOffset)
+{
+	CEntityInstance* pEntity = reinterpret_cast<CNetworkVarChainer*>(pNetworkVarChainer)->m_pEntity;
+
+	if (pEntity)
+		pEntity->NetworkStateChanged(NetworkStateChangedData(nLocalOffset, -1, reinterpret_cast<CNetworkVarChainer*>(pNetworkVarChainer)->m_PathIndex));
 }
