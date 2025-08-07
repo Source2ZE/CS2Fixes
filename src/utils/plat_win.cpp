@@ -66,8 +66,17 @@ void* CModule::FindVirtualTable(const std::string& name)
 
 	if (!typeDescriptor)
 	{
-		Warning("Failed to find type descriptor for %s\n", name.c_str());
-		return nullptr;
+		// Some classes/structs have "AU" instead of "AV"
+		decoratedTableName = ".?AU" + name + "@@";
+
+		sigIt = SignatureIterator(runTimeData->m_pBase, runTimeData->m_iSize, (const byte*)decoratedTableName.c_str(), decoratedTableName.size() + 1);
+		typeDescriptor = sigIt.FindNext(false);
+
+		if (!typeDescriptor)
+		{
+			Warning("Failed to find type descriptor for %s\n", name.c_str());
+			return nullptr;
+		}
 	}
 
 	typeDescriptor = (void*)((uintptr_t)typeDescriptor - 0x10);

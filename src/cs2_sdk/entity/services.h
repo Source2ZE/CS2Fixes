@@ -52,12 +52,16 @@ public:
 	SCHEMA_FIELD(int32_t, m_iEntryWins);
 };
 
-class CCSPlayerController_ActionTrackingServices
+class CPlayerControllerComponent
 {
-public:
-	DECLARE_SCHEMA_CLASS(CCSPlayerController_ActionTrackingServices)
+	virtual ~CPlayerControllerComponent() = 0;
 
-	SCHEMA_FIELD(CSMatchStats_t, m_matchStats)
+public:
+	DECLARE_SCHEMA_CLASS(CPlayerControllerComponent)
+
+	SCHEMA_FIELD(CNetworkVarChainer, __m_pChainEntity)
+
+	CCSPlayerController* GetController() { return reinterpret_cast<CCSPlayerController*>(__m_pChainEntity().m_pEntity); }
 };
 
 class CPlayerPawnComponent
@@ -185,8 +189,20 @@ public:
 	}
 };
 
-class CCSPlayerController_InGameMoneyServices
+class CCSPlayerController_ActionTrackingServices : public CPlayerControllerComponent
 {
+	virtual ~CCSPlayerController_ActionTrackingServices() = 0;
+
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayerController_ActionTrackingServices)
+
+	SCHEMA_FIELD(CSMatchStats_t, m_matchStats)
+};
+
+class CCSPlayerController_InGameMoneyServices : public CPlayerControllerComponent
+{
+	virtual ~CCSPlayerController_InGameMoneyServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerController_InGameMoneyServices);
 
@@ -229,13 +245,27 @@ public:
 class WeaponPurchaseCount_t
 {
 private:
+	virtual void unk00() {};
 	virtual void unk01() {};
-	uint64_t unk1 = 0;	// 0x8
+	virtual void unk02() {};
+	virtual void unk03() {};
+	virtual void unk04() {};
+
+	CCSPlayerPawn* m_pPawn;
 	uint64_t unk2 = 0;	// 0x10
 	uint64_t unk3 = 0;	// 0x18
 	uint64_t unk4 = 0;	// 0x20
 	uint64_t unk5 = -1; // 0x28
+
 public:
+	WeaponPurchaseCount_t(CCSPlayerPawn* pPawn, uint16 nItemDefIndex, uint16 nCount) :
+		m_pPawn(pPawn), m_nItemDefIndex(nItemDefIndex), m_nCount(nCount)
+	{
+		// Since we're constructing a new object, the vtable pointer will be incorrect so fix it
+		static const auto pVTable = modules::server->FindVirtualTable("WeaponPurchaseCount_t");
+		((void**)this)[0] = pVTable;
+	}
+
 	uint16_t m_nItemDefIndex; // 0x30
 	uint16_t m_nCount;		  // 0x32
 private:

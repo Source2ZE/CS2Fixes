@@ -190,11 +190,7 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 	if (!found)
 	{
-		WeaponPurchaseCount_t purchase = {};
-
-		purchase.m_nCount = 1;
-		purchase.m_nItemDefIndex = pWeaponInfo->m_iItemDefinitionIndex;
-
+		WeaponPurchaseCount_t purchase(pPawn, pWeaponInfo->m_iItemDefinitionIndex, 1);
 		weaponPurchases->AddToTail(purchase);
 	}
 
