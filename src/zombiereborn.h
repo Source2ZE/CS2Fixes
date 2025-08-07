@@ -49,13 +49,13 @@ enum EZRSpawnType
 struct ZRModelEntry
 {
 	std::string szModelPath;
-	CUtlVector<int> vecSkins;
+	std::vector<int> vecSkins;
 	std::string szColor;
 	ZRModelEntry(std::shared_ptr<ZRModelEntry> modelEntry);
 	ZRModelEntry(ordered_json jsonModelEntry);
 	int GetRandomSkin()
 	{
-		return vecSkins[rand() % vecSkins.Count()];
+		return vecSkins[rand() % vecSkins.size()];
 	}
 };
 
@@ -66,7 +66,7 @@ struct ZRClass
 	bool bEnabled;
 	std::string szClassName;
 	int iHealth;
-	CUtlVector<std::shared_ptr<ZRModelEntry>> vecModels;
+	std::vector<std::shared_ptr<ZRModelEntry>> vecModels;
 	float flScale;
 	float flSpeed;
 	float flGravity;
@@ -81,11 +81,11 @@ struct ZRClass
 		flGravity(pClass->flGravity),
 		iAdminFlag(pClass->iAdminFlag)
 	{
-		vecModels.Purge();
-		FOR_EACH_VEC(pClass->vecModels, i)
+		vecModels.clear();
+		for (auto pModel : pClass->vecModels)
 		{
-			std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(pClass->vecModels[i]);
-			vecModels.AddToTail(modelEntry);
+			std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(pModel);
+			vecModels.push_back(modelEntry);
 		}
 	};
 
@@ -93,15 +93,15 @@ struct ZRClass
 	void PrintInfo()
 	{
 		std::string szModels = "";
-		FOR_EACH_VEC(vecModels, i)
+		for (auto pModel : vecModels)
 		{
-			szModels += "\n\t\t" + vecModels[i]->szModelPath;
-			szModels += " Color=\"" + vecModels[i]->szColor + "\"";
+			szModels += "\n\t\t" + pModel->szModelPath;
+			szModels += " Color=\"" + pModel->szColor + "\"";
 			szModels += " Skins=[";
-			FOR_EACH_VEC(vecModels[i]->vecSkins, j)
+			for (int iSkin : pModel->vecSkins)
 			{
-				szModels += std::to_string(vecModels[i]->vecSkins[j]);
-				if (j != vecModels[i]->vecSkins.Count() - 1)
+				szModels += std::to_string(pModel->vecSkins[iSkin]);
+				if (iSkin != pModel->vecSkins.size() - 1)
 					szModels += " ";
 			}
 			szModels += "]";
@@ -129,7 +129,7 @@ struct ZRClass
 	uint64 ParseClassFlags(const char* pszFlags);
 	std::shared_ptr<ZRModelEntry> GetRandomModelEntry()
 	{
-		return vecModels[rand() % vecModels.Count()];
+		return vecModels[rand() % vecModels.size()];
 	};
 };
 
@@ -154,15 +154,15 @@ struct ZRZombieClass : ZRClass
 	void PrintInfo()
 	{
 		std::string szModels = "";
-		FOR_EACH_VEC(vecModels, i)
+		for (auto pModel : vecModels)
 		{
-			szModels += "\n\t\t" + vecModels[i]->szModelPath;
-			szModels += " Color=\"" + vecModels[i]->szColor + "\"";
+			szModels += "\n\t\t" + pModel->szModelPath;
+			szModels += " Color=\"" + pModel->szColor + "\"";
 			szModels += " Skins=[";
-			FOR_EACH_VEC(vecModels[i]->vecSkins, j)
+			for (int iSkin : pModel->vecSkins)
 			{
-				szModels += std::to_string(vecModels[i]->vecSkins[j]);
-				if (j != vecModels[i]->vecSkins.Count() - 1)
+				szModels += std::to_string(pModel->vecSkins[iSkin]);
+				if (iSkin != pModel->vecSkins.size() - 1)
 					szModels += " ";
 			}
 			szModels += "]";
@@ -207,12 +207,12 @@ public:
 	void ApplyZombieClass(std::shared_ptr<ZRZombieClass> pClass, CCSPlayerPawn* pPawn);
 	void ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn* pPawn);
 	void PrecacheModels(IEntityResourceManifest* pResourceManifest);
-	void GetZRClassList(int iTeam, CUtlVector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController = nullptr);
+	void GetZRClassList(int iTeam, std::vector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController = nullptr);
 
 private:
 	void ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
-	CUtlVector<std::shared_ptr<ZRZombieClass>> m_vecZombieDefaultClass;
-	CUtlVector<std::shared_ptr<ZRHumanClass>> m_vecHumanDefaultClass;
+	std::vector<std::shared_ptr<ZRZombieClass>> m_vecZombieDefaultClass;
+	std::vector<std::shared_ptr<ZRHumanClass>> m_vecHumanDefaultClass;
 	std::map<uint32, std::shared_ptr<ZRZombieClass>> m_ZombieClassMap;
 	std::map<uint32, std::shared_ptr<ZRHumanClass>> m_HumanClassMap;
 };
