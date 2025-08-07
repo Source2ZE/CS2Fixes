@@ -31,6 +31,8 @@ extern CGlobalVars* GetGlobals();
 using SchemaKeyValueMap_t = std::map<uint32_t, SchemaKey>;
 using SchemaTableMap_t = std::map<uint32_t, SchemaKeyValueMap_t>;
 
+static constexpr uint32_t g_ChainKey = hash_32_fnv1a_const("__m_pChainEntity");
+
 static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 {
 	for (int i = 0; i < field.m_nStaticMetadataCount; i++)
@@ -41,6 +43,60 @@ static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 	}
 
 	return false;
+}
+
+// Try to recursively find __m_pChainEntity in base classes 
+// (e.g. CCSGameRules -> CTeamplayRules -> CMultiplayRules -> CGameRules, in this case it's in CGameRules)
+static void InitChainOffset(SchemaClassInfoData_t *pClassInfo, SchemaKeyValueMap_t &keyValueMap)
+{
+	short fieldsSize = pClassInfo->m_nFieldCount;
+	SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
+
+	for (int i = 0; i < fieldsSize; ++i)
+	{
+		SchemaClassFieldData_t& field = pFields[i];
+		
+		if (hash_32_fnv1a_const(field.m_pszName) != g_ChainKey)
+			continue;
+
+		std::pair<uint32_t, SchemaKey> keyValuePair;
+		keyValuePair.first = g_ChainKey;
+		keyValuePair.second.offset = field.m_nSingleInheritanceOffset;
+		keyValuePair.second.networked = IsFieldNetworked(field);
+
+		keyValueMap.insert(keyValuePair);
+		return;
+	}
+
+	// Not the base class yet, keep looking
+	if (pClassInfo->m_nBaseClassCount)
+		return InitChainOffset(pClassInfo->m_pBaseClasses[0].m_pClass, keyValueMap);
+}
+
+static void InitSchemaKeyValueMap(SchemaClassInfoData_t *pClassInfo, SchemaKeyValueMap_t& keyValueMap)
+{
+	short fieldsSize = pClassInfo->m_nFieldCount;
+	SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
+
+	for (int i = 0; i < fieldsSize; ++i)
+	{
+		SchemaClassFieldData_t& field = pFields[i];
+
+#ifdef _DEBUG
+		Message("%s::%s found at -> 0x%X - %llx\n", pClassInfo->m_pszName, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
+#endif
+
+		std::pair<uint32_t, SchemaKey> keyValuePair;
+		keyValuePair.first = hash_32_fnv1a_const(field.m_pszName);
+		keyValuePair.second.offset = field.m_nSingleInheritanceOffset;
+		keyValuePair.second.networked = IsFieldNetworked(field);
+
+		keyValueMap.insert(keyValuePair);
+	}
+
+	// If this is a child class there might be a parent class with __m_pChainEntity
+	if (!keyValueMap.contains(g_ChainKey) && pClassInfo->m_nBaseClassCount)
+		InitChainOffset(pClassInfo->m_pBaseClasses[0].m_pClass, keyValueMap);
 }
 
 static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap, const char* className, uint32_t classKey)
@@ -61,31 +117,12 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap, const char* cla
 		return false;
 	}
 
-	short fieldsSize = pClassInfo->m_nFieldCount;
-	SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
-
 	SchemaKeyValueMap_t& keyValueMap = tableMap.insert(std::make_pair(classKey, SchemaKeyValueMap_t())).first->second;
 
-	for (int i = 0; i < fieldsSize; ++i)
-	{
-		SchemaClassFieldData_t& field = pFields[i];
-
-#ifdef _DEBUG
-		Message("%s::%s found at -> 0x%X - %llx\n", className, field.m_pszName, field.m_nSingleInheritanceOffset, &field);
-#endif
-
-		std::pair<uint32_t, SchemaKey> keyValuePair;
-		keyValuePair.first = hash_32_fnv1a_const(field.m_pszName);
-		keyValuePair.second.offset = field.m_nSingleInheritanceOffset;
-		keyValuePair.second.networked = IsFieldNetworked(field);
-
-		keyValueMap.insert(keyValuePair);
-	}
+	InitSchemaKeyValueMap(pClassInfo, keyValueMap);
 
 	return true;
 }
-
-static constexpr uint32_t g_ChainKey = hash_32_fnv1a_const("__m_pChainEntity");
 
 int16_t schema::FindChainOffset(const char* className, uint32_t classNameHash)
 {
