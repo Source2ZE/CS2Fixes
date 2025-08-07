@@ -215,6 +215,9 @@ private:
 	std::vector<std::shared_ptr<ZRHumanClass>> m_vecHumanDefaultClass;
 	std::map<uint32, std::shared_ptr<ZRZombieClass>> m_ZombieClassMap;
 	std::map<uint32, std::shared_ptr<ZRHumanClass>> m_HumanClassMap;
+	// These exist so we can iterate the class maps in insertion order
+	std::vector<uint32> m_ZombieClassKeys;
+	std::vector<uint32> m_HumanClassKeys;
 };
 
 class CZRRegenTimer : public CTimerBase

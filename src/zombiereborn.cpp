@@ -293,6 +293,8 @@ void CZRPlayerClassManager::LoadPlayerClass()
 	Message("Loading PlayerClass...\n");
 	m_ZombieClassMap.clear();
 	m_HumanClassMap.clear();
+	m_ZombieClassKeys.clear();
+	m_HumanClassKeys.clear();
 	m_vecZombieDefaultClass.clear();
 	m_vecHumanDefaultClass.clear();
 
@@ -425,7 +427,10 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				else
 					pHumanClass = std::make_shared<ZRHumanClass>(jsonClass, szClassName);
 
-				m_HumanClassMap.insert(std::make_pair(hash_32_fnv1a_const(szClassName.c_str()), pHumanClass));
+				uint32 hashKey = hash_32_fnv1a_const(szClassName.c_str());
+
+				m_HumanClassMap.insert(std::make_pair(hashKey, pHumanClass));
+				m_HumanClassKeys.push_back(hashKey);
 
 				if (bTeamDefault)
 					m_vecHumanDefaultClass.push_back(pHumanClass);
@@ -452,7 +457,11 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				else
 					pZombieClass = std::make_shared<ZRZombieClass>(jsonClass, szClassName);
 
-				m_ZombieClassMap.insert(std::make_pair(hash_32_fnv1a_const(szClassName.c_str()), pZombieClass));
+				uint32 hashKey = hash_32_fnv1a_const(szClassName.c_str());
+
+				m_ZombieClassMap.insert(std::make_pair(hashKey, pZombieClass));
+				m_ZombieClassKeys.push_back(hashKey);
+
 				if (bTeamDefault)
 					m_vecZombieDefaultClass.push_back(pZombieClass);
 
@@ -656,23 +665,23 @@ void CZRPlayerClassManager::GetZRClassList(int iTeam, std::vector<std::shared_pt
 {
 	if (iTeam == CS_TEAM_T || iTeam == CS_TEAM_NONE)
 	{
-		for (auto pair : m_ZombieClassMap)
+		for (uint32 hashKey : m_ZombieClassKeys)
 		{
-			std::shared_ptr<ZRZombieClass> zmClass = pair.second;
+			auto pZmClass = m_ZombieClassMap[hashKey];
 
-			if (!pController || zmClass->IsApplicableTo(pController))
-				vecClasses.push_back(zmClass);
+			if (pZmClass && (!pController || pZmClass->IsApplicableTo(pController)))
+				vecClasses.push_back(pZmClass);
 		}
 	}
 
 	if (iTeam == CS_TEAM_CT || iTeam == CS_TEAM_NONE)
 	{
-		for (auto pair : m_HumanClassMap)
+		for (uint32 hashKey : m_HumanClassKeys)
 		{
-			std::shared_ptr<ZRHumanClass> hClass = pair.second;
+			auto pHClass = m_HumanClassMap[hashKey];
 
-			if (!pController || hClass->IsApplicableTo(pController))
-				vecClasses.push_back(hClass);
+			if (pHClass && (!pController || pHClass->IsApplicableTo(pController)))
+				vecClasses.push_back(pHClass);
 		}
 	}
 }
