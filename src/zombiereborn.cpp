@@ -122,27 +122,26 @@ ZRModelEntry::ZRModelEntry(std::shared_ptr<ZRModelEntry> modelEntry) :
 	szModelPath(modelEntry->szModelPath),
 	szColor(modelEntry->szColor)
 {
-	vecSkins.Purge();
-	FOR_EACH_VEC(modelEntry->vecSkins, i)
-	{
-		vecSkins.AddToTail(modelEntry->vecSkins[i]);
-	}
+	vecSkins.clear();
+
+	for (int iSkin : modelEntry->vecSkins)
+		vecSkins.push_back(iSkin);
 };
 
 ZRModelEntry::ZRModelEntry(ordered_json jsonModelEntry) :
 	szModelPath(jsonModelEntry.value("modelname", "")),
 	szColor(jsonModelEntry.value("color", "255 255 255"))
 {
-	vecSkins.Purge();
+	vecSkins.clear();
 
 	if (jsonModelEntry.contains("skins"))
 	{
 		if (jsonModelEntry["skins"].size() > 0) // single int or array of ints
 			for (auto& [key, skinIndex] : jsonModelEntry["skins"].items())
-				vecSkins.AddToTail(skinIndex);
+				vecSkins.push_back(skinIndex);
 		return;
 	}
-	vecSkins.AddToTail(0); // key missing, set default
+	vecSkins.push_back(0); // key missing, set default
 };
 
 // seperate parsing to adminsystem's ParseFlags as making class 'z' flagged would make it available to players with non-zero flag
@@ -175,12 +174,12 @@ ZRClass::ZRClass(ordered_json jsonKeys, std::string szClassname, int iTeam) :
 	iAdminFlag(ParseClassFlags(
 		jsonKeys["admin_flag"].get<std::string>().c_str()))
 {
-	vecModels.Purge();
+	vecModels.clear();
 
 	for (auto& [key, jsonModelEntry] : jsonKeys["models"].items())
 	{
 		std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(jsonModelEntry);
-		vecModels.AddToTail(modelEntry);
+		vecModels.push_back(modelEntry);
 	}
 };
 
@@ -206,7 +205,7 @@ void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 		return;
 
 	// one model entry in base and overriding class, apply model entry keys if defined
-	if (vecModels.Count() == 1 && jsonKeys["models"].size() == 1)
+	if (vecModels.size() == 1 && jsonKeys["models"].size() == 1)
 	{
 		if (jsonKeys["models"][0].contains("modelname"))
 			vecModels[0]->szModelPath = jsonKeys["models"][0]["modelname"];
@@ -214,10 +213,10 @@ void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 			vecModels[0]->szColor = jsonKeys["models"][0]["color"];
 		if (jsonKeys["models"][0].contains("skins") && jsonKeys["models"][0]["skins"].size() > 0)
 		{
-			vecModels[0]->vecSkins.Purge();
+			vecModels[0]->vecSkins.clear();
 
 			for (auto& [key, skinIndex] : jsonKeys["models"][0]["skins"].items())
-				vecModels[0]->vecSkins.AddToTail(skinIndex);
+				vecModels[0]->vecSkins.push_back(skinIndex);
 		}
 
 		return;
@@ -240,23 +239,23 @@ void ZRClass::Override(ordered_json jsonKeys, std::string szClassname)
 		return;
 	}
 
-	vecModels.Purge();
+	vecModels.clear();
 
 	for (auto& [key, jsonModelEntry] : jsonKeys["models"].items())
 	{
 		std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(jsonModelEntry);
-		vecModels.AddToTail(modelEntry);
+		vecModels.push_back(modelEntry);
 	}
 }
 
 ZRHumanClass::ZRHumanClass(ordered_json jsonKeys, std::string szClassname) :
-	ZRClass(jsonKeys, szClassname, CS_TEAM_CT) {};
+	ZRClass(jsonKeys, szClassname, CS_TEAM_CT){};
 
 ZRZombieClass::ZRZombieClass(ordered_json jsonKeys, std::string szClassname) :
 	ZRClass(jsonKeys, szClassname, CS_TEAM_T),
 	iHealthRegenCount(jsonKeys.value("health_regen_count", 0)),
 	flHealthRegenInterval(jsonKeys.value("health_regen_interval", 0)),
-	flKnockback(jsonKeys.value("knockback", 1.0)) {};
+	flKnockback(jsonKeys.value("knockback", 1.0)){};
 
 void ZRZombieClass::Override(ordered_json jsonKeys, std::string szClassname)
 {
@@ -282,23 +281,11 @@ bool ZRClass::IsApplicableTo(CCSPlayerController* pController)
 void CZRPlayerClassManager::PrecacheModels(IEntityResourceManifest* pResourceManifest)
 {
 	for (auto pair : m_ZombieClassMap)
-	{
-		std::shared_ptr<ZRZombieClass> zmClass = pair.second;
-
-		FOR_EACH_VEC(zmClass->vecModels, i)
-		{
-			pResourceManifest->AddResource(zmClass->vecModels[i]->szModelPath.c_str());
-		}
-	}
+		for (auto pModel : pair.second->vecModels)
+			pResourceManifest->AddResource(pModel->szModelPath.c_str());
 	for (auto pair : m_HumanClassMap)
-	{
-		std::shared_ptr<ZRHumanClass> hClass = pair.second;
-
-		FOR_EACH_VEC(hClass->vecModels, j)
-		{
-			pResourceManifest->AddResource(hClass->vecModels[j]->szModelPath.c_str());
-		}
-	}
+		for (auto pModel : pair.second->vecModels)
+			pResourceManifest->AddResource(pModel->szModelPath.c_str());
 }
 
 void CZRPlayerClassManager::LoadPlayerClass()
@@ -306,8 +293,8 @@ void CZRPlayerClassManager::LoadPlayerClass()
 	Message("Loading PlayerClass...\n");
 	m_ZombieClassMap.clear();
 	m_HumanClassMap.clear();
-	m_vecZombieDefaultClass.Purge();
-	m_vecHumanDefaultClass.Purge();
+	m_vecZombieDefaultClass.clear();
+	m_vecHumanDefaultClass.clear();
 
 	const char* pszJsonPath = "addons/cs2fixes/configs/zr/playerclass.jsonc";
 	char szPath[MAX_PATH];
@@ -441,7 +428,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				m_HumanClassMap.insert(std::make_pair(hash_32_fnv1a_const(szClassName.c_str()), pHumanClass));
 
 				if (bTeamDefault)
-					m_vecHumanDefaultClass.AddToTail(pHumanClass);
+					m_vecHumanDefaultClass.push_back(pHumanClass);
 
 				pHumanClass->PrintInfo();
 			}
@@ -467,7 +454,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 
 				m_ZombieClassMap.insert(std::make_pair(hash_32_fnv1a_const(szClassName.c_str()), pZombieClass));
 				if (bTeamDefault)
-					m_vecZombieDefaultClass.AddToTail(pZombieClass);
+					m_vecZombieDefaultClass.push_back(pZombieClass);
 
 				pZombieClass->PrintInfo();
 			}
@@ -576,9 +563,9 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClass(CCSPlayerPawn* pPa
 	{
 		humanClass = m_HumanClassMap[nameHash];
 	}
-	else if (m_vecHumanDefaultClass.Count())
+	else if (!m_vecHumanDefaultClass.empty())
 	{
-		humanClass = m_vecHumanDefaultClass[rand() % m_vecHumanDefaultClass.Count()];
+		humanClass = m_vecHumanDefaultClass[rand() % m_vecHumanDefaultClass.size()];
 	}
 	else if (!humanClass)
 	{
@@ -605,9 +592,9 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultHumanClassVisuals(CCSPlayerPa
 	{
 		humanClass = m_HumanClassMap[nameHash];
 	}
-	else if (m_vecHumanDefaultClass.Count())
+	else if (!m_vecHumanDefaultClass.empty())
 	{
-		humanClass = m_vecHumanDefaultClass[rand() % m_vecHumanDefaultClass.Count()];
+		humanClass = m_vecHumanDefaultClass[rand() % m_vecHumanDefaultClass.size()];
 	}
 	else if (!humanClass)
 	{
@@ -652,9 +639,9 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn* pP
 	{
 		zombieClass = m_ZombieClassMap[nameHash];
 	}
-	else if (m_vecZombieDefaultClass.Count())
+	else if (!m_vecZombieDefaultClass.empty())
 	{
-		zombieClass = m_vecZombieDefaultClass[rand() % m_vecZombieDefaultClass.Count()];
+		zombieClass = m_vecZombieDefaultClass[rand() % m_vecZombieDefaultClass.size()];
 	}
 	else if (!zombieClass)
 	{
@@ -665,7 +652,7 @@ void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn* pP
 	ApplyZombieClass(zombieClass, pPawn);
 }
 
-void CZRPlayerClassManager::GetZRClassList(int iTeam, CUtlVector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController)
+void CZRPlayerClassManager::GetZRClassList(int iTeam, std::vector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController)
 {
 	if (iTeam == CS_TEAM_T || iTeam == CS_TEAM_NONE)
 	{
@@ -674,7 +661,7 @@ void CZRPlayerClassManager::GetZRClassList(int iTeam, CUtlVector<std::shared_ptr
 			std::shared_ptr<ZRZombieClass> zmClass = pair.second;
 
 			if (!pController || zmClass->IsApplicableTo(pController))
-				vecClasses.AddToTail(zmClass);
+				vecClasses.push_back(zmClass);
 		}
 	}
 
@@ -685,7 +672,7 @@ void CZRPlayerClassManager::GetZRClassList(int iTeam, CUtlVector<std::shared_ptr
 			std::shared_ptr<ZRHumanClass> hClass = pair.second;
 
 			if (!pController || hClass->IsApplicableTo(pController))
-				vecClasses.AddToTail(hClass);
+				vecClasses.push_back(hClass);
 		}
 	}
 }
@@ -1897,7 +1884,7 @@ CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:
 		return;
 	}
 
-	CUtlVector<std::shared_ptr<ZRClass>> vecClasses;
+	std::vector<std::shared_ptr<ZRClass>> vecClasses;
 	int iSlot = player->GetPlayerSlot();
 	bool bListingZombie = true;
 	bool bListingHuman = true;
@@ -1925,18 +1912,16 @@ CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:
 			else
 				ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Available %s classes:", sTeamName);
 
-			FOR_EACH_VEC(vecClasses, i)
-			{
+			for (int i = 0; i < vecClasses.size(); i++)
 				if (vecClasses[i]->iTeam == team)
 					ClientPrint(player, HUD_PRINTTALK, "%i. %s", i + 1, vecClasses[i]->szClassName.c_str());
-			}
 		}
 
 		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Select a class using \x2!zclass <class name/number>");
 		return;
 	}
 
-	FOR_EACH_VEC(vecClasses, i)
+	for (int i = 0; i < vecClasses.size(); i++)
 	{
 		const char* sClassName = vecClasses[i]->szClassName.c_str();
 		bool bClassMatches = !V_stricmp(sClassName, args[1]) || (V_StringToInt32(args[1], -1, NULL, NULL, PARSING_FLAG_SKIP_WARNING) - 1) == i;
