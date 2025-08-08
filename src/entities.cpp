@@ -137,15 +137,20 @@ namespace CTriggerGravityHandler
 		s_gravityMap[hEntity] = flGravity;
 	}
 
-	void GravityTouching(CBaseEntity* pEntity, CBaseEntity* pOther)
+	bool GravityTouching(CBaseEntity* pEntity, CBaseEntity* pOther)
 	{
 		const auto hEntity = GetEntityUnique(pEntity);
 		if (hEntity == ENTITY_UNIQUE_INVALID)
-			return;
+			return false;
 
 		const auto gravity = s_gravityMap.find(hEntity);
-		if (gravity != s_gravityMap.end() && pOther->IsPawn() && pOther->IsAlive())
+		if (gravity == s_gravityMap.end())
+			return false;
+
+		if (pOther->IsPawn() && pOther->IsAlive())
 			pOther->SetGravityScale(gravity->second);
+
+		return true;
 	}
 
 	void OnEndTouch(CBaseEntity* pEntity, CBaseEntity* pOther)

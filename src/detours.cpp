@@ -581,7 +581,13 @@ void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayer
 
 void FASTCALL Detour_CTriggerGravity_GravityTouch(CBaseEntity* pEntity, CBaseEntity* pOther)
 {
-	CTriggerGravityHandler::GravityTouching(pEntity, pOther);
+	// no need to call original function here
+	// because original function calls CBaseEntity::SetGravityScale internal
+	// but passes the wrong gravity scale value
+	if (CTriggerGravityHandler::GravityTouching(pEntity, pOther))
+		return;
+
+	CTriggerGravity_GravityTouch(pEntity, pOther);
 }
 
 CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6)
