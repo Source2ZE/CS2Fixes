@@ -1786,7 +1786,7 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 		{
 			CRecipientFilter filter;
 			filter.AddAllPlayers();
-			g_hTeamCT->DispatchParticle(g_cvarHumanWinOverlayParticle.Get().String(), &filter);
+			g_hTeamCT->DispatchParticle(g_cvarHumanWinOverlayParticle.Get().String(), &filter, PATTACH_MAIN_VIEW);
 		}
 	}
 	else if (iTeamNum == CS_TEAM_T)
@@ -1801,7 +1801,7 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 		{
 			CRecipientFilter filter;
 			filter.AddAllPlayers();
-			g_hTeamT->DispatchParticle(g_cvarZombieWinOverlayParticle.Get().String(), &filter);
+			g_hTeamT->DispatchParticle(g_cvarZombieWinOverlayParticle.Get().String(), &filter, PATTACH_MAIN_VIEW);
 		}
 	}
 }
