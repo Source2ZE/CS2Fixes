@@ -98,10 +98,10 @@ struct ZRClass
 			szModels += "\n\t\t" + pModel->szModelPath;
 			szModels += " Color=\"" + pModel->szColor + "\"";
 			szModels += " Skins=[";
-			for (int iSkin : pModel->vecSkins)
+			for (int i = 0; i < pModel->vecSkins.size(); i++)
 			{
-				szModels += std::to_string(pModel->vecSkins[iSkin]);
-				if (iSkin != pModel->vecSkins.size() - 1)
+				szModels += std::to_string(pModel->vecSkins[i]);
+				if (i != pModel->vecSkins.size() - 1)
 					szModels += " ";
 			}
 			szModels += "]";
@@ -159,10 +159,10 @@ struct ZRZombieClass : ZRClass
 			szModels += "\n\t\t" + pModel->szModelPath;
 			szModels += " Color=\"" + pModel->szColor + "\"";
 			szModels += " Skins=[";
-			for (int iSkin : pModel->vecSkins)
+			for (int i = 0; i < pModel->vecSkins.size(); i++)
 			{
-				szModels += std::to_string(pModel->vecSkins[iSkin]);
-				if (iSkin != pModel->vecSkins.size() - 1)
+				szModels += std::to_string(pModel->vecSkins[i]);
+				if (i != pModel->vecSkins.size() - 1)
 					szModels += " ";
 			}
 			szModels += "]";
