@@ -415,5 +415,8 @@
     <ClInclude Include="src\utils\hud_manager.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\cpointorient.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

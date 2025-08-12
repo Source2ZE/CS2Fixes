@@ -1061,6 +1061,21 @@ void CPlayerManager::UpdatePlayerStates()
 					pClient->ForceFullUpdate();
 			}
 		}
+
+		// Update entwatch hud position
+		if (g_cvarEnableEntWatch.Get() && g_cvarEnableEntwatchHud.Get())
+		{
+			CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
+			if (!pPawn)
+				continue;
+
+			CPointOrient* pOrient = pPlayer->GetPointOrient();
+			if (pOrient)
+			{
+				Vector origin = pPawn->GetEyePosition();
+				pOrient->Teleport(&origin, nullptr, nullptr);
+			}
+		}
 	}
 }
 
