@@ -247,7 +247,6 @@
     <ClInclude Include="src\cs2_sdk\entity\cmathcounter.h" />
     <ClInclude Include="src\cs2_sdk\entity\cparticlesystem.h" />
     <ClInclude Include="src\cs2_sdk\entity\cphysthruster.h" />
-    <ClInclude Include="src\cs2_sdk\entity\cpointorient.h" />
     <ClInclude Include="src\cs2_sdk\entity\cpointviewcontrol.h" />
     <ClInclude Include="src\cs2_sdk\entity\cpointworldtext.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctakedamageinfo.h" />
