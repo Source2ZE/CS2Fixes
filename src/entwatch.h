@@ -45,6 +45,9 @@ using ordered_json = nlohmann::ordered_json;
 
 #define EW_HUD_TICKRATE 0.5f
 
+extern CConVar<bool> g_cvarEnableEntWatch;
+extern CConVar<bool> g_cvarEnableEntwatchHud;
+
 enum EWHandlerType
 {
 	Type_None,
