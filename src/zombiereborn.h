@@ -82,18 +82,17 @@ struct ZRClass
 		iAdminFlag(pClass->iAdminFlag)
 	{
 		vecModels.clear();
-		for (auto pModel : pClass->vecModels)
-		{
-			std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(pModel);
-			vecModels.push_back(modelEntry);
-		}
+		vecModels.reserve(pClass->vecModels.size());
+
+		for (const auto& pModel : pClass->vecModels)
+			vecModels.push_back(std::make_shared<ZRModelEntry>(pModel));
 	};
 
 	ZRClass(ordered_json jsonKeys, std::string szClassname, int iTeam);
 	void PrintInfo()
 	{
 		std::string szModels = "";
-		for (auto pModel : vecModels)
+		for (const auto& pModel : vecModels)
 		{
 			szModels += "\n\t\t" + pModel->szModelPath;
 			szModels += " Color=\"" + pModel->szColor + "\"";
@@ -154,7 +153,7 @@ struct ZRZombieClass : ZRClass
 	void PrintInfo()
 	{
 		std::string szModels = "";
-		for (auto pModel : vecModels)
+		for (const auto& pModel : vecModels)
 		{
 			szModels += "\n\t\t" + pModel->szModelPath;
 			szModels += " Color=\"" + pModel->szColor + "\"";

@@ -494,7 +494,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 		{
 			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands is:");
 
-			for (auto cmdPair : CommandList())
+			for (const auto& cmdPair : CommandList())
 			{
 				CChatCommand* cmd = cmdPair.second;
 
@@ -509,7 +509,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 
 			ZEPlayer* pZEPlayer = player->GetZEPlayer();
 
-			for (auto cmdPair : CommandList())
+			for (const auto& cmdPair : CommandList())
 			{
 				CChatCommand* cmd = cmdPair.second;
 				uint64 flags = cmd->GetAdminFlags();
@@ -541,7 +541,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 
 		if (!player)
 		{
-			for (auto cmdPair : CommandList())
+			for (const auto& cmdPair : CommandList())
 			{
 				CChatCommand* cmd = cmdPair.second;
 
@@ -555,7 +555,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 		{
 			ZEPlayer* pZEPlayer = player->GetZEPlayer();
 
-			for (auto cmdPair : CommandList())
+			for (const auto& cmdPair : CommandList())
 			{
 				CChatCommand* cmd = cmdPair.second;
 				uint64 flags = cmd->GetAdminFlags();
