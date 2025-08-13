@@ -297,12 +297,8 @@ void CUserPreferencesREST::StorePreferences(uint64 iSteamId, UserPrefsMap_t& pre
 
 	// Create the JSON object with all key-value pairs
 	json sJsonObject = json::object();
-	for (auto prefPair : preferences)
-	{
-		std::shared_ptr<CPreferenceValue> prefValue = preferences[prefPair.first];
-
+	for (const auto& [_, prefValue] : preferences)
 		sJsonObject[prefValue->GetKey()] = prefValue->GetValue();
-	}
 
 	// Prepare the API URL to send the request to
 	char sUserPreferencesUrl[256];

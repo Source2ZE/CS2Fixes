@@ -280,11 +280,11 @@ bool ZRClass::IsApplicableTo(CCSPlayerController* pController)
 
 void CZRPlayerClassManager::PrecacheModels(IEntityResourceManifest* pResourceManifest)
 {
-	for (auto pair : m_ZombieClassMap)
-		for (auto pModel : pair.second->vecModels)
+	for (const auto& pair : m_ZombieClassMap)
+		for (const auto& pModel : pair.second->vecModels)
 			pResourceManifest->AddResource(pModel->szModelPath.c_str());
-	for (auto pair : m_HumanClassMap)
-		for (auto pModel : pair.second->vecModels)
+	for (const auto& pair : m_HumanClassMap)
+		for (const auto& pModel : pair.second->vecModels)
 			pResourceManifest->AddResource(pModel->szModelPath.c_str());
 }
 
