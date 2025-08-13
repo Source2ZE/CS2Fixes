@@ -1084,11 +1084,9 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 			if (!pPawn)
 				continue;
 
-			// Hide players marked as hidden or ANY dead player, it seems that a ragdoll of a previously hidden player can crash?
-			// TODO: Revert this if/when valve fixes the issue?
-			// Also do not hide leaders to other players
+			// Do not hide leaders to other players
 			ZEPlayer* pOtherZEPlayer = g_playerManager->GetPlayer(j);
-			if ((pSelfZEPlayer->ShouldBlockTransmit(j) && (pOtherZEPlayer && !pOtherZEPlayer->IsLeader())) || !pPawn->IsAlive())
+			if (pSelfZEPlayer->ShouldBlockTransmit(j) && (pOtherZEPlayer && !pOtherZEPlayer->IsLeader()))
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 		}
 
