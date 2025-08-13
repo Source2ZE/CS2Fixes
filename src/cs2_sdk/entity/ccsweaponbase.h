@@ -47,7 +47,11 @@ enum gear_slot_t : uint32_t
 class CEconItemView
 {
 public:
-	DECLARE_SCHEMA_CLASS_INLINE(CEconItemView);
+#ifdef PLATFORM_LINUX
+	DECLARE_SCHEMA_CLASS_BASE(CEconItemView, 28)
+#else
+	DECLARE_SCHEMA_CLASS_BASE(CEconItemView, 27)
+#endif
 
 	SCHEMA_FIELD(uint16_t, m_iItemDefinitionIndex)
 	SCHEMA_FIELD(bool, m_bInitialized)

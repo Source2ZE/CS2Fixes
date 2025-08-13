@@ -22,7 +22,7 @@
 #include "common.h"
 #include "entity/cvotecontroller.h"
 #include "eventlistener.h"
-#include "irecipientfilter.h"
+#include "recipientfilters.h"
 #include "utils/entity.h"
 
 #define VOTE_CALLER_SERVER 99
@@ -113,7 +113,7 @@ public:
 	 *  @param handler			Called when a menu action is completed.
 	 *  @param callback			Called when the vote has finished.
 	 */
-	bool SendYesNoVote(float flDuration, int iCaller, const char* sVoteTitle, const char* sDetailStr, IRecipientFilter* pFilter, YesNoVoteResult resultCallback, YesNoVoteHandler handler);
+	bool SendYesNoVote(float flDuration, int iCaller, const char* sVoteTitle, const char* sDetailStr, CRecipientFilter* pFilter, YesNoVoteResult resultCallback, YesNoVoteHandler handler);
 
 	/* Start a new Yes/No vote with all players included
 	 *
@@ -142,7 +142,7 @@ private:
 	char m_szCurrentVoteDetailStr[256];
 
 	void CheckForEarlyVoteClose();
-	void InitVoters(IRecipientFilter* pFilter);
+	void InitVoters(CRecipientFilter* pFilter);
 	void SendVoteStartUM(IRecipientFilter* pFilter);
 	void UpdateVoteCounts();
 };

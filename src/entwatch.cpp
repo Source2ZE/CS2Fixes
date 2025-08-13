@@ -33,6 +33,7 @@
 #include "eventlistener.h"
 #include "gameevents.pb.h"
 #include "leader.h"
+#include "map_votes.h"
 #include "networksystem/inetworkmessages.h"
 #include "playermanager.h"
 #include "recipientfilters.h"
@@ -76,6 +77,7 @@ CConVar<bool> g_cvarEnableEntWatch("entwatch_enable", FCVAR_NONE, "INCOMPATIBLE 
 CConVar<bool> g_cvarEnableFiltering("entwatch_auto_filter", FCVAR_NONE, "Whether to automatically block non-item holders from triggering uses", true);
 CConVar<bool> g_cvarUseEntwatchClantag("entwatch_clantag", FCVAR_NONE, "Whether to set item holder's clantag and set score", true);
 CConVar<int> g_cvarItemHolderScore("entwatch_score", FCVAR_NONE, "Score to give item holders (0 = dont change score at all) Requires entwatch_clantag 1", 9999, true, 0, false, 0);
+CConVar<bool> g_cvarEnableEntwatchHud("entwatch_hud", FCVAR_NONE, "Whether to enable the EntWatch hud and related commands", true);
 
 void ItemGlowDistanceChanged(CConVar<int>* ref, CSplitScreenSlot nSlot, const int* pNewValue, const int* pOldValue)
 {
@@ -807,7 +809,7 @@ void EWItemInstance::Pickup(int slot)
 				pController->m_iScore = score;
 			}
 
-			EW_SendBeginNewMatchEvent();
+			EW_UpdateClientClanTags();
 		}
 	}
 
@@ -862,7 +864,7 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 			pController->m_szClan("");
 		}
 
-		EW_SendBeginNewMatchEvent();
+		EW_UpdateClientClanTags();
 	}
 
 	char sPlayerInfo[64];
@@ -1509,7 +1511,7 @@ void CEWHandler::ResetAllClantags()
 		pController->m_szClan("");
 	}
 
-	EW_SendBeginNewMatchEvent();
+	EW_UpdateClientClanTags();
 }
 
 int CEWHandler::RegisterItem(CBasePlayerWeapon* pWeapon)
@@ -1620,7 +1622,7 @@ void CEWHandler::PlayerPickup(CCSPlayerPawn* pPawn, int iItemInstance)
 
 	item->Pickup(pPawn->m_hOriginalController->GetPlayerSlot());
 
-	if (!m_bHudTicking)
+	if (g_cvarEnableEntwatchHud.Get() && !m_bHudTicking)
 	{
 		m_bHudTicking = true;
 		new CTimer(EW_HUD_TICKRATE, false, false, [] {
@@ -2261,15 +2263,21 @@ void EW_PlayerDisconnect(int slot)
 	g_pEWHandler->PlayerDrop(EWDropReason::Disconnect, -1, pController);
 }
 
-void EW_SendBeginNewMatchEvent()
+// An event needs to be sent to force clients to see up to date clantags
+void EW_UpdateClientClanTags()
 {
-	if (!GetGlobals())
+	// Cannot send this event during map vote, as it breaks voting client side
+	if (!GetGlobals() || !g_pMapVoteSystem->IsIntermissionAllowed())
 		return;
 
-	IGameEvent* pEvent = g_gameEventManager->CreateEvent("begin_new_match");
+	static IGameEvent* pEvent = nullptr;
+
+	if (!pEvent)
+		pEvent = g_gameEventManager->CreateEvent("nextlevel_changed");
+
 	if (!pEvent)
 	{
-		Panic("Failed to create begin_new_match event\n");
+		Panic("Failed to create nextlevel_changed event\n");
 		return;
 	}
 
@@ -2679,6 +2687,12 @@ CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
 	if (!g_cvarEnableEntWatch.Get())
 		return;
 
+	if (!g_cvarEnableEntwatchHud.Get())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		return;
+	}
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Only usable in game.");
@@ -2715,6 +2729,12 @@ CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
 	if (!g_cvarEnableEntWatch.Get())
 		return;
 
+	if (!g_cvarEnableEntwatchHud.Get())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		return;
+	}
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
@@ -2746,6 +2766,12 @@ CON_COMMAND_CHAT(hudcolor, "<r> <g> <b> [a] - Set color (and transparency) of th
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
+
+	if (!g_cvarEnableEntwatchHud.Get())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		return;
+	}
 
 	if (!player)
 	{
@@ -2792,6 +2818,12 @@ CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
+
+	if (!g_cvarEnableEntwatchHud.Get())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		return;
+	}
 
 	if (!player)
 	{

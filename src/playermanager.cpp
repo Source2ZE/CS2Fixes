@@ -107,7 +107,10 @@ void ZEPlayer::OnSpawn()
 	ZEPlayerHandle handle = GetHandle();
 	new CTimer(0.0f, false, false, [handle] {
 		if (handle.Get())
+		{
+			handle.Get()->CreatePointOrient();
 			handle.Get()->CreateEntwatchHud();
+		}
 		return -1.0f;
 	});
 }
@@ -170,7 +173,6 @@ CConVar<bool> g_cvarFlashLightTransmitOthers("cs2f_flashlight_transmit_others", 
 CConVar<float> g_cvarFlashLightBrightness("cs2f_flashlight_brightness", FCVAR_NONE, "How bright should flashlights be", 1.0f);
 CConVar<float> g_cvarFlashLightDistance("cs2f_flashlight_distance", FCVAR_NONE, "How far flashlights should be from the player's head", 54.0f); // The minimum distance such that an awp wouldn't block the light
 CConVar<Color> g_cvarFlashLightColor("cs2f_flashlight_color", FCVAR_NONE, "What color to use for flashlights", Color(255, 255, 255));
-CConVar<bool> g_cvarFlashLightUseAttachment("cs2f_flashlight_use_attachment", FCVAR_NONE, "Whether to parent flashlights to an attachment or a viewmodel (1=use attachment, 0=use viewmodel)", false);
 CConVar<CUtlString> g_cvarFlashLightAttachment("cs2f_flashlight_attachment", FCVAR_NONE, "Which attachment to parent a flashlight to. If the player model is not properly setup, you might have to use clip_limit here instead", "axis_of_intent");
 
 void ZEPlayer::SpawnFlashLight()
@@ -179,13 +181,6 @@ void ZEPlayer::SpawnFlashLight()
 		return;
 
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)CCSPlayerController::FromSlot(GetPlayerSlot())->GetPawn();
-
-	// Ensure custom viewmodel exists if needed
-	if (!g_cvarFlashLightUseAttachment.Get())
-	{
-		if (!pPawn->m_pViewModelServices() || !GetOrCreateCustomViewModel(pPawn))
-			return;
-	}
 
 	Vector origin = pPawn->GetAbsOrigin();
 	Vector forward;
@@ -215,19 +210,8 @@ void ZEPlayer::SpawnFlashLight()
 
 	pLight->DispatchSpawn(pKeyValues);
 
-	if (g_cvarFlashLightUseAttachment.Get())
-	{
-		pLight->SetParent(pPawn);
-		pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
-	}
-	else
-	{
-		CBaseViewModel* pViewModel = GetOrCreateCustomViewModel(pPawn);
-		if (!pViewModel)
-			return;
-
-		pLight->SetParent(pViewModel);
-	}
+	pLight->SetParent(pPawn);
+	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
 
 	SetFlashLight(pLight);
 }
@@ -602,21 +586,35 @@ void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
 	delete data;
 }
 
-CBaseViewModel* ZEPlayer::GetOrCreateCustomViewModel(CCSPlayerPawn* pPawn)
+void ZEPlayer::CreatePointOrient()
 {
-	CBaseViewModel* pViewmodel = pPawn->m_pViewModelServices()->GetViewModel(2);
-	if (pViewmodel)
-		return pViewmodel;
+	CPointOrient* pOrient = GetPointOrient();
+	if (pOrient)
+	{
+		pOrient->Remove();
+		pOrient = nullptr;
+	}
 
-	pViewmodel = CreateEntityByName<CBaseViewModel>("predicted_viewmodel");
-	if (!pViewmodel)
-		return nullptr;
+	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
+	if (!pController)
+		return;
 
-	pViewmodel->DispatchSpawn();
-	pViewmodel->SetOwner(pPawn);
-	pPawn->m_pViewModelServices()->SetViewModel(2, pViewmodel);
+	CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
+	if (!pPawn)
+		return;
 
-	return pViewmodel;
+	pOrient = CreateEntityByName<CPointOrient>("point_orient");
+	pOrient->m_bActive(true);
+	pOrient->m_nGoalDirection(PointOrientGoalDirectionType_t::eEyesForward);
+
+	pOrient->DispatchSpawn();
+	SetPointOrient(pOrient);
+
+	Vector origin = pPawn->GetEyePosition();
+	pOrient->Teleport(&origin, nullptr, nullptr);
+
+	pOrient->AcceptInput("SetParent", "!activator", pPawn);
+	pOrient->AcceptInput("SetTarget", "!activator", pPawn);
 }
 
 void ZEPlayer::CreateEntwatchHud()
@@ -629,15 +627,9 @@ void ZEPlayer::CreateEntwatchHud()
 	if (!pPawn)
 		return;
 
-	if (!pPawn->m_pViewModelServices())
+	CPointOrient* pOrient = GetPointOrient();
+	if (!pOrient)
 		return;
-
-	CBaseViewModel* pViewModel = GetOrCreateCustomViewModel(pPawn);
-	if (!pViewModel)
-	{
-		Panic("Failed to get or create custom viewmodel for entwatch hud.\n");
-		return;
-	}
 
 	CPointWorldText* pText = GetEntwatchHud();
 	if (pText)
@@ -670,10 +662,10 @@ void ZEPlayer::CreateEntwatchHud()
 	pText->DispatchSpawn();
 	SetEntwatchHud(pText);
 
-	pText->AcceptInput("SetParent", "!activator", pViewModel);
+	pText->AcceptInput("SetParent", "!activator", pOrient);
 
-	Vector origin = pViewModel->GetAbsOrigin();
-	QAngle vmangles = pViewModel->GetAbsRotation();
+	Vector origin = pOrient->GetAbsOrigin();
+	QAngle vmangles = pOrient->GetAbsRotation();
 
 	Vector forward;
 	Vector right;
@@ -1011,8 +1003,7 @@ void CPlayerManager::CheckHideDistances()
 			{
 				auto pTargetPawn = pTargetController->GetPawn();
 
-				// TODO: Unhide dead pawns if/when valve fixes the crash
-				if (pTargetPawn && (!g_cvarHideTeammatesOnly.Get() || pTargetController->m_iTeamNum == team))
+				if (pTargetPawn && pTargetPawn->IsAlive() && (!g_cvarHideTeammatesOnly.Get() || pTargetController->m_iTeamNum == team))
 					player->SetTransmit(j, pTargetPawn->GetAbsOrigin().DistToSqr(vecPosition) <= hideDistance * hideDistance);
 			}
 		}
@@ -1055,18 +1046,25 @@ void CPlayerManager::UpdatePlayerStates()
 
 		if (iCurrentPlayerState != iPreviousPlayerState)
 		{
-			if (g_cvarEnableHide.Get())
-				Message("Player %s changed states from %s to %s\n", pController->GetPlayerName(), g_szPlayerStates[iPreviousPlayerState], g_szPlayerStates[iCurrentPlayerState]);
+#ifdef _DEBUG
+			Message("Player %s changed states from %s to %s\n", pController->GetPlayerName(), g_szPlayerStates[iPreviousPlayerState], g_szPlayerStates[iCurrentPlayerState]);
+#endif
 
 			pPlayer->SetPlayerState(iCurrentPlayerState);
+		}
 
-			// Send full update to people going in/out of spec as a mitigation for hide crashes
-			if (g_cvarEnableHide.Get() && (iCurrentPlayerState == STATE_OBSERVER_MODE || iPreviousPlayerState == STATE_OBSERVER_MODE))
+		// Update entwatch hud position
+		if (g_cvarEnableEntWatch.Get() && g_cvarEnableEntwatchHud.Get())
+		{
+			CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
+			if (!pPawn)
+				continue;
+
+			CPointOrient* pOrient = pPlayer->GetPointOrient();
+			if (pOrient)
 			{
-				CServerSideClient* pClient = GetClientBySlot(i);
-
-				if (pClient)
-					pClient->ForceFullUpdate();
+				Vector origin = pPawn->GetEyePosition();
+				pOrient->Teleport(&origin, nullptr, nullptr);
 			}
 		}
 	}

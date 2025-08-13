@@ -47,10 +47,9 @@ extern CGameEntitySystem* g_pEntitySystem;
 extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
 extern CPlayerManager* g_playerManager;
+extern CUtlVector<CServerSideClient*>* GetClientList();
 
 CAdminSystem* g_pAdminSystem = nullptr;
-
-CUtlMap<uint32, CChatCommand*> g_CommandList(0, 0, DefLessFunc(uint32));
 
 void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAdding, CInfractionBase::EInfractionType infType);
 const char* GetActionPhrase(CInfractionBase::EInfractionType infType, GrammarTense iTense, bool bAdding);
@@ -115,6 +114,25 @@ void PrintMultiAdminAction(ETargetType nType, const char* pszAdminName, const ch
 		case ETargetType::ALL_BUT_CT:
 			PrintSingleAdminAction(pszAdminName, "non-counter-terrorists", pszAction, pszAction2, prefix);
 			break;
+	}
+}
+
+CON_COMMAND_CHAT_FLAGS(debugclientlist, "- Debug client list", ADMFLAG_ROOT)
+{
+	if (!GetClientList())
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, "GetClientList() is null!");
+		return;
+	}
+
+	for (int i = 0; i < GetClientList()->Count(); i++)
+	{
+		CServerSideClient* pClient = (*GetClientList())[i];
+
+		if (!pClient)
+			continue;
+
+		ClientPrint(player, HUD_PRINTCONSOLE, "slot: %i address: %s signonstate: %i spawngroups: %i name: %s", pClient->GetPlayerSlot().Get(), pClient->GetRemoteAddress()->ToString(), pClient->GetSignonState(), pClient->m_vecLoadedSpawnGroups.Count(), pClient->GetClientName());
 	}
 }
 
@@ -1693,7 +1711,10 @@ void CAdminSystem::ShowDisconnectedPlayers(CCSPlayerController* const pAdmin)
 
 			ClientPrint(pAdmin, HUD_PRINTCONSOLE, "%i. %s", i, std::get<0>(ply).c_str());
 			ClientPrint(pAdmin, HUD_PRINTCONSOLE, "\tSteam64 ID - %s", std::to_string(std::get<1>(ply)).c_str());
-			ClientPrint(pAdmin, HUD_PRINTCONSOLE, "\tIP Address - %s", std::get<2>(ply).c_str());
+
+			ZEPlayer* zpAdmin = pAdmin->GetZEPlayer();
+			if (zpAdmin && zpAdmin->IsAdminFlagSet(ADMFLAG_RCON))
+				ClientPrint(pAdmin, HUD_PRINTCONSOLE, "\tIP Address - %s", std::get<2>(ply).c_str());
 		}
 	}
 	if (!bAnyDCedPlayers)

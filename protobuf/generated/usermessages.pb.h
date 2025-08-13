@@ -239,6 +239,9 @@ extern CUserMsg_HudErrorDefaultTypeInternal _CUserMsg_HudError_default_instance_
 class CUserMsg_ParticleManager;
 struct CUserMsg_ParticleManagerDefaultTypeInternal;
 extern CUserMsg_ParticleManagerDefaultTypeInternal _CUserMsg_ParticleManager_default_instance_;
+class CUserMsg_ParticleManager_AddFan;
+struct CUserMsg_ParticleManager_AddFanDefaultTypeInternal;
+extern CUserMsg_ParticleManager_AddFanDefaultTypeInternal _CUserMsg_ParticleManager_AddFan_default_instance_;
 class CUserMsg_ParticleManager_AddModellistOverrideElement;
 struct CUserMsg_ParticleManager_AddModellistOverrideElementDefaultTypeInternal;
 extern CUserMsg_ParticleManager_AddModellistOverrideElementDefaultTypeInternal _CUserMsg_ParticleManager_AddModellistOverrideElement_default_instance_;
@@ -290,6 +293,9 @@ extern CUserMsg_ParticleManager_SetControlPointSnapshotDefaultTypeInternal _CUse
 class CUserMsg_ParticleManager_SetMaterialOverride;
 struct CUserMsg_ParticleManager_SetMaterialOverrideDefaultTypeInternal;
 extern CUserMsg_ParticleManager_SetMaterialOverrideDefaultTypeInternal _CUserMsg_ParticleManager_SetMaterialOverride_default_instance_;
+class CUserMsg_ParticleManager_SetParticleClusterGrowth;
+struct CUserMsg_ParticleManager_SetParticleClusterGrowthDefaultTypeInternal;
+extern CUserMsg_ParticleManager_SetParticleClusterGrowthDefaultTypeInternal _CUserMsg_ParticleManager_SetParticleClusterGrowth_default_instance_;
 class CUserMsg_ParticleManager_SetParticleFoWProperties;
 struct CUserMsg_ParticleManager_SetParticleFoWPropertiesDefaultTypeInternal;
 extern CUserMsg_ParticleManager_SetParticleFoWPropertiesDefaultTypeInternal _CUserMsg_ParticleManager_SetParticleFoWProperties_default_instance_;
@@ -329,6 +335,9 @@ extern CUserMsg_ParticleManager_SetVDataDefaultTypeInternal _CUserMsg_ParticleMa
 class CUserMsg_ParticleManager_UpdateEntityPosition;
 struct CUserMsg_ParticleManager_UpdateEntityPositionDefaultTypeInternal;
 extern CUserMsg_ParticleManager_UpdateEntityPositionDefaultTypeInternal _CUserMsg_ParticleManager_UpdateEntityPosition_default_instance_;
+class CUserMsg_ParticleManager_UpdateFan;
+struct CUserMsg_ParticleManager_UpdateFanDefaultTypeInternal;
+extern CUserMsg_ParticleManager_UpdateFanDefaultTypeInternal _CUserMsg_ParticleManager_UpdateFan_default_instance_;
 class CUserMsg_ParticleManager_UpdateParticleEnt;
 struct CUserMsg_ParticleManager_UpdateParticleEntDefaultTypeInternal;
 extern CUserMsg_ParticleManager_UpdateParticleEntDefaultTypeInternal _CUserMsg_ParticleManager_UpdateParticleEnt_default_instance_;
@@ -421,6 +430,7 @@ template<> ::CUserMessage_UtilMsg_Response_ItemDetail* Arena::CreateMaybeMessage
 template<> ::CUserMsg_CustomGameEvent* Arena::CreateMaybeMessage<::CUserMsg_CustomGameEvent>(Arena*);
 template<> ::CUserMsg_HudError* Arena::CreateMaybeMessage<::CUserMsg_HudError>(Arena*);
 template<> ::CUserMsg_ParticleManager* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager>(Arena*);
+template<> ::CUserMsg_ParticleManager_AddFan* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_AddFan>(Arena*);
 template<> ::CUserMsg_ParticleManager_AddModellistOverrideElement* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_AddModellistOverrideElement>(Arena*);
 template<> ::CUserMsg_ParticleManager_ChangeControlPointAttachment* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_ChangeControlPointAttachment>(Arena*);
 template<> ::CUserMsg_ParticleManager_ClearModellistOverride* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_ClearModellistOverride>(Arena*);
@@ -438,6 +448,7 @@ template<> ::CUserMsg_ParticleManager_ReleaseParticleIndex* Arena::CreateMaybeMe
 template<> ::CUserMsg_ParticleManager_SetControlPointModel* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetControlPointModel>(Arena*);
 template<> ::CUserMsg_ParticleManager_SetControlPointSnapshot* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetControlPointSnapshot>(Arena*);
 template<> ::CUserMsg_ParticleManager_SetMaterialOverride* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetMaterialOverride>(Arena*);
+template<> ::CUserMsg_ParticleManager_SetParticleClusterGrowth* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetParticleClusterGrowth>(Arena*);
 template<> ::CUserMsg_ParticleManager_SetParticleFoWProperties* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetParticleFoWProperties>(Arena*);
 template<> ::CUserMsg_ParticleManager_SetParticleNamedValueContext* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetParticleNamedValueContext>(Arena*);
 template<> ::CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext>(Arena*);
@@ -451,6 +462,7 @@ template<> ::CUserMsg_ParticleManager_SetSceneObjectTintAndDesat* Arena::CreateM
 template<> ::CUserMsg_ParticleManager_SetTextureAttribute* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetTextureAttribute>(Arena*);
 template<> ::CUserMsg_ParticleManager_SetVData* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_SetVData>(Arena*);
 template<> ::CUserMsg_ParticleManager_UpdateEntityPosition* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_UpdateEntityPosition>(Arena*);
+template<> ::CUserMsg_ParticleManager_UpdateFan* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_UpdateFan>(Arena*);
 template<> ::CUserMsg_ParticleManager_UpdateParticleEnt* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_UpdateParticleEnt>(Arena*);
 template<> ::CUserMsg_ParticleManager_UpdateParticleFallback* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_UpdateParticleFallback>(Arena*);
 template<> ::CUserMsg_ParticleManager_UpdateParticleFwd_OBSOLETE* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_UpdateParticleFwd_OBSOLETE>(Arena*);
@@ -499,7 +511,6 @@ enum EBaseUserMessages : int {
   UM_AnimGraphUpdate = 149,
   UM_HapticsManagerPulse = 150,
   UM_HapticsManagerEffect = 151,
-  UM_CommandQueueState = 152,
   UM_UpdateCssClasses = 153,
   UM_ServerFrameTime = 154,
   UM_LagCompensationError = 155,
@@ -624,11 +635,14 @@ enum PARTICLE_MESSAGE : int {
   GAME_PARTICLE_MANAGER_EVENT_CREATE_PHYSICS_SIM = 32,
   GAME_PARTICLE_MANAGER_EVENT_DESTROY_PHYSICS_SIM = 33,
   GAME_PARTICLE_MANAGER_EVENT_SET_VDATA = 34,
-  GAME_PARTICLE_MANAGER_EVENT_SET_MATERIAL_OVERRIDE = 35
+  GAME_PARTICLE_MANAGER_EVENT_SET_MATERIAL_OVERRIDE = 35,
+  GAME_PARTICLE_MANAGER_EVENT_ADD_FAN = 36,
+  GAME_PARTICLE_MANAGER_EVENT_UPDATE_FAN = 37,
+  GAME_PARTICLE_MANAGER_EVENT_SET_CLUSTER_GROWTH = 38
 };
 bool PARTICLE_MESSAGE_IsValid(int value);
 constexpr PARTICLE_MESSAGE PARTICLE_MESSAGE_MIN = GAME_PARTICLE_MANAGER_EVENT_CREATE;
-constexpr PARTICLE_MESSAGE PARTICLE_MESSAGE_MAX = GAME_PARTICLE_MANAGER_EVENT_SET_MATERIAL_OVERRIDE;
+constexpr PARTICLE_MESSAGE PARTICLE_MESSAGE_MAX = GAME_PARTICLE_MANAGER_EVENT_SET_CLUSTER_GROWTH;
 constexpr int PARTICLE_MESSAGE_ARRAYSIZE = PARTICLE_MESSAGE_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* PARTICLE_MESSAGE_descriptor();
@@ -14991,6 +15005,816 @@ class CUserMsg_ParticleManager_SetMaterialOverride :
 };
 // -------------------------------------------------------------------
 
+class CUserMsg_ParticleManager_AddFan :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.AddFan) */ {
+ public:
+  inline CUserMsg_ParticleManager_AddFan() : CUserMsg_ParticleManager_AddFan(nullptr) {}
+  ~CUserMsg_ParticleManager_AddFan() override;
+  explicit PROTOBUF_CONSTEXPR CUserMsg_ParticleManager_AddFan(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CUserMsg_ParticleManager_AddFan(const CUserMsg_ParticleManager_AddFan& from);
+  CUserMsg_ParticleManager_AddFan(CUserMsg_ParticleManager_AddFan&& from) noexcept
+    : CUserMsg_ParticleManager_AddFan() {
+    *this = ::std::move(from);
+  }
+
+  inline CUserMsg_ParticleManager_AddFan& operator=(const CUserMsg_ParticleManager_AddFan& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CUserMsg_ParticleManager_AddFan& operator=(CUserMsg_ParticleManager_AddFan&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CUserMsg_ParticleManager_AddFan& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CUserMsg_ParticleManager_AddFan* internal_default_instance() {
+    return reinterpret_cast<const CUserMsg_ParticleManager_AddFan*>(
+               &_CUserMsg_ParticleManager_AddFan_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    76;
+
+  friend void swap(CUserMsg_ParticleManager_AddFan& a, CUserMsg_ParticleManager_AddFan& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CUserMsg_ParticleManager_AddFan* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CUserMsg_ParticleManager_AddFan* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CUserMsg_ParticleManager_AddFan* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CUserMsg_ParticleManager_AddFan>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CUserMsg_ParticleManager_AddFan& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CUserMsg_ParticleManager_AddFan& from) {
+    CUserMsg_ParticleManager_AddFan::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CUserMsg_ParticleManager_AddFan* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CUserMsg_ParticleManager.AddFan";
+  }
+  protected:
+  explicit CUserMsg_ParticleManager_AddFan(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kFanForceCurveFieldNumber = 8,
+    kBoundsMinsFieldNumber = 2,
+    kBoundsMaxsFieldNumber = 3,
+    kFanOriginFieldNumber = 4,
+    kFanOriginOffsetFieldNumber = 5,
+    kFanDirectionFieldNumber = 6,
+    kActiveFieldNumber = 1,
+    kFalloffFieldNumber = 9,
+    kPullTowardsPointFieldNumber = 10,
+    kForceFieldNumber = 7,
+    kCurveMinDistFieldNumber = 11,
+    kCurveMaxDistFieldNumber = 12,
+  };
+  // optional string fan_force_curve = 8;
+  bool has_fan_force_curve() const;
+  private:
+  bool _internal_has_fan_force_curve() const;
+  public:
+  void clear_fan_force_curve();
+  const std::string& fan_force_curve() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_fan_force_curve(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_fan_force_curve();
+  PROTOBUF_NODISCARD std::string* release_fan_force_curve();
+  void set_allocated_fan_force_curve(std::string* fan_force_curve);
+  private:
+  const std::string& _internal_fan_force_curve() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_fan_force_curve(const std::string& value);
+  std::string* _internal_mutable_fan_force_curve();
+  public:
+
+  // optional .CMsgVector bounds_mins = 2;
+  bool has_bounds_mins() const;
+  private:
+  bool _internal_has_bounds_mins() const;
+  public:
+  void clear_bounds_mins();
+  const ::CMsgVector& bounds_mins() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_bounds_mins();
+  ::CMsgVector* mutable_bounds_mins();
+  void set_allocated_bounds_mins(::CMsgVector* bounds_mins);
+  private:
+  const ::CMsgVector& _internal_bounds_mins() const;
+  ::CMsgVector* _internal_mutable_bounds_mins();
+  public:
+  void unsafe_arena_set_allocated_bounds_mins(
+      ::CMsgVector* bounds_mins);
+  ::CMsgVector* unsafe_arena_release_bounds_mins();
+
+  // optional .CMsgVector bounds_maxs = 3;
+  bool has_bounds_maxs() const;
+  private:
+  bool _internal_has_bounds_maxs() const;
+  public:
+  void clear_bounds_maxs();
+  const ::CMsgVector& bounds_maxs() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_bounds_maxs();
+  ::CMsgVector* mutable_bounds_maxs();
+  void set_allocated_bounds_maxs(::CMsgVector* bounds_maxs);
+  private:
+  const ::CMsgVector& _internal_bounds_maxs() const;
+  ::CMsgVector* _internal_mutable_bounds_maxs();
+  public:
+  void unsafe_arena_set_allocated_bounds_maxs(
+      ::CMsgVector* bounds_maxs);
+  ::CMsgVector* unsafe_arena_release_bounds_maxs();
+
+  // optional .CMsgVector fan_origin = 4;
+  bool has_fan_origin() const;
+  private:
+  bool _internal_has_fan_origin() const;
+  public:
+  void clear_fan_origin();
+  const ::CMsgVector& fan_origin() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_fan_origin();
+  ::CMsgVector* mutable_fan_origin();
+  void set_allocated_fan_origin(::CMsgVector* fan_origin);
+  private:
+  const ::CMsgVector& _internal_fan_origin() const;
+  ::CMsgVector* _internal_mutable_fan_origin();
+  public:
+  void unsafe_arena_set_allocated_fan_origin(
+      ::CMsgVector* fan_origin);
+  ::CMsgVector* unsafe_arena_release_fan_origin();
+
+  // optional .CMsgVector fan_origin_offset = 5;
+  bool has_fan_origin_offset() const;
+  private:
+  bool _internal_has_fan_origin_offset() const;
+  public:
+  void clear_fan_origin_offset();
+  const ::CMsgVector& fan_origin_offset() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_fan_origin_offset();
+  ::CMsgVector* mutable_fan_origin_offset();
+  void set_allocated_fan_origin_offset(::CMsgVector* fan_origin_offset);
+  private:
+  const ::CMsgVector& _internal_fan_origin_offset() const;
+  ::CMsgVector* _internal_mutable_fan_origin_offset();
+  public:
+  void unsafe_arena_set_allocated_fan_origin_offset(
+      ::CMsgVector* fan_origin_offset);
+  ::CMsgVector* unsafe_arena_release_fan_origin_offset();
+
+  // optional .CMsgVector fan_direction = 6;
+  bool has_fan_direction() const;
+  private:
+  bool _internal_has_fan_direction() const;
+  public:
+  void clear_fan_direction();
+  const ::CMsgVector& fan_direction() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_fan_direction();
+  ::CMsgVector* mutable_fan_direction();
+  void set_allocated_fan_direction(::CMsgVector* fan_direction);
+  private:
+  const ::CMsgVector& _internal_fan_direction() const;
+  ::CMsgVector* _internal_mutable_fan_direction();
+  public:
+  void unsafe_arena_set_allocated_fan_direction(
+      ::CMsgVector* fan_direction);
+  ::CMsgVector* unsafe_arena_release_fan_direction();
+
+  // optional bool active = 1;
+  bool has_active() const;
+  private:
+  bool _internal_has_active() const;
+  public:
+  void clear_active();
+  bool active() const;
+  void set_active(bool value);
+  private:
+  bool _internal_active() const;
+  void _internal_set_active(bool value);
+  public:
+
+  // optional bool falloff = 9;
+  bool has_falloff() const;
+  private:
+  bool _internal_has_falloff() const;
+  public:
+  void clear_falloff();
+  bool falloff() const;
+  void set_falloff(bool value);
+  private:
+  bool _internal_falloff() const;
+  void _internal_set_falloff(bool value);
+  public:
+
+  // optional bool pull_towards_point = 10;
+  bool has_pull_towards_point() const;
+  private:
+  bool _internal_has_pull_towards_point() const;
+  public:
+  void clear_pull_towards_point();
+  bool pull_towards_point() const;
+  void set_pull_towards_point(bool value);
+  private:
+  bool _internal_pull_towards_point() const;
+  void _internal_set_pull_towards_point(bool value);
+  public:
+
+  // optional float force = 7;
+  bool has_force() const;
+  private:
+  bool _internal_has_force() const;
+  public:
+  void clear_force();
+  float force() const;
+  void set_force(float value);
+  private:
+  float _internal_force() const;
+  void _internal_set_force(float value);
+  public:
+
+  // optional float curve_min_dist = 11;
+  bool has_curve_min_dist() const;
+  private:
+  bool _internal_has_curve_min_dist() const;
+  public:
+  void clear_curve_min_dist();
+  float curve_min_dist() const;
+  void set_curve_min_dist(float value);
+  private:
+  float _internal_curve_min_dist() const;
+  void _internal_set_curve_min_dist(float value);
+  public:
+
+  // optional float curve_max_dist = 12;
+  bool has_curve_max_dist() const;
+  private:
+  bool _internal_has_curve_max_dist() const;
+  public:
+  void clear_curve_max_dist();
+  float curve_max_dist() const;
+  void set_curve_max_dist(float value);
+  private:
+  float _internal_curve_max_dist() const;
+  void _internal_set_curve_max_dist(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CUserMsg_ParticleManager.AddFan)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr fan_force_curve_;
+    ::CMsgVector* bounds_mins_;
+    ::CMsgVector* bounds_maxs_;
+    ::CMsgVector* fan_origin_;
+    ::CMsgVector* fan_origin_offset_;
+    ::CMsgVector* fan_direction_;
+    bool active_;
+    bool falloff_;
+    bool pull_towards_point_;
+    float force_;
+    float curve_min_dist_;
+    float curve_max_dist_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_usermessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CUserMsg_ParticleManager_UpdateFan :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.UpdateFan) */ {
+ public:
+  inline CUserMsg_ParticleManager_UpdateFan() : CUserMsg_ParticleManager_UpdateFan(nullptr) {}
+  ~CUserMsg_ParticleManager_UpdateFan() override;
+  explicit PROTOBUF_CONSTEXPR CUserMsg_ParticleManager_UpdateFan(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CUserMsg_ParticleManager_UpdateFan(const CUserMsg_ParticleManager_UpdateFan& from);
+  CUserMsg_ParticleManager_UpdateFan(CUserMsg_ParticleManager_UpdateFan&& from) noexcept
+    : CUserMsg_ParticleManager_UpdateFan() {
+    *this = ::std::move(from);
+  }
+
+  inline CUserMsg_ParticleManager_UpdateFan& operator=(const CUserMsg_ParticleManager_UpdateFan& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CUserMsg_ParticleManager_UpdateFan& operator=(CUserMsg_ParticleManager_UpdateFan&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CUserMsg_ParticleManager_UpdateFan& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CUserMsg_ParticleManager_UpdateFan* internal_default_instance() {
+    return reinterpret_cast<const CUserMsg_ParticleManager_UpdateFan*>(
+               &_CUserMsg_ParticleManager_UpdateFan_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    77;
+
+  friend void swap(CUserMsg_ParticleManager_UpdateFan& a, CUserMsg_ParticleManager_UpdateFan& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CUserMsg_ParticleManager_UpdateFan* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CUserMsg_ParticleManager_UpdateFan* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CUserMsg_ParticleManager_UpdateFan* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CUserMsg_ParticleManager_UpdateFan>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CUserMsg_ParticleManager_UpdateFan& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CUserMsg_ParticleManager_UpdateFan& from) {
+    CUserMsg_ParticleManager_UpdateFan::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CUserMsg_ParticleManager_UpdateFan* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CUserMsg_ParticleManager.UpdateFan";
+  }
+  protected:
+  explicit CUserMsg_ParticleManager_UpdateFan(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kFanOriginFieldNumber = 2,
+    kFanOriginOffsetFieldNumber = 3,
+    kFanDirectionFieldNumber = 4,
+    kBoundsMinsFieldNumber = 5,
+    kBoundsMaxsFieldNumber = 6,
+    kActiveFieldNumber = 1,
+    kFanRampRatioFieldNumber = 7,
+  };
+  // optional .CMsgVector fan_origin = 2;
+  bool has_fan_origin() const;
+  private:
+  bool _internal_has_fan_origin() const;
+  public:
+  void clear_fan_origin();
+  const ::CMsgVector& fan_origin() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_fan_origin();
+  ::CMsgVector* mutable_fan_origin();
+  void set_allocated_fan_origin(::CMsgVector* fan_origin);
+  private:
+  const ::CMsgVector& _internal_fan_origin() const;
+  ::CMsgVector* _internal_mutable_fan_origin();
+  public:
+  void unsafe_arena_set_allocated_fan_origin(
+      ::CMsgVector* fan_origin);
+  ::CMsgVector* unsafe_arena_release_fan_origin();
+
+  // optional .CMsgVector fan_origin_offset = 3;
+  bool has_fan_origin_offset() const;
+  private:
+  bool _internal_has_fan_origin_offset() const;
+  public:
+  void clear_fan_origin_offset();
+  const ::CMsgVector& fan_origin_offset() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_fan_origin_offset();
+  ::CMsgVector* mutable_fan_origin_offset();
+  void set_allocated_fan_origin_offset(::CMsgVector* fan_origin_offset);
+  private:
+  const ::CMsgVector& _internal_fan_origin_offset() const;
+  ::CMsgVector* _internal_mutable_fan_origin_offset();
+  public:
+  void unsafe_arena_set_allocated_fan_origin_offset(
+      ::CMsgVector* fan_origin_offset);
+  ::CMsgVector* unsafe_arena_release_fan_origin_offset();
+
+  // optional .CMsgVector fan_direction = 4;
+  bool has_fan_direction() const;
+  private:
+  bool _internal_has_fan_direction() const;
+  public:
+  void clear_fan_direction();
+  const ::CMsgVector& fan_direction() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_fan_direction();
+  ::CMsgVector* mutable_fan_direction();
+  void set_allocated_fan_direction(::CMsgVector* fan_direction);
+  private:
+  const ::CMsgVector& _internal_fan_direction() const;
+  ::CMsgVector* _internal_mutable_fan_direction();
+  public:
+  void unsafe_arena_set_allocated_fan_direction(
+      ::CMsgVector* fan_direction);
+  ::CMsgVector* unsafe_arena_release_fan_direction();
+
+  // optional .CMsgVector bounds_mins = 5;
+  bool has_bounds_mins() const;
+  private:
+  bool _internal_has_bounds_mins() const;
+  public:
+  void clear_bounds_mins();
+  const ::CMsgVector& bounds_mins() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_bounds_mins();
+  ::CMsgVector* mutable_bounds_mins();
+  void set_allocated_bounds_mins(::CMsgVector* bounds_mins);
+  private:
+  const ::CMsgVector& _internal_bounds_mins() const;
+  ::CMsgVector* _internal_mutable_bounds_mins();
+  public:
+  void unsafe_arena_set_allocated_bounds_mins(
+      ::CMsgVector* bounds_mins);
+  ::CMsgVector* unsafe_arena_release_bounds_mins();
+
+  // optional .CMsgVector bounds_maxs = 6;
+  bool has_bounds_maxs() const;
+  private:
+  bool _internal_has_bounds_maxs() const;
+  public:
+  void clear_bounds_maxs();
+  const ::CMsgVector& bounds_maxs() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_bounds_maxs();
+  ::CMsgVector* mutable_bounds_maxs();
+  void set_allocated_bounds_maxs(::CMsgVector* bounds_maxs);
+  private:
+  const ::CMsgVector& _internal_bounds_maxs() const;
+  ::CMsgVector* _internal_mutable_bounds_maxs();
+  public:
+  void unsafe_arena_set_allocated_bounds_maxs(
+      ::CMsgVector* bounds_maxs);
+  ::CMsgVector* unsafe_arena_release_bounds_maxs();
+
+  // optional bool active = 1;
+  bool has_active() const;
+  private:
+  bool _internal_has_active() const;
+  public:
+  void clear_active();
+  bool active() const;
+  void set_active(bool value);
+  private:
+  bool _internal_active() const;
+  void _internal_set_active(bool value);
+  public:
+
+  // optional float fan_ramp_ratio = 7;
+  bool has_fan_ramp_ratio() const;
+  private:
+  bool _internal_has_fan_ramp_ratio() const;
+  public:
+  void clear_fan_ramp_ratio();
+  float fan_ramp_ratio() const;
+  void set_fan_ramp_ratio(float value);
+  private:
+  float _internal_fan_ramp_ratio() const;
+  void _internal_set_fan_ramp_ratio(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CUserMsg_ParticleManager.UpdateFan)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::CMsgVector* fan_origin_;
+    ::CMsgVector* fan_origin_offset_;
+    ::CMsgVector* fan_direction_;
+    ::CMsgVector* bounds_mins_;
+    ::CMsgVector* bounds_maxs_;
+    bool active_;
+    float fan_ramp_ratio_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_usermessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CUserMsg_ParticleManager_SetParticleClusterGrowth :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager.SetParticleClusterGrowth) */ {
+ public:
+  inline CUserMsg_ParticleManager_SetParticleClusterGrowth() : CUserMsg_ParticleManager_SetParticleClusterGrowth(nullptr) {}
+  ~CUserMsg_ParticleManager_SetParticleClusterGrowth() override;
+  explicit PROTOBUF_CONSTEXPR CUserMsg_ParticleManager_SetParticleClusterGrowth(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CUserMsg_ParticleManager_SetParticleClusterGrowth(const CUserMsg_ParticleManager_SetParticleClusterGrowth& from);
+  CUserMsg_ParticleManager_SetParticleClusterGrowth(CUserMsg_ParticleManager_SetParticleClusterGrowth&& from) noexcept
+    : CUserMsg_ParticleManager_SetParticleClusterGrowth() {
+    *this = ::std::move(from);
+  }
+
+  inline CUserMsg_ParticleManager_SetParticleClusterGrowth& operator=(const CUserMsg_ParticleManager_SetParticleClusterGrowth& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CUserMsg_ParticleManager_SetParticleClusterGrowth& operator=(CUserMsg_ParticleManager_SetParticleClusterGrowth&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CUserMsg_ParticleManager_SetParticleClusterGrowth& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CUserMsg_ParticleManager_SetParticleClusterGrowth* internal_default_instance() {
+    return reinterpret_cast<const CUserMsg_ParticleManager_SetParticleClusterGrowth*>(
+               &_CUserMsg_ParticleManager_SetParticleClusterGrowth_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    78;
+
+  friend void swap(CUserMsg_ParticleManager_SetParticleClusterGrowth& a, CUserMsg_ParticleManager_SetParticleClusterGrowth& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CUserMsg_ParticleManager_SetParticleClusterGrowth* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CUserMsg_ParticleManager_SetParticleClusterGrowth* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CUserMsg_ParticleManager_SetParticleClusterGrowth* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CUserMsg_ParticleManager_SetParticleClusterGrowth>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CUserMsg_ParticleManager_SetParticleClusterGrowth& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CUserMsg_ParticleManager_SetParticleClusterGrowth& from) {
+    CUserMsg_ParticleManager_SetParticleClusterGrowth::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CUserMsg_ParticleManager_SetParticleClusterGrowth* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CUserMsg_ParticleManager.SetParticleClusterGrowth";
+  }
+  protected:
+  explicit CUserMsg_ParticleManager_SetParticleClusterGrowth(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kOriginFieldNumber = 2,
+    kDurationFieldNumber = 1,
+  };
+  // optional .CMsgVector origin = 2;
+  bool has_origin() const;
+  private:
+  bool _internal_has_origin() const;
+  public:
+  void clear_origin();
+  const ::CMsgVector& origin() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_origin();
+  ::CMsgVector* mutable_origin();
+  void set_allocated_origin(::CMsgVector* origin);
+  private:
+  const ::CMsgVector& _internal_origin() const;
+  ::CMsgVector* _internal_mutable_origin();
+  public:
+  void unsafe_arena_set_allocated_origin(
+      ::CMsgVector* origin);
+  ::CMsgVector* unsafe_arena_release_origin();
+
+  // optional float duration = 1;
+  bool has_duration() const;
+  private:
+  bool _internal_has_duration() const;
+  public:
+  void clear_duration();
+  float duration() const;
+  void set_duration(float value);
+  private:
+  float _internal_duration() const;
+  void _internal_set_duration(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CUserMsg_ParticleManager.SetParticleClusterGrowth)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::CMsgVector* origin_;
+    float duration_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_usermessages_2eproto;
+};
+// -------------------------------------------------------------------
+
 class CUserMsg_ParticleManager :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMsg_ParticleManager) */ {
  public:
@@ -15046,7 +15870,7 @@ class CUserMsg_ParticleManager :
                &_CUserMsg_ParticleManager_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    76;
+    79;
 
   friend void swap(CUserMsg_ParticleManager& a, CUserMsg_ParticleManager& b) {
     a.Swap(&b);
@@ -15151,6 +15975,9 @@ class CUserMsg_ParticleManager :
   typedef CUserMsg_ParticleManager_DestroyPhysicsSim DestroyPhysicsSim;
   typedef CUserMsg_ParticleManager_SetVData SetVData;
   typedef CUserMsg_ParticleManager_SetMaterialOverride SetMaterialOverride;
+  typedef CUserMsg_ParticleManager_AddFan AddFan;
+  typedef CUserMsg_ParticleManager_UpdateFan UpdateFan;
+  typedef CUserMsg_ParticleManager_SetParticleClusterGrowth SetParticleClusterGrowth;
 
   // accessors -------------------------------------------------------
 
@@ -15190,6 +16017,9 @@ class CUserMsg_ParticleManager :
     kDestroyPhysicsSimFieldNumber = 36,
     kSetVdataFieldNumber = 37,
     kSetMaterialOverrideFieldNumber = 38,
+    kAddFanFieldNumber = 39,
+    kUpdateFanFieldNumber = 40,
+    kSetParticleClusterGrowthFieldNumber = 41,
     kTypeFieldNumber = 1,
     kIndexFieldNumber = 2,
   };
@@ -15823,6 +16653,60 @@ class CUserMsg_ParticleManager :
       ::CUserMsg_ParticleManager_SetMaterialOverride* set_material_override);
   ::CUserMsg_ParticleManager_SetMaterialOverride* unsafe_arena_release_set_material_override();
 
+  // optional .CUserMsg_ParticleManager.AddFan add_fan = 39;
+  bool has_add_fan() const;
+  private:
+  bool _internal_has_add_fan() const;
+  public:
+  void clear_add_fan();
+  const ::CUserMsg_ParticleManager_AddFan& add_fan() const;
+  PROTOBUF_NODISCARD ::CUserMsg_ParticleManager_AddFan* release_add_fan();
+  ::CUserMsg_ParticleManager_AddFan* mutable_add_fan();
+  void set_allocated_add_fan(::CUserMsg_ParticleManager_AddFan* add_fan);
+  private:
+  const ::CUserMsg_ParticleManager_AddFan& _internal_add_fan() const;
+  ::CUserMsg_ParticleManager_AddFan* _internal_mutable_add_fan();
+  public:
+  void unsafe_arena_set_allocated_add_fan(
+      ::CUserMsg_ParticleManager_AddFan* add_fan);
+  ::CUserMsg_ParticleManager_AddFan* unsafe_arena_release_add_fan();
+
+  // optional .CUserMsg_ParticleManager.UpdateFan update_fan = 40;
+  bool has_update_fan() const;
+  private:
+  bool _internal_has_update_fan() const;
+  public:
+  void clear_update_fan();
+  const ::CUserMsg_ParticleManager_UpdateFan& update_fan() const;
+  PROTOBUF_NODISCARD ::CUserMsg_ParticleManager_UpdateFan* release_update_fan();
+  ::CUserMsg_ParticleManager_UpdateFan* mutable_update_fan();
+  void set_allocated_update_fan(::CUserMsg_ParticleManager_UpdateFan* update_fan);
+  private:
+  const ::CUserMsg_ParticleManager_UpdateFan& _internal_update_fan() const;
+  ::CUserMsg_ParticleManager_UpdateFan* _internal_mutable_update_fan();
+  public:
+  void unsafe_arena_set_allocated_update_fan(
+      ::CUserMsg_ParticleManager_UpdateFan* update_fan);
+  ::CUserMsg_ParticleManager_UpdateFan* unsafe_arena_release_update_fan();
+
+  // optional .CUserMsg_ParticleManager.SetParticleClusterGrowth set_particle_cluster_growth = 41;
+  bool has_set_particle_cluster_growth() const;
+  private:
+  bool _internal_has_set_particle_cluster_growth() const;
+  public:
+  void clear_set_particle_cluster_growth();
+  const ::CUserMsg_ParticleManager_SetParticleClusterGrowth& set_particle_cluster_growth() const;
+  PROTOBUF_NODISCARD ::CUserMsg_ParticleManager_SetParticleClusterGrowth* release_set_particle_cluster_growth();
+  ::CUserMsg_ParticleManager_SetParticleClusterGrowth* mutable_set_particle_cluster_growth();
+  void set_allocated_set_particle_cluster_growth(::CUserMsg_ParticleManager_SetParticleClusterGrowth* set_particle_cluster_growth);
+  private:
+  const ::CUserMsg_ParticleManager_SetParticleClusterGrowth& _internal_set_particle_cluster_growth() const;
+  ::CUserMsg_ParticleManager_SetParticleClusterGrowth* _internal_mutable_set_particle_cluster_growth();
+  public:
+  void unsafe_arena_set_allocated_set_particle_cluster_growth(
+      ::CUserMsg_ParticleManager_SetParticleClusterGrowth* set_particle_cluster_growth);
+  ::CUserMsg_ParticleManager_SetParticleClusterGrowth* unsafe_arena_release_set_particle_cluster_growth();
+
   // required .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
   bool has_type() const;
   private:
@@ -16089,6 +16973,9 @@ class CUserMsg_ParticleManager :
     ::CUserMsg_ParticleManager_DestroyPhysicsSim* destroy_physics_sim_;
     ::CUserMsg_ParticleManager_SetVData* set_vdata_;
     ::CUserMsg_ParticleManager_SetMaterialOverride* set_material_override_;
+    ::CUserMsg_ParticleManager_AddFan* add_fan_;
+    ::CUserMsg_ParticleManager_UpdateFan* update_fan_;
+    ::CUserMsg_ParticleManager_SetParticleClusterGrowth* set_particle_cluster_growth_;
     int type_;
     uint32_t index_;
   };
@@ -16152,7 +17039,7 @@ class CUserMsg_HudError :
                &_CUserMsg_HudError_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    77;
+    80;
 
   friend void swap(CUserMsg_HudError& a, CUserMsg_HudError& b) {
     a.Swap(&b);
@@ -16312,7 +17199,7 @@ class CUserMsg_CustomGameEvent :
                &_CUserMsg_CustomGameEvent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    78;
+    81;
 
   friend void swap(CUserMsg_CustomGameEvent& a, CUserMsg_CustomGameEvent& b) {
     a.Swap(&b);
@@ -16497,7 +17384,7 @@ class CUserMessageHapticsManagerPulse :
                &_CUserMessageHapticsManagerPulse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    79;
+    82;
 
   friend void swap(CUserMessageHapticsManagerPulse& a, CUserMessageHapticsManagerPulse& b) {
     a.Swap(&b);
@@ -16702,7 +17589,7 @@ class CUserMessageHapticsManagerEffect :
                &_CUserMessageHapticsManagerEffect_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    80;
+    83;
 
   friend void swap(CUserMessageHapticsManagerEffect& a, CUserMessageHapticsManagerEffect& b) {
     a.Swap(&b);
@@ -16892,7 +17779,7 @@ class CUserMessageAnimStateGraphState :
                &_CUserMessageAnimStateGraphState_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    81;
+    84;
 
   friend void swap(CUserMessageAnimStateGraphState& a, CUserMessageAnimStateGraphState& b) {
     a.Swap(&b);
@@ -17072,7 +17959,7 @@ class CUserMessageUpdateCssClasses :
                &_CUserMessageUpdateCssClasses_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    82;
+    85;
 
   friend void swap(CUserMessageUpdateCssClasses& a, CUserMessageUpdateCssClasses& b) {
     a.Swap(&b);
@@ -17267,7 +18154,7 @@ class CUserMessageServerFrameTime :
                &_CUserMessageServerFrameTime_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    83;
+    86;
 
   friend void swap(CUserMessageServerFrameTime& a, CUserMessageServerFrameTime& b) {
     a.Swap(&b);
@@ -17427,7 +18314,7 @@ class CUserMessageLagCompensationError :
                &_CUserMessageLagCompensationError_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    84;
+    87;
 
   friend void swap(CUserMessageLagCompensationError& a, CUserMessageLagCompensationError& b) {
     a.Swap(&b);
@@ -17587,7 +18474,7 @@ class CUserMessageRequestDllStatus :
                &_CUserMessageRequestDllStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    85;
+    88;
 
   friend void swap(CUserMessageRequestDllStatus& a, CUserMessageRequestDllStatus& b) {
     a.Swap(&b);
@@ -17767,7 +18654,7 @@ class CUserMessageRequestUtilAction :
                &_CUserMessageRequestUtilAction_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    86;
+    89;
 
   friend void swap(CUserMessageRequestUtilAction& a, CUserMessageRequestUtilAction& b) {
     a.Swap(&b);
@@ -17987,7 +18874,7 @@ class CUserMessage_UtilMsg_Response_ItemDetail :
                &_CUserMessage_UtilMsg_Response_ItemDetail_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    87;
+    90;
 
   friend void swap(CUserMessage_UtilMsg_Response_ItemDetail& a, CUserMessage_UtilMsg_Response_ItemDetail& b) {
     a.Swap(&b);
@@ -18197,7 +19084,7 @@ class CUserMessage_UtilMsg_Response :
                &_CUserMessage_UtilMsg_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    88;
+    91;
 
   friend void swap(CUserMessage_UtilMsg_Response& a, CUserMessage_UtilMsg_Response& b) {
     a.Swap(&b);
@@ -18547,7 +19434,7 @@ class CUserMessage_DllStatus_CVDiagnostic :
                &_CUserMessage_DllStatus_CVDiagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    89;
+    92;
 
   friend void swap(CUserMessage_DllStatus_CVDiagnostic& a, CUserMessage_DllStatus_CVDiagnostic& b) {
     a.Swap(&b);
@@ -18757,7 +19644,7 @@ class CUserMessage_DllStatus_CModule :
                &_CUserMessage_DllStatus_CModule_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    90;
+    93;
 
   friend void swap(CUserMessage_DllStatus_CModule& a, CUserMessage_DllStatus_CModule& b) {
     a.Swap(&b);
@@ -18967,7 +19854,7 @@ class CUserMessage_DllStatus :
                &_CUserMessage_DllStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    91;
+    94;
 
   friend void swap(CUserMessage_DllStatus& a, CUserMessage_DllStatus& b) {
     a.Swap(&b);
@@ -19255,7 +20142,7 @@ class CUserMessageRequestInventory :
                &_CUserMessageRequestInventory_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    92;
+    95;
 
   friend void swap(CUserMessageRequestInventory& a, CUserMessageRequestInventory& b) {
     a.Swap(&b);
@@ -19445,7 +20332,7 @@ class CUserMessage_Inventory_Response_InventoryDetail :
                &_CUserMessage_Inventory_Response_InventoryDetail_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    93;
+    96;
 
   friend void swap(CUserMessage_Inventory_Response_InventoryDetail& a, CUserMessage_Inventory_Response_InventoryDetail& b) {
     a.Swap(&b);
@@ -19750,7 +20637,7 @@ class CUserMessage_Inventory_Response :
                &_CUserMessage_Inventory_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    94;
+    97;
 
   friend void swap(CUserMessage_Inventory_Response& a, CUserMessage_Inventory_Response& b) {
     a.Swap(&b);
@@ -20107,7 +20994,7 @@ class CUserMessageRequestDiagnostic_Diagnostic :
                &_CUserMessageRequestDiagnostic_Diagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    95;
+    98;
 
   friend void swap(CUserMessageRequestDiagnostic_Diagnostic& a, CUserMessageRequestDiagnostic_Diagnostic& b) {
     a.Swap(&b);
@@ -20462,7 +21349,7 @@ class CUserMessageRequestDiagnostic :
                &_CUserMessageRequestDiagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    96;
+    99;
 
   friend void swap(CUserMessageRequestDiagnostic& a, CUserMessageRequestDiagnostic& b) {
     a.Swap(&b);
@@ -20628,7 +21515,7 @@ class CUserMessage_Diagnostic_Response_Diagnostic :
                &_CUserMessage_Diagnostic_Response_Diagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    97;
+    100;
 
   friend void swap(CUserMessage_Diagnostic_Response_Diagnostic& a, CUserMessage_Diagnostic_Response_Diagnostic& b) {
     a.Swap(&b);
@@ -21018,7 +21905,7 @@ class CUserMessage_Diagnostic_Response :
                &_CUserMessage_Diagnostic_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    98;
+    101;
 
   friend void swap(CUserMessage_Diagnostic_Response& a, CUserMessage_Diagnostic_Response& b) {
     a.Swap(&b);
@@ -21260,7 +22147,7 @@ class CUserMessage_ExtraUserData :
                &_CUserMessage_ExtraUserData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    99;
+    102;
 
   friend void swap(CUserMessage_ExtraUserData& a, CUserMessage_ExtraUserData& b) {
     a.Swap(&b);
@@ -21502,7 +22389,7 @@ class CUserMessage_NotifyResponseFound_Criteria :
                &_CUserMessage_NotifyResponseFound_Criteria_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    100;
+    103;
 
   friend void swap(CUserMessage_NotifyResponseFound_Criteria& a, CUserMessage_NotifyResponseFound_Criteria& b) {
     a.Swap(&b);
@@ -21682,7 +22569,7 @@ class CUserMessage_NotifyResponseFound :
                &_CUserMessage_NotifyResponseFound_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    101;
+    104;
 
   friend void swap(CUserMessage_NotifyResponseFound& a, CUserMessage_NotifyResponseFound& b) {
     a.Swap(&b);
@@ -22088,7 +22975,7 @@ class CUserMessage_PlayResponseConditional :
                &_CUserMessage_PlayResponseConditional_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    102;
+    105;
 
   friend void swap(CUserMessage_PlayResponseConditional& a, CUserMessage_PlayResponseConditional& b) {
     a.Swap(&b);
@@ -31338,11 +32225,1300 @@ inline void CUserMsg_ParticleManager_SetMaterialOverride::set_include_children(b
 
 // -------------------------------------------------------------------
 
+// CUserMsg_ParticleManager_AddFan
+
+// optional bool active = 1;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_active() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_active() const {
+  return _internal_has_active();
+}
+inline void CUserMsg_ParticleManager_AddFan::clear_active() {
+  _impl_.active_ = false;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline bool CUserMsg_ParticleManager_AddFan::_internal_active() const {
+  return _impl_.active_;
+}
+inline bool CUserMsg_ParticleManager_AddFan::active() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.active)
+  return _internal_active();
+}
+inline void CUserMsg_ParticleManager_AddFan::_internal_set_active(bool value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.active_ = value;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_active(bool value) {
+  _internal_set_active(value);
+  // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.AddFan.active)
+}
+
+// optional .CMsgVector bounds_mins = 2;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_bounds_mins() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.bounds_mins_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_bounds_mins() const {
+  return _internal_has_bounds_mins();
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_AddFan::_internal_bounds_mins() const {
+  const ::CMsgVector* p = _impl_.bounds_mins_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_AddFan::bounds_mins() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.bounds_mins)
+  return _internal_bounds_mins();
+}
+inline void CUserMsg_ParticleManager_AddFan::unsafe_arena_set_allocated_bounds_mins(
+    ::CMsgVector* bounds_mins) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.bounds_mins_);
+  }
+  _impl_.bounds_mins_ = bounds_mins;
+  if (bounds_mins) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.AddFan.bounds_mins)
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::release_bounds_mins() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgVector* temp = _impl_.bounds_mins_;
+  _impl_.bounds_mins_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::unsafe_arena_release_bounds_mins() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.AddFan.bounds_mins)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgVector* temp = _impl_.bounds_mins_;
+  _impl_.bounds_mins_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::_internal_mutable_bounds_mins() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.bounds_mins_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.bounds_mins_ = p;
+  }
+  return _impl_.bounds_mins_;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::mutable_bounds_mins() {
+  ::CMsgVector* _msg = _internal_mutable_bounds_mins();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.AddFan.bounds_mins)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_allocated_bounds_mins(::CMsgVector* bounds_mins) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.bounds_mins_);
+  }
+  if (bounds_mins) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(bounds_mins));
+    if (message_arena != submessage_arena) {
+      bounds_mins = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, bounds_mins, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.bounds_mins_ = bounds_mins;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.AddFan.bounds_mins)
+}
+
+// optional .CMsgVector bounds_maxs = 3;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_bounds_maxs() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.bounds_maxs_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_bounds_maxs() const {
+  return _internal_has_bounds_maxs();
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_AddFan::_internal_bounds_maxs() const {
+  const ::CMsgVector* p = _impl_.bounds_maxs_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_AddFan::bounds_maxs() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.bounds_maxs)
+  return _internal_bounds_maxs();
+}
+inline void CUserMsg_ParticleManager_AddFan::unsafe_arena_set_allocated_bounds_maxs(
+    ::CMsgVector* bounds_maxs) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.bounds_maxs_);
+  }
+  _impl_.bounds_maxs_ = bounds_maxs;
+  if (bounds_maxs) {
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.AddFan.bounds_maxs)
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::release_bounds_maxs() {
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  ::CMsgVector* temp = _impl_.bounds_maxs_;
+  _impl_.bounds_maxs_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::unsafe_arena_release_bounds_maxs() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.AddFan.bounds_maxs)
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  ::CMsgVector* temp = _impl_.bounds_maxs_;
+  _impl_.bounds_maxs_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::_internal_mutable_bounds_maxs() {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  if (_impl_.bounds_maxs_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.bounds_maxs_ = p;
+  }
+  return _impl_.bounds_maxs_;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::mutable_bounds_maxs() {
+  ::CMsgVector* _msg = _internal_mutable_bounds_maxs();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.AddFan.bounds_maxs)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_allocated_bounds_maxs(::CMsgVector* bounds_maxs) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.bounds_maxs_);
+  }
+  if (bounds_maxs) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(bounds_maxs));
+    if (message_arena != submessage_arena) {
+      bounds_maxs = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, bounds_maxs, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  _impl_.bounds_maxs_ = bounds_maxs;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.AddFan.bounds_maxs)
+}
+
+// optional .CMsgVector fan_origin = 4;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_fan_origin() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.fan_origin_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_fan_origin() const {
+  return _internal_has_fan_origin();
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_AddFan::_internal_fan_origin() const {
+  const ::CMsgVector* p = _impl_.fan_origin_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_AddFan::fan_origin() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.fan_origin)
+  return _internal_fan_origin();
+}
+inline void CUserMsg_ParticleManager_AddFan::unsafe_arena_set_allocated_fan_origin(
+    ::CMsgVector* fan_origin) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_origin_);
+  }
+  _impl_.fan_origin_ = fan_origin;
+  if (fan_origin) {
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.AddFan.fan_origin)
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::release_fan_origin() {
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CMsgVector* temp = _impl_.fan_origin_;
+  _impl_.fan_origin_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::unsafe_arena_release_fan_origin() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.AddFan.fan_origin)
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CMsgVector* temp = _impl_.fan_origin_;
+  _impl_.fan_origin_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::_internal_mutable_fan_origin() {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  if (_impl_.fan_origin_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.fan_origin_ = p;
+  }
+  return _impl_.fan_origin_;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::mutable_fan_origin() {
+  ::CMsgVector* _msg = _internal_mutable_fan_origin();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.AddFan.fan_origin)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_allocated_fan_origin(::CMsgVector* fan_origin) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_origin_);
+  }
+  if (fan_origin) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(fan_origin));
+    if (message_arena != submessage_arena) {
+      fan_origin = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, fan_origin, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  _impl_.fan_origin_ = fan_origin;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.AddFan.fan_origin)
+}
+
+// optional .CMsgVector fan_origin_offset = 5;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_fan_origin_offset() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.fan_origin_offset_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_fan_origin_offset() const {
+  return _internal_has_fan_origin_offset();
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_AddFan::_internal_fan_origin_offset() const {
+  const ::CMsgVector* p = _impl_.fan_origin_offset_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_AddFan::fan_origin_offset() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.fan_origin_offset)
+  return _internal_fan_origin_offset();
+}
+inline void CUserMsg_ParticleManager_AddFan::unsafe_arena_set_allocated_fan_origin_offset(
+    ::CMsgVector* fan_origin_offset) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_origin_offset_);
+  }
+  _impl_.fan_origin_offset_ = fan_origin_offset;
+  if (fan_origin_offset) {
+    _impl_._has_bits_[0] |= 0x00000010u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000010u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.AddFan.fan_origin_offset)
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::release_fan_origin_offset() {
+  _impl_._has_bits_[0] &= ~0x00000010u;
+  ::CMsgVector* temp = _impl_.fan_origin_offset_;
+  _impl_.fan_origin_offset_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::unsafe_arena_release_fan_origin_offset() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.AddFan.fan_origin_offset)
+  _impl_._has_bits_[0] &= ~0x00000010u;
+  ::CMsgVector* temp = _impl_.fan_origin_offset_;
+  _impl_.fan_origin_offset_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::_internal_mutable_fan_origin_offset() {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  if (_impl_.fan_origin_offset_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.fan_origin_offset_ = p;
+  }
+  return _impl_.fan_origin_offset_;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::mutable_fan_origin_offset() {
+  ::CMsgVector* _msg = _internal_mutable_fan_origin_offset();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.AddFan.fan_origin_offset)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_allocated_fan_origin_offset(::CMsgVector* fan_origin_offset) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_origin_offset_);
+  }
+  if (fan_origin_offset) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(fan_origin_offset));
+    if (message_arena != submessage_arena) {
+      fan_origin_offset = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, fan_origin_offset, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000010u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000010u;
+  }
+  _impl_.fan_origin_offset_ = fan_origin_offset;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.AddFan.fan_origin_offset)
+}
+
+// optional .CMsgVector fan_direction = 6;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_fan_direction() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.fan_direction_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_fan_direction() const {
+  return _internal_has_fan_direction();
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_AddFan::_internal_fan_direction() const {
+  const ::CMsgVector* p = _impl_.fan_direction_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_AddFan::fan_direction() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.fan_direction)
+  return _internal_fan_direction();
+}
+inline void CUserMsg_ParticleManager_AddFan::unsafe_arena_set_allocated_fan_direction(
+    ::CMsgVector* fan_direction) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_direction_);
+  }
+  _impl_.fan_direction_ = fan_direction;
+  if (fan_direction) {
+    _impl_._has_bits_[0] |= 0x00000020u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000020u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.AddFan.fan_direction)
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::release_fan_direction() {
+  _impl_._has_bits_[0] &= ~0x00000020u;
+  ::CMsgVector* temp = _impl_.fan_direction_;
+  _impl_.fan_direction_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::unsafe_arena_release_fan_direction() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.AddFan.fan_direction)
+  _impl_._has_bits_[0] &= ~0x00000020u;
+  ::CMsgVector* temp = _impl_.fan_direction_;
+  _impl_.fan_direction_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::_internal_mutable_fan_direction() {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  if (_impl_.fan_direction_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.fan_direction_ = p;
+  }
+  return _impl_.fan_direction_;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_AddFan::mutable_fan_direction() {
+  ::CMsgVector* _msg = _internal_mutable_fan_direction();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.AddFan.fan_direction)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_allocated_fan_direction(::CMsgVector* fan_direction) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_direction_);
+  }
+  if (fan_direction) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(fan_direction));
+    if (message_arena != submessage_arena) {
+      fan_direction = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, fan_direction, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000020u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000020u;
+  }
+  _impl_.fan_direction_ = fan_direction;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.AddFan.fan_direction)
+}
+
+// optional float force = 7;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_force() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_force() const {
+  return _internal_has_force();
+}
+inline void CUserMsg_ParticleManager_AddFan::clear_force() {
+  _impl_.force_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000200u;
+}
+inline float CUserMsg_ParticleManager_AddFan::_internal_force() const {
+  return _impl_.force_;
+}
+inline float CUserMsg_ParticleManager_AddFan::force() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.force)
+  return _internal_force();
+}
+inline void CUserMsg_ParticleManager_AddFan::_internal_set_force(float value) {
+  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_.force_ = value;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_force(float value) {
+  _internal_set_force(value);
+  // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.AddFan.force)
+}
+
+// optional string fan_force_curve = 8;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_fan_force_curve() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_fan_force_curve() const {
+  return _internal_has_fan_force_curve();
+}
+inline void CUserMsg_ParticleManager_AddFan::clear_fan_force_curve() {
+  _impl_.fan_force_curve_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CUserMsg_ParticleManager_AddFan::fan_force_curve() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.fan_force_curve)
+  return _internal_fan_force_curve();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CUserMsg_ParticleManager_AddFan::set_fan_force_curve(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.fan_force_curve_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.AddFan.fan_force_curve)
+}
+inline std::string* CUserMsg_ParticleManager_AddFan::mutable_fan_force_curve() {
+  std::string* _s = _internal_mutable_fan_force_curve();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.AddFan.fan_force_curve)
+  return _s;
+}
+inline const std::string& CUserMsg_ParticleManager_AddFan::_internal_fan_force_curve() const {
+  return _impl_.fan_force_curve_.Get();
+}
+inline void CUserMsg_ParticleManager_AddFan::_internal_set_fan_force_curve(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.fan_force_curve_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CUserMsg_ParticleManager_AddFan::_internal_mutable_fan_force_curve() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.fan_force_curve_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CUserMsg_ParticleManager_AddFan::release_fan_force_curve() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.AddFan.fan_force_curve)
+  if (!_internal_has_fan_force_curve()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.fan_force_curve_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.fan_force_curve_.IsDefault()) {
+    _impl_.fan_force_curve_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_allocated_fan_force_curve(std::string* fan_force_curve) {
+  if (fan_force_curve != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.fan_force_curve_.SetAllocated(fan_force_curve, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.fan_force_curve_.IsDefault()) {
+    _impl_.fan_force_curve_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.AddFan.fan_force_curve)
+}
+
+// optional bool falloff = 9;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_falloff() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_falloff() const {
+  return _internal_has_falloff();
+}
+inline void CUserMsg_ParticleManager_AddFan::clear_falloff() {
+  _impl_.falloff_ = false;
+  _impl_._has_bits_[0] &= ~0x00000080u;
+}
+inline bool CUserMsg_ParticleManager_AddFan::_internal_falloff() const {
+  return _impl_.falloff_;
+}
+inline bool CUserMsg_ParticleManager_AddFan::falloff() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.falloff)
+  return _internal_falloff();
+}
+inline void CUserMsg_ParticleManager_AddFan::_internal_set_falloff(bool value) {
+  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_.falloff_ = value;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_falloff(bool value) {
+  _internal_set_falloff(value);
+  // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.AddFan.falloff)
+}
+
+// optional bool pull_towards_point = 10;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_pull_towards_point() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_pull_towards_point() const {
+  return _internal_has_pull_towards_point();
+}
+inline void CUserMsg_ParticleManager_AddFan::clear_pull_towards_point() {
+  _impl_.pull_towards_point_ = false;
+  _impl_._has_bits_[0] &= ~0x00000100u;
+}
+inline bool CUserMsg_ParticleManager_AddFan::_internal_pull_towards_point() const {
+  return _impl_.pull_towards_point_;
+}
+inline bool CUserMsg_ParticleManager_AddFan::pull_towards_point() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.pull_towards_point)
+  return _internal_pull_towards_point();
+}
+inline void CUserMsg_ParticleManager_AddFan::_internal_set_pull_towards_point(bool value) {
+  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_.pull_towards_point_ = value;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_pull_towards_point(bool value) {
+  _internal_set_pull_towards_point(value);
+  // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.AddFan.pull_towards_point)
+}
+
+// optional float curve_min_dist = 11;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_curve_min_dist() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_curve_min_dist() const {
+  return _internal_has_curve_min_dist();
+}
+inline void CUserMsg_ParticleManager_AddFan::clear_curve_min_dist() {
+  _impl_.curve_min_dist_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000400u;
+}
+inline float CUserMsg_ParticleManager_AddFan::_internal_curve_min_dist() const {
+  return _impl_.curve_min_dist_;
+}
+inline float CUserMsg_ParticleManager_AddFan::curve_min_dist() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.curve_min_dist)
+  return _internal_curve_min_dist();
+}
+inline void CUserMsg_ParticleManager_AddFan::_internal_set_curve_min_dist(float value) {
+  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_.curve_min_dist_ = value;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_curve_min_dist(float value) {
+  _internal_set_curve_min_dist(value);
+  // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.AddFan.curve_min_dist)
+}
+
+// optional float curve_max_dist = 12;
+inline bool CUserMsg_ParticleManager_AddFan::_internal_has_curve_max_dist() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  return value;
+}
+inline bool CUserMsg_ParticleManager_AddFan::has_curve_max_dist() const {
+  return _internal_has_curve_max_dist();
+}
+inline void CUserMsg_ParticleManager_AddFan::clear_curve_max_dist() {
+  _impl_.curve_max_dist_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000800u;
+}
+inline float CUserMsg_ParticleManager_AddFan::_internal_curve_max_dist() const {
+  return _impl_.curve_max_dist_;
+}
+inline float CUserMsg_ParticleManager_AddFan::curve_max_dist() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.AddFan.curve_max_dist)
+  return _internal_curve_max_dist();
+}
+inline void CUserMsg_ParticleManager_AddFan::_internal_set_curve_max_dist(float value) {
+  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_.curve_max_dist_ = value;
+}
+inline void CUserMsg_ParticleManager_AddFan::set_curve_max_dist(float value) {
+  _internal_set_curve_max_dist(value);
+  // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.AddFan.curve_max_dist)
+}
+
+// -------------------------------------------------------------------
+
+// CUserMsg_ParticleManager_UpdateFan
+
+// optional bool active = 1;
+inline bool CUserMsg_ParticleManager_UpdateFan::_internal_has_active() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CUserMsg_ParticleManager_UpdateFan::has_active() const {
+  return _internal_has_active();
+}
+inline void CUserMsg_ParticleManager_UpdateFan::clear_active() {
+  _impl_.active_ = false;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline bool CUserMsg_ParticleManager_UpdateFan::_internal_active() const {
+  return _impl_.active_;
+}
+inline bool CUserMsg_ParticleManager_UpdateFan::active() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.UpdateFan.active)
+  return _internal_active();
+}
+inline void CUserMsg_ParticleManager_UpdateFan::_internal_set_active(bool value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.active_ = value;
+}
+inline void CUserMsg_ParticleManager_UpdateFan::set_active(bool value) {
+  _internal_set_active(value);
+  // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.UpdateFan.active)
+}
+
+// optional .CMsgVector fan_origin = 2;
+inline bool CUserMsg_ParticleManager_UpdateFan::_internal_has_fan_origin() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.fan_origin_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager_UpdateFan::has_fan_origin() const {
+  return _internal_has_fan_origin();
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_UpdateFan::_internal_fan_origin() const {
+  const ::CMsgVector* p = _impl_.fan_origin_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_UpdateFan::fan_origin() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.UpdateFan.fan_origin)
+  return _internal_fan_origin();
+}
+inline void CUserMsg_ParticleManager_UpdateFan::unsafe_arena_set_allocated_fan_origin(
+    ::CMsgVector* fan_origin) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_origin_);
+  }
+  _impl_.fan_origin_ = fan_origin;
+  if (fan_origin) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.UpdateFan.fan_origin)
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::release_fan_origin() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgVector* temp = _impl_.fan_origin_;
+  _impl_.fan_origin_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::unsafe_arena_release_fan_origin() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.UpdateFan.fan_origin)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgVector* temp = _impl_.fan_origin_;
+  _impl_.fan_origin_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::_internal_mutable_fan_origin() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.fan_origin_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.fan_origin_ = p;
+  }
+  return _impl_.fan_origin_;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::mutable_fan_origin() {
+  ::CMsgVector* _msg = _internal_mutable_fan_origin();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.UpdateFan.fan_origin)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager_UpdateFan::set_allocated_fan_origin(::CMsgVector* fan_origin) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_origin_);
+  }
+  if (fan_origin) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(fan_origin));
+    if (message_arena != submessage_arena) {
+      fan_origin = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, fan_origin, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.fan_origin_ = fan_origin;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.UpdateFan.fan_origin)
+}
+
+// optional .CMsgVector fan_origin_offset = 3;
+inline bool CUserMsg_ParticleManager_UpdateFan::_internal_has_fan_origin_offset() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.fan_origin_offset_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager_UpdateFan::has_fan_origin_offset() const {
+  return _internal_has_fan_origin_offset();
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_UpdateFan::_internal_fan_origin_offset() const {
+  const ::CMsgVector* p = _impl_.fan_origin_offset_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_UpdateFan::fan_origin_offset() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.UpdateFan.fan_origin_offset)
+  return _internal_fan_origin_offset();
+}
+inline void CUserMsg_ParticleManager_UpdateFan::unsafe_arena_set_allocated_fan_origin_offset(
+    ::CMsgVector* fan_origin_offset) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_origin_offset_);
+  }
+  _impl_.fan_origin_offset_ = fan_origin_offset;
+  if (fan_origin_offset) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.UpdateFan.fan_origin_offset)
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::release_fan_origin_offset() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgVector* temp = _impl_.fan_origin_offset_;
+  _impl_.fan_origin_offset_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::unsafe_arena_release_fan_origin_offset() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.UpdateFan.fan_origin_offset)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgVector* temp = _impl_.fan_origin_offset_;
+  _impl_.fan_origin_offset_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::_internal_mutable_fan_origin_offset() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.fan_origin_offset_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.fan_origin_offset_ = p;
+  }
+  return _impl_.fan_origin_offset_;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::mutable_fan_origin_offset() {
+  ::CMsgVector* _msg = _internal_mutable_fan_origin_offset();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.UpdateFan.fan_origin_offset)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager_UpdateFan::set_allocated_fan_origin_offset(::CMsgVector* fan_origin_offset) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_origin_offset_);
+  }
+  if (fan_origin_offset) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(fan_origin_offset));
+    if (message_arena != submessage_arena) {
+      fan_origin_offset = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, fan_origin_offset, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.fan_origin_offset_ = fan_origin_offset;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.UpdateFan.fan_origin_offset)
+}
+
+// optional .CMsgVector fan_direction = 4;
+inline bool CUserMsg_ParticleManager_UpdateFan::_internal_has_fan_direction() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.fan_direction_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager_UpdateFan::has_fan_direction() const {
+  return _internal_has_fan_direction();
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_UpdateFan::_internal_fan_direction() const {
+  const ::CMsgVector* p = _impl_.fan_direction_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_UpdateFan::fan_direction() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.UpdateFan.fan_direction)
+  return _internal_fan_direction();
+}
+inline void CUserMsg_ParticleManager_UpdateFan::unsafe_arena_set_allocated_fan_direction(
+    ::CMsgVector* fan_direction) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_direction_);
+  }
+  _impl_.fan_direction_ = fan_direction;
+  if (fan_direction) {
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.UpdateFan.fan_direction)
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::release_fan_direction() {
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  ::CMsgVector* temp = _impl_.fan_direction_;
+  _impl_.fan_direction_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::unsafe_arena_release_fan_direction() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.UpdateFan.fan_direction)
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  ::CMsgVector* temp = _impl_.fan_direction_;
+  _impl_.fan_direction_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::_internal_mutable_fan_direction() {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  if (_impl_.fan_direction_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.fan_direction_ = p;
+  }
+  return _impl_.fan_direction_;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::mutable_fan_direction() {
+  ::CMsgVector* _msg = _internal_mutable_fan_direction();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.UpdateFan.fan_direction)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager_UpdateFan::set_allocated_fan_direction(::CMsgVector* fan_direction) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.fan_direction_);
+  }
+  if (fan_direction) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(fan_direction));
+    if (message_arena != submessage_arena) {
+      fan_direction = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, fan_direction, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  _impl_.fan_direction_ = fan_direction;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.UpdateFan.fan_direction)
+}
+
+// optional float fan_ramp_ratio = 7;
+inline bool CUserMsg_ParticleManager_UpdateFan::_internal_has_fan_ramp_ratio() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CUserMsg_ParticleManager_UpdateFan::has_fan_ramp_ratio() const {
+  return _internal_has_fan_ramp_ratio();
+}
+inline void CUserMsg_ParticleManager_UpdateFan::clear_fan_ramp_ratio() {
+  _impl_.fan_ramp_ratio_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline float CUserMsg_ParticleManager_UpdateFan::_internal_fan_ramp_ratio() const {
+  return _impl_.fan_ramp_ratio_;
+}
+inline float CUserMsg_ParticleManager_UpdateFan::fan_ramp_ratio() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.UpdateFan.fan_ramp_ratio)
+  return _internal_fan_ramp_ratio();
+}
+inline void CUserMsg_ParticleManager_UpdateFan::_internal_set_fan_ramp_ratio(float value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.fan_ramp_ratio_ = value;
+}
+inline void CUserMsg_ParticleManager_UpdateFan::set_fan_ramp_ratio(float value) {
+  _internal_set_fan_ramp_ratio(value);
+  // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.UpdateFan.fan_ramp_ratio)
+}
+
+// optional .CMsgVector bounds_mins = 5;
+inline bool CUserMsg_ParticleManager_UpdateFan::_internal_has_bounds_mins() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.bounds_mins_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager_UpdateFan::has_bounds_mins() const {
+  return _internal_has_bounds_mins();
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_UpdateFan::_internal_bounds_mins() const {
+  const ::CMsgVector* p = _impl_.bounds_mins_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_UpdateFan::bounds_mins() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.UpdateFan.bounds_mins)
+  return _internal_bounds_mins();
+}
+inline void CUserMsg_ParticleManager_UpdateFan::unsafe_arena_set_allocated_bounds_mins(
+    ::CMsgVector* bounds_mins) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.bounds_mins_);
+  }
+  _impl_.bounds_mins_ = bounds_mins;
+  if (bounds_mins) {
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.UpdateFan.bounds_mins)
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::release_bounds_mins() {
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CMsgVector* temp = _impl_.bounds_mins_;
+  _impl_.bounds_mins_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::unsafe_arena_release_bounds_mins() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.UpdateFan.bounds_mins)
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CMsgVector* temp = _impl_.bounds_mins_;
+  _impl_.bounds_mins_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::_internal_mutable_bounds_mins() {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  if (_impl_.bounds_mins_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.bounds_mins_ = p;
+  }
+  return _impl_.bounds_mins_;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::mutable_bounds_mins() {
+  ::CMsgVector* _msg = _internal_mutable_bounds_mins();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.UpdateFan.bounds_mins)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager_UpdateFan::set_allocated_bounds_mins(::CMsgVector* bounds_mins) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.bounds_mins_);
+  }
+  if (bounds_mins) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(bounds_mins));
+    if (message_arena != submessage_arena) {
+      bounds_mins = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, bounds_mins, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  _impl_.bounds_mins_ = bounds_mins;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.UpdateFan.bounds_mins)
+}
+
+// optional .CMsgVector bounds_maxs = 6;
+inline bool CUserMsg_ParticleManager_UpdateFan::_internal_has_bounds_maxs() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.bounds_maxs_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager_UpdateFan::has_bounds_maxs() const {
+  return _internal_has_bounds_maxs();
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_UpdateFan::_internal_bounds_maxs() const {
+  const ::CMsgVector* p = _impl_.bounds_maxs_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_UpdateFan::bounds_maxs() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.UpdateFan.bounds_maxs)
+  return _internal_bounds_maxs();
+}
+inline void CUserMsg_ParticleManager_UpdateFan::unsafe_arena_set_allocated_bounds_maxs(
+    ::CMsgVector* bounds_maxs) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.bounds_maxs_);
+  }
+  _impl_.bounds_maxs_ = bounds_maxs;
+  if (bounds_maxs) {
+    _impl_._has_bits_[0] |= 0x00000010u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000010u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.UpdateFan.bounds_maxs)
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::release_bounds_maxs() {
+  _impl_._has_bits_[0] &= ~0x00000010u;
+  ::CMsgVector* temp = _impl_.bounds_maxs_;
+  _impl_.bounds_maxs_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::unsafe_arena_release_bounds_maxs() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.UpdateFan.bounds_maxs)
+  _impl_._has_bits_[0] &= ~0x00000010u;
+  ::CMsgVector* temp = _impl_.bounds_maxs_;
+  _impl_.bounds_maxs_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::_internal_mutable_bounds_maxs() {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  if (_impl_.bounds_maxs_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.bounds_maxs_ = p;
+  }
+  return _impl_.bounds_maxs_;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_UpdateFan::mutable_bounds_maxs() {
+  ::CMsgVector* _msg = _internal_mutable_bounds_maxs();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.UpdateFan.bounds_maxs)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager_UpdateFan::set_allocated_bounds_maxs(::CMsgVector* bounds_maxs) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.bounds_maxs_);
+  }
+  if (bounds_maxs) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(bounds_maxs));
+    if (message_arena != submessage_arena) {
+      bounds_maxs = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, bounds_maxs, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000010u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000010u;
+  }
+  _impl_.bounds_maxs_ = bounds_maxs;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.UpdateFan.bounds_maxs)
+}
+
+// -------------------------------------------------------------------
+
+// CUserMsg_ParticleManager_SetParticleClusterGrowth
+
+// optional float duration = 1;
+inline bool CUserMsg_ParticleManager_SetParticleClusterGrowth::_internal_has_duration() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CUserMsg_ParticleManager_SetParticleClusterGrowth::has_duration() const {
+  return _internal_has_duration();
+}
+inline void CUserMsg_ParticleManager_SetParticleClusterGrowth::clear_duration() {
+  _impl_.duration_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline float CUserMsg_ParticleManager_SetParticleClusterGrowth::_internal_duration() const {
+  return _impl_.duration_;
+}
+inline float CUserMsg_ParticleManager_SetParticleClusterGrowth::duration() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.SetParticleClusterGrowth.duration)
+  return _internal_duration();
+}
+inline void CUserMsg_ParticleManager_SetParticleClusterGrowth::_internal_set_duration(float value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.duration_ = value;
+}
+inline void CUserMsg_ParticleManager_SetParticleClusterGrowth::set_duration(float value) {
+  _internal_set_duration(value);
+  // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.SetParticleClusterGrowth.duration)
+}
+
+// optional .CMsgVector origin = 2;
+inline bool CUserMsg_ParticleManager_SetParticleClusterGrowth::_internal_has_origin() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.origin_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager_SetParticleClusterGrowth::has_origin() const {
+  return _internal_has_origin();
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_SetParticleClusterGrowth::_internal_origin() const {
+  const ::CMsgVector* p = _impl_.origin_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CUserMsg_ParticleManager_SetParticleClusterGrowth::origin() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.SetParticleClusterGrowth.origin)
+  return _internal_origin();
+}
+inline void CUserMsg_ParticleManager_SetParticleClusterGrowth::unsafe_arena_set_allocated_origin(
+    ::CMsgVector* origin) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.origin_);
+  }
+  _impl_.origin_ = origin;
+  if (origin) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.SetParticleClusterGrowth.origin)
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_SetParticleClusterGrowth::release_origin() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgVector* temp = _impl_.origin_;
+  _impl_.origin_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_SetParticleClusterGrowth::unsafe_arena_release_origin() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.SetParticleClusterGrowth.origin)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgVector* temp = _impl_.origin_;
+  _impl_.origin_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_SetParticleClusterGrowth::_internal_mutable_origin() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.origin_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.origin_ = p;
+  }
+  return _impl_.origin_;
+}
+inline ::CMsgVector* CUserMsg_ParticleManager_SetParticleClusterGrowth::mutable_origin() {
+  ::CMsgVector* _msg = _internal_mutable_origin();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.SetParticleClusterGrowth.origin)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager_SetParticleClusterGrowth::set_allocated_origin(::CMsgVector* origin) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.origin_);
+  }
+  if (origin) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(origin));
+    if (message_arena != submessage_arena) {
+      origin = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, origin, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.origin_ = origin;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.SetParticleClusterGrowth.origin)
+}
+
+// -------------------------------------------------------------------
+
 // CUserMsg_ParticleManager
 
 // required .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
 inline bool CUserMsg_ParticleManager::_internal_has_type() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000040u) != 0;
   return value;
 }
 inline bool CUserMsg_ParticleManager::has_type() const {
@@ -31350,7 +33526,7 @@ inline bool CUserMsg_ParticleManager::has_type() const {
 }
 inline void CUserMsg_ParticleManager::clear_type() {
   _impl_.type_ = 0;
-  _impl_._has_bits_[1] &= ~0x00000008u;
+  _impl_._has_bits_[1] &= ~0x00000040u;
 }
 inline ::PARTICLE_MESSAGE CUserMsg_ParticleManager::_internal_type() const {
   return static_cast< ::PARTICLE_MESSAGE >(_impl_.type_);
@@ -31361,7 +33537,7 @@ inline ::PARTICLE_MESSAGE CUserMsg_ParticleManager::type() const {
 }
 inline void CUserMsg_ParticleManager::_internal_set_type(::PARTICLE_MESSAGE value) {
   assert(::PARTICLE_MESSAGE_IsValid(value));
-  _impl_._has_bits_[1] |= 0x00000008u;
+  _impl_._has_bits_[1] |= 0x00000040u;
   _impl_.type_ = value;
 }
 inline void CUserMsg_ParticleManager::set_type(::PARTICLE_MESSAGE value) {
@@ -31371,7 +33547,7 @@ inline void CUserMsg_ParticleManager::set_type(::PARTICLE_MESSAGE value) {
 
 // required uint32 index = 2;
 inline bool CUserMsg_ParticleManager::_internal_has_index() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000080u) != 0;
   return value;
 }
 inline bool CUserMsg_ParticleManager::has_index() const {
@@ -31379,7 +33555,7 @@ inline bool CUserMsg_ParticleManager::has_index() const {
 }
 inline void CUserMsg_ParticleManager::clear_index() {
   _impl_.index_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00000010u;
+  _impl_._has_bits_[1] &= ~0x00000080u;
 }
 inline uint32_t CUserMsg_ParticleManager::_internal_index() const {
   return _impl_.index_;
@@ -31389,7 +33565,7 @@ inline uint32_t CUserMsg_ParticleManager::index() const {
   return _internal_index();
 }
 inline void CUserMsg_ParticleManager::_internal_set_index(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00000010u;
+  _impl_._has_bits_[1] |= 0x00000080u;
   _impl_.index_ = value;
 }
 inline void CUserMsg_ParticleManager::set_index(uint32_t value) {
@@ -34545,6 +36721,276 @@ inline void CUserMsg_ParticleManager::set_allocated_set_material_override(::CUse
   }
   _impl_.set_material_override_ = set_material_override;
   // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.set_material_override)
+}
+
+// optional .CUserMsg_ParticleManager.AddFan add_fan = 39;
+inline bool CUserMsg_ParticleManager::_internal_has_add_fan() const {
+  bool value = (_impl_._has_bits_[1] & 0x00000008u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.add_fan_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager::has_add_fan() const {
+  return _internal_has_add_fan();
+}
+inline void CUserMsg_ParticleManager::clear_add_fan() {
+  if (_impl_.add_fan_ != nullptr) _impl_.add_fan_->Clear();
+  _impl_._has_bits_[1] &= ~0x00000008u;
+}
+inline const ::CUserMsg_ParticleManager_AddFan& CUserMsg_ParticleManager::_internal_add_fan() const {
+  const ::CUserMsg_ParticleManager_AddFan* p = _impl_.add_fan_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CUserMsg_ParticleManager_AddFan&>(
+      ::_CUserMsg_ParticleManager_AddFan_default_instance_);
+}
+inline const ::CUserMsg_ParticleManager_AddFan& CUserMsg_ParticleManager::add_fan() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.add_fan)
+  return _internal_add_fan();
+}
+inline void CUserMsg_ParticleManager::unsafe_arena_set_allocated_add_fan(
+    ::CUserMsg_ParticleManager_AddFan* add_fan) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.add_fan_);
+  }
+  _impl_.add_fan_ = add_fan;
+  if (add_fan) {
+    _impl_._has_bits_[1] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[1] &= ~0x00000008u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.add_fan)
+}
+inline ::CUserMsg_ParticleManager_AddFan* CUserMsg_ParticleManager::release_add_fan() {
+  _impl_._has_bits_[1] &= ~0x00000008u;
+  ::CUserMsg_ParticleManager_AddFan* temp = _impl_.add_fan_;
+  _impl_.add_fan_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CUserMsg_ParticleManager_AddFan* CUserMsg_ParticleManager::unsafe_arena_release_add_fan() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.add_fan)
+  _impl_._has_bits_[1] &= ~0x00000008u;
+  ::CUserMsg_ParticleManager_AddFan* temp = _impl_.add_fan_;
+  _impl_.add_fan_ = nullptr;
+  return temp;
+}
+inline ::CUserMsg_ParticleManager_AddFan* CUserMsg_ParticleManager::_internal_mutable_add_fan() {
+  _impl_._has_bits_[1] |= 0x00000008u;
+  if (_impl_.add_fan_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CUserMsg_ParticleManager_AddFan>(GetArenaForAllocation());
+    _impl_.add_fan_ = p;
+  }
+  return _impl_.add_fan_;
+}
+inline ::CUserMsg_ParticleManager_AddFan* CUserMsg_ParticleManager::mutable_add_fan() {
+  ::CUserMsg_ParticleManager_AddFan* _msg = _internal_mutable_add_fan();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.add_fan)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager::set_allocated_add_fan(::CUserMsg_ParticleManager_AddFan* add_fan) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.add_fan_;
+  }
+  if (add_fan) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(add_fan);
+    if (message_arena != submessage_arena) {
+      add_fan = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, add_fan, submessage_arena);
+    }
+    _impl_._has_bits_[1] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[1] &= ~0x00000008u;
+  }
+  _impl_.add_fan_ = add_fan;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.add_fan)
+}
+
+// optional .CUserMsg_ParticleManager.UpdateFan update_fan = 40;
+inline bool CUserMsg_ParticleManager::_internal_has_update_fan() const {
+  bool value = (_impl_._has_bits_[1] & 0x00000010u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.update_fan_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager::has_update_fan() const {
+  return _internal_has_update_fan();
+}
+inline void CUserMsg_ParticleManager::clear_update_fan() {
+  if (_impl_.update_fan_ != nullptr) _impl_.update_fan_->Clear();
+  _impl_._has_bits_[1] &= ~0x00000010u;
+}
+inline const ::CUserMsg_ParticleManager_UpdateFan& CUserMsg_ParticleManager::_internal_update_fan() const {
+  const ::CUserMsg_ParticleManager_UpdateFan* p = _impl_.update_fan_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CUserMsg_ParticleManager_UpdateFan&>(
+      ::_CUserMsg_ParticleManager_UpdateFan_default_instance_);
+}
+inline const ::CUserMsg_ParticleManager_UpdateFan& CUserMsg_ParticleManager::update_fan() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.update_fan)
+  return _internal_update_fan();
+}
+inline void CUserMsg_ParticleManager::unsafe_arena_set_allocated_update_fan(
+    ::CUserMsg_ParticleManager_UpdateFan* update_fan) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.update_fan_);
+  }
+  _impl_.update_fan_ = update_fan;
+  if (update_fan) {
+    _impl_._has_bits_[1] |= 0x00000010u;
+  } else {
+    _impl_._has_bits_[1] &= ~0x00000010u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.update_fan)
+}
+inline ::CUserMsg_ParticleManager_UpdateFan* CUserMsg_ParticleManager::release_update_fan() {
+  _impl_._has_bits_[1] &= ~0x00000010u;
+  ::CUserMsg_ParticleManager_UpdateFan* temp = _impl_.update_fan_;
+  _impl_.update_fan_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CUserMsg_ParticleManager_UpdateFan* CUserMsg_ParticleManager::unsafe_arena_release_update_fan() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.update_fan)
+  _impl_._has_bits_[1] &= ~0x00000010u;
+  ::CUserMsg_ParticleManager_UpdateFan* temp = _impl_.update_fan_;
+  _impl_.update_fan_ = nullptr;
+  return temp;
+}
+inline ::CUserMsg_ParticleManager_UpdateFan* CUserMsg_ParticleManager::_internal_mutable_update_fan() {
+  _impl_._has_bits_[1] |= 0x00000010u;
+  if (_impl_.update_fan_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CUserMsg_ParticleManager_UpdateFan>(GetArenaForAllocation());
+    _impl_.update_fan_ = p;
+  }
+  return _impl_.update_fan_;
+}
+inline ::CUserMsg_ParticleManager_UpdateFan* CUserMsg_ParticleManager::mutable_update_fan() {
+  ::CUserMsg_ParticleManager_UpdateFan* _msg = _internal_mutable_update_fan();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.update_fan)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager::set_allocated_update_fan(::CUserMsg_ParticleManager_UpdateFan* update_fan) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.update_fan_;
+  }
+  if (update_fan) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(update_fan);
+    if (message_arena != submessage_arena) {
+      update_fan = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, update_fan, submessage_arena);
+    }
+    _impl_._has_bits_[1] |= 0x00000010u;
+  } else {
+    _impl_._has_bits_[1] &= ~0x00000010u;
+  }
+  _impl_.update_fan_ = update_fan;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.update_fan)
+}
+
+// optional .CUserMsg_ParticleManager.SetParticleClusterGrowth set_particle_cluster_growth = 41;
+inline bool CUserMsg_ParticleManager::_internal_has_set_particle_cluster_growth() const {
+  bool value = (_impl_._has_bits_[1] & 0x00000020u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.set_particle_cluster_growth_ != nullptr);
+  return value;
+}
+inline bool CUserMsg_ParticleManager::has_set_particle_cluster_growth() const {
+  return _internal_has_set_particle_cluster_growth();
+}
+inline void CUserMsg_ParticleManager::clear_set_particle_cluster_growth() {
+  if (_impl_.set_particle_cluster_growth_ != nullptr) _impl_.set_particle_cluster_growth_->Clear();
+  _impl_._has_bits_[1] &= ~0x00000020u;
+}
+inline const ::CUserMsg_ParticleManager_SetParticleClusterGrowth& CUserMsg_ParticleManager::_internal_set_particle_cluster_growth() const {
+  const ::CUserMsg_ParticleManager_SetParticleClusterGrowth* p = _impl_.set_particle_cluster_growth_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CUserMsg_ParticleManager_SetParticleClusterGrowth&>(
+      ::_CUserMsg_ParticleManager_SetParticleClusterGrowth_default_instance_);
+}
+inline const ::CUserMsg_ParticleManager_SetParticleClusterGrowth& CUserMsg_ParticleManager::set_particle_cluster_growth() const {
+  // @@protoc_insertion_point(field_get:CUserMsg_ParticleManager.set_particle_cluster_growth)
+  return _internal_set_particle_cluster_growth();
+}
+inline void CUserMsg_ParticleManager::unsafe_arena_set_allocated_set_particle_cluster_growth(
+    ::CUserMsg_ParticleManager_SetParticleClusterGrowth* set_particle_cluster_growth) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.set_particle_cluster_growth_);
+  }
+  _impl_.set_particle_cluster_growth_ = set_particle_cluster_growth;
+  if (set_particle_cluster_growth) {
+    _impl_._has_bits_[1] |= 0x00000020u;
+  } else {
+    _impl_._has_bits_[1] &= ~0x00000020u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMsg_ParticleManager.set_particle_cluster_growth)
+}
+inline ::CUserMsg_ParticleManager_SetParticleClusterGrowth* CUserMsg_ParticleManager::release_set_particle_cluster_growth() {
+  _impl_._has_bits_[1] &= ~0x00000020u;
+  ::CUserMsg_ParticleManager_SetParticleClusterGrowth* temp = _impl_.set_particle_cluster_growth_;
+  _impl_.set_particle_cluster_growth_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CUserMsg_ParticleManager_SetParticleClusterGrowth* CUserMsg_ParticleManager::unsafe_arena_release_set_particle_cluster_growth() {
+  // @@protoc_insertion_point(field_release:CUserMsg_ParticleManager.set_particle_cluster_growth)
+  _impl_._has_bits_[1] &= ~0x00000020u;
+  ::CUserMsg_ParticleManager_SetParticleClusterGrowth* temp = _impl_.set_particle_cluster_growth_;
+  _impl_.set_particle_cluster_growth_ = nullptr;
+  return temp;
+}
+inline ::CUserMsg_ParticleManager_SetParticleClusterGrowth* CUserMsg_ParticleManager::_internal_mutable_set_particle_cluster_growth() {
+  _impl_._has_bits_[1] |= 0x00000020u;
+  if (_impl_.set_particle_cluster_growth_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CUserMsg_ParticleManager_SetParticleClusterGrowth>(GetArenaForAllocation());
+    _impl_.set_particle_cluster_growth_ = p;
+  }
+  return _impl_.set_particle_cluster_growth_;
+}
+inline ::CUserMsg_ParticleManager_SetParticleClusterGrowth* CUserMsg_ParticleManager::mutable_set_particle_cluster_growth() {
+  ::CUserMsg_ParticleManager_SetParticleClusterGrowth* _msg = _internal_mutable_set_particle_cluster_growth();
+  // @@protoc_insertion_point(field_mutable:CUserMsg_ParticleManager.set_particle_cluster_growth)
+  return _msg;
+}
+inline void CUserMsg_ParticleManager::set_allocated_set_particle_cluster_growth(::CUserMsg_ParticleManager_SetParticleClusterGrowth* set_particle_cluster_growth) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.set_particle_cluster_growth_;
+  }
+  if (set_particle_cluster_growth) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(set_particle_cluster_growth);
+    if (message_arena != submessage_arena) {
+      set_particle_cluster_growth = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, set_particle_cluster_growth, submessage_arena);
+    }
+    _impl_._has_bits_[1] |= 0x00000020u;
+  } else {
+    _impl_._has_bits_[1] &= ~0x00000020u;
+  }
+  _impl_.set_particle_cluster_growth_ = set_particle_cluster_growth;
+  // @@protoc_insertion_point(field_set_allocated:CUserMsg_ParticleManager.set_particle_cluster_growth)
 }
 
 // -------------------------------------------------------------------
@@ -40022,6 +42468,12 @@ inline void CUserMessage_PlayResponseConditional::set_mix_priority(int32_t value
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

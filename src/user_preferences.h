@@ -19,52 +19,53 @@
 
 #pragma once
 #include "common.h"
-#include "utlmap.h"
 #include "utlstring.h"
+#include <functional>
 #undef snprintf
 #include "vendor/nlohmann/json_fwd.hpp"
 
-using json = nlohmann::json;
-
-#include <functional>
-#define StorageCallback std::function<void(uint64, CUtlMap<uint32, CPreferenceValue>&)>
-
 #define MAX_PREFERENCE_LENGTH 128
+
+class CPreferenceValue;
+
+using json = nlohmann::json;
+using UserPrefsMap_t = std::map<uint32, std::shared_ptr<CPreferenceValue>>;
+using StorageCallback_t = std::function<void(uint64, UserPrefsMap_t&)>;
 
 class CPreferenceValue
 {
 public:
-	CPreferenceValue(const char* sKey = "", const char* sValue = "")
+	CPreferenceValue(std::string strKey = "", std::string strValue = "")
 	{
-		V_strcpy(m_sKey, sKey);
-		V_strcpy(m_sValue, sValue);
+		m_strKey = strKey;
+		m_strValue = strValue;
 	}
-	char* GetKey() { return m_sKey; };
-	char* GetValue() { return m_sValue; };
-	void SetKeyValue(const char* sKey, const char* sValue)
+	const char* GetKey() { return m_strKey.c_str(); };
+	const char* GetValue() { return m_strValue.c_str(); };
+	void SetKeyValue(std::string strKey, std::string strValue)
 	{
-		V_strcpy(m_sKey, sKey);
-		V_strcpy(m_sValue, sValue);
+		m_strKey = strKey;
+		m_strValue = strValue;
 	}
 
 private:
-	char m_sKey[MAX_PREFERENCE_LENGTH];
-	char m_sValue[MAX_PREFERENCE_LENGTH];
+	std::string m_strKey;
+	std::string m_strValue;
 };
 
 class CUserPreferencesStorage
 {
 public:
-	virtual void LoadPreferences(uint64 iSteamId, StorageCallback cb) = 0;
-	virtual void StorePreferences(uint64 iSteamId, CUtlMap<uint32, CPreferenceValue>& preferences, StorageCallback cb) = 0;
+	virtual void LoadPreferences(uint64 iSteamId, StorageCallback_t cb) = 0;
+	virtual void StorePreferences(uint64 iSteamId, UserPrefsMap_t& preferences, StorageCallback_t cb) = 0;
 };
 
 class CUserPreferencesREST : public CUserPreferencesStorage
 {
 public:
-	void LoadPreferences(uint64 iSteamId, StorageCallback cb);
-	void StorePreferences(uint64 iSteamId, CUtlMap<uint32, CPreferenceValue>& preferences, StorageCallback cb);
-	void JsonToPreferencesMap(json data, CUtlMap<uint32, CPreferenceValue>& preferences);
+	void LoadPreferences(uint64 iSteamId, StorageCallback_t cb);
+	void StorePreferences(uint64 iSteamId, UserPrefsMap_t& preferences, StorageCallback_t cb);
+	void JsonToPreferencesMap(json data, UserPrefsMap_t& preferences);
 };
 
 class CUserPreferencesSystem
@@ -74,7 +75,7 @@ public:
 	{
 		for (int i = 0; i < MAXPLAYERS; i++)
 		{
-			m_mPreferencesMaps[i].SetLessFunc(DefLessFunc(uint32));
+			m_mUserSteamIds[i] = 0;
 			m_mPreferencesLoaded[i] = false;
 		}
 	}
@@ -88,12 +89,12 @@ public:
 	void SetPreferenceInt(int iSlot, const char* sKey, int iValue);
 	void SetPreferenceFloat(int iSlot, const char* sKey, float fValue);
 	bool CheckPreferencesLoaded(int iSlot);
-	bool PutPreferences(int iSlot, uint64 iSteamId, CUtlMap<uint32, CPreferenceValue>& preferenceData);
+	bool PutPreferences(int iSlot, uint64 iSteamId, UserPrefsMap_t& preferenceData);
 	void OnPutPreferences(int iSlot);
 	void PushPreferences(int iSlot);
 
 private:
-	CUtlMap<uint32, CPreferenceValue> m_mPreferencesMaps[MAXPLAYERS];
+	UserPrefsMap_t m_mPreferencesMaps[MAXPLAYERS];
 	uint64 m_mUserSteamIds[MAXPLAYERS];
 	bool m_mPreferencesLoaded[MAXPLAYERS];
 };

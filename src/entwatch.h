@@ -45,6 +45,9 @@ using ordered_json = nlohmann::ordered_json;
 
 #define EW_HUD_TICKRATE 0.5f
 
+extern CConVar<bool> g_cvarEnableEntWatch;
+extern CConVar<bool> g_cvarEnableEntwatchHud;
+
 enum EWHandlerType
 {
 	Type_None,
@@ -293,7 +296,7 @@ void EW_DropWeapon(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon*
 void EW_PlayerDeath(IGameEvent* pEvent);
 void EW_PlayerDeathPre(CCSPlayerController* pController);
 void EW_PlayerDisconnect(int slot);
-void EW_SendBeginNewMatchEvent();
+void EW_UpdateClientClanTags();
 bool EW_IsFireOutputHooked();
 void EW_FireOutput(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay);
 int GetTemplateSuffixNumber(const char* szName);

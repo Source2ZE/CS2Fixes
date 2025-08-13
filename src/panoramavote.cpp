@@ -155,7 +155,7 @@ bool CPanoramaVoteHandler::IsVoteInProgress()
 	return m_bIsVoteInProgress;
 }
 
-bool CPanoramaVoteHandler::SendYesNoVote(float flDuration, int iCaller, const char* sVoteTitle, const char* sDetailStr, IRecipientFilter* pFilter, YesNoVoteResult resultCallback, YesNoVoteHandler handler = nullptr)
+bool CPanoramaVoteHandler::SendYesNoVote(float flDuration, int iCaller, const char* sVoteTitle, const char* sDetailStr, CRecipientFilter* pFilter, YesNoVoteResult resultCallback, YesNoVoteHandler handler = nullptr)
 {
 	if (!hVoteController.Get() || m_bIsVoteInProgress)
 		return false;
@@ -166,7 +166,7 @@ bool CPanoramaVoteHandler::SendYesNoVote(float flDuration, int iCaller, const ch
 	if (resultCallback == nullptr)
 		return false;
 
-	Message("[Vote Start] Starting a new vote [id:%d]. Duration:%.1f Caller:%d NumClients:%d", m_iVoteCount, flDuration, iCaller, pFilter->GetRecipientCount());
+	Message("[Vote Start] Starting a new vote [id:%d]. Duration:%.1f Caller:%d NumClients:%d\n", m_iVoteCount, flDuration, iCaller, pFilter->GetRecipientCount());
 
 	m_bIsVoteInProgress = true;
 
@@ -228,7 +228,7 @@ void CPanoramaVoteHandler::SendVoteStartUM(IRecipientFilter* pFilter)
 	delete data;
 }
 
-void CPanoramaVoteHandler::InitVoters(IRecipientFilter* pFilter)
+void CPanoramaVoteHandler::InitVoters(CRecipientFilter* pFilter)
 {
 	// Clear any old info
 	m_iVoterCount = 0;
@@ -242,15 +242,11 @@ void CPanoramaVoteHandler::InitVoters(IRecipientFilter* pFilter)
 		hVoteController->m_nVoteOptionCount[i] = 0;
 
 	m_iVoterCount = pFilter->GetRecipientCount();
-	for (int i = 0, j = 0; i < m_iVoterCount; i++)
-	{
-		CPlayerSlot slot = pFilter->GetRecipientIndex(i);
-		if (slot.Get() != -1)
-		{
-			m_iVoters[j] = slot.Get();
-			j++;
-		}
-	}
+
+	const uint64 x = *reinterpret_cast<const uint64*>(&pFilter->GetRecipients());
+	for (int i = 0, j = 0; i < MAXPLAYERS; i++)
+		if (x & (static_cast<unsigned long long>(1u) << i))
+			m_iVoters[j] = i;
 }
 
 void CPanoramaVoteHandler::CheckForEarlyVoteClose()
@@ -279,13 +275,13 @@ void CPanoramaVoteHandler::EndVote(YesNoVoteEndReason reason)
 	switch (reason)
 	{
 		case VoteEnd_AllVotes:
-			Message("[Vote Ending] [id:%d] All possible players voted.", m_iVoteCount);
+			Message("[Vote Ending] [id:%d] All possible players voted.\n", m_iVoteCount);
 			break;
 		case VoteEnd_TimeUp:
-			Message("[Vote Ending] [id:%d] Time ran out.", m_iVoteCount);
+			Message("[Vote Ending] [id:%d] Time ran out.\n", m_iVoteCount);
 			break;
 		case VoteEnd_Cancelled:
-			Message("[Vote Ending] [id:%d] The vote has been cancelled.", m_iVoteCount);
+			Message("[Vote Ending] [id:%d] The vote has been cancelled.\n", m_iVoteCount);
 			break;
 	}
 

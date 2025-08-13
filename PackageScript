@@ -130,7 +130,6 @@ for task in MMSPlugin.binaries:
   builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'leader_defend_mark_ground.vpcf_c'), particles_cs2f_folder)
   builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'leader_tracer.vpcf_c'), particles_cs2f_folder)
   builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'napalm_fire.vpcf_c'), particles_cs2f_folder)
-  builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'simple_overlay.vpcf_c'), particles_cs2f_folder)
 
   materials_cs2f_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'materials', MMSPlugin.metadata['name']))
   builder.AddCopy(os.path.join('assets', 'materials', MMSPlugin.metadata['name'], 'leader_defend_mark.vtex_c'), materials_cs2f_folder)

@@ -18,9 +18,9 @@
  */
 
 #include "entities.h"
-
 #include "ctimer.h"
 #include "entity.h"
+
 #include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
@@ -35,6 +35,18 @@
 // #define ENTITY_HANDLER_ASSERTION
 
 extern CCSGameRules* g_pGameRules;
+
+static constexpr uint32_t ENTITY_MURMURHASH_SEED = 0x97984357;
+static constexpr uint32_t ENTITY_UNIQUE_INVALID = ~0u;
+
+static uint32_t GetEntityUnique(CBaseEntity* pEntity)
+{
+	const auto& sUniqueHammerID = pEntity->m_sUniqueHammerID();
+	if (sUniqueHammerID.IsEmpty())
+		return ENTITY_UNIQUE_INVALID;
+
+	return MurmurHash2LowerCase(sUniqueHammerID.Get(), ENTITY_MURMURHASH_SEED);
+}
 
 static bool StripPlayer(CCSPlayerPawn* pPawn)
 {
@@ -108,9 +120,54 @@ static void DelayInput(CBaseEntity* pCaller, CBaseEntity* pActivator, const char
 	});
 }
 
+namespace CTriggerGravityHandler
+{
+	static std::unordered_map<uint32_t, float> s_gravityMap;
+
+	void OnPrecache(CBaseEntity* pEntity, const CEntityKeyValues* kv)
+	{
+		const auto pGravity = kv->GetKeyValue("gravity");
+		const auto pHammerId = kv->GetKeyValue("hammerUniqueId");
+		if (!pGravity || !pHammerId)
+			return;
+
+		const auto flGravity = pGravity->GetFloat();
+		const auto hEntity = MurmurHash2LowerCase(pHammerId->GetString(), ENTITY_MURMURHASH_SEED);
+
+		s_gravityMap[hEntity] = flGravity;
+	}
+
+	bool GravityTouching(CBaseEntity* pEntity, CBaseEntity* pOther)
+	{
+		const auto hEntity = GetEntityUnique(pEntity);
+		if (hEntity == ENTITY_UNIQUE_INVALID)
+			return false;
+
+		const auto gravity = s_gravityMap.find(hEntity);
+		if (gravity == s_gravityMap.end())
+			return false;
+
+		if (pOther->IsPawn() && pOther->IsAlive())
+			pOther->SetGravityScale(gravity->second);
+
+		return true;
+	}
+
+	void OnEndTouch(CBaseEntity* pEntity, CBaseEntity* pOther)
+	{
+		if (pOther->IsPawn())
+			pOther->SetGravityScale(1);
+	}
+
+	static void Shutdown()
+	{
+		s_gravityMap.clear();
+	}
+} // namespace CTriggerGravityHandler
+
 namespace CGamePlayerEquipHandler
 {
-	static std::unordered_map<std::string, std::unordered_set<uint32_t>> s_PlayerEquipMap;
+	static std::unordered_map<uint32_t, std::unordered_set<uint32_t>> s_PlayerEquipMap;
 
 	void Use(CGamePlayerEquip* pEntity, InputData_t* pInput)
 	{
@@ -127,9 +184,9 @@ namespace CGamePlayerEquipHandler
 		{
 			StripPlayer(pPawn);
 		}
-		else if (flags & ::CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
+		else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
+			const auto& pair = s_PlayerEquipMap.find(GetEntityUnique(pEntity));
 			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
 				StripPlayer(pPawn, pair->second);
 		}
@@ -148,7 +205,7 @@ namespace CGamePlayerEquipHandler
 		}
 		else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
+			const auto& pair = s_PlayerEquipMap.find(GetEntityUnique(pEntity));
 			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
 			{
 				CCSPlayerPawn* pPawn = nullptr;
@@ -177,7 +234,7 @@ namespace CGamePlayerEquipHandler
 		}
 		else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
+			const auto& pair = s_PlayerEquipMap.find(GetEntityUnique(pEntity));
 			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
 				StripPlayer(pPawn, pair->second);
 		}
@@ -199,8 +256,8 @@ namespace CGamePlayerEquipHandler
 
 	void OnPrecache(CGamePlayerEquip* pEntity, const CEntityKeyValues* kv)
 	{
-		const auto pName = pEntity->GetName();
-		if (!pName || !pName[0])
+		const auto pHammerId = kv->GetKeyValue("hammerUniqueId");
+		if (!pHammerId)
 			return;
 
 		auto list = std::unordered_set<uint32_t>();
@@ -219,10 +276,13 @@ namespace CGamePlayerEquipHandler
 		}
 
 		if (!list.empty())
-			s_PlayerEquipMap[std::string(pName)] = list;
+		{
+			const auto hEntity = MurmurHash2LowerCase(pHammerId->GetString(), ENTITY_MURMURHASH_SEED);
+			s_PlayerEquipMap[hEntity] = list;
+		}
 	}
 
-	void Shutdown()
+	static void Shutdown()
 	{
 		s_PlayerEquipMap.clear();
 	}
@@ -761,5 +821,6 @@ void EntityHandler_OnEntitySpawned(CBaseEntity* pEntity)
 
 void EntityHandler_OnLevelInit()
 {
+	CTriggerGravityHandler::Shutdown();
 	CGamePlayerEquipHandler::Shutdown();
 }

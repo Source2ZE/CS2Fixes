@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -46,7 +46,7 @@ CBaseEntity* UTIL_FindPickerEntity(CBasePlayerController* pPlayer)
 		return nullptr;
 	}
 
-	return CALL_VIRTUAL(CBaseEntity*, offset, g_pGameRules, pPlayer);
+	return CALL_VIRTUAL(CBaseEntity*, offset, g_pGameRules, pPlayer, nullptr);
 }
 
 CBaseEntity* UTIL_FindEntityByClassname(CEntityInstance* pStartEntity, const char* szName)
@@ -63,5 +63,5 @@ CBaseEntity* UTIL_FindEntityByName(CEntityInstance* pStartEntity, const char* sz
 void UTIL_AddEntityIOEvent(CEntityInstance* pTarget, const char* pszInput,
 						   CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t value, float flDelay)
 {
-	addresses::CEntitySystem_AddEntityIOEvent(g_pEntitySystem, pTarget, pszInput, pActivator, pCaller, &value, flDelay, 0);
+	addresses::CEntitySystem_AddEntityIOEvent(g_pEntitySystem, pTarget, pszInput, pActivator, pCaller, &value, flDelay, 0, nullptr, nullptr);
 }

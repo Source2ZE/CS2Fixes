@@ -18,30 +18,34 @@
  */
 
 #pragma once
-#include "cbasemodelentity.h"
 
-class CBaseAnimGraph : public CBaseModelEntity
+#include "cbaseentity.h"
+
+enum PointOrientGoalDirectionType_t : uint32_t
 {
-public:
-	DECLARE_SCHEMA_CLASS(CBaseAnimGraph)
+	eAbsOrigin = 0,
+	eCenter = 1,
+	eHead = 2,
+	eForward = 3,
+	eEyesForward = 4,
 };
 
-class CBaseViewModel : public CBaseAnimGraph
+enum PointOrientConstraint_t : uint32_t
 {
-public:
-	DECLARE_SCHEMA_CLASS(CBaseViewModel)
-	SCHEMA_FIELD(uint32_t, m_nViewModelIndex)
+	eNone = 0,
+	ePreserveUpAxis = 1,
 };
 
-class CPredictedViewModel : public CBaseViewModel
+class CPointOrient : public CBaseEntity
 {
 public:
-	DECLARE_SCHEMA_CLASS(CPredictedViewModel)
-};
+	DECLARE_SCHEMA_CLASS(CPointOrient)
 
-class CCSGOViewModel : public CPredictedViewModel
-{
-public:
-	DECLARE_SCHEMA_CLASS(CCSGOViewModel)
-	SCHEMA_FIELD(bool, m_bShouldIgnoreOffsetAndAccuracy)
+	SCHEMA_FIELD(CUtlSymbolLarge, m_iszSpawnTargetName)
+	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hTarget)
+	SCHEMA_FIELD(bool, m_bActive)
+	SCHEMA_FIELD(PointOrientGoalDirectionType_t, m_nGoalDirection)
+	SCHEMA_FIELD(PointOrientConstraint_t, m_nConstraint)
+	SCHEMA_FIELD(float32, m_flMaxTurnRate)
+	SCHEMA_FIELD(GameTime_t, m_flLastGameTime)
 };

@@ -202,6 +202,10 @@ static const int kNetworkConnectionDetailTokenFieldNumber = 50501;
 extern ::PROTOBUF_NAMESPACE_ID::internal::ExtensionIdentifier< ::PROTOBUF_NAMESPACE_ID::EnumValueOptions,
     ::PROTOBUF_NAMESPACE_ID::internal::StringTypeTraits, 9, false >
   network_connection_detail_token;
+static const int kAllowedFromClientFieldNumber = 50502;
+extern ::PROTOBUF_NAMESPACE_ID::internal::ExtensionIdentifier< ::PROTOBUF_NAMESPACE_ID::EnumValueOptions,
+    ::PROTOBUF_NAMESPACE_ID::internal::PrimitiveTypeTraits< bool >, 8, false >
+  allowed_from_client;
 
 // ===================================================================
 

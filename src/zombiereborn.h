@@ -49,13 +49,13 @@ enum EZRSpawnType
 struct ZRModelEntry
 {
 	std::string szModelPath;
-	CUtlVector<int> vecSkins;
+	std::vector<int> vecSkins;
 	std::string szColor;
 	ZRModelEntry(std::shared_ptr<ZRModelEntry> modelEntry);
 	ZRModelEntry(ordered_json jsonModelEntry);
 	int GetRandomSkin()
 	{
-		return vecSkins[rand() % vecSkins.Count()];
+		return vecSkins[rand() % vecSkins.size()];
 	}
 };
 
@@ -66,7 +66,7 @@ struct ZRClass
 	bool bEnabled;
 	std::string szClassName;
 	int iHealth;
-	CUtlVector<std::shared_ptr<ZRModelEntry>> vecModels;
+	std::vector<std::shared_ptr<ZRModelEntry>> vecModels;
 	float flScale;
 	float flSpeed;
 	float flGravity;
@@ -81,27 +81,26 @@ struct ZRClass
 		flGravity(pClass->flGravity),
 		iAdminFlag(pClass->iAdminFlag)
 	{
-		vecModels.Purge();
-		FOR_EACH_VEC(pClass->vecModels, i)
-		{
-			std::shared_ptr<ZRModelEntry> modelEntry = std::make_shared<ZRModelEntry>(pClass->vecModels[i]);
-			vecModels.AddToTail(modelEntry);
-		}
+		vecModels.clear();
+		vecModels.reserve(pClass->vecModels.size());
+
+		for (const auto& pModel : pClass->vecModels)
+			vecModels.push_back(std::make_shared<ZRModelEntry>(pModel));
 	};
 
 	ZRClass(ordered_json jsonKeys, std::string szClassname, int iTeam);
 	void PrintInfo()
 	{
 		std::string szModels = "";
-		FOR_EACH_VEC(vecModels, i)
+		for (const auto& pModel : vecModels)
 		{
-			szModels += "\n\t\t" + vecModels[i]->szModelPath;
-			szModels += " Color=\"" + vecModels[i]->szColor + "\"";
+			szModels += "\n\t\t" + pModel->szModelPath;
+			szModels += " Color=\"" + pModel->szColor + "\"";
 			szModels += " Skins=[";
-			FOR_EACH_VEC(vecModels[i]->vecSkins, j)
+			for (int i = 0; i < pModel->vecSkins.size(); i++)
 			{
-				szModels += std::to_string(vecModels[i]->vecSkins[j]);
-				if (j != vecModels[i]->vecSkins.Count() - 1)
+				szModels += std::to_string(pModel->vecSkins[i]);
+				if (i != pModel->vecSkins.size() - 1)
 					szModels += " ";
 			}
 			szModels += "]";
@@ -129,7 +128,7 @@ struct ZRClass
 	uint64 ParseClassFlags(const char* pszFlags);
 	std::shared_ptr<ZRModelEntry> GetRandomModelEntry()
 	{
-		return vecModels[rand() % vecModels.Count()];
+		return vecModels[rand() % vecModels.size()];
 	};
 };
 
@@ -154,15 +153,15 @@ struct ZRZombieClass : ZRClass
 	void PrintInfo()
 	{
 		std::string szModels = "";
-		FOR_EACH_VEC(vecModels, i)
+		for (const auto& pModel : vecModels)
 		{
-			szModels += "\n\t\t" + vecModels[i]->szModelPath;
-			szModels += " Color=\"" + vecModels[i]->szColor + "\"";
+			szModels += "\n\t\t" + pModel->szModelPath;
+			szModels += " Color=\"" + pModel->szColor + "\"";
 			szModels += " Skins=[";
-			FOR_EACH_VEC(vecModels[i]->vecSkins, j)
+			for (int i = 0; i < pModel->vecSkins.size(); i++)
 			{
-				szModels += std::to_string(vecModels[i]->vecSkins[j]);
-				if (j != vecModels[i]->vecSkins.Count() - 1)
+				szModels += std::to_string(pModel->vecSkins[i]);
+				if (i != pModel->vecSkins.size() - 1)
 					szModels += " ";
 			}
 			szModels += "]";
@@ -197,11 +196,6 @@ struct ZRZombieClass : ZRClass
 class CZRPlayerClassManager
 {
 public:
-	CZRPlayerClassManager()
-	{
-		m_ZombieClassMap.SetLessFunc(DefLessFunc(uint32));
-		m_HumanClassMap.SetLessFunc(DefLessFunc(uint32));
-	};
 	void LoadPlayerClass();
 	void ApplyBaseClassVisuals(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
 	std::shared_ptr<ZRHumanClass> GetHumanClass(const char* pszClassName);
@@ -212,14 +206,17 @@ public:
 	void ApplyZombieClass(std::shared_ptr<ZRZombieClass> pClass, CCSPlayerPawn* pPawn);
 	void ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn* pPawn);
 	void PrecacheModels(IEntityResourceManifest* pResourceManifest);
-	void GetZRClassList(int iTeam, CUtlVector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController = nullptr);
+	void GetZRClassList(int iTeam, std::vector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController = nullptr);
 
 private:
 	void ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
-	CUtlVector<std::shared_ptr<ZRZombieClass>> m_vecZombieDefaultClass;
-	CUtlVector<std::shared_ptr<ZRHumanClass>> m_vecHumanDefaultClass;
-	CUtlMap<uint32, std::shared_ptr<ZRZombieClass>> m_ZombieClassMap;
-	CUtlMap<uint32, std::shared_ptr<ZRHumanClass>> m_HumanClassMap;
+	std::vector<std::shared_ptr<ZRZombieClass>> m_vecZombieDefaultClass;
+	std::vector<std::shared_ptr<ZRHumanClass>> m_vecHumanDefaultClass;
+	std::map<uint32, std::shared_ptr<ZRZombieClass>> m_ZombieClassMap;
+	std::map<uint32, std::shared_ptr<ZRHumanClass>> m_HumanClassMap;
+	// These exist so we can iterate the class maps in insertion order
+	std::vector<uint32> m_ZombieClassKeys;
+	std::vector<uint32> m_HumanClassKeys;
 };
 
 class CZRRegenTimer : public CTimerBase
@@ -255,29 +252,21 @@ struct ZRHitgroup
 class ZRWeaponConfig
 {
 public:
-	ZRWeaponConfig()
-	{
-		m_WeaponMap.SetLessFunc(DefLessFunc(uint32));
-	};
 	void LoadWeaponConfig();
 	std::shared_ptr<ZRWeapon> FindWeapon(const char* pszWeaponName);
 
 private:
-	CUtlMap<uint32, std::shared_ptr<ZRWeapon>> m_WeaponMap;
+	std::map<uint32, std::shared_ptr<ZRWeapon>> m_WeaponMap;
 };
 
 class ZRHitgroupConfig
 {
 public:
-	ZRHitgroupConfig()
-	{
-		m_HitgroupMap.SetLessFunc(DefLessFunc(uint32));
-	};
 	void LoadHitgroupConfig();
 	std::shared_ptr<ZRHitgroup> FindHitgroupIndex(int iIndex);
 
 private:
-	CUtlMap<uint32, std::shared_ptr<ZRHitgroup>> m_HitgroupMap;
+	std::map<uint32, std::shared_ptr<ZRHitgroup>> m_HitgroupMap;
 };
 
 extern ZRWeaponConfig* g_pZRWeaponConfig;
@@ -301,3 +290,4 @@ void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLar
 void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const* pszName, int type, uint64 xuid);
 void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand& args);
 void ZR_Precache(IEntityResourceManifest* pResourceManifest);
+bool ZR_CheckTeamWinConditions(int iTeamNum);

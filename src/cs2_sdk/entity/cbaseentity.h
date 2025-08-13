@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -211,7 +211,7 @@ public:
 
 	void AcceptInput(const char* pInputName, variant_t value = variant_t(""), CEntityInstance* pActivator = nullptr, CEntityInstance* pCaller = nullptr)
 	{
-		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, &value, 0);
+		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, &value, 0, nullptr);
 	}
 
 	bool IsAlive() { return m_lifeState == LifeState_t::LIFE_ALIVE; }
@@ -234,12 +234,19 @@ public:
 
 	SndOpEventGuid_t EmitSoundFilter(IRecipientFilter& filter, const char* pszSound, float flVolume = 1.0, float flPitch = 1.0)
 	{
+#ifdef __linux__
+		uint8_t unk[32];
+#endif
 		EmitSound_t params;
 		params.m_pSoundName = pszSound;
 		params.m_flVolume = flVolume;
 		params.m_nPitch = flPitch;
 
+#ifdef __linux__
+		return addresses::CBaseEntity_EmitSoundFilter(unk, filter, entindex(), params);
+#else
 		return addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
+#endif
 	}
 
 	void DispatchParticle(const char* pszParticleName, IRecipientFilter* pFilter, ParticleAttachment_t nAttachType = PATTACH_POINT_FOLLOW,
@@ -273,6 +280,11 @@ public:
 	void SetGroundEntity(CBaseEntity* pGround)
 	{
 		addresses::SetGroundEntity(this, pGround, nullptr);
+	}
+
+	void SetGravityScale(float flGravityScale)
+	{
+		addresses::SetGravityScale(this, flGravityScale);
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }

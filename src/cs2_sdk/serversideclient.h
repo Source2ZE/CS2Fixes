@@ -71,13 +71,50 @@ public:
 	int m_nCurBit;
 }; // sizeof 40
 
-abstract_class INetworkChannelNotify
+enum CopiedLockState_t : int32
 {
-public:
-	virtual void OnShutdownChannel(INetChannel * pChannel) = 0;
+	CLS_NOCOPY = 0,
+	CLS_UNLOCKED = 1,
+	CLS_LOCKED_BY_COPYING_THREAD = 2,
 };
 
-class CServerSideClientBase : public INetworkChannelNotify, public INetworkMessageProcessingPreFilter
+template <class MUTEX, CopiedLockState_t L = CLS_UNLOCKED>
+class CCopyableLock : public MUTEX
+{
+	typedef MUTEX BaseClass;
+
+public:
+	// ...
+};
+
+class CUtlSignaller_Base
+{
+public:
+	using Delegate_t = CUtlDelegate<void(CUtlSlot*)>;
+
+	CUtlSignaller_Base(const Delegate_t& other) :
+		m_SlotDeletionDelegate(other) {}
+	CUtlSignaller_Base(Delegate_t&& other) :
+		m_SlotDeletionDelegate(Move(other)) {}
+
+private:
+	Delegate_t m_SlotDeletionDelegate;
+};
+
+class CUtlSlot
+{
+public:
+	using MTElement_t = CUtlSignaller_Base*;
+
+	CUtlSlot() :
+		m_ConnectedSignallers(0, 1) {}
+
+private:
+	CCopyableLock<CThreadFastMutex> m_Mutex;
+	CUtlVector<MTElement_t> m_ConnectedSignallers;
+};
+
+class CServerSideClientBase : public CUtlSlot, public INetworkChannelNotify, public INetworkMessageProcessingPreFilter
 {
 public:
 	virtual ~CServerSideClientBase() = 0;
@@ -134,7 +171,6 @@ public:
 	virtual bool IsLowViolenceClient() const { return m_bLowViolence; }
 
 	virtual bool IsSplitScreenUser() const { return m_bSplitScreenUser; }
-	int GetClientPlatform() const { return m_ClientPlatform; } // CrossPlayPlatform_t
 
 public: // Message Handlers
 	virtual bool ProcessTick(const CNETMsg_Tick_t& msg) = 0;
@@ -252,12 +288,6 @@ public:																				 // INetworkMessageProcessingPreFilter
 	virtual bool FilterMessage(const CNetMessage* pData, INetChannel* pChannel) = 0; // "Client %d(%s) tried to send a RebroadcastSourceId msg.\n"
 
 public:
-	CUtlString m_unk16;				   // 16
-	[[maybe_unused]] char pad24[0x16]; // 24
-#ifdef __linux__
-	[[maybe_unused]] char pad46[0x10]; // 46
-#endif
-	void (*RebroadcastSource)(int msgID);
 	CUtlString m_UserIDString;					  // 72
 	CUtlString m_Name;							  // 80
 	CPlayerSlot m_nClientSlot;					  // 88
@@ -286,24 +316,28 @@ public:
 	ns_address m_nAddr;			 // 220
 	ns_address m_nAddr2;		 // 252
 	KeyValues* m_ConVars;		 // 288
-	bool m_bConVarsChanged;		 // 296
-	bool m_bConVarsInited;		 // 297
-	bool m_bIsHLTV;				 // 298
-	bool m_bIsReplay;			 // 299
+	bool m_bUnk0;
 
 private:
-	[[maybe_unused]] char pad29[0x12];
+	[[maybe_unused]] char pad273[0x28];
 
 public:
-	uint32 m_nSendtableCRC;								   // 312
-	int m_ClientPlatform;								   // 316
+	bool m_bConVarsChanged; // 296
+	bool m_bIsHLTV;			// 298
+
+private:
+	[[maybe_unused]] char pad29[0xB];
+
+public:
+	uint32 m_nSendtableCRC; // 312
+	uint32 m_uChallengeNumber;
 	int m_nSignonTick;									   // 320
 	int m_nDeltaTick;									   // 324
 	int m_UnkVariable3;									   // 328
 	int m_nStringTableAckTick;							   // 332
 	int m_UnkVariable4;									   // 336
-	CUtlVector<SpawnGroupHandle_t> m_vecLoadedSpawnGroups; // 352
 	CFrameSnapshot* m_pLastSnapshot;					   // last send snapshot
+	CUtlVector<SpawnGroupHandle_t> m_vecLoadedSpawnGroups; // 352
 	CMsgPlayerInfo m_playerInfo;						   // 376
 	CFrameSnapshot* m_pBaseline;						   // 432
 	int m_nBaselineUpdateTick;							   // 440
