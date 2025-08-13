@@ -1940,16 +1940,7 @@ void CEWHandler::Hook_Use(InputData_t* pInput)
 
 	if (!pController || pController->GetPlayerSlot() != pItem->iOwnerSlot)
 		RETURN_META(resVal);
-
-	const char* classname = pEntity->GetClassname();
-
-	if (!strcmp(classname, "func_button") || !strcmp(classname, "func_rot_button") || !strcmp(classname, "momentary_rot_button") || !strcmp(classname, "func_physical_button"))
-	{
-		CBaseButton* pButton = (CBaseButton*)pEntity;
-		if (pButton->m_bLocked || pButton->m_bDisabled)
-			RETURN_META(resVal);
-	}
-
+	
 	//
 	// WE SHOW USE MESSAGE IN FireOutput
 	// This is just to prevent unnecessary stuff with buttons like movement
