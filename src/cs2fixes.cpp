@@ -1084,9 +1084,9 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 			if (!pPawn)
 				continue;
 
-			// Do not hide leaders to other players
+			// Do not hide leaders or item holders to other players
 			ZEPlayer* pOtherZEPlayer = g_playerManager->GetPlayer(j);
-			if (pSelfZEPlayer->ShouldBlockTransmit(j) && (pOtherZEPlayer && !pOtherZEPlayer->IsLeader()))
+			if (pSelfZEPlayer->ShouldBlockTransmit(j) && pOtherZEPlayer && !pOtherZEPlayer->IsLeader() && g_pEWHandler->FindItemInstanceByOwner(j, false, 0) == -1)
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 		}
 
