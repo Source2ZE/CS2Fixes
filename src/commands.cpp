@@ -451,25 +451,25 @@ CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 		return;
 	}
 
-	int distance;
-
-	if (args.ArgC() < 2)
-		distance = g_cvarDefaultHideDistance.Get();
-	else
-		distance = V_StringToInt32(args[1], -1);
-
-	if (distance > g_cvarMaxHideDistance.Get() || distance < 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only hide players between 0 and %i units away.", g_cvarMaxHideDistance.Get());
-		return;
-	}
-
 	ZEPlayer* pZEPlayer = player->GetZEPlayer();
 
 	// Something has to really go wrong for this to happen
 	if (!pZEPlayer)
 	{
 		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
+		return;
+	}
+
+	int distance;
+
+	if (args.ArgC() < 2)
+		distance = pZEPlayer->GetHideDistance() > 0 ? pZEPlayer->GetHideDistance() : g_cvarDefaultHideDistance.Get();
+	else
+		distance = V_StringToInt32(args[1], -1);
+
+	if (distance > g_cvarMaxHideDistance.Get() || distance < 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only hide players between\x06 0\x01 and \x06%i units\x01 away.", g_cvarMaxHideDistance.Get());
 		return;
 	}
 
@@ -482,7 +482,7 @@ CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 	if (distance == 0)
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding players is now disabled.");
 	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding players within %i units.", distance);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding players within \x06%i units\x01.", distance);
 }
 
 void PrintHelp(const CCommand& args, CCSPlayerController* player)
