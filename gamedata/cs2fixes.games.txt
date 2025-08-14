@@ -407,38 +407,38 @@
 			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
 			"CCSPlayerController_ChangeTeam"
 			{
-				"windows"		"107"
-				"linux"			"106"
+				"windows"		"106"
+				"linux"			"105"
 			}
 			"GetHammerUniqueId"
 			{
-				"windows"		"116"
-				"linux"			"115"
+				"windows"		"115"
+				"linux"			"114"
 			}
 			"CBaseEntity::Use"
 			{
-				"windows"		"148"
-				"linux"			"147"
+				"windows"		"147"
+				"linux"			"146"
 			}
 			"CBaseEntity::StartTouch"
+			{
+				"windows"		"150"
+				"linux"			"149"
+			}
+			"CBaseEntity::Touch"
 			{
 				"windows"		"151"
 				"linux"			"150"
 			}
-			"CBaseEntity::Touch"
+			"CBaseEntity::EndTouch"
 			{
 				"windows"		"152"
 				"linux"			"151"
 			}
-			"CBaseEntity::EndTouch"
-			{
-				"windows"		"153"
-				"linux"			"152"
-			}
 			"Teleport"
 			{
-				"windows"		"166"
-				"linux"			"165"
+				"windows"		"165"
+				"linux"			"164"
 			}
 			// For these two, look for the names, you'll find vscript bindings
 			// Scroll down to where the var + 64 gets set to a function, that calls the offset we want
@@ -454,13 +454,13 @@
 			}
 			"CollisionRulesChanged"
 			{
-				"windows"		"190"
-				"linux"			"189"
+				"windows"		"189"
+				"linux"			"188"
 			}
 			"CCSPlayerController_Respawn"
 			{
-				"windows"		"276"
-				"linux"			"278"
+				"windows"		"275"
+				"linux"			"277"
 			}
 			// CBaseTrigger
 			"PassesTriggerFilters"
