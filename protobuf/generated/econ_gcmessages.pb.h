@@ -77,7 +77,7 @@ enum EGCItemMsg : int {
   k_EMsgGCDelete = 1004,
   k_EMsgGCVerifyCacheSubscription = 1005,
   k_EMsgGCNameItem = 1006,
-  k_EMsgGCUnlockCrate = 1007,
+  k_EMsgGCUnlockCrate_DEPRECATED = 1007,
   k_EMsgGCUnlockCrateResponse = 1008,
   k_EMsgGCPaintItem = 1009,
   k_EMsgGCPaintItemResponse = 1010,
@@ -215,11 +215,12 @@ enum EGCItemMsg : int {
   k_EMsgGCAdjustEquipSlotsManual = 2531,
   k_EMsgGCAdjustEquipSlotsShuffle = 2532,
   k_EMsgGCOpenCrate = 2534,
-  k_EMsgGCAcknowledgeRentalExpiration = 2535
+  k_EMsgGCAcknowledgeRentalExpiration = 2535,
+  k_EMsgGCVolatileItemLoadContents = 2536
 };
 bool EGCItemMsg_IsValid(int value);
 constexpr EGCItemMsg EGCItemMsg_MIN = k_EMsgGCBase;
-constexpr EGCItemMsg EGCItemMsg_MAX = k_EMsgGCAcknowledgeRentalExpiration;
+constexpr EGCItemMsg EGCItemMsg_MAX = k_EMsgGCVolatileItemLoadContents;
 constexpr int EGCItemMsg_ARRAYSIZE = EGCItemMsg_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EGCItemMsg_descriptor();

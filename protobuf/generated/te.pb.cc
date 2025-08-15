@@ -126,24 +126,6 @@ struct CMsgTEBeamRingDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgTEBeamRingDefaultTypeInternal _CMsgTEBeamRing_default_instance_;
-PROTOBUF_CONSTEXPR CMsgTEBSPDecal::CMsgTEBSPDecal(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_._has_bits_)*/{}
-  , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.origin_)*/nullptr
-  , /*decltype(_impl_.normal_)*/nullptr
-  , /*decltype(_impl_.saxis_)*/nullptr
-  , /*decltype(_impl_.index_)*/0u
-  , /*decltype(_impl_.entity_)*/-1} {}
-struct CMsgTEBSPDecalDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CMsgTEBSPDecalDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CMsgTEBSPDecalDefaultTypeInternal() {}
-  union {
-    CMsgTEBSPDecal _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgTEBSPDecalDefaultTypeInternal _CMsgTEBSPDecal_default_instance_;
 PROTOBUF_CONSTEXPR CMsgTEBubbles::CMsgTEBubbles(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
@@ -465,39 +447,6 @@ struct CMsgTEPhysicsPropDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgTEPhysicsPropDefaultTypeInternal _CMsgTEPhysicsProp_default_instance_;
-PROTOBUF_CONSTEXPR CMsgTEPlayerDecal::CMsgTEPlayerDecal(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_._has_bits_)*/{}
-  , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.origin_)*/nullptr
-  , /*decltype(_impl_.player_)*/-1
-  , /*decltype(_impl_.entity_)*/-1} {}
-struct CMsgTEPlayerDecalDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CMsgTEPlayerDecalDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CMsgTEPlayerDecalDefaultTypeInternal() {}
-  union {
-    CMsgTEPlayerDecal _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgTEPlayerDecalDefaultTypeInternal _CMsgTEPlayerDecal_default_instance_;
-PROTOBUF_CONSTEXPR CMsgTEProjectedDecal::CMsgTEProjectedDecal(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_._has_bits_)*/{}
-  , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.origin_)*/nullptr
-  , /*decltype(_impl_.angles_)*/nullptr
-  , /*decltype(_impl_.index_)*/0u
-  , /*decltype(_impl_.distance_)*/0} {}
-struct CMsgTEProjectedDecalDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CMsgTEProjectedDecalDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CMsgTEProjectedDecalDefaultTypeInternal() {}
-  union {
-    CMsgTEProjectedDecal _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgTEProjectedDecalDefaultTypeInternal _CMsgTEProjectedDecal_default_instance_;
 PROTOBUF_CONSTEXPR CMsgTESmoke::CMsgTESmoke(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
@@ -529,7 +478,7 @@ struct CMsgTEWorldDecalDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgTEWorldDecalDefaultTypeInternal _CMsgTEWorldDecal_default_instance_;
-static ::_pb::Metadata file_level_metadata_te_2eproto[28];
+static ::_pb::Metadata file_level_metadata_te_2eproto[25];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_te_2eproto[1];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_te_2eproto = nullptr;
 
@@ -626,22 +575,6 @@ const uint32_t TableStruct_te_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(proto
   0,
   1,
   2,
-  PROTOBUF_FIELD_OFFSET(::CMsgTEBSPDecal, _impl_._has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEBSPDecal, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CMsgTEBSPDecal, _impl_.origin_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEBSPDecal, _impl_.normal_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEBSPDecal, _impl_.saxis_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEBSPDecal, _impl_.entity_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEBSPDecal, _impl_.index_),
-  0,
-  1,
-  2,
-  4,
-  3,
   PROTOBUF_FIELD_OFFSET(::CMsgTEBubbles, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgTEBubbles, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -944,32 +877,6 @@ const uint32_t TableStruct_te_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(proto
   3,
   4,
   12,
-  PROTOBUF_FIELD_OFFSET(::CMsgTEPlayerDecal, _impl_._has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEPlayerDecal, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CMsgTEPlayerDecal, _impl_.origin_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEPlayerDecal, _impl_.player_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEPlayerDecal, _impl_.entity_),
-  0,
-  1,
-  2,
-  PROTOBUF_FIELD_OFFSET(::CMsgTEProjectedDecal, _impl_._has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEProjectedDecal, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CMsgTEProjectedDecal, _impl_.origin_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEProjectedDecal, _impl_.angles_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEProjectedDecal, _impl_.index_),
-  PROTOBUF_FIELD_OFFSET(::CMsgTEProjectedDecal, _impl_.distance_),
-  0,
-  1,
-  2,
-  3,
   PROTOBUF_FIELD_OFFSET(::CMsgTESmoke, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgTESmoke, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -1000,28 +907,25 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 56, 65, -1, sizeof(::CMsgTEBeamEnts)},
   { 68, 77, -1, sizeof(::CMsgTEBeamPoints)},
   { 80, 89, -1, sizeof(::CMsgTEBeamRing)},
-  { 92, 103, -1, sizeof(::CMsgTEBSPDecal)},
-  { 108, 119, -1, sizeof(::CMsgTEBubbles)},
-  { 124, 135, -1, sizeof(::CMsgTEBubbleTrail)},
-  { 140, 151, -1, sizeof(::CMsgTEDecal)},
-  { 156, 181, -1, sizeof(::CMsgEffectData)},
-  { 200, 207, -1, sizeof(::CMsgTEEffectDispatch)},
-  { 208, 217, -1, sizeof(::CMsgTEEnergySplash)},
-  { 220, 229, -1, sizeof(::CMsgTEFizz)},
-  { 232, 248, -1, sizeof(::CMsgTEShatterSurface)},
-  { 258, 268, -1, sizeof(::CMsgTEGlowSprite)},
-  { 272, 281, -1, sizeof(::CMsgTEImpact)},
-  { 284, 294, -1, sizeof(::CMsgTEMuzzleFlash)},
-  { 298, 308, -1, sizeof(::CMsgTEBloodStream)},
-  { 312, 329, -1, sizeof(::CMsgTEExplosion)},
-  { 340, 350, -1, sizeof(::CMsgTEDust)},
-  { 354, 362, -1, sizeof(::CMsgTELargeFunnel)},
-  { 364, 374, -1, sizeof(::CMsgTESparks)},
-  { 378, 397, -1, sizeof(::CMsgTEPhysicsProp)},
-  { 410, 419, -1, sizeof(::CMsgTEPlayerDecal)},
-  { 422, 432, -1, sizeof(::CMsgTEProjectedDecal)},
-  { 436, 444, -1, sizeof(::CMsgTESmoke)},
-  { 446, 455, -1, sizeof(::CMsgTEWorldDecal)},
+  { 92, 103, -1, sizeof(::CMsgTEBubbles)},
+  { 108, 119, -1, sizeof(::CMsgTEBubbleTrail)},
+  { 124, 135, -1, sizeof(::CMsgTEDecal)},
+  { 140, 165, -1, sizeof(::CMsgEffectData)},
+  { 184, 191, -1, sizeof(::CMsgTEEffectDispatch)},
+  { 192, 201, -1, sizeof(::CMsgTEEnergySplash)},
+  { 204, 213, -1, sizeof(::CMsgTEFizz)},
+  { 216, 232, -1, sizeof(::CMsgTEShatterSurface)},
+  { 242, 252, -1, sizeof(::CMsgTEGlowSprite)},
+  { 256, 265, -1, sizeof(::CMsgTEImpact)},
+  { 268, 278, -1, sizeof(::CMsgTEMuzzleFlash)},
+  { 282, 292, -1, sizeof(::CMsgTEBloodStream)},
+  { 296, 313, -1, sizeof(::CMsgTEExplosion)},
+  { 324, 334, -1, sizeof(::CMsgTEDust)},
+  { 338, 346, -1, sizeof(::CMsgTELargeFunnel)},
+  { 348, 358, -1, sizeof(::CMsgTESparks)},
+  { 362, 381, -1, sizeof(::CMsgTEPhysicsProp)},
+  { 394, 402, -1, sizeof(::CMsgTESmoke)},
+  { 404, 413, -1, sizeof(::CMsgTEWorldDecal)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -1031,7 +935,6 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CMsgTEBeamEnts_default_instance_._instance,
   &::_CMsgTEBeamPoints_default_instance_._instance,
   &::_CMsgTEBeamRing_default_instance_._instance,
-  &::_CMsgTEBSPDecal_default_instance_._instance,
   &::_CMsgTEBubbles_default_instance_._instance,
   &::_CMsgTEBubbleTrail_default_instance_._instance,
   &::_CMsgTEDecal_default_instance_._instance,
@@ -1049,8 +952,6 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CMsgTELargeFunnel_default_instance_._instance,
   &::_CMsgTESparks_default_instance_._instance,
   &::_CMsgTEPhysicsProp_default_instance_._instance,
-  &::_CMsgTEPlayerDecal_default_instance_._instance,
-  &::_CMsgTEProjectedDecal_default_instance_._instance,
   &::_CMsgTESmoke_default_instance_._instance,
   &::_CMsgTEWorldDecal_default_instance_._instance,
 };
@@ -1075,107 +976,96 @@ const char descriptor_table_protodef_te_2eproto[] PROTOBUF_SECTION_VARIABLE(prot
   "2\013.CMsgVector\022\030\n\003end\030\003 \001(\0132\013.CMsgVector\""
   "W\n\016CMsgTEBeamRing\022\035\n\004base\030\001 \001(\0132\017.CMsgTE"
   "BaseBeam\022\023\n\013startentity\030\002 \001(\r\022\021\n\tendenti"
-  "ty\030\003 \001(\r\"\211\001\n\016CMsgTEBSPDecal\022\033\n\006origin\030\001 "
-  "\001(\0132\013.CMsgVector\022\033\n\006normal\030\002 \001(\0132\013.CMsgV"
-  "ector\022\032\n\005saxis\030\003 \001(\0132\013.CMsgVector\022\022\n\006ent"
-  "ity\030\004 \001(\005:\002-1\022\r\n\005index\030\005 \001(\r\"s\n\rCMsgTEBu"
-  "bbles\022\031\n\004mins\030\001 \001(\0132\013.CMsgVector\022\031\n\004maxs"
-  "\030\002 \001(\0132\013.CMsgVector\022\016\n\006height\030\003 \001(\002\022\r\n\005c"
-  "ount\030\004 \001(\r\022\r\n\005speed\030\005 \001(\002\"w\n\021CMsgTEBubbl"
-  "eTrail\022\031\n\004mins\030\001 \001(\0132\013.CMsgVector\022\031\n\004max"
-  "s\030\002 \001(\0132\013.CMsgVector\022\016\n\006waterz\030\003 \001(\002\022\r\n\005"
-  "count\030\004 \001(\r\022\r\n\005speed\030\005 \001(\002\"y\n\013CMsgTEDeca"
-  "l\022\033\n\006origin\030\001 \001(\0132\013.CMsgVector\022\032\n\005start\030"
-  "\002 \001(\0132\013.CMsgVector\022\022\n\006entity\030\003 \001(\005:\002-1\022\016"
-  "\n\006hitbox\030\004 \001(\r\022\r\n\005index\030\005 \001(\r\"\261\003\n\016CMsgEf"
-  "fectData\022\033\n\006origin\030\001 \001(\0132\013.CMsgVector\022\032\n"
-  "\005start\030\002 \001(\0132\013.CMsgVector\022\033\n\006normal\030\003 \001("
-  "\0132\013.CMsgVector\022\033\n\006angles\030\004 \001(\0132\013.CMsgQAn"
-  "gle\022\030\n\006entity\030\005 \001(\007:\01016777215\022\035\n\013otheren"
-  "tity\030\006 \001(\007:\01016777215\022\r\n\005scale\030\007 \001(\002\022\021\n\tm"
-  "agnitude\030\010 \001(\002\022\016\n\006radius\030\t \001(\002\022\023\n\013surfac"
-  "eprop\030\n \001(\007\022\023\n\013effectindex\030\013 \001(\006\022\022\n\ndama"
-  "getype\030\014 \001(\r\022\020\n\010material\030\r \001(\r\022\016\n\006hitbox"
-  "\030\016 \001(\r\022\r\n\005color\030\017 \001(\r\022\r\n\005flags\030\020 \001(\r\022\027\n\017"
-  "attachmentindex\030\021 \001(\005\022\022\n\neffectname\030\022 \001("
-  "\r\022\026\n\016attachmentname\030\023 \001(\r\";\n\024CMsgTEEffec"
-  "tDispatch\022#\n\neffectdata\030\001 \001(\0132\017.CMsgEffe"
-  "ctData\"[\n\022CMsgTEEnergySplash\022\030\n\003pos\030\001 \001("
-  "\0132\013.CMsgVector\022\030\n\003dir\030\002 \001(\0132\013.CMsgVector"
-  "\022\021\n\texplosive\030\003 \001(\010\"B\n\nCMsgTEFizz\022\022\n\006ent"
-  "ity\030\001 \001(\005:\002-1\022\017\n\007density\030\002 \001(\r\022\017\n\007curren"
-  "t\030\003 \001(\005\"\371\001\n\024CMsgTEShatterSurface\022\033\n\006orig"
-  "in\030\001 \001(\0132\013.CMsgVector\022\033\n\006angles\030\002 \001(\0132\013."
-  "CMsgQAngle\022\032\n\005force\030\003 \001(\0132\013.CMsgVector\022\035"
-  "\n\010forcepos\030\004 \001(\0132\013.CMsgVector\022\r\n\005width\030\005"
-  " \001(\002\022\016\n\006height\030\006 \001(\002\022\021\n\tshardsize\030\007 \001(\002\022"
-  "\023\n\013surfacetype\030\010 \001(\r\022\022\n\nfrontcolor\030\t \001(\007"
-  "\022\021\n\tbackcolor\030\n \001(\007\"`\n\020CMsgTEGlowSprite\022"
-  "\033\n\006origin\030\001 \001(\0132\013.CMsgVector\022\r\n\005scale\030\002 "
-  "\001(\002\022\014\n\004life\030\003 \001(\002\022\022\n\nbrightness\030\004 \001(\r\"V\n"
-  "\014CMsgTEImpact\022\033\n\006origin\030\001 \001(\0132\013.CMsgVect"
-  "or\022\033\n\006normal\030\002 \001(\0132\013.CMsgVector\022\014\n\004type\030"
-  "\003 \001(\r\"j\n\021CMsgTEMuzzleFlash\022\033\n\006origin\030\001 \001"
-  "(\0132\013.CMsgVector\022\033\n\006angles\030\002 \001(\0132\013.CMsgQA"
-  "ngle\022\r\n\005scale\030\003 \001(\002\022\014\n\004type\030\004 \001(\r\"o\n\021CMs"
-  "gTEBloodStream\022\033\n\006origin\030\001 \001(\0132\013.CMsgVec"
-  "tor\022\036\n\tdirection\030\002 \001(\0132\013.CMsgVector\022\r\n\005c"
-  "olor\030\003 \001(\007\022\016\n\006amount\030\004 \001(\r\"\231\002\n\017CMsgTEExp"
-  "losion\022\033\n\006origin\030\001 \001(\0132\013.CMsgVector\022\r\n\005f"
-  "lags\030\003 \001(\r\022\033\n\006normal\030\004 \001(\0132\013.CMsgVector\022"
-  "\016\n\006radius\030\006 \001(\r\022\021\n\tmagnitude\030\007 \001(\r\022\027\n\017af"
-  "fect_ragdolls\030\t \001(\010\022\022\n\nsound_name\030\n \001(\t\022"
-  "\026\n\016explosion_type\030\013 \001(\r\022\025\n\rcreate_debris"
-  "\030\014 \001(\010\022\"\n\rdebris_origin\030\r \001(\0132\013.CMsgVect"
-  "or\022\032\n\022debris_surfaceprop\030\016 \001(\007\"f\n\nCMsgTE"
-  "Dust\022\033\n\006origin\030\001 \001(\0132\013.CMsgVector\022\014\n\004siz"
-  "e\030\002 \001(\002\022\r\n\005speed\030\003 \001(\002\022\036\n\tdirection\030\004 \001("
-  "\0132\013.CMsgVector\"B\n\021CMsgTELargeFunnel\022\033\n\006o"
-  "rigin\030\001 \001(\0132\013.CMsgVector\022\020\n\010reversed\030\002 \001"
-  "(\r\"n\n\014CMsgTESparks\022\033\n\006origin\030\001 \001(\0132\013.CMs"
-  "gVector\022\021\n\tmagnitude\030\002 \001(\r\022\016\n\006length\030\003 \001"
-  "(\r\022\036\n\tdirection\030\004 \001(\0132\013.CMsgVector\"\274\002\n\021C"
-  "MsgTEPhysicsProp\022\033\n\006origin\030\001 \001(\0132\013.CMsgV"
-  "ector\022\035\n\010velocity\030\002 \001(\0132\013.CMsgVector\022\033\n\006"
-  "angles\030\003 \001(\0132\013.CMsgQAngle\022\014\n\004skin\030\004 \001(\007\022"
-  "\r\n\005flags\030\005 \001(\r\022\017\n\007effects\030\006 \001(\r\022\r\n\005color"
-  "\030\007 \001(\007\022\022\n\nmodelindex\030\010 \001(\006\022#\n\033unused_bre"
-  "akmodelsnottomake\030\t \001(\r\022\r\n\005scale\030\n \001(\002\022\033"
-  "\n\006dmgpos\030\013 \001(\0132\013.CMsgVector\022\033\n\006dmgdir\030\014 "
-  "\001(\0132\013.CMsgVector\022\017\n\007dmgtype\030\r \001(\005\"X\n\021CMs"
-  "gTEPlayerDecal\022\033\n\006origin\030\001 \001(\0132\013.CMsgVec"
-  "tor\022\022\n\006player\030\002 \001(\005:\002-1\022\022\n\006entity\030\003 \001(\005:"
-  "\002-1\"q\n\024CMsgTEProjectedDecal\022\033\n\006origin\030\001 "
-  "\001(\0132\013.CMsgVector\022\033\n\006angles\030\002 \001(\0132\013.CMsgQ"
-  "Angle\022\r\n\005index\030\003 \001(\r\022\020\n\010distance\030\004 \001(\002\"9"
-  "\n\013CMsgTESmoke\022\033\n\006origin\030\001 \001(\0132\013.CMsgVect"
-  "or\022\r\n\005scale\030\002 \001(\002\"[\n\020CMsgTEWorldDecal\022\033\n"
-  "\006origin\030\001 \001(\0132\013.CMsgVector\022\033\n\006normal\030\002 \001"
-  "(\0132\013.CMsgVector\022\r\n\005index\030\003 \001(\r*\275\004\n\016ETEPr"
-  "otobufIds\022\030\n\023TE_EffectDispatchId\020\220\003\022\027\n\022T"
-  "E_ArmorRicochetId\020\221\003\022\026\n\021TE_BeamEntPointI"
-  "d\020\222\003\022\022\n\rTE_BeamEntsId\020\223\003\022\024\n\017TE_BeamPoint"
-  "sId\020\224\003\022\022\n\rTE_BeamRingId\020\225\003\022\022\n\rTE_BSPDeca"
-  "lId\020\227\003\022\021\n\014TE_BubblesId\020\230\003\022\025\n\020TE_BubbleTr"
-  "ailId\020\231\003\022\017\n\nTE_DecalId\020\232\003\022\024\n\017TE_WorldDec"
-  "alId\020\233\003\022\026\n\021TE_EnergySplashId\020\234\003\022\016\n\tTE_Fi"
-  "zzId\020\235\003\022\030\n\023TE_ShatterSurfaceId\020\236\003\022\024\n\017TE_"
-  "GlowSpriteId\020\237\003\022\020\n\013TE_ImpactId\020\240\003\022\025\n\020TE_"
-  "MuzzleFlashId\020\241\003\022\025\n\020TE_BloodStreamId\020\242\003\022"
-  "\023\n\016TE_ExplosionId\020\243\003\022\016\n\tTE_DustId\020\244\003\022\025\n\020"
-  "TE_LargeFunnelId\020\245\003\022\020\n\013TE_SparksId\020\246\003\022\025\n"
-  "\020TE_PhysicsPropId\020\247\003\022\025\n\020TE_PlayerDecalId"
-  "\020\250\003\022\030\n\023TE_ProjectedDecalId\020\251\003\022\017\n\nTE_Smok"
-  "eId\020\252\003"
+  "ty\030\003 \001(\r\"s\n\rCMsgTEBubbles\022\031\n\004mins\030\001 \001(\0132"
+  "\013.CMsgVector\022\031\n\004maxs\030\002 \001(\0132\013.CMsgVector\022"
+  "\016\n\006height\030\003 \001(\002\022\r\n\005count\030\004 \001(\r\022\r\n\005speed\030"
+  "\005 \001(\002\"w\n\021CMsgTEBubbleTrail\022\031\n\004mins\030\001 \001(\013"
+  "2\013.CMsgVector\022\031\n\004maxs\030\002 \001(\0132\013.CMsgVector"
+  "\022\016\n\006waterz\030\003 \001(\002\022\r\n\005count\030\004 \001(\r\022\r\n\005speed"
+  "\030\005 \001(\002\"y\n\013CMsgTEDecal\022\033\n\006origin\030\001 \001(\0132\013."
+  "CMsgVector\022\032\n\005start\030\002 \001(\0132\013.CMsgVector\022\022"
+  "\n\006entity\030\003 \001(\005:\002-1\022\016\n\006hitbox\030\004 \001(\r\022\r\n\005in"
+  "dex\030\005 \001(\r\"\261\003\n\016CMsgEffectData\022\033\n\006origin\030\001"
+  " \001(\0132\013.CMsgVector\022\032\n\005start\030\002 \001(\0132\013.CMsgV"
+  "ector\022\033\n\006normal\030\003 \001(\0132\013.CMsgVector\022\033\n\006an"
+  "gles\030\004 \001(\0132\013.CMsgQAngle\022\030\n\006entity\030\005 \001(\007:"
+  "\01016777215\022\035\n\013otherentity\030\006 \001(\007:\01016777215"
+  "\022\r\n\005scale\030\007 \001(\002\022\021\n\tmagnitude\030\010 \001(\002\022\016\n\006ra"
+  "dius\030\t \001(\002\022\023\n\013surfaceprop\030\n \001(\007\022\023\n\013effec"
+  "tindex\030\013 \001(\006\022\022\n\ndamagetype\030\014 \001(\r\022\020\n\010mate"
+  "rial\030\r \001(\r\022\016\n\006hitbox\030\016 \001(\r\022\r\n\005color\030\017 \001("
+  "\r\022\r\n\005flags\030\020 \001(\r\022\027\n\017attachmentindex\030\021 \001("
+  "\005\022\022\n\neffectname\030\022 \001(\r\022\026\n\016attachmentname\030"
+  "\023 \001(\r\";\n\024CMsgTEEffectDispatch\022#\n\neffectd"
+  "ata\030\001 \001(\0132\017.CMsgEffectData\"[\n\022CMsgTEEner"
+  "gySplash\022\030\n\003pos\030\001 \001(\0132\013.CMsgVector\022\030\n\003di"
+  "r\030\002 \001(\0132\013.CMsgVector\022\021\n\texplosive\030\003 \001(\010\""
+  "B\n\nCMsgTEFizz\022\022\n\006entity\030\001 \001(\005:\002-1\022\017\n\007den"
+  "sity\030\002 \001(\r\022\017\n\007current\030\003 \001(\005\"\371\001\n\024CMsgTESh"
+  "atterSurface\022\033\n\006origin\030\001 \001(\0132\013.CMsgVecto"
+  "r\022\033\n\006angles\030\002 \001(\0132\013.CMsgQAngle\022\032\n\005force\030"
+  "\003 \001(\0132\013.CMsgVector\022\035\n\010forcepos\030\004 \001(\0132\013.C"
+  "MsgVector\022\r\n\005width\030\005 \001(\002\022\016\n\006height\030\006 \001(\002"
+  "\022\021\n\tshardsize\030\007 \001(\002\022\023\n\013surfacetype\030\010 \001(\r"
+  "\022\022\n\nfrontcolor\030\t \001(\007\022\021\n\tbackcolor\030\n \001(\007\""
+  "`\n\020CMsgTEGlowSprite\022\033\n\006origin\030\001 \001(\0132\013.CM"
+  "sgVector\022\r\n\005scale\030\002 \001(\002\022\014\n\004life\030\003 \001(\002\022\022\n"
+  "\nbrightness\030\004 \001(\r\"V\n\014CMsgTEImpact\022\033\n\006ori"
+  "gin\030\001 \001(\0132\013.CMsgVector\022\033\n\006normal\030\002 \001(\0132\013"
+  ".CMsgVector\022\014\n\004type\030\003 \001(\r\"j\n\021CMsgTEMuzzl"
+  "eFlash\022\033\n\006origin\030\001 \001(\0132\013.CMsgVector\022\033\n\006a"
+  "ngles\030\002 \001(\0132\013.CMsgQAngle\022\r\n\005scale\030\003 \001(\002\022"
+  "\014\n\004type\030\004 \001(\r\"o\n\021CMsgTEBloodStream\022\033\n\006or"
+  "igin\030\001 \001(\0132\013.CMsgVector\022\036\n\tdirection\030\002 \001"
+  "(\0132\013.CMsgVector\022\r\n\005color\030\003 \001(\007\022\016\n\006amount"
+  "\030\004 \001(\r\"\231\002\n\017CMsgTEExplosion\022\033\n\006origin\030\001 \001"
+  "(\0132\013.CMsgVector\022\r\n\005flags\030\003 \001(\r\022\033\n\006normal"
+  "\030\004 \001(\0132\013.CMsgVector\022\016\n\006radius\030\006 \001(\r\022\021\n\tm"
+  "agnitude\030\007 \001(\r\022\027\n\017affect_ragdolls\030\t \001(\010\022"
+  "\022\n\nsound_name\030\n \001(\t\022\026\n\016explosion_type\030\013 "
+  "\001(\r\022\025\n\rcreate_debris\030\014 \001(\010\022\"\n\rdebris_ori"
+  "gin\030\r \001(\0132\013.CMsgVector\022\032\n\022debris_surface"
+  "prop\030\016 \001(\007\"f\n\nCMsgTEDust\022\033\n\006origin\030\001 \001(\013"
+  "2\013.CMsgVector\022\014\n\004size\030\002 \001(\002\022\r\n\005speed\030\003 \001"
+  "(\002\022\036\n\tdirection\030\004 \001(\0132\013.CMsgVector\"B\n\021CM"
+  "sgTELargeFunnel\022\033\n\006origin\030\001 \001(\0132\013.CMsgVe"
+  "ctor\022\020\n\010reversed\030\002 \001(\r\"n\n\014CMsgTESparks\022\033"
+  "\n\006origin\030\001 \001(\0132\013.CMsgVector\022\021\n\tmagnitude"
+  "\030\002 \001(\r\022\016\n\006length\030\003 \001(\r\022\036\n\tdirection\030\004 \001("
+  "\0132\013.CMsgVector\"\274\002\n\021CMsgTEPhysicsProp\022\033\n\006"
+  "origin\030\001 \001(\0132\013.CMsgVector\022\035\n\010velocity\030\002 "
+  "\001(\0132\013.CMsgVector\022\033\n\006angles\030\003 \001(\0132\013.CMsgQ"
+  "Angle\022\014\n\004skin\030\004 \001(\007\022\r\n\005flags\030\005 \001(\r\022\017\n\007ef"
+  "fects\030\006 \001(\r\022\r\n\005color\030\007 \001(\007\022\022\n\nmodelindex"
+  "\030\010 \001(\006\022#\n\033unused_breakmodelsnottomake\030\t "
+  "\001(\r\022\r\n\005scale\030\n \001(\002\022\033\n\006dmgpos\030\013 \001(\0132\013.CMs"
+  "gVector\022\033\n\006dmgdir\030\014 \001(\0132\013.CMsgVector\022\017\n\007"
+  "dmgtype\030\r \001(\005\"9\n\013CMsgTESmoke\022\033\n\006origin\030\001"
+  " \001(\0132\013.CMsgVector\022\r\n\005scale\030\002 \001(\002\"[\n\020CMsg"
+  "TEWorldDecal\022\033\n\006origin\030\001 \001(\0132\013.CMsgVecto"
+  "r\022\033\n\006normal\030\002 \001(\0132\013.CMsgVector\022\r\n\005index\030"
+  "\003 \001(\r*\370\003\n\016ETEProtobufIds\022\030\n\023TE_EffectDis"
+  "patchId\020\220\003\022\027\n\022TE_ArmorRicochetId\020\221\003\022\026\n\021T"
+  "E_BeamEntPointId\020\222\003\022\022\n\rTE_BeamEntsId\020\223\003\022"
+  "\024\n\017TE_BeamPointsId\020\224\003\022\022\n\rTE_BeamRingId\020\225"
+  "\003\022\021\n\014TE_BubblesId\020\230\003\022\025\n\020TE_BubbleTrailId"
+  "\020\231\003\022\017\n\nTE_DecalId\020\232\003\022\024\n\017TE_WorldDecalId\020"
+  "\233\003\022\026\n\021TE_EnergySplashId\020\234\003\022\016\n\tTE_FizzId\020"
+  "\235\003\022\030\n\023TE_ShatterSurfaceId\020\236\003\022\024\n\017TE_GlowS"
+  "priteId\020\237\003\022\020\n\013TE_ImpactId\020\240\003\022\025\n\020TE_Muzzl"
+  "eFlashId\020\241\003\022\025\n\020TE_BloodStreamId\020\242\003\022\023\n\016TE"
+  "_ExplosionId\020\243\003\022\016\n\tTE_DustId\020\244\003\022\025\n\020TE_La"
+  "rgeFunnelId\020\245\003\022\020\n\013TE_SparksId\020\246\003\022\025\n\020TE_P"
+  "hysicsPropId\020\247\003\022\017\n\nTE_SmokeId\020\252\003"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_te_2eproto_deps[1] = {
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_te_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_te_2eproto = {
-    false, false, 4406, descriptor_table_protodef_te_2eproto,
+    false, false, 3992, descriptor_table_protodef_te_2eproto,
     "te.proto",
-    &descriptor_table_te_2eproto_once, descriptor_table_te_2eproto_deps, 1, 28,
+    &descriptor_table_te_2eproto_once, descriptor_table_te_2eproto_deps, 1, 25,
     schemas, file_default_instances, TableStruct_te_2eproto::offsets,
     file_level_metadata_te_2eproto, file_level_enum_descriptors_te_2eproto,
     file_level_service_descriptors_te_2eproto,
@@ -1198,7 +1088,6 @@ bool ETEProtobufIds_IsValid(int value) {
     case 403:
     case 404:
     case 405:
-    case 407:
     case 408:
     case 409:
     case 410:
@@ -1215,8 +1104,6 @@ bool ETEProtobufIds_IsValid(int value) {
     case 421:
     case 422:
     case 423:
-    case 424:
-    case 425:
     case 426:
       return true;
     default:
@@ -3279,389 +3166,6 @@ void CMsgTEBeamRing::InternalSwap(CMsgTEBeamRing* other) {
 
 // ===================================================================
 
-class CMsgTEBSPDecal::_Internal {
- public:
-  using HasBits = decltype(std::declval<CMsgTEBSPDecal>()._impl_._has_bits_);
-  static const ::CMsgVector& origin(const CMsgTEBSPDecal* msg);
-  static void set_has_origin(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
-  static const ::CMsgVector& normal(const CMsgTEBSPDecal* msg);
-  static void set_has_normal(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
-  }
-  static const ::CMsgVector& saxis(const CMsgTEBSPDecal* msg);
-  static void set_has_saxis(HasBits* has_bits) {
-    (*has_bits)[0] |= 4u;
-  }
-  static void set_has_entity(HasBits* has_bits) {
-    (*has_bits)[0] |= 16u;
-  }
-  static void set_has_index(HasBits* has_bits) {
-    (*has_bits)[0] |= 8u;
-  }
-};
-
-const ::CMsgVector&
-CMsgTEBSPDecal::_Internal::origin(const CMsgTEBSPDecal* msg) {
-  return *msg->_impl_.origin_;
-}
-const ::CMsgVector&
-CMsgTEBSPDecal::_Internal::normal(const CMsgTEBSPDecal* msg) {
-  return *msg->_impl_.normal_;
-}
-const ::CMsgVector&
-CMsgTEBSPDecal::_Internal::saxis(const CMsgTEBSPDecal* msg) {
-  return *msg->_impl_.saxis_;
-}
-void CMsgTEBSPDecal::clear_origin() {
-  if (_impl_.origin_ != nullptr) _impl_.origin_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-void CMsgTEBSPDecal::clear_normal() {
-  if (_impl_.normal_ != nullptr) _impl_.normal_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-void CMsgTEBSPDecal::clear_saxis() {
-  if (_impl_.saxis_ != nullptr) _impl_.saxis_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-CMsgTEBSPDecal::CMsgTEBSPDecal(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:CMsgTEBSPDecal)
-}
-CMsgTEBSPDecal::CMsgTEBSPDecal(const CMsgTEBSPDecal& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CMsgTEBSPDecal* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){from._impl_._has_bits_}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.origin_){nullptr}
-    , decltype(_impl_.normal_){nullptr}
-    , decltype(_impl_.saxis_){nullptr}
-    , decltype(_impl_.index_){}
-    , decltype(_impl_.entity_){}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_origin()) {
-    _this->_impl_.origin_ = new ::CMsgVector(*from._impl_.origin_);
-  }
-  if (from._internal_has_normal()) {
-    _this->_impl_.normal_ = new ::CMsgVector(*from._impl_.normal_);
-  }
-  if (from._internal_has_saxis()) {
-    _this->_impl_.saxis_ = new ::CMsgVector(*from._impl_.saxis_);
-  }
-  ::memcpy(&_impl_.index_, &from._impl_.index_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.entity_) -
-    reinterpret_cast<char*>(&_impl_.index_)) + sizeof(_impl_.entity_));
-  // @@protoc_insertion_point(copy_constructor:CMsgTEBSPDecal)
-}
-
-inline void CMsgTEBSPDecal::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.origin_){nullptr}
-    , decltype(_impl_.normal_){nullptr}
-    , decltype(_impl_.saxis_){nullptr}
-    , decltype(_impl_.index_){0u}
-    , decltype(_impl_.entity_){-1}
-  };
-}
-
-CMsgTEBSPDecal::~CMsgTEBSPDecal() {
-  // @@protoc_insertion_point(destructor:CMsgTEBSPDecal)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void CMsgTEBSPDecal::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  if (this != internal_default_instance()) delete _impl_.origin_;
-  if (this != internal_default_instance()) delete _impl_.normal_;
-  if (this != internal_default_instance()) delete _impl_.saxis_;
-}
-
-void CMsgTEBSPDecal::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void CMsgTEBSPDecal::Clear() {
-// @@protoc_insertion_point(message_clear_start:CMsgTEBSPDecal)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
-    if (cached_has_bits & 0x00000001u) {
-      GOOGLE_DCHECK(_impl_.origin_ != nullptr);
-      _impl_.origin_->Clear();
-    }
-    if (cached_has_bits & 0x00000002u) {
-      GOOGLE_DCHECK(_impl_.normal_ != nullptr);
-      _impl_.normal_->Clear();
-    }
-    if (cached_has_bits & 0x00000004u) {
-      GOOGLE_DCHECK(_impl_.saxis_ != nullptr);
-      _impl_.saxis_->Clear();
-    }
-  }
-  if (cached_has_bits & 0x00000018u) {
-    _impl_.index_ = 0u;
-    _impl_.entity_ = -1;
-  }
-  _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* CMsgTEBSPDecal::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // optional .CMsgVector origin = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_origin(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional .CMsgVector normal = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          ptr = ctx->ParseMessage(_internal_mutable_normal(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional .CMsgVector saxis = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          ptr = ctx->ParseMessage(_internal_mutable_saxis(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional int32 entity = 4 [default = -1];
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
-          _Internal::set_has_entity(&has_bits);
-          _impl_.entity_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional uint32 index = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
-          _Internal::set_has_index(&has_bits);
-          _impl_.index_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  _impl_._has_bits_.Or(has_bits);
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* CMsgTEBSPDecal::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CMsgTEBSPDecal)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  // optional .CMsgVector origin = 1;
-  if (cached_has_bits & 0x00000001u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::origin(this),
-        _Internal::origin(this).GetCachedSize(), target, stream);
-  }
-
-  // optional .CMsgVector normal = 2;
-  if (cached_has_bits & 0x00000002u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(2, _Internal::normal(this),
-        _Internal::normal(this).GetCachedSize(), target, stream);
-  }
-
-  // optional .CMsgVector saxis = 3;
-  if (cached_has_bits & 0x00000004u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(3, _Internal::saxis(this),
-        _Internal::saxis(this).GetCachedSize(), target, stream);
-  }
-
-  // optional int32 entity = 4 [default = -1];
-  if (cached_has_bits & 0x00000010u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_entity(), target);
-  }
-
-  // optional uint32 index = 5;
-  if (cached_has_bits & 0x00000008u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(5, this->_internal_index(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:CMsgTEBSPDecal)
-  return target;
-}
-
-size_t CMsgTEBSPDecal::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CMsgTEBSPDecal)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000001fu) {
-    // optional .CMsgVector origin = 1;
-    if (cached_has_bits & 0x00000001u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *_impl_.origin_);
-    }
-
-    // optional .CMsgVector normal = 2;
-    if (cached_has_bits & 0x00000002u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *_impl_.normal_);
-    }
-
-    // optional .CMsgVector saxis = 3;
-    if (cached_has_bits & 0x00000004u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *_impl_.saxis_);
-    }
-
-    // optional uint32 index = 5;
-    if (cached_has_bits & 0x00000008u) {
-      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_index());
-    }
-
-    // optional int32 entity = 4 [default = -1];
-    if (cached_has_bits & 0x00000010u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_entity());
-    }
-
-  }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgTEBSPDecal::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CMsgTEBSPDecal::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgTEBSPDecal::GetClassData() const { return &_class_data_; }
-
-
-void CMsgTEBSPDecal::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CMsgTEBSPDecal*>(&to_msg);
-  auto& from = static_cast<const CMsgTEBSPDecal&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgTEBSPDecal)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000001fu) {
-    if (cached_has_bits & 0x00000001u) {
-      _this->_internal_mutable_origin()->::CMsgVector::MergeFrom(
-          from._internal_origin());
-    }
-    if (cached_has_bits & 0x00000002u) {
-      _this->_internal_mutable_normal()->::CMsgVector::MergeFrom(
-          from._internal_normal());
-    }
-    if (cached_has_bits & 0x00000004u) {
-      _this->_internal_mutable_saxis()->::CMsgVector::MergeFrom(
-          from._internal_saxis());
-    }
-    if (cached_has_bits & 0x00000008u) {
-      _this->_impl_.index_ = from._impl_.index_;
-    }
-    if (cached_has_bits & 0x00000010u) {
-      _this->_impl_.entity_ = from._impl_.entity_;
-    }
-    _this->_impl_._has_bits_[0] |= cached_has_bits;
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void CMsgTEBSPDecal::CopyFrom(const CMsgTEBSPDecal& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CMsgTEBSPDecal)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CMsgTEBSPDecal::IsInitialized() const {
-  return true;
-}
-
-void CMsgTEBSPDecal::InternalSwap(CMsgTEBSPDecal* other) {
-  using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgTEBSPDecal, _impl_.index_)
-      + sizeof(CMsgTEBSPDecal::_impl_.index_)
-      - PROTOBUF_FIELD_OFFSET(CMsgTEBSPDecal, _impl_.origin_)>(
-          reinterpret_cast<char*>(&_impl_.origin_),
-          reinterpret_cast<char*>(&other->_impl_.origin_));
-  swap(_impl_.entity_, other->_impl_.entity_);
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEBSPDecal::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[6]);
-}
-
-// ===================================================================
-
 class CMsgTEBubbles::_Internal {
  public:
   using HasBits = decltype(std::declval<CMsgTEBubbles>()._impl_._has_bits_);
@@ -4020,7 +3524,7 @@ void CMsgTEBubbles::InternalSwap(CMsgTEBubbles* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEBubbles::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[7]);
+      file_level_metadata_te_2eproto[6]);
 }
 
 // ===================================================================
@@ -4383,7 +3887,7 @@ void CMsgTEBubbleTrail::InternalSwap(CMsgTEBubbleTrail* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEBubbleTrail::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[8]);
+      file_level_metadata_te_2eproto[7]);
 }
 
 // ===================================================================
@@ -4748,7 +4252,7 @@ void CMsgTEDecal::InternalSwap(CMsgTEDecal* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEDecal::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[9]);
+      file_level_metadata_te_2eproto[8]);
 }
 
 // ===================================================================
@@ -5573,7 +5077,7 @@ void CMsgEffectData::InternalSwap(CMsgEffectData* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgEffectData::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[10]);
+      file_level_metadata_te_2eproto[9]);
 }
 
 // ===================================================================
@@ -5779,7 +5283,7 @@ void CMsgTEEffectDispatch::InternalSwap(CMsgTEEffectDispatch* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEEffectDispatch::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[11]);
+      file_level_metadata_te_2eproto[10]);
 }
 
 // ===================================================================
@@ -6080,7 +5584,7 @@ void CMsgTEEnergySplash::InternalSwap(CMsgTEEnergySplash* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEEnergySplash::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[12]);
+      file_level_metadata_te_2eproto[11]);
 }
 
 // ===================================================================
@@ -6347,7 +5851,7 @@ void CMsgTEFizz::InternalSwap(CMsgTEFizz* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEFizz::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[13]);
+      file_level_metadata_te_2eproto[12]);
 }
 
 // ===================================================================
@@ -6900,7 +6404,7 @@ void CMsgTEShatterSurface::InternalSwap(CMsgTEShatterSurface* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEShatterSurface::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[14]);
+      file_level_metadata_te_2eproto[13]);
 }
 
 // ===================================================================
@@ -7213,7 +6717,7 @@ void CMsgTEGlowSprite::InternalSwap(CMsgTEGlowSprite* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEGlowSprite::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[15]);
+      file_level_metadata_te_2eproto[14]);
 }
 
 // ===================================================================
@@ -7514,7 +7018,7 @@ void CMsgTEImpact::InternalSwap(CMsgTEImpact* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEImpact::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[16]);
+      file_level_metadata_te_2eproto[15]);
 }
 
 // ===================================================================
@@ -7849,7 +7353,7 @@ void CMsgTEMuzzleFlash::InternalSwap(CMsgTEMuzzleFlash* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEMuzzleFlash::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[17]);
+      file_level_metadata_te_2eproto[16]);
 }
 
 // ===================================================================
@@ -8184,7 +7688,7 @@ void CMsgTEBloodStream::InternalSwap(CMsgTEBloodStream* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEBloodStream::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[18]);
+      file_level_metadata_te_2eproto[17]);
 }
 
 // ===================================================================
@@ -8776,7 +8280,7 @@ void CMsgTEExplosion::InternalSwap(CMsgTEExplosion* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEExplosion::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[19]);
+      file_level_metadata_te_2eproto[18]);
 }
 
 // ===================================================================
@@ -9111,7 +8615,7 @@ void CMsgTEDust::InternalSwap(CMsgTEDust* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEDust::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[20]);
+      file_level_metadata_te_2eproto[19]);
 }
 
 // ===================================================================
@@ -9362,7 +8866,7 @@ void CMsgTELargeFunnel::InternalSwap(CMsgTELargeFunnel* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTELargeFunnel::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[21]);
+      file_level_metadata_te_2eproto[20]);
 }
 
 // ===================================================================
@@ -9697,7 +9201,7 @@ void CMsgTESparks::InternalSwap(CMsgTESparks* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTESparks::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[22]);
+      file_level_metadata_te_2eproto[21]);
 }
 
 // ===================================================================
@@ -10354,623 +9858,7 @@ void CMsgTEPhysicsProp::InternalSwap(CMsgTEPhysicsProp* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEPhysicsProp::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[23]);
-}
-
-// ===================================================================
-
-class CMsgTEPlayerDecal::_Internal {
- public:
-  using HasBits = decltype(std::declval<CMsgTEPlayerDecal>()._impl_._has_bits_);
-  static const ::CMsgVector& origin(const CMsgTEPlayerDecal* msg);
-  static void set_has_origin(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
-  static void set_has_player(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
-  }
-  static void set_has_entity(HasBits* has_bits) {
-    (*has_bits)[0] |= 4u;
-  }
-};
-
-const ::CMsgVector&
-CMsgTEPlayerDecal::_Internal::origin(const CMsgTEPlayerDecal* msg) {
-  return *msg->_impl_.origin_;
-}
-void CMsgTEPlayerDecal::clear_origin() {
-  if (_impl_.origin_ != nullptr) _impl_.origin_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-CMsgTEPlayerDecal::CMsgTEPlayerDecal(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:CMsgTEPlayerDecal)
-}
-CMsgTEPlayerDecal::CMsgTEPlayerDecal(const CMsgTEPlayerDecal& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CMsgTEPlayerDecal* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){from._impl_._has_bits_}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.origin_){nullptr}
-    , decltype(_impl_.player_){}
-    , decltype(_impl_.entity_){}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_origin()) {
-    _this->_impl_.origin_ = new ::CMsgVector(*from._impl_.origin_);
-  }
-  ::memcpy(&_impl_.player_, &from._impl_.player_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.entity_) -
-    reinterpret_cast<char*>(&_impl_.player_)) + sizeof(_impl_.entity_));
-  // @@protoc_insertion_point(copy_constructor:CMsgTEPlayerDecal)
-}
-
-inline void CMsgTEPlayerDecal::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.origin_){nullptr}
-    , decltype(_impl_.player_){-1}
-    , decltype(_impl_.entity_){-1}
-  };
-}
-
-CMsgTEPlayerDecal::~CMsgTEPlayerDecal() {
-  // @@protoc_insertion_point(destructor:CMsgTEPlayerDecal)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void CMsgTEPlayerDecal::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  if (this != internal_default_instance()) delete _impl_.origin_;
-}
-
-void CMsgTEPlayerDecal::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void CMsgTEPlayerDecal::Clear() {
-// @@protoc_insertion_point(message_clear_start:CMsgTEPlayerDecal)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
-    if (cached_has_bits & 0x00000001u) {
-      GOOGLE_DCHECK(_impl_.origin_ != nullptr);
-      _impl_.origin_->Clear();
-    }
-    _impl_.player_ = -1;
-    _impl_.entity_ = -1;
-  }
-  _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* CMsgTEPlayerDecal::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // optional .CMsgVector origin = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_origin(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional int32 player = 2 [default = -1];
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _Internal::set_has_player(&has_bits);
-          _impl_.player_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional int32 entity = 3 [default = -1];
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _Internal::set_has_entity(&has_bits);
-          _impl_.entity_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  _impl_._has_bits_.Or(has_bits);
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* CMsgTEPlayerDecal::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CMsgTEPlayerDecal)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  // optional .CMsgVector origin = 1;
-  if (cached_has_bits & 0x00000001u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::origin(this),
-        _Internal::origin(this).GetCachedSize(), target, stream);
-  }
-
-  // optional int32 player = 2 [default = -1];
-  if (cached_has_bits & 0x00000002u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_player(), target);
-  }
-
-  // optional int32 entity = 3 [default = -1];
-  if (cached_has_bits & 0x00000004u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_entity(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:CMsgTEPlayerDecal)
-  return target;
-}
-
-size_t CMsgTEPlayerDecal::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CMsgTEPlayerDecal)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
-    // optional .CMsgVector origin = 1;
-    if (cached_has_bits & 0x00000001u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *_impl_.origin_);
-    }
-
-    // optional int32 player = 2 [default = -1];
-    if (cached_has_bits & 0x00000002u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_player());
-    }
-
-    // optional int32 entity = 3 [default = -1];
-    if (cached_has_bits & 0x00000004u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_entity());
-    }
-
-  }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgTEPlayerDecal::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CMsgTEPlayerDecal::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgTEPlayerDecal::GetClassData() const { return &_class_data_; }
-
-
-void CMsgTEPlayerDecal::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CMsgTEPlayerDecal*>(&to_msg);
-  auto& from = static_cast<const CMsgTEPlayerDecal&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgTEPlayerDecal)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
-    if (cached_has_bits & 0x00000001u) {
-      _this->_internal_mutable_origin()->::CMsgVector::MergeFrom(
-          from._internal_origin());
-    }
-    if (cached_has_bits & 0x00000002u) {
-      _this->_impl_.player_ = from._impl_.player_;
-    }
-    if (cached_has_bits & 0x00000004u) {
-      _this->_impl_.entity_ = from._impl_.entity_;
-    }
-    _this->_impl_._has_bits_[0] |= cached_has_bits;
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void CMsgTEPlayerDecal::CopyFrom(const CMsgTEPlayerDecal& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CMsgTEPlayerDecal)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CMsgTEPlayerDecal::IsInitialized() const {
-  return true;
-}
-
-void CMsgTEPlayerDecal::InternalSwap(CMsgTEPlayerDecal* other) {
-  using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  swap(_impl_.origin_, other->_impl_.origin_);
-  swap(_impl_.player_, other->_impl_.player_);
-  swap(_impl_.entity_, other->_impl_.entity_);
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEPlayerDecal::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[24]);
-}
-
-// ===================================================================
-
-class CMsgTEProjectedDecal::_Internal {
- public:
-  using HasBits = decltype(std::declval<CMsgTEProjectedDecal>()._impl_._has_bits_);
-  static const ::CMsgVector& origin(const CMsgTEProjectedDecal* msg);
-  static void set_has_origin(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
-  static const ::CMsgQAngle& angles(const CMsgTEProjectedDecal* msg);
-  static void set_has_angles(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
-  }
-  static void set_has_index(HasBits* has_bits) {
-    (*has_bits)[0] |= 4u;
-  }
-  static void set_has_distance(HasBits* has_bits) {
-    (*has_bits)[0] |= 8u;
-  }
-};
-
-const ::CMsgVector&
-CMsgTEProjectedDecal::_Internal::origin(const CMsgTEProjectedDecal* msg) {
-  return *msg->_impl_.origin_;
-}
-const ::CMsgQAngle&
-CMsgTEProjectedDecal::_Internal::angles(const CMsgTEProjectedDecal* msg) {
-  return *msg->_impl_.angles_;
-}
-void CMsgTEProjectedDecal::clear_origin() {
-  if (_impl_.origin_ != nullptr) _impl_.origin_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-void CMsgTEProjectedDecal::clear_angles() {
-  if (_impl_.angles_ != nullptr) _impl_.angles_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-CMsgTEProjectedDecal::CMsgTEProjectedDecal(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:CMsgTEProjectedDecal)
-}
-CMsgTEProjectedDecal::CMsgTEProjectedDecal(const CMsgTEProjectedDecal& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CMsgTEProjectedDecal* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){from._impl_._has_bits_}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.origin_){nullptr}
-    , decltype(_impl_.angles_){nullptr}
-    , decltype(_impl_.index_){}
-    , decltype(_impl_.distance_){}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_origin()) {
-    _this->_impl_.origin_ = new ::CMsgVector(*from._impl_.origin_);
-  }
-  if (from._internal_has_angles()) {
-    _this->_impl_.angles_ = new ::CMsgQAngle(*from._impl_.angles_);
-  }
-  ::memcpy(&_impl_.index_, &from._impl_.index_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.distance_) -
-    reinterpret_cast<char*>(&_impl_.index_)) + sizeof(_impl_.distance_));
-  // @@protoc_insertion_point(copy_constructor:CMsgTEProjectedDecal)
-}
-
-inline void CMsgTEProjectedDecal::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.origin_){nullptr}
-    , decltype(_impl_.angles_){nullptr}
-    , decltype(_impl_.index_){0u}
-    , decltype(_impl_.distance_){0}
-  };
-}
-
-CMsgTEProjectedDecal::~CMsgTEProjectedDecal() {
-  // @@protoc_insertion_point(destructor:CMsgTEProjectedDecal)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void CMsgTEProjectedDecal::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  if (this != internal_default_instance()) delete _impl_.origin_;
-  if (this != internal_default_instance()) delete _impl_.angles_;
-}
-
-void CMsgTEProjectedDecal::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void CMsgTEProjectedDecal::Clear() {
-// @@protoc_insertion_point(message_clear_start:CMsgTEProjectedDecal)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
-    if (cached_has_bits & 0x00000001u) {
-      GOOGLE_DCHECK(_impl_.origin_ != nullptr);
-      _impl_.origin_->Clear();
-    }
-    if (cached_has_bits & 0x00000002u) {
-      GOOGLE_DCHECK(_impl_.angles_ != nullptr);
-      _impl_.angles_->Clear();
-    }
-  }
-  if (cached_has_bits & 0x0000000cu) {
-    ::memset(&_impl_.index_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.distance_) -
-        reinterpret_cast<char*>(&_impl_.index_)) + sizeof(_impl_.distance_));
-  }
-  _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* CMsgTEProjectedDecal::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // optional .CMsgVector origin = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_origin(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional .CMsgQAngle angles = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          ptr = ctx->ParseMessage(_internal_mutable_angles(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional uint32 index = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _Internal::set_has_index(&has_bits);
-          _impl_.index_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional float distance = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 37)) {
-          _Internal::set_has_distance(&has_bits);
-          _impl_.distance_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
-          ptr += sizeof(float);
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  _impl_._has_bits_.Or(has_bits);
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* CMsgTEProjectedDecal::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CMsgTEProjectedDecal)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  // optional .CMsgVector origin = 1;
-  if (cached_has_bits & 0x00000001u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::origin(this),
-        _Internal::origin(this).GetCachedSize(), target, stream);
-  }
-
-  // optional .CMsgQAngle angles = 2;
-  if (cached_has_bits & 0x00000002u) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(2, _Internal::angles(this),
-        _Internal::angles(this).GetCachedSize(), target, stream);
-  }
-
-  // optional uint32 index = 3;
-  if (cached_has_bits & 0x00000004u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_index(), target);
-  }
-
-  // optional float distance = 4;
-  if (cached_has_bits & 0x00000008u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFloatToArray(4, this->_internal_distance(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:CMsgTEProjectedDecal)
-  return target;
-}
-
-size_t CMsgTEProjectedDecal::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CMsgTEProjectedDecal)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000000fu) {
-    // optional .CMsgVector origin = 1;
-    if (cached_has_bits & 0x00000001u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *_impl_.origin_);
-    }
-
-    // optional .CMsgQAngle angles = 2;
-    if (cached_has_bits & 0x00000002u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *_impl_.angles_);
-    }
-
-    // optional uint32 index = 3;
-    if (cached_has_bits & 0x00000004u) {
-      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_index());
-    }
-
-    // optional float distance = 4;
-    if (cached_has_bits & 0x00000008u) {
-      total_size += 1 + 4;
-    }
-
-  }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgTEProjectedDecal::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CMsgTEProjectedDecal::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgTEProjectedDecal::GetClassData() const { return &_class_data_; }
-
-
-void CMsgTEProjectedDecal::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CMsgTEProjectedDecal*>(&to_msg);
-  auto& from = static_cast<const CMsgTEProjectedDecal&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgTEProjectedDecal)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000000fu) {
-    if (cached_has_bits & 0x00000001u) {
-      _this->_internal_mutable_origin()->::CMsgVector::MergeFrom(
-          from._internal_origin());
-    }
-    if (cached_has_bits & 0x00000002u) {
-      _this->_internal_mutable_angles()->::CMsgQAngle::MergeFrom(
-          from._internal_angles());
-    }
-    if (cached_has_bits & 0x00000004u) {
-      _this->_impl_.index_ = from._impl_.index_;
-    }
-    if (cached_has_bits & 0x00000008u) {
-      _this->_impl_.distance_ = from._impl_.distance_;
-    }
-    _this->_impl_._has_bits_[0] |= cached_has_bits;
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void CMsgTEProjectedDecal::CopyFrom(const CMsgTEProjectedDecal& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CMsgTEProjectedDecal)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CMsgTEProjectedDecal::IsInitialized() const {
-  return true;
-}
-
-void CMsgTEProjectedDecal::InternalSwap(CMsgTEProjectedDecal* other) {
-  using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgTEProjectedDecal, _impl_.distance_)
-      + sizeof(CMsgTEProjectedDecal::_impl_.distance_)
-      - PROTOBUF_FIELD_OFFSET(CMsgTEProjectedDecal, _impl_.origin_)>(
-          reinterpret_cast<char*>(&_impl_.origin_),
-          reinterpret_cast<char*>(&other->_impl_.origin_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEProjectedDecal::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[25]);
+      file_level_metadata_te_2eproto[22]);
 }
 
 // ===================================================================
@@ -11221,7 +10109,7 @@ void CMsgTESmoke::InternalSwap(CMsgTESmoke* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTESmoke::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[26]);
+      file_level_metadata_te_2eproto[23]);
 }
 
 // ===================================================================
@@ -11522,7 +10410,7 @@ void CMsgTEWorldDecal::InternalSwap(CMsgTEWorldDecal* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEWorldDecal::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_te_2eproto_getter, &descriptor_table_te_2eproto_once,
-      file_level_metadata_te_2eproto[27]);
+      file_level_metadata_te_2eproto[24]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -11550,10 +10438,6 @@ Arena::CreateMaybeMessage< ::CMsgTEBeamPoints >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::CMsgTEBeamRing*
 Arena::CreateMaybeMessage< ::CMsgTEBeamRing >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CMsgTEBeamRing >(arena);
-}
-template<> PROTOBUF_NOINLINE ::CMsgTEBSPDecal*
-Arena::CreateMaybeMessage< ::CMsgTEBSPDecal >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CMsgTEBSPDecal >(arena);
 }
 template<> PROTOBUF_NOINLINE ::CMsgTEBubbles*
 Arena::CreateMaybeMessage< ::CMsgTEBubbles >(Arena* arena) {
@@ -11622,14 +10506,6 @@ Arena::CreateMaybeMessage< ::CMsgTESparks >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::CMsgTEPhysicsProp*
 Arena::CreateMaybeMessage< ::CMsgTEPhysicsProp >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CMsgTEPhysicsProp >(arena);
-}
-template<> PROTOBUF_NOINLINE ::CMsgTEPlayerDecal*
-Arena::CreateMaybeMessage< ::CMsgTEPlayerDecal >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CMsgTEPlayerDecal >(arena);
-}
-template<> PROTOBUF_NOINLINE ::CMsgTEProjectedDecal*
-Arena::CreateMaybeMessage< ::CMsgTEProjectedDecal >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CMsgTEProjectedDecal >(arena);
 }
 template<> PROTOBUF_NOINLINE ::CMsgTESmoke*
 Arena::CreateMaybeMessage< ::CMsgTESmoke >(Arena* arena) {
