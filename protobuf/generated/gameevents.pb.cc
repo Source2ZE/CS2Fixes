@@ -42,17 +42,15 @@ PROTOBUF_CONSTEXPR CMsgPlaceDecalEvent::CMsgPlaceDecalEvent(
   , /*decltype(_impl_.position_)*/nullptr
   , /*decltype(_impl_.normal_)*/nullptr
   , /*decltype(_impl_.saxis_)*/nullptr
-  , /*decltype(_impl_.decalmaterialindex_)*/0u
+  , /*decltype(_impl_.boneindex_)*/0
   , /*decltype(_impl_.flags_)*/0u
   , /*decltype(_impl_.color_)*/0u
-  , /*decltype(_impl_.width_)*/0
-  , /*decltype(_impl_.height_)*/0
-  , /*decltype(_impl_.depth_)*/0
-  , /*decltype(_impl_.entityhandleindex_)*/0u
-  , /*decltype(_impl_.skeletoninstancehash_)*/0u
-  , /*decltype(_impl_.boneindex_)*/0
-  , /*decltype(_impl_.translucenthit_)*/false
-  , /*decltype(_impl_.is_adjacent_)*/false} {}
+  , /*decltype(_impl_.random_seed_)*/0
+  , /*decltype(_impl_.decal_group_name_)*/0u
+  , /*decltype(_impl_.size_override_)*/0
+  , /*decltype(_impl_.material_id_)*/uint64_t{0u}
+  , /*decltype(_impl_.sequence_name_)*/0u
+  , /*decltype(_impl_.entityhandle_)*/16777215u} {}
 struct CMsgPlaceDecalEventDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CMsgPlaceDecalEventDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -90,22 +88,21 @@ struct CMsgClearEntityDecalsEventDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgClearEntityDecalsEventDefaultTypeInternal _CMsgClearEntityDecalsEvent_default_instance_;
-PROTOBUF_CONSTEXPR CMsgClearDecalsForSkeletonInstanceEvent::CMsgClearDecalsForSkeletonInstanceEvent(
+PROTOBUF_CONSTEXPR CMsgClearDecalsForEntityEvent::CMsgClearDecalsForEntityEvent(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
   , /*decltype(_impl_.flagstoclear_)*/0u
-  , /*decltype(_impl_.entityhandleindex_)*/0u
-  , /*decltype(_impl_.skeletoninstancehash_)*/0u} {}
-struct CMsgClearDecalsForSkeletonInstanceEventDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CMsgClearDecalsForSkeletonInstanceEventDefaultTypeInternal()
+  , /*decltype(_impl_.entityhandle_)*/16777215u} {}
+struct CMsgClearDecalsForEntityEventDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CMsgClearDecalsForEntityEventDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CMsgClearDecalsForSkeletonInstanceEventDefaultTypeInternal() {}
+  ~CMsgClearDecalsForEntityEventDefaultTypeInternal() {}
   union {
-    CMsgClearDecalsForSkeletonInstanceEvent _instance;
+    CMsgClearDecalsForEntityEvent _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgClearDecalsForSkeletonInstanceEventDefaultTypeInternal _CMsgClearDecalsForSkeletonInstanceEvent_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgClearDecalsForEntityEventDefaultTypeInternal _CMsgClearDecalsForEntityEvent_default_instance_;
 PROTOBUF_CONSTEXPR CMsgSource1LegacyGameEventList_key_t::CMsgSource1LegacyGameEventList_key_t(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
@@ -306,17 +303,15 @@ const uint32_t TableStruct_gameevents_2eproto::offsets[] PROTOBUF_SECTION_VARIAB
   PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.position_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.normal_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.saxis_),
-  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.decalmaterialindex_),
+  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.boneindex_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.flags_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.color_),
-  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.width_),
-  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.height_),
-  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.depth_),
-  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.entityhandleindex_),
-  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.skeletoninstancehash_),
-  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.boneindex_),
-  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.translucenthit_),
-  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.is_adjacent_),
+  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.random_seed_),
+  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.decal_group_name_),
+  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.size_override_),
+  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.entityhandle_),
+  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.material_id_),
+  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.sequence_name_),
   0,
   1,
   2,
@@ -326,11 +321,9 @@ const uint32_t TableStruct_gameevents_2eproto::offsets[] PROTOBUF_SECTION_VARIAB
   6,
   7,
   8,
+  11,
   9,
   10,
-  11,
-  12,
-  13,
   PROTOBUF_FIELD_OFFSET(::CMsgClearWorldDecalsEvent, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgClearWorldDecalsEvent, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -347,18 +340,16 @@ const uint32_t TableStruct_gameevents_2eproto::offsets[] PROTOBUF_SECTION_VARIAB
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CMsgClearEntityDecalsEvent, _impl_.flagstoclear_),
   0,
-  PROTOBUF_FIELD_OFFSET(::CMsgClearDecalsForSkeletonInstanceEvent, _impl_._has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CMsgClearDecalsForSkeletonInstanceEvent, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::CMsgClearDecalsForEntityEvent, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CMsgClearDecalsForEntityEvent, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CMsgClearDecalsForSkeletonInstanceEvent, _impl_.flagstoclear_),
-  PROTOBUF_FIELD_OFFSET(::CMsgClearDecalsForSkeletonInstanceEvent, _impl_.entityhandleindex_),
-  PROTOBUF_FIELD_OFFSET(::CMsgClearDecalsForSkeletonInstanceEvent, _impl_.skeletoninstancehash_),
+  PROTOBUF_FIELD_OFFSET(::CMsgClearDecalsForEntityEvent, _impl_.flagstoclear_),
+  PROTOBUF_FIELD_OFFSET(::CMsgClearDecalsForEntityEvent, _impl_.entityhandle_),
   0,
   1,
-  2,
   PROTOBUF_FIELD_OFFSET(::CMsgSource1LegacyGameEventList_key_t, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource1LegacyGameEventList_key_t, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -495,21 +486,21 @@ const uint32_t TableStruct_gameevents_2eproto::offsets[] PROTOBUF_SECTION_VARIAB
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 8, -1, sizeof(::CMsgVDebugGameSessionIDEvent)},
-  { 10, 30, -1, sizeof(::CMsgPlaceDecalEvent)},
-  { 44, 51, -1, sizeof(::CMsgClearWorldDecalsEvent)},
-  { 52, 59, -1, sizeof(::CMsgClearEntityDecalsEvent)},
-  { 60, 69, -1, sizeof(::CMsgClearDecalsForSkeletonInstanceEvent)},
-  { 72, 80, -1, sizeof(::CMsgSource1LegacyGameEventList_key_t)},
-  { 82, 91, -1, sizeof(::CMsgSource1LegacyGameEventList_descriptor_t)},
-  { 94, -1, -1, sizeof(::CMsgSource1LegacyGameEventList)},
-  { 101, 109, -1, sizeof(::CMsgSource1LegacyListenEvents)},
-  { 111, 125, -1, sizeof(::CMsgSource1LegacyGameEvent_key_t)},
-  { 133, 144, -1, sizeof(::CMsgSource1LegacyGameEvent)},
-  { 149, 161, -1, sizeof(::CMsgSosStartSoundEvent)},
-  { 167, 174, -1, sizeof(::CMsgSosStopSoundEvent)},
-  { 175, 183, -1, sizeof(::CMsgSosStopSoundEventHash)},
-  { 185, 193, -1, sizeof(::CMsgSosSetSoundEventParams)},
-  { 195, 203, -1, sizeof(::CMsgSosSetLibraryStackFields)},
+  { 10, 28, -1, sizeof(::CMsgPlaceDecalEvent)},
+  { 40, 47, -1, sizeof(::CMsgClearWorldDecalsEvent)},
+  { 48, 55, -1, sizeof(::CMsgClearEntityDecalsEvent)},
+  { 56, 64, -1, sizeof(::CMsgClearDecalsForEntityEvent)},
+  { 66, 74, -1, sizeof(::CMsgSource1LegacyGameEventList_key_t)},
+  { 76, 85, -1, sizeof(::CMsgSource1LegacyGameEventList_descriptor_t)},
+  { 88, -1, -1, sizeof(::CMsgSource1LegacyGameEventList)},
+  { 95, 103, -1, sizeof(::CMsgSource1LegacyListenEvents)},
+  { 105, 119, -1, sizeof(::CMsgSource1LegacyGameEvent_key_t)},
+  { 127, 138, -1, sizeof(::CMsgSource1LegacyGameEvent)},
+  { 143, 155, -1, sizeof(::CMsgSosStartSoundEvent)},
+  { 161, 168, -1, sizeof(::CMsgSosStopSoundEvent)},
+  { 169, 177, -1, sizeof(::CMsgSosStopSoundEventHash)},
+  { 179, 187, -1, sizeof(::CMsgSosSetSoundEventParams)},
+  { 189, 197, -1, sizeof(::CMsgSosSetLibraryStackFields)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -517,7 +508,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CMsgPlaceDecalEvent_default_instance_._instance,
   &::_CMsgClearWorldDecalsEvent_default_instance_._instance,
   &::_CMsgClearEntityDecalsEvent_default_instance_._instance,
-  &::_CMsgClearDecalsForSkeletonInstanceEvent_default_instance_._instance,
+  &::_CMsgClearDecalsForEntityEvent_default_instance_._instance,
   &::_CMsgSource1LegacyGameEventList_key_t_default_instance_._instance,
   &::_CMsgSource1LegacyGameEventList_descriptor_t_default_instance_._instance,
   &::_CMsgSource1LegacyGameEventList_default_instance_._instance,
@@ -534,67 +525,65 @@ static const ::_pb::Message* const file_default_instances[] = {
 const char descriptor_table_protodef_gameevents_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\020gameevents.proto\032\026networkbasetypes.pro"
   "to\"G\n\034CMsgVDebugGameSessionIDEvent\022\020\n\010cl"
-  "ientid\030\001 \001(\005\022\025\n\rgamesessionid\030\002 \001(\t\"\316\002\n\023"
+  "ientid\030\001 \001(\005\022\025\n\rgamesessionid\030\002 \001(\t\"\260\002\n\023"
   "CMsgPlaceDecalEvent\022\035\n\010position\030\001 \001(\0132\013."
   "CMsgVector\022\033\n\006normal\030\002 \001(\0132\013.CMsgVector\022"
-  "\032\n\005saxis\030\003 \001(\0132\013.CMsgVector\022\032\n\022decalmate"
-  "rialindex\030\004 \001(\r\022\r\n\005flags\030\005 \001(\r\022\r\n\005color\030"
-  "\006 \001(\007\022\r\n\005width\030\007 \001(\002\022\016\n\006height\030\010 \001(\002\022\r\n\005"
-  "depth\030\t \001(\002\022\031\n\021entityhandleindex\030\n \001(\r\022\034"
-  "\n\024skeletoninstancehash\030\013 \001(\007\022\021\n\tboneinde"
-  "x\030\014 \001(\005\022\026\n\016translucenthit\030\r \001(\010\022\023\n\013is_ad"
-  "jacent\030\016 \001(\010\"1\n\031CMsgClearWorldDecalsEven"
-  "t\022\024\n\014flagstoclear\030\001 \001(\r\"2\n\032CMsgClearEnti"
-  "tyDecalsEvent\022\024\n\014flagstoclear\030\001 \001(\r\"x\n\'C"
-  "MsgClearDecalsForSkeletonInstanceEvent\022\024"
-  "\n\014flagstoclear\030\001 \001(\r\022\031\n\021entityhandleinde"
-  "x\030\002 \001(\r\022\034\n\024skeletoninstancehash\030\003 \001(\r\"\354\001"
-  "\n\036CMsgSource1LegacyGameEventList\022A\n\013desc"
-  "riptors\030\001 \003(\0132,.CMsgSource1LegacyGameEve"
-  "ntList.descriptor_t\032#\n\005key_t\022\014\n\004type\030\001 \001"
-  "(\005\022\014\n\004name\030\002 \001(\t\032b\n\014descriptor_t\022\017\n\007even"
-  "tid\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\0223\n\004keys\030\003 \003(\0132%."
-  "CMsgSource1LegacyGameEventList.key_t\"K\n\035"
-  "CMsgSource1LegacyListenEvents\022\022\n\nplayers"
-  "lot\030\001 \001(\005\022\026\n\016eventarraybits\030\002 \003(\r\"\270\002\n\032CM"
-  "sgSource1LegacyGameEvent\022\022\n\nevent_name\030\001"
-  " \001(\t\022\017\n\007eventid\030\002 \001(\005\022/\n\004keys\030\003 \003(\0132!.CM"
-  "sgSource1LegacyGameEvent.key_t\022\023\n\013server"
-  "_tick\030\004 \001(\005\022\023\n\013passthrough\030\005 \001(\005\032\231\001\n\005key"
-  "_t\022\014\n\004type\030\001 \001(\005\022\022\n\nval_string\030\002 \001(\t\022\021\n\t"
-  "val_float\030\003 \001(\002\022\020\n\010val_long\030\004 \001(\005\022\021\n\tval"
-  "_short\030\005 \001(\005\022\020\n\010val_byte\030\006 \001(\005\022\020\n\010val_bo"
-  "ol\030\007 \001(\010\022\022\n\nval_uint64\030\010 \001(\004\"\244\001\n\026CMsgSos"
-  "StartSoundEvent\022\027\n\017soundevent_guid\030\001 \001(\005"
-  "\022\027\n\017soundevent_hash\030\002 \001(\007\022\037\n\023source_enti"
-  "ty_index\030\003 \001(\005:\002-1\022\014\n\004seed\030\004 \001(\005\022\025\n\rpack"
-  "ed_params\030\005 \001(\014\022\022\n\nstart_time\030\006 \001(\002\"0\n\025C"
-  "MsgSosStopSoundEvent\022\027\n\017soundevent_guid\030"
-  "\001 \001(\005\"U\n\031CMsgSosStopSoundEventHash\022\027\n\017so"
-  "undevent_hash\030\001 \001(\007\022\037\n\023source_entity_ind"
-  "ex\030\002 \001(\005:\002-1\"L\n\032CMsgSosSetSoundEventPara"
-  "ms\022\027\n\017soundevent_guid\030\001 \001(\005\022\025\n\rpacked_pa"
-  "rams\030\005 \001(\014\"I\n\034CMsgSosSetLibraryStackFiel"
-  "ds\022\022\n\nstack_hash\030\001 \001(\007\022\025\n\rpacked_fields\030"
-  "\005 \001(\014*\267\003\n\017EBaseGameEvents\022 \n\033GE_VDebugGa"
-  "meSessionIDEvent\020\310\001\022\027\n\022GE_PlaceDecalEven"
-  "t\020\311\001\022\035\n\030GE_ClearWorldDecalsEvent\020\312\001\022\036\n\031G"
-  "E_ClearEntityDecalsEvent\020\313\001\022+\n&GE_ClearD"
-  "ecalsForSkeletonInstanceEvent\020\314\001\022\"\n\035GE_S"
-  "ource1LegacyGameEventList\020\315\001\022!\n\034GE_Sourc"
-  "e1LegacyListenEvents\020\316\001\022\036\n\031GE_Source1Leg"
-  "acyGameEvent\020\317\001\022\032\n\025GE_SosStartSoundEvent"
-  "\020\320\001\022\031\n\024GE_SosStopSoundEvent\020\321\001\022\036\n\031GE_Sos"
-  "SetSoundEventParams\020\322\001\022 \n\033GE_SosSetLibra"
-  "ryStackFields\020\323\001\022\035\n\030GE_SosStopSoundEvent"
-  "Hash\020\324\001"
+  "\032\n\005saxis\030\003 \001(\0132\013.CMsgVector\022\021\n\tboneindex"
+  "\030\004 \001(\005\022\r\n\005flags\030\005 \001(\r\022\r\n\005color\030\006 \001(\007\022\023\n\013"
+  "random_seed\030\007 \001(\005\022\030\n\020decal_group_name\030\010 "
+  "\001(\r\022\025\n\rsize_override\030\t \001(\002\022\036\n\014entityhand"
+  "le\030\n \001(\r:\01016777215\022\023\n\013material_id\030\013 \001(\004\022"
+  "\025\n\rsequence_name\030\014 \001(\r\"1\n\031CMsgClearWorld"
+  "DecalsEvent\022\024\n\014flagstoclear\030\001 \001(\r\"2\n\032CMs"
+  "gClearEntityDecalsEvent\022\024\n\014flagstoclear\030"
+  "\001 \001(\r\"U\n\035CMsgClearDecalsForEntityEvent\022\024"
+  "\n\014flagstoclear\030\001 \001(\r\022\036\n\014entityhandle\030\002 \001"
+  "(\r:\01016777215\"\354\001\n\036CMsgSource1LegacyGameEv"
+  "entList\022A\n\013descriptors\030\001 \003(\0132,.CMsgSourc"
+  "e1LegacyGameEventList.descriptor_t\032#\n\005ke"
+  "y_t\022\014\n\004type\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\032b\n\014descr"
+  "iptor_t\022\017\n\007eventid\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\0223"
+  "\n\004keys\030\003 \003(\0132%.CMsgSource1LegacyGameEven"
+  "tList.key_t\"K\n\035CMsgSource1LegacyListenEv"
+  "ents\022\022\n\nplayerslot\030\001 \001(\005\022\026\n\016eventarraybi"
+  "ts\030\002 \003(\r\"\270\002\n\032CMsgSource1LegacyGameEvent\022"
+  "\022\n\nevent_name\030\001 \001(\t\022\017\n\007eventid\030\002 \001(\005\022/\n\004"
+  "keys\030\003 \003(\0132!.CMsgSource1LegacyGameEvent."
+  "key_t\022\023\n\013server_tick\030\004 \001(\005\022\023\n\013passthroug"
+  "h\030\005 \001(\005\032\231\001\n\005key_t\022\014\n\004type\030\001 \001(\005\022\022\n\nval_s"
+  "tring\030\002 \001(\t\022\021\n\tval_float\030\003 \001(\002\022\020\n\010val_lo"
+  "ng\030\004 \001(\005\022\021\n\tval_short\030\005 \001(\005\022\020\n\010val_byte\030"
+  "\006 \001(\005\022\020\n\010val_bool\030\007 \001(\010\022\022\n\nval_uint64\030\010 "
+  "\001(\004\"\244\001\n\026CMsgSosStartSoundEvent\022\027\n\017sounde"
+  "vent_guid\030\001 \001(\005\022\027\n\017soundevent_hash\030\002 \001(\007"
+  "\022\037\n\023source_entity_index\030\003 \001(\005:\002-1\022\014\n\004see"
+  "d\030\004 \001(\005\022\025\n\rpacked_params\030\005 \001(\014\022\022\n\nstart_"
+  "time\030\006 \001(\002\"0\n\025CMsgSosStopSoundEvent\022\027\n\017s"
+  "oundevent_guid\030\001 \001(\005\"U\n\031CMsgSosStopSound"
+  "EventHash\022\027\n\017soundevent_hash\030\001 \001(\007\022\037\n\023so"
+  "urce_entity_index\030\002 \001(\005:\002-1\"L\n\032CMsgSosSe"
+  "tSoundEventParams\022\027\n\017soundevent_guid\030\001 \001"
+  "(\005\022\025\n\rpacked_params\030\005 \001(\014\"I\n\034CMsgSosSetL"
+  "ibraryStackFields\022\022\n\nstack_hash\030\001 \001(\007\022\025\n"
+  "\rpacked_fields\030\005 \001(\014*\255\003\n\017EBaseGameEvents"
+  "\022 \n\033GE_VDebugGameSessionIDEvent\020\310\001\022\027\n\022GE"
+  "_PlaceDecalEvent\020\311\001\022\035\n\030GE_ClearWorldDeca"
+  "lsEvent\020\312\001\022\036\n\031GE_ClearEntityDecalsEvent\020"
+  "\313\001\022!\n\034GE_ClearDecalsForEntityEvent\020\314\001\022\"\n"
+  "\035GE_Source1LegacyGameEventList\020\315\001\022!\n\034GE_"
+  "Source1LegacyListenEvents\020\316\001\022\036\n\031GE_Sourc"
+  "e1LegacyGameEvent\020\317\001\022\032\n\025GE_SosStartSound"
+  "Event\020\320\001\022\031\n\024GE_SosStopSoundEvent\020\321\001\022\036\n\031G"
+  "E_SosSetSoundEventParams\020\322\001\022 \n\033GE_SosSet"
+  "LibraryStackFields\020\323\001\022\035\n\030GE_SosStopSound"
+  "EventHash\020\324\001"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_gameevents_2eproto_deps[1] = {
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_gameevents_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_gameevents_2eproto = {
-    false, false, 2207, descriptor_table_protodef_gameevents_2eproto,
+    false, false, 2132, descriptor_table_protodef_gameevents_2eproto,
     "gameevents.proto",
     &descriptor_table_gameevents_2eproto_once, descriptor_table_gameevents_2eproto_deps, 1, 16,
     schemas, file_default_instances, TableStruct_gameevents_2eproto::offsets,
@@ -907,7 +896,7 @@ class CMsgPlaceDecalEvent::_Internal {
   static void set_has_saxis(HasBits* has_bits) {
     (*has_bits)[0] |= 4u;
   }
-  static void set_has_decalmaterialindex(HasBits* has_bits) {
+  static void set_has_boneindex(HasBits* has_bits) {
     (*has_bits)[0] |= 8u;
   }
   static void set_has_flags(HasBits* has_bits) {
@@ -916,29 +905,23 @@ class CMsgPlaceDecalEvent::_Internal {
   static void set_has_color(HasBits* has_bits) {
     (*has_bits)[0] |= 32u;
   }
-  static void set_has_width(HasBits* has_bits) {
+  static void set_has_random_seed(HasBits* has_bits) {
     (*has_bits)[0] |= 64u;
   }
-  static void set_has_height(HasBits* has_bits) {
+  static void set_has_decal_group_name(HasBits* has_bits) {
     (*has_bits)[0] |= 128u;
   }
-  static void set_has_depth(HasBits* has_bits) {
+  static void set_has_size_override(HasBits* has_bits) {
     (*has_bits)[0] |= 256u;
   }
-  static void set_has_entityhandleindex(HasBits* has_bits) {
-    (*has_bits)[0] |= 512u;
-  }
-  static void set_has_skeletoninstancehash(HasBits* has_bits) {
-    (*has_bits)[0] |= 1024u;
-  }
-  static void set_has_boneindex(HasBits* has_bits) {
+  static void set_has_entityhandle(HasBits* has_bits) {
     (*has_bits)[0] |= 2048u;
   }
-  static void set_has_translucenthit(HasBits* has_bits) {
-    (*has_bits)[0] |= 4096u;
+  static void set_has_material_id(HasBits* has_bits) {
+    (*has_bits)[0] |= 512u;
   }
-  static void set_has_is_adjacent(HasBits* has_bits) {
-    (*has_bits)[0] |= 8192u;
+  static void set_has_sequence_name(HasBits* has_bits) {
+    (*has_bits)[0] |= 1024u;
   }
 };
 
@@ -981,17 +964,15 @@ CMsgPlaceDecalEvent::CMsgPlaceDecalEvent(const CMsgPlaceDecalEvent& from)
     , decltype(_impl_.position_){nullptr}
     , decltype(_impl_.normal_){nullptr}
     , decltype(_impl_.saxis_){nullptr}
-    , decltype(_impl_.decalmaterialindex_){}
+    , decltype(_impl_.boneindex_){}
     , decltype(_impl_.flags_){}
     , decltype(_impl_.color_){}
-    , decltype(_impl_.width_){}
-    , decltype(_impl_.height_){}
-    , decltype(_impl_.depth_){}
-    , decltype(_impl_.entityhandleindex_){}
-    , decltype(_impl_.skeletoninstancehash_){}
-    , decltype(_impl_.boneindex_){}
-    , decltype(_impl_.translucenthit_){}
-    , decltype(_impl_.is_adjacent_){}};
+    , decltype(_impl_.random_seed_){}
+    , decltype(_impl_.decal_group_name_){}
+    , decltype(_impl_.size_override_){}
+    , decltype(_impl_.material_id_){}
+    , decltype(_impl_.sequence_name_){}
+    , decltype(_impl_.entityhandle_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_position()) {
@@ -1003,9 +984,9 @@ CMsgPlaceDecalEvent::CMsgPlaceDecalEvent(const CMsgPlaceDecalEvent& from)
   if (from._internal_has_saxis()) {
     _this->_impl_.saxis_ = new ::CMsgVector(*from._impl_.saxis_);
   }
-  ::memcpy(&_impl_.decalmaterialindex_, &from._impl_.decalmaterialindex_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_adjacent_) -
-    reinterpret_cast<char*>(&_impl_.decalmaterialindex_)) + sizeof(_impl_.is_adjacent_));
+  ::memcpy(&_impl_.boneindex_, &from._impl_.boneindex_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.entityhandle_) -
+    reinterpret_cast<char*>(&_impl_.boneindex_)) + sizeof(_impl_.entityhandle_));
   // @@protoc_insertion_point(copy_constructor:CMsgPlaceDecalEvent)
 }
 
@@ -1019,17 +1000,15 @@ inline void CMsgPlaceDecalEvent::SharedCtor(
     , decltype(_impl_.position_){nullptr}
     , decltype(_impl_.normal_){nullptr}
     , decltype(_impl_.saxis_){nullptr}
-    , decltype(_impl_.decalmaterialindex_){0u}
+    , decltype(_impl_.boneindex_){0}
     , decltype(_impl_.flags_){0u}
     , decltype(_impl_.color_){0u}
-    , decltype(_impl_.width_){0}
-    , decltype(_impl_.height_){0}
-    , decltype(_impl_.depth_){0}
-    , decltype(_impl_.entityhandleindex_){0u}
-    , decltype(_impl_.skeletoninstancehash_){0u}
-    , decltype(_impl_.boneindex_){0}
-    , decltype(_impl_.translucenthit_){false}
-    , decltype(_impl_.is_adjacent_){false}
+    , decltype(_impl_.random_seed_){0}
+    , decltype(_impl_.decal_group_name_){0u}
+    , decltype(_impl_.size_override_){0}
+    , decltype(_impl_.material_id_){uint64_t{0u}}
+    , decltype(_impl_.sequence_name_){0u}
+    , decltype(_impl_.entityhandle_){16777215u}
   };
 }
 
@@ -1075,14 +1054,15 @@ void CMsgPlaceDecalEvent::Clear() {
     }
   }
   if (cached_has_bits & 0x000000f8u) {
-    ::memset(&_impl_.decalmaterialindex_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.height_) -
-        reinterpret_cast<char*>(&_impl_.decalmaterialindex_)) + sizeof(_impl_.height_));
+    ::memset(&_impl_.boneindex_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.decal_group_name_) -
+        reinterpret_cast<char*>(&_impl_.boneindex_)) + sizeof(_impl_.decal_group_name_));
   }
-  if (cached_has_bits & 0x00003f00u) {
-    ::memset(&_impl_.depth_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.is_adjacent_) -
-        reinterpret_cast<char*>(&_impl_.depth_)) + sizeof(_impl_.is_adjacent_));
+  if (cached_has_bits & 0x00000f00u) {
+    ::memset(&_impl_.size_override_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.sequence_name_) -
+        reinterpret_cast<char*>(&_impl_.size_override_)) + sizeof(_impl_.sequence_name_));
+    _impl_.entityhandle_ = 16777215u;
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -1119,11 +1099,11 @@ const char* CMsgPlaceDecalEvent::_InternalParse(const char* ptr, ::_pbi::ParseCo
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 decalmaterialindex = 4;
+      // optional int32 boneindex = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
-          _Internal::set_has_decalmaterialindex(&has_bits);
-          _impl_.decalmaterialindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _Internal::set_has_boneindex(&has_bits);
+          _impl_.boneindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1146,74 +1126,56 @@ const char* CMsgPlaceDecalEvent::_InternalParse(const char* ptr, ::_pbi::ParseCo
         } else
           goto handle_unusual;
         continue;
-      // optional float width = 7;
+      // optional int32 random_seed = 7;
       case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 61)) {
-          _Internal::set_has_width(&has_bits);
-          _impl_.width_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
-          ptr += sizeof(float);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
+          _Internal::set_has_random_seed(&has_bits);
+          _impl_.random_seed_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // optional float height = 8;
+      // optional uint32 decal_group_name = 8;
       case 8:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 69)) {
-          _Internal::set_has_height(&has_bits);
-          _impl_.height_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
-          ptr += sizeof(float);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
+          _Internal::set_has_decal_group_name(&has_bits);
+          _impl_.decal_group_name_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // optional float depth = 9;
+      // optional float size_override = 9;
       case 9:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 77)) {
-          _Internal::set_has_depth(&has_bits);
-          _impl_.depth_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          _Internal::set_has_size_override(&has_bits);
+          _impl_.size_override_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entityhandleindex = 10;
+      // optional uint32 entityhandle = 10 [default = 16777215];
       case 10:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
-          _Internal::set_has_entityhandleindex(&has_bits);
-          _impl_.entityhandleindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _Internal::set_has_entityhandle(&has_bits);
+          _impl_.entityhandle_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // optional fixed32 skeletoninstancehash = 11;
+      // optional uint64 material_id = 11;
       case 11:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 93)) {
-          _Internal::set_has_skeletoninstancehash(&has_bits);
-          _impl_.skeletoninstancehash_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<uint32_t>(ptr);
-          ptr += sizeof(uint32_t);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 88)) {
+          _Internal::set_has_material_id(&has_bits);
+          _impl_.material_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // optional int32 boneindex = 12;
+      // optional uint32 sequence_name = 12;
       case 12:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
-          _Internal::set_has_boneindex(&has_bits);
-          _impl_.boneindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bool translucenthit = 13;
-      case 13:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 104)) {
-          _Internal::set_has_translucenthit(&has_bits);
-          _impl_.translucenthit_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bool is_adjacent = 14;
-      case 14:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 112)) {
-          _Internal::set_has_is_adjacent(&has_bits);
-          _impl_.is_adjacent_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          _Internal::set_has_sequence_name(&has_bits);
+          _impl_.sequence_name_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1270,10 +1232,10 @@ uint8_t* CMsgPlaceDecalEvent::_InternalSerialize(
         _Internal::saxis(this).GetCachedSize(), target, stream);
   }
 
-  // optional uint32 decalmaterialindex = 4;
+  // optional int32 boneindex = 4;
   if (cached_has_bits & 0x00000008u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_decalmaterialindex(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_boneindex(), target);
   }
 
   // optional uint32 flags = 5;
@@ -1288,52 +1250,40 @@ uint8_t* CMsgPlaceDecalEvent::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFixed32ToArray(6, this->_internal_color(), target);
   }
 
-  // optional float width = 7;
+  // optional int32 random_seed = 7;
   if (cached_has_bits & 0x00000040u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFloatToArray(7, this->_internal_width(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(7, this->_internal_random_seed(), target);
   }
 
-  // optional float height = 8;
+  // optional uint32 decal_group_name = 8;
   if (cached_has_bits & 0x00000080u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFloatToArray(8, this->_internal_height(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(8, this->_internal_decal_group_name(), target);
   }
 
-  // optional float depth = 9;
+  // optional float size_override = 9;
   if (cached_has_bits & 0x00000100u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFloatToArray(9, this->_internal_depth(), target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(9, this->_internal_size_override(), target);
   }
 
-  // optional uint32 entityhandleindex = 10;
-  if (cached_has_bits & 0x00000200u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(10, this->_internal_entityhandleindex(), target);
-  }
-
-  // optional fixed32 skeletoninstancehash = 11;
-  if (cached_has_bits & 0x00000400u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFixed32ToArray(11, this->_internal_skeletoninstancehash(), target);
-  }
-
-  // optional int32 boneindex = 12;
+  // optional uint32 entityhandle = 10 [default = 16777215];
   if (cached_has_bits & 0x00000800u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(12, this->_internal_boneindex(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(10, this->_internal_entityhandle(), target);
   }
 
-  // optional bool translucenthit = 13;
-  if (cached_has_bits & 0x00001000u) {
+  // optional uint64 material_id = 11;
+  if (cached_has_bits & 0x00000200u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(13, this->_internal_translucenthit(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(11, this->_internal_material_id(), target);
   }
 
-  // optional bool is_adjacent = 14;
-  if (cached_has_bits & 0x00002000u) {
+  // optional uint32 sequence_name = 12;
+  if (cached_has_bits & 0x00000400u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(14, this->_internal_is_adjacent(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(12, this->_internal_sequence_name(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1375,9 +1325,9 @@ size_t CMsgPlaceDecalEvent::ByteSizeLong() const {
           *_impl_.saxis_);
     }
 
-    // optional uint32 decalmaterialindex = 4;
+    // optional int32 boneindex = 4;
     if (cached_has_bits & 0x00000008u) {
-      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_decalmaterialindex());
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_boneindex());
     }
 
     // optional uint32 flags = 5;
@@ -1390,46 +1340,36 @@ size_t CMsgPlaceDecalEvent::ByteSizeLong() const {
       total_size += 1 + 4;
     }
 
-    // optional float width = 7;
+    // optional int32 random_seed = 7;
     if (cached_has_bits & 0x00000040u) {
-      total_size += 1 + 4;
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_random_seed());
     }
 
-    // optional float height = 8;
+    // optional uint32 decal_group_name = 8;
     if (cached_has_bits & 0x00000080u) {
-      total_size += 1 + 4;
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_decal_group_name());
     }
 
   }
-  if (cached_has_bits & 0x00003f00u) {
-    // optional float depth = 9;
+  if (cached_has_bits & 0x00000f00u) {
+    // optional float size_override = 9;
     if (cached_has_bits & 0x00000100u) {
       total_size += 1 + 4;
     }
 
-    // optional uint32 entityhandleindex = 10;
+    // optional uint64 material_id = 11;
     if (cached_has_bits & 0x00000200u) {
-      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entityhandleindex());
+      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_material_id());
     }
 
-    // optional fixed32 skeletoninstancehash = 11;
+    // optional uint32 sequence_name = 12;
     if (cached_has_bits & 0x00000400u) {
-      total_size += 1 + 4;
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_sequence_name());
     }
 
-    // optional int32 boneindex = 12;
+    // optional uint32 entityhandle = 10 [default = 16777215];
     if (cached_has_bits & 0x00000800u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_boneindex());
-    }
-
-    // optional bool translucenthit = 13;
-    if (cached_has_bits & 0x00001000u) {
-      total_size += 1 + 1;
-    }
-
-    // optional bool is_adjacent = 14;
-    if (cached_has_bits & 0x00002000u) {
-      total_size += 1 + 1;
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entityhandle());
     }
 
   }
@@ -1466,7 +1406,7 @@ void CMsgPlaceDecalEvent::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, co
           from._internal_saxis());
     }
     if (cached_has_bits & 0x00000008u) {
-      _this->_impl_.decalmaterialindex_ = from._impl_.decalmaterialindex_;
+      _this->_impl_.boneindex_ = from._impl_.boneindex_;
     }
     if (cached_has_bits & 0x00000010u) {
       _this->_impl_.flags_ = from._impl_.flags_;
@@ -1475,31 +1415,25 @@ void CMsgPlaceDecalEvent::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, co
       _this->_impl_.color_ = from._impl_.color_;
     }
     if (cached_has_bits & 0x00000040u) {
-      _this->_impl_.width_ = from._impl_.width_;
+      _this->_impl_.random_seed_ = from._impl_.random_seed_;
     }
     if (cached_has_bits & 0x00000080u) {
-      _this->_impl_.height_ = from._impl_.height_;
+      _this->_impl_.decal_group_name_ = from._impl_.decal_group_name_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
-  if (cached_has_bits & 0x00003f00u) {
+  if (cached_has_bits & 0x00000f00u) {
     if (cached_has_bits & 0x00000100u) {
-      _this->_impl_.depth_ = from._impl_.depth_;
+      _this->_impl_.size_override_ = from._impl_.size_override_;
     }
     if (cached_has_bits & 0x00000200u) {
-      _this->_impl_.entityhandleindex_ = from._impl_.entityhandleindex_;
+      _this->_impl_.material_id_ = from._impl_.material_id_;
     }
     if (cached_has_bits & 0x00000400u) {
-      _this->_impl_.skeletoninstancehash_ = from._impl_.skeletoninstancehash_;
+      _this->_impl_.sequence_name_ = from._impl_.sequence_name_;
     }
     if (cached_has_bits & 0x00000800u) {
-      _this->_impl_.boneindex_ = from._impl_.boneindex_;
-    }
-    if (cached_has_bits & 0x00001000u) {
-      _this->_impl_.translucenthit_ = from._impl_.translucenthit_;
-    }
-    if (cached_has_bits & 0x00002000u) {
-      _this->_impl_.is_adjacent_ = from._impl_.is_adjacent_;
+      _this->_impl_.entityhandle_ = from._impl_.entityhandle_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
@@ -1522,11 +1456,12 @@ void CMsgPlaceDecalEvent::InternalSwap(CMsgPlaceDecalEvent* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgPlaceDecalEvent, _impl_.is_adjacent_)
-      + sizeof(CMsgPlaceDecalEvent::_impl_.is_adjacent_)
+      PROTOBUF_FIELD_OFFSET(CMsgPlaceDecalEvent, _impl_.sequence_name_)
+      + sizeof(CMsgPlaceDecalEvent::_impl_.sequence_name_)
       - PROTOBUF_FIELD_OFFSET(CMsgPlaceDecalEvent, _impl_.position_)>(
           reinterpret_cast<char*>(&_impl_.position_),
           reinterpret_cast<char*>(&other->_impl_.position_));
+  swap(_impl_.entityhandle_, other->_impl_.entityhandle_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgPlaceDecalEvent::GetMetadata() const {
@@ -1919,44 +1854,40 @@ void CMsgClearEntityDecalsEvent::InternalSwap(CMsgClearEntityDecalsEvent* other)
 
 // ===================================================================
 
-class CMsgClearDecalsForSkeletonInstanceEvent::_Internal {
+class CMsgClearDecalsForEntityEvent::_Internal {
  public:
-  using HasBits = decltype(std::declval<CMsgClearDecalsForSkeletonInstanceEvent>()._impl_._has_bits_);
+  using HasBits = decltype(std::declval<CMsgClearDecalsForEntityEvent>()._impl_._has_bits_);
   static void set_has_flagstoclear(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
-  static void set_has_entityhandleindex(HasBits* has_bits) {
+  static void set_has_entityhandle(HasBits* has_bits) {
     (*has_bits)[0] |= 2u;
-  }
-  static void set_has_skeletoninstancehash(HasBits* has_bits) {
-    (*has_bits)[0] |= 4u;
   }
 };
 
-CMsgClearDecalsForSkeletonInstanceEvent::CMsgClearDecalsForSkeletonInstanceEvent(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+CMsgClearDecalsForEntityEvent::CMsgClearDecalsForEntityEvent(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:CMsgClearDecalsForSkeletonInstanceEvent)
+  // @@protoc_insertion_point(arena_constructor:CMsgClearDecalsForEntityEvent)
 }
-CMsgClearDecalsForSkeletonInstanceEvent::CMsgClearDecalsForSkeletonInstanceEvent(const CMsgClearDecalsForSkeletonInstanceEvent& from)
+CMsgClearDecalsForEntityEvent::CMsgClearDecalsForEntityEvent(const CMsgClearDecalsForEntityEvent& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CMsgClearDecalsForSkeletonInstanceEvent* const _this = this; (void)_this;
+  CMsgClearDecalsForEntityEvent* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){from._impl_._has_bits_}
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.flagstoclear_){}
-    , decltype(_impl_.entityhandleindex_){}
-    , decltype(_impl_.skeletoninstancehash_){}};
+    , decltype(_impl_.entityhandle_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.flagstoclear_, &from._impl_.flagstoclear_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.skeletoninstancehash_) -
-    reinterpret_cast<char*>(&_impl_.flagstoclear_)) + sizeof(_impl_.skeletoninstancehash_));
-  // @@protoc_insertion_point(copy_constructor:CMsgClearDecalsForSkeletonInstanceEvent)
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.entityhandle_) -
+    reinterpret_cast<char*>(&_impl_.flagstoclear_)) + sizeof(_impl_.entityhandle_));
+  // @@protoc_insertion_point(copy_constructor:CMsgClearDecalsForEntityEvent)
 }
 
-inline void CMsgClearDecalsForSkeletonInstanceEvent::SharedCtor(
+inline void CMsgClearDecalsForEntityEvent::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
@@ -1964,13 +1895,12 @@ inline void CMsgClearDecalsForSkeletonInstanceEvent::SharedCtor(
       decltype(_impl_._has_bits_){}
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.flagstoclear_){0u}
-    , decltype(_impl_.entityhandleindex_){0u}
-    , decltype(_impl_.skeletoninstancehash_){0u}
+    , decltype(_impl_.entityhandle_){16777215u}
   };
 }
 
-CMsgClearDecalsForSkeletonInstanceEvent::~CMsgClearDecalsForSkeletonInstanceEvent() {
-  // @@protoc_insertion_point(destructor:CMsgClearDecalsForSkeletonInstanceEvent)
+CMsgClearDecalsForEntityEvent::~CMsgClearDecalsForEntityEvent() {
+  // @@protoc_insertion_point(destructor:CMsgClearDecalsForEntityEvent)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -1978,31 +1908,30 @@ CMsgClearDecalsForSkeletonInstanceEvent::~CMsgClearDecalsForSkeletonInstanceEven
   SharedDtor();
 }
 
-inline void CMsgClearDecalsForSkeletonInstanceEvent::SharedDtor() {
+inline void CMsgClearDecalsForEntityEvent::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
-void CMsgClearDecalsForSkeletonInstanceEvent::SetCachedSize(int size) const {
+void CMsgClearDecalsForEntityEvent::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void CMsgClearDecalsForSkeletonInstanceEvent::Clear() {
-// @@protoc_insertion_point(message_clear_start:CMsgClearDecalsForSkeletonInstanceEvent)
+void CMsgClearDecalsForEntityEvent::Clear() {
+// @@protoc_insertion_point(message_clear_start:CMsgClearDecalsForEntityEvent)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
-    ::memset(&_impl_.flagstoclear_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.skeletoninstancehash_) -
-        reinterpret_cast<char*>(&_impl_.flagstoclear_)) + sizeof(_impl_.skeletoninstancehash_));
+  if (cached_has_bits & 0x00000003u) {
+    _impl_.flagstoclear_ = 0u;
+    _impl_.entityhandle_ = 16777215u;
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* CMsgClearDecalsForSkeletonInstanceEvent::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* CMsgClearDecalsForEntityEvent::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
   while (!ctx->Done(&ptr)) {
@@ -2018,20 +1947,11 @@ const char* CMsgClearDecalsForSkeletonInstanceEvent::_InternalParse(const char* 
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entityhandleindex = 2;
+      // optional uint32 entityhandle = 2 [default = 16777215];
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _Internal::set_has_entityhandleindex(&has_bits);
-          _impl_.entityhandleindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional uint32 skeletoninstancehash = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _Internal::set_has_skeletoninstancehash(&has_bits);
-          _impl_.skeletoninstancehash_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _Internal::set_has_entityhandle(&has_bits);
+          _impl_.entityhandle_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2060,9 +1980,9 @@ failure:
 #undef CHK_
 }
 
-uint8_t* CMsgClearDecalsForSkeletonInstanceEvent::_InternalSerialize(
+uint8_t* CMsgClearDecalsForEntityEvent::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CMsgClearDecalsForSkeletonInstanceEvent)
+  // @@protoc_insertion_point(serialize_to_array_start:CMsgClearDecalsForEntityEvent)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2073,28 +1993,22 @@ uint8_t* CMsgClearDecalsForSkeletonInstanceEvent::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_flagstoclear(), target);
   }
 
-  // optional uint32 entityhandleindex = 2;
+  // optional uint32 entityhandle = 2 [default = 16777215];
   if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_entityhandleindex(), target);
-  }
-
-  // optional uint32 skeletoninstancehash = 3;
-  if (cached_has_bits & 0x00000004u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_skeletoninstancehash(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_entityhandle(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:CMsgClearDecalsForSkeletonInstanceEvent)
+  // @@protoc_insertion_point(serialize_to_array_end:CMsgClearDecalsForEntityEvent)
   return target;
 }
 
-size_t CMsgClearDecalsForSkeletonInstanceEvent::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CMsgClearDecalsForSkeletonInstanceEvent)
+size_t CMsgClearDecalsForEntityEvent::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CMsgClearDecalsForEntityEvent)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
@@ -2102,81 +2016,69 @@ size_t CMsgClearDecalsForSkeletonInstanceEvent::ByteSizeLong() const {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
+  if (cached_has_bits & 0x00000003u) {
     // optional uint32 flagstoclear = 1;
     if (cached_has_bits & 0x00000001u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_flagstoclear());
     }
 
-    // optional uint32 entityhandleindex = 2;
+    // optional uint32 entityhandle = 2 [default = 16777215];
     if (cached_has_bits & 0x00000002u) {
-      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entityhandleindex());
-    }
-
-    // optional uint32 skeletoninstancehash = 3;
-    if (cached_has_bits & 0x00000004u) {
-      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_skeletoninstancehash());
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entityhandle());
     }
 
   }
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgClearDecalsForSkeletonInstanceEvent::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgClearDecalsForEntityEvent::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CMsgClearDecalsForSkeletonInstanceEvent::MergeImpl
+    CMsgClearDecalsForEntityEvent::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgClearDecalsForSkeletonInstanceEvent::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgClearDecalsForEntityEvent::GetClassData() const { return &_class_data_; }
 
 
-void CMsgClearDecalsForSkeletonInstanceEvent::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CMsgClearDecalsForSkeletonInstanceEvent*>(&to_msg);
-  auto& from = static_cast<const CMsgClearDecalsForSkeletonInstanceEvent&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgClearDecalsForSkeletonInstanceEvent)
+void CMsgClearDecalsForEntityEvent::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CMsgClearDecalsForEntityEvent*>(&to_msg);
+  auto& from = static_cast<const CMsgClearDecalsForEntityEvent&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgClearDecalsForEntityEvent)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
+  if (cached_has_bits & 0x00000003u) {
     if (cached_has_bits & 0x00000001u) {
       _this->_impl_.flagstoclear_ = from._impl_.flagstoclear_;
     }
     if (cached_has_bits & 0x00000002u) {
-      _this->_impl_.entityhandleindex_ = from._impl_.entityhandleindex_;
-    }
-    if (cached_has_bits & 0x00000004u) {
-      _this->_impl_.skeletoninstancehash_ = from._impl_.skeletoninstancehash_;
+      _this->_impl_.entityhandle_ = from._impl_.entityhandle_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void CMsgClearDecalsForSkeletonInstanceEvent::CopyFrom(const CMsgClearDecalsForSkeletonInstanceEvent& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CMsgClearDecalsForSkeletonInstanceEvent)
+void CMsgClearDecalsForEntityEvent::CopyFrom(const CMsgClearDecalsForEntityEvent& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CMsgClearDecalsForEntityEvent)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool CMsgClearDecalsForSkeletonInstanceEvent::IsInitialized() const {
+bool CMsgClearDecalsForEntityEvent::IsInitialized() const {
   return true;
 }
 
-void CMsgClearDecalsForSkeletonInstanceEvent::InternalSwap(CMsgClearDecalsForSkeletonInstanceEvent* other) {
+void CMsgClearDecalsForEntityEvent::InternalSwap(CMsgClearDecalsForEntityEvent* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgClearDecalsForSkeletonInstanceEvent, _impl_.skeletoninstancehash_)
-      + sizeof(CMsgClearDecalsForSkeletonInstanceEvent::_impl_.skeletoninstancehash_)
-      - PROTOBUF_FIELD_OFFSET(CMsgClearDecalsForSkeletonInstanceEvent, _impl_.flagstoclear_)>(
-          reinterpret_cast<char*>(&_impl_.flagstoclear_),
-          reinterpret_cast<char*>(&other->_impl_.flagstoclear_));
+  swap(_impl_.flagstoclear_, other->_impl_.flagstoclear_);
+  swap(_impl_.entityhandle_, other->_impl_.entityhandle_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata CMsgClearDecalsForSkeletonInstanceEvent::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata CMsgClearDecalsForEntityEvent::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_gameevents_2eproto_getter, &descriptor_table_gameevents_2eproto_once,
       file_level_metadata_gameevents_2eproto[4]);
@@ -5253,9 +5155,9 @@ template<> PROTOBUF_NOINLINE ::CMsgClearEntityDecalsEvent*
 Arena::CreateMaybeMessage< ::CMsgClearEntityDecalsEvent >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CMsgClearEntityDecalsEvent >(arena);
 }
-template<> PROTOBUF_NOINLINE ::CMsgClearDecalsForSkeletonInstanceEvent*
-Arena::CreateMaybeMessage< ::CMsgClearDecalsForSkeletonInstanceEvent >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CMsgClearDecalsForSkeletonInstanceEvent >(arena);
+template<> PROTOBUF_NOINLINE ::CMsgClearDecalsForEntityEvent*
+Arena::CreateMaybeMessage< ::CMsgClearDecalsForEntityEvent >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CMsgClearDecalsForEntityEvent >(arena);
 }
 template<> PROTOBUF_NOINLINE ::CMsgSource1LegacyGameEventList_key_t*
 Arena::CreateMaybeMessage< ::CMsgSource1LegacyGameEventList_key_t >(Arena* arena) {
