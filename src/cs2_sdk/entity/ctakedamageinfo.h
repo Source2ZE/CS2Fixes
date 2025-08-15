@@ -23,48 +23,49 @@
 
 enum DamageTypes_t : uint32_t
 {
-	DMG_GENERIC = 0x0,
-	DMG_CRUSH = 0x1,
-	DMG_BULLET = 0x2,
-	DMG_SLASH = 0x4,
-	DMG_BURN = 0x8,
-	DMG_VEHICLE = 0x10,
-	DMG_FALL = 0x20,
-	DMG_BLAST = 0x40,
-	DMG_CLUB = 0x80,
-	DMG_SHOCK = 0x100,
-	DMG_SONIC = 0x200,
-	DMG_ENERGYBEAM = 0x400,
-	DMG_DROWN = 0x4000,
-	DMG_POISON = 0x8000,
-	DMG_RADIATION = 0x10000,
-	DMG_DROWNRECOVER = 0x20000,
-	DMG_ACID = 0x40000,
-	DMG_PHYSGUN = 0x100000,
-	DMG_DISSOLVE = 0x200000,
-	DMG_BLAST_SURFACE = 0x400000,
-	DMG_BUCKSHOT = 0x1000000,
-	DMG_LASTGENERICFLAG = 0x1000000,
-	DMG_HEADSHOT = 0x2000000,
-	DMG_DANGERZONE = 0x4000000,
+	DMG_GENERIC = 0,			 // 0x0
+	DMG_CRUSH = 1 << 0,			 // 0x1
+	DMG_BULLET = 1 << 1,		 // 0x2
+	DMG_SLASH = 1 << 2,			 // 0x4
+	DMG_BURN = 1 << 3,			 // 0x8
+	DMG_VEHICLE = 1 << 4,		 // 0x10
+	DMG_FALL = 1 << 5,			 // 0x20
+	DMG_BLAST = 1 << 6,			 // 0x40
+	DMG_CLUB = 1 << 7,			 // 0x80
+	DMG_SHOCK = 1 << 8,			 // 0x100
+	DMG_SONIC = 1 << 9,			 // 0x200
+	DMG_ENERGYBEAM = 1 << 10,	 // 0x400
+	DMG_BUCKSHOT = 1 << 11,		 // 0x800
+	DMG_DROWN = 1 << 14,		 // 0x4000
+	DMG_POISON = 1 << 15,		 // 0x8000
+	DMG_RADIATION = 1 << 16,	 // 0x10000
+	DMG_DROWNRECOVER = 1 << 17,	 // 0x20000
+	DMG_ACID = 1 << 18,			 // 0x40000
+	DMG_PHYSGUN = 1 << 20,		 // 0x100000
+	DMG_DISSOLVE = 1 << 21,		 // 0x200000
+	DMG_BLAST_SURFACE = 1 << 22, // 0x400000
+	DMG_HEADSHOT = 1 << 23,		 // 0x800000
 };
 
 enum TakeDamageFlags_t : uint32_t
 {
-	DFLAG_NONE = 0x0,
-	DFLAG_SUPPRESS_HEALTH_CHANGES = 0x1,
-	DFLAG_SUPPRESS_PHYSICS_FORCE = 0x2,
-	DFLAG_SUPPRESS_EFFECTS = 0x4,
-	DFLAG_PREVENT_DEATH = 0x8,
-	DFLAG_FORCE_DEATH = 0x10,
-	DFLAG_ALWAYS_GIB = 0x20,
-	DFLAG_NEVER_GIB = 0x40,
-	DFLAG_REMOVE_NO_RAGDOLL = 0x80,
-	DFLAG_SUPPRESS_DAMAGE_MODIFICATION = 0x100,
-	DFLAG_ALWAYS_FIRE_DAMAGE_EVENTS = 0x200,
-	DFLAG_RADIUS_DMG = 0x400,
-	DMG_LASTDFLAG = 0x400,
-	DFLAG_IGNORE_ARMOR = 0x800,
+	DFLAG_NONE = 0,								 // 0x0
+	DFLAG_SUPPRESS_HEALTH_CHANGES = 1 << 0,		 // 0x1
+	DFLAG_SUPPRESS_PHYSICS_FORCE = 1 << 1,		 // 0x2
+	DFLAG_SUPPRESS_EFFECTS = 1 << 2,			 // 0x4
+	DFLAG_PREVENT_DEATH = 1 << 3,				 // 0x8
+	DFLAG_FORCE_DEATH = 1 << 4,					 // 0x10
+	DFLAG_ALWAYS_GIB = 1 << 5,					 // 0x20
+	DFLAG_NEVER_GIB = 1 << 6,					 // 0x40
+	DFLAG_REMOVE_NO_RAGDOLL = 1 << 7,			 // 0x80
+	DFLAG_SUPPRESS_DAMAGE_MODIFICATION = 1 << 8, // 0x100
+	DFLAG_ALWAYS_FIRE_DAMAGE_EVENTS = 1 << 9,	 // 0x200
+	DFLAG_RADIUS_DMG = 1 << 10,					 // 0x400
+	DFLAG_FORCEREDUCEARMOR_DMG = 1 << 11,		 // 0x800
+	DFLAG_SUPPRESS_INTERRUPT_FLINCH = 1 << 12,	 // 0x1000
+	DFLAG_IGNORE_DESTRUCTIBLE_PARTS = 1 << 13,	 // 0x2000
+	DFLAG_IGNORE_ARMOR = 1 << 14,				 // 0x4000
+	DFLAG_SUPPRESS_UTILREMOVE = 1 << 15,		 // 0x8000
 };
 
 struct AttackerInfo_t
@@ -73,7 +74,7 @@ struct AttackerInfo_t
 	bool m_bIsPawn;
 	bool m_bIsWorld;
 	CHandle<CCSPlayerPawn> m_hAttackerPawn;
-	uint16_t m_nAttackerPlayerSlot;
+	int32_t m_nAttackerPlayerSlot;
 	int m_iTeamChecked;
 	int m_nTeam;
 };
@@ -127,25 +128,24 @@ private:
 	[[maybe_unused]] uint8_t m_nUnknown1[0x2]; // 0x66
 
 public:
-	float m_flDamageAbsorbed;		  // 0x68 | 104
-	CGameTrace* m_pTrace;			  // 0x70 | 112
-	TakeDamageFlags_t m_nDamageFlags; // 0x78 | 120
+	CGameTrace* m_pTrace;			  // 0x68 | 104
+	TakeDamageFlags_t m_nDamageFlags; // 0x70 | 112
 
 private:
-	[[maybe_unused]] uint8_t m_sDamageSourceName[0x8]; // 0x80 | 128
+	[[maybe_unused]] uint8_t m_sDamageSourceName[0x8]; // 0x78 | 120
 
 public:
-	HitGroup_t m_iHitGroupId;					// 0x88 | 136
-	int32_t m_nNumObjectsPenetrated;			// 0x8c | 140
-	float m_flFriendlyFireDamageReductionRatio; // 0x90 | 144
+	HitGroup_t m_iHitGroupId;					// 0x80 | 128
+	int32_t m_nNumObjectsPenetrated;			// 0x84 | 132
+	float m_flFriendlyFireDamageReductionRatio; // 0x88 | 136
 private:
-	uint8_t m_nUnknown2[0x5C]; // 0x94 | 148
+	uint8_t m_nUnknown2[0x5C]; // 0x9c | 140
 public:
-	void* m_hScriptInstance;	   // 0xf0 | 240
-	AttackerInfo_t m_AttackerInfo; // 0xf8 | 248
-	bool m_bInTakeDamageFlow;	   // 0x104 | 268
+	void* m_hScriptInstance;	   // 0xe8 | 232
+	AttackerInfo_t m_AttackerInfo; // 0xf0 | 240
+	bool m_bInTakeDamageFlow;	   // 0x104 | 260
 
 private:
-	[[maybe_unused]] int32_t m_nUnknown3; // 0x108 | 272
+	[[maybe_unused]] int32_t m_nUnknown3; // 0x108 | 264
 };
-static_assert(sizeof(CTakeDamageInfo) == 280);
+static_assert(sizeof(CTakeDamageInfo) == 272);
