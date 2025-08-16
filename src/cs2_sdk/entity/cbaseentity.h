@@ -232,21 +232,14 @@ public:
 		addresses::CBaseEntity_EmitSoundParams(this, pszSound, nPitch, flVolume, flDelay);
 	}
 
-	SndOpEventGuid_t EmitSoundFilter(IRecipientFilter& filter, const char* pszSound, float flVolume = 1.0, float flPitch = 1.0)
+	StartSoundEventInfo EmitSoundFilter(IRecipientFilter& filter, const char* pszSound, float flVolume = 1.0, float flPitch = 1.0)
 	{
-#ifdef __linux__
-		uint8_t unk[32];
-#endif
 		EmitSound_t params;
 		params.m_pSoundName = pszSound;
 		params.m_flVolume = flVolume;
 		params.m_nPitch = flPitch;
 
-#ifdef __linux__
-		return addresses::CBaseEntity_EmitSoundFilter(unk, filter, entindex(), params);
-#else
 		return addresses::CBaseEntity_EmitSoundFilter(filter, entindex(), params);
-#endif
 	}
 
 	void DispatchParticle(const char* pszParticleName, IRecipientFilter* pFilter, ParticleAttachment_t nAttachType = PATTACH_POINT_FOLLOW,

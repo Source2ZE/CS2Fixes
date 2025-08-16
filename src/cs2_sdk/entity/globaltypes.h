@@ -100,8 +100,18 @@ typedef uint32 SoundEventGuid_t;
 struct SndOpEventGuid_t
 {
 	SoundEventGuid_t m_nGuid;
-	uint64 m_hStackHash;
+	uint32 m_hStackHash;
 };
+
+#pragma pack(push, 1)
+struct StartSoundEventInfo
+{
+	SndOpEventGuid_t m_nSndOpEventGuid;
+	int32 m_nFlags;
+	uint64 m_nRecipients;
+};
+#pragma pack(pop)
+static_assert(sizeof(StartSoundEventInfo) == 20); // Ensure alignment change works
 
 // used with EmitSound_t
 enum gender_t : uint8
