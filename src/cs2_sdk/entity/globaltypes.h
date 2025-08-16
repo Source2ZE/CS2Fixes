@@ -101,6 +101,7 @@ struct SndOpEventGuid_t
 {
 	SoundEventGuid_t m_nGuid;
 	uint64 m_hStackHash;
+	uint64 m_unk;
 };
 
 // used with EmitSound_t
