@@ -552,11 +552,6 @@
 				"windows"		"\x11\x43"
 				"linux"			"\x11\x43"
 			}
-			"WaterLevelGravity"
-			{
-				"windows"		"\x3C\x02"
-				"linux"			"\x3C\x02"
-			}
 			// Jumping over a check for nav mesh
 			"BotNavIgnore"
 			{
