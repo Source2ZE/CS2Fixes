@@ -945,13 +945,8 @@ bool CMapVoteSystem::LoadMapList()
 
 	if (!jsonFile.is_open())
 	{
-		if (!ConvertMapListKVToJSON())
-		{
-			Panic("Failed to open %s and convert KV1 maplist.cfg to JSON format, map list not loaded!\n", pszJsonPath);
-			return false;
-		}
-
-		jsonFile.open(szPath);
+		Panic("Failed to open %s, map list not loaded!\n", pszJsonPath);
+		return false;
 	}
 
 	ordered_json jsonMaps = ordered_json::parse(jsonFile, nullptr, false, true);
@@ -1338,71 +1333,4 @@ void CMapVoteSystem::ReloadCurrentMap()
 		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", GetCurrentMapName());
 
 	g_pEngineServer2->ServerCommand(sChangeMapCmd);
-}
-
-// TODO: remove this once servers have been given at least a few months to update cs2fixes
-bool CMapVoteSystem::ConvertMapListKVToJSON()
-{
-	Message("Attempting to convert KV1 maplist.cfg to JSON format...\n");
-
-	const char* pszPath = "addons/cs2fixes/configs/maplist.cfg";
-
-	KeyValues* pKV = new KeyValues("maplist");
-	KeyValues::AutoDelete autoDelete(pKV);
-
-	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
-	{
-		Panic("Failed to load %s\n", pszPath);
-		return false;
-	}
-
-	ordered_json jsonMapList;
-
-	jsonMapList["Groups"] = ordered_json(ordered_json::value_t::object);
-
-	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
-	{
-		ordered_json jsonMap;
-
-		if (pKey->FindKey("enabled"))
-			jsonMap["enabled"] = pKey->GetBool("enabled");
-		if (pKey->FindKey("workshop_id"))
-			jsonMap["workshop_id"] = pKey->GetUint64("workshop_id");
-		if (pKey->FindKey("min_players"))
-			jsonMap["min_players"] = pKey->GetInt("min_players");
-		if (pKey->FindKey("max_players"))
-			jsonMap["max_players"] = pKey->GetInt("max_players");
-		if (pKey->FindKey("cooldown"))
-			jsonMap["cooldown"] = pKey->GetInt("cooldown");
-
-		jsonMapList["Maps"][pKey->GetName()] = jsonMap;
-	}
-
-	const char* pszJsonPath = "addons/cs2fixes/configs/maplist.jsonc";
-	const char* pszKVConfigRenamePath = "addons/cs2fixes/configs/maplist_old.cfg";
-	char szPath[MAX_PATH];
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
-	std::ofstream jsonFile(szPath);
-
-	if (!jsonFile.is_open())
-	{
-		Panic("Failed to open %s\n", pszJsonPath);
-		return false;
-	}
-
-	jsonFile << std::setfill('\t') << std::setw(1) << jsonMapList << std::endl;
-
-	char szKVRenamePath[MAX_PATH];
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszPath);
-	V_snprintf(szKVRenamePath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVConfigRenamePath);
-
-	std::rename(szPath, szKVRenamePath);
-
-	// remove old cfg example if it exists
-	const char* pszKVExamplePath = "addons/cs2fixes/configs/maplist.cfg.example";
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVExamplePath);
-	std::remove(szPath);
-
-	Message("Successfully converted KV1 maplist.cfg to JSON format at %s\n", pszJsonPath);
-	return true;
 }
