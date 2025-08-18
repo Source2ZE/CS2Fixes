@@ -170,7 +170,6 @@ public:
 	void ClearInvalidNominations();
 	uint64 GetForcedNextMap() { return m_iForcedNextMap; }
 	std::string GetForcedNextMapName() { return GetForcedNextMap() > GetMapListSize() ? std::to_string(GetForcedNextMap()) : GetMapName(GetForcedNextMap()); }
-	bool ConvertMapListKVToJSON();
 	std::unordered_map<int, int> GetNominatedMaps();
 	void ApplyGameSettings(KeyValues* pKV);
 	void OnLevelShutdown();
