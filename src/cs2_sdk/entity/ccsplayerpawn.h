@@ -39,7 +39,6 @@ class CCSPlayerPawnBase : public CBasePlayerPawn
 {
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerPawnBase);
-	SCHEMA_FIELD(QAngle, m_angEyeAngles)
 	SCHEMA_FIELD(CSPlayerState, m_iPlayerState)
 	SCHEMA_FIELD(CHandle<CCSPlayerController>, m_hOriginalController)
 	SCHEMA_FIELD(CCSPlayer_PingServices*, m_pPingServices)
@@ -62,6 +61,7 @@ public:
 
 	SCHEMA_FIELD(float, m_flVelocityModifier)
 	SCHEMA_FIELD(CCSPlayer_ActionTrackingServices*, m_pActionTrackingServices)
+	SCHEMA_FIELD(QAngle, m_angEyeAngles)
 
 	[[nodiscard]] CCSPlayer_CameraServices* GetCameraService()
 	{
