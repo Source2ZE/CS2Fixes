@@ -58,6 +58,13 @@ CConVar<bool> g_cvarEnableCommands("cs2f_commands_enable", FCVAR_NONE, "Whether 
 CConVar<bool> g_cvarEnableAdminCommands("cs2f_admin_commands_enable", FCVAR_NONE, "Whether to enable admin chat commands", false);
 CConVar<bool> g_cvarEnableWeapons("cs2f_weapons_enable", FCVAR_NONE, "Whether to enable weapon commands", false);
 
+// We need to use a helper function to avoid command macros accessing command list before its initialized
+std::map<uint32, std::shared_ptr<CChatCommand>>& CommandList()
+{
+	static std::map<uint32, std::shared_ptr<CChatCommand>> commandList;
+	return commandList;
+}
+
 int GetGrenadeAmmo(CCSPlayer_WeaponServices* pWeaponServices, const WeaponInfo_t* pWeaponInfo)
 {
 	if (!pWeaponServices || pWeaponInfo->m_eSlot != GEAR_SLOT_GRENADES)
@@ -245,7 +252,7 @@ void RegisterWeaponCommands()
 	{
 		for (const auto& alias : aliases)
 		{
-			new CChatCommand(alias.c_str(), ParseWeaponCommand, "- Buys this weapon", ADMFLAG_NONE, CMDFLAG_NOHELP);
+			CChatCommand::Create(alias.c_str(), ParseWeaponCommand, "- Buys this weapon", ADMFLAG_NONE, CMDFLAG_NOHELP);
 
 			char cmdName[64];
 			V_snprintf(cmdName, sizeof(cmdName), "%s%s", COMMAND_PREFIX, alias.c_str());
@@ -253,12 +260,6 @@ void RegisterWeaponCommands()
 			new ConCommand(cmdName, WeaponCommandCallback, "Buys this weapon", FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);
 		}
 	}
-}
-
-std::map<uint32, CChatCommand*>& CommandList()
-{
-	static std::map<uint32, CChatCommand*> commandList;
-	return commandList;
 }
 
 void ParseChatCommand(const char* pMessage, CCSPlayerController* pController)
@@ -496,7 +497,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 
 			for (const auto& cmdPair : CommandList())
 			{
-				CChatCommand* cmd = cmdPair.second;
+				auto cmd = cmdPair.second;
 
 				if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP))
 					rgstrCommands.push_back(std::string("c_") + cmd->GetName() + " " + cmd->GetDescription());
@@ -511,7 +512,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 
 			for (const auto& cmdPair : CommandList())
 			{
-				CChatCommand* cmd = cmdPair.second;
+				auto cmd = cmdPair.second;
 				uint64 flags = cmd->GetAdminFlags();
 
 				if ((pZEPlayer->IsAdminFlagSet(flags) || ((flags & FLAG_LEADER) == FLAG_LEADER && pZEPlayer->IsLeader()))
@@ -543,7 +544,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 		{
 			for (const auto& cmdPair : CommandList())
 			{
-				CChatCommand* cmd = cmdPair.second;
+				auto cmd = cmdPair.second;
 
 				if (!cmd->IsCommandFlagSet(CMDFLAG_NOHELP)
 					&& ((!bOnlyCheckStart && V_stristr(cmd->GetName(), pszSearchTerm))
@@ -557,7 +558,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 
 			for (const auto& cmdPair : CommandList())
 			{
-				CChatCommand* cmd = cmdPair.second;
+				auto cmd = cmdPair.second;
 				uint64 flags = cmd->GetAdminFlags();
 
 				if ((pZEPlayer->IsAdminFlagSet(flags) || ((flags & FLAG_LEADER) == FLAG_LEADER && pZEPlayer->IsLeader()))

@@ -64,13 +64,13 @@ class CTimer : public CTimerBase, public std::enable_shared_from_this<CTimer>
 {
 private:
 	// Silly workaround to achieve a "private constructor" only Create() can call
-	struct _constructor_tag
+	struct _timer_constructor_tag
 	{
-		explicit _constructor_tag() = default;
+		explicit _timer_constructor_tag() = default;
 	};
 
 public:
-	CTimer(float flInitialInterval, uint64 nTimerFlags, std::function<float()> func, _constructor_tag) :
+	CTimer(float flInitialInterval, uint64 nTimerFlags, std::function<float()> func, _timer_constructor_tag) :
 		CTimerBase(flInitialInterval, nTimerFlags), m_func(func)
 	{}
 

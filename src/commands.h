@@ -36,14 +36,11 @@ class CChatCommand;
 
 extern CConVar<bool> g_cvarEnableCommands;
 extern CConVar<bool> g_cvarEnableAdminCommands;
-
 extern CConVar<bool> g_cvarEnableHide;
 extern CConVar<bool> g_cvarEnableStopSound;
 extern CConVar<bool> g_cvarEnableNoShake;
 extern CConVar<float> g_cvarMaxShakeAmp;
-
-// We need to use a helper function to avoid command macros accessing command list before its initialized
-extern std::map<uint32, CChatCommand*>& CommandList();
+extern std::map<uint32, std::shared_ptr<CChatCommand>>& CommandList();
 
 void ClientPrintAll(int destination, const char* msg, ...);
 void ClientPrint(CCSPlayerController* player, int destination, const char* msg, ...);
@@ -52,10 +49,16 @@ void ClientPrint(CCSPlayerController* player, int destination, const char* msg, 
 class CChatCommand
 {
 public:
-	CChatCommand(const char* cmd, FnChatCommandCallback_t callback, const char* description, uint64 adminFlags = ADMFLAG_NONE, uint64 cmdFlags = CMDFLAG_NONE) :
+	CChatCommand(const char* cmd, FnChatCommandCallback_t callback, const char* description, uint64 adminFlags, uint64 cmdFlags) :
 		m_pfnCallback(callback), m_sName(cmd), m_sDescription(description), m_nAdminFlags(adminFlags), m_nCmdFlags(cmdFlags)
+	{}
+
+	static std::shared_ptr<CChatCommand> Create(const char* cmd, FnChatCommandCallback_t callback, const char* description, uint64 adminFlags = ADMFLAG_NONE, uint64 cmdFlags = CMDFLAG_NONE)
 	{
-		CommandList().insert(std::make_pair(hash_32_fnv1a_const(cmd), this));
+		auto pCommand = std::make_shared<CChatCommand>(cmd, callback, description, adminFlags, cmdFlags);
+
+		CommandList().insert(std::make_pair(hash_32_fnv1a_const(cmd), pCommand));
+		return pCommand;
 	}
 
 	void operator()(const CCommand& args, CCSPlayerController* player)
@@ -102,14 +105,14 @@ void ParseChatCommand(const char*, CCSPlayerController*);
 
 #define CON_COMMAND_CHAT_FLAGS(name, description, flags)                                                                               \
 	void name##_callback(const CCommand& args, CCSPlayerController* player);                                                           \
-	static CChatCommand name##_chat_command(#name, name##_callback, description, flags);                                               \
+	static auto name##_chat_command = CChatCommand::Create(#name, name##_callback, description, flags);                                \
 	static void name##_con_callback(const CCommandContext& context, const CCommand& args)                                              \
 	{                                                                                                                                  \
 		CCSPlayerController* pController = nullptr;                                                                                    \
 		if (context.GetPlayerSlot().Get() != -1)                                                                                       \
 			pController = (CCSPlayerController*)g_pEntitySystem->GetEntityInstance((CEntityIndex)(context.GetPlayerSlot().Get() + 1)); \
                                                                                                                                        \
-		name##_chat_command(args, pController);                                                                                        \
+		(*name##_chat_command)(args, pController);                                                                                     \
 	}                                                                                                                                  \
 	static ConCommand name##_command(COMMAND_PREFIX #name, name##_con_callback,                                                        \
 									 description, FCVAR_CLIENT_CAN_EXECUTE | FCVAR_LINKED_CONCOMMAND);                                 \
