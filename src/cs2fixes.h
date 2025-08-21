@@ -114,5 +114,6 @@ public:
 };
 
 extern CS2Fixes g_CS2Fixes;
+extern double g_flUniversalTime;
 
 PLUGIN_GLOBALVARS();

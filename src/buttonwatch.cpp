@@ -134,7 +134,7 @@ void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEnt
 	// Limit each button to only printing out at most once every 5 seconds
 	int iIndex = pCaller->GetEntityIndex().Get();
 	mapRecentEnts[iIndex] = true;
-	new CTimer(5.0f, true, true, [iIndex]() {
+	CTimer::Create(5.0f, TIMERFLAG_NONE, [iIndex]() {
 		mapRecentEnts.erase(iIndex);
 		return -1.0f;
 	});

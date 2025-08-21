@@ -33,7 +33,7 @@ void CCSPlayerPawn::FixPlayerModelAnimations()
 	Teleport(nullptr, nullptr, &vec3_origin);
 	SetMoveType(MOVETYPE_OBSOLETE);
 
-	new CTimer(0.02f, false, false, [hPawn, originalVelocity]() {
+	CTimer::Create(0.02f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hPawn, originalVelocity]() {
 		CCSPlayerPawn* pPawn = hPawn.Get();
 
 		if (!pPawn || !pPawn->IsAlive())
