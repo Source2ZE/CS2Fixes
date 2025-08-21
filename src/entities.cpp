@@ -97,7 +97,7 @@ static void DelayInput(CBaseEntity* pCaller, const char* input, const char* para
 {
 	const auto eh = pCaller->GetHandle();
 
-	new CTimer(0.f, false, false, [eh, input, param]() {
+	CTimer::Create(0.f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [eh, input, param]() {
 		if (const auto entity = reinterpret_cast<CBaseEntity*>(eh.Get()))
 			entity->AcceptInput(input, param, nullptr, entity);
 
@@ -111,7 +111,7 @@ static void DelayInput(CBaseEntity* pCaller, CBaseEntity* pActivator, const char
 	const auto eh = pCaller->GetHandle();
 	const auto ph = pActivator->GetHandle();
 
-	new CTimer(0.f, false, false, [eh, ph, input, param]() {
+	CTimer::Create(0.f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [eh, ph, input, param]() {
 		const auto player = reinterpret_cast<CBaseEntity*>(ph.Get());
 		if (const auto entity = reinterpret_cast<CBaseEntity*>(eh.Get()))
 			entity->AcceptInput(input, param, player, entity);

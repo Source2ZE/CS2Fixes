@@ -84,7 +84,7 @@ void CreateHudMessage(std::shared_ptr<CHudMessage> pHudMessage)
 	g_vecHudMessages.push_back(pHudMessage);
 
 	// Start a timer to remove this hud message after its duration passes
-	new CTimer(pHudMessage->GetDuration(), true, true, [pHudMessage]() {
+	CTimer::Create(pHudMessage->GetDuration(), TIMERFLAG_NONE, [pHudMessage]() {
 		g_vecHudMessages.erase(std::remove(g_vecHudMessages.begin(), g_vecHudMessages.end(), pHudMessage), g_vecHudMessages.end());
 
 		return -1.0f;
@@ -140,7 +140,7 @@ void SendHudMessageAll(int iDuration, EHudPriority ePriority, const char* pszMes
 void StartFlashingFixTimer()
 {
 	// Timer that fakes m_bGameRestart enabled, to fix flashing with show_survival_respawn_status
-	new CTimer(0.5f, false, true, []() {
+	CTimer::Create(0.5f, TIMERFLAG_MAP, []() {
 		if (!g_cvarFixHudFlashing.Get() || !g_pGameRules)
 			return 0.5f;
 

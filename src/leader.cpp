@@ -331,7 +331,7 @@ static bool Leader_CreateDefendMarker(ZEPlayer* pPlayer, Color clrTint, int iDur
 
 	g_iMarkerCount++;
 
-	new CTimer(iDuration, false, false, []() {
+	CTimer::Create(iDuration, TIMERFLAG_MAP | TIMERFLAG_ROUND, []() {
 		if (g_iMarkerCount > 0)
 			g_iMarkerCount--;
 

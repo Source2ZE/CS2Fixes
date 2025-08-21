@@ -68,7 +68,6 @@
 double g_flUniversalTime;
 float g_flLastTickedTime;
 bool g_bHasTicked;
-int g_iRoundNum = 0;
 
 void Message(const char* msg, ...)
 {
@@ -392,19 +391,19 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	RegisterWeaponCommands();
 
 	// Check hide distance
-	new CTimer(0.5f, true, true, []() {
+	CTimer::Create(0.5f, TIMERFLAG_NONE, []() {
 		g_playerManager->CheckHideDistances();
 		return 0.5f;
 	});
 
 	// Check for the expiration of infractions like mutes or gags
-	new CTimer(30.0f, true, true, []() {
+	CTimer::Create(30.0f, TIMERFLAG_NONE, []() {
 		g_playerManager->CheckInfractions();
 		return 30.0f;
 	});
 
 	// Check for idle players and kick them if permitted by cs2f_idle_kick_* 'convars'
-	new CTimer(5.0f, true, true, []() {
+	CTimer::Create(5.0f, TIMERFLAG_NONE, []() {
 		g_pIdleSystem->CheckForIdleClients();
 		return 5.0f;
 	});
@@ -483,7 +482,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	FlushAllDetours();
 	UndoPatches();
-	RemoveTimers();
+	RemoveAllTimers();
 	UnregisterEventListeners();
 
 	if (g_GameConfig)
@@ -644,7 +643,7 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	RegisterEventListeners();
 
 	if (g_bHasTicked)
-		RemoveMapTimers();
+		RemoveTimers(TIMERFLAG_MAP);
 
 	g_bHasTicked = false;
 
@@ -993,34 +992,7 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 	g_flLastTickedTime = GetGlobals()->curtime;
 	g_bHasTicked = true;
 
-	for (int i = g_timers.Tail(); i != g_timers.InvalidIndex();)
-	{
-		auto timer = g_timers[i];
-
-		int prevIndex = i;
-		i = g_timers.Previous(i);
-
-		if (timer->m_flLastExecute == -1)
-			timer->m_flLastExecute = g_flUniversalTime;
-
-		// Timer execute
-		if (timer->m_flLastExecute + timer->m_flInterval <= g_flUniversalTime)
-		{
-			if ((!timer->m_bPreserveRoundChange && timer->m_iRoundNum != g_iRoundNum) || !timer->Execute())
-			{
-				delete timer;
-				g_timers.Remove(prevIndex);
-			}
-			else
-			{
-				timer->m_flLastExecute = g_flUniversalTime;
-			}
-		}
-	}
-
-	if (g_cvarEnableZR.Get())
-		CZRRegenTimer::Tick();
-
+	RunTimers();
 	EntityHandler_OnGameFramePost(simulating, GetGlobals()->tickcount);
 }
 
@@ -1337,7 +1309,6 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 						   bool background)
 {
 	Message("OnLevelInit(%s)\n", pMapName);
-	g_iRoundNum = 0;
 
 	// run our cfg
 	g_pEngineServer2->ServerCommand("exec cs2fixes/cs2fixes");

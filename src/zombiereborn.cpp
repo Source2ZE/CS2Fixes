@@ -52,7 +52,6 @@ extern CGlobalVars* GetGlobals();
 extern CCSGameRules* g_pGameRules;
 extern IGameEventManager2* g_gameEventManager;
 extern IGameEventSystem* g_gameEventSystem;
-extern double g_flUniversalTime;
 extern CConVar<int> g_cvarFreeArmor;
 
 void ZR_Infect(CCSPlayerController* pAttackerController, CCSPlayerController* pVictimController, bool bBroadcast);
@@ -535,19 +534,18 @@ void CZRPlayerClassManager::ApplyHumanClass(std::shared_ptr<ZRHumanClass> pClass
 {
 	ApplyBaseClass(pClass, pPawn);
 	CCSPlayerController* pController = CCSPlayerController::FromPawn(pPawn);
-	if (pController)
-		CZRRegenTimer::StopRegen(pController);
 
-	if (!g_cvarEnableLeader.Get() || !pController)
+	if (!pController)
 		return;
 
+	CancelRegenTimer(pController->GetPlayerSlot());
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
 
-	if (pPlayer && pPlayer->IsLeader())
+	if (g_cvarEnableLeader.Get() && pPlayer && pPlayer->IsLeader())
 	{
 		CHandle<CCSPlayerPawn> hPawn = pPawn->GetHandle();
 
-		new CTimer(0.02f, false, false, [hPawn]() {
+		CTimer::Create(0.02f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hPawn]() {
 			CCSPlayerPawn* pPawn = hPawn.Get();
 			if (pPawn)
 				Leader_ApplyLeaderVisuals(pPawn);
@@ -628,8 +626,9 @@ void CZRPlayerClassManager::ApplyZombieClass(std::shared_ptr<ZRZombieClass> pCla
 {
 	ApplyBaseClass(pClass, pPawn);
 	CCSPlayerController* pController = CCSPlayerController::FromPawn(pPawn);
+
 	if (pController)
-		CZRRegenTimer::StartRegen(pClass->flHealthRegenInterval, pClass->iHealthRegenCount, pController);
+		CreateRegenTimer(pController->GetPlayerSlot(), pPawn->GetHandle(), pClass->flHealthRegenInterval, pClass->iHealthRegenCount);
 }
 
 void CZRPlayerClassManager::ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn* pPawn)
@@ -686,83 +685,38 @@ void CZRPlayerClassManager::GetZRClassList(int iTeam, std::vector<std::shared_pt
 	}
 }
 
-double CZRRegenTimer::s_flNextExecution;
-CZRRegenTimer* CZRRegenTimer::s_vecRegenTimers[MAXPLAYERS];
-
-bool CZRRegenTimer::Execute()
+void CZRPlayerClassManager::CreateRegenTimer(int iPlayerSlot, CHandle<CCSPlayerPawn> hPawn, float flInterval, int iAmount)
 {
-	CCSPlayerPawn* pPawn = m_hPawnHandle.Get();
-	if (!pPawn || !pPawn->IsAlive())
-		return false;
+	// Double check a regen timer isn't somehow already running
+	CancelRegenTimer(iPlayerSlot);
 
-	// Do we even need to regen?
-	if (pPawn->m_iHealth() >= pPawn->m_iMaxHealth())
-		return true;
+	auto wTimer = CTimer::Create(flInterval, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hPawn, flInterval, iAmount]() {
+		CCSPlayerPawn* pPawn = hPawn.Get();
 
-	int iHealth = pPawn->m_iHealth() + m_iRegenAmount;
-	pPawn->m_iHealth = pPawn->m_iMaxHealth() < iHealth ? pPawn->m_iMaxHealth() : iHealth;
-	return true;
+		if (!pPawn || !pPawn->IsAlive())
+			return -1.0f;
+
+		// Do we even need to regen?
+		if (pPawn->m_iHealth() >= pPawn->m_iMaxHealth())
+			return flInterval;
+
+		int iHealth = pPawn->m_iHealth() + iAmount;
+		pPawn->m_iHealth = pPawn->m_iMaxHealth() < iHealth ? pPawn->m_iMaxHealth() : iHealth;
+		return flInterval;
+	});
+
+	m_vecRegenTimers[iPlayerSlot] = wTimer;
 }
 
-void CZRRegenTimer::StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController* pController)
+void CZRPlayerClassManager::CancelRegenTimer(int iPlayerSlot)
 {
-	int slot = pController->GetPlayerSlot();
-	CZRRegenTimer* pTimer = s_vecRegenTimers[slot];
-	if (pTimer != nullptr)
-	{
-		pTimer->m_flInterval = flRegenInterval;
-		pTimer->m_iRegenAmount = iRegenAmount;
-		return;
-	}
-	s_vecRegenTimers[slot] = new CZRRegenTimer(flRegenInterval, iRegenAmount, pController->m_hPlayerPawn());
-}
-
-void CZRRegenTimer::StopRegen(CCSPlayerController* pController)
-{
-	int slot = pController->GetPlayerSlot();
-	if (!s_vecRegenTimers[slot])
+	if (iPlayerSlot < 0 || iPlayerSlot > 63)
 		return;
 
-	delete s_vecRegenTimers[slot];
-	s_vecRegenTimers[slot] = nullptr;
-}
+	auto wTimer = m_vecRegenTimers[iPlayerSlot];
 
-void CZRRegenTimer::Tick()
-{
-	// check every timer every 0.1
-	if (s_flNextExecution > g_flUniversalTime)
-		return;
-
-	VPROF("CZRRegenTimer::Tick");
-
-	s_flNextExecution = g_flUniversalTime + 0.1f;
-	for (int i = MAXPLAYERS - 1; i >= 0; i--)
-	{
-		CZRRegenTimer* pTimer = s_vecRegenTimers[i];
-		if (!pTimer)
-			continue;
-
-		if (pTimer->m_flLastExecute == -1)
-			pTimer->m_flLastExecute = g_flUniversalTime;
-
-		// Timer execute
-		if (pTimer->m_flLastExecute + pTimer->m_flInterval <= g_flUniversalTime)
-		{
-			pTimer->Execute();
-			pTimer->m_flLastExecute = g_flUniversalTime;
-		}
-	}
-}
-
-void CZRRegenTimer::RemoveAllTimers()
-{
-	for (int i = MAXPLAYERS - 1; i >= 0; i--)
-	{
-		if (!s_vecRegenTimers[i])
-			continue;
-		delete s_vecRegenTimers[i];
-		s_vecRegenTimers[i] = nullptr;
-	}
+	if (!wTimer.expired())
+		wTimer.lock()->Cancel();
 }
 
 void ZR_OnLevelInit()
@@ -770,7 +724,7 @@ void ZR_OnLevelInit()
 	g_ZRRoundState = EZRRoundState::ROUND_START;
 
 	// Delay one tick to override any .cfg's
-	new CTimer(0.02f, false, true, []() {
+	CTimer::Create(0.02f, TIMERFLAG_MAP, []() {
 		// Here we force some cvars that are necessary for the gamemode
 		g_pEngineServer2->ServerCommand("mp_give_player_c4 0");
 		g_pEngineServer2->ServerCommand("mp_friendlyfire 0");
@@ -989,11 +943,11 @@ void SetupCTeams()
 
 void ZR_OnRoundStart(IGameEvent* pEvent)
 {
+	SetupRespawnToggler();
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
+
 	if (g_cvarInfectSpawnWarning.Get() && g_cvarInfectSpawnType.Get() == (int)EZRSpawnType::IN_PLACE)
 		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Classic spawn is enabled! Zombies will be \x07spawning between humans\x01!");
-	SetupRespawnToggler();
-	CZRRegenTimer::RemoveAllTimers();
 
 	if (!GetGlobals())
 		return;
@@ -1031,7 +985,7 @@ void ZR_OnPlayerSpawn(CCSPlayerController* pController)
 	}
 
 	CHandle<CCSPlayerController> handle = pController->GetHandle();
-	new CTimer(0.05f, false, false, [handle, bInfect]() {
+	CTimer::Create(0.05f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [handle, bInfect]() {
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
 		if (!pController)
 			return -1.0f;
@@ -1260,7 +1214,7 @@ void ZR_Infect(CCSPlayerController* pAttackerController, CCSPlayerController* pV
 		pZEPlayer->SetInfectState(true);
 
 		ZEPlayerHandle hPlayer = pZEPlayer->GetHandle();
-		new CTimer(rand() % (int)g_cvarMoanInterval.Get(), false, false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
+		CTimer::Create(rand() % (int)g_cvarMoanInterval.Get(), TIMERFLAG_MAP | TIMERFLAG_ROUND, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
 	}
 }
 
@@ -1301,7 +1255,7 @@ void ZR_InfectMotherZombie(CCSPlayerController* pVictimController, std::vector<S
 	pZEPlayer->SetInfectState(true);
 
 	ZEPlayerHandle hPlayer = pZEPlayer->GetHandle();
-	new CTimer(rand() % (int)g_cvarMoanInterval.Get(), false, false, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
+	CTimer::Create(rand() % (int)g_cvarMoanInterval.Get(), TIMERFLAG_MAP | TIMERFLAG_ROUND, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
 }
 
 // make players who've been picked as MZ recently less likely to be picked again
@@ -1427,7 +1381,7 @@ void ZR_StartInitialCountdown()
 
 	int iRand = rand();
 	auto iSecondsElapsed = std::make_shared<int>(0);
-	new CTimer(0.0f, false, false, [iRand, iSecondsElapsed]() {
+	CTimer::Create(0.0f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [iRand, iSecondsElapsed]() {
 		if (g_ZRRoundState != EZRRoundState::ROUND_START)
 			return -1.0f;
 
@@ -1567,7 +1521,7 @@ void SpawnPlayer(CCSPlayerController* pController)
 	}
 
 	CHandle<CCSPlayerController> handle = pController->GetHandle();
-	new CTimer(2.0f, false, false, [handle]() {
+	CTimer::Create(2.0f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [handle]() {
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
 		if (!pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T)
 			return -1.0f;
@@ -1671,7 +1625,7 @@ void ZR_OnPlayerDeath(IGameEvent* pEvent)
 
 	// respawn player
 	CHandle<CCSPlayerController> handle = pVictimController->GetHandle();
-	new CTimer(g_cvarRespawnDelay.Get() < 0.0f ? 2.0f : g_cvarRespawnDelay.Get(), false, false, [handle]() {
+	CTimer::Create(g_cvarRespawnDelay.Get() < 0.0f ? 2.0f : g_cvarRespawnDelay.Get(), TIMERFLAG_MAP | TIMERFLAG_ROUND, [handle]() {
 		CCSPlayerController* pController = (CCSPlayerController*)handle.Get();
 		if (!pController || !g_bRespawnEnabled || pController->m_iTeamNum < CS_TEAM_T)
 			return -1.0f;
@@ -1688,7 +1642,7 @@ void ZR_OnRoundFreezeEnd(IGameEvent* pEvent)
 // there is probably a better way to check when time is running out...
 void ZR_OnRoundTimeWarning(IGameEvent* pEvent)
 {
-	new CTimer(10.0, false, false, []() {
+	CTimer::Create(10.0, TIMERFLAG_MAP | TIMERFLAG_ROUND, []() {
 		if (g_ZRRoundState == EZRRoundState::ROUND_END)
 			return -1.0f;
 		ZR_EndRoundAndAddTeamScore(g_cvarDefaultWinnerTeam.Get());
@@ -1855,7 +1809,7 @@ CON_COMMAND_CHAT(ztele, "- Teleport to spawn")
 
 	CHandle<CCSPlayerPawn> pawnHandle = pPawn->GetHandle();
 
-	new CTimer(5.0f, false, false, [spawnHandle, pawnHandle, initialpos]() {
+	CTimer::Create(5.0f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [spawnHandle, pawnHandle, initialpos]() {
 		CCSPlayerPawn* pPawn = pawnHandle.Get();
 		SpawnPoint* pSpawn = spawnHandle.Get();
 

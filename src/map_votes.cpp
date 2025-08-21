@@ -101,7 +101,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 	{
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to \x06%s\x01...", pszMapInput);
 
-		new CTimer(5.0f, false, true, [sMapInput]() {
+		CTimer::Create(5.0f, TIMERFLAG_MAP, [sMapInput]() {
 			g_pEngineServer2->ChangeLevel(sMapInput.c_str(), nullptr);
 			return -1.0f;
 		});
@@ -134,7 +134,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to \x06%s\x01...", sMapName.c_str());
 
-	new CTimer(5.0f, false, true, [sCommand]() {
+	CTimer::Create(5.0f, TIMERFLAG_MAP, [sCommand]() {
 		g_pEngineServer2->ServerCommand(sCommand.c_str());
 		return -1.0f;
 	});
@@ -257,7 +257,7 @@ void CMapVoteSystem::OnLevelInit(const char* pMapName)
 		ClearPlayerInfo(i);
 
 	// Delay one tick to override any .cfg's
-	new CTimer(0.02f, false, true, []() {
+	CTimer::Create(0.02f, TIMERFLAG_MAP, []() {
 		g_pEngineServer2->ServerCommand("mp_match_end_changelevel 0");
 		g_pEngineServer2->ServerCommand("mp_endmatch_votenextmap 1");
 
@@ -283,7 +283,7 @@ void CMapVoteSystem::StartVote()
 
 	if (m_iForcedNextMap != -1)
 	{
-		new CTimer(6.0f, false, true, []() {
+		CTimer::Create(6.0f, TIMERFLAG_MAP, []() {
 			g_pMapVoteSystem->FinishVote();
 			return -1.0f;
 		});
@@ -299,7 +299,7 @@ void CMapVoteSystem::StartVote()
 
 		// Reload the current map as a fallback
 		// Previously we fell back to game behaviour which could choose a random map in mapgroup, but a crash bug with default map changes was introduced in 2025-05-07 CS2 update
-		new CTimer(6.0f, false, true, []() {
+		CTimer::Create(6.0f, TIMERFLAG_MAP, []() {
 			g_pMapVoteSystem->ReloadCurrentMap();
 			return -1.0f;
 		});
@@ -372,7 +372,7 @@ void CMapVoteSystem::StartVote()
 	// Start the end-of-vote timer to finish the vote
 	static ConVarRefAbstract mp_endmatch_votenextleveltime("mp_endmatch_votenextleveltime");
 	float flVoteTime = mp_endmatch_votenextleveltime.GetFloat();
-	new CTimer(flVoteTime, false, true, []() {
+	CTimer::Create(flVoteTime, TIMERFLAG_MAP, []() {
 		g_pMapVoteSystem->FinishVote();
 		return -1.0;
 	});
@@ -456,7 +456,7 @@ void CMapVoteSystem::FinishVote()
 	}
 
 	// Wait a second and force-change the map
-	new CTimer(1.0, false, true, [iWinningMap]() {
+	CTimer::Create(1.0, TIMERFLAG_MAP, [iWinningMap]() {
 		char sChangeMapCmd[128];
 		uint64 workshopId = iWinningMap > g_pMapVoteSystem->GetMapListSize() ? iWinningMap : g_pMapVoteSystem->GetMapWorkshopId(iWinningMap);
 
@@ -888,13 +888,13 @@ void CMapVoteSystem::ForceNextMap(CCSPlayerController* pController, const char* 
 
 void CMapVoteSystem::PrintDownloadProgress()
 {
-	if (m_DownloadQueue.Count() == 0)
+	if (GetDownloadQueueSize() == 0)
 		return;
 
 	uint64 iBytesDownloaded = 0;
 	uint64 iTotalBytes = 0;
 
-	if (!g_steamAPI.SteamUGC()->GetItemDownloadInfo(m_DownloadQueue.Head(), &iBytesDownloaded, &iTotalBytes) || !iTotalBytes)
+	if (!g_steamAPI.SteamUGC()->GetItemDownloadInfo(m_DownloadQueue.front(), &iBytesDownloaded, &iTotalBytes) || !iTotalBytes)
 		return;
 
 	double flMBDownloaded = (double)iBytesDownloaded / 1024 / 1024;
@@ -903,30 +903,30 @@ void CMapVoteSystem::PrintDownloadProgress()
 	double flProgress = (double)iBytesDownloaded / (double)iTotalBytes;
 	flProgress *= 100.f;
 
-	Message("Downloading map %lli: %.2f/%.2f MB (%.2f%%)\n", m_DownloadQueue.Head(), flMBDownloaded, flTotalMB, flProgress);
+	Message("Downloading map %lli: %.2f/%.2f MB (%.2f%%)\n", m_DownloadQueue.front(), flMBDownloaded, flTotalMB, flProgress);
 }
 
 void CMapVoteSystem::OnMapDownloaded(DownloadItemResult_t* pResult)
 {
-	if (!m_DownloadQueue.Check(pResult->m_nPublishedFileId))
+	if (std::find(m_DownloadQueue.begin(), m_DownloadQueue.end(), pResult->m_nPublishedFileId) == m_DownloadQueue.end())
 		return;
 
-	m_DownloadQueue.RemoveAtHead();
+	m_DownloadQueue.pop_front();
 
-	if (m_DownloadQueue.Count() == 0)
+	if (GetDownloadQueueSize() == 0)
 		return;
 
-	g_steamAPI.SteamUGC()->DownloadItem(m_DownloadQueue.Head(), false);
+	g_steamAPI.SteamUGC()->DownloadItem(m_DownloadQueue.front(), false);
 }
 
 void CMapVoteSystem::QueueMapDownload(PublishedFileId_t iWorkshopId)
 {
-	if (m_DownloadQueue.Check(iWorkshopId))
+	if (std::find(m_DownloadQueue.begin(), m_DownloadQueue.end(), iWorkshopId) != m_DownloadQueue.end())
 		return;
 
-	m_DownloadQueue.Insert(iWorkshopId);
+	m_DownloadQueue.push_back(iWorkshopId);
 
-	if (m_DownloadQueue.Head() == iWorkshopId)
+	if (m_DownloadQueue.front() == iWorkshopId)
 		g_steamAPI.SteamUGC()->DownloadItem(iWorkshopId, false);
 }
 
@@ -1013,7 +1013,7 @@ bool CMapVoteSystem::LoadMapList()
 		}
 	}
 
-	new CTimer(0.f, true, true, []() {
+	CTimer::Create(0.f, TIMERFLAG_NONE, []() {
 		if (g_pMapVoteSystem->GetDownloadQueueSize() == 0)
 			return -1.f;
 
