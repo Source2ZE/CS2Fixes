@@ -56,7 +56,7 @@ void RemoveTimers(uint64 iTimerFlag)
 
 std::weak_ptr<CTimer> CTimer::Create(float flInitialInterval, uint64 nTimerFlags, std::function<float()> func)
 {
-	auto pTimer = std::make_shared<CTimer>(flInitialInterval, nTimerFlags, func, _constructor_tag{});
+	auto pTimer = std::make_shared<CTimer>(flInitialInterval, nTimerFlags, func, _timer_constructor_tag{});
 
 	g_timers.push_back(pTimer);
 	return pTimer;
