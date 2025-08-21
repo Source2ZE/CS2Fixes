@@ -207,6 +207,8 @@ public:
 	void ApplyPreferredOrDefaultZombieClass(CCSPlayerPawn* pPawn);
 	void PrecacheModels(IEntityResourceManifest* pResourceManifest);
 	void GetZRClassList(int iTeam, std::vector<std::shared_ptr<ZRClass>>& vecClasses, CCSPlayerController* pController = nullptr);
+	void CreateRegenTimer(int iPlayerSlot, CHandle<CCSPlayerPawn> hPawn, float flInterval, int iAmount);
+	void CancelRegenTimer(int iPlayerSlot);
 
 private:
 	void ApplyBaseClass(std::shared_ptr<ZRClass> pClass, CCSPlayerPawn* pPawn);
@@ -217,26 +219,7 @@ private:
 	// These exist so we can iterate the class maps in insertion order
 	std::vector<uint32> m_ZombieClassKeys;
 	std::vector<uint32> m_HumanClassKeys;
-};
-
-class CZRRegenTimer : public CTimerBase
-{
-public:
-	CZRRegenTimer(float flRegenInterval, int iRegenAmount, CHandle<CCSPlayerPawn> hPawnHandle) :
-		CTimerBase(flRegenInterval, false, false), m_iRegenAmount(iRegenAmount), m_hPawnHandle(hPawnHandle){};
-
-	bool Execute();
-	static void StartRegen(float flRegenInterval, int iRegenAmount, CCSPlayerController* pController);
-	static void StopRegen(CCSPlayerController* pController);
-	static int GetIndex(CPlayerSlot slot);
-	static void Tick();
-	static void RemoveAllTimers();
-
-private:
-	static double s_flNextExecution;
-	static CZRRegenTimer* s_vecRegenTimers[MAXPLAYERS];
-	int m_iRegenAmount;
-	CHandle<CCSPlayerPawn> m_hPawnHandle;
+	std::weak_ptr<CTimer> m_vecRegenTimers[MAXPLAYERS];
 };
 
 struct ZRWeapon

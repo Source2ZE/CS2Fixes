@@ -105,7 +105,7 @@ void ZEPlayer::OnSpawn()
 	SetSpeedMod(1.f);
 
 	ZEPlayerHandle handle = GetHandle();
-	new CTimer(0.0f, false, false, [handle] {
+	CTimer::Create(0.0f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [handle] {
 		if (handle.Get())
 		{
 			handle.Get()->CreatePointOrient();
@@ -309,7 +309,7 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
 	if (pGiver && pGiver->IsLeader())
 		bLeaderBeacon = true;
 
-	new CTimer(0.0f, false, false, [hPlayer, hParticle, hGiver, iTeamNum, bLeaderBeacon]() {
+	CTimer::Create(0.0f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hPlayer, hParticle, hGiver, iTeamNum, bLeaderBeacon]() {
 		CParticleSystem* pParticle = hParticle.Get();
 
 		if (!hPlayer.IsValid() || !pParticle)
@@ -326,7 +326,7 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
 		pParticle->AcceptInput("Start");
 
 		// delayed DestroyImmediately input so particle effect can be replayed (and default particle doesn't bug out)
-		new CTimer(0.5f, false, false, [hParticle]() {
+		CTimer::Create(0.5f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hParticle]() {
 			CParticleSystem* particle = hParticle.Get();
 			if (particle)
 				particle->AcceptInput("DestroyImmediately");
@@ -464,7 +464,7 @@ void ZEPlayer::StartGlow(Color color, int duration)
 	int iTeamNum = hPawn->m_iTeamNum();
 
 	// check if player's team or model changed
-	new CTimer(0.5f, false, false, [hGlowModel, hPawn, iTeamNum]() {
+	CTimer::Create(0.5f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hGlowModel, hPawn, iTeamNum]() {
 		CBaseModelEntity* pModel = hGlowModel.Get();
 		CCSPlayerPawn* pawn = hPawn.Get();
 
@@ -493,7 +493,7 @@ void ZEPlayer::StartGlow(Color color, int duration)
 	if (duration < 1)
 		return;
 
-	new CTimer((float)duration, false, false, [hGlowModel]() {
+	CTimer::Create((float)duration, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hGlowModel]() {
 		CBaseModelEntity* pModel = hGlowModel.Get();
 
 		if (!pModel)
@@ -813,7 +813,7 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
 
 	// One tick delay, to ensure player count decrements
-	new CTimer(0.01f, false, true, []() {
+	CTimer::Create(0.01f, TIMERFLAG_MAP, []() {
 		g_pVoteManager->CheckRTVStatus();
 		g_pMapVoteSystem->ClearInvalidNominations();
 		return -1.0f;
@@ -905,7 +905,7 @@ void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pRespons
 				ClientPrint(pController, HUD_PRINTTALK, " \7WARNING: You will be kicked in %i seconds due to failed Steam authentication.\n", g_cvarDelayAuthFailKick.Get());
 
 				ZEPlayerHandle hPlayer = pPlayer->GetHandle();
-				new CTimer(g_cvarDelayAuthFailKick.Get(), true, true, [hPlayer]() {
+				CTimer::Create(g_cvarDelayAuthFailKick.Get(), TIMERFLAG_NONE, [hPlayer]() {
 					if (!hPlayer.IsValid())
 						return -1.f;
 
@@ -1074,7 +1074,7 @@ CConVar<bool> g_cvarInfiniteAmmo("cs2f_infinite_reserve_ammo", FCVAR_NONE, "Whet
 
 void CPlayerManager::SetupInfiniteAmmo()
 {
-	new CTimer(5.0f, false, true, []() {
+	CTimer::Create(5.0f, TIMERFLAG_MAP, []() {
 		if (!g_cvarInfiniteAmmo.Get() || !GetGlobals())
 			return 5.0f;
 

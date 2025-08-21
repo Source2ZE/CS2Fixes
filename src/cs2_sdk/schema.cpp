@@ -45,9 +45,9 @@ static bool IsFieldNetworked(SchemaClassFieldData_t& field)
 	return false;
 }
 
-// Try to recursively find __m_pChainEntity in base classes 
+// Try to recursively find __m_pChainEntity in base classes
 // (e.g. CCSGameRules -> CTeamplayRules -> CMultiplayRules -> CGameRules, in this case it's in CGameRules)
-static void InitChainOffset(SchemaClassInfoData_t *pClassInfo, SchemaKeyValueMap_t &keyValueMap)
+static void InitChainOffset(SchemaClassInfoData_t* pClassInfo, SchemaKeyValueMap_t& keyValueMap)
 {
 	short fieldsSize = pClassInfo->m_nFieldCount;
 	SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;
@@ -55,7 +55,7 @@ static void InitChainOffset(SchemaClassInfoData_t *pClassInfo, SchemaKeyValueMap
 	for (int i = 0; i < fieldsSize; ++i)
 	{
 		SchemaClassFieldData_t& field = pFields[i];
-		
+
 		if (hash_32_fnv1a_const(field.m_pszName) != g_ChainKey)
 			continue;
 
@@ -73,7 +73,7 @@ static void InitChainOffset(SchemaClassInfoData_t *pClassInfo, SchemaKeyValueMap
 		return InitChainOffset(pClassInfo->m_pBaseClasses[0].m_pClass, keyValueMap);
 }
 
-static void InitSchemaKeyValueMap(SchemaClassInfoData_t *pClassInfo, SchemaKeyValueMap_t& keyValueMap)
+static void InitSchemaKeyValueMap(SchemaClassInfoData_t* pClassInfo, SchemaKeyValueMap_t& keyValueMap)
 {
 	short fieldsSize = pClassInfo->m_nFieldCount;
 	SchemaClassFieldData_t* pFields = pClassInfo->m_pFields;

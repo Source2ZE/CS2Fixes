@@ -650,7 +650,7 @@ CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 	// 1 frame delay as observer services will be null on same frame as spectator team switch
 	CHandle<CCSPlayerController> hPlayer = player->GetHandle();
 	CHandle<CCSPlayerController> hTarget = pTarget->GetHandle();
-	new CTimer(0.0f, false, false, [hPlayer, hTarget]() {
+	CTimer::Create(0.0f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hPlayer, hTarget]() {
 		CCSPlayerController* pPlayer = hPlayer.Get();
 		CCSPlayerController* pTargetPlayer = hTarget.Get();
 		if (!pPlayer || !pTargetPlayer)
