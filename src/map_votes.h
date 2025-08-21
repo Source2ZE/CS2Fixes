@@ -22,11 +22,9 @@
 #include "entity/ccsplayercontroller.h"
 #include "steam/isteamugc.h"
 #include "steam/steam_api_common.h"
-#include "utlqueue.h"
-#include "utlstring.h"
-#include "utlvector.h"
 #undef snprintf
 #include "vendor/nlohmann/json_fwd.hpp"
+#include <deque>
 #include <playerslot.h>
 #include <string>
 #include <vector>
@@ -161,7 +159,7 @@ public:
 	const char* GetCurrentMapName() { return m_strCurrentMap.c_str(); }
 	void SetCurrentWorkshopMap(uint64 iCurrentWorkshopMap) { m_iCurrentWorkshopMap = iCurrentWorkshopMap; }
 	uint64 GetCurrentWorkshopMap() { return m_iCurrentWorkshopMap; }
-	int GetDownloadQueueSize() { return m_DownloadQueue.Count(); }
+	int GetDownloadQueueSize() { return m_DownloadQueue.size(); }
 	int GetCurrentMapIndex() { return m_iCurrentMapIndex; }
 	void UpdateCurrentMapIndex();
 	int GetMapMinPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMinPlayers(); }
@@ -187,7 +185,7 @@ private:
 	bool WriteMapCooldownsToFile();
 
 	STEAM_GAMESERVER_CALLBACK_MANUAL(CMapVoteSystem, OnMapDownloaded, DownloadItemResult_t, m_CallbackDownloadItemResult);
-	CUtlQueue<PublishedFileId_t> m_DownloadQueue;
+	std::deque<PublishedFileId_t> m_DownloadQueue;
 
 	std::vector<std::shared_ptr<CMap>> m_vecMapList;
 	std::vector<std::shared_ptr<CGroup>> m_vecGroups;

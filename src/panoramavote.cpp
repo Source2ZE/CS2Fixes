@@ -193,7 +193,7 @@ bool CPanoramaVoteHandler::SendYesNoVote(float flDuration, int iCaller, const ch
 		(m_VoteHandler)(YesNoVoteAction::VoteAction_Start, 0, 0);
 
 	int voteNum = m_iVoteCount;
-	new CTimer(flDuration, false, true, [voteNum]() {
+	CTimer::Create(flDuration, TIMERFLAG_MAP, [voteNum]() {
 		// Ensure we dont end the wrong vote
 		if (voteNum == g_pPanoramaVoteHandler->m_iVoteCount)
 			g_pPanoramaVoteHandler->EndVote(YesNoVoteEndReason::VoteEnd_TimeUp);
@@ -258,7 +258,7 @@ void CPanoramaVoteHandler::CheckForEarlyVoteClose()
 	if (votes >= m_iVoterCount)
 	{
 		// Do this next frame to prevent a crash
-		new CTimer(0.0, false, true, []() {
+		CTimer::Create(0.0, TIMERFLAG_MAP, []() {
 			g_pPanoramaVoteHandler->EndVote(YesNoVoteEndReason::VoteEnd_AllVotes);
 			return -1.0;
 		});

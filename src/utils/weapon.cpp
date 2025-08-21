@@ -97,18 +97,17 @@ static std::unordered_map<std::string, WeaponInfo_t> s_WeaponMap = {
 	{"ammo_50ae",					{"ammo_50ae", 0, 0, GEAR_SLOT_UTILITY}															},
 };
 
-const WeaponInfo_t* FindWeaponInfoByClass(const char* pClass)
+const WeaponInfo_t* FindWeaponInfoByClass(std::string strClass)
 {
-	const auto& find = s_WeaponMap.find(pClass);
+	const auto& find = s_WeaponMap.find(strClass);
 	return find == s_WeaponMap.end() ? nullptr : &find->second;
 }
 
-const WeaponInfo_t* FindWeaponInfoByClassCaseInsensitive(const char* pClass)
+const WeaponInfo_t* FindWeaponInfoByClassCaseInsensitive(std::string strClass)
 {
-	CUtlString string(pClass);
-	string.ToLowerFast();
-	const auto& find = s_WeaponMap.find(string.Get());
-	return find == s_WeaponMap.end() ? nullptr : &find->second;
+	std::transform(strClass.begin(), strClass.end(), strClass.begin(), [](unsigned char c) { return std::tolower(c); });
+
+	return FindWeaponInfoByClass(strClass);
 }
 
 const WeaponInfo_t* FindWeaponInfoByAlias(const char* pAlias)
