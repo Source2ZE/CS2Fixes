@@ -54,12 +54,6 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGlobalVars* GetGlobals();
-extern CGameEntitySystem* g_pEntitySystem;
-extern IGameEventManager2* g_gameEventManager;
-extern CCSGameRules* g_pGameRules;
-extern CUtlVector<CServerSideClient*>* GetClientList();
-
 CUtlVector<CDetourBase*> g_vecDetours;
 
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);

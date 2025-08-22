@@ -37,9 +37,6 @@
 
 using json = nlohmann::json;
 
-class HTTPManager;
-extern HTTPManager g_HTTPManager;
-
 #define CompletedCallback std::function<void(HTTPRequestHandle, json)>
 #define ErrorCallback std::function<void(HTTPRequestHandle, EHTTPStatusCode, json)>
 
@@ -101,3 +98,5 @@ private:
 						 CompletedCallback callbackCompleted, ErrorCallback callbackError,
 						 std::vector<HTTPHeader>* headers);
 };
+
+extern HTTPManager g_HTTPManager;

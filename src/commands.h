@@ -24,6 +24,16 @@
 #include "leader.h"
 #include <vector>
 
+class CChatCommand;
+
+extern CConVar<bool> g_cvarEnableCommands;
+extern CConVar<bool> g_cvarEnableAdminCommands;
+extern std::map<uint32, std::shared_ptr<CChatCommand>>& CommandList();
+extern CConVar<bool> g_cvarEnableStopSound;
+extern CConVar<bool> g_cvarEnableNoShake;
+extern CConVar<float> g_cvarMaxShakeAmp;
+extern CConVar<bool> g_cvarEnableHide;
+
 #define CMDFLAG_NONE (0)
 #define CMDFLAG_NOHELP (1 << 0) // Don't show in !help menu
 
@@ -31,16 +41,6 @@
 #define CHAT_PREFIX " \7[CS2Fixes]\1 "
 
 typedef void (*FnChatCommandCallback_t)(const CCommand& args, CCSPlayerController* player);
-
-class CChatCommand;
-
-extern CConVar<bool> g_cvarEnableCommands;
-extern CConVar<bool> g_cvarEnableAdminCommands;
-extern CConVar<bool> g_cvarEnableHide;
-extern CConVar<bool> g_cvarEnableStopSound;
-extern CConVar<bool> g_cvarEnableNoShake;
-extern CConVar<float> g_cvarMaxShakeAmp;
-extern std::map<uint32, std::shared_ptr<CChatCommand>>& CommandList();
 
 void ClientPrintAll(int destination, const char* msg, ...);
 void ClientPrint(CCSPlayerController* player, int destination, const char* msg, ...);

@@ -23,11 +23,12 @@
 #include "utlstring.h"
 #include "utlvector.h"
 
-typedef void (*FnEventListenerCallback)(IGameEvent* event);
-
 class CGameEventListener;
 
 extern CUtlVector<CGameEventListener*> g_vecEventListeners;
+extern CConVar<int> g_cvarFreeArmor;
+
+typedef void (*FnEventListenerCallback)(IGameEvent* event);
 
 class CGameEventListener : public IGameEventListener2
 {

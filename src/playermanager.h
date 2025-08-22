@@ -31,6 +31,9 @@
 #include "utlvector.h"
 #include <playerslot.h>
 
+extern CConVar<bool> g_cvarFlashLightTransmitOthers;
+extern CConVar<CUtlString> g_cvarFlashLightAttachment;
+
 #define NO_TARGET_BLOCKS (0)
 #define NO_RANDOM (1 << 1)
 #define NO_MULTIPLE (1 << 2)

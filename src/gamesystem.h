@@ -90,6 +90,8 @@ public:
 	static CGameSystemStaticCustomFactory<CGameSystem>* sm_Factory;
 };
 
+extern CGameSystem g_GameSystem;
+
 // Quick and dirty definition
 // MSVC for whatever reason flips overload ordering, and this has three of them
 // So this is based on the linux bin which is correct, and MSVC will flip it to match the windows bin, fun
@@ -125,5 +127,3 @@ struct AddedGameSystem_t
 	int m_nPriority;
 	int m_nInsertionOrder;
 };
-
-extern CGameSystem g_GameSystem;

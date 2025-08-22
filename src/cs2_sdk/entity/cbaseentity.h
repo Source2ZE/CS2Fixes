@@ -30,8 +30,6 @@
 #include "schema.h"
 #include "tier1/utlstringtoken.h"
 
-extern CGameConfig* g_GameConfig;
-
 class CGameUI;
 class CEnvHudHint;
 class CPointViewControl;

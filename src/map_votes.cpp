@@ -37,12 +37,6 @@
 #include <random>
 #include <stdio.h>
 
-extern CGlobalVars* GetGlobals();
-extern CCSGameRules* g_pGameRules;
-extern IVEngineServer2* g_pEngineServer2;
-extern CSteamGameServerAPIContext g_steamAPI;
-extern IGameTypes* g_pGameTypes;
-
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
 CConVar<float> g_cvarVoteMapsCooldown("cs2f_vote_maps_cooldown", FCVAR_NONE, "Default number of hours until a map can be played again i.e. cooldown", 6.0f);

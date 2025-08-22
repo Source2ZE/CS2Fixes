@@ -40,12 +40,7 @@
 
 #include "tier0/memdbgon.h"
 
-extern IVEngineServer2* g_pEngineServer2;
-extern CGameEntitySystem* g_pEntitySystem;
-extern CGlobalVars* GetGlobals();
-extern IGameEventSystem* g_gameEventSystem;
-extern CUtlVector<CServerSideClient*>* GetClientList();
-extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
+CPlayerManager* g_playerManager = nullptr;
 
 CConVar<int> g_cvarAdminImmunityTargetting("cs2f_admin_immunity", FCVAR_NONE, "Mode for which admin immunity system targetting allows: 0 - strictly lower, 1 - equal to or lower, 2 - ignore immunity levels", 0, true, 0, true, 2);
 CConVar<bool> g_cvarEnableMapSteamIds("cs2f_map_steamids_enable", FCVAR_NONE, "Whether to make Steam ID's available to maps", false);
@@ -1021,8 +1016,6 @@ static const char* g_szPlayerStates[] =
 		"STATE_OBSERVER_MODE",
 		"STATE_GUNGAME_RESPAWN",
 		"STATE_DORMANT"};
-
-extern CConVar<bool> g_cvarEnableHide;
 
 void CPlayerManager::UpdatePlayerStates()
 {

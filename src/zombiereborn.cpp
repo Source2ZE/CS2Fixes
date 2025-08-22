@@ -44,16 +44,6 @@
 
 #include "tier0/memdbgon.h"
 
-using ordered_json = nlohmann::ordered_json;
-
-extern CGameEntitySystem* g_pEntitySystem;
-extern IVEngineServer2* g_pEngineServer2;
-extern CGlobalVars* GetGlobals();
-extern CCSGameRules* g_pGameRules;
-extern IGameEventManager2* g_gameEventManager;
-extern IGameEventSystem* g_gameEventSystem;
-extern CConVar<int> g_cvarFreeArmor;
-
 void ZR_Infect(CCSPlayerController* pAttackerController, CCSPlayerController* pVictimController, bool bBroadcast);
 void ZR_Cure(CCSPlayerController* pTargetController);
 void ZR_EndRoundAndAddTeamScore(int iTeamNum);
