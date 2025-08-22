@@ -890,6 +890,21 @@ void CMapVoteSystem::OnMapDownloaded(DownloadItemResult_t* pResult)
 	if (std::find(m_DownloadQueue.begin(), m_DownloadQueue.end(), pResult->m_nPublishedFileId) == m_DownloadQueue.end())
 		return;
 
+	// Some weird rate limiting that's been observed? Back off for a while then retry download
+	if (pResult->m_eResult == k_EResultNoConnection)
+	{
+		PublishedFileId_t workshopID = m_DownloadQueue.front();
+		Message("Addon %llu download failed with status code 3, retrying in 2 minutes\n", workshopID);
+
+		m_timerRateLimitedDownload = CTimer::Create(120.0f, TIMERFLAG_NONE, [workshopID]() {
+			g_steamAPI.SteamUGC()->DownloadItem(workshopID, false);
+
+			return -1.0f;
+		});
+
+		return;
+	}
+
 	m_DownloadQueue.pop_front();
 
 	if (GetDownloadQueueSize() == 0)
@@ -1336,6 +1351,9 @@ bool CMapVoteSystem::ReloadMapList(bool bReloadMap)
 
 		if (!m_timerDownloadProgress.expired())
 			m_timerDownloadProgress.lock()->Cancel();
+
+		if (!m_timerRateLimitedDownload.expired())
+			m_timerRateLimitedDownload.lock()->Cancel();
 	}
 
 	if (!g_pMapVoteSystem->LoadMapList())
