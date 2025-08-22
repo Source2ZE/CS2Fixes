@@ -24,6 +24,11 @@
 #include "playermanager.h"
 #include "utils/entity.h"
 
+extern CUtlVector<ZEPlayerHandle> g_vecLeaders;
+extern CConVar<bool> g_cvarEnableLeader;
+extern CConVar<bool> g_cvarLeaderActionsHumanOnly;
+extern CConVar<CUtlString> g_cvarMarkParticlePath;
+
 // Inside IsAdminFlagSet, checks for ADMFLAG_GENERIC.
 // Inside command permissions, checks for if leader system is enabled and player is leader
 // OR if player has ADMFLAG_GENERIC
@@ -37,11 +42,6 @@ struct ColorPreset
 };
 
 extern std::map<std::string, ColorPreset> mapColorPresets;
-extern CUtlVector<ZEPlayerHandle> g_vecLeaders;
-
-extern CConVar<bool> g_cvarEnableLeader;
-extern CConVar<bool> g_cvarLeaderActionsHumanOnly;
-extern CConVar<CUtlString> g_cvarMarkParticlePath;
 
 void Leader_ApplyLeaderVisuals(CCSPlayerPawn* pPawn);
 void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, const CNetMessage* pData);

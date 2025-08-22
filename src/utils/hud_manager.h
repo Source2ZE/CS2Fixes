@@ -23,6 +23,8 @@
 #include <string>
 #include <vector>
 
+extern CConVar<bool> g_cvarFixHudFlashing;
+
 enum class EHudPriority
 {
 	InfectionCountdown = 2,
@@ -60,5 +62,3 @@ void SendHudMessageAll(int iDuration, EHudPriority ePriority, const char* pszMes
 
 void StartFlashingFixTimer();
 std::string EscapeHTMLSpecialCharacters(std::string strMsg);
-
-extern CConVar<bool> g_cvarFixHudFlashing;

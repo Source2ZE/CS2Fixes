@@ -42,13 +42,6 @@
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
 
-extern IVEngineServer2* g_pEngineServer2;
-extern CGameEntitySystem* g_pEntitySystem;
-extern CGlobalVars* GetGlobals();
-extern CCSGameRules* g_pGameRules;
-extern CPlayerManager* g_playerManager;
-extern CUtlVector<CServerSideClient*>* GetClientList();
-
 CAdminSystem* g_pAdminSystem = nullptr;
 
 void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAdding, CInfractionBase::EInfractionType infType);

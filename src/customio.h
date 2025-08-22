@@ -19,11 +19,16 @@
 
 #pragma once
 
+#include "convar.h"
+#include "utlstring.h"
+
 class CEntityIdentity;
 class CEntityInstance;
 class CBaseEntity;
 class CCSPlayerPawn;
 enum DamageTypes_t : unsigned int;
+
+extern CConVar<CUtlString> g_cvarBurnParticle;
 
 bool CustomIO_HandleInput(CEntityInstance* pEntityInstance,
 						  const char* pParams,

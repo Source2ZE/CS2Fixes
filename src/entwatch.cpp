@@ -25,6 +25,8 @@
 #include "detours.h"
 #include "engine/igameeventsystem.h"
 #include "entity/cbasebutton.h"
+#include "entity/ccsplayercontroller.h"
+#include "entity/ccsplayerpawn.h"
 #include "entity/cgamerules.h"
 #include "entity/cmathcounter.h"
 #include "entity/cpointworldtext.h"
@@ -48,12 +50,6 @@
 #include <sstream>
 
 #include "tier0/memdbgon.h"
-
-extern CGlobalVars* GetGlobals();
-extern IGameEventManager2* g_gameEventManager;
-extern IGameEventSystem* g_gameEventSystem;
-extern INetworkMessages* g_pNetworkMessages;
-extern CCSGameRules* g_pGameRules;
 
 CEWHandler* g_pEWHandler = nullptr;
 

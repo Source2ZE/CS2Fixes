@@ -60,6 +60,8 @@ public:
 	virtual void StorePreferences(uint64 iSteamId, UserPrefsMap_t& preferences, StorageCallback_t cb) = 0;
 };
 
+extern CUserPreferencesStorage* g_pUserPreferencesStorage;
+
 class CUserPreferencesREST : public CUserPreferencesStorage
 {
 public:
@@ -99,5 +101,4 @@ private:
 	bool m_mPreferencesLoaded[MAXPLAYERS];
 };
 
-extern CUserPreferencesStorage* g_pUserPreferencesStorage;
 extern CUserPreferencesSystem* g_pUserPreferencesSystem;

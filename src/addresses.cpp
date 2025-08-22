@@ -23,8 +23,6 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGameConfig* g_GameConfig;
-
 #define RESOLVE_SIG(gameConfig, name, variable)                        \
 	variable = (decltype(variable))gameConfig->ResolveSignature(name); \
 	if (!variable)                                                     \

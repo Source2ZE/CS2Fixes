@@ -19,11 +19,8 @@
 
 #include "idlemanager.h"
 #include "commands.h"
+#include "cs2fixes.h"
 #include <vprof.h>
-
-extern IVEngineServer2* g_pEngineServer2;
-extern CGlobalVars* GetGlobals();
-extern CPlayerManager* g_playerManager;
 
 CIdleSystem* g_pIdleSystem = nullptr;
 

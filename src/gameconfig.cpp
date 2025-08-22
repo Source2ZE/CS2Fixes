@@ -1,6 +1,8 @@
 #include "gameconfig.h"
 #include "addresses.h"
 
+CGameConfig* g_GameConfig = nullptr;
+
 CGameConfig::CGameConfig(const std::string& gameDir, const std::string& path)
 {
 	this->m_szGameDir = gameDir;

@@ -33,8 +33,6 @@
 #include <string>
 #include <vector>
 
-extern CGlobalVars* GetGlobals();
-
 struct AddOutputKey_t
 {
 	AddOutputKey_t(const char* pName, int32_t parts, bool prefix = false) :

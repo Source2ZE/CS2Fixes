@@ -38,13 +38,6 @@
 
 #include "tier0/memdbgon.h"
 
-extern IGameEventManager2* g_gameEventManager;
-extern IServerGameClients* g_pSource2GameClients;
-extern CGameEntitySystem* g_pEntitySystem;
-extern CGlobalVars* GetGlobals();
-extern CCSGameRules* g_pGameRules;
-extern IVEngineServer2* g_pEngineServer2;
-
 CUtlVector<CGameEventListener*> g_vecEventListeners;
 
 void RegisterEventListeners()
@@ -76,8 +69,6 @@ void UnregisterEventListeners()
 }
 
 CConVar<bool> g_cvarPurgeEntityNames("cs2f_purge_entity_strings", FCVAR_NONE, "Whether to purge the EntityNames stringtable on new rounds", false);
-
-extern void FullUpdateAllClients();
 
 GAME_EVENT_F(round_prestart)
 {
