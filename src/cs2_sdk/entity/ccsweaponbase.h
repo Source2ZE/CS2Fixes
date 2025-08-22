@@ -19,9 +19,8 @@
 
 #pragma once
 
+#include "../cs2fixes.h"
 #include "cbasemodelentity.h"
-
-extern CGlobalVars* GetGlobals();
 
 enum gear_slot_t : uint32_t
 {

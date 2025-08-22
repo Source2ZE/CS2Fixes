@@ -21,6 +21,7 @@
 
 #include "../addresses.h"
 #include "../common.h"
+#include "../cs2fixes.h"
 #include "../gameconfig.h"
 #include "../utils/virtual.h"
 #include "entity/cgamerules.h"
@@ -28,10 +29,6 @@
 #include "platform.h"
 
 #include "tier0/memdbgon.h"
-
-extern CGameEntitySystem* g_pEntitySystem;
-extern CGameConfig* g_GameConfig;
-extern CCSGameRules* g_pGameRules;
 
 CBaseEntity* UTIL_FindPickerEntity(CBasePlayerController* pPlayer)
 {

@@ -48,12 +48,6 @@
 
 using json = nlohmann::json;
 
-extern IGameEventSystem* g_gameEventSystem;
-extern CGameEntitySystem* g_pEntitySystem;
-extern IVEngineServer2* g_pEngineServer2;
-extern ISteamHTTP* g_http;
-extern CConVar<CUtlString> g_cvarFlashLightAttachment;
-
 CConVar<bool> g_cvarEnableCommands("cs2f_commands_enable", FCVAR_NONE, "Whether to enable chat commands", false);
 CConVar<bool> g_cvarEnableAdminCommands("cs2f_admin_commands_enable", FCVAR_NONE, "Whether to enable admin chat commands", false);
 CConVar<bool> g_cvarEnableWeapons("cs2f_weapons_enable", FCVAR_NONE, "Whether to enable weapon commands", false);

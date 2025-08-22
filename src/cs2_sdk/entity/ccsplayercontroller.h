@@ -24,10 +24,6 @@
 #include "cbaseplayercontroller.h"
 #include "services.h"
 
-extern CServerSideClient* GetClientBySlot(CPlayerSlot slot);
-
-extern CGameEntitySystem* g_pEntitySystem;
-
 class CCSPlayerController : public CBasePlayerController
 {
 public:

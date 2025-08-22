@@ -30,8 +30,6 @@
 #include "vendor/nlohmann/json.hpp"
 #include <string>
 
-extern ISteamHTTP* g_http;
-
 HTTPManager g_HTTPManager;
 
 #undef strdup

@@ -29,8 +29,6 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGameConfig* g_GameConfig;
-
 CMemPatch g_CommonPatches[] =
 	{
 		CMemPatch("ServerMovementUnlock", "ServerMovementUnlock"),

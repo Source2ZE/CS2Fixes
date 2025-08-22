@@ -34,8 +34,6 @@
 
 // #define ENTITY_HANDLER_ASSERTION
 
-extern CCSGameRules* g_pGameRules;
-
 static constexpr uint32_t ENTITY_MURMURHASH_SEED = 0x97984357;
 static constexpr uint32_t ENTITY_UNIQUE_INVALID = ~0u;
 

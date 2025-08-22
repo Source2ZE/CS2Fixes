@@ -21,6 +21,7 @@
 #include "addresses.h"
 #include "adminsystem.h"
 #include "common.h"
+#include "customio.h"
 #include "entities.h"
 #include "entity/cgamerules.h"
 #include "gameconfig.h"
@@ -32,15 +33,8 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGlobalVars* GetGlobals();
-extern CGameConfig* g_GameConfig;
-extern CCSGameRules* g_pGameRules;
-extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
-extern CUtlVector<CServerSideClient*>* GetClientList();
-
-CBaseGameSystemFactory** CBaseGameSystemFactory::sm_pFirst = nullptr;
-
 CGameSystem g_GameSystem;
+CBaseGameSystemFactory** CBaseGameSystemFactory::sm_pFirst = nullptr;
 CGameSystemStaticCustomFactory<CGameSystem>* CGameSystem::sm_Factory = nullptr;
 
 // This mess is needed to get the pointer to sm_pFirst so we can insert game systems
@@ -154,8 +148,6 @@ bool UnregisterGameSystem()
 
 	return true;
 }
-
-extern CConVar<CUtlString> g_cvarBurnParticle;
 
 GS_EVENT_MEMBER(CGameSystem, BuildGameSessionManifest)
 {

@@ -28,10 +28,8 @@
 #include "ctimer.h"
 #include "detours.h"
 #include "discord.h"
-#include "engine/igameeventsystem.h"
 #include "entities.h"
 #include "entity/ccsplayercontroller.h"
-#include "entity/cgamerules.h"
 #include "entity/services.h"
 #include "entitylistener.h"
 #include "entitysystem.h"
@@ -64,10 +62,6 @@
 #include <entity.h>
 
 #include "tier0/memdbgon.h"
-
-double g_flUniversalTime;
-float g_flLastTickedTime;
-bool g_bHasTicked;
 
 void Message(const char* msg, ...)
 {
@@ -128,18 +122,15 @@ SH_DECL_MANUALHOOK3_void(DropWeapon, 0, 0, 0, CBasePlayerWeapon*, Vector*, Vecto
 SH_DECL_HOOK1_void(IServer, SetGameSpawnGroupMgr, SH_NOATTRIB, 0, IGameSpawnGroupMgr*);
 
 CS2Fixes g_CS2Fixes;
-
 IGameEventSystem* g_gameEventSystem = nullptr;
 IGameEventManager2* g_gameEventManager = nullptr;
 CGameEntitySystem* g_pEntitySystem = nullptr;
-CEntityListener* g_pEntityListener = nullptr;
-CPlayerManager* g_playerManager = nullptr;
 IVEngineServer2* g_pEngineServer2 = nullptr;
-CGameConfig* g_GameConfig = nullptr;
 ISteamHTTP* g_http = nullptr;
 CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules* g_pGameRules = nullptr;				  // Will be null between map end & new map startup, null check if necessary!
 CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr = nullptr; // Will be null between map end & new map startup, null check if necessary!
+
 int g_iCGamePlayerEquipUseId = -1;
 int g_iCGamePlayerEquipPrecacheId = -1;
 int g_iCTriggerGravityPrecacheId = -1;
@@ -152,6 +143,10 @@ int g_iGoToIntermissionId = -1;
 int g_iPhysicsTouchShuffle = -1;
 int g_iWeaponServiceDropWeaponId = -1;
 int g_iSetGameSpawnGroupMgrId = -1;
+
+double g_flUniversalTime = 0.0;
+float g_flLastTickedTime = 0.0f;
+bool g_bHasTicked = false;
 
 CGameEntitySystem* GameEntitySystem()
 {
@@ -995,8 +990,6 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 	RunTimers();
 	EntityHandler_OnGameFramePost(simulating, GetGlobals()->tickcount);
 }
-
-extern CConVar<bool> g_cvarFlashLightTransmitOthers;
 
 void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts,
 								  CBitVec<16384>&, const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities)

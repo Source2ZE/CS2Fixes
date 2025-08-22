@@ -27,8 +27,7 @@
 #include "gameconfig.h"
 #include "plat.h"
 
-extern CGameConfig* g_GameConfig;
-extern CCSGameRules* g_pGameRules;
+CEntityListener* g_pEntityListener = nullptr;
 
 CConVar<bool> g_cvarGrenadeNoBlock("cs2f_noblock_grenades", FCVAR_NONE, "Whether to use noblock on grenade projectiles", false);
 
