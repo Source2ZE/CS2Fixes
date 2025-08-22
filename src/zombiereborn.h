@@ -28,6 +28,8 @@
 
 using ordered_json = nlohmann::ordered_json;
 
+extern CConVar<bool> g_cvarEnableZR;
+
 #define ZR_PREFIX " \4[Zombie:Reborn]\1 "
 #define HUMAN_CLASS_KEY_NAME "zr_human_class"
 #define ZOMBIE_CLASS_KEY_NAME "zr_zombie_class"
@@ -38,6 +40,8 @@ enum class EZRRoundState
 	POST_INFECTION,
 	ROUND_END,
 };
+
+extern EZRRoundState g_ZRRoundState;
 
 enum EZRSpawnType
 {
@@ -222,6 +226,8 @@ private:
 	std::weak_ptr<CTimer> m_vecRegenTimers[MAXPLAYERS];
 };
 
+extern CZRPlayerClassManager* g_pZRPlayerClassManager;
+
 struct ZRWeapon
 {
 	float flKnockback;
@@ -242,6 +248,8 @@ private:
 	std::map<uint32, std::shared_ptr<ZRWeapon>> m_WeaponMap;
 };
 
+extern ZRWeaponConfig* g_pZRWeaponConfig;
+
 class ZRHitgroupConfig
 {
 public:
@@ -252,12 +260,7 @@ private:
 	std::map<uint32, std::shared_ptr<ZRHitgroup>> m_HitgroupMap;
 };
 
-extern ZRWeaponConfig* g_pZRWeaponConfig;
 extern ZRHitgroupConfig* g_pZRHitgroupConfig;
-extern CZRPlayerClassManager* g_pZRPlayerClassManager;
-
-extern CConVar<bool> g_cvarEnableZR;
-extern EZRRoundState g_ZRRoundState;
 
 void ZR_OnLevelInit();
 void ZR_OnRoundPrestart(IGameEvent* pEvent);

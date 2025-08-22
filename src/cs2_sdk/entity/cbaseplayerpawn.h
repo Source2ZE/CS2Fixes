@@ -19,13 +19,10 @@
 
 #pragma once
 
+#include "../entwatch.h"
 #include "cbaseentity.h"
 #include "cbasemodelentity.h"
 #include "services.h"
-
-extern CConVar<bool> g_cvarDropMapWeapons;
-void EW_PlayerDeathPre(CCSPlayerController* pController);
-extern CConVar<bool> g_cvarEnableEntWatch;
 
 class CBasePlayerPawn : public CBaseModelEntity
 {

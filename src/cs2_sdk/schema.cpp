@@ -26,8 +26,6 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGlobalVars* GetGlobals();
-
 using SchemaKeyValueMap_t = std::map<uint32_t, SchemaKey>;
 using SchemaTableMap_t = std::map<uint32_t, SchemaKeyValueMap_t>;
 

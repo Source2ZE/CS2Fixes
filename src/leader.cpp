@@ -26,11 +26,6 @@
 
 #include "tier0/memdbgon.h"
 
-extern IVEngineServer2* g_pEngineServer2;
-extern CGameEntitySystem* g_pEntitySystem;
-extern CGlobalVars* GetGlobals();
-extern IGameEventManager2* g_gameEventManager;
-
 // All colors MUST have 255 alpha
 // clang-format off
 std::map<std::string, ColorPreset> mapColorPresets = {

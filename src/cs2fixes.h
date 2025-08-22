@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -19,10 +19,13 @@
 
 #pragma once
 
+#include "engine/igameeventsystem.h"
+#include "entity/cgamerules.h"
 #include "gamesystems/spawngroup_manager.h"
 #include "igameevents.h"
 #include "networksystem/inetworkserializer.h"
 #include "public/ics2fixes.h"
+#include "steam/isteamhttp.h"
 #include <ISmmPlugin.h>
 #include <iplayerinfo.h>
 #include <iserver.h>
@@ -40,6 +43,21 @@ class CServerSideClient;
 struct TouchLinked_t;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
+
+extern IGameEventSystem* g_gameEventSystem;
+extern IGameEventManager2* g_gameEventManager;
+extern CGameEntitySystem* g_pEntitySystem;
+extern IVEngineServer2* g_pEngineServer2;
+extern ISteamHTTP* g_http;
+extern CSteamGameServerAPIContext g_steamAPI;
+extern CCSGameRules* g_pGameRules;
+extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
+extern double g_flUniversalTime;
+extern CGlobalVars* GetGlobals();
+extern CUtlVector<CServerSideClient*>* GetClientList();
+extern CServerSideClient* GetClientBySlot(CPlayerSlot slot);
+extern void FullUpdateAllClients();
+extern CConVar<bool> g_cvarDropMapWeapons;
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener, public ICS2Fixes
 {
@@ -114,6 +132,5 @@ public:
 };
 
 extern CS2Fixes g_CS2Fixes;
-extern double g_flUniversalTime;
 
 PLUGIN_GLOBALVARS();

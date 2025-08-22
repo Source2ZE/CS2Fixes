@@ -39,3 +39,5 @@ private:
 	std::unordered_map<std::string, std::string> m_umLibraries;
 	std::unordered_map<std::string, std::string> m_umPatches;
 };
+
+extern CGameConfig* g_GameConfig;

@@ -22,6 +22,8 @@
 
 #include "panoramavote.h"
 
+extern CConVar<bool> g_cvarVoteManagerEnable;
+
 enum class ERTVState
 {
 	MAP_START,
@@ -51,8 +53,6 @@ enum EExtendVoteMode
 	EXTENDVOTE_MANUAL,	  // Extend votes are triggered by players typing !ve
 	EXTENDVOTE_AUTO,	  // Extend votes can be triggered by !ve or when map timelimit reaches a given value
 };
-
-extern CConVar<bool> g_cvarVoteManagerEnable;
 
 class CVoteManager
 {

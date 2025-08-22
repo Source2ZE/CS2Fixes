@@ -26,14 +26,10 @@
 #include "gameevents.pb.h"
 #include "networksystem/inetworkmessages.h"
 
-extern CCSGameRules* g_pGameRules;
-extern IGameEventManager2* g_gameEventManager;
-extern IGameEventSystem* g_gameEventSystem;
-extern CGlobalVars* GetGlobals();
-
 CConVar<bool> g_cvarFixHudFlashing("cs2f_fix_hud_flashing", FCVAR_NONE, "Whether to fix hud flashing using a workaround, this BREAKS warmup so pick one or the other", false);
 CConVar<bool> g_cvarDisableHudOutsideRound("cs2f_disable_hud_outside_round", FCVAR_NONE, "Whether to disable hud messages that would flash when a round is not ongoing, since flashing fix cannot run then", false);
 CConVar<int> g_cvarHudDurationLeeway("cs2f_hud_duration_leeway", FCVAR_NONE, "Extra seconds duration to leave hud messages visible (without priority), reduces transition flashes between different priority messages", 2);
+
 static std::vector<std::shared_ptr<CHudMessage>> g_vecHudMessages;
 
 bool ShouldDisplayForPlayer(ZEPlayerHandle hPlayer, EHudPriority ePriority)
