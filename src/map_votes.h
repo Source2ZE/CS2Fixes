@@ -206,6 +206,7 @@ private:
 	bool g_bDisableCooldowns = false;
 	std::filesystem::file_time_type m_timeMapListModified = std::filesystem::file_time_type::min();
 	std::weak_ptr<CTimer> m_timerDownloadProgress;
+	std::weak_ptr<CTimer> m_timerRateLimitedDownload;
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;
