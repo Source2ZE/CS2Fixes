@@ -25,6 +25,7 @@
 #undef snprintf
 #include "vendor/nlohmann/json_fwd.hpp"
 #include <deque>
+#include <filesystem>
 #include <playerslot.h>
 #include <string>
 #include <vector>
@@ -176,7 +177,8 @@ public:
 	std::string StringToLower(std::string sValue);
 	void SetDisabledCooldowns(bool bValue) { g_bDisableCooldowns = bValue; } // Can be used by custom fork features, e.g. an auto-restart
 	void ProcessGroupCooldowns();
-	void ReloadCurrentMap();
+	bool ReloadCurrentMap();
+	bool ReloadMapList(bool bReloadMap = true);
 
 private:
 	int WinningMapIndex();
@@ -202,6 +204,8 @@ private:
 	std::string m_strCurrentMap = "MISSING_MAP";
 	int m_iVoteSize = 0;
 	bool g_bDisableCooldowns = false;
+	std::filesystem::file_time_type m_timeMapListModified = std::filesystem::file_time_type::min();
+	std::weak_ptr<CTimer> m_timerDownloadProgress;
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;

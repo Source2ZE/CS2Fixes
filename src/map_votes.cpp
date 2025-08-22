@@ -48,25 +48,10 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 	if (!g_cvarVoteManagerEnable.Get())
 		return;
 
-	if (g_pMapVoteSystem->GetDownloadQueueSize() != 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Please wait for current map downloads to finish before loading map list again.");
-		return;
-	}
-
-	if (!g_pMapVoteSystem->LoadMapList() || !V_strcmp(g_pMapVoteSystem->GetCurrentMapName(), "MISSING_MAP"))
-	{
+	if (g_pMapVoteSystem->ReloadMapList())
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Map list reloaded!");
+	else
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to reload map list!");
-		return;
-	}
-
-	// A CUtlStringList param is also expected, but we build it in our CreateWorkshopMapGroup pre-hook anyways
-	CALL_VIRTUAL(void, g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup"), g_pGameTypes, "workshop");
-
-	// Updating the mapgroup requires reloading the map for everything to load properly
-	g_pMapVoteSystem->ReloadCurrentMap();
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Map list reloaded!");
 }
 
 CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
@@ -951,6 +936,8 @@ bool CMapVoteSystem::LoadMapList()
 		return false;
 	}
 
+	m_timeMapListModified = std::filesystem::last_write_time(szPath);
+
 	// Load map cooldowns from file
 	KeyValues* pKVcooldowns = new KeyValues("cooldowns");
 	KeyValues::AutoDelete autoDeleteKVcooldowns(pKVcooldowns);
@@ -1007,7 +994,7 @@ bool CMapVoteSystem::LoadMapList()
 		}
 	}
 
-	CTimer::Create(0.f, TIMERFLAG_NONE, []() {
+	m_timerDownloadProgress = CTimer::Create(0.f, TIMERFLAG_NONE, []() {
 		if (g_pMapVoteSystem->GetDownloadQueueSize() == 0)
 			return -1.f;
 
@@ -1158,7 +1145,16 @@ void CMapVoteSystem::OnLevelShutdown()
 	}
 
 	if (IsMapListLoaded())
+	{
 		WriteMapCooldownsToFile();
+
+		char szPath[MAX_PATH];
+		V_snprintf(szPath, sizeof(szPath), "%s%s", Plat_GetGameDirectory(), "/csgo/addons/cs2fixes/configs/maplist.jsonc");
+
+		// If maplist.jsonc was updated, automatically reload the map list without a map change (map is about to change anyways)
+		if (m_timeMapListModified != std::filesystem::last_write_time(szPath))
+			ReloadMapList(false);
+	}
 }
 
 std::string CMapVoteSystem::ConvertFloatToString(float fValue, int precision)
@@ -1317,14 +1313,40 @@ float CCooldown::GetCurrentCooldown()
 	return fRemainingTime;
 }
 
-void CMapVoteSystem::ReloadCurrentMap()
+bool CMapVoteSystem::ReloadCurrentMap()
 {
 	char sChangeMapCmd[128] = "";
 
 	if (GetCurrentWorkshopMap() != 0)
 		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "host_workshop_map %llu", GetCurrentWorkshopMap());
-	else
+	else if (V_strcmp(g_pMapVoteSystem->GetCurrentMapName(), "MISSING_MAP"))
 		V_snprintf(sChangeMapCmd, sizeof(sChangeMapCmd), "map %s", GetCurrentMapName());
+	else
+		return false;
 
 	g_pEngineServer2->ServerCommand(sChangeMapCmd);
+	return true;
+}
+
+bool CMapVoteSystem::ReloadMapList(bool bReloadMap)
+{
+	if (g_pMapVoteSystem->GetDownloadQueueSize() != 0)
+	{
+		m_DownloadQueue.clear();
+
+		if (!m_timerDownloadProgress.expired())
+			m_timerDownloadProgress.lock()->Cancel();
+	}
+
+	if (!g_pMapVoteSystem->LoadMapList())
+		return false;
+
+	// A CUtlStringList param is also expected, but we build it in our CreateWorkshopMapGroup pre-hook anyways
+	CALL_VIRTUAL(void, g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup"), g_pGameTypes, "workshop");
+
+	// Updating the mapgroup requires reloading the map for everything to load properly
+	if (bReloadMap)
+		return g_pMapVoteSystem->ReloadCurrentMap();
+
+	return true;
 }
