@@ -460,7 +460,7 @@
 			"CCSPlayerController_Respawn"
 			{
 				"windows"		"275"
-				"linux"			"277"
+				"linux"			"276"
 			}
 			// CBaseTrigger
 			"PassesTriggerFilters"
@@ -472,7 +472,7 @@
 			"CBasePlayerPawn::OnTakeDamage_Alive"
 			{
 				"windows"		"252"
-				"linux"			"253"
+				"linux"			"252" //VERIFY
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
 			// return (*(*v9 + 2976LL))(v9, v27, 0LL);
@@ -480,7 +480,7 @@
 			"CBasePlayerPawn_CommitSuicide"
 			{
 				"windows"		"404"
-				"linux"			"404"
+				"linux"			"403"
 			}
 			"GameEntitySystem"
 			{
