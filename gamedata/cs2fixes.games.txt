@@ -472,7 +472,7 @@
 			"CBasePlayerPawn::OnTakeDamage_Alive"
 			{
 				"windows"		"251"
-				"linux"			"252" //VERIFY
+				"linux"			"252"
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
 			// return (*(*v9 + 2976LL))(v9, v27, 0LL);
