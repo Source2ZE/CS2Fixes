@@ -459,19 +459,19 @@
 			}
 			"CCSPlayerController_Respawn"
 			{
-				"windows"		"275"
+				"windows"		"274"
 				"linux"			"276"
 			}
 			// CBaseTrigger
 			"PassesTriggerFilters"
 			{
-				"windows"		"269"
-				"linux"			"270"
+				"windows"		"268"
+				"linux"			"269"
 			}
 			// Long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
 			"CBasePlayerPawn::OnTakeDamage_Alive"
 			{
-				"windows"		"252"
+				"windows"		"251"
 				"linux"			"252" //VERIFY
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
@@ -479,7 +479,7 @@
 			// 2976 (372 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"		"404"
+				"windows"		"403"
 				"linux"			"403"
 			}
 			"GameEntitySystem"
