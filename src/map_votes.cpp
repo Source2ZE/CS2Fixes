@@ -624,6 +624,11 @@ std::shared_ptr<CMap> CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController*
 	{
 		if (vecFoundMaps.size() > 1)
 		{
+			// If we have an exact match here, just use that
+			for (auto pMap : vecFoundMaps)
+				if (!V_strcmp(pMap->GetName(), pszMapSubstring))
+					return pMap;
+
 			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Multiple maps matched \x06%s\x01, try being more specific:", pszMapSubstring);
 
 			for (int i = 0; i < vecFoundMaps.size() && i < 5; i++)
