@@ -141,6 +141,7 @@ public:
 		}
 	}
 	bool LoadMapList();
+	bool LoadCooldowns();
 	void OnLevelInit(const char* pszMapName);
 	void StartVote();
 	void FinishVote();
@@ -183,6 +184,7 @@ public:
 	void SetDisabledCooldowns(bool bValue) { g_bDisableCooldowns = bValue; } // Can be used by custom fork features, e.g. an auto-restart
 	void ProcessGroupCooldowns();
 	bool ReloadMapList(bool bReloadMap = true);
+	bool ConvertCooldownsKVToJSON();
 
 private:
 	int WinningMapIndex();

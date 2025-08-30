@@ -921,56 +921,37 @@ bool CMapVoteSystem::LoadMapList()
 	m_vecGroups.clear();
 	m_vecCooldowns.clear();
 
-	const char* pszJsonPath = "addons/cs2fixes/configs/maplist.jsonc";
+	const char* pszMapListPath = "addons/cs2fixes/configs/maplist.jsonc";
 	char szPath[MAX_PATH];
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
-	std::ifstream jsonFile(szPath);
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszMapListPath);
+	std::ifstream mapListFile(szPath);
 
-	if (!jsonFile.is_open())
+	if (!mapListFile.is_open())
 	{
-		Panic("Failed to open %s, map list not loaded!\n", pszJsonPath);
+		Panic("Failed to open %s, map list not loaded!\n", pszMapListPath);
 		return false;
 	}
 
-	ordered_json jsonMaps = ordered_json::parse(jsonFile, nullptr, false, true);
+	ordered_json jsonMaps = ordered_json::parse(mapListFile, nullptr, false, true);
 
 	if (jsonMaps.is_discarded())
 	{
-		Panic("Failed parsing JSON from %s, map list not loaded!\n", pszJsonPath);
+		Panic("Failed parsing JSON from %s, map list not loaded!\n", pszMapListPath);
 		return false;
 	}
 
 	m_timeMapListModified = std::filesystem::last_write_time(szPath);
+	LoadCooldowns();
 
-	// Load map cooldowns from file
-	KeyValues* pKVcooldowns = new KeyValues("cooldowns");
-	KeyValues::AutoDelete autoDeleteKVcooldowns(pKVcooldowns);
-	const char* pszCooldownFilePath = "addons/cs2fixes/data/cooldowns.txt";
-	if (!pKVcooldowns->LoadFromFile(g_pFullFileSystem, pszCooldownFilePath))
-		Message("Failed to load cooldown file at %s - resetting all cooldowns to 0\n", pszCooldownFilePath);
-
-	for (KeyValues* pKey = pKVcooldowns->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+	for (auto& [strSection, jsonSection] : jsonMaps.items())
 	{
-		time_t timeCooldown = pKey->GetUint64();
-
-		if (timeCooldown > std::time(0))
+		for (auto& [strEntry, jsonEntry] : jsonSection.items())
 		{
-			std::shared_ptr<CCooldown> pCooldown = std::make_shared<CCooldown>(pKey->GetName());
-
-			pCooldown->SetTimeCooldown(timeCooldown);
-			m_vecCooldowns.push_back(pCooldown);
-		}
-	}
-
-	for (auto& [sSection, jsonSection] : jsonMaps.items())
-	{
-		for (auto& [sEntry, jsonEntry] : jsonSection.items())
-		{
-			if (sSection == "Groups")
+			if (strSection == "Groups")
 			{
-				m_vecGroups.push_back(std::make_shared<CGroup>(sEntry, jsonEntry.value("enabled", true), jsonEntry.value("cooldown", 0.0f)));
+				m_vecGroups.push_back(std::make_shared<CGroup>(strEntry, jsonEntry.value("enabled", true), jsonEntry.value("cooldown", 0.0f)));
 			}
-			else if (sSection == "Maps")
+			else if (strSection == "Maps")
 			{
 				// Seems like uint64 needs special handling
 				uint64 iWorkshopId = 0;
@@ -993,7 +974,7 @@ bool CMapVoteSystem::LoadMapList()
 					QueueMapDownload(iWorkshopId);
 
 				// We just append the maps to the map list
-				m_vecMapList.push_back(std::make_shared<CMap>(sEntry, iWorkshopId, false, strDisplayName, bIsEnabled, iMinPlayers, iMaxPlayers, fCooldown, vecGroups));
+				m_vecMapList.push_back(std::make_shared<CMap>(strEntry, iWorkshopId, false, strDisplayName, bIsEnabled, iMinPlayers, iMaxPlayers, fCooldown, vecGroups));
 			}
 		}
 	}
@@ -1030,6 +1011,50 @@ bool CMapVoteSystem::LoadMapList()
 	return true;
 }
 
+bool CMapVoteSystem::LoadCooldowns()
+{
+	const char* pszCooldownsFilePath = "addons/cs2fixes/data/cooldowns.jsonc";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszCooldownsFilePath);
+	std::ifstream cooldownsFile(szPath);
+
+	if (!cooldownsFile.is_open())
+	{
+		if (!ConvertCooldownsKVToJSON())
+		{
+			Message("Failed to open %s and convert KV1 cooldowns.txt to JSON format, resetting all cooldowns to 0\n", pszCooldownsFilePath);
+			return false;
+		}
+
+		cooldownsFile.open(szPath);
+	}
+
+	ordered_json jsonCooldownsRoot = ordered_json::parse(cooldownsFile, nullptr, false, true);
+
+	if (jsonCooldownsRoot.is_discarded())
+	{
+		Message("Failed parsing JSON from %s, resetting all cooldowns to 0\n", pszCooldownsFilePath);
+		return false;
+	}
+
+	ordered_json jsonCooldowns = jsonCooldownsRoot.value("Cooldowns", ordered_json());
+
+	for (auto& [strMapName, iCooldown] : jsonCooldowns.items())
+	{
+		time_t timeCooldown = iCooldown;
+
+		if (timeCooldown > std::time(0))
+		{
+			std::shared_ptr<CCooldown> pCooldown = std::make_shared<CCooldown>(strMapName);
+
+			pCooldown->SetTimeCooldown(timeCooldown);
+			m_vecCooldowns.push_back(pCooldown);
+		}
+	}
+
+	return true;
+}
+
 bool CMapVoteSystem::IsIntermissionAllowed(bool bCheckOnly)
 {
 	// We need to prevent "ending the map twice" as it messes with ongoing map votes
@@ -1056,21 +1081,25 @@ CUtlStringList CMapVoteSystem::CreateWorkshopMapGroup()
 
 bool CMapVoteSystem::WriteMapCooldownsToFile()
 {
-	KeyValues* pKV = new KeyValues("cooldowns");
-	KeyValues::AutoDelete autoDelete(pKV);
+	const char* pszJsonPath = "addons/cs2fixes/data/cooldowns.jsonc";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
+	std::ofstream jsonFile(szPath);
+	ordered_json jsonCooldowns;
 
-	const char* pszPath = "addons/cs2fixes/data/cooldowns.txt";
-
-	for (std::shared_ptr<CCooldown> pCooldown : m_vecCooldowns)
-		if (pCooldown->GetTimeCooldown() > std::time(0))
-			pKV->AddUint64(pCooldown->GetMapName(), pCooldown->GetTimeCooldown());
-
-	if (!pKV->SaveToFile(g_pFullFileSystem, pszPath))
+	if (!jsonFile.is_open())
 	{
-		Panic("Failed to write cooldowns to file: %s\n", pszPath);
+		Panic("Failed to open %s\n", pszJsonPath);
 		return false;
 	}
 
+	jsonCooldowns["Cooldowns"] = ordered_json(ordered_json::value_t::object);
+
+	for (std::shared_ptr<CCooldown> pCooldown : m_vecCooldowns)
+		if (pCooldown->GetTimeCooldown() > std::time(0))
+			jsonCooldowns["Cooldowns"][pCooldown->GetMapName()] = pCooldown->GetTimeCooldown();
+
+	jsonFile << std::setfill('\t') << std::setw(1) << jsonCooldowns << std::endl;
 	return true;
 }
 
@@ -1346,4 +1375,47 @@ std::pair<int, std::shared_ptr<CMap>> CMapVoteSystem::GetMapInfoByIdentifiers(co
 	}
 
 	return {-1, nullptr};
+}
+
+// TODO: remove this once servers have been given at least a few months to update cs2fixes
+bool CMapVoteSystem::ConvertCooldownsKVToJSON()
+{
+	Message("Attempting to convert KV1 cooldowns.txt to JSON format...\n");
+
+	const char* pszPath = "addons/cs2fixes/data/cooldowns.txt";
+	KeyValues* pKV = new KeyValues("cooldowns");
+	KeyValues::AutoDelete autoDelete(pKV);
+
+	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
+	{
+		Panic("Failed to load %s\n", pszPath);
+		return false;
+	}
+
+	ordered_json jsonCooldowns;
+
+	jsonCooldowns["Cooldowns"] = ordered_json(ordered_json::value_t::object);
+
+	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+		jsonCooldowns["Cooldowns"][pKey->GetName()] = pKey->GetUint64();
+
+	const char* pszJsonPath = "addons/cs2fixes/data/cooldowns.jsonc";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
+	std::ofstream jsonFile(szPath);
+
+	if (!jsonFile.is_open())
+	{
+		Panic("Failed to open %s\n", pszJsonPath);
+		return false;
+	}
+
+	jsonFile << std::setfill('\t') << std::setw(1) << jsonCooldowns << std::endl;
+
+	// remove old file
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszPath);
+	std::remove(szPath);
+
+	Message("Successfully converted KV1 cooldowns.txt to JSON format at %s\n", pszJsonPath);
+	return true;
 }
