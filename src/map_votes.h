@@ -30,7 +30,9 @@
 #include <string>
 #include <vector>
 
+class CMap;
 using ordered_json = nlohmann::ordered_json;
+using QueryCallback_t = std::function<void(std::shared_ptr<CMap>, CCSPlayerController*)>;
 
 class CCooldown
 {
@@ -128,6 +130,37 @@ private:
 	float m_fCooldown;
 };
 
+// Implementation is a bit hardcoded for HandlePlayerMapLookup use
+class CWorkshopDetailsQuery : public std::enable_shared_from_this<CWorkshopDetailsQuery>
+{
+public:
+	CWorkshopDetailsQuery(UGCQueryHandle_t hQuery, uint64 iWorkshopId, CCSPlayerController* pController, QueryCallback_t callbackSuccess) :
+		m_hQuery(hQuery), m_iWorkshopId(iWorkshopId), m_callbackSuccess(callbackSuccess)
+	{
+		if (pController)
+		{
+			m_bConsole = false;
+			m_hController = pController->GetHandle();
+		}
+		else
+		{
+			m_bConsole = true;
+		}
+	}
+
+	static std::shared_ptr<CWorkshopDetailsQuery> Create(uint64 iWorkshopId, CCSPlayerController* pController, QueryCallback_t callbackSuccess);
+
+private:
+	void OnQueryCompleted(SteamUGCQueryCompleted_t* pCompletedQuery, bool bFailed);
+
+	UGCQueryHandle_t m_hQuery;
+	CCallResult<CWorkshopDetailsQuery, SteamUGCQueryCompleted_t> m_CallResult;
+	uint64 m_iWorkshopId;
+	bool m_bConsole;
+	CHandle<CCSPlayerController> m_hController;
+	QueryCallback_t m_callbackSuccess;
+};
+
 class CMapVoteSystem
 {
 public:
@@ -147,7 +180,7 @@ public:
 	void FinishVote();
 	bool RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
 	std::vector<std::shared_ptr<CMap>> GetMapsFromSubstring(const char* pszMapSubstring);
-	std::shared_ptr<CMap> HandlePlayerMapLookup(CCSPlayerController* pController, std::string strMapSubstring, bool bAdmin = false);
+	void HandlePlayerMapLookup(CCSPlayerController* pController, std::string strMapSubstring, bool bAdmin, QueryCallback_t callbackSuccess);
 	std::shared_ptr<CMap> GetMapFromString(const char* pszMapString);
 	std::shared_ptr<CGroup> GetGroupFromString(const char* pszName);
 	std::shared_ptr<CCooldown> GetMapCooldown(const char* pszMapName);
@@ -185,6 +218,9 @@ public:
 	void ProcessGroupCooldowns();
 	bool ReloadMapList(bool bReloadMap = true);
 	bool ConvertCooldownsKVToJSON();
+	void AddWorkshopDetailsQuery(std::shared_ptr<CWorkshopDetailsQuery> pQuery) { m_vecWorkshopDetailsQueries.push_back(pQuery); }
+	void RemoveWorkshopDetailsQuery(std::shared_ptr<CWorkshopDetailsQuery> pQuery) { m_vecWorkshopDetailsQueries.erase(std::remove(m_vecWorkshopDetailsQueries.begin(), m_vecWorkshopDetailsQueries.end(), pQuery), m_vecWorkshopDetailsQueries.end()); }
+	void SetPlayerNomination(int iPlayerSlot, int iMapIndex) { m_arrPlayerNominations[iPlayerSlot] = iMapIndex; }
 
 private:
 	int WinningMapIndex();
@@ -211,6 +247,7 @@ private:
 	std::filesystem::file_time_type m_timeMapListModified = std::filesystem::file_time_type::min();
 	std::weak_ptr<CTimer> m_pDownloadProgressTimer;
 	std::weak_ptr<CTimer> m_pRateLimitedDownloadTimer;
+	std::vector<std::shared_ptr<CWorkshopDetailsQuery>> m_vecWorkshopDetailsQueries;
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;
