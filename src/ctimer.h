@@ -58,8 +58,6 @@ private:
 	uint64 m_nTimerFlags;
 };
 
-extern std::list<std::shared_ptr<CTimerBase>> g_timers;
-
 // Timer functions should return the time until next execution, or a negative value like -1.0f to stop
 // Having an interval of 0 is fine, in this case it will run on every game frame
 class CTimer : public CTimerBase, public std::enable_shared_from_this<CTimer>

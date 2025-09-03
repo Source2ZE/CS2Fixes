@@ -609,11 +609,15 @@ void CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, std
 	// Don't list disabled maps in non-admin commands
 	if (!bAdmin)
 	{
-		for (auto pMap : vecFoundMaps)
+		auto iterator = vecFoundMaps.begin();
+
+		while (iterator != vecFoundMaps.end())
 		{
 			// Only erase if vector has multiple elements, so we can still give "map disabled" output in single-match scenarios
-			if (!pMap->IsEnabled() && vecFoundMaps.size() > 1)
-				vecFoundMaps.erase(std::remove(vecFoundMaps.begin(), vecFoundMaps.end(), pMap), vecFoundMaps.end());
+			if (!(*iterator)->IsEnabled() && vecFoundMaps.size() > 1)
+				vecFoundMaps.erase(iterator);
+			else
+				iterator++;
 		}
 	}
 
