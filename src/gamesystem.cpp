@@ -46,23 +46,26 @@ CGameSystemStaticCustomFactory<CGameSystem>* CGameSystem::sm_Factory = nullptr;
 // This mess is needed to get the pointer to sm_pFirst so we can insert game systems
 bool InitGameSystems()
 {
-	// This signature directly points to the instruction referencing sm_pFirst, and the opcode is 3 bytes so we skip those
-	uint8* ptr = (uint8*)g_GameConfig->ResolveSignature("IGameSystem_InitAllSystems_pFirst") + 3;
+	// This signature directly points to the instruction referencing sm_pFirst
+	uintptr_t pAddr = (uintptr_t)g_GameConfig->ResolveSignature("IGameSystem_InitAllSystems_pFirst");
 
-	if (!ptr)
+	if (!pAddr)
 	{
 		Panic("Failed to InitGameSystems, see warnings above.\n");
 		return false;
 	}
 
+	// the opcode is 3 bytes so we skip those
+	pAddr += 3;
+
 	// Grab the offset as 4 bytes
-	uint32 offset = *(uint32*)ptr;
+	uint32 offset = *(uint32*)pAddr;
 
 	// Go to the next instruction, which is the starting point of the relative jump
-	ptr += 4;
+	pAddr += 4;
 
 	// Now grab our pointer
-	CBaseGameSystemFactory::sm_pFirst = (CBaseGameSystemFactory**)(ptr + offset);
+	CBaseGameSystemFactory::sm_pFirst = (CBaseGameSystemFactory**)(pAddr + offset);
 
 	// And insert the game system(s)
 	CGameSystem::sm_Factory = new CGameSystemStaticCustomFactory<CGameSystem>("CS2Fixes_GameSystem", &g_GameSystem);
@@ -72,36 +75,41 @@ bool InitGameSystems()
 
 bool UnregisterGameSystem()
 {
-	// This signature directly points to the instruction referencing sm_pEventDispatcher, and the opcode is 3 bytes so we skip those
-	uint8* ptr = (uint8*)g_GameConfig->ResolveSignature("IGameSystem_LoopPostInitAllSystems_pEventDispatcher") + 3;
+	// This signature directly points to the instruction referencing sm_pEventDispatcher
+	uintptr_t pAddr = (uintptr_t)g_GameConfig->ResolveSignature("IGameSystem_LoopPostInitAllSystems_pEventDispatcher");
 
-	if (!ptr)
+	if (!pAddr)
 	{
 		Panic("Failed to UnregisterGameSystem, see warnings above.\n");
 		return false;
 	}
 
-	uint32 offset = *(uint32*)ptr;
+	// the opcode is 3 bytes so we skip those
+	pAddr += 3;
+
+	uint32 offset = *(uint32*)pAddr;
 
 	// Go to the next instruction, which is the starting point of the relative jump
-	ptr += 4;
+	pAddr += 4;
 
-	CGameSystemEventDispatcher** ppDispatchers = (CGameSystemEventDispatcher**)(ptr + offset);
+	CGameSystemEventDispatcher** ppDispatchers = (CGameSystemEventDispatcher**)(pAddr + offset);
 
-	// Here the opcode is 2 bytes as it's moving a dword, not a qword, but that's the start of a vector object
-	ptr = (uint8*)g_GameConfig->ResolveSignature("IGameSystem_LoopDestroyAllSystems_s_GameSystems") + 2;
+	pAddr = (uintptr_t)g_GameConfig->ResolveSignature("IGameSystem_LoopDestroyAllSystems_s_GameSystems");
 
-	if (!ptr)
+	if (!pAddr)
 	{
 		Panic("Failed to UnregisterGameSystem, see warnings above.\n");
 		return false;
 	}
 
-	offset = *(uint32*)ptr;
+	// Here the opcode is 2 bytes as it's moving a dword, not a qword, but that's the start of a vector object
+	pAddr += 2;
 
-	ptr += 4;
+	offset = *(uint32*)pAddr;
 
-	CUtlVector<AddedGameSystem_t>* pGameSystems = (CUtlVector<AddedGameSystem_t>*)(ptr + offset);
+	pAddr += 4;
+
+	CUtlVector<AddedGameSystem_t>* pGameSystems = (CUtlVector<AddedGameSystem_t>*)(pAddr + offset);
 
 	auto* pDispatcher = *ppDispatchers;
 

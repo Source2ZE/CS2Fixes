@@ -81,11 +81,14 @@ bool addresses::Initialize(CGameConfig* g_GameConfig)
 
 bool addresses::InitializeBanMap(CGameConfig* g_GameConfig)
 {
-	// This signature directly points to the instruction referencing sm_mapGcBanInformation, and the opcode is 3 bytes so we skip those
-	uint8* pAddr = (uint8*)g_GameConfig->ResolveSignature("CCSGameRules__sm_mapGcBanInformation") + 3;
+	// This signature directly points to the instruction referencing sm_mapGcBanInformation
+	uintptr_t pAddr = (uintptr_t)g_GameConfig->ResolveSignature("CCSGameRules__sm_mapGcBanInformation");
 
 	if (!pAddr)
 		return false;
+
+	// the opcode is 3 bytes so we skip those
+	pAddr += 3;
 
 	// Grab the offset as 4 bytes
 	uint32 offset = *(uint32*)pAddr;
