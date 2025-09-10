@@ -167,8 +167,37 @@ CConVar<bool> g_cvarFlashLightShadows("cs2f_flashlight_shadows", FCVAR_NONE, "Wh
 CConVar<bool> g_cvarFlashLightTransmitOthers("cs2f_flashlight_transmit_others", FCVAR_NONE, "Whether to transmit other player's flashlights, recommended to have shadows off for this", false);
 CConVar<float> g_cvarFlashLightBrightness("cs2f_flashlight_brightness", FCVAR_NONE, "How bright should flashlights be", 1.0f);
 CConVar<float> g_cvarFlashLightDistance("cs2f_flashlight_distance", FCVAR_NONE, "How far flashlights should be from the player's head", 54.0f); // The minimum distance such that an awp wouldn't block the light
+CConVar<float> g_cvarFlashLightAngle("cs2f_flashlight_angle", FCVAR_NONE, "How wide should the flashlight be in degrees", 45.0f);
 CConVar<Color> g_cvarFlashLightColor("cs2f_flashlight_color", FCVAR_NONE, "What color to use for flashlights", Color(255, 255, 255));
 CConVar<CUtlString> g_cvarFlashLightAttachment("cs2f_flashlight_attachment", FCVAR_NONE, "Which attachment to parent a flashlight to. If the player model is not properly setup, you might have to use clip_limit here instead", "axis_of_intent");
+
+void TeleportFlashLight(CCSPlayerPawn* pPawn, CBaseEntity* pLight, float flDistance = -1.f, QAngle angOverride = vec3_angle)
+{
+	if (!pPawn || !pLight)
+		return;
+
+	Vector origin = pPawn->GetAbsOrigin();
+	Vector forward;
+	AngleVectors(pPawn->m_angEyeAngles(), &forward);
+
+	float flScale = pPawn->m_CBodyComponent()->m_pSceneNode->m_flScale;
+
+	if (flDistance == -1.f)
+		flDistance = g_cvarFlashLightDistance.Get();
+
+	origin.z += 64.f * flScale;
+	origin += forward * flDistance * flScale;
+
+	pLight->AcceptInput("ClearParent");
+
+	if (angOverride == vec3_angle)
+		angOverride = pPawn->m_angEyeAngles();
+
+	pLight->Teleport(&origin, &angOverride, nullptr);
+
+	pLight->SetParent(pPawn);
+	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
+}
 
 void ZEPlayer::SpawnFlashLight()
 {
@@ -177,16 +206,9 @@ void ZEPlayer::SpawnFlashLight()
 
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)CCSPlayerController::FromSlot(GetPlayerSlot())->GetPawn();
 
-	Vector origin = pPawn->GetAbsOrigin();
-	Vector forward;
-	AngleVectors(pPawn->m_angEyeAngles(), &forward);
-
-	origin.z += 64.0f;
-	origin += forward * g_cvarFlashLightDistance.Get();
-
 	CBarnLight* pLight = CreateEntityByName<CBarnLight>("light_barn");
 
-	pLight->m_bEnabled = true;
+	pLight->m_bEnabled = false;
 	pLight->m_Color->SetColor(g_cvarFlashLightColor.Get().r(), g_cvarFlashLightColor.Get().g(), g_cvarFlashLightColor.Get().b());
 	pLight->m_flBrightness = g_cvarFlashLightBrightness.Get();
 	pLight->m_flRange = 2048.0f;
@@ -194,10 +216,9 @@ void ZEPlayer::SpawnFlashLight()
 	pLight->m_flSoftY = 1.0f;
 	pLight->m_flSkirt = 0.5f;
 	pLight->m_flSkirtNear = 1.0f;
-	pLight->m_vSizeParams->Init(45.0f, 45.0f, 0.02f);
+	pLight->m_vSizeParams->Init(g_cvarFlashLightAngle.Get(), g_cvarFlashLightAngle.Get(), 0.02f);
 	pLight->m_nCastShadows = g_cvarFlashLightShadows.Get();
 	pLight->m_nDirectLight = 3;
-	pLight->Teleport(&origin, &pPawn->m_angEyeAngles(), nullptr);
 
 	// Have to use keyvalues for this since the schema prop is a resource handle
 	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
@@ -205,28 +226,26 @@ void ZEPlayer::SpawnFlashLight()
 
 	pLight->DispatchSpawn(pKeyValues);
 
-	pLight->SetParent(pPawn);
-	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
+	TeleportFlashLight(pPawn, pLight);
 
 	SetFlashLight(pLight);
 }
 
 void ZEPlayer::ToggleFlashLight()
 {
+	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
+
 	// Play the "click" sound
 	CSingleRecipientFilter filter(GetPlayerSlot());
-	CCSPlayerController::FromSlot(GetPlayerSlot())->EmitSoundFilter(filter, "HudChat.Message");
+	pController->EmitSoundFilter(filter, "HudChat.Message");
 
-	CBarnLight* pLight = GetFlashLight();
-
-	// Create a flashlight if we don't have one, and don't bother with the input since it spawns enabled
-	if (!pLight)
-	{
+	if (!GetFlashLight())
 		SpawnFlashLight();
-		return;
-	}
 
-	pLight->AcceptInput(pLight->m_bEnabled() ? "Disable" : "Enable");
+	GetFlashLight()->AcceptInput(m_hFlashLight->m_bEnabled ? "Disable" : "Enable");
+
+	if (m_hFlashLight->m_bEnabled)
+		TeleportFlashLight(pController->GetPlayerPawn(), GetFlashLight());
 }
 
 CConVar<float> g_cvarFloodInterval("cs2f_flood_interval", FCVAR_NONE, "Amount of time allowed between chat messages acquiring flood tokens", 0.75f, true, 0.0f, false, 0.0f);
