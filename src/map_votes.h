@@ -29,6 +29,7 @@
 #include <playerslot.h>
 #include <string>
 #include <vector>
+#include <optional>
 
 class CMap;
 using ordered_json = nlohmann::ordered_json;
