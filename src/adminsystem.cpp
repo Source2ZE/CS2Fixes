@@ -577,6 +577,8 @@ CON_COMMAND_CHAT_FLAGS(hsay, "<message> - Say something as a hud hint", ADMFLAG_
 		EscapeHTMLSpecialCharacters(args.ArgS()).c_str());
 }
 
+CLoggingListener g_LoggingListener;
+
 CON_COMMAND_CHAT_FLAGS(rcon, "<command> - Send a command to server console", ADMFLAG_RCON)
 {
 	if (!player)
@@ -591,7 +593,62 @@ CON_COMMAND_CHAT_FLAGS(rcon, "<command> - Send a command to server console", ADM
 		return;
 	}
 
+	// Normally this should be done on plugin init, but for whatever reason "log_flags <channel> +donotecho" crashes AFTER this
+	ExecuteOnce
+	(
+		LoggingSystem_RegisterBackdoorLoggingListener(&g_LoggingListener);
+		LoggingSystem_EnableBackdoorLoggingListeners(true);
+	);
+
+	// We don't have the equivalent of ServerExecute (to immediately execute commands) in source2, so manually find and execute the command
+
+	ConCommandRef cmdRef(args[1], true);
+
+	if (cmdRef.IsValidRef())
+	{
+		CCommandContext context(CT_FIRST_SPLITSCREEN_CLIENT, player->GetPlayerSlot());
+
+		CCommand newArgs;
+		newArgs.Tokenize(args.ArgS());
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Command executed, see console for output (if any)");
+
+		g_LoggingListener.SetPlayer(player);
+		cmdRef.Dispatch(context, newArgs);
+		g_LoggingListener.SetPlayer(nullptr);
+
+		return;
+	}
+
+	ConVarRefAbstract cvarRef(args[1], true);
+
+	if (cvarRef.IsValidRef())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Command executed, see console for output (if any)");
+
+		if (args.ArgC() == 2)
+		{
+			g_LoggingListener.SetPlayer(player);
+			ConVar_PrintDescription(&cvarRef);
+			g_LoggingListener.SetPlayer(nullptr);
+
+			return;
+		}
+
+		CCommand newArgs;
+		newArgs.Tokenize(args.ArgS());
+
+		g_LoggingListener.SetPlayer(player);
+		cvarRef.SetString(newArgs.ArgS());
+		g_LoggingListener.SetPlayer(nullptr);
+
+		return;
+	}
+
+	// Just in case it's not an actual ConCommand (for example an alias)
 	g_pEngineServer2->ServerCommand(args.ArgS());
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Command executed");
 }
 
 CON_COMMAND_CHAT_FLAGS(extend, "<minutes> - Extend current map (negative value reduces map duration)", ADMFLAG_CHANGEMAP)
