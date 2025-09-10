@@ -120,3 +120,20 @@ void ParseChatCommand(const char*, CCSPlayerController*);
 
 #define CON_COMMAND_CHAT(name, description) CON_COMMAND_CHAT_FLAGS(name, description, ADMFLAG_NONE)
 #define CON_COMMAND_CHAT_LEADER(name, description) CON_COMMAND_CHAT_FLAGS(name, description, FLAG_LEADER)
+
+class CLoggingListener : public ILoggingListener
+{
+public:
+	void SetPlayer(CCSPlayerController* pController) { m_pController = pController; }
+
+	void Log(const LoggingContext_t* pContext, const tchar* pMessage) override
+	{
+		if (m_pController)
+			ClientPrint(m_pController, HUD_PRINTCONSOLE, pMessage);
+	}
+
+private:
+	CCSPlayerController* m_pController = nullptr;
+};
+
+extern CLoggingListener g_LoggingListener;
