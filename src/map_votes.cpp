@@ -327,16 +327,21 @@ void CMapVoteSystem::StartVote()
 		}
 	}
 
-	// Print the maps chosen in the vote to console
 	for (int i = 0; i < m_iVoteSize; i++)
 	{
 		int iMapIndex = g_pGameRules->m_nEndMatchMapGroupVoteOptions[i];
 		Message("The %d-th chosen map index %d is %s\n", i, iMapIndex, GetMapName(iMapIndex));
 	}
 
-	// Start the end-of-vote timer to finish the vote
 	static ConVarRefAbstract mp_endmatch_votenextleveltime("mp_endmatch_votenextleveltime");
-	float flVoteTime = mp_endmatch_votenextleveltime.GetFloat();
+	static ConVarRefAbstract mp_match_restart_delay("mp_match_restart_delay");
+
+	// Game logic seems to be higher value wins
+	float flVoteTime = std::max(mp_endmatch_votenextleveltime.GetFloat(), mp_match_restart_delay.GetFloat());
+
+	// But it's also always 3 seconds off
+	flVoteTime = flVoteTime - 3.0f;
+
 	CTimer::Create(flVoteTime, TIMERFLAG_MAP, []() {
 		g_pMapVoteSystem->FinishVote();
 		return -1.0;
