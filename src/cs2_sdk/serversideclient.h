@@ -196,7 +196,6 @@ private:
 public:
 	virtual bool ProcessMove(const CCLCMsg_Move_t& msg) = 0;
 	virtual bool ProcessVoiceData(const CCLCMsg_VoiceData_t& msg) = 0;
-	virtual bool ProcessFileCRCCheck(const CCLCMsg_FileCRCCheck_t& msg) = 0;
 	virtual bool ProcessRespondCvarValue(const CCLCMsg_RespondCvarValue_t& msg) = 0;
 
 	virtual bool ProcessPacketStart(const NetMessagePacketStart_t& msg) = 0;
@@ -294,7 +293,7 @@ public:
 	CEntityIndex m_nEntityIndex;				  // 92
 	CNetworkGameServerBase* m_Server;			  // 96
 	INetChannel* m_NetChannel;					  // 104
-	uint8 m_nUnkVariable;						  // 112
+	uint16 m_nConnectionTypeFlags;				  // 112
 	bool m_bMarkedToKick;						  // 113
 	SignonState_t m_nSignonState;				  // 116
 	bool m_bSplitScreenUser;					  // 120
