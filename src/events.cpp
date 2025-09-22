@@ -30,7 +30,6 @@
 #include "idlemanager.h"
 #include "leader.h"
 #include "map_votes.h"
-#include "networkstringtabledefs.h"
 #include "panoramavote.h"
 #include "recipientfilters.h"
 #include "votemanager.h"
@@ -68,30 +67,9 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
-CConVar<bool> g_cvarPurgeEntityNames("cs2f_purge_entity_strings", FCVAR_NONE, "Whether to purge the EntityNames stringtable on new rounds", false);
-
 GAME_EVENT_F(round_prestart)
 {
 	RemoveTimers(TIMERFLAG_ROUND);
-
-	if (g_cvarPurgeEntityNames.Get())
-	{
-		INetworkStringTable* pEntityNames = g_pNetworkStringTableServer->FindTable("EntityNames");
-
-		if (pEntityNames)
-		{
-			int iStringCount = pEntityNames->GetNumStrings();
-			addresses::CNetworkStringTable_DeleteAllStrings(pEntityNames);
-
-			Message("Purged %i strings from EntityNames\n", iStringCount);
-
-			// Vauff: Not fixing cubemap fog in my testing
-			// This also breaks round start particle resets, so disabling for now
-			// pEntityNames->SetTick(-1, nullptr);
-
-			// FullUpdateAllClients();
-		}
-	}
 
 	EntityHandler_OnRoundRestart();
 
