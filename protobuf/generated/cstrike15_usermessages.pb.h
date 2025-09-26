@@ -119,9 +119,6 @@ extern CCSUsrMsg_GameTitleDefaultTypeInternal _CCSUsrMsg_GameTitle_default_insta
 class CCSUsrMsg_Geiger;
 struct CCSUsrMsg_GeigerDefaultTypeInternal;
 extern CCSUsrMsg_GeigerDefaultTypeInternal _CCSUsrMsg_Geiger_default_instance_;
-class CCSUsrMsg_GlowPropTurnOff;
-struct CCSUsrMsg_GlowPropTurnOffDefaultTypeInternal;
-extern CCSUsrMsg_GlowPropTurnOffDefaultTypeInternal _CCSUsrMsg_GlowPropTurnOff_default_instance_;
 class CCSUsrMsg_HintText;
 struct CCSUsrMsg_HintTextDefaultTypeInternal;
 extern CCSUsrMsg_HintTextDefaultTypeInternal _CCSUsrMsg_HintText_default_instance_;
@@ -236,6 +233,12 @@ extern CCSUsrMsg_SendPlayerItemDropsDefaultTypeInternal _CCSUsrMsg_SendPlayerIte
 class CCSUsrMsg_SendPlayerItemFound;
 struct CCSUsrMsg_SendPlayerItemFoundDefaultTypeInternal;
 extern CCSUsrMsg_SendPlayerItemFoundDefaultTypeInternal _CCSUsrMsg_SendPlayerItemFound_default_instance_;
+class CCSUsrMsg_SendPlayerLoadout;
+struct CCSUsrMsg_SendPlayerLoadoutDefaultTypeInternal;
+extern CCSUsrMsg_SendPlayerLoadoutDefaultTypeInternal _CCSUsrMsg_SendPlayerLoadout_default_instance_;
+class CCSUsrMsg_SendPlayerLoadout_LoadoutItem;
+struct CCSUsrMsg_SendPlayerLoadout_LoadoutItemDefaultTypeInternal;
+extern CCSUsrMsg_SendPlayerLoadout_LoadoutItemDefaultTypeInternal _CCSUsrMsg_SendPlayerLoadout_LoadoutItem_default_instance_;
 class CCSUsrMsg_ServerRankRevealAll;
 struct CCSUsrMsg_ServerRankRevealAllDefaultTypeInternal;
 extern CCSUsrMsg_ServerRankRevealAllDefaultTypeInternal _CCSUsrMsg_ServerRankRevealAll_default_instance_;
@@ -299,9 +302,6 @@ extern CCSUsrMsg_VoteSetupDefaultTypeInternal _CCSUsrMsg_VoteSetup_default_insta
 class CCSUsrMsg_VoteStart;
 struct CCSUsrMsg_VoteStartDefaultTypeInternal;
 extern CCSUsrMsg_VoteStartDefaultTypeInternal _CCSUsrMsg_VoteStart_default_instance_;
-class CCSUsrMsg_WarmupHasEnded;
-struct CCSUsrMsg_WarmupHasEndedDefaultTypeInternal;
-extern CCSUsrMsg_WarmupHasEndedDefaultTypeInternal _CCSUsrMsg_WarmupHasEnded_default_instance_;
 class CCSUsrMsg_WeaponSound;
 struct CCSUsrMsg_WeaponSoundDefaultTypeInternal;
 extern CCSUsrMsg_WeaponSoundDefaultTypeInternal _CCSUsrMsg_WeaponSound_default_instance_;
@@ -339,7 +339,6 @@ template<> ::CCSUsrMsg_EntityOutlineHighlight* Arena::CreateMaybeMessage<::CCSUs
 template<> ::CCSUsrMsg_Fade* Arena::CreateMaybeMessage<::CCSUsrMsg_Fade>(Arena*);
 template<> ::CCSUsrMsg_GameTitle* Arena::CreateMaybeMessage<::CCSUsrMsg_GameTitle>(Arena*);
 template<> ::CCSUsrMsg_Geiger* Arena::CreateMaybeMessage<::CCSUsrMsg_Geiger>(Arena*);
-template<> ::CCSUsrMsg_GlowPropTurnOff* Arena::CreateMaybeMessage<::CCSUsrMsg_GlowPropTurnOff>(Arena*);
 template<> ::CCSUsrMsg_HintText* Arena::CreateMaybeMessage<::CCSUsrMsg_HintText>(Arena*);
 template<> ::CCSUsrMsg_HudMsg* Arena::CreateMaybeMessage<::CCSUsrMsg_HudMsg>(Arena*);
 template<> ::CCSUsrMsg_HudText* Arena::CreateMaybeMessage<::CCSUsrMsg_HudText>(Arena*);
@@ -378,6 +377,8 @@ template<> ::CCSUsrMsg_SendAudio* Arena::CreateMaybeMessage<::CCSUsrMsg_SendAudi
 template<> ::CCSUsrMsg_SendLastKillerDamageToClient* Arena::CreateMaybeMessage<::CCSUsrMsg_SendLastKillerDamageToClient>(Arena*);
 template<> ::CCSUsrMsg_SendPlayerItemDrops* Arena::CreateMaybeMessage<::CCSUsrMsg_SendPlayerItemDrops>(Arena*);
 template<> ::CCSUsrMsg_SendPlayerItemFound* Arena::CreateMaybeMessage<::CCSUsrMsg_SendPlayerItemFound>(Arena*);
+template<> ::CCSUsrMsg_SendPlayerLoadout* Arena::CreateMaybeMessage<::CCSUsrMsg_SendPlayerLoadout>(Arena*);
+template<> ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem* Arena::CreateMaybeMessage<::CCSUsrMsg_SendPlayerLoadout_LoadoutItem>(Arena*);
 template<> ::CCSUsrMsg_ServerRankRevealAll* Arena::CreateMaybeMessage<::CCSUsrMsg_ServerRankRevealAll>(Arena*);
 template<> ::CCSUsrMsg_ServerRankUpdate* Arena::CreateMaybeMessage<::CCSUsrMsg_ServerRankUpdate>(Arena*);
 template<> ::CCSUsrMsg_ServerRankUpdate_RankUpdate* Arena::CreateMaybeMessage<::CCSUsrMsg_ServerRankUpdate_RankUpdate>(Arena*);
@@ -399,7 +400,6 @@ template<> ::CCSUsrMsg_VoteFailed* Arena::CreateMaybeMessage<::CCSUsrMsg_VoteFai
 template<> ::CCSUsrMsg_VotePass* Arena::CreateMaybeMessage<::CCSUsrMsg_VotePass>(Arena*);
 template<> ::CCSUsrMsg_VoteSetup* Arena::CreateMaybeMessage<::CCSUsrMsg_VoteSetup>(Arena*);
 template<> ::CCSUsrMsg_VoteStart* Arena::CreateMaybeMessage<::CCSUsrMsg_VoteStart>(Arena*);
-template<> ::CCSUsrMsg_WarmupHasEnded* Arena::CreateMaybeMessage<::CCSUsrMsg_WarmupHasEnded>(Arena*);
 template<> ::CCSUsrMsg_WeaponSound* Arena::CreateMaybeMessage<::CCSUsrMsg_WeaponSound>(Arena*);
 template<> ::CCSUsrMsg_XRankGet* Arena::CreateMaybeMessage<::CCSUsrMsg_XRankGet>(Arena*);
 template<> ::CCSUsrMsg_XRankUpd* Arena::CreateMaybeMessage<::CCSUsrMsg_XRankUpd>(Arena*);
@@ -442,7 +442,6 @@ enum ECstrike15UserMessages : int {
   CS_UM_MatchEndConditions = 334,
   CS_UM_DisconnectToLobby = 335,
   CS_UM_PlayerStatsUpdate = 336,
-  CS_UM_WarmupHasEnded = 338,
   CS_UM_ClientInfo = 339,
   CS_UM_XRankGet = 340,
   CS_UM_XRankUpd = 341,
@@ -461,7 +460,6 @@ enum ECstrike15UserMessages : int {
   CS_UM_MarkAchievement = 357,
   CS_UM_MatchStatsUpdate = 358,
   CS_UM_ItemDrop = 359,
-  CS_UM_GlowPropTurnOff = 360,
   CS_UM_SendPlayerItemDrops = 361,
   CS_UM_RoundBackupFilenames = 362,
   CS_UM_SendPlayerItemFound = 363,
@@ -484,11 +482,12 @@ enum ECstrike15UserMessages : int {
   CS_UM_ShootInfo = 383,
   CS_UM_CounterStrafe = 385,
   CS_UM_DamagePrediction = 386,
-  CS_UM_RecurringMissionSchema = 387
+  CS_UM_RecurringMissionSchema = 387,
+  CS_UM_SendPlayerLoadout = 388
 };
 bool ECstrike15UserMessages_IsValid(int value);
 constexpr ECstrike15UserMessages ECstrike15UserMessages_MIN = CS_UM_VGUIMenu;
-constexpr ECstrike15UserMessages ECstrike15UserMessages_MAX = CS_UM_RecurringMissionSchema;
+constexpr ECstrike15UserMessages ECstrike15UserMessages_MAX = CS_UM_SendPlayerLoadout;
 constexpr int ECstrike15UserMessages_ARRAYSIZE = ECstrike15UserMessages_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ECstrike15UserMessages_descriptor();
@@ -11474,166 +11473,6 @@ class CCSUsrMsg_ItemDrop :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_GlowPropTurnOff :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_GlowPropTurnOff) */ {
- public:
-  inline CCSUsrMsg_GlowPropTurnOff() : CCSUsrMsg_GlowPropTurnOff(nullptr) {}
-  ~CCSUsrMsg_GlowPropTurnOff() override;
-  explicit PROTOBUF_CONSTEXPR CCSUsrMsg_GlowPropTurnOff(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CCSUsrMsg_GlowPropTurnOff(const CCSUsrMsg_GlowPropTurnOff& from);
-  CCSUsrMsg_GlowPropTurnOff(CCSUsrMsg_GlowPropTurnOff&& from) noexcept
-    : CCSUsrMsg_GlowPropTurnOff() {
-    *this = ::std::move(from);
-  }
-
-  inline CCSUsrMsg_GlowPropTurnOff& operator=(const CCSUsrMsg_GlowPropTurnOff& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CCSUsrMsg_GlowPropTurnOff& operator=(CCSUsrMsg_GlowPropTurnOff&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CCSUsrMsg_GlowPropTurnOff& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CCSUsrMsg_GlowPropTurnOff* internal_default_instance() {
-    return reinterpret_cast<const CCSUsrMsg_GlowPropTurnOff*>(
-               &_CCSUsrMsg_GlowPropTurnOff_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    57;
-
-  friend void swap(CCSUsrMsg_GlowPropTurnOff& a, CCSUsrMsg_GlowPropTurnOff& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CCSUsrMsg_GlowPropTurnOff* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CCSUsrMsg_GlowPropTurnOff* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CCSUsrMsg_GlowPropTurnOff* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CCSUsrMsg_GlowPropTurnOff>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CCSUsrMsg_GlowPropTurnOff& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CCSUsrMsg_GlowPropTurnOff& from) {
-    CCSUsrMsg_GlowPropTurnOff::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CCSUsrMsg_GlowPropTurnOff* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CCSUsrMsg_GlowPropTurnOff";
-  }
-  protected:
-  explicit CCSUsrMsg_GlowPropTurnOff(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kEntidxFieldNumber = 1,
-  };
-  // optional int32 entidx = 1 [default = -1];
-  bool has_entidx() const;
-  private:
-  bool _internal_has_entidx() const;
-  public:
-  void clear_entidx();
-  int32_t entidx() const;
-  void set_entidx(int32_t value);
-  private:
-  int32_t _internal_entidx() const;
-  void _internal_set_entidx(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:CCSUsrMsg_GlowPropTurnOff)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    int32_t entidx_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_cstrike15_5fusermessages_2eproto;
-};
-// -------------------------------------------------------------------
-
 class CCSUsrMsg_RoundBackupFilenames :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_RoundBackupFilenames) */ {
  public:
@@ -11689,7 +11528,7 @@ class CCSUsrMsg_RoundBackupFilenames :
                &_CCSUsrMsg_RoundBackupFilenames_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    58;
+    57;
 
   friend void swap(CCSUsrMsg_RoundBackupFilenames& a, CCSUsrMsg_RoundBackupFilenames& b) {
     a.Swap(&b);
@@ -11904,7 +11743,7 @@ class CCSUsrMsg_SSUI :
                &_CCSUsrMsg_SSUI_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    59;
+    58;
 
   friend void swap(CCSUsrMsg_SSUI& a, CCSUsrMsg_SSUI& b) {
     a.Swap(&b);
@@ -12094,7 +11933,7 @@ class CCSUsrMsg_SurvivalStats_Fact :
                &_CCSUsrMsg_SurvivalStats_Fact_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    60;
+    59;
 
   friend void swap(CCSUsrMsg_SurvivalStats_Fact& a, CCSUsrMsg_SurvivalStats_Fact& b) {
     a.Swap(&b);
@@ -12299,7 +12138,7 @@ class CCSUsrMsg_SurvivalStats_Placement :
                &_CCSUsrMsg_SurvivalStats_Placement_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    61;
+    60;
 
   friend void swap(CCSUsrMsg_SurvivalStats_Placement& a, CCSUsrMsg_SurvivalStats_Placement& b) {
     a.Swap(&b);
@@ -12489,7 +12328,7 @@ class CCSUsrMsg_SurvivalStats_Damage :
                &_CCSUsrMsg_SurvivalStats_Damage_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    62;
+    61;
 
   friend void swap(CCSUsrMsg_SurvivalStats_Damage& a, CCSUsrMsg_SurvivalStats_Damage& b) {
     a.Swap(&b);
@@ -12709,7 +12548,7 @@ class CCSUsrMsg_SurvivalStats :
                &_CCSUsrMsg_SurvivalStats_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    63;
+    62;
 
   friend void swap(CCSUsrMsg_SurvivalStats& a, CCSUsrMsg_SurvivalStats& b) {
     a.Swap(&b);
@@ -12948,7 +12787,7 @@ class CCSUsrMsg_EndOfMatchAllPlayersData_Accolade :
                &_CCSUsrMsg_EndOfMatchAllPlayersData_Accolade_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    64;
+    63;
 
   friend void swap(CCSUsrMsg_EndOfMatchAllPlayersData_Accolade& a, CCSUsrMsg_EndOfMatchAllPlayersData_Accolade& b) {
     a.Swap(&b);
@@ -13138,7 +12977,7 @@ class CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData :
                &_CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    65;
+    64;
 
   friend void swap(CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData& a, CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData& b) {
     a.Swap(&b);
@@ -13418,7 +13257,7 @@ class CCSUsrMsg_EndOfMatchAllPlayersData :
                &_CCSUsrMsg_EndOfMatchAllPlayersData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    66;
+    65;
 
   friend void swap(CCSUsrMsg_EndOfMatchAllPlayersData& a, CCSUsrMsg_EndOfMatchAllPlayersData& b) {
     a.Swap(&b);
@@ -13601,7 +13440,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent_Victim :
                &_CCSUsrMsg_RoundEndReportData_RerEvent_Victim_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    67;
+    66;
 
   friend void swap(CCSUsrMsg_RoundEndReportData_RerEvent_Victim& a, CCSUsrMsg_RoundEndReportData_RerEvent_Victim& b) {
     a.Swap(&b);
@@ -13836,7 +13675,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent_Objective :
                &_CCSUsrMsg_RoundEndReportData_RerEvent_Objective_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    68;
+    67;
 
   friend void swap(CCSUsrMsg_RoundEndReportData_RerEvent_Objective& a, CCSUsrMsg_RoundEndReportData_RerEvent_Objective& b) {
     a.Swap(&b);
@@ -13996,7 +13835,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent_Damage :
                &_CCSUsrMsg_RoundEndReportData_RerEvent_Damage_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    69;
+    68;
 
   friend void swap(CCSUsrMsg_RoundEndReportData_RerEvent_Damage& a, CCSUsrMsg_RoundEndReportData_RerEvent_Damage& b) {
     a.Swap(&b);
@@ -14231,7 +14070,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent :
                &_CCSUsrMsg_RoundEndReportData_RerEvent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    70;
+    69;
 
   friend void swap(CCSUsrMsg_RoundEndReportData_RerEvent& a, CCSUsrMsg_RoundEndReportData_RerEvent& b) {
     a.Swap(&b);
@@ -14500,7 +14339,7 @@ class CCSUsrMsg_RoundEndReportData_InitialConditions :
                &_CCSUsrMsg_RoundEndReportData_InitialConditions_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    71;
+    70;
 
   friend void swap(CCSUsrMsg_RoundEndReportData_InitialConditions& a, CCSUsrMsg_RoundEndReportData_InitialConditions& b) {
     a.Swap(&b);
@@ -14690,7 +14529,7 @@ class CCSUsrMsg_RoundEndReportData :
                &_CCSUsrMsg_RoundEndReportData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    72;
+    71;
 
   friend void swap(CCSUsrMsg_RoundEndReportData& a, CCSUsrMsg_RoundEndReportData& b) {
     a.Swap(&b);
@@ -14878,7 +14717,7 @@ class CCSUsrMsg_PostRoundDamageReport :
                &_CCSUsrMsg_PostRoundDamageReport_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    73;
+    72;
 
   friend void swap(CCSUsrMsg_PostRoundDamageReport& a, CCSUsrMsg_PostRoundDamageReport& b) {
     a.Swap(&b);
@@ -15128,7 +14967,7 @@ class CCSUsrMsg_CurrentRoundOdds :
                &_CCSUsrMsg_CurrentRoundOdds_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    74;
+    73;
 
   friend void swap(CCSUsrMsg_CurrentRoundOdds& a, CCSUsrMsg_CurrentRoundOdds& b) {
     a.Swap(&b);
@@ -15288,7 +15127,7 @@ class CCSUsrMsg_DeepStats :
                &_CCSUsrMsg_DeepStats_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    75;
+    74;
 
   friend void swap(CCSUsrMsg_DeepStats& a, CCSUsrMsg_DeepStats& b) {
     a.Swap(&b);
@@ -15453,7 +15292,7 @@ class CCSUsrMsg_ShootInfo :
                &_CCSUsrMsg_ShootInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    76;
+    75;
 
   friend void swap(CCSUsrMsg_ShootInfo& a, CCSUsrMsg_ShootInfo& b) {
     a.Swap(&b);
@@ -15673,7 +15512,7 @@ class CCSUsrMsg_ResetHud :
                &_CCSUsrMsg_ResetHud_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    77;
+    76;
 
   friend void swap(CCSUsrMsg_ResetHud& a, CCSUsrMsg_ResetHud& b) {
     a.Swap(&b);
@@ -15833,7 +15672,7 @@ class CCSUsrMsg_GameTitle :
                &_CCSUsrMsg_GameTitle_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    78;
+    77;
 
   friend void swap(CCSUsrMsg_GameTitle& a, CCSUsrMsg_GameTitle& b) {
     a.Swap(&b);
@@ -15993,7 +15832,7 @@ class CCSUsrMsg_RequestState :
                &_CCSUsrMsg_RequestState_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    79;
+    78;
 
   friend void swap(CCSUsrMsg_RequestState& a, CCSUsrMsg_RequestState& b) {
     a.Swap(&b);
@@ -16153,7 +15992,7 @@ class CCSUsrMsg_StopSpectatorMode :
                &_CCSUsrMsg_StopSpectatorMode_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    80;
+    79;
 
   friend void swap(CCSUsrMsg_StopSpectatorMode& a, CCSUsrMsg_StopSpectatorMode& b) {
     a.Swap(&b);
@@ -16313,7 +16152,7 @@ class CCSUsrMsg_DisconnectToLobby :
                &_CCSUsrMsg_DisconnectToLobby_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    81;
+    80;
 
   friend void swap(CCSUsrMsg_DisconnectToLobby& a, CCSUsrMsg_DisconnectToLobby& b) {
     a.Swap(&b);
@@ -16418,166 +16257,6 @@ class CCSUsrMsg_DisconnectToLobby :
 };
 // -------------------------------------------------------------------
 
-class CCSUsrMsg_WarmupHasEnded :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_WarmupHasEnded) */ {
- public:
-  inline CCSUsrMsg_WarmupHasEnded() : CCSUsrMsg_WarmupHasEnded(nullptr) {}
-  ~CCSUsrMsg_WarmupHasEnded() override;
-  explicit PROTOBUF_CONSTEXPR CCSUsrMsg_WarmupHasEnded(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CCSUsrMsg_WarmupHasEnded(const CCSUsrMsg_WarmupHasEnded& from);
-  CCSUsrMsg_WarmupHasEnded(CCSUsrMsg_WarmupHasEnded&& from) noexcept
-    : CCSUsrMsg_WarmupHasEnded() {
-    *this = ::std::move(from);
-  }
-
-  inline CCSUsrMsg_WarmupHasEnded& operator=(const CCSUsrMsg_WarmupHasEnded& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CCSUsrMsg_WarmupHasEnded& operator=(CCSUsrMsg_WarmupHasEnded&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CCSUsrMsg_WarmupHasEnded& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CCSUsrMsg_WarmupHasEnded* internal_default_instance() {
-    return reinterpret_cast<const CCSUsrMsg_WarmupHasEnded*>(
-               &_CCSUsrMsg_WarmupHasEnded_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    82;
-
-  friend void swap(CCSUsrMsg_WarmupHasEnded& a, CCSUsrMsg_WarmupHasEnded& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CCSUsrMsg_WarmupHasEnded* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CCSUsrMsg_WarmupHasEnded* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CCSUsrMsg_WarmupHasEnded* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CCSUsrMsg_WarmupHasEnded>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CCSUsrMsg_WarmupHasEnded& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CCSUsrMsg_WarmupHasEnded& from) {
-    CCSUsrMsg_WarmupHasEnded::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CCSUsrMsg_WarmupHasEnded* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CCSUsrMsg_WarmupHasEnded";
-  }
-  protected:
-  explicit CCSUsrMsg_WarmupHasEnded(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kDummyFieldNumber = 1,
-  };
-  // optional int32 dummy = 1;
-  bool has_dummy() const;
-  private:
-  bool _internal_has_dummy() const;
-  public:
-  void clear_dummy();
-  int32_t dummy() const;
-  void set_dummy(int32_t value);
-  private:
-  int32_t _internal_dummy() const;
-  void _internal_set_dummy(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:CCSUsrMsg_WarmupHasEnded)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    int32_t dummy_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_cstrike15_5fusermessages_2eproto;
-};
-// -------------------------------------------------------------------
-
 class CCSUsrMsg_ClientInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_ClientInfo) */ {
  public:
@@ -16633,7 +16312,7 @@ class CCSUsrMsg_ClientInfo :
                &_CCSUsrMsg_ClientInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    83;
+    81;
 
   friend void swap(CCSUsrMsg_ClientInfo& a, CCSUsrMsg_ClientInfo& b) {
     a.Swap(&b);
@@ -16793,7 +16472,7 @@ class CCSUsrMsg_ServerRankRevealAll :
                &_CCSUsrMsg_ServerRankRevealAll_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    84;
+    82;
 
   friend void swap(CCSUsrMsg_ServerRankRevealAll& a, CCSUsrMsg_ServerRankRevealAll& b) {
     a.Swap(&b);
@@ -16973,7 +16652,7 @@ class CCSUsrMsgPreMatchSayText :
                &_CCSUsrMsgPreMatchSayText_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    85;
+    83;
 
   friend void swap(CCSUsrMsgPreMatchSayText& a, CCSUsrMsgPreMatchSayText& b) {
     a.Swap(&b);
@@ -17168,7 +16847,7 @@ class CCSUsrMsg_CounterStrafe :
                &_CCSUsrMsg_CounterStrafe_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    86;
+    84;
 
   friend void swap(CCSUsrMsg_CounterStrafe& a, CCSUsrMsg_CounterStrafe& b) {
     a.Swap(&b);
@@ -17343,7 +17022,7 @@ class CCSUsrMsg_DamagePrediction :
                &_CCSUsrMsg_DamagePrediction_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    87;
+    85;
 
   friend void swap(CCSUsrMsg_DamagePrediction& a, CCSUsrMsg_DamagePrediction& b) {
     a.Swap(&b);
@@ -17623,7 +17302,7 @@ class CCSUsrMsg_RecurringMissionSchema :
                &_CCSUsrMsg_RecurringMissionSchema_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    88;
+    86;
 
   friend void swap(CCSUsrMsg_RecurringMissionSchema& a, CCSUsrMsg_RecurringMissionSchema& b) {
     a.Swap(&b);
@@ -17742,6 +17421,383 @@ class CCSUsrMsg_RecurringMissionSchema :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr mission_schema_;
     uint32_t period_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cstrike15_5fusermessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CCSUsrMsg_SendPlayerLoadout_LoadoutItem :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_SendPlayerLoadout.LoadoutItem) */ {
+ public:
+  inline CCSUsrMsg_SendPlayerLoadout_LoadoutItem() : CCSUsrMsg_SendPlayerLoadout_LoadoutItem(nullptr) {}
+  ~CCSUsrMsg_SendPlayerLoadout_LoadoutItem() override;
+  explicit PROTOBUF_CONSTEXPR CCSUsrMsg_SendPlayerLoadout_LoadoutItem(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CCSUsrMsg_SendPlayerLoadout_LoadoutItem(const CCSUsrMsg_SendPlayerLoadout_LoadoutItem& from);
+  CCSUsrMsg_SendPlayerLoadout_LoadoutItem(CCSUsrMsg_SendPlayerLoadout_LoadoutItem&& from) noexcept
+    : CCSUsrMsg_SendPlayerLoadout_LoadoutItem() {
+    *this = ::std::move(from);
+  }
+
+  inline CCSUsrMsg_SendPlayerLoadout_LoadoutItem& operator=(const CCSUsrMsg_SendPlayerLoadout_LoadoutItem& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CCSUsrMsg_SendPlayerLoadout_LoadoutItem& operator=(CCSUsrMsg_SendPlayerLoadout_LoadoutItem&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CCSUsrMsg_SendPlayerLoadout_LoadoutItem& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CCSUsrMsg_SendPlayerLoadout_LoadoutItem* internal_default_instance() {
+    return reinterpret_cast<const CCSUsrMsg_SendPlayerLoadout_LoadoutItem*>(
+               &_CCSUsrMsg_SendPlayerLoadout_LoadoutItem_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    87;
+
+  friend void swap(CCSUsrMsg_SendPlayerLoadout_LoadoutItem& a, CCSUsrMsg_SendPlayerLoadout_LoadoutItem& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CCSUsrMsg_SendPlayerLoadout_LoadoutItem* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CCSUsrMsg_SendPlayerLoadout_LoadoutItem* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CCSUsrMsg_SendPlayerLoadout_LoadoutItem* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CCSUsrMsg_SendPlayerLoadout_LoadoutItem>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CCSUsrMsg_SendPlayerLoadout_LoadoutItem& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CCSUsrMsg_SendPlayerLoadout_LoadoutItem& from) {
+    CCSUsrMsg_SendPlayerLoadout_LoadoutItem::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CCSUsrMsg_SendPlayerLoadout_LoadoutItem* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CCSUsrMsg_SendPlayerLoadout.LoadoutItem";
+  }
+  protected:
+  explicit CCSUsrMsg_SendPlayerLoadout_LoadoutItem(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kEconItemFieldNumber = 1,
+    kTeamFieldNumber = 2,
+    kSlotFieldNumber = 3,
+  };
+  // optional .CEconItemPreviewDataBlock econ_item = 1;
+  bool has_econ_item() const;
+  private:
+  bool _internal_has_econ_item() const;
+  public:
+  void clear_econ_item();
+  const ::CEconItemPreviewDataBlock& econ_item() const;
+  PROTOBUF_NODISCARD ::CEconItemPreviewDataBlock* release_econ_item();
+  ::CEconItemPreviewDataBlock* mutable_econ_item();
+  void set_allocated_econ_item(::CEconItemPreviewDataBlock* econ_item);
+  private:
+  const ::CEconItemPreviewDataBlock& _internal_econ_item() const;
+  ::CEconItemPreviewDataBlock* _internal_mutable_econ_item();
+  public:
+  void unsafe_arena_set_allocated_econ_item(
+      ::CEconItemPreviewDataBlock* econ_item);
+  ::CEconItemPreviewDataBlock* unsafe_arena_release_econ_item();
+
+  // optional int32 team = 2;
+  bool has_team() const;
+  private:
+  bool _internal_has_team() const;
+  public:
+  void clear_team();
+  int32_t team() const;
+  void set_team(int32_t value);
+  private:
+  int32_t _internal_team() const;
+  void _internal_set_team(int32_t value);
+  public:
+
+  // optional int32 slot = 3;
+  bool has_slot() const;
+  private:
+  bool _internal_has_slot() const;
+  public:
+  void clear_slot();
+  int32_t slot() const;
+  void set_slot(int32_t value);
+  private:
+  int32_t _internal_slot() const;
+  void _internal_set_slot(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CCSUsrMsg_SendPlayerLoadout.LoadoutItem)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::CEconItemPreviewDataBlock* econ_item_;
+    int32_t team_;
+    int32_t slot_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cstrike15_5fusermessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CCSUsrMsg_SendPlayerLoadout :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_SendPlayerLoadout) */ {
+ public:
+  inline CCSUsrMsg_SendPlayerLoadout() : CCSUsrMsg_SendPlayerLoadout(nullptr) {}
+  ~CCSUsrMsg_SendPlayerLoadout() override;
+  explicit PROTOBUF_CONSTEXPR CCSUsrMsg_SendPlayerLoadout(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CCSUsrMsg_SendPlayerLoadout(const CCSUsrMsg_SendPlayerLoadout& from);
+  CCSUsrMsg_SendPlayerLoadout(CCSUsrMsg_SendPlayerLoadout&& from) noexcept
+    : CCSUsrMsg_SendPlayerLoadout() {
+    *this = ::std::move(from);
+  }
+
+  inline CCSUsrMsg_SendPlayerLoadout& operator=(const CCSUsrMsg_SendPlayerLoadout& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CCSUsrMsg_SendPlayerLoadout& operator=(CCSUsrMsg_SendPlayerLoadout&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CCSUsrMsg_SendPlayerLoadout& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CCSUsrMsg_SendPlayerLoadout* internal_default_instance() {
+    return reinterpret_cast<const CCSUsrMsg_SendPlayerLoadout*>(
+               &_CCSUsrMsg_SendPlayerLoadout_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    88;
+
+  friend void swap(CCSUsrMsg_SendPlayerLoadout& a, CCSUsrMsg_SendPlayerLoadout& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CCSUsrMsg_SendPlayerLoadout* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CCSUsrMsg_SendPlayerLoadout* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CCSUsrMsg_SendPlayerLoadout* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CCSUsrMsg_SendPlayerLoadout>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CCSUsrMsg_SendPlayerLoadout& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CCSUsrMsg_SendPlayerLoadout& from) {
+    CCSUsrMsg_SendPlayerLoadout::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CCSUsrMsg_SendPlayerLoadout* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CCSUsrMsg_SendPlayerLoadout";
+  }
+  protected:
+  explicit CCSUsrMsg_SendPlayerLoadout(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef CCSUsrMsg_SendPlayerLoadout_LoadoutItem LoadoutItem;
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kLoadoutFieldNumber = 1,
+    kPlayerslotFieldNumber = 2,
+  };
+  // repeated .CCSUsrMsg_SendPlayerLoadout.LoadoutItem loadout = 1;
+  int loadout_size() const;
+  private:
+  int _internal_loadout_size() const;
+  public:
+  void clear_loadout();
+  ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem* mutable_loadout(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem >*
+      mutable_loadout();
+  private:
+  const ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem& _internal_loadout(int index) const;
+  ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem* _internal_add_loadout();
+  public:
+  const ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem& loadout(int index) const;
+  ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem* add_loadout();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem >&
+      loadout() const;
+
+  // optional int32 playerslot = 2 [default = -1];
+  bool has_playerslot() const;
+  private:
+  bool _internal_has_playerslot() const;
+  public:
+  void clear_playerslot();
+  int32_t playerslot() const;
+  void set_playerslot(int32_t value);
+  private:
+  int32_t _internal_playerslot() const;
+  void _internal_set_playerslot(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CCSUsrMsg_SendPlayerLoadout)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem > loadout_;
+    int32_t playerslot_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_cstrike15_5fusermessages_2eproto;
@@ -24156,38 +24212,6 @@ inline void CCSUsrMsg_ItemDrop::set_death(bool value) {
 
 // -------------------------------------------------------------------
 
-// CCSUsrMsg_GlowPropTurnOff
-
-// optional int32 entidx = 1 [default = -1];
-inline bool CCSUsrMsg_GlowPropTurnOff::_internal_has_entidx() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool CCSUsrMsg_GlowPropTurnOff::has_entidx() const {
-  return _internal_has_entidx();
-}
-inline void CCSUsrMsg_GlowPropTurnOff::clear_entidx() {
-  _impl_.entidx_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-inline int32_t CCSUsrMsg_GlowPropTurnOff::_internal_entidx() const {
-  return _impl_.entidx_;
-}
-inline int32_t CCSUsrMsg_GlowPropTurnOff::entidx() const {
-  // @@protoc_insertion_point(field_get:CCSUsrMsg_GlowPropTurnOff.entidx)
-  return _internal_entidx();
-}
-inline void CCSUsrMsg_GlowPropTurnOff::_internal_set_entidx(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.entidx_ = value;
-}
-inline void CCSUsrMsg_GlowPropTurnOff::set_entidx(int32_t value) {
-  _internal_set_entidx(value);
-  // @@protoc_insertion_point(field_set:CCSUsrMsg_GlowPropTurnOff.entidx)
-}
-
-// -------------------------------------------------------------------
-
 // CCSUsrMsg_RoundBackupFilenames
 
 // optional int32 count = 1;
@@ -27159,38 +27183,6 @@ inline void CCSUsrMsg_DisconnectToLobby::set_dummy(int32_t value) {
 
 // -------------------------------------------------------------------
 
-// CCSUsrMsg_WarmupHasEnded
-
-// optional int32 dummy = 1;
-inline bool CCSUsrMsg_WarmupHasEnded::_internal_has_dummy() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool CCSUsrMsg_WarmupHasEnded::has_dummy() const {
-  return _internal_has_dummy();
-}
-inline void CCSUsrMsg_WarmupHasEnded::clear_dummy() {
-  _impl_.dummy_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-inline int32_t CCSUsrMsg_WarmupHasEnded::_internal_dummy() const {
-  return _impl_.dummy_;
-}
-inline int32_t CCSUsrMsg_WarmupHasEnded::dummy() const {
-  // @@protoc_insertion_point(field_get:CCSUsrMsg_WarmupHasEnded.dummy)
-  return _internal_dummy();
-}
-inline void CCSUsrMsg_WarmupHasEnded::_internal_set_dummy(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.dummy_ = value;
-}
-inline void CCSUsrMsg_WarmupHasEnded::set_dummy(int32_t value) {
-  _internal_set_dummy(value);
-  // @@protoc_insertion_point(field_set:CCSUsrMsg_WarmupHasEnded.dummy)
-}
-
-// -------------------------------------------------------------------
-
 // CCSUsrMsg_ClientInfo
 
 // optional int32 dummy = 1;
@@ -28031,6 +28023,225 @@ inline void CCSUsrMsg_RecurringMissionSchema::set_allocated_mission_schema(std::
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:CCSUsrMsg_RecurringMissionSchema.mission_schema)
+}
+
+// -------------------------------------------------------------------
+
+// CCSUsrMsg_SendPlayerLoadout_LoadoutItem
+
+// optional .CEconItemPreviewDataBlock econ_item = 1;
+inline bool CCSUsrMsg_SendPlayerLoadout_LoadoutItem::_internal_has_econ_item() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.econ_item_ != nullptr);
+  return value;
+}
+inline bool CCSUsrMsg_SendPlayerLoadout_LoadoutItem::has_econ_item() const {
+  return _internal_has_econ_item();
+}
+inline const ::CEconItemPreviewDataBlock& CCSUsrMsg_SendPlayerLoadout_LoadoutItem::_internal_econ_item() const {
+  const ::CEconItemPreviewDataBlock* p = _impl_.econ_item_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CEconItemPreviewDataBlock&>(
+      ::_CEconItemPreviewDataBlock_default_instance_);
+}
+inline const ::CEconItemPreviewDataBlock& CCSUsrMsg_SendPlayerLoadout_LoadoutItem::econ_item() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_SendPlayerLoadout.LoadoutItem.econ_item)
+  return _internal_econ_item();
+}
+inline void CCSUsrMsg_SendPlayerLoadout_LoadoutItem::unsafe_arena_set_allocated_econ_item(
+    ::CEconItemPreviewDataBlock* econ_item) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.econ_item_);
+  }
+  _impl_.econ_item_ = econ_item;
+  if (econ_item) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CCSUsrMsg_SendPlayerLoadout.LoadoutItem.econ_item)
+}
+inline ::CEconItemPreviewDataBlock* CCSUsrMsg_SendPlayerLoadout_LoadoutItem::release_econ_item() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CEconItemPreviewDataBlock* temp = _impl_.econ_item_;
+  _impl_.econ_item_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CEconItemPreviewDataBlock* CCSUsrMsg_SendPlayerLoadout_LoadoutItem::unsafe_arena_release_econ_item() {
+  // @@protoc_insertion_point(field_release:CCSUsrMsg_SendPlayerLoadout.LoadoutItem.econ_item)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CEconItemPreviewDataBlock* temp = _impl_.econ_item_;
+  _impl_.econ_item_ = nullptr;
+  return temp;
+}
+inline ::CEconItemPreviewDataBlock* CCSUsrMsg_SendPlayerLoadout_LoadoutItem::_internal_mutable_econ_item() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.econ_item_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CEconItemPreviewDataBlock>(GetArenaForAllocation());
+    _impl_.econ_item_ = p;
+  }
+  return _impl_.econ_item_;
+}
+inline ::CEconItemPreviewDataBlock* CCSUsrMsg_SendPlayerLoadout_LoadoutItem::mutable_econ_item() {
+  ::CEconItemPreviewDataBlock* _msg = _internal_mutable_econ_item();
+  // @@protoc_insertion_point(field_mutable:CCSUsrMsg_SendPlayerLoadout.LoadoutItem.econ_item)
+  return _msg;
+}
+inline void CCSUsrMsg_SendPlayerLoadout_LoadoutItem::set_allocated_econ_item(::CEconItemPreviewDataBlock* econ_item) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.econ_item_);
+  }
+  if (econ_item) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(econ_item));
+    if (message_arena != submessage_arena) {
+      econ_item = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, econ_item, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.econ_item_ = econ_item;
+  // @@protoc_insertion_point(field_set_allocated:CCSUsrMsg_SendPlayerLoadout.LoadoutItem.econ_item)
+}
+
+// optional int32 team = 2;
+inline bool CCSUsrMsg_SendPlayerLoadout_LoadoutItem::_internal_has_team() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_SendPlayerLoadout_LoadoutItem::has_team() const {
+  return _internal_has_team();
+}
+inline void CCSUsrMsg_SendPlayerLoadout_LoadoutItem::clear_team() {
+  _impl_.team_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline int32_t CCSUsrMsg_SendPlayerLoadout_LoadoutItem::_internal_team() const {
+  return _impl_.team_;
+}
+inline int32_t CCSUsrMsg_SendPlayerLoadout_LoadoutItem::team() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_SendPlayerLoadout.LoadoutItem.team)
+  return _internal_team();
+}
+inline void CCSUsrMsg_SendPlayerLoadout_LoadoutItem::_internal_set_team(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.team_ = value;
+}
+inline void CCSUsrMsg_SendPlayerLoadout_LoadoutItem::set_team(int32_t value) {
+  _internal_set_team(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_SendPlayerLoadout.LoadoutItem.team)
+}
+
+// optional int32 slot = 3;
+inline bool CCSUsrMsg_SendPlayerLoadout_LoadoutItem::_internal_has_slot() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_SendPlayerLoadout_LoadoutItem::has_slot() const {
+  return _internal_has_slot();
+}
+inline void CCSUsrMsg_SendPlayerLoadout_LoadoutItem::clear_slot() {
+  _impl_.slot_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline int32_t CCSUsrMsg_SendPlayerLoadout_LoadoutItem::_internal_slot() const {
+  return _impl_.slot_;
+}
+inline int32_t CCSUsrMsg_SendPlayerLoadout_LoadoutItem::slot() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_SendPlayerLoadout.LoadoutItem.slot)
+  return _internal_slot();
+}
+inline void CCSUsrMsg_SendPlayerLoadout_LoadoutItem::_internal_set_slot(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.slot_ = value;
+}
+inline void CCSUsrMsg_SendPlayerLoadout_LoadoutItem::set_slot(int32_t value) {
+  _internal_set_slot(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_SendPlayerLoadout.LoadoutItem.slot)
+}
+
+// -------------------------------------------------------------------
+
+// CCSUsrMsg_SendPlayerLoadout
+
+// repeated .CCSUsrMsg_SendPlayerLoadout.LoadoutItem loadout = 1;
+inline int CCSUsrMsg_SendPlayerLoadout::_internal_loadout_size() const {
+  return _impl_.loadout_.size();
+}
+inline int CCSUsrMsg_SendPlayerLoadout::loadout_size() const {
+  return _internal_loadout_size();
+}
+inline void CCSUsrMsg_SendPlayerLoadout::clear_loadout() {
+  _impl_.loadout_.Clear();
+}
+inline ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem* CCSUsrMsg_SendPlayerLoadout::mutable_loadout(int index) {
+  // @@protoc_insertion_point(field_mutable:CCSUsrMsg_SendPlayerLoadout.loadout)
+  return _impl_.loadout_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem >*
+CCSUsrMsg_SendPlayerLoadout::mutable_loadout() {
+  // @@protoc_insertion_point(field_mutable_list:CCSUsrMsg_SendPlayerLoadout.loadout)
+  return &_impl_.loadout_;
+}
+inline const ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem& CCSUsrMsg_SendPlayerLoadout::_internal_loadout(int index) const {
+  return _impl_.loadout_.Get(index);
+}
+inline const ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem& CCSUsrMsg_SendPlayerLoadout::loadout(int index) const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_SendPlayerLoadout.loadout)
+  return _internal_loadout(index);
+}
+inline ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem* CCSUsrMsg_SendPlayerLoadout::_internal_add_loadout() {
+  return _impl_.loadout_.Add();
+}
+inline ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem* CCSUsrMsg_SendPlayerLoadout::add_loadout() {
+  ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem* _add = _internal_add_loadout();
+  // @@protoc_insertion_point(field_add:CCSUsrMsg_SendPlayerLoadout.loadout)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem >&
+CCSUsrMsg_SendPlayerLoadout::loadout() const {
+  // @@protoc_insertion_point(field_list:CCSUsrMsg_SendPlayerLoadout.loadout)
+  return _impl_.loadout_;
+}
+
+// optional int32 playerslot = 2 [default = -1];
+inline bool CCSUsrMsg_SendPlayerLoadout::_internal_has_playerslot() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_SendPlayerLoadout::has_playerslot() const {
+  return _internal_has_playerslot();
+}
+inline void CCSUsrMsg_SendPlayerLoadout::clear_playerslot() {
+  _impl_.playerslot_ = -1;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline int32_t CCSUsrMsg_SendPlayerLoadout::_internal_playerslot() const {
+  return _impl_.playerslot_;
+}
+inline int32_t CCSUsrMsg_SendPlayerLoadout::playerslot() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_SendPlayerLoadout.playerslot)
+  return _internal_playerslot();
+}
+inline void CCSUsrMsg_SendPlayerLoadout::_internal_set_playerslot(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.playerslot_ = value;
+}
+inline void CCSUsrMsg_SendPlayerLoadout::set_playerslot(int32_t value) {
+  _internal_set_playerslot(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_SendPlayerLoadout.playerslot)
 }
 
 #ifdef __GNUC__
