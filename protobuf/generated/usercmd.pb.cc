@@ -45,8 +45,8 @@ PROTOBUF_CONSTEXPR CSubtickMoveStep::CSubtickMoveStep(
   , /*decltype(_impl_.when_)*/0
   , /*decltype(_impl_.analog_forward_delta_)*/0
   , /*decltype(_impl_.analog_left_delta_)*/0
-  , /*decltype(_impl_.analog_pitch_delta_)*/0
-  , /*decltype(_impl_.analog_yaw_delta_)*/0} {}
+  , /*decltype(_impl_.pitch_delta_)*/0
+  , /*decltype(_impl_.yaw_delta_)*/0} {}
 struct CSubtickMoveStepDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CSubtickMoveStepDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -129,8 +129,8 @@ const uint32_t TableStruct_usercmd_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
   PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.when_),
   PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.analog_forward_delta_),
   PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.analog_left_delta_),
-  PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.analog_pitch_delta_),
-  PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.analog_yaw_delta_),
+  PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.pitch_delta_),
+  PROTOBUF_FIELD_OFFSET(::CSubtickMoveStep, _impl_.yaw_delta_),
   0,
   1,
   2,
@@ -207,31 +207,31 @@ const char descriptor_table_protodef_usercmd_2eproto[] PROTOBUF_SECTION_VARIABLE
   "\n\rusercmd.proto\032\026networkbasetypes.proto\""
   "T\n\020CInButtonStatePB\022\024\n\014buttonstate1\030\001 \001("
   "\004\022\024\n\014buttonstate2\030\002 \001(\004\022\024\n\014buttonstate3\030"
-  "\003 \001(\004\"\260\001\n\020CSubtickMoveStep\022\016\n\006button\030\001 \001"
+  "\003 \001(\004\"\242\001\n\020CSubtickMoveStep\022\016\n\006button\030\001 \001"
   "(\004\022\017\n\007pressed\030\002 \001(\010\022\014\n\004when\030\003 \001(\002\022\034\n\024ana"
   "log_forward_delta\030\004 \001(\002\022\031\n\021analog_left_d"
-  "elta\030\005 \001(\002\022\032\n\022analog_pitch_delta\030\006 \001(\002\022\030"
-  "\n\020analog_yaw_delta\030\007 \001(\002\"\343\003\n\016CBaseUserCm"
-  "dPB\022\035\n\025legacy_command_number\030\001 \001(\005\022\023\n\013cl"
-  "ient_tick\030\002 \001(\005\022$\n\034prediction_offset_tic"
-  "ks_x256\030\021 \001(\r\022%\n\nbuttons_pb\030\003 \001(\0132\021.CInB"
-  "uttonStatePB\022\037\n\nviewangles\030\004 \001(\0132\013.CMsgQ"
-  "Angle\022\023\n\013forwardmove\030\005 \001(\002\022\020\n\010leftmove\030\006"
-  " \001(\002\022\016\n\006upmove\030\007 \001(\002\022\017\n\007impulse\030\010 \001(\005\022\024\n"
-  "\014weaponselect\030\t \001(\005\022\023\n\013random_seed\030\n \001(\005"
-  "\022\017\n\007mousedx\030\013 \001(\005\022\017\n\007mousedy\030\014 \001(\005\022$\n\022pa"
-  "wn_entity_handle\030\016 \001(\r:\01016777215\022(\n\rsubt"
-  "ick_moves\030\022 \003(\0132\021.CSubtickMoveStep\022\020\n\010mo"
-  "ve_crc\030\023 \001(\014\022%\n\035consumed_server_angle_ch"
-  "anges\030\024 \001(\r\022\021\n\tcmd_flags\030\025 \001(\005\"/\n\016CUserC"
-  "mdBasePB\022\035\n\004base\030\001 \001(\0132\017.CBaseUserCmdPB"
+  "elta\030\005 \001(\002\022\023\n\013pitch_delta\030\010 \001(\002\022\021\n\tyaw_d"
+  "elta\030\t \001(\002\"\343\003\n\016CBaseUserCmdPB\022\035\n\025legacy_"
+  "command_number\030\001 \001(\005\022\023\n\013client_tick\030\002 \001("
+  "\005\022$\n\034prediction_offset_ticks_x256\030\021 \001(\r\022"
+  "%\n\nbuttons_pb\030\003 \001(\0132\021.CInButtonStatePB\022\037"
+  "\n\nviewangles\030\004 \001(\0132\013.CMsgQAngle\022\023\n\013forwa"
+  "rdmove\030\005 \001(\002\022\020\n\010leftmove\030\006 \001(\002\022\016\n\006upmove"
+  "\030\007 \001(\002\022\017\n\007impulse\030\010 \001(\005\022\024\n\014weaponselect\030"
+  "\t \001(\005\022\023\n\013random_seed\030\n \001(\005\022\017\n\007mousedx\030\013 "
+  "\001(\005\022\017\n\007mousedy\030\014 \001(\005\022$\n\022pawn_entity_hand"
+  "le\030\016 \001(\r:\01016777215\022(\n\rsubtick_moves\030\022 \003("
+  "\0132\021.CSubtickMoveStep\022\020\n\010move_crc\030\023 \001(\014\022%"
+  "\n\035consumed_server_angle_changes\030\024 \001(\r\022\021\n"
+  "\tcmd_flags\030\025 \001(\005\"/\n\016CUserCmdBasePB\022\035\n\004ba"
+  "se\030\001 \001(\0132\017.CBaseUserCmdPB"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_usercmd_2eproto_deps[1] = {
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_usercmd_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_usercmd_2eproto = {
-    false, false, 839, descriptor_table_protodef_usercmd_2eproto,
+    false, false, 825, descriptor_table_protodef_usercmd_2eproto,
     "usercmd.proto",
     &descriptor_table_usercmd_2eproto_once, descriptor_table_usercmd_2eproto_deps, 1, 4,
     schemas, file_default_instances, TableStruct_usercmd_2eproto::offsets,
@@ -530,10 +530,10 @@ class CSubtickMoveStep::_Internal {
   static void set_has_analog_left_delta(HasBits* has_bits) {
     (*has_bits)[0] |= 16u;
   }
-  static void set_has_analog_pitch_delta(HasBits* has_bits) {
+  static void set_has_pitch_delta(HasBits* has_bits) {
     (*has_bits)[0] |= 32u;
   }
-  static void set_has_analog_yaw_delta(HasBits* has_bits) {
+  static void set_has_yaw_delta(HasBits* has_bits) {
     (*has_bits)[0] |= 64u;
   }
 };
@@ -555,13 +555,13 @@ CSubtickMoveStep::CSubtickMoveStep(const CSubtickMoveStep& from)
     , decltype(_impl_.when_){}
     , decltype(_impl_.analog_forward_delta_){}
     , decltype(_impl_.analog_left_delta_){}
-    , decltype(_impl_.analog_pitch_delta_){}
-    , decltype(_impl_.analog_yaw_delta_){}};
+    , decltype(_impl_.pitch_delta_){}
+    , decltype(_impl_.yaw_delta_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.button_, &from._impl_.button_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.analog_yaw_delta_) -
-    reinterpret_cast<char*>(&_impl_.button_)) + sizeof(_impl_.analog_yaw_delta_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.yaw_delta_) -
+    reinterpret_cast<char*>(&_impl_.button_)) + sizeof(_impl_.yaw_delta_));
   // @@protoc_insertion_point(copy_constructor:CSubtickMoveStep)
 }
 
@@ -577,8 +577,8 @@ inline void CSubtickMoveStep::SharedCtor(
     , decltype(_impl_.when_){0}
     , decltype(_impl_.analog_forward_delta_){0}
     , decltype(_impl_.analog_left_delta_){0}
-    , decltype(_impl_.analog_pitch_delta_){0}
-    , decltype(_impl_.analog_yaw_delta_){0}
+    , decltype(_impl_.pitch_delta_){0}
+    , decltype(_impl_.yaw_delta_){0}
   };
 }
 
@@ -608,8 +608,8 @@ void CSubtickMoveStep::Clear() {
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x0000007fu) {
     ::memset(&_impl_.button_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.analog_yaw_delta_) -
-        reinterpret_cast<char*>(&_impl_.button_)) + sizeof(_impl_.analog_yaw_delta_));
+        reinterpret_cast<char*>(&_impl_.yaw_delta_) -
+        reinterpret_cast<char*>(&_impl_.button_)) + sizeof(_impl_.yaw_delta_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -667,20 +667,20 @@ const char* CSubtickMoveStep::_InternalParse(const char* ptr, ::_pbi::ParseConte
         } else
           goto handle_unusual;
         continue;
-      // optional float analog_pitch_delta = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 53)) {
-          _Internal::set_has_analog_pitch_delta(&has_bits);
-          _impl_.analog_pitch_delta_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+      // optional float pitch_delta = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 69)) {
+          _Internal::set_has_pitch_delta(&has_bits);
+          _impl_.pitch_delta_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
         } else
           goto handle_unusual;
         continue;
-      // optional float analog_yaw_delta = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 61)) {
-          _Internal::set_has_analog_yaw_delta(&has_bits);
-          _impl_.analog_yaw_delta_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+      // optional float yaw_delta = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 77)) {
+          _Internal::set_has_yaw_delta(&has_bits);
+          _impl_.yaw_delta_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
         } else
           goto handle_unusual;
@@ -746,16 +746,16 @@ uint8_t* CSubtickMoveStep::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFloatToArray(5, this->_internal_analog_left_delta(), target);
   }
 
-  // optional float analog_pitch_delta = 6;
+  // optional float pitch_delta = 8;
   if (cached_has_bits & 0x00000020u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFloatToArray(6, this->_internal_analog_pitch_delta(), target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(8, this->_internal_pitch_delta(), target);
   }
 
-  // optional float analog_yaw_delta = 7;
+  // optional float yaw_delta = 9;
   if (cached_has_bits & 0x00000040u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFloatToArray(7, this->_internal_analog_yaw_delta(), target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(9, this->_internal_yaw_delta(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -801,12 +801,12 @@ size_t CSubtickMoveStep::ByteSizeLong() const {
       total_size += 1 + 4;
     }
 
-    // optional float analog_pitch_delta = 6;
+    // optional float pitch_delta = 8;
     if (cached_has_bits & 0x00000020u) {
       total_size += 1 + 4;
     }
 
-    // optional float analog_yaw_delta = 7;
+    // optional float yaw_delta = 9;
     if (cached_has_bits & 0x00000040u) {
       total_size += 1 + 4;
     }
@@ -848,10 +848,10 @@ void CSubtickMoveStep::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const
       _this->_impl_.analog_left_delta_ = from._impl_.analog_left_delta_;
     }
     if (cached_has_bits & 0x00000020u) {
-      _this->_impl_.analog_pitch_delta_ = from._impl_.analog_pitch_delta_;
+      _this->_impl_.pitch_delta_ = from._impl_.pitch_delta_;
     }
     if (cached_has_bits & 0x00000040u) {
-      _this->_impl_.analog_yaw_delta_ = from._impl_.analog_yaw_delta_;
+      _this->_impl_.yaw_delta_ = from._impl_.yaw_delta_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
@@ -874,8 +874,8 @@ void CSubtickMoveStep::InternalSwap(CSubtickMoveStep* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CSubtickMoveStep, _impl_.analog_yaw_delta_)
-      + sizeof(CSubtickMoveStep::_impl_.analog_yaw_delta_)
+      PROTOBUF_FIELD_OFFSET(CSubtickMoveStep, _impl_.yaw_delta_)
+      + sizeof(CSubtickMoveStep::_impl_.yaw_delta_)
       - PROTOBUF_FIELD_OFFSET(CSubtickMoveStep, _impl_.button_)>(
           reinterpret_cast<char*>(&_impl_.button_),
           reinterpret_cast<char*>(&other->_impl_.button_));

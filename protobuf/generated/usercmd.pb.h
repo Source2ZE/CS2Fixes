@@ -389,8 +389,8 @@ class CSubtickMoveStep :
     kWhenFieldNumber = 3,
     kAnalogForwardDeltaFieldNumber = 4,
     kAnalogLeftDeltaFieldNumber = 5,
-    kAnalogPitchDeltaFieldNumber = 6,
-    kAnalogYawDeltaFieldNumber = 7,
+    kPitchDeltaFieldNumber = 8,
+    kYawDeltaFieldNumber = 9,
   };
   // optional uint64 button = 1;
   bool has_button() const;
@@ -457,30 +457,30 @@ class CSubtickMoveStep :
   void _internal_set_analog_left_delta(float value);
   public:
 
-  // optional float analog_pitch_delta = 6;
-  bool has_analog_pitch_delta() const;
+  // optional float pitch_delta = 8;
+  bool has_pitch_delta() const;
   private:
-  bool _internal_has_analog_pitch_delta() const;
+  bool _internal_has_pitch_delta() const;
   public:
-  void clear_analog_pitch_delta();
-  float analog_pitch_delta() const;
-  void set_analog_pitch_delta(float value);
+  void clear_pitch_delta();
+  float pitch_delta() const;
+  void set_pitch_delta(float value);
   private:
-  float _internal_analog_pitch_delta() const;
-  void _internal_set_analog_pitch_delta(float value);
+  float _internal_pitch_delta() const;
+  void _internal_set_pitch_delta(float value);
   public:
 
-  // optional float analog_yaw_delta = 7;
-  bool has_analog_yaw_delta() const;
+  // optional float yaw_delta = 9;
+  bool has_yaw_delta() const;
   private:
-  bool _internal_has_analog_yaw_delta() const;
+  bool _internal_has_yaw_delta() const;
   public:
-  void clear_analog_yaw_delta();
-  float analog_yaw_delta() const;
-  void set_analog_yaw_delta(float value);
+  void clear_yaw_delta();
+  float yaw_delta() const;
+  void set_yaw_delta(float value);
   private:
-  float _internal_analog_yaw_delta() const;
-  void _internal_set_analog_yaw_delta(float value);
+  float _internal_yaw_delta() const;
+  void _internal_set_yaw_delta(float value);
   public:
 
   // @@protoc_insertion_point(class_scope:CSubtickMoveStep)
@@ -498,8 +498,8 @@ class CSubtickMoveStep :
     float when_;
     float analog_forward_delta_;
     float analog_left_delta_;
-    float analog_pitch_delta_;
-    float analog_yaw_delta_;
+    float pitch_delta_;
+    float yaw_delta_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_usercmd_2eproto;
@@ -1343,60 +1343,60 @@ inline void CSubtickMoveStep::set_analog_left_delta(float value) {
   // @@protoc_insertion_point(field_set:CSubtickMoveStep.analog_left_delta)
 }
 
-// optional float analog_pitch_delta = 6;
-inline bool CSubtickMoveStep::_internal_has_analog_pitch_delta() const {
+// optional float pitch_delta = 8;
+inline bool CSubtickMoveStep::_internal_has_pitch_delta() const {
   bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
-inline bool CSubtickMoveStep::has_analog_pitch_delta() const {
-  return _internal_has_analog_pitch_delta();
+inline bool CSubtickMoveStep::has_pitch_delta() const {
+  return _internal_has_pitch_delta();
 }
-inline void CSubtickMoveStep::clear_analog_pitch_delta() {
-  _impl_.analog_pitch_delta_ = 0;
+inline void CSubtickMoveStep::clear_pitch_delta() {
+  _impl_.pitch_delta_ = 0;
   _impl_._has_bits_[0] &= ~0x00000020u;
 }
-inline float CSubtickMoveStep::_internal_analog_pitch_delta() const {
-  return _impl_.analog_pitch_delta_;
+inline float CSubtickMoveStep::_internal_pitch_delta() const {
+  return _impl_.pitch_delta_;
 }
-inline float CSubtickMoveStep::analog_pitch_delta() const {
-  // @@protoc_insertion_point(field_get:CSubtickMoveStep.analog_pitch_delta)
-  return _internal_analog_pitch_delta();
+inline float CSubtickMoveStep::pitch_delta() const {
+  // @@protoc_insertion_point(field_get:CSubtickMoveStep.pitch_delta)
+  return _internal_pitch_delta();
 }
-inline void CSubtickMoveStep::_internal_set_analog_pitch_delta(float value) {
+inline void CSubtickMoveStep::_internal_set_pitch_delta(float value) {
   _impl_._has_bits_[0] |= 0x00000020u;
-  _impl_.analog_pitch_delta_ = value;
+  _impl_.pitch_delta_ = value;
 }
-inline void CSubtickMoveStep::set_analog_pitch_delta(float value) {
-  _internal_set_analog_pitch_delta(value);
-  // @@protoc_insertion_point(field_set:CSubtickMoveStep.analog_pitch_delta)
+inline void CSubtickMoveStep::set_pitch_delta(float value) {
+  _internal_set_pitch_delta(value);
+  // @@protoc_insertion_point(field_set:CSubtickMoveStep.pitch_delta)
 }
 
-// optional float analog_yaw_delta = 7;
-inline bool CSubtickMoveStep::_internal_has_analog_yaw_delta() const {
+// optional float yaw_delta = 9;
+inline bool CSubtickMoveStep::_internal_has_yaw_delta() const {
   bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
-inline bool CSubtickMoveStep::has_analog_yaw_delta() const {
-  return _internal_has_analog_yaw_delta();
+inline bool CSubtickMoveStep::has_yaw_delta() const {
+  return _internal_has_yaw_delta();
 }
-inline void CSubtickMoveStep::clear_analog_yaw_delta() {
-  _impl_.analog_yaw_delta_ = 0;
+inline void CSubtickMoveStep::clear_yaw_delta() {
+  _impl_.yaw_delta_ = 0;
   _impl_._has_bits_[0] &= ~0x00000040u;
 }
-inline float CSubtickMoveStep::_internal_analog_yaw_delta() const {
-  return _impl_.analog_yaw_delta_;
+inline float CSubtickMoveStep::_internal_yaw_delta() const {
+  return _impl_.yaw_delta_;
 }
-inline float CSubtickMoveStep::analog_yaw_delta() const {
-  // @@protoc_insertion_point(field_get:CSubtickMoveStep.analog_yaw_delta)
-  return _internal_analog_yaw_delta();
+inline float CSubtickMoveStep::yaw_delta() const {
+  // @@protoc_insertion_point(field_get:CSubtickMoveStep.yaw_delta)
+  return _internal_yaw_delta();
 }
-inline void CSubtickMoveStep::_internal_set_analog_yaw_delta(float value) {
+inline void CSubtickMoveStep::_internal_set_yaw_delta(float value) {
   _impl_._has_bits_[0] |= 0x00000040u;
-  _impl_.analog_yaw_delta_ = value;
+  _impl_.yaw_delta_ = value;
 }
-inline void CSubtickMoveStep::set_analog_yaw_delta(float value) {
-  _internal_set_analog_yaw_delta(value);
-  // @@protoc_insertion_point(field_set:CSubtickMoveStep.analog_yaw_delta)
+inline void CSubtickMoveStep::set_yaw_delta(float value) {
+  _internal_set_yaw_delta(value);
+  // @@protoc_insertion_point(field_set:CSubtickMoveStep.yaw_delta)
 }
 
 // -------------------------------------------------------------------

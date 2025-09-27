@@ -2274,6 +2274,38 @@ struct CSOAccountXpShopBidsDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSOAccountXpShopBidsDefaultTypeInternal _CSOAccountXpShopBids_default_instance_;
+PROTOBUF_CONSTEXPR CSOVolatileItemOffer::CSOVolatileItemOffer(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.faux_itemid_)*/{}
+  , /*decltype(_impl_.generation_time_)*/{}
+  , /*decltype(_impl_.defidx_)*/0u} {}
+struct CSOVolatileItemOfferDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CSOVolatileItemOfferDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CSOVolatileItemOfferDefaultTypeInternal() {}
+  union {
+    CSOVolatileItemOffer _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSOVolatileItemOfferDefaultTypeInternal _CSOVolatileItemOffer_default_instance_;
+PROTOBUF_CONSTEXPR CSOVolatileItemClaimedRewards::CSOVolatileItemClaimedRewards(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.reward_)*/{}
+  , /*decltype(_impl_.generation_time_)*/{}
+  , /*decltype(_impl_.defidx_)*/0u} {}
+struct CSOVolatileItemClaimedRewardsDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CSOVolatileItemClaimedRewardsDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CSOVolatileItemClaimedRewardsDefaultTypeInternal() {}
+  union {
+    CSOVolatileItemClaimedRewards _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSOVolatileItemClaimedRewardsDefaultTypeInternal _CSOVolatileItemClaimedRewards_default_instance_;
 PROTOBUF_CONSTEXPR CSOAccountKeychainRemoveToolCharges::CSOAccountKeychainRemoveToolCharges(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
@@ -3185,7 +3217,7 @@ struct CMsgRecurringMissionSchemaDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgRecurringMissionSchemaDefaultTypeInternal _CMsgRecurringMissionSchema_default_instance_;
-static ::_pb::Metadata file_level_metadata_cstrike15_5fgcmessages_2eproto[178];
+static ::_pb::Metadata file_level_metadata_cstrike15_5fgcmessages_2eproto[180];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_cstrike15_5fgcmessages_2eproto[5];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_cstrike15_5fgcmessages_2eproto = nullptr;
 
@@ -5273,6 +5305,30 @@ const uint32_t TableStruct_cstrike15_5fgcmessages_2eproto::offsets[] PROTOBUF_SE
   1,
   2,
   3,
+  PROTOBUF_FIELD_OFFSET(::CSOVolatileItemOffer, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CSOVolatileItemOffer, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CSOVolatileItemOffer, _impl_.defidx_),
+  PROTOBUF_FIELD_OFFSET(::CSOVolatileItemOffer, _impl_.faux_itemid_),
+  PROTOBUF_FIELD_OFFSET(::CSOVolatileItemOffer, _impl_.generation_time_),
+  0,
+  ~0u,
+  ~0u,
+  PROTOBUF_FIELD_OFFSET(::CSOVolatileItemClaimedRewards, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CSOVolatileItemClaimedRewards, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CSOVolatileItemClaimedRewards, _impl_.defidx_),
+  PROTOBUF_FIELD_OFFSET(::CSOVolatileItemClaimedRewards, _impl_.reward_),
+  PROTOBUF_FIELD_OFFSET(::CSOVolatileItemClaimedRewards, _impl_.generation_time_),
+  0,
+  ~0u,
+  ~0u,
   PROTOBUF_FIELD_OFFSET(::CSOAccountKeychainRemoveToolCharges, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CSOAccountKeychainRemoveToolCharges, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -6115,62 +6171,64 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 2045, 2054, -1, sizeof(::CSOAccountItemPersonalStore)},
   { 2057, 2066, -1, sizeof(::CSOAccountXpShop)},
   { 2069, 2079, -1, sizeof(::CSOAccountXpShopBids)},
-  { 2083, 2090, -1, sizeof(::CSOAccountKeychainRemoveToolCharges)},
-  { 2091, 2100, -1, sizeof(::CSOQuestProgress)},
-  { 2103, 2116, -1, sizeof(::CSOAccountSeasonalOperation)},
-  { 2123, 2131, -1, sizeof(::CSOAccountRecurringSubscription)},
-  { 2133, 2142, -1, sizeof(::CSOGameAccountSteamChina)},
-  { 2145, 2156, -1, sizeof(::CSOPersonaDataPublic)},
-  { 2161, 2171, -1, sizeof(::CSOAccountRecurringMission)},
-  { 2175, 2185, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientNotifyXPShop)},
-  { 2189, -1, -1, sizeof(::CMsgGCCStrike15_v2_Client2GcAckXPShopTracks)},
-  { 2195, 2206, -1, sizeof(::CMsgGCCStrike15_v2_MatchmakingGC2ClientSearchStats)},
-  { 2211, 2218, -1, sizeof(::CMsgGC_GlobalGame_Subscribe)},
-  { 2219, 2226, -1, sizeof(::CMsgGC_GlobalGame_Unsubscribe)},
-  { 2227, 2236, -1, sizeof(::CMsgGC_GlobalGame_Play)},
-  { 2239, 2246, -1, sizeof(::CMsgGCCStrike15_v2_AcknowledgePenalty)},
-  { 2247, 2257, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin)},
-  { 2261, 2269, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCStreamUnlock)},
-  { 2271, 2278, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCRequestElevate)},
-  { 2279, 2287, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCChat)},
-  { 2289, 2297, -1, sizeof(::CMsgGCCStrike15_v2_GCToClientChat)},
-  { 2299, 2307, -1, sizeof(::CMsgGCCStrike15_v2_ClientAuthKeyCode)},
-  { 2309, 2316, -1, sizeof(::CMsgGCCStrike15_GotvSyncPacket)},
-  { 2317, 2337, -1, sizeof(::PlayerDecalDigitalSignature)},
-  { 2351, 2359, -1, sizeof(::CMsgGCCStrike15_v2_ClientPlayerDecalSign)},
-  { 2361, 2368, -1, sizeof(::CMsgGCCStrike15_v2_BetaEnrollment)},
-  { 2369, 2378, -1, sizeof(::CMsgGCCStrike15_v2_ClientLogonFatalError)},
-  { 2381, 2390, -1, sizeof(::CMsgGCCStrike15_v2_ClientPollState)},
-  { 2393, 2408, -1, sizeof(::CMsgGCCStrike15_v2_Party_Register)},
-  { 2417, 2429, -1, sizeof(::CMsgGCCStrike15_v2_Party_Search)},
-  { 2435, 2448, -1, sizeof(::CMsgGCCStrike15_v2_Party_SearchResults_Entry)},
-  { 2455, -1, -1, sizeof(::CMsgGCCStrike15_v2_Party_SearchResults)},
-  { 2462, 2470, -1, sizeof(::CMsgGCCStrike15_v2_Party_Invite)},
-  { 2472, 2481, -1, sizeof(::CMsgGCCStrike15_v2_Account_RequestCoPlays_Player)},
-  { 2484, 2492, -1, sizeof(::CMsgGCCStrike15_v2_Account_RequestCoPlays)},
-  { 2494, 2504, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCRequestTicket)},
-  { 2508, 2515, -1, sizeof(::CMsgGCToClientSteamDatagramTicket)},
-  { 2516, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestOffers)},
-  { 2522, 2531, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestSouvenir)},
-  { 2534, 2542, -1, sizeof(::CMsgGCCStrike15_v2_ClientAccountBalance)},
-  { 2544, 2552, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyJoinRelay)},
-  { 2554, 2562, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyWarning_Entry)},
-  { 2564, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyWarning)},
-  { 2571, 2579, -1, sizeof(::CMsgGCCStrike15_v2_SetEventFavorite)},
-  { 2581, 2588, -1, sizeof(::CMsgGCCStrike15_v2_GetEventFavorites_Request)},
-  { 2589, 2598, -1, sizeof(::CMsgGCCStrike15_v2_GetEventFavorites_Response)},
-  { 2601, 2613, -1, sizeof(::CMsgGCCStrike15_v2_ClientPerfReport_Entry)},
-  { 2619, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientPerfReport)},
-  { 2626, 2636, -1, sizeof(::CVDiagnostic)},
-  { 2640, 2666, -1, sizeof(::CMsgGCCStrike15_v2_ClientReportValidation)},
-  { 2686, 2701, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)},
-  { 2710, 2718, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientRequestValidation)},
-  { 2720, 2735, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientInitSystem)},
-  { 2744, 2760, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)},
-  { 2770, 2777, -1, sizeof(::CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName)},
-  { 2778, -1, -1, sizeof(::CMsgRequestRecurringMissionSchedule)},
-  { 2784, 2792, -1, sizeof(::CMsgRecurringMissionSchema_MissionTemplateList)},
-  { 2794, -1, -1, sizeof(::CMsgRecurringMissionSchema)},
+  { 2083, 2092, -1, sizeof(::CSOVolatileItemOffer)},
+  { 2095, 2104, -1, sizeof(::CSOVolatileItemClaimedRewards)},
+  { 2107, 2114, -1, sizeof(::CSOAccountKeychainRemoveToolCharges)},
+  { 2115, 2124, -1, sizeof(::CSOQuestProgress)},
+  { 2127, 2140, -1, sizeof(::CSOAccountSeasonalOperation)},
+  { 2147, 2155, -1, sizeof(::CSOAccountRecurringSubscription)},
+  { 2157, 2166, -1, sizeof(::CSOGameAccountSteamChina)},
+  { 2169, 2180, -1, sizeof(::CSOPersonaDataPublic)},
+  { 2185, 2195, -1, sizeof(::CSOAccountRecurringMission)},
+  { 2199, 2209, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientNotifyXPShop)},
+  { 2213, -1, -1, sizeof(::CMsgGCCStrike15_v2_Client2GcAckXPShopTracks)},
+  { 2219, 2230, -1, sizeof(::CMsgGCCStrike15_v2_MatchmakingGC2ClientSearchStats)},
+  { 2235, 2242, -1, sizeof(::CMsgGC_GlobalGame_Subscribe)},
+  { 2243, 2250, -1, sizeof(::CMsgGC_GlobalGame_Unsubscribe)},
+  { 2251, 2260, -1, sizeof(::CMsgGC_GlobalGame_Play)},
+  { 2263, 2270, -1, sizeof(::CMsgGCCStrike15_v2_AcknowledgePenalty)},
+  { 2271, 2281, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin)},
+  { 2285, 2293, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCStreamUnlock)},
+  { 2295, 2302, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCRequestElevate)},
+  { 2303, 2311, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCChat)},
+  { 2313, 2321, -1, sizeof(::CMsgGCCStrike15_v2_GCToClientChat)},
+  { 2323, 2331, -1, sizeof(::CMsgGCCStrike15_v2_ClientAuthKeyCode)},
+  { 2333, 2340, -1, sizeof(::CMsgGCCStrike15_GotvSyncPacket)},
+  { 2341, 2361, -1, sizeof(::PlayerDecalDigitalSignature)},
+  { 2375, 2383, -1, sizeof(::CMsgGCCStrike15_v2_ClientPlayerDecalSign)},
+  { 2385, 2392, -1, sizeof(::CMsgGCCStrike15_v2_BetaEnrollment)},
+  { 2393, 2402, -1, sizeof(::CMsgGCCStrike15_v2_ClientLogonFatalError)},
+  { 2405, 2414, -1, sizeof(::CMsgGCCStrike15_v2_ClientPollState)},
+  { 2417, 2432, -1, sizeof(::CMsgGCCStrike15_v2_Party_Register)},
+  { 2441, 2453, -1, sizeof(::CMsgGCCStrike15_v2_Party_Search)},
+  { 2459, 2472, -1, sizeof(::CMsgGCCStrike15_v2_Party_SearchResults_Entry)},
+  { 2479, -1, -1, sizeof(::CMsgGCCStrike15_v2_Party_SearchResults)},
+  { 2486, 2494, -1, sizeof(::CMsgGCCStrike15_v2_Party_Invite)},
+  { 2496, 2505, -1, sizeof(::CMsgGCCStrike15_v2_Account_RequestCoPlays_Player)},
+  { 2508, 2516, -1, sizeof(::CMsgGCCStrike15_v2_Account_RequestCoPlays)},
+  { 2518, 2528, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCRequestTicket)},
+  { 2532, 2539, -1, sizeof(::CMsgGCToClientSteamDatagramTicket)},
+  { 2540, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestOffers)},
+  { 2546, 2555, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestSouvenir)},
+  { 2558, 2566, -1, sizeof(::CMsgGCCStrike15_v2_ClientAccountBalance)},
+  { 2568, 2576, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyJoinRelay)},
+  { 2578, 2586, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyWarning_Entry)},
+  { 2588, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyWarning)},
+  { 2595, 2603, -1, sizeof(::CMsgGCCStrike15_v2_SetEventFavorite)},
+  { 2605, 2612, -1, sizeof(::CMsgGCCStrike15_v2_GetEventFavorites_Request)},
+  { 2613, 2622, -1, sizeof(::CMsgGCCStrike15_v2_GetEventFavorites_Response)},
+  { 2625, 2637, -1, sizeof(::CMsgGCCStrike15_v2_ClientPerfReport_Entry)},
+  { 2643, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientPerfReport)},
+  { 2650, 2660, -1, sizeof(::CVDiagnostic)},
+  { 2664, 2690, -1, sizeof(::CMsgGCCStrike15_v2_ClientReportValidation)},
+  { 2710, 2725, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)},
+  { 2734, 2742, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientRequestValidation)},
+  { 2744, 2759, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientInitSystem)},
+  { 2768, 2784, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)},
+  { 2794, 2801, -1, sizeof(::CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName)},
+  { 2802, -1, -1, sizeof(::CMsgRequestRecurringMissionSchedule)},
+  { 2808, 2816, -1, sizeof(::CMsgRecurringMissionSchema_MissionTemplateList)},
+  { 2818, -1, -1, sizeof(::CMsgRecurringMissionSchema)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -6296,6 +6354,8 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CSOAccountItemPersonalStore_default_instance_._instance,
   &::_CSOAccountXpShop_default_instance_._instance,
   &::_CSOAccountXpShopBids_default_instance_._instance,
+  &::_CSOVolatileItemOffer_default_instance_._instance,
+  &::_CSOVolatileItemClaimedRewards_default_instance_._instance,
   &::_CSOAccountKeychainRemoveToolCharges_default_instance_._instance,
   &::_CSOQuestProgress_default_instance_._instance,
   &::_CSOAccountSeasonalOperation_default_instance_._instance,
@@ -6898,317 +6958,323 @@ const char descriptor_table_protodef_cstrike15_5fgcmessages_2eproto[] PROTOBUF_S
   "(\r\"z\n\024CSOAccountXpShopBids\022\031\n\013campaign_i"
   "d\030\001 \001(\rB\004\200\246\035\001\022\027\n\tredeem_id\030\002 \001(\rB\004\200\246\035\001\022\025"
   "\n\rexpected_cost\030\003 \001(\r\022\027\n\017generation_time"
-  "\030\004 \001(\r\"6\n#CSOAccountKeychainRemoveToolCh"
-  "arges\022\017\n\007charges\030\001 \001(\r\"Y\n\020CSOQuestProgre"
-  "ss\022\025\n\007questid\030\001 \001(\rB\004\200\246\035\001\022\030\n\020points_rema"
-  "ining\030\002 \001(\r\022\024\n\014bonus_points\030\003 \001(\r\"\315\001\n\033CS"
-  "OAccountSeasonalOperation\022\032\n\014season_valu"
-  "e\030\001 \001(\rB\004\200\246\035\001\022\025\n\rtier_unlocked\030\002 \001(\r\022\025\n\r"
-  "premium_tiers\030\003 \001(\r\022\022\n\nmission_id\030\004 \001(\r\022"
-  "\032\n\022missions_completed\030\005 \001(\r\022\032\n\022redeemabl"
-  "e_balance\030\006 \001(\r\022\030\n\020season_pass_time\030\007 \001("
-  "\r\"R\n\037CSOAccountRecurringSubscription\022\027\n\017"
-  "time_next_cycle\030\001 \001(\r\022\026\n\016time_initiated\030"
-  "\002 \001(\r\"c\n\030CSOGameAccountSteamChina\022\030\n\020tim"
-  "e_last_update\030\001 \001(\r\022\026\n\016time_comms_ban\030\002 "
-  "\001(\r\022\025\n\rtime_play_ban\030\003 \001(\r\"\257\001\n\024CSOPerson"
-  "aDataPublic\022\024\n\014player_level\030\001 \001(\005\022-\n\014com"
-  "mendation\030\002 \001(\0132\027.PlayerCommendationInfo"
-  "\022\026\n\016elevated_state\030\003 \001(\010\022\"\n\032xp_trail_tim"
-  "estamp_refresh\030\004 \001(\r\022\026\n\016xp_trail_level\030\005"
-  " \001(\r\"f\n\032CSOAccountRecurringMission\022\022\n\nac"
-  "count_id\030\001 \001(\r\022\022\n\nmission_id\030\002 \001(\r\022\016\n\006pe"
-  "riod\030\003 \001(\r\022\020\n\010progress\030\004 \001(\r\"\240\001\n(CMsgGCC"
-  "Strike15_v2_GC2ClientNotifyXPShop\022#\n\010pre"
-  "match\030\001 \001(\0132\021.CSOAccountXpShop\022$\n\tpostma"
-  "tch\030\002 \001(\0132\021.CSOAccountXpShop\022\022\n\ncurrent_"
-  "xp\030\003 \001(\r\022\025\n\rcurrent_level\030\004 \001(\r\"-\n+CMsgG"
-  "CCStrike15_v2_Client2GcAckXPShopTracks\"\251"
-  "\001\n2CMsgGCCStrike15_v2_MatchmakingGC2Clie"
-  "ntSearchStats\022\026\n\016gs_location_id\030\001 \001(\r\022\026\n"
-  "\016data_center_id\030\002 \001(\r\022\025\n\rnum_locked_in\030\003"
-  " \001(\r\022\030\n\020num_found_nearby\030\004 \001(\r\022\022\n\nnote_l"
-  "evel\030\005 \001(\r\"-\n\033CMsgGC_GlobalGame_Subscrib"
-  "e\022\016\n\006ticket\030\001 \001(\004\"1\n\035CMsgGC_GlobalGame_U"
-  "nsubscribe\022\020\n\010timeleft\030\001 \001(\005\"P\n\026CMsgGC_G"
-  "lobalGame_Play\022\016\n\006ticket\030\001 \001(\004\022\022\n\ngameti"
-  "mems\030\002 \001(\r\022\022\n\nmsperpoint\030\003 \001(\r\"=\n%CMsgGC"
-  "CStrike15_v2_AcknowledgePenalty\022\024\n\014ackno"
-  "wledged\030\001 \001(\005\"{\n/CMsgGCCStrike15_v2_Clie"
-  "nt2GCRequestPrestigeCoin\022\020\n\010defindex\030\001 \001"
-  "(\r\022\021\n\tupgradeid\030\002 \001(\004\022\r\n\005hours\030\003 \001(\r\022\024\n\014"
-  "prestigetime\030\004 \001(\r\"F\n(CMsgGCCStrike15_v2"
-  "_Client2GCStreamUnlock\022\016\n\006ticket\030\001 \001(\004\022\n"
-  "\n\002os\030\002 \001(\005\"<\n+CMsgGCCStrike15_v2_ClientT"
-  "oGCRequestElevate\022\r\n\005stage\030\001 \001(\r\"C\n!CMsg"
-  "GCCStrike15_v2_ClientToGCChat\022\020\n\010match_i"
-  "d\030\001 \001(\004\022\014\n\004text\030\002 \001(\t\"E\n!CMsgGCCStrike15"
-  "_v2_GCToClientChat\022\022\n\naccount_id\030\001 \001(\r\022\014"
-  "\n\004text\030\002 \001(\t\"E\n$CMsgGCCStrike15_v2_Clien"
-  "tAuthKeyCode\022\017\n\007eventid\030\001 \001(\r\022\014\n\004code\030\002 "
-  "\001(\t\"F\n\036CMsgGCCStrike15_GotvSyncPacket\022$\n"
-  "\004data\030\001 \001(\0132\026.CEngineGotvSyncPacket\"\223\002\n\033"
-  "PlayerDecalDigitalSignature\022\021\n\tsignature"
-  "\030\001 \001(\014\022\021\n\taccountid\030\002 \001(\r\022\r\n\005rtime\030\003 \001(\r"
-  "\022\016\n\006endpos\030\004 \003(\002\022\020\n\010startpos\030\005 \003(\002\022\014\n\004le"
-  "ft\030\006 \003(\002\022\021\n\ttx_defidx\030\007 \001(\r\022\020\n\010entindex\030"
-  "\010 \001(\005\022\016\n\006hitbox\030\t \001(\r\022\024\n\014creationtime\030\n "
-  "\001(\002\022\021\n\tequipslot\030\013 \001(\r\022\020\n\010trace_id\030\014 \001(\r"
-  "\022\016\n\006normal\030\r \003(\002\022\017\n\007tint_id\030\016 \001(\r\"f\n(CMs"
-  "gGCCStrike15_v2_ClientPlayerDecalSign\022*\n"
-  "\004data\030\001 \001(\0132\034.PlayerDecalDigitalSignatur"
-  "e\022\016\n\006itemid\030\002 \001(\004\"4\n!CMsgGCCStrike15_v2_"
-  "BetaEnrollment\022\017\n\007eresult\030\001 \001(\r\"_\n(CMsgG"
-  "CCStrike15_v2_ClientLogonFatalError\022\021\n\te"
-  "rrorcode\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\022\017\n\007count"
-  "ry\030\003 \001(\t\"S\n\"CMsgGCCStrike15_v2_ClientPol"
-  "lState\022\016\n\006pollid\030\001 \001(\r\022\r\n\005names\030\002 \003(\t\022\016\n"
-  "\006values\030\003 \003(\005\"\244\001\n!CMsgGCCStrike15_v2_Par"
-  "ty_Register\022\n\n\002id\030\001 \001(\r\022\013\n\003ver\030\002 \001(\r\022\013\n\003"
-  "apr\030\003 \001(\r\022\013\n\003ark\030\004 \001(\r\022\013\n\003nby\030\005 \001(\r\022\013\n\003g"
-  "rp\030\006 \001(\r\022\r\n\005slots\030\007 \001(\r\022\020\n\010launcher\030\010 \001("
-  "\r\022\021\n\tgame_type\030\t \001(\r\"{\n\037CMsgGCCStrike15_"
-  "v2_Party_Search\022\013\n\003ver\030\001 \001(\r\022\013\n\003apr\030\002 \001("
-  "\r\022\013\n\003ark\030\003 \001(\r\022\014\n\004grps\030\004 \003(\r\022\020\n\010launcher"
-  "\030\005 \001(\r\022\021\n\tgame_type\030\006 \001(\r\"\327\001\n&CMsgGCCStr"
-  "ike15_v2_Party_SearchResults\022>\n\007entries\030"
-  "\001 \003(\0132-.CMsgGCCStrike15_v2_Party_SearchR"
-  "esults.Entry\032m\n\005Entry\022\n\n\002id\030\001 \001(\r\022\013\n\003grp"
-  "\030\002 \001(\r\022\021\n\tgame_type\030\003 \001(\r\022\013\n\003apr\030\004 \001(\r\022\013"
-  "\n\003ark\030\005 \001(\r\022\013\n\003loc\030\006 \001(\r\022\021\n\taccountid\030\007 "
-  "\001(\r\"E\n\037CMsgGCCStrike15_v2_Party_Invite\022\021"
-  "\n\taccountid\030\001 \001(\r\022\017\n\007lobbyid\030\002 \001(\r\"\302\001\n)C"
-  "MsgGCCStrike15_v2_Account_RequestCoPlays"
-  "\022B\n\007players\030\001 \003(\01321.CMsgGCCStrike15_v2_A"
-  "ccount_RequestCoPlays.Player\022\022\n\nserverti"
-  "me\030\002 \001(\r\032=\n\006Player\022\021\n\taccountid\030\001 \001(\r\022\020\n"
-  "\010rtcoplay\030\002 \001(\r\022\016\n\006online\030\003 \001(\010\"\244\001\n*CMsg"
-  "GCCStrike15_v2_ClientToGCRequestTicket\022\033"
-  "\n\023authorized_steam_id\030\001 \001(\006\022\034\n\024authorize"
-  "d_public_ip\030\002 \001(\007\022\033\n\023gameserver_steam_id"
-  "\030\003 \001(\006\022\036\n\026gameserver_sdr_routing\030\005 \001(\t\">"
-  "\n!CMsgGCToClientSteamDatagramTicket\022\031\n\021s"
-  "erialized_ticket\030\020 \001(\014\"(\n&CMsgGCCStrike1"
-  "5_v2_ClientRequestOffers\"\\\n(CMsgGCCStrik"
-  "e15_v2_ClientRequestSouvenir\022\016\n\006itemid\030\001"
-  " \001(\004\022\017\n\007matchid\030\002 \001(\004\022\017\n\007eventid\030\003 \001(\005\"F"
-  "\n\'CMsgGCCStrike15_v2_ClientAccountBalanc"
-  "e\022\016\n\006amount\030\001 \001(\004\022\013\n\003url\030\002 \001(\t\"M\n\'CMsgGC"
-  "CStrike15_v2_ClientPartyJoinRelay\022\021\n\tacc"
-  "ountid\030\001 \001(\r\022\017\n\007lobbyid\030\002 \001(\004\"\224\001\n%CMsgGC"
-  "CStrike15_v2_ClientPartyWarning\022=\n\007entri"
-  "es\030\001 \003(\0132,.CMsgGCCStrike15_v2_ClientPart"
-  "yWarning.Entry\032,\n\005Entry\022\021\n\taccountid\030\001 \001"
-  "(\r\022\020\n\010warntype\030\002 \001(\r\"K\n#CMsgGCCStrike15_"
-  "v2_SetEventFavorite\022\017\n\007eventid\030\001 \001(\004\022\023\n\013"
-  "is_favorite\030\002 \001(\010\"B\n,CMsgGCCStrike15_v2_"
-  "GetEventFavorites_Request\022\022\n\nall_events\030"
-  "\001 \001(\010\"r\n-CMsgGCCStrike15_v2_GetEventFavo"
-  "rites_Response\022\022\n\nall_events\030\001 \001(\010\022\026\n\016js"
-  "on_favorites\030\002 \001(\t\022\025\n\rjson_featured\030\003 \001("
-  "\t\"\325\001\n#CMsgGCCStrike15_v2_ClientPerfRepor"
-  "t\022;\n\007entries\030\001 \003(\0132*.CMsgGCCStrike15_v2_"
-  "ClientPerfReport.Entry\032q\n\005Entry\022\023\n\013perfc"
-  "ounter\030\001 \001(\r\022\016\n\006length\030\002 \001(\r\022\021\n\treferenc"
-  "e\030\003 \001(\014\022\016\n\006actual\030\004 \001(\014\022\020\n\010sourceid\030\005 \001("
-  "\r\022\016\n\006status\030\006 \001(\r\"Q\n\014CVDiagnostic\022\n\n\002id\030"
-  "\001 \001(\r\022\020\n\010extended\030\002 \001(\r\022\r\n\005value\030\003 \001(\004\022\024"
-  "\n\014string_value\030\004 \001(\t\"\360\003\n)CMsgGCCStrike15"
-  "_v2_ClientReportValidation\022\023\n\013file_repor"
-  "t\030\001 \001(\t\022\024\n\014command_line\030\002 \001(\t\022\023\n\013total_f"
-  "iles\030\003 \001(\r\022\026\n\016internal_error\030\004 \001(\r\022\022\n\ntr"
-  "ust_time\030\005 \001(\r\022\025\n\rcount_pending\030\006 \001(\r\022\027\n"
-  "\017count_completed\030\007 \001(\r\022\022\n\nprocess_id\030\010 \001"
-  "(\r\022\021\n\tosversion\030\t \001(\005\022\033\n\023clientreportver"
-  "sion\030\n \001(\r\022\021\n\tstatus_id\030\013 \001(\r\022\023\n\013diagnos"
-  "tic1\030\014 \001(\r\022\023\n\013diagnostic2\030\r \001(\004\022\023\n\013diagn"
-  "ostic3\030\016 \001(\004\022\030\n\020last_launch_data\030\017 \001(\t\022\024"
-  "\n\014report_count\030\020 \001(\r\022\023\n\013client_time\030\021 \001("
-  "\004\022\023\n\013diagnostic4\030\022 \001(\004\022\023\n\013diagnostic5\030\023 "
-  "\001(\004\022\"\n\013diagnostics\030\024 \003(\0132\r.CVDiagnostic\""
-  "\250\002\n,CMsgGCCStrike15_v2_GC2ClientRefuseSe"
-  "cureMode\022\023\n\013file_report\030\001 \001(\t\022\033\n\023offer_i"
-  "nsecure_mode\030\002 \001(\010\022\031\n\021offer_secure_mode\030"
-  "\003 \001(\010\022\030\n\020show_unsigned_ui\030\004 \001(\010\022\021\n\tkick_"
-  "user\030\005 \001(\010\022\027\n\017show_trusted_ui\030\006 \001(\010\022 \n\030s"
-  "how_warning_not_trusted\030\007 \001(\010\022\"\n\032show_wa"
-  "rning_not_trusted_2\030\010 \001(\010\022\037\n\027files_preve"
-  "nted_trusted\030\t \001(\t\"T\n-CMsgGCCStrike15_v2"
-  "_GC2ClientRequestValidation\022\023\n\013full_repo"
-  "rt\030\001 \001(\010\022\016\n\006module\030\002 \001(\t\"\313\001\n&CMsgGCCStri"
-  "ke15_v2_GC2ClientInitSystem\022\014\n\004load\030\001 \001("
-  "\010\022\014\n\004name\030\002 \001(\t\022\022\n\noutputname\030\003 \001(\t\022\020\n\010k"
-  "ey_data\030\004 \001(\014\022\020\n\010sha_hash\030\005 \001(\014\022\016\n\006cooki"
-  "e\030\006 \001(\005\022\020\n\010manifest\030\007 \001(\t\022\026\n\016system_pack"
-  "age\030\010 \001(\014\022\023\n\013load_system\030\t \001(\010\"\245\002\n/CMsgG"
-  "CCStrike15_v2_GC2ClientInitSystem_Respon"
-  "se\022\017\n\007success\030\001 \001(\010\022\022\n\ndiagnostic\030\002 \001(\t\022"
-  "\020\n\010sha_hash\030\003 \001(\014\022\020\n\010response\030\004 \001(\005\022\023\n\013e"
-  "rror_code1\030\005 \001(\005\022\023\n\013error_code2\030\006 \001(\005\022\016\n"
-  "\006handle\030\007 \001(\003\022E\n\014einit_result\030\010 \001(\0162\022.EI"
-  "nitSystemResult:\033k_EInitSystemResult_Inv"
-  "alid\022\023\n\013aux_system1\030\t \001(\005\022\023\n\013aux_system2"
-  "\030\n \001(\005\"P\n/CMsgGCCStrike15_v2_SetPlayerLe"
-  "aderboardSafeName\022\035\n\025leaderboard_safe_na"
-  "me\030\001 \001(\t\"%\n#CMsgRequestRecurringMissionS"
-  "chedule\"\241\001\n\032CMsgRecurringMissionSchema\022A"
-  "\n\010missions\030\001 \003(\0132/.CMsgRecurringMissionS"
-  "chema.MissionTemplateList\032@\n\023MissionTemp"
-  "lateList\022\016\n\006period\030\001 \001(\r\022\031\n\021mission_temp"
-  "lates\030\002 \003(\014*\226*\n\nECsgoGCMsg\022\036\n\031k_EMsgGCCS"
-  "trike15_v2_Base\020\214G\022*\n%k_EMsgGCCStrike15_"
-  "v2_MatchmakingStart\020\215G\022)\n$k_EMsgGCCStrik"
-  "e15_v2_MatchmakingStop\020\216G\0226\n1k_EMsgGCCSt"
-  "rike15_v2_MatchmakingClient2ServerPing\020\217"
-  "G\0224\n/k_EMsgGCCStrike15_v2_MatchmakingGC2"
-  "ClientUpdate\020\220G\022>\n9k_EMsgGCCStrike15_v2_"
-  "MatchmakingServerReservationResponse\020\222G\022"
-  "5\n0k_EMsgGCCStrike15_v2_MatchmakingGC2Cl"
-  "ientReserve\020\223G\0223\n.k_EMsgGCCStrike15_v2_M"
-  "atchmakingClient2GCHello\020\225G\0223\n.k_EMsgGCC"
-  "Strike15_v2_MatchmakingGC2ClientHello\020\226G"
-  "\0225\n0k_EMsgGCCStrike15_v2_MatchmakingGC2C"
-  "lientAbandon\020\230G\022:\n5k_EMsgGCCStrike15_v2_"
-  "MatchmakingOperator2GCBlogUpdate\020\235G\022:\n5k"
-  "_EMsgGCCStrike15_v2_ServerNotificationFo"
-  "rUserPenalty\020\236G\022,\n\'k_EMsgGCCStrike15_v2_"
-  "ClientReportPlayer\020\237G\022,\n\'k_EMsgGCCStrike"
-  "15_v2_ClientReportServer\020\240G\022-\n(k_EMsgGCC"
-  "Strike15_v2_ClientCommendPlayer\020\241G\022.\n)k_"
-  "EMsgGCCStrike15_v2_ClientReportResponse\020"
-  "\242G\0222\n-k_EMsgGCCStrike15_v2_ClientCommend"
-  "PlayerQuery\020\243G\022:\n5k_EMsgGCCStrike15_v2_C"
-  "lientCommendPlayerQueryResponse\020\244G\022(\n#k_"
-  "EMsgGCCStrike15_v2_WatchInfoUsers\020\246G\0225\n0"
-  "k_EMsgGCCStrike15_v2_ClientRequestPlayer"
-  "sProfile\020\247G\022(\n#k_EMsgGCCStrike15_v2_Play"
-  "ersProfile\020\250G\0223\n.k_EMsgGCCStrike15_v2_Pl"
-  "ayerOverwatchCaseUpdate\020\253G\0227\n2k_EMsgGCCS"
-  "trike15_v2_PlayerOverwatchCaseAssignment"
-  "\020\254G\0223\n.k_EMsgGCCStrike15_v2_PlayerOverwa"
-  "tchCaseStatus\020\255G\022*\n%k_EMsgGCCStrike15_v2"
-  "_GC2ClientTextMsg\020\256G\022*\n%k_EMsgGCCStrike1"
-  "5_v2_Client2GCTextMsg\020\257G\0220\n+k_EMsgGCCStr"
-  "ike15_v2_MatchEndRunRewardDrops\020\260G\0229\n4k_"
-  "EMsgGCCStrike15_v2_MatchEndRewardDropsNo"
-  "tification\020\261G\0228\n3k_EMsgGCCStrike15_v2_Cl"
-  "ientRequestWatchInfoFriends2\020\262G\022#\n\036k_EMs"
-  "gGCCStrike15_v2_MatchList\020\263G\022:\n5k_EMsgGC"
-  "CStrike15_v2_MatchListRequestCurrentLive"
-  "Games\020\264G\0229\n4k_EMsgGCCStrike15_v2_MatchLi"
-  "stRequestRecentUserGames\020\265G\0224\n/k_EMsgGCC"
-  "Strike15_v2_GC2ServerReservationUpdate\020\266"
-  "G\0228\n3k_EMsgGCCStrike15_v2_ClientVarValue"
-  "NotificationInfo\020\270G\0229\n4k_EMsgGCCStrike15"
-  "_v2_MatchListRequestTournamentGames\020\272G\0226"
-  "\n1k_EMsgGCCStrike15_v2_MatchListRequestF"
-  "ullGameInfo\020\273G\0221\n,k_EMsgGCCStrike15_v2_G"
-  "iftsLeaderboardRequest\020\274G\0222\n-k_EMsgGCCSt"
-  "rike15_v2_GiftsLeaderboardResponse\020\275G\0228\n"
-  "3k_EMsgGCCStrike15_v2_ServerVarValueNoti"
-  "ficationInfo\020\276G\0220\n+k_EMsgGCCStrike15_v2_"
-  "ClientSubmitSurveyVote\020\300G\0221\n,k_EMsgGCCSt"
-  "rike15_v2_Server2GCClientValidate\020\301G\0229\n4"
-  "k_EMsgGCCStrike15_v2_MatchListRequestLiv"
-  "eGameForUser\020\302G\022>\n9k_EMsgGCCStrike15_v2_"
-  "Client2GCEconPreviewDataBlockRequest\020\304G\022"
-  "\?\n:k_EMsgGCCStrike15_v2_Client2GCEconPre"
-  "viewDataBlockResponse\020\305G\0220\n+k_EMsgGCCStr"
-  "ike15_v2_AccountPrivacySettings\020\306G\022+\n&k_"
-  "EMsgGCCStrike15_v2_SetMyActivityInfo\020\307G\022"
-  "\?\n:k_EMsgGCCStrike15_v2_MatchListRequest"
-  "TournamentPredictions\020\310G\022>\n9k_EMsgGCCStr"
-  "ike15_v2_MatchListUploadTournamentPredic"
-  "tions\020\311G\022&\n!k_EMsgGCCStrike15_v2_DraftSu"
-  "mmary\020\312G\0225\n0k_EMsgGCCStrike15_v2_ClientR"
-  "equestJoinFriendData\020\313G\0225\n0k_EMsgGCCStri"
-  "ke15_v2_ClientRequestJoinServerData\020\314G\0221"
-  "\n,k_EMsgGCCStrike15_v2_GC2ClientTourname"
-  "ntInfo\020\317G\022\"\n\035k_EMsgGC_GlobalGame_Subscri"
-  "be\020\320G\022$\n\037k_EMsgGC_GlobalGame_Unsubscribe"
-  "\020\321G\022\035\n\030k_EMsgGC_GlobalGame_Play\020\322G\022,\n\'k_"
-  "EMsgGCCStrike15_v2_AcknowledgePenalty\020\323G"
-  "\0226\n1k_EMsgGCCStrike15_v2_Client2GCReques"
-  "tPrestigeCoin\020\324G\022.\n)k_EMsgGCCStrike15_v2"
-  "_GC2ClientGlobalStats\020\325G\022/\n*k_EMsgGCCStr"
-  "ike15_v2_Client2GCStreamUnlock\020\326G\0222\n-k_E"
-  "MsgGCCStrike15_v2_FantasyRequestClientDa"
-  "ta\020\327G\0221\n,k_EMsgGCCStrike15_v2_FantasyUpd"
-  "ateClientData\020\330G\0227\n2k_EMsgGCCStrike15_v2"
-  "_GCToClientSteamdatagramTicket\020\331G\0221\n,k_E"
-  "MsgGCCStrike15_v2_ClientToGCRequestTicke"
-  "t\020\332G\0222\n-k_EMsgGCCStrike15_v2_ClientToGCR"
-  "equestElevate\020\333G\022$\n\037k_EMsgGCCStrike15_v2"
-  "_GlobalChat\020\334G\022.\n)k_EMsgGCCStrike15_v2_G"
-  "lobalChat_Subscribe\020\335G\0220\n+k_EMsgGCCStrik"
-  "e15_v2_GlobalChat_Unsubscribe\020\336G\022+\n&k_EM"
-  "sgGCCStrike15_v2_ClientAuthKeyCode\020\337G\022(\n"
-  "#k_EMsgGCCStrike15_v2_GotvSyncPacket\020\340G\022"
-  "/\n*k_EMsgGCCStrike15_v2_ClientPlayerDeca"
-  "lSign\020\341G\022/\n*k_EMsgGCCStrike15_v2_ClientL"
-  "ogonFatalError\020\343G\022)\n$k_EMsgGCCStrike15_v"
-  "2_ClientPollState\020\344G\022(\n#k_EMsgGCCStrike1"
-  "5_v2_Party_Register\020\345G\022*\n%k_EMsgGCCStrik"
-  "e15_v2_Party_Unregister\020\346G\022&\n!k_EMsgGCCS"
-  "trike15_v2_Party_Search\020\347G\022&\n!k_EMsgGCCS"
-  "trike15_v2_Party_Invite\020\350G\0220\n+k_EMsgGCCS"
-  "trike15_v2_Account_RequestCoPlays\020\351G\022,\n\'"
-  "k_EMsgGCCStrike15_v2_ClientGCRankUpdate\020"
-  "\352G\022-\n(k_EMsgGCCStrike15_v2_ClientRequest"
-  "Offers\020\353G\022.\n)k_EMsgGCCStrike15_v2_Client"
-  "AccountBalance\020\354G\022.\n)k_EMsgGCCStrike15_v"
-  "2_ClientPartyJoinRelay\020\355G\022,\n\'k_EMsgGCCSt"
-  "rike15_v2_ClientPartyWarning\020\356G\022*\n%k_EMs"
-  "gGCCStrike15_v2_SetEventFavorite\020\360G\0223\n.k"
-  "_EMsgGCCStrike15_v2_GetEventFavorites_Re"
-  "quest\020\361G\022*\n%k_EMsgGCCStrike15_v2_ClientP"
-  "erfReport\020\362G\0224\n/k_EMsgGCCStrike15_v2_Get"
-  "EventFavorites_Response\020\363G\022/\n*k_EMsgGCCS"
-  "trike15_v2_ClientRequestSouvenir\020\364G\0220\n+k"
-  "_EMsgGCCStrike15_v2_ClientReportValidati"
-  "on\020\365G\0223\n.k_EMsgGCCStrike15_v2_GC2ClientR"
-  "efuseSecureMode\020\366G\0224\n/k_EMsgGCCStrike15_"
-  "v2_GC2ClientRequestValidation\020\367G\0223\n.k_EM"
-  "sgGCCStrike15_v2_ClientRedeemMissionRewa"
-  "rd\020\371G\022&\n!k_EMsgGCCStrike15_ClientDeepSta"
-  "ts\020\372G\0222\n-k_EMsgGCCStrike15_StartAgreemen"
-  "tSessionInGame\020\373G\022-\n(k_EMsgGCCStrike15_v"
-  "2_GC2ClientInitSystem\020\374G\0226\n1k_EMsgGCCStr"
-  "ike15_v2_GC2ClientInitSystem_Response\020\375G"
-  "\022\'\n\"k_EMsgGCCStrike15_v2_PrivateQueues\020\376"
-  "G\0229\n4k_EMsgGCCStrike15_v2_MatchListTourn"
-  "amentOperatorMgmt\020\377G\022(\n#k_EMsgGCCStrike1"
-  "5_v2_BetaEnrollment\020\201H\0226\n1k_EMsgGCCStrik"
-  "e15_v2_SetPlayerLeaderboardSafeName\020\202H\0220"
-  "\n+k_EMsgGCCStrike15_v2_ClientRedeemFreeR"
-  "eward\020\203H\022-\n(k_EMsgGCCStrike15_v2_ClientN"
-  "etworkConfig\020\204H\022/\n*k_EMsgGCCStrike15_v2_"
-  "GC2ClientNotifyXPShop\020\205H\0222\n-k_EMsgGCCStr"
-  "ike15_v2_Client2GcAckXPShopTracks\020\206H\0229\n4"
-  "k_EMsgGCCStrike15_v2_MatchmakingGC2Clien"
-  "tSearchStats\020\207H\022.\n)k_EMsgGCCStrike15_v2_"
-  "PremierSeasonSummary\020\210H\0229\n4k_EMsgGCCStri"
-  "ke15_v2_RequestRecurringMissionSchedule\020"
-  "\211H\0220\n+k_EMsgGCCStrike15_v2_RecurringMiss"
-  "ionSchema\020\212H*\230\001\n\022ECsgoSteamUserStat\022&\n\"k"
-  "_ECsgoSteamUserStat_XpEarnedGames\020\001\022-\n)k"
-  "_ECsgoSteamUserStat_MatchWinsCompetitive"
-  "\020\002\022+\n\'k_ECsgoSteamUserStat_SurvivedDange"
-  "rZone\020\003*J\n\tQuestType\022\032\n\026k_EQuestType_Ope"
-  "ration\020\001\022!\n\035k_EQuestType_RecurringMissio"
-  "n\020\002*\241\001\n\027EClientReportingVersion\022(\n$k_ECl"
-  "ientReportingVersion_OldVersion\020\000\022)\n%k_E"
-  "ClientReportingVersion_BetaVersion\020\001\0221\n-"
-  "k_EClientReportingVersion_SupportsTruste"
-  "dMode\020\002*\276\002\n\021EInitSystemResult\022\037\n\033k_EInit"
-  "SystemResult_Invalid\020\000\022\037\n\033k_EInitSystemR"
-  "esult_Success\020\001\022\034\n\030k_EInitSystemResult_N"
-  "one\020\002\022 \n\034k_EInitSystemResult_NotFound\020\003\022"
-  " \n\034k_EInitSystemResult_Existing\020\004\022\"\n\036k_E"
-  "InitSystemResult_FailedOpen\020\005\022 \n\034k_EInit"
-  "SystemResult_Mismatch\020\006\022\"\n\036k_EInitSystem"
-  "Result_FailedInit\020\007\022\033\n\027k_EInitSystemResu"
-  "lt_Max\020\010"
+  "\030\004 \001(\r\"Z\n\024CSOVolatileItemOffer\022\024\n\006defidx"
+  "\030\001 \001(\rB\004\200\246\035\001\022\023\n\013faux_itemid\030\002 \003(\004\022\027\n\017gen"
+  "eration_time\030\003 \003(\r\"^\n\035CSOVolatileItemCla"
+  "imedRewards\022\024\n\006defidx\030\001 \001(\rB\004\200\246\035\001\022\016\n\006rew"
+  "ard\030\002 \003(\r\022\027\n\017generation_time\030\003 \003(\r\"6\n#CS"
+  "OAccountKeychainRemoveToolCharges\022\017\n\007cha"
+  "rges\030\001 \001(\r\"Y\n\020CSOQuestProgress\022\025\n\007questi"
+  "d\030\001 \001(\rB\004\200\246\035\001\022\030\n\020points_remaining\030\002 \001(\r\022"
+  "\024\n\014bonus_points\030\003 \001(\r\"\315\001\n\033CSOAccountSeas"
+  "onalOperation\022\032\n\014season_value\030\001 \001(\rB\004\200\246\035"
+  "\001\022\025\n\rtier_unlocked\030\002 \001(\r\022\025\n\rpremium_tier"
+  "s\030\003 \001(\r\022\022\n\nmission_id\030\004 \001(\r\022\032\n\022missions_"
+  "completed\030\005 \001(\r\022\032\n\022redeemable_balance\030\006 "
+  "\001(\r\022\030\n\020season_pass_time\030\007 \001(\r\"R\n\037CSOAcco"
+  "untRecurringSubscription\022\027\n\017time_next_cy"
+  "cle\030\001 \001(\r\022\026\n\016time_initiated\030\002 \001(\r\"c\n\030CSO"
+  "GameAccountSteamChina\022\030\n\020time_last_updat"
+  "e\030\001 \001(\r\022\026\n\016time_comms_ban\030\002 \001(\r\022\025\n\rtime_"
+  "play_ban\030\003 \001(\r\"\257\001\n\024CSOPersonaDataPublic\022"
+  "\024\n\014player_level\030\001 \001(\005\022-\n\014commendation\030\002 "
+  "\001(\0132\027.PlayerCommendationInfo\022\026\n\016elevated"
+  "_state\030\003 \001(\010\022\"\n\032xp_trail_timestamp_refre"
+  "sh\030\004 \001(\r\022\026\n\016xp_trail_level\030\005 \001(\r\"f\n\032CSOA"
+  "ccountRecurringMission\022\022\n\naccount_id\030\001 \001"
+  "(\r\022\022\n\nmission_id\030\002 \001(\r\022\016\n\006period\030\003 \001(\r\022\020"
+  "\n\010progress\030\004 \001(\r\"\240\001\n(CMsgGCCStrike15_v2_"
+  "GC2ClientNotifyXPShop\022#\n\010prematch\030\001 \001(\0132"
+  "\021.CSOAccountXpShop\022$\n\tpostmatch\030\002 \001(\0132\021."
+  "CSOAccountXpShop\022\022\n\ncurrent_xp\030\003 \001(\r\022\025\n\r"
+  "current_level\030\004 \001(\r\"-\n+CMsgGCCStrike15_v"
+  "2_Client2GcAckXPShopTracks\"\251\001\n2CMsgGCCSt"
+  "rike15_v2_MatchmakingGC2ClientSearchStat"
+  "s\022\026\n\016gs_location_id\030\001 \001(\r\022\026\n\016data_center"
+  "_id\030\002 \001(\r\022\025\n\rnum_locked_in\030\003 \001(\r\022\030\n\020num_"
+  "found_nearby\030\004 \001(\r\022\022\n\nnote_level\030\005 \001(\r\"-"
+  "\n\033CMsgGC_GlobalGame_Subscribe\022\016\n\006ticket\030"
+  "\001 \001(\004\"1\n\035CMsgGC_GlobalGame_Unsubscribe\022\020"
+  "\n\010timeleft\030\001 \001(\005\"P\n\026CMsgGC_GlobalGame_Pl"
+  "ay\022\016\n\006ticket\030\001 \001(\004\022\022\n\ngametimems\030\002 \001(\r\022\022"
+  "\n\nmsperpoint\030\003 \001(\r\"=\n%CMsgGCCStrike15_v2"
+  "_AcknowledgePenalty\022\024\n\014acknowledged\030\001 \001("
+  "\005\"{\n/CMsgGCCStrike15_v2_Client2GCRequest"
+  "PrestigeCoin\022\020\n\010defindex\030\001 \001(\r\022\021\n\tupgrad"
+  "eid\030\002 \001(\004\022\r\n\005hours\030\003 \001(\r\022\024\n\014prestigetime"
+  "\030\004 \001(\r\"F\n(CMsgGCCStrike15_v2_Client2GCSt"
+  "reamUnlock\022\016\n\006ticket\030\001 \001(\004\022\n\n\002os\030\002 \001(\005\"<"
+  "\n+CMsgGCCStrike15_v2_ClientToGCRequestEl"
+  "evate\022\r\n\005stage\030\001 \001(\r\"C\n!CMsgGCCStrike15_"
+  "v2_ClientToGCChat\022\020\n\010match_id\030\001 \001(\004\022\014\n\004t"
+  "ext\030\002 \001(\t\"E\n!CMsgGCCStrike15_v2_GCToClie"
+  "ntChat\022\022\n\naccount_id\030\001 \001(\r\022\014\n\004text\030\002 \001(\t"
+  "\"E\n$CMsgGCCStrike15_v2_ClientAuthKeyCode"
+  "\022\017\n\007eventid\030\001 \001(\r\022\014\n\004code\030\002 \001(\t\"F\n\036CMsgG"
+  "CCStrike15_GotvSyncPacket\022$\n\004data\030\001 \001(\0132"
+  "\026.CEngineGotvSyncPacket\"\223\002\n\033PlayerDecalD"
+  "igitalSignature\022\021\n\tsignature\030\001 \001(\014\022\021\n\tac"
+  "countid\030\002 \001(\r\022\r\n\005rtime\030\003 \001(\r\022\016\n\006endpos\030\004"
+  " \003(\002\022\020\n\010startpos\030\005 \003(\002\022\014\n\004left\030\006 \003(\002\022\021\n\t"
+  "tx_defidx\030\007 \001(\r\022\020\n\010entindex\030\010 \001(\005\022\016\n\006hit"
+  "box\030\t \001(\r\022\024\n\014creationtime\030\n \001(\002\022\021\n\tequip"
+  "slot\030\013 \001(\r\022\020\n\010trace_id\030\014 \001(\r\022\016\n\006normal\030\r"
+  " \003(\002\022\017\n\007tint_id\030\016 \001(\r\"f\n(CMsgGCCStrike15"
+  "_v2_ClientPlayerDecalSign\022*\n\004data\030\001 \001(\0132"
+  "\034.PlayerDecalDigitalSignature\022\016\n\006itemid\030"
+  "\002 \001(\004\"4\n!CMsgGCCStrike15_v2_BetaEnrollme"
+  "nt\022\017\n\007eresult\030\001 \001(\r\"_\n(CMsgGCCStrike15_v"
+  "2_ClientLogonFatalError\022\021\n\terrorcode\030\001 \001"
+  "(\r\022\017\n\007message\030\002 \001(\t\022\017\n\007country\030\003 \001(\t\"S\n\""
+  "CMsgGCCStrike15_v2_ClientPollState\022\016\n\006po"
+  "llid\030\001 \001(\r\022\r\n\005names\030\002 \003(\t\022\016\n\006values\030\003 \003("
+  "\005\"\244\001\n!CMsgGCCStrike15_v2_Party_Register\022"
+  "\n\n\002id\030\001 \001(\r\022\013\n\003ver\030\002 \001(\r\022\013\n\003apr\030\003 \001(\r\022\013\n"
+  "\003ark\030\004 \001(\r\022\013\n\003nby\030\005 \001(\r\022\013\n\003grp\030\006 \001(\r\022\r\n\005"
+  "slots\030\007 \001(\r\022\020\n\010launcher\030\010 \001(\r\022\021\n\tgame_ty"
+  "pe\030\t \001(\r\"{\n\037CMsgGCCStrike15_v2_Party_Sea"
+  "rch\022\013\n\003ver\030\001 \001(\r\022\013\n\003apr\030\002 \001(\r\022\013\n\003ark\030\003 \001"
+  "(\r\022\014\n\004grps\030\004 \003(\r\022\020\n\010launcher\030\005 \001(\r\022\021\n\tga"
+  "me_type\030\006 \001(\r\"\327\001\n&CMsgGCCStrike15_v2_Par"
+  "ty_SearchResults\022>\n\007entries\030\001 \003(\0132-.CMsg"
+  "GCCStrike15_v2_Party_SearchResults.Entry"
+  "\032m\n\005Entry\022\n\n\002id\030\001 \001(\r\022\013\n\003grp\030\002 \001(\r\022\021\n\tga"
+  "me_type\030\003 \001(\r\022\013\n\003apr\030\004 \001(\r\022\013\n\003ark\030\005 \001(\r\022"
+  "\013\n\003loc\030\006 \001(\r\022\021\n\taccountid\030\007 \001(\r\"E\n\037CMsgG"
+  "CCStrike15_v2_Party_Invite\022\021\n\taccountid\030"
+  "\001 \001(\r\022\017\n\007lobbyid\030\002 \001(\r\"\302\001\n)CMsgGCCStrike"
+  "15_v2_Account_RequestCoPlays\022B\n\007players\030"
+  "\001 \003(\01321.CMsgGCCStrike15_v2_Account_Reque"
+  "stCoPlays.Player\022\022\n\nservertime\030\002 \001(\r\032=\n\006"
+  "Player\022\021\n\taccountid\030\001 \001(\r\022\020\n\010rtcoplay\030\002 "
+  "\001(\r\022\016\n\006online\030\003 \001(\010\"\244\001\n*CMsgGCCStrike15_"
+  "v2_ClientToGCRequestTicket\022\033\n\023authorized"
+  "_steam_id\030\001 \001(\006\022\034\n\024authorized_public_ip\030"
+  "\002 \001(\007\022\033\n\023gameserver_steam_id\030\003 \001(\006\022\036\n\026ga"
+  "meserver_sdr_routing\030\005 \001(\t\">\n!CMsgGCToCl"
+  "ientSteamDatagramTicket\022\031\n\021serialized_ti"
+  "cket\030\020 \001(\014\"(\n&CMsgGCCStrike15_v2_ClientR"
+  "equestOffers\"\\\n(CMsgGCCStrike15_v2_Clien"
+  "tRequestSouvenir\022\016\n\006itemid\030\001 \001(\004\022\017\n\007matc"
+  "hid\030\002 \001(\004\022\017\n\007eventid\030\003 \001(\005\"F\n\'CMsgGCCStr"
+  "ike15_v2_ClientAccountBalance\022\016\n\006amount\030"
+  "\001 \001(\004\022\013\n\003url\030\002 \001(\t\"M\n\'CMsgGCCStrike15_v2"
+  "_ClientPartyJoinRelay\022\021\n\taccountid\030\001 \001(\r"
+  "\022\017\n\007lobbyid\030\002 \001(\004\"\224\001\n%CMsgGCCStrike15_v2"
+  "_ClientPartyWarning\022=\n\007entries\030\001 \003(\0132,.C"
+  "MsgGCCStrike15_v2_ClientPartyWarning.Ent"
+  "ry\032,\n\005Entry\022\021\n\taccountid\030\001 \001(\r\022\020\n\010warnty"
+  "pe\030\002 \001(\r\"K\n#CMsgGCCStrike15_v2_SetEventF"
+  "avorite\022\017\n\007eventid\030\001 \001(\004\022\023\n\013is_favorite\030"
+  "\002 \001(\010\"B\n,CMsgGCCStrike15_v2_GetEventFavo"
+  "rites_Request\022\022\n\nall_events\030\001 \001(\010\"r\n-CMs"
+  "gGCCStrike15_v2_GetEventFavorites_Respon"
+  "se\022\022\n\nall_events\030\001 \001(\010\022\026\n\016json_favorites"
+  "\030\002 \001(\t\022\025\n\rjson_featured\030\003 \001(\t\"\325\001\n#CMsgGC"
+  "CStrike15_v2_ClientPerfReport\022;\n\007entries"
+  "\030\001 \003(\0132*.CMsgGCCStrike15_v2_ClientPerfRe"
+  "port.Entry\032q\n\005Entry\022\023\n\013perfcounter\030\001 \001(\r"
+  "\022\016\n\006length\030\002 \001(\r\022\021\n\treference\030\003 \001(\014\022\016\n\006a"
+  "ctual\030\004 \001(\014\022\020\n\010sourceid\030\005 \001(\r\022\016\n\006status\030"
+  "\006 \001(\r\"Q\n\014CVDiagnostic\022\n\n\002id\030\001 \001(\r\022\020\n\010ext"
+  "ended\030\002 \001(\r\022\r\n\005value\030\003 \001(\004\022\024\n\014string_val"
+  "ue\030\004 \001(\t\"\360\003\n)CMsgGCCStrike15_v2_ClientRe"
+  "portValidation\022\023\n\013file_report\030\001 \001(\t\022\024\n\014c"
+  "ommand_line\030\002 \001(\t\022\023\n\013total_files\030\003 \001(\r\022\026"
+  "\n\016internal_error\030\004 \001(\r\022\022\n\ntrust_time\030\005 \001"
+  "(\r\022\025\n\rcount_pending\030\006 \001(\r\022\027\n\017count_compl"
+  "eted\030\007 \001(\r\022\022\n\nprocess_id\030\010 \001(\r\022\021\n\tosvers"
+  "ion\030\t \001(\005\022\033\n\023clientreportversion\030\n \001(\r\022\021"
+  "\n\tstatus_id\030\013 \001(\r\022\023\n\013diagnostic1\030\014 \001(\r\022\023"
+  "\n\013diagnostic2\030\r \001(\004\022\023\n\013diagnostic3\030\016 \001(\004"
+  "\022\030\n\020last_launch_data\030\017 \001(\t\022\024\n\014report_cou"
+  "nt\030\020 \001(\r\022\023\n\013client_time\030\021 \001(\004\022\023\n\013diagnos"
+  "tic4\030\022 \001(\004\022\023\n\013diagnostic5\030\023 \001(\004\022\"\n\013diagn"
+  "ostics\030\024 \003(\0132\r.CVDiagnostic\"\250\002\n,CMsgGCCS"
+  "trike15_v2_GC2ClientRefuseSecureMode\022\023\n\013"
+  "file_report\030\001 \001(\t\022\033\n\023offer_insecure_mode"
+  "\030\002 \001(\010\022\031\n\021offer_secure_mode\030\003 \001(\010\022\030\n\020sho"
+  "w_unsigned_ui\030\004 \001(\010\022\021\n\tkick_user\030\005 \001(\010\022\027"
+  "\n\017show_trusted_ui\030\006 \001(\010\022 \n\030show_warning_"
+  "not_trusted\030\007 \001(\010\022\"\n\032show_warning_not_tr"
+  "usted_2\030\010 \001(\010\022\037\n\027files_prevented_trusted"
+  "\030\t \001(\t\"T\n-CMsgGCCStrike15_v2_GC2ClientRe"
+  "questValidation\022\023\n\013full_report\030\001 \001(\010\022\016\n\006"
+  "module\030\002 \001(\t\"\313\001\n&CMsgGCCStrike15_v2_GC2C"
+  "lientInitSystem\022\014\n\004load\030\001 \001(\010\022\014\n\004name\030\002 "
+  "\001(\t\022\022\n\noutputname\030\003 \001(\t\022\020\n\010key_data\030\004 \001("
+  "\014\022\020\n\010sha_hash\030\005 \001(\014\022\016\n\006cookie\030\006 \001(\005\022\020\n\010m"
+  "anifest\030\007 \001(\t\022\026\n\016system_package\030\010 \001(\014\022\023\n"
+  "\013load_system\030\t \001(\010\"\245\002\n/CMsgGCCStrike15_v"
+  "2_GC2ClientInitSystem_Response\022\017\n\007succes"
+  "s\030\001 \001(\010\022\022\n\ndiagnostic\030\002 \001(\t\022\020\n\010sha_hash\030"
+  "\003 \001(\014\022\020\n\010response\030\004 \001(\005\022\023\n\013error_code1\030\005"
+  " \001(\005\022\023\n\013error_code2\030\006 \001(\005\022\016\n\006handle\030\007 \001("
+  "\003\022E\n\014einit_result\030\010 \001(\0162\022.EInitSystemRes"
+  "ult:\033k_EInitSystemResult_Invalid\022\023\n\013aux_"
+  "system1\030\t \001(\005\022\023\n\013aux_system2\030\n \001(\005\"P\n/CM"
+  "sgGCCStrike15_v2_SetPlayerLeaderboardSaf"
+  "eName\022\035\n\025leaderboard_safe_name\030\001 \001(\t\"%\n#"
+  "CMsgRequestRecurringMissionSchedule\"\241\001\n\032"
+  "CMsgRecurringMissionSchema\022A\n\010missions\030\001"
+  " \003(\0132/.CMsgRecurringMissionSchema.Missio"
+  "nTemplateList\032@\n\023MissionTemplateList\022\016\n\006"
+  "period\030\001 \001(\r\022\031\n\021mission_templates\030\002 \003(\014*"
+  "\311*\n\nECsgoGCMsg\022\036\n\031k_EMsgGCCStrike15_v2_B"
+  "ase\020\214G\022*\n%k_EMsgGCCStrike15_v2_Matchmaki"
+  "ngStart\020\215G\022)\n$k_EMsgGCCStrike15_v2_Match"
+  "makingStop\020\216G\0226\n1k_EMsgGCCStrike15_v2_Ma"
+  "tchmakingClient2ServerPing\020\217G\0224\n/k_EMsgG"
+  "CCStrike15_v2_MatchmakingGC2ClientUpdate"
+  "\020\220G\022>\n9k_EMsgGCCStrike15_v2_MatchmakingS"
+  "erverReservationResponse\020\222G\0225\n0k_EMsgGCC"
+  "Strike15_v2_MatchmakingGC2ClientReserve\020"
+  "\223G\0223\n.k_EMsgGCCStrike15_v2_MatchmakingCl"
+  "ient2GCHello\020\225G\0223\n.k_EMsgGCCStrike15_v2_"
+  "MatchmakingGC2ClientHello\020\226G\0225\n0k_EMsgGC"
+  "CStrike15_v2_MatchmakingGC2ClientAbandon"
+  "\020\230G\022:\n5k_EMsgGCCStrike15_v2_MatchmakingO"
+  "perator2GCBlogUpdate\020\235G\022:\n5k_EMsgGCCStri"
+  "ke15_v2_ServerNotificationForUserPenalty"
+  "\020\236G\022,\n\'k_EMsgGCCStrike15_v2_ClientReport"
+  "Player\020\237G\022,\n\'k_EMsgGCCStrike15_v2_Client"
+  "ReportServer\020\240G\022-\n(k_EMsgGCCStrike15_v2_"
+  "ClientCommendPlayer\020\241G\022.\n)k_EMsgGCCStrik"
+  "e15_v2_ClientReportResponse\020\242G\0222\n-k_EMsg"
+  "GCCStrike15_v2_ClientCommendPlayerQuery\020"
+  "\243G\022:\n5k_EMsgGCCStrike15_v2_ClientCommend"
+  "PlayerQueryResponse\020\244G\022(\n#k_EMsgGCCStrik"
+  "e15_v2_WatchInfoUsers\020\246G\0225\n0k_EMsgGCCStr"
+  "ike15_v2_ClientRequestPlayersProfile\020\247G\022"
+  "(\n#k_EMsgGCCStrike15_v2_PlayersProfile\020\250"
+  "G\0223\n.k_EMsgGCCStrike15_v2_PlayerOverwatc"
+  "hCaseUpdate\020\253G\0227\n2k_EMsgGCCStrike15_v2_P"
+  "layerOverwatchCaseAssignment\020\254G\0223\n.k_EMs"
+  "gGCCStrike15_v2_PlayerOverwatchCaseStatu"
+  "s\020\255G\022*\n%k_EMsgGCCStrike15_v2_GC2ClientTe"
+  "xtMsg\020\256G\022*\n%k_EMsgGCCStrike15_v2_Client2"
+  "GCTextMsg\020\257G\0220\n+k_EMsgGCCStrike15_v2_Mat"
+  "chEndRunRewardDrops\020\260G\0229\n4k_EMsgGCCStrik"
+  "e15_v2_MatchEndRewardDropsNotification\020\261"
+  "G\0228\n3k_EMsgGCCStrike15_v2_ClientRequestW"
+  "atchInfoFriends2\020\262G\022#\n\036k_EMsgGCCStrike15"
+  "_v2_MatchList\020\263G\022:\n5k_EMsgGCCStrike15_v2"
+  "_MatchListRequestCurrentLiveGames\020\264G\0229\n4"
+  "k_EMsgGCCStrike15_v2_MatchListRequestRec"
+  "entUserGames\020\265G\0224\n/k_EMsgGCCStrike15_v2_"
+  "GC2ServerReservationUpdate\020\266G\0228\n3k_EMsgG"
+  "CCStrike15_v2_ClientVarValueNotification"
+  "Info\020\270G\0229\n4k_EMsgGCCStrike15_v2_MatchLis"
+  "tRequestTournamentGames\020\272G\0226\n1k_EMsgGCCS"
+  "trike15_v2_MatchListRequestFullGameInfo\020"
+  "\273G\0221\n,k_EMsgGCCStrike15_v2_GiftsLeaderbo"
+  "ardRequest\020\274G\0222\n-k_EMsgGCCStrike15_v2_Gi"
+  "ftsLeaderboardResponse\020\275G\0228\n3k_EMsgGCCSt"
+  "rike15_v2_ServerVarValueNotificationInfo"
+  "\020\276G\0220\n+k_EMsgGCCStrike15_v2_ClientSubmit"
+  "SurveyVote\020\300G\0221\n,k_EMsgGCCStrike15_v2_Se"
+  "rver2GCClientValidate\020\301G\0229\n4k_EMsgGCCStr"
+  "ike15_v2_MatchListRequestLiveGameForUser"
+  "\020\302G\022>\n9k_EMsgGCCStrike15_v2_Client2GCEco"
+  "nPreviewDataBlockRequest\020\304G\022\?\n:k_EMsgGCC"
+  "Strike15_v2_Client2GCEconPreviewDataBloc"
+  "kResponse\020\305G\0220\n+k_EMsgGCCStrike15_v2_Acc"
+  "ountPrivacySettings\020\306G\022+\n&k_EMsgGCCStrik"
+  "e15_v2_SetMyActivityInfo\020\307G\022\?\n:k_EMsgGCC"
+  "Strike15_v2_MatchListRequestTournamentPr"
+  "edictions\020\310G\022>\n9k_EMsgGCCStrike15_v2_Mat"
+  "chListUploadTournamentPredictions\020\311G\022&\n!"
+  "k_EMsgGCCStrike15_v2_DraftSummary\020\312G\0225\n0"
+  "k_EMsgGCCStrike15_v2_ClientRequestJoinFr"
+  "iendData\020\313G\0225\n0k_EMsgGCCStrike15_v2_Clie"
+  "ntRequestJoinServerData\020\314G\0221\n,k_EMsgGCCS"
+  "trike15_v2_GC2ClientTournamentInfo\020\317G\022\"\n"
+  "\035k_EMsgGC_GlobalGame_Subscribe\020\320G\022$\n\037k_E"
+  "MsgGC_GlobalGame_Unsubscribe\020\321G\022\035\n\030k_EMs"
+  "gGC_GlobalGame_Play\020\322G\022,\n\'k_EMsgGCCStrik"
+  "e15_v2_AcknowledgePenalty\020\323G\0226\n1k_EMsgGC"
+  "CStrike15_v2_Client2GCRequestPrestigeCoi"
+  "n\020\324G\022.\n)k_EMsgGCCStrike15_v2_GC2ClientGl"
+  "obalStats\020\325G\022/\n*k_EMsgGCCStrike15_v2_Cli"
+  "ent2GCStreamUnlock\020\326G\0222\n-k_EMsgGCCStrike"
+  "15_v2_FantasyRequestClientData\020\327G\0221\n,k_E"
+  "MsgGCCStrike15_v2_FantasyUpdateClientDat"
+  "a\020\330G\0227\n2k_EMsgGCCStrike15_v2_GCToClientS"
+  "teamdatagramTicket\020\331G\0221\n,k_EMsgGCCStrike"
+  "15_v2_ClientToGCRequestTicket\020\332G\0222\n-k_EM"
+  "sgGCCStrike15_v2_ClientToGCRequestElevat"
+  "e\020\333G\022$\n\037k_EMsgGCCStrike15_v2_GlobalChat\020"
+  "\334G\022.\n)k_EMsgGCCStrike15_v2_GlobalChat_Su"
+  "bscribe\020\335G\0220\n+k_EMsgGCCStrike15_v2_Globa"
+  "lChat_Unsubscribe\020\336G\022+\n&k_EMsgGCCStrike1"
+  "5_v2_ClientAuthKeyCode\020\337G\022(\n#k_EMsgGCCSt"
+  "rike15_v2_GotvSyncPacket\020\340G\022/\n*k_EMsgGCC"
+  "Strike15_v2_ClientPlayerDecalSign\020\341G\022/\n*"
+  "k_EMsgGCCStrike15_v2_ClientLogonFatalErr"
+  "or\020\343G\022)\n$k_EMsgGCCStrike15_v2_ClientPoll"
+  "State\020\344G\022(\n#k_EMsgGCCStrike15_v2_Party_R"
+  "egister\020\345G\022*\n%k_EMsgGCCStrike15_v2_Party"
+  "_Unregister\020\346G\022&\n!k_EMsgGCCStrike15_v2_P"
+  "arty_Search\020\347G\022&\n!k_EMsgGCCStrike15_v2_P"
+  "arty_Invite\020\350G\0220\n+k_EMsgGCCStrike15_v2_A"
+  "ccount_RequestCoPlays\020\351G\022,\n\'k_EMsgGCCStr"
+  "ike15_v2_ClientGCRankUpdate\020\352G\022-\n(k_EMsg"
+  "GCCStrike15_v2_ClientRequestOffers\020\353G\022.\n"
+  ")k_EMsgGCCStrike15_v2_ClientAccountBalan"
+  "ce\020\354G\022.\n)k_EMsgGCCStrike15_v2_ClientPart"
+  "yJoinRelay\020\355G\022,\n\'k_EMsgGCCStrike15_v2_Cl"
+  "ientPartyWarning\020\356G\022*\n%k_EMsgGCCStrike15"
+  "_v2_SetEventFavorite\020\360G\0223\n.k_EMsgGCCStri"
+  "ke15_v2_GetEventFavorites_Request\020\361G\022*\n%"
+  "k_EMsgGCCStrike15_v2_ClientPerfReport\020\362G"
+  "\0224\n/k_EMsgGCCStrike15_v2_GetEventFavorit"
+  "es_Response\020\363G\022/\n*k_EMsgGCCStrike15_v2_C"
+  "lientRequestSouvenir\020\364G\0220\n+k_EMsgGCCStri"
+  "ke15_v2_ClientReportValidation\020\365G\0223\n.k_E"
+  "MsgGCCStrike15_v2_GC2ClientRefuseSecureM"
+  "ode\020\366G\0224\n/k_EMsgGCCStrike15_v2_GC2Client"
+  "RequestValidation\020\367G\0223\n.k_EMsgGCCStrike1"
+  "5_v2_ClientRedeemMissionReward\020\371G\022&\n!k_E"
+  "MsgGCCStrike15_ClientDeepStats\020\372G\0222\n-k_E"
+  "MsgGCCStrike15_StartAgreementSessionInGa"
+  "me\020\373G\022-\n(k_EMsgGCCStrike15_v2_GC2ClientI"
+  "nitSystem\020\374G\0226\n1k_EMsgGCCStrike15_v2_GC2"
+  "ClientInitSystem_Response\020\375G\022\'\n\"k_EMsgGC"
+  "CStrike15_v2_PrivateQueues\020\376G\0229\n4k_EMsgG"
+  "CCStrike15_v2_MatchListTournamentOperato"
+  "rMgmt\020\377G\022(\n#k_EMsgGCCStrike15_v2_BetaEnr"
+  "ollment\020\201H\0226\n1k_EMsgGCCStrike15_v2_SetPl"
+  "ayerLeaderboardSafeName\020\202H\0220\n+k_EMsgGCCS"
+  "trike15_v2_ClientRedeemFreeReward\020\203H\022-\n("
+  "k_EMsgGCCStrike15_v2_ClientNetworkConfig"
+  "\020\204H\022/\n*k_EMsgGCCStrike15_v2_GC2ClientNot"
+  "ifyXPShop\020\205H\0222\n-k_EMsgGCCStrike15_v2_Cli"
+  "ent2GcAckXPShopTracks\020\206H\0229\n4k_EMsgGCCStr"
+  "ike15_v2_MatchmakingGC2ClientSearchStats"
+  "\020\207H\022.\n)k_EMsgGCCStrike15_v2_PremierSeaso"
+  "nSummary\020\210H\0229\n4k_EMsgGCCStrike15_v2_Requ"
+  "estRecurringMissionSchedule\020\211H\0220\n+k_EMsg"
+  "GCCStrike15_v2_RecurringMissionSchema\020\212H"
+  "\0221\n,k_EMsgGCCStrike15_v2_VolatileItemCla"
+  "imReward\020\213H*\230\001\n\022ECsgoSteamUserStat\022&\n\"k_"
+  "ECsgoSteamUserStat_XpEarnedGames\020\001\022-\n)k_"
+  "ECsgoSteamUserStat_MatchWinsCompetitive\020"
+  "\002\022+\n\'k_ECsgoSteamUserStat_SurvivedDanger"
+  "Zone\020\003*J\n\tQuestType\022\032\n\026k_EQuestType_Oper"
+  "ation\020\001\022!\n\035k_EQuestType_RecurringMission"
+  "\020\002*\241\001\n\027EClientReportingVersion\022(\n$k_ECli"
+  "entReportingVersion_OldVersion\020\000\022)\n%k_EC"
+  "lientReportingVersion_BetaVersion\020\001\0221\n-k"
+  "_EClientReportingVersion_SupportsTrusted"
+  "Mode\020\002*\276\002\n\021EInitSystemResult\022\037\n\033k_EInitS"
+  "ystemResult_Invalid\020\000\022\037\n\033k_EInitSystemRe"
+  "sult_Success\020\001\022\034\n\030k_EInitSystemResult_No"
+  "ne\020\002\022 \n\034k_EInitSystemResult_NotFound\020\003\022 "
+  "\n\034k_EInitSystemResult_Existing\020\004\022\"\n\036k_EI"
+  "nitSystemResult_FailedOpen\020\005\022 \n\034k_EInitS"
+  "ystemResult_Mismatch\020\006\022\"\n\036k_EInitSystemR"
+  "esult_FailedInit\020\007\022\033\n\027k_EInitSystemResul"
+  "t_Max\020\010"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fgcmessages_2eproto_deps[3] = {
   &::descriptor_table_engine_5fgcmessages_2eproto,
@@ -7217,9 +7283,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fgcmessa
 };
 static ::_pbi::once_flag descriptor_table_cstrike15_5fgcmessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cstrike15_5fgcmessages_2eproto = {
-    false, false, 34128, descriptor_table_protodef_cstrike15_5fgcmessages_2eproto,
+    false, false, 34367, descriptor_table_protodef_cstrike15_5fgcmessages_2eproto,
     "cstrike15_gcmessages.proto",
-    &descriptor_table_cstrike15_5fgcmessages_2eproto_once, descriptor_table_cstrike15_5fgcmessages_2eproto_deps, 3, 178,
+    &descriptor_table_cstrike15_5fgcmessages_2eproto_once, descriptor_table_cstrike15_5fgcmessages_2eproto_deps, 3, 180,
     schemas, file_default_instances, TableStruct_cstrike15_5fgcmessages_2eproto::offsets,
     file_level_metadata_cstrike15_5fgcmessages_2eproto, file_level_enum_descriptors_cstrike15_5fgcmessages_2eproto,
     file_level_service_descriptors_cstrike15_5fgcmessages_2eproto,
@@ -7343,6 +7409,7 @@ bool ECsgoGCMsg_IsValid(int value) {
     case 9224:
     case 9225:
     case 9226:
+    case 9227:
       return true;
     default:
       return false;
@@ -50774,6 +50841,536 @@ void CSOAccountXpShopBids::InternalSwap(CSOAccountXpShopBids* other) {
 
 // ===================================================================
 
+class CSOVolatileItemOffer::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CSOVolatileItemOffer>()._impl_._has_bits_);
+  static void set_has_defidx(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+};
+
+CSOVolatileItemOffer::CSOVolatileItemOffer(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CSOVolatileItemOffer)
+}
+CSOVolatileItemOffer::CSOVolatileItemOffer(const CSOVolatileItemOffer& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CSOVolatileItemOffer* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.faux_itemid_){from._impl_.faux_itemid_}
+    , decltype(_impl_.generation_time_){from._impl_.generation_time_}
+    , decltype(_impl_.defidx_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.defidx_ = from._impl_.defidx_;
+  // @@protoc_insertion_point(copy_constructor:CSOVolatileItemOffer)
+}
+
+inline void CSOVolatileItemOffer::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.faux_itemid_){arena}
+    , decltype(_impl_.generation_time_){arena}
+    , decltype(_impl_.defidx_){0u}
+  };
+}
+
+CSOVolatileItemOffer::~CSOVolatileItemOffer() {
+  // @@protoc_insertion_point(destructor:CSOVolatileItemOffer)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CSOVolatileItemOffer::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.faux_itemid_.~RepeatedField();
+  _impl_.generation_time_.~RepeatedField();
+}
+
+void CSOVolatileItemOffer::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CSOVolatileItemOffer::Clear() {
+// @@protoc_insertion_point(message_clear_start:CSOVolatileItemOffer)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.faux_itemid_.Clear();
+  _impl_.generation_time_.Clear();
+  _impl_.defidx_ = 0u;
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CSOVolatileItemOffer::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional uint32 defidx = 1 [(.key_field) = true];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _Internal::set_has_defidx(&has_bits);
+          _impl_.defidx_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated uint64 faux_itemid = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            _internal_add_faux_itemid(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<16>(ptr));
+        } else if (static_cast<uint8_t>(tag) == 18) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt64Parser(_internal_mutable_faux_itemid(), ptr, ctx);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated uint32 generation_time = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            _internal_add_generation_time(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<24>(ptr));
+        } else if (static_cast<uint8_t>(tag) == 26) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_generation_time(), ptr, ctx);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CSOVolatileItemOffer::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CSOVolatileItemOffer)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional uint32 defidx = 1 [(.key_field) = true];
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_defidx(), target);
+  }
+
+  // repeated uint64 faux_itemid = 2;
+  for (int i = 0, n = this->_internal_faux_itemid_size(); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_faux_itemid(i), target);
+  }
+
+  // repeated uint32 generation_time = 3;
+  for (int i = 0, n = this->_internal_generation_time_size(); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_generation_time(i), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CSOVolatileItemOffer)
+  return target;
+}
+
+size_t CSOVolatileItemOffer::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CSOVolatileItemOffer)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated uint64 faux_itemid = 2;
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      UInt64Size(this->_impl_.faux_itemid_);
+    total_size += 1 *
+                  ::_pbi::FromIntSize(this->_internal_faux_itemid_size());
+    total_size += data_size;
+  }
+
+  // repeated uint32 generation_time = 3;
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      UInt32Size(this->_impl_.generation_time_);
+    total_size += 1 *
+                  ::_pbi::FromIntSize(this->_internal_generation_time_size());
+    total_size += data_size;
+  }
+
+  // optional uint32 defidx = 1 [(.key_field) = true];
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_defidx());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CSOVolatileItemOffer::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CSOVolatileItemOffer::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CSOVolatileItemOffer::GetClassData() const { return &_class_data_; }
+
+
+void CSOVolatileItemOffer::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CSOVolatileItemOffer*>(&to_msg);
+  auto& from = static_cast<const CSOVolatileItemOffer&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CSOVolatileItemOffer)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.faux_itemid_.MergeFrom(from._impl_.faux_itemid_);
+  _this->_impl_.generation_time_.MergeFrom(from._impl_.generation_time_);
+  if (from._internal_has_defidx()) {
+    _this->_internal_set_defidx(from._internal_defidx());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CSOVolatileItemOffer::CopyFrom(const CSOVolatileItemOffer& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CSOVolatileItemOffer)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CSOVolatileItemOffer::IsInitialized() const {
+  return true;
+}
+
+void CSOVolatileItemOffer::InternalSwap(CSOVolatileItemOffer* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  _impl_.faux_itemid_.InternalSwap(&other->_impl_.faux_itemid_);
+  _impl_.generation_time_.InternalSwap(&other->_impl_.generation_time_);
+  swap(_impl_.defidx_, other->_impl_.defidx_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CSOVolatileItemOffer::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[122]);
+}
+
+// ===================================================================
+
+class CSOVolatileItemClaimedRewards::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CSOVolatileItemClaimedRewards>()._impl_._has_bits_);
+  static void set_has_defidx(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+};
+
+CSOVolatileItemClaimedRewards::CSOVolatileItemClaimedRewards(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CSOVolatileItemClaimedRewards)
+}
+CSOVolatileItemClaimedRewards::CSOVolatileItemClaimedRewards(const CSOVolatileItemClaimedRewards& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CSOVolatileItemClaimedRewards* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.reward_){from._impl_.reward_}
+    , decltype(_impl_.generation_time_){from._impl_.generation_time_}
+    , decltype(_impl_.defidx_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.defidx_ = from._impl_.defidx_;
+  // @@protoc_insertion_point(copy_constructor:CSOVolatileItemClaimedRewards)
+}
+
+inline void CSOVolatileItemClaimedRewards::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.reward_){arena}
+    , decltype(_impl_.generation_time_){arena}
+    , decltype(_impl_.defidx_){0u}
+  };
+}
+
+CSOVolatileItemClaimedRewards::~CSOVolatileItemClaimedRewards() {
+  // @@protoc_insertion_point(destructor:CSOVolatileItemClaimedRewards)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CSOVolatileItemClaimedRewards::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.reward_.~RepeatedField();
+  _impl_.generation_time_.~RepeatedField();
+}
+
+void CSOVolatileItemClaimedRewards::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CSOVolatileItemClaimedRewards::Clear() {
+// @@protoc_insertion_point(message_clear_start:CSOVolatileItemClaimedRewards)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.reward_.Clear();
+  _impl_.generation_time_.Clear();
+  _impl_.defidx_ = 0u;
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CSOVolatileItemClaimedRewards::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional uint32 defidx = 1 [(.key_field) = true];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _Internal::set_has_defidx(&has_bits);
+          _impl_.defidx_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated uint32 reward = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            _internal_add_reward(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<16>(ptr));
+        } else if (static_cast<uint8_t>(tag) == 18) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_reward(), ptr, ctx);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated uint32 generation_time = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            _internal_add_generation_time(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<24>(ptr));
+        } else if (static_cast<uint8_t>(tag) == 26) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_generation_time(), ptr, ctx);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CSOVolatileItemClaimedRewards::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CSOVolatileItemClaimedRewards)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional uint32 defidx = 1 [(.key_field) = true];
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_defidx(), target);
+  }
+
+  // repeated uint32 reward = 2;
+  for (int i = 0, n = this->_internal_reward_size(); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_reward(i), target);
+  }
+
+  // repeated uint32 generation_time = 3;
+  for (int i = 0, n = this->_internal_generation_time_size(); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_generation_time(i), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CSOVolatileItemClaimedRewards)
+  return target;
+}
+
+size_t CSOVolatileItemClaimedRewards::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CSOVolatileItemClaimedRewards)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated uint32 reward = 2;
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      UInt32Size(this->_impl_.reward_);
+    total_size += 1 *
+                  ::_pbi::FromIntSize(this->_internal_reward_size());
+    total_size += data_size;
+  }
+
+  // repeated uint32 generation_time = 3;
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      UInt32Size(this->_impl_.generation_time_);
+    total_size += 1 *
+                  ::_pbi::FromIntSize(this->_internal_generation_time_size());
+    total_size += data_size;
+  }
+
+  // optional uint32 defidx = 1 [(.key_field) = true];
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_defidx());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CSOVolatileItemClaimedRewards::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CSOVolatileItemClaimedRewards::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CSOVolatileItemClaimedRewards::GetClassData() const { return &_class_data_; }
+
+
+void CSOVolatileItemClaimedRewards::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CSOVolatileItemClaimedRewards*>(&to_msg);
+  auto& from = static_cast<const CSOVolatileItemClaimedRewards&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CSOVolatileItemClaimedRewards)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.reward_.MergeFrom(from._impl_.reward_);
+  _this->_impl_.generation_time_.MergeFrom(from._impl_.generation_time_);
+  if (from._internal_has_defidx()) {
+    _this->_internal_set_defidx(from._internal_defidx());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CSOVolatileItemClaimedRewards::CopyFrom(const CSOVolatileItemClaimedRewards& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CSOVolatileItemClaimedRewards)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CSOVolatileItemClaimedRewards::IsInitialized() const {
+  return true;
+}
+
+void CSOVolatileItemClaimedRewards::InternalSwap(CSOVolatileItemClaimedRewards* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  _impl_.reward_.InternalSwap(&other->_impl_.reward_);
+  _impl_.generation_time_.InternalSwap(&other->_impl_.generation_time_);
+  swap(_impl_.defidx_, other->_impl_.defidx_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CSOVolatileItemClaimedRewards::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[123]);
+}
+
+// ===================================================================
+
 class CSOAccountKeychainRemoveToolCharges::_Internal {
  public:
   using HasBits = decltype(std::declval<CSOAccountKeychainRemoveToolCharges>()._impl_._has_bits_);
@@ -50960,7 +51557,7 @@ void CSOAccountKeychainRemoveToolCharges::InternalSwap(CSOAccountKeychainRemoveT
 ::PROTOBUF_NAMESPACE_ID::Metadata CSOAccountKeychainRemoveToolCharges::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[122]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[124]);
 }
 
 // ===================================================================
@@ -51225,7 +51822,7 @@ void CSOQuestProgress::InternalSwap(CSOQuestProgress* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CSOQuestProgress::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[123]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[125]);
 }
 
 // ===================================================================
@@ -51602,7 +52199,7 @@ void CSOAccountSeasonalOperation::InternalSwap(CSOAccountSeasonalOperation* othe
 ::PROTOBUF_NAMESPACE_ID::Metadata CSOAccountSeasonalOperation::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[124]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[126]);
 }
 
 // ===================================================================
@@ -51839,7 +52436,7 @@ void CSOAccountRecurringSubscription::InternalSwap(CSOAccountRecurringSubscripti
 ::PROTOBUF_NAMESPACE_ID::Metadata CSOAccountRecurringSubscription::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[125]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[127]);
 }
 
 // ===================================================================
@@ -52104,7 +52701,7 @@ void CSOGameAccountSteamChina::InternalSwap(CSOGameAccountSteamChina* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CSOGameAccountSteamChina::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[126]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[128]);
 }
 
 // ===================================================================
@@ -52441,7 +53038,7 @@ void CSOPersonaDataPublic::InternalSwap(CSOPersonaDataPublic* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CSOPersonaDataPublic::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[127]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[129]);
 }
 
 // ===================================================================
@@ -52734,7 +53331,7 @@ void CSOAccountRecurringMission::InternalSwap(CSOAccountRecurringMission* other)
 ::PROTOBUF_NAMESPACE_ID::Metadata CSOAccountRecurringMission::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[128]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[130]);
 }
 
 // ===================================================================
@@ -53061,7 +53658,7 @@ void CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::InternalSwap(CMsgGCCStrike15_v2_G
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GC2ClientNotifyXPShop::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[129]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[131]);
 }
 
 // ===================================================================
@@ -53101,7 +53698,7 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgGCCStrike15_v2_Client2GcAc
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_Client2GcAckXPShopTracks::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[130]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[132]);
 }
 
 // ===================================================================
@@ -53422,7 +54019,7 @@ void CMsgGCCStrike15_v2_MatchmakingGC2ClientSearchStats::InternalSwap(CMsgGCCStr
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_MatchmakingGC2ClientSearchStats::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[131]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[133]);
 }
 
 // ===================================================================
@@ -53613,7 +54210,7 @@ void CMsgGC_GlobalGame_Subscribe::InternalSwap(CMsgGC_GlobalGame_Subscribe* othe
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGC_GlobalGame_Subscribe::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[132]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[134]);
 }
 
 // ===================================================================
@@ -53804,7 +54401,7 @@ void CMsgGC_GlobalGame_Unsubscribe::InternalSwap(CMsgGC_GlobalGame_Unsubscribe* 
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGC_GlobalGame_Unsubscribe::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[133]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[135]);
 }
 
 // ===================================================================
@@ -54069,7 +54666,7 @@ void CMsgGC_GlobalGame_Play::InternalSwap(CMsgGC_GlobalGame_Play* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGC_GlobalGame_Play::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[134]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[136]);
 }
 
 // ===================================================================
@@ -54260,7 +54857,7 @@ void CMsgGCCStrike15_v2_AcknowledgePenalty::InternalSwap(CMsgGCCStrike15_v2_Ackn
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_AcknowledgePenalty::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[135]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[137]);
 }
 
 // ===================================================================
@@ -54553,7 +55150,7 @@ void CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin::InternalSwap(CMsgGCCStrike
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[136]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[138]);
 }
 
 // ===================================================================
@@ -54790,7 +55387,7 @@ void CMsgGCCStrike15_v2_Client2GCStreamUnlock::InternalSwap(CMsgGCCStrike15_v2_C
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_Client2GCStreamUnlock::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[137]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[139]);
 }
 
 // ===================================================================
@@ -54981,7 +55578,7 @@ void CMsgGCCStrike15_v2_ClientToGCRequestElevate::InternalSwap(CMsgGCCStrike15_v
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientToGCRequestElevate::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[138]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[140]);
 }
 
 // ===================================================================
@@ -55238,7 +55835,7 @@ void CMsgGCCStrike15_v2_ClientToGCChat::InternalSwap(CMsgGCCStrike15_v2_ClientTo
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientToGCChat::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[139]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[141]);
 }
 
 // ===================================================================
@@ -55495,7 +56092,7 @@ void CMsgGCCStrike15_v2_GCToClientChat::InternalSwap(CMsgGCCStrike15_v2_GCToClie
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GCToClientChat::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[140]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[142]);
 }
 
 // ===================================================================
@@ -55752,7 +56349,7 @@ void CMsgGCCStrike15_v2_ClientAuthKeyCode::InternalSwap(CMsgGCCStrike15_v2_Clien
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientAuthKeyCode::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[141]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[143]);
 }
 
 // ===================================================================
@@ -55962,7 +56559,7 @@ void CMsgGCCStrike15_GotvSyncPacket::InternalSwap(CMsgGCCStrike15_GotvSyncPacket
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_GotvSyncPacket::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[142]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[144]);
 }
 
 // ===================================================================
@@ -56605,7 +57202,7 @@ void PlayerDecalDigitalSignature::InternalSwap(PlayerDecalDigitalSignature* othe
 ::PROTOBUF_NAMESPACE_ID::Metadata PlayerDecalDigitalSignature::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[143]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[145]);
 }
 
 // ===================================================================
@@ -56852,7 +57449,7 @@ void CMsgGCCStrike15_v2_ClientPlayerDecalSign::InternalSwap(CMsgGCCStrike15_v2_C
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientPlayerDecalSign::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[144]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[146]);
 }
 
 // ===================================================================
@@ -57043,7 +57640,7 @@ void CMsgGCCStrike15_v2_BetaEnrollment::InternalSwap(CMsgGCCStrike15_v2_BetaEnro
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_BetaEnrollment::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[145]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[147]);
 }
 
 // ===================================================================
@@ -57359,7 +57956,7 @@ void CMsgGCCStrike15_v2_ClientLogonFatalError::InternalSwap(CMsgGCCStrike15_v2_C
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientLogonFatalError::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[146]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[148]);
 }
 
 // ===================================================================
@@ -57628,7 +58225,7 @@ void CMsgGCCStrike15_v2_ClientPollState::InternalSwap(CMsgGCCStrike15_v2_ClientP
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientPollState::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[147]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[149]);
 }
 
 // ===================================================================
@@ -58062,7 +58659,7 @@ void CMsgGCCStrike15_v2_Party_Register::InternalSwap(CMsgGCCStrike15_v2_Party_Re
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_Party_Register::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[148]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[150]);
 }
 
 // ===================================================================
@@ -58420,7 +59017,7 @@ void CMsgGCCStrike15_v2_Party_Search::InternalSwap(CMsgGCCStrike15_v2_Party_Sear
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_Party_Search::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[149]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[151]);
 }
 
 // ===================================================================
@@ -58797,7 +59394,7 @@ void CMsgGCCStrike15_v2_Party_SearchResults_Entry::InternalSwap(CMsgGCCStrike15_
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_Party_SearchResults_Entry::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[150]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[152]);
 }
 
 // ===================================================================
@@ -58982,7 +59579,7 @@ void CMsgGCCStrike15_v2_Party_SearchResults::InternalSwap(CMsgGCCStrike15_v2_Par
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_Party_SearchResults::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[151]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[153]);
 }
 
 // ===================================================================
@@ -59219,7 +59816,7 @@ void CMsgGCCStrike15_v2_Party_Invite::InternalSwap(CMsgGCCStrike15_v2_Party_Invi
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_Party_Invite::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[152]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[154]);
 }
 
 // ===================================================================
@@ -59484,7 +60081,7 @@ void CMsgGCCStrike15_v2_Account_RequestCoPlays_Player::InternalSwap(CMsgGCCStrik
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_Account_RequestCoPlays_Player::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[153]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[155]);
 }
 
 // ===================================================================
@@ -59709,7 +60306,7 @@ void CMsgGCCStrike15_v2_Account_RequestCoPlays::InternalSwap(CMsgGCCStrike15_v2_
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_Account_RequestCoPlays::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[154]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[156]);
 }
 
 // ===================================================================
@@ -60033,7 +60630,7 @@ void CMsgGCCStrike15_v2_ClientToGCRequestTicket::InternalSwap(CMsgGCCStrike15_v2
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientToGCRequestTicket::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[155]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[157]);
 }
 
 // ===================================================================
@@ -60246,7 +60843,7 @@ void CMsgGCToClientSteamDatagramTicket::InternalSwap(CMsgGCToClientSteamDatagram
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCToClientSteamDatagramTicket::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[156]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[158]);
 }
 
 // ===================================================================
@@ -60286,7 +60883,7 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgGCCStrike15_v2_ClientReque
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientRequestOffers::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[157]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[159]);
 }
 
 // ===================================================================
@@ -60551,7 +61148,7 @@ void CMsgGCCStrike15_v2_ClientRequestSouvenir::InternalSwap(CMsgGCCStrike15_v2_C
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientRequestSouvenir::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[158]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[160]);
 }
 
 // ===================================================================
@@ -60808,7 +61405,7 @@ void CMsgGCCStrike15_v2_ClientAccountBalance::InternalSwap(CMsgGCCStrike15_v2_Cl
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientAccountBalance::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[159]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[161]);
 }
 
 // ===================================================================
@@ -61045,7 +61642,7 @@ void CMsgGCCStrike15_v2_ClientPartyJoinRelay::InternalSwap(CMsgGCCStrike15_v2_Cl
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientPartyJoinRelay::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[160]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[162]);
 }
 
 // ===================================================================
@@ -61282,7 +61879,7 @@ void CMsgGCCStrike15_v2_ClientPartyWarning_Entry::InternalSwap(CMsgGCCStrike15_v
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientPartyWarning_Entry::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[161]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[163]);
 }
 
 // ===================================================================
@@ -61467,7 +62064,7 @@ void CMsgGCCStrike15_v2_ClientPartyWarning::InternalSwap(CMsgGCCStrike15_v2_Clie
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientPartyWarning::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[162]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[164]);
 }
 
 // ===================================================================
@@ -61704,7 +62301,7 @@ void CMsgGCCStrike15_v2_SetEventFavorite::InternalSwap(CMsgGCCStrike15_v2_SetEve
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_SetEventFavorite::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[163]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[165]);
 }
 
 // ===================================================================
@@ -61895,7 +62492,7 @@ void CMsgGCCStrike15_v2_GetEventFavorites_Request::InternalSwap(CMsgGCCStrike15_
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GetEventFavorites_Request::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[164]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[166]);
 }
 
 // ===================================================================
@@ -62211,7 +62808,7 @@ void CMsgGCCStrike15_v2_GetEventFavorites_Response::InternalSwap(CMsgGCCStrike15
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GetEventFavorites_Response::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[165]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[167]);
 }
 
 // ===================================================================
@@ -62608,7 +63205,7 @@ void CMsgGCCStrike15_v2_ClientPerfReport_Entry::InternalSwap(CMsgGCCStrike15_v2_
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientPerfReport_Entry::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[166]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[168]);
 }
 
 // ===================================================================
@@ -62793,7 +63390,7 @@ void CMsgGCCStrike15_v2_ClientPerfReport::InternalSwap(CMsgGCCStrike15_v2_Client
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientPerfReport::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[167]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[169]);
 }
 
 // ===================================================================
@@ -63117,7 +63714,7 @@ void CVDiagnostic::InternalSwap(CVDiagnostic* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CVDiagnostic::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[168]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[170]);
 }
 
 // ===================================================================
@@ -63983,7 +64580,7 @@ void CMsgGCCStrike15_v2_ClientReportValidation::InternalSwap(CMsgGCCStrike15_v2_
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_ClientReportValidation::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[169]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[171]);
 }
 
 // ===================================================================
@@ -64479,7 +65076,7 @@ void CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::InternalSwap(CMsgGCCStrike15_
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[170]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[172]);
 }
 
 // ===================================================================
@@ -64736,7 +65333,7 @@ void CMsgGCCStrike15_v2_GC2ClientRequestValidation::InternalSwap(CMsgGCCStrike15
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GC2ClientRequestValidation::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[171]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[173]);
 }
 
 // ===================================================================
@@ -65327,7 +65924,7 @@ void CMsgGCCStrike15_v2_GC2ClientInitSystem::InternalSwap(CMsgGCCStrike15_v2_GC2
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GC2ClientInitSystem::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[172]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[174]);
 }
 
 // ===================================================================
@@ -65859,7 +66456,7 @@ void CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::InternalSwap(CMsgGCCStrike
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[173]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[175]);
 }
 
 // ===================================================================
@@ -66079,7 +66676,7 @@ void CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName::InternalSwap(CMsgGCCStrike
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[174]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[176]);
 }
 
 // ===================================================================
@@ -66119,7 +66716,7 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgRequestRecurringMissionSch
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgRequestRecurringMissionSchedule::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[175]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[177]);
 }
 
 // ===================================================================
@@ -66344,7 +66941,7 @@ void CMsgRecurringMissionSchema_MissionTemplateList::InternalSwap(CMsgRecurringM
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgRecurringMissionSchema_MissionTemplateList::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[176]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[178]);
 }
 
 // ===================================================================
@@ -66529,7 +67126,7 @@ void CMsgRecurringMissionSchema::InternalSwap(CMsgRecurringMissionSchema* other)
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgRecurringMissionSchema::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[177]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[179]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -67021,6 +67618,14 @@ Arena::CreateMaybeMessage< ::CSOAccountXpShop >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::CSOAccountXpShopBids*
 Arena::CreateMaybeMessage< ::CSOAccountXpShopBids >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CSOAccountXpShopBids >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CSOVolatileItemOffer*
+Arena::CreateMaybeMessage< ::CSOVolatileItemOffer >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CSOVolatileItemOffer >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CSOVolatileItemClaimedRewards*
+Arena::CreateMaybeMessage< ::CSOVolatileItemClaimedRewards >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CSOVolatileItemClaimedRewards >(arena);
 }
 template<> PROTOBUF_NOINLINE ::CSOAccountKeychainRemoveToolCharges*
 Arena::CreateMaybeMessage< ::CSOAccountKeychainRemoveToolCharges >(Arena* arena) {
