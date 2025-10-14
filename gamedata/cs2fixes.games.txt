@@ -400,72 +400,72 @@
 			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
 			"CCSPlayerController_ChangeTeam"
 			{
-				"windows"		"106"
-				"linux"			"105"
+				"windows"		"109"
+				"linux"			"108"
 			}
 			"GetHammerUniqueId"
 			{
-				"windows"		"115"
-				"linux"			"114"
+				"windows"		"118"
+				"linux"			"117"
 			}
 			"CBaseEntity::Use"
-			{
-				"windows"		"147"
-				"linux"			"146"
-			}
-			"CBaseEntity::StartTouch"
 			{
 				"windows"		"150"
 				"linux"			"149"
 			}
+			"CBaseEntity::StartTouch"
+			{
+				"windows"		"153"
+				"linux"			"152"
+			}
 			"CBaseEntity::Touch"
 			{
-				"windows"		"151"
-				"linux"			"150"
+				"windows"		"154"
+				"linux"			"153"
 			}
 			"CBaseEntity::EndTouch"
 			{
-				"windows"		"152"
-				"linux"			"151"
+				"windows"		"155"
+				"linux"			"154"
 			}
 			"Teleport"
 			{
-				"windows"		"165"
-				"linux"			"164"
+				"windows"		"168"
+				"linux"			"167"
 			}
 			// For these two, look for the names, you'll find vscript bindings
 			// Scroll down to where the var + 64 gets set to a function, that calls the offset we want
 			"IsPlayerPawn"
 			{
-				"windows"		"172"
-				"linux"			"171"
+				"windows"		"174"
+				"linux"			"173"
 			}
 			"IsPlayerController"
 			{
-				"windows"		"173"
-				"linux"			"172"
+				"windows"		"175"
+				"linux"			"174"
 			}
 			"CollisionRulesChanged"
 			{
-				"windows"		"189"
-				"linux"			"188"
+				"windows"		"191"
+				"linux"			"190"
 			}
 			"CCSPlayerController_Respawn"
 			{
-				"windows"		"275"
-				"linux"			"277"
+				"windows"		"277"
+				"linux"			"279"
 			}
 			// CBaseTrigger
 			"PassesTriggerFilters"
 			{
-				"windows"		"269"
-				"linux"			"270"
+				"windows"		"271"
+				"linux"			"272"
 			}
-			// Long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
-			"CBasePlayerPawn::OnTakeDamage_Alive"
+			// Actually a bit of a wrapper function now? Eventually calls a long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
+			"CCSPlayerPawn::OnTakeDamage_Alive"
 			{
-				"windows"		"252"
-				"linux"			"253"
+				"windows"		"254"
+				"linux"			"255"
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
 			// return (*(*v9 + 2976LL))(v9, v27, 0LL);
@@ -528,8 +528,8 @@
 			// server.dll -> xref 'sv_phys_stop_at_collision' first __fastcall
 			"CVPhys2World::GetTouchingList"
 			{
-				"windows"		"122"
-				"linux"			"122"
+				"windows"		"120"
+				"linux"			"120"
 			}
 		}
 		"Patches"
