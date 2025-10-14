@@ -89,7 +89,7 @@ CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NON
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
 CConVar<bool> g_cvarFixBlockDamage("cs2f_fix_block_dmg", FCVAR_NONE, "Whether to fix block-damage on players", false);
 
-int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* inputInfo)
+int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* inputInfo, uint64_t unk3)
 {
 #ifdef _DEBUG
 	Message("\n--------------------------------\n"
@@ -138,7 +138,7 @@ int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageI
 	if (g_cvarBlockMolotovSelfDmg.Get() && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
 		return 0;
 
-	const auto damage = CBaseEntity_TakeDamageOld(pThis, inputInfo);
+	const auto damage = CBaseEntity_TakeDamageOld(pThis, inputInfo, unk3);
 
 	if (damage > 0 && g_cvarEnableZR.Get() && pThis->IsPawn())
 		ZR_OnPlayerTakeDamage(reinterpret_cast<CCSPlayerPawn*>(pThis), inputInfo, static_cast<int32>(damage));
@@ -486,12 +486,12 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 
 CConVar<bool> g_cvarBlockNavLookup("cs2f_block_nav_lookup", FCVAR_NONE, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", false);
 
-void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7, int64_t unk8)
+void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7)
 {
 	if (g_cvarBlockNavLookup.Get())
 		return nullptr;
 
-	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7, unk8);
+	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7);
 }
 
 void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pMove)
