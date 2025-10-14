@@ -301,10 +301,10 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 
-	offset = g_GameConfig->GetOffset("CBasePlayerPawn::OnTakeDamage_Alive");
+	offset = g_GameConfig->GetOffset("CCSPlayerPawn::OnTakeDamage_Alive");
 	if (offset == -1)
 	{
-		snprintf(error, maxlen, "Failed to find CBasePlayerPawn::OnTakeDamage_Alive\n");
+		snprintf(error, maxlen, "Failed to find CCSPlayerPawn::OnTakeDamage_Alive\n");
 		bRequiredInitLoaded = false;
 	}
 	SH_MANUALHOOK_RECONFIGURE(OnTakeDamage_Alive, offset, 0, 0);
