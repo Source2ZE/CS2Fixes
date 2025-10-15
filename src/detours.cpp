@@ -486,7 +486,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 
 CConVar<bool> g_cvarBlockNavLookup("cs2f_block_nav_lookup", FCVAR_NONE, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", false);
 
-void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7)
+void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, float unk6, int64_t unk7)
 {
 	if (g_cvarBlockNavLookup.Get())
 		return nullptr;
@@ -793,6 +793,8 @@ bool InitDetours(CGameConfig* gameConfig)
 		g_vecDetours[i]->EnableDetour();
 	}
 
+	SV_DetermineUpdateType_InstallHook(gameConfig);
+
 	return success;
 }
 
@@ -803,4 +805,6 @@ void FlushAllDetours()
 		g_vecDetours[i]->FreeDetour();
 		g_vecDetours.FastRemove(i);
 	}
+
+	SV_DetermineUpdateType_UninstallHook();
 }
