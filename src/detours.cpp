@@ -793,8 +793,6 @@ bool InitDetours(CGameConfig* gameConfig)
 		g_vecDetours[i]->EnableDetour();
 	}
 
-	SV_DetermineUpdateType_InstallHook(gameConfig);
-
 	return success;
 }
 
@@ -805,6 +803,4 @@ void FlushAllDetours()
 		g_vecDetours[i]->FreeDetour();
 		g_vecDetours.FastRemove(i);
 	}
-
-	SV_DetermineUpdateType_UninstallHook();
 }
