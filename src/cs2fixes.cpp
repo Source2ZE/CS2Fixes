@@ -1089,11 +1089,11 @@ void CS2Fixes::Hook_GoToIntermission(bool bAbortedMatch)
 
 CConVar<bool> g_cvarDropMapWeapons("cs2f_drop_map_weapons", FCVAR_NONE, "Whether to force drop map-spawned weapons on death", false);
 
-bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageResult* pInfoContainer)
+bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageResult* pDamageResult)
 {
 	CCSPlayerPawn* pPawn = META_IFACEPTR(CCSPlayerPawn);
 
-	if (g_cvarEnableZR.Get() && ZR_Hook_OnTakeDamage_Alive(pInfoContainer->m_pOriginatingInfo, pPawn))
+	if (g_cvarEnableZR.Get() && ZR_Hook_OnTakeDamage_Alive(pDamageResult->m_pOriginatingInfo, pPawn))
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
 
 	// This is a shit place to be doing this, but player_death event is too late and there is no pre-hook alternative
