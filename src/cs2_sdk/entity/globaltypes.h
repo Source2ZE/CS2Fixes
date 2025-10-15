@@ -141,7 +141,7 @@ enum gender_t : uint8
 
 struct EmitSound_t
 {
-	char* m_pSoundName;		 // 0x0
+	const char* m_pSoundName; // 0x0
 	Vector m_vecSoundOrigin; // 0x8
 	float m_flVolume;		 // 0x14
 	float m_flSoundTime;	 // 0x18
