@@ -143,9 +143,13 @@ private:
 public:
 	void* m_hScriptInstance;	   // 0xe8 | 232
 	AttackerInfo_t m_AttackerInfo; // 0xf0 | 240
-	bool m_bInTakeDamageFlow;	   // 0x104 | 260
+private:
+	[[maybe_unused]] uint8_t m_nUnknown3[0x1C]; // 0x104 | 260
+
+public:
+	bool m_bInTakeDamageFlow; // 0x120 | 288
 
 private:
-	[[maybe_unused]] int32_t m_nUnknown3; // 0x108 | 264
+	[[maybe_unused]] int32_t m_nUnknown4; // 0x124 | 292
 };
-static_assert(sizeof(CTakeDamageInfo) == 272);
+static_assert(sizeof(CTakeDamageInfo) == 296);
