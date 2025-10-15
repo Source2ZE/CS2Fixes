@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -37,7 +37,6 @@
 	#include "version_gen_placeholder.h"
 #endif
 
-struct CTakeDamageInfoContainer;
 class CCSPlayer_MovementServices;
 class CServerSideClient;
 struct TouchLinked_t;
@@ -99,7 +98,7 @@ public: // hooks
 	void Hook_ApplyGameSettings(KeyValues* pKV);
 	void Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList);
 	void Hook_GoToIntermission(bool bAbortedMatch);
-	bool Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer* pInfoContainer);
+	bool Hook_OnTakeDamage_Alive(CTakeDamageResult* pInfoContainer);
 	void Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool unknown);
 #ifdef PLATFORM_WINDOWS
 	Vector* Hook_GetEyePosition(Vector*);

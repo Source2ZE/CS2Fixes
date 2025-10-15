@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -52,6 +52,7 @@ class CTraceFilter;
 class Vector;
 class QAngle;
 class CEconItemView;
+struct CTakeDamageResult;
 
 // Add callback functions to this map that wish to hook into Detour_CEntityIOOutput_FireOutputInternal
 // to make it more modular/cleaner than shoving everything into the detour (buttonwatch, entwatch, etc.)
@@ -86,7 +87,7 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter&, const char*, CCSPlaye
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter&, CCSPlayerController*, uint64, const char*, const char*, const char*, const char*, const char*);
 bool FASTCALL Detour_IsHearingClient(void*, int);
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther);
-int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* inputInfo, uint64_t unk3);
+int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult);
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices*, CBasePlayerWeapon*);
 void FASTCALL Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServices*, CBasePlayerWeapon*);
 bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID, void*, void*);

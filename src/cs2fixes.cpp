@@ -113,7 +113,7 @@ SH_DECL_MANUALHOOK1_void(CGamePlayerEquipPrecache, 0, 0, 0, CEntityPrecacheConte
 SH_DECL_MANUALHOOK1_void(CTriggerGravityPrecache, 0, 0, 0, CEntityPrecacheContext*);
 SH_DECL_MANUALHOOK1_void(CTriggerGravityEndTouch, 0, 0, 0, CBaseEntity*);
 SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUtlStringList&);
-SH_DECL_MANUALHOOK1(OnTakeDamage_Alive, 0, 0, 0, bool, CTakeDamageInfoContainer*);
+SH_DECL_MANUALHOOK1(OnTakeDamage_Alive, 0, 0, 0, bool, CTakeDamageResult*);
 SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
 SH_DECL_HOOK2(IGameEventManager2, LoadEventsFromFile, SH_NOATTRIB, 0, int, const char*, bool);
 SH_DECL_MANUALHOOK1_void(GoToIntermission, 0, 0, 0, bool);
@@ -1089,11 +1089,11 @@ void CS2Fixes::Hook_GoToIntermission(bool bAbortedMatch)
 
 CConVar<bool> g_cvarDropMapWeapons("cs2f_drop_map_weapons", FCVAR_NONE, "Whether to force drop map-spawned weapons on death", false);
 
-bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageInfoContainer* pInfoContainer)
+bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageResult* pInfoContainer)
 {
 	CCSPlayerPawn* pPawn = META_IFACEPTR(CCSPlayerPawn);
 
-	if (g_cvarEnableZR.Get() && ZR_Hook_OnTakeDamage_Alive(pInfoContainer->pInfo, pPawn))
+	if (g_cvarEnableZR.Get() && ZR_Hook_OnTakeDamage_Alive(pInfoContainer->m_pOriginatingInfo, pPawn))
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
 
 	// This is a shit place to be doing this, but player_death event is too late and there is no pre-hook alternative
