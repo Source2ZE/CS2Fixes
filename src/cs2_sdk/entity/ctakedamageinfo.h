@@ -153,6 +153,7 @@ struct CTakeDamageResult
 {
 	CTakeDamageInfo* m_pOriginatingInfo;
 	int32_t m_nHealthLost;
+	int32_t m_nHealthBefore;
 	int32_t m_nDamageDealt;
 	float m_flPreModifiedDamage;
 	int32_t m_nTotalledHealthLost;
@@ -163,6 +164,7 @@ struct CTakeDamageResult
 	{
 		m_pOriginatingInfo = pInfo;
 		m_nHealthLost = static_cast<int32_t>(pInfo->m_flDamage);
+		m_nHealthBefore = 0;
 		m_nDamageDealt = static_cast<int32_t>(pInfo->m_flDamage);
 		m_flPreModifiedDamage = pInfo->m_flDamage;
 		m_nTotalledHealthLost = static_cast<int32_t>(pInfo->m_flDamage);
@@ -175,6 +177,7 @@ struct CTakeDamageResult
 	constexpr CTakeDamageResult(float damage) :
 		m_pOriginatingInfo(nullptr),
 		m_nHealthLost(static_cast<int32_t>(damage)),
+		m_nHealthBefore(0),
 		m_nDamageDealt(static_cast<int32_t>(damage)),
 		m_flPreModifiedDamage(damage),
 		m_nTotalledHealthLost(static_cast<int32_t>(damage)),
@@ -183,4 +186,4 @@ struct CTakeDamageResult
 	{
 	}
 };
-static_assert(sizeof(CTakeDamageResult) == 32);
+static_assert(sizeof(CTakeDamageResult) == 40);
