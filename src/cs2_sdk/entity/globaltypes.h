@@ -141,6 +141,16 @@ enum gender_t : uint8
 
 struct EmitSound_t
 {
+	EmitSound_t() :
+		m_pSoundName(0),
+		m_vecSoundOrigin(),
+		m_flVolume(VOL_NORM),
+		m_flSoundTime(0.0f),
+		m_nForceGuid(0),
+		m_nPitch(PITCH_NORM),
+		m_nFlags(0)
+	{
+	}
 	const char* m_pSoundName; // 0x0
 	Vector m_vecSoundOrigin; // 0x8
 	float m_flVolume;		 // 0x14
