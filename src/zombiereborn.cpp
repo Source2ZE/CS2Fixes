@@ -421,7 +421,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				m_HumanClassMap.insert(std::make_pair(hashKey, pHumanClass));
 				m_HumanClassKeys.push_back(hashKey);
 
-				if (bTeamDefault)
+				if (bEnabled && bTeamDefault)
 					m_vecHumanDefaultClass.push_back(pHumanClass);
 
 				pHumanClass->PrintInfo();
@@ -451,7 +451,7 @@ void CZRPlayerClassManager::LoadPlayerClass()
 				m_ZombieClassMap.insert(std::make_pair(hashKey, pZombieClass));
 				m_ZombieClassKeys.push_back(hashKey);
 
-				if (bTeamDefault)
+				if (bEnabled && bTeamDefault)
 					m_vecZombieDefaultClass.push_back(pZombieClass);
 
 				pZombieClass->PrintInfo();
