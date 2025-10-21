@@ -1052,7 +1052,22 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 			// Do not hide leaders or item holders to other players
 			ZEPlayer* pOtherZEPlayer = g_playerManager->GetPlayer(j);
 			if (pSelfZEPlayer->ShouldBlockTransmit(j) && pOtherZEPlayer && !pOtherZEPlayer->IsLeader() && g_pEWHandler->FindItemInstanceByOwner(j, false, 0) == -1)
+			{
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
+
+				if (g_cvarHideWeapons.Get())
+				{
+					auto pVecWeapons = pPawn->m_pWeaponServices->m_hMyWeapons();
+
+					FOR_EACH_VEC(*pVecWeapons, i)
+					{
+						auto pWeapon = (*pVecWeapons)[i].Get();
+
+						if (pWeapon)
+							pInfo->m_pTransmitEntity->Clear(pWeapon->entindex());
+					}
+				}
+			}
 		}
 
 		// Don't transmit glow model to it's owner
