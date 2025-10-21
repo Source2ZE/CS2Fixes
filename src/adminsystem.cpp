@@ -606,7 +606,8 @@ CON_COMMAND_CHAT_FLAGS(rcon, "<command> - Send a command to server console", ADM
 
 	if (cmdRef.IsValidRef())
 	{
-		CCommandContext context(CT_FIRST_SPLITSCREEN_CLIENT, player->GetPlayerSlot());
+		// Some commands are blocked by UTIL_IsCommandIssuedByServerAdmin which only allows slot -1 on dedicated servers
+		CCommandContext context(CT_FIRST_SPLITSCREEN_CLIENT, -1);
 
 		CCommand newArgs;
 		newArgs.Tokenize(args.ArgS());
