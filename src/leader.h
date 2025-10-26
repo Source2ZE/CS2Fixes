@@ -24,7 +24,7 @@
 #include "playermanager.h"
 #include "utils/entity.h"
 
-extern CUtlVector<ZEPlayerHandle> g_vecLeaders;
+extern std::vector<ZEPlayerHandle> g_vecLeaders;
 extern CConVar<bool> g_cvarEnableLeader;
 extern CConVar<bool> g_cvarLeaderActionsHumanOnly;
 extern CConVar<CUtlString> g_cvarMarkParticlePath;
