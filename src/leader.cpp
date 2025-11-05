@@ -47,7 +47,7 @@ std::map<std::string, ColorPreset> mapColorPresets = {
 };
 // clang-format on
 
-CUtlVector<ZEPlayerHandle> g_vecLeaders;
+std::vector<ZEPlayerHandle> g_vecLeaders;
 
 static int g_iMarkerCount = 0;
 static bool g_bPingWithLeader = true;
@@ -110,14 +110,16 @@ static std::pair<int, std::string> GetLeaders()
 {
 	int iLeaders = 0;
 	std::string strLeaders = "";
-	FOR_EACH_VEC_BACK(g_vecLeaders, i)
+
+	for (int i = g_vecLeaders.size() - 1; i >= 0; i--)
 	{
 		ZEPlayer* pLeader = g_vecLeaders[i].Get();
 		if (!pLeader)
 		{
-			g_vecLeaders.Remove(i);
+			g_vecLeaders.erase(g_vecLeaders.begin() + i);
 			continue;
 		}
+
 		CCSPlayerController* pController = CCSPlayerController::FromSlot((CPlayerSlot)pLeader->GetPlayerSlot());
 		if (!pController)
 			continue;
@@ -224,7 +226,7 @@ static bool Leader_SetNewLeader(ZEPlayer* zpLeader, std::string strColor = "")
 		Leader_ApplyLeaderVisuals(pawnLeader);
 
 	zpLeader->PurgeLeaderVotes();
-	g_vecLeaders.AddToTail(zpLeader->GetHandle());
+	g_vecLeaders.push_back(zpLeader->GetHandle());
 	return true;
 }
 
@@ -299,11 +301,12 @@ static void RemoveLeader(CCSPlayerController* ccsLeader)
 	zpLeader->SetTracerColor(Color(0, 0, 0, 0));
 	zpLeader->SetBeaconColor(Color(0, 0, 0, 0));
 	zpLeader->SetGlowColor(Color(0, 0, 0, 0));
-	FOR_EACH_VEC_BACK(g_vecLeaders, i)
+
+	for (int i = g_vecLeaders.size() - 1; i >= 0; i--)
 	{
 		if (g_vecLeaders[i] == zpLeader)
 		{
-			g_vecLeaders.Remove(i);
+			g_vecLeaders.erase(g_vecLeaders.begin() + i);
 			break;
 		}
 	}
@@ -367,7 +370,8 @@ void Leader_PostEventAbstract_Source1LegacyGameEvent(const uint64* clients, cons
 		return;
 
 	bool bNoHumanLeaders = true;
-	FOR_EACH_VEC_BACK(g_vecLeaders, i)
+
+	for (int i = 0; i < g_vecLeaders.size(); i++)
 	{
 		if (g_vecLeaders[i].IsValid())
 		{
