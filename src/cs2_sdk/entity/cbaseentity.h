@@ -249,7 +249,10 @@ public:
 	// This was needed so we can parent to nameless entities using pointers
 	void SetParent(CBaseEntity* pNewParent)
 	{
-		addresses::CBaseEntity_SetParent(this, pNewParent, MakeStringToken(""), nullptr);
+		if (pNewParent)
+			AcceptInput("SetParent", "!activator", pNewParent);
+		else
+			AcceptInput("ClearParent");
 	}
 
 	void SetOwner(CBaseEntity* pNewOwner)
