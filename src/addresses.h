@@ -98,7 +98,6 @@ namespace addresses
 	inline void(FASTCALL* DispatchSpawn)(CBaseEntity* pEntity, CEntityKeyValues* pEntityKeyValues);
 	inline void(FASTCALL* CEntityIdentity_SetEntityName)(CEntityIdentity* pEntity, const char* pName);
 	inline void(FASTCALL* CBaseEntity_EmitSoundParams)(CBaseEntity* pEntity, const char* pszSound, int nPitch, float flVolume, float flDelay);
-	inline void(FASTCALL* CBaseEntity_SetParent)(CBaseEntity* pEntity, CBaseEntity* pNewParent, CUtlStringToken nBoneOrAttachName, matrix3x4a_t* pOffsetTransform);
 	inline int(FASTCALL* DispatchParticleEffect)(const char* pszParticleName, int iAttachType, CBaseEntity* pEntity,
 												 char iAttachmentPoint, CUtlSymbolLarge iAttachmentName, bool bResetAllParticlesOnEntity, int nSplitScreenPlayerSlot, IRecipientFilter* a7, byte* a8);
 	inline StartSoundEventInfo(FASTCALL* CBaseEntity_EmitSoundFilter)(IRecipientFilter& filter, CEntityIndex ent, const EmitSound_t& params);
