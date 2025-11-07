@@ -20,7 +20,6 @@
 #pragma once
 #include "platform.h"
 #include "playermanager.h"
-#include "utlvector.h"
 #include <ctime>
 
 // clang-format off
@@ -196,7 +195,7 @@ public:
 private:
 	std::map<std::string, CAdminBase> m_mapAdminGroups;
 	std::map<uint64, CAdmin> m_mapAdmins;
-	CUtlVector<CInfractionBase*> m_vecInfractions;
+	std::vector<CInfractionBase*> m_vecInfractions;
 
 	// Implemented as a circular buffer.
 	std::tuple<std::string, uint64, std::string> m_rgDCPly[20];
