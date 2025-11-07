@@ -40,7 +40,7 @@ void DiscordHttpCallback(HTTPRequestHandle request, json response)
 
 void CDiscordBotManager::PostDiscordMessage(const char* sDiscordBotName, const char* sMessage)
 {
-	FOR_EACH_VEC(m_vecDiscordBots, i)
+	for (int i = 0; i < m_vecDiscordBots.size(); i++)
 	{
 		CDiscordBot bot = m_vecDiscordBots[i];
 
@@ -74,7 +74,7 @@ void CDiscordBot::PostMessage(const char* sMessage)
 
 bool CDiscordBotManager::LoadDiscordBotsConfig()
 {
-	m_vecDiscordBots.Purge();
+	m_vecDiscordBots.clear();
 	KeyValues* pKV = new KeyValues("discordbots");
 	KeyValues::AutoDelete autoDelete(pKV);
 
@@ -105,7 +105,7 @@ bool CDiscordBotManager::LoadDiscordBotsConfig()
 		ConMsg("Loaded DiscordBot config %s\n", bot.GetName());
 		ConMsg(" - Webhook URL: %s\n", bot.GetWebhookUrl());
 		ConMsg(" - Avatar URL: %s\n", bot.GetAvatarUrl());
-		m_vecDiscordBots.AddToTail(bot);
+		m_vecDiscordBots.push_back(bot);
 	}
 
 	return true;
