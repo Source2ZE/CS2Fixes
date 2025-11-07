@@ -1529,7 +1529,7 @@ void CAdminSystem::AddOrUpdateAdmin(uint64 iSteamID, uint64 iFlags, int iAdminIm
 
 bool CAdminSystem::LoadInfractions()
 {
-	m_vecInfractions.PurgeAndDeleteElements();
+	m_vecInfractions.clear();
 	KeyValues* pKV = new KeyValues("infractions");
 	KeyValues::AutoDelete autoDelete(pKV);
 
@@ -1590,7 +1590,7 @@ void CAdminSystem::SaveInfractions()
 	KeyValues* pSubKey;
 	KeyValues::AutoDelete autoDelete(pKV);
 
-	FOR_EACH_VEC(m_vecInfractions, i)
+	for (int i = 0; i < m_vecInfractions.size(); i++)
 	{
 		time_t timestamp = m_vecInfractions[i]->GetTimestamp();
 		if (timestamp != 0 && timestamp < std::time(0))
@@ -1618,7 +1618,7 @@ void CAdminSystem::SaveInfractions()
 
 void CAdminSystem::AddInfraction(CInfractionBase* infraction)
 {
-	m_vecInfractions.AddToTail(infraction);
+	m_vecInfractions.push_back(infraction);
 }
 
 // This function can run at least twice when a player connects: Immediately upon client connection, and also upon getting authenticated by steam.
@@ -1626,7 +1626,7 @@ void CAdminSystem::AddInfraction(CInfractionBase* infraction)
 // This returns false only when called from ClientConnect and the player is banned in order to reject them.
 bool CAdminSystem::ApplyInfractions(ZEPlayer* player)
 {
-	FOR_EACH_VEC(m_vecInfractions, i)
+	for (int i = m_vecInfractions.size() - 1; i >= 0; i--)
 	{
 		// Because this can run without the player being authenticated, and the fact that we're applying a ban/mute here,
 		// we can immediately just use the steamid we got from the connecting player.
@@ -1642,7 +1642,7 @@ bool CAdminSystem::ApplyInfractions(ZEPlayer* player)
 		time_t timestamp = m_vecInfractions[i]->GetTimestamp();
 		if (timestamp != 0 && timestamp <= std::time(0))
 		{
-			m_vecInfractions.Remove(i);
+			m_vecInfractions.erase(m_vecInfractions.begin() + i);
 			continue;
 		}
 
@@ -1658,12 +1658,12 @@ bool CAdminSystem::ApplyInfractions(ZEPlayer* player)
 
 bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer* player, CInfractionBase::EInfractionType type)
 {
-	FOR_EACH_VEC_BACK(m_vecInfractions, i)
+	for (int i = m_vecInfractions.size() - 1; i >= 0; i--)
 	{
 		if (m_vecInfractions[i]->GetSteamId64() == player->GetSteamId64() && m_vecInfractions[i]->GetType() == type)
 		{
 			m_vecInfractions[i]->UndoInfraction(player);
-			m_vecInfractions.Remove(i);
+			m_vecInfractions.erase(m_vecInfractions.begin() + i);
 
 			return true;
 		}
@@ -1674,11 +1674,11 @@ bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer* player, CInfractionBase::EI
 
 bool CAdminSystem::FindAndRemoveInfractionSteamId64(uint64 steamid64, CInfractionBase::EInfractionType type)
 {
-	FOR_EACH_VEC_BACK(m_vecInfractions, i)
+	for (int i = m_vecInfractions.size() - 1; i >= 0; i--)
 	{
 		if (m_vecInfractions[i]->GetSteamId64() == steamid64 && m_vecInfractions[i]->GetType() == type)
 		{
-			m_vecInfractions.Remove(i);
+			m_vecInfractions.erase(m_vecInfractions.begin() + i);
 
 			return true;
 		}
