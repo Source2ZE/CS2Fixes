@@ -563,12 +563,23 @@ void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd
 			{
 				uint64 button = iterator->button();
 
-				// Remove normal subtick movement inputs by button & subtick movement viewangles by pitch/yaw
+				// Remove normal subtick movement inputs by button
 				// Unfortunately, we also need to ignore IN_JUMP, because de-subticking jumps somehow conflicts with other subtick inputs pressed at the same time
-				if ((button >= IN_DUCK && button <= IN_MOVERIGHT && button != IN_USE) || iterator->pitch_delta() != 0.0f || iterator->yaw_delta() != 0.0f)
+				if (button >= IN_DUCK && button <= IN_MOVERIGHT && button != IN_USE)
+				{
 					subtickMoves->erase(iterator);
+				}
 				else
+				{
+					// Remove subtick movement viewangles by pitch/yaw
+					if (iterator->pitch_delta() != 0.0f)
+						iterator->set_pitch_delta(0.0f);
+
+					if (iterator->yaw_delta() != 0.0f)
+						iterator->set_yaw_delta(0.0f);
+
 					iterator++;
+				}
 			}
 		}
 
