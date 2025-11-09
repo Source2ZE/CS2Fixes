@@ -950,10 +950,14 @@ void CS2Fixes::Hook_ClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReas
 	Message("Hook_ClientDisconnect(%d, %d, \"%s\", %lli)\n", slot, reason, pszName, xuid);
 
 	CCSPlayerController* player = CCSPlayerController::FromSlot(slot);
-	if (player)
-		ZR_CheckTeamWinConditions(player->m_iTeamNum == CS_TEAM_T ? CS_TEAM_CT : CS_TEAM_T);
-	else if (!ZR_CheckTeamWinConditions(CS_TEAM_T)) // If we cant get team num, just check both
-		ZR_CheckTeamWinConditions(CS_TEAM_CT);
+
+	if (g_cvarEnableZR.Get())
+	{
+		if (player)
+			ZR_CheckTeamWinConditions(player->m_iTeamNum == CS_TEAM_T ? CS_TEAM_CT : CS_TEAM_T);
+		else if (!ZR_CheckTeamWinConditions(CS_TEAM_T)) // If we cant get team num, just check both
+			ZR_CheckTeamWinConditions(CS_TEAM_CT);
+	}
 
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
 
