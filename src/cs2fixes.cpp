@@ -513,7 +513,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	if (g_pZRHitgroupConfig)
 		delete g_pZRHitgroupConfig;
 
-	if (g_pEntityListener)
+	if (g_pEntitySystem && g_pEntityListener)
 	{
 		g_pEntitySystem->RemoveListenerEntity(g_pEntityListener);
 		delete g_pEntityListener;
