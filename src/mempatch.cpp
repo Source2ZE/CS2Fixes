@@ -73,7 +73,7 @@ bool CMemPatch::PerformPatch(CGameConfig* gameConfig)
 
 void CMemPatch::UndoPatch()
 {
-	if (!m_pPatchAddress)
+	if (!m_pOriginalBytes)
 		return;
 
 	Message("Undoing patch %s at %p\n", m_pszName, m_pPatchAddress);

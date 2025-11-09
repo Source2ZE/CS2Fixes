@@ -25,16 +25,15 @@
 #include "entity/ccsplayerpawn.h"
 #include "icvar.h"
 #include "irecipientfilter.h"
-#include "mempatch.h"
 
 #include "tier0/memdbgon.h"
 
 CMemPatch g_CommonPatches[] =
 	{
 		CMemPatch("ServerMovementUnlock", "ServerMovementUnlock"),
+		CMemPatch("BotNavIgnore", "BotNavIgnore"),
 		CMemPatch("CheckJumpButtonWater", "FixWaterFloorJump"),
 		CMemPatch("CPhysBox_Use", "CPhysBox_Use"),
-		CMemPatch("BotNavIgnore", "BotNavIgnore"),
 };
 
 CConVar<bool> cs2f_movement_unlocker_enable("cs2f_movement_unlocker_enable", FCVAR_NONE, "Whether to enable movement unlocker", false,
@@ -50,8 +49,8 @@ bool InitPatches(CGameConfig* g_GameConfig)
 {
 	bool success = true;
 
-	// Skip first patch (movement unlocker), it gets patched in convar callback
-	for (int i = 1; i < sizeof(g_CommonPatches) / sizeof(*g_CommonPatches); i++)
+	// Skip first two patches (movement unlocker & bot nav ignore), they are patched elsewhere
+	for (int i = 2; i < sizeof(g_CommonPatches) / sizeof(*g_CommonPatches); i++)
 		if (!g_CommonPatches[i].PerformPatch(g_GameConfig))
 			success = false;
 

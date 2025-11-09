@@ -1326,6 +1326,10 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 	V_snprintf(cmd, sizeof(cmd), "exec cs2fixes/maps/%s", pMapName);
 	g_pEngineServer2->ServerCommand(cmd);
 
+	// Only patch BotNavIgnore while a map is loaded, else adding bots will crash
+	if (V_strcmp(pMapName, "error"))
+		g_CommonPatches[1].PerformPatch(g_GameConfig);
+
 	g_playerManager->SetupInfiniteAmmo();
 	g_pMapVoteSystem->OnLevelInit(pMapName);
 
@@ -1345,6 +1349,9 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 void CS2Fixes::OnLevelShutdown()
 {
 	Message("OnLevelShutdown()\n");
+
+	// Only patch BotNavIgnore while a map is loaded, else adding bots will crash
+	g_CommonPatches[1].UndoPatch();
 
 	if (g_cvarVoteManagerEnable.Get())
 		g_pMapVoteSystem->OnLevelShutdown();
