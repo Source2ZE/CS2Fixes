@@ -50,6 +50,7 @@ PROTOBUF_CONSTEXPR CMsgPlaceDecalEvent::CMsgPlaceDecalEvent(
   , /*decltype(_impl_.size_override_)*/0
   , /*decltype(_impl_.material_id_)*/uint64_t{0u}
   , /*decltype(_impl_.sequence_name_)*/0u
+  , /*decltype(_impl_.triangleindex_)*/0
   , /*decltype(_impl_.entityhandle_)*/16777215u} {}
 struct CMsgPlaceDecalEventDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CMsgPlaceDecalEventDefaultTypeInternal()
@@ -304,6 +305,7 @@ const uint32_t TableStruct_gameevents_2eproto::offsets[] PROTOBUF_SECTION_VARIAB
   PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.normal_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.saxis_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.boneindex_),
+  PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.triangleindex_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.flags_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.color_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlaceDecalEvent, _impl_.random_seed_),
@@ -316,12 +318,13 @@ const uint32_t TableStruct_gameevents_2eproto::offsets[] PROTOBUF_SECTION_VARIAB
   1,
   2,
   3,
+  11,
   4,
   5,
   6,
   7,
   8,
-  11,
+  12,
   9,
   10,
   PROTOBUF_FIELD_OFFSET(::CMsgClearWorldDecalsEvent, _impl_._has_bits_),
@@ -486,21 +489,21 @@ const uint32_t TableStruct_gameevents_2eproto::offsets[] PROTOBUF_SECTION_VARIAB
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 8, -1, sizeof(::CMsgVDebugGameSessionIDEvent)},
-  { 10, 28, -1, sizeof(::CMsgPlaceDecalEvent)},
-  { 40, 47, -1, sizeof(::CMsgClearWorldDecalsEvent)},
-  { 48, 55, -1, sizeof(::CMsgClearEntityDecalsEvent)},
-  { 56, 64, -1, sizeof(::CMsgClearDecalsForEntityEvent)},
-  { 66, 74, -1, sizeof(::CMsgSource1LegacyGameEventList_key_t)},
-  { 76, 85, -1, sizeof(::CMsgSource1LegacyGameEventList_descriptor_t)},
-  { 88, -1, -1, sizeof(::CMsgSource1LegacyGameEventList)},
-  { 95, 103, -1, sizeof(::CMsgSource1LegacyListenEvents)},
-  { 105, 119, -1, sizeof(::CMsgSource1LegacyGameEvent_key_t)},
-  { 127, 138, -1, sizeof(::CMsgSource1LegacyGameEvent)},
-  { 143, 155, -1, sizeof(::CMsgSosStartSoundEvent)},
-  { 161, 168, -1, sizeof(::CMsgSosStopSoundEvent)},
-  { 169, 177, -1, sizeof(::CMsgSosStopSoundEventHash)},
-  { 179, 187, -1, sizeof(::CMsgSosSetSoundEventParams)},
-  { 189, 197, -1, sizeof(::CMsgSosSetLibraryStackFields)},
+  { 10, 29, -1, sizeof(::CMsgPlaceDecalEvent)},
+  { 42, 49, -1, sizeof(::CMsgClearWorldDecalsEvent)},
+  { 50, 57, -1, sizeof(::CMsgClearEntityDecalsEvent)},
+  { 58, 66, -1, sizeof(::CMsgClearDecalsForEntityEvent)},
+  { 68, 76, -1, sizeof(::CMsgSource1LegacyGameEventList_key_t)},
+  { 78, 87, -1, sizeof(::CMsgSource1LegacyGameEventList_descriptor_t)},
+  { 90, -1, -1, sizeof(::CMsgSource1LegacyGameEventList)},
+  { 97, 105, -1, sizeof(::CMsgSource1LegacyListenEvents)},
+  { 107, 121, -1, sizeof(::CMsgSource1LegacyGameEvent_key_t)},
+  { 129, 140, -1, sizeof(::CMsgSource1LegacyGameEvent)},
+  { 145, 157, -1, sizeof(::CMsgSosStartSoundEvent)},
+  { 163, 170, -1, sizeof(::CMsgSosStopSoundEvent)},
+  { 171, 179, -1, sizeof(::CMsgSosStopSoundEventHash)},
+  { 181, 189, -1, sizeof(::CMsgSosSetSoundEventParams)},
+  { 191, 199, -1, sizeof(::CMsgSosSetLibraryStackFields)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -525,65 +528,66 @@ static const ::_pb::Message* const file_default_instances[] = {
 const char descriptor_table_protodef_gameevents_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\020gameevents.proto\032\026networkbasetypes.pro"
   "to\"G\n\034CMsgVDebugGameSessionIDEvent\022\020\n\010cl"
-  "ientid\030\001 \001(\005\022\025\n\rgamesessionid\030\002 \001(\t\"\260\002\n\023"
+  "ientid\030\001 \001(\005\022\025\n\rgamesessionid\030\002 \001(\t\"\307\002\n\023"
   "CMsgPlaceDecalEvent\022\035\n\010position\030\001 \001(\0132\013."
   "CMsgVector\022\033\n\006normal\030\002 \001(\0132\013.CMsgVector\022"
   "\032\n\005saxis\030\003 \001(\0132\013.CMsgVector\022\021\n\tboneindex"
-  "\030\004 \001(\005\022\r\n\005flags\030\005 \001(\r\022\r\n\005color\030\006 \001(\007\022\023\n\013"
-  "random_seed\030\007 \001(\005\022\030\n\020decal_group_name\030\010 "
-  "\001(\r\022\025\n\rsize_override\030\t \001(\002\022\036\n\014entityhand"
-  "le\030\n \001(\r:\01016777215\022\023\n\013material_id\030\013 \001(\004\022"
-  "\025\n\rsequence_name\030\014 \001(\r\"1\n\031CMsgClearWorld"
-  "DecalsEvent\022\024\n\014flagstoclear\030\001 \001(\r\"2\n\032CMs"
-  "gClearEntityDecalsEvent\022\024\n\014flagstoclear\030"
-  "\001 \001(\r\"U\n\035CMsgClearDecalsForEntityEvent\022\024"
-  "\n\014flagstoclear\030\001 \001(\r\022\036\n\014entityhandle\030\002 \001"
-  "(\r:\01016777215\"\354\001\n\036CMsgSource1LegacyGameEv"
-  "entList\022A\n\013descriptors\030\001 \003(\0132,.CMsgSourc"
-  "e1LegacyGameEventList.descriptor_t\032#\n\005ke"
-  "y_t\022\014\n\004type\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\032b\n\014descr"
-  "iptor_t\022\017\n\007eventid\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\0223"
-  "\n\004keys\030\003 \003(\0132%.CMsgSource1LegacyGameEven"
-  "tList.key_t\"K\n\035CMsgSource1LegacyListenEv"
-  "ents\022\022\n\nplayerslot\030\001 \001(\005\022\026\n\016eventarraybi"
-  "ts\030\002 \003(\r\"\270\002\n\032CMsgSource1LegacyGameEvent\022"
-  "\022\n\nevent_name\030\001 \001(\t\022\017\n\007eventid\030\002 \001(\005\022/\n\004"
-  "keys\030\003 \003(\0132!.CMsgSource1LegacyGameEvent."
-  "key_t\022\023\n\013server_tick\030\004 \001(\005\022\023\n\013passthroug"
-  "h\030\005 \001(\005\032\231\001\n\005key_t\022\014\n\004type\030\001 \001(\005\022\022\n\nval_s"
-  "tring\030\002 \001(\t\022\021\n\tval_float\030\003 \001(\002\022\020\n\010val_lo"
-  "ng\030\004 \001(\005\022\021\n\tval_short\030\005 \001(\005\022\020\n\010val_byte\030"
-  "\006 \001(\005\022\020\n\010val_bool\030\007 \001(\010\022\022\n\nval_uint64\030\010 "
-  "\001(\004\"\244\001\n\026CMsgSosStartSoundEvent\022\027\n\017sounde"
-  "vent_guid\030\001 \001(\005\022\027\n\017soundevent_hash\030\002 \001(\007"
-  "\022\037\n\023source_entity_index\030\003 \001(\005:\002-1\022\014\n\004see"
-  "d\030\004 \001(\005\022\025\n\rpacked_params\030\005 \001(\014\022\022\n\nstart_"
-  "time\030\006 \001(\002\"0\n\025CMsgSosStopSoundEvent\022\027\n\017s"
-  "oundevent_guid\030\001 \001(\005\"U\n\031CMsgSosStopSound"
-  "EventHash\022\027\n\017soundevent_hash\030\001 \001(\007\022\037\n\023so"
-  "urce_entity_index\030\002 \001(\005:\002-1\"L\n\032CMsgSosSe"
-  "tSoundEventParams\022\027\n\017soundevent_guid\030\001 \001"
-  "(\005\022\025\n\rpacked_params\030\005 \001(\014\"I\n\034CMsgSosSetL"
-  "ibraryStackFields\022\022\n\nstack_hash\030\001 \001(\007\022\025\n"
-  "\rpacked_fields\030\005 \001(\014*\255\003\n\017EBaseGameEvents"
-  "\022 \n\033GE_VDebugGameSessionIDEvent\020\310\001\022\027\n\022GE"
-  "_PlaceDecalEvent\020\311\001\022\035\n\030GE_ClearWorldDeca"
-  "lsEvent\020\312\001\022\036\n\031GE_ClearEntityDecalsEvent\020"
-  "\313\001\022!\n\034GE_ClearDecalsForEntityEvent\020\314\001\022\"\n"
-  "\035GE_Source1LegacyGameEventList\020\315\001\022!\n\034GE_"
-  "Source1LegacyListenEvents\020\316\001\022\036\n\031GE_Sourc"
-  "e1LegacyGameEvent\020\317\001\022\032\n\025GE_SosStartSound"
-  "Event\020\320\001\022\031\n\024GE_SosStopSoundEvent\020\321\001\022\036\n\031G"
-  "E_SosSetSoundEventParams\020\322\001\022 \n\033GE_SosSet"
-  "LibraryStackFields\020\323\001\022\035\n\030GE_SosStopSound"
-  "EventHash\020\324\001"
+  "\030\004 \001(\005\022\025\n\rtriangleindex\030\r \001(\005\022\r\n\005flags\030\005"
+  " \001(\r\022\r\n\005color\030\006 \001(\007\022\023\n\013random_seed\030\007 \001(\005"
+  "\022\030\n\020decal_group_name\030\010 \001(\r\022\025\n\rsize_overr"
+  "ide\030\t \001(\002\022\036\n\014entityhandle\030\n \001(\r:\0101677721"
+  "5\022\023\n\013material_id\030\013 \001(\004\022\025\n\rsequence_name\030"
+  "\014 \001(\r\"1\n\031CMsgClearWorldDecalsEvent\022\024\n\014fl"
+  "agstoclear\030\001 \001(\r\"2\n\032CMsgClearEntityDecal"
+  "sEvent\022\024\n\014flagstoclear\030\001 \001(\r\"U\n\035CMsgClea"
+  "rDecalsForEntityEvent\022\024\n\014flagstoclear\030\001 "
+  "\001(\r\022\036\n\014entityhandle\030\002 \001(\r:\01016777215\"\364\001\n\036"
+  "CMsgSource1LegacyGameEventList\022A\n\013descri"
+  "ptors\030\001 \003(\0132,.CMsgSource1LegacyGameEvent"
+  "List.descriptor_t\032#\n\005key_t\022\014\n\004type\030\001 \001(\005"
+  "\022\014\n\004name\030\002 \001(\t\032b\n\014descriptor_t\022\017\n\007eventi"
+  "d\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\0223\n\004keys\030\003 \003(\0132%.CM"
+  "sgSource1LegacyGameEventList.key_t:\006\200\265\030\200"
+  "\300\001\"K\n\035CMsgSource1LegacyListenEvents\022\022\n\np"
+  "layerslot\030\001 \001(\005\022\026\n\016eventarraybits\030\002 \003(\r\""
+  "\270\002\n\032CMsgSource1LegacyGameEvent\022\022\n\nevent_"
+  "name\030\001 \001(\t\022\017\n\007eventid\030\002 \001(\005\022/\n\004keys\030\003 \003("
+  "\0132!.CMsgSource1LegacyGameEvent.key_t\022\023\n\013"
+  "server_tick\030\004 \001(\005\022\023\n\013passthrough\030\005 \001(\005\032\231"
+  "\001\n\005key_t\022\014\n\004type\030\001 \001(\005\022\022\n\nval_string\030\002 \001"
+  "(\t\022\021\n\tval_float\030\003 \001(\002\022\020\n\010val_long\030\004 \001(\005\022"
+  "\021\n\tval_short\030\005 \001(\005\022\020\n\010val_byte\030\006 \001(\005\022\020\n\010"
+  "val_bool\030\007 \001(\010\022\022\n\nval_uint64\030\010 \001(\004\"\244\001\n\026C"
+  "MsgSosStartSoundEvent\022\027\n\017soundevent_guid"
+  "\030\001 \001(\005\022\027\n\017soundevent_hash\030\002 \001(\007\022\037\n\023sourc"
+  "e_entity_index\030\003 \001(\005:\002-1\022\014\n\004seed\030\004 \001(\005\022\025"
+  "\n\rpacked_params\030\005 \001(\014\022\022\n\nstart_time\030\006 \001("
+  "\002\"0\n\025CMsgSosStopSoundEvent\022\027\n\017soundevent"
+  "_guid\030\001 \001(\005\"U\n\031CMsgSosStopSoundEventHash"
+  "\022\027\n\017soundevent_hash\030\001 \001(\007\022\037\n\023source_enti"
+  "ty_index\030\002 \001(\005:\002-1\"L\n\032CMsgSosSetSoundEve"
+  "ntParams\022\027\n\017soundevent_guid\030\001 \001(\005\022\025\n\rpac"
+  "ked_params\030\005 \001(\014\"I\n\034CMsgSosSetLibrarySta"
+  "ckFields\022\022\n\nstack_hash\030\001 \001(\007\022\025\n\rpacked_f"
+  "ields\030\005 \001(\014*\255\003\n\017EBaseGameEvents\022 \n\033GE_VD"
+  "ebugGameSessionIDEvent\020\310\001\022\027\n\022GE_PlaceDec"
+  "alEvent\020\311\001\022\035\n\030GE_ClearWorldDecalsEvent\020\312"
+  "\001\022\036\n\031GE_ClearEntityDecalsEvent\020\313\001\022!\n\034GE_"
+  "ClearDecalsForEntityEvent\020\314\001\022\"\n\035GE_Sourc"
+  "e1LegacyGameEventList\020\315\001\022!\n\034GE_Source1Le"
+  "gacyListenEvents\020\316\001\022\036\n\031GE_Source1LegacyG"
+  "ameEvent\020\317\001\022\032\n\025GE_SosStartSoundEvent\020\320\001\022"
+  "\031\n\024GE_SosStopSoundEvent\020\321\001\022\036\n\031GE_SosSetS"
+  "oundEventParams\020\322\001\022 \n\033GE_SosSetLibrarySt"
+  "ackFields\020\323\001\022\035\n\030GE_SosStopSoundEventHash"
+  "\020\324\001"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_gameevents_2eproto_deps[1] = {
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_gameevents_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_gameevents_2eproto = {
-    false, false, 2132, descriptor_table_protodef_gameevents_2eproto,
+    false, false, 2163, descriptor_table_protodef_gameevents_2eproto,
     "gameevents.proto",
     &descriptor_table_gameevents_2eproto_once, descriptor_table_gameevents_2eproto_deps, 1, 16,
     schemas, file_default_instances, TableStruct_gameevents_2eproto::offsets,
@@ -899,6 +903,9 @@ class CMsgPlaceDecalEvent::_Internal {
   static void set_has_boneindex(HasBits* has_bits) {
     (*has_bits)[0] |= 8u;
   }
+  static void set_has_triangleindex(HasBits* has_bits) {
+    (*has_bits)[0] |= 2048u;
+  }
   static void set_has_flags(HasBits* has_bits) {
     (*has_bits)[0] |= 16u;
   }
@@ -915,7 +922,7 @@ class CMsgPlaceDecalEvent::_Internal {
     (*has_bits)[0] |= 256u;
   }
   static void set_has_entityhandle(HasBits* has_bits) {
-    (*has_bits)[0] |= 2048u;
+    (*has_bits)[0] |= 4096u;
   }
   static void set_has_material_id(HasBits* has_bits) {
     (*has_bits)[0] |= 512u;
@@ -972,6 +979,7 @@ CMsgPlaceDecalEvent::CMsgPlaceDecalEvent(const CMsgPlaceDecalEvent& from)
     , decltype(_impl_.size_override_){}
     , decltype(_impl_.material_id_){}
     , decltype(_impl_.sequence_name_){}
+    , decltype(_impl_.triangleindex_){}
     , decltype(_impl_.entityhandle_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -1008,6 +1016,7 @@ inline void CMsgPlaceDecalEvent::SharedCtor(
     , decltype(_impl_.size_override_){0}
     , decltype(_impl_.material_id_){uint64_t{0u}}
     , decltype(_impl_.sequence_name_){0u}
+    , decltype(_impl_.triangleindex_){0}
     , decltype(_impl_.entityhandle_){16777215u}
   };
 }
@@ -1058,10 +1067,10 @@ void CMsgPlaceDecalEvent::Clear() {
         reinterpret_cast<char*>(&_impl_.decal_group_name_) -
         reinterpret_cast<char*>(&_impl_.boneindex_)) + sizeof(_impl_.decal_group_name_));
   }
-  if (cached_has_bits & 0x00000f00u) {
+  if (cached_has_bits & 0x00001f00u) {
     ::memset(&_impl_.size_override_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.sequence_name_) -
-        reinterpret_cast<char*>(&_impl_.size_override_)) + sizeof(_impl_.sequence_name_));
+        reinterpret_cast<char*>(&_impl_.triangleindex_) -
+        reinterpret_cast<char*>(&_impl_.size_override_)) + sizeof(_impl_.triangleindex_));
     _impl_.entityhandle_ = 16777215u;
   }
   _impl_._has_bits_.Clear();
@@ -1180,6 +1189,15 @@ const char* CMsgPlaceDecalEvent::_InternalParse(const char* ptr, ::_pbi::ParseCo
         } else
           goto handle_unusual;
         continue;
+      // optional int32 triangleindex = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 104)) {
+          _Internal::set_has_triangleindex(&has_bits);
+          _impl_.triangleindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -1269,7 +1287,7 @@ uint8_t* CMsgPlaceDecalEvent::_InternalSerialize(
   }
 
   // optional uint32 entityhandle = 10 [default = 16777215];
-  if (cached_has_bits & 0x00000800u) {
+  if (cached_has_bits & 0x00001000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(10, this->_internal_entityhandle(), target);
   }
@@ -1284,6 +1302,12 @@ uint8_t* CMsgPlaceDecalEvent::_InternalSerialize(
   if (cached_has_bits & 0x00000400u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(12, this->_internal_sequence_name(), target);
+  }
+
+  // optional int32 triangleindex = 13;
+  if (cached_has_bits & 0x00000800u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(13, this->_internal_triangleindex(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1351,7 +1375,7 @@ size_t CMsgPlaceDecalEvent::ByteSizeLong() const {
     }
 
   }
-  if (cached_has_bits & 0x00000f00u) {
+  if (cached_has_bits & 0x00001f00u) {
     // optional float size_override = 9;
     if (cached_has_bits & 0x00000100u) {
       total_size += 1 + 4;
@@ -1367,8 +1391,13 @@ size_t CMsgPlaceDecalEvent::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_sequence_name());
     }
 
-    // optional uint32 entityhandle = 10 [default = 16777215];
+    // optional int32 triangleindex = 13;
     if (cached_has_bits & 0x00000800u) {
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_triangleindex());
+    }
+
+    // optional uint32 entityhandle = 10 [default = 16777215];
+    if (cached_has_bits & 0x00001000u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entityhandle());
     }
 
@@ -1422,7 +1451,7 @@ void CMsgPlaceDecalEvent::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, co
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
-  if (cached_has_bits & 0x00000f00u) {
+  if (cached_has_bits & 0x00001f00u) {
     if (cached_has_bits & 0x00000100u) {
       _this->_impl_.size_override_ = from._impl_.size_override_;
     }
@@ -1433,6 +1462,9 @@ void CMsgPlaceDecalEvent::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, co
       _this->_impl_.sequence_name_ = from._impl_.sequence_name_;
     }
     if (cached_has_bits & 0x00000800u) {
+      _this->_impl_.triangleindex_ = from._impl_.triangleindex_;
+    }
+    if (cached_has_bits & 0x00001000u) {
       _this->_impl_.entityhandle_ = from._impl_.entityhandle_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -1456,8 +1488,8 @@ void CMsgPlaceDecalEvent::InternalSwap(CMsgPlaceDecalEvent* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgPlaceDecalEvent, _impl_.sequence_name_)
-      + sizeof(CMsgPlaceDecalEvent::_impl_.sequence_name_)
+      PROTOBUF_FIELD_OFFSET(CMsgPlaceDecalEvent, _impl_.triangleindex_)
+      + sizeof(CMsgPlaceDecalEvent::_impl_.triangleindex_)
       - PROTOBUF_FIELD_OFFSET(CMsgPlaceDecalEvent, _impl_.position_)>(
           reinterpret_cast<char*>(&_impl_.position_),
           reinterpret_cast<char*>(&other->_impl_.position_));

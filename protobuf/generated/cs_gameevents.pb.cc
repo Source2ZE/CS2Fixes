@@ -50,6 +50,27 @@ struct CMsgTERadioIconDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgTERadioIconDefaultTypeInternal _CMsgTERadioIcon_default_instance_;
+PROTOBUF_CONSTEXPR CMsgTEFireBullets_Extra::CMsgTEFireBullets_Extra(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.aim_punch_)*/nullptr
+  , /*decltype(_impl_.attack_tick_count_)*/0
+  , /*decltype(_impl_.attack_tick_frac_)*/0
+  , /*decltype(_impl_.render_tick_count_)*/0
+  , /*decltype(_impl_.render_tick_frac_)*/0
+  , /*decltype(_impl_.inaccuracy_move_)*/0
+  , /*decltype(_impl_.inaccuracy_air_)*/0
+  , /*decltype(_impl_.type_)*/0} {}
+struct CMsgTEFireBullets_ExtraDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CMsgTEFireBullets_ExtraDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CMsgTEFireBullets_ExtraDefaultTypeInternal() {}
+  union {
+    CMsgTEFireBullets_Extra _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgTEFireBullets_ExtraDefaultTypeInternal _CMsgTEFireBullets_Extra_default_instance_;
 PROTOBUF_CONSTEXPR CMsgTEFireBullets::CMsgTEFireBullets(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
@@ -57,6 +78,7 @@ PROTOBUF_CONSTEXPR CMsgTEFireBullets::CMsgTEFireBullets(
   , /*decltype(_impl_.origin_)*/nullptr
   , /*decltype(_impl_.angles_)*/nullptr
   , /*decltype(_impl_.ent_origin_)*/nullptr
+  , /*decltype(_impl_.extra_)*/nullptr
   , /*decltype(_impl_.mode_)*/0u
   , /*decltype(_impl_.seed_)*/0u
   , /*decltype(_impl_.inaccuracy_)*/0
@@ -78,7 +100,7 @@ struct CMsgTEFireBulletsDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgTEFireBulletsDefaultTypeInternal _CMsgTEFireBullets_default_instance_;
-static ::_pb::Metadata file_level_metadata_cs_5fgameevents_2eproto[3];
+static ::_pb::Metadata file_level_metadata_cs_5fgameevents_2eproto[4];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_cs_5fgameevents_2eproto[1];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_cs_5fgameevents_2eproto = nullptr;
 
@@ -103,6 +125,28 @@ const uint32_t TableStruct_cs_5fgameevents_2eproto::offsets[] PROTOBUF_SECTION_V
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CMsgTERadioIcon, _impl_.player_),
   0,
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets_Extra, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets_Extra, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets_Extra, _impl_.aim_punch_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets_Extra, _impl_.attack_tick_count_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets_Extra, _impl_.attack_tick_frac_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets_Extra, _impl_.render_tick_count_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets_Extra, _impl_.render_tick_frac_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets_Extra, _impl_.inaccuracy_move_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets_Extra, _impl_.inaccuracy_air_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets_Extra, _impl_.type_),
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
   PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -124,31 +168,35 @@ const uint32_t TableStruct_cs_5fgameevents_2eproto::offsets[] PROTOBUF_SECTION_V
   PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets, _impl_.ent_origin_),
   PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets, _impl_.num_bullets_remaining_),
   PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets, _impl_.attack_type_),
+  PROTOBUF_FIELD_OFFSET(::CMsgTEFireBullets, _impl_.extra_),
   0,
   1,
-  13,
-  3,
-  4,
   14,
+  4,
   5,
+  15,
   6,
   7,
   8,
   9,
   10,
-  2,
   11,
+  2,
   12,
+  13,
+  3,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 9, -1, sizeof(::CMsgTEPlayerAnimEvent)},
   { 12, 19, -1, sizeof(::CMsgTERadioIcon)},
-  { 20, 41, -1, sizeof(::CMsgTEFireBullets)},
+  { 20, 34, -1, sizeof(::CMsgTEFireBullets_Extra)},
+  { 42, 64, -1, sizeof(::CMsgTEFireBullets)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
   &::_CMsgTEPlayerAnimEvent_default_instance_._instance,
   &::_CMsgTERadioIcon_default_instance_._instance,
+  &::_CMsgTEFireBullets_Extra_default_instance_._instance,
   &::_CMsgTEFireBullets_default_instance_._instance,
 };
 
@@ -157,7 +205,7 @@ const char descriptor_table_protodef_cs_5fgameevents_2eproto[] PROTOBUF_SECTION_
   "proto\"N\n\025CMsgTEPlayerAnimEvent\022\030\n\006player"
   "\030\001 \001(\007:\01016777215\022\r\n\005event\030\002 \001(\r\022\014\n\004data\030"
   "\003 \001(\005\"+\n\017CMsgTERadioIcon\022\030\n\006player\030\001 \001(\007"
-  ":\01016777215\"\365\002\n\021CMsgTEFireBullets\022\033\n\006orig"
+  ":\01016777215\"\361\004\n\021CMsgTEFireBullets\022\033\n\006orig"
   "in\030\001 \001(\0132\013.CMsgVector\022\033\n\006angles\030\002 \001(\0132\013."
   "CMsgQAngle\022\033\n\tweapon_id\030\003 \001(\r:\01016777215\022"
   "\014\n\004mode\030\004 \001(\r\022\014\n\004seed\030\005 \001(\r\022\030\n\006player\030\006 "
@@ -166,19 +214,25 @@ const char descriptor_table_protodef_cs_5fgameevents_2eproto[] PROTOBUF_SECTION_
   "_type\030\n \001(\005\022\026\n\016item_def_index\030\013 \001(\r\022\030\n\020s"
   "ound_dsp_effect\030\014 \001(\007\022\037\n\nent_origin\030\r \001("
   "\0132\013.CMsgVector\022\035\n\025num_bullets_remaining\030"
-  "\016 \001(\r\022\023\n\013attack_type\030\017 \001(\r*]\n\017ECsgoGameE"
-  "vents\022\031\n\024GE_PlayerAnimEventId\020\302\003\022\030\n\023GE_R"
-  "adioIconEventId\020\303\003\022\025\n\020GE_FireBulletsId\020\304"
-  "\003"
+  "\016 \001(\r\022\023\n\013attack_type\030\017 \001(\r\022\'\n\005extra\030\020 \001("
+  "\0132\030.CMsgTEFireBullets.Extra\032\320\001\n\005Extra\022\036\n"
+  "\taim_punch\030\001 \001(\0132\013.CMsgQAngle\022\031\n\021attack_"
+  "tick_count\030\002 \001(\005\022\030\n\020attack_tick_frac\030\003 \001"
+  "(\002\022\031\n\021render_tick_count\030\004 \001(\005\022\030\n\020render_"
+  "tick_frac\030\005 \001(\002\022\027\n\017inaccuracy_move\030\006 \001(\002"
+  "\022\026\n\016inaccuracy_air\030\007 \001(\002\022\014\n\004type\030\010 \001(\005*]"
+  "\n\017ECsgoGameEvents\022\031\n\024GE_PlayerAnimEventI"
+  "d\020\302\003\022\030\n\023GE_RadioIconEventId\020\303\003\022\025\n\020GE_Fir"
+  "eBulletsId\020\304\003"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_cs_5fgameevents_2eproto_deps[1] = {
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_cs_5fgameevents_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cs_5fgameevents_2eproto = {
-    false, false, 641, descriptor_table_protodef_cs_5fgameevents_2eproto,
+    false, false, 893, descriptor_table_protodef_cs_5fgameevents_2eproto,
     "cs_gameevents.proto",
-    &descriptor_table_cs_5fgameevents_2eproto_once, descriptor_table_cs_5fgameevents_2eproto_deps, 1, 3,
+    &descriptor_table_cs_5fgameevents_2eproto_once, descriptor_table_cs_5fgameevents_2eproto_deps, 1, 4,
     schemas, file_default_instances, TableStruct_cs_5fgameevents_2eproto::offsets,
     file_level_metadata_cs_5fgameevents_2eproto, file_level_enum_descriptors_cs_5fgameevents_2eproto,
     file_level_service_descriptors_cs_5fgameevents_2eproto,
@@ -665,6 +719,431 @@ void CMsgTERadioIcon::InternalSwap(CMsgTERadioIcon* other) {
 
 // ===================================================================
 
+class CMsgTEFireBullets_Extra::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CMsgTEFireBullets_Extra>()._impl_._has_bits_);
+  static const ::CMsgQAngle& aim_punch(const CMsgTEFireBullets_Extra* msg);
+  static void set_has_aim_punch(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_attack_tick_count(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+  static void set_has_attack_tick_frac(HasBits* has_bits) {
+    (*has_bits)[0] |= 4u;
+  }
+  static void set_has_render_tick_count(HasBits* has_bits) {
+    (*has_bits)[0] |= 8u;
+  }
+  static void set_has_render_tick_frac(HasBits* has_bits) {
+    (*has_bits)[0] |= 16u;
+  }
+  static void set_has_inaccuracy_move(HasBits* has_bits) {
+    (*has_bits)[0] |= 32u;
+  }
+  static void set_has_inaccuracy_air(HasBits* has_bits) {
+    (*has_bits)[0] |= 64u;
+  }
+  static void set_has_type(HasBits* has_bits) {
+    (*has_bits)[0] |= 128u;
+  }
+};
+
+const ::CMsgQAngle&
+CMsgTEFireBullets_Extra::_Internal::aim_punch(const CMsgTEFireBullets_Extra* msg) {
+  return *msg->_impl_.aim_punch_;
+}
+void CMsgTEFireBullets_Extra::clear_aim_punch() {
+  if (_impl_.aim_punch_ != nullptr) _impl_.aim_punch_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+CMsgTEFireBullets_Extra::CMsgTEFireBullets_Extra(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CMsgTEFireBullets.Extra)
+}
+CMsgTEFireBullets_Extra::CMsgTEFireBullets_Extra(const CMsgTEFireBullets_Extra& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CMsgTEFireBullets_Extra* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.aim_punch_){nullptr}
+    , decltype(_impl_.attack_tick_count_){}
+    , decltype(_impl_.attack_tick_frac_){}
+    , decltype(_impl_.render_tick_count_){}
+    , decltype(_impl_.render_tick_frac_){}
+    , decltype(_impl_.inaccuracy_move_){}
+    , decltype(_impl_.inaccuracy_air_){}
+    , decltype(_impl_.type_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_aim_punch()) {
+    _this->_impl_.aim_punch_ = new ::CMsgQAngle(*from._impl_.aim_punch_);
+  }
+  ::memcpy(&_impl_.attack_tick_count_, &from._impl_.attack_tick_count_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.type_) -
+    reinterpret_cast<char*>(&_impl_.attack_tick_count_)) + sizeof(_impl_.type_));
+  // @@protoc_insertion_point(copy_constructor:CMsgTEFireBullets.Extra)
+}
+
+inline void CMsgTEFireBullets_Extra::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.aim_punch_){nullptr}
+    , decltype(_impl_.attack_tick_count_){0}
+    , decltype(_impl_.attack_tick_frac_){0}
+    , decltype(_impl_.render_tick_count_){0}
+    , decltype(_impl_.render_tick_frac_){0}
+    , decltype(_impl_.inaccuracy_move_){0}
+    , decltype(_impl_.inaccuracy_air_){0}
+    , decltype(_impl_.type_){0}
+  };
+}
+
+CMsgTEFireBullets_Extra::~CMsgTEFireBullets_Extra() {
+  // @@protoc_insertion_point(destructor:CMsgTEFireBullets.Extra)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CMsgTEFireBullets_Extra::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete _impl_.aim_punch_;
+}
+
+void CMsgTEFireBullets_Extra::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CMsgTEFireBullets_Extra::Clear() {
+// @@protoc_insertion_point(message_clear_start:CMsgTEFireBullets.Extra)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    GOOGLE_DCHECK(_impl_.aim_punch_ != nullptr);
+    _impl_.aim_punch_->Clear();
+  }
+  if (cached_has_bits & 0x000000feu) {
+    ::memset(&_impl_.attack_tick_count_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.type_) -
+        reinterpret_cast<char*>(&_impl_.attack_tick_count_)) + sizeof(_impl_.type_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CMsgTEFireBullets_Extra::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional .CMsgQAngle aim_punch = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_aim_punch(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional int32 attack_tick_count = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _Internal::set_has_attack_tick_count(&has_bits);
+          _impl_.attack_tick_count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional float attack_tick_frac = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 29)) {
+          _Internal::set_has_attack_tick_frac(&has_bits);
+          _impl_.attack_tick_frac_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional int32 render_tick_count = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _Internal::set_has_render_tick_count(&has_bits);
+          _impl_.render_tick_count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional float render_tick_frac = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 45)) {
+          _Internal::set_has_render_tick_frac(&has_bits);
+          _impl_.render_tick_frac_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional float inaccuracy_move = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 53)) {
+          _Internal::set_has_inaccuracy_move(&has_bits);
+          _impl_.inaccuracy_move_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional float inaccuracy_air = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 61)) {
+          _Internal::set_has_inaccuracy_air(&has_bits);
+          _impl_.inaccuracy_air_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional int32 type = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
+          _Internal::set_has_type(&has_bits);
+          _impl_.type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CMsgTEFireBullets_Extra::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CMsgTEFireBullets.Extra)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional .CMsgQAngle aim_punch = 1;
+  if (cached_has_bits & 0x00000001u) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(1, _Internal::aim_punch(this),
+        _Internal::aim_punch(this).GetCachedSize(), target, stream);
+  }
+
+  // optional int32 attack_tick_count = 2;
+  if (cached_has_bits & 0x00000002u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_attack_tick_count(), target);
+  }
+
+  // optional float attack_tick_frac = 3;
+  if (cached_has_bits & 0x00000004u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(3, this->_internal_attack_tick_frac(), target);
+  }
+
+  // optional int32 render_tick_count = 4;
+  if (cached_has_bits & 0x00000008u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_render_tick_count(), target);
+  }
+
+  // optional float render_tick_frac = 5;
+  if (cached_has_bits & 0x00000010u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(5, this->_internal_render_tick_frac(), target);
+  }
+
+  // optional float inaccuracy_move = 6;
+  if (cached_has_bits & 0x00000020u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(6, this->_internal_inaccuracy_move(), target);
+  }
+
+  // optional float inaccuracy_air = 7;
+  if (cached_has_bits & 0x00000040u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(7, this->_internal_inaccuracy_air(), target);
+  }
+
+  // optional int32 type = 8;
+  if (cached_has_bits & 0x00000080u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(8, this->_internal_type(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CMsgTEFireBullets.Extra)
+  return target;
+}
+
+size_t CMsgTEFireBullets_Extra::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CMsgTEFireBullets.Extra)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x000000ffu) {
+    // optional .CMsgQAngle aim_punch = 1;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *_impl_.aim_punch_);
+    }
+
+    // optional int32 attack_tick_count = 2;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attack_tick_count());
+    }
+
+    // optional float attack_tick_frac = 3;
+    if (cached_has_bits & 0x00000004u) {
+      total_size += 1 + 4;
+    }
+
+    // optional int32 render_tick_count = 4;
+    if (cached_has_bits & 0x00000008u) {
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_render_tick_count());
+    }
+
+    // optional float render_tick_frac = 5;
+    if (cached_has_bits & 0x00000010u) {
+      total_size += 1 + 4;
+    }
+
+    // optional float inaccuracy_move = 6;
+    if (cached_has_bits & 0x00000020u) {
+      total_size += 1 + 4;
+    }
+
+    // optional float inaccuracy_air = 7;
+    if (cached_has_bits & 0x00000040u) {
+      total_size += 1 + 4;
+    }
+
+    // optional int32 type = 8;
+    if (cached_has_bits & 0x00000080u) {
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_type());
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgTEFireBullets_Extra::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CMsgTEFireBullets_Extra::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgTEFireBullets_Extra::GetClassData() const { return &_class_data_; }
+
+
+void CMsgTEFireBullets_Extra::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CMsgTEFireBullets_Extra*>(&to_msg);
+  auto& from = static_cast<const CMsgTEFireBullets_Extra&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgTEFireBullets.Extra)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x000000ffu) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_mutable_aim_punch()->::CMsgQAngle::MergeFrom(
+          from._internal_aim_punch());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_impl_.attack_tick_count_ = from._impl_.attack_tick_count_;
+    }
+    if (cached_has_bits & 0x00000004u) {
+      _this->_impl_.attack_tick_frac_ = from._impl_.attack_tick_frac_;
+    }
+    if (cached_has_bits & 0x00000008u) {
+      _this->_impl_.render_tick_count_ = from._impl_.render_tick_count_;
+    }
+    if (cached_has_bits & 0x00000010u) {
+      _this->_impl_.render_tick_frac_ = from._impl_.render_tick_frac_;
+    }
+    if (cached_has_bits & 0x00000020u) {
+      _this->_impl_.inaccuracy_move_ = from._impl_.inaccuracy_move_;
+    }
+    if (cached_has_bits & 0x00000040u) {
+      _this->_impl_.inaccuracy_air_ = from._impl_.inaccuracy_air_;
+    }
+    if (cached_has_bits & 0x00000080u) {
+      _this->_impl_.type_ = from._impl_.type_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CMsgTEFireBullets_Extra::CopyFrom(const CMsgTEFireBullets_Extra& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CMsgTEFireBullets.Extra)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CMsgTEFireBullets_Extra::IsInitialized() const {
+  return true;
+}
+
+void CMsgTEFireBullets_Extra::InternalSwap(CMsgTEFireBullets_Extra* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(CMsgTEFireBullets_Extra, _impl_.type_)
+      + sizeof(CMsgTEFireBullets_Extra::_impl_.type_)
+      - PROTOBUF_FIELD_OFFSET(CMsgTEFireBullets_Extra, _impl_.aim_punch_)>(
+          reinterpret_cast<char*>(&_impl_.aim_punch_),
+          reinterpret_cast<char*>(&other->_impl_.aim_punch_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEFireBullets_Extra::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_cs_5fgameevents_2eproto_getter, &descriptor_table_cs_5fgameevents_2eproto_once,
+      file_level_metadata_cs_5fgameevents_2eproto[2]);
+}
+
+// ===================================================================
+
 class CMsgTEFireBullets::_Internal {
  public:
   using HasBits = decltype(std::declval<CMsgTEFireBullets>()._impl_._has_bits_);
@@ -677,44 +1156,48 @@ class CMsgTEFireBullets::_Internal {
     (*has_bits)[0] |= 2u;
   }
   static void set_has_weapon_id(HasBits* has_bits) {
-    (*has_bits)[0] |= 8192u;
-  }
-  static void set_has_mode(HasBits* has_bits) {
-    (*has_bits)[0] |= 8u;
-  }
-  static void set_has_seed(HasBits* has_bits) {
-    (*has_bits)[0] |= 16u;
-  }
-  static void set_has_player(HasBits* has_bits) {
     (*has_bits)[0] |= 16384u;
   }
-  static void set_has_inaccuracy(HasBits* has_bits) {
+  static void set_has_mode(HasBits* has_bits) {
+    (*has_bits)[0] |= 16u;
+  }
+  static void set_has_seed(HasBits* has_bits) {
     (*has_bits)[0] |= 32u;
   }
-  static void set_has_recoil_index(HasBits* has_bits) {
+  static void set_has_player(HasBits* has_bits) {
+    (*has_bits)[0] |= 32768u;
+  }
+  static void set_has_inaccuracy(HasBits* has_bits) {
     (*has_bits)[0] |= 64u;
   }
-  static void set_has_spread(HasBits* has_bits) {
+  static void set_has_recoil_index(HasBits* has_bits) {
     (*has_bits)[0] |= 128u;
   }
-  static void set_has_sound_type(HasBits* has_bits) {
+  static void set_has_spread(HasBits* has_bits) {
     (*has_bits)[0] |= 256u;
   }
-  static void set_has_item_def_index(HasBits* has_bits) {
+  static void set_has_sound_type(HasBits* has_bits) {
     (*has_bits)[0] |= 512u;
   }
-  static void set_has_sound_dsp_effect(HasBits* has_bits) {
+  static void set_has_item_def_index(HasBits* has_bits) {
     (*has_bits)[0] |= 1024u;
+  }
+  static void set_has_sound_dsp_effect(HasBits* has_bits) {
+    (*has_bits)[0] |= 2048u;
   }
   static const ::CMsgVector& ent_origin(const CMsgTEFireBullets* msg);
   static void set_has_ent_origin(HasBits* has_bits) {
     (*has_bits)[0] |= 4u;
   }
   static void set_has_num_bullets_remaining(HasBits* has_bits) {
-    (*has_bits)[0] |= 2048u;
+    (*has_bits)[0] |= 4096u;
   }
   static void set_has_attack_type(HasBits* has_bits) {
-    (*has_bits)[0] |= 4096u;
+    (*has_bits)[0] |= 8192u;
+  }
+  static const ::CMsgTEFireBullets_Extra& extra(const CMsgTEFireBullets* msg);
+  static void set_has_extra(HasBits* has_bits) {
+    (*has_bits)[0] |= 8u;
   }
 };
 
@@ -729,6 +1212,10 @@ CMsgTEFireBullets::_Internal::angles(const CMsgTEFireBullets* msg) {
 const ::CMsgVector&
 CMsgTEFireBullets::_Internal::ent_origin(const CMsgTEFireBullets* msg) {
   return *msg->_impl_.ent_origin_;
+}
+const ::CMsgTEFireBullets_Extra&
+CMsgTEFireBullets::_Internal::extra(const CMsgTEFireBullets* msg) {
+  return *msg->_impl_.extra_;
 }
 void CMsgTEFireBullets::clear_origin() {
   if (_impl_.origin_ != nullptr) _impl_.origin_->Clear();
@@ -757,6 +1244,7 @@ CMsgTEFireBullets::CMsgTEFireBullets(const CMsgTEFireBullets& from)
     , decltype(_impl_.origin_){nullptr}
     , decltype(_impl_.angles_){nullptr}
     , decltype(_impl_.ent_origin_){nullptr}
+    , decltype(_impl_.extra_){nullptr}
     , decltype(_impl_.mode_){}
     , decltype(_impl_.seed_){}
     , decltype(_impl_.inaccuracy_){}
@@ -780,6 +1268,9 @@ CMsgTEFireBullets::CMsgTEFireBullets(const CMsgTEFireBullets& from)
   if (from._internal_has_ent_origin()) {
     _this->_impl_.ent_origin_ = new ::CMsgVector(*from._impl_.ent_origin_);
   }
+  if (from._internal_has_extra()) {
+    _this->_impl_.extra_ = new ::CMsgTEFireBullets_Extra(*from._impl_.extra_);
+  }
   ::memcpy(&_impl_.mode_, &from._impl_.mode_,
     static_cast<size_t>(reinterpret_cast<char*>(&_impl_.player_) -
     reinterpret_cast<char*>(&_impl_.mode_)) + sizeof(_impl_.player_));
@@ -796,6 +1287,7 @@ inline void CMsgTEFireBullets::SharedCtor(
     , decltype(_impl_.origin_){nullptr}
     , decltype(_impl_.angles_){nullptr}
     , decltype(_impl_.ent_origin_){nullptr}
+    , decltype(_impl_.extra_){nullptr}
     , decltype(_impl_.mode_){0u}
     , decltype(_impl_.seed_){0u}
     , decltype(_impl_.inaccuracy_){0}
@@ -825,6 +1317,7 @@ inline void CMsgTEFireBullets::SharedDtor() {
   if (this != internal_default_instance()) delete _impl_.origin_;
   if (this != internal_default_instance()) delete _impl_.angles_;
   if (this != internal_default_instance()) delete _impl_.ent_origin_;
+  if (this != internal_default_instance()) delete _impl_.extra_;
 }
 
 void CMsgTEFireBullets::SetCachedSize(int size) const {
@@ -838,7 +1331,7 @@ void CMsgTEFireBullets::Clear() {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000007u) {
+  if (cached_has_bits & 0x0000000fu) {
     if (cached_has_bits & 0x00000001u) {
       GOOGLE_DCHECK(_impl_.origin_ != nullptr);
       _impl_.origin_->Clear();
@@ -851,16 +1344,20 @@ void CMsgTEFireBullets::Clear() {
       GOOGLE_DCHECK(_impl_.ent_origin_ != nullptr);
       _impl_.ent_origin_->Clear();
     }
+    if (cached_has_bits & 0x00000008u) {
+      GOOGLE_DCHECK(_impl_.extra_ != nullptr);
+      _impl_.extra_->Clear();
+    }
   }
-  if (cached_has_bits & 0x000000f8u) {
+  if (cached_has_bits & 0x000000f0u) {
     ::memset(&_impl_.mode_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.spread_) -
-        reinterpret_cast<char*>(&_impl_.mode_)) + sizeof(_impl_.spread_));
+        reinterpret_cast<char*>(&_impl_.recoil_index_) -
+        reinterpret_cast<char*>(&_impl_.mode_)) + sizeof(_impl_.recoil_index_));
   }
-  if (cached_has_bits & 0x00007f00u) {
-    ::memset(&_impl_.sound_type_, 0, static_cast<size_t>(
+  if (cached_has_bits & 0x0000ff00u) {
+    ::memset(&_impl_.spread_, 0, static_cast<size_t>(
         reinterpret_cast<char*>(&_impl_.attack_type_) -
-        reinterpret_cast<char*>(&_impl_.sound_type_)) + sizeof(_impl_.attack_type_));
+        reinterpret_cast<char*>(&_impl_.spread_)) + sizeof(_impl_.attack_type_));
     _impl_.weapon_id_ = 16777215u;
     _impl_.player_ = 16777215u;
   }
@@ -1007,6 +1504,14 @@ const char* CMsgTEFireBullets::_InternalParse(const char* ptr, ::_pbi::ParseCont
         } else
           goto handle_unusual;
         continue;
+      // optional .CMsgTEFireBullets.Extra extra = 16;
+      case 16:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 130)) {
+          ptr = ctx->ParseMessage(_internal_mutable_extra(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -1053,61 +1558,61 @@ uint8_t* CMsgTEFireBullets::_InternalSerialize(
   }
 
   // optional uint32 weapon_id = 3 [default = 16777215];
-  if (cached_has_bits & 0x00002000u) {
+  if (cached_has_bits & 0x00004000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_weapon_id(), target);
   }
 
   // optional uint32 mode = 4;
-  if (cached_has_bits & 0x00000008u) {
+  if (cached_has_bits & 0x00000010u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_mode(), target);
   }
 
   // optional uint32 seed = 5;
-  if (cached_has_bits & 0x00000010u) {
+  if (cached_has_bits & 0x00000020u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(5, this->_internal_seed(), target);
   }
 
   // optional fixed32 player = 6 [default = 16777215];
-  if (cached_has_bits & 0x00004000u) {
+  if (cached_has_bits & 0x00008000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteFixed32ToArray(6, this->_internal_player(), target);
   }
 
   // optional float inaccuracy = 7;
-  if (cached_has_bits & 0x00000020u) {
+  if (cached_has_bits & 0x00000040u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteFloatToArray(7, this->_internal_inaccuracy(), target);
   }
 
   // optional float recoil_index = 8;
-  if (cached_has_bits & 0x00000040u) {
+  if (cached_has_bits & 0x00000080u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteFloatToArray(8, this->_internal_recoil_index(), target);
   }
 
   // optional float spread = 9;
-  if (cached_has_bits & 0x00000080u) {
+  if (cached_has_bits & 0x00000100u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteFloatToArray(9, this->_internal_spread(), target);
   }
 
   // optional int32 sound_type = 10;
-  if (cached_has_bits & 0x00000100u) {
+  if (cached_has_bits & 0x00000200u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(10, this->_internal_sound_type(), target);
   }
 
   // optional uint32 item_def_index = 11;
-  if (cached_has_bits & 0x00000200u) {
+  if (cached_has_bits & 0x00000400u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(11, this->_internal_item_def_index(), target);
   }
 
   // optional fixed32 sound_dsp_effect = 12;
-  if (cached_has_bits & 0x00000400u) {
+  if (cached_has_bits & 0x00000800u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteFixed32ToArray(12, this->_internal_sound_dsp_effect(), target);
   }
@@ -1120,15 +1625,22 @@ uint8_t* CMsgTEFireBullets::_InternalSerialize(
   }
 
   // optional uint32 num_bullets_remaining = 14;
-  if (cached_has_bits & 0x00000800u) {
+  if (cached_has_bits & 0x00001000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(14, this->_internal_num_bullets_remaining(), target);
   }
 
   // optional uint32 attack_type = 15;
-  if (cached_has_bits & 0x00001000u) {
+  if (cached_has_bits & 0x00002000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(15, this->_internal_attack_type(), target);
+  }
+
+  // optional .CMsgTEFireBullets.Extra extra = 16;
+  if (cached_has_bits & 0x00000008u) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(16, _Internal::extra(this),
+        _Internal::extra(this).GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1170,65 +1682,72 @@ size_t CMsgTEFireBullets::ByteSizeLong() const {
           *_impl_.ent_origin_);
     }
 
-    // optional uint32 mode = 4;
+    // optional .CMsgTEFireBullets.Extra extra = 16;
     if (cached_has_bits & 0x00000008u) {
+      total_size += 2 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *_impl_.extra_);
+    }
+
+    // optional uint32 mode = 4;
+    if (cached_has_bits & 0x00000010u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_mode());
     }
 
     // optional uint32 seed = 5;
-    if (cached_has_bits & 0x00000010u) {
+    if (cached_has_bits & 0x00000020u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_seed());
     }
 
     // optional float inaccuracy = 7;
-    if (cached_has_bits & 0x00000020u) {
-      total_size += 1 + 4;
-    }
-
-    // optional float recoil_index = 8;
     if (cached_has_bits & 0x00000040u) {
       total_size += 1 + 4;
     }
 
-    // optional float spread = 9;
+    // optional float recoil_index = 8;
     if (cached_has_bits & 0x00000080u) {
       total_size += 1 + 4;
     }
 
   }
-  if (cached_has_bits & 0x00007f00u) {
-    // optional int32 sound_type = 10;
+  if (cached_has_bits & 0x0000ff00u) {
+    // optional float spread = 9;
     if (cached_has_bits & 0x00000100u) {
+      total_size += 1 + 4;
+    }
+
+    // optional int32 sound_type = 10;
+    if (cached_has_bits & 0x00000200u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_sound_type());
     }
 
     // optional uint32 item_def_index = 11;
-    if (cached_has_bits & 0x00000200u) {
+    if (cached_has_bits & 0x00000400u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_item_def_index());
     }
 
     // optional fixed32 sound_dsp_effect = 12;
-    if (cached_has_bits & 0x00000400u) {
+    if (cached_has_bits & 0x00000800u) {
       total_size += 1 + 4;
     }
 
     // optional uint32 num_bullets_remaining = 14;
-    if (cached_has_bits & 0x00000800u) {
+    if (cached_has_bits & 0x00001000u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_num_bullets_remaining());
     }
 
     // optional uint32 attack_type = 15;
-    if (cached_has_bits & 0x00001000u) {
+    if (cached_has_bits & 0x00002000u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_attack_type());
     }
 
     // optional uint32 weapon_id = 3 [default = 16777215];
-    if (cached_has_bits & 0x00002000u) {
+    if (cached_has_bits & 0x00004000u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_weapon_id());
     }
 
     // optional fixed32 player = 6 [default = 16777215];
-    if (cached_has_bits & 0x00004000u) {
+    if (cached_has_bits & 0x00008000u) {
       total_size += 1 + 4;
     }
 
@@ -1266,42 +1785,46 @@ void CMsgTEFireBullets::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, cons
           from._internal_ent_origin());
     }
     if (cached_has_bits & 0x00000008u) {
-      _this->_impl_.mode_ = from._impl_.mode_;
+      _this->_internal_mutable_extra()->::CMsgTEFireBullets_Extra::MergeFrom(
+          from._internal_extra());
     }
     if (cached_has_bits & 0x00000010u) {
-      _this->_impl_.seed_ = from._impl_.seed_;
+      _this->_impl_.mode_ = from._impl_.mode_;
     }
     if (cached_has_bits & 0x00000020u) {
-      _this->_impl_.inaccuracy_ = from._impl_.inaccuracy_;
+      _this->_impl_.seed_ = from._impl_.seed_;
     }
     if (cached_has_bits & 0x00000040u) {
-      _this->_impl_.recoil_index_ = from._impl_.recoil_index_;
+      _this->_impl_.inaccuracy_ = from._impl_.inaccuracy_;
     }
     if (cached_has_bits & 0x00000080u) {
-      _this->_impl_.spread_ = from._impl_.spread_;
+      _this->_impl_.recoil_index_ = from._impl_.recoil_index_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
-  if (cached_has_bits & 0x00007f00u) {
+  if (cached_has_bits & 0x0000ff00u) {
     if (cached_has_bits & 0x00000100u) {
-      _this->_impl_.sound_type_ = from._impl_.sound_type_;
+      _this->_impl_.spread_ = from._impl_.spread_;
     }
     if (cached_has_bits & 0x00000200u) {
-      _this->_impl_.item_def_index_ = from._impl_.item_def_index_;
+      _this->_impl_.sound_type_ = from._impl_.sound_type_;
     }
     if (cached_has_bits & 0x00000400u) {
-      _this->_impl_.sound_dsp_effect_ = from._impl_.sound_dsp_effect_;
+      _this->_impl_.item_def_index_ = from._impl_.item_def_index_;
     }
     if (cached_has_bits & 0x00000800u) {
-      _this->_impl_.num_bullets_remaining_ = from._impl_.num_bullets_remaining_;
+      _this->_impl_.sound_dsp_effect_ = from._impl_.sound_dsp_effect_;
     }
     if (cached_has_bits & 0x00001000u) {
-      _this->_impl_.attack_type_ = from._impl_.attack_type_;
+      _this->_impl_.num_bullets_remaining_ = from._impl_.num_bullets_remaining_;
     }
     if (cached_has_bits & 0x00002000u) {
-      _this->_impl_.weapon_id_ = from._impl_.weapon_id_;
+      _this->_impl_.attack_type_ = from._impl_.attack_type_;
     }
     if (cached_has_bits & 0x00004000u) {
+      _this->_impl_.weapon_id_ = from._impl_.weapon_id_;
+    }
+    if (cached_has_bits & 0x00008000u) {
       _this->_impl_.player_ = from._impl_.player_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -1337,7 +1860,7 @@ void CMsgTEFireBullets::InternalSwap(CMsgTEFireBullets* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgTEFireBullets::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cs_5fgameevents_2eproto_getter, &descriptor_table_cs_5fgameevents_2eproto_once,
-      file_level_metadata_cs_5fgameevents_2eproto[2]);
+      file_level_metadata_cs_5fgameevents_2eproto[3]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -1349,6 +1872,10 @@ Arena::CreateMaybeMessage< ::CMsgTEPlayerAnimEvent >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::CMsgTERadioIcon*
 Arena::CreateMaybeMessage< ::CMsgTERadioIcon >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CMsgTERadioIcon >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CMsgTEFireBullets_Extra*
+Arena::CreateMaybeMessage< ::CMsgTEFireBullets_Extra >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CMsgTEFireBullets_Extra >(arena);
 }
 template<> PROTOBUF_NOINLINE ::CMsgTEFireBullets*
 Arena::CreateMaybeMessage< ::CMsgTEFireBullets >(Arena* arena) {

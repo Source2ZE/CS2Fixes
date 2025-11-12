@@ -26,9 +26,9 @@ PROTOBUF_CONSTEXPR CGCStorePurchaseInit_LineItem::CGCStorePurchaseInit_LineItem(
   , /*decltype(_impl_._cached_size_)*/{}
   , /*decltype(_impl_.item_def_id_)*/0u
   , /*decltype(_impl_.quantity_)*/0u
-  , /*decltype(_impl_.cost_in_local_currency_)*/0u
-  , /*decltype(_impl_.purchase_type_)*/0u
-  , /*decltype(_impl_.supplemental_data_)*/uint64_t{0u}} {}
+  , /*decltype(_impl_.cost_in_local_currency_)*/uint64_t{0u}
+  , /*decltype(_impl_.supplemental_data_)*/uint64_t{0u}
+  , /*decltype(_impl_.purchase_type_)*/0u} {}
 struct CGCStorePurchaseInit_LineItemDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CGCStorePurchaseInit_LineItemDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -1375,8 +1375,8 @@ const uint32_t TableStruct_base_5fgcmessages_2eproto::offsets[] PROTOBUF_SECTION
   0,
   1,
   2,
-  3,
   4,
+  3,
   PROTOBUF_FIELD_OFFSET(::CMsgGCStorePurchaseInit, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgGCStorePurchaseInit, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -2576,7 +2576,7 @@ const char descriptor_table_protodef_base_5fgcmessages_2eproto[] PROTOBUF_SECTIO
   "\n\025base_gcmessages.proto\032\023steammessages.p"
   "roto\"\230\001\n\035CGCStorePurchaseInit_LineItem\022\023"
   "\n\013item_def_id\030\001 \001(\r\022\020\n\010quantity\030\002 \001(\r\022\036\n"
-  "\026cost_in_local_currency\030\003 \001(\r\022\025\n\rpurchas"
+  "\026cost_in_local_currency\030\003 \001(\004\022\025\n\rpurchas"
   "e_type\030\004 \001(\r\022\031\n\021supplemental_data\030\005 \001(\004\""
   "\202\001\n\027CMsgGCStorePurchaseInit\022\017\n\007country\030\001"
   " \001(\t\022\020\n\010language\030\002 \001(\005\022\020\n\010currency\030\003 \001(\005"
@@ -2920,10 +2920,10 @@ class CGCStorePurchaseInit_LineItem::_Internal {
     (*has_bits)[0] |= 4u;
   }
   static void set_has_purchase_type(HasBits* has_bits) {
-    (*has_bits)[0] |= 8u;
+    (*has_bits)[0] |= 16u;
   }
   static void set_has_supplemental_data(HasBits* has_bits) {
-    (*has_bits)[0] |= 16u;
+    (*has_bits)[0] |= 8u;
   }
 };
 
@@ -2942,13 +2942,13 @@ CGCStorePurchaseInit_LineItem::CGCStorePurchaseInit_LineItem(const CGCStorePurch
     , decltype(_impl_.item_def_id_){}
     , decltype(_impl_.quantity_){}
     , decltype(_impl_.cost_in_local_currency_){}
-    , decltype(_impl_.purchase_type_){}
-    , decltype(_impl_.supplemental_data_){}};
+    , decltype(_impl_.supplemental_data_){}
+    , decltype(_impl_.purchase_type_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.item_def_id_, &from._impl_.item_def_id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.supplemental_data_) -
-    reinterpret_cast<char*>(&_impl_.item_def_id_)) + sizeof(_impl_.supplemental_data_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.purchase_type_) -
+    reinterpret_cast<char*>(&_impl_.item_def_id_)) + sizeof(_impl_.purchase_type_));
   // @@protoc_insertion_point(copy_constructor:CGCStorePurchaseInit_LineItem)
 }
 
@@ -2961,9 +2961,9 @@ inline void CGCStorePurchaseInit_LineItem::SharedCtor(
     , /*decltype(_impl_._cached_size_)*/{}
     , decltype(_impl_.item_def_id_){0u}
     , decltype(_impl_.quantity_){0u}
-    , decltype(_impl_.cost_in_local_currency_){0u}
-    , decltype(_impl_.purchase_type_){0u}
+    , decltype(_impl_.cost_in_local_currency_){uint64_t{0u}}
     , decltype(_impl_.supplemental_data_){uint64_t{0u}}
+    , decltype(_impl_.purchase_type_){0u}
   };
 }
 
@@ -2993,8 +2993,8 @@ void CGCStorePurchaseInit_LineItem::Clear() {
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x0000001fu) {
     ::memset(&_impl_.item_def_id_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.supplemental_data_) -
-        reinterpret_cast<char*>(&_impl_.item_def_id_)) + sizeof(_impl_.supplemental_data_));
+        reinterpret_cast<char*>(&_impl_.purchase_type_) -
+        reinterpret_cast<char*>(&_impl_.item_def_id_)) + sizeof(_impl_.purchase_type_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -3025,11 +3025,11 @@ const char* CGCStorePurchaseInit_LineItem::_InternalParse(const char* ptr, ::_pb
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 cost_in_local_currency = 3;
+      // optional uint64 cost_in_local_currency = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _Internal::set_has_cost_in_local_currency(&has_bits);
-          _impl_.cost_in_local_currency_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _impl_.cost_in_local_currency_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -3095,20 +3095,20 @@ uint8_t* CGCStorePurchaseInit_LineItem::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_quantity(), target);
   }
 
-  // optional uint32 cost_in_local_currency = 3;
+  // optional uint64 cost_in_local_currency = 3;
   if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_cost_in_local_currency(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_cost_in_local_currency(), target);
   }
 
   // optional uint32 purchase_type = 4;
-  if (cached_has_bits & 0x00000008u) {
+  if (cached_has_bits & 0x00000010u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_purchase_type(), target);
   }
 
   // optional uint64 supplemental_data = 5;
-  if (cached_has_bits & 0x00000010u) {
+  if (cached_has_bits & 0x00000008u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(5, this->_internal_supplemental_data(), target);
   }
@@ -3141,19 +3141,19 @@ size_t CGCStorePurchaseInit_LineItem::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_quantity());
     }
 
-    // optional uint32 cost_in_local_currency = 3;
+    // optional uint64 cost_in_local_currency = 3;
     if (cached_has_bits & 0x00000004u) {
-      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_cost_in_local_currency());
-    }
-
-    // optional uint32 purchase_type = 4;
-    if (cached_has_bits & 0x00000008u) {
-      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_purchase_type());
+      total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_cost_in_local_currency());
     }
 
     // optional uint64 supplemental_data = 5;
-    if (cached_has_bits & 0x00000010u) {
+    if (cached_has_bits & 0x00000008u) {
       total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_supplemental_data());
+    }
+
+    // optional uint32 purchase_type = 4;
+    if (cached_has_bits & 0x00000010u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_purchase_type());
     }
 
   }
@@ -3187,10 +3187,10 @@ void CGCStorePurchaseInit_LineItem::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& 
       _this->_impl_.cost_in_local_currency_ = from._impl_.cost_in_local_currency_;
     }
     if (cached_has_bits & 0x00000008u) {
-      _this->_impl_.purchase_type_ = from._impl_.purchase_type_;
+      _this->_impl_.supplemental_data_ = from._impl_.supplemental_data_;
     }
     if (cached_has_bits & 0x00000010u) {
-      _this->_impl_.supplemental_data_ = from._impl_.supplemental_data_;
+      _this->_impl_.purchase_type_ = from._impl_.purchase_type_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
@@ -3213,8 +3213,8 @@ void CGCStorePurchaseInit_LineItem::InternalSwap(CGCStorePurchaseInit_LineItem* 
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CGCStorePurchaseInit_LineItem, _impl_.supplemental_data_)
-      + sizeof(CGCStorePurchaseInit_LineItem::_impl_.supplemental_data_)
+      PROTOBUF_FIELD_OFFSET(CGCStorePurchaseInit_LineItem, _impl_.purchase_type_)
+      + sizeof(CGCStorePurchaseInit_LineItem::_impl_.purchase_type_)
       - PROTOBUF_FIELD_OFFSET(CGCStorePurchaseInit_LineItem, _impl_.item_def_id_)>(
           reinterpret_cast<char*>(&_impl_.item_def_id_),
           reinterpret_cast<char*>(&other->_impl_.item_def_id_));

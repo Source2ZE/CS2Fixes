@@ -621,8 +621,8 @@ class CGCStorePurchaseInit_LineItem :
     kItemDefIdFieldNumber = 1,
     kQuantityFieldNumber = 2,
     kCostInLocalCurrencyFieldNumber = 3,
-    kPurchaseTypeFieldNumber = 4,
     kSupplementalDataFieldNumber = 5,
+    kPurchaseTypeFieldNumber = 4,
   };
   // optional uint32 item_def_id = 1;
   bool has_item_def_id() const;
@@ -650,30 +650,17 @@ class CGCStorePurchaseInit_LineItem :
   void _internal_set_quantity(uint32_t value);
   public:
 
-  // optional uint32 cost_in_local_currency = 3;
+  // optional uint64 cost_in_local_currency = 3;
   bool has_cost_in_local_currency() const;
   private:
   bool _internal_has_cost_in_local_currency() const;
   public:
   void clear_cost_in_local_currency();
-  uint32_t cost_in_local_currency() const;
-  void set_cost_in_local_currency(uint32_t value);
+  uint64_t cost_in_local_currency() const;
+  void set_cost_in_local_currency(uint64_t value);
   private:
-  uint32_t _internal_cost_in_local_currency() const;
-  void _internal_set_cost_in_local_currency(uint32_t value);
-  public:
-
-  // optional uint32 purchase_type = 4;
-  bool has_purchase_type() const;
-  private:
-  bool _internal_has_purchase_type() const;
-  public:
-  void clear_purchase_type();
-  uint32_t purchase_type() const;
-  void set_purchase_type(uint32_t value);
-  private:
-  uint32_t _internal_purchase_type() const;
-  void _internal_set_purchase_type(uint32_t value);
+  uint64_t _internal_cost_in_local_currency() const;
+  void _internal_set_cost_in_local_currency(uint64_t value);
   public:
 
   // optional uint64 supplemental_data = 5;
@@ -689,6 +676,19 @@ class CGCStorePurchaseInit_LineItem :
   void _internal_set_supplemental_data(uint64_t value);
   public:
 
+  // optional uint32 purchase_type = 4;
+  bool has_purchase_type() const;
+  private:
+  bool _internal_has_purchase_type() const;
+  public:
+  void clear_purchase_type();
+  uint32_t purchase_type() const;
+  void set_purchase_type(uint32_t value);
+  private:
+  uint32_t _internal_purchase_type() const;
+  void _internal_set_purchase_type(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CGCStorePurchaseInit_LineItem)
  private:
   class _Internal;
@@ -701,9 +701,9 @@ class CGCStorePurchaseInit_LineItem :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint32_t item_def_id_;
     uint32_t quantity_;
-    uint32_t cost_in_local_currency_;
-    uint32_t purchase_type_;
+    uint64_t cost_in_local_currency_;
     uint64_t supplemental_data_;
+    uint32_t purchase_type_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_base_5fgcmessages_2eproto;
@@ -16914,7 +16914,7 @@ inline void CGCStorePurchaseInit_LineItem::set_quantity(uint32_t value) {
   // @@protoc_insertion_point(field_set:CGCStorePurchaseInit_LineItem.quantity)
 }
 
-// optional uint32 cost_in_local_currency = 3;
+// optional uint64 cost_in_local_currency = 3;
 inline bool CGCStorePurchaseInit_LineItem::_internal_has_cost_in_local_currency() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -16923,28 +16923,28 @@ inline bool CGCStorePurchaseInit_LineItem::has_cost_in_local_currency() const {
   return _internal_has_cost_in_local_currency();
 }
 inline void CGCStorePurchaseInit_LineItem::clear_cost_in_local_currency() {
-  _impl_.cost_in_local_currency_ = 0u;
+  _impl_.cost_in_local_currency_ = uint64_t{0u};
   _impl_._has_bits_[0] &= ~0x00000004u;
 }
-inline uint32_t CGCStorePurchaseInit_LineItem::_internal_cost_in_local_currency() const {
+inline uint64_t CGCStorePurchaseInit_LineItem::_internal_cost_in_local_currency() const {
   return _impl_.cost_in_local_currency_;
 }
-inline uint32_t CGCStorePurchaseInit_LineItem::cost_in_local_currency() const {
+inline uint64_t CGCStorePurchaseInit_LineItem::cost_in_local_currency() const {
   // @@protoc_insertion_point(field_get:CGCStorePurchaseInit_LineItem.cost_in_local_currency)
   return _internal_cost_in_local_currency();
 }
-inline void CGCStorePurchaseInit_LineItem::_internal_set_cost_in_local_currency(uint32_t value) {
+inline void CGCStorePurchaseInit_LineItem::_internal_set_cost_in_local_currency(uint64_t value) {
   _impl_._has_bits_[0] |= 0x00000004u;
   _impl_.cost_in_local_currency_ = value;
 }
-inline void CGCStorePurchaseInit_LineItem::set_cost_in_local_currency(uint32_t value) {
+inline void CGCStorePurchaseInit_LineItem::set_cost_in_local_currency(uint64_t value) {
   _internal_set_cost_in_local_currency(value);
   // @@protoc_insertion_point(field_set:CGCStorePurchaseInit_LineItem.cost_in_local_currency)
 }
 
 // optional uint32 purchase_type = 4;
 inline bool CGCStorePurchaseInit_LineItem::_internal_has_purchase_type() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool CGCStorePurchaseInit_LineItem::has_purchase_type() const {
@@ -16952,7 +16952,7 @@ inline bool CGCStorePurchaseInit_LineItem::has_purchase_type() const {
 }
 inline void CGCStorePurchaseInit_LineItem::clear_purchase_type() {
   _impl_.purchase_type_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline uint32_t CGCStorePurchaseInit_LineItem::_internal_purchase_type() const {
   return _impl_.purchase_type_;
@@ -16962,7 +16962,7 @@ inline uint32_t CGCStorePurchaseInit_LineItem::purchase_type() const {
   return _internal_purchase_type();
 }
 inline void CGCStorePurchaseInit_LineItem::_internal_set_purchase_type(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.purchase_type_ = value;
 }
 inline void CGCStorePurchaseInit_LineItem::set_purchase_type(uint32_t value) {
@@ -16972,7 +16972,7 @@ inline void CGCStorePurchaseInit_LineItem::set_purchase_type(uint32_t value) {
 
 // optional uint64 supplemental_data = 5;
 inline bool CGCStorePurchaseInit_LineItem::_internal_has_supplemental_data() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
 inline bool CGCStorePurchaseInit_LineItem::has_supplemental_data() const {
@@ -16980,7 +16980,7 @@ inline bool CGCStorePurchaseInit_LineItem::has_supplemental_data() const {
 }
 inline void CGCStorePurchaseInit_LineItem::clear_supplemental_data() {
   _impl_.supplemental_data_ = uint64_t{0u};
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
 inline uint64_t CGCStorePurchaseInit_LineItem::_internal_supplemental_data() const {
   return _impl_.supplemental_data_;
@@ -16990,7 +16990,7 @@ inline uint64_t CGCStorePurchaseInit_LineItem::supplemental_data() const {
   return _internal_supplemental_data();
 }
 inline void CGCStorePurchaseInit_LineItem::_internal_set_supplemental_data(uint64_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000008u;
   _impl_.supplemental_data_ = value;
 }
 inline void CGCStorePurchaseInit_LineItem::set_supplemental_data(uint64_t value) {
