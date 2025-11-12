@@ -46,6 +46,9 @@ struct TableStruct_cs_5fgameevents_2eproto {
   static const uint32_t offsets[];
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_cs_5fgameevents_2eproto;
+class CMsgPlayerBulletHit;
+struct CMsgPlayerBulletHitDefaultTypeInternal;
+extern CMsgPlayerBulletHitDefaultTypeInternal _CMsgPlayerBulletHit_default_instance_;
 class CMsgTEFireBullets;
 struct CMsgTEFireBulletsDefaultTypeInternal;
 extern CMsgTEFireBulletsDefaultTypeInternal _CMsgTEFireBullets_default_instance_;
@@ -59,6 +62,7 @@ class CMsgTERadioIcon;
 struct CMsgTERadioIconDefaultTypeInternal;
 extern CMsgTERadioIconDefaultTypeInternal _CMsgTERadioIcon_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
+template<> ::CMsgPlayerBulletHit* Arena::CreateMaybeMessage<::CMsgPlayerBulletHit>(Arena*);
 template<> ::CMsgTEFireBullets* Arena::CreateMaybeMessage<::CMsgTEFireBullets>(Arena*);
 template<> ::CMsgTEFireBullets_Extra* Arena::CreateMaybeMessage<::CMsgTEFireBullets_Extra>(Arena*);
 template<> ::CMsgTEPlayerAnimEvent* Arena::CreateMaybeMessage<::CMsgTEPlayerAnimEvent>(Arena*);
@@ -68,11 +72,12 @@ PROTOBUF_NAMESPACE_CLOSE
 enum ECsgoGameEvents : int {
   GE_PlayerAnimEventId = 450,
   GE_RadioIconEventId = 451,
-  GE_FireBulletsId = 452
+  GE_FireBulletsId = 452,
+  GE_PlayerBulletHitId = 453
 };
 bool ECsgoGameEvents_IsValid(int value);
 constexpr ECsgoGameEvents ECsgoGameEvents_MIN = GE_PlayerAnimEventId;
-constexpr ECsgoGameEvents ECsgoGameEvents_MAX = GE_FireBulletsId;
+constexpr ECsgoGameEvents ECsgoGameEvents_MAX = GE_PlayerBulletHitId;
 constexpr int ECsgoGameEvents_ARRAYSIZE = ECsgoGameEvents_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ECsgoGameEvents_descriptor();
@@ -855,6 +860,9 @@ class CMsgTEFireBullets :
     kSoundDspEffectFieldNumber = 12,
     kNumBulletsRemainingFieldNumber = 14,
     kAttackTypeFieldNumber = 15,
+    kPlayerInairFieldNumber = 17,
+    kPlayerScopedFieldNumber = 18,
+    kTickFieldNumber = 19,
     kWeaponIdFieldNumber = 3,
     kPlayerFieldNumber = 6,
   };
@@ -1060,6 +1068,45 @@ class CMsgTEFireBullets :
   void _internal_set_attack_type(uint32_t value);
   public:
 
+  // optional bool player_inair = 17;
+  bool has_player_inair() const;
+  private:
+  bool _internal_has_player_inair() const;
+  public:
+  void clear_player_inair();
+  bool player_inair() const;
+  void set_player_inair(bool value);
+  private:
+  bool _internal_player_inair() const;
+  void _internal_set_player_inair(bool value);
+  public:
+
+  // optional bool player_scoped = 18;
+  bool has_player_scoped() const;
+  private:
+  bool _internal_has_player_scoped() const;
+  public:
+  void clear_player_scoped();
+  bool player_scoped() const;
+  void set_player_scoped(bool value);
+  private:
+  bool _internal_player_scoped() const;
+  void _internal_set_player_scoped(bool value);
+  public:
+
+  // optional int32 tick = 19;
+  bool has_tick() const;
+  private:
+  bool _internal_has_tick() const;
+  public:
+  void clear_tick();
+  int32_t tick() const;
+  void set_tick(int32_t value);
+  private:
+  int32_t _internal_tick() const;
+  void _internal_set_tick(int32_t value);
+  public:
+
   // optional uint32 weapon_id = 3 [default = 16777215];
   bool has_weapon_id() const;
   private:
@@ -1110,8 +1157,266 @@ class CMsgTEFireBullets :
     uint32_t sound_dsp_effect_;
     uint32_t num_bullets_remaining_;
     uint32_t attack_type_;
+    bool player_inair_;
+    bool player_scoped_;
+    int32_t tick_;
     uint32_t weapon_id_;
     uint32_t player_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cs_5fgameevents_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CMsgPlayerBulletHit :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgPlayerBulletHit) */ {
+ public:
+  inline CMsgPlayerBulletHit() : CMsgPlayerBulletHit(nullptr) {}
+  ~CMsgPlayerBulletHit() override;
+  explicit PROTOBUF_CONSTEXPR CMsgPlayerBulletHit(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgPlayerBulletHit(const CMsgPlayerBulletHit& from);
+  CMsgPlayerBulletHit(CMsgPlayerBulletHit&& from) noexcept
+    : CMsgPlayerBulletHit() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgPlayerBulletHit& operator=(const CMsgPlayerBulletHit& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgPlayerBulletHit& operator=(CMsgPlayerBulletHit&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgPlayerBulletHit& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgPlayerBulletHit* internal_default_instance() {
+    return reinterpret_cast<const CMsgPlayerBulletHit*>(
+               &_CMsgPlayerBulletHit_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(CMsgPlayerBulletHit& a, CMsgPlayerBulletHit& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgPlayerBulletHit* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgPlayerBulletHit* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgPlayerBulletHit* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgPlayerBulletHit>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgPlayerBulletHit& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgPlayerBulletHit& from) {
+    CMsgPlayerBulletHit::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgPlayerBulletHit* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgPlayerBulletHit";
+  }
+  protected:
+  explicit CMsgPlayerBulletHit(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kVictimPosFieldNumber = 3,
+    kHitGroupFieldNumber = 4,
+    kDamageFieldNumber = 5,
+    kPenetrationCountFieldNumber = 6,
+    kIsKillFieldNumber = 7,
+    kAttackerSlotFieldNumber = 1,
+    kVictimSlotFieldNumber = 2,
+  };
+  // optional .CMsgVector victim_pos = 3;
+  bool has_victim_pos() const;
+  private:
+  bool _internal_has_victim_pos() const;
+  public:
+  void clear_victim_pos();
+  const ::CMsgVector& victim_pos() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_victim_pos();
+  ::CMsgVector* mutable_victim_pos();
+  void set_allocated_victim_pos(::CMsgVector* victim_pos);
+  private:
+  const ::CMsgVector& _internal_victim_pos() const;
+  ::CMsgVector* _internal_mutable_victim_pos();
+  public:
+  void unsafe_arena_set_allocated_victim_pos(
+      ::CMsgVector* victim_pos);
+  ::CMsgVector* unsafe_arena_release_victim_pos();
+
+  // optional int32 hit_group = 4;
+  bool has_hit_group() const;
+  private:
+  bool _internal_has_hit_group() const;
+  public:
+  void clear_hit_group();
+  int32_t hit_group() const;
+  void set_hit_group(int32_t value);
+  private:
+  int32_t _internal_hit_group() const;
+  void _internal_set_hit_group(int32_t value);
+  public:
+
+  // optional int32 damage = 5;
+  bool has_damage() const;
+  private:
+  bool _internal_has_damage() const;
+  public:
+  void clear_damage();
+  int32_t damage() const;
+  void set_damage(int32_t value);
+  private:
+  int32_t _internal_damage() const;
+  void _internal_set_damage(int32_t value);
+  public:
+
+  // optional int32 penetration_count = 6;
+  bool has_penetration_count() const;
+  private:
+  bool _internal_has_penetration_count() const;
+  public:
+  void clear_penetration_count();
+  int32_t penetration_count() const;
+  void set_penetration_count(int32_t value);
+  private:
+  int32_t _internal_penetration_count() const;
+  void _internal_set_penetration_count(int32_t value);
+  public:
+
+  // optional bool is_kill = 7;
+  bool has_is_kill() const;
+  private:
+  bool _internal_has_is_kill() const;
+  public:
+  void clear_is_kill();
+  bool is_kill() const;
+  void set_is_kill(bool value);
+  private:
+  bool _internal_is_kill() const;
+  void _internal_set_is_kill(bool value);
+  public:
+
+  // optional int32 attacker_slot = 1 [default = -1];
+  bool has_attacker_slot() const;
+  private:
+  bool _internal_has_attacker_slot() const;
+  public:
+  void clear_attacker_slot();
+  int32_t attacker_slot() const;
+  void set_attacker_slot(int32_t value);
+  private:
+  int32_t _internal_attacker_slot() const;
+  void _internal_set_attacker_slot(int32_t value);
+  public:
+
+  // optional int32 victim_slot = 2 [default = -1];
+  bool has_victim_slot() const;
+  private:
+  bool _internal_has_victim_slot() const;
+  public:
+  void clear_victim_slot();
+  int32_t victim_slot() const;
+  void set_victim_slot(int32_t value);
+  private:
+  int32_t _internal_victim_slot() const;
+  void _internal_set_victim_slot(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgPlayerBulletHit)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::CMsgVector* victim_pos_;
+    int32_t hit_group_;
+    int32_t damage_;
+    int32_t penetration_count_;
+    bool is_kill_;
+    int32_t attacker_slot_;
+    int32_t victim_slot_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_cs_5fgameevents_2eproto;
@@ -1710,7 +2015,7 @@ inline void CMsgTEFireBullets::set_allocated_angles(::CMsgQAngle* angles) {
 
 // optional uint32 weapon_id = 3 [default = 16777215];
 inline bool CMsgTEFireBullets::_internal_has_weapon_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_weapon_id() const {
@@ -1718,7 +2023,7 @@ inline bool CMsgTEFireBullets::has_weapon_id() const {
 }
 inline void CMsgTEFireBullets::clear_weapon_id() {
   _impl_.weapon_id_ = 16777215u;
-  _impl_._has_bits_[0] &= ~0x00004000u;
+  _impl_._has_bits_[0] &= ~0x00020000u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_weapon_id() const {
   return _impl_.weapon_id_;
@@ -1728,7 +2033,7 @@ inline uint32_t CMsgTEFireBullets::weapon_id() const {
   return _internal_weapon_id();
 }
 inline void CMsgTEFireBullets::_internal_set_weapon_id(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00004000u;
+  _impl_._has_bits_[0] |= 0x00020000u;
   _impl_.weapon_id_ = value;
 }
 inline void CMsgTEFireBullets::set_weapon_id(uint32_t value) {
@@ -1794,7 +2099,7 @@ inline void CMsgTEFireBullets::set_seed(uint32_t value) {
 
 // optional fixed32 player = 6 [default = 16777215];
 inline bool CMsgTEFireBullets::_internal_has_player() const {
-  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00040000u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_player() const {
@@ -1802,7 +2107,7 @@ inline bool CMsgTEFireBullets::has_player() const {
 }
 inline void CMsgTEFireBullets::clear_player() {
   _impl_.player_ = 16777215u;
-  _impl_._has_bits_[0] &= ~0x00008000u;
+  _impl_._has_bits_[0] &= ~0x00040000u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_player() const {
   return _impl_.player_;
@@ -1812,7 +2117,7 @@ inline uint32_t CMsgTEFireBullets::player() const {
   return _internal_player();
 }
 inline void CMsgTEFireBullets::_internal_set_player(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00008000u;
+  _impl_._has_bits_[0] |= 0x00040000u;
   _impl_.player_ = value;
 }
 inline void CMsgTEFireBullets::set_player(uint32_t value) {
@@ -2131,6 +2436,90 @@ inline void CMsgTEFireBullets::set_attack_type(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgTEFireBullets.attack_type)
 }
 
+// optional bool player_inair = 17;
+inline bool CMsgTEFireBullets::_internal_has_player_inair() const {
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+  return value;
+}
+inline bool CMsgTEFireBullets::has_player_inair() const {
+  return _internal_has_player_inair();
+}
+inline void CMsgTEFireBullets::clear_player_inair() {
+  _impl_.player_inair_ = false;
+  _impl_._has_bits_[0] &= ~0x00004000u;
+}
+inline bool CMsgTEFireBullets::_internal_player_inair() const {
+  return _impl_.player_inair_;
+}
+inline bool CMsgTEFireBullets::player_inair() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.player_inair)
+  return _internal_player_inair();
+}
+inline void CMsgTEFireBullets::_internal_set_player_inair(bool value) {
+  _impl_._has_bits_[0] |= 0x00004000u;
+  _impl_.player_inair_ = value;
+}
+inline void CMsgTEFireBullets::set_player_inair(bool value) {
+  _internal_set_player_inair(value);
+  // @@protoc_insertion_point(field_set:CMsgTEFireBullets.player_inair)
+}
+
+// optional bool player_scoped = 18;
+inline bool CMsgTEFireBullets::_internal_has_player_scoped() const {
+  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
+  return value;
+}
+inline bool CMsgTEFireBullets::has_player_scoped() const {
+  return _internal_has_player_scoped();
+}
+inline void CMsgTEFireBullets::clear_player_scoped() {
+  _impl_.player_scoped_ = false;
+  _impl_._has_bits_[0] &= ~0x00008000u;
+}
+inline bool CMsgTEFireBullets::_internal_player_scoped() const {
+  return _impl_.player_scoped_;
+}
+inline bool CMsgTEFireBullets::player_scoped() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.player_scoped)
+  return _internal_player_scoped();
+}
+inline void CMsgTEFireBullets::_internal_set_player_scoped(bool value) {
+  _impl_._has_bits_[0] |= 0x00008000u;
+  _impl_.player_scoped_ = value;
+}
+inline void CMsgTEFireBullets::set_player_scoped(bool value) {
+  _internal_set_player_scoped(value);
+  // @@protoc_insertion_point(field_set:CMsgTEFireBullets.player_scoped)
+}
+
+// optional int32 tick = 19;
+inline bool CMsgTEFireBullets::_internal_has_tick() const {
+  bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
+  return value;
+}
+inline bool CMsgTEFireBullets::has_tick() const {
+  return _internal_has_tick();
+}
+inline void CMsgTEFireBullets::clear_tick() {
+  _impl_.tick_ = 0;
+  _impl_._has_bits_[0] &= ~0x00010000u;
+}
+inline int32_t CMsgTEFireBullets::_internal_tick() const {
+  return _impl_.tick_;
+}
+inline int32_t CMsgTEFireBullets::tick() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.tick)
+  return _internal_tick();
+}
+inline void CMsgTEFireBullets::_internal_set_tick(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00010000u;
+  _impl_.tick_ = value;
+}
+inline void CMsgTEFireBullets::set_tick(int32_t value) {
+  _internal_set_tick(value);
+  // @@protoc_insertion_point(field_set:CMsgTEFireBullets.tick)
+}
+
 // optional .CMsgTEFireBullets.Extra extra = 16;
 inline bool CMsgTEFireBullets::_internal_has_extra() const {
   bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
@@ -2221,9 +2610,270 @@ inline void CMsgTEFireBullets::set_allocated_extra(::CMsgTEFireBullets_Extra* ex
   // @@protoc_insertion_point(field_set_allocated:CMsgTEFireBullets.extra)
 }
 
+// -------------------------------------------------------------------
+
+// CMsgPlayerBulletHit
+
+// optional int32 attacker_slot = 1 [default = -1];
+inline bool CMsgPlayerBulletHit::_internal_has_attacker_slot() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CMsgPlayerBulletHit::has_attacker_slot() const {
+  return _internal_has_attacker_slot();
+}
+inline void CMsgPlayerBulletHit::clear_attacker_slot() {
+  _impl_.attacker_slot_ = -1;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline int32_t CMsgPlayerBulletHit::_internal_attacker_slot() const {
+  return _impl_.attacker_slot_;
+}
+inline int32_t CMsgPlayerBulletHit::attacker_slot() const {
+  // @@protoc_insertion_point(field_get:CMsgPlayerBulletHit.attacker_slot)
+  return _internal_attacker_slot();
+}
+inline void CMsgPlayerBulletHit::_internal_set_attacker_slot(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.attacker_slot_ = value;
+}
+inline void CMsgPlayerBulletHit::set_attacker_slot(int32_t value) {
+  _internal_set_attacker_slot(value);
+  // @@protoc_insertion_point(field_set:CMsgPlayerBulletHit.attacker_slot)
+}
+
+// optional int32 victim_slot = 2 [default = -1];
+inline bool CMsgPlayerBulletHit::_internal_has_victim_slot() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CMsgPlayerBulletHit::has_victim_slot() const {
+  return _internal_has_victim_slot();
+}
+inline void CMsgPlayerBulletHit::clear_victim_slot() {
+  _impl_.victim_slot_ = -1;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline int32_t CMsgPlayerBulletHit::_internal_victim_slot() const {
+  return _impl_.victim_slot_;
+}
+inline int32_t CMsgPlayerBulletHit::victim_slot() const {
+  // @@protoc_insertion_point(field_get:CMsgPlayerBulletHit.victim_slot)
+  return _internal_victim_slot();
+}
+inline void CMsgPlayerBulletHit::_internal_set_victim_slot(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.victim_slot_ = value;
+}
+inline void CMsgPlayerBulletHit::set_victim_slot(int32_t value) {
+  _internal_set_victim_slot(value);
+  // @@protoc_insertion_point(field_set:CMsgPlayerBulletHit.victim_slot)
+}
+
+// optional .CMsgVector victim_pos = 3;
+inline bool CMsgPlayerBulletHit::_internal_has_victim_pos() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.victim_pos_ != nullptr);
+  return value;
+}
+inline bool CMsgPlayerBulletHit::has_victim_pos() const {
+  return _internal_has_victim_pos();
+}
+inline const ::CMsgVector& CMsgPlayerBulletHit::_internal_victim_pos() const {
+  const ::CMsgVector* p = _impl_.victim_pos_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CMsgPlayerBulletHit::victim_pos() const {
+  // @@protoc_insertion_point(field_get:CMsgPlayerBulletHit.victim_pos)
+  return _internal_victim_pos();
+}
+inline void CMsgPlayerBulletHit::unsafe_arena_set_allocated_victim_pos(
+    ::CMsgVector* victim_pos) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.victim_pos_);
+  }
+  _impl_.victim_pos_ = victim_pos;
+  if (victim_pos) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CMsgPlayerBulletHit.victim_pos)
+}
+inline ::CMsgVector* CMsgPlayerBulletHit::release_victim_pos() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgVector* temp = _impl_.victim_pos_;
+  _impl_.victim_pos_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CMsgPlayerBulletHit::unsafe_arena_release_victim_pos() {
+  // @@protoc_insertion_point(field_release:CMsgPlayerBulletHit.victim_pos)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgVector* temp = _impl_.victim_pos_;
+  _impl_.victim_pos_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CMsgPlayerBulletHit::_internal_mutable_victim_pos() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.victim_pos_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.victim_pos_ = p;
+  }
+  return _impl_.victim_pos_;
+}
+inline ::CMsgVector* CMsgPlayerBulletHit::mutable_victim_pos() {
+  ::CMsgVector* _msg = _internal_mutable_victim_pos();
+  // @@protoc_insertion_point(field_mutable:CMsgPlayerBulletHit.victim_pos)
+  return _msg;
+}
+inline void CMsgPlayerBulletHit::set_allocated_victim_pos(::CMsgVector* victim_pos) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.victim_pos_);
+  }
+  if (victim_pos) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(victim_pos));
+    if (message_arena != submessage_arena) {
+      victim_pos = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, victim_pos, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.victim_pos_ = victim_pos;
+  // @@protoc_insertion_point(field_set_allocated:CMsgPlayerBulletHit.victim_pos)
+}
+
+// optional int32 hit_group = 4;
+inline bool CMsgPlayerBulletHit::_internal_has_hit_group() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgPlayerBulletHit::has_hit_group() const {
+  return _internal_has_hit_group();
+}
+inline void CMsgPlayerBulletHit::clear_hit_group() {
+  _impl_.hit_group_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline int32_t CMsgPlayerBulletHit::_internal_hit_group() const {
+  return _impl_.hit_group_;
+}
+inline int32_t CMsgPlayerBulletHit::hit_group() const {
+  // @@protoc_insertion_point(field_get:CMsgPlayerBulletHit.hit_group)
+  return _internal_hit_group();
+}
+inline void CMsgPlayerBulletHit::_internal_set_hit_group(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.hit_group_ = value;
+}
+inline void CMsgPlayerBulletHit::set_hit_group(int32_t value) {
+  _internal_set_hit_group(value);
+  // @@protoc_insertion_point(field_set:CMsgPlayerBulletHit.hit_group)
+}
+
+// optional int32 damage = 5;
+inline bool CMsgPlayerBulletHit::_internal_has_damage() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CMsgPlayerBulletHit::has_damage() const {
+  return _internal_has_damage();
+}
+inline void CMsgPlayerBulletHit::clear_damage() {
+  _impl_.damage_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline int32_t CMsgPlayerBulletHit::_internal_damage() const {
+  return _impl_.damage_;
+}
+inline int32_t CMsgPlayerBulletHit::damage() const {
+  // @@protoc_insertion_point(field_get:CMsgPlayerBulletHit.damage)
+  return _internal_damage();
+}
+inline void CMsgPlayerBulletHit::_internal_set_damage(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.damage_ = value;
+}
+inline void CMsgPlayerBulletHit::set_damage(int32_t value) {
+  _internal_set_damage(value);
+  // @@protoc_insertion_point(field_set:CMsgPlayerBulletHit.damage)
+}
+
+// optional int32 penetration_count = 6;
+inline bool CMsgPlayerBulletHit::_internal_has_penetration_count() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CMsgPlayerBulletHit::has_penetration_count() const {
+  return _internal_has_penetration_count();
+}
+inline void CMsgPlayerBulletHit::clear_penetration_count() {
+  _impl_.penetration_count_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline int32_t CMsgPlayerBulletHit::_internal_penetration_count() const {
+  return _impl_.penetration_count_;
+}
+inline int32_t CMsgPlayerBulletHit::penetration_count() const {
+  // @@protoc_insertion_point(field_get:CMsgPlayerBulletHit.penetration_count)
+  return _internal_penetration_count();
+}
+inline void CMsgPlayerBulletHit::_internal_set_penetration_count(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.penetration_count_ = value;
+}
+inline void CMsgPlayerBulletHit::set_penetration_count(int32_t value) {
+  _internal_set_penetration_count(value);
+  // @@protoc_insertion_point(field_set:CMsgPlayerBulletHit.penetration_count)
+}
+
+// optional bool is_kill = 7;
+inline bool CMsgPlayerBulletHit::_internal_has_is_kill() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CMsgPlayerBulletHit::has_is_kill() const {
+  return _internal_has_is_kill();
+}
+inline void CMsgPlayerBulletHit::clear_is_kill() {
+  _impl_.is_kill_ = false;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline bool CMsgPlayerBulletHit::_internal_is_kill() const {
+  return _impl_.is_kill_;
+}
+inline bool CMsgPlayerBulletHit::is_kill() const {
+  // @@protoc_insertion_point(field_get:CMsgPlayerBulletHit.is_kill)
+  return _internal_is_kill();
+}
+inline void CMsgPlayerBulletHit::_internal_set_is_kill(bool value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.is_kill_ = value;
+}
+inline void CMsgPlayerBulletHit::set_is_kill(bool value) {
+  _internal_set_is_kill(value);
+  // @@protoc_insertion_point(field_set:CMsgPlayerBulletHit.is_kill)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
