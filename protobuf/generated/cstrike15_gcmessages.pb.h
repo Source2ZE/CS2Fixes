@@ -21878,6 +21878,7 @@ class CEconItemPreviewDataBlock_Sticker :
     kOffsetZFieldNumber = 9,
     kPatternFieldNumber = 10,
     kHighlightReelFieldNumber = 11,
+    kWrappedStickerFieldNumber = 12,
   };
   // optional uint32 slot = 1;
   bool has_slot() const;
@@ -22022,6 +22023,19 @@ class CEconItemPreviewDataBlock_Sticker :
   void _internal_set_highlight_reel(uint32_t value);
   public:
 
+  // optional uint32 wrapped_sticker = 12;
+  bool has_wrapped_sticker() const;
+  private:
+  bool _internal_has_wrapped_sticker() const;
+  public:
+  void clear_wrapped_sticker();
+  uint32_t wrapped_sticker() const;
+  void set_wrapped_sticker(uint32_t value);
+  private:
+  uint32_t _internal_wrapped_sticker() const;
+  void _internal_set_wrapped_sticker(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CEconItemPreviewDataBlock.Sticker)
  private:
   class _Internal;
@@ -22043,6 +22057,7 @@ class CEconItemPreviewDataBlock_Sticker :
     float offset_z_;
     uint32_t pattern_;
     uint32_t highlight_reel_;
+    uint32_t wrapped_sticker_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_cstrike15_5fgcmessages_2eproto;
@@ -61929,6 +61944,34 @@ inline void CEconItemPreviewDataBlock_Sticker::_internal_set_highlight_reel(uint
 inline void CEconItemPreviewDataBlock_Sticker::set_highlight_reel(uint32_t value) {
   _internal_set_highlight_reel(value);
   // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.Sticker.highlight_reel)
+}
+
+// optional uint32 wrapped_sticker = 12;
+inline bool CEconItemPreviewDataBlock_Sticker::_internal_has_wrapped_sticker() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  return value;
+}
+inline bool CEconItemPreviewDataBlock_Sticker::has_wrapped_sticker() const {
+  return _internal_has_wrapped_sticker();
+}
+inline void CEconItemPreviewDataBlock_Sticker::clear_wrapped_sticker() {
+  _impl_.wrapped_sticker_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
+}
+inline uint32_t CEconItemPreviewDataBlock_Sticker::_internal_wrapped_sticker() const {
+  return _impl_.wrapped_sticker_;
+}
+inline uint32_t CEconItemPreviewDataBlock_Sticker::wrapped_sticker() const {
+  // @@protoc_insertion_point(field_get:CEconItemPreviewDataBlock.Sticker.wrapped_sticker)
+  return _internal_wrapped_sticker();
+}
+inline void CEconItemPreviewDataBlock_Sticker::_internal_set_wrapped_sticker(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_.wrapped_sticker_ = value;
+}
+inline void CEconItemPreviewDataBlock_Sticker::set_wrapped_sticker(uint32_t value) {
+  _internal_set_wrapped_sticker(value);
+  // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.Sticker.wrapped_sticker)
 }
 
 // -------------------------------------------------------------------

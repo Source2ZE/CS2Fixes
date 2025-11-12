@@ -342,7 +342,7 @@ const char descriptor_table_protodef_econ_5fgcmessages_2eproto[] PROTOBUF_SECTIO
   "\020\002\022#\n\037k_UnlockStyle_Failed_CantCommit\020\003\022"
   "&\n\"k_UnlockStyle_Failed_CantLockCache\020\004\022"
   ")\n%k_UnlockStyle_Failed_CantAffordAttrib"
-  "\020\005*\323\013\n EGCItemCustomizationNotification\022"
+  "\020\005*\307\014\n EGCItemCustomizationNotification\022"
   "0\n+k_EGCItemCustomizationNotification_Na"
   "meItem\020\356\007\0223\n.k_EGCItemCustomizationNotif"
   "ication_UnlockCrate\020\357\007\0226\n1k_EGCItemCusto"
@@ -359,34 +359,37 @@ const char descriptor_table_protodef_econ_5fgcmessages_2eproto[] PROTOBUF_SECTIO
   "ation_NameBaseItem\020\373\007\0226\n1k_EGCItemCustom"
   "izationNotification_RemoveItemName\020\206\010\0225\n"
   "0k_EGCItemCustomizationNotification_Remo"
-  "veSticker\020\235\010\0224\n/k_EGCItemCustomizationNo"
-  "tification_ApplySticker\020\276\010\0224\n/k_EGCItemC"
-  "ustomizationNotification_StatTrakSwap\020\300\010"
-  "\0223\n.k_EGCItemCustomizationNotification_R"
-  "emovePatch\020\301\010\0222\n-k_EGCItemCustomizationN"
-  "otification_ApplyPatch\020\302\010\0225\n0k_EGCItemCu"
-  "stomizationNotification_ApplyKeychain\020\303\010"
-  "\0226\n1k_EGCItemCustomizationNotification_R"
-  "emoveKeychain\020\304\010\0228\n3k_EGCItemCustomizati"
-  "onNotification_ActivateFanToken\020\332G\022=\n8k_"
-  "EGCItemCustomizationNotification_Activat"
-  "eOperationCoin\020\333G\0226\n1k_EGCItemCustomizat"
-  "ionNotification_GraffitiUnseal\020\341G\0228\n3k_E"
-  "GCItemCustomizationNotification_Generate"
-  "Souvenir\020\364G\022A\n<k_EGCItemCustomizationNot"
-  "ification_ClientRedeemMissionReward\020\371G\022>"
-  "\n9k_EGCItemCustomizationNotification_Cli"
-  "entRedeemFreeReward\020\203H\0227\n2k_EGCItemCusto"
-  "mizationNotification_XpShopUseTicket\020\205H\022"
-  "7\n2k_EGCItemCustomizationNotification_Xp"
-  "ShopAckTracks\020\206H"
+  "veSticker\020\235\010\0226\n1k_EGCItemCustomizationNo"
+  "tification_ExtractSticker\020\236\010\022:\n5k_EGCIte"
+  "mCustomizationNotification_EncapsulateSt"
+  "icker\020\237\010\0224\n/k_EGCItemCustomizationNotifi"
+  "cation_ApplySticker\020\276\010\0224\n/k_EGCItemCusto"
+  "mizationNotification_StatTrakSwap\020\300\010\0223\n."
+  "k_EGCItemCustomizationNotification_Remov"
+  "ePatch\020\301\010\0222\n-k_EGCItemCustomizationNotif"
+  "ication_ApplyPatch\020\302\010\0225\n0k_EGCItemCustom"
+  "izationNotification_ApplyKeychain\020\303\010\0226\n1"
+  "k_EGCItemCustomizationNotification_Remov"
+  "eKeychain\020\304\010\0228\n3k_EGCItemCustomizationNo"
+  "tification_ActivateFanToken\020\332G\022=\n8k_EGCI"
+  "temCustomizationNotification_ActivateOpe"
+  "rationCoin\020\333G\0226\n1k_EGCItemCustomizationN"
+  "otification_GraffitiUnseal\020\341G\0228\n3k_EGCIt"
+  "emCustomizationNotification_GenerateSouv"
+  "enir\020\364G\022A\n<k_EGCItemCustomizationNotific"
+  "ation_ClientRedeemMissionReward\020\371G\022>\n9k_"
+  "EGCItemCustomizationNotification_ClientR"
+  "edeemFreeReward\020\203H\0227\n2k_EGCItemCustomiza"
+  "tionNotification_XpShopUseTicket\020\205H\0227\n2k"
+  "_EGCItemCustomizationNotification_XpShop"
+  "AckTracks\020\206H"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_econ_5fgcmessages_2eproto_deps[1] = {
   &::descriptor_table_steammessages_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_econ_5fgcmessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_econ_5fgcmessages_2eproto = {
-    false, false, 7856, descriptor_table_protodef_econ_5fgcmessages_2eproto,
+    false, false, 7972, descriptor_table_protodef_econ_5fgcmessages_2eproto,
     "econ_gcmessages.proto",
     &descriptor_table_econ_5fgcmessages_2eproto_once, descriptor_table_econ_5fgcmessages_2eproto_deps, 1, 5,
     schemas, file_default_instances, TableStruct_econ_5fgcmessages_2eproto::offsets,
@@ -617,6 +620,8 @@ bool EGCItemCustomizationNotification_IsValid(int value) {
     case 1019:
     case 1030:
     case 1053:
+    case 1054:
+    case 1055:
     case 1086:
     case 1088:
     case 1089:
