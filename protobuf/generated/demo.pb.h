@@ -339,7 +339,7 @@ class CDemoFileHeader :
     kDemoVersionNameFieldNumber = 11,
     kDemoVersionGuidFieldNumber = 12,
     kGameFieldNumber = 14,
-    kNetworkProtocolFieldNumber = 2,
+    kPatchVersionFieldNumber = 2,
     kFullpacketsVersionFieldNumber = 7,
     kAllowClientsideEntitiesFieldNumber = 8,
     kAllowClientsideParticlesFieldNumber = 9,
@@ -508,17 +508,17 @@ class CDemoFileHeader :
   std::string* _internal_mutable_game();
   public:
 
-  // optional int32 network_protocol = 2;
-  bool has_network_protocol() const;
+  // optional int32 patch_version = 2;
+  bool has_patch_version() const;
   private:
-  bool _internal_has_network_protocol() const;
+  bool _internal_has_patch_version() const;
   public:
-  void clear_network_protocol();
-  int32_t network_protocol() const;
-  void set_network_protocol(int32_t value);
+  void clear_patch_version();
+  int32_t patch_version() const;
+  void set_patch_version(int32_t value);
   private:
-  int32_t _internal_network_protocol() const;
-  void _internal_set_network_protocol(int32_t value);
+  int32_t _internal_patch_version() const;
+  void _internal_set_patch_version(int32_t value);
   public:
 
   // optional int32 fullpackets_version = 7;
@@ -605,7 +605,7 @@ class CDemoFileHeader :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr demo_version_name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr demo_version_guid_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr game_;
-    int32_t network_protocol_;
+    int32_t patch_version_;
     int32_t fullpackets_version_;
     bool allow_clientside_entities_;
     bool allow_clientside_particles_;
@@ -5573,32 +5573,32 @@ inline void CDemoFileHeader::set_allocated_demo_file_stamp(std::string* demo_fil
   // @@protoc_insertion_point(field_set_allocated:CDemoFileHeader.demo_file_stamp)
 }
 
-// optional int32 network_protocol = 2;
-inline bool CDemoFileHeader::_internal_has_network_protocol() const {
+// optional int32 patch_version = 2;
+inline bool CDemoFileHeader::_internal_has_patch_version() const {
   bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
   return value;
 }
-inline bool CDemoFileHeader::has_network_protocol() const {
-  return _internal_has_network_protocol();
+inline bool CDemoFileHeader::has_patch_version() const {
+  return _internal_has_patch_version();
 }
-inline void CDemoFileHeader::clear_network_protocol() {
-  _impl_.network_protocol_ = 0;
+inline void CDemoFileHeader::clear_patch_version() {
+  _impl_.patch_version_ = 0;
   _impl_._has_bits_[0] &= ~0x00000200u;
 }
-inline int32_t CDemoFileHeader::_internal_network_protocol() const {
-  return _impl_.network_protocol_;
+inline int32_t CDemoFileHeader::_internal_patch_version() const {
+  return _impl_.patch_version_;
 }
-inline int32_t CDemoFileHeader::network_protocol() const {
-  // @@protoc_insertion_point(field_get:CDemoFileHeader.network_protocol)
-  return _internal_network_protocol();
+inline int32_t CDemoFileHeader::patch_version() const {
+  // @@protoc_insertion_point(field_get:CDemoFileHeader.patch_version)
+  return _internal_patch_version();
 }
-inline void CDemoFileHeader::_internal_set_network_protocol(int32_t value) {
+inline void CDemoFileHeader::_internal_set_patch_version(int32_t value) {
   _impl_._has_bits_[0] |= 0x00000200u;
-  _impl_.network_protocol_ = value;
+  _impl_.patch_version_ = value;
 }
-inline void CDemoFileHeader::set_network_protocol(int32_t value) {
-  _internal_set_network_protocol(value);
-  // @@protoc_insertion_point(field_set:CDemoFileHeader.network_protocol)
+inline void CDemoFileHeader::set_patch_version(int32_t value) {
+  _internal_set_patch_version(value);
+  // @@protoc_insertion_point(field_set:CDemoFileHeader.patch_version)
 }
 
 // optional string server_name = 3;

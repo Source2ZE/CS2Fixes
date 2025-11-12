@@ -49,6 +49,9 @@ extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table
 class CMsgTEFireBullets;
 struct CMsgTEFireBulletsDefaultTypeInternal;
 extern CMsgTEFireBulletsDefaultTypeInternal _CMsgTEFireBullets_default_instance_;
+class CMsgTEFireBullets_Extra;
+struct CMsgTEFireBullets_ExtraDefaultTypeInternal;
+extern CMsgTEFireBullets_ExtraDefaultTypeInternal _CMsgTEFireBullets_Extra_default_instance_;
 class CMsgTEPlayerAnimEvent;
 struct CMsgTEPlayerAnimEventDefaultTypeInternal;
 extern CMsgTEPlayerAnimEventDefaultTypeInternal _CMsgTEPlayerAnimEvent_default_instance_;
@@ -57,6 +60,7 @@ struct CMsgTERadioIconDefaultTypeInternal;
 extern CMsgTERadioIconDefaultTypeInternal _CMsgTERadioIcon_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::CMsgTEFireBullets* Arena::CreateMaybeMessage<::CMsgTEFireBullets>(Arena*);
+template<> ::CMsgTEFireBullets_Extra* Arena::CreateMaybeMessage<::CMsgTEFireBullets_Extra>(Arena*);
 template<> ::CMsgTEPlayerAnimEvent* Arena::CreateMaybeMessage<::CMsgTEPlayerAnimEvent>(Arena*);
 template<> ::CMsgTERadioIcon* Arena::CreateMaybeMessage<::CMsgTERadioIcon>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -437,6 +441,276 @@ class CMsgTERadioIcon :
 };
 // -------------------------------------------------------------------
 
+class CMsgTEFireBullets_Extra :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEFireBullets.Extra) */ {
+ public:
+  inline CMsgTEFireBullets_Extra() : CMsgTEFireBullets_Extra(nullptr) {}
+  ~CMsgTEFireBullets_Extra() override;
+  explicit PROTOBUF_CONSTEXPR CMsgTEFireBullets_Extra(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgTEFireBullets_Extra(const CMsgTEFireBullets_Extra& from);
+  CMsgTEFireBullets_Extra(CMsgTEFireBullets_Extra&& from) noexcept
+    : CMsgTEFireBullets_Extra() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgTEFireBullets_Extra& operator=(const CMsgTEFireBullets_Extra& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgTEFireBullets_Extra& operator=(CMsgTEFireBullets_Extra&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgTEFireBullets_Extra& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgTEFireBullets_Extra* internal_default_instance() {
+    return reinterpret_cast<const CMsgTEFireBullets_Extra*>(
+               &_CMsgTEFireBullets_Extra_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(CMsgTEFireBullets_Extra& a, CMsgTEFireBullets_Extra& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgTEFireBullets_Extra* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgTEFireBullets_Extra* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgTEFireBullets_Extra* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgTEFireBullets_Extra>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgTEFireBullets_Extra& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgTEFireBullets_Extra& from) {
+    CMsgTEFireBullets_Extra::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgTEFireBullets_Extra* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgTEFireBullets.Extra";
+  }
+  protected:
+  explicit CMsgTEFireBullets_Extra(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kAimPunchFieldNumber = 1,
+    kAttackTickCountFieldNumber = 2,
+    kAttackTickFracFieldNumber = 3,
+    kRenderTickCountFieldNumber = 4,
+    kRenderTickFracFieldNumber = 5,
+    kInaccuracyMoveFieldNumber = 6,
+    kInaccuracyAirFieldNumber = 7,
+    kTypeFieldNumber = 8,
+  };
+  // optional .CMsgQAngle aim_punch = 1;
+  bool has_aim_punch() const;
+  private:
+  bool _internal_has_aim_punch() const;
+  public:
+  void clear_aim_punch();
+  const ::CMsgQAngle& aim_punch() const;
+  PROTOBUF_NODISCARD ::CMsgQAngle* release_aim_punch();
+  ::CMsgQAngle* mutable_aim_punch();
+  void set_allocated_aim_punch(::CMsgQAngle* aim_punch);
+  private:
+  const ::CMsgQAngle& _internal_aim_punch() const;
+  ::CMsgQAngle* _internal_mutable_aim_punch();
+  public:
+  void unsafe_arena_set_allocated_aim_punch(
+      ::CMsgQAngle* aim_punch);
+  ::CMsgQAngle* unsafe_arena_release_aim_punch();
+
+  // optional int32 attack_tick_count = 2;
+  bool has_attack_tick_count() const;
+  private:
+  bool _internal_has_attack_tick_count() const;
+  public:
+  void clear_attack_tick_count();
+  int32_t attack_tick_count() const;
+  void set_attack_tick_count(int32_t value);
+  private:
+  int32_t _internal_attack_tick_count() const;
+  void _internal_set_attack_tick_count(int32_t value);
+  public:
+
+  // optional float attack_tick_frac = 3;
+  bool has_attack_tick_frac() const;
+  private:
+  bool _internal_has_attack_tick_frac() const;
+  public:
+  void clear_attack_tick_frac();
+  float attack_tick_frac() const;
+  void set_attack_tick_frac(float value);
+  private:
+  float _internal_attack_tick_frac() const;
+  void _internal_set_attack_tick_frac(float value);
+  public:
+
+  // optional int32 render_tick_count = 4;
+  bool has_render_tick_count() const;
+  private:
+  bool _internal_has_render_tick_count() const;
+  public:
+  void clear_render_tick_count();
+  int32_t render_tick_count() const;
+  void set_render_tick_count(int32_t value);
+  private:
+  int32_t _internal_render_tick_count() const;
+  void _internal_set_render_tick_count(int32_t value);
+  public:
+
+  // optional float render_tick_frac = 5;
+  bool has_render_tick_frac() const;
+  private:
+  bool _internal_has_render_tick_frac() const;
+  public:
+  void clear_render_tick_frac();
+  float render_tick_frac() const;
+  void set_render_tick_frac(float value);
+  private:
+  float _internal_render_tick_frac() const;
+  void _internal_set_render_tick_frac(float value);
+  public:
+
+  // optional float inaccuracy_move = 6;
+  bool has_inaccuracy_move() const;
+  private:
+  bool _internal_has_inaccuracy_move() const;
+  public:
+  void clear_inaccuracy_move();
+  float inaccuracy_move() const;
+  void set_inaccuracy_move(float value);
+  private:
+  float _internal_inaccuracy_move() const;
+  void _internal_set_inaccuracy_move(float value);
+  public:
+
+  // optional float inaccuracy_air = 7;
+  bool has_inaccuracy_air() const;
+  private:
+  bool _internal_has_inaccuracy_air() const;
+  public:
+  void clear_inaccuracy_air();
+  float inaccuracy_air() const;
+  void set_inaccuracy_air(float value);
+  private:
+  float _internal_inaccuracy_air() const;
+  void _internal_set_inaccuracy_air(float value);
+  public:
+
+  // optional int32 type = 8;
+  bool has_type() const;
+  private:
+  bool _internal_has_type() const;
+  public:
+  void clear_type();
+  int32_t type() const;
+  void set_type(int32_t value);
+  private:
+  int32_t _internal_type() const;
+  void _internal_set_type(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgTEFireBullets.Extra)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::CMsgQAngle* aim_punch_;
+    int32_t attack_tick_count_;
+    float attack_tick_frac_;
+    int32_t render_tick_count_;
+    float render_tick_frac_;
+    float inaccuracy_move_;
+    float inaccuracy_air_;
+    int32_t type_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cs_5fgameevents_2eproto;
+};
+// -------------------------------------------------------------------
+
 class CMsgTEFireBullets :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgTEFireBullets) */ {
  public:
@@ -492,7 +766,7 @@ class CMsgTEFireBullets :
                &_CMsgTEFireBullets_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    3;
 
   friend void swap(CMsgTEFireBullets& a, CMsgTEFireBullets& b) {
     a.Swap(&b);
@@ -562,12 +836,15 @@ class CMsgTEFireBullets :
 
   // nested types ----------------------------------------------------
 
+  typedef CMsgTEFireBullets_Extra Extra;
+
   // accessors -------------------------------------------------------
 
   enum : int {
     kOriginFieldNumber = 1,
     kAnglesFieldNumber = 2,
     kEntOriginFieldNumber = 13,
+    kExtraFieldNumber = 16,
     kModeFieldNumber = 4,
     kSeedFieldNumber = 5,
     kInaccuracyFieldNumber = 7,
@@ -634,6 +911,24 @@ class CMsgTEFireBullets :
   void unsafe_arena_set_allocated_ent_origin(
       ::CMsgVector* ent_origin);
   ::CMsgVector* unsafe_arena_release_ent_origin();
+
+  // optional .CMsgTEFireBullets.Extra extra = 16;
+  bool has_extra() const;
+  private:
+  bool _internal_has_extra() const;
+  public:
+  void clear_extra();
+  const ::CMsgTEFireBullets_Extra& extra() const;
+  PROTOBUF_NODISCARD ::CMsgTEFireBullets_Extra* release_extra();
+  ::CMsgTEFireBullets_Extra* mutable_extra();
+  void set_allocated_extra(::CMsgTEFireBullets_Extra* extra);
+  private:
+  const ::CMsgTEFireBullets_Extra& _internal_extra() const;
+  ::CMsgTEFireBullets_Extra* _internal_mutable_extra();
+  public:
+  void unsafe_arena_set_allocated_extra(
+      ::CMsgTEFireBullets_Extra* extra);
+  ::CMsgTEFireBullets_Extra* unsafe_arena_release_extra();
 
   // optional uint32 mode = 4;
   bool has_mode() const;
@@ -804,6 +1099,7 @@ class CMsgTEFireBullets :
     ::CMsgVector* origin_;
     ::CMsgQAngle* angles_;
     ::CMsgVector* ent_origin_;
+    ::CMsgTEFireBullets_Extra* extra_;
     uint32_t mode_;
     uint32_t seed_;
     float inaccuracy_;
@@ -945,6 +1241,293 @@ inline void CMsgTERadioIcon::_internal_set_player(uint32_t value) {
 inline void CMsgTERadioIcon::set_player(uint32_t value) {
   _internal_set_player(value);
   // @@protoc_insertion_point(field_set:CMsgTERadioIcon.player)
+}
+
+// -------------------------------------------------------------------
+
+// CMsgTEFireBullets_Extra
+
+// optional .CMsgQAngle aim_punch = 1;
+inline bool CMsgTEFireBullets_Extra::_internal_has_aim_punch() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.aim_punch_ != nullptr);
+  return value;
+}
+inline bool CMsgTEFireBullets_Extra::has_aim_punch() const {
+  return _internal_has_aim_punch();
+}
+inline const ::CMsgQAngle& CMsgTEFireBullets_Extra::_internal_aim_punch() const {
+  const ::CMsgQAngle* p = _impl_.aim_punch_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgQAngle&>(
+      ::_CMsgQAngle_default_instance_);
+}
+inline const ::CMsgQAngle& CMsgTEFireBullets_Extra::aim_punch() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.Extra.aim_punch)
+  return _internal_aim_punch();
+}
+inline void CMsgTEFireBullets_Extra::unsafe_arena_set_allocated_aim_punch(
+    ::CMsgQAngle* aim_punch) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.aim_punch_);
+  }
+  _impl_.aim_punch_ = aim_punch;
+  if (aim_punch) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CMsgTEFireBullets.Extra.aim_punch)
+}
+inline ::CMsgQAngle* CMsgTEFireBullets_Extra::release_aim_punch() {
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgQAngle* temp = _impl_.aim_punch_;
+  _impl_.aim_punch_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgQAngle* CMsgTEFireBullets_Extra::unsafe_arena_release_aim_punch() {
+  // @@protoc_insertion_point(field_release:CMsgTEFireBullets.Extra.aim_punch)
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  ::CMsgQAngle* temp = _impl_.aim_punch_;
+  _impl_.aim_punch_ = nullptr;
+  return temp;
+}
+inline ::CMsgQAngle* CMsgTEFireBullets_Extra::_internal_mutable_aim_punch() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  if (_impl_.aim_punch_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgQAngle>(GetArenaForAllocation());
+    _impl_.aim_punch_ = p;
+  }
+  return _impl_.aim_punch_;
+}
+inline ::CMsgQAngle* CMsgTEFireBullets_Extra::mutable_aim_punch() {
+  ::CMsgQAngle* _msg = _internal_mutable_aim_punch();
+  // @@protoc_insertion_point(field_mutable:CMsgTEFireBullets.Extra.aim_punch)
+  return _msg;
+}
+inline void CMsgTEFireBullets_Extra::set_allocated_aim_punch(::CMsgQAngle* aim_punch) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.aim_punch_);
+  }
+  if (aim_punch) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(aim_punch));
+    if (message_arena != submessage_arena) {
+      aim_punch = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, aim_punch, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.aim_punch_ = aim_punch;
+  // @@protoc_insertion_point(field_set_allocated:CMsgTEFireBullets.Extra.aim_punch)
+}
+
+// optional int32 attack_tick_count = 2;
+inline bool CMsgTEFireBullets_Extra::_internal_has_attack_tick_count() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgTEFireBullets_Extra::has_attack_tick_count() const {
+  return _internal_has_attack_tick_count();
+}
+inline void CMsgTEFireBullets_Extra::clear_attack_tick_count() {
+  _impl_.attack_tick_count_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline int32_t CMsgTEFireBullets_Extra::_internal_attack_tick_count() const {
+  return _impl_.attack_tick_count_;
+}
+inline int32_t CMsgTEFireBullets_Extra::attack_tick_count() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.Extra.attack_tick_count)
+  return _internal_attack_tick_count();
+}
+inline void CMsgTEFireBullets_Extra::_internal_set_attack_tick_count(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.attack_tick_count_ = value;
+}
+inline void CMsgTEFireBullets_Extra::set_attack_tick_count(int32_t value) {
+  _internal_set_attack_tick_count(value);
+  // @@protoc_insertion_point(field_set:CMsgTEFireBullets.Extra.attack_tick_count)
+}
+
+// optional float attack_tick_frac = 3;
+inline bool CMsgTEFireBullets_Extra::_internal_has_attack_tick_frac() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CMsgTEFireBullets_Extra::has_attack_tick_frac() const {
+  return _internal_has_attack_tick_frac();
+}
+inline void CMsgTEFireBullets_Extra::clear_attack_tick_frac() {
+  _impl_.attack_tick_frac_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline float CMsgTEFireBullets_Extra::_internal_attack_tick_frac() const {
+  return _impl_.attack_tick_frac_;
+}
+inline float CMsgTEFireBullets_Extra::attack_tick_frac() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.Extra.attack_tick_frac)
+  return _internal_attack_tick_frac();
+}
+inline void CMsgTEFireBullets_Extra::_internal_set_attack_tick_frac(float value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.attack_tick_frac_ = value;
+}
+inline void CMsgTEFireBullets_Extra::set_attack_tick_frac(float value) {
+  _internal_set_attack_tick_frac(value);
+  // @@protoc_insertion_point(field_set:CMsgTEFireBullets.Extra.attack_tick_frac)
+}
+
+// optional int32 render_tick_count = 4;
+inline bool CMsgTEFireBullets_Extra::_internal_has_render_tick_count() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CMsgTEFireBullets_Extra::has_render_tick_count() const {
+  return _internal_has_render_tick_count();
+}
+inline void CMsgTEFireBullets_Extra::clear_render_tick_count() {
+  _impl_.render_tick_count_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline int32_t CMsgTEFireBullets_Extra::_internal_render_tick_count() const {
+  return _impl_.render_tick_count_;
+}
+inline int32_t CMsgTEFireBullets_Extra::render_tick_count() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.Extra.render_tick_count)
+  return _internal_render_tick_count();
+}
+inline void CMsgTEFireBullets_Extra::_internal_set_render_tick_count(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.render_tick_count_ = value;
+}
+inline void CMsgTEFireBullets_Extra::set_render_tick_count(int32_t value) {
+  _internal_set_render_tick_count(value);
+  // @@protoc_insertion_point(field_set:CMsgTEFireBullets.Extra.render_tick_count)
+}
+
+// optional float render_tick_frac = 5;
+inline bool CMsgTEFireBullets_Extra::_internal_has_render_tick_frac() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CMsgTEFireBullets_Extra::has_render_tick_frac() const {
+  return _internal_has_render_tick_frac();
+}
+inline void CMsgTEFireBullets_Extra::clear_render_tick_frac() {
+  _impl_.render_tick_frac_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline float CMsgTEFireBullets_Extra::_internal_render_tick_frac() const {
+  return _impl_.render_tick_frac_;
+}
+inline float CMsgTEFireBullets_Extra::render_tick_frac() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.Extra.render_tick_frac)
+  return _internal_render_tick_frac();
+}
+inline void CMsgTEFireBullets_Extra::_internal_set_render_tick_frac(float value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.render_tick_frac_ = value;
+}
+inline void CMsgTEFireBullets_Extra::set_render_tick_frac(float value) {
+  _internal_set_render_tick_frac(value);
+  // @@protoc_insertion_point(field_set:CMsgTEFireBullets.Extra.render_tick_frac)
+}
+
+// optional float inaccuracy_move = 6;
+inline bool CMsgTEFireBullets_Extra::_internal_has_inaccuracy_move() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CMsgTEFireBullets_Extra::has_inaccuracy_move() const {
+  return _internal_has_inaccuracy_move();
+}
+inline void CMsgTEFireBullets_Extra::clear_inaccuracy_move() {
+  _impl_.inaccuracy_move_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline float CMsgTEFireBullets_Extra::_internal_inaccuracy_move() const {
+  return _impl_.inaccuracy_move_;
+}
+inline float CMsgTEFireBullets_Extra::inaccuracy_move() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.Extra.inaccuracy_move)
+  return _internal_inaccuracy_move();
+}
+inline void CMsgTEFireBullets_Extra::_internal_set_inaccuracy_move(float value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.inaccuracy_move_ = value;
+}
+inline void CMsgTEFireBullets_Extra::set_inaccuracy_move(float value) {
+  _internal_set_inaccuracy_move(value);
+  // @@protoc_insertion_point(field_set:CMsgTEFireBullets.Extra.inaccuracy_move)
+}
+
+// optional float inaccuracy_air = 7;
+inline bool CMsgTEFireBullets_Extra::_internal_has_inaccuracy_air() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CMsgTEFireBullets_Extra::has_inaccuracy_air() const {
+  return _internal_has_inaccuracy_air();
+}
+inline void CMsgTEFireBullets_Extra::clear_inaccuracy_air() {
+  _impl_.inaccuracy_air_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline float CMsgTEFireBullets_Extra::_internal_inaccuracy_air() const {
+  return _impl_.inaccuracy_air_;
+}
+inline float CMsgTEFireBullets_Extra::inaccuracy_air() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.Extra.inaccuracy_air)
+  return _internal_inaccuracy_air();
+}
+inline void CMsgTEFireBullets_Extra::_internal_set_inaccuracy_air(float value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.inaccuracy_air_ = value;
+}
+inline void CMsgTEFireBullets_Extra::set_inaccuracy_air(float value) {
+  _internal_set_inaccuracy_air(value);
+  // @@protoc_insertion_point(field_set:CMsgTEFireBullets.Extra.inaccuracy_air)
+}
+
+// optional int32 type = 8;
+inline bool CMsgTEFireBullets_Extra::_internal_has_type() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  return value;
+}
+inline bool CMsgTEFireBullets_Extra::has_type() const {
+  return _internal_has_type();
+}
+inline void CMsgTEFireBullets_Extra::clear_type() {
+  _impl_.type_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000080u;
+}
+inline int32_t CMsgTEFireBullets_Extra::_internal_type() const {
+  return _impl_.type_;
+}
+inline int32_t CMsgTEFireBullets_Extra::type() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.Extra.type)
+  return _internal_type();
+}
+inline void CMsgTEFireBullets_Extra::_internal_set_type(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_.type_ = value;
+}
+inline void CMsgTEFireBullets_Extra::set_type(int32_t value) {
+  _internal_set_type(value);
+  // @@protoc_insertion_point(field_set:CMsgTEFireBullets.Extra.type)
 }
 
 // -------------------------------------------------------------------
@@ -1127,7 +1710,7 @@ inline void CMsgTEFireBullets::set_allocated_angles(::CMsgQAngle* angles) {
 
 // optional uint32 weapon_id = 3 [default = 16777215];
 inline bool CMsgTEFireBullets::_internal_has_weapon_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_weapon_id() const {
@@ -1135,7 +1718,7 @@ inline bool CMsgTEFireBullets::has_weapon_id() const {
 }
 inline void CMsgTEFireBullets::clear_weapon_id() {
   _impl_.weapon_id_ = 16777215u;
-  _impl_._has_bits_[0] &= ~0x00002000u;
+  _impl_._has_bits_[0] &= ~0x00004000u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_weapon_id() const {
   return _impl_.weapon_id_;
@@ -1145,7 +1728,7 @@ inline uint32_t CMsgTEFireBullets::weapon_id() const {
   return _internal_weapon_id();
 }
 inline void CMsgTEFireBullets::_internal_set_weapon_id(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_._has_bits_[0] |= 0x00004000u;
   _impl_.weapon_id_ = value;
 }
 inline void CMsgTEFireBullets::set_weapon_id(uint32_t value) {
@@ -1155,7 +1738,7 @@ inline void CMsgTEFireBullets::set_weapon_id(uint32_t value) {
 
 // optional uint32 mode = 4;
 inline bool CMsgTEFireBullets::_internal_has_mode() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_mode() const {
@@ -1163,7 +1746,7 @@ inline bool CMsgTEFireBullets::has_mode() const {
 }
 inline void CMsgTEFireBullets::clear_mode() {
   _impl_.mode_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_mode() const {
   return _impl_.mode_;
@@ -1173,7 +1756,7 @@ inline uint32_t CMsgTEFireBullets::mode() const {
   return _internal_mode();
 }
 inline void CMsgTEFireBullets::_internal_set_mode(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.mode_ = value;
 }
 inline void CMsgTEFireBullets::set_mode(uint32_t value) {
@@ -1183,7 +1766,7 @@ inline void CMsgTEFireBullets::set_mode(uint32_t value) {
 
 // optional uint32 seed = 5;
 inline bool CMsgTEFireBullets::_internal_has_seed() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_seed() const {
@@ -1191,7 +1774,7 @@ inline bool CMsgTEFireBullets::has_seed() const {
 }
 inline void CMsgTEFireBullets::clear_seed() {
   _impl_.seed_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_seed() const {
   return _impl_.seed_;
@@ -1201,7 +1784,7 @@ inline uint32_t CMsgTEFireBullets::seed() const {
   return _internal_seed();
 }
 inline void CMsgTEFireBullets::_internal_set_seed(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.seed_ = value;
 }
 inline void CMsgTEFireBullets::set_seed(uint32_t value) {
@@ -1211,7 +1794,7 @@ inline void CMsgTEFireBullets::set_seed(uint32_t value) {
 
 // optional fixed32 player = 6 [default = 16777215];
 inline bool CMsgTEFireBullets::_internal_has_player() const {
-  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_player() const {
@@ -1219,7 +1802,7 @@ inline bool CMsgTEFireBullets::has_player() const {
 }
 inline void CMsgTEFireBullets::clear_player() {
   _impl_.player_ = 16777215u;
-  _impl_._has_bits_[0] &= ~0x00004000u;
+  _impl_._has_bits_[0] &= ~0x00008000u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_player() const {
   return _impl_.player_;
@@ -1229,7 +1812,7 @@ inline uint32_t CMsgTEFireBullets::player() const {
   return _internal_player();
 }
 inline void CMsgTEFireBullets::_internal_set_player(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00004000u;
+  _impl_._has_bits_[0] |= 0x00008000u;
   _impl_.player_ = value;
 }
 inline void CMsgTEFireBullets::set_player(uint32_t value) {
@@ -1239,7 +1822,7 @@ inline void CMsgTEFireBullets::set_player(uint32_t value) {
 
 // optional float inaccuracy = 7;
 inline bool CMsgTEFireBullets::_internal_has_inaccuracy() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_inaccuracy() const {
@@ -1247,7 +1830,7 @@ inline bool CMsgTEFireBullets::has_inaccuracy() const {
 }
 inline void CMsgTEFireBullets::clear_inaccuracy() {
   _impl_.inaccuracy_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline float CMsgTEFireBullets::_internal_inaccuracy() const {
   return _impl_.inaccuracy_;
@@ -1257,7 +1840,7 @@ inline float CMsgTEFireBullets::inaccuracy() const {
   return _internal_inaccuracy();
 }
 inline void CMsgTEFireBullets::_internal_set_inaccuracy(float value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.inaccuracy_ = value;
 }
 inline void CMsgTEFireBullets::set_inaccuracy(float value) {
@@ -1267,7 +1850,7 @@ inline void CMsgTEFireBullets::set_inaccuracy(float value) {
 
 // optional float recoil_index = 8;
 inline bool CMsgTEFireBullets::_internal_has_recoil_index() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_recoil_index() const {
@@ -1275,7 +1858,7 @@ inline bool CMsgTEFireBullets::has_recoil_index() const {
 }
 inline void CMsgTEFireBullets::clear_recoil_index() {
   _impl_.recoil_index_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
 inline float CMsgTEFireBullets::_internal_recoil_index() const {
   return _impl_.recoil_index_;
@@ -1285,7 +1868,7 @@ inline float CMsgTEFireBullets::recoil_index() const {
   return _internal_recoil_index();
 }
 inline void CMsgTEFireBullets::_internal_set_recoil_index(float value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   _impl_.recoil_index_ = value;
 }
 inline void CMsgTEFireBullets::set_recoil_index(float value) {
@@ -1295,7 +1878,7 @@ inline void CMsgTEFireBullets::set_recoil_index(float value) {
 
 // optional float spread = 9;
 inline bool CMsgTEFireBullets::_internal_has_spread() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_spread() const {
@@ -1303,7 +1886,7 @@ inline bool CMsgTEFireBullets::has_spread() const {
 }
 inline void CMsgTEFireBullets::clear_spread() {
   _impl_.spread_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
 }
 inline float CMsgTEFireBullets::_internal_spread() const {
   return _impl_.spread_;
@@ -1313,7 +1896,7 @@ inline float CMsgTEFireBullets::spread() const {
   return _internal_spread();
 }
 inline void CMsgTEFireBullets::_internal_set_spread(float value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] |= 0x00000100u;
   _impl_.spread_ = value;
 }
 inline void CMsgTEFireBullets::set_spread(float value) {
@@ -1323,7 +1906,7 @@ inline void CMsgTEFireBullets::set_spread(float value) {
 
 // optional int32 sound_type = 10;
 inline bool CMsgTEFireBullets::_internal_has_sound_type() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_sound_type() const {
@@ -1331,7 +1914,7 @@ inline bool CMsgTEFireBullets::has_sound_type() const {
 }
 inline void CMsgTEFireBullets::clear_sound_type() {
   _impl_.sound_type_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00000200u;
 }
 inline int32_t CMsgTEFireBullets::_internal_sound_type() const {
   return _impl_.sound_type_;
@@ -1341,7 +1924,7 @@ inline int32_t CMsgTEFireBullets::sound_type() const {
   return _internal_sound_type();
 }
 inline void CMsgTEFireBullets::_internal_set_sound_type(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_._has_bits_[0] |= 0x00000200u;
   _impl_.sound_type_ = value;
 }
 inline void CMsgTEFireBullets::set_sound_type(int32_t value) {
@@ -1351,7 +1934,7 @@ inline void CMsgTEFireBullets::set_sound_type(int32_t value) {
 
 // optional uint32 item_def_index = 11;
 inline bool CMsgTEFireBullets::_internal_has_item_def_index() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_item_def_index() const {
@@ -1359,7 +1942,7 @@ inline bool CMsgTEFireBullets::has_item_def_index() const {
 }
 inline void CMsgTEFireBullets::clear_item_def_index() {
   _impl_.item_def_index_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000200u;
+  _impl_._has_bits_[0] &= ~0x00000400u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_item_def_index() const {
   return _impl_.item_def_index_;
@@ -1369,7 +1952,7 @@ inline uint32_t CMsgTEFireBullets::item_def_index() const {
   return _internal_item_def_index();
 }
 inline void CMsgTEFireBullets::_internal_set_item_def_index(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_._has_bits_[0] |= 0x00000400u;
   _impl_.item_def_index_ = value;
 }
 inline void CMsgTEFireBullets::set_item_def_index(uint32_t value) {
@@ -1379,7 +1962,7 @@ inline void CMsgTEFireBullets::set_item_def_index(uint32_t value) {
 
 // optional fixed32 sound_dsp_effect = 12;
 inline bool CMsgTEFireBullets::_internal_has_sound_dsp_effect() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_sound_dsp_effect() const {
@@ -1387,7 +1970,7 @@ inline bool CMsgTEFireBullets::has_sound_dsp_effect() const {
 }
 inline void CMsgTEFireBullets::clear_sound_dsp_effect() {
   _impl_.sound_dsp_effect_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000400u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_sound_dsp_effect() const {
   return _impl_.sound_dsp_effect_;
@@ -1397,7 +1980,7 @@ inline uint32_t CMsgTEFireBullets::sound_dsp_effect() const {
   return _internal_sound_dsp_effect();
 }
 inline void CMsgTEFireBullets::_internal_set_sound_dsp_effect(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_._has_bits_[0] |= 0x00000800u;
   _impl_.sound_dsp_effect_ = value;
 }
 inline void CMsgTEFireBullets::set_sound_dsp_effect(uint32_t value) {
@@ -1494,7 +2077,7 @@ inline void CMsgTEFireBullets::set_allocated_ent_origin(::CMsgVector* ent_origin
 
 // optional uint32 num_bullets_remaining = 14;
 inline bool CMsgTEFireBullets::_internal_has_num_bullets_remaining() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_num_bullets_remaining() const {
@@ -1502,7 +2085,7 @@ inline bool CMsgTEFireBullets::has_num_bullets_remaining() const {
 }
 inline void CMsgTEFireBullets::clear_num_bullets_remaining() {
   _impl_.num_bullets_remaining_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000800u;
+  _impl_._has_bits_[0] &= ~0x00001000u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_num_bullets_remaining() const {
   return _impl_.num_bullets_remaining_;
@@ -1512,7 +2095,7 @@ inline uint32_t CMsgTEFireBullets::num_bullets_remaining() const {
   return _internal_num_bullets_remaining();
 }
 inline void CMsgTEFireBullets::_internal_set_num_bullets_remaining(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_._has_bits_[0] |= 0x00001000u;
   _impl_.num_bullets_remaining_ = value;
 }
 inline void CMsgTEFireBullets::set_num_bullets_remaining(uint32_t value) {
@@ -1522,7 +2105,7 @@ inline void CMsgTEFireBullets::set_num_bullets_remaining(uint32_t value) {
 
 // optional uint32 attack_type = 15;
 inline bool CMsgTEFireBullets::_internal_has_attack_type() const {
-  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
   return value;
 }
 inline bool CMsgTEFireBullets::has_attack_type() const {
@@ -1530,7 +2113,7 @@ inline bool CMsgTEFireBullets::has_attack_type() const {
 }
 inline void CMsgTEFireBullets::clear_attack_type() {
   _impl_.attack_type_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00001000u;
+  _impl_._has_bits_[0] &= ~0x00002000u;
 }
 inline uint32_t CMsgTEFireBullets::_internal_attack_type() const {
   return _impl_.attack_type_;
@@ -1540,7 +2123,7 @@ inline uint32_t CMsgTEFireBullets::attack_type() const {
   return _internal_attack_type();
 }
 inline void CMsgTEFireBullets::_internal_set_attack_type(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00001000u;
+  _impl_._has_bits_[0] |= 0x00002000u;
   _impl_.attack_type_ = value;
 }
 inline void CMsgTEFireBullets::set_attack_type(uint32_t value) {
@@ -1548,9 +2131,101 @@ inline void CMsgTEFireBullets::set_attack_type(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgTEFireBullets.attack_type)
 }
 
+// optional .CMsgTEFireBullets.Extra extra = 16;
+inline bool CMsgTEFireBullets::_internal_has_extra() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.extra_ != nullptr);
+  return value;
+}
+inline bool CMsgTEFireBullets::has_extra() const {
+  return _internal_has_extra();
+}
+inline void CMsgTEFireBullets::clear_extra() {
+  if (_impl_.extra_ != nullptr) _impl_.extra_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline const ::CMsgTEFireBullets_Extra& CMsgTEFireBullets::_internal_extra() const {
+  const ::CMsgTEFireBullets_Extra* p = _impl_.extra_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgTEFireBullets_Extra&>(
+      ::_CMsgTEFireBullets_Extra_default_instance_);
+}
+inline const ::CMsgTEFireBullets_Extra& CMsgTEFireBullets::extra() const {
+  // @@protoc_insertion_point(field_get:CMsgTEFireBullets.extra)
+  return _internal_extra();
+}
+inline void CMsgTEFireBullets::unsafe_arena_set_allocated_extra(
+    ::CMsgTEFireBullets_Extra* extra) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.extra_);
+  }
+  _impl_.extra_ = extra;
+  if (extra) {
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CMsgTEFireBullets.extra)
+}
+inline ::CMsgTEFireBullets_Extra* CMsgTEFireBullets::release_extra() {
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CMsgTEFireBullets_Extra* temp = _impl_.extra_;
+  _impl_.extra_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgTEFireBullets_Extra* CMsgTEFireBullets::unsafe_arena_release_extra() {
+  // @@protoc_insertion_point(field_release:CMsgTEFireBullets.extra)
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CMsgTEFireBullets_Extra* temp = _impl_.extra_;
+  _impl_.extra_ = nullptr;
+  return temp;
+}
+inline ::CMsgTEFireBullets_Extra* CMsgTEFireBullets::_internal_mutable_extra() {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  if (_impl_.extra_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgTEFireBullets_Extra>(GetArenaForAllocation());
+    _impl_.extra_ = p;
+  }
+  return _impl_.extra_;
+}
+inline ::CMsgTEFireBullets_Extra* CMsgTEFireBullets::mutable_extra() {
+  ::CMsgTEFireBullets_Extra* _msg = _internal_mutable_extra();
+  // @@protoc_insertion_point(field_mutable:CMsgTEFireBullets.extra)
+  return _msg;
+}
+inline void CMsgTEFireBullets::set_allocated_extra(::CMsgTEFireBullets_Extra* extra) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.extra_;
+  }
+  if (extra) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(extra);
+    if (message_arena != submessage_arena) {
+      extra = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, extra, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  _impl_.extra_ = extra;
+  // @@protoc_insertion_point(field_set_allocated:CMsgTEFireBullets.extra)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

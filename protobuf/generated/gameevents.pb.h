@@ -468,6 +468,7 @@ class CMsgPlaceDecalEvent :
     kSizeOverrideFieldNumber = 9,
     kMaterialIdFieldNumber = 11,
     kSequenceNameFieldNumber = 12,
+    kTriangleindexFieldNumber = 13,
     kEntityhandleFieldNumber = 10,
   };
   // optional .CMsgVector position = 1;
@@ -628,6 +629,19 @@ class CMsgPlaceDecalEvent :
   void _internal_set_sequence_name(uint32_t value);
   public:
 
+  // optional int32 triangleindex = 13;
+  bool has_triangleindex() const;
+  private:
+  bool _internal_has_triangleindex() const;
+  public:
+  void clear_triangleindex();
+  int32_t triangleindex() const;
+  void set_triangleindex(int32_t value);
+  private:
+  int32_t _internal_triangleindex() const;
+  void _internal_set_triangleindex(int32_t value);
+  public:
+
   // optional uint32 entityhandle = 10 [default = 16777215];
   bool has_entityhandle() const;
   private:
@@ -662,6 +676,7 @@ class CMsgPlaceDecalEvent :
     float size_override_;
     uint64_t material_id_;
     uint32_t sequence_name_;
+    int32_t triangleindex_;
     uint32_t entityhandle_;
   };
   union { Impl_ _impl_; };
@@ -3730,6 +3745,34 @@ inline void CMsgPlaceDecalEvent::set_boneindex(int32_t value) {
   // @@protoc_insertion_point(field_set:CMsgPlaceDecalEvent.boneindex)
 }
 
+// optional int32 triangleindex = 13;
+inline bool CMsgPlaceDecalEvent::_internal_has_triangleindex() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  return value;
+}
+inline bool CMsgPlaceDecalEvent::has_triangleindex() const {
+  return _internal_has_triangleindex();
+}
+inline void CMsgPlaceDecalEvent::clear_triangleindex() {
+  _impl_.triangleindex_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000800u;
+}
+inline int32_t CMsgPlaceDecalEvent::_internal_triangleindex() const {
+  return _impl_.triangleindex_;
+}
+inline int32_t CMsgPlaceDecalEvent::triangleindex() const {
+  // @@protoc_insertion_point(field_get:CMsgPlaceDecalEvent.triangleindex)
+  return _internal_triangleindex();
+}
+inline void CMsgPlaceDecalEvent::_internal_set_triangleindex(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_.triangleindex_ = value;
+}
+inline void CMsgPlaceDecalEvent::set_triangleindex(int32_t value) {
+  _internal_set_triangleindex(value);
+  // @@protoc_insertion_point(field_set:CMsgPlaceDecalEvent.triangleindex)
+}
+
 // optional uint32 flags = 5;
 inline bool CMsgPlaceDecalEvent::_internal_has_flags() const {
   bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
@@ -3872,7 +3915,7 @@ inline void CMsgPlaceDecalEvent::set_size_override(float value) {
 
 // optional uint32 entityhandle = 10 [default = 16777215];
 inline bool CMsgPlaceDecalEvent::_internal_has_entityhandle() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
   return value;
 }
 inline bool CMsgPlaceDecalEvent::has_entityhandle() const {
@@ -3880,7 +3923,7 @@ inline bool CMsgPlaceDecalEvent::has_entityhandle() const {
 }
 inline void CMsgPlaceDecalEvent::clear_entityhandle() {
   _impl_.entityhandle_ = 16777215u;
-  _impl_._has_bits_[0] &= ~0x00000800u;
+  _impl_._has_bits_[0] &= ~0x00001000u;
 }
 inline uint32_t CMsgPlaceDecalEvent::_internal_entityhandle() const {
   return _impl_.entityhandle_;
@@ -3890,7 +3933,7 @@ inline uint32_t CMsgPlaceDecalEvent::entityhandle() const {
   return _internal_entityhandle();
 }
 inline void CMsgPlaceDecalEvent::_internal_set_entityhandle(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_._has_bits_[0] |= 0x00001000u;
   _impl_.entityhandle_ = value;
 }
 inline void CMsgPlaceDecalEvent::set_entityhandle(uint32_t value) {
