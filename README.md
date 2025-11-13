@@ -53,7 +53,7 @@ ambuild
 
 #### Windows
 
-Make sure to run in "x64 Native Tools Command Prompt for VS"
+Make sure to run in "x64 Native Tools Command Prompt for VS". Doing an initial build here is also required to setup the protobuf headers for Visual Studio to reference.
 
 ```bash
 set MMSOURCE_DEV=\path\to\metamod
