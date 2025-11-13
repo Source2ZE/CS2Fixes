@@ -87,17 +87,14 @@ for sdk_target in MMSPlugin.sdk_targets:
     os.path.join(sdk['path'], 'game', 'shared', 'te.proto'),
     os.path.join(sdk['path'], 'game', 'shared', 'usercmd.proto'),
     os.path.join(sdk['path'], 'game', 'shared', 'usermessages.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'cs_gameevents.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'cs_usercmd.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'cstrike15_gcmessages.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'cstrike15_usermessages.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'networksystem_protomessages.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'cs', 'cs_gameevents.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'cs', 'cs_usercmd.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'cstrike15', 'cstrike15_gcmessages.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'cstrike15', 'cstrike15_usermessages.proto'),
+    os.path.join(sdk['path'], 'networksystem', 'networksystem_protomessages.proto'),
   ])
   protoc_builder.protoc.includes += [
     os.path.join(sdk['path'], 'gcsdk'),
-    os.path.join(sdk['path'], 'common'),
-    os.path.join(sdk['path'], 'game', 'shared'),
-    os.path.join(builder.sourcePath, 'protobuf'),
   ]
 
   binary.custom = [protoc_builder]
