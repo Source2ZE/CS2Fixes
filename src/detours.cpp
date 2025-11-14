@@ -151,7 +151,7 @@ int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageI
 
 	CBaseEntity_TakeDamageOld(pThis, pInfo, pResult);
 
-	if (pResult->m_nDamageDealt > 0 && g_cvarEnableZR.Get() && pThis->IsPawn())
+	if (pResult->m_nDamageDealt > 0 && !pResult->m_bWasDamageSuppressed && g_cvarEnableZR.Get() && pThis->IsPawn())
 		ZR_OnPlayerTakeDamage(reinterpret_cast<CCSPlayerPawn*>(pThis), pInfo, pResult->m_nDamageDealt);
 
 	return 1;
