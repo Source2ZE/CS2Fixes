@@ -953,9 +953,8 @@ void CS2Fixes::Hook_ClientDisconnect(CPlayerSlot slot, ENetworkDisconnectionReas
 
 	if (g_cvarEnableZR.Get())
 	{
-		if (player)
-			ZR_CheckTeamWinConditions(player->m_iTeamNum == CS_TEAM_T ? CS_TEAM_CT : CS_TEAM_T);
-		else if (!ZR_CheckTeamWinConditions(CS_TEAM_T)) // If we cant get team num, just check both
+		// Controller team num is not valid post-disconnect, so just check both teams
+		if (!ZR_CheckTeamWinConditions(CS_TEAM_T))
 			ZR_CheckTeamWinConditions(CS_TEAM_CT);
 	}
 
