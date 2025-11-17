@@ -112,6 +112,7 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	bool bHideDecals = (bool)GetPreferenceInt(iSlot, DECAL_PREF_KEY_NAME, 1);
 	bool bNoShake = (bool)GetPreferenceInt(iSlot, NO_SHAKE_PREF_KEY_NAME, 0);
 	int iButtonWatchMode = GetPreferenceInt(iSlot, BUTTON_WATCH_PREF_KEY_NAME, 0);
+	bool bZSounds = (bool)GetPreferenceInt(iSlot, ZSOUNDS_PREF_KEY_NAME, 1);
 
 	// EntWatch
 	int iEntwatchMode = GetPreferenceInt(iSlot, EW_PREF_HUD_MODE, 0);
@@ -125,6 +126,7 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	// Set the values that we just loaded --- the player is guaranteed available
 	g_playerManager->SetPlayerStopSound(iSlot, bStopSound);
 	g_playerManager->SetPlayerSilenceSound(iSlot, bSilenceSound);
+	g_playerManager->SetPlayerZSounds(iSlot, bZSounds);
 	g_playerManager->SetPlayerStopDecals(iSlot, bHideDecals);
 	g_playerManager->SetPlayerNoShake(iSlot, bNoShake);
 

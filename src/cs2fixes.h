@@ -53,6 +53,7 @@ extern CCSGameRules* g_pGameRules;
 extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
 extern double g_flUniversalTime;
 extern CGlobalVars* GetGlobals();
+extern uint32 GetSoundEventHash(const char* pszSoundEventName);
 extern CUtlVector<CServerSideClient*>* GetClientList();
 extern CServerSideClient* GetClientBySlot(CPlayerSlot slot);
 extern void FullUpdateAllClients();
