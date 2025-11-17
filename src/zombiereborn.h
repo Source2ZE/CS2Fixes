@@ -24,6 +24,7 @@
 #include "entity/ccsplayerpawn.h"
 #include "eventlistener.h"
 #include "gamesystem.h"
+#include "gameevents.pb.h"
 #include "vendor/nlohmann/json_fwd.hpp"
 
 using ordered_json = nlohmann::ordered_json;
@@ -277,3 +278,4 @@ void ZR_Hook_ClientPutInServer(CPlayerSlot slot, char const* pszName, int type, 
 void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand& args);
 void ZR_Precache(IEntityResourceManifest* pResourceManifest);
 bool ZR_CheckTeamWinConditions(int iTeamNum);
+void ZR_PostEventAbstract_SosStartSoundEvent(const uint64* pClients, CNetMessagePB<CMsgSosStartSoundEvent>* pMsg);
