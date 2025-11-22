@@ -288,13 +288,21 @@ void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPla
 			uiNextWordLength = strlen(pNextWord);
 		}
 
-		// Case: ... X sec(onds) ... or ... X min(utes) ...
-		if (pNextWord != NULL && uiNextWordLength > 2 && uiCurrentValue > 0)
+		// Case: ... X sec(onds) ... or ... X s ... or ... X min(utes) ...
+		if (pNextWord != NULL && uiCurrentValue > 0)
 		{
-			if (pNextWord[0] == 's' && pNextWord[1] == 'e' && pNextWord[2] == 'c')
-				uiTriggerTimerLength = uiCurrentValue;
-			if (pNextWord[0] == 'm' && pNextWord[1] == 'i' && pNextWord[2] == 'n')
-				uiTriggerTimerLength = uiCurrentValue * 60;
+			if (uiNextWordLength == 1)
+			{
+				if (pNextWord[0] == 's')
+					uiTriggerTimerLength = uiCurrentValue;
+			}
+			else if (uiNextWordLength > 2)
+			{
+				if (pNextWord[0] == 's' && pNextWord[1] == 'e' && pNextWord[2] == 'c')
+					uiTriggerTimerLength = uiCurrentValue;
+				if (pNextWord[0] == 'm' && pNextWord[1] == 'i' && pNextWord[2] == 'n')
+					uiTriggerTimerLength = uiCurrentValue * 60;
+			}
 		}
 
 		// Case: ... Xs - only support up to 3 digit numbers (in seconds) for this timer parse method
