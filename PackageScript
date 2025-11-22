@@ -120,7 +120,7 @@ for task in MMSPlugin.binaries:
   builder.AddCopy(os.path.join('configs', 'zr', 'playerclass.jsonc.example'), zr_folder)
   builder.AddCopy(os.path.join('configs', 'zr', 'weapons.cfg.example'), zr_folder)
   builder.AddCopy(os.path.join('configs', 'zr', 'hitgroups.cfg.example'), zr_folder)
-  builder.AddCopy(os.path.join('configs', 'entwatch', 'maps', 'example_config.jsonc'), ew_maps_folder)
+  builder.AddCopy(os.path.join('configs', 'entwatch', 'maps', 'template.jsonc'), ew_maps_folder)
   builder.AddCopy(os.path.join('gamedata', 'cs2fixes.games.txt'), gamedata_folder)
 
   particles_cs2f_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'particles', MMSPlugin.metadata['name']))
