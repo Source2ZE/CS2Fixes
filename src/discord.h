@@ -18,7 +18,6 @@
  */
 
 #include "httpmanager.h"
-#include "utlvector.h"
 
 class CDiscordBot
 {
@@ -55,7 +54,7 @@ public:
 	bool LoadDiscordBotsConfig();
 
 private:
-	CUtlVector<CDiscordBot> m_vecDiscordBots;
+	std::vector<CDiscordBot> m_vecDiscordBots;
 };
 
 extern CDiscordBotManager* g_pDiscordBotManager;
