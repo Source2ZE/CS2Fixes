@@ -993,6 +993,9 @@ void CS2Fixes::Hook_GameFramePost(bool simulating, bool bFirstTick, bool bLastTi
 
 	RunTimers();
 	EntityHandler_OnGameFramePost(simulating, GetGlobals()->tickcount);
+
+	if (g_playerManager)
+		g_playerManager->CheckForLadderExits();
 }
 
 void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts,
