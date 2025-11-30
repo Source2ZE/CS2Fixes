@@ -1837,6 +1837,8 @@ void CPlayerManager::CheckForLadderExits()
 	if (!g_cvarFixLadderGravity.Get())
 		return;
 
+	VPROF("CPlayerManager::CheckForLadderExits");
+
 	for (int i = 0; i < MAXPLAYERS; i++)
 	{
 		ZEPlayer* pPlayer = this->GetPlayer(i);
