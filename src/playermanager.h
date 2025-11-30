@@ -196,6 +196,8 @@ public:
 		m_flEntwatchHudX = -7.5f;
 		m_flEntwatchHudY = -2.0f;
 		m_flEntwatchHudSize = 60.0f;
+		m_flGravity = 1.0f;
+		m_hMoveType = MOVETYPE_NONE;
 	}
 
 	~ZEPlayer()
@@ -266,6 +268,8 @@ public:
 	void SetEntwatchHudColor(Color colorHud);
 	void SetEntwatchHudPos(float x, float y);
 	void SetEntwatchHudSize(float flSize);
+	void SetMoveType(MoveType_t hMoveType) { m_hMoveType = hMoveType; }
+	void SetGravity(float flGravity) { m_flGravity = flGravity; }
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -315,6 +319,8 @@ public:
 	float GetEntwatchHudX() { return m_flEntwatchHudX; }
 	float GetEntwatchHudY() { return m_flEntwatchHudY; }
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
+	float GetGravity() { return m_flGravity; }
+	MoveType_t GetMoveType() { return m_hMoveType; }
 
 	void OnSpawn();
 	void OnAuthenticated();
@@ -388,6 +394,8 @@ private:
 	float m_flEntwatchHudX;
 	float m_flEntwatchHudY;
 	float m_flEntwatchHudSize;
+	float m_flGravity;
+	MoveType_t m_hMoveType;
 };
 
 class CPlayerManager
@@ -442,6 +450,8 @@ public:
 
 	void UpdatePlayerStates();
 	int GetOnlinePlayerCount(bool bCountBots);
+
+	void CheckForLadderExits();
 
 	STEAM_GAMESERVER_CALLBACK_MANUAL(CPlayerManager, OnValidateAuthTicket, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
 

@@ -1829,3 +1829,37 @@ int CPlayerManager::GetOnlinePlayerCount(bool bCountBots)
 
 	return iOnlinePlayers;
 }
+
+CConVar<bool> g_cvarFixLadderGravity("cs2f_fix_ladder_gravity", FCVAR_NONE, "Whether to fix ladders resetting player gravity.", false);
+
+void CPlayerManager::CheckForLadderExits()
+{
+	if (!g_cvarFixLadderGravity.Get())
+		return;
+
+	VPROF("CPlayerManager::CheckForLadderExits");
+
+	for (int i = 0; i < MAXPLAYERS; i++)
+	{
+		ZEPlayer* pPlayer = this->GetPlayer(i);
+
+		if (!pPlayer)
+			continue;
+
+		auto slot = pPlayer->GetPlayerSlot();
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(slot);
+
+		if (!pTarget || !pTarget->m_bPawnIsAlive) // Also want to do this for bots so checking for FakeClient is a bad idea - m'kay
+			continue;
+
+		CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pTarget->GetPawn();
+		auto movetype = pPawn->m_MoveType();
+
+		if (pPlayer->GetMoveType() == MOVETYPE_LADDER && movetype != MOVETYPE_LADDER) // They were on a ladder last frame and now are not so reset gravity.
+			pPawn->SetGravityScale(pPlayer->GetGravity());
+		else if (movetype == MOVETYPE_WALK) // Need the else or it would happen in the same frame as the if above.
+			pPlayer->SetGravity(pPawn->m_flGravityScale());
+
+		pPlayer->SetMoveType(movetype);
+	}
+}
