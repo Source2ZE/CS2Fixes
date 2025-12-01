@@ -1119,7 +1119,11 @@ bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageResult* pDamageResult)
 	CCSPlayerPawn* pPawn = META_IFACEPTR(CCSPlayerPawn);
 
 	if (g_cvarEnableZR.Get() && ZR_Hook_OnTakeDamage_Alive(pDamageResult->m_pOriginatingInfo, pPawn))
+	{
+		pDamageResult->m_bWasDamageSuppressed = true;
+		pDamageResult->m_nDamageDealt = 0;
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
+	}
 
 	// This is a shit place to be doing this, but player_death event is too late and there is no pre-hook alternative
 	// Check if this is going to kill the player
