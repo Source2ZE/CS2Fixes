@@ -61,11 +61,14 @@ jobs:
         run: |
           cd ambuild && python setup.py install && cd ..
 
-      - name: Install Clang 16
+      - name: Install Clang 21
         if: matrix.os == 'ubuntu-latest'
         run: |
-          apt update && apt install -y clang-16
-          ln -sf /usr/bin/clang-16 /usr/bin/clang && ln -sf /usr/bin/clang++-16 /usr/bin/clang++
+          echo "deb http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list.d/llvm.list
+          echo "deb-src http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list.d/llvm.list
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          apt update && apt install -y clang-21
+          ln -sf /usr/bin/clang-21 /usr/bin/clang && ln -sf /usr/bin/clang++-21 /usr/bin/clang++
 
       - name: Build
         working-directory: CS2Fixes
