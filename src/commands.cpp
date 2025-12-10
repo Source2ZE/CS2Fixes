@@ -744,6 +744,12 @@ CON_COMMAND_CHAT(showteam, "<name> - Get a player's current team")
 	}
 }
 
+// Because sv_fullupdate doesn't work
+CON_COMMAND_F(cs2f_fullupdate, "- Force a full update for all clients.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
+{
+	g_playerManager->FullUpdateAllClients();
+}
+
 #if _DEBUG
 CON_COMMAND_CHAT(myuid, "- Test")
 {

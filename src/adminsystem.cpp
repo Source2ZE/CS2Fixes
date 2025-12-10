@@ -594,11 +594,9 @@ CON_COMMAND_CHAT_FLAGS(rcon, "<command> - Send a command to server console", ADM
 	}
 
 	// Normally this should be done on plugin init, but for whatever reason "log_flags <channel> +donotecho" crashes AFTER this
-	ExecuteOnce
-	(
+	ExecuteOnce(
 		LoggingSystem_RegisterBackdoorLoggingListener(&g_LoggingListener);
-		LoggingSystem_EnableBackdoorLoggingListeners(true);
-	);
+		LoggingSystem_EnableBackdoorLoggingListeners(true););
 
 	// We don't have the equivalent of ServerExecute (to immediately execute commands) in source2, so manually find and execute the command
 

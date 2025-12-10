@@ -218,6 +218,7 @@
     <ClCompile Include="src\utils\plat_win.cpp" />
     <ClCompile Include="src\utils\weapon.cpp" />
     <ClCompile Include="src\utils\hud_manager.cpp" />
+    <ClCompile Include="src\utils\utils.cpp" />
     <ClCompile Include="src\cs2_sdk\entity\services.cpp" />
     <ClCompile Include="src\cs2_sdk\entity\ccsplayerpawn.cpp" />
     <ClCompile Include="src\cs2_sdk\entity\cbasemodelentity.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="src\utils\weapon.h" />
     <ClInclude Include="src\utils\version_gen_placeholder.h" />
     <ClInclude Include="src\utils\hud_manager.h" />
+    <ClInclude Include="src\utils\utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

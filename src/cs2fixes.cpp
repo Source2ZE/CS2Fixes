@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -62,32 +62,6 @@
 #include <entity.h>
 
 #include "tier0/memdbgon.h"
-
-void Message(const char* msg, ...)
-{
-	va_list args;
-	va_start(args, msg);
-
-	char buf[1024] = {};
-	V_vsnprintf(buf, sizeof(buf) - 1, msg, args);
-
-	ConColorMsg(Color(255, 0, 255, 255), "[CS2Fixes] %s", buf);
-
-	va_end(args);
-}
-
-void Panic(const char* msg, ...)
-{
-	va_list args;
-	va_start(args, msg);
-
-	char buf[1024] = {};
-	V_vsnprintf(buf, sizeof(buf) - 1, msg, args);
-
-	Warning("[CS2Fixes] %s", buf);
-
-	va_end(args);
-}
 
 class GameSessionConfiguration_t
 {};
@@ -691,11 +665,6 @@ void CS2Fixes::Hook_GameServerSteamAPIDeactivated()
 	RETURN_META(MRES_IGNORED);
 }
 
-uint32 GetSoundEventHash(const char* pszSoundEventName)
-{
-	return MurmurHash2LowerCase(pszSoundEventName, 0x53524332);
-}
-
 void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
 							  INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
@@ -837,42 +806,6 @@ void CS2Fixes::AllPluginsLoaded()
 	 */
 
 	Message("AllPluginsLoaded\n");
-}
-
-CUtlVector<CServerSideClient*>* GetClientList()
-{
-	if (!GetNetworkGameServer())
-		return nullptr;
-
-	static int offset = g_GameConfig->GetOffset("CNetworkGameServer_ClientList");
-	return (CUtlVector<CServerSideClient*>*)(&GetNetworkGameServer()[offset]);
-}
-
-CServerSideClient* GetClientBySlot(CPlayerSlot slot)
-{
-	CUtlVector<CServerSideClient*>* pClients = GetClientList();
-
-	if (!pClients)
-		return nullptr;
-
-	return pClients->Element(slot.Get());
-}
-
-void FullUpdateAllClients()
-{
-	auto pClients = GetClientList();
-
-	if (!pClients)
-		return;
-
-	FOR_EACH_VEC(*pClients, i)
-	(*pClients)[i]->ForceFullUpdate();
-}
-
-// Because sv_fullupdate doesn't work
-CON_COMMAND_F(cs2f_fullupdate, "- Force a full update for all clients.", FCVAR_LINKED_CONCOMMAND | FCVAR_SPONLY)
-{
-	FullUpdateAllClients();
 }
 
 void CS2Fixes::Hook_ClientActive(CPlayerSlot slot, bool bLoadGame, const char* pszName, uint64 xuid)
