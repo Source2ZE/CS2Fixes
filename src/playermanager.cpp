@@ -715,12 +715,6 @@ void ZEPlayer::SetEntwatchHudMode(int iMode)
 	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_HUD_MODE, m_iEntwatchHudMode);
 }
 
-void ZEPlayer::SetEntwatchClangtags(bool bStatus)
-{
-	m_bEntwatchClantags = bStatus;
-	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_CLANTAG, bStatus ? 1 : 0);
-}
-
 void ZEPlayer::SetEntwatchHudColor(Color colorHud)
 {
 	m_colorEntwatchHud = colorHud;

@@ -116,7 +116,6 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 
 	// EntWatch
 	int iEntwatchMode = GetPreferenceInt(iSlot, EW_PREF_HUD_MODE, 0);
-	bool bEntwatchClantag = (bool)GetPreferenceInt(iSlot, EW_PREF_CLANTAG, 1);
 	float flEntwatchHudposX = GetPreferenceFloat(iSlot, EW_PREF_HUDPOS_X, EW_HUDPOS_X_DEFAULT);
 	float flEntwatchHudposY = GetPreferenceFloat(iSlot, EW_PREF_HUDPOS_Y, EW_HUDPOS_Y_DEFAULT);
 	Color ewHudColor;
@@ -137,7 +136,6 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 
 	// Set EntWatch
 	player->SetEntwatchHudMode(iEntwatchMode);
-	player->SetEntwatchClangtags(bEntwatchClantag);
 	player->SetEntwatchHudPos(flEntwatchHudposX, flEntwatchHudposY);
 	player->SetEntwatchHudColor(ewHudColor);
 	player->SetEntwatchHudSize(flEntwatchHudSize);
