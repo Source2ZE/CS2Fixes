@@ -185,6 +185,9 @@
     <ClCompile Include="src\utils\hud_manager.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\utils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
     <ClCompile Include="src\cs2_sdk\entity\services.cpp">
       <Filter>Source Files\cs2_sdk\entity</Filter>
     </ClCompile>
@@ -410,6 +413,9 @@
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\hud_manager.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\utils.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cpointorient.h">

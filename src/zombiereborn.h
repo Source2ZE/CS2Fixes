@@ -23,8 +23,8 @@
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "eventlistener.h"
-#include "gamesystem.h"
 #include "gameevents.pb.h"
+#include "gamesystem.h"
 #include "vendor/nlohmann/json_fwd.hpp"
 
 using ordered_json = nlohmann::ordered_json;

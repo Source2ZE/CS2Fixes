@@ -399,7 +399,7 @@ public:
 		V_memset(m_vecPlayers, 0, sizeof(m_vecPlayers));
 		m_nUsingStopSound = -1; // On by default
 		m_nUsingSilenceSound = 0;
-		m_nUsingZSounds = -1; // On by default
+		m_nUsingZSounds = -1;	 // On by default
 		m_nUsingStopDecals = -1; // On by default
 		m_nUsingNoShake = 0;
 	}
@@ -447,6 +447,7 @@ public:
 
 	void UpdatePlayerStates();
 	int GetOnlinePlayerCount(bool bCountBots);
+	void FullUpdateAllClients();
 
 	STEAM_GAMESERVER_CALLBACK_MANUAL(CPlayerManager, OnValidateAuthTicket, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
 

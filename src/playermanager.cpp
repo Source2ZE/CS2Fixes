@@ -1846,3 +1846,14 @@ int CPlayerManager::GetOnlinePlayerCount(bool bCountBots)
 
 	return iOnlinePlayers;
 }
+
+void CPlayerManager::FullUpdateAllClients()
+{
+	auto pClients = GetClientList();
+
+	if (!pClients)
+		return;
+
+	FOR_EACH_VEC(*pClients, i)
+	(*pClients)[i]->ForceFullUpdate();
+}

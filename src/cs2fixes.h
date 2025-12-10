@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -52,11 +52,8 @@ extern CSteamGameServerAPIContext g_steamAPI;
 extern CCSGameRules* g_pGameRules;
 extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
 extern double g_flUniversalTime;
+extern INetworkGameServer* GetNetworkGameServer();
 extern CGlobalVars* GetGlobals();
-extern uint32 GetSoundEventHash(const char* pszSoundEventName);
-extern CUtlVector<CServerSideClient*>* GetClientList();
-extern CServerSideClient* GetClientBySlot(CPlayerSlot slot);
-extern void FullUpdateAllClients();
 extern CConVar<bool> g_cvarDropMapWeapons;
 
 class CS2Fixes : public ISmmPlugin, public IMetamodListener, public ICS2Fixes

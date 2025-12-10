@@ -607,7 +607,7 @@ std::vector<std::shared_ptr<CMap>> CMapVoteSystem::GetMapsFromSubstring(const ch
 
 void CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, std::string strMapSubstring, bool bAdmin, QueryCallback_t callbackSuccess)
 {
-	strMapSubstring = g_pMapVoteSystem->StringToLower(strMapSubstring);
+	strMapSubstring = StringToLower(strMapSubstring);
 	const char* pszMapSubstring = strMapSubstring.c_str();
 	auto vecFoundMaps = GetMapsFromSubstring(pszMapSubstring);
 
@@ -1210,14 +1210,6 @@ std::string CMapVoteSystem::ConvertFloatToString(float fValue, int precision)
 	}
 
 	return str;
-}
-
-std::string CMapVoteSystem::StringToLower(std::string strValue)
-{
-	for (int i = 0; strValue[i]; i++)
-		strValue[i] = tolower(strValue[i]);
-
-	return strValue;
 }
 
 std::string CMapVoteSystem::GetMapCooldownText(const char* pszMapName, bool bPlural)

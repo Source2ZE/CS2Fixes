@@ -26,10 +26,10 @@
 #include "vendor/nlohmann/json_fwd.hpp"
 #include <deque>
 #include <filesystem>
+#include <optional>
 #include <playerslot.h>
 #include <string>
 #include <vector>
-#include <optional>
 
 class CMap;
 using ordered_json = nlohmann::ordered_json;
@@ -214,7 +214,6 @@ public:
 	void OnLevelShutdown();
 	std::vector<std::shared_ptr<CCooldown>> GetMapCooldowns() { return m_vecCooldowns; }
 	std::string ConvertFloatToString(float fValue, int precision);
-	std::string StringToLower(std::string strValue);
 	void SetDisabledCooldowns(bool bValue) { g_bDisableCooldowns = bValue; } // Can be used by custom fork features, e.g. an auto-restart
 	void ProcessGroupCooldowns();
 	bool ReloadMapList(bool bReloadMap = true);
