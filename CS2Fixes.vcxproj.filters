@@ -179,6 +179,9 @@
     <ClCompile Include="src\entwatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cvarwhitelist.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\utils\weapon.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
@@ -389,6 +392,9 @@
       <Filter>Header Files\cs2_sdk</Filter>
     </ClInclude>
     <ClInclude Include="src\entwatch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cvarwhitelist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cpointworldtext.h">

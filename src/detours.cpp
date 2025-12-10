@@ -28,6 +28,7 @@
 #include "common.h"
 #include "ctimer.h"
 #include "customio.h"
+#include "cvarwhitelist.h"
 #include "detours.h"
 #include "entities.h"
 #include "entity/cbasemodelentity.h"
@@ -84,6 +85,7 @@ DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles
 DECLARE_DETOUR(CBaseFilter_InputTestActivator, Detour_CBaseFilter_InputTestActivator);
 DECLARE_DETOUR(GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan);
 DECLARE_DETOUR(CCSPlayer_ItemServices_CanAcquire, Detour_CCSPlayer_ItemServices_CanAcquire);
+DECLARE_DETOUR(CS_Script_ServerCommand, Detour_CS_Script_ServerCommand);
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
@@ -498,9 +500,18 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 			return CPointViewControlHandler::OnDisableAll(pViewControl);
 	}
 
-	VPROF_SCOPE_END();
+	bool bWhitelistCheck = g_cvarConVarWhitelistEnable.Get() && !V_strnicmp(pInputName->String(), "Command", 7) && !V_strcmp(pThis->GetClassname(), "point_servercommand");
 
-	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID, a7, a8);
+	if (bWhitelistCheck)
+		g_pConvarWhitelist->SetMapExecuting(true);
+
+	bool returnValue = CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID, a7, a8);
+
+	if (bWhitelistCheck)
+		g_pConvarWhitelist->SetMapExecuting(false);
+
+	return returnValue;
+	VPROF_SCOPE_END();
 }
 
 CConVar<bool> g_cvarBlockNavLookup("cs2f_block_nav_lookup", FCVAR_NONE, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", false);
@@ -809,6 +820,17 @@ AcquireResult FASTCALL Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemSe
 	}
 
 	return CCSPlayer_ItemServices_CanAcquire(pItemServices, pEconItem, iAcquireMethod, unk4);
+}
+
+void FASTCALL Detour_CS_Script_ServerCommand(uint64_t unk1)
+{
+	if (g_cvarConVarWhitelistEnable.Get())
+		g_pConvarWhitelist->SetMapExecuting(true);
+
+	CS_Script_ServerCommand(unk1);
+
+	if (g_cvarConVarWhitelistEnable.Get())
+		g_pConvarWhitelist->SetMapExecuting(false);
 }
 
 bool InitDetours(CGameConfig* gameConfig)

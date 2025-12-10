@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -88,6 +88,7 @@ public: // hooks
 	void Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts,
 							CBitVec<16384>&, const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities);
 	void Hook_DispatchConCommand(ConCommandRef cmd, const CCommandContext& ctx, const CCommand& args);
+	bool Hook_CallFilterCallback(ConVarRef cvar, const CSplitScreenSlot nSlot, const CVValue_t* pNewValue, const CVValue_t* pOldValue, void* __unk01);
 	void Hook_CGamePlayerEquipUse(class InputData_t*);
 	void Hook_CGamePlayerEquipPrecache(CEntityPrecacheContext*);
 	void Hook_CTriggerGravityPrecache(CEntityPrecacheContext* param);

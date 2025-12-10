@@ -71,6 +71,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/leader.cpp',
     'src/buttonwatch.cpp',
     'src/idlemanager.cpp',
+    'src/cvarwhitelist.cpp',
     'sdk/entity2/entitysystem.cpp',
     'sdk/entity2/entityidentity.cpp',
     'sdk/entity2/entitykeyvalues.cpp',

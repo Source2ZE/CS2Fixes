@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -26,6 +26,7 @@
 #include "common.h"
 #include "cs_gameevents.pb.h"
 #include "ctimer.h"
+#include "cvarwhitelist.h"
 #include "detours.h"
 #include "discord.h"
 #include "entities.h"
@@ -82,6 +83,7 @@ SH_DECL_HOOK8_void(IGameEventSystem, PostEventAbstract, SH_NOATTRIB, 0, CSplitSc
 SH_DECL_HOOK7_void(ISource2GameEntities, CheckTransmit, SH_NOATTRIB, 0, CCheckTransmitInfo**, int, CBitVec<16384>&, CBitVec<16384>&, const Entity2Networkable_t**, const uint16*, int);
 SH_DECL_HOOK2_void(IServerGameClients, ClientCommand, SH_NOATTRIB, 0, CPlayerSlot, const CCommand&);
 SH_DECL_HOOK3_void(ICvar, DispatchConCommand, SH_NOATTRIB, 0, ConCommandRef, const CCommandContext&, const CCommand&);
+SH_DECL_HOOK5(ICvar, CallFilterCallback, SH_NOATTRIB, 0, bool, ConVarRef, CSplitScreenSlot, const CVValue_t*, const CVValue_t*, void*);
 SH_DECL_MANUALHOOK1_void(CGamePlayerEquipUse, 0, 0, 0, InputData_t*);
 SH_DECL_MANUALHOOK1_void(CGamePlayerEquipPrecache, 0, 0, 0, CEntityPrecacheContext*);
 SH_DECL_MANUALHOOK1_void(CTriggerGravityPrecache, 0, 0, 0, CEntityPrecacheContext*);
@@ -200,6 +202,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	SH_ADD_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
 	SH_ADD_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_ADD_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
+	SH_ADD_HOOK(ICvar, CallFilterCallback, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_CallFilterCallback), false);
 	g_iCreateWorkshopMapGroupId = SH_ADD_MANUALVPHOOK(CreateWorkshopMapGroup, g_pGameTypes, SH_MEMBER(this, &CS2Fixes::Hook_CreateWorkshopMapGroup), false);
 
 	META_CONPRINTF("All hooks started!\n");
@@ -356,6 +359,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	g_pIdleSystem = new CIdleSystem();
 	g_pPanoramaVoteHandler = new CPanoramaVoteHandler();
 	g_pEWHandler = new CEWHandler();
+	g_pConvarWhitelist = new CConVarWhitelist();
 
 	RegisterWeaponCommands();
 
@@ -428,6 +432,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	SH_REMOVE_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
 	SH_REMOVE_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_REMOVE_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
+	SH_REMOVE_HOOK(ICvar, CallFilterCallback, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_CallFilterCallback), false);
 	SH_REMOVE_HOOK_ID(g_iLoadEventsFromFileId);
 	SH_REMOVE_HOOK_ID(g_iCreateWorkshopMapGroupId);
 	SH_REMOVE_HOOK_ID(g_iOnTakeDamageAliveId);
@@ -506,6 +511,9 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 		delete g_pEWHandler;
 	}
 
+	if (g_pConvarWhitelist)
+		delete g_pConvarWhitelist;
+
 	return true;
 }
 
@@ -513,18 +521,14 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 {
 	VPROF_BUDGET("CS2Fixes::Hook_DispatchConCommand", "ConCommands");
 
-	if (!g_pEntitySystem)
-		RETURN_META(MRES_IGNORED);
-
 	auto iCommandPlayerSlot = ctx.GetPlayerSlot();
-
-	if (!g_cvarEnableCommands.Get())
-		RETURN_META(MRES_IGNORED);
-
 	bool bSay = !V_strcmp(args.Arg(0), "say");
 	bool bTeamSay = !V_strcmp(args.Arg(0), "say_team");
 
-	if (iCommandPlayerSlot != -1 && (bSay || bTeamSay))
+	if (iCommandPlayerSlot == -1 && !g_pConvarWhitelist->RunWhitelistCheck(cmdHandle.GetName()))
+		RETURN_META(MRES_SUPERCEDE);
+
+	if (g_pEntitySystem && g_cvarEnableCommands.Get() && iCommandPlayerSlot != -1 && (bSay || bTeamSay))
 	{
 		auto pController = CCSPlayerController::FromSlot(iCommandPlayerSlot);
 		bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
@@ -597,6 +601,14 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 	}
 
 	RETURN_META(MRES_IGNORED);
+}
+
+bool CS2Fixes::Hook_CallFilterCallback(ConVarRef cvar, const CSplitScreenSlot nSlot, const CVValue_t* pNewValue, const CVValue_t* pOldValue, void* __unk01)
+{
+	if (nSlot.Get() == 0 && cvar.IsValidRef() && !g_pConvarWhitelist->RunWhitelistCheck(ConVarRefAbstract(cvar).GetName()))
+		RETURN_META_VALUE(MRES_SUPERCEDE, false);
+
+	RETURN_META_VALUE(MRES_IGNORED, true);
 }
 
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession* pSession, const char* pszMapName)

@@ -115,6 +115,7 @@ for task in MMSPlugin.binaries:
   builder.AddCopy(os.path.join('configs', 'admins.jsonc.example'), configs_folder)
   builder.AddCopy(os.path.join('configs', 'discordbots.cfg.example'), configs_folder)
   builder.AddCopy(os.path.join('configs', 'maplist.jsonc.example'), configs_folder)
+  builder.AddCopy(os.path.join('configs', 'cvar_whitelist.jsonc.example'), configs_folder)
   builder.AddCopy(os.path.join('cfg', MMSPlugin.metadata['name'], 'cs2fixes.cfg'), cfg_folder)
   builder.AddCopy(os.path.join('cfg', MMSPlugin.metadata['name'], 'maps', 'de_somemap.cfg'), mapcfg_folder)
   builder.AddCopy(os.path.join('configs', 'zr', 'playerclass.jsonc.example'), zr_folder)

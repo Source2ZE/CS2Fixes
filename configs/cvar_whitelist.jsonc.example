@@ -1,0 +1,82 @@
+{
+	// Since maps can change cvars that are enabled here, make sure they all get reset to desired values on map change by server config(s)!
+	/* Map specific overrides can also be set up as so:
+	"ze_my_first_ze_map":
+	{
+		"sv_airaccelerate": false,
+		"sv_noclipspeed": true
+	},
+	"ze_last_man_standing_p":
+	{
+		"zr_infect_spawn_mz_ratio": true
+	},
+	*/
+
+	"ammo_grenade_limit_default": true,
+	"ammo_grenade_limit_flashbang": true,
+	"ammo_grenade_limit_total": true,
+	"ammo_item_limit_healthshot": true,
+	"healthshot_healthboost_damage_multiplier": true,
+	"healthshot_healthboost_speed_multiplier": true,
+	"healthshot_healthboost_time": true,
+	"mp_afterroundmoney": true,
+	"mp_anyone_can_pickup_c4": true,
+	"mp_buy_allow_grenades": true,
+	"mp_buy_allow_guns": true,
+	"mp_buy_anywhere": true,
+	"mp_buytime": true,
+	"mp_ct_default_grenades": true,
+	"mp_ct_default_melee": true,
+	"mp_ct_default_primary": true,
+	"mp_ct_default_secondary": true,
+	"mp_damage_headshot_only": true,
+	"mp_damage_scale_ct_body": true,
+	"mp_damage_scale_ct_head": true,
+	"mp_damage_scale_t_body": true,
+	"mp_damage_scale_t_head": true,
+	"mp_damage_vampiric_amount": true,
+	"mp_drop_grenade_enable": true,
+	"mp_free_armor": false, // Breaks buy menu rebuys, cs2f_free_armor doesn't
+	"mp_freezetime": true,
+	"mp_global_damage_per_second": true,
+	"mp_maxmoney": true,
+	"mp_roundtime": true,
+	"mp_startmoney": true,
+	"mp_taser_recharge_time": true,
+	"mp_weapon_self_inflict_amount": true,
+	"mp_weapons_allow_typecount": true,
+	"mp_weapons_allow_zeus": true,
+	"sv_accelerate": true,
+	"sv_airaccelerate": true,
+	"sv_autobunnyhopping": true,
+	"sv_bounce": true,
+	"sv_disable_radar": true,
+	"sv_enablebunnyhopping": true,
+	"sv_falldamage_scale": true,
+	"sv_friction": true,
+	"sv_gravity": true,
+	"sv_hegrenade_damage_multiplier": true,
+	"sv_hegrenade_radius_multiplier": true,
+	"sv_infinite_ammo": true,
+	"sv_maxspeed": true,
+	"sv_maxvelocity": true,
+	"sv_staminajumpcost": true,
+	"sv_staminalandcost": true,
+	"sv_stopspeed": true,
+	"sv_wateraccelerate": true,
+	"sv_waterfriction": true,
+	"weapon_accuracy_nospread": true,
+	"weapon_air_spread_scale": true,
+	"say": true,
+	"echo": true,
+	"sv_jump_impulse": true,
+	"endround": true,
+
+	"cs2f_use_old_push": true,
+	"cs2f_infinite_reserve_ammo": true,
+	"cs2f_free_armor": true,
+	// Often over-abused but still have some legitimate uses, recommend either setting up map specific overrides or just globally enabling these
+	"zr_infect_spawn_time_min": false,
+	"zr_infect_spawn_time_max": false,
+	"zr_infect_spawn_mz_ratio": false
+}
