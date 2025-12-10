@@ -798,14 +798,12 @@ void EWItemInstance::Pickup(int slot)
 		if (bShouldSetClantag)
 		{
 			bHasThisClantag = true;
-			pController->m_szClan(sClantag);
+			pController->SetClanTag(sClantag);
 			if (g_cvarItemHolderScore.Get() > -1)
 			{
 				int score = pController->m_iScore + g_cvarItemHolderScore.Get();
 				pController->m_iScore = score;
 			}
-
-			EW_UpdateClientClanTags();
 		}
 	}
 
@@ -840,7 +838,7 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 			{
 				// Player IS holding another item, score doesnt need adjusting
 
-				pController->m_szClan(g_pEWHandler->vecItems[otherItem]->sClantag);
+				pController->SetClanTag(g_pEWHandler->vecItems[otherItem]->sClantag);
 				g_pEWHandler->vecItems[otherItem]->bHasThisClantag = true;
 				bSetAnotherClantag = true;
 				break;
@@ -857,10 +855,8 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 				pController->m_iScore = score;
 			}
 
-			pController->m_szClan("");
+			pController->SetClanTag("");
 		}
-
-		EW_UpdateClientClanTags();
 	}
 
 	char sPlayerInfo[64];
@@ -1504,10 +1500,8 @@ void CEWHandler::ResetAllClantags()
 			pController->m_iScore = score;
 		}
 
-		pController->m_szClan("");
+		pController->SetClanTag("");
 	}
-
-	EW_UpdateClientClanTags();
 }
 
 int CEWHandler::RegisterItem(CBasePlayerWeapon* pWeapon)
@@ -2259,49 +2253,6 @@ void EW_PlayerDisconnect(int slot)
 	g_pEWHandler->PlayerDrop(EWDropReason::Disconnect, -1, pController);
 }
 
-// An event needs to be sent to force clients to see up to date clantags
-void EW_UpdateClientClanTags()
-{
-	// Cannot send this event during map vote, as it breaks voting client side
-	if (!GetGlobals() || !g_pMapVoteSystem->IsIntermissionAllowed())
-		return;
-
-	static IGameEvent* pEvent = nullptr;
-
-	if (!pEvent)
-		pEvent = g_gameEventManager->CreateEvent("nextlevel_changed");
-
-	if (!pEvent)
-	{
-		Panic("Failed to create nextlevel_changed event\n");
-		return;
-	}
-
-	INetworkMessageInternal* pMsg = g_pNetworkMessages->FindNetworkMessageById(GE_Source1LegacyGameEvent);
-	if (!pMsg)
-	{
-		Panic("Failed to create Source1LegacyGameEvent\n");
-		return;
-	}
-	CNetMessagePB<CMsgSource1LegacyGameEvent>* data = pMsg->AllocateMessage()->ToPB<CMsgSource1LegacyGameEvent>();
-	g_gameEventManager->SerializeEvent(pEvent, data);
-
-	CRecipientFilter filter;
-	for (int i = 0; i < GetGlobals()->maxClients; i++)
-	{
-		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
-
-		if (!pPlayer || pPlayer->IsFakeClient() || !pPlayer->IsAuthenticated())
-			continue;
-
-		if (pPlayer->GetEntwatchClangtags())
-			filter.AddRecipient(pPlayer->GetPlayerSlot());
-	}
-
-	g_gameEventSystem->PostEventAbstract(-1, false, &filter, pMsg, data, 0);
-	delete data;
-}
-
 bool EW_IsFireOutputHooked()
 {
 	return std::any_of(mapIOFunctions.begin(), mapIOFunctions.end(), [](const auto& p) { return p.first == "entwatch"; });
@@ -2648,34 +2599,6 @@ CON_COMMAND_CHAT(ew_dump, "- Prints the currently loaded config to console")
 	}
 
 	g_pEWHandler->PrintLoadedConfig(player->GetPlayerSlot());
-}
-
-CON_COMMAND_CHAT(etag, "- Toggle EntWatch clantags on the scoreboard")
-{
-	if (!g_cvarEnableEntWatch.Get())
-		return;
-
-	if (!player)
-	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Only usable in game.");
-		return;
-	}
-
-	ZEPlayer* zpPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
-	if (!zpPlayer)
-	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Something went wrong, try again later.");
-		return;
-	}
-
-	bool bCurrentStatus = zpPlayer->GetEntwatchClangtags();
-	bCurrentStatus = !bCurrentStatus;
-	zpPlayer->SetEntwatchClangtags(bCurrentStatus);
-
-	if (bCurrentStatus)
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "You have\x04 Enabled\x01 EntWatch clantag updates");
-	else
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "You have\x07 Disabled\x01 EntWatch clantag updates");
 }
 
 CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
