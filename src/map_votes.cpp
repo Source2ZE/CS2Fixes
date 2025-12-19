@@ -40,6 +40,7 @@
 CMapVoteSystem* g_pMapVoteSystem = nullptr;
 
 CConVar<float> g_cvarVoteMapsCooldown("cs2f_vote_maps_cooldown", FCVAR_NONE, "Default number of hours until a map can be played again i.e. cooldown", 6.0f);
+CConVar<float> g_cvarVoteMapsCooldownRng("cs2f_vote_maps_cooldown_rng", FCVAR_NONE, "Randomness range in both directions to apply to map cooldowns", 0.0f);
 CConVar<int> g_cvarVoteMaxNominations("cs2f_vote_max_nominations", FCVAR_NONE, "Number of nominations to include per vote, out of a maximum of 10", 10, true, 0, true, 10);
 CConVar<int> g_cvarVoteMaxMaps("cs2f_vote_max_maps", FCVAR_NONE, "Number of total maps to include per vote, including nominations, out of a maximum of 10", 10, true, 2, true, 10);
 
@@ -1262,6 +1263,17 @@ void CMapVoteSystem::PutMapOnCooldown(const char* pszMapName, float fCooldown)
 			fCooldown = pMap->GetCustomCooldown();
 		else
 			fCooldown = g_cvarVoteMapsCooldown.Get();
+
+		// Add randomness if applicable
+		if (g_cvarVoteMapsCooldown.Get() != 0.0f)
+		{
+			float flRandomValue = ((float)rand() / RAND_MAX) * g_cvarVoteMapsCooldownRng.Get();
+
+			if (rand() % 2)
+				fCooldown += flRandomValue;
+			else
+				fCooldown -= flRandomValue;
+		}
 	}
 
 	time_t timeCooldown = std::time(0) + (time_t)(fCooldown * 60 * 60);
