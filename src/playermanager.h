@@ -165,6 +165,7 @@ public:
 		m_bConnected = false;
 		m_iTotalDamage = 0;
 		m_iTotalHits = 0;
+		m_iTotalHeadshots = 0;
 		m_iTotalKills = 0;
 		m_bVotedRTV = false;
 		m_bVotedExtend = false;
@@ -196,6 +197,7 @@ public:
 		m_flEntwatchHudX = -7.5f;
 		m_flEntwatchHudY = -2.0f;
 		m_flEntwatchHudSize = 60.0f;
+		m_bTopDefender = false;
 	}
 
 	~ZEPlayer()
@@ -230,6 +232,7 @@ public:
 	void SetHideDistance(int distance);
 	void SetTotalDamage(int damage) { m_iTotalDamage = damage; }
 	void SetTotalHits(int hits) { m_iTotalHits = hits; }
+	void SetTotalHeadshots(int headshots) { m_iTotalHeadshots = headshots; }
 	void SetTotalKills(int kills) { m_iTotalKills = kills; }
 	void SetRTVVote(bool bRTVVote) { m_bVotedRTV = bRTVVote; }
 	void SetRTVVoteTime(float flCurtime) { m_flRTVVoteTime = flCurtime; }
@@ -265,6 +268,7 @@ public:
 	void SetEntwatchHudColor(Color colorHud);
 	void SetEntwatchHudPos(float x, float y);
 	void SetEntwatchHudSize(float flSize);
+	void SetTopDefenderStatus(bool bStatus) { m_bTopDefender = bStatus; }
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -276,6 +280,7 @@ public:
 	CPlayerSlot GetPlayerSlot() { return m_slot; }
 	int GetTotalDamage() { return m_iTotalDamage; }
 	int GetTotalHits() { return m_iTotalHits; }
+	int GetTotalHeadshots() { return m_iTotalHeadshots; }
 	int GetTotalKills() { return m_iTotalKills; }
 	bool GetRTVVote() { return m_bVotedRTV; }
 	float GetRTVVoteTime() { return m_flRTVVoteTime; }
@@ -313,6 +318,7 @@ public:
 	float GetEntwatchHudX() { return m_flEntwatchHudX; }
 	float GetEntwatchHudY() { return m_flEntwatchHudY; }
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
+	bool GetTopDefenderStatus() { return m_bTopDefender; }
 
 	void OnSpawn();
 	void OnAuthenticated();
@@ -346,6 +352,7 @@ private:
 	CBitVec<MAXPLAYERS> m_shouldTransmit;
 	int m_iTotalDamage;
 	int m_iTotalHits;
+	int m_iTotalHeadshots;
 	int m_iTotalKills;
 	bool m_bVotedRTV;
 	float m_flRTVVoteTime;
@@ -385,6 +392,7 @@ private:
 	float m_flEntwatchHudX;
 	float m_flEntwatchHudY;
 	float m_flEntwatchHudSize;
+	bool m_bTopDefender;
 };
 
 class CPlayerManager
