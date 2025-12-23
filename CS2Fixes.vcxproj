@@ -207,6 +207,7 @@
     <ClCompile Include="src\panoramavote.cpp" />
     <ClCompile Include="src\patches.cpp" />
     <ClCompile Include="src\playermanager.cpp" />
+    <ClCompile Include="src\topdefender.cpp" />
     <ClCompile Include="src\user_preferences.cpp" />
     <ClCompile Include="src\votemanager.cpp" />
     <ClCompile Include="src\zombiereborn.cpp" />
@@ -282,6 +283,7 @@
     <ClInclude Include="src\recipientfilters.h" />
     <ClInclude Include="src\cs2_sdk\serversideclient.h" />
     <ClInclude Include="src\cs2_sdk\clientframe.h" />
+    <ClInclude Include="src\topdefender.h" />
     <ClInclude Include="src\utils\plat_win.h" />
     <ClInclude Include="src\votemanager.h" />
     <ClInclude Include="src\map_votes.h" />

@@ -46,6 +46,10 @@ public:
 	SCHEMA_FIELD(int32_t, m_iRoundsWon)
 	SCHEMA_FIELD(int32_t, m_iMVPs)
 	SCHEMA_FIELD(float, m_flSmoothedPing)
+	SCHEMA_FIELD(bool, m_bMvpNoMusic)
+	SCHEMA_FIELD(int32_t, m_eMvpReason)
+	SCHEMA_FIELD(int32_t, m_iMusicKitID)
+	SCHEMA_FIELD(int32_t, m_iMusicKitMVPs)
 
 	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn)
 	{
