@@ -197,6 +197,9 @@
     <ClCompile Include="src\cs2_sdk\entity\cbasemodelentity.cpp">
       <Filter>Source Files\cs2_sdk\entity</Filter>
     </ClCompile>
+    <ClCompile Include="src\topdefender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -420,6 +423,9 @@
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cpointorient.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\topdefender.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
