@@ -31,8 +31,8 @@
 #include "leader.h"
 #include "map_votes.h"
 #include "panoramavote.h"
-#include "topdefender.h"
 #include "recipientfilters.h"
+#include "topdefender.h"
 #include "votemanager.h"
 #include "zombiereborn.h"
 
@@ -164,9 +164,7 @@ GAME_EVENT_F(player_spawn)
 GAME_EVENT_F(player_hurt)
 {
 	if (g_cvarEnableTopDefender.Get())
-	{
 		TD_OnPlayerHurt(pEvent);
-	}
 }
 
 GAME_EVENT_F(player_death)
@@ -178,9 +176,7 @@ GAME_EVENT_F(player_death)
 		EW_PlayerDeath(pEvent);
 
 	if (g_cvarEnableTopDefender.Get())
-	{
 		TD_OnPlayerDeath(pEvent);
-	}
 }
 
 CConVar<bool> g_cvarFullAllTalk("cs2f_full_alltalk", FCVAR_NONE, "Whether to enforce sv_full_alltalk 1", false);
@@ -204,9 +200,7 @@ GAME_EVENT_F(round_start)
 		g_pEngineServer2->ServerCommand("mp_warmup_end");
 
 	if (g_cvarEnableTopDefender.Get())
-	{
 		TD_OnRoundStart(pEvent);
-	}
 }
 
 GAME_EVENT_F(round_end)
@@ -215,9 +209,7 @@ GAME_EVENT_F(round_end)
 		g_pGameRules->m_bGameRestart = false;
 
 	if (g_cvarEnableTopDefender.Get())
-	{
 		TD_OnRoundEnd(pEvent);
-	}
 }
 
 GAME_EVENT_F(round_freeze_end)

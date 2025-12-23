@@ -47,37 +47,25 @@ CConVar<CUtlString> g_cvarTopDefenderClanTag("cs2f_topdefender_clantag", FCVAR_N
 bool SortTD(ZEPlayerHandle a, ZEPlayerHandle b)
 {
 	if (a.Get() && b.Get())
-	{
 		return a.Get()->GetTotalDamage() > b.Get()->GetTotalDamage();
-	}
 	else
-	{
 		return false;
-	}
 }
 
 void UnfuckMVP(CCSPlayerController* pController)
 {
 	// stop this shit from spamming mvp music
 	if (!pController->m_bMvpNoMusic())
-	{
 		pController->m_bMvpNoMusic = true;
-	}
 
 	if (pController->m_eMvpReason() != 0)
-	{
 		pController->m_eMvpReason = 0;
-	}
 
 	if (pController->m_iMusicKitID() != 0)
-	{
 		pController->m_iMusicKitID = 0;
-	}
 
 	if (pController->m_iMusicKitMVPs() != 0)
-	{
 		pController->m_iMusicKitMVPs = 0;
-	}
 }
 
 void TD_OnPlayerHurt(IGameEvent* pEvent)
@@ -87,17 +75,13 @@ void TD_OnPlayerHurt(IGameEvent* pEvent)
 
 	// Ignore Ts/zombies and CTs hurting themselves
 	if (!pAttacker || pAttacker->m_iTeamNum() != CS_TEAM_CT || pAttacker->m_iTeamNum() == pVictim->m_iTeamNum())
-	{
 		return;
-	}
 
 	ZEPlayer* pAttackerPlayer = pAttacker->GetZEPlayer();
 	ZEPlayer* pVictimPlayer = pVictim->GetZEPlayer();
 
 	if (!pAttackerPlayer || !pVictimPlayer)
-	{
 		return;
-	}
 
 	if (g_cvarIdleKickTime.Get() <= 0.0f || (std::time(0) - pVictimPlayer->GetLastInputTime()) < 15)
 	{
@@ -105,9 +89,7 @@ void TD_OnPlayerHurt(IGameEvent* pEvent)
 		pAttackerPlayer->SetTotalHits(pAttackerPlayer->GetTotalHits() + 1);
 
 		if (pEvent->GetInt("hitgroup") == 1)
-		{
 			pAttackerPlayer->SetTotalHeadshots(pAttackerPlayer->GetTotalHeadshots() + 1);
-		}
 	}
 }
 
@@ -118,15 +100,11 @@ void TD_OnPlayerDeath(IGameEvent* pEvent)
 
 	// Ignore Ts/zombie kills and ignore CT teamkilling or suicide
 	if (!pAttacker || !pVictim || pAttacker->m_iTeamNum != CS_TEAM_CT || pAttacker->m_iTeamNum == pVictim->m_iTeamNum)
-	{
 		return;
-	}
 
 	ZEPlayer* pPlayer = pAttacker->GetZEPlayer();
 	if (pPlayer)
-	{
 		pPlayer->SetTotalKills(pPlayer->GetTotalKills() + 1);
-	}
 }
 
 void TD_OnRoundStart(IGameEvent* pEvent)
@@ -139,9 +117,7 @@ void TD_OnRoundStart(IGameEvent* pEvent)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 		if (!pPlayer)
-		{
 			continue;
-		}
 
 		pPlayer->SetTotalDamage(0);
 		pPlayer->SetTotalHits(0);
@@ -168,9 +144,7 @@ void TD_OnRoundStart(IGameEvent* pEvent)
 
 	m_pUpdateTimer = CTimer::Create(g_cvarTopDefenderRate.Get(), TIMERFLAG_MAP | TIMERFLAG_ROUND, []() {
 		if (!GetGlobals())
-		{
 			return -1.0f;
-		}
 
 		sortedPlayers.clear();
 
@@ -178,9 +152,7 @@ void TD_OnRoundStart(IGameEvent* pEvent)
 		{
 			ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 			if (!pPlayer || pPlayer->GetTotalDamage() == 0)
-			{
 				continue;
-			}
 
 			sortedPlayers.push_back(pPlayer->GetHandle());
 		}
@@ -193,15 +165,11 @@ void TD_OnRoundStart(IGameEvent* pEvent)
 			{
 				ZEPlayer* pPlayer = sortedPlayers[i].Get();
 				if (!pPlayer)
-				{
 					continue;
-				}
 
 				CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 				if (!pController)
-				{
 					continue;
-				}
 
 				if (pController->m_iMVPs() != i + 1)
 				{
@@ -219,14 +187,10 @@ void TD_OnRoundEnd(IGameEvent* pEvent)
 {
 	// When the round ends, stop the timer and do final recalculation
 	if (!m_pUpdateTimer.expired())
-	{
 		m_pUpdateTimer.lock()->Cancel();
-	}
 
 	if (!GetGlobals())
-	{
 		return;
-	}
 
 	sortedPlayers.clear();
 
@@ -234,15 +198,11 @@ void TD_OnRoundEnd(IGameEvent* pEvent)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 		if (!pPlayer)
-		{
 			continue;
-		}
 
 		// Only add players over the threshold to the array
 		if (pPlayer->GetTotalDamage() >= g_cvarTopDefenderThreshold.Get())
-		{
 			sortedPlayers.push_back(pPlayer->GetHandle());
-		}
 
 		// Reset the current top defender
 		if (pPlayer->GetTopDefenderStatus())
@@ -274,15 +234,11 @@ void TD_OnRoundEnd(IGameEvent* pEvent)
 	{
 		ZEPlayer* pPlayer = sortedPlayers[i].Get();
 		if (!pPlayer)
-		{
 			continue;
-		}
 
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 		if (!pController)
-		{
 			continue;
-		}
 
 		if (i < 5)
 			ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG \x05(%i HITS | %.0f%% HS | %i KILL%s)", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
@@ -302,15 +258,11 @@ void TD_OnRoundEnd(IGameEvent* pEvent)
 			{
 				ZEPlayer* pPlayer = sortedPlayers[i].Get();
 				if (!pPlayer)
-				{
 					continue;
-				}
 
 				CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 				if (!pController)
-				{
 					continue;
-				}
 
 				ClientPrintAll(HUD_PRINTCONSOLE, "%i. %s - %i DMG (%i HITS | %.0f%% HS | %i KILL%s)", i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
 			}
@@ -349,17 +301,13 @@ void TopDefenderSearch(CCSPlayerController* player, const CCommand& args)
 	{
 		ZEPlayer* pPlayer = player->GetZEPlayer();
 		if (!pPlayer)
-		{
 			return;
-		}
 
 		// Search for the player in the sorted array
 		for (int i = 0; i < sortedPlayers.size(); i++)
 		{
 			if (sortedPlayers[i] != pPlayer)
-			{
 				continue;
-			}
 
 			ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "RANK \4%d \1- \4%d \1DMG (\4%d \1HITS | \4%.0f%% \1HS | \4%d \1KILL%s)", i + 1, pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
 			return;
@@ -378,23 +326,17 @@ void TopDefenderSearch(CCSPlayerController* player, const CCommand& args)
 			int pSlots[MAXPLAYERS];
 
 			if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_MULTIPLE))
-			{
 				return;
-			}
 
 			for (int i = 0; i < sortedPlayers.size(); i++)
 			{
 				CCSPlayerController* pController = CCSPlayerController::FromSlot(pSlots[0]);
 				if (!pController)
-				{
 					continue;
-				}
 
 				ZEPlayer* pTarget = pController->GetZEPlayer();
 				if (!pTarget || sortedPlayers[i] != pTarget)
-				{
 					continue;
-				}
 
 				ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "RANK \4%d\1: \4%s \1 - \4%d \1DMG (\4%d \1HITS | \4%.0f%% \1HS | \4%d \1KILL%s)", i + 1, pController->GetPlayerName(), pTarget->GetTotalDamage(), pTarget->GetTotalHits(), ((double)pTarget->GetTotalHeadshots() / (double)pTarget->GetTotalHits()) * 100.0f, pTarget->GetTotalKills(), pTarget->GetTotalKills() == 1 ? "" : "S");
 				return;
@@ -406,15 +348,11 @@ void TopDefenderSearch(CCSPlayerController* player, const CCommand& args)
 		{
 			ZEPlayer* pPlayer = sortedPlayers[iRank - 1].Get();
 			if (!pPlayer)
-			{
 				return;
-			}
 
 			CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
 			if (!pController)
-			{
 				return;
-			}
 
 			ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "RANK \4%d\1: \4%s \1- \4%d \1DMG (\4%d \1HITS | \4%.0f%% \1HS | \4%d \1KILL%s)", iRank, pController->GetPlayerName(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
 		}
