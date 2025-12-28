@@ -21,6 +21,7 @@
 
 #include "playerslot.h"
 #include "utlvector.h"
+#include <string>
 
 class CServerSideClient;
 
