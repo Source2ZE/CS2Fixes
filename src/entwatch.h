@@ -178,7 +178,7 @@ public:
 		sClantag(""),
 		bHasThisClantag(false),
 		iTeamNum(CS_TEAM_NONE),
-		bShouldGlow(false){};
+		bShouldGlow(false) {};
 	bool RegisterHandler(CBaseEntity* pEnt, int iHandlerTemplateNum);
 	bool RemoveHandler(CBaseEntity* pEnt);
 	int FindHandlerByEntIndex(int indexToFind);
@@ -205,13 +205,19 @@ struct ETransferInfo
 	float flTime;							// The time when the command was initiated
 };
 
+struct EActiveTransfer
+{
+	CHandle<CCSPlayerController> hReceiver;
+	CHandle<CBasePlayerWeapon> hWeapon;
+	float flTime;
+};
+
 class CEWHandler
 {
 public:
 	CEWHandler()
 	{
 		bConfigLoaded = false;
-		m_bHudTicking = false;
 
 		iBaseBtnUseHookId = -1;
 		iPhysboxUseHookId = -1;
@@ -278,9 +284,10 @@ public:
 	int iRotBtnUseHookId;
 	int iMomRotBtnUseHookId;
 
-	bool m_bHudTicking;
+	std::weak_ptr<CTimer> m_pHudTimer;
 
-	std::map<int, std::shared_ptr<ETransferInfo>> mapTransfers; // Any etransfers that target multiple items
+	std::map<int, std::shared_ptr<ETransferInfo>> mapTransfers;		  // Any etransfers that target multiple items
+	std::vector<std::shared_ptr<EActiveTransfer>> vecActiveTransfers; // Active transfers where only the receiver can pickup the weapon
 };
 
 extern CEWHandler* g_pEWHandler;

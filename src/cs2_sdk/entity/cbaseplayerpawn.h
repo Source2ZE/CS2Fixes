@@ -62,8 +62,19 @@ public:
 			}
 		}
 
+		Vector pos = GetEyePosition();
 		for (CBasePlayerWeapon* pWeapon : vecWeaponsToDrop)
+		{
 			m_pWeaponServices()->DropWeapon(pWeapon);
+
+			CHandle<CBasePlayerWeapon> hWep = pWeapon->GetHandle();
+			CTimer::Create(0.0, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hWep, pos] {
+				CBasePlayerWeapon* pWep = hWep.Get();
+				if (pWep)
+					pWep->Teleport(&pos, nullptr, nullptr);
+				return -1.0f;
+			});
+		}
 	}
 
 	void CommitSuicide(bool bExplode, bool bForce)
