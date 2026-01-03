@@ -797,8 +797,9 @@ void EWItemInstance::Pickup(int slot)
 
 		if (bShouldSetClantag)
 		{
+			// Hud tick function sets it
 			bHasThisClantag = true;
-			pController->SetClanTag(sClantag);
+
 			if (g_cvarItemHolderScore.Get() > -1)
 			{
 				int score = pController->m_iScore + g_cvarItemHolderScore.Get();
@@ -836,9 +837,8 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 		{
 			if (g_pEWHandler->vecItems[otherItem]->bShowHud && !g_pEWHandler->vecItems[otherItem]->bHasThisClantag)
 			{
-				// Player IS holding another item, score doesnt need adjusting
+				// Player IS holding another item
 
-				pController->SetClanTag(g_pEWHandler->vecItems[otherItem]->sClantag);
 				g_pEWHandler->vecItems[otherItem]->bHasThisClantag = true;
 				bSetAnotherClantag = true;
 				break;
@@ -847,16 +847,14 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 		}
 		bHasThisClantag = false;
 
-		if (!bSetAnotherClantag)
+		if (g_cvarItemHolderScore.Get() != 0)
 		{
-			if (g_cvarItemHolderScore.Get() != 0)
-			{
-				int score = pController->m_iScore - g_cvarItemHolderScore.Get();
-				pController->m_iScore = score;
-			}
-
-			pController->SetClanTag("");
+			int score = pController->m_iScore - g_cvarItemHolderScore.Get();
+			pController->m_iScore = score;
 		}
+
+		if (!bSetAnotherClantag)
+			pController->SetClanTag("");
 	}
 
 	char sPlayerInfo[64];
@@ -871,7 +869,7 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 
 			Message(EW_PREFIX "%s has dropped %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 			if (bShowPickup)
-				ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05has dropped %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+				ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 has dropped %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
 			break;
 		case EWDropReason::Infected:
 			if (bAllowDrop)
@@ -1209,6 +1207,7 @@ void CEWHandler::PrintLoadedConfig(CPlayerSlot slot)
 
 void CEWHandler::ClearItems()
 {
+	vecActiveTransfers.clear();
 	mapTransfers.clear();
 	vecItems.clear();
 }
@@ -1519,8 +1518,6 @@ int CEWHandler::RegisterItem(CBasePlayerWeapon* pWeapon)
 
 	std::shared_ptr<EWItemInstance> instance = std::make_shared<EWItemInstance>(pWeapon->entindex(), item);
 
-	V_snprintf(instance->sClantag, sizeof(EWItemInstance::sClantag), "[+]%s:", instance->szShortName.c_str());
-
 	bool bKnife = pWeapon->GetWeaponVData()->m_GearSlot() == GEAR_SLOT_KNIFE;
 	instance->bAllowDrop = !bKnife;
 
@@ -1612,13 +1609,10 @@ void CEWHandler::PlayerPickup(CCSPlayerPawn* pPawn, int iItemInstance)
 
 	item->Pickup(pPawn->m_hOriginalController->GetPlayerSlot());
 
-	if (g_cvarEnableEntwatchHud.Get() && !m_bHudTicking)
-	{
-		m_bHudTicking = true;
-		CTimer::Create(EW_HUD_TICKRATE, TIMERFLAG_MAP | TIMERFLAG_ROUND, [] {
+	if (m_pHudTimer.expired())
+		m_pHudTimer = CTimer::Create(EW_HUD_TICKRATE, TIMERFLAG_MAP | TIMERFLAG_ROUND, [] {
 			return EW_UpdateHud();
 		});
-	}
 }
 
 void CEWHandler::PlayerDrop(EWDropReason reason, int iItemInstance, CCSPlayerController* pController)
@@ -1733,6 +1727,31 @@ void CEWHandler::Transfer(CCSPlayerController* pCaller, int iItemInstance, CHand
 			pReceiverPawn->m_pWeaponServices()->DropWeapon(pWeapon);
 			break;
 		}
+	}
+
+	// Add this weapon and receiver to active transfers to prevent others from picking it up
+	if (GetGlobals())
+	{
+		std::shared_ptr<EActiveTransfer> transfer = std::make_shared<EActiveTransfer>();
+		transfer->hReceiver = hReceiver;
+		transfer->hWeapon = pItemWeapon->GetHandle();
+		transfer->flTime = GetGlobals()->curtime + 0.95;
+		vecActiveTransfers.push_back(transfer);
+		CTimer::Create(1.0, TIMERFLAG_MAP | TIMERFLAG_ROUND, [] {
+			if (!GetGlobals())
+				return -1.0f;
+
+			for (int i = 0; i < g_pEWHandler->vecActiveTransfers.size(); i++)
+			{
+				std::shared_ptr<EActiveTransfer> transfer = g_pEWHandler->vecActiveTransfers[i];
+				if (transfer->flTime < GetGlobals()->curtime)
+				{
+					g_pEWHandler->vecActiveTransfers.erase(g_pEWHandler->vecActiveTransfers.begin() + i);
+					i--;
+				}
+			}
+			return -1.0f;
+		});
 	}
 
 	// Give the item to the receiver
@@ -1968,8 +1987,17 @@ float EW_UpdateHud()
 
 		std::string sItemText = pItem->GetHandlerStateText();
 
-		// TODO: std::format not supported in clang16 by default
-		// sHudText.append(std::format("\n[{}]{}: {}", sItemText, pItem->szShortName, pOwner->GetPlayerName()));
+		if (g_cvarUseEntwatchClantag.Get())
+		{
+			V_snprintf(pItem->sClantag, sizeof(EWItemInstance::sClantag), "[%s]%s:", sItemText.c_str(), pItem->szShortName.c_str());
+			if (pItem->bHasThisClantag)
+				pOwner->SetClanTag(pItem->sClantag);
+		}
+
+		if (!g_cvarEnableEntwatchHud.Get())
+			continue;
+
+		// std::format not supported in clang16 by default (steamrt3)
 		if (!bFirst)
 		{
 			sHudText.append("\n");
@@ -2045,7 +2073,6 @@ void EW_RoundPreStart()
 
 	g_pEWHandler->ResetAllClantags();
 	g_pEWHandler->ClearItems();
-	g_pEWHandler->m_bHudTicking = false;
 }
 
 void EW_OnEntitySpawned(CEntityInstance* pEntity)
@@ -2149,6 +2176,27 @@ bool EW_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeapon
 	if (!zpPlayer || zpPlayer->IsEbanned())
 		return false;
 
+	// Limit any active transfers to the receiver only
+	if (g_pEWHandler->vecActiveTransfers.size() == 0)
+		return true;
+
+	for (int i = 0; i < g_pEWHandler->vecActiveTransfers.size(); i++)
+	{
+		std::shared_ptr<EActiveTransfer> transfer = g_pEWHandler->vecActiveTransfers[i];
+		CHandle<CCSPlayerController> hReceiver = transfer->hReceiver;
+		CHandle<CBasePlayerWeapon> hWeapon = transfer->hWeapon;
+		if (!hReceiver.Get() || !hWeapon.Get())
+			continue;
+
+		if (hWeapon.Get() != pPlayerWeapon)
+			continue;
+
+		if (hReceiver.Get() == ccsPlayer)
+			return true;
+		else
+			return false;
+	}
+
 	return true;
 }
 
@@ -2241,6 +2289,14 @@ void EW_PlayerDeathPre(CCSPlayerController* pController)
 
 void EW_PlayerDisconnect(int slot)
 {
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(CPlayerSlot(slot));
+	if (pPlayer)
+	{
+		CPointWorldText* pText = pPlayer->GetEntwatchHud();
+		if (pText)
+			pText->Remove();
+	}
+
 	auto i = g_pEWHandler->mapTransfers.find(slot);
 	if (i != g_pEWHandler->mapTransfers.end())
 		g_pEWHandler->mapTransfers.erase(slot);
