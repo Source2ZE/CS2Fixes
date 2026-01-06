@@ -599,6 +599,8 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 	RETURN_META(MRES_IGNORED);
 }
 
+CConVar<CUtlString> g_cvarMotdUrl("cs2f_motd_url", FCVAR_NONE, "Server MOTD URL, shows up as a \"Server Website\" button in scoreboard", "");
+
 void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession* pSession, const char* pszMapName)
 {
 	g_pEntitySystem = GameEntitySystem();
@@ -618,8 +620,18 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 
 	g_pPanoramaVoteHandler->Reset();
 	g_pVoteManager->VoteManager_Init();
-
 	g_pIdleSystem->Reset();
+
+	INetworkStringTable* pInfoPanelTable = g_pNetworkStringTableServer->FindTable("InfoPanel");
+
+	if (pInfoPanelTable && V_strcmp(g_cvarMotdUrl.Get(), ""))
+	{
+		SetStringUserDataRequest_t pUserData;
+		pUserData.m_pRawData = (void*)g_cvarMotdUrl.Get().Get();
+		pUserData.m_cbDataSize = g_cvarMotdUrl.Get().Length() + 1;
+
+		pInfoPanelTable->AddString(true, "motd", &pUserData);
+	}
 }
 
 class CGamePlayerEquip;
