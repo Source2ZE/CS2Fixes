@@ -178,7 +178,7 @@ public:
 		sClantag(""),
 		bHasThisClantag(false),
 		iTeamNum(CS_TEAM_NONE),
-		bShouldGlow(false) {};
+		bShouldGlow(false){};
 	bool RegisterHandler(CBaseEntity* pEnt, int iHandlerTemplateNum);
 	bool RemoveHandler(CBaseEntity* pEnt);
 	int FindHandlerByEntIndex(int indexToFind);
