@@ -2,31 +2,16 @@
 import os
 import subprocess
 
-MMSPlugin.plugin_name = 'cs2fixes'
-MMSPlugin.plugin_alias = 'cs2fixes'
-
 for sdk_target in MMSPlugin.sdk_targets:
   sdk = sdk_target.sdk
   cxx = sdk_target.cxx
 
-  binary = MMSPlugin.HL2Library(builder, cxx, MMSPlugin.plugin_name, sdk)
-  
-  try:
-    version = subprocess.check_output(['git', 'describe', '--tags', '--long']).decode('ascii').strip()
-  except subprocess.SubprocessError as e:
-    version = "1.7-dev"
-    print("git describe failed as there are no tags")
-	
-  print(f'Setting version to "{version}"')
-	
-  binary.compiler.defines += ['CS2FIXES_VERSION="' + version + '"']
-
-  if binary.compiler.behavior == 'gcc':
-    binary.compiler.cxxflags += ['-Wno-invalid-offsetof']
+  binary = MMSPlugin.HL2Library(builder, cxx, f'{MMSPlugin.metadata["name"]}.{sdk["name"]}', sdk)
 
   binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath, 'src', 'cs2_sdk'),
     os.path.join(builder.sourcePath, 'src', 'utils'),
+    os.path.join(builder.sourcePath, 'public'),
     os.path.join(builder.sourcePath, 'sdk', 'thirdparty', 'protobuf-3.21.8', 'src'),
     os.path.join(builder.sourcePath, 'vendor', 'funchook', 'include'),
   ]
@@ -50,7 +35,6 @@ for sdk_target in MMSPlugin.sdk_targets:
     ]
     binary.sources += ['src/utils/plat_win.cpp']
 
-
   binary.sources += [
     'src/cs2fixes.cpp',
     'src/mempatch.cpp',
@@ -64,6 +48,8 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/events.cpp',
     'src/utils/entity.cpp',
     'src/utils/weapon.cpp',
+    'src/utils/hud_manager.cpp',
+    'src/utils/utils.cpp',
     'src/cs2_sdk/entity/services.cpp',
     'src/cs2_sdk/entity/ccsplayerpawn.cpp',
     'src/cs2_sdk/entity/cbasemodelentity.cpp',
@@ -84,6 +70,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/entitylistener.cpp',
     'src/leader.cpp',
     'src/buttonwatch.cpp',
+    'src/topdefender.cpp',
     'src/idlemanager.cpp',
     'sdk/entity2/entitysystem.cpp',
     'sdk/entity2/entityidentity.cpp',
@@ -102,17 +89,14 @@ for sdk_target in MMSPlugin.sdk_targets:
     os.path.join(sdk['path'], 'game', 'shared', 'te.proto'),
     os.path.join(sdk['path'], 'game', 'shared', 'usercmd.proto'),
     os.path.join(sdk['path'], 'game', 'shared', 'usermessages.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'cs_gameevents.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'cs_usercmd.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'cstrike15_gcmessages.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'cstrike15_usermessages.proto'),
-    os.path.join(builder.sourcePath, 'protobuf', 'networksystem_protomessages.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'cs', 'cs_gameevents.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'cs', 'cs_usercmd.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'cstrike15', 'cstrike15_gcmessages.proto'),
+    os.path.join(sdk['path'], 'game', 'shared', 'cstrike15', 'cstrike15_usermessages.proto'),
+    os.path.join(sdk['path'], 'networksystem', 'networksystem_protomessages.proto'),
   ])
   protoc_builder.protoc.includes += [
     os.path.join(sdk['path'], 'gcsdk'),
-    os.path.join(sdk['path'], 'common'),
-    os.path.join(sdk['path'], 'game', 'shared'),
-    os.path.join(builder.sourcePath, 'protobuf'),
   ]
 
   binary.custom = [protoc_builder]

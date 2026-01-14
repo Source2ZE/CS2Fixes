@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -100,8 +100,18 @@ typedef uint32 SoundEventGuid_t;
 struct SndOpEventGuid_t
 {
 	SoundEventGuid_t m_nGuid;
-	uint64 m_hStackHash;
+	uint32 m_hStackHash;
 };
+
+#pragma pack(push, 1)
+struct StartSoundEventInfo
+{
+	SndOpEventGuid_t m_nSndOpEventGuid;
+	int32 m_nFlags;
+	uint64 m_nRecipients;
+};
+#pragma pack(pop)
+static_assert(sizeof(StartSoundEventInfo) == 20); // Ensure alignment change works
 
 // used with EmitSound_t
 enum gender_t : uint8
@@ -132,41 +142,31 @@ enum gender_t : uint8
 struct EmitSound_t
 {
 	EmitSound_t() :
-		m_nChannel(0),
 		m_pSoundName(0),
+		m_vecSoundOrigin(),
 		m_flVolume(VOL_NORM),
-		m_SoundLevel(SNDLVL_NONE),
-		m_nFlags(0),
-		m_nPitch(PITCH_NORM),
-		m_pOrigin(0),
 		m_flSoundTime(0.0f),
-		m_pflSoundDuration(0),
-		m_bEmitCloseCaption(true),
-		m_bWarnOnMissingCloseCaption(false),
-		m_bWarnOnDirectWaveReference(false),
-		m_nSpeakerEntity(-1),
-		m_UtlVecSoundOrigin(),
 		m_nForceGuid(0),
-		m_SpeakerGender(GENDER_NONE)
+		m_nPitch(PITCH_NORM),
+		m_nFlags(0)
 	{
 	}
-	int m_nChannel;
-	const char* m_pSoundName;
-	float m_flVolume;
-	soundlevel_t m_SoundLevel;
-	int m_nFlags;
-	int m_nPitch;
-	const Vector* m_pOrigin;
-	float m_flSoundTime;
-	float* m_pflSoundDuration;
-	bool m_bEmitCloseCaption;
-	bool m_bWarnOnMissingCloseCaption;
-	bool m_bWarnOnDirectWaveReference;
-	CEntityIndex m_nSpeakerEntity;
-	CUtlVector<Vector, CUtlMemory<Vector, int> > m_UtlVecSoundOrigin;
-	SoundEventGuid_t m_nForceGuid;
-	gender_t m_SpeakerGender;
-};
+	const char* m_pSoundName; // 0x0
+	Vector m_vecSoundOrigin;  // 0x8
+	float m_flVolume;		  // 0x14
+	float m_flSoundTime;	  // 0x18
+private:
+	uint8_t pad_1c[0x4];
+
+public:
+	uint32_t m_nForceGuid; // 0x20
+private:
+	uint8_t pad_24[0x4];
+
+public:
+	int16_t m_nPitch; // 0x28
+	uint8_t m_nFlags; // 0x2a
+}; // Size: 0x2b
 
 class CNetworkTransmitComponent
 {
@@ -224,5 +224,8 @@ public:
 	SCHEMA_FIELD(int, m_nGlowRangeMin)
 	SCHEMA_FIELD(Color, m_glowColorOverride)
 	SCHEMA_FIELD(bool, m_bFlashing)
+	SCHEMA_FIELD(float, m_flGlowTime)
+	SCHEMA_FIELD(float, m_flGlowStartTime)
+	SCHEMA_FIELD(bool, m_bEligibleForScreenHighlight)
 	SCHEMA_FIELD(bool, m_bGlowing)
 };

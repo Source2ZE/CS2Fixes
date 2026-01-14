@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -32,8 +32,6 @@
 #include <entity/cbasetrigger.h>
 #include <string>
 #include <vector>
-
-extern CGlobalVars* GetGlobals();
 
 struct AddOutputKey_t
 {
@@ -269,7 +267,7 @@ static void AddOutputCustom_Gravity(CBaseEntity* pInstance,
 {
 	const auto value = Q_atof(vecArgs[1].c_str());
 
-	pInstance->m_flGravityScale = value;
+	pInstance->SetGravityScale(value);
 
 #ifdef _DEBUG
 	Message("Set gravity to %f for %s\n", value, pInstance->GetName());
@@ -537,7 +535,7 @@ bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor,
 	CHandle<CBaseEntity> hAttacker(pAttacker);
 	CHandle<CBaseEntity> hAbility(pAbility);
 
-	new CTimer(0.f, false, false, [hPawn, hInflictor, hAttacker, hAbility, nDamageType]() {
+	CTimer::Create(0.f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hPawn, hInflictor, hAttacker, hAbility, nDamageType]() {
 		CCSPlayerPawn* pPawn = hPawn.Get();
 
 		if (!pPawn || !GetGlobals())

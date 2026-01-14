@@ -30,8 +30,6 @@
 #include "vendor/nlohmann/json.hpp"
 #include <string>
 
-extern ISteamHTTP* g_http;
-
 HTTPManager g_HTTPManager;
 
 #undef strdup
@@ -97,7 +95,7 @@ void HTTPManager::TrackedRequest::OnHTTPRequestCompleted(HTTPRequestCompleted_t*
 			// Allow error callback even if invalid json, since error code can provide useful info
 			m_callbackError(arg->m_hRequest, arg->m_eStatusCode, json());
 		}
-		else if (!jsonResponse.is_discarded())
+		else if (!jsonResponse.is_discarded() && m_callbackCompleted)
 			m_callbackCompleted(arg->m_hRequest, jsonResponse);
 
 		delete[] response;

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -29,8 +29,6 @@
 #include "mathlib/vector.h"
 #include "schema.h"
 #include "tier1/utlstringtoken.h"
-
-extern CGameConfig* g_GameConfig;
 
 class CGameUI;
 class CEnvHudHint;
@@ -154,6 +152,7 @@ public:
 	SCHEMA_FIELD(CUtlString, m_sUniqueHammerID);
 	SCHEMA_FIELD(CUtlSymbolLarge, m_target);
 	SCHEMA_FIELD(CUtlSymbolLarge, m_iGlobalname);
+	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hOwnerEntity)
 
 	int entindex() { return m_pEntity->m_EHandle.GetEntryIndex(); }
 
@@ -172,7 +171,7 @@ public:
 
 	void TakeDamage(CTakeDamageInfo& info)
 	{
-		Detour_CBaseEntity_TakeDamageOld(this, &info);
+		Detour_CBaseEntity_TakeDamageOld(this, &info, 0);
 	}
 
 	void Teleport(const Vector* position, const QAngle* angles, const Vector* velocity)
@@ -210,7 +209,7 @@ public:
 
 	void AcceptInput(const char* pInputName, variant_t value = variant_t(""), CEntityInstance* pActivator = nullptr, CEntityInstance* pCaller = nullptr)
 	{
-		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, &value, 0);
+		addresses::CEntityInstance_AcceptInput(this, pInputName, pActivator, pCaller, &value, 0, nullptr);
 	}
 
 	bool IsAlive() { return m_lifeState == LifeState_t::LIFE_ALIVE; }
@@ -231,7 +230,7 @@ public:
 		addresses::CBaseEntity_EmitSoundParams(this, pszSound, nPitch, flVolume, flDelay);
 	}
 
-	SndOpEventGuid_t EmitSoundFilter(IRecipientFilter& filter, const char* pszSound, float flVolume = 1.0, float flPitch = 1.0)
+	StartSoundEventInfo EmitSoundFilter(IRecipientFilter& filter, const char* pszSound, float flVolume = 1.0, float flPitch = 1.0)
 	{
 		EmitSound_t params;
 		params.m_pSoundName = pszSound;
@@ -250,7 +249,10 @@ public:
 	// This was needed so we can parent to nameless entities using pointers
 	void SetParent(CBaseEntity* pNewParent)
 	{
-		addresses::CBaseEntity_SetParent(this, pNewParent, MakeStringToken(""), nullptr);
+		if (pNewParent)
+			AcceptInput("SetParent", "!activator", pNewParent);
+		else
+			AcceptInput("ClearParent");
 	}
 
 	void SetOwner(CBaseEntity* pNewOwner)
@@ -272,6 +274,11 @@ public:
 	void SetGroundEntity(CBaseEntity* pGround)
 	{
 		addresses::SetGroundEntity(this, pGround, nullptr);
+	}
+
+	void SetGravityScale(float flGravityScale)
+	{
+		addresses::SetGravityScale(this, flGravityScale);
 	}
 
 	const char* GetName() const { return m_pEntity->m_name.String(); }

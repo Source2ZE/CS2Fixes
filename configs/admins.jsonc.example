@@ -1,0 +1,57 @@
+//---------------------
+// Permission flags
+//---------------------
+// a : Reserved slots
+// b : Generic admin, required for admins
+// c : Kick other players
+// d : Banning other players
+// e : Removing bans
+// f : Slaying other players
+// g : Changing the map
+// h : Changing cvars
+// i : Changing configs
+// j : Special chat privileges
+// k : Voting
+// l : Password the server
+// m : Remote console
+// n : Change sv_cheats and related commands
+// z : Root. It grants ALL flags so use with caution!
+
+// Flags 'o' to 'y' are custom flags (currently unused)
+
+// cs2f_admin_immunity 'convar' controls how targetting works with "immunity" KV
+//	0 - Commands using immunity targetting can only target players with immunities LOWER than the user's
+//	1 - Commands using immunity targetting can only target players with immunities EQUAL TO OR LOWER than the user's
+//	2 - Commands ignore immunity levels
+{
+	"Groups":
+	{
+		// Group entries should follow this format
+		//"Moderator": // Group name. Used in "Admins" entries
+		//{
+		//  // These fields are optional and can be excluded if unset
+		//	"flags": "abcdefg", // Permission flags as described above
+		//	"immunity": 1 // Non-negative value.
+		//}
+	},
+
+	"Admins":
+	{
+		// Admin entries should follow this format
+		//"76561197960287930": // Steam64 ID
+		//{
+		//	"name": "Gabe Newell", // Admin name, can be anything.
+		//
+		//  // Groups array is optional; you can instead manually define individual admin settings with later fields
+		//	"groups":
+		//	[
+		//		// Groups this admin inherits permissions from
+		//		"Moderator" // Case sensitive
+		//	],
+		// 
+		//  // If at least 1 group is added above, these are all optional fields.
+		//	"flags": "abcdefg", // Permission flags. Combines with any flags defined in user's groups
+		//	"immunity": 1 // Non-negative value. Takes highest value from here or any of user's groups
+		//}
+	}
+}

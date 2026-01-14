@@ -36,6 +36,8 @@ public:
 	virtual void DisableDetour() = 0;
 };
 
+extern CUtlVector<CDetourBase*> g_vecDetours;
+
 template <typename T>
 class CDetour : public CDetourBase
 {
@@ -71,8 +73,6 @@ private:
 	funchook_t* m_hook;
 	bool m_bInstalled;
 };
-
-extern CUtlVector<CDetourBase*> g_vecDetours;
 
 template <typename T>
 CDetour<T>::CDetour(T* pfnDetour, const char* pszName) :

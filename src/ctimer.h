@@ -18,51 +18,70 @@
  */
 
 #pragma once
-#include "utllinkedlist.h"
+#include "cs2fixes.h"
 #include <functional>
+#include <list>
+#include <memory>
 
-extern int g_iRoundNum;
+// clang-format off
+#define TIMERFLAG_NONE		(0)
+#define TIMERFLAG_MAP		(1 << 0) // Only valid for this map, cancels on map change
+#define TIMERFLAG_ROUND		(1 << 1) // Only valid for this round, cancels on new round
+// clang-format on
 
 class CTimerBase
 {
+protected:
+	CTimerBase(float flInitialInterval, uint64 nTimerFlags) :
+		m_flInterval(flInitialInterval), m_nTimerFlags(nTimerFlags)
+	{}
+
+	void SetInterval(float flInterval) { m_flInterval = flInterval; }
+	void SetLastExecute(float flLastExecute) { m_flLastExecute = flLastExecute; }
+
 public:
-	CTimerBase(float flInitialInterval, bool bPreserveMapChange, bool bPreserveRoundChange) :
-		m_flInterval(flInitialInterval), m_bPreserveMapChange(bPreserveMapChange), m_bPreserveRoundChange(bPreserveRoundChange)
+	virtual bool Execute(bool bAutomaticExecute = false) = 0;
+	virtual void Cancel() = 0;
+
+	float GetInterval() { return m_flInterval; }
+	float GetLastExecute() { return m_flLastExecute; }
+	bool IsTimerFlagSet(uint64 iTimerFlag) { return !iTimerFlag || (m_nTimerFlags & iTimerFlag); }
+	void Initialize()
 	{
-		m_iRoundNum = g_iRoundNum;
+		if (m_flLastExecute == -1)
+			m_flLastExecute = g_flUniversalTime;
 	}
 
-	virtual bool Execute() = 0;
-
+private:
 	float m_flInterval;
 	float m_flLastExecute = -1;
-	bool m_bPreserveMapChange;
-	bool m_bPreserveRoundChange;
-	int m_iRoundNum;
+	uint64 m_nTimerFlags;
 };
-
-extern CUtlLinkedList<CTimerBase*> g_timers;
 
 // Timer functions should return the time until next execution, or a negative value like -1.0f to stop
 // Having an interval of 0 is fine, in this case it will run on every game frame
-class CTimer : public CTimerBase
+class CTimer : public CTimerBase, public std::enable_shared_from_this<CTimer>
 {
-public:
-	CTimer(float flInitialInterval, bool bPreserveMapChange, bool bPreserveRoundChange, std::function<float()> func) :
-		CTimerBase(flInitialInterval, bPreserveMapChange, bPreserveRoundChange), m_func(func)
+private:
+	// Silly workaround to achieve a "private constructor" only Create() can call
+	struct _timer_constructor_tag
 	{
-		g_timers.AddToTail(this);
+		explicit _timer_constructor_tag() = default;
 	};
 
-	inline bool Execute() override
-	{
-		m_flInterval = m_func();
+public:
+	CTimer(float flInitialInterval, uint64 nTimerFlags, std::function<float()> func, _timer_constructor_tag) :
+		CTimerBase(flInitialInterval, nTimerFlags), m_func(func)
+	{}
 
-		return m_flInterval >= 0;
-	}
+	static std::weak_ptr<CTimer> Create(float flInitialInterval, uint64 nTimerFlags, std::function<float()> func);
+	bool Execute(bool bAutomaticExecute) override;
+	void Cancel() override;
 
+private:
 	std::function<float()> m_func;
 };
 
-void RemoveTimers();
-void RemoveMapTimers();
+void RunTimers();
+void RemoveAllTimers();
+void RemoveTimers(uint64 iTimerFlag);

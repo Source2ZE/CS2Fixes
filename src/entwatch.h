@@ -21,8 +21,6 @@
 
 #include "common.h"
 #include "ctimer.h"
-#include "entity/ccsplayercontroller.h"
-#include "entity/ccsplayerpawn.h"
 #include "eventlistener.h"
 #include "gamesystem.h"
 #include "khook.hpp"
@@ -30,10 +28,15 @@
 
 using ordered_json = nlohmann::ordered_json;
 
+class CCSPlayerController;
+class CCSPlayerPawn;
+
+extern CConVar<bool> g_cvarEnableEntWatch;
+extern CConVar<bool> g_cvarEnableEntwatchHud;
+
 #define EW_PREFIX " \4[EntWatch]\1 "
 
 #define EW_PREF_HUD_MODE "entwatch_hud"
-#define EW_PREF_CLANTAG "entwatch_clantag"
 #define EW_PREF_HUDPOS_X "entwatch_hudpos_x"
 #define EW_PREF_HUDPOS_Y "entwatch_hudpos_y"
 #define EW_PREF_HUDCOLOR "entwatch_hudcolor"
@@ -116,6 +119,7 @@ struct EWItemHandler
 	float flLastUsed;	  // For tracking cd on the hud
 	float flLastShownUse; // To prevent too much chat spam
 
+	bool IsCounter() { return (type == EWHandlerType::CounterDown || type == EWHandlerType::CounterUp); }
 	void SetDefaultValues();
 	void Print();
 
@@ -137,6 +141,7 @@ struct EWItem
 	std::string szShortName; /* Name to show on hud/scoreboard */
 	std::string szHammerid;	 /* Hammerid of the weapon */
 	char sChatColor[2];
+	Color colorGlow;
 	bool bShowPickup;										 /* Whether to show pickup/drop messages in chat */
 	bool bShowHud;											 /* Whether to show this item on hud/scoreboard */
 	EWAutoConfigOption transfer;							 /* Can this item be transferred */
@@ -162,6 +167,7 @@ struct EWItemInstance : EWItem /* Current instance of defined items */
 	bool bHasThisClantag;
 	int iTeamNum;
 	std::string sLastOwnerName; // For etransfer info
+	bool bShouldGlow;
 
 public:
 	EWItemInstance(int iWeapon, std::shared_ptr<EWItem> pItem) :
@@ -172,7 +178,8 @@ public:
 		bAllowDrop(true),
 		sClantag(""),
 		bHasThisClantag(false),
-		iTeamNum(CS_TEAM_NONE){};
+		iTeamNum(CS_TEAM_NONE),
+		bShouldGlow(false){};
 	bool RegisterHandler(CBaseEntity* pEnt, int iHandlerTemplateNum);
 	bool RemoveHandler(CBaseEntity* pEnt);
 	int FindHandlerByEntIndex(int indexToFind);
@@ -181,6 +188,9 @@ public:
 	void Pickup(int slot);
 	void Drop(EWDropReason reason, CCSPlayerController* pController);
 	std::string GetHandlerStateText();
+	void StartGlow();
+	void EndGlow();
+	bool IsEmpty();
 };
 
 struct ETransferInfo
@@ -196,13 +206,19 @@ struct ETransferInfo
 	float flTime;							// The time when the command was initiated
 };
 
+struct EActiveTransfer
+{
+	CHandle<CCSPlayerController> hReceiver;
+	CHandle<CBasePlayerWeapon> hWeapon;
+	float flTime;
+};
+
 class CEWHandler
 {
 public:
 	CEWHandler()
 	{
 		bConfigLoaded = false;
-		m_bHudTicking = false;
 	}
 
 	void CreateHooks();
@@ -246,9 +262,10 @@ public:
 	std::vector<CHandle<CBaseEntity>> vecHookedTriggers;
 	std::vector<CHandle<CBaseEntity>> vecUseHookedEntities;
 
-	bool m_bHudTicking;
+	std::weak_ptr<CTimer> m_pHudTimer;
 
-	std::map<int, std::shared_ptr<ETransferInfo>> mapTransfers; // Any etransfers that target multiple items
+	std::map<int, std::shared_ptr<ETransferInfo>> mapTransfers;		  // Any etransfers that target multiple items
+	std::vector<std::shared_ptr<EActiveTransfer>> vecActiveTransfers; // Active transfers where only the receiver can pickup the weapon
 };
 
 extern CEWHandler* g_pEWHandler;
@@ -264,7 +281,6 @@ void EW_DropWeapon(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon*
 void EW_PlayerDeath(IGameEvent* pEvent);
 void EW_PlayerDeathPre(CCSPlayerController* pController);
 void EW_PlayerDisconnect(int slot);
-void EW_SendBeginNewMatchEvent();
 bool EW_IsFireOutputHooked();
 void EW_FireOutput(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay);
 int GetTemplateSuffixNumber(const char* szName);

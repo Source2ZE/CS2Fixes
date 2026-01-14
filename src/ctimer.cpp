@@ -19,24 +19,75 @@
 
 #include "ctimer.h"
 
-CUtlLinkedList<CTimerBase*> g_timers;
+std::list<std::shared_ptr<CTimerBase>> g_timers;
 
-void RemoveTimers()
+void RunTimers()
 {
-	g_timers.PurgeAndDeleteElements();
+	auto iterator = g_timers.begin();
+
+	while (iterator != g_timers.end())
+	{
+		auto pTimer = *iterator;
+		pTimer->Initialize();
+
+		// Timer execute
+		if (pTimer->GetLastExecute() + pTimer->GetInterval() <= g_flUniversalTime && !pTimer->Execute(true))
+			iterator = g_timers.erase(iterator);
+		else
+			iterator++;
+	}
 }
 
-void RemoveMapTimers()
+void RemoveAllTimers()
 {
-	for (int i = g_timers.Tail(); i != g_timers.InvalidIndex();)
+	g_timers.clear();
+}
+
+void RemoveTimers(uint64 iTimerFlag)
+{
+	auto iterator = g_timers.begin();
+
+	while (iterator != g_timers.end())
+		if ((*iterator)->IsTimerFlagSet(iTimerFlag))
+			iterator = g_timers.erase(iterator);
+		else
+			iterator++;
+}
+
+std::weak_ptr<CTimer> CTimer::Create(float flInitialInterval, uint64 nTimerFlags, std::function<float()> func)
+{
+	auto pTimer = std::make_shared<CTimer>(flInitialInterval, nTimerFlags, func, _timer_constructor_tag{});
+
+	g_timers.push_back(pTimer);
+	return pTimer;
+}
+
+bool CTimer::Execute(bool bAutomaticExecute)
+{
+	SetInterval(m_func());
+	SetLastExecute(g_flUniversalTime);
+
+	bool bContinue = GetInterval() >= 0;
+
+	// Only scan the timer list if this isn't an automatic execute (RunTimers() already has the iterator to erase)
+	if (!bAutomaticExecute && !bContinue)
+		Cancel();
+
+	return bContinue;
+}
+
+void CTimer::Cancel()
+{
+	auto iterator = g_timers.begin();
+
+	while (iterator != g_timers.end())
 	{
-		int prevIndex = i;
-		i = g_timers.Previous(i);
+		if (*iterator == shared_from_this())
+		{
+			g_timers.erase(iterator);
+			break;
+		}
 
-		if (g_timers[prevIndex]->m_bPreserveMapChange)
-			continue;
-
-		delete g_timers[prevIndex];
-		g_timers.Remove(prevIndex);
+		iterator++;
 	}
 }

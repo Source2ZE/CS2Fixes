@@ -19,13 +19,10 @@
 
 #pragma once
 
+#include "../entwatch.h"
 #include "cbaseentity.h"
 #include "cbasemodelentity.h"
 #include "services.h"
-
-extern CConVar<bool> g_cvarDropMapWeapons;
-void EW_PlayerDeathPre(CCSPlayerController* pController);
-extern CConVar<bool> g_cvarEnableEntWatch;
 
 class CBasePlayerPawn : public CBaseModelEntity
 {
@@ -65,8 +62,19 @@ public:
 			}
 		}
 
+		Vector pos = GetEyePosition();
 		for (CBasePlayerWeapon* pWeapon : vecWeaponsToDrop)
+		{
 			m_pWeaponServices()->DropWeapon(pWeapon);
+
+			CHandle<CBasePlayerWeapon> hWep = pWeapon->GetHandle();
+			CTimer::Create(0.0, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hWep, pos] {
+				CBasePlayerWeapon* pWep = hWep.Get();
+				if (pWep)
+					pWep->Teleport(&pos, nullptr, nullptr);
+				return -1.0f;
+			});
+		}
 	}
 
 	void CommitSuicide(bool bExplode, bool bForce)

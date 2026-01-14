@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -18,9 +18,9 @@
  */
 
 #include "entities.h"
-
 #include "ctimer.h"
 #include "entity.h"
+
 #include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
@@ -34,7 +34,17 @@
 
 // #define ENTITY_HANDLER_ASSERTION
 
-extern CCSGameRules* g_pGameRules;
+static constexpr uint32_t ENTITY_MURMURHASH_SEED = 0x97984357;
+static constexpr uint32_t ENTITY_UNIQUE_INVALID = ~0u;
+
+static uint32_t GetEntityUnique(CBaseEntity* pEntity)
+{
+	const auto& sUniqueHammerID = pEntity->m_sUniqueHammerID();
+	if (sUniqueHammerID.IsEmpty())
+		return ENTITY_UNIQUE_INVALID;
+
+	return MurmurHash2LowerCase(sUniqueHammerID.Get(), ENTITY_MURMURHASH_SEED);
+}
 
 static bool StripPlayer(CCSPlayerPawn* pPawn)
 {
@@ -85,7 +95,7 @@ static void DelayInput(CBaseEntity* pCaller, const char* input, const char* para
 {
 	const auto eh = pCaller->GetHandle();
 
-	new CTimer(0.f, false, false, [eh, input, param]() {
+	CTimer::Create(0.f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [eh, input, param]() {
 		if (const auto entity = reinterpret_cast<CBaseEntity*>(eh.Get()))
 			entity->AcceptInput(input, param, nullptr, entity);
 
@@ -99,7 +109,7 @@ static void DelayInput(CBaseEntity* pCaller, CBaseEntity* pActivator, const char
 	const auto eh = pCaller->GetHandle();
 	const auto ph = pActivator->GetHandle();
 
-	new CTimer(0.f, false, false, [eh, ph, input, param]() {
+	CTimer::Create(0.f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [eh, ph, input, param]() {
 		const auto player = reinterpret_cast<CBaseEntity*>(ph.Get());
 		if (const auto entity = reinterpret_cast<CBaseEntity*>(eh.Get()))
 			entity->AcceptInput(input, param, player, entity);
@@ -108,9 +118,54 @@ static void DelayInput(CBaseEntity* pCaller, CBaseEntity* pActivator, const char
 	});
 }
 
+namespace CTriggerGravityHandler
+{
+	static std::unordered_map<uint32_t, float> s_gravityMap;
+
+	void OnPrecache(CTriggerGravity* pEntity, const CEntityKeyValues* kv)
+	{
+		const auto pGravity = kv->GetKeyValue("gravity");
+		const auto pHammerId = kv->GetKeyValue("hammerUniqueId");
+		if (!pGravity || !pHammerId)
+			return;
+
+		const auto flGravity = pGravity->GetFloat();
+		const auto hEntity = MurmurHash2LowerCase(pHammerId->GetString(), ENTITY_MURMURHASH_SEED);
+
+		s_gravityMap[hEntity] = flGravity;
+	}
+
+	bool GravityTouching(CBaseEntity* pEntity, CBaseEntity* pOther)
+	{
+		const auto hEntity = GetEntityUnique(pEntity);
+		if (hEntity == ENTITY_UNIQUE_INVALID)
+			return false;
+
+		const auto gravity = s_gravityMap.find(hEntity);
+		if (gravity == s_gravityMap.end())
+			return false;
+
+		if (pOther->IsPawn() && pOther->IsAlive())
+			pOther->SetGravityScale(gravity->second);
+
+		return true;
+	}
+
+	void OnEndTouch(CTriggerGravity* pEntity, CBaseEntity* pOther)
+	{
+		if (pOther->IsPawn())
+			pOther->SetGravityScale(1);
+	}
+
+	static void Shutdown()
+	{
+		s_gravityMap.clear();
+	}
+} // namespace CTriggerGravityHandler
+
 namespace CGamePlayerEquipHandler
 {
-	static std::unordered_map<std::string, std::unordered_set<uint32_t>> s_PlayerEquipMap;
+	static std::unordered_map<uint32_t, std::unordered_set<uint32_t>> s_PlayerEquipMap;
 
 	void Use(CGamePlayerEquip* pEntity, InputData_t* pInput)
 	{
@@ -127,9 +182,9 @@ namespace CGamePlayerEquipHandler
 		{
 			StripPlayer(pPawn);
 		}
-		else if (flags & ::CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
+		else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
+			const auto& pair = s_PlayerEquipMap.find(GetEntityUnique(pEntity));
 			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
 				StripPlayer(pPawn, pair->second);
 		}
@@ -148,7 +203,7 @@ namespace CGamePlayerEquipHandler
 		}
 		else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
+			const auto& pair = s_PlayerEquipMap.find(GetEntityUnique(pEntity));
 			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
 			{
 				CCSPlayerPawn* pPawn = nullptr;
@@ -177,7 +232,7 @@ namespace CGamePlayerEquipHandler
 		}
 		else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
 		{
-			const auto& pair = s_PlayerEquipMap.find(pEntity->GetName());
+			const auto& pair = s_PlayerEquipMap.find(GetEntityUnique(pEntity));
 			if (pair != s_PlayerEquipMap.end() && !pair->second.empty())
 				StripPlayer(pPawn, pair->second);
 		}
@@ -199,8 +254,8 @@ namespace CGamePlayerEquipHandler
 
 	void OnPrecache(CGamePlayerEquip* pEntity, const CEntityKeyValues* kv)
 	{
-		const auto pName = pEntity->GetName();
-		if (!pName || !pName[0])
+		const auto pHammerId = kv->GetKeyValue("hammerUniqueId");
+		if (!pHammerId)
 			return;
 
 		auto list = std::unordered_set<uint32_t>();
@@ -219,10 +274,13 @@ namespace CGamePlayerEquipHandler
 		}
 
 		if (!list.empty())
-			s_PlayerEquipMap[std::string(pName)] = list;
+		{
+			const auto hEntity = MurmurHash2LowerCase(pHammerId->GetString(), ENTITY_MURMURHASH_SEED);
+			s_PlayerEquipMap[hEntity] = list;
+		}
 	}
 
-	void Shutdown()
+	static void Shutdown()
 	{
 		s_PlayerEquipMap.clear();
 	}
@@ -251,10 +309,10 @@ namespace CGameUIHandler
 
 	static std::unordered_map<uint32, CGameUIState> s_repository;
 
-	inline uint64 GetButtons(CPlayer_MovementServices* pMovement)
+	inline uint64 GetButtons(CPlayer_MovementServices* pMovement, int key = 0)
 	{
 		const auto buttonStates = pMovement->m_nButtons().m_pButtonStates();
-		const auto buttons = buttonStates[0];
+		const auto buttons = buttonStates[key];
 		return buttons;
 	}
 
@@ -266,8 +324,9 @@ namespace CGameUIHandler
 
 		const auto spawnFlags = pEntity->m_spawnflags();
 		const auto buttons = GetButtons(pMovement);
+		const auto scrolls = GetButtons(pMovement, 2);
 
-		if ((spawnFlags & CGameUI::SF_GAMEUI_JUMP_DEACTIVATE) != 0 && (buttons & IN_JUMP) != 0)
+		if (((spawnFlags & CGameUI::SF_GAMEUI_JUMP_DEACTIVATE) != 0) && ((buttons & IN_JUMP) != 0 || (scrolls & IN_JUMP) != 0))
 		{
 			DelayInput(pEntity, pPlayer, "Deactivate");
 			return BAD_BUTTONS;
@@ -760,5 +819,6 @@ void EntityHandler_OnEntitySpawned(CBaseEntity* pEntity)
 
 void EntityHandler_OnLevelInit()
 {
+	CTriggerGravityHandler::Shutdown();
 	CGamePlayerEquipHandler::Shutdown();
 }

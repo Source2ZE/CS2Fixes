@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -26,6 +26,14 @@ class CGameUI;
 class CPointViewControl;
 class CCSPlayerPawn;
 class CEntityKeyValues;
+class CTriggerGravity;
+
+namespace CTriggerGravityHandler
+{
+	void OnPrecache(CTriggerGravity* pEntity, const CEntityKeyValues* kv);
+	bool GravityTouching(CBaseEntity* pEntity, CBaseEntity* pOther);
+	void OnEndTouch(CTriggerGravity* pEntity, CBaseEntity* pOther);
+} // namespace CTriggerGravityHandler
 
 namespace CGamePlayerEquipHandler
 {

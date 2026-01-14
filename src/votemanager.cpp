@@ -26,11 +26,6 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGameEntitySystem* g_pEntitySystem;
-extern IVEngineServer2* g_pEngineServer2;
-extern CGlobalVars* GetGlobals();
-extern CCSGameRules* g_pGameRules;
-
 CVoteManager* g_pVoteManager = nullptr;
 
 CConVar<bool> g_cvarVoteManagerEnable("cs2f_votemanager_enable", FCVAR_NONE, "Whether to enable votemanager features such as RTV and extends", false);
@@ -54,19 +49,19 @@ void CVoteManager::VoteManager_Init()
 
 	m_iExtends = 0;
 
-	new CTimer(g_cvarExtendVoteDelay.Get(), false, true, [this]() {
+	CTimer::Create(g_cvarExtendVoteDelay.Get(), TIMERFLAG_MAP, [this]() {
 		if (m_ExtendState < EExtendState::POST_EXTEND_NO_EXTENDS_LEFT)
 			m_ExtendState = EExtendState::EXTEND_ALLOWED;
 		return -1.0f;
 	});
 
-	new CTimer(g_cvarRtvDelay.Get(), false, true, [this]() {
+	CTimer::Create(g_cvarRtvDelay.Get(), TIMERFLAG_MAP, [this]() {
 		if (m_RTVState != ERTVState::BLOCKED_BY_ADMIN)
 			m_RTVState = ERTVState::RTV_ALLOWED;
 		return -1.0f;
 	});
 
-	new CTimer(m_flExtendVoteTickrate, false, true, std::bind(&CVoteManager::TimerCheckTimeleft, this));
+	CTimer::Create(m_flExtendVoteTickrate, TIMERFLAG_MAP, std::bind(&CVoteManager::TimerCheckTimeleft, this));
 }
 
 float CVoteManager::TimerCheckTimeleft()
@@ -104,7 +99,7 @@ float CVoteManager::TimerCheckTimeleft()
 	m_bVoteStarting = true;
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote starting in 10 seconds!");
 
-	new CTimer(7.0f, false, true, [this]() {
+	CTimer::Create(7.0f, TIMERFLAG_MAP, [this]() {
 		if (m_iVoteStartTicks == 0)
 		{
 			m_iVoteStartTicks = 3;
@@ -233,7 +228,7 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 	if (pPlayer->GetRTVVoteTime() + 60.0f > GetGlobals()->curtime)
 	{
 		int iRemainingTime = (int)(pPlayer->GetRTVVoteTime() + 60.0f - GetGlobals()->curtime);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can RTV again.", iRemainingTime);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can RTV.", iRemainingTime);
 		return;
 	}
 
@@ -268,12 +263,21 @@ CON_COMMAND_CHAT(unrtv, "- Remove your vote to end the current map sooner")
 
 	if (!pPlayer->GetRTVVote())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have not voted to RTV current map.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have not voted to RTV current map (%i voted, %i needed).", g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
+		return;
+	}
+
+	if (pPlayer->GetRTVVoteTime() + 60.0f > GetGlobals()->curtime)
+	{
+		int iRemainingTime = (int)(pPlayer->GetRTVVoteTime() + 60.0f - GetGlobals()->curtime);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can remove your RTV.", iRemainingTime);
 		return;
 	}
 
 	pPlayer->SetRTVVote(false);
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You no longer want to RTV current map.");
+	pPlayer->SetRTVVoteTime(GetGlobals()->curtime);
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You no longer want to RTV current map (%i voted, %i needed).", g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
 }
 
 CON_COMMAND_CHAT(ve, "- Vote to extend current map")
@@ -625,7 +629,7 @@ bool CVoteManager::VoteExtendEndCallback(YesNoVoteInfo info)
 			if (g_cvarExtendVoteMode.Get() == EExtendVoteMode::EXTENDVOTE_AUTO)
 			{
 				// small delay to allow cvar change to go through
-				new CTimer(0.1, false, true, [this]() {
+				CTimer::Create(0.1, TIMERFLAG_MAP, [this]() {
 					m_ExtendState = EExtendState::EXTEND_ALLOWED;
 					return -1.0f;
 				});
@@ -635,7 +639,7 @@ bool CVoteManager::VoteExtendEndCallback(YesNoVoteInfo info)
 				m_ExtendState = EExtendState::POST_EXTEND_COOLDOWN;
 
 				// Allow another extend vote after added time lapses
-				new CTimer(g_cvarExtendTimeToAdd.Get() * 60.0f, false, true, [this]() {
+				CTimer::Create(g_cvarExtendTimeToAdd.Get() * 60.0f, TIMERFLAG_MAP, [this]() {
 					if (m_ExtendState == EExtendState::POST_EXTEND_COOLDOWN)
 						m_ExtendState = EExtendState::EXTEND_ALLOWED;
 					return -1.0f;
@@ -669,7 +673,7 @@ void CVoteManager::StartExtendVote(int iCaller)
 	g_pPanoramaVoteHandler->SendYesNoVoteToAll(g_cvarExtendVoteDuration.Get(), iCaller, "#SFUI_vote_passed_nextlevel_extend", sDetailStr,
 											   std::bind(&CVoteManager::VoteExtendEndCallback, this, std::placeholders::_1), std::bind(&CVoteManager::VoteExtendHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
-	new CTimer(g_cvarExtendVoteDuration.Get() - 3.0f, false, true, [this]() {
+	CTimer::Create(g_cvarExtendVoteDuration.Get() - 3.0f, TIMERFLAG_MAP, [this]() {
 		if (m_iVoteEndTicks == 0 || m_ExtendState != EExtendState::IN_PROGRESS)
 		{
 			m_iVoteEndTicks = 3;
@@ -708,7 +712,7 @@ bool CVoteManager::CheckRTVStatus()
 		{
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! Ending the map now...");
 
-			new CTimer(3.0f, false, true, []() {
+			CTimer::Create(3.0f, TIMERFLAG_MAP, []() {
 				g_pGameRules->TerminateRound(5.0f, CSRoundEndReason::Draw);
 
 				return -1.0f;

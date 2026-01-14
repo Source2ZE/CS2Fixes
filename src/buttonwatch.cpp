@@ -32,16 +32,17 @@
 #include "entity/clogiccase.h"
 #include "entity/cpointviewcontrol.h"
 
-CConVar<bool> g_cvarEnableButtonWatch("cs2f_enable_button_watch", FCVAR_NONE, "INCOMPATIBLE WITH CS#. Whether to enable button watch or not.", false,
-									  [](CConVar<bool>* cvar, CSplitScreenSlot slot, const bool* new_val, const bool* old_val) {
-										  if (!(*new_val) || !SetupFireOutputInternalDetour())
-										  {
-											  mapIOFunctions.erase("buttonwatch");
-											  cvar->Set(false);
-										  }
-										  else if (!IsButtonWatchEnabled())
-											  mapIOFunctions["buttonwatch"] = ButtonWatch;
-									  });
+CConVar<bool> g_cvarEnableButtonWatch(
+	"cs2f_enable_button_watch", FCVAR_NONE, "INCOMPATIBLE WITH CS#. Whether to enable button watch or not.", false,
+	[](CConVar<bool>* cvar, CSplitScreenSlot slot, const bool* new_val, const bool* old_val) {
+		if (!(*new_val) || !SetupFireOutputInternalDetour())
+		{
+			mapIOFunctions.erase("buttonwatch");
+			cvar->Set(false);
+		}
+		else if (!IsButtonWatchEnabled())
+			mapIOFunctions["buttonwatch"] = ButtonWatch;
+	});
 
 CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
 {
@@ -133,7 +134,7 @@ void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEnt
 	// Limit each button to only printing out at most once every 5 seconds
 	int iIndex = pCaller->GetEntityIndex().Get();
 	mapRecentEnts[iIndex] = true;
-	new CTimer(5.0f, true, true, [iIndex]() {
+	CTimer::Create(5.0f, TIMERFLAG_NONE, [iIndex]() {
 		mapRecentEnts.erase(iIndex);
 		return -1.0f;
 	});

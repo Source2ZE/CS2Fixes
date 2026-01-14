@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -54,12 +54,11 @@ class CGameRules;
 class CEntityKeyValues;
 class IRecipientFilter;
 class CTakeDamageInfo;
-class INetworkStringTable;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
-
+class CSpawnGroupMgrGameSystem;
 struct EmitSound_t;
-struct SndOpEventGuid_t;
+struct StartSoundEventInfo;
 
 // Can't be forward-declared, can't include cgamerules.h.. just define it here
 struct CGcBanInformation_t
@@ -78,16 +77,16 @@ namespace addresses
 	inline CUtlMap<uint32, CGcBanInformation_t, uint32>* sm_mapGcBanInformation;
 
 	inline void(FASTCALL* SetGroundEntity)(CBaseEntity* ent, CBaseEntity* ground, CBaseEntity* unk3);
+	inline void(FASTCALL* SetGravityScale)(CBaseEntity*, float);
 	inline void(FASTCALL* CCSPlayerController_SwitchTeam)(CCSPlayerController* pController, uint32 team);
-	inline void(FASTCALL* CBasePlayerController_SetPawn)(CBasePlayerController* pController, CCSPlayerPawn* pPawn, bool a3, bool a4, bool a5);
+	inline void(FASTCALL* CBasePlayerController_SetPawn)(CBasePlayerController* pController, CCSPlayerPawn* pPawn, bool a3, bool a4, bool a5, bool a6);
 	inline void(FASTCALL* CBaseModelEntity_SetModel)(CBaseModelEntity* pModel, const char* szModel);
 	inline void(FASTCALL* UTIL_Remove)(CEntityInstance*);
 
 	inline void(FASTCALL* CEntitySystem_AddEntityIOEvent)(CEntitySystem* pEntitySystem, CEntityInstance* pTarget, const char* pszInput,
-														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, int outputID);
-
+														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, int outputID, void*, void*);
 	inline void(FASTCALL* CEntityInstance_AcceptInput)(CEntityInstance* pThis, const char* pInputName,
-													   CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID);
+													   CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID, void*);
 
 	inline CBaseEntity*(FASTCALL* CGameEntitySystem_FindEntityByClassName)(CEntitySystem* pEntitySystem, CEntityInstance* pStartEntity, const char* szName);
 
@@ -99,13 +98,12 @@ namespace addresses
 	inline void(FASTCALL* DispatchSpawn)(CBaseEntity* pEntity, CEntityKeyValues* pEntityKeyValues);
 	inline void(FASTCALL* CEntityIdentity_SetEntityName)(CEntityIdentity* pEntity, const char* pName);
 	inline void(FASTCALL* CBaseEntity_EmitSoundParams)(CBaseEntity* pEntity, const char* pszSound, int nPitch, float flVolume, float flDelay);
-	inline void(FASTCALL* CBaseEntity_SetParent)(CBaseEntity* pEntity, CBaseEntity* pNewParent, CUtlStringToken nBoneOrAttachName, matrix3x4a_t* pOffsetTransform);
 	inline int(FASTCALL* DispatchParticleEffect)(const char* pszParticleName, int iAttachType, CBaseEntity* pEntity,
 												 char iAttachmentPoint, CUtlSymbolLarge iAttachmentName, bool bResetAllParticlesOnEntity, int nSplitScreenPlayerSlot, IRecipientFilter* a7, byte* a8);
-	inline SndOpEventGuid_t(FASTCALL* CBaseEntity_EmitSoundFilter)(IRecipientFilter& filter, CEntityIndex ent, const EmitSound_t& params);
+	inline StartSoundEventInfo(FASTCALL* CBaseEntity_EmitSoundFilter)(IRecipientFilter& filter, CEntityIndex ent, const EmitSound_t& params);
 	inline void(FASTCALL* CBaseEntity_SetMoveType)(CBaseEntity* pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
 	inline void(FASTCALL* CTakeDamageInfo_Constructor)(CTakeDamageInfo* pThis, CBaseEntity* pInflictor, CBaseEntity* pAttacker, CBaseEntity* pAbility,
 													   const Vector* vecDamageForce, const Vector* vecDamagePosition, float flDamage, int bitsDamageType, int iCustomDamage, void* a10);
-	inline void(FASTCALL* CNetworkStringTable_DeleteAllStrings)(INetworkStringTable* pThis);
 	inline void(FASTCALL* CCSPlayer_WeaponServices_EquipWeapon)(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
+	inline void(FASTCALL* GetSpawnGroups)(CSpawnGroupMgrGameSystem* pSpawnGroupMgr, CUtlVector<SpawnGroupHandle_t>* pList);
 } // namespace addresses

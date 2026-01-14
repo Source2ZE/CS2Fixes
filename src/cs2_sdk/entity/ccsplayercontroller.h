@@ -24,10 +24,6 @@
 #include "cbaseplayercontroller.h"
 #include "services.h"
 
-extern CServerSideClient* GetClientBySlot(CPlayerSlot slot);
-
-extern CGameEntitySystem* g_pEntitySystem;
-
 class CCSPlayerController : public CBasePlayerController
 {
 public:
@@ -37,7 +33,6 @@ public:
 	SCHEMA_FIELD(CCSPlayerController_ActionTrackingServices*, m_pActionTrackingServices)
 	SCHEMA_FIELD(uint32_t, m_iPing)
 	SCHEMA_FIELD(CUtlSymbolLarge, m_szClan)
-	SCHEMA_FIELD_POINTER(char, m_szClanName) // char m_szClanName[32]
 	SCHEMA_FIELD(bool, m_bEverFullyConnected)
 	SCHEMA_FIELD(bool, m_bPawnIsAlive)
 	SCHEMA_FIELD(int32_t, m_nDisconnectionTick)
@@ -51,6 +46,10 @@ public:
 	SCHEMA_FIELD(int32_t, m_iRoundsWon)
 	SCHEMA_FIELD(int32_t, m_iMVPs)
 	SCHEMA_FIELD(float, m_flSmoothedPing)
+	SCHEMA_FIELD(bool, m_bMvpNoMusic)
+	SCHEMA_FIELD(int32_t, m_eMvpReason)
+	SCHEMA_FIELD(int32_t, m_iMusicKitID)
+	SCHEMA_FIELD(int32_t, m_iMusicKitMVPs)
 
 	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn)
 	{
@@ -80,7 +79,7 @@ public:
 
 	bool IsBot()
 	{
-		return m_fFlags() & FL_CONTROLLER_FAKECLIENT;
+		return m_fFlags() & FL_FAKECLIENT;
 	}
 
 	void ChangeTeam(int iTeam)
@@ -147,5 +146,25 @@ public:
 	void AddScore(int iScore)
 	{
 		m_iScore() = m_iScore() + iScore;
+	}
+
+	void SetClanTag(const char* pszClanTag)
+	{
+		// Skip if clan tag is unchanged, since name swap trick has a bit of overhead
+		if (!V_strcmp(m_szClan().String(), pszClanTag))
+			return;
+
+		m_szClan = g_pEntitySystem->AllocPooledString(pszClanTag);
+
+		// This name swap trick is necessary to get clients to display the new clan tag
+		std::string strName = GetPlayerName();
+
+		if (!strName.empty() && strName.back() == ' ')
+			strName.pop_back();
+		else
+			strName.push_back(' ');
+
+		V_strncpy(m_iszPlayerName, strName.c_str(), 128);
+		m_iszPlayerName.NetworkStateChanged();
 	}
 };

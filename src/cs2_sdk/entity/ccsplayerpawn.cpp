@@ -21,16 +21,19 @@
 #include "../ctimer.h"
 
 // Silly workaround for an animation bug that's been happening since 2024-11-06 CS2 update
-// Clients need to see the new playermodel with zero velocity for at least one tick to properly render animations
+// Clients need to see the new playermodel with zero velocity for at least (two?) ticks to properly render animations
 void CCSPlayerPawn::FixPlayerModelAnimations()
 {
+	if (m_nActualMoveType() < MOVETYPE_WALK)
+		return;
+
 	CHandle<CCSPlayerPawn> hPawn = GetHandle();
 	Vector originalVelocity = m_vecAbsVelocity;
 
 	Teleport(nullptr, nullptr, &vec3_origin);
 	SetMoveType(MOVETYPE_OBSOLETE);
 
-	new CTimer(0.01f, false, false, [hPawn, originalVelocity]() {
+	CTimer::Create(0.02f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hPawn, originalVelocity]() {
 		CCSPlayerPawn* pPawn = hPawn.Get();
 
 		if (!pPawn || !pPawn->IsAlive())

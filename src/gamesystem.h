@@ -68,6 +68,7 @@ public:
 	GS_EVENT(ServerPreEntityThink);
 	GS_EVENT(ServerPostEntityThink);
 	GS_EVENT(GameShutdown);
+	GS_EVENT(PostSpawnGroupLoad);
 
 	void Shutdown() override
 	{
@@ -88,6 +89,8 @@ public:
 
 	static CGameSystemStaticCustomFactory<CGameSystem>* sm_Factory;
 };
+
+extern CGameSystem g_GameSystem;
 
 // Quick and dirty definition
 // MSVC for whatever reason flips overload ordering, and this has three of them
@@ -124,5 +127,3 @@ struct AddedGameSystem_t
 	int m_nPriority;
 	int m_nInsertionOrder;
 };
-
-extern CGameSystem g_GameSystem;

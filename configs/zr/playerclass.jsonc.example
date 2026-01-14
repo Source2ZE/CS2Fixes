@@ -69,7 +69,7 @@
 					]
 				}
 			],
-			"scale": 1.05,
+			"scale": 1.0,
 			"speed": 1.0,
 			"gravity": 1.0,
 			"knockback": 1.0,
@@ -91,7 +91,7 @@
 					]
 				}
 			],
-			"scale": 1.15,
+			"scale": 1.0,
 			"speed": 1.0,
 			"gravity": 1.0,
 			"admin_flag": "",

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -54,13 +54,6 @@
 
 #include "tier0/memdbgon.h"
 
-extern CGlobalVars* GetGlobals();
-extern CGameEntitySystem* g_pEntitySystem;
-extern IGameEventManager2* g_gameEventManager;
-extern CCSGameRules* g_pGameRules;
-extern CMapVoteSystem* g_pMapVoteSystem;
-extern CUtlVector<CServerSideClient*>* GetClientList();
-
 CUtlVector<CDetourBase*> g_vecDetours;
 
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
@@ -76,8 +69,13 @@ DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
 DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers);
 DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer);
+DECLARE_DETOUR(CTriggerGravity_GravityTouch, Detour_CTriggerGravity_GravityTouch);
 DECLARE_DETOUR(GetFreeClient, Detour_GetFreeClient);
+#ifdef __linux__
+// Inlined by MSVC as of 2025-07-28 CS2 update
+// TODO: Find some alternative that supports Windows
 DECLARE_DETOUR(CCSPlayerPawn_GetMaxSpeed, Detour_CCSPlayerPawn_GetMaxSpeed);
+#endif
 DECLARE_DETOUR(FindUseEntity, Detour_FindUseEntity);
 DECLARE_DETOUR(TraceFunc, Detour_TraceFunc);
 DECLARE_DETOUR(TraceShape, Detour_TraceShape);
@@ -85,13 +83,16 @@ DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosi
 DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
 DECLARE_DETOUR(CBaseFilter_InputTestActivator, Detour_CBaseFilter_InputTestActivator);
 DECLARE_DETOUR(GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan);
+DECLARE_DETOUR(CCSPlayer_ItemServices_CanAcquire, Detour_CCSPlayer_ItemServices_CanAcquire);
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
 CConVar<bool> g_cvarFixBlockDamage("cs2f_fix_block_dmg", FCVAR_NONE, "Whether to fix block-damage on players", false);
 
-int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* inputInfo)
+int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult)
 {
+	// NOTE valve always return 1 here, since 2025/10/15 update.
+
 #ifdef _DEBUG
 	Message("\n--------------------------------\n"
 			"TakeDamage on %s\n"
@@ -102,22 +103,22 @@ int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageI
 			"Damage Type: %i\n"
 			"--------------------------------\n",
 			pThis->GetClassname(),
-			inputInfo->m_hAttacker.Get() ? inputInfo->m_hAttacker.Get()->GetClassname() : "NULL",
-			inputInfo->m_hInflictor.Get() ? inputInfo->m_hInflictor.Get()->GetClassname() : "NULL",
-			inputInfo->m_hAbility.Get() ? inputInfo->m_hAbility.Get()->GetClassname() : "NULL",
-			inputInfo->m_flDamage,
-			inputInfo->m_bitsDamageType);
+			pInfo->m_hAttacker.Get() ? pInfo->m_hAttacker.Get()->GetClassname() : "NULL",
+			pInfo->m_hInflictor.Get() ? pInfo->m_hInflictor.Get()->GetClassname() : "NULL",
+			pInfo->m_hAbility.Get() ? pInfo->m_hAbility.Get()->GetClassname() : "NULL",
+			pInfo->m_flDamage,
+			pInfo->m_bitsDamageType);
 #endif
 
 	// Block all player damage if desired
 	if (g_cvarBlockAllDamage.Get() && pThis->IsPawn())
-		return 0;
+		return 1;
 
-	CBaseEntity* pInflictor = inputInfo->m_hInflictor.Get();
+	CEntityInstance* pInflictor = pInfo->m_hInflictor.Get();
 	const char* pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
 
 	// After Armory update, activator became attacker on block damage, which broke it..
-	if (g_cvarFixBlockDamage.Get() && inputInfo->m_AttackerInfo.m_bIsPawn && inputInfo->m_bitsDamageType ^ DMG_BULLET && inputInfo->m_hAttacker != pThis->GetHandle())
+	if (g_cvarFixBlockDamage.Get() && pInfo->m_AttackerInfo.m_bIsPawn && pInfo->m_bitsDamageType ^ DMG_BULLET && pInfo->m_hAttacker != pThis->GetHandle())
 	{
 		if (V_strcasecmp(pszInflictorClass, "func_movelinear") == 0
 			|| V_strcasecmp(pszInflictorClass, "func_mover") == 0
@@ -126,25 +127,34 @@ int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageI
 			|| V_strcasecmp(pszInflictorClass, "func_rotating") == 0
 			|| V_strcasecmp(pszInflictorClass, "point_hurt") == 0)
 		{
-			inputInfo->m_AttackerInfo.m_bIsPawn = false;
-			inputInfo->m_AttackerInfo.m_bIsWorld = true;
-			inputInfo->m_hAttacker = inputInfo->m_hInflictor;
+			pInfo->m_AttackerInfo.m_bIsPawn = false;
+			pInfo->m_AttackerInfo.m_bIsWorld = true;
+			pInfo->m_hAttacker = pInfo->m_hInflictor;
 
-			inputInfo->m_AttackerInfo.m_hAttackerPawn = CHandle<CCSPlayerPawn>(~0u);
-			inputInfo->m_AttackerInfo.m_nAttackerPlayerSlot = ~0;
+			pInfo->m_AttackerInfo.m_hAttackerPawn = CHandle<CCSPlayerPawn>(~0u);
+			pInfo->m_AttackerInfo.m_nAttackerPlayerSlot = ~0;
 		}
 	}
 
 	// Prevent molly on self
-	if (g_cvarBlockMolotovSelfDmg.Get() && inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
-		return 0;
+	if (g_cvarBlockMolotovSelfDmg.Get() && pInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
+		return 1;
 
-	const auto damage = CBaseEntity_TakeDamageOld(pThis, inputInfo);
+	// maybe call in flow
+	CTakeDamageResult damageResult(0);
 
-	if (damage > 0 && g_cvarEnableZR.Get() && pThis->IsPawn())
-		ZR_OnPlayerTakeDamage(reinterpret_cast<CCSPlayerPawn*>(pThis), inputInfo, static_cast<int32>(damage));
+	if (pResult == nullptr)
+	{
+		damageResult.CopyFrom(pInfo);
+		pResult = &damageResult;
+	}
 
-	return damage;
+	CBaseEntity_TakeDamageOld(pThis, pInfo, pResult);
+
+	if (pResult->m_nDamageDealt > 0 && !pResult->m_bWasDamageSuppressed && g_cvarEnableZR.Get() && pThis->IsPawn())
+		ZR_OnPlayerTakeDamage(reinterpret_cast<CCSPlayerPawn*>(pThis), pInfo, pResult->m_nDamageDealt);
+
+	return 1;
 }
 
 CConVar<bool> g_cvarUseOldPush("cs2f_use_old_push", FCVAR_NONE, "Whether to use the old CSGO trigger_push behavior", false);
@@ -191,7 +201,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 
 	uint32 flags = pOther->m_fFlags();
 
-	if (flags & FL_BASEVELOCITY)
+	if (flags & (1 << 23)) // TODO: is FL_BASEVELOCITY really gone?
 		vecPush = vecPush + pOther->m_vecBaseVelocity();
 
 	if (vecPush.z > 0 && (flags & FL_ONGROUND))
@@ -212,7 +222,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 				pOther->GetEntityIndex(),
 				GetGlobals()->framecount,
 				GetGlobals()->tickcount,
-				(flags & FL_BASEVELOCITY) ? "WITH FLAG" : "",
+				(flags & (1 << 23)) ? "WITH FLAG" : "",
 				vecEntBaseVelocity.x, vecEntBaseVelocity.y, vecEntBaseVelocity.z,
 				vecOrigPush.x, vecOrigPush.y, vecOrigPush.z,
 				vecPush.x, vecPush.y, vecPush.z);
@@ -220,7 +230,7 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 
 	pOther->m_vecBaseVelocity(vecPush);
 
-	flags |= (FL_BASEVELOCITY);
+	flags |= (1 << 23); // TODO: is FL_BASEVELOCITY really gone?
 	pOther->m_fFlags(flags);
 }
 
@@ -278,13 +288,21 @@ void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPla
 			uiNextWordLength = strlen(pNextWord);
 		}
 
-		// Case: ... X sec(onds) ... or ... X min(utes) ...
-		if (pNextWord != NULL && uiNextWordLength > 2 && uiCurrentValue > 0)
+		// Case: ... X sec(onds) ... or ... X s ... or ... X min(utes) ...
+		if (pNextWord != NULL && uiCurrentValue > 0)
 		{
-			if (pNextWord[0] == 's' && pNextWord[1] == 'e' && pNextWord[2] == 'c')
-				uiTriggerTimerLength = uiCurrentValue;
-			if (pNextWord[0] == 'm' && pNextWord[1] == 'i' && pNextWord[2] == 'n')
-				uiTriggerTimerLength = uiCurrentValue * 60;
+			if (uiNextWordLength == 1)
+			{
+				if (pNextWord[0] == 's')
+					uiTriggerTimerLength = uiCurrentValue;
+			}
+			else if (uiNextWordLength > 2)
+			{
+				if (pNextWord[0] == 's' && pNextWord[1] == 'e' && pNextWord[2] == 'c')
+					uiTriggerTimerLength = uiCurrentValue;
+				if (pNextWord[0] == 'm' && pNextWord[1] == 'i' && pNextWord[2] == 'n')
+					uiTriggerTimerLength = uiCurrentValue * 60;
+			}
 		}
 
 		// Case: ... Xs - only support up to 3 digit numbers (in seconds) for this timer parse method
@@ -369,9 +387,6 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
-	if (g_cvarEnableZR.Get() && !ZR_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
-		return false;
-
 	if (g_cvarEnableEntWatch.Get() && !EW_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
 		return false;
 
@@ -386,7 +401,7 @@ void FASTCALL Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServic
 	return CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
 }
 
-bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID)
+bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID, void* a7, void* a8)
 {
 	VPROF_SCOPE_BEGIN("Detour_CEntityIdentity_AcceptInput");
 
@@ -412,7 +427,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
 			flDuration = V_StringToFloat32(value->m_pszString, 0.f);
 		else
-			flDuration = value->m_float;
+			flDuration = value->m_float32;
 
 		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
@@ -426,7 +441,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
 			iScore = V_StringToInt32(value->m_pszString, 0);
 		else
-			iScore = value->m_int;
+			iScore = value->m_int32;
 
 		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
@@ -450,7 +465,17 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if (const auto pModelEntity = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsBaseModelEntity())
 		{
 			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+			{
+				// Player color may have been changed by zclass/server customization, so reset it first
+				// This also means if maps want to change player color, it needs to be done after the SetModel input
+				if (pModelEntity->IsPawn())
+				{
+					int originalAlpha = pModelEntity->m_clrRender().a();
+					pModelEntity->m_clrRender = Color(255, 255, 255, originalAlpha);
+				}
+
 				pModelEntity->SetModel(value->m_pszString);
+			}
 			return true;
 		}
 	}
@@ -475,17 +500,17 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 
 	VPROF_SCOPE_END();
 
-	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID, a7, a8);
 }
 
 CConVar<bool> g_cvarBlockNavLookup("cs2f_block_nav_lookup", FCVAR_NONE, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", false);
 
-void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, int64_t unk6, float unk7, int64_t unk8)
+void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, float unk6, int64_t unk7)
 {
 	if (g_cvarBlockNavLookup.Get())
 		return nullptr;
 
-	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7, unk8);
+	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7);
 }
 
 void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pMove)
@@ -516,8 +541,8 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pM
 	GetGlobals()->frametime = flStoreFrametime;
 }
 
-CConVar<bool> g_cvarDisableSubtick("cs2f_disable_subtick_move", FCVAR_NONE, "Whether to disable subtick movement", false);
-CConVar<bool> g_cvarDisableSubtickShooting("cs2f_disable_subtick_shooting", FCVAR_NONE, "Whether to disable subtick shooting", false);
+CConVar<bool> g_cvarDisableSubtickMovement("cs2f_disable_subtick_move", FCVAR_NONE, "Whether to disable subtick movement", false);
+CConVar<bool> g_cvarDisableSubtickShooting("cs2f_disable_subtick_shooting", FCVAR_NONE, "Whether to disable subtick shooting, experimental (WARNING: add \"log_flags Shooting + DoNotEcho\" to your cfg to prevent console spam on every shot fired)", false);
 
 class CUserCmd
 {
@@ -532,21 +557,44 @@ public:
 
 void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd* cmds, int numcmds, bool paused, float margin)
 {
-	// Push fix only works properly if subtick movement is also disabled
-	if (!g_cvarDisableSubtick.Get() && !g_cvarUseOldPush.Get())
-		return ProcessUsercmds(pController, cmds, numcmds, paused, margin);
-
 	VPROF_SCOPE_BEGIN("Detour_ProcessUsercmds");
 
 	for (int i = 0; i < numcmds; i++)
 	{
-		cmds[i].cmd.mutable_base()->mutable_subtick_moves()->Clear();
+		// Push fix only works properly if subtick movement is also disabled
+		if (g_cvarDisableSubtickMovement.Get() || g_cvarUseOldPush.Get())
+		{
+			auto subtickMoves = cmds[i].cmd.mutable_base()->mutable_subtick_moves();
+			auto iterator = subtickMoves->begin();
+
+			while (iterator != subtickMoves->end())
+			{
+				uint64 button = iterator->button();
+
+				// Remove normal subtick movement inputs by button
+				// Unfortunately, we also need to ignore IN_JUMP, because de-subticking jumps somehow conflicts with other subtick inputs pressed at the same time
+				if (button >= IN_DUCK && button <= IN_MOVERIGHT && button != IN_USE)
+				{
+					subtickMoves->erase(iterator);
+				}
+				else
+				{
+					// Remove subtick movement viewangles by pitch/yaw
+					if (iterator->pitch_delta() != 0.0f)
+						iterator->set_pitch_delta(0.0f);
+
+					if (iterator->yaw_delta() != 0.0f)
+						iterator->set_yaw_delta(0.0f);
+
+					iterator++;
+				}
+			}
+		}
 
 		if (g_cvarDisableSubtickShooting.Get())
 		{
 			cmds[i].cmd.set_attack1_start_history_index(-1);
 			cmds[i].cmd.set_attack2_start_history_index(-1);
-			cmds[i].cmd.set_attack3_start_history_index(-1);
 			cmds[i].cmd.mutable_input_history()->Clear();
 		}
 	}
@@ -565,6 +613,17 @@ void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayer
 {
 	if (CGamePlayerEquipHandler::TriggerForActivatedPlayer(pEntity, pInput))
 		CGamePlayerEquip_InputTriggerForActivatedPlayer(pEntity, pInput);
+}
+
+void FASTCALL Detour_CTriggerGravity_GravityTouch(CBaseEntity* pEntity, CBaseEntity* pOther)
+{
+	// no need to call original function here
+	// because original function calls CBaseEntity::SetGravityScale internal
+	// but passes the wrong gravity scale value
+	if (CTriggerGravityHandler::GravityTouching(pEntity, pOther))
+		return;
+
+	CTriggerGravity_GravityTouch(pEntity, pOther);
 }
 
 CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6)
@@ -590,6 +649,7 @@ CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* un
 	return nullptr;
 }
 
+#ifdef __linux__
 float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
 {
 	auto flMaxSpeed = CCSPlayerPawn_GetMaxSpeed(pPawn);
@@ -600,6 +660,7 @@ float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
 
 	return flMaxSpeed;
 }
+#endif
 
 CConVar<bool> g_cvarPreventUsingPlayers("cs2f_prevent_using_players", FCVAR_NONE, "Whether to prevent +use from hitting players (0=can use players, 1=cannot use players)", false);
 
@@ -636,12 +697,12 @@ bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceF
 
 CDetour<decltype(Detour_CEntityIOOutput_FireOutputInternal)>* CEntityIOOutput_FireOutputInternal = nullptr;
 std::map<std::string, std::function<void(const CEntityIOOutput*, CEntityInstance*, CEntityInstance*, const CVariant*, float)>> mapIOFunctions{};
-void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
+void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay, void* a6, void* a7)
 {
 	for (const auto& [name, cb] : mapIOFunctions)
 		cb(pThis, pActivator, pCaller, value, flDelay);
 
-	(*CEntityIOOutput_FireOutputInternal)(pThis, pActivator, pCaller, value, flDelay);
+	(*CEntityIOOutput_FireOutputInternal)(pThis, pActivator, pCaller, value, flDelay, a6, a7);
 }
 
 // Tries to setup Detour_CEntityIOOutput_FireOutputInternal if it is not already setup. This is not
@@ -735,6 +796,19 @@ void FASTCALL Detour_GameSystem_Think_CheckSteamBan()
 	// After player has been kicked, remove any ban entries, to prevent spreading to all new joining players
 	if (count > 0)
 		pMap->RemoveAll();
+}
+
+AcquireResult FASTCALL Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices* pItemServices, CEconItemView* pEconItem, AcquireMethod iAcquireMethod, uint64_t unk4)
+{
+	if (g_cvarEnableZR.Get())
+	{
+		AcquireResult zrResult = ZR_Detour_CCSPlayer_ItemServices_CanAcquire(pItemServices, pEconItem);
+
+		if (zrResult != AcquireResult::Allowed)
+			return zrResult;
+	}
+
+	return CCSPlayer_ItemServices_CanAcquire(pItemServices, pEconItem, iAcquireMethod, unk4);
 }
 
 bool InitDetours(CGameConfig* gameConfig)

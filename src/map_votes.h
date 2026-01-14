@@ -22,76 +22,25 @@
 #include "entity/ccsplayercontroller.h"
 #include "steam/isteamugc.h"
 #include "steam/steam_api_common.h"
-#include "utlqueue.h"
-#include "utlstring.h"
-#include "utlvector.h"
 #undef snprintf
 #include "vendor/nlohmann/json_fwd.hpp"
+#include <deque>
+#include <filesystem>
+#include <optional>
 #include <playerslot.h>
 #include <string>
 #include <vector>
 
+class CMap;
 using ordered_json = nlohmann::ordered_json;
-
-class CMap
-{
-public:
-	CMap(std::string sName, uint64 iWorkshopId, bool bIsEnabled, int iMinPlayers, int iMaxPlayers, float fCustomCooldown, std::vector<std::string> vecGroups)
-	{
-		m_strName = sName;
-		m_iWorkshopId = iWorkshopId;
-		m_bIsEnabled = bIsEnabled;
-		m_fCustomCooldown = fCustomCooldown;
-		m_iMinPlayers = iMinPlayers;
-		m_iMaxPlayers = iMaxPlayers;
-		m_vecGroups = vecGroups;
-	}
-
-	const char* GetName() { return m_strName.c_str(); };
-	uint64 GetWorkshopId() const { return m_iWorkshopId; };
-	bool IsEnabled() { return m_bIsEnabled; };
-	float GetCustomCooldown() { return m_fCustomCooldown; };
-	int GetMinPlayers() { return m_iMinPlayers; };
-	int GetMaxPlayers() { return m_iMaxPlayers; };
-	std::vector<std::string> GetGroups() { return m_vecGroups; };
-	bool HasGroup(std::string strGroup) { return std::find(m_vecGroups.begin(), m_vecGroups.end(), strGroup) != m_vecGroups.end(); };
-
-private:
-	std::string m_strName;
-	uint64 m_iWorkshopId;
-	bool m_bIsEnabled;
-	int m_iMinPlayers;
-	int m_iMaxPlayers;
-	float m_fCustomCooldown;
-	std::vector<std::string> m_vecGroups;
-};
-
-class CGroup
-{
-public:
-	CGroup(std::string sName, bool bIsEnabled, float fCooldown)
-	{
-		m_strName = sName;
-		m_bIsEnabled = bIsEnabled;
-		m_fCooldown = fCooldown;
-	}
-
-	const char* GetName() { return m_strName.c_str(); };
-	bool IsEnabled() { return m_bIsEnabled; };
-	float GetCooldown() { return m_fCooldown; };
-
-private:
-	std::string m_strName;
-	bool m_bIsEnabled;
-	float m_fCooldown;
-};
+using QueryCallback_t = std::function<void(std::shared_ptr<CMap>, CCSPlayerController*)>;
 
 class CCooldown
 {
 public:
-	CCooldown(std::string sMapName)
+	CCooldown(std::string strMapName)
 	{
-		m_strMapName = sMapName;
+		m_strMapName = strMapName;
 		m_timeCooldown = 0;
 		m_fPendingCooldown = 0.0f;
 	}
@@ -111,6 +60,108 @@ private:
 	float m_fPendingCooldown;
 };
 
+class CMap : public std::enable_shared_from_this<CMap>
+{
+public:
+	CMap(std::string strName, uint64 iWorkshopId, bool bMissingIdentifier = false, std::string strDisplayName = "", bool bIsEnabled = false, int iMinPlayers = 0, int iMaxPlayers = 64, float fCustomCooldown = 0.0f, std::optional<std::vector<std::string>> vecGroups = std::nullopt)
+	{
+		m_strName = strName;
+		m_iWorkshopId = iWorkshopId;
+		m_bMissingIdentifier = bMissingIdentifier;
+		m_strDisplayName = strDisplayName;
+		m_bIsEnabled = bIsEnabled;
+		m_fCustomCooldown = fCustomCooldown;
+		m_iMinPlayers = iMinPlayers;
+		m_iMaxPlayers = iMaxPlayers;
+
+		if (vecGroups.has_value())
+			m_vecGroups = vecGroups.value();
+	}
+
+	const char* GetName() { return m_strName.c_str(); };
+	const char* GetDisplayName() { return m_strDisplayName.empty() ? m_strName.c_str() : m_strDisplayName.c_str(); };
+	uint64 GetWorkshopId() const { return m_iWorkshopId; };
+	bool IsMissingIdentifier() { return m_bMissingIdentifier; }
+	bool IsEnabled() { return m_bIsEnabled; };
+	float GetCustomCooldown() { return m_fCustomCooldown; };
+	int GetMinPlayers() { return m_iMinPlayers; };
+	int GetMaxPlayers() { return m_iMaxPlayers; };
+	std::vector<std::string> GetGroups() { return m_vecGroups; };
+	bool HasGroup(std::string strGroup) { return std::find(m_vecGroups.begin(), m_vecGroups.end(), strGroup) != m_vecGroups.end(); };
+
+	bool IsAvailable();
+	bool Load();
+	std::shared_ptr<CCooldown> GetCooldown();
+	std::string GetCooldownText(bool bPlural);
+
+	bool operator==(CMap& other)
+	{
+		return (this->GetName()[0] != '\0' && !V_strcasecmp(this->GetName(), other.GetName())) || (this->GetWorkshopId() != 0 && this->GetWorkshopId() == other.GetWorkshopId());
+	}
+
+private:
+	std::string m_strName;
+	std::string m_strDisplayName;
+	uint64 m_iWorkshopId;
+	bool m_bMissingIdentifier;
+	bool m_bIsEnabled;
+	int m_iMinPlayers;
+	int m_iMaxPlayers;
+	float m_fCustomCooldown;
+	std::vector<std::string> m_vecGroups;
+};
+
+class CGroup
+{
+public:
+	CGroup(std::string strName, bool bIsEnabled, float fCooldown)
+	{
+		m_strName = strName;
+		m_bIsEnabled = bIsEnabled;
+		m_fCooldown = fCooldown;
+	}
+
+	const char* GetName() { return m_strName.c_str(); };
+	bool IsEnabled() { return m_bIsEnabled; };
+	float GetCooldown() { return m_fCooldown; };
+
+private:
+	std::string m_strName;
+	bool m_bIsEnabled;
+	float m_fCooldown;
+};
+
+// Implementation is a bit hardcoded for HandlePlayerMapLookup use
+class CWorkshopDetailsQuery : public std::enable_shared_from_this<CWorkshopDetailsQuery>
+{
+public:
+	CWorkshopDetailsQuery(UGCQueryHandle_t hQuery, uint64 iWorkshopId, CCSPlayerController* pController, QueryCallback_t callbackSuccess) :
+		m_hQuery(hQuery), m_iWorkshopId(iWorkshopId), m_callbackSuccess(callbackSuccess)
+	{
+		if (pController)
+		{
+			m_bConsole = false;
+			m_hController = pController->GetHandle();
+		}
+		else
+		{
+			m_bConsole = true;
+		}
+	}
+
+	static std::shared_ptr<CWorkshopDetailsQuery> Create(uint64 iWorkshopId, CCSPlayerController* pController, QueryCallback_t callbackSuccess);
+
+private:
+	void OnQueryCompleted(SteamUGCQueryCompleted_t* pCompletedQuery, bool bFailed);
+
+	UGCQueryHandle_t m_hQuery;
+	CCallResult<CWorkshopDetailsQuery, SteamUGCQueryCompleted_t> m_CallResult;
+	uint64 m_iWorkshopId;
+	bool m_bConsole;
+	CHandle<CCSPlayerController> m_hController;
+	QueryCallback_t m_callbackSuccess;
+};
+
 class CMapVoteSystem
 {
 public:
@@ -124,57 +175,52 @@ public:
 		}
 	}
 	bool LoadMapList();
-	void OnLevelInit(const char* pMapName);
+	bool LoadCooldowns();
+	void OnLevelInit(const char* pszMapName);
 	void StartVote();
 	void FinishVote();
 	bool RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption);
-	std::vector<int> GetMapIndexesFromSubstring(const char* sMapSubstring);
-	uint64 HandlePlayerMapLookup(CCSPlayerController* pController, const char* sMapSubstring, bool bAllowWorkshopID = false);
-	int GetMapIndexFromString(const char* pszMapString);
+	std::vector<std::shared_ptr<CMap>> GetMapsFromSubstring(const char* pszMapSubstring);
+	void HandlePlayerMapLookup(CCSPlayerController* pController, std::string strMapSubstring, bool bAdmin, QueryCallback_t callbackSuccess);
+	std::shared_ptr<CMap> GetMapFromString(const char* pszMapString);
 	std::shared_ptr<CGroup> GetGroupFromString(const char* pszName);
 	std::shared_ptr<CCooldown> GetMapCooldown(const char* pszMapName);
-	std::shared_ptr<CCooldown> GetMapCooldown(int iMapIndex) { return GetMapCooldown(GetMapName(iMapIndex)); };
 	std::string GetMapCooldownText(const char* pszMapName, bool bPlural);
-	std::string GetMapCooldownText(int iMapIndex, bool bPlural) { return GetMapCooldownText(GetMapName(iMapIndex), bPlural); };
-	float GetMapCustomCooldown(int iMapIndex) { return m_vecMapList[iMapIndex]->GetCustomCooldown(); };
 	void PutMapOnCooldown(const char* pszMapName, float fCooldown = 0.0f);
-	void AttemptNomination(CCSPlayerController* pController, const char* sMapSubstring);
+	void AttemptNomination(CCSPlayerController* pController, const char* pszMapSubstring);
 	void PrintMapList(CCSPlayerController* pController);
-	bool IsMapIndexEnabled(int iMapIndex);
 	int GetTotalNominations(int iMapIndex);
-	void ForceNextMap(CCSPlayerController* pController, const char* sMapSubstring);
+	void ForceNextMap(CCSPlayerController* pController, const char* pszMapSubstring);
+	std::vector<std::shared_ptr<CMap>> GetMapList() { return m_vecMapList; }
 	int GetMapListSize() { return m_vecMapList.size(); };
+	std::shared_ptr<CMap> GetMapByIndex(int iMapIndex) { return m_vecMapList[iMapIndex]; }
+	std::pair<int, std::shared_ptr<CMap>> GetMapInfoByIdentifiers(const char* pszMapName = "", uint64 iWorkshopId = 0);
 	const char* GetMapName(int iMapIndex) { return m_vecMapList[iMapIndex]->GetName(); };
-	uint64 GetMapWorkshopId(int iMapIndex) { return m_vecMapList[iMapIndex]->GetWorkshopId(); };
 	void ClearPlayerInfo(int iSlot);
 	bool IsVoteOngoing() { return m_bIsVoteOngoing; }
-	bool IsIntermissionAllowed();
+	bool IsIntermissionAllowed(bool bCheckOnly = true);
 	bool IsMapListLoaded() { return m_bMapListLoaded; }
 	CUtlStringList CreateWorkshopMapGroup();
 	void QueueMapDownload(PublishedFileId_t iWorkshopId);
 	void PrintDownloadProgress();
-	void SetCurrentMapName(const char* pszCurrentMap) { m_strCurrentMap = pszCurrentMap; }
-	const char* GetCurrentMapName() { return m_strCurrentMap.c_str(); }
-	void SetCurrentWorkshopMap(uint64 iCurrentWorkshopMap) { m_iCurrentWorkshopMap = iCurrentWorkshopMap; }
-	uint64 GetCurrentWorkshopMap() { return m_iCurrentWorkshopMap; }
-	int GetDownloadQueueSize() { return m_DownloadQueue.Count(); }
-	int GetCurrentMapIndex() { return m_iCurrentMapIndex; }
-	void UpdateCurrentMapIndex();
-	int GetMapMinPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMinPlayers(); }
-	int GetMapMaxPlayers(int iMapIndex) { return m_vecMapList[iMapIndex]->GetMaxPlayers(); }
-	bool GetMapEnabledStatus(int iMapIndex) { return m_vecMapList[iMapIndex]->IsEnabled(); }
+	std::shared_ptr<CMap> GetCurrentMap() { return m_pCurrentMap; }
+	void SetCurrentMap(std::shared_ptr<CMap> pCurrentMap) { m_pCurrentMap = pCurrentMap; }
+	int GetDownloadQueueSize() { return m_DownloadQueue.size(); }
 	void ClearInvalidNominations();
-	uint64 GetForcedNextMap() { return m_iForcedNextMap; }
-	std::string GetForcedNextMapName() { return GetForcedNextMap() > GetMapListSize() ? std::to_string(GetForcedNextMap()) : GetMapName(GetForcedNextMap()); }
-	bool ConvertMapListKVToJSON();
+	std::shared_ptr<CMap> GetForcedNextMap() { return m_pForcedNextMap; }
+	void SetForcedNextMap(std::shared_ptr<CMap> pForcedNextMap) { m_pForcedNextMap = pForcedNextMap; }
 	std::unordered_map<int, int> GetNominatedMaps();
 	void ApplyGameSettings(KeyValues* pKV);
 	void OnLevelShutdown();
 	std::vector<std::shared_ptr<CCooldown>> GetMapCooldowns() { return m_vecCooldowns; }
 	std::string ConvertFloatToString(float fValue, int precision);
-	std::string StringToLower(std::string sValue);
 	void SetDisabledCooldowns(bool bValue) { g_bDisableCooldowns = bValue; } // Can be used by custom fork features, e.g. an auto-restart
 	void ProcessGroupCooldowns();
+	bool ReloadMapList(bool bReloadMap = true);
+	bool ConvertCooldownsKVToJSON();
+	void AddWorkshopDetailsQuery(std::shared_ptr<CWorkshopDetailsQuery> pQuery) { m_vecWorkshopDetailsQueries.push_back(pQuery); }
+	void RemoveWorkshopDetailsQuery(std::shared_ptr<CWorkshopDetailsQuery> pQuery) { m_vecWorkshopDetailsQueries.erase(std::remove(m_vecWorkshopDetailsQueries.begin(), m_vecWorkshopDetailsQueries.end(), pQuery), m_vecWorkshopDetailsQueries.end()); }
+	void SetPlayerNomination(int iPlayerSlot, int iMapIndex) { m_arrPlayerNominations[iPlayerSlot] = iMapIndex; }
 
 private:
 	int WinningMapIndex();
@@ -183,23 +229,25 @@ private:
 	bool WriteMapCooldownsToFile();
 
 	STEAM_GAMESERVER_CALLBACK_MANUAL(CMapVoteSystem, OnMapDownloaded, DownloadItemResult_t, m_CallbackDownloadItemResult);
-	CUtlQueue<PublishedFileId_t> m_DownloadQueue;
+	std::deque<PublishedFileId_t> m_DownloadQueue;
 
 	std::vector<std::shared_ptr<CMap>> m_vecMapList;
 	std::vector<std::shared_ptr<CGroup>> m_vecGroups;
 	std::vector<std::shared_ptr<CCooldown>> m_vecCooldowns;
 	int m_arrPlayerNominations[MAXPLAYERS];
-	uint64 m_iForcedNextMap = -1; // Can be a map index or a workshop ID
+	std::shared_ptr<CMap> m_pForcedNextMap;
 	int m_iRandomWinnerShift = 0;
 	int m_arrPlayerVotes[MAXPLAYERS];
-	int m_iCurrentMapIndex = -1;
 	bool m_bIsVoteOngoing = false;
 	bool m_bMapListLoaded = false;
 	bool m_bIntermissionStarted = false;
-	uint64 m_iCurrentWorkshopMap = 0;
-	std::string m_strCurrentMap = "MISSING_MAP";
+	std::shared_ptr<CMap> m_pCurrentMap;
 	int m_iVoteSize = 0;
 	bool g_bDisableCooldowns = false;
+	std::filesystem::file_time_type m_timeMapListModified = std::filesystem::file_time_type::min();
+	std::weak_ptr<CTimer> m_pDownloadProgressTimer;
+	std::weak_ptr<CTimer> m_pRateLimitedDownloadTimer;
+	std::vector<std::shared_ptr<CWorkshopDetailsQuery>> m_vecWorkshopDetailsQueries;
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;

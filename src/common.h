@@ -20,6 +20,7 @@
 #pragma once
 
 #include "platform.h"
+#include "utils.h"
 
 #define VPROF_LEVEL 1
 
@@ -45,6 +46,3 @@
 
 void UnlockConVars();
 void UnlockConCommands();
-
-void Message(const char*, ...);
-void Panic(const char*, ...);

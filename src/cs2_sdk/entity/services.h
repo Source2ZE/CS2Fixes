@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2025 Source2ZE
@@ -19,20 +19,19 @@
 
 #pragma once
 #include "globaltypes.h"
-#include "viewmodels.h"
 #include "weapon.h"
 
 #include <entity/ccsweaponbase.h>
 #include <platform.h>
 #include <unordered_map>
 
+extern bool g_bAwsChangingTeam;
+
 #define AMMO_OFFSET_HEGRENADE 13
 #define AMMO_OFFSET_FLASHBANG 14
 #define AMMO_OFFSET_SMOKEGRENADE 15
 #define AMMO_OFFSET_MOLOTOV 16
 #define AMMO_OFFSET_DECOY 17
-
-extern bool g_bAwsChangingTeam;
 
 struct CSPerRoundStats_t
 {
@@ -53,12 +52,16 @@ public:
 	SCHEMA_FIELD(int32_t, m_iEntryWins);
 };
 
-class CCSPlayerController_ActionTrackingServices
+class CPlayerControllerComponent
 {
-public:
-	DECLARE_SCHEMA_CLASS(CCSPlayerController_ActionTrackingServices)
+	virtual ~CPlayerControllerComponent() = 0;
 
-	SCHEMA_FIELD(CSMatchStats_t, m_matchStats)
+public:
+	DECLARE_SCHEMA_CLASS(CPlayerControllerComponent)
+
+	SCHEMA_FIELD(CNetworkVarChainer, __m_pChainEntity)
+
+	CCSPlayerController* GetController() { return reinterpret_cast<CCSPlayerController*>(__m_pChainEntity().m_pEntity); }
 };
 
 class CPlayerPawnComponent
@@ -80,13 +83,14 @@ class CPlayerPawnComponent
 	virtual void unk_14() = 0;
 	virtual void unk_15() = 0;
 	virtual void unk_16() = 0;
+	virtual void unk_17() = 0;
 
 public:
 	DECLARE_SCHEMA_CLASS(CPlayerPawnComponent);
 
-	SCHEMA_FIELD(CCSPlayerPawn*, __m_pChainEntity)
+	SCHEMA_FIELD(CNetworkVarChainer, __m_pChainEntity)
 
-	CCSPlayerPawn* GetPawn() { return __m_pChainEntity; }
+	CCSPlayerPawn* GetPawn() { return reinterpret_cast<CCSPlayerPawn*>(__m_pChainEntity().m_pEntity); }
 };
 
 class CPlayer_MovementServices : public CPlayerPawnComponent
@@ -186,8 +190,20 @@ public:
 	}
 };
 
-class CCSPlayerController_InGameMoneyServices
+class CCSPlayerController_ActionTrackingServices : public CPlayerControllerComponent
 {
+	virtual ~CCSPlayerController_ActionTrackingServices() = 0;
+
+public:
+	DECLARE_SCHEMA_CLASS(CCSPlayerController_ActionTrackingServices)
+
+	SCHEMA_FIELD(CSMatchStats_t, m_matchStats)
+};
+
+class CCSPlayerController_InGameMoneyServices : public CPlayerControllerComponent
+{
+	virtual ~CCSPlayerController_InGameMoneyServices() = 0;
+
 public:
 	DECLARE_SCHEMA_CLASS(CCSPlayerController_InGameMoneyServices);
 
@@ -230,13 +246,27 @@ public:
 class WeaponPurchaseCount_t
 {
 private:
+	virtual void unk00() {};
 	virtual void unk01() {};
-	uint64_t unk1 = 0;	// 0x8
+	virtual void unk02() {};
+	virtual void unk03() {};
+	virtual void unk04() {};
+
+	CCSPlayerPawn* m_pPawn;
 	uint64_t unk2 = 0;	// 0x10
 	uint64_t unk3 = 0;	// 0x18
 	uint64_t unk4 = 0;	// 0x20
 	uint64_t unk5 = -1; // 0x28
+
 public:
+	WeaponPurchaseCount_t(CCSPlayerPawn* pPawn, uint16 nItemDefIndex, uint16 nCount) :
+		m_pPawn(pPawn), m_nItemDefIndex(nItemDefIndex), m_nCount(nCount)
+	{
+		// Since we're constructing a new object, the vtable pointer will be incorrect so fix it
+		static const auto pVTable = modules::server->FindVirtualTable("WeaponPurchaseCount_t");
+		((void**)this)[0] = pVTable;
+	}
+
 	uint16_t m_nItemDefIndex; // 0x30
 	uint16_t m_nCount;		  // 0x32
 private:
@@ -300,30 +330,13 @@ class CCSPlayer_CameraServices : public CCSPlayerBase_CameraServices
 	virtual ~CCSPlayer_CameraServices() = 0;
 };
 
-class CPlayer_ViewModelServices : public CPlayerPawnComponent
+class CCSPlayer_PingServices : public CPlayerPawnComponent
 {
-	virtual ~CPlayer_ViewModelServices() = 0;
+	virtual ~CCSPlayer_PingServices() = 0;
 
 public:
-	DECLARE_SCHEMA_CLASS(CPlayer_ViewModelServices)
-};
+	DECLARE_SCHEMA_CLASS(CCSPlayer_PingServices);
 
-class CCSPlayer_ViewModelServices : public CPlayer_ViewModelServices
-{
-	virtual ~CCSPlayer_ViewModelServices() = 0;
-
-public:
-	DECLARE_SCHEMA_CLASS(CCSPlayer_ViewModelServices)
-	SCHEMA_FIELD_POINTER(CHandle<CBaseViewModel>, m_hViewModel) // CHandle<CBaseViewModel> m_hViewModel[3]
-
-	CBaseViewModel* GetViewModel(int iIndex = 0)
-	{
-		return m_hViewModel()[iIndex].Get();
-	}
-
-	void SetViewModel(int iIndex, CBaseViewModel* pViewModel)
-	{
-		m_hViewModel()[iIndex].Set(pViewModel);
-		pViewModel->m_nViewModelIndex = iIndex;
-	}
+	SCHEMA_FIELD_POINTER(GameTime_t, m_flPlayerPingTokens)
+	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hPlayerPing)
 };
