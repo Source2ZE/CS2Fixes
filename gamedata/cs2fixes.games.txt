@@ -382,91 +382,91 @@
 		{
 			"CBaseEntity::Precache"
 			{
-				"windows"		"4"
-				"linux"			"5"
+				"windows"		"6"
+				"linux"			"7"
 			}
 			"CBaseEntity::SetOwner"
 			{
-				"windows"		"50"
-				"linux"			"49"
+				"windows"		"52"
+				"linux"			"51"
 			}
 			// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
 			"CCSPlayerController_ChangeTeam"
 			{
-				"windows"		"109"
-				"linux"			"108"
+				"windows"		"102"
+				"linux"			"101"
 			}
 			"GetHammerUniqueId"
 			{
-				"windows"		"118"
-				"linux"			"117"
+				"windows"		"111"
+				"linux"			"110"
 			}
 			"CBaseEntity::Use"
 			{
-				"windows"		"150"
-				"linux"			"149"
+				"windows"		"144"
+				"linux"			"143"
 			}
 			"CBaseEntity::StartTouch"
 			{
-				"windows"		"153"
-				"linux"			"152"
+				"windows"		"147"
+				"linux"			"146"
 			}
 			"CBaseEntity::Touch"
 			{
-				"windows"		"154"
-				"linux"			"153"
+				"windows"		"148"
+				"linux"			"147"
 			}
 			"CBaseEntity::EndTouch"
 			{
-				"windows"		"155"
-				"linux"			"154"
+				"windows"		"149"
+				"linux"			"148"
 			}
 			"Teleport"
 			{
-				"windows"		"168"
-				"linux"			"167"
+				"windows"		"162"
+				"linux"			"161"
 			}
 			// For these two, look for the names, you'll find vscript bindings
 			// Scroll down to where the var + 64 gets set to a function, that calls the offset we want
 			"IsPlayerPawn"
 			{
-				"windows"		"174"
-				"linux"			"173"
+				"windows"		"168"
+				"linux"			"167"
 			}
 			"IsPlayerController"
 			{
-				"windows"		"175"
-				"linux"			"174"
+				"windows"		"169"
+				"linux"			"168"
 			}
 			"CollisionRulesChanged"
 			{
-				"windows"		"191"
-				"linux"			"190"
+				"windows"		"185"
+				"linux"			"184"
 			}
 			"CCSPlayerController_Respawn"
 			{
-				"windows"		"277"
-				"linux"			"279"
+				"windows"		"272"
+				"linux"			"274"
 			}
 			// CBaseTrigger
 			"PassesTriggerFilters"
 			{
-				"windows"		"271"
-				"linux"			"272"
+				"windows"		"266"
+				"linux"			"267"
 			}
 			// Actually a bit of a wrapper function now? Eventually calls a long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
 			"CCSPlayerPawn::OnTakeDamage_Alive"
 			{
-				"windows"		"254"
-				"linux"			"255"
+				"windows"		"249"
+				"linux"			"250"
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
 			// return (*(*v9 + 2976LL))(v9, v27, 0LL);
 			// 2976 (372 * 8) is the offset
 			"CBasePlayerPawn_CommitSuicide"
 			{
-				"windows"		"408"
-				"linux"			"408"
+				"windows"		"400"
+				"linux"			"400"
 			}
 			"GameEntitySystem"
 			{
@@ -493,8 +493,8 @@
 			// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) ), note that this is a CUtlVector
 			"CNetworkGameServer_ClientList"
 			{
-				"windows"		"78"
-				"linux"			"80"
+				"windows"		"74"
+				"linux"			"74"
 			}
 			// Right above "mapgroup workshop;" string there is a virtual call to this on g_pGameTypes using "workshop" string
 			"IGameTypes_CreateWorkshopMapGroup"
@@ -505,24 +505,24 @@
 			// There's no easy way to find this, but it's a function that checks entity flags (0x370) and ends by calling RemoveFlag with 0x800000 (FL_BASEVELOCITY)
 			"CCSPlayer_MovementServices::CheckMovingGround"
 			{
-				"windows"		"37"
-				"linux"			"38"
+				"windows"		"40"
+				"linux"			"41"
 			}
 			"CCSPlayer_WeaponServices::DropWeapon"
 			{
-				"windows"		"23"
-				"linux"			"24"
+				"windows"		"24"
+				"linux"			"25"
 			}
 			"CCSPlayer_WeaponServices::SelectItem"
 			{
-				"windows"		"25"
-				"linux"			"26"
+				"windows"		"26"
+				"linux"			"27"
 			}
 			// server.dll -> xref 'sv_phys_stop_at_collision' first __fastcall
 			"CVPhys2World::GetTouchingList"
 			{
-				"windows"		"120"
-				"linux"			"120"
+				"windows"		"121"
+				"linux"			"121"
 			}
 		}
 		"Patches"
