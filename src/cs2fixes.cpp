@@ -719,7 +719,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 		*(uint64*)clients &= ~g_playerManager->GetStopSoundMask();
 		*(uint64*)clients &= ~g_playerManager->GetSilenceSoundMask();
 	}
-	else if (info->m_MessageId == TE_WorldDecalId)
+	else if (info->m_MessageId == GE_PlaceDecalEvent)
 	{
 		*(uint64*)clients &= ~g_playerManager->GetStopDecalsMask();
 	}
