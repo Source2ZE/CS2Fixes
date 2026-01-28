@@ -140,6 +140,10 @@ int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageI
 	if (g_cvarBlockMolotovSelfDmg.Get() && pInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
 		return 1;
 
+	// Fix disconnected players grenades being able to damage teammates
+	if (!V_strcasecmp(pszInflictorClass, "hegrenade_projectile") && pInfo->m_AttackerInfo.m_bIsPawn && pInfo->m_AttackerInfo.m_nTeam == 0)
+		return 1;
+
 	// maybe call in flow
 	CTakeDamageResult damageResult(0);
 
