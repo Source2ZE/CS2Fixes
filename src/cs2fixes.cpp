@@ -784,7 +784,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 			if (!pSourceEntity)
 				return;
 
-			if (!V_strcasecmp(pSourceEntity->GetClassname(), "player"))
+			if (pSourceEntity->IsPawn() && ((CCSPlayerPawn*)pSourceEntity)->GetController())
 			{
 				playerSlot = ((CCSPlayerPawn*)pSourceEntity)->GetController()->GetPlayerSlot();
 			}
@@ -792,7 +792,7 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 			{
 				CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pSourceEntity->m_hOwnerEntity().Get();
 
-				if (pPawn && pPawn->IsPawn())
+				if (pPawn && pPawn->IsPawn() && pPawn->GetController())
 					playerSlot = pPawn->GetController()->GetPlayerSlot();
 			}
 
