@@ -45,6 +45,7 @@
 #include "interface.h"
 #include "leader.h"
 #include "map_votes.h"
+#include "mapmigrations.h"
 #include "networkstringtabledefs.h"
 #include "panoramavote.h"
 #include "patches.h"
@@ -356,6 +357,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	g_pIdleSystem = new CIdleSystem();
 	g_pPanoramaVoteHandler = new CPanoramaVoteHandler();
 	g_pEWHandler = new CEWHandler();
+	g_pMapMigrations = new CMapMigrations();
 
 	RegisterWeaponCommands();
 
@@ -505,6 +507,9 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 		g_pEWHandler->RemoveAllTriggers();
 		delete g_pEWHandler;
 	}
+
+	if (g_pMapMigrations)
+		delete g_pMapMigrations;
 
 	return true;
 }
@@ -1036,6 +1041,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 void CS2Fixes::Hook_ApplyGameSettings(KeyValues* pKV)
 {
 	g_pMapVoteSystem->ApplyGameSettings(pKV);
+	g_pMapMigrations->ApplyGameSettings(pKV);
 }
 
 void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList)

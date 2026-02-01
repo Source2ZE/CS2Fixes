@@ -661,7 +661,7 @@ void CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, std
 		// Check if input is numeric (workshop ID)
 		if (iWorkshopId != 0)
 		{
-			CWorkshopDetailsQuery::Create(iWorkshopId, pController, callbackSuccess);
+			CMapSystemWorkshopDetailsQuery::Create(iWorkshopId, pController, callbackSuccess);
 			return;
 		}
 
@@ -1386,7 +1386,7 @@ std::pair<int, std::shared_ptr<CMap>> CMapVoteSystem::GetMapInfoByIdentifiers(co
 	return {-1, nullptr};
 }
 
-std::shared_ptr<CWorkshopDetailsQuery> CWorkshopDetailsQuery::Create(uint64 iWorkshopId, CCSPlayerController* pController, QueryCallback_t callbackSuccess)
+std::shared_ptr<CMapSystemWorkshopDetailsQuery> CMapSystemWorkshopDetailsQuery::Create(uint64 iWorkshopId, CCSPlayerController* pController, QueryCallback_t callbackSuccess)
 {
 	uint64 iWorkshopIDArray[1] = {iWorkshopId};
 	UGCQueryHandle_t hQuery = g_steamAPI.SteamUGC()->CreateQueryUGCDetailsRequest(iWorkshopIDArray, 1);
@@ -1400,14 +1400,14 @@ std::shared_ptr<CWorkshopDetailsQuery> CWorkshopDetailsQuery::Create(uint64 iWor
 	g_steamAPI.SteamUGC()->SetAllowCachedResponse(hQuery, 0);
 	SteamAPICall_t hCall = g_steamAPI.SteamUGC()->SendQueryUGCRequest(hQuery);
 
-	auto pQuery = std::make_shared<CWorkshopDetailsQuery>(hQuery, iWorkshopId, pController, callbackSuccess);
+	auto pQuery = std::make_shared<CMapSystemWorkshopDetailsQuery>(hQuery, iWorkshopId, pController, callbackSuccess);
 	g_pMapVoteSystem->AddWorkshopDetailsQuery(pQuery);
-	pQuery->m_CallResult.Set(hCall, pQuery.get(), &CWorkshopDetailsQuery::OnQueryCompleted);
+	pQuery->m_CallResult.Set(hCall, pQuery.get(), &CMapSystemWorkshopDetailsQuery::OnQueryCompleted);
 
 	return pQuery;
 }
 
-void CWorkshopDetailsQuery::OnQueryCompleted(SteamUGCQueryCompleted_t* pCompletedQuery, bool bFailed)
+void CMapSystemWorkshopDetailsQuery::OnQueryCompleted(SteamUGCQueryCompleted_t* pCompletedQuery, bool bFailed)
 {
 	CCSPlayerController* pController = m_hController.Get();
 	SteamUGCDetails_t details;
