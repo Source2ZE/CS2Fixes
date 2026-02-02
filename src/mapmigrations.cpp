@@ -40,29 +40,49 @@ void CMapMigrations::ApplyGameSettings(KeyValues* pKV)
 	CMapMigrationWorkshopDetailsQuery::Create(pKV->FindKey("launchoptions")->GetUint64("customgamemode"));
 }
 
-void CMapMigrations::OnEntitySpawned(CEntityInstance* pEntity)
+void CMapMigrations::OnRoundPrestart()
 {
-	if (g_cvarMapMigrations20260121.Get() == 1 || (g_cvarMapMigrations20260121.Get() == 2 && m_timeMapUpdated < g_time20260121))
-		Migration_20260121(pEntity);
+	m_vecModelEntitiesUsingRendermodeEnum.clear();
 }
 
-void CMapMigrations::Migration_20260121(CEntityInstance* pEntity)
+void CMapMigrations::OnEntitySpawned(CEntityInstance* pEntity, const CEntityKeyValues* pKeyValues)
 {
 	CBaseEntity* pBaseEntity = (CBaseEntity*)pEntity;
 
+	// Stupid workaround for CEntityKeyValues being inaccessible after entity spawn
+	// We need access to this in 2026-01-21 rendermode migrations when called from UpdateMapUpdateTime
+	if (pBaseEntity->AsBaseModelEntity() && V_StringToInt32(pKeyValues->GetString("rendermode"), -1, NULL, NULL, PARSING_FLAG_SKIP_WARNING) == -1)
+		m_vecModelEntitiesUsingRendermodeEnum.push_back(pBaseEntity->GetHandle());
+
+	RunMigrations(pBaseEntity);
+}
+
+void CMapMigrations::RunMigrations(CBaseEntity* pEntity)
+{
+	if (g_cvarMapMigrations20260121.Get() == 1 || (g_cvarMapMigrations20260121.Get() == 2 && m_timeMapUpdated < g_time20260121))
+		Migrations_20260121(pEntity);
+}
+
+void CMapMigrations::Migrations_20260121(CBaseEntity* pEntity)
+{
 	if (!V_strcasecmp(pEntity->GetClassname(), "func_door_rotating"))
 	{
-		uint32 spawnFlags = pBaseEntity->m_spawnflags();
+		uint32 spawnFlags = pEntity->m_spawnflags();
 
-		// Force add One-way flag if not present
-		if (!(spawnFlags & 16))
-			pBaseEntity->m_spawnflags = spawnFlags + 16;
+		if (!(spawnFlags & SF_DOOR_ONEWAY))
+			pEntity->m_spawnflags = spawnFlags + SF_DOOR_ONEWAY;
 	}
 
-	CBaseModelEntity* pModelEntity = pBaseEntity->AsBaseModelEntity();
+	CBaseModelEntity* pModelEntity = pEntity->AsBaseModelEntity();
 
 	if (pModelEntity)
 	{
+		// Also need to make sure the entity is using index-based rendermodes, and not enum-based ones (which will already automatically migrate correctly)
+		// This differentiation is lost after entity spawn, so we had to check the original keyvalue earlier instead
+		for (int i = 0; i < m_vecModelEntitiesUsingRendermodeEnum.size(); i++)
+			if (m_vecModelEntitiesUsingRendermodeEnum[i] == pModelEntity->GetHandle())
+				return;
+
 		RenderMode_t renderMode = pModelEntity->m_nRenderMode();
 
 		// Legacy kRenderTransAlpha
@@ -85,7 +105,7 @@ void CMapMigrations::UpdateMapUpdateTime(time_t timeMapUpdated)
 
 	// May be called late, so also check any existing entities first
 	while ((pTarget = UTIL_FindEntityByName(pTarget, "*")))
-		OnEntitySpawned(pTarget);
+		RunMigrations(pTarget);
 }
 
 std::shared_ptr<CMapMigrationWorkshopDetailsQuery> CMapMigrationWorkshopDetailsQuery::Create(uint64 iWorkshopId)
