@@ -25,6 +25,7 @@
 #include "entitysystem.h"
 #include "steam/isteamugc.h"
 #include <vector>
+#undef max
 
 extern CConVar<int> g_cvarMapMigrations20260121;
 
