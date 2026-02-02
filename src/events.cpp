@@ -30,6 +30,7 @@
 #include "idlemanager.h"
 #include "leader.h"
 #include "map_votes.h"
+#include "mapmigrations.h"
 #include "panoramavote.h"
 #include "recipientfilters.h"
 #include "topdefender.h"
@@ -85,6 +86,8 @@ GAME_EVENT_F(round_prestart)
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_RoundPreStart();
+
+	g_pMapMigrations->OnRoundPrestart();
 }
 
 CConVar<bool> g_cvarBlockTeamMessages("cs2f_block_team_messages", FCVAR_NONE, "Whether to block team join messages", false);

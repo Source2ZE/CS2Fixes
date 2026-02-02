@@ -25,7 +25,6 @@
 #include "entity/cgamerules.h"
 #include "entwatch.h"
 #include "gameconfig.h"
-#include "mapmigrations.h"
 #include "plat.h"
 
 CEntityListener* g_pEntityListener = nullptr;
@@ -56,8 +55,6 @@ void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_OnEntitySpawned(pEntity);
-
-	g_pMapMigrations->OnEntitySpawned(pEntity);
 }
 
 void CEntityListener::OnEntityCreated(CEntityInstance* pEntity)

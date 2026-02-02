@@ -109,6 +109,7 @@ public: // hooks
 	void Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity);
 	int Hook_LoadEventsFromFile(const char* filename, bool bSearchAll);
 	void Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr);
+	void Hook_SpawnPost(int nCount, const EntitySpawnInfo_t* pInfo);
 
 public: // MetaMod API
 	void* OnMetamodQuery(const char* iface, int* ret);
