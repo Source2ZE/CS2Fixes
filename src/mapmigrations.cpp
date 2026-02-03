@@ -104,7 +104,7 @@ void CMapMigrations::UpdateMapUpdateTime(time_t timeMapUpdated)
 	CBaseEntity* pTarget = nullptr;
 
 	// May be called late, so also check any existing entities first
-	while ((pTarget = UTIL_FindEntityByName(pTarget, "*")))
+	while ((pTarget = UTIL_FindEntityByClassname(pTarget, "*")))
 		RunMigrations(pTarget);
 }
 

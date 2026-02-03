@@ -735,7 +735,7 @@ void EWItemInstance::FindExistingHandlers()
 			continue;
 
 		CBaseEntity* pTarget = nullptr;
-		while ((pTarget = UTIL_FindEntityByName(pTarget, "*")))
+		while ((pTarget = UTIL_FindEntityByClassname(pTarget, "*")))
 		{
 			if (!V_strcmp(pTarget->m_sUniqueHammerID().Get(), handler->szHammerid.c_str()))
 			{
