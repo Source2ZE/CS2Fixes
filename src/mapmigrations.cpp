@@ -110,8 +110,14 @@ void CMapMigrations::UpdateMapUpdateTime(time_t timeMapUpdated)
 
 std::shared_ptr<CMapMigrationWorkshopDetailsQuery> CMapMigrationWorkshopDetailsQuery::Create(uint64 iWorkshopId)
 {
+	if (!GetSteamUGC())
+	{
+		Panic("Map migrations failed to find current map update time: null ISteamUGC\n");
+		return nullptr;
+	}
+
 	uint64 iWorkshopIDArray[1] = {iWorkshopId};
-	UGCQueryHandle_t hQuery = g_steamAPI.SteamUGC()->CreateQueryUGCDetailsRequest(iWorkshopIDArray, 1);
+	UGCQueryHandle_t hQuery = GetSteamUGC()->CreateQueryUGCDetailsRequest(iWorkshopIDArray, 1);
 
 	if (hQuery == k_UGCQueryHandleInvalid)
 	{
@@ -119,8 +125,8 @@ std::shared_ptr<CMapMigrationWorkshopDetailsQuery> CMapMigrationWorkshopDetailsQ
 		return nullptr;
 	}
 
-	g_steamAPI.SteamUGC()->SetAllowCachedResponse(hQuery, 0);
-	SteamAPICall_t hCall = g_steamAPI.SteamUGC()->SendQueryUGCRequest(hQuery);
+	GetSteamUGC()->SetAllowCachedResponse(hQuery, 0);
+	SteamAPICall_t hCall = GetSteamUGC()->SendQueryUGCRequest(hQuery);
 
 	auto pQuery = std::make_shared<CMapMigrationWorkshopDetailsQuery>(hQuery, iWorkshopId);
 	g_pMapMigrations->AddWorkshopDetailsQuery(pQuery);
@@ -133,11 +139,13 @@ void CMapMigrationWorkshopDetailsQuery::OnQueryCompleted(SteamUGCQueryCompleted_
 {
 	SteamUGCDetails_t details;
 
-	if (bFailed || pCompletedQuery->m_eResult != k_EResultOK || pCompletedQuery->m_unNumResultsReturned < 1 || !g_steamAPI.SteamUGC()->GetQueryUGCResult(pCompletedQuery->m_handle, 0, &details) || details.m_eResult != k_EResultOK)
+	if (bFailed || pCompletedQuery->m_eResult != k_EResultOK || pCompletedQuery->m_unNumResultsReturned < 1 || !GetSteamUGC()->GetQueryUGCResult(pCompletedQuery->m_handle, 0, &details) || details.m_eResult != k_EResultOK)
 		Panic("Map migrations failed to find current map update time: failed to query workshop map information for ID %llu\n", m_iWorkshopId);
 	else
 		g_pMapMigrations->UpdateMapUpdateTime(details.m_rtimeUpdated);
 
-	g_steamAPI.SteamUGC()->ReleaseQueryUGCRequest(m_hQuery);
+	if (GetSteamUGC())
+		GetSteamUGC()->ReleaseQueryUGCRequest(m_hQuery);
+
 	g_pMapMigrations->RemoveWorkshopDetailsQuery(shared_from_this());
 }

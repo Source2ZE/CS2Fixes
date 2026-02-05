@@ -47,8 +47,6 @@ extern IGameEventSystem* g_gameEventSystem;
 extern IGameEventManager2* g_gameEventManager;
 extern CGameEntitySystem* g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
-extern ISteamHTTP* g_http;
-extern CSteamGameServerAPIContext g_steamAPI;
 extern CCSGameRules* g_pGameRules;
 extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
 extern double g_flUniversalTime;
@@ -69,7 +67,6 @@ public:
 
 public: // hooks
 	void Hook_GameServerSteamAPIActivated();
-	void Hook_GameServerSteamAPIDeactivated();
 	void OnLevelInit(char const* pMapName,
 					 char const* pMapEntities,
 					 char const* pOldLevel,
