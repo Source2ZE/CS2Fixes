@@ -760,10 +760,6 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 			static std::set<uint32> soundEventHashes;
 
 			ExecuteOnce(
-				soundEventHashes.insert(GetSoundEventHash("Weapon_Knife.HitWall"));
-				soundEventHashes.insert(GetSoundEventHash("Weapon_Knife.Slash"));
-				soundEventHashes.insert(GetSoundEventHash("Weapon_Knife.Hit"));
-				soundEventHashes.insert(GetSoundEventHash("Weapon_Knife.Stab"));
 				soundEventHashes.insert(GetSoundEventHash("Weapon_sg556.ZoomIn"));
 				soundEventHashes.insert(GetSoundEventHash("Weapon_sg556.ZoomOut"));
 				soundEventHashes.insert(GetSoundEventHash("Weapon_AUG.ZoomIn"));
