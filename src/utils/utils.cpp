@@ -78,3 +78,19 @@ std::string StringToLower(std::string strValue)
 
 	return strValue;
 }
+
+ISteamUGC* GetSteamUGC()
+{
+	if (g_pEngineServer2->IsDedicatedServer())
+		return SteamGameServerUGC();
+	else
+		return SteamUGC();
+}
+
+ISteamHTTP* GetSteamHTTP()
+{
+	if (g_pEngineServer2->IsDedicatedServer())
+		return SteamGameServerHTTP();
+	else
+		return SteamHTTP();
+}

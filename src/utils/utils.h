@@ -20,6 +20,7 @@
 #pragma once
 
 #include "playerslot.h"
+#include "steam/isteamugc.h"
 #include "utlvector.h"
 #include <string>
 
@@ -33,3 +34,6 @@ CServerSideClient* GetClientBySlot(CPlayerSlot slot);
 
 uint32 GetSoundEventHash(const char* pszSoundEventName);
 std::string StringToLower(std::string strValue);
+
+ISteamUGC* GetSteamUGC();
+ISteamHTTP* GetSteamHTTP();
