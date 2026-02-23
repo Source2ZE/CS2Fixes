@@ -34,6 +34,7 @@
 #include "interfaces/interfaces.h"
 #include "map_votes.h"
 #include "playermanager.h"
+#include "translations.h"
 #include "utils/entity.h"
 #include "votemanager.h"
 #include <fstream>
@@ -1946,7 +1947,11 @@ void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAd
 	}
 	else if (eType != ETargetError::NO_ERRORS)
 	{
-		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "%s", g_playerManager->GetErrorString(eType, (iNumClients == 0) ? 0 : pSlots[0]).c_str());
+		std::string strError = g_playerManager->GetErrorString(eType);
+
+		char szFormat[256];
+		V_snprintf(szFormat, sizeof(szFormat), CHAT_PREFIX "%s", strError.c_str());
+		ClientPrintT(pAdmin, HUD_PRINTTALK, szFormat);
 		return;
 	}
 

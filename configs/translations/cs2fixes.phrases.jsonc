@@ -556,5 +556,136 @@
 		"fr": "%s n'est dans aucune équipe.",
 		"de": "%s ist in keinem Team.",
 		"ru": "%s не в команде."
+	},
+
+	// ---- Target Errors ----
+
+	"Target.Invalid": {
+		"en": "No matching player was found.",
+		"es": "No se encontró ningún jugador.",
+		"pt": "Nenhum jogador correspondente foi encontrado.",
+		"fr": "Aucun joueur correspondant trouvé.",
+		"de": "Kein passender Spieler gefunden.",
+		"ru": "Подходящий игрок не найден."
+	},
+	"Target.Connecting": {
+		"en": "This action cannot be performed on connecting players. Please wait a moment and try again.",
+		"es": "Esta acción no se puede realizar en jugadores conectándose. Espera un momento e inténtalo de nuevo.",
+		"pt": "Esta ação não pode ser realizada em jogadores conectando. Aguarde um momento e tente novamente.",
+		"fr": "Cette action ne peut pas être effectuée sur des joueurs en cours de connexion. Veuillez patienter et réessayer.",
+		"de": "Diese Aktion kann nicht bei verbindenden Spielern ausgeführt werden. Bitte warte einen Moment und versuche es erneut.",
+		"ru": "Это действие нельзя выполнить для подключающихся игроков. Подождите и попробуйте снова."
+	},
+	"Target.MultipleMatches": {
+		"en": "More than one player matched the given pattern. Consider using & before the player's name for exact matching.",
+		"es": "Más de un jugador coincide con el patrón dado. Usa & antes del nombre del jugador para coincidencia exacta.",
+		"pt": "Mais de um jogador corresponde ao padrão. Use & antes do nome do jogador para correspondência exata.",
+		"fr": "Plus d'un joueur correspond au motif donné. Utilisez & avant le nom du joueur pour une correspondance exacte.",
+		"de": "Mehr als ein Spieler stimmt mit dem Muster überein. Verwende & vor dem Spielernamen für exakte Übereinstimmung.",
+		"ru": "Найдено более одного игрока. Используйте & перед именем для точного совпадения."
+	},
+	"Target.NoRandom": {
+		"en": "This action cannot be performed on random players.",
+		"es": "Esta acción no se puede realizar en jugadores aleatorios.",
+		"pt": "Esta ação não pode ser realizada em jogadores aleatórios.",
+		"fr": "Cette action ne peut pas être effectuée sur des joueurs aléatoires.",
+		"de": "Diese Aktion kann nicht bei zufälligen Spielern ausgeführt werden.",
+		"ru": "Это действие нельзя выполнить для случайных игроков."
+	},
+	"Target.NoMultiple": {
+		"en": "This action cannot be performed on multiple players.",
+		"es": "Esta acción no se puede realizar en múltiples jugadores.",
+		"pt": "Esta ação não pode ser realizada em múltiplos jogadores.",
+		"fr": "Cette action ne peut pas être effectuée sur plusieurs joueurs.",
+		"de": "Diese Aktion kann nicht bei mehreren Spielern ausgeführt werden.",
+		"ru": "Это действие нельзя выполнить для нескольких игроков."
+	},
+	"Target.NoSelf": {
+		"en": "This action cannot be performed on yourself.",
+		"es": "Esta acción no se puede realizar en ti mismo.",
+		"pt": "Esta ação não pode ser realizada em si mesmo.",
+		"fr": "Cette action ne peut pas être effectuée sur vous-même.",
+		"de": "Diese Aktion kann nicht bei dir selbst ausgeführt werden.",
+		"ru": "Это действие нельзя выполнить для себя."
+	},
+	"Target.NoBot": {
+		"en": "This action cannot be performed on bots.",
+		"es": "Esta acción no se puede realizar en bots.",
+		"pt": "Esta ação não pode ser realizada em bots.",
+		"fr": "Cette action ne peut pas être effectuée sur des bots.",
+		"de": "Diese Aktion kann nicht bei Bots ausgeführt werden.",
+		"ru": "Это действие нельзя выполнить для ботов."
+	},
+	"Target.OnlyBot": {
+		"en": "This action can only be performed on bots.",
+		"es": "Esta acción solo se puede realizar en bots.",
+		"pt": "Esta ação só pode ser realizada em bots.",
+		"fr": "Cette action ne peut être effectuée que sur des bots.",
+		"de": "Diese Aktion kann nur bei Bots ausgeführt werden.",
+		"ru": "Это действие можно выполнить только для ботов."
+	},
+	"Target.OnlyAlive": {
+		"en": "This action can only be performed on alive players.",
+		"es": "Esta acción solo se puede realizar en jugadores vivos.",
+		"pt": "Esta ação só pode ser realizada em jogadores vivos.",
+		"fr": "Cette action ne peut être effectuée que sur des joueurs vivants.",
+		"de": "Diese Aktion kann nur bei lebenden Spielern ausgeführt werden.",
+		"ru": "Это действие можно выполнить только для живых игроков."
+	},
+	"Target.NoAlive": {
+		"en": "This action cannot be performed on alive players.",
+		"es": "Esta acción no se puede realizar en jugadores vivos.",
+		"pt": "Esta ação não pode ser realizada em jogadores vivos.",
+		"fr": "Cette action ne peut pas être effectuée sur des joueurs vivants.",
+		"de": "Diese Aktion kann nicht bei lebenden Spielern ausgeführt werden.",
+		"ru": "Это действие нельзя выполнить для живых игроков."
+	},
+	"Target.NoTerrorist": {
+		"en": "This action cannot be performed on terrorists.",
+		"es": "Esta acción no se puede realizar en terroristas.",
+		"pt": "Esta ação não pode ser realizada em terroristas.",
+		"fr": "Cette action ne peut pas être effectuée sur des terroristes.",
+		"de": "Diese Aktion kann nicht bei Terroristen ausgeführt werden.",
+		"ru": "Это действие нельзя выполнить для террористов."
+	},
+	"Target.NoCT": {
+		"en": "This action cannot be performed on counter-terrorists.",
+		"es": "Esta acción no se puede realizar en antiterroristas.",
+		"pt": "Esta ação não pode ser realizada em contraterroristas.",
+		"fr": "Cette action ne peut pas être effectuée sur des antiterroristes.",
+		"de": "Diese Aktion kann nicht bei Anti-Terroristen ausgeführt werden.",
+		"ru": "Это действие нельзя выполнить для контр-террористов."
+	},
+	"Target.NoSpectator": {
+		"en": "This action cannot be performed on spectators.",
+		"es": "Esta acción no se puede realizar en espectadores.",
+		"pt": "Esta ação não pode ser realizada em espectadores.",
+		"fr": "Cette action ne peut pas être effectuée sur des spectateurs.",
+		"de": "Diese Aktion kann nicht bei Zuschauern ausgeführt werden.",
+		"ru": "Это действие нельзя выполнить для наблюдателей."
+	},
+	"Target.Unauthenticated": {
+		"en": "This action cannot be performed on unauthenticated players. Please wait a moment and try again.",
+		"es": "Esta acción no se puede realizar en jugadores no autenticados. Espera un momento e inténtalo de nuevo.",
+		"pt": "Esta ação não pode ser realizada em jogadores não autenticados. Aguarde um momento e tente novamente.",
+		"fr": "Cette action ne peut pas être effectuée sur des joueurs non authentifiés. Veuillez patienter et réessayer.",
+		"de": "Diese Aktion kann nicht bei nicht authentifizierten Spielern ausgeführt werden. Bitte warte einen Moment und versuche es erneut.",
+		"ru": "Это действие нельзя выполнить для неаутентифицированных игроков. Подождите и попробуйте снова."
+	},
+	"Target.NoPermission": {
+		"en": "You do not have permission to target this player.",
+		"es": "No tienes permiso para seleccionar a este jugador.",
+		"pt": "Você não tem permissão para selecionar este jogador.",
+		"fr": "Vous n'avez pas la permission de cibler ce joueur.",
+		"de": "Du hast keine Berechtigung, diesen Spieler auszuwählen.",
+		"ru": "У вас нет прав для выбора этого игрока."
+	},
+	"Target.Unknown": {
+		"en": "Encountered an unknown ETargetError, please contact a dev with the exact command used.",
+		"es": "Se encontró un ETargetError desconocido, contacta a un desarrollador con el comando exacto usado.",
+		"pt": "Ocorreu um ETargetError desconhecido, entre em contato com um desenvolvedor com o comando exato usado.",
+		"fr": "Une ETargetError inconnue a été rencontrée, veuillez contacter un développeur avec la commande exacte utilisée.",
+		"de": "Ein unbekannter ETargetError ist aufgetreten, bitte kontaktiere einen Entwickler mit dem genauen verwendeten Befehl.",
+		"ru": "Произошла неизвестная ошибка ETargetError, свяжитесь с разработчиком и укажите точную команду."
 	}
 }
