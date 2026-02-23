@@ -251,5 +251,310 @@
 		"fr": "Aucune classe disponible ne correspond à {gold}%s{default}.",
 		"de": "Keine verfügbare Klasse stimmt mit {gold}%s{default} überein.",
 		"ru": "Нет доступных классов, совпадающих с {gold}%s{default}."
+	},
+
+	// ---- General ----
+
+	"General.NoAccess": {
+		"en": "You don't have access to this command.",
+		"es": "No tienes acceso a este comando.",
+		"pt": "Você não tem acesso a este comando.",
+		"fr": "Vous n'avez pas accès à cette commande.",
+		"de": "Du hast keinen Zugriff auf diesen Befehl.",
+		"ru": "У вас нет доступа к этой команде."
+	},
+	"General.MustBeLeader": {
+		"en": "You must be a leader to use this command.",
+		"es": "Debes ser líder para usar este comando.",
+		"pt": "Você deve ser líder para usar este comando.",
+		"fr": "Vous devez être leader pour utiliser cette commande.",
+		"de": "Du musst ein Leader sein, um diesen Befehl zu verwenden.",
+		"ru": "Вы должны быть лидером, чтобы использовать эту команду."
+	},
+	"General.MustBeHuman": {
+		"en": "You must be a human to use this command.",
+		"es": "Debes ser humano para usar este comando.",
+		"pt": "Você deve ser humano para usar este comando.",
+		"fr": "Vous devez être humain pour utiliser cette commande.",
+		"de": "Du musst ein Mensch sein, um diesen Befehl zu verwenden.",
+		"ru": "Вы должны быть человеком, чтобы использовать эту команду."
+	},
+
+	// ---- Weapons ----
+
+	"Weapon.HumanOnly": {
+		"en": "You can only buy weapons when human.",
+		"es": "Solo puedes comprar armas siendo humano.",
+		"pt": "Você só pode comprar armas quando é humano.",
+		"fr": "Vous ne pouvez acheter des armes qu'en tant qu'humain.",
+		"de": "Du kannst nur als Mensch Waffen kaufen.",
+		"ru": "Вы можете покупать оружие только будучи человеком."
+	},
+	// %s = weapon name, %i = weapon price, %i = current money
+	"Weapon.CantAfford": {
+		"en": "You can't afford %s! It costs $%i, you only have $%i",
+		"es": "¡No puedes permitirte %s! Cuesta $%i, solo tienes $%i",
+		"pt": "Você não pode comprar %s! Custa $%i, você só tem $%i",
+		"fr": "Vous ne pouvez pas vous permettre %s ! Coûte $%i, vous n'avez que $%i",
+		"de": "Du kannst dir %s nicht leisten! Kostet $%i, du hast nur $%i",
+		"ru": "Вы не можете позволить себе %s! Стоит $%i, у вас только $%i"
+	},
+	// %s = weapon name, %i = max count
+	"Weapon.MaxReached": {
+		"en": "You cannot carry any more %ss (Max %i)",
+		"es": "No puedes llevar más %ss (Máx %i)",
+		"pt": "Você não pode carregar mais %ss (Máx %i)",
+		"fr": "Vous ne pouvez plus porter de %ss (Max %i)",
+		"de": "Du kannst keine weiteren %ss tragen (Max %i)",
+		"ru": "Вы не можете нести больше %ss (Макс %i)"
+	},
+	// %i = total grenade limit
+	"Weapon.MaxGrenades": {
+		"en": "You cannot carry any more grenades (Max %i)",
+		"es": "No puedes llevar más granadas (Máx %i)",
+		"pt": "Você não pode carregar mais granadas (Máx %i)",
+		"fr": "Vous ne pouvez plus porter de grenades (Max %i)",
+		"de": "Du kannst keine weiteren Granaten tragen (Max %i)",
+		"ru": "Вы не можете нести больше гранат (Макс %i)"
+	},
+	// %s = weapon name, %i = max buy count
+	"Weapon.MaxBuyReached": {
+		"en": "You cannot buy any more %s (Max %i)",
+		"es": "No puedes comprar más %s (Máx %i)",
+		"pt": "Você não pode comprar mais %s (Máx %i)",
+		"fr": "Vous ne pouvez plus acheter de %s (Max %i)",
+		"de": "Du kannst keine weiteren %s kaufen (Max %i)",
+		"ru": "Вы не можете купить больше %s (Макс %i)"
+	},
+	// %s = weapon name, %i = price
+	"Weapon.Purchased": {
+		"en": "You have purchased %s for $%i",
+		"es": "Has comprado %s por $%i",
+		"pt": "Você comprou %s por $%i",
+		"fr": "Vous avez acheté %s pour $%i",
+		"de": "Du hast %s für $%i gekauft",
+		"ru": "Вы купили %s за $%i"
+	},
+
+	// ---- StopSound ----
+
+	"StopSound.Enabled": {
+		"en": "You have {lime}enabled{default} weapon sounds.",
+		"es": "Has {lime}activado{default} los sonidos de armas.",
+		"pt": "Você {lime}ativou{default} os sons de armas.",
+		"fr": "Vous avez {lime}activé{default} les sons des armes.",
+		"de": "Du hast Waffengeräusche {lime}aktiviert{default}.",
+		"ru": "Вы {lime}включили{default} звуки оружия."
+	},
+	"StopSound.Silenced": {
+		"en": "You have {yellow}silenced{default} weapon sounds.",
+		"es": "Has {yellow}silenciado{default} los sonidos de armas.",
+		"pt": "Você {yellow}silenciou{default} os sons de armas.",
+		"fr": "Vous avez {yellow}réduit{default} les sons des armes.",
+		"de": "Du hast Waffengeräusche {yellow}gedämpft{default}.",
+		"ru": "Вы {yellow}приглушили{default} звуки оружия."
+	},
+	"StopSound.Disabled": {
+		"en": "You have {lightred}disabled{default} weapon sounds.",
+		"es": "Has {lightred}desactivado{default} los sonidos de armas.",
+		"pt": "Você {lightred}desativou{default} os sons de armas.",
+		"fr": "Vous avez {lightred}désactivé{default} les sons des armes.",
+		"de": "Du hast Waffengeräusche {lightred}deaktiviert{default}.",
+		"ru": "Вы {lightred}отключили{default} звуки оружия."
+	},
+
+	// ---- Decals ----
+
+	"Decals.Enabled": {
+		"en": "You have {lime}enabled{default} world decals.",
+		"es": "Has {lime}activado{default} las calcomanías del mundo.",
+		"pt": "Você {lime}ativou{default} os decalques do mundo.",
+		"fr": "Vous avez {lime}activé{default} les décals du monde.",
+		"de": "Du hast Welt-Decals {lime}aktiviert{default}.",
+		"ru": "Вы {lime}включили{default} декали мира."
+	},
+	"Decals.Disabled": {
+		"en": "You have {lightred}disabled{default} world decals.",
+		"es": "Has {lightred}desactivado{default} las calcomanías del mundo.",
+		"pt": "Você {lightred}desativou{default} os decalques do mundo.",
+		"fr": "Vous avez {lightred}désactivé{default} les décals du monde.",
+		"de": "Du hast Welt-Decals {lightred}deaktiviert{default}.",
+		"ru": "Вы {lightred}отключили{default} декали мира."
+	},
+
+	// ---- NoShake ----
+
+	"NoShake.Enabled": {
+		"en": "You have {lime}enabled{default} noshake.",
+		"es": "Has {lime}activado{default} noshake.",
+		"pt": "Você {lime}ativou{default} noshake.",
+		"fr": "Vous avez {lime}activé{default} noshake.",
+		"de": "Du hast NoShake {lime}aktiviert{default}.",
+		"ru": "Вы {lime}включили{default} noshake."
+	},
+	"NoShake.Disabled": {
+		"en": "You have {lightred}disabled{default} noshake.",
+		"es": "Has {lightred}desactivado{default} noshake.",
+		"pt": "Você {lightred}desativou{default} noshake.",
+		"fr": "Vous avez {lightred}désactivé{default} noshake.",
+		"de": "Du hast NoShake {lightred}deaktiviert{default}.",
+		"ru": "Вы {lightred}отключили{default} noshake."
+	},
+
+	// ---- Hide ----
+
+	// %i = max distance
+	"Hide.InvalidRange": {
+		"en": "You can only hide players between {lime}0{default} and {lime}%i units{default} away.",
+		"es": "Solo puedes ocultar jugadores entre {lime}0{default} y {lime}%i unidades{default}.",
+		"pt": "Você só pode ocultar jogadores entre {lime}0{default} e {lime}%i unidades{default}.",
+		"fr": "Vous pouvez masquer les joueurs entre {lime}0{default} et {lime}%i unités{default}.",
+		"de": "Du kannst Spieler nur zwischen {lime}0{default} und {lime}%i Einheiten{default} ausblenden.",
+		"ru": "Вы можете скрыть игроков на расстоянии от {lime}0{default} до {lime}%i единиц{default}."
+	},
+	"Hide.Disabled": {
+		"en": "Hiding players is now disabled.",
+		"es": "La ocultación de jugadores está desactivada.",
+		"pt": "A ocultação de jogadores está desativada.",
+		"fr": "Le masquage des joueurs est maintenant désactivé.",
+		"de": "Das Ausblenden von Spielern ist jetzt deaktiviert.",
+		"ru": "Скрытие игроков отключено."
+	},
+	// %i = distance
+	"Hide.Set": {
+		"en": "Now hiding players within {lime}%i units{default}.",
+		"es": "Ocultando jugadores dentro de {lime}%i unidades{default}.",
+		"pt": "Ocultando jogadores dentro de {lime}%i unidades{default}.",
+		"fr": "Masquage des joueurs dans un rayon de {lime}%i unités{default}.",
+		"de": "Spieler innerhalb von {lime}%i Einheiten{default} werden nun ausgeblendet.",
+		"ru": "Игроки в пределах {lime}%i единиц{default} скрыты."
+	},
+
+	// ---- Help ----
+
+	"Help.ListChat": {
+		"en": "The list of all available commands will be shown in console.",
+		"es": "La lista de todos los comandos disponibles se mostrará en la consola.",
+		"pt": "A lista de todos os comandos disponíveis será mostrada no console.",
+		"fr": "La liste de toutes les commandes disponibles sera affichée dans la console.",
+		"de": "Die Liste aller verfügbaren Befehle wird in der Konsole angezeigt.",
+		"ru": "Список всех доступных команд будет показан в консоли."
+	},
+	// %s = search term
+	"Help.NoMatch": {
+		"en": "No commands matched \"%s\".",
+		"es": "Ningún comando coincide con \"%s\".",
+		"pt": "Nenhum comando corresponde a \"%s\".",
+		"fr": "Aucune commande ne correspond à \"%s\".",
+		"de": "Keine Befehle stimmen mit \"%s\" überein.",
+		"ru": "Нет команд, соответствующих \"%s\"."
+	},
+	// %s = search term
+	"Help.MatchChat": {
+		"en": "The list of all commands matching \"%s\" will be shown in console.",
+		"es": "La lista de comandos que coinciden con \"%s\" se mostrará en la consola.",
+		"pt": "A lista de comandos correspondentes a \"%s\" será mostrada no console.",
+		"fr": "La liste des commandes correspondant à \"%s\" sera affichée dans la console.",
+		"de": "Die Liste aller Befehle, die mit \"%s\" übereinstimmen, wird in der Konsole angezeigt.",
+		"ru": "Список команд, соответствующих \"%s\", будет показан в консоли."
+	},
+
+	// ---- Spectate ----
+
+	"Spec.AlreadySpectating": {
+		"en": "Already spectating.",
+		"es": "Ya estás espectando.",
+		"pt": "Você já está espectando.",
+		"fr": "Vous êtes déjà en mode spectateur.",
+		"de": "Du bist bereits Zuschauer.",
+		"ru": "Вы уже наблюдаете."
+	},
+	"Spec.MovedToSpectators": {
+		"en": "Moved to spectators.",
+		"es": "Movido a espectadores.",
+		"pt": "Movido para espectadores.",
+		"fr": "Déplacé vers les spectateurs.",
+		"de": "Zu den Zuschauern verschoben.",
+		"ru": "Перемещены к наблюдателям."
+	},
+	// %s = target player name
+	"Spec.NowSpectating": {
+		"en": "Spectating player %s.",
+		"es": "Espectando al jugador %s.",
+		"pt": "Espectando o jogador %s.",
+		"fr": "Observation du joueur %s.",
+		"de": "Zuschauer von Spieler %s.",
+		"ru": "Наблюдение за игроком %s."
+	},
+
+	// ---- Info ----
+
+	"Info.Usage": {
+		"en": "Usage: !info <name>",
+		"es": "Uso: !info <nombre>",
+		"pt": "Uso: !info <nome>",
+		"fr": "Utilisation : !info <nom>",
+		"de": "Verwendung: !info <name>",
+		"ru": "Использование: !info <имя>"
+	},
+	"Info.PrintedToConsole": {
+		"en": "Printed matching player's information to console.",
+		"es": "Información del jugador impresa en la consola.",
+		"pt": "Informação do jogador impressa no console.",
+		"fr": "Informations du joueur affichées dans la console.",
+		"de": "Spieler-Informationen in der Konsole ausgegeben.",
+		"ru": "Информация об игроке выведена в консоль."
+	},
+	"Info.PrintedToConsolePlural": {
+		"en": "Printed matching players' information to console.",
+		"es": "Información de los jugadores impresa en la consola.",
+		"pt": "Informação dos jogadores impressa no console.",
+		"fr": "Informations des joueurs affichées dans la console.",
+		"de": "Spieler-Informationen in der Konsole ausgegeben.",
+		"ru": "Информация об игроках выведена в консоль."
+	},
+
+	// ---- ShowTeam ----
+
+	"ShowTeam.Usage": {
+		"en": "Usage: !showteam <name>",
+		"es": "Uso: !showteam <nombre>",
+		"pt": "Uso: !showteam <nome>",
+		"fr": "Utilisation : !showteam <nom>",
+		"de": "Verwendung: !showteam <name>",
+		"ru": "Использование: !showteam <имя>"
+	},
+	// %s = player name
+	"ShowTeam.Spectator": {
+		"en": "%s is a {gray}spectator{default}.",
+		"es": "%s es un {gray}espectador{default}.",
+		"pt": "%s é um {gray}espectador{default}.",
+		"fr": "%s est un {gray}spectateur{default}.",
+		"de": "%s ist ein {gray}Zuschauer{default}.",
+		"ru": "%s — {gray}наблюдатель{default}."
+	},
+	"ShowTeam.Terrorist": {
+		"en": "%s is a {yellow}terrorist{default}.",
+		"es": "%s es un {yellow}terrorista{default}.",
+		"pt": "%s é um {yellow}terrorista{default}.",
+		"fr": "%s est un {yellow}terroriste{default}.",
+		"de": "%s ist ein {yellow}Terrorist{default}.",
+		"ru": "%s — {yellow}террорист{default}."
+	},
+	"ShowTeam.CT": {
+		"en": "%s is a {blue}counter-terrorist{default}.",
+		"es": "%s es un {blue}antiterrorista{default}.",
+		"pt": "%s é um {blue}contra-terrorista{default}.",
+		"fr": "%s est un {blue}contre-terroriste{default}.",
+		"de": "%s ist ein {blue}Antiterrorist{default}.",
+		"ru": "%s — {blue}контр-террорист{default}."
+	},
+	"ShowTeam.NoTeam": {
+		"en": "%s is not on a team.",
+		"es": "%s no está en un equipo.",
+		"pt": "%s não está em uma equipe.",
+		"fr": "%s n'est dans aucune équipe.",
+		"de": "%s ist in keinem Team.",
+		"ru": "%s не в команде."
 	}
 }

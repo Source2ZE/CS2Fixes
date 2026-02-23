@@ -41,6 +41,7 @@
 #include "utils/entity.h"
 #include "utlstring.h"
 #include "zombiereborn.h"
+#include "translations.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
 
@@ -118,7 +119,7 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 	if (pPawn->m_iHealth() <= 0 || pPawn->m_iTeamNum != CS_TEAM_CT)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only buy weapons when human.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Weapon.HumanOnly}");
 		return;
 	}
 
@@ -133,7 +134,7 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 	if (money < pWeaponInfo->m_nPrice)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can't afford %s! It costs $%i, you only have $%i", pWeaponInfo->m_pName, pWeaponInfo->m_nPrice, money);
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Weapon.CantAfford}", pWeaponInfo->m_pName, pWeaponInfo->m_nPrice, money);
 		return;
 	}
 
@@ -150,13 +151,13 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 		if (iMatchingGrenades >= iGrenadeLimitDefault)
 		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot carry any more %ss (Max %i)", pWeaponInfo->m_pName, iGrenadeLimitDefault);
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Weapon.MaxReached}", pWeaponInfo->m_pName, iGrenadeLimitDefault);
 			return;
 		}
 
 		if (iTotalGrenades >= iGrenadeLimitTotal)
 		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot carry any more grenades (Max %i)", iGrenadeLimitTotal);
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Weapon.MaxGrenades}", iGrenadeLimitTotal);
 			return;
 		}
 	}
@@ -180,7 +181,7 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 			// Note ammo_grenade_limit_total is not followed here, only for checking inventory space
 			if (purchase.m_nCount >= maxAmount)
 			{
-				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot buy any more %s (Max %i)", pWeaponInfo->m_pName, maxAmount);
+				ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Weapon.MaxBuyReached}", pWeaponInfo->m_pName, maxAmount);
 				return;
 			}
 			purchase.m_nCount += 1;
@@ -222,7 +223,7 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 	player->m_pInGameMoneyServices->m_iAccount = money - pWeaponInfo->m_nPrice;
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have purchased %s for $%i", pWeaponInfo->m_pName, pWeaponInfo->m_nPrice);
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Weapon.Purchased}", pWeaponInfo->m_pName, pWeaponInfo->m_nPrice);
 }
 
 void WeaponCommandCallback(const CCommandContext& context, const CCommand& args)
@@ -296,19 +297,19 @@ bool CChatCommand::CheckCommandAccess(CCSPlayerController* pPlayer, uint64 flags
 		{
 			if (!pZEPlayer->IsLeader())
 			{
-				ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You must be a leader to use this command.");
+				ClientPrintT(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "{General.MustBeLeader}");
 				return false;
 			}
 			else if (g_cvarLeaderActionsHumanOnly.Get() && pPlayer->m_iTeamNum != CS_TEAM_CT)
 			{
-				ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You must be a human to use this command.");
+				ClientPrintT(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "{General.MustBeHuman}");
 				return false;
 			}
 		}
 	}
 	else if (!pZEPlayer->IsAdminFlagSet(flags))
 	{
-		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+		ClientPrintT(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "{General.NoAccess}");
 		return false;
 	}
 
@@ -390,8 +391,12 @@ CON_COMMAND_CHAT(stopsound, "- Toggle weapon sounds")
 	g_playerManager->SetPlayerStopSound(iPlayer, bSilencedSet);
 	g_playerManager->SetPlayerSilenceSound(iPlayer, !bSilencedSet && !bStopSet);
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s weapon sounds.", bSilencedSet ? "disabled" : !bSilencedSet && !bStopSet ? "silenced" :
-																																		  "enabled");
+	if (bSilencedSet)
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{StopSound.Disabled}");
+	else if (!bStopSet)
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{StopSound.Silenced}");
+	else
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{StopSound.Enabled}");
 }
 
 CON_COMMAND_CHAT(toggledecals, "- Toggle world decals, if you're into having 10 fps in ZE")
@@ -407,7 +412,10 @@ CON_COMMAND_CHAT(toggledecals, "- Toggle world decals, if you're into having 10 
 
 	g_playerManager->SetPlayerStopDecals(iPlayer, bSet);
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s world decals.", bSet ? "disabled" : "enabled");
+	if (bSet)
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Decals.Disabled}");
+	else
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Decals.Enabled}");
 }
 
 CConVar<bool> g_cvarEnableNoShake("cs2f_noshake_enable", FCVAR_NONE, "Whether to enable noshake command", false);
@@ -427,7 +435,10 @@ CON_COMMAND_CHAT(noshake, "- toggle noshake")
 	bool bSet = !g_playerManager->IsPlayerUsingNoShake(iPlayer);
 
 	g_playerManager->SetPlayerNoShake(iPlayer, bSet);
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s noshake.", bSet ? "enabled" : "disabled");
+	if (bSet)
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{NoShake.Enabled}");
+	else
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{NoShake.Disabled}");
 }
 
 CConVar<bool> g_cvarEnableHide("cs2f_hide_enable", FCVAR_NONE, "Whether to enable hide (WARNING: randomly crashes clients since 2023-12-13 CS2 update)", false);
@@ -465,7 +476,7 @@ CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 
 	if (distance > g_cvarMaxHideDistance.Get() || distance < 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only hide players between\x06 0\x01 and \x06%i units\x01 away.", g_cvarMaxHideDistance.Get());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Hide.InvalidRange}", g_cvarMaxHideDistance.Get());
 		return;
 	}
 
@@ -476,9 +487,9 @@ CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 	pZEPlayer->SetHideDistance(distance);
 
 	if (distance == 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding players is now disabled.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Hide.Disabled}");
 	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding players within \x06%i units\x01.", distance);
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Hide.Set}", distance);
 }
 
 void PrintHelp(const CCommand& args, CCSPlayerController* player)
@@ -500,7 +511,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 		}
 		else
 		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all available commands will be shown in console.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Help.ListChat}");
 			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands you can use is:");
 
 			ZEPlayer* pZEPlayer = player->GetZEPlayer();
@@ -568,13 +579,13 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 		{
 			ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "No commands matched \"%s\".", args[1]);
 			if (player)
-				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No commands matched \"%s\".", args[1]);
+				ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Help.NoMatch}", args[1]);
 			return;
 		}
 
 		ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands matching \"%s\" is:", args[1]);
 		if (player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of all commands matching \"%s\" will be shown in console.", args[1]);
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Help.MatchChat}", args[1]);
 	}
 
 	std::sort(rgstrCommands.begin(), rgstrCommands.end());
@@ -610,7 +621,7 @@ CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 	{
 		if (player->m_iTeamNum() == CS_TEAM_SPECTATOR)
 		{
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Already spectating.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Spec.AlreadySpectating}");
 		}
 		else
 		{
@@ -618,7 +629,7 @@ CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 				pPawn->CommitSuicide(false, true);
 
 			player->SwitchTeam(CS_TEAM_SPECTATOR);
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Moved to spectators.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Spec.MovedToSpectators}");
 		}
 		return;
 	}
@@ -657,7 +668,7 @@ CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 		pObserverServices->m_iObserverMode = OBS_MODE_IN_EYE;
 		pObserverServices->m_iObserverLastMode = OBS_MODE_ROAMING;
 		pObserverServices->m_hObserverTarget = pTargetPlayer->GetPawn();
-		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "Spectating player %s.", pTargetPlayer->GetPlayerName());
+		ClientPrintT(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "{Spec.NowSpectating}", pTargetPlayer->GetPlayerName());
 		return -1.0f;
 	});
 }
@@ -678,7 +689,7 @@ CON_COMMAND_CHAT(info, "<name> - Get a player's information")
 {
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !info <name>");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Info.Usage}");
 		return;
 	}
 
@@ -709,14 +720,17 @@ CON_COMMAND_CHAT(info, "<name> - Get a player's information")
 			ClientPrint(player, HUD_PRINTCONSOLE, "\tIP Address: %s", zpTarget->GetIpAddress());
 	}
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Printed matching player%s information to console.", (iNumClients == 1) ? "'s" : "s'");
+	if (iNumClients == 1)
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Info.PrintedToConsole}");
+	else
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Info.PrintedToConsolePlural}");
 }
 
 CON_COMMAND_CHAT(showteam, "<name> - Get a player's current team")
 {
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !showteam <name>");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{ShowTeam.Usage}");
 		return;
 	}
 
@@ -731,16 +745,16 @@ CON_COMMAND_CHAT(showteam, "<name> - Get a player's current team")
 	switch (pTarget->m_iTeamNum())
 	{
 		case CS_TEAM_SPECTATOR:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is a\x08 spectator\x01.", pTarget->GetPlayerName());
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{ShowTeam.Spectator}", pTarget->GetPlayerName());
 			break;
 		case CS_TEAM_T:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is a\x09 terrorist\x01.", pTarget->GetPlayerName());
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{ShowTeam.Terrorist}", pTarget->GetPlayerName());
 			break;
 		case CS_TEAM_CT:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is a\x0B counter-terrorist\x01.", pTarget->GetPlayerName());
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{ShowTeam.CT}", pTarget->GetPlayerName());
 			break;
 		default:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not on a team.", pTarget->GetPlayerName());
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{ShowTeam.NoTeam}", pTarget->GetPlayerName());
 	}
 }
 
