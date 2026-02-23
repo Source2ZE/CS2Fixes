@@ -1,0 +1,255 @@
+// CS2Fixes Translation Phrases
+//
+// Color tokens:
+//   {default} {darkred} {team} {green} {olive} {lime}
+//   {lightred} {gray} {yellow} {gold} {blue} {purple}
+//   {pink} {red} {orange}
+{
+	// ---- Language ----
+
+	// %s = display name, %s = language code
+	"Lang.Current": {
+		"en": "Your current language is: {lime}%s{default} (%s)",
+		"es": "Tu idioma actual es: {lime}%s{default} (%s)",
+		"pt": "Seu idioma atual é: {lime}%s{default} (%s)",
+		"fr": "Votre langue actuelle est : {lime}%s{default} (%s)",
+		"de": "Deine aktuelle Sprache ist: {lime}%s{default} (%s)",
+		"ru": "Ваш текущий язык: {lime}%s{default} (%s)"
+	},
+	// %s = language code
+	"Lang.NotFound": {
+		"en": "Language {lightred}%s{default} not found. Available languages:",
+		"es": "Idioma {lightred}%s{default} no encontrado. Idiomas disponibles:",
+		"pt": "Idioma {lightred}%s{default} não encontrado. Idiomas disponíveis:",
+		"fr": "Langue {lightred}%s{default} introuvable. Langues disponibles :",
+		"de": "Sprache {lightred}%s{default} nicht gefunden. Verfügbare Sprachen:",
+		"ru": "Язык {lightred}%s{default} не найден. Доступные языки:"
+	},
+	// %s = display name
+	"Lang.Changed": {
+		"en": "Language changed to: {lime}%s",
+		"es": "Idioma cambiado a: {lime}%s",
+		"pt": "Idioma alterado para: {lime}%s",
+		"fr": "Langue changée pour : {lime}%s",
+		"de": "Sprache geändert zu: {lime}%s",
+		"ru": "Язык изменён на: {lime}%s"
+	},
+	"Lang.List": {
+		"en": "Available languages:",
+		"es": "Idiomas disponibles:",
+		"pt": "Idiomas disponíveis:",
+		"fr": "Langues disponibles :",
+		"de": "Verfügbare Sprachen:",
+		"ru": "Доступные языки:"
+	},
+
+	// ---- ZombieReborn ----
+
+	"ZR.RoundStart.Message": {
+		"en": "The game is {olive}Humans vs. Zombies{default}, the goal for zombies is to infect all humans by knifing them.",
+		"es": "El juego es {olive}Humanos vs. Zombies{default}, el objetivo de los zombies es infectar a todos los humanos acuchillándolos.",
+		"pt": "O jogo é {olive}Humanos vs. Zombies{default}, o objetivo dos zombies é infectar todos os humanos esfaqueando-os.",
+		"fr": "Le jeu est {olive}Humains vs. Zombies{default}, le but des zombies est d'infecter tous les humains en les poignardant.",
+		"de": "Das Spiel ist {olive}Menschen vs. Zombies{default}, das Ziel der Zombies ist es, alle Menschen durch Messerangriffe zu infizieren.",
+		"ru": "Игра {olive}Люди против Зомби{default}, цель зомби — заразить всех людей ударами ножа."
+	},
+	"ZR.RoundStart.ClassicSpawn": {
+		"en": "Classic spawn is enabled! Zombies will be {lightred}spawning between humans{default}!",
+		"es": "¡Spawn clásico habilitado! ¡Los zombies {lightred}aparecerán entre los humanos{default}!",
+		"pt": "Spawn clássico ativado! Os zombies vão {lightred}aparecer entre os humanos{default}!",
+		"fr": "Spawn classique activé ! Les zombies vont {lightred}apparaître parmi les humains{default} !",
+		"de": "Klassischer Spawn aktiviert! Zombies werden {lightred}zwischen den Menschen spawnen{default}!",
+		"ru": "Классический спавн включён! Зомби будут {lightred}появляться среди людей{default}!"
+	},
+	"ZR.NoSpawns": {
+		"en": "There are no spawns!",
+		"es": "¡No hay puntos de aparición!",
+		"pt": "Não há pontos de spawn!",
+		"fr": "Il n'y a pas de spawns !",
+		"de": "Es gibt keine Spawns!",
+		"ru": "Нет точек спавна!"
+	},
+	"ZR.Infection.Started": {
+		"en": "First infection has started! Good luck, survivors!",
+		"es": "¡La primera infección ha comenzado! ¡Buena suerte, supervivientes!",
+		"pt": "A primeira infecção começou! Boa sorte, sobreviventes!",
+		"fr": "La première infection a commencé ! Bonne chance, survivants !",
+		"de": "Die erste Infektion hat begonnen! Viel Glück, Überlebende!",
+		"ru": "Первая инфекция началась! Удачи, выжившие!"
+	},
+	// %i = seconds
+	"ZR.Infection.Countdown": {
+		"en": "First infection in {lightred}%i seconds{default}!",
+		"es": "¡Primera infección en {lightred}%i segundos{default}!",
+		"pt": "Primeira infecção em {lightred}%i segundos{default}!",
+		"fr": "Première infection dans {lightred}%i secondes{default} !",
+		"de": "Erste Infektion in {lightred}%i Sekunden{default}!",
+		"ru": "Первая инфекция через {lightred}%i секунд{default}!"
+	},
+	// %i = second
+	"ZR.Infection.CountdownSingular": {
+		"en": "First infection in {lightred}%i second{default}!",
+		"es": "¡Primera infección en {lightred}%i segundo{default}!",
+		"pt": "Primeira infecção em {lightred}%i segundo{default}!",
+		"fr": "Première infection dans {lightred}%i seconde{default} !",
+		"de": "Erste Infektion in {lightred}%i Sekunde{default}!",
+		"ru": "Первая инфекция через {lightred}%i секунду{default}!"
+	},
+	"ZR.Hud.Infection.Started": {
+		"en": "First infection has started!",
+		"es": "¡La primera infección ha comenzado!",
+		"pt": "A primeira infecção começou!",
+		"fr": "La première infection a commencé !",
+		"de": "Die erste Infektion hat begonnen!",
+		"ru": "Первая инфекция началась!"
+	},
+	// %i = seconds
+	"ZR.Hud.Infection.Countdown": {
+		"en": "First infection in <span color='#00FF00'>%i seconds</span>!",
+		"es": "¡Primera infección en <span color='#00FF00'>%i segundos</span>!",
+		"pt": "Primeira infecção em <span color='#00FF00'>%i segundos</span>!",
+		"fr": "Première infection dans <span color='#00FF00'>%i secondes</span> !",
+		"de": "Erste Infektion in <span color='#00FF00'>%i Sekunden</span>!",
+		"ru": "Первая инфекция через <span color='#00FF00'>%i секунд</span>!"
+	},
+	// %i = second
+	"ZR.Hud.Infection.CountdownSingular": {
+		"en": "First infection in <span color='#00FF00'>%i second</span>!",
+		"es": "¡Primera infección en <span color='#00FF00'>%i segundo</span>!",
+		"pt": "Primeira infecção em <span color='#00FF00'>%i segundo</span>!",
+		"fr": "Première infection dans <span color='#00FF00'>%i seconde</span> !",
+		"de": "Erste Infektion in <span color='#00FF00'>%i Sekunde</span>!",
+		"ru": "Первая инфекция через <span color='#00FF00'>%i секунду</span>!"
+	},
+	"ZR.Respawn.Enabled": {
+		"en": "Respawning is enabled!",
+		"es": "¡Reaparición habilitada!",
+		"pt": "Respawn ativado!",
+		"fr": "Réapparition activée !",
+		"de": "Respawn aktiviert!",
+		"ru": "Возрождение включено!"
+	},
+	"ZR.Respawn.Disabled": {
+		"en": "Respawning is disabled!",
+		"es": "¡Reaparición deshabilitada!",
+		"pt": "Respawn desativado!",
+		"fr": "Réapparition désactivée !",
+		"de": "Respawn deaktiviert!",
+		"ru": "Возрождение отключено!"
+	},
+	"ZR.ZSounds.Enabled": {
+		"en": "You have {lime}enabled{default} zombie sounds.",
+		"es": "Has {lime}activado{default} los sonidos de zombie.",
+		"pt": "Você {lime}ativou{default} os sons de zombie.",
+		"fr": "Vous avez {lime}activé{default} les sons de zombie.",
+		"de": "Du hast Zombie-Sounds {lime}aktiviert{default}.",
+		"ru": "Вы {lime}включили{default} звуки зомби."
+	},
+	"ZR.ZSounds.Disabled": {
+		"en": "You have {lightred}disabled{default} zombie sounds.",
+		"es": "Has {lightred}desactivado{default} los sonidos de zombie.",
+		"pt": "Você {lightred}desativou{default} os sons de zombie.",
+		"fr": "Vous avez {lightred}désactivé{default} les sons de zombie.",
+		"de": "Du hast Zombie-Sounds {lightred}deaktiviert{default}.",
+		"ru": "Вы {lightred}отключили{default} звуки зомби."
+	},
+	"ZR.ZombieOnly": {
+		"en": "You cannot use this command as a human.",
+		"es": "No puedes usar este comando como humano.",
+		"pt": "Você não pode usar este comando como humano.",
+		"fr": "Vous ne pouvez pas utiliser cette commande en tant qu'humain.",
+		"de": "Du kannst diesen Befehl nicht als Mensch verwenden.",
+		"ru": "Вы не можете использовать эту команду будучи человеком."
+	},
+	"ZR.ZTele.Dead": {
+		"en": "You cannot teleport when dead!",
+		"es": "¡No puedes teletransportarte estando muerto!",
+		"pt": "Você não pode se teletransportar estando morto!",
+		"fr": "Vous ne pouvez pas vous téléporter en étant mort !",
+		"de": "Du kannst dich nicht teleportieren, wenn du tot bist!",
+		"ru": "Вы не можете телепортироваться, будучи мёртвым!"
+	},
+	"ZR.ZTele.Teleporting": {
+		"en": "Teleporting to spawn in 5 seconds.",
+		"es": "Teletransportando al spawn en 5 segundos.",
+		"pt": "Teletransportando ao spawn em 5 segundos.",
+		"fr": "Téléportation au spawn dans 5 secondes.",
+		"de": "Teleportation zum Spawn in 5 Sekunden.",
+		"ru": "Телепортация на спавн через 5 секунд."
+	},
+	"ZR.ZTele.Teleported": {
+		"en": "You have been teleported to spawn.",
+		"es": "Has sido teletransportado al spawn.",
+		"pt": "Você foi teletransportado ao spawn.",
+		"fr": "Vous avez été téléporté au spawn.",
+		"de": "Du wurdest zum Spawn teleportiert.",
+		"ru": "Вы были телепортированы на спавн."
+	},
+	"ZR.ZTele.Failed": {
+		"en": "Teleport failed! You moved too far.",
+		"es": "¡Teletransporte fallido! Te moviste demasiado lejos.",
+		"pt": "Teletransporte falhou! Você se moveu demais.",
+		"fr": "Téléportation échouée ! Vous avez trop bougé.",
+		"de": "Teleportation fehlgeschlagen! Du hast dich zu weit bewegt.",
+		"ru": "Телепортация не удалась! Вы сдвинулись слишком далеко."
+	},
+	"ZR.Infect.Usage": {
+		"en": "Usage: !infect <name>",
+		"es": "Uso: !infect <nombre>",
+		"pt": "Uso: !infect <nome>",
+		"fr": "Utilisation : !infect <nom>",
+		"de": "Verwendung: !infect <name>",
+		"ru": "Использование: !infect <имя>"
+	},
+	"ZR.Global.RoundAlreadyOver": {
+		"en": "The round is already over!",
+		"es": "¡La ronda ya ha terminado!",
+		"pt": "A rodada já acabou!",
+		"fr": "Le round est déjà terminé !",
+		"de": "Die Runde ist bereits vorbei!",
+		"ru": "Раунд уже окончен!"
+	},
+	"ZR.Revive.Usage": {
+		"en": "Usage: !revive <name>",
+		"es": "Uso: !revive <nombre>",
+		"pt": "Uso: !revive <nome>",
+		"fr": "Utilisation : !revive <nom>",
+		"de": "Verwendung: !revive <name>",
+		"ru": "Использование: !revive <имя>"
+	},
+	"ZR.Global.NoRound": {
+		"en": "A round is not ongoing!",
+		"es": "¡No hay una ronda en curso!",
+		"pt": "Não há rodada em andamento!",
+		"fr": "Aucun round en cours !",
+		"de": "Es läuft keine Runde!",
+		"ru": "Раунд не идёт!"
+	},
+	// %s = team name, %s = class name
+	"ZR.Class.Current": {
+		"en": "Your current %s class is: {gold}%s{default}. Available classes:",
+		"es": "Tu clase actual de %s es: {gold}%s{default}. Clases disponibles:",
+		"pt": "Sua classe atual de %s é: {gold}%s{default}. Classes disponíveis:",
+		"fr": "Votre classe %s actuelle est : {gold}%s{default}. Classes disponibles :",
+		"de": "Deine aktuelle %s-Klasse ist: {gold}%s{default}. Verfügbare Klassen:",
+		"ru": "Ваш текущий класс %s: {gold}%s{default}. Доступные классы:"
+	},
+	// %s = team name, %s = class name
+	"ZR.Class.Selected": {
+		"en": "Your %s class is now set to {gold}%s{default}.",
+		"es": "Tu clase de %s ahora es {gold}%s{default}.",
+		"pt": "Sua classe de %s agora é {gold}%s{default}.",
+		"fr": "Votre classe %s est maintenant {gold}%s{default}.",
+		"de": "Deine %s-Klasse ist jetzt {gold}%s{default}.",
+		"ru": "Ваш класс %s теперь {gold}%s{default}."
+	},
+	// %s = search term
+	"ZR.Class.NoMatch": {
+		"en": "No available classes matched {gold}%s{default}.",
+		"es": "Ninguna clase disponible coincide con {gold}%s{default}.",
+		"pt": "Nenhuma classe disponível corresponde a {gold}%s{default}.",
+		"fr": "Aucune classe disponible ne correspond à {gold}%s{default}.",
+		"de": "Keine verfügbare Klasse stimmt mit {gold}%s{default} überein.",
+		"ru": "Нет доступных классов, совпадающих с {gold}%s{default}."
+	}
+}

@@ -21,6 +21,7 @@
 #include "../cs2fixes.h"
 #include "../ctimer.h"
 #include "../recipientfilters.h"
+#include "../translations.h"
 #include "engine/igameeventsystem.h"
 #include "entity/cgamerules.h"
 #include "gameevents.pb.h"
@@ -107,6 +108,44 @@ void SendHudMessage(ZEPlayer* pPlayer, int iDuration, EHudPriority ePriority, co
 	CreateHudMessage(pHudMessage);
 }
 
+void SendHudMessageT(ZEPlayer* pPlayer, int iDuration, EHudPriority ePriority, const char* pszMessage, ...)
+{
+	if (!pPlayer)
+		return;
+
+	int iSlot = pPlayer->GetPlayerSlot().Get();
+
+	std::string strMessage = pszMessage;
+	size_t pos = 0;
+	while ((pos = strMessage.find('{', pos)) != std::string::npos)
+	{
+		size_t endPos = strMessage.find('}', pos);
+		if (endPos != std::string::npos)
+		{
+			std::string key = strMessage.substr(pos + 1, endPos - pos - 1);
+			const char* translated = (g_pTranslations && g_cvarTranslationsEnable.Get())
+			                         ? g_pTranslations->Translate(key.c_str(), iSlot)
+			                         : key.c_str();
+			strMessage.replace(pos, endPos - pos + 1, translated);
+			pos += strlen(translated);
+		}
+		else break;
+	}
+
+	va_list args;
+	va_start(args, pszMessage);
+
+	char buf[1024];
+	V_vsnprintf(buf, sizeof(buf), strMessage.c_str(), args);
+
+	va_end(args);
+
+	std::shared_ptr<CHudMessage> pHudMessage = std::make_shared<CHudMessage>(buf, iDuration, ePriority);
+
+	pHudMessage->AddRecipient(pPlayer->GetHandle());
+	CreateHudMessage(pHudMessage);
+}
+
 void SendHudMessageAll(int iDuration, EHudPriority ePriority, const char* pszMessage, ...)
 {
 	if (!GetGlobals())
@@ -131,6 +170,48 @@ void SendHudMessageAll(int iDuration, EHudPriority ePriority, const char* pszMes
 	}
 
 	CreateHudMessage(pHudMessage);
+}
+
+void SendHudMessageAllT(int iDuration, EHudPriority ePriority, const char* pszMessage, ...)
+{
+	if (!GetGlobals())
+		return;
+
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+		if (!pPlayer)
+			continue;
+
+		std::string strMessage = pszMessage;
+		size_t pos = 0;
+		while ((pos = strMessage.find('{', pos)) != std::string::npos)
+		{
+			size_t endPos = strMessage.find('}', pos);
+			if (endPos != std::string::npos)
+			{
+				std::string key = strMessage.substr(pos + 1, endPos - pos - 1);
+				const char* translated = (g_pTranslations && g_cvarTranslationsEnable.Get())
+				                         ? g_pTranslations->Translate(key.c_str(), i)
+				                         : key.c_str();
+				strMessage.replace(pos, endPos - pos + 1, translated);
+				pos += strlen(translated);
+			}
+			else break;
+		}
+
+		va_list args;
+		va_start(args, pszMessage);
+
+		char buf[1024];
+		V_vsnprintf(buf, sizeof(buf), strMessage.c_str(), args);
+
+		va_end(args);
+
+		std::shared_ptr<CHudMessage> pHudMessage = std::make_shared<CHudMessage>(buf, iDuration, ePriority);
+		pHudMessage->AddRecipient(pPlayer->GetHandle());
+		CreateHudMessage(pHudMessage);
+	}
 }
 
 void StartFlashingFixTimer()

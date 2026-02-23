@@ -34,6 +34,7 @@
 #include "playermanager.h"
 #include "recipientfilters.h"
 #include "serversideclient.h"
+#include "translations.h"
 #include "tier0/vprof.h"
 #include "user_preferences.h"
 #include "utils/entity.h"
@@ -934,10 +935,10 @@ void SetupCTeams()
 void ZR_OnRoundStart(IGameEvent* pEvent)
 {
 	SetupRespawnToggler();
-	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
+	ClientPrintAllT(HUD_PRINTTALK, ZR_PREFIX "{ZR.RoundStart.Message}");
 
 	if (g_cvarInfectSpawnWarning.Get() && g_cvarInfectSpawnType.Get() == (int)EZRSpawnType::IN_PLACE)
-		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Classic spawn is enabled! Zombies will be \x07spawning between humans\x01!");
+		ClientPrintAllT(HUD_PRINTTALK, ZR_PREFIX "{ZR.RoundStart.ClassicSpawn}");
 
 	if (!GetGlobals())
 		return;
@@ -1298,7 +1299,7 @@ void ZR_InitialInfection()
 	std::vector<SpawnPoint*> spawns = ZR_GetSpawns();
 	if (g_cvarInfectSpawnType.Get() == (int)EZRSpawnType::RESPAWN && !spawns.size())
 	{
-		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "There are no spawns!");
+		ClientPrintAllT(HUD_PRINTTALK, ZR_PREFIX "{ZR.NoSpawns}");
 		return;
 	}
 
@@ -1369,8 +1370,8 @@ void ZR_InitialInfection()
 	if (g_cvarRespawnDelay.Get() < 0.0f)
 		g_bRespawnEnabled = false;
 
-	SendHudMessageAll(4, EHudPriority::InfectionCountdown, "First infection has started!");
-	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "First infection has started! Good luck, survivors!");
+	SendHudMessageAllT(4, EHudPriority::InfectionCountdown, "{ZR.Hud.Infection.Started}");
+	ClientPrintAllT(HUD_PRINTTALK, ZR_PREFIX "{ZR.Infection.Started}");
 	g_ZRRoundState = EZRRoundState::POST_INFECTION;
 }
 
@@ -1403,10 +1404,12 @@ void ZR_StartInitialCountdown()
 			else
 				V_snprintf(classicSpawnMsg, sizeof(classicSpawnMsg), "");
 
-			SendHudMessageAll(2, EHudPriority::InfectionCountdown, "%sFirst infection in <span color='#00FF00'>%i %s</span>!", classicSpawnMsg, g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
+			char szHudMsg[512];
+			V_snprintf(szHudMsg, sizeof(szHudMsg), "%s%s", classicSpawnMsg, g_iInfectionCountDown == 1 ? "{ZR.Hud.Infection.CountdownSingular}" : "{ZR.Hud.Infection.Countdown}");
+			SendHudMessageAllT(2, EHudPriority::InfectionCountdown, szHudMsg, g_iInfectionCountDown);
 
 			if (g_iInfectionCountDown % 5 == 0)
-				ClientPrintAll(HUD_PRINTTALK, "%sFirst infection in \7%i %s\1!", ZR_PREFIX, g_iInfectionCountDown, g_iInfectionCountDown == 1 ? "second" : "seconds");
+				ClientPrintAllT(HUD_PRINTTALK, g_iInfectionCountDown == 1 ? ZR_PREFIX "{ZR.Infection.CountdownSingular}" : ZR_PREFIX "{ZR.Infection.Countdown}", g_iInfectionCountDown);
 		}
 		(*iSecondsElapsed)++;
 
@@ -1502,7 +1505,7 @@ void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLar
 	else
 		return;
 
-	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Respawning is %s!", g_bRespawnEnabled ? "enabled" : "disabled");
+	ClientPrintAllT(HUD_PRINTTALK, g_bRespawnEnabled ? ZR_PREFIX "{ZR.Respawn.Enabled}" : ZR_PREFIX "{ZR.Respawn.Disabled}");
 }
 
 void SpawnPlayer(CCSPlayerController* pController)
@@ -1779,7 +1782,7 @@ CON_COMMAND_CHAT(zsounds, "- Toggle zombie sounds")
 {
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, ZR_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, ZR_PREFIX "{General.ConsoleOnly}");
 		return;
 	}
 
@@ -1788,7 +1791,7 @@ CON_COMMAND_CHAT(zsounds, "- Toggle zombie sounds")
 
 	g_playerManager->SetPlayerZSounds(iPlayer, bSet);
 
-	ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "You have %s zombie sounds.", bSet ? "enabled" : "disabled");
+	ClientPrintT(player, HUD_PRINTTALK, bSet ? ZR_PREFIX "{ZR.ZSounds.Enabled}" : ZR_PREFIX "{ZR.ZSounds.Disabled}");
 }
 
 CON_COMMAND_CHAT(ztele, "- Teleport to spawn")
@@ -1799,21 +1802,21 @@ CON_COMMAND_CHAT(ztele, "- Teleport to spawn")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, ZR_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, ZR_PREFIX "{General.ConsoleOnly}");
 		return;
 	}
 
 	// Check if command is enabled for humans
 	if (!g_cvarZteleHuman.Get() && player->m_iTeamNum() == CS_TEAM_CT)
 	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "You cannot use this command as a human.");
+		ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.ZombieOnly}");
 		return;
 	}
 
 	std::vector<SpawnPoint*> spawns = ZR_GetSpawns();
 	if (!spawns.size())
 	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "There are no spawns!");
+		ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.NoSpawns}");
 		return;
 	}
 
@@ -1829,14 +1832,14 @@ CON_COMMAND_CHAT(ztele, "- Teleport to spawn")
 
 	if (!pPawn->IsAlive())
 	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "You cannot teleport when dead!");
+		ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.ZTele.Dead}");
 		return;
 	}
 
 	// Get initial player position so we can do distance check
 	Vector initialpos = pPawn->GetAbsOrigin();
 
-	ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Teleporting to spawn in 5 seconds.");
+	ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.ZTele.Teleporting}");
 
 	CHandle<CCSPlayerPawn> pawnHandle = pPawn->GetHandle();
 
@@ -1855,11 +1858,11 @@ CON_COMMAND_CHAT(ztele, "- Teleport to spawn")
 			QAngle rotation = pSpawn->GetAbsRotation();
 
 			pPawn->Teleport(&origin, &rotation, nullptr);
-			ClientPrint(pPawn->GetOriginalController(), HUD_PRINTTALK, ZR_PREFIX "You have been teleported to spawn.");
+			ClientPrintT(pPawn->GetOriginalController(), HUD_PRINTTALK, ZR_PREFIX "{ZR.ZTele.Teleported}");
 		}
 		else
 		{
-			ClientPrint(pPawn->GetOriginalController(), HUD_PRINTTALK, ZR_PREFIX "Teleport failed! You moved too far.");
+			ClientPrintT(pPawn->GetOriginalController(), HUD_PRINTTALK, ZR_PREFIX "{ZR.ZTele.Failed}");
 		}
 
 		return -1.0f;
@@ -1874,7 +1877,7 @@ CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, ZR_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, ZR_PREFIX "{General.ConsoleOnly}");
 		return;
 	}
 
@@ -1902,16 +1905,16 @@ CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:
 			const char* sCurrentClass = g_pUserPreferencesSystem->GetPreference(iSlot, team == CS_TEAM_CT ? HUMAN_CLASS_KEY_NAME : ZOMBIE_CLASS_KEY_NAME);
 
 			if (sCurrentClass[0] != '\0')
-				ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Your current %s class is: \x10%s\x1. Available classes:", sTeamName, sCurrentClass);
+				ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.Class.Current}", sTeamName, sCurrentClass);
 			else
-				ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Available %s classes:", sTeamName);
+				ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.Class.Available}", sTeamName);
 
 			for (int i = 0; i < vecClasses.size(); i++)
 				if (vecClasses[i]->iTeam == team)
 					ClientPrint(player, HUD_PRINTTALK, "%i. %s", i + 1, vecClasses[i]->szClassName.c_str());
 		}
 
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Select a class using \x2!zclass <class name/number>");
+		ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.Class.SelectUsage}");
 		return;
 	}
 
@@ -1923,13 +1926,13 @@ CON_COMMAND_CHAT(zclass, "<teamname/class name/number> - Find and select your Z:
 
 		if (bClassMatches)
 		{
-			ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Your %s class is now set to \x10%s\x1.", pClass->iTeam == CS_TEAM_CT ? "Human" : "Zombie", sClassName);
+			ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.Class.Selected}", pClass->iTeam == CS_TEAM_CT ? "Human" : "Zombie", sClassName);
 			g_pUserPreferencesSystem->SetPreference(iSlot, pClass->iTeam == CS_TEAM_CT ? HUMAN_CLASS_KEY_NAME : ZOMBIE_CLASS_KEY_NAME, sClassName);
 			return;
 		}
 	}
 
-	ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "No available classes matched \x10%s\x1.", args[1]);
+	ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.Class.NoMatch}", args[1]);
 }
 
 CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
@@ -1940,13 +1943,13 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Usage: !infect <name>");
+		ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.Infect.Usage}");
 		return;
 	}
 
 	if (g_ZRRoundState == EZRRoundState::ROUND_END)
 	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "The round is already over!");
+		ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.Global.RoundAlreadyOver}");
 		return;
 	}
 
@@ -1962,7 +1965,7 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 
 	if (g_cvarInfectSpawnType.Get() == (int)EZRSpawnType::RESPAWN && !spawns.size())
 	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "There are no spawns!");
+		ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.NoSpawns}");
 		return;
 	}
 
@@ -2000,13 +2003,13 @@ CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Usage: !revive <name>");
+		ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.Revive.Usage}");
 		return;
 	}
 
 	if (g_ZRRoundState != EZRRoundState::POST_INFECTION)
 	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "A round is not ongoing!");
+		ClientPrintT(player, HUD_PRINTTALK, ZR_PREFIX "{ZR.Global.NoRound}");
 		return;
 	}
 

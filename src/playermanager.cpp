@@ -37,6 +37,7 @@
 #include "utlstring.h"
 #include "votemanager.h"
 #include <../cs2fixes.h>
+#include "translations.h"
 
 #include "tier0/memdbgon.h"
 
@@ -809,6 +810,9 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 
 	g_pUserPreferencesSystem->PushPreferences(slot.Get());
 	g_pUserPreferencesSystem->ClearPreferences(slot.Get());
+
+	if (g_pTranslations)
+		g_pTranslations->ResetPlayerLanguage(slot.Get());
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_PlayerDisconnect(slot.Get());
