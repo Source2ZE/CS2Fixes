@@ -20,6 +20,7 @@
 #include "buttonwatch.h"
 
 #include "commands.h"
+#include "translations.h"
 #include "cs2fixes.h"
 #include "ctimer.h"
 #include "detours.h"
@@ -48,7 +49,7 @@ CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
 {
 	if (!IsButtonWatchEnabled())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Button watch is disabled on this server.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{BW.Disabled}");
 		return;
 	}
 
@@ -61,7 +62,7 @@ CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
 	ZEPlayer* zpPlayer = player->GetZEPlayer();
 	if (!zpPlayer)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Something went wrong, please wait a moment before trying this command again.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{General.CommandError}");
 		return;
 	}
 
@@ -70,16 +71,16 @@ CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
 	switch (zpPlayer->GetButtonWatchMode())
 	{
 		case 0:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x02 disabled\1 button watch.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{BW.ModeOff}");
 			break;
 		case 1:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in chat.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{BW.ModeChat}");
 			break;
 		case 2:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in console.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{BW.ModeConsole}");
 			break;
 		case 3:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have\x04 enabled\1 button watch in chat and console.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{BW.ModeBoth}");
 			break;
 	}
 }
@@ -121,7 +122,7 @@ void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEnt
 			continue;
 
 		if (zpPlayer->GetButtonWatchMode() % 2 == 1)
-			ClientPrint(ccsPlayer, HUD_PRINTTALK, " \x02[BW]\x0C %s\1 pressed button \x0C%s\1", strPlayerName.c_str(), strButton.c_str());
+			ClientPrintT(ccsPlayer, HUD_PRINTTALK, " {darkred}[BW]{lime} %s{default} {BW.Pressed} {lime}%s", strPlayerName.c_str(), strButton.c_str());
 		if (zpPlayer->GetButtonWatchMode() >= 2)
 		{
 			ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "------------------------------------ [ButtonWatch] ------------------------------------");

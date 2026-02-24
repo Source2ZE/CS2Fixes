@@ -566,7 +566,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 		else if (bFlooding)
 		{
 			if (pController)
-				ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "You are flooding the server!");
+				ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{General.Flooding}");
 		}
 		else if (bAdminChat && GetGlobals()) // Admin chat can be sent by anyone but only seen by admins, use flood protection here too
 		{

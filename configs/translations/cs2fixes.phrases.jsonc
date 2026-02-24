@@ -272,6 +272,14 @@
 
 	// ---- General ----
 
+	"General.CommandError": {
+		"en": "Something went wrong, please wait a moment before trying this command again.",
+		"es": "Algo salió mal, espera un momento antes de intentar este comando de nuevo.",
+		"pt": "Algo deu errado, aguarde um momento antes de tentar este comando novamente.",
+		"fr": "Une erreur est survenue, veuillez attendre un moment avant de réessayer cette commande.",
+		"de": "Etwas ist schiefgelaufen, bitte warte einen Moment bevor du diesen Befehl erneut versuchst.",
+		"ru": "Что-то пошло не так, подождите немного перед повторной попыткой."
+	},
 	"General.NoAccess": {
 		"en": "You don't have access to this command.",
 		"es": "No tienes acceso a este comando.",
@@ -295,6 +303,14 @@
 		"fr": "Vous devez être humain pour utiliser cette commande.",
 		"de": "Du musst ein Mensch sein, um diesen Befehl zu verwenden.",
 		"ru": "Вы должны быть человеком, чтобы использовать эту команду."
+	},
+	"General.Flooding": {
+		"en": "You are flooding the server!",
+		"es": "¡Estás haciendo flooding en el servidor!",
+		"pt": "Você está fazendo flooding no servidor!",
+		"fr": "Vous faites du flooding sur le serveur !",
+		"de": "Du machst Flooding auf dem Server!",
+		"ru": "Вы флудите на сервере!"
 	},
 
 	// ---- Weapons ----
@@ -1129,5 +1145,57 @@
 		"fr": "Temps restant : {lime}%i{default} secondes.",
 		"de": "Verbleibende Zeit: {lime}%i{default} Sekunden.",
 		"ru": "Осталось: {lime}%i{default} секунд."
+	},
+
+	// ---- Button Watch ----
+
+	"BW.Disabled": {
+		"en": "Button Watch is disabled on this server.",
+		"es": "Button Watch está desactivado en este servidor.",
+		"pt": "Button Watch está desativado neste servidor.",
+		"fr": "Button Watch est désactivé sur ce serveur.",
+		"de": "Button Watch ist auf diesem Server deaktiviert.",
+		"ru": "Button Watch отключён на этом сервере."
+	},
+	"BW.ModeOff": {
+		"en": "You have {darkred}disabled{default} Button Watch.",
+		"es": "Has {darkred}desactivado{default} Button Watch.",
+		"pt": "Você {darkred}desativou{default} Button Watch.",
+		"fr": "Vous avez {darkred}désactivé{default} Button Watch.",
+		"de": "Du hast Button Watch {darkred}deaktiviert{default}.",
+		"ru": "Вы {darkred}отключили{default} Button Watch."
+	},
+	"BW.ModeChat": {
+		"en": "You have {green}enabled{default} Button Watch in chat.",
+		"es": "Has {green}activado{default} Button Watch en el chat.",
+		"pt": "Você {green}ativou{default} Button Watch no chat.",
+		"fr": "Vous avez {green}activé{default} Button Watch dans le chat.",
+		"de": "Du hast Button Watch im Chat {green}aktiviert{default}.",
+		"ru": "Вы {green}включили{default} Button Watch в чате."
+	},
+	"BW.ModeConsole": {
+		"en": "You have {green}enabled{default} Button Watch in console.",
+		"es": "Has {green}activado{default} Button Watch en la consola.",
+		"pt": "Você {green}ativou{default} Button Watch no console.",
+		"fr": "Vous avez {green}activé{default} Button Watch dans la console.",
+		"de": "Du hast Button Watch in der Konsole {green}aktiviert{default}.",
+		"ru": "Вы {green}включили{default} Button Watch в консоли."
+	},
+	"BW.ModeBoth": {
+		"en": "You have {green}enabled{default} Button Watch in chat and console.",
+		"es": "Has {green}activado{default} Button Watch en el chat y la consola.",
+		"pt": "Você {green}ativou{default} Button Watch no chat e no console.",
+		"fr": "Vous avez {green}activé{default} Button Watch dans le chat et la console.",
+		"de": "Du hast Button Watch in Chat und Konsole {green}aktiviert{default}.",
+		"ru": "Вы {green}включили{default} Button Watch в чате и консоли."
+	},
+	// used in: "[BW] PlayerName {BW.Pressed} ButtonName"
+	"BW.Pressed": {
+		"en": "pressed button",
+		"es": "pulsó el botón",
+		"pt": "pressionou o botão",
+		"fr": "a appuyé sur le bouton",
+		"de": "hat den Button gedrückt",
+		"ru": "нажал кнопку"
 	}
 }
