@@ -312,6 +312,22 @@
 		"de": "Du machst Flooding auf dem Server!",
 		"ru": "Вы флудите на сервере!"
 	},
+	"General.OnlyUsableInGame": {
+		"en": "Only usable in game.",
+		"es": "Solo utilizable en el juego.",
+		"pt": "Apenas utilizável no jogo.",
+		"fr": "Uniquement utilisable en jeu.",
+		"de": "Nur im Spiel verwendbar.",
+		"ru": "Можно использовать только в игре."
+	},
+	"General.NoConsole": {
+		"en": "You cannot use this command from the server console.",
+		"es": "No puedes usar este comando desde la consola del servidor.",
+		"pt": "Você não pode usar este comando no console do servidor.",
+		"fr": "Vous ne pouvez pas utiliser cette commande depuis la console du serveur.",
+		"de": "Du kannst diesen Befehl nicht über die Serverkonsole verwenden.",
+		"ru": "Вы не можете использовать эту команду из серверной консоли."
+	},
 
 	// ---- Weapons ----
 
@@ -1189,7 +1205,6 @@
 		"de": "Du hast Button Watch in Chat und Konsole {green}aktiviert{default}.",
 		"ru": "Вы {green}включили{default} Button Watch в чате и консоли."
 	},
-	// used in: "[BW] PlayerName {BW.Pressed} ButtonName"
 	"BW.Pressed": {
 		"en": "pressed button",
 		"es": "pulsó el botón",
@@ -1197,5 +1212,553 @@
 		"fr": "a appuyé sur le bouton",
 		"de": "hat den Button gedrückt",
 		"ru": "нажал кнопку"
+	},
+
+	// ---- EntWatch ----
+
+	"EW.OwnerErrorSpan": {
+		"en": "{olive}(Owner:{red} ERROR)",
+		"es": "{olive}(Dueño:{red} ERROR)",
+		"pt": "{olive}(Dono:{red} ERROR)",
+		"fr": "{olive}(Possesseur :{red} ERREUR)",
+		"de": "{olive}(Besitzer:{red} FEHLER)",
+		"ru": "{olive}(Владелец:{red} ОШИБКА)"
+	},
+	"EW.OwnerSpan": {
+		"en": "{olive}(Owner: %s)",
+		"es": "{olive}(Dueño: %s)",
+		"pt": "{olive}(Dono: %s)",
+		"fr": "{olive}(Possesseur : %s)",
+		"de": "{olive}(Besitzer: %s)",
+		"ru": "{olive}(Владелец: %s)"
+	},
+	"EW.PreviousOwnerSpan": {
+		"en": "{gold}(Previous owner: %s)",
+		"es": "{gold}(Dueño anterior: %s)",
+		"pt": "{gold}(Dono anterior: %s)",
+		"fr": "{gold}(Ancien possesseur : %s)",
+		"de": "{gold}(Vorheriger Besitzer: %s)",
+		"ru": "{gold}(Предыдущий владелец: %s)"
+	},
+
+	"EW.Used": {
+		"en": "used",
+		"es": "usó",
+		"pt": "usou",
+		"fr": "a utilisé",
+		"de": "benutzte",
+		"ru": "использовал"
+	},
+	"EW.PickedUp": {
+		"en": "has picked up",
+		"es": "ha recogido",
+		"pt": "pegou",
+		"fr": "a ramassé",
+		"de": "hat aufgehoben",
+		"ru": "подобрал"
+	},
+	"EW.Dropped": {
+		"en": "has dropped",
+		"es": "ha soltado",
+		"pt": "largou",
+		"fr": "a lâché",
+		"de": "hat fallen gelassen",
+		"ru": "выбросил"
+	},
+	"EW.InfectedDropped": {
+		"en": "got infected and dropped",
+		"es": "se infectó y soltó",
+		"pt": "foi infectado e largou",
+		"fr": "a été infecté et a lâché",
+		"de": "wurde infiziert und ließ fallen",
+		"ru": "был заражён и выбросил"
+	},
+	"EW.InfectedWith": {
+		"en": "got infected with",
+		"es": "se infectó con",
+		"pt": "foi infectado com",
+		"fr": "a été infecté avec",
+		"de": "wurde infiziert mit",
+		"ru": "был заражён с"
+	},
+	"EW.DiedDropped": {
+		"en": "died and dropped",
+		"es": "murió y soltó",
+		"pt": "morreu e largou",
+		"fr": "est mort et a lâché",
+		"de": "ist gestorben und ließ fallen",
+		"ru": "умер и выбросил"
+	},
+	"EW.DiedWith": {
+		"en": "died with",
+		"es": "murió con",
+		"pt": "morreu com",
+		"fr": "est mort avec",
+		"de": "ist gestorben mit",
+		"ru": "умер с"
+	},
+	"EW.DisconnectedDropped": {
+		"en": "disconnected and dropped",
+		"es": "se desconectó y soltó",
+		"pt": "desconectou e largou",
+		"fr": "s'est déconnecté et a lâché",
+		"de": "hat sich getrennt und ließ fallen",
+		"ru": "отключился и выбросил"
+	},
+	"EW.DisconnectedWith": {
+		"en": "disconnected with",
+		"es": "se desconectó con",
+		"pt": "desconectou com",
+		"fr": "s'est déconnecté avec",
+		"de": "hat sich getrennt mit",
+		"ru": "отключился с"
+	},
+	"EW.TransferredFromTo": {
+		"en": "Admin{darkred} %s{default} has transferred%s %s{default} from{darkred} %s{default} to{darkred} %s{default}.",
+		"es": "Admin{darkred} %s{default} ha transferido%s %s{default} de{darkred} %s{default} a{darkred} %s{default}.",
+		"pt": "Admin{darkred} %s{default} transferiu%s %s{default} de{darkred} %s{default} para{darkred} %s{default}.",
+		"fr": "Admin{darkred} %s{default} a transféré%s %s{default} de{darkred} %s{default} à{darkred} %s{default}.",
+		"de": "Admin{darkred} %s{default} hat%s %s{default} von{darkred} %s{default} an{darkred} %s{default} transferiert.",
+		"ru": "Админ{darkred} %s{default} передал%s %s{default} от{darkred} %s{default} к{darkred} %s{default}."
+	},
+	"EW.TransferredTo": {
+		"en": "Admin{darkred} %s{default} has transferred%s %s{default} to{darkred} %s{default}.",
+		"es": "Admin{darkred} %s{default} ha transferido%s %s{default} a{darkred} %s{default}.",
+		"pt": "Admin{darkred} %s{default} transferiu%s %s{default} para{darkred} %s{default}.",
+		"fr": "Admin{darkred} %s{default} a transféré%s %s{default} à{darkred} %s{default}.",
+		"de": "Admin{darkred} %s{default} hat%s %s{default} an{darkred} %s{default} transferiert.",
+		"ru": "Админ{darkred} %s{default} передал%s %s{default} к{darkred} %s{default}."
+	},
+	"EW.ReceiverInvalid": {
+		"en": "Receiver is no longer valid.",
+		"es": "El receptor ya no es válido.",
+		"pt": "O receptor não é mais válido.",
+		"fr": "Le receveur n'est plus valide.",
+		"de": "Der Empfänger ist nicht mehr gültig.",
+		"ru": "Получатель больше не действителен."
+	},
+	"EW.ItemInvalid": {
+		"en": "Item is no longer valid.",
+		"es": "El item ya no es válido.",
+		"pt": "O item não é mais válido.",
+		"fr": "L'item n'est plus valide.",
+		"de": "Das Item ist nicht mehr gültig.",
+		"ru": "Предмет больше не действителен."
+	},
+	"EW.TransferError": {
+		"en": "There was an error while transferring.",
+		"es": "Hubo un error durante la transferencia.",
+		"pt": "Houve um erro durante a transferência.",
+		"fr": "Une erreur est survenue lors du transfert.",
+		"de": "Beim Transfer ist ein Fehler aufgetreten.",
+		"ru": "Произошла ошибка при передаче."
+	},
+	"EW.InitError": {
+		"en": "There has been an error initialising EntWatch.",
+		"es": "Ha ocurrido un error al inicializar EntWatch.",
+		"pt": "Ocorreu um erro ao inicializar EntWatch.",
+		"fr": "Une erreur est survenue lors de l'initialisation d'EntWatch.",
+		"de": "Beim Initialisieren von EntWatch ist ein Fehler aufgetreten.",
+		"ru": "Произошла ошибка при инициализации EntWatch."
+	},
+	"EW.ReloadError": {
+		"en": "Error reloading config, check console log for details.",
+		"es": "Error al recargar la configuración, revisa la consola para más detalles.",
+		"pt": "Erro ao recarregar a configuração, verifique o console para detalhes.",
+		"fr": "Erreur lors du rechargement de la config, consultez la console pour les détails.",
+		"de": "Fehler beim Neuladen der Konfiguration, überprüfe die Konsole für Details.",
+		"ru": "Ошибка перезагрузки конфигурации, проверьте консоль для подробностей."
+	},
+	"EW.ReloadSuccess": {
+		"en": "Config reloaded successfully.",
+		"es": "Configuración recargada con éxito.",
+		"pt": "Configuração recarregada com sucesso.",
+		"fr": "Configuration rechargée avec succès.",
+		"de": "Konfiguration erfolgreich neu geladen.",
+		"ru": "Конфигурация успешно перезагружена."
+	},
+	"EW.NoConfig": {
+		"en": "No config loaded.",
+		"es": "No hay configuración cargada.",
+		"pt": "Nenhuma configuração carregada.",
+		"fr": "Aucune config chargée.",
+		"de": "Keine Konfiguration geladen.",
+		"ru": "Конфигурация не загружена."
+	},
+	"EW.NoConfigLoaded": {
+		"en": "No EntWatch config is currently loaded!",
+		"es": "¡No hay configuración de EntWatch cargada actualmente!",
+		"pt": "Nenhuma configuração de EntWatch está carregada atualmente!",
+		"fr": "Aucune config EntWatch n'est actuellement chargée !",
+		"de": "Derzeit ist keine EntWatch-Konfiguration geladen!",
+		"ru": "В настоящее время конфигурация EntWatch не загружена!"
+	},
+	"EW.SeeConsole": {
+		"en": "See console for output.",
+		"es": "Revisa la consola para ver el resultado.",
+		"pt": "Veja o console para a saída.",
+		"fr": "Consultez la console pour le résultat.",
+		"de": "Überprüfe die Konsole für die Ausgabe.",
+		"ru": "Смотрите консоль для вывода."
+	},
+	"EW.NumberRange": {
+		"en": "Number must be between 1 and %d, try again.",
+		"es": "El número debe estar entre 1 y %d, inténtalo de nuevo.",
+		"pt": "O número deve estar entre 1 e %d, tente novamente.",
+		"fr": "Le nombre doit être entre 1 et %d, réessayez.",
+		"de": "Die Zahl muss zwischen 1 und %d liegen, versuche es erneut.",
+		"ru": "Число должно быть от 1 до %d, попробуйте снова."
+	},
+	"EW.ReceiverEbanned": {
+		"en": "Specified receiver is ebanned.",
+		"es": "El receptor especificado está ebaneado.",
+		"pt": "O receptor especificado está ebanido.",
+		"fr": "Le receveur spécifié est ebanni.",
+		"de": "Der angegebene Empfänger ist ebannt.",
+		"ru": "Указанный получатель забанен (eban)."
+	},
+	"EW.ReceiverError": {
+		"en": "Error getting receiver.",
+		"es": "Error al obtener el receptor.",
+		"pt": "Erro ao obter o receptor.",
+		"fr": "Erreur lors de la récupération du receveur.",
+		"de": "Fehler beim Abrufen des Empfängers.",
+		"ru": "Ошибка при получении получателя."
+	},
+	"EW.ItemNotFoundExact": {
+		"en": "Could not find an item with the exact name:{green} %s",
+		"es": "No se encontró un item con el nombre exacto:{green} %s",
+		"pt": "Não foi possível encontrar um item com o nome exato:{green} %s",
+		"fr": "Impossible de trouver un item avec le nom exact :{green} %s",
+		"de": "Konnte kein Item mit dem exakten Namen finden:{green} %s",
+		"ru": "Не удалось найти предмет с точным названием:{green} %s"
+	},
+	"EW.ItemNotFound": {
+		"en": "Could not find an item with the name:{green} %s",
+		"es": "No se encontró un item con el nombre:{green} %s",
+		"pt": "Não foi possível encontrar um item com o nome:{green} %s",
+		"fr": "Impossible de trouver un item avec le nom :{green} %s",
+		"de": "Konnte kein Item mit dem Namen finden:{green} %s",
+		"ru": "Не удалось найти предмет с названием:{green} %s"
+	},
+	"EW.FoundItemsMatching": {
+		"en": "Found %d items matching{green} \"%s\"",
+		"es": "Se encontraron %d items que coinciden con{green} \"%s\"",
+		"pt": "Encontrados %d items correspondentes a{green} \"%s\"",
+		"fr": "Trouvé %d items correspondant à{green} \"%s\"",
+		"de": "%d Items gefunden, die mit{green} \"%s\"{default} übereinstimmen",
+		"ru": "Найдено %d предметов, совпадающих с{green} \"%s\""
+	},
+	"EW.TransferPrompt": {
+		"en": "Enter{darkred} !etransfer <number>{default} to complete the transfer.",
+		"es": "Escribe{darkred} !etransfer <número>{default} para completar la transferencia.",
+		"pt": "Digite{darkred} !etransfer <número>{default} para completar a transferência.",
+		"fr": "Entrez{darkred} !etransfer <numéro>{default} pour compléter le transfert.",
+		"de": "Gib{darkred} !etransfer <Nummer>{default} ein, um den Transfer abzuschließen.",
+		"ru": "Введите{darkred} !etransfer <номер>{default} для завершения передачи."
+	},
+	"EW.OwnerNotFound": {
+		"en": "Item owner not found.",
+		"es": "Dueño del item no encontrado.",
+		"pt": "Dono do item não encontrado.",
+		"fr": "Possesseur de l'item introuvable.",
+		"de": "Besitzer des Items nicht gefunden.",
+		"ru": "Владелец предмета не найден."
+	},
+	"EW.OwnerError": {
+		"en": "Error getting item owner.",
+		"es": "Error al obtener el dueño del item.",
+		"pt": "Erro ao obter o dono do item.",
+		"fr": "Erreur lors de la récupération du possesseur de l'item.",
+		"de": "Fehler beim Abrufen des Item-Besitzers.",
+		"ru": "Ошибка при получении владельца предмета."
+	},
+	"EW.NoTransferableItem": {
+		"en": "%s does not have an item that can be transferred.",
+		"es": "%s no tiene un item que pueda ser transferido.",
+		"pt": "%s não possui um item que possa ser transferido.",
+		"fr": "%s n'a pas d'item pouvant être transféré.",
+		"de": "%s hat kein Item, das transferiert werden kann.",
+		"ru": "У %s нет предмета, который можно передать."
+	},
+	"EW.FoundItemsOwned": {
+		"en": "Found %d items owned by{green} \"%s\"",
+		"es": "Se encontraron %d items de{green} \"%s\"",
+		"pt": "Encontrados %d items de{green} \"%s\"",
+		"fr": "Trouvé %d items appartenant à{green} \"%s\"",
+		"de": "%d Items gefunden, die{green} \"%s\"{default} gehören",
+		"ru": "Найдено %d предметов, принадлежащих{green} \"%s\""
+	},
+	"EW.HudDisabled": {
+		"en": "The EntWatch HUD is currently disabled.",
+		"es": "El HUD de EntWatch está desactivado actualmente.",
+		"pt": "O HUD do EntWatch está desativado atualmente.",
+		"fr": "Le HUD EntWatch est actuellement désactivé.",
+		"de": "Das EntWatch-HUD ist derzeit deaktiviert.",
+		"ru": "HUD EntWatch в настоящее время отключён."
+	},
+	"EW.HudOff": {
+		"en": "EntWatch HUD{red} disabled{default}.",
+		"es": "HUD de EntWatch{red} desactivado{default}.",
+		"pt": "HUD do EntWatch{red} desativado{default}.",
+		"fr": "HUD EntWatch{red} désactivé{default}.",
+		"de": "EntWatch-HUD{red} deaktiviert{default}.",
+		"ru": "HUD EntWatch{red} отключён{default}."
+	},
+	"EW.HudOn": {
+		"en": "EntWatch HUD{green} enabled{default}.",
+		"es": "HUD de EntWatch{green} activado{default}.",
+		"pt": "HUD do EntWatch{green} ativado{default}.",
+		"fr": "HUD EntWatch{green} activé{default}.",
+		"de": "EntWatch-HUD{green} aktiviert{default}.",
+		"ru": "HUD EntWatch{green} включён{default}."
+	},
+	"EW.HudItemOnly": {
+		"en": "EntWatch HUD{green} enabled{lightblue} (Item names only){default}.",
+		"es": "HUD de EntWatch{green} activado{lightblue} (Solo nombres de items){default}.",
+		"pt": "HUD do EntWatch{green} ativado{lightblue} (Apenas nomes de items){default}.",
+		"fr": "HUD EntWatch{green} activé{lightblue} (Noms d'items uniquement){default}.",
+		"de": "EntWatch-HUD{green} aktiviert{lightblue} (Nur Item-Namen){default}.",
+		"ru": "HUD EntWatch{green} включён{lightblue} (Только названия предметов){default}."
+	},
+	"EW.HudPosCurrent": {
+		"en": "Current hudpos: %.1fx %.1fy",
+		"es": "Posición actual del HUD: %.1fx %.1fy",
+		"pt": "Posição atual do HUD: %.1fx %.1fy",
+		"fr": "Position actuelle du HUD : %.1fx %.1fy",
+		"de": "Aktuelle HUD-Position: %.1fx %.1fy",
+		"ru": "Текущая позиция HUD: %.1fx %.1fy"
+	},
+	"EW.HudPosSet": {
+		"en": "Set hudpos to: %.1fx %.1fy",
+		"es": "Posición del HUD establecida en: %.1fx %.1fy",
+		"pt": "Posição do HUD definida para: %.1fx %.1fy",
+		"fr": "Position du HUD définie à : %.1fx %.1fy",
+		"de": "HUD-Position gesetzt auf: %.1fx %.1fy",
+		"ru": "Позиция HUD установлена на: %.1fx %.1fy"
+	},
+	"EW.HudColorCurrent": {
+		"en": "Current hudcolor:{red} %d{green} %d{lime} %d{default} %d",
+		"es": "Color actual del HUD:{red} %d{green} %d{lime} %d{default} %d",
+		"pt": "Cor atual do HUD:{red} %d{green} %d{lime} %d{default} %d",
+		"fr": "Couleur actuelle du HUD :{red} %d{green} %d{lime} %d{default} %d",
+		"de": "Aktuelle HUD-Farbe:{red} %d{green} %d{lime} %d{default} %d",
+		"ru": "Текущий цвет HUD:{red} %d{green} %d{lime} %d{default} %d"
+	},
+	"EW.HudColorSet": {
+		"en": "Set hudcolor to:{red} %d{green} %d{lime} %d{default} %d",
+		"es": "Color del HUD establecido en:{red} %d{green} %d{lime} %d{default} %d",
+		"pt": "Cor do HUD definida para:{red} %d{green} %d{lime} %d{default} %d",
+		"fr": "Couleur du HUD définie à :{red} %d{green} %d{lime} %d{default} %d",
+		"de": "HUD-Farbe gesetzt auf:{red} %d{green} %d{lime} %d{default} %d",
+		"ru": "Цвет HUD установлен на:{red} %d{green} %d{lime} %d{default} %d"
+	},
+	"EW.HudColorSetNoAlpha": {
+		"en": "Set hudcolor to:{red} %d{green} %d{lime} %d",
+		"es": "Color del HUD establecido en:{red} %d{green} %d{lime} %d",
+		"pt": "Cor do HUD definida para:{red} %d{green} %d{lime} %d",
+		"fr": "Couleur du HUD définie à :{red} %d{green} %d{lime} %d",
+		"de": "HUD-Farbe gesetzt auf:{red} %d{green} %d{lime} %d",
+		"ru": "Цвет HUD установлен на:{red} %d{green} %d{lime} %d"
+	},
+	"EW.HudSizeCurrent": {
+		"en": "Current hud size:{green} %.2f",
+		"es": "Tamaño actual del HUD:{green} %.2f",
+		"pt": "Tamanho atual do HUD:{green} %.2f",
+		"fr": "Taille actuelle du HUD :{green} %.2f",
+		"de": "Aktuelle HUD-Größe:{green} %.2f",
+		"ru": "Текущий размер HUD:{green} %.2f"
+	},
+	"EW.HudSizeSet": {
+		"en": "Hud font size set to:{green} %.2f",
+		"es": "Tamaño de fuente del HUD establecido en:{green} %.2f",
+		"pt": "Tamanho da fonte do HUD definido para:{green} %.2f",
+		"fr": "Taille de police du HUD définie à :{green} %.2f",
+		"de": "HUD-Schriftgröße gesetzt auf:{green} %.2f",
+		"ru": "Размер шрифта HUD установлен на:{green} %.2f"
+	},
+	"EW.UsageTransfer": {
+		"en": "Usage: !etransfer <owner>/$<itemname> <receiver>",
+		"es": "Uso: !etransfer <dueño>/$<nombre_item> <receptor>",
+		"pt": "Uso: !etransfer <dono>/$<nome_item> <receptor>",
+		"fr": "Utilisation : !etransfer <possesseur>/$<nom_item> <receveur>",
+		"de": "Verwendung: !etransfer <Besitzer>/$<Itemname> <Empfänger>",
+		"ru": "Использование: !etransfer <владелец>/$<имя_предмета> <получатель>"
+	},
+	"EW.UsageHudPos": {
+		"en": "Usage: !hudpos <x> <y>",
+		"es": "Uso: !hudpos <x> <y>",
+		"pt": "Uso: !hudpos <x> <y>",
+		"fr": "Utilisation : !hudpos <x> <y>",
+		"de": "Verwendung: !hudpos <x> <y>",
+		"ru": "Использование: !hudpos <x> <y>"
+	},
+	"EW.UsageHudColor": {
+		"en": "Usage: !hudcolor <r> <g> <b> [Optional: alpha]",
+		"es": "Uso: !hudcolor <r> <g> <b> [Opcional: alpha]",
+		"pt": "Uso: !hudcolor <r> <g> <b> [Opcional: alpha]",
+		"fr": "Utilisation : !hudcolor <r> <g> <b> [Optionnel : alpha]",
+		"de": "Verwendung: !hudcolor <r> <g> <b> [Optional: Alpha]",
+		"ru": "Использование: !hudcolor <r> <g> <b> [Опционально: alpha]"
+	},
+	"EW.UsageHudSize": {
+		"en": "Usage: !hudsize <size>",
+		"es": "Uso: !hudsize <tamaño>",
+		"pt": "Uso: !hudsize <tamanho>",
+		"fr": "Utilisation : !hudsize <taille>",
+		"de": "Verwendung: !hudsize <Größe>",
+		"ru": "Использование: !hudsize <размер>"
+	},
+	"EW.NullItem": {
+		"en": "Null item in the item map at pos %d",
+		"es": "Item nulo en el mapa de items en la posición %d",
+		"pt": "Item nulo no mapa de items na posição %d",
+		"fr": "Item nul dans la carte d'items à la position %d",
+		"de": "Null-Item in der Item-Map an Position %d",
+		"ru": "Пустой предмет в карте предметов на позиции %d"
+	},
+	"EW.NoHandlers": {
+		"en": "        No handlers set.",
+		"es": "        No hay handlers configurados.",
+		"pt": "        Nenhum handler configurado.",
+		"fr": "        Aucun handler configuré.",
+		"de": "        Keine Handler gesetzt.",
+		"ru": "        Обработчики не установлены."
+	},
+	"EW.NoTriggers": {
+		"en": "       No triggers set.",
+		"es": "       No hay triggers configurados.",
+		"pt": "       Nenhum trigger configurado.",
+		"fr": "       Aucun trigger configuré.",
+		"de": "       Keine Trigger gesetzt.",
+		"ru": "       Триггеры не установлены."
+	},
+	"EW.DumpItemHeader": {
+		"en": "------------ Item %02d ------------",
+		"es": "------------ Item %02d ------------",
+		"pt": "------------ Item %02d ------------",
+		"fr": "------------ Item %02d ------------",
+		"de": "------------ Item %02d ------------",
+		"ru": "------------ Предмет %02d ------------"
+	},
+	"EW.DumpName": {
+		"en": "     Name:  %s",
+		"es": "   Nombre:  %s",
+		"pt": "     Nome:  %s",
+		"fr": "      Nom:  %s",
+		"de": "     Name:  %s",
+		"ru": "      Имя:  %s"
+	},
+	"EW.DumpShortName": {
+		"en": "ShortName:  %s",
+		"es": "  Abrev.:  %s",
+		"pt": "  Abrevi:  %s",
+		"fr": "NomCourt:  %s",
+		"de": "Kurzname:  %s",
+		"ru": " Краткое:  %s"
+	},
+	"EW.DumpHammerid": {
+		"en": " Hammerid:  %s",
+		"es": " Hammerid:  %s",
+		"pt": " Hammerid:  %s",
+		"fr": " Hammerid:  %s",
+		"de": " Hammerid:  %s",
+		"ru": " Hammerid:  %s"
+	},
+	"EW.DumpMessage": {
+		"en": "  Message:  %s",
+		"es": "  Mensaje:  %s",
+		"pt": " Mensagem:  %s",
+		"fr": "  Message:  %s",
+		"de": "Nachricht:  %s",
+		"ru": " Сообщен.:  %s"
+	},
+	"EW.DumpUI": {
+		"en": "       UI:  %s",
+		"es": "       UI:  %s",
+		"pt": "       UI:  %s",
+		"fr": "       UI:  %s",
+		"de": "       UI:  %s",
+		"ru": "       UI:  %s"
+	},
+	"EW.DumpTransfer": {
+		"en": " Transfer:  %s",
+		"es": "Transfer.:  %s",
+		"pt": "Transfer:  %s",
+		"fr": "Transfert:  %s",
+		"de": " Transfer:  %s",
+		"ru": "Передача:  %s"
+	},
+	"EW.DumpHandlerHeader": {
+		"en": "          --------- Handler %d ---------",
+		"es": "          --------- Handler %d ---------",
+		"pt": "          --------- Handler %d ---------",
+		"fr": "          --------- Handler %d ---------",
+		"de": "          --------- Handler %d ---------",
+		"ru": "          --------- Обработчик %d ---------"
+	},
+	"EW.DumpHandlerType": {
+		"en": "              Type:  %s",
+		"es": "              Tipo:  %s",
+		"pt": "              Tipo:  %s",
+		"fr": "              Type:  %s",
+		"de": "               Typ:  %s",
+		"ru": "               Тип:  %s"
+	},
+	"EW.DumpHandlerMode": {
+		"en": "              Mode:  %d",
+		"es": "              Modo:  %d",
+		"pt": "              Modo:  %d",
+		"fr": "              Mode:  %d",
+		"de": "             Modus:  %d",
+		"ru": "             Режим:  %d"
+	},
+	"EW.DumpHandlerHammerid": {
+		"en": "          Hammerid:  %s",
+		"es": "          Hammerid:  %s",
+		"pt": "          Hammerid:  %s",
+		"fr": "          Hammerid:  %s",
+		"de": "          Hammerid:  %s",
+		"ru": "          Hammerid:  %s"
+	},
+	"EW.DumpHandlerEvent": {
+		"en": "             Event:  %s",
+		"es": "            Evento:  %s",
+		"pt": "            Evento:  %s",
+		"fr": "         Événement:  %s",
+		"de": "             Event:  %s",
+		"ru": "           Событие:  %s"
+	},
+	"EW.DumpHandlerCooldown": {
+		"en": "          Cooldown:  %.1f",
+		"es": "          Cooldown:  %.1f",
+		"pt": "          Cooldown:  %.1f",
+		"fr": "          Cooldown:  %.1f",
+		"de": "          Cooldown:  %.1f",
+		"ru": "          Cooldown:  %.1f"
+	},
+	"EW.DumpHandlerMaxUses": {
+		"en": "          Max Uses:  %d",
+		"es": "        Usos máx.:  %d",
+		"pt": "       Usos máx.:  %d",
+		"fr": "     Utilisations:  %d",
+		"de": "    Max. Nutzung.:  %d",
+		"ru": "      Макс. исп.:  %d"
+	},
+	"EW.DumpHandlerMessage": {
+		"en": "           Message:  %s",
+		"es": "           Mensaje:  %s",
+		"pt": "          Mensagem:  %s",
+		"fr": "           Message:  %s",
+		"de": "         Nachricht:  %s",
+		"ru": "          Сообщен.:  %s"
+	},
+	"EW.DumpTrigger": {
+		"en": " Trigger %d:  %s",
+		"es": " Trigger %d:  %s",
+		"pt": " Trigger %d:  %s",
+		"fr": " Trigger %d:  %s",
+		"de": " Trigger %d:  %s",
+		"ru": " Триггер %d:  %s"
 	}
 }
