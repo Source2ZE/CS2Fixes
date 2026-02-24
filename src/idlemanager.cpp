@@ -20,6 +20,7 @@
 #include "idlemanager.h"
 #include "commands.h"
 #include "cs2fixes.h"
+#include "translations.h"
 #include <vprof.h>
 
 CIdleSystem* g_pIdleSystem = nullptr;
@@ -66,7 +67,7 @@ void CIdleSystem::CheckForIdleClients()
 			{
 				CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(zPlayer->GetPlayerSlot());
 				if (pPlayer)
-					ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "You will be flagged as idle if you do not move within\2 %i\1 seconds.", iIdleTimeLeft);
+					ClientPrintT(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "{Idle.Warning}", iIdleTimeLeft);
 			}
 			continue;
 		}

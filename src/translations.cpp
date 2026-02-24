@@ -514,7 +514,7 @@ CON_COMMAND_CHAT(lang, "[code] - Change your language or view current language")
 	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Lang.Changed}", pszDisplayName);
 }
 
-CON_COMMAND_CHAT(langs, "Show all available languages")
+CON_COMMAND_CHAT(langs, "- Show all available languages")
 {
 	if (!g_cvarTranslationsEnable.Get())
 		return;

@@ -252,6 +252,23 @@
 		"de": "Keine verfügbare Klasse stimmt mit {gold}%s{default} überein.",
 		"ru": "Нет доступных классов, совпадающих с {gold}%s{default}."
 	},
+	// %s = team name (Human/Zombie)
+	"ZR.Class.Available": {
+		"en": "Available %s classes:",
+		"es": "Clases de %s disponibles:",
+		"pt": "Classes de %s disponíveis:",
+		"fr": "Classes %s disponibles :",
+		"de": "Verfügbare %s-Klassen:",
+		"ru": "Доступные классы %s:"
+	},
+	"ZR.Class.SelectUsage": {
+		"en": "Use {gold}!class <name/number>{default} to select a class.",
+		"es": "Usa {gold}!class <nombre/número>{default} para seleccionar una clase.",
+		"pt": "Use {gold}!class <nome/número>{default} para selecionar uma classe.",
+		"fr": "Utilisez {gold}!class <nom/numéro>{default} pour sélectionner une classe.",
+		"de": "Verwende {gold}!class <Name/Nummer>{default}, um eine Klasse auszuwählen.",
+		"ru": "Используйте {gold}!class <имя/номер>{default}, чтобы выбрать класс."
+	},
 
 	// ---- General ----
 
@@ -687,5 +704,430 @@
 		"fr": "Une ETargetError inconnue a été rencontrée, veuillez contacter un développeur avec la commande exacte utilisée.",
 		"de": "Ein unbekannter ETargetError ist aufgetreten, bitte kontaktiere einen Entwickler mit dem genauen verwendeten Befehl.",
 		"ru": "Произошла неизвестная ошибка ETargetError, свяжитесь с разработчиком и укажите точную команду."
+	},
+
+	// ---- Idle ----
+
+	// %i = seconds remaining
+	"Idle.Warning": {
+		"en": "You will be flagged as idle if you do not move within {gold}%i{default} seconds.",
+		"es": "Serás marcado como inactivo si no te mueves en {gold}%i{default} segundos.",
+		"pt": "Você será marcado como inativo se não se mover em {gold}%i{default} segundos.",
+		"fr": "Vous serez marqué comme inactif si vous ne bougez pas dans {gold}%i{default} secondes.",
+		"de": "Du wirst als inaktiv markiert, wenn du dich nicht innerhalb von {gold}%i{default} Sekunden bewegst.",
+		"ru": "Вы будете отмечены как неактивный, если не пошевелитесь в течение {gold}%i{default} секунд."
+	},
+
+	// ---- RTV ----
+
+	"RTV.NotOpenYet": {
+		"en": "RTV is not open yet.",
+		"es": "RTV aún no está disponible.",
+		"pt": "RTV ainda não está disponível.",
+		"fr": "Le RTV n'est pas encore disponible.",
+		"de": "RTV ist noch nicht verfügbar.",
+		"ru": "RTV ещё не доступно."
+	},
+	"RTV.AlreadySucceeded": {
+		"en": "RTV vote already succeeded.",
+		"es": "La votación de RTV ya fue aprobada.",
+		"pt": "A votação de RTV já foi aprovada.",
+		"fr": "Le vote RTV a déjà réussi.",
+		"de": "RTV-Abstimmung war bereits erfolgreich.",
+		"ru": "Голосование RTV уже прошло успешно."
+	},
+	"RTV.ClosedMapSelection": {
+		"en": "RTV is closed during next map selection.",
+		"es": "RTV está cerrado durante la selección del siguiente mapa.",
+		"pt": "RTV está fechado durante a seleção do próximo mapa.",
+		"fr": "Le RTV est fermé pendant la sélection de la prochaine carte.",
+		"de": "RTV ist während der nächsten Kartenauswahl geschlossen.",
+		"ru": "RTV закрыто во время выбора следующей карты."
+	},
+	"RTV.BlockedByAdmin": {
+		"en": "RTV has been blocked by an Admin.",
+		"es": "RTV ha sido bloqueado por un administrador.",
+		"pt": "RTV foi bloqueado por um administrador.",
+		"fr": "Le RTV a été bloqué par un administrateur.",
+		"de": "RTV wurde von einem Admin blockiert.",
+		"ru": "RTV заблокировано администратором."
+	},
+	// %i = current votes, %i = needed votes
+	"RTV.AlreadyVoted": {
+		"en": "You have already rocked the vote ({lime}%i{default} voted, {lime}%i{default} needed).",
+		"es": "Ya has votado por RTV ({lime}%i{default} votaron, {lime}%i{default} necesarios).",
+		"pt": "Você já votou por RTV ({lime}%i{default} votaram, {lime}%i{default} necessários).",
+		"fr": "Vous avez déjà voté pour le RTV ({lime}%i{default} votes, {lime}%i{default} nécessaires).",
+		"de": "Du hast bereits für RTV gestimmt ({lime}%i{default} abgestimmt, {lime}%i{default} benötigt).",
+		"ru": "Вы уже проголосовали за RTV ({lime}%i{default} проголосовало, {lime}%i{default} нужно)."
+	},
+	// %i = seconds
+	"RTV.Wait": {
+		"en": "Wait {lime}%i{default} seconds before you can RTV.",
+		"es": "Espera {lime}%i{default} segundos antes de poder votar RTV.",
+		"pt": "Aguarde {lime}%i{default} segundos antes de poder votar RTV.",
+		"fr": "Attendez {lime}%i{default} secondes avant de pouvoir voter RTV.",
+		"de": "Warte {lime}%i{default} Sekunden, bevor du RTV wählen kannst.",
+		"ru": "Подождите {lime}%i{default} секунд, прежде чем голосовать за RTV."
+	},
+	// %s = player name, %i = current votes, %i = needed votes
+	"RTV.WantsToRTV": {
+		"en": "{lime}%s{default} wants to rock the vote ({lime}%i{default} voted, {lime}%i{default} needed).",
+		"es": "{lime}%s{default} quiere cambiar de mapa ({lime}%i{default} votaron, {lime}%i{default} necesarios).",
+		"pt": "{lime}%s{default} quer mudar de mapa ({lime}%i{default} votaram, {lime}%i{default} necessários).",
+		"fr": "{lime}%s{default} veut changer de carte ({lime}%i{default} votes, {lime}%i{default} nécessaires).",
+		"de": "{lime}%s{default} möchte die Karte wechseln ({lime}%i{default} abgestimmt, {lime}%i{default} benötigt).",
+		"ru": "{lime}%s{default} хочет сменить карту ({lime}%i{default} проголосовало, {lime}%i{default} нужно)."
+	},
+	// %i = current votes, %i = needed votes
+	"RTV.NotVoted": {
+		"en": "You have not voted to RTV current map ({lime}%i{default} voted, {lime}%i{default} needed).",
+		"es": "No has votado por RTV para cambiar el mapa actual ({lime}%i{default} votaron, {lime}%i{default} necesarios).",
+		"pt": "Você não votou para mudar o mapa atual ({lime}%i{default} votaram, {lime}%i{default} necessários).",
+		"fr": "Vous n'avez pas voté pour changer la carte actuelle ({lime}%i{default} votes, {lime}%i{default} nécessaires).",
+		"de": "Du hast nicht abgestimmt, die aktuelle Karte zu wechseln ({lime}%i{default} abgestimmt, {lime}%i{default} benötigt).",
+		"ru": "Вы не голосовали за смену текущей карты ({lime}%i{default} проголосовало, {lime}%i{default} нужно)."
+	},
+	// %i = seconds
+	"RTV.WaitRemove": {
+		"en": "Wait {lime}%i{default} seconds before you can remove your RTV.",
+		"es": "Espera {lime}%i{default} segundos antes de poder retirar tu RTV.",
+		"pt": "Aguarde {lime}%i{default} segundos antes de poder remover seu RTV.",
+		"fr": "Attendez {lime}%i{default} secondes avant de pouvoir retirer votre RTV.",
+		"de": "Warte {lime}%i{default} Sekunden, bevor du dein RTV entfernen kannst.",
+		"ru": "Подождите {lime}%i{default} секунд, прежде чем отменить RTV."
+	},
+	// %i = current votes, %i = needed votes
+	"RTV.Removed": {
+		"en": "You no longer want to RTV current map ({lime}%i{default} voted, {lime}%i{default} needed).",
+		"es": "Ya no quieres cambiar de mapa ({lime}%i{default} votaron, {lime}%i{default} necesarios).",
+		"pt": "Você não quer mais mudar de mapa ({lime}%i{default} votaram, {lime}%i{default} necessários).",
+		"fr": "Vous ne souhaitez plus changer de carte ({lime}%i{default} votes, {lime}%i{default} nécessaires).",
+		"de": "Du möchtest nicht mehr die Karte wechseln ({lime}%i{default} abgestimmt, {lime}%i{default} benötigt).",
+		"ru": "Вы больше не хотите сменить карту ({lime}%i{default} проголосовало, {lime}%i{default} нужно)."
+	},
+	"RTV.AlreadyDisabled": {
+		"en": "RTV is already disabled.",
+		"es": "RTV ya está desactivado.",
+		"pt": "RTV já está desativado.",
+		"fr": "Le RTV est déjà désactivé.",
+		"de": "RTV ist bereits deaktiviert.",
+		"ru": "RTV уже отключено."
+	},
+	"RTV.NotDisabled": {
+		"en": "RTV is not disabled.",
+		"es": "RTV no está desactivado.",
+		"pt": "RTV não está desativado.",
+		"fr": "Le RTV n'est pas désactivé.",
+		"de": "RTV ist nicht deaktiviert.",
+		"ru": "RTV не отключено."
+	},
+	"RTV.AdminDisabled": {
+		"en": "disabled vote for RTV.",
+		"es": "desactivó la votación de RTV.",
+		"pt": "desativou a votação de RTV.",
+		"fr": "a désactivé le vote RTV.",
+		"de": "hat die RTV-Abstimmung deaktiviert.",
+		"ru": "отключил голосование RTV."
+	},
+	"RTV.AdminEnabled": {
+		"en": "enabled vote for RTV.",
+		"es": "activó la votación de RTV.",
+		"pt": "ativou a votação de RTV.",
+		"fr": "a activé le vote RTV.",
+		"de": "hat die RTV-Abstimmung aktiviert.",
+		"ru": "включил голосование RTV."
+	},
+	"RTV.SucceededEnding": {
+		"en": "RTV succeeded! Ending the map now...",
+		"es": "¡RTV aprobado! Terminando el mapa ahora...",
+		"pt": "RTV aprovado! Encerrando o mapa agora...",
+		"fr": "RTV réussi ! Fin de la carte en cours...",
+		"de": "RTV erfolgreich! Karte wird jetzt beendet...",
+		"ru": "RTV прошло успешно! Завершаем карту..."
+	},
+	"RTV.SucceededLastRound": {
+		"en": "RTV succeeded! This is the last round of the map!",
+		"es": "¡RTV aprobado! ¡Esta es la última ronda del mapa!",
+		"pt": "RTV aprovado! Esta é a última rodada do mapa!",
+		"fr": "RTV réussi ! C'est le dernier round de la carte !",
+		"de": "RTV erfolgreich! Das ist die letzte Runde der Karte!",
+		"ru": "RTV прошло успешно! Это последний раунд карты!"
+	},
+
+	// ---- Extend ----
+
+	"Extend.StartingSoon": {
+		"en": "Extend vote starting in 10 seconds!",
+		"es": "¡La votación para extender el mapa comienza en 10 segundos!",
+		"pt": "A votação para estender o mapa começa em 10 segundos!",
+		"fr": "Le vote pour prolonger la carte commence dans 10 secondes!",
+		"de": "Die Abstimmung zur Erweiterung der Karte beginnt in 10 Sekunden!",
+		"ru": "Голосование по расширению карты начнется через 10 секунд!"
+	},
+	// %d = seconds
+	"Extend.StartingIn": {
+		"en": "Extend vote starting in %d....",
+		"es": "Votación de extensión comienza en %d....",
+		"pt": "Votação de extensão começa em %d....",
+		"fr": "Vote d'extension dans %d....",
+		"de": "Verlängerungsabstimmung beginnt in %d....",
+		"ru": "Голосование за продление через %d...."
+	},
+	"Extend.Disabled": {
+		"en": "Extend votes are disabled.",
+		"es": "Las votaciones de extensión están desactivadas.",
+		"pt": "As votações de extensão estão desativadas.",
+		"fr": "Les votes d'extension sont désactivés.",
+		"de": "Verlängerungsabstimmungen sind deaktiviert.",
+		"ru": "Голосования за продление отключены."
+	},
+	// %i = minutes, %i = seconds
+	"Extend.WillStartMinSec": {
+		"en": "An extend vote will start in {lime}%im %is{default}.",
+		"es": "Una votación de extensión comenzará en {lime}%im %is{default}.",
+		"pt": "Uma votação de extensão começará em {lime}%im %is{default}.",
+		"fr": "Un vote d'extension commencera dans {lime}%im %is{default}.",
+		"de": "Eine Verlängerungsabstimmung beginnt in {lime}%im %is{default}.",
+		"ru": "Голосование за продление начнётся через {lime}%im %is{default}."
+	},
+	// %i = seconds
+	"Extend.WillStartSec": {
+		"en": "An extend vote will start in {lime}%i{default} seconds.",
+		"es": "Una votación de extensión comenzará en {lime}%i{default} segundos.",
+		"pt": "Uma votação de extensão começará em {lime}%i{default} segundos.",
+		"fr": "Un vote d'extension commencera dans {lime}%i{default} secondes.",
+		"de": "Eine Verlängerungsabstimmung beginnt in {lime}%i{default} Sekunden.",
+		"ru": "Голосование за продление начнётся через {lime}%i{default} секунд."
+	},
+	"Extend.NotOpenYet": {
+		"en": "Extend vote is not open yet.",
+		"es": "La votación de extensión aún no está disponible.",
+		"pt": "A votação de extensão ainda não está disponível.",
+		"fr": "Le vote d'extension n'est pas encore disponible.",
+		"de": "Verlängerungsabstimmung ist noch nicht verfügbar.",
+		"ru": "Голосование за продление ещё не доступно."
+	},
+	"Extend.InProgress": {
+		"en": "An extend vote is in progress right now!",
+		"es": "¡Una votación de extensión está en curso ahora mismo!",
+		"pt": "Uma votação de extensão está em andamento agora!",
+		"fr": "Un vote d'extension est en cours en ce moment !",
+		"de": "Eine Verlängerungsabstimmung läuft gerade!",
+		"ru": "Голосование за продление сейчас в процессе!"
+	},
+	"Extend.NoExtendsLeft": {
+		"en": "There are no extends left for the current map.",
+		"es": "No quedan extensiones para el mapa actual.",
+		"pt": "Não restam extensões para o mapa atual.",
+		"fr": "Il ne reste plus d'extensions pour la carte actuelle.",
+		"de": "Es sind keine Verlängerungen mehr für die aktuelle Karte übrig.",
+		"ru": "Для текущей карты не осталось продлений."
+	},
+	"Extend.PreviousFailed": {
+		"en": "A previous extend vote already failed.",
+		"es": "Una votación de extensión ya falló anteriormente.",
+		"pt": "Uma votação de extensão anterior já falhou.",
+		"fr": "Un précédent vote d'extension a déjà échoué.",
+		"de": "Eine vorherige Verlängerungsabstimmung ist bereits gescheitert.",
+		"ru": "Предыдущее голосование за продление уже провалилось."
+	},
+	"Extend.ClosedMapSelection": {
+		"en": "Extend vote is closed during next map selection.",
+		"es": "La votación de extensión está cerrada durante la selección del siguiente mapa.",
+		"pt": "A votação de extensão está fechada durante a seleção do próximo mapa.",
+		"fr": "Le vote d'extension est fermé pendant la sélection de la prochaine carte.",
+		"de": "Verlängerungsabstimmung ist während der nächsten Kartenauswahl geschlossen.",
+		"ru": "Голосование за продление закрыто во время выбора следующей карты."
+	},
+	"Extend.ClosedRTV": {
+		"en": "Extend vote is closed because RTV vote has passed.",
+		"es": "La votación de extensión está cerrada porque el RTV fue aprobado.",
+		"pt": "A votação de extensão está fechada porque o RTV foi aprovado.",
+		"fr": "Le vote d'extension est fermé car le vote RTV a réussi.",
+		"de": "Verlängerungsabstimmung ist geschlossen, da die RTV-Abstimmung bestanden hat.",
+		"ru": "Голосование за продление закрыто, так как RTV прошло успешно."
+	},
+	"Extend.NotAllowed": {
+		"en": "Extend vote is not allowed for current map.",
+		"es": "La votación de extensión no está permitida para el mapa actual.",
+		"pt": "A votação de extensão não é permitida para o mapa atual.",
+		"fr": "Le vote d'extension n'est pas autorisé pour la carte actuelle.",
+		"de": "Verlängerungsabstimmung ist für die aktuelle Karte nicht erlaubt.",
+		"ru": "Голосование за продление не разрешено для текущей карты."
+	},
+	// %i = current votes, %i = needed votes
+	"Extend.AlreadyVoted": {
+		"en": "You have already voted to extend the map ({lime}%i{default} voted, {lime}%i{default} needed).",
+		"es": "Ya has votado para extender el mapa ({lime}%i{default} votaron, {lime}%i{default} necesarios).",
+		"pt": "Você já votou para estender o mapa ({lime}%i{default} votaram, {lime}%i{default} necessários).",
+		"fr": "Vous avez déjà voté pour prolonger la carte ({lime}%i{default} votes, {lime}%i{default} nécessaires).",
+		"de": "Du hast bereits für die Verlängerung gestimmt ({lime}%i{default} abgestimmt, {lime}%i{default} benötigt).",
+		"ru": "Вы уже проголосовали за продление ({lime}%i{default} проголосовало, {lime}%i{default} нужно)."
+	},
+	// %i = seconds
+	"Extend.Wait": {
+		"en": "Wait {lime}%i{default} seconds before you can vote extend again.",
+		"es": "Espera {lime}%i{default} segundos antes de poder votar extensión de nuevo.",
+		"pt": "Aguarde {lime}%i{default} segundos antes de poder votar extensão novamente.",
+		"fr": "Attendez {lime}%i{default} secondes avant de pouvoir revoter l'extension.",
+		"de": "Warte {lime}%i{default} Sekunden, bevor du erneut für Verlängerung stimmen kannst.",
+		"ru": "Подождите {lime}%i{default} секунд, прежде чем снова голосовать за продление."
+	},
+	// %s = player name, %i = current votes, %i = needed votes
+	"Extend.WantsToExtend": {
+		"en": "{lime}%s{default} wants to extend the map ({lime}%i{default} voted, {lime}%i{default} needed).",
+		"es": "{lime}%s{default} quiere extender el mapa ({lime}%i{default} votaron, {lime}%i{default} necesarios).",
+		"pt": "{lime}%s{default} quer estender o mapa ({lime}%i{default} votaram, {lime}%i{default} necessários).",
+		"fr": "{lime}%s{default} veut prolonger la carte ({lime}%i{default} votes, {lime}%i{default} nécessaires).",
+		"de": "{lime}%s{default} möchte die Karte verlängern ({lime}%i{default} abgestimmt, {lime}%i{default} benötigt).",
+		"ru": "{lime}%s{default} хочет продлить карту ({lime}%i{default} проголосовало, {lime}%i{default} нужно)."
+	},
+	"Extend.VotingDisabled": {
+		"en": "Voting to start extend votes is disabled.",
+		"es": "La votación para iniciar una votación de extensión está desactivada.",
+		"pt": "A votação para iniciar uma votação de extensão está desativada.",
+		"fr": "Le vote pour lancer une votation d'extension est désactivé.",
+		"de": "Abstimmung über den Start von Verlängerungen ist deaktiviert.",
+		"ru": "Голосование за начало голосования по продлению отключено."
+	},
+	"Extend.NotVoted": {
+		"en": "You have not voted to extend current map.",
+		"es": "No has votado para extender el mapa actual.",
+		"pt": "Você não votou para estender o mapa atual.",
+		"fr": "Vous n'avez pas voté pour prolonger la carte actuelle.",
+		"de": "Du hast nicht für die Verlängerung gestimmt.",
+		"ru": "Вы не голосовали за продление текущей карты."
+	},
+	"Extend.Removed": {
+		"en": "You no longer want to extend current map.",
+		"es": "Ya no quieres extender el mapa actual.",
+		"pt": "Você não quer mais estender o mapa atual.",
+		"fr": "Vous ne souhaitez plus prolonger la carte actuelle.",
+		"de": "Du möchtest die aktuelle Karte nicht mehr verlängern.",
+		"ru": "Вы больше не хотите продлить текущую карту."
+	},
+	"Extend.AlreadyInProgress": {
+		"en": "An extend vote is already in progress.",
+		"es": "Una votación de extensión ya está en curso.",
+		"pt": "Uma votação de extensão já está em andamento.",
+		"fr": "Un vote d'extension est déjà en cours.",
+		"de": "Eine Verlängerungsabstimmung ist bereits im Gange.",
+		"ru": "Голосование за продление уже идёт."
+	},
+	// %i = extends used, %i = max extends
+	"Extend.NoExtendsLeftCount": {
+		"en": "There are no extends left, the map was already extended {lime}%i/%i{default} times.",
+		"es": "No quedan extensiones, el mapa ya fue extendido {lime}%i/%i{default} veces.",
+		"pt": "Não restam extensões, o mapa já foi estendido {lime}%i/%i{default} vezes.",
+		"fr": "Il ne reste plus d'extensions, la carte a déjà été prolongée {lime}%i/%i{default} fois.",
+		"de": "Keine Verlängerungen mehr übrig, die Karte wurde bereits {lime}%i/%i{default} Mal verlängert.",
+		"ru": "Продлений не осталось, карта уже была продлена {lime}%i/%i{default} раз."
+	},
+	// %i = extends left, %i = max extends
+	"Extend.ExtendsLeftFailed": {
+		"en": "The map had {lime}%i/%i{default} extends left, but the last extend vote failed.",
+		"es": "El mapa tenía {lime}%i/%i{default} extensiones restantes, pero la última votación falló.",
+		"pt": "O mapa tinha {lime}%i/%i{default} extensões restantes, mas a última votação falhou.",
+		"fr": "La carte avait {lime}%i/%i{default} extensions restantes, mais le dernier vote a échoué.",
+		"de": "Die Karte hatte noch {lime}%i/%i{default} Verlängerungen, aber die letzte Abstimmung ist gescheitert.",
+		"ru": "У карты оставалось {lime}%i/%i{default} продлений, но последнее голосование провалилось."
+	},
+	// %i = extends left, %i = max extends
+	"Extend.ExtendsLeft": {
+		"en": "The map has {lime}%i/%i{default} extends left.",
+		"es": "El mapa tiene {lime}%i/%i{default} extensiones restantes.",
+		"pt": "O mapa tem {lime}%i/%i{default} extensões restantes.",
+		"fr": "La carte a {lime}%i/%i{default} extensions restantes.",
+		"de": "Die Karte hat noch {lime}%i/%i{default} Verlängerungen übrig.",
+		"ru": "У карты осталось {lime}%i/%i{default} продлений."
+	},
+	"Extend.VoteStarted": {
+		"en": "Extend vote started!",
+		"es": "¡Votación de extensión iniciada!",
+		"pt": "Votação de extensão iniciada!",
+		"fr": "Vote d'extension lancé !",
+		"de": "Verlängerungsabstimmung gestartet!",
+		"ru": "Голосование за продление началось!"
+	},
+	"Extend.ThanksForVoting": {
+		"en": "Thanks for voting! Type {lime}!revote{default} to change your vote!",
+		"es": "¡Gracias por votar! Escribe {lime}!revote{default} para cambiar tu voto.",
+		"pt": "Obrigado por votar! Digite {lime}!revote{default} para mudar seu voto!",
+		"fr": "Merci d'avoir voté ! Tapez {lime}!revote{default} pour changer votre vote !",
+		"de": "Danke fürs Abstimmen! Tippe {lime}!revote{default}, um deine Stimme zu ändern!",
+		"ru": "Спасибо за голос! Напишите {lime}!revote{default}, чтобы изменить свой голос!"
+	},
+	// %.2f = yes percent, %d = total votes, %.2f = needed percent
+	"Extend.VoteEnded": {
+		"en": "Vote ended. Yes received {lime}%.2f%%{default} of {lime}%d{default} votes (Needed {lime}%.2f%%{default}).",
+		"es": "Votación terminada. Recibió {lime}%.2f%%{default} de {lime}%d{default} votos (Se necesitaba {lime}%.2f%%{default}).",
+		"pt": "Votação encerrada. Recebeu {lime}%.2f%%{default} de {lime}%d{default} votos (Necessário {lime}%.2f%%{default}).",
+		"fr": "Vote terminé. Reçu {lime}%.2f%%{default} sur {lime}%d{default} votes (Requis {lime}%.2f%%{default}).",
+		"de": "Abstimmung beendet. Erhielt {lime}%.2f%%{default} von {lime}%d{default} Stimmen (Benötigt {lime}%.2f%%{default}).",
+		"ru": "Голосование завершено. Получено {lime}%.2f%%{default} из {lime}%d{default} голосов (Нужно {lime}%.2f%%{default})."
+	},
+	// %i = minutes added
+	"Extend.VoteSucceeded": {
+		"en": "Extend vote succeeded! Current map has been extended by {lime}%i{default} minutes.",
+		"es": "¡Votación de extensión aprobada! El mapa se ha extendido {lime}%i{default} minutos.",
+		"pt": "Votação de extensão aprovada! O mapa foi estendido por {lime}%i{default} minutos.",
+		"fr": "Vote d'extension réussi ! La carte a été prolongée de {lime}%i{default} minutes.",
+		"de": "Verlängerungsabstimmung erfolgreich! Die Karte wurde um {lime}%i{default} Minuten verlängert.",
+		"ru": "Голосование за продление успешно! Карта продлена на {lime}%i{default} минут."
+	},
+	"Extend.VoteFailed": {
+		"en": "Extend vote failed! Further extend votes disabled!",
+		"es": "¡Votación de extensión fallida! ¡Las votaciones de extensión han sido desactivadas!",
+		"pt": "Votação de extensão falhou! Votações de extensão desativadas!",
+		"fr": "Vote d'extension échoué ! Les prochains votes d'extension sont désactivés !",
+		"de": "Verlängerungsabstimmung gescheitert! Weitere Verlängerungsabstimmungen deaktiviert!",
+		"ru": "Голосование за продление провалилось! Дальнейшие голосования отключены!"
+	},
+	// %d = seconds
+	"Extend.EndingIn": {
+		"en": "Extend vote ending in %d....",
+		"es": "Votación de extensión termina en %d....",
+		"pt": "Votação de extensão encerra em %d....",
+		"fr": "Vote d'extension se termine dans %d....",
+		"de": "Verlängerungsabstimmung endet in %d....",
+		"ru": "Голосование за продление завершится через %d...."
+	},
+
+	// ---- Timeleft ----
+
+	"Timeleft.NoLimit": {
+		"en": "No time limit.",
+		"es": "Sin límite de tiempo.",
+		"pt": "Sem limite de tempo.",
+		"fr": "Pas de limite de temps.",
+		"de": "Kein Zeitlimit.",
+		"ru": "Без ограничения по времени."
+	},
+	"Timeleft.LastRound": {
+		"en": "Last round!",
+		"es": "¡Última ronda!",
+		"pt": "Última rodada!",
+		"fr": "Dernier round !",
+		"de": "Letzte Runde!",
+		"ru": "Последний раунд!"
+	},
+	// %i = minutes, %i = seconds
+	"Timeleft.MinSec": {
+		"en": "Timeleft: {lime}%i{default} minutes {lime}%i{default} seconds.",
+		"es": "Tiempo restante: {lime}%i{default} minutos {lime}%i{default} segundos.",
+		"pt": "Tempo restante: {lime}%i{default} minutos {lime}%i{default} segundos.",
+		"fr": "Temps restant : {lime}%i{default} minutes {lime}%i{default} secondes.",
+		"de": "Verbleibende Zeit: {lime}%i{default} Minuten {lime}%i{default} Sekunden.",
+		"ru": "Осталось: {lime}%i{default} минут {lime}%i{default} секунд."
+	},
+	// %i = seconds
+	"Timeleft.Sec": {
+		"en": "Timeleft: {lime}%i{default} seconds.",
+		"es": "Tiempo restante: {lime}%i{default} segundos.",
+		"pt": "Tempo restante: {lime}%i{default} segundos.",
+		"fr": "Temps restant : {lime}%i{default} secondes.",
+		"de": "Verbleibende Zeit: {lime}%i{default} Sekunden.",
+		"ru": "Осталось: {lime}%i{default} секунд."
 	}
 }
