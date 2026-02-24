@@ -380,7 +380,7 @@ CON_COMMAND_CHAT(stopsound, "- Toggle weapon sounds")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -403,7 +403,7 @@ CON_COMMAND_CHAT(toggledecals, "- Toggle world decals, if you're into having 10 
 {
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -427,7 +427,7 @@ CON_COMMAND_CHAT(noshake, "- toggle noshake")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -454,7 +454,7 @@ CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -499,7 +499,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 	{
 		if (!player)
 		{
-			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands is:");
+			ClientPrintT(player, HUD_PRINTCONSOLE, "{Help.ListAllConsole}");
 
 			for (const auto& cmdPair : CommandList())
 			{
@@ -512,7 +512,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 		else
 		{
 			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Help.ListChat}");
-			ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands you can use is:");
+			ClientPrintT(player, HUD_PRINTCONSOLE, "{Help.ListConsole}");
 
 			ZEPlayer* pZEPlayer = player->GetZEPlayer();
 
@@ -577,13 +577,13 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 
 		if (rgstrCommands.size() == 0)
 		{
-			ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "No commands matched \"%s\".", args[1]);
+			ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{Help.NoMatchConsole}", args[1]);
 			if (player)
 				ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Help.NoMatch}", args[1]);
 			return;
 		}
 
-		ClientPrint(player, HUD_PRINTCONSOLE, "The list of all commands matching \"%s\" is:", args[1]);
+		ClientPrintT(player, HUD_PRINTCONSOLE, "{Help.MatchConsole}", args[1]);
 		if (player)
 			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Help.MatchChat}", args[1]);
 	}
@@ -594,7 +594,7 @@ void PrintHelp(const CCommand& args, CCSPlayerController* player)
 		ClientPrint(player, HUD_PRINTCONSOLE, strCommand.c_str());
 
 	if (player)
-		ClientPrint(player, HUD_PRINTCONSOLE, "! can be replaced with / for a silent chat command, or c_ for console usage");
+		ClientPrintT(player, HUD_PRINTCONSOLE, "{Help.CommandHint}");
 }
 
 CON_COMMAND_CHAT(help, "- Display list of commands in console")
@@ -613,7 +613,7 @@ CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -709,15 +709,15 @@ CON_COMMAND_CHAT(info, "<name> - Get a player's information")
 		ZEPlayer* zpTarget = pTarget->GetZEPlayer();
 
 		ClientPrint(player, HUD_PRINTCONSOLE, "%s", pTarget->GetPlayerName());
-		ClientPrint(player, HUD_PRINTCONSOLE, "\tUser ID: %i", g_pEngineServer2->GetPlayerUserId(pTarget->GetPlayerSlot()).Get());
+		ClientPrintT(player, HUD_PRINTCONSOLE, "\t{Info.UserID}: %i", g_pEngineServer2->GetPlayerUserId(pTarget->GetPlayerSlot()).Get());
 
 		if (zpTarget->IsAuthenticated())
 			ClientPrint(player, HUD_PRINTCONSOLE, "\tSteam64 ID: %llu", zpTarget->GetSteamId64());
 		else
-			ClientPrint(player, HUD_PRINTCONSOLE, "\tSteam64 ID: %llu (Unauthenticated)", zpTarget->GetUnauthenticatedSteamId());
+			ClientPrintT(player, HUD_PRINTCONSOLE, "\tSteam64 ID: %llu ({Info.Unauthenticated})", zpTarget->GetUnauthenticatedSteamId());
 
 		if (bIsAdmin)
-			ClientPrint(player, HUD_PRINTCONSOLE, "\tIP Address: %s", zpTarget->GetIpAddress());
+			ClientPrintT(player, HUD_PRINTCONSOLE, "\t{Info.IPAddress}: %s", zpTarget->GetIpAddress());
 	}
 
 	if (iNumClients == 1)

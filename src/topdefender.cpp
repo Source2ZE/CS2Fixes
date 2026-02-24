@@ -20,6 +20,7 @@
 #include "topdefender.h"
 #include "commands.h"
 #include "common.h"
+#include "translations.h"
 #include "ctimer.h"
 #include "detours.h"
 #include "entity/ccsplayercontroller.h"
@@ -286,7 +287,7 @@ void TopDefenderSearch(CCSPlayerController* player, const CCommand& args)
 {
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, TD_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, TD_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 

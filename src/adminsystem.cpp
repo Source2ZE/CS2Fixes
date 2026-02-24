@@ -115,7 +115,7 @@ CON_COMMAND_CHAT_FLAGS(debugclientlist, "- Debug client list", ADMFLAG_ROOT)
 {
 	if (!GetClientList())
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, "GetClientList() is null!");
+		ClientPrintT(player, HUD_PRINTCONSOLE, "{Admin.ClientListNull}");
 		return;
 	}
 
@@ -380,7 +380,7 @@ CON_COMMAND_CHAT_FLAGS(bring, "<name> - Bring a player", ADMFLAG_SLAY)
 {
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -584,7 +584,7 @@ CON_COMMAND_CHAT_FLAGS(rcon, "<command> - Send a command to server console", ADM
 {
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You are already on the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{Admin.AlreadyServerConsole}");
 		return;
 	}
 
@@ -863,11 +863,11 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GE
 
 	if (rgNameSlotID.size() == 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, "There are no clients currently online.");
+		ClientPrintT(player, HUD_PRINTTALK, "{Admin.NoClientsOnline}");
 		return;
 	}
 
-	ClientPrint(player, HUD_PRINTCONSOLE, "c_who output: %i client%s", rgNameSlotID.size(), rgNameSlotID.size() == 1 ? "" : "s");
+	ClientPrintT(player, HUD_PRINTCONSOLE, "{Admin.WhoOutput}", rgNameSlotID.size(), rgNameSlotID.size() == 1 ? "" : "s");
 	ClientPrint(player, HUD_PRINTCONSOLE, "|----------------------|----------------------------------------------------|-------------------|");
 	ClientPrint(player, HUD_PRINTCONSOLE, "|         Name         |                       Flags                        |    Steam64 ID     |");
 	ClientPrint(player, HUD_PRINTCONSOLE, "|----------------------|----------------------------------------------------|-------------------|");
@@ -927,7 +927,7 @@ CON_COMMAND_CHAT_FLAGS(who, "- List the flags of all online players", ADMFLAG_GE
 	}
 	ClientPrint(player, HUD_PRINTCONSOLE, "|----------------------|----------------------------------------------------|-------------------|");
 	if (player)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Check console for output.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{General.SeeConsole}");
 }
 
 CON_COMMAND_CHAT(status, "<name> - Checks a player's active punishments. Non-admins may only check their own punishments")
@@ -1754,8 +1754,8 @@ void CAdminSystem::ShowDisconnectedPlayers(CCSPlayerController* const pAdmin)
 			if (!bAnyDCedPlayers)
 			{
 				if (pAdmin)
-					ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "Disconnected player(s) displayed in console.");
-				ClientPrint(pAdmin, HUD_PRINTCONSOLE, "Disconnected Player(s):");
+					ClientPrintT(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "{Admin.DCPlayersConsole}");
+				ClientPrintT(pAdmin, HUD_PRINTCONSOLE, "{Admin.DCPlayersHeader}");
 				bAnyDCedPlayers = true;
 			}
 
@@ -1764,11 +1764,11 @@ void CAdminSystem::ShowDisconnectedPlayers(CCSPlayerController* const pAdmin)
 
 			ZEPlayer* zpAdmin = pAdmin->GetZEPlayer();
 			if (zpAdmin && zpAdmin->IsAdminFlagSet(ADMFLAG_RCON))
-				ClientPrint(pAdmin, HUD_PRINTCONSOLE, "\tIP Address - %s", std::get<2>(ply).c_str());
+				ClientPrintT(pAdmin, HUD_PRINTCONSOLE, "\t{Info.IPAddress} - %s", std::get<2>(ply).c_str());
 		}
 	}
 	if (!bAnyDCedPlayers)
-		ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "No players have disconnected yet.");
+		ClientPrintT(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "{Admin.NoDCPlayers}");
 }
 
 void CBanInfraction::ApplyInfraction(ZEPlayer* player)

@@ -126,8 +126,8 @@ void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEnt
 		if (zpPlayer->GetButtonWatchMode() >= 2)
 		{
 			ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "------------------------------------ [ButtonWatch] ------------------------------------");
-			ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Player: %s %s", strPlayerName.c_str(), strPlayerID.c_str());
-			ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "Button: %s", strButton.c_str());
+			ClientPrintT(ccsPlayer, HUD_PRINTCONSOLE, "{BW.ConsolePlayer}", strPlayerName.c_str(), strPlayerID.c_str());
+			ClientPrintT(ccsPlayer, HUD_PRINTCONSOLE, "{BW.ConsoleButton}", strButton.c_str());
 			ClientPrint(ccsPlayer, HUD_PRINTCONSOLE, "---------------------------------------------------------------------------------------");
 		}
 	}

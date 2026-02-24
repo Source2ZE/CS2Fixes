@@ -1203,7 +1203,7 @@ void CEWHandler::PrintLoadedConfig(CPlayerSlot slot)
 
 		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "------------ ------- ------------");
 	}
-	ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.SeeConsole}");
+	ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{General.SeeConsole}");
 }
 
 void CEWHandler::ClearItems()
@@ -2713,7 +2713,7 @@ CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
 
 	if (!player)
 	{
-		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoConsole}");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -2751,7 +2751,7 @@ CON_COMMAND_CHAT(hudcolor, "<r> <g> <b> [a] - Set color (and transparency) of th
 
 	if (!player)
 	{
-		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoConsole}");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -2803,7 +2803,7 @@ CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
 
 	if (!player)
 	{
-		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoConsole}");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 

@@ -270,6 +270,65 @@
 		"ru": "Используйте {gold}!class <имя/номер>{default}, чтобы выбрать класс."
 	},
 
+	// ---- Admin ----
+
+	"Admin.NoClientsOnline": {
+		"en": "There are no clients currently online.",
+		"es": "No hay clientes conectados actualmente.",
+		"pt": "Não há clientes conectados atualmente.",
+		"fr": "Il n'y a aucun client actuellement en ligne.",
+		"de": "Es sind derzeit keine Clients online.",
+		"ru": "В настоящее время нет подключённых клиентов."
+	},
+	"Admin.WhoOutput": {
+		"en": "c_who output: %i client%s",
+		"es": "Resultado de c_who: %i cliente%s",
+		"pt": "Resultado do c_who: %i cliente%s",
+		"fr": "Résultat de c_who : %i client%s",
+		"de": "c_who Ausgabe: %i Client%s",
+		"ru": "Вывод c_who: %i клиент%s"
+	},
+	"Admin.DCPlayersConsole": {
+		"en": "Disconnected player(s) displayed in console.",
+		"es": "Jugador(es) desconectado(s) mostrados en la consola.",
+		"pt": "Jogador(es) desconectado(s) exibido(s) no console.",
+		"fr": "Joueur(s) déconnecté(s) affiché(s) dans la console.",
+		"de": "Getrennte(r) Spieler in der Konsole angezeigt.",
+		"ru": "Отключённые игроки показаны в консоли."
+	},
+	"Admin.DCPlayersHeader": {
+		"en": "Disconnected Player(s):",
+		"es": "Jugador(es) desconectado(s):",
+		"pt": "Jogador(es) desconectado(s):",
+		"fr": "Joueur(s) déconnecté(s) :",
+		"de": "Getrennte(r) Spieler:",
+		"ru": "Отключённые игроки:"
+	},
+	"Admin.NoDCPlayers": {
+		"en": "No players have disconnected yet.",
+		"es": "Ningún jugador se ha desconectado aún.",
+		"pt": "Nenhum jogador se desconectou ainda.",
+		"fr": "Aucun joueur ne s'est déconnecté pour le moment.",
+		"de": "Es haben sich noch keine Spieler getrennt.",
+		"ru": "Ни один игрок ещё не отключился."
+	},
+	"Admin.AlreadyServerConsole": {
+		"en": "You are already on the server console.",
+		"es": "Ya estás en la consola del servidor.",
+		"pt": "Você já está no console do servidor.",
+		"fr": "Vous êtes déjà sur la console du serveur.",
+		"de": "Du bist bereits auf der Serverkonsole.",
+		"ru": "Вы уже в консоли сервера."
+	},
+	"Admin.ClientListNull": {
+		"en": "GetClientList() is null!",
+		"es": "¡GetClientList() es null!",
+		"pt": "GetClientList() é null!",
+		"fr": "GetClientList() est null !",
+		"de": "GetClientList() ist null!",
+		"ru": "GetClientList() равен null!"
+	},
+
 	// ---- General ----
 
 	"General.CommandError": {
@@ -320,13 +379,21 @@
 		"de": "Nur im Spiel verwendbar.",
 		"ru": "Можно использовать только в игре."
 	},
-	"General.NoConsole": {
+	"General.NoServerConsole": {
 		"en": "You cannot use this command from the server console.",
 		"es": "No puedes usar este comando desde la consola del servidor.",
 		"pt": "Você não pode usar este comando no console do servidor.",
 		"fr": "Vous ne pouvez pas utiliser cette commande depuis la console du serveur.",
 		"de": "Du kannst diesen Befehl nicht über die Serverkonsole verwenden.",
 		"ru": "Вы не можете использовать эту команду из серверной консоли."
+	},
+	"General.SeeConsole": {
+		"en": "Check console for output.",
+		"es": "Revisa la consola para ver el resultado.",
+		"pt": "Verifique o console para a saída.",
+		"fr": "Consultez la console pour le résultat.",
+		"de": "Überprüfe die Konsole für die Ausgabe.",
+		"ru": "Смотрите консоль для вывода."
 	},
 
 	// ---- Weapons ----
@@ -507,6 +574,46 @@
 		"de": "Die Liste aller Befehle, die mit \"%s\" übereinstimmen, wird in der Konsole angezeigt.",
 		"ru": "Список команд, соответствующих \"%s\", будет показан в консоли."
 	},
+	"Help.ListAllConsole": {
+		"en": "The list of all commands is:",
+		"es": "La lista de todos los comandos es:",
+		"pt": "A lista de todos os comandos é:",
+		"fr": "La liste de toutes les commandes est :",
+		"de": "Die Liste aller Befehle ist:",
+		"ru": "Список всех команд:"
+	},
+	"Help.ListConsole": {
+		"en": "The list of all commands you can use is:",
+		"es": "La lista de todos los comandos que puedes usar es:",
+		"pt": "A lista de todos os comandos que você pode usar é:",
+		"fr": "La liste de toutes les commandes que vous pouvez utiliser est :",
+		"de": "Die Liste aller Befehle, die du verwenden kannst, ist:",
+		"ru": "Список всех доступных вам команд:"
+	},
+	"Help.NoMatchConsole": {
+		"en": "No commands matched \"%s\".",
+		"es": "Ningún comando coincide con \"%s\".",
+		"pt": "Nenhum comando correspondente a \"%s\".",
+		"fr": "Aucune commande ne correspond à \"%s\".",
+		"de": "Keine Befehle stimmen mit \"%s\" überein.",
+		"ru": "Нет команд, соответствующих \"%s\"."
+	},
+	"Help.MatchConsole": {
+		"en": "The list of all commands matching \"%s\" is:",
+		"es": "La lista de todos los comandos que coinciden con \"%s\" es:",
+		"pt": "A lista de todos os comandos correspondentes a \"%s\" é:",
+		"fr": "La liste de toutes les commandes correspondant à \"%s\" est :",
+		"de": "Die Liste aller Befehle, die mit \"%s\" übereinstimmen, ist:",
+		"ru": "Список всех команд, соответствующих \"%s\":"
+	},
+	"Help.CommandHint": {
+		"en": "! can be replaced with / for a silent chat command, or c_ for console usage",
+		"es": "! se puede reemplazar con / para un comando silencioso, o c_ para uso en consola",
+		"pt": "! pode ser substituído por / para um comando silencioso, ou c_ para uso no console",
+		"fr": "! peut être remplacé par / pour une commande silencieuse, ou c_ pour la console",
+		"de": "! kann durch / für einen stillen Befehl oder c_ für Konsolennutzung ersetzt werden",
+		"ru": "! можно заменить на / для тихой команды или c_ для консоли"
+	},
 
 	// ---- Spectate ----
 
@@ -561,6 +668,30 @@
 		"fr": "Informations des joueurs affichées dans la console.",
 		"de": "Spieler-Informationen in der Konsole ausgegeben.",
 		"ru": "Информация об игроках выведена в консоль."
+	},
+	"Info.UserID": {
+		"en": "User ID",
+		"es": "ID de usuario",
+		"pt": "ID do usuário",
+		"fr": "ID utilisateur",
+		"de": "Benutzer-ID",
+		"ru": "ID пользователя"
+	},
+	"Info.Unauthenticated": {
+		"en": "Unauthenticated",
+		"es": "No autenticado",
+		"pt": "Não autenticado",
+		"fr": "Non authentifié",
+		"de": "Nicht authentifiziert",
+		"ru": "Не аутентифицирован"
+	},
+	"Info.IPAddress": {
+		"en": "IP Address",
+		"es": "Dirección IP",
+		"pt": "Endereço IP",
+		"fr": "Adresse IP",
+		"de": "IP-Adresse",
+		"ru": "IP-адрес"
 	},
 
 	// ---- ShowTeam ----
@@ -885,6 +1016,54 @@
 		"fr": "RTV réussi ! C'est le dernier round de la carte !",
 		"de": "RTV erfolgreich! Das ist die letzte Runde der Karte!",
 		"ru": "RTV прошло успешно! Это последний раунд карты!"
+	},
+	"RTV.CooldownListChat": {
+		"en": "The list of maps in cooldown will be shown in console.",
+		"es": "La lista de mapas en cooldown se mostrará en la consola.",
+		"pt": "A lista de mapas em cooldown será mostrada no console.",
+		"fr": "La liste des cartes en cooldown sera affichée dans la console.",
+		"de": "Die Liste der Karten im Cooldown wird in der Konsole angezeigt.",
+		"ru": "Список карт на кулдауне будет показан в консоли."
+	},
+	"RTV.CooldownListConsole": {
+		"en": "The list of maps in cooldown is:",
+		"es": "La lista de mapas en cooldown es:",
+		"pt": "A lista de mapas em cooldown é:",
+		"fr": "La liste des cartes en cooldown est :",
+		"de": "Die Liste der Karten im Cooldown ist:",
+		"ru": "Список карт на кулдауне:"
+	},
+	"RTV.MapListChat": {
+		"en": "The list of all maps will be shown in console.",
+		"es": "La lista de todos los mapas se mostrará en la consola.",
+		"pt": "A lista de todos os mapas será mostrada no console.",
+		"fr": "La liste de toutes les cartes sera affichée dans la console.",
+		"de": "Die Liste aller Karten wird in der Konsole angezeigt.",
+		"ru": "Список всех карт будет показан в консоли."
+	},
+	"RTV.MapListConsole": {
+		"en": "The list of all maps is:",
+		"es": "La lista de todos los mapas es:",
+		"pt": "A lista de todos os mapas é:",
+		"fr": "La liste de toutes les cartes est :",
+		"de": "Die Liste aller Karten ist:",
+		"ru": "Список всех карт:"
+	},
+	"RTV.CurrentMap": {
+		"en": "Current Map",
+		"es": "Mapa actual",
+		"pt": "Mapa atual",
+		"fr": "Carte actuelle",
+		"de": "Aktuelle Karte",
+		"ru": "Текущая карта"
+	},
+	"RTV.Players": {
+		"en": "Players",
+		"es": "Jugadores",
+		"pt": "Jogadores",
+		"fr": "Joueurs",
+		"de": "Spieler",
+		"ru": "Игроков"
 	},
 
 	// ---- Extend ----
@@ -1213,6 +1392,22 @@
 		"de": "hat den Button gedrückt",
 		"ru": "нажал кнопку"
 	},
+	"BW.ConsolePlayer": {
+		"en": "Player: %s %s",
+		"es": "Jugador: %s %s",
+		"pt": "Jogador: %s %s",
+		"fr": "Joueur: %s %s",
+		"de": "Spieler: %s %s",
+		"ru": "Игрок: %s %s"
+	},
+	"BW.ConsoleButton": {
+		"en": "Button: %s",
+		"es": "Botón: %s",
+		"pt": "Botão: %s",
+		"fr": "Bouton: %s",
+		"de": "Button: %s",
+		"ru": "Кнопка: %s"
+	},
 
 	// ---- EntWatch ----
 
@@ -1392,14 +1587,6 @@
 		"fr": "Aucune config EntWatch n'est actuellement chargée !",
 		"de": "Derzeit ist keine EntWatch-Konfiguration geladen!",
 		"ru": "В настоящее время конфигурация EntWatch не загружена!"
-	},
-	"EW.SeeConsole": {
-		"en": "See console for output.",
-		"es": "Revisa la consola para ver el resultado.",
-		"pt": "Veja o console para a saída.",
-		"fr": "Consultez la console pour le résultat.",
-		"de": "Überprüfe die Konsole für die Ausgabe.",
-		"ru": "Смотрите консоль для вывода."
 	},
 	"EW.NumberRange": {
 		"en": "Number must be between 1 and %d, try again.",

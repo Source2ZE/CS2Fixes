@@ -20,6 +20,7 @@
 #include "map_votes.h"
 #include "commands.h"
 #include "common.h"
+#include "translations.h"
 #include "ctimer.h"
 #include "entity/cgamerules.h"
 #include "eventlistener.h"
@@ -138,8 +139,8 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 		return;
 	}
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The list of maps in cooldown will be shown in console.");
-	ClientPrint(player, HUD_PRINTCONSOLE, "The list of maps in cooldown is:");
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.CooldownListChat}");
+	ClientPrintT(player, HUD_PRINTCONSOLE, "{RTV.CooldownListConsole}");
 
 	std::sort(vecCooldowns.begin(), vecCooldowns.end(), [](auto left, auto right) {
 		return left.second < right.second;
@@ -807,8 +808,8 @@ void CMapVoteSystem::PrintMapList(CCSPlayerController* pController)
 		return V_strcasecmp(right->GetName(), left->GetName()) > 0;
 	});
 
-	ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "The list of all maps will be shown in console.");
-	ClientPrint(pController, HUD_PRINTCONSOLE, "The list of all maps is:");
+	ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{RTV.MapListChat}");
+	ClientPrintT(pController, HUD_PRINTCONSOLE, "{RTV.MapListConsole}");
 
 	for (auto pMap : vecSortedMaps)
 	{
@@ -817,13 +818,13 @@ void CMapVoteSystem::PrintMapList(CCSPlayerController* pController)
 		int maxPlayers = pMap->GetMaxPlayers();
 
 		if (*pMap == *GetCurrentMap())
-			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - Current Map", name);
+			ClientPrintT(pController, HUD_PRINTCONSOLE, "- %s - {RTV.CurrentMap}", name);
 		else if (pMap->GetCooldown()->IsOnCooldown())
-			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - Cooldown: %s", name, pMap->GetCooldownText(true).c_str());
+			ClientPrintT(pController, HUD_PRINTCONSOLE, "- %s - Cooldown: %s", name, pMap->GetCooldownText(true).c_str());
 		else if (iPlayerCount < minPlayers)
-			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - +%d Players", name, minPlayers - iPlayerCount);
+			ClientPrintT(pController, HUD_PRINTCONSOLE, "- %s - +%d {RTV.Players}", name, minPlayers - iPlayerCount);
 		else if (iPlayerCount > maxPlayers)
-			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s - -%d Players", name, iPlayerCount - maxPlayers);
+			ClientPrintT(pController, HUD_PRINTCONSOLE, "- %s - -%d {RTV.Players}", name, iPlayerCount - maxPlayers);
 		else
 			ClientPrint(pController, HUD_PRINTCONSOLE, "- %s", name);
 	}

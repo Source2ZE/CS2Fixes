@@ -20,6 +20,7 @@
 #include "leader.h"
 #include "commands.h"
 #include "common.h"
+#include "translations.h"
 #include "gameevents.pb.h"
 #include "networksystem/inetworkmessages.h"
 #include "zombiereborn.h"
@@ -598,7 +599,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
