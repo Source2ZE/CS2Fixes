@@ -2541,18 +2541,18 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 			{
 				CCSPlayerController* pOwner = CCSPlayerController::FromSlot(CPlayerSlot(pItem->iOwnerSlot));
 				if (!pOwner)
-					sOwnerInfo = g_pTranslations->Translate("EW.OwnerErrorSpan", player ? player->GetPlayerSlot().Get() : -1);
+					sOwnerInfo = g_pTranslations->Translate("EW.OwnerErrorSpan", player ? player->GetPlayerSlot() : -1);
 				else
 				{
 					char szOwnerBuf[256];
-					V_snprintf(szOwnerBuf, sizeof(szOwnerBuf), g_pTranslations->Translate("EW.OwnerSpan", player ? player->GetPlayerSlot().Get() : -1), pOwner->GetPlayerName());
+					V_snprintf(szOwnerBuf, sizeof(szOwnerBuf), g_pTranslations->Translate("EW.OwnerSpan", player ? player->GetPlayerSlot() : -1), pOwner->GetPlayerName());
 					sOwnerInfo = szOwnerBuf;
 				}
 			}
 			else if (pItem->sLastOwnerName != "")
 			{
 				char szOwnerBuf[256];
-				V_snprintf(szOwnerBuf, sizeof(szOwnerBuf), g_pTranslations->Translate("EW.PreviousOwnerSpan", player ? player->GetPlayerSlot().Get() : -1), pItem->sLastOwnerName.c_str());
+				V_snprintf(szOwnerBuf, sizeof(szOwnerBuf), g_pTranslations->Translate("EW.PreviousOwnerSpan", player ? player->GetPlayerSlot() : -1), pItem->sLastOwnerName.c_str());
 				sOwnerInfo = szOwnerBuf;
 			}
 
@@ -2630,7 +2630,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 		std::shared_ptr<EWItemInstance> pItem = g_pEWHandler->vecItems[itemIds[i]];
 		std::string sItemText = pItem->GetHandlerStateText();
 		char szOwnerBuf[256];
-		V_snprintf(szOwnerBuf, sizeof(szOwnerBuf), g_pTranslations->Translate("EW.OwnerSpan", player ? player->GetPlayerSlot().Get() : -1), pOwner->GetPlayerName());
+		V_snprintf(szOwnerBuf, sizeof(szOwnerBuf), g_pTranslations->Translate("EW.OwnerSpan", player ? player->GetPlayerSlot() : -1), pOwner->GetPlayerName());
 		std::string sOwnerInfo = szOwnerBuf;
 
 		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{red}%d.{default} %s [%s] %s", i + 1, pItem->szItemName.c_str(), sItemText.c_str(), sOwnerInfo.c_str());
