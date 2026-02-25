@@ -324,7 +324,7 @@ static bool Leader_CreateDefendMarker(ZEPlayer* pPlayer, Color clrTint, int iDur
 
 	if (g_iMarkerCount >= g_cvarMaxMarkers.Get() && !pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC))
 	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Too many defend markers already active!");
+		ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Leader.TooManyMarkers}");
 		return false;
 	}
 
@@ -557,7 +557,7 @@ CON_COMMAND_CHAT_LEADER(glow, "[name] [color] - Toggle glow highlight on a playe
 		{
 			if (!bIsAdmin && GetCount(LeaderVisual::Glow).first >= g_cvarMaxGlows.Get())
 			{
-				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The max number of glows is already enabled.");
+				ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.MaxGlows}");
 				return;
 			}
 
@@ -568,13 +568,11 @@ CON_COMMAND_CHAT_LEADER(glow, "[name] [color] - Toggle glow highlight on a playe
 			pPlayerTarget->EndGlow();
 
 		if (iNumClients == 1 && player == pTarget)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s glow on yourself.",
-						bEnablingGlow ? "Enabled" : "Disabled");
+			ClientPrintT(player, HUD_PRINTTALK, bEnablingGlow ? CHAT_PREFIX "{Leader.GlowOnSelf}" : CHAT_PREFIX "{Leader.GlowOffSelf}");
 		else if (iNumClients == 1)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s %s glow on %s.",
+			ClientPrintAllT(HUD_PRINTTALK, bEnablingGlow ? CHAT_PREFIX "{Leader.GlowOnTarget}" : CHAT_PREFIX "{Leader.GlowOffTarget}",
 						   bIsAdmin ? "Admin" : "Leader",
 						   pszCommandPlayerName,
-						   bEnablingGlow ? "enabled" : "disabled",
 						   pTarget->GetPlayerName());
 	}
 
@@ -587,9 +585,9 @@ CON_COMMAND_CHAT(glows, "- List all active player glows")
 	std::pair<int, std::string> glows = GetCount(LeaderVisual::Glow);
 
 	if (glows.first == 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no active glows.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.NoGlows}");
 	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%i active glows: %s", glows.first, glows.second.c_str());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.ActiveGlows}", glows.first, glows.second.c_str());
 }
 
 CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
@@ -605,25 +603,25 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !vl <name>");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.UsageVl}");
 		return;
 	}
 
 	if (GetGlobals()->curtime < 60.0f)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Leader voting is not open yet.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.VotingNotOpen}");
 		return;
 	}
 
 	if (GetLeaders().first > 0 && !g_cvarLeaderVoteMultiple.Get())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There is already an active leader.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.AlreadyActiveLeader}");
 		return;
 	}
 
 	if (GetLeaders().first >= g_cvarMaxLeaders.Get())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The max amount of leaders has already been reached.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.MaxLeaders}");
 		return;
 	}
 
@@ -634,7 +632,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 	if (pPlayer->GetLeaderVoteTime() + 30.0f > GetGlobals()->curtime)
 	{
 		int iRemainingTime = (int)(pPlayer->GetLeaderVoteTime() + 30.0f - GetGlobals()->curtime);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can !vl again.", iRemainingTime);
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.VoteWait}", iRemainingTime);
 		return;
 	}
 
@@ -649,13 +647,13 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 
 	if (pPlayerTarget->IsLeader())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is already a leader.", pTarget->GetPlayerName());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.AlreadyLeader}", pTarget->GetPlayerName());
 		return;
 	}
 
 	if (pPlayerTarget->HasPlayerVotedLeader(pPlayer))
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already voted for %s to become a leader.", pTarget->GetPlayerName());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.AlreadyVoted}", pTarget->GetPlayerName());
 		return;
 	}
 
@@ -667,14 +665,14 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 	if (iLeaderVoteCount + 1 >= iNeededLeaderVoteCount)
 	{
 		Leader_SetNewLeader(pPlayerTarget);
-		Message("%s was voted for Leader with %i vote(s).\n", pTarget->GetPlayerName(), iNeededLeaderVoteCount);
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s has been voted as a leader!", pTarget->GetPlayerName());
-		ClientPrint(pTarget, HUD_PRINTTALK, CHAT_PREFIX "You became a leader! Use !leaderhelp and !leadercolors commands to list available leader commands and colors.");
+		Message(g_pTranslations->Translate("Leader.VoteSuccessConsole", -1), pTarget->GetPlayerName(), iNeededLeaderVoteCount);
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Leader.VoteSuccess}", pTarget->GetPlayerName());
+		ClientPrintT(pTarget, HUD_PRINTTALK, CHAT_PREFIX "{Leader.BecameLeader}");
 		return;
 	}
 
 	pPlayerTarget->AddLeaderVote(pPlayer);
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants %s to become a Leader (%i/%i votes).",
+	ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Leader.VoteProgress}",
 				   player->GetPlayerName(), pTarget->GetPlayerName(), iLeaderVoteCount + 1, iNeededLeaderVoteCount);
 }
 
@@ -706,9 +704,9 @@ CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend mar
 	if (Leader_CreateDefendMarker(pTargetPlayer, Leader_GetColor("", pPlayer), iDuration))
 	{
 		if (player == pTarget)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed a defend marker on your position lasting %i seconds.", iDuration);
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.DefendSelf}", iDuration);
 		else
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s placed a defend marker on %s's position lasting %i seconds.",
+			ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Leader.DefendTarget}",
 						   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName,
 						   pTarget->GetPlayerName(), iDuration);
 	}
@@ -736,9 +734,9 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 	if (pPlayerTarget->GetTracerColor().a() == 255)
 	{
 		if (pTarget == player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Disabled tracers for yourself.", pTarget->GetPlayerName());
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.TracerOffSelf}");
 		else
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s disabled tracers for %s.",
+			ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Leader.TracerOffTarget}",
 						   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName, pTarget->GetPlayerName());
 		pPlayerTarget->SetTracerColor(Color(0, 0, 0, 0));
 		return;
@@ -746,7 +744,7 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 
 	if (!bIsAdmin && GetCount(LeaderVisual::Tracer).first >= g_cvarMaxTracers.Get())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The max number of tracers is already enabled.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.MaxTracers}");
 		return;
 	}
 
@@ -754,9 +752,9 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 	pPlayerTarget->SetTracerColor(color);
 
 	if (pTarget == player)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Enabled tracers for yourself.", pTarget->GetPlayerName());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.TracerOnSelf}");
 	else
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s enabled tracers for %s.",
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Leader.TracerOnTarget}",
 					   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName, pTarget->GetPlayerName());
 }
 
@@ -765,9 +763,9 @@ CON_COMMAND_CHAT(tracers, "- List all active player tracers")
 	std::pair<int, std::string> tracers = GetCount(LeaderVisual::Tracer);
 
 	if (tracers.first == 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no active tracers.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.NoTracers}");
 	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%i active tracers: %s", tracers.first, tracers.second.c_str());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.ActiveTracers}", tracers.first, tracers.second.c_str());
 }
 
 CON_COMMAND_CHAT_LEADER(beacon, "[name] [color] - Toggle beacon on a player")
@@ -799,7 +797,7 @@ CON_COMMAND_CHAT_LEADER(beacon, "[name] [color] - Toggle beacon on a player")
 		{
 			if (!bIsAdmin && GetCount(LeaderVisual::Beacon).first >= g_cvarMaxBeacons.Get())
 			{
-				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The max number of beacons is already enabled.");
+				ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.MaxBeacons}");
 				return;
 			}
 
@@ -810,13 +808,11 @@ CON_COMMAND_CHAT_LEADER(beacon, "[name] [color] - Toggle beacon on a player")
 			pPlayerTarget->EndBeacon();
 
 		if (iNumClients == 1 && player == pTarget)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s beacon on yourself.",
-						bEnablingBeacon ? "Enabled" : "Disabled");
+			ClientPrintT(player, HUD_PRINTTALK, bEnablingBeacon ? CHAT_PREFIX "{Leader.BeaconOnSelf}" : CHAT_PREFIX "{Leader.BeaconOffSelf}");
 		else if (iNumClients == 1)
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s %s beacon on %s.",
+			ClientPrintAllT(HUD_PRINTTALK, bEnablingBeacon ? CHAT_PREFIX "{Leader.BeaconOnTarget}" : CHAT_PREFIX "{Leader.BeaconOffTarget}",
 						   bIsAdmin ? "Admin" : "Leader",
 						   pszCommandPlayerName,
-						   bEnablingBeacon ? "enabled" : "disabled",
 						   pTarget->GetPlayerName());
 	}
 
@@ -829,21 +825,21 @@ CON_COMMAND_CHAT(beacons, "- List all active player beacons")
 	std::pair<int, std::string> beacons = GetCount(LeaderVisual::Beacon);
 
 	if (beacons.first == 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no active beacons.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.NoBeacons}");
 	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%i active beacons: %s", beacons.first, beacons.second.c_str());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.ActiveBeacons}", beacons.first, beacons.second.c_str());
 }
 
 CON_COMMAND_CHAT_LEADER(enablepings, "- Enable non-leaders pings")
 {
 	g_bPingWithLeader = true;
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\4Enabled\x01 pings for non-leaders.");
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.PingsEnabled}");
 }
 
 CON_COMMAND_CHAT_LEADER(disablepings, "- Disable non-leaders pings")
 {
 	g_bPingWithLeader = false;
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\2Disabled\x01 pings for non-leaders.");
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.PingsDisabled}");
 }
 
 CON_COMMAND_CHAT(leaders, "- List all current leaders")
@@ -854,9 +850,9 @@ CON_COMMAND_CHAT(leaders, "- List all current leaders")
 	std::pair<int, std::string> leaders = GetLeaders();
 
 	if (leaders.first == 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are currently no leaders.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.NoLeaders}");
 	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%i leaders: %s", leaders.first, leaders.second.c_str());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.ActiveLeaders}", leaders.first, leaders.second.c_str());
 }
 
 CON_COMMAND_CHAT(leaderhelp, "- List leader commands in chat")
@@ -864,25 +860,25 @@ CON_COMMAND_CHAT(leaderhelp, "- List leader commands in chat")
 	if (!g_cvarEnableLeader.Get())
 		return;
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "List of leader commands:");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!leader [name] [color] - Give another player leader status");
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpTitle}");
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpLeader}");
 	if (g_cvarLeaderCanTargetPlayers.Get())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!beacon <name> [color] - Toggle beacon on a player");
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!tracer <name> [color] - Toggle projectile tracers on a player");
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!defend [name|duration] [duration] - Place a defend marker on the target player");
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!glow <name> [color] - Toggle glow highlight on a player");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpBeaconTarget}");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpTracerTarget}");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpDefendTarget}");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpGlowTarget}");
 	}
 	else
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!beacon - Toggle beacon on yourself");
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!tracer - Toggle projectile tracers on yourself");
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!defend [duration] - Place a defend marker on yourself");
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!glow - Toggle glow highlight on yourself");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpBeaconSelf}");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpTracerSelf}");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpDefendSelf}");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpGlowSelf}");
 	}
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!disablepings - Disable non-leaders pings");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!leadercolor [color] - List leader colors in chat or change your active leader color");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "!resign - Remove leader status from yourself");
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpDisablePings}");
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpColor}");
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.HelpResign}");
 }
 
 CON_COMMAND_CHAT(leadercolor, "[color] - List leader colors in chat or change your leader color")
@@ -921,12 +917,12 @@ CON_COMMAND_CHAT(leadercolor, "[color] - List leader colors in chat or change yo
 			if (pawnPlayer && pawnPlayer->m_iHealth() > 0 && player->m_iTeamNum == CS_TEAM_CT)
 				pawnPlayer->m_clrRender = color;
 
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Set your leader color to %s%s\x01.", colorPreset.strChatColor.c_str(), strColor.c_str());
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.ColorSet}", colorPreset.strChatColor.c_str(), strColor.c_str());
 			return;
 		}
 	}
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "List of leader colors:");
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.ColorList}");
 
 	std::string strColors = "";
 	for (auto const& [strColorName, colorPreset] : mapColorPresets)
@@ -944,7 +940,7 @@ CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a playe
 
 	if (!bIsAdmin && GetLeaders().first >= g_cvarMaxLeaders.Get())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The max amount of leaders has already been reached.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.MaxLeaders}");
 		return;
 	}
 
@@ -964,9 +960,9 @@ CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a playe
 	ZEPlayer* pPlayerTarget = pTarget->GetZEPlayer();
 
 	if (!Leader_SetNewLeader(pPlayerTarget, args.ArgC() < 3 ? "" : args[2]))
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is already a leader.", pTarget->GetPlayerName());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.AlreadyLeader}", pTarget->GetPlayerName());
 	else
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s set %s as a leader.",
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Leader.SetLeader}",
 					   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName, pTarget->GetPlayerName());
 }
 
@@ -977,7 +973,7 @@ CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a playe
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !removeleader <name>");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.UsageRemoveLeader}");
 		return;
 	}
 
@@ -996,16 +992,16 @@ CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a playe
 
 	if (!pPlayerTarget->IsLeader())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not a leader. Use !leaders to list all current leaders.", pTarget->GetPlayerName());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.NotLeader}", pTarget->GetPlayerName());
 		return;
 	}
 
 	RemoveLeader(pTarget);
 
 	if (player == pTarget)
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s resigned from being a leader.", player->GetPlayerName());
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Leader.Resigned}", player->GetPlayerName());
 	else
-		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "removed leader from ", "", CHAT_PREFIX);
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Leader.RemovedLeader}", "Admin", pszCommandPlayerName, pTarget->GetPlayerName());
 }
 
 CON_COMMAND_CHAT(resign, "- Remove leader status from yourself")
@@ -1017,7 +1013,7 @@ CON_COMMAND_CHAT(resign, "- Remove leader status from yourself")
 	// Only players can use this command at all
 	if (!player || !pPlayer)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -1025,11 +1021,11 @@ CON_COMMAND_CHAT(resign, "- Remove leader status from yourself")
 	// even when they are not CTs and cs2f_leader_actions_ct_only is set to true
 	if (!pPlayer->IsLeader())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You must be a leader to use this command.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Leader.MustBeLeader}");
 		return;
 	}
 
 	RemoveLeader(player);
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s resigned from being a leader.", player->GetPlayerName());
+	ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Leader.Resigned}", player->GetPlayerName());
 }

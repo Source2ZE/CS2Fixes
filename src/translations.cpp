@@ -295,12 +295,15 @@ const char* CTranslations::Translate(const char* pszPhraseKey, int iSlot)
 
 	const CPhrase& phrase = it->second;
 
-	const char* pszPlayerLang = GetPlayerLanguage(iSlot);
-	if (pszPlayerLang && *pszPlayerLang)
+	if (g_cvarTranslationsEnable.Get())
 	{
-		auto langIt = phrase.m_mapTranslations.find(pszPlayerLang);
-		if (langIt != phrase.m_mapTranslations.end())
-			return langIt->second.c_str();
+		const char* pszPlayerLang = GetPlayerLanguage(iSlot);
+		if (pszPlayerLang && *pszPlayerLang)
+		{
+			auto langIt = phrase.m_mapTranslations.find(pszPlayerLang);
+			if (langIt != phrase.m_mapTranslations.end())
+				return langIt->second.c_str();
+		}
 	}
 
 	const char* pszDefaultLang = g_cvarDefaultLanguage.Get().String();
@@ -370,12 +373,20 @@ static std::string TranslatePlaceholders(const char* pszMessage, int iSlot)
 			break;
 
 		std::string key = strMessage.substr(pos + 1, endPos - pos - 1);
-		const char* pszTranslated = (g_pTranslations && g_cvarTranslationsEnable.Get())
-			? g_pTranslations->Translate(key.c_str(), iSlot)
-			: key.c_str();
+		
+		if (g_pTranslations)
+		{
+			const char* pszTranslated = g_pTranslations->Translate(key.c_str(), iSlot);
+			
+			if (V_strcmp(pszTranslated, key.c_str()) != 0)
+			{
+				strMessage.replace(pos, endPos - pos + 1, pszTranslated);
+				pos += strlen(pszTranslated);
+				continue;
+			}
+		}
 
-		strMessage.replace(pos, endPos - pos + 1, pszTranslated);
-		pos += strlen(pszTranslated);
+		pos = endPos + 1;
 	}
 
 	return strMessage;
@@ -443,14 +454,16 @@ void ClientPrintAllT(int hud_dest, const char* msg, ...)
 		delete data;
 	}
 
+	std::string ServerConsoleMsg = TranslatePlaceholders(msg, -1);
+	
 	va_list args;
 	va_start(args, msg);
 
-	char buf[2048];
-	V_vsnprintf(buf, sizeof(buf), msg, args);
+	char ConsoleBuf[2048];
+	V_vsnprintf(ConsoleBuf, sizeof(ConsoleBuf), ServerConsoleMsg.c_str(), args);
 	va_end(args);
 
-	ConMsg("%s\n", buf);
+	ConMsg("%s\n", ConsoleBuf);
 }
 
 CON_COMMAND_CHAT(lang, "[code] - Change your language or view current language")

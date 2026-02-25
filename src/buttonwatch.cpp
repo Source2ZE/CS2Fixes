@@ -55,7 +55,7 @@ CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 

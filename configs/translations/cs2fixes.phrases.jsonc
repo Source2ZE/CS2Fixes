@@ -1409,6 +1409,489 @@
 		"ru": "Кнопка: %s"
 	},
 
+	// ---- Leader ----
+
+	"Leader.TooManyMarkers": {
+		"en": "Too many defend markers already active!",
+		"es": "Demasiados marcadores de defensa activos!",
+		"pt": "Muitos marcadores de defesa já ativos!",
+		"fr": "Trop de marqueurs de défense déjà actifs !",
+		"de": "Zu viele Verteidigungsmarkierungen bereits aktiv!",
+		"ru": "Слишком много активных маркеров защиты!"
+	},
+	"Leader.DefendSelf": {
+		"en": "Placed a defend marker on your position lasting %i seconds.",
+		"es": "Marcador de defensa colocado en tu posición durante %i segundos.",
+		"pt": "Marcador de defesa colocado na sua posição por %i segundos.",
+		"fr": "Marqueur de défense placé sur votre position pendant %i secondes.",
+		"de": "Verteidigungsmarkierung an deiner Position für %i Sekunden platziert.",
+		"ru": "Маркер защиты установлен на вашей позиции на %i секунд."
+	},
+	"Leader.DefendTarget": {
+		"en": "%s %s placed a defend marker on %s's position lasting %i seconds.",
+		"es": "%s %s colocó un marcador de defensa en la posición de %s durante %i segundos.",
+		"pt": "%s %s colocou um marcador de defesa na posição de %s por %i segundos.",
+		"fr": "%s %s a placé un marqueur de défense sur la position de %s pendant %i secondes.",
+		"de": "%s %s hat eine Verteidigungsmarkierung an %s's Position für %i Sekunden platziert.",
+		"ru": "%s %s установил маркер защиты на позиции %s на %i секунд."
+	},
+	"Leader.MaxGlows": {
+		"en": "The max number of glows is already enabled.",
+		"es": "Se han activado el número máximo de glows.",
+		"pt": "O número máximo de glows já está ativado.",
+		"fr": "Le nombre maximum de glows est déjà activé.",
+		"de": "Die maximale Anzahl an Glows ist bereits aktiviert.",
+		"ru": "Максимальное количество свечений уже включено."
+	},
+	"Leader.GlowOnSelf": {
+		"en": "Enabled glow on yourself.",
+		"es": "Glow activado en ti mismo.",
+		"pt": "Glow ativado em você.",
+		"fr": "Glow activé sur vous-même.",
+		"de": "Glow bei dir selbst aktiviert.",
+		"ru": "Свечение включено на себе."
+	},
+	"Leader.GlowOffSelf": {
+		"en": "Disabled glow on yourself.",
+		"es": "Glow desactivado en ti mismo.",
+		"pt": "Glow desativado em você.",
+		"fr": "Glow désactivé sur vous-même.",
+		"de": "Glow bei dir selbst deaktiviert.",
+		"ru": "Свечение выключено на себе."
+	},
+	"Leader.GlowOnTarget": {
+		"en": "%s %s enabled glow on %s.",
+		"es": "%s %s activó glow en %s.",
+		"pt": "%s %s ativou glow em %s.",
+		"fr": "%s %s a activé le glow sur %s.",
+		"de": "%s %s hat Glow bei %s aktiviert.",
+		"ru": "%s %s включил свечение на %s."
+	},
+	"Leader.GlowOffTarget": {
+		"en": "%s %s disabled glow on %s.",
+		"es": "%s %s desactivó glow en %s.",
+		"pt": "%s %s desativou glow em %s.",
+		"fr": "%s %s a désactivé le glow sur %s.",
+		"de": "%s %s hat Glow bei %s deaktiviert.",
+		"ru": "%s %s выключил свечение на %s."
+	},
+	"Leader.NoGlows": {
+		"en": "There are no active glows.",
+		"es": "No hay glows activos.",
+		"pt": "Não há glows ativos.",
+		"fr": "Il n'y a pas de glows actifs.",
+		"de": "Es gibt keine aktiven Glows.",
+		"ru": "Нет активных свечений."
+	},
+	"Leader.ActiveGlows": {
+		"en": "%i active glows: %s",
+		"es": "%i glows activos: %s",
+		"pt": "%i glows ativos: %s",
+		"fr": "%i glows actifs: %s",
+		"de": "%i aktive Glows: %s",
+		"ru": "%i активных свечений: %s"
+	},
+	"Leader.MaxTracers": {
+		"en": "The max number of tracers is already enabled.",
+		"es": "Se han activado el número máximo de tracers.",
+		"pt": "O número máximo de tracers já está ativado.",
+		"fr": "Le nombre maximum de tracers est déjà activé.",
+		"de": "Die maximale Anzahl an Tracern ist bereits aktiviert.",
+		"ru": "Максимальное количество трассеров уже включено."
+	},
+	"Leader.TracerOnSelf": {
+		"en": "Enabled tracers for yourself.",
+		"es": "Tracers activados en ti mismo.",
+		"pt": "Tracers ativados em você.",
+		"fr": "Tracers activés sur vous-même.",
+		"de": "Tracer bei dir selbst aktiviert.",
+		"ru": "Трассеры включены на себе."
+	},
+	"Leader.TracerOffSelf": {
+		"en": "Disabled tracers for yourself.",
+		"es": "Tracers desactivados en ti mismo.",
+		"pt": "Tracers desativados em você.",
+		"fr": "Tracers désactivés sur vous-même.",
+		"de": "Tracer bei dir selbst deaktiviert.",
+		"ru": "Трассеры выключены на себе."
+	},
+	"Leader.TracerOnTarget": {
+		"en": "%s %s enabled tracers for %s.",
+		"es": "%s %s activó tracers en %s.",
+		"pt": "%s %s ativou tracers em %s.",
+		"fr": "%s %s a activé les tracers sur %s.",
+		"de": "%s %s hat Tracer bei %s aktiviert.",
+		"ru": "%s %s включил трассеры на %s."
+	},
+	"Leader.TracerOffTarget": {
+		"en": "%s %s disabled tracers for %s.",
+		"es": "%s %s desactivó tracers en %s.",
+		"pt": "%s %s desativou tracers em %s.",
+		"fr": "%s %s a désactivé les tracers sur %s.",
+		"de": "%s %s hat Tracer bei %s deaktiviert.",
+		"ru": "%s %s выключил трассеры на %s."
+	},
+	"Leader.NoTracers": {
+		"en": "There are no active tracers.",
+		"es": "No hay tracers activos.",
+		"pt": "Não há tracers ativos.",
+		"fr": "Il n'y a pas de tracers actifs.",
+		"de": "Es gibt keine aktiven Tracer.",
+		"ru": "Нет активных трассеров."
+	},
+	"Leader.ActiveTracers": {
+		"en": "%i active tracers: %s",
+		"es": "%i tracers activos: %s",
+		"pt": "%i tracers ativos: %s",
+		"fr": "%i tracers actifs : %s",
+		"de": "%i aktive Tracer: %s",
+		"ru": "%i активных трассеров: %s"
+	},
+	"Leader.MaxBeacons": {
+		"en": "The max number of beacons is already enabled.",
+		"es": "Se han activado el número máximo de beacons.",
+		"pt": "O número máximo de beacons já está ativado.",
+		"fr": "Le nombre maximum de beacons est déjà activé.",
+		"de": "Die maximale Anzahl an Beacons ist bereits aktiviert.",
+		"ru": "Максимальное количество маяков уже включено."
+	},
+	"Leader.BeaconOnSelf": {
+		"en": "Enabled beacon on yourself.",
+		"es": "Beacon activado en ti mismo.",
+		"pt": "Beacon ativado em você.",
+		"fr": "Beacon activé sur vous-même.",
+		"de": "Beacon bei dir selbst aktiviert.",
+		"ru": "Маяк включен на себе."
+	},
+	"Leader.BeaconOffSelf": {
+		"en": "Disabled beacon on yourself.",
+		"es": "Beacon desactivado en ti mismo.",
+		"pt": "Beacon desativado em você.",
+		"fr": "Beacon désactivé sur vous-même.",
+		"de": "Beacon bei dir selbst deaktiviert.",
+		"ru": "Маяк выключен на себе."
+	},
+	"Leader.BeaconOnTarget": {
+		"en": "%s %s enabled beacon on %s.",
+		"es": "%s %s activó beacon en %s.",
+		"pt": "%s %s ativou beacon em %s.",
+		"fr": "%s %s a activé le beacon sur %s.",
+		"de": "%s %s hat Beacon bei %s aktiviert.",
+		"ru": "%s %s включил маяк на %s."
+	},
+	"Leader.BeaconOffTarget": {
+		"en": "%s %s disabled beacon on %s.",
+		"es": "%s %s desactivó beacon en %s.",
+		"pt": "%s %s desativou beacon em %s.",
+		"fr": "%s %s a désactivé le beacon sur %s.",
+		"de": "%s %s hat Beacon bei %s deaktiviert.",
+		"ru": "%s %s выключил маяк на %s."
+	},
+	"Leader.NoBeacons": {
+		"en": "There are no active beacons.",
+		"es": "No hay beacons activos.",
+		"pt": "Não há beacons ativos.",
+		"fr": "Il n'y a pas de beacons actifs.",
+		"de": "Es gibt keine aktiven Beacons.",
+		"ru": "Нет активных маяков."
+	},
+	"Leader.ActiveBeacons": {
+		"en": "%i active beacons: %s",
+		"es": "%i beacons activos: %s",
+		"pt": "%i beacons ativos: %s",
+		"fr": "%i beacons actifs : %s",
+		"de": "%i aktive Beacons: %s",
+		"ru": "%i активных маяков: %s"
+	},
+	"Leader.PingsEnabled": {
+		"en": "{green}Enabled{default} pings for non-leaders.",
+		"es": "{green}Activados{default} los pings para no-leaders.",
+		"pt": "{green}Ativados{default} pings para não-leaders.",
+		"fr": "{green}Activés{default} les pings pour les non-leaders.",
+		"de": "{green}Aktiviert{default} Pings für Nicht-Leader.",
+		"ru": "{green}Включены{default} пинги для не-лидеров."
+	},
+	"Leader.PingsDisabled": {
+		"en": "{darkred}Disabled{default} pings for non-leaders.",
+		"es": "{darkred}Desactivados{default} los pings para no-leaders.",
+		"pt": "{darkred}Desativados{default} pings para não-leaders.",
+		"fr": "{darkred}Désactivés{default} les pings pour les non-leaders.",
+		"de": "{darkred}Deaktiviert{default} Pings für Nicht-Leader.",
+		"ru": "{darkred}Выключены{default} пинги для не-лидеров."
+	},
+	"Leader.NoLeaders": {
+		"en": "There are currently no leaders.",
+		"es": "Actualmente no hay leaders.",
+		"pt": "Atualmente não há leaders.",
+		"fr": "Il n'y a actuellement pas de leaders.",
+		"de": "Es gibt derzeit keine Leader.",
+		"ru": "В данный момент нет лидеров."
+	},
+	"Leader.ActiveLeaders": {
+		"en": "%i leaders: %s",
+		"es": "%i leaders: %s",
+		"pt": "%i leaders: %s",
+		"fr": "%i leaders : %s",
+		"de": "%i Leader: %s",
+		"ru": "%i лидеров: %s"
+	},
+	"Leader.UsageVl": {
+		"en": "Usage: !vl <name>",
+		"es": "Uso: !vl <nombre>",
+		"pt": "Uso: !vl <nome>",
+		"fr": "Utilisation : !vl <nom>",
+		"de": "Verwendung: !vl <Name>",
+		"ru": "Использование: !vl <имя>"
+	},
+	"Leader.VotingNotOpen": {
+		"en": "Leader voting is not open yet.",
+		"es": "La votación de leader aún no está abierta.",
+		"pt": "A votação de leader ainda não está aberta.",
+		"fr": "Le vote pour leader n'est pas encore ouvert.",
+		"de": "Die Leader-Abstimmung ist noch nicht offen.",
+		"ru": "Голосование за лидера ещё не открыто."
+	},
+	"Leader.AlreadyActiveLeader": {
+		"en": "There is already an active leader.",
+		"es": "Ya hay un leader activo.",
+		"pt": "Já há um leader ativo.",
+		"fr": "Il y a déjà un leader actif.",
+		"de": "Es gibt bereits einen aktiven Leader.",
+		"ru": "Уже есть активный лидер."
+	},
+	"Leader.MaxLeaders": {
+		"en": "The max amount of leaders has already been reached.",
+		"es": "Se ha alcanzado el número máximo de leaders.",
+		"pt": "O número máximo de leaders já foi atingido.",
+		"fr": "Le nombre maximum de leaders a déjà été atteint.",
+		"de": "Die maximale Anzahl an Leadern wurde bereits erreicht.",
+		"ru": "Максимальное количество лидеров уже достигнуто."
+	},
+	"Leader.VoteWait": {
+		"en": "Wait %i seconds before you can !vl again.",
+		"es": "Espera %i segundos antes de poder usar !vl de nuevo.",
+		"pt": "Espere %i segundos antes de usar !vl novamente.",
+		"fr": "Attendez %i secondes avant de pouvoir utiliser !vl à nouveau.",
+		"de": "Warte %i Sekunden, bevor du !vl erneut verwenden kannst.",
+		"ru": "Подождите %i секунд, прежде чем снова использовать !vl."
+	},
+	"Leader.AlreadyLeader": {
+		"en": "%s is already a leader.",
+		"es": "%s ya es leader.",
+		"pt": "%s já é leader.",
+		"fr": "%s est déjà leader.",
+		"de": "%s ist bereits Leader.",
+		"ru": "%s уже лидер."
+	},
+	"Leader.AlreadyVoted": {
+		"en": "You have already voted for %s to become a leader.",
+		"es": "Ya has votado para que %s sea leader.",
+		"pt": "Você já votou para %s se tornar leader.",
+		"fr": "Vous avez déjà voté pour que %s devienne leader.",
+		"de": "Du hast bereits für %s als Leader abgestimmt.",
+		"ru": "Вы уже голосовали за %s в качестве лидера."
+	},
+	"Leader.VoteSuccess": {
+		"en": "%s has been voted as a leader!",
+		"es": "%s ha sido votado como leader!",
+		"pt": "%s foi votado como leader!",
+		"fr": "%s a été élu leader !",
+		"de": "%s wurde zum Leader gewählt!",
+		"ru": "%s был выбран лидером!"
+	},
+	"Leader.VoteSuccessConsole": {
+		"en": "%s was voted for Leader with %i vote(s).\n",
+		"es": "%s ha sido votado como Leader con %i voto(s).\n",
+		"pt": "%s foi votado como Leader com %i voto(s).\n",
+		"fr": "%s a été élu Leader avec %i vote(s).\n",
+		"de": "%s wurde mit %i Stimme(n) zum Leader gewählt.\n",
+		"ru": "%s был выбран лидером с %i голосом(ами).\n"
+	},
+	"Leader.BecameLeader": {
+		"en": "You became a leader! Use !leaderhelp and !leadercolors commands to list available leader commands and colors.",
+		"es": "Te has convertido en leader! Usa !leaderhelp y !leadercolors para ver los comandos y colores disponibles.",
+		"pt": "Você se tornou leader! Use !leaderhelp e !leadercolors para listar os comandos e cores disponíveis.",
+		"fr": "Vous êtes devenu leader ! Utilisez !leaderhelp et !leadercolors pour lister les commandes et couleurs disponibles.",
+		"de": "Du bist jetzt Leader! Benutze !leaderhelp und !leadercolors, um verfügbare Befehle und Farben anzuzeigen.",
+		"ru": "Вы стали лидером! Используйте !leaderhelp и !leadercolors для списка доступных команд и цветов."
+	},
+	"Leader.VoteProgress": {
+		"en": "%s wants %s to become a Leader (%i/%i votes).",
+		"es": "%s quiere que %s sea Leader (%i/%i votos).",
+		"pt": "%s quer que %s se torne Leader (%i/%i votos).",
+		"fr": "%s veut que %s devienne Leader (%i/%i votes).",
+		"de": "%s möchte, dass %s Leader wird (%i/%i Stimmen).",
+		"ru": "%s хочет, чтобы %s стал лидером (%i/%i голосов)."
+	},
+	"Leader.SetLeader": {
+		"en": "%s %s set %s as a leader.",
+		"es": "%s %s estableció a %s como leader.",
+		"pt": "%s %s definiu %s como leader.",
+		"fr": "%s %s a défini %s comme leader.",
+		"de": "%s %s hat %s als Leader festgelegt.",
+		"ru": "%s %s назначил %s лидером."
+	},
+	"Leader.UsageRemoveLeader": {
+		"en": "Usage: !removeleader <name>",
+		"es": "Uso: !removeleader <nombre>",
+		"pt": "Uso: !removeleader <nome>",
+		"fr": "Utilisation : !removeleader <nom>",
+		"de": "Verwendung: !removeleader <Name>",
+		"ru": "Использование: !removeleader <имя>"
+	},
+	"Leader.NotLeader": {
+		"en": "%s is not a leader. Use !leaders to list all current leaders.",
+		"es": "%s no es leader. Usa !leaders para ver todos los leaders actuales.",
+		"pt": "%s não é leader. Use !leaders para listar todos os leaders atuais.",
+		"fr": "%s n'est pas leader. Utilisez !leaders pour lister tous les leaders actuels.",
+		"de": "%s ist kein Leader. Benutze !leaders, um alle aktuellen Leader aufzulisten.",
+		"ru": "%s не лидер. Используйте !leaders для списка всех текущих лидеров."
+	},
+	"Leader.Resigned": {
+		"en": "%s resigned from being a leader.",
+		"es": "%s renunció a ser leader.",
+		"pt": "%s renunciou ao cargo de leader.",
+		"fr": "%s a démissionné de son rôle de leader.",
+		"de": "%s hat als Leader aufgehört.",
+		"ru": "%s отказался от роли лидера."
+	},
+	"Leader.RemovedLeader": {
+		"en": "%s %s removed leader from %s.",
+		"es": "%s %s quitó el leader a %s.",
+		"pt": "%s %s removeu o leader de %s.",
+		"fr": "%s %s a retiré le leader à %s.",
+		"de": "%s %s hat den Leader von %s entfernt.",
+		"ru": "%s %s удалил лидера %s."
+	},
+	"Leader.MustBeLeader": {
+		"en": "You must be a leader to use this command.",
+		"es": "Debes ser leader para usar este comando.",
+		"pt": "Você precisa ser leader para usar este comando.",
+		"fr": "Vous devez être leader pour utiliser cette commande.",
+		"de": "Du musst Leader sein, um diesen Befehl zu verwenden.",
+		"ru": "Вы должны быть лидером, чтобы использовать эту команду."
+	},
+	"Leader.ColorSet": {
+		"en": "Set your leader color to %s%s{default}.",
+		"es": "Color de leader cambiado a %s%s{default}.",
+		"pt": "Cor de leader definida para %s%s{default}.",
+		"fr": "Couleur de leader définie sur %s%s{default}.",
+		"de": "Leader-Farbe auf %s%s{default} gesetzt.",
+		"ru": "Цвет лидера установлен на %s%s{default}."
+	},
+	"Leader.ColorList": {
+		"en": "List of leader colors:",
+		"es": "Lista de colores de leader:",
+		"pt": "Lista de cores de leader:",
+		"fr": "Liste des couleurs de leader :",
+		"de": "Liste der Leader-Farben:",
+		"ru": "Список цветов лидера:"
+	},
+	"Leader.HelpTitle": {
+		"en": "List of leader commands:",
+		"es": "Lista de comandos de leader:",
+		"pt": "Lista de comandos de leader:",
+		"fr": "Liste des commandes de leader :",
+		"de": "Liste der Leader-Befehle:",
+		"ru": "Список команд лидера:"
+	},
+	"Leader.HelpLeader": {
+		"en": "!leader [name] [color] - Give another player leader status",
+		"es": "!leader [nombre] [color] - Dar estatus de leader a otro jugador",
+		"pt": "!leader [nome] [cor] - Dar status de leader a outro jogador",
+		"fr": "!leader [nom] [couleur] - Donner le statut de leader à un autre joueur",
+		"de": "!leader [Name] [Farbe] - Einem anderen Spieler Leader-Status geben",
+		"ru": "!leader [имя] [цвет] - Дать другому игроку статус лидера"
+	},
+	"Leader.HelpBeaconTarget": {
+		"en": "!beacon <name> [color] - Toggle beacon on a player",
+		"es": "!beacon <nombre> [color] - Activar/desactivar beacon en un jugador",
+		"pt": "!beacon <nome> [cor] - Ativar/desativar beacon em um jogador",
+		"fr": "!beacon <nom> [couleur] - Activer/désactiver le beacon sur un joueur",
+		"de": "!beacon <Name> [Farbe] - Beacon bei einem Spieler umschalten",
+		"ru": "!beacon <имя> [цвет] - Включить/выключить маяк на игроке"
+	},
+	"Leader.HelpTracerTarget": {
+		"en": "!tracer <name> [color] - Toggle projectile tracers on a player",
+		"es": "!tracer <nombre> [color] - Activar/desactivar tracers en un jugador",
+		"pt": "!tracer <nome> [cor] - Ativar/desativar tracers em um jogador",
+		"fr": "!tracer <nom> [couleur] - Activer/désactiver les tracers sur un joueur",
+		"de": "!tracer <Name> [Farbe] - Tracer bei einem Spieler umschalten",
+		"ru": "!tracer <имя> [цвет] - Включить/выключить трассеры на игроке"
+	},
+	"Leader.HelpDefendTarget": {
+		"en": "!defend [name|duration] [duration] - Place a defend marker on the target player",
+		"es": "!defend [nombre|duración] [duración] - Colocar un marcador de defensa en un jugador",
+		"pt": "!defend [nome|duração] [duração] - Colocar um marcador de defesa em um jogador",
+		"fr": "!defend [nom|durée] [durée] - Placer un marqueur de défense sur un joueur",
+		"de": "!defend [Name|Dauer] [Dauer] - Verteidigungsmarkierung bei einem Spieler platzieren",
+		"ru": "!defend [имя|длительность] [длительность] - Установить маркер защиты на игроке"
+	},
+	"Leader.HelpGlowTarget": {
+		"en": "!glow <name> [color] - Toggle glow highlight on a player",
+		"es": "!glow <nombre> [color] - Activar/desactivar glow en un jugador",
+		"pt": "!glow <nome> [cor] - Ativar/desativar glow em um jogador",
+		"fr": "!glow <nom> [couleur] - Activer/désactiver le glow sur un joueur",
+		"de": "!glow <Name> [Farbe] - Glow bei einem Spieler umschalten",
+		"ru": "!glow <имя> [цвет] - Включить/выключить свечение на игроке"
+	},
+	"Leader.HelpBeaconSelf": {
+		"en": "!beacon - Toggle beacon on yourself",
+		"es": "!beacon - Activar/desactivar beacon en ti mismo",
+		"pt": "!beacon - Ativar/desativar beacon em você",
+		"fr": "!beacon - Activer/désactiver le beacon sur vous-même",
+		"de": "!beacon - Beacon bei dir selbst umschalten",
+		"ru": "!beacon - Включить/выключить маяк на себе"
+	},
+	"Leader.HelpTracerSelf": {
+		"en": "!tracer - Toggle projectile tracers on yourself",
+		"es": "!tracer - Activar/desactivar tracers en ti mismo",
+		"pt": "!tracer - Ativar/desativar tracers em você",
+		"fr": "!tracer - Activer/désactiver les tracers sur vous-même",
+		"de": "!tracer - Tracer bei dir selbst umschalten",
+		"ru": "!tracer - Включить/выключить трассеры на себе"
+	},
+	"Leader.HelpDefendSelf": {
+		"en": "!defend [duration] - Place a defend marker on yourself",
+		"es": "!defend [duración] - Colocar un marcador de defensa en ti mismo",
+		"pt": "!defend [duração] - Colocar um marcador de defesa em você",
+		"fr": "!defend [durée] - Placer un marqueur de défense sur vous-même",
+		"de": "!defend [Dauer] - Verteidigungsmarkierung bei dir selbst platzieren",
+		"ru": "!defend [длительность] - Установить маркер защиты на себе"
+	},
+	"Leader.HelpGlowSelf": {
+		"en": "!glow - Toggle glow highlight on yourself",
+		"es": "!glow - Activar/desactivar glow en ti mismo",
+		"pt": "!glow - Ativar/desativar glow em você",
+		"fr": "!glow - Activer/désactiver le glow sur vous-même",
+		"de": "!glow - Glow bei dir selbst umschalten",
+		"ru": "!glow - Включить/выключить свечение на себе"
+	},
+	"Leader.HelpDisablePings": {
+		"en": "!disablepings - Disable non-leaders pings",
+		"es": "!disablepings - Desactivar pings de no-leaders",
+		"pt": "!disablepings - Desativar pings de não-leaders",
+		"fr": "!disablepings - Désactiver les pings des non-leaders",
+		"de": "!disablepings - Pings von Nicht-Leadern deaktivieren",
+		"ru": "!disablepings - Отключить пинги не-лидеров"
+	},
+	"Leader.HelpColor": {
+		"en": "!leadercolor [color] - List leader colors in chat or change your active leader color",
+		"es": "!leadercolor [color] - Listar colores de leader o cambiar tu color activo",
+		"pt": "!leadercolor [cor] - Listar cores de leader ou alterar sua cor ativa",
+		"fr": "!leadercolor [couleur] - Lister les couleurs de leader ou changer votre couleur active",
+		"de": "!leadercolor [Farbe] - Leader-Farben auflisten oder aktive Farbe ändern",
+		"ru": "!leadercolor [цвет] - Список цветов лидера или смена активного цвета"
+	},
+	"Leader.HelpResign": {
+		"en": "!resign - Remove leader status from yourself",
+		"es": "!resign - Quitarte el estatus de leader",
+		"pt": "!resign - Remover status de leader de você",
+		"fr": "!resign - Retirer votre statut de leader",
+		"de": "!resign - Leader-Status von dir selbst entfernen",
+		"ru": "!resign - Снять с себя статус лидера"
+	},
+
 	// ---- EntWatch ----
 
 	"EW.OwnerErrorSpan": {
