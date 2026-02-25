@@ -38,8 +38,8 @@ using json = nlohmann::json;
 
 CTranslations* g_pTranslations = nullptr;
 
-CConVar<CUtlString> g_cvarDefaultLanguage("cs2f_default_language", FCVAR_NONE, "Default language code for translations", "en");
-CConVar<bool> g_cvarTranslationsEnable("cs2f_translations_enable", FCVAR_NONE, "Whether to enable translations", false);
+CConVar<CUtlString> g_cvarDefaultLanguage("cs2f_default_language", FCVAR_NONE, "Default language code for translations, used when per-player language is disabled or not set", "en");
+CConVar<bool> g_cvarTranslationsEnable("cs2f_translations_enable", FCVAR_NONE, "Whether to enable per-player language selection via !lang", false);
 
 struct ColorToken
 {
@@ -473,7 +473,7 @@ CON_COMMAND_CHAT(lang, "[code] - Change your language or view current language")
 
 	if (!player)
 	{
-		ClientPrintT(player, HUD_PRINTCONSOLE, "{General.ConsoleOnly}");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -534,7 +534,7 @@ CON_COMMAND_CHAT(langs, "- Show all available languages")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, "Available languages:");
+		ClientPrintT(player, HUD_PRINTCONSOLE, "{Lang.AvailableConsole}");
 		const auto& languages = g_pTranslations->GetLanguages();
 		for (const auto& lang : languages)
 			ClientPrint(player, HUD_PRINTCONSOLE, "  %s - %s", lang.c_str(), g_pTranslations->GetLanguageDisplayName(lang.c_str()));
@@ -553,7 +553,7 @@ CON_COMMAND_CHAT(langs, "- Show all available languages")
 		bool bCurrent = !V_stricmp(lang.c_str(), pszCurrentLang);
 
 		if (bCurrent)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX " %s - %s (current)", lang.c_str(), pszDisplay);
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Lang.ListItemCurrent}", lang.c_str(), pszDisplay);
 		else
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX " %s - %s", lang.c_str(), pszDisplay);
 	}

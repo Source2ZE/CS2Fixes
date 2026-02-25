@@ -21,6 +21,7 @@
 
 #include "commands.h"
 #include "common.h"
+#include "translations.h"
 #include "cs2fixes.h"
 #include "ctimer.h"
 #include "engine/igameeventsystem.h"
@@ -369,34 +370,34 @@ CON_COMMAND_CHAT_FLAGS(cancelvote, "Cancels the ongoing vote.", ADMFLAG_CHANGEMA
 {
 	if (!g_pPanoramaVoteHandler)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Votes cannot be started/stopped at the moment.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Vote.CannotStartStop}");
 		return;
 	}
 
 	if (!g_pPanoramaVoteHandler->IsVoteInProgress())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No vote in progress.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Vote.NoVoteInProgress}");
 		return;
 	}
 
 	g_pPanoramaVoteHandler->EndVote(YesNoVoteEndReason::VoteEnd_Cancelled);
 
 	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Admin %s has cancelled the vote.", pszCommandPlayerName);
+	ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Vote.AdminCancelled}", pszCommandPlayerName);
 }
 
 CON_COMMAND_CHAT(revote, "Change your vote in the ongoing vote.")
 {
 	if (!g_pPanoramaVoteHandler->IsVoteInProgress())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No vote in progress.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Vote.NoVoteInProgress}");
 		return;
 	}
 
 	int slot = player->GetPlayerSlot();
 	if (!g_pPanoramaVoteHandler->RedrawVoteToClient(slot))
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No vote in progress.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Vote.NoVoteInProgress}");
 		return;
 	}
 }

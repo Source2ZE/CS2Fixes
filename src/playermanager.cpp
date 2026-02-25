@@ -38,7 +38,6 @@
 #include "utlstring.h"
 #include "votemanager.h"
 #include <../cs2fixes.h>
-#include "translations.h"
 
 #include "tier0/memdbgon.h"
 
@@ -905,8 +904,8 @@ void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pRespons
 				if (!g_cvarDelayAuthFailKick.Get())
 					return;
 
-				ClientPrint(pController, HUD_PRINTTALK, " \7Your Steam authentication failed due to an invalid or used ticket.");
-				ClientPrint(pController, HUD_PRINTTALK, " \7You may have to restart your Steam client in order to fix this.\n");
+				ClientPrintT(pController, HUD_PRINTTALK, " {red}{Auth.InvalidTicket}");
+				ClientPrintT(pController, HUD_PRINTTALK, " {red}{Auth.RestartSteam}");
 				[[fallthrough]];
 			}
 
@@ -915,7 +914,7 @@ void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pRespons
 				if (!g_cvarDelayAuthFailKick.Get())
 					return;
 
-				ClientPrint(pController, HUD_PRINTTALK, " \7WARNING: You will be kicked in %i seconds due to failed Steam authentication.\n", g_cvarDelayAuthFailKick.Get());
+				ClientPrintT(pController, HUD_PRINTTALK, " {red}{Auth.KickWarning}", g_cvarDelayAuthFailKick.Get());
 
 				ZEPlayerHandle hPlayer = pPlayer->GetHandle();
 				CTimer::Create(g_cvarDelayAuthFailKick.Get(), TIMERFLAG_NONE, [hPlayer]() {

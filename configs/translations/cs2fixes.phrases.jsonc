@@ -42,6 +42,22 @@
 		"de": "Verfügbare Sprachen:",
 		"ru": "Доступные языки:"
 	},
+	"Lang.AvailableConsole": {
+		"en": "Available languages:",
+		"es": "Idiomas disponibles:",
+		"pt": "Idiomas disponíveis:",
+		"fr": "Langues disponibles :",
+		"de": "Verfügbare Sprachen:",
+		"ru": "Доступные языки:"
+	},
+	"Lang.ListItemCurrent": {
+		"en": " %s - %s (current)",
+		"es": " %s - %s (actual)",
+		"pt": " %s - %s (atual)",
+		"fr": " %s - %s (actuelle)",
+		"de": " %s - %s (aktuell)",
+		"ru": " %s - %s (текущий)"
+	},
 
 	// ---- ZombieReborn ----
 
@@ -327,6 +343,33 @@
 		"fr": "GetClientList() est null !",
 		"de": "GetClientList() ist null!",
 		"ru": "GetClientList() равен null!"
+	},
+
+	// ---- Steam Auth ----
+
+	"Auth.InvalidTicket": {
+		"en": "Your Steam authentication failed due to an invalid or used ticket.",
+		"es": "Tu autenticación de Steam falló debido a un ticket inválido o ya usado.",
+		"pt": "Sua autenticação Steam falhou devido a um ticket inválido ou já usado.",
+		"fr": "Votre authentification Steam a échoué en raison d'un ticket invalide ou déjà utilisé.",
+		"de": "Deine Steam-Authentifizierung ist aufgrund eines ungültigen oder bereits verwendeten Tickets fehlgeschlagen.",
+		"ru": "Аутентификация Steam не удалась из-за недействительного или уже использованного билета."
+	},
+	"Auth.RestartSteam": {
+		"en": "You may have to restart your Steam client in order to fix this.",
+		"es": "Es posible que necesites reiniciar tu cliente de Steam para solucionar esto.",
+		"pt": "Você pode precisar reiniciar seu cliente Steam para corrigir isso.",
+		"fr": "Vous devrez peut-être redémarrer votre client Steam pour résoudre ce problème.",
+		"de": "Möglicherweise musst du deinen Steam-Client neu starten, um dies zu beheben.",
+		"ru": "Возможно, вам потребуется перезапустить клиент Steam, чтобы исправить это."
+	},
+	"Auth.KickWarning": {
+		"en": "WARNING: You will be kicked in %i seconds due to failed Steam authentication.",
+		"es": "AVISO: Serás expulsado en %i segundos por fallo en la autenticación de Steam.",
+		"pt": "AVISO: Você será expulso em %i segundos devido a falha na autenticação Steam.",
+		"fr": "ATTENTION : Vous serez expulsé dans %i secondes en raison d'un échec d'authentification Steam.",
+		"de": "WARNUNG: Du wirst in %i Sekunden gekickt wegen fehlgeschlagener Steam-Authentifizierung.",
+		"ru": "ВНИМАНИЕ: Вы будете кикнуты через %i секунд из-за неудачной аутентификации Steam."
 	},
 
 	// ---- General ----
@@ -881,6 +924,33 @@
 		"ru": "Вы будете отмечены как неактивный, если не пошевелитесь в течение {gold}%i{default} секунд."
 	},
 
+	// ---- Panorama Vote ----
+
+	"Vote.CannotStartStop": {
+		"en": "Votes cannot be started/stopped at the moment.",
+		"es": "Las votaciones no pueden iniciarse/detenerse en este momento.",
+		"pt": "As votações não podem ser iniciadas/paradas no momento.",
+		"fr": "Les votes ne peuvent pas être lancés/arrêtés pour le moment.",
+		"de": "Abstimmungen können derzeit nicht gestartet/gestoppt werden.",
+		"ru": "Голосования сейчас не могут быть начаты/остановлены."
+	},
+	"Vote.NoVoteInProgress": {
+		"en": "No vote in progress.",
+		"es": "No hay ninguna votación en curso.",
+		"pt": "Nenhuma votação em andamento.",
+		"fr": "Aucun vote en cours.",
+		"de": "Keine Abstimmung läuft.",
+		"ru": "Голосование не проводится."
+	},
+	"Vote.AdminCancelled": {
+		"en": "Admin %s has cancelled the vote.",
+		"es": "El admin %s ha cancelado la votación.",
+		"pt": "O admin %s cancelou a votação.",
+		"fr": "L'admin %s a annulé le vote.",
+		"de": "Admin %s hat die Abstimmung abgebrochen.",
+		"ru": "Админ %s отменил голосование."
+	},
+
 	// ---- RTV ----
 
 	"RTV.NotOpenYet": {
@@ -1407,6 +1477,73 @@
 		"fr": "Bouton: %s",
 		"de": "Button: %s",
 		"ru": "Кнопка: %s"
+	},
+
+	// ---- Top Defender ----
+
+	"TD.Title": {
+		"en": "*** TOP DEFENDERS ***",
+		"es": "*** MEJORES DEFENSORES ***",
+		"pt": "*** MELHORES DEFENSORES ***",
+		"fr": "*** MEILLEURS DÉFENSEURS ***",
+		"de": "*** TOP VERTEIDIGER ***",
+		"ru": "*** ЛУЧШИЕ ЗАЩИТНИКИ ***"
+	},
+	"TD.Fail1": {
+		"en": "No top defenders? You all are bad.",
+		"es": "¿Sin defensores? Sois todos malísimos.",
+		"pt": "Sem defensores? Vocês são todos ruins.",
+		"fr": "Pas de défenseurs ? Vous êtes tous nuls.",
+		"de": "Keine Top-Verteidiger? Ihr seid alle schlecht.",
+		"ru": "Нет лучших защитников? Вы все плохие."
+	},
+	"TD.Fail2": {
+		"en": "Start defending, less doorhugging.",
+		"es": "Empezad a defender, menos doorhugging.",
+		"pt": "Comecem a defender, menos doorhugging.",
+		"fr": "Commencez à défendre, moins de doorhugging.",
+		"de": "Fangt an zu verteidigen, weniger Doorhugging.",
+		"ru": "Начните защищать, хватит обнимать двери."
+	},
+	"TD.Fail3": {
+		"en": "Hold left-click to shoot, FYI",
+		"es": "Mantén click izquierdo para disparar, por si no lo sabías",
+		"pt": "Segure o botão esquerdo para atirar, caso não saiba",
+		"fr": "Maintenez le clic gauche pour tirer, au cas où",
+		"de": "Linksklick gedrückt halten zum Schießen, nur zur Info",
+		"ru": "Зажмите левую кнопку мыши, чтобы стрелять, к сведению"
+	},
+	"TD.Fail4": {
+		"en": "WHAT ARE YOU DOING?!?!?",
+		"es": "¿¡QUÉ ESTÁIS HACIENDO?!?!?",
+		"pt": "O QUE VOCÊS ESTÃO FAZENDO?!?!?",
+		"fr": "QU'EST-CE QUE VOUS FAITES ?!?!?",
+		"de": "WAS MACHT IHR DA?!?!?",
+		"ru": "ЧТО ВЫ ДЕЛАЕТЕ?!?!?"
+	},
+	"TD.NoDefenders": {
+		"en": "There are no top defenders at this time.",
+		"es": "No hay defensores en este momento.",
+		"pt": "Não há defensores neste momento.",
+		"fr": "Il n'y a pas de défenseurs pour le moment.",
+		"de": "Es gibt derzeit keine Top-Verteidiger.",
+		"ru": "В данный момент нет лучших защитников."
+	},
+	"TD.NoStats": {
+		"en": "You do not have any stats to display at this time.",
+		"es": "No tienes estadísticas para mostrar en este momento.",
+		"pt": "Você não tem estatísticas para exibir neste momento.",
+		"fr": "Vous n'avez pas de statistiques à afficher pour le moment.",
+		"de": "Du hast derzeit keine Statistiken zum Anzeigen.",
+		"ru": "У вас нет статистики для отображения в данный момент."
+	},
+	"TD.NoStatsPlayer": {
+		"en": "%s has no stats to display at this time.",
+		"es": "%s no tiene estadísticas para mostrar en este momento.",
+		"pt": "%s não tem estatísticas para exibir neste momento.",
+		"fr": "%s n'a pas de statistiques à afficher pour le moment.",
+		"de": "%s hat derzeit keine Statistiken zum Anzeigen.",
+		"ru": "У %s нет статистики для отображения в данный момент."
 	},
 
 	// ---- Leader ----

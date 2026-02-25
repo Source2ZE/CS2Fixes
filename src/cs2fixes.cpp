@@ -403,7 +403,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		if (g_cvarVoteManagerEnable.Get() && !g_pMapVoteSystem->IsMapListLoaded())
 			g_pMapVoteSystem->LoadMapList();
 
-		if (g_cvarTranslationsEnable.Get() && g_pTranslations)
+		if (g_pTranslations)
 			g_pTranslations->LoadPhraseFile("cs2fixes.phrases.jsonc");
 
 		Message("Plugin late load finished\n");
@@ -1304,7 +1304,7 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 	if (g_cvarEnableEntWatch.Get())
 		EW_OnLevelInit(pMapName);
 
-	if (g_cvarTranslationsEnable.Get() && g_pTranslations)
+	if (g_pTranslations)
 		g_pTranslations->LoadPhraseFile("cs2fixes.phrases.jsonc");
 
 	StartFlashingFixTimer();
