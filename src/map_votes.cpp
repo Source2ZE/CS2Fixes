@@ -51,9 +51,9 @@ CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current
 		return;
 
 	if (g_pMapVoteSystem->ReloadMapList())
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Map list reloaded!");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Map.ListReloaded}");
 	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to reload map list!");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Map.ListReloadFailed}");
 }
 
 CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
@@ -63,7 +63,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !map <name/id>");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Map.UsageMap}");
 		return;
 	}
 
@@ -73,7 +73,7 @@ CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 			return -1.0f;
 		});
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to \x06%s\x01...", pMap->GetName());
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Map.Changing}", pMap->GetName());
 	});
 }
 
@@ -100,7 +100,7 @@ CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 
 	if (g_pMapVoteSystem->GetForcedNextMap())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Nominations are disabled because the next map has been forced to \x06%s\x01.", g_pMapVoteSystem->GetForcedNextMap()->GetName());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Map.NomDisabledForced}", g_pMapVoteSystem->GetForcedNextMap()->GetName());
 		return;
 	}
 
@@ -108,11 +108,11 @@ CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 
 	if (mapNominatedMaps.size() == 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No maps have been nominated yet!");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Map.NoNominations}");
 		return;
 	}
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Current nominations:");
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Map.CurrentNominations}");
 
 	for (auto pair : mapNominatedMaps)
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "- %s (%d time%s)\n", g_pMapVoteSystem->GetMapName(pair.first), pair.second, pair.second > 1 ? "s" : "");
@@ -135,7 +135,7 @@ CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")
 
 	if (vecCooldowns.size() == 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no maps on cooldown!");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Map.NoCooldowns}");
 		return;
 	}
 
@@ -157,11 +157,11 @@ CON_COMMAND_CHAT(nextmap, "- Check the next map if it was forced")
 
 	if (!g_pMapVoteSystem->GetForcedNextMap())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Next map is pending vote, no map has been forced.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Map.NextMapPending}");
 		return;
 	}
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Next map is \x06%s\x01.", g_pMapVoteSystem->GetForcedNextMap()->GetName());
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Map.NextMapIs}", g_pMapVoteSystem->GetForcedNextMap()->GetName());
 }
 
 CON_COMMAND_CHAT(maplist, "- List the maps in the server")
@@ -259,7 +259,7 @@ void CMapVoteSystem::StartVote()
 	}
 	else if (m_iVoteSize < 2)
 	{
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Not enough maps available for map vote, aborting! Please have an admin loosen map limits.");
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Map.NotEnoughMaps}");
 		Message("Not enough maps available for map vote, aborting!\n");
 		m_bIsVoteOngoing = false;
 		bAbort = true;
@@ -398,14 +398,13 @@ void CMapVoteSystem::FinishVote()
 
 	// Print out the map we're changing to
 	if (GetForcedNextMap())
-		V_snprintf(buffer, sizeof(buffer), "The vote was overriden. \x06%s\x01 will be the next map!\n", pNextMap->GetName());
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Map.VoteOverridden}", pNextMap->GetName());
 	else if (bIsNextMapVoted)
-		V_snprintf(buffer, sizeof(buffer), "The vote has ended. \x06%s\x01 will be the next map!\n", pNextMap->GetName());
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Map.VoteEnded}", pNextMap->GetName());
 	else
-		V_snprintf(buffer, sizeof(buffer), "No map was chosen. \x06%s\x01 will be the next map!\n", pNextMap->GetName());
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Map.VoteNoChoice}", pNextMap->GetName());
 
-	ClientPrintAll(HUD_PRINTTALK, buffer);
-	Message(buffer);
+	Message("Next map: %s\n", pNextMap->GetName());
 
 	// Print vote result information: how many votes did each map get?
 	if (!GetForcedNextMap() && GetGlobals())
@@ -587,10 +586,9 @@ std::vector<int> CMapVoteSystem::GetNominatedMapsForVote()
 			iNominationsNeeded = 1;
 
 		if (std::find(vecChosenNominatedMaps.begin(), vecChosenNominatedMaps.end(), iNominatedMapIndex) != vecChosenNominatedMaps.end())
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Your \x06%s\x01 nomination made it to the map vote with \x06%i nomination%s\x01.", GetMapName(iNominatedMapIndex), iNominations, iNominations > 1 ? "s" : "");
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.NomSuccess}", GetMapName(iNominatedMapIndex), iNominations);
 		else
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Your \x06%s\x01 nomination failed to make the map vote, it needed \x06%i more nomination%s\x01 for a total of \x06%i nominations\x01.",
-						GetMapName(iNominatedMapIndex), iNominationsNeeded, iNominationsNeeded > 1 ? "s" : "", iNominations + iNominationsNeeded);
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.NomFailed}", GetMapName(iNominatedMapIndex), iNominationsNeeded, iNominations + iNominationsNeeded);
 	}
 
 	return vecChosenNominatedMaps;
@@ -642,7 +640,7 @@ void CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, std
 				}
 			}
 
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Multiple maps matched \x06%s\x01, try being more specific:", pszMapSubstring);
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.MultipleMatches}", pszMapSubstring);
 
 			for (int i = 0; i < vecFoundMaps.size() && i < 5; i++)
 				ClientPrint(pController, HUD_PRINTTALK, "- %s", vecFoundMaps[i]->GetName());
@@ -673,7 +671,7 @@ void CMapVoteSystem::HandlePlayerMapLookup(CCSPlayerController* pController, std
 		}
 	}
 
-	ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to find a map matching \x06%s\x01.", pszMapSubstring);
+	ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.NotFound}", pszMapSubstring);
 }
 
 void CMapVoteSystem::ClearPlayerInfo(int iSlot)
@@ -712,19 +710,19 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 
 	if (g_cvarVoteMaxNominations.Get() == 0)
 	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Nominations are currently disabled.");
+		ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.NomDisabled}");
 		return;
 	}
 
 	if (GetForcedNextMap())
 	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Nominations are disabled because the next map has been forced to \x06%s\x01.", GetForcedNextMap()->GetName());
+		ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.NomDisabledForced}", GetForcedNextMap()->GetName());
 		return;
 	}
 
 	if (IsVoteOngoing())
 	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Nominations are disabled because the vote has already started.");
+		ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.NomDisabledVoting}");
 		return;
 	}
 
@@ -733,7 +731,7 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 		if (m_arrPlayerNominations[iSlot] != -1)
 		{
 			ClearPlayerInfo(iSlot);
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Your nomination was reset.");
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.NomReset}");
 		}
 		else
 		{
@@ -752,45 +750,45 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 
 		if (!pMap->IsEnabled())
 		{
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Cannot nominate \x06%s\x01 because it's disabled.", pMap->GetName());
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.CannotNomDisabled}", pMap->GetName());
 			return;
 		}
 
 		if (*pMap == *g_pMapVoteSystem->GetCurrentMap())
 		{
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Cannot nominate \x06%s\x01 because it's already the current map!", pMap->GetName());
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.CannotNomCurrent}", pMap->GetName());
 			return;
 		}
 
 		if (pMap->GetCooldown()->IsOnCooldown())
 		{
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Cannot nominate \x06%s\x01 because it's on a %s cooldown.", pMap->GetName(), pMap->GetCooldownText(false).c_str());
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.CannotNomCooldown}", pMap->GetName(), pMap->GetCooldownText(false).c_str());
 			return;
 		}
 
 		if (iPlayerCount < pMap->GetMinPlayers())
 		{
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Cannot nominate \x06%s\x01 because it needs %i more players.", pMap->GetName(), pMap->GetMinPlayers() - iPlayerCount);
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.CannotNomMinPlayers}", pMap->GetName(), pMap->GetMinPlayers() - iPlayerCount);
 			return;
 		}
 
 		if (iPlayerCount > pMap->GetMaxPlayers())
 		{
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Cannot nominate \x06%s\x01 because it needs %i less players.", pMap->GetName(), iPlayerCount - pMap->GetMaxPlayers());
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.CannotNomMaxPlayers}", pMap->GetName(), iPlayerCount - pMap->GetMaxPlayers());
 			return;
 		}
 
 		if (pPlayer->GetNominateTime() + 60.0f > GetGlobals()->curtime)
 		{
 			int iRemainingTime = (int)(pPlayer->GetNominateTime() + 60.0f - GetGlobals()->curtime);
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can nominate again.", iRemainingTime);
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.NomWait}", iRemainingTime);
 			return;
 		}
 
 		g_pMapVoteSystem->SetPlayerNomination(iSlot, iMapIndex);
 		int iNominations = g_pMapVoteSystem->GetTotalNominations(iMapIndex);
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01was nominated by %s. It now has %d nomination%s.", pMap->GetName(), pController->GetPlayerName(), iNominations, iNominations > 1 ? "s" : "");
+		ClientPrintAllT(HUD_PRINTTALK, iNominations > 1 ? CHAT_PREFIX "{Map.NominatedPlural}" : CHAT_PREFIX "{Map.Nominated}", pMap->GetName(), pController->GetPlayerName(), iNominations);
 		pPlayer->SetNominateTime(GetGlobals()->curtime);
 	});
 }
@@ -836,11 +834,11 @@ void CMapVoteSystem::ForceNextMap(CCSPlayerController* pController, const char* 
 	{
 		if (!GetForcedNextMap())
 		{
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "There is no next map to reset!");
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.NoNextMapToReset}");
 		}
 		else
 		{
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01is no longer the forced next map.\n", GetForcedNextMap()->GetName());
+			ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Map.ForceRemoved}", GetForcedNextMap()->GetName());
 			SetForcedNextMap(nullptr);
 		}
 
@@ -850,13 +848,13 @@ void CMapVoteSystem::ForceNextMap(CCSPlayerController* pController, const char* 
 	g_pMapVoteSystem->HandlePlayerMapLookup(pController, pszMapSubstring, true, [](std::shared_ptr<CMap> pMap, CCSPlayerController* pController) {
 		if (g_pMapVoteSystem->GetForcedNextMap() && *pMap == *g_pMapVoteSystem->GetForcedNextMap())
 		{
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "\x06%s\x01 is already the next map!", g_pMapVoteSystem->GetForcedNextMap()->GetName());
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.AlreadyNextMap}", g_pMapVoteSystem->GetForcedNextMap()->GetName());
 			return;
 		}
 
 		// When found, print the map and store the forced map
 		g_pMapVoteSystem->SetForcedNextMap(pMap);
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01has been forced as the next map.\n", g_pMapVoteSystem->GetForcedNextMap()->GetName());
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Map.Forced}", g_pMapVoteSystem->GetForcedNextMap()->GetName());
 	});
 }
 
@@ -1133,7 +1131,7 @@ void CMapVoteSystem::ClearInvalidNominations()
 			if (!pPlayer)
 				continue;
 
-			ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "Your nomination for \x06%s \x01has been removed because the player count requirements are no longer met.", pMap->GetName());
+			ClientPrintT(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "{Map.NomRemoved}", pMap->GetName());
 		}
 	}
 }
@@ -1392,7 +1390,7 @@ std::shared_ptr<CMapSystemWorkshopDetailsQuery> CMapSystemWorkshopDetailsQuery::
 	if (!GetSteamUGC())
 	{
 		Panic("A workshop map query was attempted on null ISteamUGC, returning early.\n");
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to query workshop map information for ID \x06%llu\x01.", iWorkshopId);
+		ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.WorkshopQueryFailed}", iWorkshopId);
 		return nullptr;
 	}
 
@@ -1401,7 +1399,7 @@ std::shared_ptr<CMapSystemWorkshopDetailsQuery> CMapSystemWorkshopDetailsQuery::
 
 	if (hQuery == k_UGCQueryHandleInvalid)
 	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to query workshop map information for ID \x06%llu\x01.", iWorkshopId);
+		ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.WorkshopQueryFailed}", iWorkshopId);
 		return nullptr;
 	}
 
@@ -1425,11 +1423,11 @@ void CMapSystemWorkshopDetailsQuery::OnQueryCompleted(SteamUGCQueryCompleted_t* 
 	{
 		if (bFailed || pCompletedQuery->m_eResult != k_EResultOK || pCompletedQuery->m_unNumResultsReturned < 1 || !GetSteamUGC()->GetQueryUGCResult(pCompletedQuery->m_handle, 0, &details) || details.m_eResult != k_EResultOK)
 		{
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to query workshop map information for ID \x06%llu\x01.", m_iWorkshopId);
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.WorkshopQueryFailed}", m_iWorkshopId);
 		}
 		else if (details.m_nConsumerAppID != 730 || details.m_eFileType != k_EWorkshopFileTypeCommunity)
 		{
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "The ID \x06%llu\x01 is not a valid CS2 workshop map.", m_iWorkshopId);
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Map.WorkshopInvalid}", m_iWorkshopId);
 		}
 		else
 		{

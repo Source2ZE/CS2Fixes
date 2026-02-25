@@ -924,6 +924,297 @@
 		"ru": "Вы будете отмечены как неактивный, если не пошевелитесь в течение {gold}%i{default} секунд."
 	},
 
+	// ---- Map Votes / Nominations ----
+
+	"Map.ListReloaded": {
+		"en": "Map list reloaded!",
+		"es": "¡Lista de mapas recargada!",
+		"pt": "Lista de mapas recarregada!",
+		"fr": "Liste des maps rechargée !",
+		"de": "Mapliste neu geladen!",
+		"ru": "Список карт перезагружен!"
+	},
+	"Map.ListReloadFailed": {
+		"en": "Failed to reload map list!",
+		"es": "¡Error al recargar la lista de mapas!",
+		"pt": "Falha ao recarregar a lista de mapas!",
+		"fr": "Échec du rechargement de la liste des maps !",
+		"de": "Fehler beim Neuladen der Mapliste!",
+		"ru": "Ошибка перезагрузки списка карт!"
+	},
+	"Map.UsageMap": {
+		"en": "Usage: !map <name/id>",
+		"es": "Uso: !map <nombre/id>",
+		"pt": "Uso: !map <nome/id>",
+		"fr": "Utilisation : !map <nom/id>",
+		"de": "Verwendung: !map <Name/ID>",
+		"ru": "Использование: !map <название/id>"
+	},
+	"Map.Changing": {
+		"en": "Changing map to {purple}%s{default}...",
+		"es": "Cambiando mapa a {purple}%s{default}...",
+		"pt": "Mudando mapa para {purple}%s{default}...",
+		"fr": "Changement de map vers {purple}%s{default}...",
+		"de": "Wechsel zu Map {purple}%s{default}...",
+		"ru": "Смена карты на {purple}%s{default}..."
+	},
+	"Map.NomDisabledForced": {
+		"en": "Nominations are disabled because the next map has been forced to {purple}%s{default}.",
+		"es": "Las nominaciones están desactivadas porque el siguiente mapa fue forzado a {purple}%s{default}.",
+		"pt": "As nomeações estão desativadas porque o próximo mapa foi forçado para {purple}%s{default}.",
+		"fr": "Les nominations sont désactivées car la prochaine map a été forcée à {purple}%s{default}.",
+		"de": "Nominierungen sind deaktiviert, da die nächste Map auf {purple}%s{default} erzwungen wurde.",
+		"ru": "Номинации отключены, так как следующая карта принудительно установлена на {purple}%s{default}."
+	},
+	"Map.NoNominations": {
+		"en": "No maps have been nominated yet!",
+		"es": "¡Aún no se han nominado mapas!",
+		"pt": "Nenhum mapa foi nomeado ainda!",
+		"fr": "Aucune map n'a encore été nominée !",
+		"de": "Es wurden noch keine Maps nominiert!",
+		"ru": "Ещё ни одна карта не была номинирована!"
+	},
+	"Map.CurrentNominations": {
+		"en": "Current nominations:",
+		"es": "Nominaciones actuales:",
+		"pt": "Nomeações atuais:",
+		"fr": "Nominations actuelles :",
+		"de": "Aktuelle Nominierungen:",
+		"ru": "Текущие номинации:"
+	},
+	"Map.NoCooldowns": {
+		"en": "There are no maps on cooldown!",
+		"es": "¡No hay mapas en cooldown!",
+		"pt": "Não há mapas em cooldown!",
+		"fr": "Aucune map n'est en cooldown !",
+		"de": "Keine Maps auf Cooldown!",
+		"ru": "Нет карт на кулдауне!"
+	},
+	"Map.NextMapPending": {
+		"en": "Next map is pending vote, no map has been forced.",
+		"es": "El siguiente mapa está pendiente de votación, no se ha forzado ningún mapa.",
+		"pt": "O próximo mapa está pendente de votação, nenhum mapa foi forçado.",
+		"fr": "La prochaine map est en attente de vote, aucune map n'a été forcée.",
+		"de": "Nächste Map steht zur Abstimmung, keine Map wurde erzwungen.",
+		"ru": "Следующая карта ожидает голосования, ни одна карта не была принудительно установлена."
+	},
+	"Map.NextMapIs": {
+		"en": "Next map is {purple}%s{default}.",
+		"es": "El siguiente mapa es {purple}%s{default}.",
+		"pt": "O próximo mapa é {purple}%s{default}.",
+		"fr": "La prochaine map est {purple}%s{default}.",
+		"de": "Nächste Map ist {purple}%s{default}.",
+		"ru": "Следующая карта: {purple}%s{default}."
+	},
+	"Map.NotEnoughMaps": {
+		"en": "Not enough maps available for map vote, aborting! Please have an admin loosen map limits.",
+		"es": "No hay suficientes mapas disponibles para la votación, ¡abortando! Pide a un admin que ajuste los límites.",
+		"pt": "Mapas insuficientes disponíveis para votação, abortando! Peça a um admin para ajustar os limites.",
+		"fr": "Pas assez de maps disponibles pour le vote, annulation ! Demandez à un admin d'ajuster les limites.",
+		"de": "Nicht genügend Maps für die Abstimmung verfügbar, Abbruch! Bitte einen Admin die Map-Limits anzupassen.",
+		"ru": "Недостаточно карт для голосования, отмена! Попросите админа ослабить ограничения."
+	},
+	"Map.VoteOverridden": {
+		"en": "The vote was overridden. {purple}%s{default} will be the next map!",
+		"es": "La votación fue anulada. ¡{purple}%s{default} será el siguiente mapa!",
+		"pt": "A votação foi anulada. {purple}%s{default} será o próximo mapa!",
+		"fr": "Le vote a été annulé. {purple}%s{default} sera la prochaine map !",
+		"de": "Die Abstimmung wurde überschrieben. {purple}%s{default} wird die nächste Map!",
+		"ru": "Голосование было отменено. {purple}%s{default} будет следующей картой!"
+	},
+	"Map.VoteEnded": {
+		"en": "The vote has ended. {purple}%s{default} will be the next map!",
+		"es": "La votación ha terminado. ¡{purple}%s{default} será el siguiente mapa!",
+		"pt": "A votação terminou. {purple}%s{default} será o próximo mapa!",
+		"fr": "Le vote est terminé. {purple}%s{default} sera la prochaine map !",
+		"de": "Die Abstimmung ist beendet. {purple}%s{default} wird die nächste Map!",
+		"ru": "Голосование завершено. {purple}%s{default} будет следующей картой!"
+	},
+	"Map.VoteNoChoice": {
+		"en": "No map was chosen. {purple}%s{default} will be the next map!",
+		"es": "No se eligió ningún mapa. ¡{purple}%s{default} será el siguiente mapa!",
+		"pt": "Nenhum mapa foi escolhido. {purple}%s{default} será o próximo mapa!",
+		"fr": "Aucune map n'a été choisie. {purple}%s{default} sera la prochaine map !",
+		"de": "Keine Map wurde gewählt. {purple}%s{default} wird die nächste Map!",
+		"ru": "Карта не была выбрана. {purple}%s{default} будет следующей картой!"
+	},
+	"Map.NomSuccess": {
+		"en": "Your {purple}%s{default} nomination made it to the map vote with {purple}%i{default} nominations.",
+		"es": "Tu nominación de {purple}%s{default} llegó a la votación con {purple}%i{default} nominaciones.",
+		"pt": "Sua nomeação de {purple}%s{default} chegou à votação com {purple}%i{default} nomeações.",
+		"fr": "Votre nomination de {purple}%s{default} a atteint le vote avec {purple}%i{default} nominations.",
+		"de": "Deine Nominierung von {purple}%s{default} hat es mit {purple}%i{default} Nominierungen in die Abstimmung geschafft.",
+		"ru": "Ваша номинация {purple}%s{default} попала в голосование с {purple}%i{default} номинациями."
+	},
+	"Map.NomFailed": {
+		"en": "Your {purple}%s{default} nomination failed to make the map vote, it needed {purple}%i{default} more nominations for a total of {purple}%i{default}.",
+		"es": "Tu nominación de {purple}%s{default} no llegó a la votación, necesitaba {purple}%i{default} nominaciones más para un total de {purple}%i{default}.",
+		"pt": "Sua nomeação de {purple}%s{default} não chegou à votação, precisava de mais {purple}%i{default} nomeações para um total de {purple}%i{default}.",
+		"fr": "Votre nomination de {purple}%s{default} n'a pas atteint le vote, il fallait {purple}%i{default} nominations de plus pour un total de {purple}%i{default}.",
+		"de": "Deine Nominierung von {purple}%s{default} hat es nicht in die Abstimmung geschafft, es fehlten {purple}%i{default} Nominierungen für insgesamt {purple}%i{default}.",
+		"ru": "Ваша номинация {purple}%s{default} не попала в голосование, нужно было ещё {purple}%i{default} номинаций для итого {purple}%i{default}."
+	},
+	"Map.MultipleMatches": {
+		"en": "Multiple maps matched {purple}%s{default}, try being more specific:",
+		"es": "Varios mapas coinciden con {purple}%s{default}, intenta ser más específico:",
+		"pt": "Vários mapas correspondem a {purple}%s{default}, tente ser mais específico:",
+		"fr": "Plusieurs maps correspondent à {purple}%s{default}, essayez d'être plus précis :",
+		"de": "Mehrere Maps stimmen mit {purple}%s{default} überein, versuche genauer zu sein:",
+		"ru": "Несколько карт совпали с {purple}%s{default}, попробуйте уточнить:"
+	},
+	"Map.NotFound": {
+		"en": "Failed to find a map matching {purple}%s{default}.",
+		"es": "No se encontró un mapa que coincida con {purple}%s{default}.",
+		"pt": "Não foi possível encontrar um mapa correspondente a {purple}%s{default}.",
+		"fr": "Impossible de trouver une map correspondant à {purple}%s{default}.",
+		"de": "Keine Map gefunden die zu {purple}%s{default} passt.",
+		"ru": "Не удалось найти карту, соответствующую {purple}%s{default}."
+	},
+	"Map.NomDisabled": {
+		"en": "Nominations are currently disabled.",
+		"es": "Las nominaciones están desactivadas actualmente.",
+		"pt": "As nomeações estão desativadas no momento.",
+		"fr": "Les nominations sont actuellement désactivées.",
+		"de": "Nominierungen sind derzeit deaktiviert.",
+		"ru": "Номинации сейчас отключены."
+	},
+	"Map.NomDisabledVoting": {
+		"en": "Nominations are disabled because the vote has already started.",
+		"es": "Las nominaciones están desactivadas porque la votación ya ha comenzado.",
+		"pt": "As nomeações estão desativadas porque a votação já começou.",
+		"fr": "Les nominations sont désactivées car le vote a déjà commencé.",
+		"de": "Nominierungen sind deaktiviert, da die Abstimmung bereits begonnen hat.",
+		"ru": "Номинации отключены, так как голосование уже началось."
+	},
+	"Map.NomReset": {
+		"en": "Your nomination was reset.",
+		"es": "Tu nominación fue reiniciada.",
+		"pt": "Sua nomeação foi redefinida.",
+		"fr": "Votre nomination a été réinitialisée.",
+		"de": "Deine Nominierung wurde zurückgesetzt.",
+		"ru": "Ваша номинация была сброшена."
+	},
+	"Map.CannotNomDisabled": {
+		"en": "Cannot nominate {purple}%s{default} because it's disabled.",
+		"es": "No se puede nominar {purple}%s{default} porque está desactivado.",
+		"pt": "Não é possível nomear {purple}%s{default} porque está desativado.",
+		"fr": "Impossible de nominer {purple}%s{default} car elle est désactivée.",
+		"de": "Kann {purple}%s{default} nicht nominieren, da sie deaktiviert ist.",
+		"ru": "Невозможно номинировать {purple}%s{default}, так как она отключена."
+	},
+	"Map.CannotNomCurrent": {
+		"en": "Cannot nominate {purple}%s{default} because it's already the current map!",
+		"es": "¡No se puede nominar {purple}%s{default} porque ya es el mapa actual!",
+		"pt": "Não é possível nomear {purple}%s{default} porque já é o mapa atual!",
+		"fr": "Impossible de nominer {purple}%s{default} car c'est déjà la map actuelle !",
+		"de": "Kann {purple}%s{default} nicht nominieren, da sie bereits die aktuelle Map ist!",
+		"ru": "Невозможно номинировать {purple}%s{default}, так как это уже текущая карта!"
+	},
+	"Map.CannotNomCooldown": {
+		"en": "Cannot nominate {purple}%s{default} because it's on a %s cooldown.",
+		"es": "No se puede nominar {purple}%s{default} porque tiene un cooldown de %s.",
+		"pt": "Não é possível nomear {purple}%s{default} porque está em cooldown de %s.",
+		"fr": "Impossible de nominer {purple}%s{default} car elle est en cooldown de %s.",
+		"de": "Kann {purple}%s{default} nicht nominieren, da sie einen %s Cooldown hat.",
+		"ru": "Невозможно номинировать {purple}%s{default}, так как она на кулдауне %s."
+	},
+	"Map.CannotNomMinPlayers": {
+		"en": "Cannot nominate {purple}%s{default} because it needs %i more players.",
+		"es": "No se puede nominar {purple}%s{default} porque necesita %i jugadores más.",
+		"pt": "Não é possível nomear {purple}%s{default} porque precisa de mais %i jogadores.",
+		"fr": "Impossible de nominer {purple}%s{default} car il faut %i joueurs de plus.",
+		"de": "Kann {purple}%s{default} nicht nominieren, da %i weitere Spieler benötigt werden.",
+		"ru": "Невозможно номинировать {purple}%s{default}, нужно ещё %i игроков."
+	},
+	"Map.CannotNomMaxPlayers": {
+		"en": "Cannot nominate {purple}%s{default} because it needs %i less players.",
+		"es": "No se puede nominar {purple}%s{default} porque necesita %i jugadores menos.",
+		"pt": "Não é possível nomear {purple}%s{default} porque precisa de %i jogadores a menos.",
+		"fr": "Impossible de nominer {purple}%s{default} car il faut %i joueurs de moins.",
+		"de": "Kann {purple}%s{default} nicht nominieren, da %i weniger Spieler benötigt werden.",
+		"ru": "Невозможно номинировать {purple}%s{default}, нужно на %i игроков меньше."
+	},
+	"Map.NomWait": {
+		"en": "Wait %i seconds before you can nominate again.",
+		"es": "Espera %i segundos antes de poder nominar de nuevo.",
+		"pt": "Aguarde %i segundos antes de nomear novamente.",
+		"fr": "Attendez %i secondes avant de pouvoir nominer à nouveau.",
+		"de": "Warte %i Sekunden bevor du erneut nominieren kannst.",
+		"ru": "Подождите %i секунд перед повторной номинацией."
+	},
+	"Map.Nominated": {
+		"en": "{purple}%s {default}was nominated by %s. It now has %d nomination.",
+		"es": "{purple}%s {default}fue nominado por %s. Ahora tiene %d nominación.",
+		"pt": "{purple}%s {default}foi nomeado por %s. Agora tem %d nomeação.",
+		"fr": "{purple}%s {default}a été nominée par %s. Elle a maintenant %d nomination.",
+		"de": "{purple}%s {default}wurde von %s nominiert. Jetzt hat sie %d Nominierung.",
+		"ru": "{purple}%s {default}номинирована игроком %s. Теперь у неё %d номинация."
+	},
+	"Map.NominatedPlural": {
+		"en": "{purple}%s {default}was nominated by %s. It now has %d nominations.",
+		"es": "{purple}%s {default}fue nominado por %s. Ahora tiene %d nominaciones.",
+		"pt": "{purple}%s {default}foi nomeado por %s. Agora tem %d nomeações.",
+		"fr": "{purple}%s {default}a été nominée par %s. Elle a maintenant %d nominations.",
+		"de": "{purple}%s {default}wurde von %s nominiert. Jetzt hat sie %d Nominierungen.",
+		"ru": "{purple}%s {default}номинирована игроком %s. Теперь у неё %d номинаций."
+	},
+	"Map.NoNextMapToReset": {
+		"en": "There is no next map to reset!",
+		"es": "¡No hay un siguiente mapa que reiniciar!",
+		"pt": "Não há próximo mapa para redefinir!",
+		"fr": "Il n'y a pas de prochaine map à réinitialiser !",
+		"de": "Es gibt keine nächste Map zum Zurücksetzen!",
+		"ru": "Нет следующей карты для сброса!"
+	},
+	"Map.ForceRemoved": {
+		"en": "{purple}%s {default}is no longer the forced next map.",
+		"es": "{purple}%s {default}ya no es el siguiente mapa forzado.",
+		"pt": "{purple}%s {default}não é mais o próximo mapa forçado.",
+		"fr": "{purple}%s {default}n'est plus la prochaine map forcée.",
+		"de": "{purple}%s {default}ist nicht mehr die erzwungene nächste Map.",
+		"ru": "{purple}%s {default}больше не является принудительной следующей картой."
+	},
+	"Map.AlreadyNextMap": {
+		"en": "{purple}%s{default} is already the next map!",
+		"es": "¡{purple}%s{default} ya es el siguiente mapa!",
+		"pt": "{purple}%s{default} já é o próximo mapa!",
+		"fr": "{purple}%s{default} est déjà la prochaine map !",
+		"de": "{purple}%s{default} ist bereits die nächste Map!",
+		"ru": "{purple}%s{default} уже является следующей картой!"
+	},
+	"Map.Forced": {
+		"en": "{purple}%s {default}has been forced as the next map.",
+		"es": "{purple}%s {default}ha sido forzado como el siguiente mapa.",
+		"pt": "{purple}%s {default}foi forçado como o próximo mapa.",
+		"fr": "{purple}%s {default}a été forcée comme prochaine map.",
+		"de": "{purple}%s {default}wurde als nächste Map erzwungen.",
+		"ru": "{purple}%s {default}принудительно установлена как следующая карта."
+	},
+	"Map.NomRemoved": {
+		"en": "Your nomination for {purple}%s {default}has been removed because the player count requirements are no longer met.",
+		"es": "Tu nominación de {purple}%s {default}fue eliminada porque ya no se cumplen los requisitos de jugadores.",
+		"pt": "Sua nomeação de {purple}%s {default}foi removida porque os requisitos de jogadores não são mais atendidos.",
+		"fr": "Votre nomination pour {purple}%s {default}a été retirée car les conditions de nombre de joueurs ne sont plus remplies.",
+		"de": "Deine Nominierung für {purple}%s {default}wurde entfernt, da die Spieleranzahl-Anforderungen nicht mehr erfüllt sind.",
+		"ru": "Ваша номинация {purple}%s {default}была удалена, так как требования по количеству игроков больше не выполняются."
+	},
+	"Map.WorkshopQueryFailed": {
+		"en": "Failed to query workshop map information for ID {purple}%llu{default}.",
+		"es": "Error al consultar información del mapa del workshop con ID {purple}%llu{default}.",
+		"pt": "Falha ao consultar informações do mapa do workshop com ID {purple}%llu{default}.",
+		"fr": "Échec de la requête d'informations du workshop pour l'ID {purple}%llu{default}.",
+		"de": "Fehler beim Abfragen der Workshop-Map-Informationen für ID {purple}%llu{default}.",
+		"ru": "Ошибка запроса информации о карте из мастерской с ID {purple}%llu{default}."
+	},
+	"Map.WorkshopInvalid": {
+		"en": "The ID {purple}%llu{default} is not a valid CS2 workshop map.",
+		"es": "El ID {purple}%llu{default} no es un mapa válido del workshop de CS2.",
+		"pt": "O ID {purple}%llu{default} não é um mapa válido do workshop do CS2.",
+		"fr": "L'ID {purple}%llu{default} n'est pas une map CS2 valide du workshop.",
+		"de": "Die ID {purple}%llu{default} ist keine gültige CS2-Workshop-Map.",
+		"ru": "ID {purple}%llu{default} не является действительной картой мастерской CS2."
+	},
+
 	// ---- Panorama Vote ----
 
 	"Vote.CannotStartStop": {
