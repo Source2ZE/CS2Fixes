@@ -25,6 +25,7 @@
 #include "playermanager.h"
 #include "strtools.h"
 #include <string>
+#include "translations.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
 
@@ -139,6 +140,14 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	player->SetEntwatchHudPos(flEntwatchHudposX, flEntwatchHudposY);
 	player->SetEntwatchHudColor(ewHudColor);
 	player->SetEntwatchHudSize(flEntwatchHudSize);
+
+	// Set Language
+	if (g_pTranslations && g_cvarTranslationsEnable.Get())
+	{
+		const char* pszLang = GetPreference(iSlot, LANG_PREF_KEY_NAME, "");
+		if (*pszLang)
+			g_pTranslations->SetPlayerLanguage(iSlot, pszLang);
+	}
 }
 
 void CUserPreferencesSystem::PullPreferences(int iSlot)

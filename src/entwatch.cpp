@@ -19,6 +19,7 @@
 
 #include "entwatch.h"
 #include "commands.h"
+#include "translations.h"
 #include "cs2fixes.h"
 #include "ctimer.h"
 #include "customio.h"
@@ -341,7 +342,7 @@ void EWItemHandler::Use(float flCounterVal)
 	if (szName != "")
 		extra = " (" + szName + ")";
 
-	ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05used %s%s%s", pController->GetPlayerName(), pItem->sChatColor, pItem->szItemName.c_str(), extra.c_str());
+	ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{lightpurple}%s {olive}{EW.Used} %s%s%s", pController->GetPlayerName(), pItem->sChatColor, pItem->szItemName.c_str(), extra.c_str());
 	flLastShownUse = GetGlobals()->curtime;
 }
 
@@ -433,7 +434,7 @@ void EWItemHandler::UseCounter(float flCounterVal)
 	if (szName != "")
 		extra = " (" + szName + ")";
 
-	ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05used %s%s%s", pController->GetPlayerName(), pItem->sChatColor, pItem->szItemName.c_str(), extra.c_str());
+	ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{lightpurple}%s {olive}{EW.Used} %s%s%s", pController->GetPlayerName(), pItem->sChatColor, pItem->szItemName.c_str(), extra.c_str());
 	flLastShownUse = GetGlobals()->curtime;
 }
 
@@ -812,7 +813,7 @@ void EWItemInstance::Pickup(int slot)
 	EndGlow();
 
 	if (bShowPickup)
-		ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05has picked up %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+		ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{lightpurple}%s {olive}{EW.PickedUp} %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
 }
 
 void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
@@ -869,20 +870,20 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 
 			Message(EW_PREFIX "%s has dropped %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 			if (bShowPickup)
-				ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 has dropped %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+				ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{lightpurple}%s{olive} {EW.Dropped} %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
 			break;
 		case EWDropReason::Infected:
 			if (bAllowDrop)
 			{
 				Message(EW_PREFIX "%s got infected and dropped %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 got infected and dropped %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{lightpurple}%s{olive} {EW.InfectedDropped} %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
 			}
 			else
 			{
 				Message(EW_PREFIX "%s got infected with %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 got infected with %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{lightpurple}%s{olive} {EW.InfectedWith} %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
 			}
 			break;
 		case EWDropReason::Death:
@@ -890,13 +891,13 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 			{
 				Message(EW_PREFIX "%s has died and dropped %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 died and dropped %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{lightpurple}%s{olive} {EW.DiedDropped} %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
 			}
 			else
 			{
 				Message(EW_PREFIX "%s has died with %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 died with %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{lightpurple}%s{olive} {EW.DiedWith} %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
 			}
 			break;
 		case EWDropReason::Disconnect:
@@ -904,13 +905,13 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 			{
 				Message(EW_PREFIX "%s has disconnected and dropped %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 disconnected and dropped %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{lightpurple}%s{olive} {EW.DisconnectedDropped} %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
 			}
 			else
 			{
 				Message(EW_PREFIX "%s has disconnected with %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 disconnected with %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{lightpurple}%s{olive} {EW.DisconnectedWith} %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
 			}
 			break;
 		case EWDropReason::Deleted:
@@ -1144,7 +1145,7 @@ void CEWHandler::PrintLoadedConfig(CPlayerSlot slot)
 	CCSPlayerController* player = CCSPlayerController::FromSlot(slot);
 	if (!bConfigLoaded)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "No config loaded.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.NoConfig}");
 		return;
 	}
 
@@ -1154,55 +1155,55 @@ void CEWHandler::PrintLoadedConfig(CPlayerSlot slot)
 		i++;
 		if (!item)
 		{
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "Null item in the item map at pos %d", i);
+			ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.NullItem}", i);
 			continue;
 		}
 
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "------------ Item %02d ------------", i);
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "     Name:  %s", item->szItemName.c_str());
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "ShortName:  %s", item->szShortName.c_str());
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " Hammerid:  %s", item->szHammerid.c_str());
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "  Message:  %s", item->bShowPickup ? "True" : "False");
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "       UI:  %s", item->bShowHud ? "True" : "False");
+		ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpItemHeader}", i);
+		ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpName}", item->szItemName.c_str());
+		ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpShortName}", item->szShortName.c_str());
+		ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpHammerid}", item->szHammerid.c_str());
+		ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpMessage}", item->bShowPickup ? "True" : "False");
+		ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpUI}", item->bShowHud ? "True" : "False");
 		if (item->transfer == EWCfg_Auto)
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " Transfer:  Auto");
+			ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpTransfer}", "Auto");
 		else if (item->transfer == EWCfg_Yes)
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " Transfer:  True");
+			ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpTransfer}", "True");
 		else
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " Transfer:  False");
+			ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpTransfer}", "False");
 
 		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " ");
 		if (item->vecHandlers.size() == 0)
 		{
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "        No handlers set.");
+			ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.NoHandlers}");
 		}
 		else
 		{
 			for (int j = 0; j < (item->vecHandlers).size(); j++)
 			{
 				// "          "
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "          --------- Handler %d ---------", j);
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "              Type:  %s", item->vecHandlers[j]->type == EWHandlerType::Button ? "Button" : "GameUi");
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "              Mode:  %d", (int)item->vecHandlers[j]->mode);
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "          Hammerid:  %s", item->vecHandlers[j]->szHammerid.c_str());
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "             Event:  %s", item->vecHandlers[j]->szOutput.c_str());
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "          Cooldown:  %.1f", item->vecHandlers[j]->flCooldown);
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "          Max Uses:  %d", item->vecHandlers[j]->iMaxUses);
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "           Message:  %s", item->vecHandlers[j]->bShowUse ? "True" : "False");
+				ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpHandlerHeader}", j);
+				ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpHandlerType}", item->vecHandlers[j]->type == EWHandlerType::Button ? "Button" : "GameUi");
+				ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpHandlerMode}", (int)item->vecHandlers[j]->mode);
+				ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpHandlerHammerid}", item->vecHandlers[j]->szHammerid.c_str());
+				ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpHandlerEvent}", item->vecHandlers[j]->szOutput.c_str());
+				ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpHandlerCooldown}", item->vecHandlers[j]->flCooldown);
+				ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpHandlerMaxUses}", item->vecHandlers[j]->iMaxUses);
+				ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpHandlerMessage}", item->vecHandlers[j]->bShowUse ? "True" : "False");
 				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "          --------- --------- ---------");
 			}
 		}
 
 		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " ");
 		if (item->vecTriggers.size() == 0)
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "       No triggers set.");
+			ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.NoTriggers}");
 		else
 			for (int j = 0; j < item->vecTriggers.size(); j++)
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " Trigger %d:  %s", j, item->vecTriggers[j].c_str());
+				ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{EW.DumpTrigger}", j, item->vecTriggers[j].c_str());
 
 		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "------------ ------- ------------");
 	}
-	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "See console for output.");
+	ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{General.SeeConsole}");
 }
 
 void CEWHandler::ClearItems()
@@ -1654,26 +1655,26 @@ void CEWHandler::Transfer(CCSPlayerController* pCaller, int iItemInstance, CHand
 	CCSPlayerController* pReceiver = hReceiver.Get();
 	if (!pReceiver)
 	{
-		ClientPrint(pCaller, HUD_PRINTTALK, EW_PREFIX "Receiver is no longer valid.");
+		ClientPrintT(pCaller, HUD_PRINTTALK, EW_PREFIX "{EW.ReceiverInvalid}");
 		return;
 	}
 	CCSPlayerPawn* pReceiverPawn = pReceiver->GetPlayerPawn();
 	if (!pReceiverPawn || !pReceiverPawn->m_pWeaponServices)
 	{
-		ClientPrint(pCaller, HUD_PRINTTALK, EW_PREFIX "Receiver is no longer valid.");
+		ClientPrintT(pCaller, HUD_PRINTTALK, EW_PREFIX "{EW.ReceiverInvalid}");
 		return;
 	}
 
 	if (iItemInstance < 0 || iItemInstance >= vecItems.size() || !vecItems[iItemInstance] || vecItems[iItemInstance]->iWeaponEnt == -1)
 	{
-		ClientPrint(pCaller, HUD_PRINTTALK, EW_PREFIX "Item is no longer valid.");
+		ClientPrintT(pCaller, HUD_PRINTTALK, EW_PREFIX "{EW.ItemInvalid}");
 		return;
 	}
 
 	CBasePlayerWeapon* pItemWeapon = (CBasePlayerWeapon*)g_pEntitySystem->GetEntityInstance((CEntityIndex)vecItems[iItemInstance]->iWeaponEnt);
 	if (!pItemWeapon)
 	{
-		ClientPrint(pCaller, HUD_PRINTTALK, EW_PREFIX "There was an error while transferring.");
+		ClientPrintT(pCaller, HUD_PRINTTALK, EW_PREFIX "{EW.TransferError}");
 		return;
 	}
 	gear_slot_t itemSlot = pItemWeapon->GetWeaponVData()->m_GearSlot();
@@ -1686,14 +1687,14 @@ void CEWHandler::Transfer(CCSPlayerController* pCaller, int iItemInstance, CHand
 		pOwner = CCSPlayerController::FromSlot(CPlayerSlot(vecItems[iItemInstance]->iOwnerSlot));
 		if (!pOwner)
 		{
-			ClientPrint(pCaller, HUD_PRINTTALK, EW_PREFIX "There was an error while transferring.");
+			ClientPrintT(pCaller, HUD_PRINTTALK, EW_PREFIX "{EW.TransferError}");
 			return;
 		}
 
 		CCSPlayerPawn* pOwnerPawn = pOwner->GetPlayerPawn();
 		if (!pOwnerPawn || !pOwnerPawn->m_pWeaponServices)
 		{
-			ClientPrint(pCaller, HUD_PRINTTALK, EW_PREFIX "There was an error while transferring.");
+			ClientPrintT(pCaller, HUD_PRINTTALK, EW_PREFIX "{EW.TransferError}");
 			return;
 		}
 
@@ -1782,7 +1783,7 @@ void CEWHandler::Transfer(CCSPlayerController* pCaller, int iItemInstance, CHand
 				sOwnerInfo,
 				sReceiverInfo);
 
-		ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "Admin\x02 %s\x01 has transferred%s %s\x01 from\x02 %s\x01 to\x02 %s\x01.",
+		ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{EW.TransferredFromTo}",
 					   pszCommandPlayerName,
 					   g_pEWHandler->vecItems[iItemInstance]->sChatColor,
 					   g_pEWHandler->vecItems[iItemInstance]->szItemName.c_str(),
@@ -1796,7 +1797,7 @@ void CEWHandler::Transfer(CCSPlayerController* pCaller, int iItemInstance, CHand
 				g_pEWHandler->vecItems[iItemInstance]->szItemName.c_str(),
 				sReceiverInfo);
 
-		ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "Admin\x02 %s\x01 has transferred%s %s\x01 to\x02 %s\x01.",
+		ClientPrintAllT(HUD_PRINTTALK, EW_PREFIX "{EW.TransferredTo}",
 					   pszCommandPlayerName,
 					   g_pEWHandler->vecItems[iItemInstance]->sChatColor,
 					   g_pEWHandler->vecItems[iItemInstance]->szItemName.c_str(),
@@ -2384,7 +2385,7 @@ CON_COMMAND_CHAT_FLAGS(ew_reload, "- Reloads the current map's entwatch config",
 		return;
 	if (!g_pEWHandler)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "There has been an error initialising entwatch.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.InitError}");
 		return;
 	}
 
@@ -2393,11 +2394,11 @@ CON_COMMAND_CHAT_FLAGS(ew_reload, "- Reloads the current map's entwatch config",
 
 	if (!g_pEWHandler->bConfigLoaded)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Error reloading config, check console log for details.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.ReloadError}");
 		return;
 	}
 
-	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Config reloaded successfully.");
+	ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.ReloadSuccess}");
 }
 
 CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an EntWatch item", ADMFLAG_GENERIC)
@@ -2407,7 +2408,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 
 	if (!g_pEWHandler->IsConfigLoaded())
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "No EntWatch config is currently loaded!");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.NoConfigLoaded}");
 		return;
 	}
 
@@ -2434,7 +2435,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 				int id = Q_atoi(args[1]);
 				if (id <= 0 || id > transferInfo->itemIds.size())
 				{
-					ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Number must be between 1 and %d, try again", transferInfo->itemIds.size());
+					ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.NumberRange}", transferInfo->itemIds.size());
 					return;
 				}
 				else
@@ -2451,7 +2452,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 
 	if (args.ArgC() < 3)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !etransfer <owner>/$<itemname> <receiver>");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.UsageTransfer}");
 		return;
 	}
 
@@ -2467,21 +2468,21 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 
 	if (CCSPlayerController::FromSlot(pSlots[0])->GetZEPlayer()->IsEbanned())
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Specified receiver is ebanned.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.ReceiverEbanned}");
 		return;
 	}
 
 	CCSPlayerController* pReceiver = CCSPlayerController::FromSlot(pSlots[0]);
 	if (!pReceiver)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Error getting receiver.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.ReceiverError}");
 		return;
 	}
 
 	CCSPlayerPawn* pReceiverPawn = pReceiver->GetPlayerPawn();
 	if (!pReceiverPawn || !pReceiverPawn->m_pWeaponServices)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Error getting receiver.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.ReceiverError}");
 		return;
 	}
 	// Receiver found
@@ -2514,9 +2515,9 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 		if (itemCount == 0)
 		{
 			if (bExact)
-				ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Could not find an item with the exact name:\x04 %s", sItemName);
+				ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.ItemNotFoundExact}", sItemName);
 			else
-				ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Could not find an item with the name:\x04 %s", sItemName);
+				ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.ItemNotFound}", sItemName);
 			return;
 		}
 		else if (itemCount == 1)
@@ -2526,8 +2527,8 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 		}
 
 		// itemCount > 1
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Found %d items matching\x04 \"%s\"", itemCount, sItemName);
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Enter\x02 !etransfer <number>\x01 to complete the transfer");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.FoundItemsMatching}", itemCount, sItemName);
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.TransferPrompt}");
 
 		std::shared_ptr<ETransferInfo> transferInfo = std::make_shared<ETransferInfo>(pReceiver->GetHandle(), GetGlobals()->curtime);
 
@@ -2540,22 +2541,22 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 			{
 				CCSPlayerController* pOwner = CCSPlayerController::FromSlot(CPlayerSlot(pItem->iOwnerSlot));
 				if (!pOwner)
-					sOwnerInfo = "\x05(Owner:\x02 ERROR\x05)";
+					sOwnerInfo = g_pTranslations->Translate("EW.OwnerErrorSpan", player ? player->GetPlayerSlot() : -1);
 				else
 				{
-					sOwnerInfo = "\x05(Owner: ";
-					sOwnerInfo.append(pOwner->GetPlayerName());
-					sOwnerInfo.append(")");
+					char szOwnerBuf[256];
+					V_snprintf(szOwnerBuf, sizeof(szOwnerBuf), g_pTranslations->Translate("EW.OwnerSpan", player ? player->GetPlayerSlot() : -1), pOwner->GetPlayerName());
+					sOwnerInfo = szOwnerBuf;
 				}
 			}
 			else if (pItem->sLastOwnerName != "")
 			{
-				sOwnerInfo = "\x10(Previous owner: ";
-				sOwnerInfo.append(pItem->sLastOwnerName);
-				sOwnerInfo.append(")");
+				char szOwnerBuf[256];
+				V_snprintf(szOwnerBuf, sizeof(szOwnerBuf), g_pTranslations->Translate("EW.PreviousOwnerSpan", player ? player->GetPlayerSlot() : -1), pItem->sLastOwnerName.c_str());
+				sOwnerInfo = szOwnerBuf;
 			}
 
-			ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "\x0E%d.\x01 %s [%s] %s", i + 1, pItem->szItemName.c_str(), sItemText.c_str(), sOwnerInfo.c_str());
+			ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{red}%d.{default} %s [%s] %s", i + 1, pItem->szItemName.c_str(), sItemText.c_str(), sOwnerInfo.c_str());
 
 			transferInfo->itemIds.push_back(itemIds[i]);
 		}
@@ -2578,20 +2579,20 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 	}
 	if (!iNumClients)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Item owner not found.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.OwnerNotFound}");
 		return;
 	}
 	CCSPlayerController* pOwner = CCSPlayerController::FromSlot(pSlots[0]);
 
 	if (!pOwner)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Error getting item owner.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.OwnerError}");
 		return;
 	}
 	CCSPlayerPawn* pOwnerPawn = pOwner->GetPlayerPawn();
 	if (!pOwnerPawn || !pOwnerPawn->m_pWeaponServices)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Error getting item owner.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.OwnerError}");
 		return;
 	}
 	// Owner found
@@ -2609,7 +2610,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 
 	if (itemCount == 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "%s does not have an item that can be transferred.", pOwner->GetPlayerName());
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.NoTransferableItem}", pOwner->GetPlayerName());
 		return;
 	}
 	else if (itemCount == 1)
@@ -2619,8 +2620,8 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 	}
 
 	// itemCount > 1
-	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Found %d items owned by\x04 \"%s\"", itemCount, pOwner->GetPlayerName());
-	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Enter\x02 !etransfer <number>\x01 to complete the transfer");
+	ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.FoundItemsOwned}", itemCount, pOwner->GetPlayerName());
+	ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.TransferPrompt}");
 
 	std::shared_ptr<ETransferInfo> transferInfo = std::make_shared<ETransferInfo>(pReceiver->GetHandle(), GetGlobals()->curtime);
 
@@ -2628,11 +2629,11 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 	{
 		std::shared_ptr<EWItemInstance> pItem = g_pEWHandler->vecItems[itemIds[i]];
 		std::string sItemText = pItem->GetHandlerStateText();
-		std::string sOwnerInfo = "\x05(Owner: ";
-		sOwnerInfo.append(pOwner->GetPlayerName());
-		sOwnerInfo.append(")");
+		char szOwnerBuf[256];
+		V_snprintf(szOwnerBuf, sizeof(szOwnerBuf), g_pTranslations->Translate("EW.OwnerSpan", player ? player->GetPlayerSlot() : -1), pOwner->GetPlayerName());
+		std::string sOwnerInfo = szOwnerBuf;
 
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "\x0E%d.\x01 %s [%s] %s", i + 1, pItem->szItemName.c_str(), sItemText.c_str(), sOwnerInfo.c_str());
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{red}%d.{default} %s [%s] %s", i + 1, pItem->szItemName.c_str(), sItemText.c_str(), sOwnerInfo.c_str());
 
 		transferInfo->itemIds.push_back(itemIds[i]);
 	}
@@ -2650,7 +2651,7 @@ CON_COMMAND_CHAT(ew_dump, "- Prints the currently loaded config to console")
 
 	if (!g_pEWHandler)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "There has been an error initialising entwatch.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.InitError}");
 		return;
 	}
 
@@ -2664,20 +2665,20 @@ CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
 
 	if (!g_cvarEnableEntwatchHud.Get())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{EW.HudDisabled}");
 		return;
 	}
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Only usable in game.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, EW_PREFIX "{General.OnlyUsableInGame}");
 		return;
 	}
 
 	ZEPlayer* zpPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 	if (!zpPlayer)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Something went wrong, try again later.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{General.CommandError}");
 		return;
 	}
 
@@ -2692,11 +2693,11 @@ CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
 	zpPlayer->SetEntwatchHudMode((int)mode);
 
 	if (mode == EWHudMode::Hud_None)
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "EntWatch HUD\x07 disabled.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.HudOff}");
 	else if (mode == EWHudMode::Hud_On)
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "EntWatch HUD\x04 enabled.");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.HudOn}");
 	else
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "EntWatch HUD\x04 enabled\x10 (Item names only).");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.HudItemOnly}");
 }
 
 CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
@@ -2706,27 +2707,27 @@ CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
 
 	if (!g_cvarEnableEntwatchHud.Get())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{EW.HudDisabled}");
 		return;
 	}
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
 	ZEPlayer* zpPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 	if (!zpPlayer)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Something went wrong, try again later.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{General.CommandError}");
 		return;
 	}
 
 	if (args.ArgC() < 3)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudpos <x> <y>");
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Current hudpos: %.1fx %.1fy", zpPlayer->GetEntwatchHudX(), zpPlayer->GetEntwatchHudY());
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.UsageHudPos}");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.HudPosCurrent}", zpPlayer->GetEntwatchHudX(), zpPlayer->GetEntwatchHudY());
 		return;
 	}
 
@@ -2734,7 +2735,7 @@ CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
 	float y = std::atof(args[2]);
 
 	zpPlayer->SetEntwatchHudPos(x, y);
-	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Set hudpos to: %.1fx %.1fy", x, y);
+	ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.HudPosSet}", x, y);
 }
 
 CON_COMMAND_CHAT(hudcolor, "<r> <g> <b> [a] - Set color (and transparency) of the Entwatch hud")
@@ -2744,28 +2745,28 @@ CON_COMMAND_CHAT(hudcolor, "<r> <g> <b> [a] - Set color (and transparency) of th
 
 	if (!g_cvarEnableEntwatchHud.Get())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{EW.HudDisabled}");
 		return;
 	}
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
 	ZEPlayer* zpPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 	if (!zpPlayer)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Something went wrong, try again later.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{General.CommandError}");
 		return;
 	}
 
 	Color clrCur = zpPlayer->GetEntwatchHudColor();
 	if (args.ArgC() < 4)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudcolor <r> <g> <b> [Optional: alpha]");
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Current hudcolor:\x07 %d\x04 %d\x0C %d\x01 %d", clrCur.r(), clrCur.g(), clrCur.b(), clrCur.a());
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.UsageHudColor}");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.HudColorCurrent}", clrCur.r(), clrCur.g(), clrCur.b(), clrCur.a());
 		return;
 	}
 
@@ -2778,12 +2779,12 @@ CON_COMMAND_CHAT(hudcolor, "<r> <g> <b> [a] - Set color (and transparency) of th
 	{
 		a = std::atoi(args[4]);
 		newColor.SetColor(r, g, b, a);
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Set hudcolor to:\x07 %d\x04 %d\x0C %d\x01 %d", newColor.r(), newColor.g(), newColor.b(), newColor.a());
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.HudColorSet}", newColor.r(), newColor.g(), newColor.b(), newColor.a());
 	}
 	else
 	{
 		newColor.SetColor(r, g, b, a);
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Set hudcolor to:\x07 %d\x04 %d\x0C %d", newColor.r(), newColor.g(), newColor.b());
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.HudColorSetNoAlpha}", newColor.r(), newColor.g(), newColor.b());
 	}
 
 	zpPlayer->SetEntwatchHudColor(newColor);
@@ -2796,28 +2797,28 @@ CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
 
 	if (!g_cvarEnableEntwatchHud.Get())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The EntWatch hud is currently disabled.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{EW.HudDisabled}");
 		return;
 	}
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
 	ZEPlayer* zpPlayer = g_playerManager->GetPlayer(player->GetPlayerSlot());
 	if (!zpPlayer)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Something went wrong, try again later.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{General.CommandError}");
 		return;
 	}
 
 	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudsize <size>");
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.UsageHudSize}");
 		float flSize = zpPlayer->GetEntwatchHudSize();
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Current hud size:\x04 %.2f", flSize);
+		ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.HudSizeCurrent}", flSize);
 		return;
 	}
 
@@ -2827,6 +2828,6 @@ CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
 	else if (size > 255.0f) // game has a max of 255
 		size = 255.0f;
 
-	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Hud font size set to:\x04 %.2f", size);
+	ClientPrintT(player, HUD_PRINTTALK, EW_PREFIX "{EW.HudSizeSet}", size);
 	zpPlayer->SetEntwatchHudSize(size);
 }

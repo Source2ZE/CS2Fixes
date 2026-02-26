@@ -20,6 +20,7 @@
 #include "topdefender.h"
 #include "commands.h"
 #include "common.h"
+#include "translations.h"
 #include "ctimer.h"
 #include "detours.h"
 #include "entity/ccsplayercontroller.h"
@@ -27,11 +28,11 @@
 #include "playermanager.h"
 
 std::vector<ZEPlayerHandle> sortedPlayers;
-std::vector<std::string> failMessage = {
-	"No top defenders? You all are bad.",
-	"Start defending, less doorhugging.",
-	"Hold left-click to shoot, FYI",
-	"WHAT ARE YOU DOING?!?!?"};
+static const char* s_FailMessageKeys[] = {
+	" {darkred}{TD.Fail1}",
+	" {darkred}{TD.Fail2}",
+	" {darkred}{TD.Fail3}",
+	" {darkred}{TD.Fail4}"};
 
 std::weak_ptr<CTimer> m_pUpdateTimer;
 
@@ -217,12 +218,12 @@ void TD_OnRoundEnd(IGameEvent* pEvent)
 		}
 	}
 
-	ClientPrintAll(HUD_PRINTTALK, " \x09*** TOP DEFENDERS ***");
+	ClientPrintAllT(HUD_PRINTTALK, "{TD.Title}");
 
 	// Check if players damaged more than threshold
 	if (sortedPlayers.size() == 0)
 	{
-		ClientPrintAll(HUD_PRINTTALK, " \x02%s", failMessage[rand() % failMessage.size()].c_str());
+		ClientPrintAllT(HUD_PRINTTALK, s_FailMessageKeys[rand() % std::size(s_FailMessageKeys)]);
 		return;
 	}
 
@@ -286,13 +287,13 @@ void TopDefenderSearch(CCSPlayerController* player, const CCommand& args)
 {
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, TD_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, TD_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
 	if (sortedPlayers.size() == 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "There are no top defenders at this time.");
+		ClientPrintT(player, HUD_PRINTTALK, TD_PREFIX "{TD.NoDefenders}");
 		return;
 	}
 
@@ -313,7 +314,7 @@ void TopDefenderSearch(CCSPlayerController* player, const CCommand& args)
 			return;
 		}
 
-		ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "You do not have any stats to display at this time.");
+		ClientPrintT(player, HUD_PRINTTALK, TD_PREFIX "{TD.NoStats}");
 	}
 	else
 	{
@@ -342,7 +343,7 @@ void TopDefenderSearch(CCSPlayerController* player, const CCommand& args)
 				return;
 			}
 
-			ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "%s has no stats to display at this time.", CCSPlayerController::FromSlot(pSlots[0])->GetPlayerName());
+			ClientPrintT(player, HUD_PRINTTALK, TD_PREFIX "{TD.NoStatsPlayer}", CCSPlayerController::FromSlot(pSlots[0])->GetPlayerName());
 		}
 		else
 		{

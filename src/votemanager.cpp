@@ -23,6 +23,7 @@
 #include "entity/cgamerules.h"
 #include "icvar.h"
 #include "playermanager.h"
+#include "translations.h"
 
 #include "tier0/memdbgon.h"
 
@@ -97,7 +98,7 @@ float CVoteManager::TimerCheckTimeleft()
 		return m_flExtendVoteTickrate;
 
 	m_bVoteStarting = true;
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote starting in 10 seconds!");
+	ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Extend.StartingSoon}");
 
 	CTimer::Create(7.0f, TIMERFLAG_MAP, [this]() {
 		if (m_iVoteStartTicks == 0)
@@ -108,7 +109,7 @@ float CVoteManager::TimerCheckTimeleft()
 			return -1.0f;
 		}
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote starting in %d....", m_iVoteStartTicks);
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Extend.StartingIn}", m_iVoteStartTicks);
 		m_iVoteStartTicks--;
 		return 1.0f;
 	});
@@ -188,7 +189,7 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -206,29 +207,29 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 	switch (g_pVoteManager->GetRTVState())
 	{
 		case ERTVState::MAP_START:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is not open yet.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.NotOpenYet}");
 			return;
 		case ERTVState::POST_RTV_SUCCESSFULL:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV vote already succeeded.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.AlreadySucceeded}");
 			return;
 		case ERTVState::POST_LAST_ROUND_END:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is closed during next map selection.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.ClosedMapSelection}");
 			return;
 		case ERTVState::BLOCKED_BY_ADMIN:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV has been blocked by an Admin.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.BlockedByAdmin}");
 			return;
 	}
 
 	if (pPlayer->GetRTVVote())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already rocked the vote (%i voted, %i needed).", g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.AlreadyVoted}", g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
 		return;
 	}
 
 	if (pPlayer->GetRTVVoteTime() + 60.0f > GetGlobals()->curtime)
 	{
 		int iRemainingTime = (int)(pPlayer->GetRTVVoteTime() + 60.0f - GetGlobals()->curtime);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can RTV.", iRemainingTime);
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.Wait}", iRemainingTime);
 		return;
 	}
 
@@ -236,7 +237,7 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 	pPlayer->SetRTVVoteTime(GetGlobals()->curtime);
 
 	if (!g_pVoteManager->CheckRTVStatus())
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i needed).", player->GetPlayerName(), g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{RTV.WantsToRTV}", player->GetPlayerName(), g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
 }
 
 CON_COMMAND_CHAT(unrtv, "- Remove your vote to end the current map sooner")
@@ -246,7 +247,7 @@ CON_COMMAND_CHAT(unrtv, "- Remove your vote to end the current map sooner")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
@@ -263,21 +264,21 @@ CON_COMMAND_CHAT(unrtv, "- Remove your vote to end the current map sooner")
 
 	if (!pPlayer->GetRTVVote())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have not voted to RTV current map (%i voted, %i needed).", g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.NotVoted}", g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
 		return;
 	}
 
 	if (pPlayer->GetRTVVoteTime() + 60.0f > GetGlobals()->curtime)
 	{
 		int iRemainingTime = (int)(pPlayer->GetRTVVoteTime() + 60.0f - GetGlobals()->curtime);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can remove your RTV.", iRemainingTime);
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.WaitRemove}", iRemainingTime);
 		return;
 	}
 
 	pPlayer->SetRTVVote(false);
 	pPlayer->SetRTVVoteTime(GetGlobals()->curtime);
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You no longer want to RTV current map (%i voted, %i needed).", g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.Removed}", g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
 }
 
 CON_COMMAND_CHAT(ve, "- Vote to extend current map")
@@ -287,17 +288,17 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
 	switch (g_cvarExtendVoteMode.Get())
 	{
 		case EExtendVoteMode::EXTENDVOTE_OFF:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend votes are disabled.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.Disabled}");
 			return;
 		case EExtendVoteMode::EXTENDVOTE_ADMINONLY:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend votes are disabled.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.Disabled}");
 			return;
 		case EExtendVoteMode::EXTENDVOTE_AUTO:
 		{
@@ -316,9 +317,9 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 				int iSecondsLeft = div.rem;
 
 				if (iMinutesLeft > 0)
-					ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "An extend vote will start in %im %is", iMinutesLeft, iSecondsLeft);
+					ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.WillStartMinSec}", iMinutesLeft, iSecondsLeft);
 				else
-					ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "An extend vote will start in %i seconds", iSecondsLeft);
+					ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.WillStartSec}", iSecondsLeft);
 				return;
 			}
 		}
@@ -338,28 +339,28 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 	switch (g_pVoteManager->GetExtendState())
 	{
 		case EExtendState::MAP_START:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is not open yet.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.NotOpenYet}");
 			return;
 		case EExtendState::IN_PROGRESS:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "An extend vote is in progress right now!");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.InProgress}");
 			return;
 		case EExtendState::POST_EXTEND_COOLDOWN:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is not open yet.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.NotOpenYet}");
 			return;
 		case EExtendState::POST_EXTEND_NO_EXTENDS_LEFT:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no extends left for the current map.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.NoExtendsLeft}");
 			return;
 		case EExtendState::POST_EXTEND_FAILED:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "A previous extend vote already failed.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.PreviousFailed}");
 			return;
 		case EExtendState::POST_LAST_ROUND_END:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is closed during next map selection.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.ClosedMapSelection}");
 			return;
 		case EExtendState::POST_RTV:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is closed because RTV vote has passed.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.ClosedRTV}");
 			return;
 		case EExtendState::NO_EXTENDS:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend vote is not allowed for current map.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.NotAllowed}");
 			return;
 	}
 
@@ -368,14 +369,14 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 
 	if (pPlayer->GetExtendVote())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already voted to extend the map (%i voted, %i needed).", iCurrentExtendCount, iNeededExtendCount);
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.AlreadyVoted}", iCurrentExtendCount, iNeededExtendCount);
 		return;
 	}
 
 	if (pPlayer->GetExtendVoteTime() + 60.0f > GetGlobals()->curtime)
 	{
 		int iRemainingTime = (int)(pPlayer->GetExtendVoteTime() + 60.0f - GetGlobals()->curtime);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait %i seconds before you can vote extend again.", iRemainingTime);
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.Wait}", iRemainingTime);
 		return;
 	}
 
@@ -388,7 +389,7 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 
 	pPlayer->SetExtendVote(true);
 	pPlayer->SetExtendVoteTime(GetGlobals()->curtime);
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to extend the map (%i voted, %i needed).", player->GetPlayerName(), iCurrentExtendCount + 1, iNeededExtendCount);
+	ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Extend.WantsToExtend}", player->GetPlayerName(), iCurrentExtendCount + 1, iNeededExtendCount);
 }
 
 CON_COMMAND_CHAT(unve, "- Remove your vote to extend current map")
@@ -398,13 +399,13 @@ CON_COMMAND_CHAT(unve, "- Remove your vote to extend current map")
 
 	if (!player)
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrintT(player, HUD_PRINTCONSOLE, CHAT_PREFIX "{General.NoServerConsole}");
 		return;
 	}
 
 	if (g_cvarExtendVoteMode.Get() != EExtendVoteMode::EXTENDVOTE_MANUAL)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Voting to start extend votes is disabled.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.VotingDisabled}");
 		return;
 	}
 
@@ -421,12 +422,12 @@ CON_COMMAND_CHAT(unve, "- Remove your vote to extend current map")
 
 	if (!pPlayer->GetExtendVote())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have not voted to extend current map.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.NotVoted}");
 		return;
 	}
 
 	pPlayer->SetExtendVote(false);
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You no longer want to extend current map.");
+	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.Removed}");
 }
 
 CON_COMMAND_CHAT_FLAGS(adminve, "Start a vote extend immediately.", ADMFLAG_CHANGEMAP)
@@ -436,13 +437,13 @@ CON_COMMAND_CHAT_FLAGS(adminve, "Start a vote extend immediately.", ADMFLAG_CHAN
 
 	if (g_cvarExtendVoteMode.Get() == EExtendVoteMode::EXTENDVOTE_OFF)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Extend votes are disabled.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.Disabled}");
 		return;
 	}
 
 	if (g_pVoteManager->GetExtendState() == EExtendState::IN_PROGRESS || g_pVoteManager->IsVoteStarting())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "An extend vote is already in progress.");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.AlreadyInProgress}");
 		return;
 	}
 
@@ -461,7 +462,7 @@ CON_COMMAND_CHAT_FLAGS(disablertv, "- Disable the ability for players to vote to
 	if (g_pVoteManager->GetRTVState() == ERTVState::BLOCKED_BY_ADMIN)
 	{
 		if (player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is already disabled.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.AlreadyDisabled}");
 		else
 			ConMsg("RTV is already disabled.");
 		return;
@@ -471,7 +472,7 @@ CON_COMMAND_CHAT_FLAGS(disablertv, "- Disable the ability for players to vote to
 
 	g_pVoteManager->SetRTVState(ERTVState::BLOCKED_BY_ADMIN);
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "disabled vote for RTV.", pszCommandPlayerName);
+	ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "{RTV.AdminDisabled}", pszCommandPlayerName);
 }
 
 CON_COMMAND_CHAT_FLAGS(enablertv, "- Restore the ability for players to vote to end current map sooner", ADMFLAG_CHANGEMAP)
@@ -482,7 +483,7 @@ CON_COMMAND_CHAT_FLAGS(enablertv, "- Restore the ability for players to vote to 
 	if (g_pVoteManager->GetRTVState() == ERTVState::RTV_ALLOWED)
 	{
 		if (player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "RTV is not disabled.");
+			ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{RTV.NotDisabled}");
 		else
 			ConMsg("RTV is not disabled.");
 		return;
@@ -492,7 +493,7 @@ CON_COMMAND_CHAT_FLAGS(enablertv, "- Restore the ability for players to vote to 
 
 	g_pVoteManager->SetRTVState(ERTVState::RTV_ALLOWED);
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "enabled vote for RTV.", pszCommandPlayerName);
+	ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "{RTV.AdminEnabled}", pszCommandPlayerName);
 }
 
 CON_COMMAND_CHAT(extendsleft, "- Display amount of extends left for the current map")
@@ -501,11 +502,11 @@ CON_COMMAND_CHAT(extendsleft, "- Display amount of extends left for the current 
 		return;
 
 	if (g_cvarMaxExtends.Get() - g_pVoteManager->GetExtends() <= 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no extends left, the map was already extended %i/%i times.", g_pVoteManager->GetExtends(), g_cvarMaxExtends.Get());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.NoExtendsLeftCount}", g_pVoteManager->GetExtends(), g_cvarMaxExtends.Get());
 	else if (g_pVoteManager->GetExtendState() == EExtendState::POST_EXTEND_FAILED)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The map had %i/%i extends left, but the last extend vote failed.", g_cvarMaxExtends.Get() - g_pVoteManager->GetExtends(), g_cvarMaxExtends.Get());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.ExtendsLeftFailed}", g_cvarMaxExtends.Get() - g_pVoteManager->GetExtends(), g_cvarMaxExtends.Get());
 	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The map has %i/%i extends left.", g_cvarMaxExtends.Get() - g_pVoteManager->GetExtends(), g_cvarMaxExtends.Get());
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Extend.ExtendsLeft}", g_cvarMaxExtends.Get() - g_pVoteManager->GetExtends(), g_cvarMaxExtends.Get());
 }
 
 CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
@@ -519,7 +520,7 @@ CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 
 	if (flTimelimit == 0.0f)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No time limit");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Timeleft.NoLimit}");
 		return;
 	}
 
@@ -527,7 +528,7 @@ CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 
 	if (iTimeleft < 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Last round!");
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Timeleft.LastRound}");
 		return;
 	}
 
@@ -536,9 +537,9 @@ CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
 	int iSecondsLeft = div.rem;
 
 	if (iMinutesLeft > 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Timeleft: %i minutes %i seconds", iMinutesLeft, iSecondsLeft);
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Timeleft.MinSec}", iMinutesLeft, iSecondsLeft);
 	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Timeleft: %i seconds", iSecondsLeft);
+		ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Timeleft.Sec}", iSecondsLeft);
 }
 
 void CVoteManager::ExtendMap(int iMinutes, bool bIncrementiExtends, bool bAllowExtraTime)
@@ -578,7 +579,7 @@ void CVoteManager::VoteExtendHandler(YesNoVoteAction action, int param1, int par
 	{
 		case YesNoVoteAction::VoteAction_Start:
 		{
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote started!");
+			ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Extend.VoteStarted}");
 			break;
 		}
 		case YesNoVoteAction::VoteAction_Vote: // param1 = client slot, param2 = choice (VOTE_OPTION1=yes, VOTE_OPTION2=no)
@@ -586,7 +587,7 @@ void CVoteManager::VoteExtendHandler(YesNoVoteAction action, int param1, int par
 			CCSPlayerController* pController = CCSPlayerController::FromSlot(param1);
 			if (!pController || !pController->IsController() || !pController->IsConnected())
 				break;
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Thanks for voting! Type !revote to change your vote!");
+			ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{Extend.ThanksForVoting}");
 			break;
 		}
 		case YesNoVoteAction::VoteAction_End:
@@ -614,7 +615,7 @@ bool CVoteManager::VoteExtendEndCallback(YesNoVoteInfo info)
 	if (info.num_votes > 0)
 		yes_percent = (float)info.yes_votes / (float)info.num_votes;
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Vote ended. Yes received %.2f%% of %d votes (Needed %.2f%%)", yes_percent * 100.0f, info.num_votes, g_cvarExtendSucceedRatio.Get() * 100.0f);
+	ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Extend.VoteEnded}", yes_percent * 100.0f, info.num_votes, g_cvarExtendSucceedRatio.Get() * 100.0f);
 
 	if (yes_percent >= g_cvarExtendSucceedRatio.Get())
 	{
@@ -647,7 +648,7 @@ bool CVoteManager::VoteExtendEndCallback(YesNoVoteInfo info)
 			}
 		}
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote succeeded! Current map has been extended by %i minutes.", g_cvarExtendTimeToAdd.Get());
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Extend.VoteSucceeded}", g_cvarExtendTimeToAdd.Get());
 
 		return true;
 	}
@@ -655,7 +656,7 @@ bool CVoteManager::VoteExtendEndCallback(YesNoVoteInfo info)
 	// Vote failed so we don't allow any more votes
 	m_ExtendState = EExtendState::POST_EXTEND_FAILED;
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote failed! Further extend votes disabled!", g_cvarExtendTimeToAdd.Get());
+	ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Extend.VoteFailed}");
 
 	return false;
 }
@@ -680,7 +681,7 @@ void CVoteManager::StartExtendVote(int iCaller)
 			return -1.0f;
 		}
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Extend vote ending in %d....", m_iVoteEndTicks);
+		ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{Extend.EndingIn}", m_iVoteEndTicks);
 		m_iVoteEndTicks--;
 		return 1.0f;
 	});
@@ -713,7 +714,7 @@ bool CVoteManager::CheckRTVStatus()
 
 		if (g_cvarRTVEndRound.Get())
 		{
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! Ending the map now...");
+			ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{RTV.SucceededEnding}");
 
 			CTimer::Create(3.0f, TIMERFLAG_MAP, []() {
 				g_pGameRules->TerminateRound(5.0f, CSRoundEndReason::Draw);
@@ -723,7 +724,7 @@ bool CVoteManager::CheckRTVStatus()
 		}
 		else
 		{
-			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "RTV succeeded! This is the last round of the map!");
+			ClientPrintAllT(HUD_PRINTTALK, CHAT_PREFIX "{RTV.SucceededLastRound}");
 		}
 
 		for (int i = 0; i < GetGlobals()->maxClients; i++)

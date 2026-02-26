@@ -73,6 +73,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/topdefender.cpp',
     'src/idlemanager.cpp',
     'src/mapmigrations.cpp',
+    'src/translations.cpp',
     'sdk/entity2/entitysystem.cpp',
     'sdk/entity2/entityidentity.cpp',
     'sdk/entity2/entitykeyvalues.cpp',

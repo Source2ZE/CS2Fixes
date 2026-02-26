@@ -32,6 +32,7 @@
 #include "recipientfilters.h"
 #include "serversideclient.h"
 #include "tier0/vprof.h"
+#include "translations.h"
 #include "user_preferences.h"
 #include "utils/entity.h"
 #include "utlstring.h"
@@ -810,6 +811,9 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	g_pUserPreferencesSystem->PushPreferences(slot.Get());
 	g_pUserPreferencesSystem->ClearPreferences(slot.Get());
 
+	if (g_pTranslations)
+		g_pTranslations->ResetPlayerLanguage(slot.Get());
+
 	if (g_cvarEnableEntWatch.Get())
 		EW_PlayerDisconnect(slot.Get());
 
@@ -900,8 +904,8 @@ void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pRespons
 				if (!g_cvarDelayAuthFailKick.Get())
 					return;
 
-				ClientPrint(pController, HUD_PRINTTALK, " \7Your Steam authentication failed due to an invalid or used ticket.");
-				ClientPrint(pController, HUD_PRINTTALK, " \7You may have to restart your Steam client in order to fix this.\n");
+				ClientPrintT(pController, HUD_PRINTTALK, " {red}{Auth.InvalidTicket}");
+				ClientPrintT(pController, HUD_PRINTTALK, " {red}{Auth.RestartSteam}");
 				[[fallthrough]];
 			}
 
@@ -910,7 +914,7 @@ void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pRespons
 				if (!g_cvarDelayAuthFailKick.Get())
 					return;
 
-				ClientPrint(pController, HUD_PRINTTALK, " \7WARNING: You will be kicked in %i seconds due to failed Steam authentication.\n", g_cvarDelayAuthFailKick.Get());
+				ClientPrintT(pController, HUD_PRINTTALK, " {red}{Auth.KickWarning}", g_cvarDelayAuthFailKick.Get());
 
 				ZEPlayerHandle hPlayer = pPlayer->GetHandle();
 				CTimer::Create(g_cvarDelayAuthFailKick.Get(), TIMERFLAG_NONE, [hPlayer]() {
@@ -1628,58 +1632,39 @@ std::string CPlayerManager::GetErrorString(ETargetError eType, int iSlot)
 	switch (eType)
 	{
 		case ETargetError::INVALID:
-			return "No matching player was found.";
+			return "{Target.Invalid}";
 		case ETargetError::CONNECTING:
-			return "This action cannot be performed on connecting players. Please wait a moment and try again.";
+			return "{Target.Connecting}";
 		case ETargetError::MULTIPLE_NAME_MATCHES:
-			return "More than one player matched the given pattern. Consider using & before the player's name for exact matching.";
+			return "{Target.MultipleMatches}";
 		case ETargetError::RANDOM:
-			return "This action cannot be performed on random players.";
+			return "{Target.NoRandom}";
 		case ETargetError::MULTIPLE:
-			return "This action cannot be performed on multiple players.";
+			return "{Target.NoMultiple}";
 		case ETargetError::SELF:
-			return "This action cannot be performed on yourself.";
+			return "{Target.NoSelf}";
 		case ETargetError::BOT:
-			return "This action cannot be performed on bots.";
+			return "{Target.NoBot}";
 		case ETargetError::HUMAN:
-			return "This action can only be performed on bots.";
+			return "{Target.OnlyBot}";
 		case ETargetError::DEAD:
-			return "This action can only be performed on alive players.";
+			return "{Target.OnlyAlive}";
 		case ETargetError::ALIVE:
-			return "This action cannot be performed on alive players.";
+			return "{Target.NoAlive}";
 		case ETargetError::TERRORIST:
-			return "This action cannot be performed on terrorists.";
+			return "{Target.NoTerrorist}";
 		case ETargetError::COUNTER_TERRORIST:
-			return "This action cannot be performed on counter-terrorists.";
+			return "{Target.NoCT}";
 		case ETargetError::SPECTATOR:
-			return "This action cannot be performed on spectators.";
-	}
-
-	CCSPlayerController* pPlayer = iSlot ? CCSPlayerController::FromSlot(iSlot) : nullptr;
-	std::string strName = pPlayer ? pPlayer->GetPlayerName() : "";
-	if (strName.length() == 0)
-	{
-		switch (eType)
-		{
-			case ETargetError::UNAUTHENTICATED:
-				return "This action cannot be performed on unauthenticated players. Please wait a moment and try again.";
-			case ETargetError::INSUFFICIENT_IMMUNITY_LEVEL:
-				return "You do not have permission to target this player.";
-		}
-	}
-	else
-	{
-		switch (eType)
-		{
-			case ETargetError::UNAUTHENTICATED:
-				return strName + " is not yet authenticated. Please wait a moment and try again.";
-			case ETargetError::INSUFFICIENT_IMMUNITY_LEVEL:
-				return "You do not have permission to target " + strName + ".";
-		}
+			return "{Target.NoSpectator}";
+		case ETargetError::UNAUTHENTICATED:
+			return "{Target.Unauthenticated}";
+		case ETargetError::INSUFFICIENT_IMMUNITY_LEVEL:
+			return "{Target.NoPermission}";
 	}
 
 	// Should never reach here unless an ETargetError type was forgotten somewhere above.
-	return "Encountered an unknown ETargetError, please contact a dev with the exact command used.";
+	return "{Target.Unknown}";
 }
 
 // Return false if GetPlayersFromString returns anything other than NO_ERRORS and then print the
@@ -1692,7 +1677,11 @@ bool CPlayerManager::CanTargetPlayers(CCSPlayerController* pPlayer, const char* 
 
 	if (eType != ETargetError::NO_ERRORS)
 	{
-		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "%s", g_playerManager->GetErrorString(eType, (iNumClients == 0) ? 0 : pPlayer->GetPlayerSlot()).c_str());
+		std::string strError = g_playerManager->GetErrorString(eType);
+
+		char szFormat[256];
+		V_snprintf(szFormat, sizeof(szFormat), CHAT_PREFIX "%s", strError.c_str());
+		ClientPrintT(pPlayer, HUD_PRINTTALK, szFormat);
 		return false;
 	}
 	return true;

@@ -58,7 +58,9 @@ private:
 // When multiple hud messages are active, whichever one has highest priority one will display
 // Note this is a basic implementation (TODO: is this worth expanding?), so e.g. a previously sent lower priority message will not display once a higher priority one expires
 void SendHudMessage(ZEPlayer* pPlayer, int iDuration, EHudPriority ePriority, const char* pszMessage, ...);
+void SendHudMessageT(ZEPlayer* pPlayer, int iDuration, EHudPriority ePriority, const char* pszMessage, ...);
 void SendHudMessageAll(int iDuration, EHudPriority ePriority, const char* pszMessage, ...);
+void SendHudMessageAllT(int iDuration, EHudPriority ePriority, const char* pszMessage, ...);
 
 void StartFlashingFixTimer();
 std::string EscapeHTMLSpecialCharacters(std::string strMsg);

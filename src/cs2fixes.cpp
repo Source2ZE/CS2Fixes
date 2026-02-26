@@ -61,6 +61,7 @@
 #include "votemanager.h"
 #include "zombiereborn.h"
 #include <entity.h>
+#include "translations.h"
 
 #include "tier0/memdbgon.h"
 
@@ -358,6 +359,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	g_pPanoramaVoteHandler = new CPanoramaVoteHandler();
 	g_pEWHandler = new CEWHandler();
 	g_pMapMigrations = new CMapMigrations();
+	g_pTranslations = new CTranslations();
 
 	RegisterWeaponCommands();
 
@@ -400,6 +402,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 		if (g_cvarVoteManagerEnable.Get() && !g_pMapVoteSystem->IsMapListLoaded())
 			g_pMapVoteSystem->LoadMapList();
+
+		if (g_pTranslations)
+			g_pTranslations->LoadPhraseFile("cs2fixes.phrases.jsonc");
 
 		Message("Plugin late load finished\n");
 	}
@@ -507,6 +512,9 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	if (g_pMapMigrations)
 		delete g_pMapMigrations;
 
+	if (g_pTranslations)
+		delete g_pTranslations;
+
 	return true;
 }
 
@@ -558,7 +566,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 		else if (bFlooding)
 		{
 			if (pController)
-				ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "You are flooding the server!");
+				ClientPrintT(pController, HUD_PRINTTALK, CHAT_PREFIX "{General.Flooding}");
 		}
 		else if (bAdminChat && GetGlobals()) // Admin chat can be sent by anyone but only seen by admins, use flood protection here too
 		{
@@ -1295,6 +1303,9 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_OnLevelInit(pMapName);
+
+	if (g_pTranslations)
+		g_pTranslations->LoadPhraseFile("cs2fixes.phrases.jsonc");
 
 	StartFlashingFixTimer();
 }
