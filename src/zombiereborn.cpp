@@ -1980,7 +1980,12 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 			ZR_Infect(pTarget, pTarget, true);
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as a mother zombie" : "", ZR_PREFIX);
+		{
+			if (g_ZRRoundState == EZRRoundState::ROUND_START)
+				ClientPrintAllT(HUD_PRINTTALK, ZR_PREFIX "{ZR.ActionInfectedMotherZombie}", pszCommandPlayerName, pTarget->GetPlayerName());
+			else
+				ClientPrintAllT(HUD_PRINTTALK, ZR_PREFIX "{ZR.ActionInfected}", pszCommandPlayerName, pTarget->GetPlayerName());
+		}
 	}
 	if (iNumClients > 1)
 		PrintMultiAdminAction(nType, pszCommandPlayerName, "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as mother zombies" : "", ZR_PREFIX);
@@ -2034,7 +2039,7 @@ CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 		ZR_StripAndGiveKnife(pPawn);
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "revived", "", ZR_PREFIX);
+			ClientPrintAllT(HUD_PRINTTALK, ZR_PREFIX "{ZR.ActionRevived}", pszCommandPlayerName, pTarget->GetPlayerName());
 	}
 	if (iNumClients > 1)
 		PrintMultiAdminAction(nType, pszCommandPlayerName, "revived", "", ZR_PREFIX);

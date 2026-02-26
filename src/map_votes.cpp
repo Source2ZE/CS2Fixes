@@ -115,7 +115,7 @@ CON_COMMAND_CHAT(nomlist, "- List the list of nominations")
 	ClientPrintT(player, HUD_PRINTTALK, CHAT_PREFIX "{Map.CurrentNominations}");
 
 	for (auto pair : mapNominatedMaps)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "- %s (%d time%s)\n", g_pMapVoteSystem->GetMapName(pair.first), pair.second, pair.second > 1 ? "s" : "");
+		ClientPrintT(player, HUD_PRINTTALK, pair.second > 1 ? CHAT_PREFIX "{Map.NomListItemPlural}" : CHAT_PREFIX "{Map.NomListItem}", g_pMapVoteSystem->GetMapName(pair.first), pair.second);
 }
 
 CON_COMMAND_CHAT(mapcooldowns, "- List the maps currently in cooldown")

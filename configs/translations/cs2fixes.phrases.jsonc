@@ -285,6 +285,30 @@
 		"de": "Verwende {gold}!class <Name/Nummer>{default}, um eine Klasse auszuwählen.",
 		"ru": "Используйте {gold}!class <имя/номер>{default}, чтобы выбрать класс."
 	},
+	"ZR.ActionInfected": {
+		"en": "{purple}ADMIN {default}%s infected %s.",
+		"es": "{purple}ADMIN {default}%s infectó a %s.",
+		"pt": "{purple}ADMIN {default}%s infectou %s.",
+		"fr": "{purple}ADMIN {default}%s a infecté %s.",
+		"de": "{purple}ADMIN {default}%s hat %s infiziert.",
+		"ru": "{purple}ADMIN {default}%s заразил %s."
+	},
+	"ZR.ActionInfectedMotherZombie": {
+		"en": "{purple}ADMIN {default}%s infected %s as a mother zombie.",
+		"es": "{purple}ADMIN {default}%s infectó a %s como zombie madre.",
+		"pt": "{purple}ADMIN {default}%s infectou %s como zumbi mãe.",
+		"fr": "{purple}ADMIN {default}%s a infecté %s en tant que zombie mère.",
+		"de": "{purple}ADMIN {default}%s hat %s als Mutterzombie infiziert.",
+		"ru": "{purple}ADMIN {default}%s заразил %s как материнского зомби."
+	},
+	"ZR.ActionRevived": {
+		"en": "{purple}ADMIN {default}%s revived %s.",
+		"es": "{purple}ADMIN {default}%s revivió a %s.",
+		"pt": "{purple}ADMIN {default}%s reviveu %s.",
+		"fr": "{purple}ADMIN {default}%s a ressuscité %s.",
+		"de": "{purple}ADMIN {default}%s hat %s wiederbelebt.",
+		"ru": "{purple}ADMIN {default}%s воскресил %s."
+	},
 
 	// ---- Admin ----
 
@@ -343,6 +367,692 @@
 		"fr": "GetClientList() est null !",
 		"de": "GetClientList() ist null!",
 		"ru": "GetClientList() равен null!"
+	},
+	// %llu = STEAMID64
+	"Admin.UnbanUsage": {
+		"en": "Usage: !unban <steamid64>",
+		"es": "Uso: !unban <steamid64>",
+		"pt": "Uso: !unban <steamid64>",
+		"fr": "Utilisation : !unban <steamid64>",
+		"de": "Verwendung: !unban <steamid64>",
+		"ru": "Использование: !unban <steamid64>"
+	},
+	"Admin.UnbanNotFound": {
+		"en": "Couldn't find user with STEAMID64 <%llu> in ban infractions.",
+		"es": "No se pudo encontrar usuario con STEAMID64 <%llu> en infracciones de ban.",
+		"pt": "Não foi possível encontrar usuário com STEAMID64 <%llu> em infrações de ban.",
+		"fr": "Impossible de trouver l'utilisateur avec STEAMID64 <%llu> dans les infractions de bannissement.",
+		"de": "Konnte Benutzer mit STEAMID64 <%llu> in Bann-Verstößen nicht finden.",
+		"ru": "Не удалось найти пользователя с STEAMID64 <%llu> в банах."
+	},
+	"Admin.UnbanSuccess": {
+		"en": "User with STEAMID64 <%llu> has been unbanned.",
+		"es": "Usuario con STEAMID64 <%llu> ha sido desbaneado.",
+		"pt": "Usuário com STEAMID64 <%llu> foi desbanido.",
+		"fr": "L'utilisateur avec STEAMID64 <%llu> a été débanni.",
+		"de": "Benutzer mit STEAMID64 <%llu> wurde entbannt.",
+		"ru": "Пользователь с STEAMID64 <%llu> был разбанен."
+	},
+	"Admin.KickUsage": {
+		"en": "Usage: !kick <name>",
+		"es": "Uso: !kick <nombre>",
+		"pt": "Uso: !kick <nome>",
+		"fr": "Utilisation : !kick <nom>",
+		"de": "Verwendung: !kick <Name>",
+		"ru": "Использование: !kick <имя>"
+	},
+	"Admin.SlayUsage": {
+		"en": "Usage: !slay <name>",
+		"es": "Uso: !slay <nombre>",
+		"pt": "Uso: !slay <nome>",
+		"fr": "Utilisation : !slay <nom>",
+		"de": "Verwendung: !slay <Name>",
+		"ru": "Использование: !slay <имя>"
+	},
+	"Admin.SlapUsage": {
+		"en": "Usage: !slap <name> <optional damage>",
+		"es": "Uso: !slap <nombre> <daño opcional>",
+		"pt": "Uso: !slap <nome> <dano opcional>",
+		"fr": "Utilisation : !slap <nom> <dégâts facultatifs>",
+		"de": "Verwendung: !slap <Name> <optionaler Schaden>",
+		"ru": "Использование: !slap <имя> <необязательный урон>"
+	},
+	"Admin.GotoUsage": {
+		"en": "Usage: !goto <name>",
+		"es": "Uso: !goto <nombre>",
+		"pt": "Uso: !goto <nome>",
+		"fr": "Utilisation : !goto <nom>",
+		"de": "Verwendung: !goto <Name>",
+		"ru": "Использование: !goto <имя>"
+	},
+	"Admin.BringUsage": {
+		"en": "Usage: !bring <name>",
+		"es": "Uso: !bring <nombre>",
+		"pt": "Uso: !bring <nome>",
+		"fr": "Utilisation : !bring <nom>",
+		"de": "Verwendung: !bring <Name>",
+		"ru": "Использование: !bring <имя>"
+	},
+	"Admin.EntfireUsage": {
+		"en": "Usage: !entfire <name> <input> <optional parameter>",
+		"es": "Uso: !entfire <nombre> <input> <parámetro opcional>",
+		"pt": "Uso: !entfire <nome> <input> <parâmetro opcional>",
+		"fr": "Utilisation : !entfire <nom> <input> <paramètre facultatif>",
+		"de": "Verwendung: !entfire <Name> <Input> <optionaler Parameter>",
+		"ru": "Использование: !entfire <имя> <input> <необязательный параметр>"
+	},
+	"Admin.EntfireTargetNotFound": {
+		"en": "Target not found.",
+		"es": "Objetivo no encontrado.",
+		"pt": "Alvo não encontrado.",
+		"fr": "Cible introuvable.",
+		"de": "Ziel nicht gefunden.",
+		"ru": "Цель не найдена."
+	},
+	// %i = number of entities
+	"Admin.EntfireSuccess": {
+		"en": "Input successful on %i entities.",
+		"es": "Input exitoso en %i entidades.",
+		"pt": "Input bem-sucedido em %i entidades.",
+		"fr": "Input réussi sur %i entités.",
+		"de": "Input erfolgreich auf %i Entities.",
+		"ru": "Input успешен на %i сущностях."
+	},
+	"Admin.EntfirepawnUsage": {
+		"en": "Usage: !entfirepawn <name> <input> <optional parameter>",
+		"es": "Uso: !entfirepawn <nombre> <input> <parámetro opcional>",
+		"pt": "Uso: !entfirepawn <nome> <input> <parâmetro opcional>",
+		"fr": "Utilisation : !entfirepawn <nom> <input> <paramètre facultatif>",
+		"de": "Verwendung: !entfirepawn <Name> <Input> <optionaler Parameter>",
+		"ru": "Использование: !entfirepawn <имя> <input> <необязательный параметр>"
+	},
+	"Admin.EntfirepawnSuccess": {
+		"en": "Input successful on %i player pawns.",
+		"es": "Input exitoso en %i player pawns.",
+		"pt": "Input bem-sucedido em %i player pawns.",
+		"fr": "Input réussi sur %i player pawns.",
+		"de": "Input erfolgreich auf %i Player Pawns.",
+		"ru": "Input успешен на %i player pawns."
+	},
+	"Admin.EntfirecontrollerUsage": {
+		"en": "Usage: !entfirecontroller <name> <input> <optional parameter>",
+		"es": "Uso: !entfirecontroller <nombre> <input> <parámetro opcional>",
+		"pt": "Uso: !entfirecontroller <nome> <input> <parâmetro opcional>",
+		"fr": "Utilisation : !entfirecontroller <nom> <input> <paramètre facultatif>",
+		"de": "Verwendung: !entfirecontroller <Name> <Input> <optionaler Parameter>",
+		"ru": "Использование: !entfirecontroller <имя> <input> <необязательный параметр>"
+	},
+	"Admin.EntfirecontrollerSuccess": {
+		"en": "Input successful on %i player controllers.",
+		"es": "Input exitoso en %i player controllers.",
+		"pt": "Input bem-sucedido em %i player controllers.",
+		"fr": "Input réussi sur %i player controllers.",
+		"de": "Input erfolgreich auf %i Player Controllers.",
+		"ru": "Input успешен на %i player controllers."
+	},
+	"Admin.HsayUsage": {
+		"en": "Usage: !hsay <message>",
+		"es": "Uso: !hsay <mensaje>",
+		"pt": "Uso: !hsay <mensagem>",
+		"fr": "Utilisation : !hsay <message>",
+		"de": "Verwendung: !hsay <Nachricht>",
+		"ru": "Использование: !hsay <сообщение>"
+	},
+	"Admin.RconUsage": {
+		"en": "Usage: !rcon <command>",
+		"es": "Uso: !rcon <comando>",
+		"pt": "Uso: !rcon <comando>",
+		"fr": "Utilisation : !rcon <commande>",
+		"de": "Verwendung: !rcon <Befehl>",
+		"ru": "Использование: !rcon <команда>"
+	},
+	"Admin.RconExecuted": {
+		"en": "Command executed, see console for output (if any)",
+		"es": "Comando ejecutado, consulta la consola para ver la salida (si hay).",
+		"pt": "Comando executado, veja o console para a saída (se houver).",
+		"fr": "Commande exécutée, consultez la console pour la sortie (le cas échéant).",
+		"de": "Befehl ausgeführt, siehe Konsole für Ausgabe (falls vorhanden).",
+		"ru": "Команда выполнена, смотрите консоль для вывода (если есть)."
+	},
+	"Admin.RconExecutedSimple": {
+		"en": "Command executed.",
+		"es": "Comando ejecutado.",
+		"pt": "Comando executado.",
+		"fr": "Commande exécutée.",
+		"de": "Befehl ausgeführt.",
+		"ru": "Команда выполнена."
+	},
+	"Admin.ExtendUsage": {
+		"en": "Usage: !extend <minutes>",
+		"es": "Uso: !extend <minutos>",
+		"pt": "Uso: !extend <minutos>",
+		"fr": "Utilisation : !extend <minutes>",
+		"de": "Verwendung: !extend <Minuten>",
+		"ru": "Использование: !extend <минуты>"
+	},
+	"Admin.ExtendNoChange": {
+		"en": "Remaining map time has not been changed",
+		"es": "El tiempo restante del mapa no ha sido cambiado",
+		"pt": "O tempo restante do mapa não foi alterado",
+		"fr": "Le temps restant de la carte n'a pas été modifié",
+		"de": "Die verbleibende Map-Zeit wurde nicht geändert",
+		"ru": "Оставшееся время карты не было изменено"
+	},
+	// %s = admin name, %i = minutes
+	"Admin.ExtendShortened": {
+		"en": "{purple}ADMIN {default}%s shortened map time {lightred}%i minutes{default}.",
+		"es": "{purple}ADMIN {default}%s acortó el tiempo del mapa {lightred}%i minutos{default}.",
+		"pt": "{purple}ADMIN {default}%s encurtou o tempo do mapa {lightred}%i minutos{default}.",
+		"fr": "{purple}ADMIN {default}%s a raccourci le temps de la carte {lightred}%i minutes{default}.",
+		"de": "{purple}ADMIN {default}%s verkürzte Map-Zeit {lightred}%i Minuten{default}.",
+		"ru": "{purple}ADMIN {default}%s сократил время карты {lightred}%i минут{default}."
+	},
+	"Admin.ExtendExtended": {
+		"en": "{purple}ADMIN {default}%s extended map time {lime}%i minutes{default}.",
+		"es": "{purple}ADMIN {default}%s extendió el tiempo del mapa {lime}%i minutos{default}.",
+		"pt": "{purple}ADMIN {default}%s estendeu o tempo do mapa {lime}%i minutos{default}.",
+		"fr": "{purple}ADMIN {default}%s a étendu le temps de la carte {lime}%i minutes{default}.",
+		"de": "{purple}ADMIN {default}%s verlängerte Map-Zeit {lime}%i Minuten{default}.",
+		"ru": "{purple}ADMIN {default}%s продлил время карты {lime}%i минут{default}."
+	},
+	"Admin.PMUsage": {
+		"en": "Usage: /pm <name> <message>",
+		"es": "Uso: /pm <nombre> <mensaje>",
+		"pt": "Uso: /pm <nome> <mensagem>",
+		"fr": "Utilisation : /pm <nom> <message>",
+		"de": "Verwendung: /pm <Name> <Nachricht>",
+		"ru": "Использование: /pm <имя> <сообщение>"
+	},
+	"Admin.PMGagged": {
+		"en": "You may not private message players while gagged.",
+		"es": "No puedes enviar mensajes privados a jugadores mientras estés gagged.",
+		"pt": "Você não pode enviar mensagens privadas para jogadores enquanto estiver com gag.",
+		"fr": "Vous ne pouvez pas envoyer de messages privés aux joueurs lorsque vous êtes bâillonné.",
+		"de": "Du kannst keine privaten Nachrichten an Spieler senden, während du geknebelt bist.",
+		"ru": "Вы не можете отправлять личные сообщения игрокам, пока заглушены."
+	},
+	// %s = target name, %s = sender name, %s = message
+	"Admin.PMToOthers": {
+		"en": "{olive}[PM to %s]{purple} %s{default}: {olive}%s",
+		"es": "{olive}[PM para %s]{purple} %s{default}: {olive}%s",
+		"pt": "{olive}[PM para %s]{purple} %s{default}: {olive}%s",
+		"fr": "{olive}[PM à %s]{purple} %s{default} : {olive}%s",
+		"de": "{olive}[PM an %s]{purple} %s{default}: {olive}%s",
+		"ru": "{olive}[PM для %s]{purple} %s{default}: {olive}%s"
+	},
+	"Admin.PMToSender": {
+		"en": "{olive}[PM to %s]{purple} %s{default}: {olive}%s",
+		"es": "{olive}[PM para %s]{purple} %s{default}: {olive}%s",
+		"pt": "{olive}[PM para %s]{purple} %s{default}: {olive}%s",
+		"fr": "{olive}[PM à %s]{purple} %s{default} : {olive}%s",
+		"de": "{olive}[PM an %s]{purple} %s{default}: {olive}%s",
+		"ru": "{olive}[PM для %s]{purple} %s{default}: {olive}%s"
+	},
+	"Admin.PMToTarget": {
+		"en": "{olive}[PM]{purple} %s{default}: {olive}%s",
+		"es": "{olive}[PM]{purple} %s{default}: {olive}%s",
+		"pt": "{olive}[PM]{purple} %s{default}: {olive}%s",
+		"fr": "{olive}[PM]{purple} %s{default} : {olive}%s",
+		"de": "{olive}[PM]{purple} %s{default}: {olive}%s",
+		"ru": "{olive}[PM]{purple} %s{default}: {olive}%s"
+	},
+	"Admin.PMToSelf": {
+		"en": "{olive}[SELF]{purple} %s{default}: {olive}%s",
+		"es": "{olive}[SELF]{purple} %s{default}: {olive}%s",
+		"pt": "{olive}[SELF]{purple} %s{default}: {olive}%s",
+		"fr": "{olive}[SELF]{purple} %s{default} : {olive}%s",
+		"de": "{olive}[SELF]{purple} %s{default}: {olive}%s",
+		"ru": "{olive}[SELF]{purple} %s{default}: {olive}%s"
+	},
+	"Admin.StatusNoPunishmentsSelf": {
+		"en": "You have no active punishments.",
+		"es": "No tienes ningún castigo activo.",
+		"pt": "Você não tem punições ativas.",
+		"fr": "Vous n'avez aucune punition active.",
+		"de": "Du hast keine aktiven Strafen.",
+		"ru": "У вас нет активных наказаний."
+	},
+	// %s = target name
+	"Admin.StatusNoPunishments": {
+		"en": "%s has no active punishments.",
+		"es": "%s no tiene ningún castigo activo.",
+		"pt": "%s não tem punições ativas.",
+		"fr": "%s n'a aucune punition active.",
+		"de": "%s hat keine aktiven Strafen.",
+		"ru": "%s не имеет активных наказаний."
+	},
+	"Admin.StatusMuted": {
+		"en": "You are {darkred}muted{default}.",
+		"es": "Estás {darkred}muted{default}.",
+		"pt": "Você está {darkred}silenciado{default}.",
+		"fr": "Vous êtes {darkred}muet{default}.",
+		"de": "Du bist {darkred}stumm geschaltet{default}.",
+		"ru": "Вы {darkred}в муте{default}."
+	},
+	"Admin.StatusGagged": {
+		"en": "You are {darkred}gagged{default}.",
+		"es": "Estás {darkred}gagged{default}.",
+		"pt": "Você está com {darkred}gag{default}.",
+		"fr": "Vous êtes {darkred}bâillonné{default}.",
+		"de": "Du bist {darkred}geknebelt{default}.",
+		"ru": "Вы {darkred}заглушены{default}."
+	},
+	"Admin.StatusMutedAndGagged": {
+		"en": "You are {darkred}gagged{default} and {darkred}muted{default}.",
+		"es": "Estás {darkred}gagged{default} y {darkred}muted{default}.",
+		"pt": "Você está com {darkred}gag{default} e {darkred}mute{default}.",
+		"fr": "Vous êtes {darkred}bâillonné{default} et {darkred}muet{default}.",
+		"de": "Du bist {darkred}geknebelt{default} und {darkred}stumm geschaltet{default}.",
+		"ru": "Вы {darkred}заглушены{default} и в {darkred}муте{default}."
+	},
+	// %s = target name
+	"Admin.StatusTargetMuted": {
+		"en": "%s is {darkred}muted{default}.",
+		"es": "%s está {darkred}muted{default}.",
+		"pt": "%s está {darkred}silenciado{default}.",
+		"fr": "%s est {darkred}muet{default}.",
+		"de": "%s ist {darkred}stumm geschaltet{default}.",
+		"ru": "%s в {darkred}муте{default}."
+	},
+	"Admin.StatusTargetGagged": {
+		"en": "%s is {darkred}gagged{default}.",
+		"es": "%s está {darkred}gagged{default}.",
+		"pt": "%s está com {darkred}gag{default}.",
+		"fr": "%s est {darkred}bâillonné{default}.",
+		"de": "%s ist {darkred}geknebelt{default}.",
+		"ru": "%s {darkred}заглушен{default}."
+	},
+	"Admin.StatusTargetMutedAndGagged": {
+		"en": "%s is {darkred}gagged{default} and {darkred}muted{default}.",
+		"es": "%s está {darkred}gagged{default} y {darkred}muted{default}.",
+		"pt": "%s está com {darkred}gag{default} e {darkred}mute{default}.",
+		"fr": "%s est {darkred}bâillonné{default} et {darkred}muet{default}.",
+		"de": "%s ist {darkred}geknebelt{default} und {darkred}stumm geschaltet{default}.",
+		"ru": "%s {darkred}заглушен{default} и в {darkred}муте{default}."
+	},
+	"Admin.MoneyUsage": {
+		"en": "Usage: !money <name> <amount>",
+		"es": "Uso: !money <nombre> <cantidad>",
+		"pt": "Uso: !money <nome> <quantidade>",
+		"fr": "Utilisation : !money <nom> <montant>",
+		"de": "Verwendung: !money <Name> <Betrag>",
+		"ru": "Использование: !money <имя> <сумма>"
+	},
+	"Admin.MoneyInvalidAmount": {
+		"en": "Invalid amount specified.",
+		"es": "Cantidad especificada no válida.",
+		"pt": "Quantidade especificada inválida.",
+		"fr": "Quantité spécifiée non valide.",
+		"de": "Angegebene Menge ungültig.",
+		"ru": "Недопустимое количество."
+	},
+	"Admin.HealthUsage": {
+		"en": "Usage: !health <name> <health>",
+		"es": "Uso: !health <nombre> <vida>",
+		"pt": "Uso: !health <nome> <vida>",
+		"fr": "Utilisation : !health <nom> <santé>",
+		"de": "Verwendung: !health <Name> <Leben>",
+		"ru": "Использование: !health <имя> <здоровье>"
+	},
+	"Admin.HealthInvalidAmount": {
+		"en": "Invalid health amount specified.",
+		"es": "Cantidad de vida especificada no válida.",
+		"pt": "Quantidade de vida especificada inválida.",
+		"fr": "Quantité de vie spécifiée non valide.",
+		"de": "Ungültige angegebene Lebensdauer.",
+		"ru": "Недопустимое значение количества жизни."
+	},
+	"Admin.SetposMustBeAlive": {
+		"en": "You must be alive to use setpos.",
+		"es": "Debes estar vivo para usar setpos.",
+		"pt": "Você deve estar vivo para usar setpos.",
+		"fr": "Vous devez être en vie pour utiliser setpos.",
+		"de": "Du musst am Leben sein, um setpos zu verwenden.",
+		"ru": "Вы должны быть живы, чтобы использовать setpos."
+	},
+	"Admin.StripUsage": {
+		"en": "Usage: !strip <name>",
+		"es": "Uso: !strip <nombre>",
+		"pt": "Uso: !strip <nome>",
+		"fr": "Utilisation : !strip <nom>",
+		"de": "Verwendung: !strip <Name>",
+		"ru": "Использование: !strip <имя>"
+	},
+	"Admin.GiveUsage": {
+		"en": "Usage: !give <name> <weapon>",
+		"es": "Uso: !give <nombre> <arma>",
+		"pt": "Uso: !give <nome> <arma>",
+		"fr": "Utilisation : !give <nom> <arme>",
+		"de": "Verwendung: !give <Name> <Waffe>",
+		"ru": "Использование: !give <имя> <оружие>"
+	},
+	// %s = weapon name
+	"Admin.GiveInvalidWeapon": {
+		"en": "Invalid weapon: %s",
+		"es": "Arma inválida: %s",
+		"pt": "Arma inválida: %s",
+		"fr": "Arme invalide : %s",
+		"de": "Ungültige Waffe: %s",
+		"ru": "Неверное оружие: %s"
+	},
+	"Admin.GiveFailed": {
+		"en": "Failed to give weapon: %s",
+		"es": "Error al dar el arma: %s",
+		"pt": "Falha ao dar a arma: %s",
+		"fr": "Échec de l'attribution de l'arme : %s",
+		"de": "Waffe konnte nicht gegeben werden: %s",
+		"ru": "Не удалось выдать оружие: %s"
+	},
+	// %s = admin name, %s = target name
+	"Admin.ActionKicked": {
+		"en": "{purple}ADMIN {default}%s kicked %s.",
+		"es": "{purple}ADMIN {default}%s expulsó a %s.",
+		"pt": "{purple}ADMIN {default}%s expulsou %s.",
+		"fr": "{purple}ADMIN {default}%s a expulsé %s.",
+		"de": "{purple}ADMIN {default}%s kickte %s.",
+		"ru": "{purple}ADMIN {default}%s кикнул %s."
+	},
+	"Admin.ActionSlayed": {
+		"en": "{purple}ADMIN {default}%s slayed %s.",
+		"es": "{purple}ADMIN {default}%s mató a %s.",
+		"pt": "{purple}ADMIN {default}%s matou %s.",
+		"fr": "{purple}ADMIN {default}%s a tué %s.",
+		"de": "{purple}ADMIN {default}%s tötete %s.",
+		"ru": "{purple}ADMIN {default}%s убил %s."
+	},
+	"Admin.ActionSlapped": {
+		"en": "{purple}ADMIN {default}%s slapped %s.",
+		"es": "{purple}ADMIN {default}%s abofeteó a %s.",
+		"pt": "{purple}ADMIN {default}%s deu um tapa em %s.",
+		"fr": "{purple}ADMIN {default}%s a giflé %s.",
+		"de": "{purple}ADMIN {default}%s schlug %s.",
+		"ru": "{purple}ADMIN {default}%s дал пощёчину %s."
+	},
+	"Admin.ActionTeleportedTo": {
+		"en": "{purple}ADMIN {default}%s teleported to %s.",
+		"es": "{purple}ADMIN {default}%s se teletransportó a %s.",
+		"pt": "{purple}ADMIN {default}%s se teletransportou para %s.",
+		"fr": "{purple}ADMIN {default}%s s'est téléporté vers %s.",
+		"de": "{purple}ADMIN {default}%s teleportierte sich zu %s.",
+		"ru": "{purple}ADMIN {default}%s телепортировался к %s."
+	},
+	"Admin.ActionBrought": {
+		"en": "{purple}ADMIN {default}%s brought %s.",
+		"es": "{purple}ADMIN {default}%s trajo a %s.",
+		"pt": "{purple}ADMIN {default}%s trouxe %s.",
+		"fr": "{purple}ADMIN {default}%s a amené %s.",
+		"de": "{purple}ADMIN {default}%s holte %s.",
+		"ru": "{purple}ADMIN {default}%s притянул %s."
+	},
+	"Admin.ActionNoclipEnabled": {
+		"en": "{purple}ADMIN {default}%s enabled noclip on %s.",
+		"es": "{purple}ADMIN {default}%s activó noclip en %s.",
+		"pt": "{purple}ADMIN {default}%s ativou noclip em %s.",
+		"fr": "{purple}ADMIN {default}%s a activé noclip sur %s.",
+		"de": "{purple}ADMIN {default}%s aktivierte Noclip bei %s.",
+		"ru": "{purple}ADMIN {default}%s включил noclip для %s."
+	},
+	"Admin.ActionNoclipDisabled": {
+		"en": "{purple}ADMIN {default}%s disabled noclip on %s.",
+		"es": "{purple}ADMIN {default}%s desactivó noclip en %s.",
+		"pt": "{purple}ADMIN {default}%s desativou noclip em %s.",
+		"fr": "{purple}ADMIN {default}%s a désactivé noclip sur %s.",
+		"de": "{purple}ADMIN {default}%s deaktivierte Noclip bei %s.",
+		"ru": "{purple}ADMIN {default}%s отключил noclip для %s."
+	},
+	"Admin.ActionStripped": {
+		"en": "{purple}ADMIN {default}%s stripped %s.",
+		"es": "{purple}ADMIN {default}%s desarmó a %s.",
+		"pt": "{purple}ADMIN {default}%s desarmou %s.",
+		"fr": "{purple}ADMIN {default}%s a désarmé %s.",
+		"de": "{purple}ADMIN {default}%s entwaffnete %s.",
+		"ru": "{purple}ADMIN {default}%s разоружил %s."
+	},
+	// %s = admin name, %i = money, %s = target name
+	"Admin.ActionSetMoney": {
+		"en": "{purple}ADMIN {default}%s set $%i money on %s.",
+		"es": "{purple}ADMIN {default}%s estableció $%i de dinero a %s.",
+		"pt": "{purple}ADMIN {default}%s definiu $%i de dinheiro em %s.",
+		"fr": "{purple}ADMIN {default}%s a défini $%i d'argent sur %s.",
+		"de": "{purple}ADMIN {default}%s setzte $%i Geld bei %s.",
+		"ru": "{purple}ADMIN {default}%s установил $%i денег для %s."
+	},
+	// %s = admin name, %i = health, %s = target name
+	"Admin.ActionSetHealth": {
+		"en": "{purple}ADMIN {default}%s set %i health on %s.",
+		"es": "{purple}ADMIN {default}%s estableció %i de vida en %s.",
+		"pt": "{purple}ADMIN {default}%s definiu %i de vida em %s.",
+		"fr": "{purple}ADMIN {default}%s a défini %i de santé sur %s.",
+		"de": "{purple}ADMIN {default}%s setzte %i Leben bei %s.",
+		"ru": "{purple}ADMIN {default}%s установил %i здоровья для %s."
+	},
+	// %s = admin name, %s = weapon, %s = target name
+	"Admin.ActionGave": {
+		"en": "{purple}ADMIN {default}%s given %s to %s.",
+		"es": "{purple}ADMIN {default}%s dio %s a %s.",
+		"pt": "{purple}ADMIN {default}%s deu %s para %s.",
+		"fr": "{purple}ADMIN {default}%s a donné %s à %s.",
+		"de": "{purple}ADMIN {default}%s gab %s an %s.",
+		"ru": "{purple}ADMIN {default}%s выдал %s игроку %s."
+	},
+	// %s = admin name, %s = position
+	"Admin.ActionTeleportedToPos": {
+		"en": "{purple}ADMIN {default}%s teleported to %s.",
+		"es": "{purple}ADMIN {default}%s se teletransportó a %s.",
+		"pt": "{purple}ADMIN {default}%s se teletransportou para %s.",
+		"fr": "{purple}ADMIN {default}%s s'est téléporté à %s.",
+		"de": "{purple}ADMIN {default}%s teleportierte sich zu %s.",
+		"ru": "{purple}ADMIN {default}%s телепортировался к %s."
+	},
+	"Admin.ActionEveryone": {
+		"en": "{purple}ADMIN {default}%s %s everyone.",
+		"es": "{purple}ADMIN {default}%s %s a todos.",
+		"pt": "{purple}ADMIN {default}%s %s todos.",
+		"fr": "{purple}ADMIN {default}%s a %s tout le monde.",
+		"de": "{purple}ADMIN {default}%s %s alle.",
+		"ru": "{purple}ADMIN {default}%s %s всех."
+	},
+	"Admin.ActionSpectators": {
+		"en": "{purple}ADMIN {default}%s %s spectators.",
+		"es": "{purple}ADMIN {default}%s %s espectadores.",
+		"pt": "{purple}ADMIN {default}%s %s espectadores.",
+		"fr": "{purple}ADMIN {default}%s a %s les spectateurs.",
+		"de": "{purple}ADMIN {default}%s %s Zuschauer.",
+		"ru": "{purple}ADMIN {default}%s %s наблюдателей."
+	},
+	"Admin.ActionTerrorists": {
+		"en": "{purple}ADMIN {default}%s %s terrorists.",
+		"es": "{purple}ADMIN {default}%s %s terroristas.",
+		"pt": "{purple}ADMIN {default}%s %s terroristas.",
+		"fr": "{purple}ADMIN {default}%s a %s les terroristes.",
+		"de": "{purple}ADMIN {default}%s %s Terroristen.",
+		"ru": "{purple}ADMIN {default}%s %s террористов."
+	},
+	"Admin.ActionCounterTerrorists": {
+		"en": "{purple}ADMIN {default}%s %s counter-terrorists.",
+		"es": "{purple}ADMIN {default}%s %s contra-terroristas.",
+		"pt": "{purple}ADMIN {default}%s %s contra-terroristas.",
+		"fr": "{purple}ADMIN {default}%s a %s les contre-terroristes.",
+		"de": "{purple}ADMIN {default}%s %s Counter-Terroristen.",
+		"ru": "{purple}ADMIN {default}%s %s контр-террористов."
+	},
+	"Admin.ActionDeadPlayers": {
+		"en": "{purple}ADMIN {default}%s %s dead players.",
+		"es": "{purple}ADMIN {default}%s %s jugadores muertos.",
+		"pt": "{purple}ADMIN {default}%s %s jogadores mortos.",
+		"fr": "{purple}ADMIN {default}%s a %s les joueurs morts.",
+		"de": "{purple}ADMIN {default}%s %s tote Spieler.",
+		"ru": "{purple}ADMIN {default}%s %s мёртвых игроков."
+	},
+	"Admin.ActionAlivePlayers": {
+		"en": "{purple}ADMIN {default}%s %s alive players.",
+		"es": "{purple}ADMIN {default}%s %s jugadores vivos.",
+		"pt": "{purple}ADMIN {default}%s %s jogadores vivos.",
+		"fr": "{purple}ADMIN {default}%s a %s les joueurs vivants.",
+		"de": "{purple}ADMIN {default}%s %s lebende Spieler.",
+		"ru": "{purple}ADMIN {default}%s %s живых игроков."
+	},
+	"Admin.ActionBots": {
+		"en": "{purple}ADMIN {default}%s %s bots.",
+		"es": "{purple}ADMIN {default}%s %s bots.",
+		"pt": "{purple}ADMIN {default}%s %s bots.",
+		"fr": "{purple}ADMIN {default}%s a %s les bots.",
+		"de": "{purple}ADMIN {default}%s %s Bots.",
+		"ru": "{purple}ADMIN {default}%s %s ботов."
+	},
+	"Admin.ActionHumans": {
+		"en": "{purple}ADMIN {default}%s %s humans.",
+		"es": "{purple}ADMIN {default}%s %s humanos.",
+		"pt": "{purple}ADMIN {default}%s %s humanos.",
+		"fr": "{purple}ADMIN {default}%s a %s les humains.",
+		"de": "{purple}ADMIN {default}%s %s Menschen.",
+		"ru": "{purple}ADMIN {default}%s %s людей."
+	},
+	"Admin.ActionEveryoneExceptSelf": {
+		"en": "{purple}ADMIN {default}%s everyone except %s %s.",
+		"es": "{purple}ADMIN {default}%s todos excepto %s %s.",
+		"pt": "{purple}ADMIN {default}%s todos exceto %s %s.",
+		"fr": "{purple}ADMIN {default}%s tout le monde sauf %s %s.",
+		"de": "{purple}ADMIN {default}%s alle außer %s %s.",
+		"ru": "{purple}ADMIN {default}%s всех кроме %s %s."
+	},
+	"Admin.ActionEveryoneExceptRandom": {
+		"en": "{purple}ADMIN {default}%s %s everyone except a random player.",
+		"es": "{purple}ADMIN {default}%s %s todos excepto un jugador aleatorio.",
+		"pt": "{purple}ADMIN {default}%s %s todos exceto um jogador aleatório.",
+		"fr": "{purple}ADMIN {default}%s a %s tout le monde sauf un joueur aléatoire.",
+		"de": "{purple}ADMIN {default}%s %s alle außer einem zufälligen Spieler.",
+		"ru": "{purple}ADMIN {default}%s %s всех кроме случайного игрока."
+	},
+	"Admin.ActionEveryoneExceptRandomT": {
+		"en": "{purple}ADMIN {default}%s %s everyone except a random terrorist.",
+		"es": "{purple}ADMIN {default}%s %s todos excepto un terrorista aleatorio.",
+		"pt": "{purple}ADMIN {default}%s %s todos exceto um terrorista aleatório.",
+		"fr": "{purple}ADMIN {default}%s a %s tout le monde sauf un terroriste aléatoire.",
+		"de": "{purple}ADMIN {default}%s %s alle außer einem zufälligen Terroristen.",
+		"ru": "{purple}ADMIN {default}%s %s всех кроме случайного террориста."
+	},
+	"Admin.ActionEveryoneExceptRandomCT": {
+		"en": "{purple}ADMIN {default}%s %s everyone except a random counter-terrorist.",
+		"es": "{purple}ADMIN {default}%s %s todos excepto un contra-terrorista aleatorio.",
+		"pt": "{purple}ADMIN {default}%s %s todos exceto um contra-terrorista aleatório.",
+		"fr": "{purple}ADMIN {default}%s a %s tout le monde sauf un contre-terroriste aléatoire.",
+		"de": "{purple}ADMIN {default}%s %s alle außer einem zufälligen Counter-Terroristen.",
+		"ru": "{purple}ADMIN {default}%s %s всех кроме случайного контр-террориста."
+	},
+	"Admin.ActionEveryoneExceptRandomSpec": {
+		"en": "{purple}ADMIN {default}%s %s everyone except a random spectator.",
+		"es": "{purple}ADMIN {default}%s %s todos excepto un espectador aleatorio.",
+		"pt": "{purple}ADMIN {default}%s %s todos exceto um espectador aleatório.",
+		"fr": "{purple}ADMIN {default}%s a %s tout le monde sauf un spectateur aléatoire.",
+		"de": "{purple}ADMIN {default}%s %s alle außer einem zufälligen Zuschauer.",
+		"ru": "{purple}ADMIN {default}%s %s всех кроме случайного наблюдателя."
+	},
+	"Admin.ActionEveryoneExceptAim": {
+		"en": "{purple}ADMIN {default}%s %s everyone except a targetted player.",
+		"es": "{purple}ADMIN {default}%s %s todos excepto un jugador objetivo.",
+		"pt": "{purple}ADMIN {default}%s %s todos exceto um jogador alvo.",
+		"fr": "{purple}ADMIN {default}%s a %s tout le monde sauf un joueur ciblé.",
+		"de": "{purple}ADMIN {default}%s %s alle außer einem anvisierten Spieler.",
+		"ru": "{purple}ADMIN {default}%s %s всех кроме целевого игрока."
+	},
+	"Admin.ActionNonSpectators": {
+		"en": "{purple}ADMIN {default}%s %s non-spectators.",
+		"es": "{purple}ADMIN {default}%s %s no espectadores.",
+		"pt": "{purple}ADMIN {default}%s %s não-espectadores.",
+		"fr": "{purple}ADMIN {default}%s a %s les non-spectateurs.",
+		"de": "{purple}ADMIN {default}%s %s Nicht-Zuschauer.",
+		"ru": "{purple}ADMIN {default}%s %s не-наблюдателей."
+	},
+	"Admin.ActionNonTerrorists": {
+		"en": "{purple}ADMIN {default}%s %s non-terrorists.",
+		"es": "{purple}ADMIN {default}%s %s no terroristas.",
+		"pt": "{purple}ADMIN {default}%s %s não-terroristas.",
+		"fr": "{purple}ADMIN {default}%s a %s les non-terroristes.",
+		"de": "{purple}ADMIN {default}%s %s Nicht-Terroristen.",
+		"ru": "{purple}ADMIN {default}%s %s не-террористов."
+	},
+	"Admin.ActionNonCounterTerrorists": {
+		"en": "{purple}ADMIN {default}%s %s non-counter-terrorists.",
+		"es": "{purple}ADMIN {default}%s %s no contra-terroristas.",
+		"pt": "{purple}ADMIN {default}%s %s não-contra-terroristas.",
+		"fr": "{purple}ADMIN {default}%s a %s les non-contre-terroristes.",
+		"de": "{purple}ADMIN {default}%s %s Nicht-Counter-Terroristen.",
+		"ru": "{purple}ADMIN {default}%s %s не-контр-террористов."
+	},
+	"Admin.InfractionUsageAdd": {
+		"en": "Usage: !%s <name> <duration>",
+		"es": "Uso: !%s <nombre> <duración>",
+		"pt": "Uso: !%s <nome> <duração>",
+		"fr": "Utilisation : !%s <nom> <durée>",
+		"de": "Verwendung: !%s <Name> <Dauer>",
+		"ru": "Использование: !%s <имя> <длительность>"
+	},
+	"Admin.InfractionUsageRemove": {
+		"en": "Usage: !%s <name>",
+		"es": "Uso: !%s <nombre>",
+		"pt": "Uso: !%s <nome>",
+		"fr": "Utilisation : !%s <nom>",
+		"de": "Verwendung: !%s <Name>",
+		"ru": "Использование: !%s <имя>"
+	},
+	"Admin.InfractionInvalidDuration": {
+		"en": "Invalid duration.",
+		"es": "Duración inválida.",
+		"pt": "Duração inválida.",
+		"fr": "Durée invalide.",
+		"de": "Ungültige Dauer.",
+		"ru": "Неверная длительность."
+	},
+	"Admin.InfractionOnlyIndividuals": {
+		"en": "You may only permanently %s individuals.",
+		"es": "Solo puedes %s permanentemente a individuos.",
+		"pt": "Você só pode %s indivíduos permanentemente.",
+		"fr": "Vous ne pouvez %s que des individus de façon permanente.",
+		"de": "Du kannst nur Einzelpersonen permanent %s.",
+		"ru": "Вы можете %s только отдельных игроков навсегда."
+	},
+	"Admin.InfractionImproperType": {
+		"en": "Improper block type... Send to a dev with the command used.",
+		"es": "Tipo de bloqueo incorrecto... Envía un mensaje a un desarrollador con el comando usado.",
+		"pt": "Tipo de bloqueio incorreto... Envie uma mensagem a um programador com o comando utilizado.",
+		"fr": "Type de verrouillage incorrect... Envoyez un message à un développeur avec la commande utilisée.",
+		"de": "Falsche Sperrart... Senden Sie eine Nachricht an einen Entwickler mit dem verwendeten Befehl.",
+		"ru": "Неверный тип блокировки... Отправьте сообщение разработчику с использованной командой."
+	},
+	// %s = admin name, %s = target name, %s = duration
+	"Admin.InfractionAppliedTemp": {
+		"en": "{purple}ADMIN {default}%s %s %s for %s.",
+		"es": "{purple}ADMIN {default}%s %s %s por %s.",
+		"pt": "{purple}ADMIN {default}%s %s %s por %s.",
+		"fr": "{purple}ADMIN {default}%s a %s %s pour %s.",
+		"de": "{purple}ADMIN {default}%s %s %s für %s.",
+		"ru": "{purple}ADMIN {default}%s %s %s на %s."
+	},
+	"Admin.InfractionAppliedPerm": {
+		"en": "{purple}ADMIN {default}%s permanently %s %s.",
+		"es": "{purple}ADMIN {default}%s %s %s permanentemente.",
+		"pt": "{purple}ADMIN {default}%s %s %s permanentemente.",
+		"fr": "{purple}ADMIN {default}%s a %s %s de façon permanente.",
+		"de": "{purple}ADMIN {default}%s %s %s permanent.",
+		"ru": "{purple}ADMIN {default}%s %s %s навсегда."
+	},
+	"Admin.InfractionRemoved": {
+		"en": "{purple}ADMIN {default}%s %s %s.",
+		"es": "{purple}ADMIN {default}%s %s %s.",
+		"pt": "{purple}ADMIN {default}%s %s %s.",
+		"fr": "{purple}ADMIN {default}%s a %s %s.",
+		"de": "{purple}ADMIN {default}%s %s %s.",
+		"ru": "{purple}ADMIN {default}%s %s %s."
+	},
+	// %s = admin name, %s = target name, %s = team name
+	"Admin.ActionMovedToTeam": {
+		"en": "{purple}ADMIN {default}%s moved %s to %s.",
+		"es": "{purple}ADMIN {default}%s movió a %s a %s.",
+		"pt": "{purple}ADMIN {default}%s moveu %s para %s.",
+		"fr": "{purple}ADMIN {default}%s a déplacé %s vers %s.",
+		"de": "{purple}ADMIN {default}%s verschob %s zu %s.",
+		"ru": "{purple}ADMIN {default}%s переместил %s в %s."
 	},
 
 	// ---- Steam Auth ----
@@ -981,6 +1691,22 @@
 		"fr": "Nominations actuelles :",
 		"de": "Aktuelle Nominierungen:",
 		"ru": "Текущие номинации:"
+	},
+	"Map.NomListItem": {
+		"en": "- %s (%d time)",
+		"es": "- %s (%d vez)",
+		"pt": "- %s (%d vez)",
+		"fr": "- %s (%d fois)",
+		"de": "- %s (%d Mal)",
+		"ru": "- %s (%d раз)"
+	},
+	"Map.NomListItemPlural": {
+		"en": "- %s (%d times)",
+		"es": "- %s (%d veces)",
+		"pt": "- %s (%d vezes)",
+		"fr": "- %s (%d fois)",
+		"de": "- %s (%d Mal)",
+		"ru": "- %s (%d раз)"
 	},
 	"Map.NoCooldowns": {
 		"en": "There are no maps on cooldown!",
@@ -1773,12 +2499,12 @@
 	// ---- Top Defender ----
 
 	"TD.Title": {
-		"en": "*** TOP DEFENDERS ***",
-		"es": "*** MEJORES DEFENSORES ***",
-		"pt": "*** MELHORES DEFENSORES ***",
-		"fr": "*** MEILLEURS DÉFENSEURS ***",
-		"de": "*** TOP VERTEIDIGER ***",
-		"ru": "*** ЛУЧШИЕ ЗАЩИТНИКИ ***"
+		"en": "{yellow} *** TOP DEFENDERS ***",
+		"es": "{yellow} *** MEJORES DEFENSORES ***",
+		"pt": "{yellow} *** MELHORES DEFENSORES ***",
+		"fr": "{yellow} *** MEILLEURS DÉFENSEURS ***",
+		"de": "{yellow} *** TOP VERTEIDIGER ***",
+		"ru": "{yellow} *** ЛУЧШИЕ ЗАЩИТНИКИ ***"
 	},
 	"TD.Fail1": {
 		"en": "No top defenders? You all are bad.",

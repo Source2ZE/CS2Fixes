@@ -218,7 +218,7 @@ void TD_OnRoundEnd(IGameEvent* pEvent)
 		}
 	}
 
-	ClientPrintAllT(HUD_PRINTTALK, " {yellow}{TD.Title}");
+	ClientPrintAllT(HUD_PRINTTALK, "{TD.Title}");
 
 	// Check if players damaged more than threshold
 	if (sortedPlayers.size() == 0)

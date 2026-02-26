@@ -373,11 +373,9 @@ static std::string TranslatePlaceholders(const char* pszMessage, int iSlot)
 			break;
 
 		std::string key = strMessage.substr(pos + 1, endPos - pos - 1);
-		
 		if (g_pTranslations)
 		{
 			const char* pszTranslated = g_pTranslations->Translate(key.c_str(), iSlot);
-			
 			if (V_strcmp(pszTranslated, key.c_str()) != 0)
 			{
 				strMessage.replace(pos, endPos - pos + 1, pszTranslated);
@@ -388,6 +386,9 @@ static std::string TranslatePlaceholders(const char* pszMessage, int iSlot)
 
 		pos = endPos + 1;
 	}
+
+	if (g_pTranslations)
+		strMessage = g_pTranslations->ProcessColorTokens(strMessage);
 
 	return strMessage;
 }

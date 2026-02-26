@@ -53,13 +53,14 @@ public:
 	const std::vector<std::string>& GetLanguages() const { return m_vecLanguages; }
 	const char* GetLanguageDisplayName(const char* pszLangCode);
 
+	static std::string ProcessColorTokens(const std::string& strText);
+
 private:
 	std::map<uint32, CPhrase> m_mapPhrases;
 	std::string m_strPlayerLanguages[MAXPLAYERS];
 	std::vector<std::string> m_vecLanguages;
- 
+
 	void RegisterLanguage(const char* pszLangCode);
-	static std::string ProcessColorTokens(const std::string& strText);
 };
 
 extern CTranslations* g_pTranslations;
