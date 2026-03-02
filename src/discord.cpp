@@ -38,38 +38,36 @@ void DiscordHttpCallback(HTTPRequestHandle request, json response)
 		Message("Discord post received response: %s\n", response.dump().c_str());
 }
 
-void CDiscordBotManager::PostDiscordMessage(const char* sDiscordBotName, const char* sMessage)
+void CDiscordBotManager::PostDiscordMessage(const char* pszDiscordBotName, const char* pszMessage)
 {
-	for (int i = 0; i < m_vecDiscordBots.size(); i++)
+	for (auto pBot : m_vecDiscordBots)
 	{
-		CDiscordBot bot = m_vecDiscordBots[i];
-
 		if (g_cvarDebugDiscordRequests.Get())
-			Message("The bot at %i is %s with %s webhook and %s avatar.\n", i, bot.GetName(), bot.GetWebhookUrl(), bot.GetAvatarUrl());
+			Message("The bot is %s with %s webhook and %s avatar.\n", pBot->GetName(), pBot->GetWebhookUrl(), pBot->GetAvatarUrl());
 
-		if (!V_stricmp(sDiscordBotName, bot.GetName()))
-			bot.PostMessage(sMessage);
+		if (!V_stricmp(pszDiscordBotName, pBot->GetName()))
+			pBot->PostMessage(pszMessage);
 	}
 }
 
-void CDiscordBot::PostMessage(const char* sMessage)
+void CDiscordBot::PostMessage(std::string strMessage)
 {
 	json jRequestBody;
 
 	// Fill up the Json fields
-	jRequestBody["content"] = sMessage;
+	jRequestBody["content"] = strMessage;
 
 	if (m_bOverrideName)
-		jRequestBody["username"] = m_pszName;
+		jRequestBody["username"] = m_strName;
 
-	if (V_strcmp(m_pszAvatarUrl, ""))
-		jRequestBody["avatar_url"] = m_pszAvatarUrl;
+	if (V_strcmp(GetAvatarUrl(), ""))
+		jRequestBody["avatar_url"] = m_strAvatarUrl;
 
 	// Send the request
 	std::string sRequestBody = jRequestBody.dump();
 	if (g_cvarDebugDiscordRequests.Get())
 		Message("Sending '%s' to %s.\n", sRequestBody.c_str(), GetWebhookUrl());
-	g_HTTPManager.Post(m_pszWebhookUrl, sRequestBody.c_str(), &DiscordHttpCallback);
+	g_HTTPManager.Post(m_strWebhookUrl, sRequestBody, &DiscordHttpCallback);
 }
 
 bool CDiscordBotManager::LoadDiscordBotsConfig()
@@ -101,11 +99,11 @@ bool CDiscordBotManager::LoadDiscordBotsConfig()
 			pszAvatarUrl = "";
 
 		// We just append the bots as-is
-		CDiscordBot bot = CDiscordBot(pszName, pszWebhookUrl, pszAvatarUrl, bOverrideName);
-		ConMsg("Loaded DiscordBot config %s\n", bot.GetName());
-		ConMsg(" - Webhook URL: %s\n", bot.GetWebhookUrl());
-		ConMsg(" - Avatar URL: %s\n", bot.GetAvatarUrl());
-		m_vecDiscordBots.push_back(bot);
+		std::shared_ptr<CDiscordBot> pBot = std::make_shared<CDiscordBot>(pszName, pszWebhookUrl, pszAvatarUrl, bOverrideName);
+		ConMsg("Loaded DiscordBot config %s\n", pBot->GetName());
+		ConMsg(" - Webhook URL: %s\n", pBot->GetWebhookUrl());
+		ConMsg(" - Avatar URL: %s\n", pBot->GetAvatarUrl());
+		m_vecDiscordBots.push_back(pBot);
 	}
 
 	return true;

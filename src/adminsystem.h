@@ -178,7 +178,7 @@ public:
 	bool LoadAdmins();
 	void AddOrUpdateAdmin(uint64 iSteamID, uint64 iFlags = 0, int iAdminImmunity = 0);
 	bool LoadInfractions();
-	void AddInfraction(CInfractionBase*);
+	void AddInfraction(std::shared_ptr<CInfractionBase> pInfraction);
 	void SaveInfractions();
 	bool ApplyInfractions(ZEPlayer* player);
 	bool FindAndRemoveInfraction(ZEPlayer* player, CInfractionBase::EInfractionType type);
@@ -195,7 +195,7 @@ public:
 private:
 	std::map<std::string, CAdminBase> m_mapAdminGroups;
 	std::map<uint64, CAdmin> m_mapAdmins;
-	std::vector<CInfractionBase*> m_vecInfractions;
+	std::vector<std::shared_ptr<CInfractionBase>> m_vecInfractions;
 
 	// Implemented as a circular buffer.
 	std::tuple<std::string, uint64, std::string> m_rgDCPly[20];

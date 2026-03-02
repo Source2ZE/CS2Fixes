@@ -1568,13 +1568,13 @@ bool CAdminSystem::LoadInfractions()
 		switch (iType)
 		{
 			case CInfractionBase::Ban:
-				AddInfraction(new CBanInfraction(iEndTime, iSteamId, true));
+				AddInfraction(std::make_shared<CBanInfraction>(iEndTime, iSteamId, true));
 				break;
 			case CInfractionBase::Mute:
-				AddInfraction(new CMuteInfraction(iEndTime, iSteamId, true));
+				AddInfraction(std::make_shared<CMuteInfraction>(iEndTime, iSteamId, true));
 				break;
 			case CInfractionBase::Gag:
-				AddInfraction(new CGagInfraction(iEndTime, iSteamId, true));
+				AddInfraction(std::make_shared<CGagInfraction>(iEndTime, iSteamId, true));
 				break;
 			default:
 				Warning("Invalid infraction type %d\n", iType);
@@ -1616,9 +1616,9 @@ void CAdminSystem::SaveInfractions()
 		Warning("Failed to save infractions to %s\n", szPath);
 }
 
-void CAdminSystem::AddInfraction(CInfractionBase* infraction)
+void CAdminSystem::AddInfraction(std::shared_ptr<CInfractionBase> pInfraction)
 {
-	m_vecInfractions.push_back(infraction);
+	m_vecInfractions.push_back(pInfraction);
 }
 
 // This function can run at least twice when a player connects: Immediately upon client connection, and also upon getting authenticated by steam.
@@ -1961,31 +1961,31 @@ void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAd
 			g_pAdminSystem->FindAndRemoveInfraction(zpTarget, infType);
 		else
 		{
-			CInfractionBase* infraction;
+			std::shared_ptr<CInfractionBase> pInfraction;
 			switch (infType)
 			{
 				case CInfractionBase::Mute:
-					infraction = new CMuteInfraction(iDuration, zpTarget->GetSteamId64());
+					pInfraction = std::make_shared<CMuteInfraction>(iDuration, zpTarget->GetSteamId64());
 					break;
 				case CInfractionBase::Gag:
-					infraction = new CGagInfraction(iDuration, zpTarget->GetSteamId64());
+					pInfraction = std::make_shared<CGagInfraction>(iDuration, zpTarget->GetSteamId64());
 					break;
 				case CInfractionBase::Ban:
-					infraction = new CBanInfraction(iDuration, zpTarget->GetSteamId64());
+					pInfraction = std::make_shared<CBanInfraction>(iDuration, zpTarget->GetSteamId64());
 					break;
 				case CInfractionBase::Eban:
-					infraction = new CEbanInfraction(iDuration, zpTarget->GetSteamId64());
+					pInfraction = std::make_shared<CEbanInfraction>(iDuration, zpTarget->GetSteamId64());
 					break;
 				default:
-					// This should never be reached, since we it means we are trying to apply an unimplemented block type
+					// This should never be reached, since it means we are trying to apply an unimplemented block type
 					ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "Improper block type... Send to a dev with the command used.");
 					return;
 			}
 
 			// We're overwriting the infraction, so remove the previous one first
 			g_pAdminSystem->FindAndRemoveInfraction(zpTarget, infType);
-			g_pAdminSystem->AddInfraction(infraction);
-			infraction->ApplyInfraction(zpTarget);
+			g_pAdminSystem->AddInfraction(pInfraction);
+			pInfraction->ApplyInfraction(zpTarget);
 		}
 
 		if (iNumClients == 1 || (bAdding && iDuration == 0))
