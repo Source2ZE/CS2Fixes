@@ -1529,7 +1529,7 @@ void CAdminSystem::AddOrUpdateAdmin(uint64 iSteamID, uint64 iFlags, int iAdminIm
 
 bool CAdminSystem::LoadInfractions()
 {
-	m_vecInfractions.PurgeAndDeleteElements();
+	m_vecInfractions.clear();
 	KeyValues* pKV = new KeyValues("infractions");
 	KeyValues::AutoDelete autoDelete(pKV);
 
@@ -1568,13 +1568,13 @@ bool CAdminSystem::LoadInfractions()
 		switch (iType)
 		{
 			case CInfractionBase::Ban:
-				AddInfraction(new CBanInfraction(iEndTime, iSteamId, true));
+				AddInfraction(std::make_shared<CBanInfraction>(iEndTime, iSteamId, true));
 				break;
 			case CInfractionBase::Mute:
-				AddInfraction(new CMuteInfraction(iEndTime, iSteamId, true));
+				AddInfraction(std::make_shared<CMuteInfraction>(iEndTime, iSteamId, true));
 				break;
 			case CInfractionBase::Gag:
-				AddInfraction(new CGagInfraction(iEndTime, iSteamId, true));
+				AddInfraction(std::make_shared<CGagInfraction>(iEndTime, iSteamId, true));
 				break;
 			default:
 				Warning("Invalid infraction type %d\n", iType);
@@ -1590,7 +1590,7 @@ void CAdminSystem::SaveInfractions()
 	KeyValues* pSubKey;
 	KeyValues::AutoDelete autoDelete(pKV);
 
-	FOR_EACH_VEC(m_vecInfractions, i)
+	for (int i = 0; i < m_vecInfractions.size(); i++)
 	{
 		time_t timestamp = m_vecInfractions[i]->GetTimestamp();
 		if (timestamp != 0 && timestamp < std::time(0))
@@ -1616,9 +1616,9 @@ void CAdminSystem::SaveInfractions()
 		Warning("Failed to save infractions to %s\n", szPath);
 }
 
-void CAdminSystem::AddInfraction(CInfractionBase* infraction)
+void CAdminSystem::AddInfraction(std::shared_ptr<CInfractionBase> pInfraction)
 {
-	m_vecInfractions.AddToTail(infraction);
+	m_vecInfractions.push_back(pInfraction);
 }
 
 // This function can run at least twice when a player connects: Immediately upon client connection, and also upon getting authenticated by steam.
@@ -1626,7 +1626,7 @@ void CAdminSystem::AddInfraction(CInfractionBase* infraction)
 // This returns false only when called from ClientConnect and the player is banned in order to reject them.
 bool CAdminSystem::ApplyInfractions(ZEPlayer* player)
 {
-	FOR_EACH_VEC(m_vecInfractions, i)
+	for (int i = m_vecInfractions.size() - 1; i >= 0; i--)
 	{
 		// Because this can run without the player being authenticated, and the fact that we're applying a ban/mute here,
 		// we can immediately just use the steamid we got from the connecting player.
@@ -1642,7 +1642,7 @@ bool CAdminSystem::ApplyInfractions(ZEPlayer* player)
 		time_t timestamp = m_vecInfractions[i]->GetTimestamp();
 		if (timestamp != 0 && timestamp <= std::time(0))
 		{
-			m_vecInfractions.Remove(i);
+			m_vecInfractions.erase(m_vecInfractions.begin() + i);
 			continue;
 		}
 
@@ -1658,12 +1658,12 @@ bool CAdminSystem::ApplyInfractions(ZEPlayer* player)
 
 bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer* player, CInfractionBase::EInfractionType type)
 {
-	FOR_EACH_VEC_BACK(m_vecInfractions, i)
+	for (int i = m_vecInfractions.size() - 1; i >= 0; i--)
 	{
 		if (m_vecInfractions[i]->GetSteamId64() == player->GetSteamId64() && m_vecInfractions[i]->GetType() == type)
 		{
 			m_vecInfractions[i]->UndoInfraction(player);
-			m_vecInfractions.Remove(i);
+			m_vecInfractions.erase(m_vecInfractions.begin() + i);
 
 			return true;
 		}
@@ -1674,11 +1674,11 @@ bool CAdminSystem::FindAndRemoveInfraction(ZEPlayer* player, CInfractionBase::EI
 
 bool CAdminSystem::FindAndRemoveInfractionSteamId64(uint64 steamid64, CInfractionBase::EInfractionType type)
 {
-	FOR_EACH_VEC_BACK(m_vecInfractions, i)
+	for (int i = m_vecInfractions.size() - 1; i >= 0; i--)
 	{
 		if (m_vecInfractions[i]->GetSteamId64() == steamid64 && m_vecInfractions[i]->GetType() == type)
 		{
-			m_vecInfractions.Remove(i);
+			m_vecInfractions.erase(m_vecInfractions.begin() + i);
 
 			return true;
 		}
@@ -1961,31 +1961,31 @@ void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAd
 			g_pAdminSystem->FindAndRemoveInfraction(zpTarget, infType);
 		else
 		{
-			CInfractionBase* infraction;
+			std::shared_ptr<CInfractionBase> pInfraction;
 			switch (infType)
 			{
 				case CInfractionBase::Mute:
-					infraction = new CMuteInfraction(iDuration, zpTarget->GetSteamId64());
+					pInfraction = std::make_shared<CMuteInfraction>(iDuration, zpTarget->GetSteamId64());
 					break;
 				case CInfractionBase::Gag:
-					infraction = new CGagInfraction(iDuration, zpTarget->GetSteamId64());
+					pInfraction = std::make_shared<CGagInfraction>(iDuration, zpTarget->GetSteamId64());
 					break;
 				case CInfractionBase::Ban:
-					infraction = new CBanInfraction(iDuration, zpTarget->GetSteamId64());
+					pInfraction = std::make_shared<CBanInfraction>(iDuration, zpTarget->GetSteamId64());
 					break;
 				case CInfractionBase::Eban:
-					infraction = new CEbanInfraction(iDuration, zpTarget->GetSteamId64());
+					pInfraction = std::make_shared<CEbanInfraction>(iDuration, zpTarget->GetSteamId64());
 					break;
 				default:
-					// This should never be reached, since we it means we are trying to apply an unimplemented block type
+					// This should never be reached, since it means we are trying to apply an unimplemented block type
 					ClientPrint(pAdmin, HUD_PRINTTALK, CHAT_PREFIX "Improper block type... Send to a dev with the command used.");
 					return;
 			}
 
 			// We're overwriting the infraction, so remove the previous one first
 			g_pAdminSystem->FindAndRemoveInfraction(zpTarget, infType);
-			g_pAdminSystem->AddInfraction(infraction);
-			infraction->ApplyInfraction(zpTarget);
+			g_pAdminSystem->AddInfraction(pInfraction);
+			pInfraction->ApplyInfraction(zpTarget);
 		}
 
 		if (iNumClients == 1 || (bAdding && iDuration == 0))
