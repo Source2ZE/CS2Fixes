@@ -217,7 +217,6 @@ public:
 	void SetDisabledCooldowns(bool bValue) { g_bDisableCooldowns = bValue; } // Can be used by custom fork features, e.g. an auto-restart
 	void ProcessGroupCooldowns();
 	bool ReloadMapList(bool bReloadMap = true);
-	bool ConvertCooldownsKVToJSON();
 	void AddWorkshopDetailsQuery(std::shared_ptr<CMapSystemWorkshopDetailsQuery> pQuery) { m_vecWorkshopDetailsQueries.push_back(pQuery); }
 	void RemoveWorkshopDetailsQuery(std::shared_ptr<CMapSystemWorkshopDetailsQuery> pQuery) { m_vecWorkshopDetailsQueries.erase(std::remove(m_vecWorkshopDetailsQueries.begin(), m_vecWorkshopDetailsQueries.end(), pQuery), m_vecWorkshopDetailsQueries.end()); }
 	void SetPlayerNomination(int iPlayerSlot, int iMapIndex) { m_arrPlayerNominations[iPlayerSlot] = iMapIndex; }
