@@ -410,7 +410,12 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 	VPROF_SCOPE_BEGIN("Detour_CEntityIdentity_AcceptInput");
 
 	if (g_cvarEnableZR.Get())
-		ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+	{
+		bool result = ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+
+		if (!result)
+			return result;
+	}
 
 	// Handle KeyValue(s)
 	if (!V_strnicmp(pInputName->String(), "KeyValue", 8))
