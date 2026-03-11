@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023-2025 Source2ZE
+ * Copyright (C) 2023-2026 Source2ZE
  * =============================================================================
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -84,6 +84,7 @@ class CPlayerPawnComponent
 	virtual void unk_15() = 0;
 	virtual void unk_16() = 0;
 	virtual void unk_17() = 0;
+	virtual void unk_18() = 0;
 
 public:
 	DECLARE_SCHEMA_CLASS(CPlayerPawnComponent);

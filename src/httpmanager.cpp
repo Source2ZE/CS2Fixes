@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023-2025 Source2ZE
+ * Copyright (C) 2023-2026 Source2ZE
  * Original code from D2Lobby2
  * Copyright (C) 2023 Nicholas Hastings
  * =============================================================================
@@ -71,10 +71,10 @@ void HTTPManager::TrackedRequest::OnHTTPRequestCompleted(HTTPRequestCompleted_t*
 	else
 	{
 		uint32 size;
-		g_http->GetHTTPResponseBodySize(arg->m_hRequest, &size);
+		GetSteamHTTP()->GetHTTPResponseBodySize(arg->m_hRequest, &size);
 
 		uint8* response = new uint8[size + 1];
-		g_http->GetHTTPResponseBodyData(arg->m_hRequest, response, size);
+		GetSteamHTTP()->GetHTTPResponseBodyData(arg->m_hRequest, response, size);
 		response[size] = 0; // Add null terminator
 
 		json jsonResponse;
@@ -101,8 +101,8 @@ void HTTPManager::TrackedRequest::OnHTTPRequestCompleted(HTTPRequestCompleted_t*
 		delete[] response;
 	}
 
-	if (g_http)
-		g_http->ReleaseHTTPRequest(arg->m_hRequest);
+	if (GetSteamHTTP())
+		GetSteamHTTP()->ReleaseHTTPRequest(arg->m_hRequest);
 
 	delete this;
 }
@@ -141,14 +141,14 @@ void HTTPManager::GenerateRequest(EHTTPMethod method, const char* pszUrl, const 
 								  CompletedCallback callbackCompleted, ErrorCallback callbackError,
 								  std::vector<HTTPHeader>* headers)
 {
-	if (!g_http)
+	if (!GetSteamHTTP())
 	{
-		Panic("A web request was attempted before g_http was instantiated, returning early.\n");
+		Panic("A web request was attempted on null ISteamHTTP, returning early.\n");
 		return;
 	}
 
 	// Message("Sending HTTP:\n%s\n", pszText);
-	auto hReq = g_http->CreateHTTPRequest(method, pszUrl);
+	auto hReq = GetSteamHTTP()->CreateHTTPRequest(method, pszUrl);
 	int size = strlen(pszText);
 	// Message("HTTP request: %p\n", hReq);
 
@@ -157,7 +157,7 @@ void HTTPManager::GenerateRequest(EHTTPMethod method, const char* pszUrl, const 
 						  || method == k_EHTTPMethodPUT
 						  || method == k_EHTTPMethodDELETE;
 
-	if (shouldHaveBody && !g_http->SetHTTPRequestRawPostBody(hReq, "application/json", (uint8*)pszText, size))
+	if (shouldHaveBody && !GetSteamHTTP()->SetHTTPRequestRawPostBody(hReq, "application/json", (uint8*)pszText, size))
 	{
 		// Message("Failed to SetHTTPRequestRawPostBody\n");
 		return;
@@ -168,10 +168,10 @@ void HTTPManager::GenerateRequest(EHTTPMethod method, const char* pszUrl, const 
 
 	if (headers != nullptr)
 		for (HTTPHeader header : *headers)
-			g_http->SetHTTPRequestHeaderValue(hReq, header.GetName(), header.GetValue());
+			GetSteamHTTP()->SetHTTPRequestHeaderValue(hReq, header.GetName(), header.GetValue());
 
 	SteamAPICall_t hCall;
-	g_http->SendHTTPRequest(hReq, &hCall);
+	GetSteamHTTP()->SendHTTPRequest(hReq, &hCall);
 
 	new TrackedRequest(hReq, hCall, pszUrl, pszText, callbackCompleted, callbackError);
 }

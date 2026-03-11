@@ -58,7 +58,11 @@ jobs:
           path: ambuild
 
       - name: Install AMBuild
+        shell: bash
         run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            pip install setuptools
+          fi
           cd ambuild && python setup.py install && cd ..
 
       - name: Install Clang 21

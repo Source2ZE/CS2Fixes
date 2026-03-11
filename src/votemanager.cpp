@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023-2025 Source2ZE
+ * Copyright (C) 2023-2026 Source2ZE
  * =============================================================================
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -704,6 +704,9 @@ bool CVoteManager::CheckRTVStatus()
 	{
 		m_RTVState = ERTVState::POST_RTV_SUCCESSFULL;
 		m_ExtendState = EExtendState::POST_RTV;
+
+		if (g_pPanoramaVoteHandler->IsVoteInProgress())
+			g_pPanoramaVoteHandler->EndVote(YesNoVoteEndReason::VoteEnd_Cancelled);
 
 		static ConVarRefAbstract mp_timelimit("mp_timelimit");
 		mp_timelimit.SetFloat(0.01);

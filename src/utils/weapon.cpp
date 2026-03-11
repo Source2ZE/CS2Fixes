@@ -1,7 +1,7 @@
 ﻿/**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023-2025 Source2ZE
+ * Copyright (C) 2023-2026 Source2ZE
  * =============================================================================
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,16 +36,16 @@ static std::unordered_map<std::string, WeaponInfo_t> s_WeaponMap = {
 	{"weapon_m4a1",					{"weapon_m4a1", 16, 3, GEAR_SLOT_RIFLE, 2900, "M4A4", {"m4a4"}}								   },
 	{"weapon_mac10",				 {"weapon_mac10", 17, 2, GEAR_SLOT_RIFLE, 1050, "MAC-10", {"mac10"}}								},
 	{"weapon_p90",				   {"weapon_p90", 19, 0, GEAR_SLOT_RIFLE, 2350, "P90", {"p90"}}									   },
-	{"weapon_mp5sd",				 {"weapon_mp5sd", 23, 0, GEAR_SLOT_RIFLE, 1500, "MP5-SD", {"mp5sd", "mp5"}}						   },
+	{"weapon_mp5sd",				 {"weapon_mp5sd", 23, 0, GEAR_SLOT_RIFLE, 1400, "MP5-SD", {"mp5sd", "mp5"}}						   },
 	{"weapon_ump45",				 {"weapon_ump45", 24, 0, GEAR_SLOT_RIFLE, 1200, "UMP-45", {"ump45", "ump"}}						   },
 	{"weapon_xm1014",				  {"weapon_xm1014", 25, 0, GEAR_SLOT_RIFLE, 2000, "XM1014", {"xm1014", "xm"}}						 },
-	{"weapon_bizon",				 {"weapon_bizon", 26, 0, GEAR_SLOT_RIFLE, 1400, "PP-Bizon", {"bizon"}}							  },
+	{"weapon_bizon",				 {"weapon_bizon", 26, 0, GEAR_SLOT_RIFLE, 1300, "PP-Bizon", {"bizon"}}							  },
 	{"weapon_mag7",					{"weapon_mag7", 27, 3, GEAR_SLOT_RIFLE, 1300, "MAG-7", {"mag7", "mag"}}						   },
 	{"weapon_negev",				 {"weapon_negev", 28, 0, GEAR_SLOT_RIFLE, 1700, "Negev", {"negev"}}								   },
 	{"weapon_sawedoff",				{"weapon_sawedoff", 29, 2, GEAR_SLOT_RIFLE, 1100, "Sawed-Off", {"sawedoff"}}						},
 	{"weapon_tec9",					{"weapon_tec9", 30, 2, GEAR_SLOT_PISTOL, 500, "Tec-9", {"tec9"}}									},
 	{"weapon_hkp2000",			   {"weapon_hkp2000", 32, 3, GEAR_SLOT_PISTOL, 200, "P2000", {"p2000"}}							   },
-	{"weapon_mp7",				   {"weapon_mp7", 33, 0, GEAR_SLOT_RIFLE, 1500, "MP7", {"mp7"}}									   },
+	{"weapon_mp7",				   {"weapon_mp7", 33, 0, GEAR_SLOT_RIFLE, 1400, "MP7", {"mp7"}}									   },
 	{"weapon_mp9",				   {"weapon_mp9", 34, 0, GEAR_SLOT_RIFLE, 1250, "MP9", {"mp9"}}									   },
 	{"weapon_nova",					{"weapon_nova", 35, 0, GEAR_SLOT_RIFLE, 1050, "Nova", {"nova"}}								   },
 	{"weapon_p250",					{"weapon_p250", 36, 0, GEAR_SLOT_PISTOL, 300, "P250", {"p250"}}								   },

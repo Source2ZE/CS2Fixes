@@ -1,7 +1,7 @@
 /**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023-2025 Source2ZE
+ * Copyright (C) 2023-2026 Source2ZE
  * =============================================================================
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -170,7 +170,7 @@ public:
 #ifdef _WIN32
 	void InitializeSections();
 #endif
-	void** FindVirtualTable(const std::string& name);
+	void* FindVirtualTable(const std::string& name);
 
 public:
 	const char* m_pszModule;

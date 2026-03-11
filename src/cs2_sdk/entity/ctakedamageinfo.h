@@ -1,7 +1,7 @@
 ﻿/**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023-2025 Source2ZE
+ * Copyright (C) 2023-2026 Source2ZE
  * =============================================================================
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -47,7 +47,7 @@ enum DamageTypes_t : uint32_t
 	DMG_HEADSHOT = 1 << 23,		 // 0x800000
 };
 
-enum TakeDamageFlags_t : uint32_t
+enum TakeDamageFlags_t : uint64_t
 {
 	DFLAG_NONE = 0,								 // 0x0
 	DFLAG_SUPPRESS_HEALTH_CHANGES = 1 << 0,		 // 0x1
@@ -123,31 +123,26 @@ private:
 	[[maybe_unused]] uint8_t m_nUnknown1[0x2]; // 0x66
 
 public:
-	CGameTrace* m_pTrace;			  // 0x68 | 104
-	TakeDamageFlags_t m_nDamageFlags; // 0x70 | 112
+	CGameTrace* m_pTrace;						// 0x68 | 104
+	TakeDamageFlags_t m_nDamageFlags;			// 0x70 | 112
+	HitGroup_t m_iHitGroupId;					// 0x78 | 120
+	int32_t m_nNumObjectsPenetrated;			// 0x7c | 124
+	float m_flFriendlyFireDamageReductionRatio; // 0x80 | 128
+	bool m_bStoppedBullet;						// 0x84 | 132
 
 private:
-	[[maybe_unused]] uint8_t m_sDamageSourceName[0x8]; // 0x78 | 120
-
-public:
-	HitGroup_t m_iHitGroupId;					// 0x80 | 128
-	int32_t m_nNumObjectsPenetrated;			// 0x84 | 132
-	float m_flFriendlyFireDamageReductionRatio; // 0x88 | 136
-private:
-	uint8_t m_nUnknown2[0x5C]; // 0x9c | 140
-public:
-	void* m_hScriptInstance;	   // 0xe8 | 232
-	AttackerInfo_t m_AttackerInfo; // 0xf0 | 240
-private:
-	[[maybe_unused]] uint8_t m_nUnknown3[0x1C]; // 0x104 | 260
+	uint8_t m_nUnknown2[0x58]; // 0x88 | 136
 
 public:
-	bool m_bInTakeDamageFlow; // 0x120 | 288
+	void* m_hScriptInstance;								// 0xe0 | 224
+	AttackerInfo_t m_AttackerInfo;							// 0xe8 | 232
+	CUtlVector<int> m_nDestructibleHitGroupsToForceDestroy; // 0x100 | 256
+	bool m_bInTakeDamageFlow;								// 0x118 | 280
 
 private:
-	[[maybe_unused]] int32_t m_nUnknown4; // 0x124 | 292
+	[[maybe_unused]] int32_t m_nUnknown4; // 0x11c | 284
 };
-static_assert(sizeof(CTakeDamageInfo) == 296);
+static_assert(sizeof(CTakeDamageInfo) == 288);
 
 struct CTakeDamageResult
 {
@@ -158,7 +153,10 @@ struct CTakeDamageResult
 	float m_flPreModifiedDamage;
 	int32_t m_nTotalledHealthLost;
 	int32_t m_nTotalledDamageDealt;
+	float m_flTotalledPreModifiedDamage;
 	bool m_bWasDamageSuppressed;
+	bool m_bSuppressFlinch;
+	HitGroup_t m_nOverrideFlinchHitGroup;
 
 	void CopyFrom(CTakeDamageInfo* pInfo)
 	{
@@ -186,4 +184,4 @@ struct CTakeDamageResult
 	{
 	}
 };
-static_assert(sizeof(CTakeDamageResult) == 40);
+static_assert(sizeof(CTakeDamageResult) == 48);

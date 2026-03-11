@@ -1,7 +1,7 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
- * Copyright (C) 2023-2025 Source2ZE
+ * Copyright (C) 2023-2026 Source2ZE
  * =============================================================================
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -1154,14 +1154,24 @@ std::vector<SpawnPoint*> ZR_GetSpawns()
 	if (!g_pGameRules)
 		return spawns;
 
-	CUtlVector<SpawnPoint*>* ctSpawns = g_pGameRules->m_CTSpawnPoints();
-	CUtlVector<SpawnPoint*>* tSpawns = g_pGameRules->m_TerroristSpawnPoints();
+	auto ctSpawns = g_pGameRules->m_CTSpawnPoints();
+	auto tSpawns = g_pGameRules->m_TerroristSpawnPoints();
 
 	FOR_EACH_VEC(*ctSpawns, i)
-	spawns.push_back((*ctSpawns)[i]);
+	{
+		SpawnPoint* pSpawn = (*ctSpawns)[i].Get();
+
+		if (pSpawn)
+			spawns.push_back(pSpawn);
+	}
 
 	FOR_EACH_VEC(*tSpawns, i)
-	spawns.push_back((*tSpawns)[i]);
+	{
+		SpawnPoint* pSpawn = (*tSpawns)[i].Get();
+
+		if (pSpawn)
+			spawns.push_back(pSpawn);
+	}
 
 	if (!spawns.size())
 		Panic("There are no spawns!\n");
