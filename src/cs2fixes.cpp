@@ -584,8 +584,7 @@ KHook::Return<void> CS2Fixes::Hook_DispatchConCommand(ICvar* pThis, ConCommandRe
 
 		if (!bGagged && !bSilent && !bFlooding)
 		{
-			// TODO: upstream issue
-			//KHook::CallOriginal(&ICvar::DispatchConCommand, pThis, cmdHandle, ctx, args);
+			KHook::CallOriginal(&ICvar::DispatchConCommand, pThis, cmdHandle, ctx, args);
 		}
 		else if (bFlooding)
 		{
@@ -733,7 +732,7 @@ KHook::Return<void> CS2Fixes::Hook_PostEventAbstract(IGameEventSystem* pThis, CS
 
 			uint64 clientMask = *(uint64*)clients & g_playerManager->GetSilenceSoundMask();
 
-			// TODO: upstream issue
+			// TODO: not doing something right with params
 			//KHook::CallOriginal(&IGameEventSystem::PostEventAbstract, pThis, nSlot, bLocalOnly, nClientCount, &clientMask, pEvent, msg, nSize, bufType);
 
 			msg->set_weapon_id(weapon_id);
@@ -1083,9 +1082,8 @@ KHook::Return<void> CS2Fixes::Hook_ApplyGameSettings(IServerGameDLL* pThis, KeyV
 
 KHook::Return<void> CS2Fixes::Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* name, const CUtlStringList& mapList)
 {
-	// TODO: this isn't working even with recall, upstream issue?
 	if (g_cvarVoteManagerEnable.Get() && g_pMapVoteSystem->IsMapListLoaded())
-		KHook::Recall(KHook::Return<void>{KHook::Action::Ignore}, pThis, name, g_pMapVoteSystem->CreateWorkshopMapGroup());
+		KHook::Recall<void (IGameTypes::*)(const char*, const CUtlStringList&)>(nullptr, {KHook::Action::Ignore}, pThis, name, g_pMapVoteSystem->CreateWorkshopMapGroup());
 
 	return {KHook::Action::Ignore};
 }
