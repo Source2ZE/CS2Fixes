@@ -213,7 +213,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 
-	loadEventsFromFileHook.AddGlobal(g_pCGameEventManagerVTable);
+	loadEventsFromFileHook.AddGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
 
 	g_pCEntitySystemVTable = (CEntitySystem*)modules::server->FindVirtualTable("CGameEntitySystem");
 	if (!g_pCEntitySystemVTable)
@@ -222,7 +222,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 
-	spawnHook.AddGlobal(g_pCEntitySystemVTable);
+	spawnHook.AddGlobal((CEntitySystem*)&g_pCEntitySystemVTable);
 
 	int offset = g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup");
 	if (offset == -1)
@@ -249,7 +249,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	getTouchingListHook.Configure(offset);
-	getTouchingListHook.AddGlobal(g_pCVPhys2WorldVTable);
+	getTouchingListHook.AddGlobal((CVPhys2World*)&g_pCVPhys2WorldVTable);
 
 	g_pCCSPlayer_MovementServicesVTable = (CCSPlayer_MovementServices*)modules::server->FindVirtualTable("CCSPlayer_MovementServices");
 	if (!g_pCCSPlayer_MovementServicesVTable)
@@ -266,7 +266,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	checkMovingGroundHook.Configure(offset);
-	checkMovingGroundHook.AddGlobal(g_pCCSPlayer_MovementServicesVTable);
+	checkMovingGroundHook.AddGlobal((CCSPlayer_MovementServices*)&g_pCCSPlayer_MovementServicesVTable);
 
 	g_pCCSPlayer_WeaponServicesVTable = (CCSPlayer_WeaponServices*)modules::server->FindVirtualTable("CCSPlayer_WeaponServices");
 	if (!g_pCCSPlayer_WeaponServicesVTable)
@@ -283,7 +283,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	dropWeaponHook.Configure(offset);
-	dropWeaponHook.AddGlobal(g_pCCSPlayer_WeaponServicesVTable);
+	dropWeaponHook.AddGlobal((CCSPlayer_WeaponServices*)&g_pCCSPlayer_WeaponServicesVTable);
 
 	g_pCCSGameRulesVTable = (CCSGameRules*)modules::server->FindVirtualTable("CCSGameRules");
 	if (!g_pCCSGameRulesVTable)
@@ -300,7 +300,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	goToIntermissionHook.Configure(offset);
-	goToIntermissionHook.AddGlobal(g_pCCSGameRulesVTable);
+	// TODO: this crashes, borked in khook for some reason
+	//goToIntermissionHook.AddGlobal((CCSGameRules*)&g_pCCSGameRulesVTable);
 
 	g_pCGamePlayerEquipVTable = (CGamePlayerEquip*)modules::server->FindVirtualTable("CGamePlayerEquip");
 	if (!g_pCGamePlayerEquipVTable)
@@ -317,7 +318,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	playerEquipUseHook.Configure(offset);
-	playerEquipUseHook.AddGlobal(g_pCGamePlayerEquipVTable);
+	playerEquipUseHook.AddGlobal((CGamePlayerEquip*)&g_pCGamePlayerEquipVTable);
 
 	offset = g_GameConfig->GetOffset("CBaseEntity::Precache");
 	if (offset == -1)
@@ -327,7 +328,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	playerEquipPrecacheHook.Configure(offset);
-	playerEquipPrecacheHook.AddGlobal(g_pCGamePlayerEquipVTable);
+	playerEquipPrecacheHook.AddGlobal((CGamePlayerEquip*)&g_pCGamePlayerEquipVTable);
 
 	g_pTriggerGravityVTable = (CTriggerGravity*)modules::server->FindVirtualTable("CTriggerGravity");
 	if (!g_pTriggerGravityVTable)
@@ -337,7 +338,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	triggerGravityPrecacheHook.Configure(offset);
-	triggerGravityPrecacheHook.AddGlobal(g_pTriggerGravityVTable);
+	triggerGravityPrecacheHook.AddGlobal((CTriggerGravity*)&g_pTriggerGravityVTable);
 
 	offset = g_GameConfig->GetOffset("CBaseEntity::EndTouch");
 	if (offset == -1)
@@ -347,7 +348,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	triggerGravityEndTouchHook.Configure(offset);
-	triggerGravityEndTouchHook.AddGlobal(g_pTriggerGravityVTable);
+	triggerGravityEndTouchHook.AddGlobal((CTriggerGravity*)&g_pTriggerGravityVTable);
 
 	g_pCCSPlayerPawnVTable = (CCSPlayerPawn*)modules::server->FindVirtualTable("CCSPlayerPawn");
 	if (!g_pCCSPlayerPawnVTable)
@@ -364,7 +365,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	onTakeDamageAliveHook.Configure(offset);
-	onTakeDamageAliveHook.AddGlobal(g_pCCSPlayerPawnVTable);
+	onTakeDamageAliveHook.AddGlobal((CCSPlayerPawn*)&g_pCCSPlayerPawnVTable);
 
 	if (!bRequiredInitLoaded)
 	{
@@ -461,19 +462,19 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	startupServerHook.Remove(g_pNetworkServerService);
 	checkTransmitHook.Remove(g_pSource2GameEntities);
 	dispatchConCommandHook.Remove(g_pCVar);
-	loadEventsFromFileHook.RemoveGlobal(g_pCGameEventManagerVTable);
-	spawnHook.RemoveGlobal(g_pCEntitySystemVTable);
+	loadEventsFromFileHook.RemoveGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
+	spawnHook.RemoveGlobal((CEntitySystem*)&g_pCEntitySystemVTable);
 	setGameSpawnGroupMgrHook.Remove(GetNetworkGameServer());
 	createWorkshopMapGroupHook.Remove(g_pGameTypes);
-	getTouchingListHook.RemoveGlobal(g_pCVPhys2WorldVTable);
-	checkMovingGroundHook.RemoveGlobal(g_pCCSPlayer_MovementServicesVTable);
-	dropWeaponHook.RemoveGlobal(g_pCCSPlayer_WeaponServicesVTable);
-	goToIntermissionHook.RemoveGlobal(g_pCCSGameRulesVTable);
-	playerEquipUseHook.RemoveGlobal(g_pCGamePlayerEquipVTable);
-	playerEquipPrecacheHook.RemoveGlobal(g_pCGamePlayerEquipVTable);
-	triggerGravityPrecacheHook.RemoveGlobal(g_pTriggerGravityVTable);
-	triggerGravityEndTouchHook.RemoveGlobal(g_pTriggerGravityVTable);
-	onTakeDamageAliveHook.RemoveGlobal(g_pCCSPlayerPawnVTable);
+	getTouchingListHook.RemoveGlobal((CVPhys2World*)&g_pCVPhys2WorldVTable);
+	checkMovingGroundHook.RemoveGlobal((CCSPlayer_MovementServices*)&g_pCCSPlayer_MovementServicesVTable);
+	dropWeaponHook.RemoveGlobal((CCSPlayer_WeaponServices*)&g_pCCSPlayer_WeaponServicesVTable);
+	goToIntermissionHook.RemoveGlobal((CCSGameRules*)&g_pCCSGameRulesVTable);
+	playerEquipUseHook.RemoveGlobal((CGamePlayerEquip*)&g_pCGamePlayerEquipVTable);
+	playerEquipPrecacheHook.RemoveGlobal((CGamePlayerEquip*)&g_pCGamePlayerEquipVTable);
+	triggerGravityPrecacheHook.RemoveGlobal((CTriggerGravity*)&g_pTriggerGravityVTable);
+	triggerGravityEndTouchHook.RemoveGlobal((CTriggerGravity*)&g_pTriggerGravityVTable);
+	onTakeDamageAliveHook.RemoveGlobal((CCSPlayerPawn*)&g_pCCSPlayerPawnVTable);
 
 	ConVar_Unregister();
 
@@ -583,8 +584,8 @@ KHook::Return<void> CS2Fixes::Hook_DispatchConCommand(ICvar* pThis, ConCommandRe
 
 		if (!bGagged && !bSilent && !bFlooding)
 		{
-			auto originalFunc = *(std::function<void(ConCommandRef, const CCommandContext&, const CCommand&)>*)KHook::GetOriginalFunction();
-			originalFunc(cmdHandle, ctx, args);
+			// TODO: upstream issue
+			//KHook::CallOriginal(&ICvar::DispatchConCommand, pThis, cmdHandle, ctx, args);
 		}
 		else if (bFlooding)
 		{
@@ -732,8 +733,8 @@ KHook::Return<void> CS2Fixes::Hook_PostEventAbstract(IGameEventSystem* pThis, CS
 
 			uint64 clientMask = *(uint64*)clients & g_playerManager->GetSilenceSoundMask();
 
-			auto originalFunc = *(std::function<void(CSplitScreenSlot, bool, int, const uint64*, INetworkMessageInternal*, const CNetMessage*, unsigned long, NetChannelBufType_t)>*)KHook::GetOriginalFunction();
-			originalFunc(nSlot, bLocalOnly, nClientCount, &clientMask, pEvent, msg, nSize, bufType);
+			// TODO: upstream issue
+			//KHook::CallOriginal(&IGameEventSystem::PostEventAbstract, pThis, nSlot, bLocalOnly, nClientCount, &clientMask, pEvent, msg, nSize, bufType);
 
 			msg->set_weapon_id(weapon_id);
 			msg->set_sound_type(sound_type);
@@ -912,7 +913,6 @@ KHook::Return<bool> CS2Fixes::Hook_ClientConnect(IServerGameClients* pThis, CPla
 	if (!g_playerManager->OnClientConnected(slot, xuid, pszNetworkID))
 		return {KHook::Action::Supersede, false};
 
-	// TODO: verify true return isn't needed
 	return {KHook::Action::Ignore};
 }
 
@@ -1081,11 +1081,11 @@ KHook::Return<void> CS2Fixes::Hook_ApplyGameSettings(IServerGameDLL* pThis, KeyV
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> CS2Fixes::Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* name, CUtlStringList& mapList)
+KHook::Return<void> CS2Fixes::Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* name, const CUtlStringList& mapList)
 {
-	// TODO: does this even work? just guessing how param override might work in khook..
+	// TODO: this isn't working even with recall, upstream issue?
 	if (g_cvarVoteManagerEnable.Get() && g_pMapVoteSystem->IsMapListLoaded())
-		mapList = g_pMapVoteSystem->CreateWorkshopMapGroup();
+		KHook::Recall(KHook::Return<void>{KHook::Action::Ignore}, pThis, name, g_pMapVoteSystem->CreateWorkshopMapGroup());
 
 	return {KHook::Action::Ignore};
 }
@@ -1126,7 +1126,6 @@ KHook::Return<bool> CS2Fixes::Hook_OnTakeDamage_Alive(CCSPlayerPawn* pPawn, CTak
 		pPawn->DropMapWeapons();
 	}
 
-	// TODO: verify true return isn't needed
 	return {KHook::Action::Ignore};
 }
 
@@ -1240,7 +1239,6 @@ KHook::Return<int> CS2Fixes::Hook_LoadEventsFromFile(IGameEventManager2* pThis, 
 {
 	ExecuteOnce(g_gameEventManager = pThis);
 
-	// TODO: verify 0 return isn't needed
 	return {KHook::Action::Ignore};
 }
 

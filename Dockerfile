@@ -9,7 +9,7 @@ RUN apt update && apt install -y clang-21
 RUN ln -sf /usr/bin/clang-21 /usr/bin/clang && ln -sf /usr/bin/clang++-21 /usr/bin/clang++
 RUN git clone https://github.com/alliedmodders/ambuild
 RUN cd ambuild && python setup.py install && cd ..
-RUN git clone --recurse-submodules -b fix-submodule https://github.com/Vauff/metamod-source
+RUN git clone --recurse-submodules -b k/sourcehook_alternative https://github.com/alliedmodders/metamod-source
 RUN git config --global --add safe.directory /app
 
 COPY ./docker-entrypoint.sh ./

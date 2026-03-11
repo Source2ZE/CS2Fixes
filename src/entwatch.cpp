@@ -1356,20 +1356,23 @@ void CEWHandler::CreateHooks()
 		return;
 	}
 
+	//TODO: these hooks crash with khook for some reason
+	return;
+
 	baseButtonUseHook.Configure(offset);
-	baseButtonUseHook.AddGlobal(g_pCBaseButtonVTable);
+	baseButtonUseHook.AddGlobal((CBaseEntity*)&g_pCBaseButtonVTable);
 
 	physBoxUseHook.Configure(offset);
-	physBoxUseHook.AddGlobal(g_pCPhysBoxVTable);
+	physBoxUseHook.AddGlobal((CBaseEntity*)&g_pCPhysBoxVTable);
 
 	rotButtonUseHook.Configure(offset);
-	rotButtonUseHook.AddGlobal(g_pCRotButtonVTable);
+	rotButtonUseHook.AddGlobal((CBaseEntity*)&g_pCRotButtonVTable);
 
 	momentaryRotButtonUseHook.Configure(offset);
-	momentaryRotButtonUseHook.AddGlobal(g_pCMomentaryRotButtonVTable);
+	momentaryRotButtonUseHook.AddGlobal((CBaseEntity*)&g_pCMomentaryRotButtonVTable);
 
 	physicalButtonUseHook.Configure(offset);
-	physicalButtonUseHook.AddGlobal(g_pCPhysicalButtonVTable);
+	physicalButtonUseHook.AddGlobal((CBaseEntity*)&g_pCPhysicalButtonVTable);
 
 	offset = g_GameConfig->GetOffset("CBaseEntity::StartTouch");
 
@@ -1380,13 +1383,13 @@ void CEWHandler::CreateHooks()
 	}
 
 	triggerTeleportStartTouchHook.Configure(offset);
-	triggerTeleportStartTouchHook.AddGlobal(g_pCTriggerTeleportVTable);
+	triggerTeleportStartTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
 
 	triggerOnceStartTouchHook.Configure(offset);
-	triggerOnceStartTouchHook.AddGlobal(g_pCTriggerOnceVTable);
+	triggerOnceStartTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
 
 	triggerMultipleStartTouchHook.Configure(offset);
-	triggerMultipleStartTouchHook.AddGlobal(g_pCTriggerMultipleVTable);
+	triggerMultipleStartTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
 
 	offset = g_GameConfig->GetOffset("CBaseEntity::Touch");
 
@@ -1397,13 +1400,13 @@ void CEWHandler::CreateHooks()
 	}
 
 	triggerTeleportTouchHook.Configure(offset);
-	triggerTeleportTouchHook.AddGlobal(g_pCTriggerTeleportVTable);
+	triggerTeleportTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
 
 	triggerOnceTouchHook.Configure(offset);
-	triggerOnceTouchHook.AddGlobal(g_pCTriggerOnceVTable);
+	triggerOnceTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
 
 	triggerMultipleTouchHook.Configure(offset);
-	triggerMultipleTouchHook.AddGlobal(g_pCTriggerMultipleVTable);
+	triggerMultipleTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
 
 	offset = g_GameConfig->GetOffset("CBaseEntity::EndTouch");
 
@@ -1414,31 +1417,31 @@ void CEWHandler::CreateHooks()
 	}
 
 	triggerTeleportEndTouchHook.Configure(offset);
-	triggerTeleportEndTouchHook.AddGlobal(g_pCTriggerTeleportVTable);
+	triggerTeleportEndTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
 
 	triggerOnceEndTouchHook.Configure(offset);
-	triggerOnceEndTouchHook.AddGlobal(g_pCTriggerOnceVTable);
+	triggerOnceEndTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
 
 	triggerMultipleEndTouchHook.Configure(offset);
-	triggerMultipleEndTouchHook.AddGlobal(g_pCTriggerMultipleVTable);
+	triggerMultipleEndTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
 }
 
 void CEWHandler::RemoveHooks()
 {
-	baseButtonUseHook.RemoveGlobal(g_pCBaseButtonVTable);
-	physBoxUseHook.RemoveGlobal(g_pCPhysBoxVTable);
-	rotButtonUseHook.RemoveGlobal(g_pCRotButtonVTable);
-	momentaryRotButtonUseHook.RemoveGlobal(g_pCMomentaryRotButtonVTable);
-	physicalButtonUseHook.RemoveGlobal(g_pCPhysicalButtonVTable);
-	triggerTeleportStartTouchHook.RemoveGlobal(g_pCTriggerTeleportVTable);
-	triggerOnceStartTouchHook.RemoveGlobal(g_pCTriggerOnceVTable);
-	triggerMultipleStartTouchHook.RemoveGlobal(g_pCTriggerMultipleVTable);
-	triggerTeleportTouchHook.RemoveGlobal(g_pCTriggerTeleportVTable);
-	triggerOnceTouchHook.RemoveGlobal(g_pCTriggerOnceVTable);
-	triggerMultipleTouchHook.RemoveGlobal(g_pCTriggerMultipleVTable);
-	triggerTeleportEndTouchHook.RemoveGlobal(g_pCTriggerTeleportVTable);
-	triggerOnceEndTouchHook.RemoveGlobal(g_pCTriggerOnceVTable);
-	triggerMultipleEndTouchHook.RemoveGlobal(g_pCTriggerMultipleVTable);
+	baseButtonUseHook.RemoveGlobal((CBaseEntity*)&g_pCBaseButtonVTable);
+	physBoxUseHook.RemoveGlobal((CBaseEntity*)&g_pCPhysBoxVTable);
+	rotButtonUseHook.RemoveGlobal((CBaseEntity*)&g_pCRotButtonVTable);
+	momentaryRotButtonUseHook.RemoveGlobal((CBaseEntity*)&g_pCMomentaryRotButtonVTable);
+	physicalButtonUseHook.RemoveGlobal((CBaseEntity*)&g_pCPhysicalButtonVTable);
+	triggerTeleportStartTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
+	triggerOnceStartTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
+	triggerMultipleStartTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
+	triggerTeleportTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
+	triggerOnceTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
+	triggerMultipleTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
+	triggerTeleportEndTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
+	triggerOnceEndTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
+	triggerMultipleEndTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
 }
 
 KHook::Return<void> CEWHandler::Hook_Touch(CBaseEntity* pThis, CBaseEntity* pOther)
