@@ -991,9 +991,13 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 			if (!pPawn)
 				continue;
 
-			// Do not hide leaders or item holders to other players
+			// Hide players according to hide distance and hide mode settings
 			ZEPlayer* pOtherZEPlayer = g_playerManager->GetPlayer(j);
-			if (pSelfZEPlayer->ShouldBlockTransmit(j) && pOtherZEPlayer && !pOtherZEPlayer->IsLeader() && g_pEWHandler->FindItemInstanceByOwner(j, false, 0) == -1)
+			int iHideMode = pSelfZEPlayer->GetHideMode();
+			
+			if (pSelfZEPlayer->ShouldBlockTransmit(j) && pOtherZEPlayer
+				&& (iHideMode == HIDE_MODE_ALL 
+					|| (!pOtherZEPlayer->IsLeader() && (iHideMode == HIDE_MODE_ITEMS || g_pEWHandler->FindItemInstanceByOwner(j, false, 0) == -1))))
 			{
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 

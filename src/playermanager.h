@@ -50,11 +50,16 @@ extern CConVar<CUtlString> g_cvarFlashLightAttachment;
 
 #define DECAL_PREF_KEY_NAME "hide_decals"
 #define HIDE_DISTANCE_PREF_KEY_NAME "hide_distance"
+#define HIDE_MODE_PREF_KEY_NAME "hide_mode"
 #define SOUND_STATUS_PREF_KEY_NAME "sound_status"
 #define NO_SHAKE_PREF_KEY_NAME "no_shake"
 #define BUTTON_WATCH_PREF_KEY_NAME "button_watch"
 #define ZSOUNDS_PREF_KEY_NAME "zsounds"
 #define INVALID_ZEPLAYERHANDLE_INDEX 0u
+
+#define HIDE_MODE_NORMAL 0
+#define HIDE_MODE_ITEMS 1
+#define HIDE_MODE_ALL 2
 
 static uint32 iZEPlayerHandleSerial = 0u; // this should actually be 3 bytes large, but no way enough players join in servers lifespan for this to be an issue
 
@@ -230,6 +235,8 @@ public:
 	void SetTransmit(int index, bool shouldTransmit) { shouldTransmit ? m_shouldTransmit.Set(index) : m_shouldTransmit.Clear(index); }
 	void ClearTransmit() { m_shouldTransmit.ClearAll(); }
 	void SetHideDistance(int distance);
+	void SetHideMode(int mode);
+	void CycleHideMode();
 	void SetTotalDamage(int damage) { m_iTotalDamage = damage; }
 	void SetTotalHits(int hits) { m_iTotalHits = hits; }
 	void SetTotalHeadshots(int headshots) { m_iTotalHeadshots = headshots; }
@@ -277,6 +284,7 @@ public:
 	bool IsEbanned() { return m_bEbanned; }
 	bool ShouldBlockTransmit(int index) { return m_shouldTransmit.Get(index); }
 	int GetHideDistance();
+	int GetHideMode();
 	CPlayerSlot GetPlayerSlot() { return m_slot; }
 	int GetTotalDamage() { return m_iTotalDamage; }
 	int GetTotalHits() { return m_iTotalHits; }

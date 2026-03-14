@@ -434,6 +434,7 @@ CConVar<bool> g_cvarEnableHide("cs2f_hide_enable", FCVAR_NONE, "Whether to enabl
 CConVar<bool> g_cvarHideWeapons("cs2f_hide_weapons", FCVAR_NONE, "Whether to hide weapons along with their holders", false);
 CConVar<int> g_cvarDefaultHideDistance("cs2f_hide_distance_default", FCVAR_NONE, "The default distance for hide", 250, true, 0, false, 0);
 CConVar<int> g_cvarMaxHideDistance("cs2f_hide_distance_max", FCVAR_NONE, "The max distance for hide", 2000, true, 0, false, 0);
+CConVar<bool> g_cvarEnableHideMode("cs2f_hide_mode_enable", FCVAR_NONE, "Whether to enable hide mode command", false);
 
 CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 {
@@ -479,6 +480,64 @@ CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding players is now disabled.");
 	else
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding players within \x06%i units\x01.", distance);
+}
+CON_COMMAND_CHAT(hidemode, "[mode] - Cycle or set hide mode: 0 (Normal), 1 (Include Items), 2 (Hide Everyone)")
+{
+	// Silently return so the command is completely hidden
+	if (!g_cvarEnableHide.Get() || !g_cvarEnableHideMode.Get())
+		return;
+
+	if (!player)
+	{
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		return;
+	}
+
+	ZEPlayer* pZEPlayer = player->GetZEPlayer();
+
+	// Something has to really go wrong for this to happen
+	if (!pZEPlayer)
+	{
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
+		return;
+	}
+
+	int iMode;
+	if(args.ArgC() < 2)
+	{
+		pZEPlayer->CycleHideMode();
+		iMode = pZEPlayer->GetHideMode();
+	}
+	else
+	{
+		iMode = V_StringToInt32(args[1], -1);
+		if (iMode != HIDE_MODE_NORMAL && iMode != HIDE_MODE_ITEMS && iMode != HIDE_MODE_ALL)
+		{
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid hide mode. Valid modes are: %i (Normal), %i (Include Items), %i (Hide Everyone)", HIDE_MODE_NORMAL, HIDE_MODE_ITEMS, HIDE_MODE_ALL);
+			return;
+		}
+		if (iMode == pZEPlayer->GetHideMode()) {
+			iMode = HIDE_MODE_NORMAL;
+		}
+
+		pZEPlayer->SetHideMode(iMode);
+	}
+
+	const char* desc;
+	switch (iMode)
+	{
+		case HIDE_MODE_NORMAL:
+			desc = "Normal";
+			break;
+		case HIDE_MODE_ITEMS:
+			desc = "Include Items";
+			break;
+		case HIDE_MODE_ALL:
+			desc = "Hide Everyone";
+			break;
+	}
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hide mode is: %s.", desc);
 }
 
 void PrintHelp(const CCommand& args, CCSPlayerController* player)
