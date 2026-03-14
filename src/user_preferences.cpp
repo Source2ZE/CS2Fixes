@@ -106,6 +106,7 @@ bool CUserPreferencesSystem::PutPreferences(int iSlot, uint64 iSteamId, UserPref
 void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 {
 	int iHideDistance = GetPreferenceInt(iSlot, HIDE_DISTANCE_PREF_KEY_NAME, 0);
+	int iHideMode = GetPreferenceInt(iSlot, HIDE_MODE_PREF_KEY_NAME, HIDE_MODE_NORMAL);
 	int iSoundStatus = GetPreferenceInt(iSlot, SOUND_STATUS_PREF_KEY_NAME, 1);
 	bool bStopSound = (bool)(iSoundStatus & 1);
 	bool bSilenceSound = (bool)(iSoundStatus & 2);
@@ -131,6 +132,7 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 
 	ZEPlayer* player = g_playerManager->GetPlayer(CPlayerSlot(iSlot));
 	player->SetHideDistance(iHideDistance);
+	player->SetHideMode(iHideMode);
 	for (int i = 0; i < iButtonWatchMode; i++)
 		player->CycleButtonWatch();
 
