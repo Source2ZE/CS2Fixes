@@ -93,7 +93,7 @@ namespace addresses
 	inline CBaseEntity*(FASTCALL* CGameEntitySystem_FindEntityByName)(CEntitySystem* pEntitySystem, CEntityInstance* pStartEntity, const char* szName,
 																	  CEntityInstance* pSearchingEntity, CEntityInstance* pActivator, CEntityInstance* pCaller,
 																	  IEntityFindFilter* pFilter);
-	inline void(FASTCALL* CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4, unsigned int a5);
+	inline void(FASTCALL* CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4);
 	inline CBaseEntity*(FASTCALL* CreateEntityByName)(const char* className, int iForceEdictIndex);
 	inline void(FASTCALL* DispatchSpawn)(CBaseEntity* pEntity, CEntityKeyValues* pEntityKeyValues);
 	inline void(FASTCALL* CEntityIdentity_SetEntityName)(CEntityIdentity* pEntity, const char* pName);
