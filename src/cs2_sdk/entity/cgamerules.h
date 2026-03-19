@@ -78,7 +78,7 @@ public:
 
 	void TerminateRound(float flDelay, CSRoundEndReason reason)
 	{
-		addresses::CGameRules_TerminateRound(this, flDelay, reason, 0, 0);
+		addresses::CGameRules_TerminateRound(this, flDelay, reason, 0);
 	}
 };
 
