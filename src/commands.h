@@ -34,6 +34,7 @@ extern CConVar<bool> g_cvarEnableNoShake;
 extern CConVar<float> g_cvarMaxShakeAmp;
 extern CConVar<bool> g_cvarEnableHide;
 extern CConVar<bool> g_cvarHideWeapons;
+extern CConVar<bool> g_cvarEnableHideMode;
 
 #define CMDFLAG_NONE (0)
 #define CMDFLAG_NOHELP (1 << 0) // Don't show in !help menu

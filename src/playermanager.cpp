@@ -163,6 +163,22 @@ void ZEPlayer::SetHideDistance(int distance)
 	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), HIDE_DISTANCE_PREF_KEY_NAME, distance);
 }
 
+int ZEPlayer::GetHideMode()
+{
+	return g_pUserPreferencesSystem->GetPreferenceInt(m_slot.Get(), HIDE_MODE_PREF_KEY_NAME, HIDE_MODE_NORMAL);
+}
+
+void ZEPlayer::SetHideMode(int mode)
+{
+	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), HIDE_MODE_PREF_KEY_NAME, mode);
+}
+
+void ZEPlayer::CycleHideMode()
+{
+	int iMode = (GetHideMode() + 1) % 3;
+	SetHideMode(iMode);
+}
+
 CConVar<bool> g_cvarFlashLightShadows("cs2f_flashlight_shadows", FCVAR_NONE, "Whether to enable flashlight shadows", true);
 CConVar<bool> g_cvarFlashLightTransmitOthers("cs2f_flashlight_transmit_others", FCVAR_NONE, "Whether to transmit other player's flashlights, recommended to have shadows off for this", false);
 CConVar<float> g_cvarFlashLightBrightness("cs2f_flashlight_brightness", FCVAR_NONE, "How bright should flashlights be", 1.0f);
