@@ -165,19 +165,12 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 	Message("Starting plugin.\n");
 
-	CBufferStringGrowable<256> gamedirpath;
-	g_pEngineServer2->GetGameDir(gamedirpath);
-
-	std::string gamedirname = CGameConfig::GetDirectoryName(gamedirpath.Get());
-
-	const char* gamedataPath = "addons/cs2fixes/gamedata/cs2fixes.games.txt";
-	Message("Loading %s for game: %s\n", gamedataPath, gamedirname.c_str());
-
-	g_GameConfig = new CGameConfig(gamedirname, gamedataPath);
+	g_GameConfig = new CGameConfig();
 	char conf_error[255] = "";
-	if (!g_GameConfig->Init(g_pFullFileSystem, conf_error, sizeof(conf_error)))
+
+	if (!g_GameConfig->Init(conf_error, sizeof(conf_error)))
 	{
-		snprintf(error, maxlen, "Could not read %s: %s", g_GameConfig->GetPath().c_str(), conf_error);
+		snprintf(error, maxlen, "%s", conf_error);
 		Panic("%s\n", error);
 		return false;
 	}
