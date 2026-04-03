@@ -267,7 +267,7 @@ void ZR_OnLevelInit();
 void ZR_OnRoundPrestart(IGameEvent* pEvent);
 void ZR_OnRoundStart(IGameEvent* pEvent);
 void ZR_OnPlayerSpawn(CCSPlayerController* pController);
-void ZR_OnPlayerTakeDamage(CCSPlayerPawn* pVictimPawn, const CTakeDamageInfo* pInfo, const int32 damage);
+void ZR_OnPlayerTakeDamage(CCSPlayerPawn* pVictimPawn, const CTakeDamageInfo* pInfo, const float damage);
 void ZR_OnPlayerDeath(IGameEvent* pEvent);
 void ZR_OnRoundFreezeEnd(IGameEvent* pEvent);
 void ZR_OnRoundTimeWarning(IGameEvent* pEvent);

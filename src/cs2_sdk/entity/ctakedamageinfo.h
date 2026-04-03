@@ -136,52 +136,60 @@ private:
 public:
 	void* m_hScriptInstance;								// 0xe0 | 224
 	AttackerInfo_t m_AttackerInfo;							// 0xe8 | 232
-	CUtlVector<int> m_nDestructibleHitGroupsToForceDestroy; // 0x100 | 256
-	bool m_bInTakeDamageFlow;								// 0x118 | 280
+	CUtlLeanVector<int> m_DestructibleHitGroupRequests;		// 0x100 | 256   CUtlLeanVector<DestructiblePartDamageRequest_t>
+	bool m_bInTakeDamageFlow;								// 0x110 | 272
 
 private:
 	[[maybe_unused]] int32_t m_nUnknown4; // 0x11c | 284
 };
-static_assert(sizeof(CTakeDamageInfo) == 288);
+static_assert(sizeof(CTakeDamageInfo) == 280);
 
 struct CTakeDamageResult
 {
+public:
 	CTakeDamageInfo* m_pOriginatingInfo;
+	CUtlLeanVector<int> m_DestructibleHitGroupRequests; // CUtlLeanVector<DestructiblePartDamageRequest_t>
 	int32_t m_nHealthLost;
 	int32_t m_nHealthBefore;
-	int32_t m_nDamageDealt;
+	float m_flDamageDealt;
 	float m_flPreModifiedDamage;
 	int32_t m_nTotalledHealthLost;
-	int32_t m_nTotalledDamageDealt;
+	float m_flTotalledDamageDealt;
 	float m_flTotalledPreModifiedDamage;
+	float m_flNewDamageAccumulatorValue;
+	TakeDamageFlags_t m_nDamageFlags;
 	bool m_bWasDamageSuppressed;
 	bool m_bSuppressFlinch;
 	HitGroup_t m_nOverrideFlinchHitGroup;
 
+private:
+	[[maybe_unused]] uint8_t m_nUnknown0[0x8];
+
+public:
 	void CopyFrom(CTakeDamageInfo* pInfo)
 	{
 		m_pOriginatingInfo = pInfo;
 		m_nHealthLost = static_cast<int32_t>(pInfo->m_flDamage);
 		m_nHealthBefore = 0;
-		m_nDamageDealt = static_cast<int32_t>(pInfo->m_flDamage);
+		m_flDamageDealt = pInfo->m_flDamage;
 		m_flPreModifiedDamage = pInfo->m_flDamage;
 		m_nTotalledHealthLost = static_cast<int32_t>(pInfo->m_flDamage);
-		m_nTotalledDamageDealt = static_cast<int32_t>(pInfo->m_flDamage);
+		m_flTotalledDamageDealt = pInfo->m_flDamage;
 		m_bWasDamageSuppressed = false;
 	}
 
 	CTakeDamageResult() = delete;
 
-	constexpr CTakeDamageResult(float damage) :
+	CTakeDamageResult(float damage) :
 		m_pOriginatingInfo(nullptr),
 		m_nHealthLost(static_cast<int32_t>(damage)),
 		m_nHealthBefore(0),
-		m_nDamageDealt(static_cast<int32_t>(damage)),
+		m_flDamageDealt(damage),
 		m_flPreModifiedDamage(damage),
 		m_nTotalledHealthLost(static_cast<int32_t>(damage)),
-		m_nTotalledDamageDealt(static_cast<int32_t>(damage)),
+		m_flTotalledDamageDealt(damage),
 		m_bWasDamageSuppressed(false)
 	{
 	}
 };
-static_assert(sizeof(CTakeDamageResult) == 48);
+static_assert(sizeof(CTakeDamageResult) == 80);
