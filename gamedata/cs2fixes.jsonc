@@ -151,7 +151,7 @@
 		{
 			"library": "server",
 			"windows": "44 88 4C 24 ? 53 57 41 54 41 56 41 57 48 83 EC",
-			"linux": "55 48 8D 87 ? ? ? ? 48 89 E5 41 57 41 89 CF"
+			"linux": "55 48 8D 87 ? ? ? ? 48 89 E5 41 57 41 56 41 89 CE 41 55 45 89 CD"
 		},
 		// String: "GetNearestNav"
 		"CNavMesh_GetNearestNavArea":
