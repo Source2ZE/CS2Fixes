@@ -216,16 +216,35 @@ struct EActiveTransfer
 class CEWHandler
 {
 public:
-	CEWHandler()
+	CEWHandler() :
+		m_bConfigLoaded(false),
+		m_hBaseButtonUse(this, &CEWHandler::Hook_Use, nullptr),
+		m_hPhysBoxUse(this, &CEWHandler::Hook_Use, nullptr),
+		m_hRotButtonUse(this, &CEWHandler::Hook_Use, nullptr),
+		m_hMomentaryRotButtonUse(this, &CEWHandler::Hook_Use, nullptr),
+		m_hPhysicalButtonUse(this, &CEWHandler::Hook_Use, nullptr),
+		m_hTriggerTeleportStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerTeleportTouch(this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceTouch(this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleTouch(this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerTeleportEndTouch(this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceEndTouch(this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleEndTouch(this, &CEWHandler::Hook_Touch, nullptr)
 	{
-		bConfigLoaded = false;
+		CreateHooks();
+	}
+
+	~CEWHandler()
+	{
+		RemoveHooks();
 	}
 
 	void CreateHooks();
 	void RemoveHooks();
 
-	bool bConfigLoaded;
-	bool IsConfigLoaded() { return bConfigLoaded; }
+	bool IsConfigLoaded() { return m_bConfigLoaded; }
 
 	void UnLoadConfig();
 	void LoadMapConfig(const char* sMapName);
@@ -263,9 +282,25 @@ public:
 	std::vector<CHandle<CBaseEntity>> vecUseHookedEntities;
 
 	std::weak_ptr<CTimer> m_pHudTimer;
+	bool m_bConfigLoaded;
 
 	std::map<int, std::shared_ptr<ETransferInfo>> mapTransfers;		  // Any etransfers that target multiple items
 	std::vector<std::shared_ptr<EActiveTransfer>> vecActiveTransfers; // Active transfers where only the receiver can pickup the weapon
+
+	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hBaseButtonUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hPhysBoxUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hRotButtonUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hMomentaryRotButtonUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hPhysicalButtonUse;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerTeleportStartTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerOnceStartTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerMultipleStartTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerTeleportTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerOnceTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerMultipleTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerTeleportEndTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerOnceEndTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerMultipleEndTouch;
 };
 
 extern CEWHandler* g_pEWHandler;

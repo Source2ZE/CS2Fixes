@@ -53,21 +53,6 @@
 
 CEWHandler* g_pEWHandler = nullptr;
 
-KHook::Virtual baseButtonUseHook(g_pEWHandler, &CEWHandler::Hook_Use, nullptr);
-KHook::Virtual physBoxUseHook(g_pEWHandler, &CEWHandler::Hook_Use, nullptr);
-KHook::Virtual rotButtonUseHook(g_pEWHandler, &CEWHandler::Hook_Use, nullptr);
-KHook::Virtual momentaryRotButtonUseHook(g_pEWHandler, &CEWHandler::Hook_Use, nullptr);
-KHook::Virtual physicalButtonUseHook(g_pEWHandler, &CEWHandler::Hook_Use, nullptr);
-KHook::Virtual triggerTeleportStartTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
-KHook::Virtual triggerOnceStartTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
-KHook::Virtual triggerMultipleStartTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
-KHook::Virtual triggerTeleportTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
-KHook::Virtual triggerOnceTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
-KHook::Virtual triggerMultipleTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
-KHook::Virtual triggerTeleportEndTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
-KHook::Virtual triggerOnceEndTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
-KHook::Virtual triggerMultipleEndTouchHook(g_pEWHandler, &CEWHandler::Hook_Touch, nullptr);
-
 CBaseEntity* g_pCBaseButtonVTable = nullptr;
 CBaseEntity* g_pCPhysBoxVTable = nullptr;
 CBaseEntity* g_pCRotButtonVTable = nullptr;
@@ -1061,7 +1046,7 @@ bool EWItemInstance::IsEmpty()
 
 void CEWHandler::UnLoadConfig()
 {
-	if (!bConfigLoaded)
+	if (!m_bConfigLoaded)
 		return;
 
 	if (EW_IsFireOutputHooked())
@@ -1080,7 +1065,7 @@ void CEWHandler::UnLoadConfig()
 	vecUseHookedEntities.clear();
 	vecHookedTriggers.clear();
 
-	bConfigLoaded = false;
+	m_bConfigLoaded = false;
 }
 
 /*
@@ -1144,13 +1129,13 @@ void CEWHandler::LoadConfig(const char* sFilePath)
 			mapIOFunctions["entwatch"] = EW_FireOutput;
 	}
 
-	bConfigLoaded = true;
+	m_bConfigLoaded = true;
 }
 
 void CEWHandler::PrintLoadedConfig(CPlayerSlot slot)
 {
 	CCSPlayerController* player = CCSPlayerController::FromSlot(slot);
-	if (!bConfigLoaded)
+	if (!m_bConfigLoaded)
 	{
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "No config loaded.");
 		return;
@@ -1356,23 +1341,20 @@ void CEWHandler::CreateHooks()
 		return;
 	}
 
-	//TODO: these hooks crash with khook for some reason
-	return;
+	m_hBaseButtonUse.Configure(offset);
+	m_hBaseButtonUse.AddGlobal((CBaseEntity*)&g_pCBaseButtonVTable);
 
-	baseButtonUseHook.Configure(offset);
-	baseButtonUseHook.AddGlobal((CBaseEntity*)&g_pCBaseButtonVTable);
+	m_hPhysBoxUse.Configure(offset);
+	m_hPhysBoxUse.AddGlobal((CBaseEntity*)&g_pCPhysBoxVTable);
 
-	physBoxUseHook.Configure(offset);
-	physBoxUseHook.AddGlobal((CBaseEntity*)&g_pCPhysBoxVTable);
+	m_hRotButtonUse.Configure(offset);
+	m_hRotButtonUse.AddGlobal((CBaseEntity*)&g_pCRotButtonVTable);
 
-	rotButtonUseHook.Configure(offset);
-	rotButtonUseHook.AddGlobal((CBaseEntity*)&g_pCRotButtonVTable);
+	m_hMomentaryRotButtonUse.Configure(offset);
+	m_hMomentaryRotButtonUse.AddGlobal((CBaseEntity*)&g_pCMomentaryRotButtonVTable);
 
-	momentaryRotButtonUseHook.Configure(offset);
-	momentaryRotButtonUseHook.AddGlobal((CBaseEntity*)&g_pCMomentaryRotButtonVTable);
-
-	physicalButtonUseHook.Configure(offset);
-	physicalButtonUseHook.AddGlobal((CBaseEntity*)&g_pCPhysicalButtonVTable);
+	m_hPhysicalButtonUse.Configure(offset);
+	m_hPhysicalButtonUse.AddGlobal((CBaseEntity*)&g_pCPhysicalButtonVTable);
 
 	offset = g_GameConfig->GetOffset("CBaseEntity::StartTouch");
 
@@ -1382,14 +1364,14 @@ void CEWHandler::CreateHooks()
 		return;
 	}
 
-	triggerTeleportStartTouchHook.Configure(offset);
-	triggerTeleportStartTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
+	m_hTriggerTeleportStartTouch.Configure(offset);
+	m_hTriggerTeleportStartTouch.AddGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
 
-	triggerOnceStartTouchHook.Configure(offset);
-	triggerOnceStartTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
+	m_hTriggerOnceStartTouch.Configure(offset);
+	m_hTriggerOnceStartTouch.AddGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
 
-	triggerMultipleStartTouchHook.Configure(offset);
-	triggerMultipleStartTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
+	m_hTriggerMultipleStartTouch.Configure(offset);
+	m_hTriggerMultipleStartTouch.AddGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
 
 	offset = g_GameConfig->GetOffset("CBaseEntity::Touch");
 
@@ -1399,14 +1381,14 @@ void CEWHandler::CreateHooks()
 		return;
 	}
 
-	triggerTeleportTouchHook.Configure(offset);
-	triggerTeleportTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
+	m_hTriggerTeleportTouch.Configure(offset);
+	m_hTriggerTeleportTouch.AddGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
 
-	triggerOnceTouchHook.Configure(offset);
-	triggerOnceTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
+	m_hTriggerOnceTouch.Configure(offset);
+	m_hTriggerOnceTouch.AddGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
 
-	triggerMultipleTouchHook.Configure(offset);
-	triggerMultipleTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
+	m_hTriggerMultipleTouch.Configure(offset);
+	m_hTriggerMultipleTouch.AddGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
 
 	offset = g_GameConfig->GetOffset("CBaseEntity::EndTouch");
 
@@ -1416,32 +1398,32 @@ void CEWHandler::CreateHooks()
 		return;
 	}
 
-	triggerTeleportEndTouchHook.Configure(offset);
-	triggerTeleportEndTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
+	m_hTriggerTeleportEndTouch.Configure(offset);
+	m_hTriggerTeleportEndTouch.AddGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
 
-	triggerOnceEndTouchHook.Configure(offset);
-	triggerOnceEndTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
+	m_hTriggerOnceEndTouch.Configure(offset);
+	m_hTriggerOnceEndTouch.AddGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
 
-	triggerMultipleEndTouchHook.Configure(offset);
-	triggerMultipleEndTouchHook.AddGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
+	m_hTriggerMultipleEndTouch.Configure(offset);
+	m_hTriggerMultipleEndTouch.AddGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
 }
 
 void CEWHandler::RemoveHooks()
 {
-	baseButtonUseHook.RemoveGlobal((CBaseEntity*)&g_pCBaseButtonVTable);
-	physBoxUseHook.RemoveGlobal((CBaseEntity*)&g_pCPhysBoxVTable);
-	rotButtonUseHook.RemoveGlobal((CBaseEntity*)&g_pCRotButtonVTable);
-	momentaryRotButtonUseHook.RemoveGlobal((CBaseEntity*)&g_pCMomentaryRotButtonVTable);
-	physicalButtonUseHook.RemoveGlobal((CBaseEntity*)&g_pCPhysicalButtonVTable);
-	triggerTeleportStartTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
-	triggerOnceStartTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
-	triggerMultipleStartTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
-	triggerTeleportTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
-	triggerOnceTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
-	triggerMultipleTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
-	triggerTeleportEndTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
-	triggerOnceEndTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
-	triggerMultipleEndTouchHook.RemoveGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
+	m_hBaseButtonUse.RemoveGlobal((CBaseEntity*)&g_pCBaseButtonVTable);
+	m_hPhysBoxUse.RemoveGlobal((CBaseEntity*)&g_pCPhysBoxVTable);
+	m_hRotButtonUse.RemoveGlobal((CBaseEntity*)&g_pCRotButtonVTable);
+	m_hMomentaryRotButtonUse.RemoveGlobal((CBaseEntity*)&g_pCMomentaryRotButtonVTable);
+	m_hPhysicalButtonUse.RemoveGlobal((CBaseEntity*)&g_pCPhysicalButtonVTable);
+	m_hTriggerTeleportStartTouch.RemoveGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
+	m_hTriggerOnceStartTouch.RemoveGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
+	m_hTriggerMultipleStartTouch.RemoveGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
+	m_hTriggerTeleportTouch.RemoveGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
+	m_hTriggerOnceTouch.RemoveGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
+	m_hTriggerMultipleTouch.RemoveGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
+	m_hTriggerTeleportEndTouch.RemoveGlobal((CBaseEntity*)&g_pCTriggerTeleportVTable);
+	m_hTriggerOnceEndTouch.RemoveGlobal((CBaseEntity*)&g_pCTriggerOnceVTable);
+	m_hTriggerMultipleEndTouch.RemoveGlobal((CBaseEntity*)&g_pCTriggerMultipleVTable);
 }
 
 KHook::Return<void> CEWHandler::Hook_Touch(CBaseEntity* pThis, CBaseEntity* pOther)
@@ -2029,7 +2011,7 @@ void EW_RoundPreStart()
 
 void EW_OnEntitySpawned(CEntityInstance* pEntity)
 {
-	if (!g_pEWHandler || !g_pEWHandler->bConfigLoaded)
+	if (!g_pEWHandler || !g_pEWHandler->m_bConfigLoaded)
 		return;
 
 	CBaseEntity* pEnt = (CBaseEntity*)pEntity;
@@ -2075,7 +2057,7 @@ void EW_OnEntitySpawned(CEntityInstance* pEntity)
 
 void EW_OnEntityDeleted(CEntityInstance* pEntity)
 {
-	if (!g_pEWHandler || !g_pEWHandler->bConfigLoaded)
+	if (!g_pEWHandler || !g_pEWHandler->m_bConfigLoaded)
 		return;
 
 	CBaseEntity* pEnt = (CBaseEntity*)pEntity;
@@ -2110,7 +2092,7 @@ void EW_OnWeaponDeleted(CBaseEntity* pEntity)
 bool EW_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
 	// false=block it, true=dont block it
-	if (!g_pEWHandler || !g_pEWHandler->bConfigLoaded)
+	if (!g_pEWHandler || !g_pEWHandler->m_bConfigLoaded)
 		return true;
 
 	CCSPlayerPawn* pPawn = pWeaponServices->GetPawn();
@@ -2154,7 +2136,7 @@ bool EW_Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeapon
 
 void EW_Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pWeapon)
 {
-	if (!g_pEWHandler || !g_pEWHandler->bConfigLoaded)
+	if (!g_pEWHandler || !g_pEWHandler->m_bConfigLoaded)
 		return;
 
 	CCSPlayerPawn* pPawn = pWeaponServices->GetPawn();
@@ -2174,7 +2156,7 @@ void EW_Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServices* pW
 
 void EW_DropWeapon(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pWeapon)
 {
-	if (!g_pEWHandler || !g_pEWHandler->bConfigLoaded)
+	if (!g_pEWHandler || !g_pEWHandler->m_bConfigLoaded)
 		return;
 
 	CCSPlayerPawn* pPawn = pWeaponServices->GetPawn();
@@ -2343,7 +2325,7 @@ CON_COMMAND_CHAT_FLAGS(ew_reload, "- Reloads the current map's entwatch config",
 	// LoadConfig unloads the current config already
 	g_pEWHandler->LoadMapConfig(GetGlobals()->mapname.ToCStr());
 
-	if (!g_pEWHandler->bConfigLoaded)
+	if (!g_pEWHandler->m_bConfigLoaded)
 	{
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Error reloading config, check console log for details.");
 		return;
