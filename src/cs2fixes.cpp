@@ -300,8 +300,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	goToIntermissionHook.Configure(offset);
-	// TODO: this crashes, borked in khook for some reason
-	//goToIntermissionHook.AddGlobal((CCSGameRules*)&g_pCCSGameRulesVTable);
+	goToIntermissionHook.AddGlobal((CCSGameRules*)&g_pCCSGameRulesVTable);
 
 	g_pCGamePlayerEquipVTable = (CGamePlayerEquip*)modules::server->FindVirtualTable("CGamePlayerEquip");
 	if (!g_pCGamePlayerEquipVTable)
