@@ -240,8 +240,7 @@ public:
 	void LoadMapConfig(const char* sMapName);
 	void LoadConfig(const char* sFilePath);
 
-	void PrintLoadedConfig(int iSlot) { PrintLoadedConfig(CPlayerSlot(iSlot)); };
-	void PrintLoadedConfig(CPlayerSlot slot);
+	void PrintLoadedConfig(CCSPlayerController* pController);
 
 	void ClearItems();
 

@@ -1139,12 +1139,11 @@ void CEWHandler::LoadConfig(const char* sFilePath)
 	bConfigLoaded = true;
 }
 
-void CEWHandler::PrintLoadedConfig(CPlayerSlot slot)
+void CEWHandler::PrintLoadedConfig(CCSPlayerController* pController)
 {
-	CCSPlayerController* player = CCSPlayerController::FromSlot(slot);
 	if (!bConfigLoaded)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "No config loaded.");
+		ClientPrint(pController, HUD_PRINTTALK, EW_PREFIX "No config loaded.");
 		return;
 	}
 
@@ -1154,55 +1153,55 @@ void CEWHandler::PrintLoadedConfig(CPlayerSlot slot)
 		i++;
 		if (!item)
 		{
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "Null item in the item map at pos %d", i);
+			ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "Null item in the item map at pos %d", i);
 			continue;
 		}
 
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "------------ Item %02d ------------", i);
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "     Name:  %s", item->szItemName.c_str());
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "ShortName:  %s", item->szShortName.c_str());
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " Hammerid:  %s", item->szHammerid.c_str());
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "  Message:  %s", item->bShowPickup ? "True" : "False");
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "       UI:  %s", item->bShowHud ? "True" : "False");
+		ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "------------ Item %02d ------------", i);
+		ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "     Name:  %s", item->szItemName.c_str());
+		ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "ShortName:  %s", item->szShortName.c_str());
+		ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX " Hammerid:  %s", item->szHammerid.c_str());
+		ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "  Message:  %s", item->bShowPickup ? "True" : "False");
+		ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "       UI:  %s", item->bShowHud ? "True" : "False");
 		if (item->transfer == EWCfg_Auto)
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " Transfer:  Auto");
+			ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX " Transfer:  Auto");
 		else if (item->transfer == EWCfg_Yes)
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " Transfer:  True");
+			ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX " Transfer:  True");
 		else
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " Transfer:  False");
+			ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX " Transfer:  False");
 
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " ");
+		ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX " ");
 		if (item->vecHandlers.size() == 0)
 		{
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "        No handlers set.");
+			ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "        No handlers set.");
 		}
 		else
 		{
 			for (int j = 0; j < (item->vecHandlers).size(); j++)
 			{
 				// "          "
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "          --------- Handler %d ---------", j);
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "              Type:  %s", item->vecHandlers[j]->type == EWHandlerType::Button ? "Button" : "GameUi");
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "              Mode:  %d", (int)item->vecHandlers[j]->mode);
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "          Hammerid:  %s", item->vecHandlers[j]->szHammerid.c_str());
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "             Event:  %s", item->vecHandlers[j]->szOutput.c_str());
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "          Cooldown:  %.1f", item->vecHandlers[j]->flCooldown);
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "          Max Uses:  %d", item->vecHandlers[j]->iMaxUses);
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "           Message:  %s", item->vecHandlers[j]->bShowUse ? "True" : "False");
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "          --------- --------- ---------");
+				ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "          --------- Handler %d ---------", j);
+				ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "              Type:  %s", item->vecHandlers[j]->type == EWHandlerType::Button ? "Button" : "GameUi");
+				ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "              Mode:  %d", (int)item->vecHandlers[j]->mode);
+				ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "          Hammerid:  %s", item->vecHandlers[j]->szHammerid.c_str());
+				ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "             Event:  %s", item->vecHandlers[j]->szOutput.c_str());
+				ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "          Cooldown:  %.1f", item->vecHandlers[j]->flCooldown);
+				ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "          Max Uses:  %d", item->vecHandlers[j]->iMaxUses);
+				ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "           Message:  %s", item->vecHandlers[j]->bShowUse ? "True" : "False");
+				ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "          --------- --------- ---------");
 			}
 		}
 
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " ");
+		ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX " ");
 		if (item->vecTriggers.size() == 0)
-			ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "       No triggers set.");
+			ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "       No triggers set.");
 		else
 			for (int j = 0; j < item->vecTriggers.size(); j++)
-				ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX " Trigger %d:  %s", j, item->vecTriggers[j].c_str());
+				ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX " Trigger %d:  %s", j, item->vecTriggers[j].c_str());
 
-		ClientPrint(player, HUD_PRINTCONSOLE, EW_PREFIX "------------ ------- ------------");
+		ClientPrint(pController, HUD_PRINTCONSOLE, EW_PREFIX "------------ ------- ------------");
 	}
-	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "See console for output.");
+	ClientPrint(pController, HUD_PRINTTALK, EW_PREFIX "See console for output.");
 }
 
 void CEWHandler::ClearItems()
@@ -2654,7 +2653,7 @@ CON_COMMAND_CHAT(ew_dump, "- Prints the currently loaded config to console")
 		return;
 	}
 
-	g_pEWHandler->PrintLoadedConfig(player->GetPlayerSlot());
+	g_pEWHandler->PrintLoadedConfig(player);
 }
 
 CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
