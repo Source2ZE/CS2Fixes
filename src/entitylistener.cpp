@@ -31,16 +31,6 @@ CEntityListener* g_pEntityListener = nullptr;
 
 CConVar<bool> g_cvarGrenadeNoBlock("cs2f_noblock_grenades", FCVAR_NONE, "Whether to use noblock on grenade projectiles", false);
 
-void Patch_GetHammerUniqueId(CEntityInstance* pEntity)
-{
-	static int offset = g_GameConfig->GetOffset("GetHammerUniqueId");
-	void** vtable = *(void***)pEntity;
-
-	// xor al, al -> mov al, 1
-	// so it always returns true and allows hammerid to be copied into the schema prop
-	Plat_WriteMemory(vtable[offset], (uint8_t*)"\xB0\x01", 2);
-}
-
 void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 {
 #ifdef _DEBUG
@@ -59,8 +49,6 @@ void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 
 void CEntityListener::OnEntityCreated(CEntityInstance* pEntity)
 {
-	ExecuteOnce(Patch_GetHammerUniqueId(pEntity));
-
 	if (!V_strcmp("cs_gamerules", pEntity->GetClassname()))
 		g_pGameRules = ((CCSGameRulesProxy*)pEntity)->m_pGameRules;
 }

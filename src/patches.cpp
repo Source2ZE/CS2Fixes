@@ -34,6 +34,7 @@ CMemPatch g_CommonPatches[] =
 		CMemPatch("BotNavIgnore", "BotNavIgnore"),
 		CMemPatch("CheckJumpButtonWater", "FixWaterFloorJump"),
 		CMemPatch("CPhysBox_Use", "CPhysBox_Use"),
+		CMemPatch("SetSchemaHammerUniqueId", "SetSchemaHammerUniqueId"),
 };
 
 CConVar<bool> cs2f_movement_unlocker_enable("cs2f_movement_unlocker_enable", FCVAR_NONE, "Whether to enable movement unlocker", false,
