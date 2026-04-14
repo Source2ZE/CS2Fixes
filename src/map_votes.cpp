@@ -277,7 +277,10 @@ void CMapVoteSystem::StartVote()
 		for (int i = 0; i < 10; i++)
 		{
 			g_pGameRules->m_nEndMatchMapGroupVoteTypes[i] = -1;
+			g_pGameRules->m_nEndMatchMapGroupVoteTypes.NetworkStateChanged();
+
 			g_pGameRules->m_nEndMatchMapGroupVoteOptions[i] = -1;
+			g_pGameRules->m_nEndMatchMapGroupVoteOptions.NetworkStateChanged();
 		}
 
 		return;
@@ -326,6 +329,9 @@ void CMapVoteSystem::StartVote()
 			g_pGameRules->m_nEndMatchMapGroupVoteTypes[i] = -1;
 			g_pGameRules->m_nEndMatchMapGroupVoteOptions[i] = -1;
 		}
+
+		g_pGameRules->m_nEndMatchMapGroupVoteTypes.NetworkStateChanged();
+		g_pGameRules->m_nEndMatchMapGroupVoteOptions.NetworkStateChanged();
 	}
 
 	for (int i = 0; i < m_iVoteSize; i++)
