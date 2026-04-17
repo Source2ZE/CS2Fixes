@@ -69,7 +69,8 @@ CConVar<bool> g_cvarInfectSpawnWarning("zr_infect_spawn_warning", FCVAR_NONE, "W
 CConVar<int> g_cvarInfectSpawnTimeMin("zr_infect_spawn_time_min", FCVAR_NONE, "Minimum time in which Mother Zombies should be picked, after round start", 15, true, 0, false, 0);
 CConVar<int> g_cvarInfectSpawnTimeMax("zr_infect_spawn_time_max", FCVAR_NONE, "Maximum time in which Mother Zombies should be picked, after round start", 15, true, 1, false, 0);
 CConVar<int> g_cvarInfectSpawnMZRatio("zr_infect_spawn_mz_ratio", FCVAR_NONE, "Ratio of all Players to Mother Zombies to be spawned at round start", 7, true, 1, true, 64);
-CConVar<int> g_cvarInfectSpawnMinCount("zr_infect_spawn_mz_min_count", FCVAR_NONE, "Minimum amount of Mother Zombies to be spawned at round start", 1, true, 0, false, 0);
+CConVar<int> g_cvarInfectSpawnMZMinCount("zr_infect_spawn_mz_min_count", FCVAR_NONE, "Minimum amount of Mother Zombies to be spawned at round start", 1, true, 0, false, 0);
+CConVar<int> g_cvarInfectSpawnMinCountReq("zr_infect_min_count_req", FCVAR_NONE, "Minimum amount of Players required to spawn Mother Zombies at round start", 2, true, 0, false, 0);
 CConVar<float> g_cvarRespawnDelay("zr_respawn_delay", FCVAR_NONE, "Time before a zombie is automatically respawned, -1 disables this. Note that maps can still manually respawn at any time", 5.0f, true, -1.0f, false, 0.0f);
 CConVar<int> g_cvarDefaultWinnerTeam("zr_default_winner_team", FCVAR_NONE, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", CS_TEAM_SPECTATOR, true, 1, true, 3);
 CConVar<int> g_cvarMZImmunityReduction("zr_mz_immunity_reduction", FCVAR_NONE, "How much mz immunity to reduce for each player per round (0-100)", 20, true, 0, true, 100);
@@ -1268,6 +1269,12 @@ void ZR_InitialInfection()
 	if (!GetGlobals())
 		return;
 
+	if (g_cvarInfectSpawnMZRatio.Get() <= 0)
+	{
+		Warning("Invalid Mother Zombie Ratio!!!");
+		return;
+	}
+
 	// mz infection candidates
 	CUtlVector<CCSPlayerController*> pCandidateControllers;
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
@@ -1283,15 +1290,15 @@ void ZR_InitialInfection()
 		pCandidateControllers.AddToTail(pController);
 	}
 
-	if (g_cvarInfectSpawnMZRatio.Get() <= 0)
+	if (pCandidateControllers.Count() < g_cvarInfectSpawnMinCountReq.Get())
 	{
-		Warning("Invalid Mother Zombie Ratio!!!");
+		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Not enough players to start infection!");
+		g_ZRRoundState = EZRRoundState::POST_INFECTION;
 		return;
 	}
 
-	// the num of mz to infect
 	int iMZToInfect = pCandidateControllers.Count() / g_cvarInfectSpawnMZRatio.Get();
-	iMZToInfect = g_cvarInfectSpawnMinCount.Get() > iMZToInfect ? g_cvarInfectSpawnMinCount.Get() : iMZToInfect;
+	iMZToInfect = g_cvarInfectSpawnMZMinCount.Get() > iMZToInfect ? g_cvarInfectSpawnMZMinCount.Get() : iMZToInfect;
 	bool vecIsMZ[MAXPLAYERS] = {false};
 
 	// get spawn points
