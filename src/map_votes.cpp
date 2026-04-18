@@ -1026,13 +1026,8 @@ bool CMapVoteSystem::LoadCooldowns()
 
 	if (!cooldownsFile.is_open())
 	{
-		if (!ConvertCooldownsKVToJSON())
-		{
-			Message("Failed to open %s and convert KV1 cooldowns.txt to JSON format, resetting all cooldowns to 0\n", pszCooldownsFilePath);
-			return false;
-		}
-
-		cooldownsFile.open(szPath);
+		Message("Failed to open %s, resetting all cooldowns to 0\n", pszCooldownsFilePath);
+		return false;
 	}
 
 	ordered_json jsonCooldownsRoot = ordered_json::parse(cooldownsFile, nullptr, false, true);
@@ -1442,47 +1437,4 @@ void CMapSystemWorkshopDetailsQuery::OnQueryCompleted(SteamUGCQueryCompleted_t* 
 		GetSteamUGC()->ReleaseQueryUGCRequest(m_hQuery);
 
 	g_pMapVoteSystem->RemoveWorkshopDetailsQuery(shared_from_this());
-}
-
-// TODO: remove this once servers have been given at least a few months to update cs2fixes
-bool CMapVoteSystem::ConvertCooldownsKVToJSON()
-{
-	Message("Attempting to convert KV1 cooldowns.txt to JSON format...\n");
-
-	const char* pszPath = "addons/cs2fixes/data/cooldowns.txt";
-	KeyValues* pKV = new KeyValues("cooldowns");
-	KeyValues::AutoDelete autoDelete(pKV);
-
-	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
-	{
-		Panic("Failed to load %s\n", pszPath);
-		return false;
-	}
-
-	ordered_json jsonCooldowns;
-
-	jsonCooldowns["Cooldowns"] = ordered_json(ordered_json::value_t::object);
-
-	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
-		jsonCooldowns["Cooldowns"][pKey->GetName()] = pKey->GetUint64();
-
-	const char* pszJsonPath = "addons/cs2fixes/data/cooldowns.jsonc";
-	char szPath[MAX_PATH];
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
-	std::ofstream jsonFile(szPath);
-
-	if (!jsonFile.is_open())
-	{
-		Panic("Failed to open %s\n", pszJsonPath);
-		return false;
-	}
-
-	jsonFile << std::setfill('\t') << std::setw(1) << jsonCooldowns << std::endl;
-
-	// remove old file
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszPath);
-	std::remove(szPath);
-
-	Message("Successfully converted KV1 cooldowns.txt to JSON format at %s\n", pszJsonPath);
-	return true;
 }
