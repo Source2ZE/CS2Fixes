@@ -51,7 +51,19 @@ public:
 	// - An observer pawn if spectating
 	// - A bot pawn if controlling one
 	CBasePlayerPawn* GetPawn() { return m_hPawn.Get(); }
-	const char* GetPlayerName() { return m_iszPlayerName(); }
+	const char* GetPlayerName() 
+	{ 
+		static char buf[128];
+		const char* name = m_iszPlayerName();
+		strncpy(buf, name, sizeof(buf) - 1);
+		buf[sizeof(buf) - 1] = '\0';
+
+		size_t len = strlen(buf);
+		if (len > 0 && buf[len - 1] == ' ')
+			buf[len - 1] = '\0';
+
+		return buf;
+	}
 	int GetPlayerSlot() { return entindex() - 1; }
 	bool IsConnected() { return m_iConnected() == PlayerConnectedState::PlayerConnected; }
 	void SetPawn(CCSPlayerPawn* pawn)

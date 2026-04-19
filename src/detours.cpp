@@ -386,7 +386,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName(), param2);
 #endif
 
-	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
+	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, pEntity->GetPlayerName(), param2, param3, param4);
 }
 
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
