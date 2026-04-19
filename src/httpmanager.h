@@ -59,15 +59,15 @@ private:
 class HTTPManager
 {
 public:
-	void Get(const char* pszUrl, CompletedCallback callbackCompleted,
+	void Get(std::string strUrl, CompletedCallback callbackCompleted,
 			 ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr);
-	void Post(const char* pszUrl, const char* pszText, CompletedCallback callbackCompleted,
+	void Post(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
 			  ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr);
-	void Put(const char* pszUrl, const char* pszText, CompletedCallback callbackCompleted,
+	void Put(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
 			 ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr);
-	void Patch(const char* pszUrl, const char* pszText, CompletedCallback callbackCompleted,
+	void Patch(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
 			   ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr);
-	void Delete(const char* pszUrl, const char* pszText, CompletedCallback callbackCompleted,
+	void Delete(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
 				ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr);
 	bool HasAnyPendingRequests() const { return m_PendingRequests.size() > 0; }
 
@@ -94,7 +94,7 @@ private:
 
 private:
 	std::vector<HTTPManager::TrackedRequest*> m_PendingRequests;
-	void GenerateRequest(EHTTPMethod method, const char* pszUrl, const char* pszText,
+	void GenerateRequest(EHTTPMethod method, std::string strUrl, std::string strText,
 						 CompletedCallback callbackCompleted, ErrorCallback callbackError,
 						 std::vector<HTTPHeader>* headers);
 };

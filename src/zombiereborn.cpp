@@ -46,7 +46,8 @@
 
 void ZR_Infect(CCSPlayerController* pAttackerController, CCSPlayerController* pVictimController, bool bBroadcast);
 void ZR_Cure(CCSPlayerController* pTargetController);
-void ZR_EndRoundAndAddTeamScore(int iTeamNum);
+void ZR_EndRound(int iTeamNum);
+void ZR_FinishRound(int iTeamNum);
 void SetupCTeams();
 bool ZR_IsTeamAlive(int iTeamNum);
 
@@ -1491,17 +1492,54 @@ AcquireResult ZR_Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices
 	return AcquireResult::Allowed;
 }
 
-void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID)
+bool ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID)
 {
+	const char* inputName = pInputName->String();
+
+	if (!V_strcasecmp(pThis->GetClassname(), "info_map_parameters") && !V_strcasecmp(inputName, "FireWinCondition"))
+	{
+		switch (value->Get<int>())
+		{
+			case CSRoundEndReason::TargetBombed:
+			case CSRoundEndReason::VIPKilled:
+			case CSRoundEndReason::TerroristsEscaped:
+			case CSRoundEndReason::TerroristWin:
+			case CSRoundEndReason::HostagesNotRescued:
+			case CSRoundEndReason::VIPNotEscaped:
+			case CSRoundEndReason::CTSurrender:
+			case CSRoundEndReason::TerroristsPlanted:
+				ZR_FinishRound(CS_TEAM_T);
+				return true;
+			case CSRoundEndReason::VIPEscaped:
+			case CSRoundEndReason::CTStoppedEscape:
+			case CSRoundEndReason::TerroristsStopped:
+			case CSRoundEndReason::BombDefused:
+			case CSRoundEndReason::CTWin:
+			case CSRoundEndReason::HostagesRescued:
+			case CSRoundEndReason::TargetSaved:
+			case CSRoundEndReason::TerroristsNotEscaped:
+			case CSRoundEndReason::TerroristsSurrender:
+			case CSRoundEndReason::CTsReachedHostage:
+				ZR_FinishRound(CS_TEAM_CT);
+				return true;
+			// This would allow maps to mess with timeleft, so we're actually just going to block it entirely
+			case CSRoundEndReason::GameStart:
+				return false;
+			case CSRoundEndReason::Draw:
+			default:
+				ZR_FinishRound(CS_TEAM_NONE);
+				return true;
+		}
+	}
+
 	if (!g_hRespawnToggler.IsValid())
-		return;
+		return true;
 
 	CBaseEntity* relay = g_hRespawnToggler.Get();
-	const char* inputName = pInputName->String();
 
 	// Must be an input into our zr_toggle_respawn relay
 	if (!relay || pThis != relay->m_pEntity)
-		return;
+		return true;
 
 	if (!V_strcasecmp(inputName, "Trigger"))
 		ToggleRespawn();
@@ -1510,9 +1548,10 @@ void ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLar
 	else if (!V_strcasecmp(inputName, "Disable") && g_bRespawnEnabled)
 		ToggleRespawn(true, false);
 	else
-		return;
+		return true;
 
 	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Respawning is %s!", g_bRespawnEnabled ? "enabled" : "disabled");
+	return true;
 }
 
 void SpawnPlayer(CCSPlayerController* pController)
@@ -1655,7 +1694,7 @@ void ZR_OnRoundTimeWarning(IGameEvent* pEvent)
 	CTimer::Create(10.0, TIMERFLAG_MAP | TIMERFLAG_ROUND, []() {
 		if (g_ZRRoundState == EZRRoundState::ROUND_END)
 			return -1.0f;
-		ZR_EndRoundAndAddTeamScore(g_cvarDefaultWinnerTeam.Get());
+		ZR_EndRound(g_cvarDefaultWinnerTeam.Get());
 		return -1.0f;
 	});
 }
@@ -1686,15 +1725,12 @@ bool ZR_CheckTeamWinConditions(int iTeamNum)
 		return false;
 
 	// allow the team to win
-	ZR_EndRoundAndAddTeamScore(iTeamNum);
+	ZR_EndRound(iTeamNum);
 
 	return true;
 }
 
-// spectator: draw
-// t: t win, add t score
-// ct: ct win, add ct score
-void ZR_EndRoundAndAddTeamScore(int iTeamNum)
+void ZR_EndRound(int iTeamNum)
 {
 	bool bServerIdle = true;
 
@@ -1719,15 +1755,14 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 	CSRoundEndReason iReason;
 	switch (iTeamNum)
 	{
-		default:
-		case CS_TEAM_SPECTATOR:
-			iReason = CSRoundEndReason::Draw;
-			break;
 		case CS_TEAM_T:
 			iReason = CSRoundEndReason::TerroristWin;
 			break;
 		case CS_TEAM_CT:
 			iReason = CSRoundEndReason::CTWin;
+			break;
+		default:
+			iReason = CSRoundEndReason::Draw;
 			break;
 	}
 
@@ -1735,6 +1770,11 @@ void ZR_EndRoundAndAddTeamScore(int iTeamNum)
 	float flRestartDelay = mp_round_restart_delay.GetFloat();
 
 	g_pGameRules->TerminateRound(flRestartDelay, iReason);
+	ZR_FinishRound(iTeamNum);
+}
+
+void ZR_FinishRound(int iTeamNum)
+{
 	g_ZRRoundState = EZRRoundState::ROUND_END;
 	ToggleRespawn(true, false);
 
