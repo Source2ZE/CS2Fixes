@@ -1284,18 +1284,17 @@ void ZR_InitialInfection()
 		pCandidateControllers.AddToTail(pController);
 	}
 
-	if (pCandidateControllers.Count() < g_cvarInfectSpawnMinCountReq.Get())
+	// the num of mz to infect
+	int iMZToInfect = 0;
+	bool bEnoughPlayersForInfection = pCandidateControllers.Count() >= g_cvarInfectSpawnMinCountReq.Get();
+	if (bEnoughPlayersForInfection)
 	{
-		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Not enough players to start infection!");
-		g_ZRRoundState = EZRRoundState::POST_INFECTION;
-		return;
+		iMZToInfect = pCandidateControllers.Count() / g_cvarInfectSpawnMZRatio.Get();
+		iMZToInfect = g_cvarInfectSpawnMinCount.Get() > iMZToInfect ? g_cvarInfectSpawnMinCount.Get() : iMZToInfect;
 	}
 
-	// the num of mz to infect
-	int iMZToInfect = pCandidateControllers.Count() / g_cvarInfectSpawnMZRatio.Get();
-	iMZToInfect = g_cvarInfectSpawnMinCount.Get() > iMZToInfect ? g_cvarInfectSpawnMinCount.Get() : iMZToInfect;
 	bool vecIsMZ[MAXPLAYERS] = {false};
-
+	
 	// get spawn points
 	std::vector<SpawnPoint*> spawns = ZR_GetSpawns();
 	if (g_cvarInfectSpawnType.Get() == (int)EZRSpawnType::RESPAWN && !spawns.size())
@@ -1371,8 +1370,17 @@ void ZR_InitialInfection()
 	if (g_cvarRespawnDelay.Get() < 0.0f)
 		g_bRespawnEnabled = false;
 
-	SendHudMessageAll(4, EHudPriority::InfectionCountdown, "First infection has started!");
-	ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "First infection has started! Good luck, survivors!");
+
+	if (bEnoughPlayersForInfection)
+	{
+		SendHudMessageAll(4, EHudPriority::InfectionCountdown, "First infection has started!");
+		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "First infection has started! Good luck, survivors!");
+	}
+	else
+	{
+		ClientPrintAll(HUD_PRINTTALK, ZR_PREFIX "Not enough players to start infection!");
+	}
+
 	g_ZRRoundState = EZRRoundState::POST_INFECTION;
 }
 
