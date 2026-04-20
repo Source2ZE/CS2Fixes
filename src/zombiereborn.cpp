@@ -1271,7 +1271,7 @@ void ZR_InitialInfection()
 		return;
 
 	// mz infection candidates
-	CUtlVector<CCSPlayerController*> pCandidateControllers;
+	std::vector<CCSPlayerController*> vecCandidateControllers;
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
@@ -1282,15 +1282,15 @@ void ZR_InitialInfection()
 		if (!pPawn || !pPawn->IsAlive())
 			continue;
 
-		pCandidateControllers.AddToTail(pController);
+		vecCandidateControllers.push_back(pController);
 	}
 
 	// the num of mz to infect
-	int iMZToInfect = pCandidateControllers.Count() / g_cvarInfectSpawnMZRatio.Get();
+	int iMZToInfect = vecCandidateControllers.size() / g_cvarInfectSpawnMZRatio.Get();
 	iMZToInfect = g_cvarInfectSpawnMinCount.Get() > iMZToInfect ? g_cvarInfectSpawnMinCount.Get() : iMZToInfect;
 	bool vecIsMZ[MAXPLAYERS] = {false};
 
-	if (pCandidateControllers.Count() < g_cvarInfectSpawnMinCountReq.Get())
+	if (vecCandidateControllers.size() < g_cvarInfectSpawnMinCountReq.Get())
 		iMZToInfect = 0;
 
 	// get spawn points
@@ -1308,41 +1308,41 @@ void ZR_InitialInfection()
 		// If we somehow don't have enough mother zombies after going through the players 5 times,
 		if (iFailSafeCounter >= 5)
 		{
-			FOR_EACH_VEC(pCandidateControllers, i)
+			for (int i = 0; i < vecCandidateControllers.size(); i++)
 			{
 				// at 5, reset everyone's immunity but mother zombies from this and last round
 				// at 6, reset everyone's immunity but mother zombies from this round
-				ZEPlayer* pPlayer = pCandidateControllers[i]->GetZEPlayer();
+				ZEPlayer* pPlayer = vecCandidateControllers[i]->GetZEPlayer();
 				if (pPlayer->GetImmunity() < 100 || (iFailSafeCounter >= 6 && !vecIsMZ[i]))
 					pPlayer->SetImmunity(0);
 			}
 		}
 
 		// a list of player who survived the previous mz roll of this round
-		CUtlVector<CCSPlayerController*> pSurvivorControllers;
-		FOR_EACH_VEC(pCandidateControllers, i)
+		std::vector<CCSPlayerController*> vecSurvivorControllers;
+		for (CCSPlayerController* pController : vecCandidateControllers)
 		{
 			// don't even bother with picked mz or player with 100 immunity
-			ZEPlayer* pPlayer = pCandidateControllers[i]->GetZEPlayer();
+			ZEPlayer* pPlayer = pController->GetZEPlayer();
 			if (pPlayer && pPlayer->GetImmunity() < 100)
-				pSurvivorControllers.AddToTail(pCandidateControllers[i]);
+				vecSurvivorControllers.push_back(pController);
 		}
 
 		// no enough human even after triggering fail safe
-		if (iFailSafeCounter >= 6 && pSurvivorControllers.Count() == 0)
+		if (iFailSafeCounter >= 6 && vecSurvivorControllers.size() == 0)
 			break;
 
-		while (pSurvivorControllers.Count() > 0 && iMZToInfect > 0)
+		while (vecSurvivorControllers.size() > 0 && iMZToInfect > 0)
 		{
-			int randomindex = rand() % pSurvivorControllers.Count();
+			int randomindex = rand() % vecSurvivorControllers.size();
 
-			CCSPlayerController* pController = (CCSPlayerController*)pSurvivorControllers[randomindex];
+			CCSPlayerController* pController = (CCSPlayerController*)vecSurvivorControllers[randomindex];
 			CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
-			ZEPlayer* pPlayer = pSurvivorControllers[randomindex]->GetZEPlayer();
+			ZEPlayer* pPlayer = vecSurvivorControllers[randomindex]->GetZEPlayer();
 			// roll for immunity
 			if (rand() % 100 < pPlayer->GetImmunity())
 			{
-				pSurvivorControllers.FastRemove(randomindex);
+				vecSurvivorControllers.erase(vecSurvivorControllers.begin() + randomindex);
 				continue;
 			}
 
