@@ -568,7 +568,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 					continue;
 
 				if (i == iCommandPlayerSlot.Get() || pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC))
-					ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, " \4(%sADMINS) %s:\6 %s", bIsAdmin ? "" : "TO ", pController->GetPlayerName(), pszMessage);
+					ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, " \4(%sADMINS) %s:\6 %s", bIsAdmin ? "" : "TO ", pController->GetPlayerName().c_str(), pszMessage);
 			}
 		}
 

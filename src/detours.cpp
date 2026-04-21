@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2026 Source2ZE
@@ -383,10 +383,10 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	CCSPlayerController* target = CCSPlayerController::FromSlot(slot);
 
 	if (target)
-		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName(), param2);
+		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName().c_str(), param2);
 #endif
 
-	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, pEntity->GetPlayerName(), param2, param3, param4);
+	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, pEntity->GetPlayerName().c_str(), param2, param3, param4);
 }
 
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)

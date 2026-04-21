@@ -341,7 +341,7 @@ void EWItemHandler::Use(float flCounterVal)
 	if (szName != "")
 		extra = " (" + szName + ")";
 
-	ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05used %s%s%s", pController->GetPlayerName(), pItem->sChatColor, pItem->szItemName.c_str(), extra.c_str());
+	ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05used %s%s%s", pController->GetPlayerName().c_str(), pItem->sChatColor, pItem->szItemName.c_str(), extra.c_str());
 	flLastShownUse = GetGlobals()->curtime;
 }
 
@@ -433,7 +433,7 @@ void EWItemHandler::UseCounter(float flCounterVal)
 	if (szName != "")
 		extra = " (" + szName + ")";
 
-	ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05used %s%s%s", pController->GetPlayerName(), pItem->sChatColor, pItem->szItemName.c_str(), extra.c_str());
+	ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05used %s%s%s", pController->GetPlayerName().c_str(), pItem->sChatColor, pItem->szItemName.c_str(), extra.c_str());
 	flLastShownUse = GetGlobals()->curtime;
 }
 
@@ -775,9 +775,9 @@ void EWItemInstance::Pickup(int slot)
 		iTeamNum = pController->m_iTeamNum();
 
 	if (pPlayer->IsFakeClient())
-		Message(EW_PREFIX "%s [BOT] has picked up %s (weaponid:%d)\n", pController->GetPlayerName(), szItemName.c_str(), iWeaponEnt);
+		Message(EW_PREFIX "%s [BOT] has picked up %s (weaponid:%d)\n", pController->GetPlayerName().c_str(), szItemName.c_str(), iWeaponEnt);
 	else
-		Message(EW_PREFIX "%s [%llu] has picked up %s (weaponid:%d)\n", pController->GetPlayerName(), pPlayer->GetUnauthenticatedSteamId64(), szItemName.c_str(), iWeaponEnt);
+		Message(EW_PREFIX "%s [%llu] has picked up %s (weaponid:%d)\n", pController->GetPlayerName().c_str(), pPlayer->GetUnauthenticatedSteamId64(), szItemName.c_str(), iWeaponEnt);
 
 	// Set clantag
 	if (g_cvarUseEntwatchClantag.Get() && bShowHud)
@@ -812,7 +812,7 @@ void EWItemInstance::Pickup(int slot)
 	EndGlow();
 
 	if (bShowPickup)
-		ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05has picked up %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+		ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s \x05has picked up %s%s", pController->GetPlayerName().c_str(), sChatColor, szItemName.c_str());
 }
 
 void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
@@ -859,9 +859,9 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 
 	char sPlayerInfo[64];
 	if (pPlayer->IsFakeClient())
-		V_snprintf(sPlayerInfo, sizeof(sPlayerInfo), "%s [BOT]", pController->GetPlayerName());
+		V_snprintf(sPlayerInfo, sizeof(sPlayerInfo), "%s [BOT]", pController->GetPlayerName().c_str());
 	else
-		V_snprintf(sPlayerInfo, sizeof(sPlayerInfo), "%s [%llu]", pController->GetPlayerName(), pPlayer->GetUnauthenticatedSteamId64());
+		V_snprintf(sPlayerInfo, sizeof(sPlayerInfo), "%s [%llu]", pController->GetPlayerName().c_str(), pPlayer->GetUnauthenticatedSteamId64());
 
 	switch (reason)
 	{
@@ -869,20 +869,20 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 
 			Message(EW_PREFIX "%s has dropped %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 			if (bShowPickup)
-				ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 has dropped %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+				ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 has dropped %s%s", pController->GetPlayerName().c_str(), sChatColor, szItemName.c_str());
 			break;
 		case EWDropReason::Infected:
 			if (bAllowDrop)
 			{
 				Message(EW_PREFIX "%s got infected and dropped %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 got infected and dropped %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 got infected and dropped %s%s", pController->GetPlayerName().c_str(), sChatColor, szItemName.c_str());
 			}
 			else
 			{
 				Message(EW_PREFIX "%s got infected with %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 got infected with %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 got infected with %s%s", pController->GetPlayerName().c_str(), sChatColor, szItemName.c_str());
 			}
 			break;
 		case EWDropReason::Death:
@@ -890,13 +890,13 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 			{
 				Message(EW_PREFIX "%s has died and dropped %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 died and dropped %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 died and dropped %s%s", pController->GetPlayerName().c_str(), sChatColor, szItemName.c_str());
 			}
 			else
 			{
 				Message(EW_PREFIX "%s has died with %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 died with %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 died with %s%s", pController->GetPlayerName().c_str(), sChatColor, szItemName.c_str());
 			}
 			break;
 		case EWDropReason::Disconnect:
@@ -904,13 +904,13 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 			{
 				Message(EW_PREFIX "%s has disconnected and dropped %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 disconnected and dropped %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 disconnected and dropped %s%s", pController->GetPlayerName().c_str(), sChatColor, szItemName.c_str());
 			}
 			else
 			{
 				Message(EW_PREFIX "%s has disconnected with %s (weaponid:%d)\n", sPlayerInfo, szItemName.c_str(), iWeaponEnt);
 				if (bShowPickup)
-					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 disconnected with %s%s", pController->GetPlayerName(), sChatColor, szItemName.c_str());
+					ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "\x03%s\x05 disconnected with %s%s", pController->GetPlayerName().c_str(), sChatColor, szItemName.c_str());
 			}
 			break;
 		case EWDropReason::Deleted:
@@ -1757,49 +1757,49 @@ void CEWHandler::Transfer(CCSPlayerController* pCaller, int iItemInstance, CHand
 	Vector vecOrigin = pReceiverPawn->GetAbsOrigin();
 	pItemWeapon->Teleport(&vecOrigin, nullptr, nullptr);
 
-	const char* pszCommandPlayerName = pCaller ? pCaller->GetPlayerName() : "Console";
+	std::string strCommandPlayerName = pCaller ? pCaller->GetPlayerName() : "Console";
 
 	ZEPlayer* pZEReceiver = g_playerManager->GetPlayer(pReceiver->GetPlayerSlot());
 	char sReceiverInfo[64];
 	if (pZEReceiver->IsFakeClient())
-		V_snprintf(sReceiverInfo, sizeof(sReceiverInfo), "%s [BOT]", pReceiver->GetPlayerName());
+		V_snprintf(sReceiverInfo, sizeof(sReceiverInfo), "%s [BOT]", pReceiver->GetPlayerName().c_str());
 	else
-		V_snprintf(sReceiverInfo, sizeof(sReceiverInfo), "%s [%llu]", pReceiver->GetPlayerName(), pZEReceiver->GetUnauthenticatedSteamId64());
+		V_snprintf(sReceiverInfo, sizeof(sReceiverInfo), "%s [%llu]", pReceiver->GetPlayerName().c_str(), pZEReceiver->GetUnauthenticatedSteamId64());
 
 	if (pOwner)
 	{
 		ZEPlayer* pZEOwner = g_playerManager->GetPlayer(pOwner->GetPlayerSlot());
 		char sOwnerInfo[64];
 		if (pZEOwner->IsFakeClient())
-			V_snprintf(sOwnerInfo, sizeof(sOwnerInfo), "%s [BOT]", pOwner->GetPlayerName());
+			V_snprintf(sOwnerInfo, sizeof(sOwnerInfo), "%s [BOT]", pOwner->GetPlayerName().c_str());
 		else
-			V_snprintf(sOwnerInfo, sizeof(sOwnerInfo), "%s [%llu]", pOwner->GetPlayerName(), pZEOwner->GetUnauthenticatedSteamId64());
+			V_snprintf(sOwnerInfo, sizeof(sOwnerInfo), "%s [%llu]", pOwner->GetPlayerName().c_str(), pZEOwner->GetUnauthenticatedSteamId64());
 
 		Message("[EntWatch] %s transferred %s from %s to %s\n",
-				pszCommandPlayerName,
+				strCommandPlayerName.c_str(),
 				g_pEWHandler->vecItems[iItemInstance]->szItemName.c_str(),
 				sOwnerInfo,
 				sReceiverInfo);
 
 		ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "Admin\x02 %s\x01 has transferred%s %s\x01 from\x02 %s\x01 to\x02 %s\x01.",
-					   pszCommandPlayerName,
+					   strCommandPlayerName.c_str(),
 					   g_pEWHandler->vecItems[iItemInstance]->sChatColor,
 					   g_pEWHandler->vecItems[iItemInstance]->szItemName.c_str(),
-					   pOwner->GetPlayerName(),
-					   pReceiver->GetPlayerName());
+					   pOwner->GetPlayerName().c_str(),
+					   pReceiver->GetPlayerName().c_str());
 	}
 	else
 	{
 		Message("[EntWatch] %s transferred %s to %s\n",
-				pszCommandPlayerName,
+				strCommandPlayerName.c_str(),
 				g_pEWHandler->vecItems[iItemInstance]->szItemName.c_str(),
 				sReceiverInfo);
 
 		ClientPrintAll(HUD_PRINTTALK, EW_PREFIX "Admin\x02 %s\x01 has transferred%s %s\x01 to\x02 %s\x01.",
-					   pszCommandPlayerName,
+					   strCommandPlayerName.c_str(),
 					   g_pEWHandler->vecItems[iItemInstance]->sChatColor,
 					   g_pEWHandler->vecItems[iItemInstance]->szItemName.c_str(),
-					   pReceiver->GetPlayerName());
+					   pReceiver->GetPlayerName().c_str());
 	}
 }
 
@@ -2410,7 +2410,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 		return;
 	}
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
 	bool bHasOngoing = false;
 	auto ongoingTransfer = g_pEWHandler->mapTransfers.find(player->GetPlayerSlot());
@@ -2608,7 +2608,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 
 	if (itemCount == 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "%s does not have an item that can be transferred.", pOwner->GetPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "%s does not have an item that can be transferred.", pOwner->GetPlayerName().c_str());
 		return;
 	}
 	else if (itemCount == 1)
@@ -2618,7 +2618,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 	}
 
 	// itemCount > 1
-	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Found %d items owned by\x04 \"%s\"", itemCount, pOwner->GetPlayerName());
+	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Found %d items owned by\x04 \"%s\"", itemCount, pOwner->GetPlayerName().c_str());
 	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Enter\x02 !etransfer <number>\x01 to complete the transfer");
 
 	std::shared_ptr<ETransferInfo> transferInfo = std::make_shared<ETransferInfo>(pReceiver->GetHandle(), GetGlobals()->curtime);

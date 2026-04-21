@@ -1995,7 +1995,7 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TERRORIST | NO_DEAD, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 	std::vector<SpawnPoint*> spawns = ZR_GetSpawns();
 
 	if (g_cvarInfectSpawnType.Get() == (int)EZRSpawnType::RESPAWN && !spawns.size())
@@ -2015,10 +2015,10 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 			ZR_Infect(pTarget, pTarget, true);
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as a mother zombie" : "", ZR_PREFIX);
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as a mother zombie" : "", ZR_PREFIX);
 	}
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as mother zombies" : "", ZR_PREFIX);
+		PrintMultiAdminAction(nType, strCommandPlayerName, "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as mother zombies" : "", ZR_PREFIX);
 
 	// Note we skip MZ immunity when first infection is manually triggered
 	if (g_ZRRoundState == EZRRoundState::ROUND_START)
@@ -2055,7 +2055,7 @@ CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_COUNTER_TERRORIST, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -2069,8 +2069,8 @@ CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 		ZR_StripAndGiveKnife(pPawn);
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "revived", "", ZR_PREFIX);
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "revived", "", ZR_PREFIX);
 	}
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "revived", "", ZR_PREFIX);
+		PrintMultiAdminAction(nType, strCommandPlayerName, "revived", "", ZR_PREFIX);
 }

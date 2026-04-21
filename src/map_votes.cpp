@@ -452,7 +452,7 @@ bool CMapVoteSystem::RegisterPlayerVote(CPlayerSlot iPlayerSlot, int iVoteOption
 	int iSlot = pController->GetPlayerSlot();
 	m_arrPlayerVotes[iSlot] = iVoteOption;
 
-	Message("Adding vote to map %i (%s) for player %s (slot %i).\n", iVoteOption, GetMapName(iMapIndexToVote), pController->GetPlayerName(), iSlot);
+	Message("Adding vote to map %i (%s) for player %s (slot %i).\n", iVoteOption, GetMapName(iMapIndexToVote), pController->GetPlayerName().c_str(), iSlot);
 
 	// Update the winning map for every player vote
 	UpdateWinningMap();
@@ -795,7 +795,7 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 		g_pMapVoteSystem->SetPlayerNomination(iSlot, iMapIndex);
 		int iNominations = g_pMapVoteSystem->GetTotalNominations(iMapIndex);
 
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01was nominated by %s. It now has %d nomination%s.", pMap->GetName(), pController->GetPlayerName(), iNominations, iNominations > 1 ? "s" : "");
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01was nominated by %s. It now has %d nomination%s.", pMap->GetName(), pController->GetPlayerName().c_str(), iNominations, iNominations > 1 ? "s" : "");
 		pPlayer->SetNominateTime(GetGlobals()->curtime);
 	});
 }

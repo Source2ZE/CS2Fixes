@@ -47,65 +47,65 @@ CAdminSystem* g_pAdminSystem = nullptr;
 void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAdding, CInfractionBase::EInfractionType infType);
 const char* GetActionPhrase(CInfractionBase::EInfractionType infType, GrammarTense iTense, bool bAdding);
 
-void PrintSingleAdminAction(const char* pszAdminName, const char* pszTargetName, const char* pszAction, const char* pszAction2 = "", const char* prefix = CHAT_PREFIX)
+void PrintSingleAdminAction(std::string strAdminName, std::string strTargetName, const char* pszAction, const char* pszAction2 = "", const char* prefix = CHAT_PREFIX)
 {
-	ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s %s%s.", prefix, pszAdminName, pszAction, pszTargetName, pszAction2);
+	ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s %s%s.", prefix, strAdminName.c_str(), pszAction, strTargetName.c_str(), pszAction2);
 }
 
-void PrintMultiAdminAction(ETargetType nType, const char* pszAdminName, const char* pszAction, const char* pszAction2 = "", const char* prefix = CHAT_PREFIX)
+void PrintMultiAdminAction(ETargetType nType, std::string strAdminName, const char* pszAction, const char* pszAction2 = "", const char* prefix = CHAT_PREFIX)
 {
 	switch (nType)
 	{
 		case ETargetType::ALL:
-			PrintSingleAdminAction(pszAdminName, "everyone", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "everyone", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::SPECTATOR:
-			PrintSingleAdminAction(pszAdminName, "spectators", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "spectators", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::T:
-			PrintSingleAdminAction(pszAdminName, "terrorists", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "terrorists", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::CT:
-			PrintSingleAdminAction(pszAdminName, "counter-terrorists", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "counter-terrorists", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::DEAD:
-			PrintSingleAdminAction(pszAdminName, "dead players", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "dead players", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::ALIVE:
-			PrintSingleAdminAction(pszAdminName, "alive players", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "alive players", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::BOT:
-			PrintSingleAdminAction(pszAdminName, "bots", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "bots", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::HUMAN:
-			PrintSingleAdminAction(pszAdminName, "humans", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "humans", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::ALL_BUT_SELF:
-			ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s everyone except %s%s.", prefix, pszAdminName, pszAction, pszAdminName, pszAction2);
+			ClientPrintAll(HUD_PRINTTALK, "%s" ADMIN_PREFIX "%s everyone except %s%s.", prefix, strAdminName.c_str(), pszAction, strAdminName.c_str(), pszAction2);
 			break;
 		case ETargetType::ALL_BUT_RANDOM:
-			PrintSingleAdminAction(pszAdminName, "everyone except a random player", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "everyone except a random player", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::ALL_BUT_RANDOM_T:
-			PrintSingleAdminAction(pszAdminName, "everyone except a random terrorist", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "everyone except a random terrorist", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::ALL_BUT_RANDOM_CT:
-			PrintSingleAdminAction(pszAdminName, "everyone except a random counter-terrorist", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "everyone except a random counter-terrorist", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::ALL_BUT_RANDOM_SPEC:
-			PrintSingleAdminAction(pszAdminName, "everyone except a random spectator", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "everyone except a random spectator", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::ALL_BUT_AIM:
-			PrintSingleAdminAction(pszAdminName, "everyone except a targetted player", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "everyone except a targetted player", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::ALL_BUT_SPECTATOR:
-			PrintSingleAdminAction(pszAdminName, "non-spectators", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "non-spectators", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::ALL_BUT_T:
-			PrintSingleAdminAction(pszAdminName, "non-terrorists", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "non-terrorists", pszAction, pszAction2, prefix);
 			break;
 		case ETargetType::ALL_BUT_CT:
-			PrintSingleAdminAction(pszAdminName, "non-counter-terrorists", pszAction, pszAction2, prefix);
+			PrintSingleAdminAction(strAdminName, "non-counter-terrorists", pszAction, pszAction2, prefix);
 			break;
 	}
 }
@@ -245,7 +245,7 @@ CON_COMMAND_CHAT_FLAGS(kick, "<name> - Kick a player", ADMFLAG_KICK)
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -255,10 +255,10 @@ CON_COMMAND_CHAT_FLAGS(kick, "<name> - Kick a player", ADMFLAG_KICK)
 		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot(), NETWORK_DISCONNECT_KICKED, "Kicked by an admin");
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "kicked");
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "kicked");
 	}
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "kicked");
+		PrintMultiAdminAction(nType, strCommandPlayerName, "kicked");
 }
 
 CON_COMMAND_CHAT_FLAGS(slay, "<name> - Slay a player", ADMFLAG_SLAY)
@@ -276,7 +276,7 @@ CON_COMMAND_CHAT_FLAGS(slay, "<name> - Slay a player", ADMFLAG_SLAY)
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -284,11 +284,11 @@ CON_COMMAND_CHAT_FLAGS(slay, "<name> - Slay a player", ADMFLAG_SLAY)
 		pTarget->GetPawn()->CommitSuicide(false, true);
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slayed");
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "slayed");
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
+		PrintMultiAdminAction(nType, strCommandPlayerName, "slayed");
 }
 
 CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - Slap a player", ADMFLAG_SLAY)
@@ -306,7 +306,7 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - Slap a player", ADMFLAG_SLAY)
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -338,11 +338,11 @@ CON_COMMAND_CHAT_FLAGS(slap, "<name> [damage] - Slap a player", ADMFLAG_SLAY)
 		}
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slapped");
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "slapped");
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "slapped");
+		PrintMultiAdminAction(nType, strCommandPlayerName, "slapped");
 }
 
 CON_COMMAND_CHAT_FLAGS(goto, "<name> - Teleport to a player", ADMFLAG_SLAY)
@@ -422,7 +422,7 @@ CON_COMMAND_CHAT_FLAGS(noclip, "[name] - Toggle noclip on a player", ADMFLAG_CHE
 
 	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
 	CBasePlayerPawn* pPawn = pTarget->m_hPawn();
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	if (!pPawn)
 		return;
@@ -430,12 +430,12 @@ CON_COMMAND_CHAT_FLAGS(noclip, "[name] - Toggle noclip on a player", ADMFLAG_CHE
 	if (pPawn->m_nActualMoveType() == MOVETYPE_NOCLIP)
 	{
 		pPawn->SetMoveType(MOVETYPE_WALK);
-		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "disabled noclip on");
+		PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "disabled noclip on");
 	}
 	else
 	{
 		pPawn->SetMoveType(MOVETYPE_NOCLIP);
-		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "enabled noclip on");
+		PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "enabled noclip on");
 	}
 }
 
@@ -668,12 +668,12 @@ CON_COMMAND_CHAT_FLAGS(extend, "<minutes> - Extend current map (negative value r
 
 	g_pVoteManager->ExtendMap(iExtendTime);
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	if (iExtendTime < 0)
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "shortened map time %i minutes.", pszCommandPlayerName, iExtendTime * -1);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "shortened map time %i minutes.", strCommandPlayerName.c_str(), iExtendTime * -1);
 	else
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "extended map time %i minutes.", pszCommandPlayerName, iExtendTime);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "extended map time %i minutes.", strCommandPlayerName.c_str(), iExtendTime);
 }
 
 CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This will also show to all online admins", ADMFLAG_GENERIC)
@@ -711,12 +711,12 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 
 	std::string strMessage = GetReason(args, 1, false);
 
-	const char* pszName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	if (player == pTarget)
 	{
 		// Player is PMing themselves (bind to display message in chat probably), so no need to echo to all admins
-		ClientPrint(player, HUD_PRINTTALK, "\x0A[SELF]\x0C %s\1: \x0B%s", pszName, strMessage.c_str());
+		ClientPrint(player, HUD_PRINTTALK, "\x0A[SELF]\x0C %s\1: \x0B%s", strPlayerName.c_str(), strMessage.c_str());
 		return;
 	}
 
@@ -728,12 +728,12 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 			continue;
 
 		if (pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC) && CCSPlayerController::FromSlot(i) != player)
-			ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, "\x0A[PM to %s]\x0C %s\1: \x0B%s", pTarget->GetPlayerName(), pszName, strMessage.c_str());
+			ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, "\x0A[PM to %s]\x0C %s\1: \x0B%s", pTarget->GetPlayerName().c_str(), strPlayerName.c_str(), strMessage.c_str());
 	}
 
-	ClientPrint(player, HUD_PRINTTALK, "\x0A[PM to %s]\x0C %s\1: \x0B%s", pTarget->GetPlayerName(), pszName, strMessage.c_str());
-	ClientPrint(pTarget, HUD_PRINTTALK, "\x0A[PM]\x0C %s\1: \x0B%s", pszName, strMessage.c_str());
-	Message("[PM to %s] %s: %s\n", pTarget->GetPlayerName(), pszName, strMessage.c_str());
+	ClientPrint(player, HUD_PRINTTALK, "\x0A[PM to %s]\x0C %s\1: \x0B%s", pTarget->GetPlayerName().c_str(), strPlayerName.c_str(), strMessage.c_str());
+	ClientPrint(pTarget, HUD_PRINTTALK, "\x0A[PM]\x0C %s\1: \x0B%s", strPlayerName.c_str(), strMessage.c_str());
+	Message("[PM to %s] %s: %s\n", pTarget->GetPlayerName().c_str(), strPlayerName.c_str(), strMessage.c_str());
 }
 
 size_t CountCharacters(const std::string& str)
@@ -949,7 +949,7 @@ CON_COMMAND_CHAT(status, "<name> - Checks a player's active punishments. Non-adm
 		if (pTarget == player)
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have no active punishments.");
 		else
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s has no active punishments.", pTarget->GetPlayerName());
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s has no active punishments.", pTarget->GetPlayerName().c_str());
 		return;
 	}
 
@@ -962,7 +962,7 @@ CON_COMMAND_CHAT(status, "<name> - Checks a player's active punishments. Non-adm
 		strPunishment = "\2gagged\1";
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s %s.",
-				pTarget == player ? "You are" : (std::string(pTarget->GetPlayerName()) + " is").c_str(), strPunishment.c_str());
+				pTarget == player ? "You are" : (pTarget->GetPlayerName() + " is").c_str(), strPunishment.c_str());
 }
 
 CON_COMMAND_CHAT_FLAGS(listdc, "- List recently disconnected players and their Steam64 IDs", ADMFLAG_GENERIC)
@@ -999,7 +999,7 @@ CON_COMMAND_CHAT_FLAGS(money, "<name> <amount> - Set a player's amount of money"
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	char szAction[64];
 	V_snprintf(szAction, sizeof(szAction), "set $%i money on", iMoney);
@@ -1014,11 +1014,11 @@ CON_COMMAND_CHAT_FLAGS(money, "<name> <amount> - Set a player's amount of money"
 		pTarget->m_pInGameMoneyServices->m_iAccount = iMoney;
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), szAction, "");
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), szAction, "");
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, szAction, "");
+		PrintMultiAdminAction(nType, strCommandPlayerName, szAction, "");
 }
 
 CON_COMMAND_CHAT_FLAGS(health, "<name> <health> - Set a player's health", ADMFLAG_CHEATS)
@@ -1044,7 +1044,7 @@ CON_COMMAND_CHAT_FLAGS(health, "<name> <health> - Set a player's health", ADMFLA
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_SPECTATOR, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	char szAction[64];
 	V_snprintf(szAction, sizeof(szAction), "set %i health on", iHealth);
@@ -1067,11 +1067,11 @@ CON_COMMAND_CHAT_FLAGS(health, "<name> <health> - Set a player's health", ADMFLA
 		pPawn->m_iHealth = iHealth;
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), szAction, "");
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), szAction, "");
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, szAction, "");
+		PrintMultiAdminAction(nType, strCommandPlayerName, szAction, "");
 }
 
 CON_COMMAND_CHAT_FLAGS(setpos, "<x y z> - Set your origin", ADMFLAG_CHEATS)
@@ -1118,7 +1118,7 @@ CON_COMMAND_CHAT_FLAGS(strip, "<name> - Strip all the weapons/items of a player"
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_SPECTATOR, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -1140,11 +1140,11 @@ CON_COMMAND_CHAT_FLAGS(strip, "<name> - Strip all the weapons/items of a player"
 		pItemServices->StripPlayerWeapons(true);
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "stripped", "");
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "stripped", "");
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "stripped", "");
+		PrintMultiAdminAction(nType, strCommandPlayerName, "stripped", "");
 }
 
 CON_COMMAND_CHAT_FLAGS(give, "<name> <weapon> - Give a weapon/item to a player", ADMFLAG_CHEATS)
@@ -1170,7 +1170,7 @@ CON_COMMAND_CHAT_FLAGS(give, "<name> <weapon> - Give a weapon/item to a player",
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_SPECTATOR, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	char szAction[64];
 	V_snprintf(szAction, sizeof(szAction), "given %s to", args[2]);
@@ -1221,11 +1221,11 @@ CON_COMMAND_CHAT_FLAGS(give, "<name> <weapon> - Give a weapon/item to a player",
 		}
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), szAction, "");
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), szAction, "");
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, szAction, "");
+		PrintMultiAdminAction(nType, strCommandPlayerName, szAction, "");
 }
 
 #ifdef _DEBUG
@@ -1272,7 +1272,7 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADM
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	constexpr const char* teams[] = {"none", "spectators", "terrorists", "counter-terrorists"};
 
@@ -1289,11 +1289,11 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADM
 		pTarget->SwitchTeam(iTeam);
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "moved", szAction);
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "moved", szAction);
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
+		PrintMultiAdminAction(nType, strCommandPlayerName, "moved", szAction);
 }
 #endif
 
@@ -1950,7 +1950,7 @@ void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAd
 		return;
 	}
 
-	const char* pszCommandPlayerName = pAdmin ? pAdmin->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = pAdmin ? pAdmin->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -1991,20 +1991,20 @@ void ParseInfraction(const CCommand& args, CCSPlayerController* pAdmin, bool bAd
 		if (iNumClients == 1 || (bAdding && iDuration == 0))
 		{
 			if (!bAdding)
-				PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), GetActionPhrase(infType, GrammarTense::Past, bAdding));
+				PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), GetActionPhrase(infType, GrammarTense::Past, bAdding));
 			else if (iDuration > 0)
-				PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), GetActionPhrase(infType, GrammarTense::Past, bAdding), (" for " + FormatTime(iDuration, false)).c_str());
+				PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), GetActionPhrase(infType, GrammarTense::Past, bAdding), (" for " + FormatTime(iDuration, false)).c_str());
 			else
 			{
 				std::string strAction = "permanently ";
 				strAction.append(GetActionPhrase(infType, GrammarTense::Past, bAdding));
-				PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), strAction.c_str());
+				PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), strAction.c_str());
 			}
 		}
 	}
 
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, GetActionPhrase(infType, GrammarTense::Past, bAdding),
+		PrintMultiAdminAction(nType, strCommandPlayerName, GetActionPhrase(infType, GrammarTense::Past, bAdding),
 							  bAdding ? (" for " + FormatTime(iDuration, false)).c_str() : "");
 
 	g_pAdminSystem->SaveInfractions();
