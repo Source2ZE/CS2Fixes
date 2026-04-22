@@ -46,7 +46,7 @@ CConVar<int> g_cvarAdminImmunityTargetting("cs2f_admin_immunity", FCVAR_NONE, "M
 CConVar<bool> g_cvarEnableMapSteamIds("cs2f_map_steamids_enable", FCVAR_NONE, "Whether to make Steam ID's available to maps", false);
 
 ZEPlayerHandle::ZEPlayerHandle() :
-	m_Index(INVALID_ZEPLAYERHANDLE_INDEX){};
+	m_Index(INVALID_ZEPLAYERHANDLE_INDEX) {};
 
 ZEPlayerHandle::ZEPlayerHandle(CPlayerSlot slot)
 {
@@ -171,6 +171,8 @@ CConVar<float> g_cvarFlashLightAngle("cs2f_flashlight_angle", FCVAR_NONE, "How w
 CConVar<Color> g_cvarFlashLightColor("cs2f_flashlight_color", FCVAR_NONE, "What color to use for flashlights", Color(255, 255, 255));
 CConVar<CUtlString> g_cvarFlashLightAttachment("cs2f_flashlight_attachment", FCVAR_NONE, "Which attachment to parent a flashlight to. If the player model is not properly setup, you might have to use clip_limit here instead", "axis_of_intent");
 
+CConVar<CUtlString> g_cvarFlashLightParticle("cs2f_flashlight_particle", FCVAR_NONE, "Ignore All other flashlight settings and spawn this particle as flashlight", "");
+
 void TeleportFlashLight(CCSPlayerPawn* pPawn, CBaseEntity* pLight, float flDistance = -1.f, QAngle angOverride = vec3_angle)
 {
 	if (!pPawn || !pLight)
@@ -239,6 +241,14 @@ void ZEPlayer::ToggleFlashLight()
 	CSingleRecipientFilter filter(GetPlayerSlot());
 	pController->EmitSoundFilter(filter, "HudChat.Message");
 
+	// particle flashlight
+	if (g_cvarFlashLightParticle.Get().Length())
+	{
+		pController->DispatchParticle(g_cvarFlashLightParticle.Get().String(), &filter);
+		return;
+	}
+
+	// entity flashlight
 	if (!GetFlashLight())
 		SpawnFlashLight();
 
@@ -286,6 +296,7 @@ bool ZEPlayer::IsFlooding()
 void PrecacheBeaconParticle(IEntityResourceManifest* pResourceManifest)
 {
 	pResourceManifest->AddResource(g_cvarBeaconParticle.Get().String());
+	pResourceManifest->AddResource(g_cvarFlashLightParticle.Get().String());
 }
 
 void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
