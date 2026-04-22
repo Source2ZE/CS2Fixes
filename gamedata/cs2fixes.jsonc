@@ -256,7 +256,7 @@
 		"CPhysBox_Use":
 		{
 			"library": "server",
-			"windows": "4C 8B 43 ? 48 8D 8F ? ? ? ? 48 8B 13 E8 ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 CC CC CC CC 40 53",
+			"windows": "4C 8B 43 ? 48 8D 8F ? ? ? ? 48 8B 13 E8 ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 CC CC CC CC 48 89 5C 24",
 			"linux": "49 8B 54 24 ? 45 31 C9 45 31 C0 C7 45 ? ? ? ? ? 49 8B 34 24 48 8D 4D ? 66 0F EF C0 48 C7 45 ? ? ? ? ? 48 8D BB ? ? ? ? E8 ? ? ? ? F6 45 ? ? 74 ? 48 8B 05 ? ? ? ? 48 8B 75 ? 48 8B 38 48 8B 07 FF 50 ? 48 83 C4"
 		},
 		"CTakeDamageInfo":
@@ -304,7 +304,7 @@
 		{
 			"library": "server",
 			"windows": "4C 89 44 24 ? F3 0F 11 4C 24 ? 55 53 56",
-			"linux": "55 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 48 8D 3D ? ? ? ? 53 48 81 EC"
+			"linux": "55 48 89 E5 41 57 49 89 FF 41 56 48 8D 3D ? ? ? ? 41 55 41 54 53 48 81 EC"
 		},
 		"TraceFunc":
 		{
