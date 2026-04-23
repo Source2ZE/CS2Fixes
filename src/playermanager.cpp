@@ -46,7 +46,7 @@ CConVar<int> g_cvarAdminImmunityTargetting("cs2f_admin_immunity", FCVAR_NONE, "M
 CConVar<bool> g_cvarEnableMapSteamIds("cs2f_map_steamids_enable", FCVAR_NONE, "Whether to make Steam ID's available to maps", false);
 
 ZEPlayerHandle::ZEPlayerHandle() :
-	m_Index(INVALID_ZEPLAYERHANDLE_INDEX) {};
+	m_Index(INVALID_ZEPLAYERHANDLE_INDEX){};
 
 ZEPlayerHandle::ZEPlayerHandle(CPlayerSlot slot)
 {
@@ -163,14 +163,15 @@ void ZEPlayer::SetHideDistance(int distance)
 	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), HIDE_DISTANCE_PREF_KEY_NAME, distance);
 }
 
+CConVar<int> g_cvarFlashLightEnable("cs2f_flashlight_enable", FCVAR_NONE, "Whether to enable flashlights (0=disabled, 1=light_barn flashlight, limited vertical movement, 2=particle flashlight, no cvar customization)", false);
 CConVar<bool> g_cvarFlashLightShadows("cs2f_flashlight_shadows", FCVAR_NONE, "Whether to enable flashlight shadows", true);
 CConVar<bool> g_cvarFlashLightTransmitOthers("cs2f_flashlight_transmit_others", FCVAR_NONE, "Whether to transmit other player's flashlights, recommended to have shadows off for this", false);
 CConVar<float> g_cvarFlashLightBrightness("cs2f_flashlight_brightness", FCVAR_NONE, "How bright should flashlights be", 1.0f);
 CConVar<float> g_cvarFlashLightDistance("cs2f_flashlight_distance", FCVAR_NONE, "How far flashlights should be from the player's head", 54.0f); // The minimum distance such that an awp wouldn't block the light
 CConVar<float> g_cvarFlashLightAngle("cs2f_flashlight_angle", FCVAR_NONE, "How wide should the flashlight be in degrees", 45.0f);
 CConVar<Color> g_cvarFlashLightColor("cs2f_flashlight_color", FCVAR_NONE, "What color to use for flashlights", Color(255, 255, 255));
-CConVar<CUtlString> g_cvarFlashLightAttachment("cs2f_flashlight_attachment", FCVAR_NONE, "Which attachment to parent a flashlight to. If the player model is not properly setup, you might have to use clip_limit here instead", "axis_of_intent");
-CConVar<CUtlString> g_cvarFlashLightParticle("cs2f_flashlight_particle", FCVAR_NONE, "If set, ignore all other flashlight settings and spawn this particle as flashlight", "");
+CConVar<CUtlString> g_cvarFlashLightAttachment("cs2f_flashlight_attachment", FCVAR_NONE, "Which attachment to parent a flashlight to. If the player model is not properly setup, you might have to use clip_limit here instead", "clip_limit");
+CConVar<CUtlString> g_cvarFlashLightParticle("cs2f_flashlight_particle", FCVAR_NONE, "If set, ignore all other flashlight settings and spawn this particle as flashlight", "particles/cs2fixes/simple_flashlight.vpcf");
 
 void TeleportFlashLight(CCSPlayerPawn* pPawn, CBaseEntity* pLight, float flDistance = -1.f, QAngle angOverride = vec3_angle)
 {
@@ -241,7 +242,7 @@ void ZEPlayer::ToggleFlashLight()
 	pController->EmitSoundFilter(filter, "HudChat.Message");
 
 	// particle flashlight
-	if (g_cvarFlashLightParticle.Get().Length())
+	if (g_cvarFlashLightEnable.Get() == 2)
 	{
 		pController->DispatchParticle(g_cvarFlashLightParticle.Get().String(), &filter);
 		return;
@@ -950,8 +951,6 @@ void CPlayerManager::CheckInfractions()
 
 	g_pAdminSystem->SaveInfractions();
 }
-
-CConVar<bool> g_cvarFlashLightEnable("cs2f_flashlight_enable", FCVAR_NONE, "Whether to enable flashlights", false);
 
 void CPlayerManager::FlashLightThink()
 {
