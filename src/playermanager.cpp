@@ -248,7 +248,7 @@ void ZEPlayer::ToggleFlashLight()
 		return;
 	}
 
-	// entity flashlight
+	// light_barn flashlight
 	if (!GetFlashLight())
 		SpawnFlashLight();
 
