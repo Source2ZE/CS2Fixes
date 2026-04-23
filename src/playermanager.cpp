@@ -170,8 +170,8 @@ CConVar<float> g_cvarFlashLightBrightness("cs2f_flashlight_brightness", FCVAR_NO
 CConVar<float> g_cvarFlashLightDistance("cs2f_flashlight_distance", FCVAR_NONE, "How far flashlights should be from the player's head", 54.0f); // The minimum distance such that an awp wouldn't block the light
 CConVar<float> g_cvarFlashLightAngle("cs2f_flashlight_angle", FCVAR_NONE, "How wide should the flashlight be in degrees", 45.0f);
 CConVar<Color> g_cvarFlashLightColor("cs2f_flashlight_color", FCVAR_NONE, "What color to use for flashlights", Color(255, 255, 255));
-CConVar<CUtlString> g_cvarFlashLightAttachment("cs2f_flashlight_attachment", FCVAR_NONE, "Which attachment to parent a flashlight to. If the player model is not properly setup, you might have to use clip_limit here instead", "clip_limit");
-CConVar<CUtlString> g_cvarFlashLightParticle("cs2f_flashlight_particle", FCVAR_NONE, "If set, ignore all other flashlight settings and spawn this particle as flashlight", "particles/cs2fixes/simple_flashlight.vpcf");
+CConVar<CUtlString> g_cvarFlashLightAttachment("cs2f_flashlight_attachment", FCVAR_NONE, "Which attachment to parent a flashlight to", "clip_limit");
+CConVar<CUtlString> g_cvarFlashLightParticle("cs2f_flashlight_particle", FCVAR_NONE, "Path to flashlight particle", "particles/cs2fixes/simple_flashlight.vpcf");
 
 void TeleportFlashLight(CCSPlayerPawn* pPawn, CBaseEntity* pLight, float flDistance = -1.f, QAngle angOverride = vec3_angle)
 {
