@@ -661,6 +661,8 @@ void CS2Fixes::Hook_GameServerSteamAPIActivated()
 	RETURN_META(MRES_IGNORED);
 }
 
+CConVar<bool> g_cvarBlockParticleMsgs("cs2f_block_particle_msgs", FCVAR_NONE, "Whether to block CUserMsg_ParticleManager messages to fix lag/crashes, experimental", false);
+
 void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
 							  INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
@@ -788,6 +790,13 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 			*(uint64*)clients &= ~stopSoundMask;
 			*(uint64*)clients &= ~silenceSoundMask;
 		}
+	}
+	else if (info->m_MessageId == UM_ParticleManager)
+	{
+		// These messages were previously unused, but recently started being used for weapon particles in the AG2 update
+		// Unfortunately, this new system seems extremely unoptimized for 64 players, and was causing severe performance issues & vector overflow client crashes
+		if (g_cvarBlockParticleMsgs.Get())
+			*(uint64*)clients = 0;
 	}
 }
 
