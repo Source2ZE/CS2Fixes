@@ -51,7 +51,16 @@ public:
 	// - An observer pawn if spectating
 	// - A bot pawn if controlling one
 	CBasePlayerPawn* GetPawn() { return m_hPawn.Get(); }
-	const char* GetPlayerName() { return m_iszPlayerName(); }
+	std::string GetPlayerName() 
+	{
+		std::string strName = m_iszPlayerName();
+		
+		// Ignore space that might be added by clan tag name swap trick
+		if (!strName.empty() && strName.back() == ' ')
+			strName.pop_back();
+
+		return strName;
+	}
 	int GetPlayerSlot() { return entindex() - 1; }
 	bool IsConnected() { return m_iConnected() == PlayerConnectedState::PlayerConnected; }
 	void SetPawn(CCSPlayerPawn* pawn)

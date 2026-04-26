@@ -1,0 +1,568 @@
+{
+	"Signatures":
+	{
+		// Called from Host_Say
+		"UTIL_SayTextFilter":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 49 8B F8",
+			"linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 56 4C 8D 75 ? 41 55 41 89 CD 41 54 49 89 D4"
+		},
+		// Called from Host_Say
+		"UTIL_SayText2Filter":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 45 0F B6 F0",
+			"linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 56 41 89 D6 31 D2"
+		},
+		"IsHearingClient":
+		{
+			"library": "engine",
+			"windows": "40 53 48 83 EC ? 48 8B D9 3B 51",
+			"linux": "55 48 89 E5 41 56 41 55 41 54 53 48 89 FB 39 77"
+		},
+		// idk a good way to find this again, i just brute forced the vtable. offset is 136 on CTriggerPush
+		"TriggerPush_Touch":
+		{
+			"library": "server",
+			"windows": "40 55 53 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 02 48 8B F9",
+			"linux": "55 48 89 E5 41 57 41 56 41 55 49 89 F5 41 54 53 48 89 FB 48 83 EC ? E8 ? ? ? ? 84 C0"
+		},
+		// this is called in CTriggerPush::Touch, using IDA pseudocode look in an `if ( ( v & 0x80 ) != 0 )` and then `if ( v > 0.0 ) SetGroundEntity()`
+		"SetGroundEntity":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 55 56 57 41 55 41 57 48 83 EC ? 44 8B 89",
+			"linux": "55 48 89 E5 41 57 49 89 FF 41 56 41 55 41 54 49 89 D4 53 48 89 F3 48 81 EC"
+		},
+		// Check vauff's pin in #scripting
+		"ServerMovementUnlock":
+		{
+			"library": "server",
+			"windows": "0F 86 B0 ? ? ? 0F 57 C0 0F 2E C2",
+			"linux": "0F 87 ? ? ? ? F3 0F 10 35 ? ? ? ? F3 0F 11 B5"
+		},
+		// String: "CCSPlayerPawnBase::SwitchTeam", just keep in mind this is actually CCSPlayerController::SwitchTeam
+		"CCSPlayerController_SwitchTeam":
+		{
+			"library": "server",
+			"windows": "40 53 57 48 81 EC ? ? ? ? 48 8B D9 8B FA",
+			"linux": "55 48 89 E5 41 54 49 89 FC 89 F7"
+		},
+		// String: "player_jump", then find 42C80000h or in pseudocode "*(a2 + 68) = 1120403456;", changing from 100 to 145
+		"CheckJumpButtonWater":
+		{
+			"library": "server",
+			"windows": "C8 42 EB ? 4C 8B 77 ? 4D 39 66",
+			"linux": "C8 42 41 C7 85 ? ? ? ? ? ? ? ? 41 C7 85 ? ? ? ? ? ? ? ? E9"
+		},
+		// Called right after "Removed %s(%s)\n"
+		"UTIL_Remove":
+		{
+			"library": "server",
+			"windows": "48 85 C9 74 ? 48 8B D1 48 8B 0D ? ? ? ?",
+			"linux": "48 89 FE 48 85 FF 74 ? 48 8D 05 ? ? ? ? 48"
+		},
+		// "SetPosition" is passed to this
+		"CEntitySystem_AddEntityIOEvent":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 18 4C 89 4C 24 20 48 89 4C 24 08 55 56 57 41 54 41 55 41 56 41 57 48 83 EC 20",
+			"linux": "55 48 89 E5 41 55 49 89 CD 41 54 49 89 FC 53 BB"
+		},
+		// "BombPlanted" is passed to this
+		"CEntityInstance_AcceptInput":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 49 8B F0 48 8B D9 48 8B 0D",
+			"linux": "55 48 89 F0 48 89 E5 41 57 49 89 FF 41 56 48 8D 7D"
+		},
+		// Called by CEntityInstance_AcceptInput
+		"CEntityIdentity_AcceptInput":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 02",
+			"linux": "55 49 89 D3 48 89 E5 41 57 45 89 CF 41 56"
+		},
+		// func_pushable inside CTriggerBrush::Use calls CEntityIOOutput::FireOutputInternal
+		// Windows - https://imgur.com/a/A3zcxQm
+		// Linux doesn't inline it so you need to find any of the xrefs and the proper function is right after it.
+		// You can tell it apart by the arguments: (a1 + 2616, v4, a1, &v6, 0.0);
+		"CEntityIOOutput_FireOutputInternal":
+		{
+			"library": "server",
+			"windows": "4C 89 4C 24 ? 48 89 4C 24 ? 53 56",
+			"linux": "55 48 89 E5 41 57 49 89 FF 41 56 41 55 41 54 49 89 D4 53 48 89 F3 48 83 EC ? 48 8D 05"
+		},
+		// "multi_manager" is passed to this
+		"CGameEntitySystem_FindEntityByClassName":
+		{
+			"library": "server",
+			"windows": "48 83 EC 68 45 33 C9",
+			"linux": "55 45 31 C0 31 C9 48 89 E5 53 48 8D 5D ? 48 83 EC ? 48 89 DF"
+		},
+		// "commentary_semaphore" is passed to this
+		"CGameEntitySystem_FindEntityByName":
+		{
+			"library": "server",
+			"windows": "48 81 EC 88 ? ? ? 4D 85 C0",
+			"linux": "55 48 89 E5 41 54 53 48 83 EC ? 48 85 D2"
+		},
+		// "CBaseEntity::TakeDamageOld"
+		"CBaseEntity_TakeDamageOld":
+		{
+			"library": "server",
+			"windows": "40 55 53 56 57 41 54 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4D 8B E0",
+			"linux": "55 48 89 E5 41 57 41 56 41 55 49 89 FD 31 FF"
+		},
+		// Should be xref'd right above "flGravity", takes a float arg
+		"CBaseEntity::SetGravityScale":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 57 48 83 EC ? F3 0F 10 81 ? ? ? ? 48 8B F9 0F 29 74 24 ? 0F 28 F1 0F 2E C6 7A ? 74",
+			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 81 EC ? ? ? ? 0F 2E 87 ? ? ? ? 7A ? 75 ? 48 81 C4 ? ? ? ? 5B 41 5C 41 5D 41 5E 41 5F 5D C3 0F 1F 40 ? 31 C9 BE ? ? ? ? 66 0F EF C9 F3 0F 11 85 ? ? ? ? 48 8D BD ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 0F 29 8D ? ? ? ? 4C 8D A5 ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? C7 85 ? ? ? ? ? ? ? ? 66 89 8D ? ? ? ? E8 ? ? ? ? 48 8B 85 ? ? ? ? 48 8D 15 ? ? ? ? 83 85 ? ? ? ? ? F3 0F 10 85 ? ? ? ? C7 00 ? ? ? ? 48 8B 03 48 8B 80 ? ? ? ? 48 39 D0 0F 85 ? ? ? ? 8B 95 ? ? ? ? 4C 8D 7B ? 85 D2 0F 85 ? ? ? ? 80 BB ? ? ? ? ? 75"
+		},
+		// "Game System %s is defined twice!\n"
+		// Note that this signature points to the instruction with sm_pFirst which is the first qword referenced in the function.
+		"IGameSystem_InitAllSystems_pFirst":
+		{
+			"library": "server",
+			"windows": "48 8B 1D ? ? ? ? 48 85 DB 0F 84 ? ? ? ? BD",
+			"linux": "4C 8B 35 ? ? ? ? 4D 85 F6 75 ? E9"
+		},
+		// Windows "%s:  IGameSystem::LoopPostInitAllSystems(start)\n"
+		// Linux "%s:  IGameSystem::LoopInitAllSystems(start)"
+		// In windows it's the only qword that gets nullchecked, while in linux it gets set to another qword's address
+		"IGameSystem_LoopPostInitAllSystems_pEventDispatcher":
+		{
+			"library": "server",
+			"windows": "48 39 1D ? ? ? ? 74 ? 39 05",
+			"linux": "4C 8B 25 ? ? ? ? 48 8B 05 ? ? ? ? 8B 35"
+		},
+		// "--CLoopModeGame::SetWorldSession"
+		// In the above, a number is checked if > 0 then the function is called
+		"IGameSystem_LoopDestroyAllSystems_s_GameSystems":
+		{
+			"library": "server",
+			"windows": "8B 05 ? ? ? ? 83 E8 ? 48 63 F8 0F 88",
+			"linux": "8B 05 ? ? ? ? 89 C2 83 EA ? 0F 88 ? ? ? ? 4C 8D 3D"
+		},
+		"CBasePlayerController_SetPawn":
+		{
+			"library": "server",
+			"windows": "44 88 4C 24 ? 53 57 41 54 41 56 41 57 48 83 EC",
+			"linux": "55 48 8D 87 ? ? ? ? 48 89 E5 41 57 41 56 41 89 CE 41 55 45 89 CD"
+		},
+		// String: "GetNearestNav"
+		"CNavMesh_GetNearestNavArea":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 4C 8B 2D",
+			"linux": "55 48 89 E5 41 57 49 89 D7 41 56 41 55 49 89 FD 41 54 4D 89 C4"
+		},
+		// Has "SetModel" string, but is also referenced by cs_script registration function using the same string
+		"CS_Script_SetModel":
+		{
+			"library": "server",
+			"windows": "40 55 56 41 56 48 83 EC ? 48 8B F1 BA ? ? ? ? 8B 0D ? ? ? ? FF 15 ? ? ? ? 4C 8D 35 ? ? ? ? 84 C0 74 ? 8B 0D ? ? ? ? 4C 8D 0D ? ? ? ? 4C 8D 05 ? ? ? ? 4C 89 74 24 ? BA ? ? ? ? FF 15 ? ? ? ? 48 89 9C 24 ? ? ? ? 48 89 BC 24 ? ? ? ? E8 ? ? ? ? 48 8B D0 48 8D 4C 24 ? 48 8B E8 E8 ? ? ? ? E8 ? ? ? ? 48 85 C0 75 ? 48 8D 15 ? ? ? ? E9 ? ? ? ? 48 8D 94 24 ? ? ? ? 48 8B C8 E8 ? ? ? ? 48 8B 5E ? 48 83 EB ? 48 8B CB E8 ? ? ? ? 83 F8 ? 0F 85 ? ? ? ? 48 8B 0B 48 8B 41 ? 0F B7 40 ? 3D ? ? ? ? 74 ? 05 ? ? ? ? 3D ? ? ? ? 76 ? 33 D2 48 8B CB E8 ? ? ? ? EB ? 48 8B 41 ? 48 8D 0D ? ? ? ? 48 3B C1 0F 85 ? ? ? ? 48 8B 0B 48 8B 41 ? 0F B7 40 ? 3D ? ? ? ? 74 ? 05 ? ? ? ? 3D ? ? ? ? 76 ? BA ? ? ? ? 48 8B CB E8 ? ? ? ? EB ? 48 8B 41 ? 48 85 C0 0F 84 ? ? ? ? 33 DB 83 38 ? 75 ? 8B 48 ? 83 F9 ? 74 ? 4C 8B 05 ? ? ? ? 4D 85 C0 74 ? 83 F9 ? 74 ? 8B C1 25 ? ? ? ? 8B D0 48 C1 E8 ? 4D 8B 0C C0 4D 85 C9 74 ? 81 E2 ? ? ? ? 48 6B C2 ? 49 03 C1 74 ? 39 48 ? 48 0F 45 C3 EB ? 48 8B C3 48 85 C0 74 ? 48 8B 08 EB ? 48 8B CB 4C 8D 0D ? ? ? ? 89 5C 24 ? 4C 8D 05 ? ? ? ? 33 D2 E8 ? ? ? ? 48 8B F8 48 85 C0 75 ? 48 8D 15 ? ? ? ? E9 ? ? ? ? 83 7E ? ? 7D ? 8B 0D ? ? ? ? BA ? ? ? ? FF 15 ? ? ? ? 84 C0 0F 84 ? ? ? ? 8B 0D",
+			"linux": "55 BE ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 83 EC ? 4C 8D 3D ? ? ? ? 41 8B 3F E8 ? ? ? ? 84 C0 0F 85 ? ? ? ? E8 ? ? ? ? 4C 8D 6D ? 4C 89 EF 48 89 C6 49 89 C4 E8 ? ? ? ? E8 ? ? ? ? 48 89 C7 48 85 C0 0F 84 ? ? ? ? E8 ? ? ? ? 49 89 C6 48 8B 43 ? 48 8D 78 ? E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 83 38 ? 0F 85 ? ? ? ? 8B 48 ? 83 F9 ? 0F 84 ? ? ? ? 48 8B 35 ? ? ? ? 48 85 F6 0F 84 ? ? ? ? 83 F9 ? 0F 84 ? ? ? ? 0F B7 40 ? 48 89 C2 48 C1 EA ? 83 E2 ? 48 8B 14 D6 48 85 D2 0F 84 ? ? ? ? 25 ? ? ? ? 48 6B C0 ? 48 01 D0 3B 48 ? 0F 85 ? ? ? ? 48 8B 38 48 85 FF 0F 84 ? ? ? ? 48 8D 15"
+		},
+		// Called by CS_Script_SetModel
+		// This has two identical functions, but because we're detouring for cs_script, we must go beyond function boundaries for a unique signature
+		"CBaseModelEntity_SetModel":
+		{
+			"library": "server",
+			"windows": "40 53 48 83 EC ? 48 8B D9 4C 8B C2 48 8B 0D ? ? ? ? 48 8D 54 24 ? 48 8B 01 FF 50 ? 48 8B 54 24 ? 48 8B CB E8 ? ? ? ? 48 83 C4 ? 5B C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24",
+			"linux": "55 48 89 E5 53 48 89 FB 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B 38 48 8B 07 FF 50 ? 48 89 DF 48 8B 5D ? C9 48 89 C6 E9 ? ? ? ? CC CC CC CC 55"
+		},
+		"CGameRules_TerminateRound":
+		{
+			"library": "server",
+			"windows": "48 8B C4 4C 89 48 ? 48 89 48 ? 55 56 41 56",
+			"linux": "55 48 89 E5 41 57 49 89 FF 41 56 41 55 41 54 53 48 81 EC ? ? ? ? 48 8D 05 ? ? ? ? F3 0F 11 85"
+		},
+		"CCSPlayer_WeaponServices_CanUse":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 48 8B 01 48 8B FA",
+			"linux": "55 48 8D 15 ? ? ? ? 48 89 E5 41 55 41 54 49 89 FC 53 48 89 F3 48 83 EC ? 48 8B 07 48 8B 80"
+		},
+		"CCSPlayer_WeaponServices_EquipWeapon":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 57 48 83 EC ? 48 83 79 ? ? 48 8B FA 48 8B D9 75 ? E8 ? ? ? ? 48 8B 53",
+			"linux": "55 48 89 E5 41 55 41 54 49 89 FC 53 48 89 F3 48 83 EC ? 48 8B 77"
+		},
+		"CreateEntityByName":
+		{
+			"library": "server",
+			"windows": "48 83 EC 48 C6 44 24 30 00",
+			"linux": "48 8D 05 ? ? ? ? 55 48 89 FA"
+		},
+		"DispatchSpawn":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 10 57 48 83 EC 30 48 8B DA 48 8B F9 48 85 C9",
+			"linux": "48 85 FF 74 ? 55 48 89 E5 41 55 41 54 49 89 FC"
+		},
+		// Look for "SetEntityName", that will be the vscript binding definition
+		// Scroll a bit down and you'll find something like this (note the offset): *(_QWORD *)(v453 + 64) = sub_1807B0350;
+		// that function is just a jump to the one we want
+		"CEntityIdentity_SetEntityName":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 10 57 48 83 EC 20 48 8B D9 4C 8B C2",
+			"linux": "55 48 89 F2 48 89 E5 41 55 41 54 53"
+		},
+		// "Error - cannot add bots after game is over."
+		"BotNavIgnore":
+		{
+			"library": "server",
+			"windows": "0F 84 ? ? ? ? 80 B8 ? ? ? ? 00 0F 84 ? ? ? ? 80 3D ? ? ? ? 00 74 15",
+			"linux": "0F 84 ? ? ? ? 44 0F B6 B0 ? ? ? ? 45 84 F6 0F 84"
+		},
+		// next to "soundname", in windows it's the last referenced sub while in linux it's right after
+		// this is a vscript binding though so it may be removed in the future?
+		"CBaseEntity_EmitSoundParams":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 48 8B EC 48 81 EC ? ? ? ? 33 C0",
+			"linux": "48 B8 ? ? ? ? ? ? ? ? 55 0F 28 D0"
+		},
+		// "ParticleEffect", found in a function with 9 arguments
+		"DispatchParticleEffect":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 18 4C 89 74 24 20 55 48 8D 6C 24 D1",
+			"linux": "55 48 89 E5 41 57 41 56 41 55 41 89 CD 41 54 53 48 89 D3"
+		},
+		// search for "land_%s", this is called after that string is referenced (the one with 4 parameters).
+		// (function that calls it also contains "T_Default.SuitLand").
+		"CBaseEntity_EmitSoundFilter":
+		{
+			"library": "server",
+			"windows": "40 53 48 83 EC ? 4C 89 4C 24 ? 48 8B D9 45 8B C8",
+			"linux": "55 48 89 E5 53 48 89 FB 48 83 EC ? E8 ? ? ? ? 48 89 D8 48 8B 5D ? C9 C3 CC CC CC CC CC CC 48 B8"
+		},
+		// "PlayerMovementTraces"
+		"ProcessMovement":
+		{
+			"library": "server",
+			"windows": "40 57 41 57 48 81 EC ? ? ? ? 48 83 79",
+			"linux": "55 48 89 E5 41 57 41 56 41 55 49 89 F5 41 54 53 48 89 FB 48 83 EC ? 48 8B 7F"
+		},
+		// "env_shake %s with", in either xref there will be a call to SetMoveType(a1, 0, 0) at the top
+		"CBaseEntity_SetMoveType":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 41 0F B6 F0",
+			"linux": "55 48 89 E5 41 57 49 89 FF 41 56 41 55 41 54 53 89 D3 48 81 EC ? ? ? ? 40 38 B7"
+		},
+		// Use CBaseEntity::Use offset
+		// This signature points directly to the instruction to patch
+		"CPhysBox_Use":
+		{
+			"library": "server",
+			"windows": "4C 8B 43 ? 48 8D 8F ? ? ? ? 48 8B 13 E8 ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 CC CC CC CC 48 89 5C 24",
+			"linux": "49 8B 54 24 ? 45 31 C9 45 31 C0 C7 45 ? ? ? ? ? 49 8B 34 24 48 8D 4D ? 66 0F EF C0 48 C7 45 ? ? ? ? ? 48 8D BB ? ? ? ? E8 ? ? ? ? F6 45 ? ? 74 ? 48 8B 05 ? ? ? ? 48 8B 75 ? 48 8B 38 48 8B 07 FF 50 ? 48 83 C4"
+		},
+		"CTakeDamageInfo":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 45 33 F6 48 C7 41",
+			"linux": "49 BB ? ? ? ? ? ? ? ? 55 48 89 E5 48 83 EC ? 4C 8D 15"
+		},
+		// "%sRecv usercmd %d.  Margin:%5.1fms net +%2d queue =%5.1f total\n"
+		"ProcessUsercmds":
+		{
+			"library": "server",
+			"windows": "48 8B C4 44 88 48 20 44 89 40 18 48 89 50 10 53",
+			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 83 EC ? 89 4D"
+		},
+		"CGamePlayerEquip_InputTriggerForAllPlayers":
+		{
+			"library": "server",
+			"windows": "40 55 53 41 54 41 56 48 8B EC 48 83 EC ? 4C 8B F1",
+			"linux": "55 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 53 48 83 EC ? E8 ? ? ? ? C7 45"
+		},
+		"CGamePlayerEquip_InputTriggerForActivatedPlayer":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 18 56 48 83 EC 20 48 8B 1A",
+			"linux": "55 48 89 E5 41 56 41 55 41 54 53 48 83 EC ? 48 8B 1E"
+		},
+		// Return value of this function is used to determine whether "NETWORK_DISCONNECT_REJECT_SERVERFULL to %s: Cannot get free client\n" gets printed
+		"GetFreeClient":
+		{
+			"library": "engine",
+			"windows": "48 89 54 24 ? 53 56 57 41 56 48 83 EC",
+			"linux": "55 48 89 E5 41 57 41 56 49 89 FE 41 55 41 54 49 89 F4 53 48 81 EC ? ? ? ? 41 C6 01"
+		},
+		// The only function with "weapon_shield" and does fminf with 260.0 earlier
+		"CCSPlayerPawn_GetMaxSpeed":
+		{
+			"library": "server",
+			// Inlined by MSVC as of 2025-07-28 CS2 update
+			//"windows": "40 53 48 83 EC ? 48 8B D9 E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 48 8B 0D",
+			"linux": "55 48 89 E5 41 55 41 54 53 48 89 FB 48 83 EC ? E8 ? ? ? ? 84 C0 75 ? 48 8D 05"
+		},
+		// str: "Radial using: %s\n"
+		"FindUseEntity":
+		{
+			"library": "server",
+			"windows": "4C 89 44 24 ? F3 0F 11 4C 24 ? 55 53 56",
+			"linux": "55 48 89 E5 41 57 49 89 FF 41 56 48 8D 3D ? ? ? ? 41 55 41 54 53 48 81 EC"
+		},
+		"TraceFunc":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 54 41 56 41 57 48 81 EC ? ? ? ? 45 33 E4",
+			"linux": "48 B8 ? ? ? ? ? ? ? ? 55 48 89 E5 41 55 41 54 4C 8D 6F ? 49 89 CC"
+		},
+		// str: "Physics/TraceShape (Server)"
+		"TraceShape":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 48 89 4C 24 ? 55 57",
+			"linux": "55 48 89 E5 41 57 49 89 CF 41 56 49 89 F6 41 55 4D 89 C5"
+		},
+		"CBasePlayerPawn_GetEyePosition":
+		{
+			"library": "server",
+			"windows": "48 89 74 24 ? 57 48 83 EC ? 48 8B F1 48 8B FA 48 8B 89 ? ? ? ? 48 85 C9 74 ? 48 8B 01",
+			"linux": "55 48 89 E5 53 48 89 FB 48 83 EC ? 48 8B BF ? ? ? ? 48 85 FF 0F 84"
+		},
+		"CBasePlayerPawn_GetEyeAngles":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B F9 48 8B DA 48 8B 89 ? ? ? ? 48 85 C9",
+			"linux": "55 48 89 E5 41 54 53 48 89 FB 48 83 EC ? 48 8B BF ? ? ? ? 48 85 FF 0F 84 ? ? ? ? 48 8B 07 48 8D 15"
+		},
+		// Only ever referenced right next to string "TestActivator"
+		"CBaseFilter_InputTestActivator":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 57 48 83 EC ? 4C 8B 02",
+			"linux": "55 48 89 E5 41 54 49 89 F4 53 48 89 FB 48 83 EC ? 48 8B 07 48 8B 16"
+		},
+		// "Kicking user %s (sv_kick_players_with_cooldown=%d)\n"
+		"GameSystem_Think_CheckSteamBan":
+		{
+			"library": "server",
+			"windows": "41 54 48 81 EC ? ? ? ? BA ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 85 C0",
+			"linux": "55 48 8D 3D ? ? ? ? BE ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC ? ? ? ? E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 8B 00"
+		},
+		// Location to CUtlMap unk that is referenced on Windows by function with "Notification about user penalty: %u/%u (%u sec)\n" string
+		// On Linux, a qword appears twice in GameSystem_Think_CheckSteamBan, and thrice in a sub-function of the function used for Windows (1 top, 2 bottom), the only other reference to this qword is some convar registration function with two unks above, sm_mapGcBanInformation is the unk further away
+		"CCSGameRules__sm_mapGcBanInformation":
+		{
+			"library": "server",
+			"windows": "48 8D 0D ? ? ? ? 48 89 45 ? 0F 11 45",
+			"linux": "48 8D 0D ? ? ? ? 48 63 51 ? 83 FA ? 0F 84 ? ? ? ? F7 41 ? ? ? ? ? 74"
+		},
+		// Called right before "%d spawn groups:\n"
+		"GetSpawnGroups":
+		{
+			"library": "server",
+			"windows": "40 56 48 83 EC ? 48 89 5C 24 ? 48 8D B1",
+			"linux": "55 49 89 F1 BE ? ? ? ? 48 89 E5 41 57 41 56 4C 8D BF"
+		},
+		// Only has "weapon_incgrenade" and "weapon_incgrenade" strings
+		// May need to look into custom way of acquiring this function address, normal sig sees frequent breakage in the CS# project
+		"CCSPlayer_ItemServices_CanAcquire":
+		{
+			"library": "server",
+			"windows": "44 89 44 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 53 56 57 41 55 41 56 41 57 48 8B EC",
+			"linux": "55 48 89 E5 41 57 41 56 41 55 49 89 CD 41 54 49 89 FC 53 48 89 F3 48 83 EC"
+		},
+		"CTriggerGravity_GravityTouch":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 57 48 83 EC ? 48 8B 02 48 8B F9 48 8B CA 48 8B DA FF 90 ? ? ? ? 84 C0 74 ? F3 0F 10 8F",
+			"linux": "48 8B 06 55 48 89 E5 41 54 49 89 FC 48 89 F7 53 48 89 F3 FF 90"
+		},
+		// Function that only has "hammerUniqueId" string, signature points to the outer if statement that determines if hammerid gets written to schema
+		"SetSchemaHammerUniqueId":
+		{
+			"library": "server",
+			"windows": "75 ? 48 8B 03 48 8B CB FF 90 ? ? ? ? 84 C0 74 ? 48 8D 05",
+			"linux": "75 ? 48 8B 03 48 8D 15 ? ? ? ? 48 8B 80 ? ? ? ? 48 39 D0 75 ? 48 83 C4"
+		}
+	},
+	"Offsets":
+	{
+		"CBaseEntity::Precache":
+		{
+			"windows": 7,
+			"linux": 8
+		},
+		"CBaseEntity::SetOwner":
+		{
+			"windows": 53,
+			"linux": 52
+		},
+		// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
+		"CCSPlayerController_ChangeTeam":
+		{
+			"windows": 103,
+			"linux": 102
+		},
+		"CBaseEntity::Use":
+		{
+			"windows": 145,
+			"linux": 144
+		},
+		"CBaseEntity::StartTouch":
+		{
+			"windows": 148,
+			"linux": 147
+		},
+		"CBaseEntity::Touch":
+		{
+			"windows": 149,
+			"linux": 148
+		},
+		"CBaseEntity::EndTouch":
+		{
+			"windows": 150,
+			"linux": 149
+		},
+		"Teleport":
+		{
+			"windows": 163,
+			"linux": 162
+		},
+		// For these two, look for the names, you'll find vscript bindings
+		// Scroll down to where the var + 64 gets set to a function, that calls the offset we want
+		"IsPlayerPawn":
+		{
+			"windows": 169,
+			"linux": 168
+		},
+		"IsPlayerController":
+		{
+			"windows": 170,
+			"linux": 169
+		},
+		"CollisionRulesChanged":
+		{
+			"windows": 186,
+			"linux": 185
+		},
+		"CCSPlayerController_Respawn":
+		{
+			"windows": 273,
+			"linux": 275
+		},
+		// CBaseTrigger
+		"PassesTriggerFilters":
+		{
+			"windows": 273,
+			"linux": 274
+		},
+		// Actually a bit of a wrapper function now? Eventually calls a long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
+		"CCSPlayerPawn::OnTakeDamage_Alive":
+		{
+			"windows": 256,
+			"linux": 257
+		},
+		// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
+		// return (*(*v9 + 2976LL))(v9, v27, 0LL);
+		// 2976 (372 * 8) is the offset
+		"CBasePlayerPawn_CommitSuicide":
+		{
+			"windows": 390,
+			"linux": 390
+		},
+		"GameEntitySystem":
+		{
+			"windows": 88,
+			"linux": 80
+		},
+		// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
+		"CGameRules_FindPickerEntity":
+		{
+			"windows": 26,
+			"linux": 27
+		},
+		"CCSGameRules_GoToIntermission":
+		{
+			"windows": 129,
+			"linux": 130
+		},
+		"CheckTransmitPlayerSlot":
+		{
+			"windows": 576,
+			"linux": 576
+		},
+		// engine
+		// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) ), note that this is a CUtlVector
+		"CNetworkGameServer_ClientList":
+		{
+			"windows": 74,
+			"linux": 74
+		},
+		// Right above "mapgroup workshop;" string there is a virtual call to this on g_pGameTypes using "workshop" string
+		"IGameTypes_CreateWorkshopMapGroup":
+		{
+			"windows": 37,
+			"linux": 38
+		},
+		// There's no easy way to find this, but it's a function that checks entity flags (0x370) and ends by calling RemoveFlag with 0x800000 (FL_BASEVELOCITY)
+		"CCSPlayer_MovementServices::CheckMovingGround":
+		{
+			"windows": 41,
+			"linux": 42
+		},
+		"CCSPlayer_WeaponServices::DropWeapon":
+		{
+			"windows": 25,
+			"linux": 26
+		},
+		"CCSPlayer_WeaponServices::SelectItem":
+		{
+			"windows": 27,
+			"linux": 28
+		},
+		// server.dll -> xref 'sv_phys_stop_at_collision' first __fastcall
+		"CVPhys2World::GetTouchingList":
+		{
+			"windows": 121,
+			"linux": 121
+		}
+	},
+	"Patches":
+	{
+		"ServerMovementUnlock":
+		{
+			"windows": "E9 B1 00 00 00 90",
+			"linux": "90 90 90 90 90 90"
+		},
+		"FixWaterFloorJump":
+		{
+			"windows": "11 43",
+			"linux": "11 43"
+		},
+		// Jumping over a check for nav mesh
+		"BotNavIgnore":
+		{
+			"windows": "E9 2C 00 00 00 90",
+			"linux": "E9 25 00 00 00 90"
+		},
+		// Make func_physbox pass itself as the caller in OnPlayerUse
+		// pCaller = inputdata->pCaller ->  pCaller = this
+		// Windows:  mov r8, [rbx+8]  	->  mov r8, rdi
+		// Linux: 	 mov rdx, [r12+8] 	->  mov rdx, rbx
+		"CPhysBox_Use":
+		{
+			"windows": "49 89 F8 90",
+			"linux": "48 89 DA 90 90"
+		},
+		// jnz -> jmp
+		"SetSchemaHammerUniqueId":
+		{
+			"windows": "EB",
+			"linux": "EB"
+		}
+	}
+}

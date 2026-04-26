@@ -1,0 +1,1 @@
+- For compilation tests, run `docker compose up` in the project directory

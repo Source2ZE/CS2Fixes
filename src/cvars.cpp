@@ -24,7 +24,7 @@
 
 static uint64 g_iFlagsToRemove = (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY);
 
-static constexpr const char* pUnCheatCvars[] = {"bot_stop", "bot_freeze", "bot_zombie"};
+static constexpr const char* pUnCheatCvars[] = {"bot_stop", "bot_freeze", "bot_zombie", "mp_flinch_punch_scale"};
 static constexpr const char* pUnCheatCmds[] = {"report_entities", "endround"};
 
 void UnlockConVars()

@@ -95,6 +95,7 @@ SH_DECL_MANUALHOOK2_void(PhysicsTouchShuffle, 0, 0, 0, CUtlVector<TouchLinked_t>
 SH_DECL_MANUALHOOK3_void(DropWeapon, 0, 0, 0, CBasePlayerWeapon*, Vector*, Vector*);
 SH_DECL_HOOK1_void(IServer, SetGameSpawnGroupMgr, SH_NOATTRIB, 0, IGameSpawnGroupMgr*);
 SH_DECL_HOOK2_void(CEntitySystem, Spawn, SH_NOATTRIB, 0, int, const EntitySpawnInfo_t*);
+SH_DECL_MANUALHOOK3_void(Teleport, 0, 0, 0, const Vector*, const QAngle*, const Vector*);
 
 CS2Fixes g_CS2Fixes;
 IGameEventSystem* g_gameEventSystem = nullptr;
@@ -117,6 +118,7 @@ int g_iPhysicsTouchShuffle = -1;
 int g_iWeaponServiceDropWeaponId = -1;
 int g_iSetGameSpawnGroupMgrId = -1;
 int g_iSpawnId = -1;
+int g_iTeleportId = -1;
 
 double g_flUniversalTime = 0.0;
 float g_flLastTickedTime = 0.0f;
@@ -165,19 +167,12 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 	Message("Starting plugin.\n");
 
-	CBufferStringGrowable<256> gamedirpath;
-	g_pEngineServer2->GetGameDir(gamedirpath);
-
-	std::string gamedirname = CGameConfig::GetDirectoryName(gamedirpath.Get());
-
-	const char* gamedataPath = "addons/cs2fixes/gamedata/cs2fixes.games.txt";
-	Message("Loading %s for game: %s\n", gamedataPath, gamedirname.c_str());
-
-	g_GameConfig = new CGameConfig(gamedirname, gamedataPath);
+	g_GameConfig = new CGameConfig();
 	char conf_error[255] = "";
-	if (!g_GameConfig->Init(g_pFullFileSystem, conf_error, sizeof(conf_error)))
+
+	if (!g_GameConfig->Init(conf_error, sizeof(conf_error)))
 	{
-		snprintf(error, maxlen, "Could not read %s: %s", g_GameConfig->GetPath().c_str(), conf_error);
+		snprintf(error, maxlen, "%s", conf_error);
 		Panic("%s\n", error);
 		return false;
 	}
@@ -282,6 +277,15 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 	SH_MANUALHOOK_RECONFIGURE(OnTakeDamage_Alive, offset, 0, 0);
 	g_iOnTakeDamageAliveId = SH_ADD_MANUALDVPHOOK(OnTakeDamage_Alive, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_OnTakeDamage_Alive), false);
+
+	offset = g_GameConfig->GetOffset("Teleport");
+	if (offset == -1)
+	{
+		snprintf(error, maxlen, "Failed to find Teleport\n");
+		bRequiredInitLoaded = false;
+	}
+	SH_MANUALHOOK_RECONFIGURE(Teleport, offset, 0, 0);
+	g_iTeleportId = SH_ADD_MANUALDVPHOOK(Teleport, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_Teleport), false);
 
 	const auto pCCSPlayer_MovementServicesVTable = modules::server->FindVirtualTable("CCSPlayer_MovementServices");
 	offset = g_GameConfig->GetOffset("CCSPlayer_MovementServices::CheckMovingGround");
@@ -437,6 +441,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	SH_REMOVE_HOOK_ID(g_iCTriggerGravityPrecacheId);
 	SH_REMOVE_HOOK_ID(g_iCTriggerGravityEndTouchId);
 	SH_REMOVE_HOOK_ID(g_iSpawnId);
+	SH_REMOVE_HOOK_ID(g_iTeleportId);
 
 	if (g_iSetGameSpawnGroupMgrId != -1)
 		SH_REMOVE_HOOK_ID(g_iSetGameSpawnGroupMgrId);
@@ -575,7 +580,7 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 					continue;
 
 				if (i == iCommandPlayerSlot.Get() || pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC))
-					ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, " \4(%sADMINS) %s:\6 %s", bIsAdmin ? "" : "TO ", pController->GetPlayerName(), pszMessage);
+					ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, " \4(%sADMINS) %s:\6 %s", bIsAdmin ? "" : "TO ", pController->GetPlayerName().c_str(), pszMessage);
 			}
 		}
 
@@ -667,6 +672,8 @@ void CS2Fixes::Hook_GameServerSteamAPIActivated()
 
 	RETURN_META(MRES_IGNORED);
 }
+
+CConVar<bool> g_cvarBlockParticleMsgs("cs2f_block_particle_msgs", FCVAR_NONE, "Whether to block CUserMsg_ParticleManager messages to fix lag/crashes, experimental", false);
 
 void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
 							  INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType)
@@ -795,6 +802,13 @@ void CS2Fixes::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 			*(uint64*)clients &= ~stopSoundMask;
 			*(uint64*)clients &= ~silenceSoundMask;
 		}
+	}
+	else if (info->m_MessageId == UM_ParticleManager)
+	{
+		// These messages were previously unused, but recently started being used for weapon particles in the AG2 update
+		// Unfortunately, this new system seems extremely unoptimized for 64 players, and was causing severe performance issues & vector overflow client crashes
+		if (g_cvarBlockParticleMsgs.Get())
+			*(uint64*)clients = 0;
 	}
 }
 
@@ -1054,7 +1068,7 @@ bool CS2Fixes::Hook_OnTakeDamage_Alive(CTakeDamageResult* pDamageResult)
 	if (g_cvarEnableZR.Get() && ZR_Hook_OnTakeDamage_Alive(pDamageResult->m_pOriginatingInfo, pPawn))
 	{
 		pDamageResult->m_bWasDamageSuppressed = true;
-		pDamageResult->m_nDamageDealt = 0;
+		pDamageResult->m_flDamageDealt = 0.0f;
 		RETURN_META_VALUE(MRES_SUPERCEDE, false);
 	}
 
@@ -1200,6 +1214,23 @@ void CS2Fixes::Hook_SpawnPost(int nCount, const EntitySpawnInfo_t* pInfo)
 {
 	for (int i = 0; i < nCount; i++)
 		g_pMapMigrations->OnEntitySpawned(pInfo[i].m_pEntity->m_pInstance, pInfo[i].m_pKeyValues);
+}
+
+void CS2Fixes::Hook_Teleport(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)
+{
+	if (!pAngles)
+		RETURN_META(MRES_IGNORED);
+
+	QAngle* pCastAngles = const_cast<QAngle*>(pAngles);
+
+	// Post-AG2, changing x or z angles on a playermodel will bug out, and never did anything pre-AG2 anyways
+	if (pCastAngles->x != 0.0f)
+		pCastAngles->x = 0.0f;
+
+	if (pCastAngles->z != 0.0f)
+		pCastAngles->z = 0.0f;
+
+	RETURN_META(MRES_HANDLED);
 }
 
 void* CS2Fixes::OnMetamodQuery(const char* iface, int* ret)
