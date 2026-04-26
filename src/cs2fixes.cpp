@@ -95,6 +95,7 @@ SH_DECL_MANUALHOOK2_void(PhysicsTouchShuffle, 0, 0, 0, CUtlVector<TouchLinked_t>
 SH_DECL_MANUALHOOK3_void(DropWeapon, 0, 0, 0, CBasePlayerWeapon*, Vector*, Vector*);
 SH_DECL_HOOK1_void(IServer, SetGameSpawnGroupMgr, SH_NOATTRIB, 0, IGameSpawnGroupMgr*);
 SH_DECL_HOOK2_void(CEntitySystem, Spawn, SH_NOATTRIB, 0, int, const EntitySpawnInfo_t*);
+SH_DECL_MANUALHOOK3_void(Teleport, 0, 0, 0, const Vector*, const QAngle*, const Vector*);
 
 CS2Fixes g_CS2Fixes;
 IGameEventSystem* g_gameEventSystem = nullptr;
@@ -117,6 +118,7 @@ int g_iPhysicsTouchShuffle = -1;
 int g_iWeaponServiceDropWeaponId = -1;
 int g_iSetGameSpawnGroupMgrId = -1;
 int g_iSpawnId = -1;
+int g_iTeleportId = -1;
 
 double g_flUniversalTime = 0.0;
 float g_flLastTickedTime = 0.0f;
@@ -276,6 +278,15 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	SH_MANUALHOOK_RECONFIGURE(OnTakeDamage_Alive, offset, 0, 0);
 	g_iOnTakeDamageAliveId = SH_ADD_MANUALDVPHOOK(OnTakeDamage_Alive, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_OnTakeDamage_Alive), false);
 
+	offset = g_GameConfig->GetOffset("Teleport");
+	if (offset == -1)
+	{
+		snprintf(error, maxlen, "Failed to find Teleport\n");
+		bRequiredInitLoaded = false;
+	}
+	SH_MANUALHOOK_RECONFIGURE(Teleport, offset, 0, 0);
+	g_iTeleportId = SH_ADD_MANUALDVPHOOK(Teleport, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_Teleport), false);
+
 	const auto pCCSPlayer_MovementServicesVTable = modules::server->FindVirtualTable("CCSPlayer_MovementServices");
 	offset = g_GameConfig->GetOffset("CCSPlayer_MovementServices::CheckMovingGround");
 	if (offset == -1)
@@ -430,6 +441,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	SH_REMOVE_HOOK_ID(g_iCTriggerGravityPrecacheId);
 	SH_REMOVE_HOOK_ID(g_iCTriggerGravityEndTouchId);
 	SH_REMOVE_HOOK_ID(g_iSpawnId);
+	SH_REMOVE_HOOK_ID(g_iTeleportId);
 
 	if (g_iSetGameSpawnGroupMgrId != -1)
 		SH_REMOVE_HOOK_ID(g_iSetGameSpawnGroupMgrId);
@@ -1202,6 +1214,23 @@ void CS2Fixes::Hook_SpawnPost(int nCount, const EntitySpawnInfo_t* pInfo)
 {
 	for (int i = 0; i < nCount; i++)
 		g_pMapMigrations->OnEntitySpawned(pInfo[i].m_pEntity->m_pInstance, pInfo[i].m_pKeyValues);
+}
+
+void CS2Fixes::Hook_Teleport(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)
+{
+	if (!pAngles)
+		RETURN_META(MRES_IGNORED);
+
+	QAngle* pCastAngles = const_cast<QAngle*>(pAngles);
+
+	// Post-AG2, changing x or z angles on a playermodel will bug out, and never did anything pre-AG2 anyways
+	if (pCastAngles->x != 0.0f)
+		pCastAngles->x = 0.0f;
+
+	if (pCastAngles->z != 0.0f)
+		pCastAngles->z = 0.0f;
+
+	RETURN_META(MRES_HANDLED);
 }
 
 void* CS2Fixes::OnMetamodQuery(const char* iface, int* ret)

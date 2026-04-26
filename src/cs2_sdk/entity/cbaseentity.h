@@ -174,10 +174,10 @@ public:
 		Detour_CBaseEntity_TakeDamageOld(this, &info, 0);
 	}
 
-	void Teleport(const Vector* position, const QAngle* angles, const Vector* velocity)
+	void Teleport(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)
 	{
 		static int offset = g_GameConfig->GetOffset("Teleport");
-		CALL_VIRTUAL(void, offset, this, position, angles, velocity);
+		CALL_VIRTUAL(void, offset, this, pPosition, pAngles, pVelocity);
 	}
 
 	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup)
