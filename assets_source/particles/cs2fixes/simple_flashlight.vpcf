@@ -4,6 +4,7 @@
 	m_nBehaviorVersion = 12
 	m_flConstantRadius = 60.0
 	m_nMaxParticles = 1
+	m_bInfiniteBounds = true
 	m_controlPointConfigurations = 
 	[
 		{
@@ -98,7 +99,7 @@
 			m_vecMin = 
 			{
 				m_nType = "PVEC_TYPE_LITERAL"
-				m_vLiteralValue = [ 15.0, 0.0, 0.0 ]
+				m_vLiteralValue = [ 54.0, 0.0, 0.0 ]
 				m_LiteralColor = [ 0, 0, 0 ]
 				m_NamedValue = ""
 				m_bFollowNamedValue = false
@@ -119,11 +120,13 @@
 					m_nScalarAttribute = 3
 					m_nVectorAttribute = 6
 					m_nVectorComponent = 0
+					m_bReverseOrder = false
 					m_flRandomMin = 0.0
 					m_flRandomMax = 1.0
 					m_bHasRandomSignFlip = false
 					m_nRandomSeed = -1
 					m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+					m_strSnapshotSubset = ""
 					m_flLOD0 = 0.0
 					m_flLOD1 = 0.0
 					m_flLOD2 = 0.0
@@ -175,11 +178,13 @@
 					m_nScalarAttribute = 3
 					m_nVectorAttribute = 6
 					m_nVectorComponent = 0
+					m_bReverseOrder = false
 					m_flRandomMin = 0.0
 					m_flRandomMax = 1.0
 					m_bHasRandomSignFlip = false
 					m_nRandomSeed = -1
 					m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+					m_strSnapshotSubset = ""
 					m_flLOD0 = 0.0
 					m_flLOD1 = 0.0
 					m_flLOD2 = 0.0
@@ -231,11 +236,13 @@
 					m_nScalarAttribute = 3
 					m_nVectorAttribute = 6
 					m_nVectorComponent = 0
+					m_bReverseOrder = false
 					m_flRandomMin = 0.0
 					m_flRandomMax = 1.0
 					m_bHasRandomSignFlip = false
 					m_nRandomSeed = -1
 					m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+					m_strSnapshotSubset = ""
 					m_flLOD0 = 0.0
 					m_flLOD1 = 0.0
 					m_flLOD2 = 0.0
@@ -287,11 +294,13 @@
 					m_nScalarAttribute = 3
 					m_nVectorAttribute = 6
 					m_nVectorComponent = 0
+					m_bReverseOrder = false
 					m_flRandomMin = 0.0
 					m_flRandomMax = 1.0
 					m_bHasRandomSignFlip = false
 					m_nRandomSeed = -1
 					m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+					m_strSnapshotSubset = ""
 					m_flLOD0 = 0.0
 					m_flLOD1 = 0.0
 					m_flLOD2 = 0.0
@@ -347,7 +356,7 @@
 			m_vecMax = 
 			{
 				m_nType = "PVEC_TYPE_LITERAL"
-				m_vLiteralValue = [ 15.0, 0.0, 0.0 ]
+				m_vLiteralValue = [ 54.0, 0.0, 0.0 ]
 				m_LiteralColor = [ 0, 0, 0 ]
 				m_NamedValue = ""
 				m_bFollowNamedValue = false
@@ -368,11 +377,13 @@
 					m_nScalarAttribute = 3
 					m_nVectorAttribute = 6
 					m_nVectorComponent = 0
+					m_bReverseOrder = false
 					m_flRandomMin = 0.0
 					m_flRandomMax = 1.0
 					m_bHasRandomSignFlip = false
 					m_nRandomSeed = -1
 					m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+					m_strSnapshotSubset = ""
 					m_flLOD0 = 0.0
 					m_flLOD1 = 0.0
 					m_flLOD2 = 0.0
@@ -424,11 +435,13 @@
 					m_nScalarAttribute = 3
 					m_nVectorAttribute = 6
 					m_nVectorComponent = 0
+					m_bReverseOrder = false
 					m_flRandomMin = 0.0
 					m_flRandomMax = 1.0
 					m_bHasRandomSignFlip = false
 					m_nRandomSeed = -1
 					m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+					m_strSnapshotSubset = ""
 					m_flLOD0 = 0.0
 					m_flLOD1 = 0.0
 					m_flLOD2 = 0.0
@@ -480,11 +493,13 @@
 					m_nScalarAttribute = 3
 					m_nVectorAttribute = 6
 					m_nVectorComponent = 0
+					m_bReverseOrder = false
 					m_flRandomMin = 0.0
 					m_flRandomMax = 1.0
 					m_bHasRandomSignFlip = false
 					m_nRandomSeed = -1
 					m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+					m_strSnapshotSubset = ""
 					m_flLOD0 = 0.0
 					m_flLOD1 = 0.0
 					m_flLOD2 = 0.0
@@ -536,11 +551,13 @@
 					m_nScalarAttribute = 3
 					m_nVectorAttribute = 6
 					m_nVectorComponent = 0
+					m_bReverseOrder = false
 					m_flRandomMin = 0.0
 					m_flRandomMax = 1.0
 					m_bHasRandomSignFlip = false
 					m_nRandomSeed = -1
 					m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+					m_strSnapshotSubset = ""
 					m_flLOD0 = 0.0
 					m_flLOD1 = 0.0
 					m_flLOD2 = 0.0
