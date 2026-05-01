@@ -26,8 +26,10 @@
 CMapMigrations* g_pMapMigrations = nullptr;
 
 const time_t g_time20260121 = 1769036239;
+const time_t g_time20260420 = 1776725888;
 
 CConVar<int> g_cvarMapMigrations20260121("cs2f_mapmigrations_20260121", FCVAR_NONE, "Current mode for 2026-01-21 CS2 update map migrations. [0 = Force disabled, 1 = Force enabled, 2 = Automatically enabled for maps updated before 2026-01-21 & disabled if updated after]", 2);
+CConVar<int> g_cvarMapMigrations20260420("cs2f_mapmigrations_20260420", FCVAR_NONE, "Current mode for 2026-04-20 CS2 update map migrations. [0 = Force disabled, 1 = Force enabled, 2 = Automatically enabled for maps updated before 2026-04-20 & disabled if updated after]", 2);
 
 void CMapMigrations::ApplyGameSettings(KeyValues* pKV)
 {
@@ -106,6 +108,11 @@ void CMapMigrations::UpdateMapUpdateTime(time_t timeMapUpdated)
 	// May be called late, so also check any existing entities first
 	while ((pTarget = UTIL_FindEntityByClassname(pTarget, "*")))
 		RunMigrations(pTarget);
+}
+
+bool CMapMigrations::Migrations20260420Enabled()
+{
+	return g_cvarMapMigrations20260420.Get() == 1 || (g_cvarMapMigrations20260420.Get() == 2 && m_timeMapUpdated < g_time20260420);
 }
 
 std::shared_ptr<CMapMigrationWorkshopDetailsQuery> CMapMigrationWorkshopDetailsQuery::Create(uint64 iWorkshopId)

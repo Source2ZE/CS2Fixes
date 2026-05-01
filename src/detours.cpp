@@ -45,6 +45,7 @@
 #include "igameevents.h"
 #include "irecipientfilter.h"
 #include "map_votes.h"
+#include "mapmigrations.h"
 #include "module.h"
 #include "networksystem/inetworkserializer.h"
 #include "playermanager.h"
@@ -416,7 +417,7 @@ bool PrepareMapSetModel(CBaseModelEntity* pModel)
 	if (!pModel->IsPawn())
 		return true;
 
-	if (g_cvarDisableSetModel.Get())
+	if (g_cvarDisableSetModel.Get() || g_pMapMigrations->Migrations20260420Enabled())
 		return false;
 
 	// Player color may have been changed by zclass/server customization, so reset it first

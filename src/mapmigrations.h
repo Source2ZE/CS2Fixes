@@ -57,6 +57,7 @@ public:
 	void RunMigrations(CBaseEntity* pEntity);
 	void Migrations_20260121(CBaseEntity* pEntity);
 	void UpdateMapUpdateTime(time_t timeMapUpdated);
+	bool Migrations20260420Enabled();
 	void AddWorkshopDetailsQuery(std::shared_ptr<CMapMigrationWorkshopDetailsQuery> pQuery) { m_vecWorkshopDetailsQueries.push_back(pQuery); }
 	void RemoveWorkshopDetailsQuery(std::shared_ptr<CMapMigrationWorkshopDetailsQuery> pQuery) { m_vecWorkshopDetailsQueries.erase(std::remove(m_vecWorkshopDetailsQueries.begin(), m_vecWorkshopDetailsQueries.end(), pQuery), m_vecWorkshopDetailsQueries.end()); }
 
