@@ -52,6 +52,7 @@ class CTraceFilter;
 class Vector;
 class QAngle;
 class CEconItemView;
+class CCSGameRules;
 struct CTakeDamageResult;
 
 // Add callback functions to this map that wish to hook into Detour_CEntityIOOutput_FireOutputInternal
@@ -115,3 +116,4 @@ void FASTCALL Detour_GameSystem_Think_CheckSteamBan();
 AcquireResult FASTCALL Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices* pItemServices, CEconItemView* pEconItem, AcquireMethod iAcquireMethod, uint64_t unk4);
 void FASTCALL Detour_CS_Script_SetModel(uint64_t unk1);
 void FASTCALL Detour_CBaseModelEntity_SetModel(CBaseModelEntity* pModel, const char* pszModel);
+void FASTCALL Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch);

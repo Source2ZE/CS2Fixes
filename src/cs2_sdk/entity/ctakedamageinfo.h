@@ -134,10 +134,10 @@ private:
 	uint8_t m_nUnknown2[0x58]; // 0x88 | 136
 
 public:
-	void* m_hScriptInstance;								// 0xe0 | 224
-	AttackerInfo_t m_AttackerInfo;							// 0xe8 | 232
-	CUtlLeanVector<int> m_DestructibleHitGroupRequests;		// 0x100 | 256   CUtlLeanVector<DestructiblePartDamageRequest_t>
-	bool m_bInTakeDamageFlow;								// 0x110 | 272
+	void* m_hScriptInstance;							// 0xe0 | 224
+	AttackerInfo_t m_AttackerInfo;						// 0xe8 | 232
+	CUtlLeanVector<int> m_DestructibleHitGroupRequests; // 0x100 | 256   CUtlLeanVector<DestructiblePartDamageRequest_t>
+	bool m_bInTakeDamageFlow;							// 0x110 | 272
 
 private:
 	[[maybe_unused]] int32_t m_nUnknown4; // 0x11c | 284

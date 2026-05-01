@@ -90,7 +90,6 @@ SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUt
 SH_DECL_MANUALHOOK1(OnTakeDamage_Alive, 0, 0, 0, bool, CTakeDamageResult*);
 SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
 SH_DECL_HOOK2(IGameEventManager2, LoadEventsFromFile, SH_NOATTRIB, 0, int, const char*, bool);
-SH_DECL_MANUALHOOK1_void(GoToIntermission, 0, 0, 0, bool);
 SH_DECL_MANUALHOOK2_void(PhysicsTouchShuffle, 0, 0, 0, CUtlVector<TouchLinked_t>*, bool);
 SH_DECL_MANUALHOOK3_void(DropWeapon, 0, 0, 0, CBasePlayerWeapon*, Vector*, Vector*);
 SH_DECL_HOOK1_void(IServer, SetGameSpawnGroupMgr, SH_NOATTRIB, 0, IGameSpawnGroupMgr*);
@@ -113,7 +112,6 @@ int g_iCreateWorkshopMapGroupId = -1;
 int g_iOnTakeDamageAliveId = -1;
 int g_iCheckMovingGroundId = -1;
 int g_iLoadEventsFromFileId = -1;
-int g_iGoToIntermissionId = -1;
 int g_iPhysicsTouchShuffle = -1;
 int g_iWeaponServiceDropWeaponId = -1;
 int g_iSetGameSpawnGroupMgrId = -1;
@@ -330,17 +328,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		return false;
 	}
 
-	auto pCCSGameRulesVTable = modules::server->FindVirtualTable("CCSGameRules");
-
-	offset = g_GameConfig->GetOffset("CCSGameRules_GoToIntermission");
-	if (offset == -1)
-	{
-		snprintf(error, maxlen, "Failed to find CCSGameRules::GoToIntermission\n");
-		bRequiredInitLoaded = false;
-	}
-	SH_MANUALHOOK_RECONFIGURE(GoToIntermission, offset, 0, 0);
-	g_iGoToIntermissionId = SH_ADD_MANUALDVPHOOK(GoToIntermission, pCCSGameRulesVTable, SH_MEMBER(this, &CS2Fixes::Hook_GoToIntermission), false);
-
 	Message("All hooks started!\n");
 
 	UnlockConVars();
@@ -435,7 +422,6 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	SH_REMOVE_HOOK_ID(g_iCheckMovingGroundId);
 	SH_REMOVE_HOOK_ID(g_iPhysicsTouchShuffle);
 	SH_REMOVE_HOOK_ID(g_iWeaponServiceDropWeaponId);
-	SH_REMOVE_HOOK_ID(g_iGoToIntermissionId);
 	SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipUseId);
 	SH_REMOVE_HOOK_ID(g_iCGamePlayerEquipPrecacheId);
 	SH_REMOVE_HOOK_ID(g_iCTriggerGravityPrecacheId);
@@ -1046,17 +1032,6 @@ void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringLis
 		RETURN_META_MNEWPARAMS(MRES_HANDLED, CreateWorkshopMapGroup, (name, g_pMapVoteSystem->CreateWorkshopMapGroup()));
 	else
 		RETURN_META(MRES_IGNORED);
-}
-
-void CS2Fixes::Hook_GoToIntermission(bool bAbortedMatch)
-{
-	if (!g_pMapVoteSystem->IsIntermissionAllowed(false) && g_cvarVoteManagerEnable.Get())
-		RETURN_META(MRES_SUPERCEDE);
-
-	if (g_cvarVoteManagerEnable.Get())
-		g_pVoteManager->OnIntermission();
-
-	RETURN_META(MRES_IGNORED);
 }
 
 CConVar<bool> g_cvarDropMapWeapons("cs2f_drop_map_weapons", FCVAR_NONE, "Whether to force drop map-spawned weapons on death", false);

@@ -51,10 +51,10 @@ public:
 	// - An observer pawn if spectating
 	// - A bot pawn if controlling one
 	CBasePlayerPawn* GetPawn() { return m_hPawn.Get(); }
-	std::string GetPlayerName() 
+	std::string GetPlayerName()
 	{
 		std::string strName = m_iszPlayerName();
-		
+
 		// Ignore space that might be added by clan tag name swap trick
 		if (!strName.empty() && strName.back() == ' ')
 			strName.pop_back();

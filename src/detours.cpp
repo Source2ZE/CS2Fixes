@@ -50,6 +50,7 @@
 #include "playermanager.h"
 #include "serversideclient.h"
 #include "tier0/vprof.h"
+#include "votemanager.h"
 #include "zombiereborn.h"
 
 #include "tier0/memdbgon.h"
@@ -86,6 +87,7 @@ DECLARE_DETOUR(GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckStea
 DECLARE_DETOUR(CCSPlayer_ItemServices_CanAcquire, Detour_CCSPlayer_ItemServices_CanAcquire);
 DECLARE_DETOUR(CS_Script_SetModel, Detour_CS_Script_SetModel);
 DECLARE_DETOUR(CBaseModelEntity_SetModel, Detour_CBaseModelEntity_SetModel);
+DECLARE_DETOUR(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission);
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
@@ -844,9 +846,20 @@ void FASTCALL Detour_CBaseModelEntity_SetModel(CBaseModelEntity* pModel, const c
 {
 	if (!g_bInScriptSetModel)
 		return CBaseModelEntity_SetModel(pModel, pszModel);
-		
+
 	if (PrepareMapSetModel(pModel))
 		return CBaseModelEntity_SetModel(pModel, pszModel);
+}
+
+void FASTCALL Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch)
+{
+	if (!g_pMapVoteSystem->IsIntermissionAllowed(false) && g_cvarVoteManagerEnable.Get())
+		return;
+
+	if (g_cvarVoteManagerEnable.Get())
+		g_pVoteManager->OnIntermission();
+
+	return CCSGameRules_GoToIntermission(pThis, bAbortedMatch);
 }
 
 bool InitDetours(CGameConfig* gameConfig)

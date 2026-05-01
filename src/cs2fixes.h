@@ -92,7 +92,6 @@ public: // hooks
 	void Hook_StartupServer(const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
 	void Hook_ApplyGameSettings(KeyValues* pKV);
 	void Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList);
-	void Hook_GoToIntermission(bool bAbortedMatch);
 	bool Hook_OnTakeDamage_Alive(CTakeDamageResult* pDamageResult);
 	void Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool unknown);
 	void Hook_Teleport(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity);
