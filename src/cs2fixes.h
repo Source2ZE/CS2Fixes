@@ -94,7 +94,7 @@ public: // hooks
 	void Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList);
 	bool Hook_OnTakeDamage_Alive(CTakeDamageResult* pDamageResult);
 	void Hook_PhysicsTouchShuffle(CUtlVector<TouchLinked_t>* pList, bool unknown);
-	void Hook_Teleport(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity);
+	void Hook_CCSPlayerPawn_Teleport(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity);
 #ifdef PLATFORM_WINDOWS
 	Vector* Hook_GetEyePosition(Vector*);
 	QAngle* Hook_GetEyeAngles(QAngle*);

@@ -283,7 +283,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 	SH_MANUALHOOK_RECONFIGURE(Teleport, offset, 0, 0);
-	g_iTeleportId = SH_ADD_MANUALDVPHOOK(Teleport, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_Teleport), false);
+	g_iTeleportId = SH_ADD_MANUALDVPHOOK(Teleport, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_CCSPlayerPawn_Teleport), false);
 
 	const auto pCCSPlayer_MovementServicesVTable = modules::server->FindVirtualTable("CCSPlayer_MovementServices");
 	offset = g_GameConfig->GetOffset("CCSPlayer_MovementServices::CheckMovingGround");
@@ -1191,7 +1191,7 @@ void CS2Fixes::Hook_SpawnPost(int nCount, const EntitySpawnInfo_t* pInfo)
 		g_pMapMigrations->OnEntitySpawned(pInfo[i].m_pEntity->m_pInstance, pInfo[i].m_pKeyValues);
 }
 
-void CS2Fixes::Hook_Teleport(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)
+void CS2Fixes::Hook_CCSPlayerPawn_Teleport(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)
 {
 	if (!pAngles)
 		RETURN_META(MRES_IGNORED);
