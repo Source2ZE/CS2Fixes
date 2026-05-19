@@ -33,7 +33,6 @@ CMemPatch g_CommonPatches[] =
 		CMemPatch("ServerMovementUnlock", "ServerMovementUnlock"),
 		CMemPatch("BotNavIgnore", "BotNavIgnore"),
 		CMemPatch("CheckJumpButtonWater", "FixWaterFloorJump"),
-		CMemPatch("CPhysBox_Use", "CPhysBox_Use"),
 		CMemPatch("SetSchemaHammerUniqueId", "SetSchemaHammerUniqueId"),
 };
 
