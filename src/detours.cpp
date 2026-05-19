@@ -407,6 +407,8 @@ void FASTCALL Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServic
 	if (g_cvarEnableEntWatch.Get())
 		EW_Detour_CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
 
+	g_pMapMigrations->OnEquipWeapon(pPlayerWeapon);
+
 	return CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
 }
 

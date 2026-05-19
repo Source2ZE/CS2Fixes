@@ -22,6 +22,7 @@
 #include "entity.h"
 #include "entity/cbasemodelentity.h"
 #include "utils.h"
+#include "vprof.h"
 
 CMapMigrations* g_pMapMigrations = nullptr;
 
@@ -45,6 +46,7 @@ void CMapMigrations::ApplyGameSettings(KeyValues* pKV)
 void CMapMigrations::OnRoundPrestart()
 {
 	m_vecModelEntitiesUsingRendermodeEnum.clear();
+	m_vecEquippedWeapons.clear();
 }
 
 void CMapMigrations::OnEntitySpawned(CEntityInstance* pEntity, const CEntityKeyValues* pKeyValues)
@@ -57,6 +59,12 @@ void CMapMigrations::OnEntitySpawned(CEntityInstance* pEntity, const CEntityKeyV
 		m_vecModelEntitiesUsingRendermodeEnum.push_back(pBaseEntity->GetHandle());
 
 	RunMigrations(pBaseEntity);
+}
+
+void CMapMigrations::OnEquipWeapon(CBasePlayerWeapon* pWeapon)
+{
+	if (Migrations20260420Enabled())
+		Migrations_20260420(pWeapon);
 }
 
 void CMapMigrations::RunMigrations(CBaseEntity* pEntity)
@@ -99,6 +107,43 @@ void CMapMigrations::Migrations_20260121(CBaseEntity* pEntity)
 	}
 }
 
+void CMapMigrations::Migrations_20260420(CBasePlayerWeapon* pWeapon)
+{
+	VPROF("CMapMigrations::Migrations_20260420");
+
+	// We only care about map-spawned weapons
+	if (!V_strcmp(pWeapon->m_sUniqueHammerID().Get(), ""))
+		return;
+
+	// And only their first equip
+	for (int i = 0; i < m_vecEquippedWeapons.size(); i++)
+		if (m_vecEquippedWeapons[i] == pWeapon->GetHandle())
+			return;
+
+	m_vecEquippedWeapons.push_back(pWeapon->GetHandle());
+	CBaseEntity* pTarget = nullptr;
+
+	// Entities parented to weapons being held by players were offset by +40 units following the AG2 update
+	// Since that doesn't affect in-world weapons, this migration is delayed until weapon equip to prevent breaking strip triggers etc
+	// Alternatively, we may want to track weapon children ahead of time via OnEntityParentChanged if this ends up becoming a performance concern
+	while ((pTarget = UTIL_FindEntityByClassname(pTarget, "*")))
+	{
+		CGameSceneNode* pParentSceneNode = pTarget->m_CBodyComponent()->m_pSceneNode()->m_pParent();
+
+		if (pParentSceneNode && pParentSceneNode->m_pOwner() == pWeapon)
+		{
+			Vector newOrigin = pTarget->GetAbsOrigin();
+			newOrigin.z -= 40.0f;
+			pTarget->Teleport(&newOrigin, nullptr, nullptr);
+		}
+	}
+}
+
+bool CMapMigrations::Migrations20260420Enabled()
+{
+	return g_cvarMapMigrations20260420.Get() == 1 || (g_cvarMapMigrations20260420.Get() == 2 && m_timeMapUpdated < g_time20260420);
+}
+
 void CMapMigrations::UpdateMapUpdateTime(time_t timeMapUpdated)
 {
 	m_timeMapUpdated = timeMapUpdated;
@@ -108,11 +153,6 @@ void CMapMigrations::UpdateMapUpdateTime(time_t timeMapUpdated)
 	// May be called late, so also check any existing entities first
 	while ((pTarget = UTIL_FindEntityByClassname(pTarget, "*")))
 		RunMigrations(pTarget);
-}
-
-bool CMapMigrations::Migrations20260420Enabled()
-{
-	return g_cvarMapMigrations20260420.Get() == 1 || (g_cvarMapMigrations20260420.Get() == 2 && m_timeMapUpdated < g_time20260420);
 }
 
 std::shared_ptr<CMapMigrationWorkshopDetailsQuery> CMapMigrationWorkshopDetailsQuery::Create(uint64 iWorkshopId)

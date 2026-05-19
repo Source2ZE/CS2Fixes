@@ -21,6 +21,7 @@
 
 #include "KeyValues.h"
 #include "convar.h"
+#include "cs2_sdk/entity/ccsweaponbase.h"
 #include "ehandle.h"
 #include "entitysystem.h"
 #include "steam/isteamugc.h"
@@ -54,10 +55,12 @@ public:
 	void ApplyGameSettings(KeyValues* pKV);
 	void OnRoundPrestart();
 	void OnEntitySpawned(CEntityInstance* pEntity, const CEntityKeyValues* pKeyValues);
+	void OnEquipWeapon(CBasePlayerWeapon* pWeapon);
 	void RunMigrations(CBaseEntity* pEntity);
 	void Migrations_20260121(CBaseEntity* pEntity);
-	void UpdateMapUpdateTime(time_t timeMapUpdated);
+	void Migrations_20260420(CBasePlayerWeapon* pWeapon);
 	bool Migrations20260420Enabled();
+	void UpdateMapUpdateTime(time_t timeMapUpdated);
 	void AddWorkshopDetailsQuery(std::shared_ptr<CMapMigrationWorkshopDetailsQuery> pQuery) { m_vecWorkshopDetailsQueries.push_back(pQuery); }
 	void RemoveWorkshopDetailsQuery(std::shared_ptr<CMapMigrationWorkshopDetailsQuery> pQuery) { m_vecWorkshopDetailsQueries.erase(std::remove(m_vecWorkshopDetailsQueries.begin(), m_vecWorkshopDetailsQueries.end(), pQuery), m_vecWorkshopDetailsQueries.end()); }
 
@@ -65,6 +68,7 @@ private:
 	time_t m_timeMapUpdated = std::numeric_limits<time_t>::max();
 	std::vector<std::shared_ptr<CMapMigrationWorkshopDetailsQuery>> m_vecWorkshopDetailsQueries;
 	std::vector<CHandle<CBaseEntity>> m_vecModelEntitiesUsingRendermodeEnum;
+	std::vector<CHandle<CBasePlayerWeapon>> m_vecEquippedWeapons;
 };
 
 extern CMapMigrations* g_pMapMigrations;
