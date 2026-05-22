@@ -1800,16 +1800,19 @@ void ZR_FinishRound(int iTeamNum)
 
 void ZR_PostEventAbstract_SosStartSoundEvent(const uint64* pClients, CNetMessagePB<CMsgSosStartSoundEvent>* pMsg)
 {
+	static uint32 screamHash;
 	static std::set<uint32> soundEventHashes;
 
 	ExecuteOnce(
-		soundEventHashes.insert(GetSoundEventHash("zr.amb.scream"));
+		screamHash = GetSoundEventHash("zr.amb.scream");
 		soundEventHashes.insert(GetSoundEventHash("zr.amb.zombie_die"));
 		soundEventHashes.insert(GetSoundEventHash("zr.amb.zombie_pain"));
 		soundEventHashes.insert(GetSoundEventHash("zr.amb.zombie_voice_idle")););
 
 	// Filter out people with zsounds disabled from hearing this sound
-	if (soundEventHashes.contains(pMsg->soundevent_hash()))
+	if (pMsg->soundevent_hash() == screamHash)
+		*(uint64*)pClients &= g_playerManager->GetZSoundsInfectMask();
+	else if (soundEventHashes.contains(pMsg->soundevent_hash()))
 		*(uint64*)pClients &= g_playerManager->GetZSoundsMask();
 }
 
@@ -1822,11 +1825,25 @@ CON_COMMAND_CHAT(zsounds, "- Toggle zombie sounds")
 	}
 
 	int iPlayer = player->GetPlayerSlot();
-	bool bSet = !g_playerManager->IsPlayerUsingZSounds(iPlayer);
+	EZSoundsType state = g_playerManager->GetPlayerZSoundsMode(iPlayer);
 
-	g_playerManager->SetPlayerZSounds(iPlayer, bSet);
+	if (state == EZSoundsType::ON)
+	{
+		state = EZSoundsType::INFECT_ONLY;
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Zombie sounds\x04 enabled\x10 (Infect sounds only).");
+	}
+	else if (state == EZSoundsType::INFECT_ONLY)
+	{
+		state = EZSoundsType::OFF;
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Zombie sounds\x07 disabled.");
+	}
+	else if (state == EZSoundsType::OFF)
+	{
+		state = EZSoundsType::ON;
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Zombie sounds\x04 enabled.");
+	}
 
-	ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "You have %s zombie sounds.", bSet ? "enabled" : "disabled");
+	g_playerManager->SetPlayerZSounds(iPlayer, state);
 }
 
 CON_COMMAND_CHAT(ztele, "- Teleport to spawn")
