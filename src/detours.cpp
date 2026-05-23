@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2026 Source2ZE
@@ -45,11 +45,13 @@
 #include "igameevents.h"
 #include "irecipientfilter.h"
 #include "map_votes.h"
+#include "mapmigrations.h"
 #include "module.h"
 #include "networksystem/inetworkserializer.h"
 #include "playermanager.h"
 #include "serversideclient.h"
 #include "tier0/vprof.h"
+#include "votemanager.h"
 #include "zombiereborn.h"
 
 #include "tier0/memdbgon.h"
@@ -84,6 +86,9 @@ DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles
 DECLARE_DETOUR(CBaseFilter_InputTestActivator, Detour_CBaseFilter_InputTestActivator);
 DECLARE_DETOUR(GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan);
 DECLARE_DETOUR(CCSPlayer_ItemServices_CanAcquire, Detour_CCSPlayer_ItemServices_CanAcquire);
+DECLARE_DETOUR(CS_Script_SetModel, Detour_CS_Script_SetModel);
+DECLARE_DETOUR(CBaseModelEntity_SetModel, Detour_CBaseModelEntity_SetModel);
+DECLARE_DETOUR(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission);
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
@@ -155,8 +160,8 @@ int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageI
 
 	CBaseEntity_TakeDamageOld(pThis, pInfo, pResult);
 
-	if (pResult->m_nDamageDealt > 0 && !pResult->m_bWasDamageSuppressed && g_cvarEnableZR.Get() && pThis->IsPawn())
-		ZR_OnPlayerTakeDamage(reinterpret_cast<CCSPlayerPawn*>(pThis), pInfo, pResult->m_nDamageDealt);
+	if (pResult->m_flDamageDealt > 0.0f && !pResult->m_bWasDamageSuppressed && g_cvarEnableZR.Get() && pThis->IsPawn())
+		ZR_OnPlayerTakeDamage(reinterpret_cast<CCSPlayerPawn*>(pThis), pInfo, pResult->m_flDamageDealt);
 
 	return 1;
 }
@@ -383,10 +388,10 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	CCSPlayerController* target = CCSPlayerController::FromSlot(slot);
 
 	if (target)
-		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName(), param2);
+		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName().c_str(), param2);
 #endif
 
-	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
+	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, pEntity->GetPlayerName().c_str(), param2, param3, param4);
 }
 
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
@@ -402,7 +407,27 @@ void FASTCALL Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServic
 	if (g_cvarEnableEntWatch.Get())
 		EW_Detour_CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
 
+	g_pMapMigrations->OnEquipWeapon(pPlayerWeapon);
+
 	return CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
+}
+
+CConVar<bool> g_cvarDisableSetModel("cs2f_disable_setmodel", FCVAR_NONE, "Whether to disable SetModel usage from maps (custom input, cs_script function)", false);
+
+bool PrepareMapSetModel(CBaseModelEntity* pModel)
+{
+	if (!pModel->IsPawn())
+		return true;
+
+	if (g_cvarDisableSetModel.Get() || g_pMapMigrations->Migrations20260420Enabled())
+		return false;
+
+	// Player color may have been changed by zclass/server customization, so reset it first
+	// This also means if maps want to change player color, it needs to be done after the SetModel call
+	int originalAlpha = pModel->m_clrRender().a();
+	pModel->m_clrRender = Color(255, 255, 255, originalAlpha);
+
+	return true;
 }
 
 bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID, void* a7, void* a8)
@@ -473,18 +498,9 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 	{
 		if (const auto pModelEntity = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsBaseModelEntity())
 		{
-			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
-			{
-				// Player color may have been changed by zclass/server customization, so reset it first
-				// This also means if maps want to change player color, it needs to be done after the SetModel input
-				if (pModelEntity->IsPawn())
-				{
-					int originalAlpha = pModelEntity->m_clrRender().a();
-					pModelEntity->m_clrRender = Color(255, 255, 255, originalAlpha);
-				}
-
+			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString && PrepareMapSetModel(pModelEntity))
 				pModelEntity->SetModel(value->m_pszString);
-			}
+
 			return true;
 		}
 	}
@@ -818,6 +834,35 @@ AcquireResult FASTCALL Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemSe
 	}
 
 	return CCSPlayer_ItemServices_CanAcquire(pItemServices, pEconItem, iAcquireMethod, unk4);
+}
+
+bool g_bInScriptSetModel = false;
+
+void FASTCALL Detour_CS_Script_SetModel(uint64_t unk1)
+{
+	g_bInScriptSetModel = true;
+	CS_Script_SetModel(unk1);
+	g_bInScriptSetModel = false;
+}
+
+void FASTCALL Detour_CBaseModelEntity_SetModel(CBaseModelEntity* pModel, const char* pszModel)
+{
+	if (!g_bInScriptSetModel)
+		return CBaseModelEntity_SetModel(pModel, pszModel);
+
+	if (PrepareMapSetModel(pModel))
+		return CBaseModelEntity_SetModel(pModel, pszModel);
+}
+
+void FASTCALL Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch)
+{
+	if (!g_pMapVoteSystem->IsIntermissionAllowed(false) && g_cvarVoteManagerEnable.Get())
+		return;
+
+	if (g_cvarVoteManagerEnable.Get())
+		g_pVoteManager->OnIntermission();
+
+	return CCSGameRules_GoToIntermission(pThis, bAbortedMatch);
 }
 
 bool InitDetours(CGameConfig* gameConfig)

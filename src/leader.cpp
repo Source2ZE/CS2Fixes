@@ -531,7 +531,7 @@ CON_COMMAND_CHAT_LEADER(glow, "[name] [color] - Toggle glow highlight on a playe
 {
 	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
 	bool bIsAdmin = pPlayer ? pPlayer->IsAdminFlagSet(FLAG_LEADER) : true;
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
@@ -572,13 +572,13 @@ CON_COMMAND_CHAT_LEADER(glow, "[name] [color] - Toggle glow highlight on a playe
 		else if (iNumClients == 1)
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s %s glow on %s.",
 						   bIsAdmin ? "Admin" : "Leader",
-						   pszCommandPlayerName,
+						   strCommandPlayerName.c_str(),
 						   bEnablingGlow ? "enabled" : "disabled",
-						   pTarget->GetPlayerName());
+						   pTarget->GetPlayerName().c_str());
 	}
 
 	if (iNumClients > 1) // Can only hit this if bIsAdmin due to target flags
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "toggled glow on", "", CHAT_PREFIX);
+		PrintMultiAdminAction(nType, strCommandPlayerName, "toggled glow on", "", CHAT_PREFIX);
 }
 
 CON_COMMAND_CHAT(glows, "- List all active player glows")
@@ -648,13 +648,13 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 
 	if (pPlayerTarget->IsLeader())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is already a leader.", pTarget->GetPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is already a leader.", pTarget->GetPlayerName().c_str());
 		return;
 	}
 
 	if (pPlayerTarget->HasPlayerVotedLeader(pPlayer))
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already voted for %s to become a leader.", pTarget->GetPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have already voted for %s to become a leader.", pTarget->GetPlayerName().c_str());
 		return;
 	}
 
@@ -666,15 +666,15 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 	if (iLeaderVoteCount + 1 >= iNeededLeaderVoteCount)
 	{
 		Leader_SetNewLeader(pPlayerTarget);
-		Message("%s was voted for Leader with %i vote(s).\n", pTarget->GetPlayerName(), iNeededLeaderVoteCount);
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s has been voted as a leader!", pTarget->GetPlayerName());
+		Message("%s was voted for Leader with %i vote(s).\n", pTarget->GetPlayerName().c_str(), iNeededLeaderVoteCount);
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s has been voted as a leader!", pTarget->GetPlayerName().c_str());
 		ClientPrint(pTarget, HUD_PRINTTALK, CHAT_PREFIX "You became a leader! Use !leaderhelp and !leadercolors commands to list available leader commands and colors.");
 		return;
 	}
 
 	pPlayerTarget->AddLeaderVote(pPlayer);
 	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants %s to become a Leader (%i/%i votes).",
-				   player->GetPlayerName(), pTarget->GetPlayerName(), iLeaderVoteCount + 1, iNeededLeaderVoteCount);
+				   player->GetPlayerName().c_str(), pTarget->GetPlayerName().c_str(), iLeaderVoteCount + 1, iNeededLeaderVoteCount);
 }
 
 CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend marker on the target player")
@@ -686,7 +686,7 @@ CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend mar
 		iDuration = V_StringToInt32(args[1], -1);
 	else if (args.ArgC() > 2)
 		iDuration = V_StringToInt32(args[2], -1);
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
@@ -708,8 +708,8 @@ CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend mar
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Placed a defend marker on your position lasting %i seconds.", iDuration);
 		else
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s placed a defend marker on %s's position lasting %i seconds.",
-						   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName,
-						   pTarget->GetPlayerName(), iDuration);
+						   bIsAdmin ? "Admin" : "Leader", strCommandPlayerName.c_str(),
+						   pTarget->GetPlayerName().c_str(), iDuration);
 	}
 }
 
@@ -717,7 +717,7 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 {
 	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
 	bool bIsAdmin = pPlayer ? pPlayer->IsAdminFlagSet(FLAG_LEADER) : true;
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
@@ -735,10 +735,10 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 	if (pPlayerTarget->GetTracerColor().a() == 255)
 	{
 		if (pTarget == player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Disabled tracers for yourself.", pTarget->GetPlayerName());
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Disabled tracers for yourself.");
 		else
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s disabled tracers for %s.",
-						   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName, pTarget->GetPlayerName());
+						   bIsAdmin ? "Admin" : "Leader", strCommandPlayerName.c_str(), pTarget->GetPlayerName().c_str());
 		pPlayerTarget->SetTracerColor(Color(0, 0, 0, 0));
 		return;
 	}
@@ -753,10 +753,10 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 	pPlayerTarget->SetTracerColor(color);
 
 	if (pTarget == player)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Enabled tracers for yourself.", pTarget->GetPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Enabled tracers for yourself.");
 	else
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s enabled tracers for %s.",
-					   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName, pTarget->GetPlayerName());
+					   bIsAdmin ? "Admin" : "Leader", strCommandPlayerName.c_str(), pTarget->GetPlayerName().c_str());
 }
 
 CON_COMMAND_CHAT(tracers, "- List all active player tracers")
@@ -773,7 +773,7 @@ CON_COMMAND_CHAT_LEADER(beacon, "[name] [color] - Toggle beacon on a player")
 {
 	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
 	bool bIsAdmin = pPlayer ? pPlayer->IsAdminFlagSet(FLAG_LEADER) : true;
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
@@ -814,13 +814,13 @@ CON_COMMAND_CHAT_LEADER(beacon, "[name] [color] - Toggle beacon on a player")
 		else if (iNumClients == 1)
 			ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s %s beacon on %s.",
 						   bIsAdmin ? "Admin" : "Leader",
-						   pszCommandPlayerName,
+						   strCommandPlayerName.c_str(),
 						   bEnablingBeacon ? "enabled" : "disabled",
-						   pTarget->GetPlayerName());
+						   pTarget->GetPlayerName().c_str());
 	}
 
 	if (iNumClients > 1) // Can only hit this if bIsAdmin due to target flags
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "toggled beacon on", "", CHAT_PREFIX);
+		PrintMultiAdminAction(nType, strCommandPlayerName, "toggled beacon on", "", CHAT_PREFIX);
 }
 
 CON_COMMAND_CHAT(beacons, "- List all active player beacons")
@@ -947,7 +947,7 @@ CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a playe
 		return;
 	}
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
@@ -963,10 +963,10 @@ CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a playe
 	ZEPlayer* pPlayerTarget = pTarget->GetZEPlayer();
 
 	if (!Leader_SetNewLeader(pPlayerTarget, args.ArgC() < 3 ? "" : args[2]))
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is already a leader.", pTarget->GetPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is already a leader.", pTarget->GetPlayerName().c_str());
 	else
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s %s set %s as a leader.",
-					   bIsAdmin ? "Admin" : "Leader", pszCommandPlayerName, pTarget->GetPlayerName());
+					   bIsAdmin ? "Admin" : "Leader", strCommandPlayerName.c_str(), pTarget->GetPlayerName().c_str());
 }
 
 CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a player", ADMFLAG_GENERIC)
@@ -981,7 +981,7 @@ CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a playe
 	}
 
 	ZEPlayer* pPlayer = player ? player->GetZEPlayer() : nullptr;
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
 	int pSlots[MAXPLAYERS];
@@ -995,16 +995,16 @@ CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a playe
 
 	if (!pPlayerTarget->IsLeader())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not a leader. Use !leaders to list all current leaders.", pTarget->GetPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not a leader. Use !leaders to list all current leaders.", pTarget->GetPlayerName().c_str());
 		return;
 	}
 
 	RemoveLeader(pTarget);
 
 	if (player == pTarget)
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s resigned from being a leader.", player->GetPlayerName());
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s resigned from being a leader.", player->GetPlayerName().c_str());
 	else
-		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "removed leader from ", "", CHAT_PREFIX);
+		PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "removed leader from ", "", CHAT_PREFIX);
 }
 
 CON_COMMAND_CHAT(resign, "- Remove leader status from yourself")
@@ -1030,5 +1030,5 @@ CON_COMMAND_CHAT(resign, "- Remove leader status from yourself")
 
 	RemoveLeader(player);
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s resigned from being a leader.", player->GetPlayerName());
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s resigned from being a leader.", player->GetPlayerName().c_str());
 }

@@ -241,9 +241,9 @@ void TD_OnRoundEnd(IGameEvent* pEvent)
 			continue;
 
 		if (i < 5)
-			ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG \x05(%i HITS | %.0f%% HS | %i KILL%s)", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
+			ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG \x05(%i HITS | %.0f%% HS | %i KILL%s)", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName().c_str(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
 		else
-			ClientPrint(pController, HUD_PRINTTALK, " \x0C%i. %s \x01- \x07%i DMG \x05(%i HITS | %.0f%% HS | %i KILL%s)", i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
+			ClientPrint(pController, HUD_PRINTTALK, " \x0C%i. %s \x01- \x07%i DMG \x05(%i HITS | %.0f%% HS | %i KILL%s)", i + 1, pController->GetPlayerName().c_str(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
 
 		if (i == 0)
 			pPlayer->SetTopDefenderStatus(true);
@@ -264,7 +264,7 @@ void TD_OnRoundEnd(IGameEvent* pEvent)
 				if (!pController)
 					continue;
 
-				ClientPrintAll(HUD_PRINTCONSOLE, "%i. %s - %i DMG (%i HITS | %.0f%% HS | %i KILL%s)", i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
+				ClientPrintAll(HUD_PRINTCONSOLE, "%i. %s - %i DMG (%i HITS | %.0f%% HS | %i KILL%s)", i + 1, pController->GetPlayerName().c_str(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
 			}
 			ClientPrintAll(HUD_PRINTCONSOLE, "----------------------------------------------------------------------------------");
 			return -1.0f;
@@ -338,11 +338,11 @@ void TopDefenderSearch(CCSPlayerController* player, const CCommand& args)
 				if (!pTarget || sortedPlayers[i] != pTarget)
 					continue;
 
-				ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "RANK \4%d\1: \4%s \1 - \4%d \1DMG (\4%d \1HITS | \4%.0f%% \1HS | \4%d \1KILL%s)", i + 1, pController->GetPlayerName(), pTarget->GetTotalDamage(), pTarget->GetTotalHits(), ((double)pTarget->GetTotalHeadshots() / (double)pTarget->GetTotalHits()) * 100.0f, pTarget->GetTotalKills(), pTarget->GetTotalKills() == 1 ? "" : "S");
+				ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "RANK \4%d\1: \4%s \1 - \4%d \1DMG (\4%d \1HITS | \4%.0f%% \1HS | \4%d \1KILL%s)", i + 1, pController->GetPlayerName().c_str(), pTarget->GetTotalDamage(), pTarget->GetTotalHits(), ((double)pTarget->GetTotalHeadshots() / (double)pTarget->GetTotalHits()) * 100.0f, pTarget->GetTotalKills(), pTarget->GetTotalKills() == 1 ? "" : "S");
 				return;
 			}
 
-			ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "%s has no stats to display at this time.", CCSPlayerController::FromSlot(pSlots[0])->GetPlayerName());
+			ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "%s has no stats to display at this time.", CCSPlayerController::FromSlot(pSlots[0])->GetPlayerName().c_str());
 		}
 		else
 		{
@@ -354,7 +354,7 @@ void TopDefenderSearch(CCSPlayerController* player, const CCommand& args)
 			if (!pController)
 				return;
 
-			ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "RANK \4%d\1: \4%s \1- \4%d \1DMG (\4%d \1HITS | \4%.0f%% \1HS | \4%d \1KILL%s)", iRank, pController->GetPlayerName(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
+			ClientPrint(player, HUD_PRINTTALK, TD_PREFIX "RANK \4%d\1: \4%s \1- \4%d \1DMG (\4%d \1HITS | \4%.0f%% \1HS | \4%d \1KILL%s)", iRank, pController->GetPlayerName().c_str(), pPlayer->GetTotalDamage(), pPlayer->GetTotalHits(), ((double)pPlayer->GetTotalHeadshots() / (double)pPlayer->GetTotalHits()) * 100.0f, pPlayer->GetTotalKills(), pPlayer->GetTotalKills() == 1 ? "" : "S");
 		}
 	}
 }

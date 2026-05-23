@@ -71,6 +71,7 @@ CConVar<int> g_cvarInfectSpawnTimeMin("zr_infect_spawn_time_min", FCVAR_NONE, "M
 CConVar<int> g_cvarInfectSpawnTimeMax("zr_infect_spawn_time_max", FCVAR_NONE, "Maximum time in which Mother Zombies should be picked, after round start", 15, true, 1, false, 0);
 CConVar<int> g_cvarInfectSpawnMZRatio("zr_infect_spawn_mz_ratio", FCVAR_NONE, "Ratio of all Players to Mother Zombies to be spawned at round start", 7, true, 1, true, 64);
 CConVar<int> g_cvarInfectSpawnMinCount("zr_infect_spawn_mz_min_count", FCVAR_NONE, "Minimum amount of Mother Zombies to be spawned at round start", 1, true, 0, false, 0);
+CConVar<int> g_cvarInfectSpawnMinCountReq("zr_infect_min_count_req", FCVAR_NONE, "Minimum amount of Players required to spawn Mother Zombies at round start", 2, true, 0, false, 0);
 CConVar<float> g_cvarRespawnDelay("zr_respawn_delay", FCVAR_NONE, "Time before a zombie is automatically respawned, -1 disables this. Note that maps can still manually respawn at any time", 5.0f, true, -1.0f, false, 0.0f);
 CConVar<int> g_cvarDefaultWinnerTeam("zr_default_winner_team", FCVAR_NONE, "Which team wins when time ran out [1 = Draw, 2 = Zombies, 3 = Humans]", CS_TEAM_SPECTATOR, true, 1, true, 3);
 CConVar<int> g_cvarMZImmunityReduction("zr_mz_immunity_reduction", FCVAR_NONE, "How much mz immunity to reduce for each player per round (0-100)", 20, true, 0, true, 100);
@@ -988,7 +989,7 @@ void ZR_OnPlayerSpawn(CCSPlayerController* pController)
 	});
 }
 
-void ZR_ApplyKnockback(CCSPlayerPawn* pHuman, CCSPlayerPawn* pVictim, int iDamage, const char* szWeapon, int hitgroup, float classknockback)
+void ZR_ApplyKnockback(CCSPlayerPawn* pHuman, CCSPlayerPawn* pVictim, float flDamage, const char* szWeapon, int hitgroup, float classknockback)
 {
 	std::shared_ptr<ZRWeapon> pWeapon = g_pZRWeaponConfig->FindWeapon(szWeapon);
 	std::shared_ptr<ZRHitgroup> pHitgroup = g_pZRHitgroupConfig->FindHitgroupIndex(hitgroup);
@@ -1003,7 +1004,7 @@ void ZR_ApplyKnockback(CCSPlayerPawn* pHuman, CCSPlayerPawn* pVictim, int iDamag
 
 	Vector vecKnockback;
 	AngleVectors(pHuman->m_angEyeAngles(), &vecKnockback);
-	vecKnockback *= (iDamage * g_cvarKnockbackScale.Get() * flWeaponKnockbackScale * flHitgroupKnockbackScale * classknockback);
+	vecKnockback *= (flDamage * g_cvarKnockbackScale.Get() * flWeaponKnockbackScale * flHitgroupKnockbackScale * classknockback);
 	pVictim->m_vecAbsVelocity = pVictim->m_vecAbsVelocity() + vecKnockback;
 }
 
@@ -1270,7 +1271,7 @@ void ZR_InitialInfection()
 		return;
 
 	// mz infection candidates
-	CUtlVector<CCSPlayerController*> pCandidateControllers;
+	std::vector<CCSPlayerController*> vecCandidateControllers;
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
@@ -1281,19 +1282,16 @@ void ZR_InitialInfection()
 		if (!pPawn || !pPawn->IsAlive())
 			continue;
 
-		pCandidateControllers.AddToTail(pController);
-	}
-
-	if (g_cvarInfectSpawnMZRatio.Get() <= 0)
-	{
-		Warning("Invalid Mother Zombie Ratio!!!");
-		return;
+		vecCandidateControllers.push_back(pController);
 	}
 
 	// the num of mz to infect
-	int iMZToInfect = pCandidateControllers.Count() / g_cvarInfectSpawnMZRatio.Get();
+	int iMZToInfect = vecCandidateControllers.size() / g_cvarInfectSpawnMZRatio.Get();
 	iMZToInfect = g_cvarInfectSpawnMinCount.Get() > iMZToInfect ? g_cvarInfectSpawnMinCount.Get() : iMZToInfect;
 	bool vecIsMZ[MAXPLAYERS] = {false};
+
+	if (vecCandidateControllers.size() < g_cvarInfectSpawnMinCountReq.Get())
+		iMZToInfect = 0;
 
 	// get spawn points
 	std::vector<SpawnPoint*> spawns = ZR_GetSpawns();
@@ -1310,41 +1308,41 @@ void ZR_InitialInfection()
 		// If we somehow don't have enough mother zombies after going through the players 5 times,
 		if (iFailSafeCounter >= 5)
 		{
-			FOR_EACH_VEC(pCandidateControllers, i)
+			for (int i = 0; i < vecCandidateControllers.size(); i++)
 			{
 				// at 5, reset everyone's immunity but mother zombies from this and last round
 				// at 6, reset everyone's immunity but mother zombies from this round
-				ZEPlayer* pPlayer = pCandidateControllers[i]->GetZEPlayer();
+				ZEPlayer* pPlayer = vecCandidateControllers[i]->GetZEPlayer();
 				if (pPlayer->GetImmunity() < 100 || (iFailSafeCounter >= 6 && !vecIsMZ[i]))
 					pPlayer->SetImmunity(0);
 			}
 		}
 
 		// a list of player who survived the previous mz roll of this round
-		CUtlVector<CCSPlayerController*> pSurvivorControllers;
-		FOR_EACH_VEC(pCandidateControllers, i)
+		std::vector<CCSPlayerController*> vecSurvivorControllers;
+		for (CCSPlayerController* pController : vecCandidateControllers)
 		{
 			// don't even bother with picked mz or player with 100 immunity
-			ZEPlayer* pPlayer = pCandidateControllers[i]->GetZEPlayer();
+			ZEPlayer* pPlayer = pController->GetZEPlayer();
 			if (pPlayer && pPlayer->GetImmunity() < 100)
-				pSurvivorControllers.AddToTail(pCandidateControllers[i]);
+				vecSurvivorControllers.push_back(pController);
 		}
 
 		// no enough human even after triggering fail safe
-		if (iFailSafeCounter >= 6 && pSurvivorControllers.Count() == 0)
+		if (iFailSafeCounter >= 6 && vecSurvivorControllers.size() == 0)
 			break;
 
-		while (pSurvivorControllers.Count() > 0 && iMZToInfect > 0)
+		while (vecSurvivorControllers.size() > 0 && iMZToInfect > 0)
 		{
-			int randomindex = rand() % pSurvivorControllers.Count();
+			int randomindex = rand() % vecSurvivorControllers.size();
 
-			CCSPlayerController* pController = (CCSPlayerController*)pSurvivorControllers[randomindex];
+			CCSPlayerController* pController = (CCSPlayerController*)vecSurvivorControllers[randomindex];
 			CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
-			ZEPlayer* pPlayer = pSurvivorControllers[randomindex]->GetZEPlayer();
+			ZEPlayer* pPlayer = vecSurvivorControllers[randomindex]->GetZEPlayer();
 			// roll for immunity
 			if (rand() % 100 < pPlayer->GetImmunity())
 			{
-				pSurvivorControllers.FastRemove(randomindex);
+				vecSurvivorControllers.erase(vecSurvivorControllers.begin() + randomindex);
 				continue;
 			}
 
@@ -1594,7 +1592,7 @@ void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand& args)
 		SpawnPlayer(pController);
 }
 
-void ZR_OnPlayerTakeDamage(CCSPlayerPawn* pVictimPawn, const CTakeDamageInfo* pInfo, const int32_t damage)
+void ZR_OnPlayerTakeDamage(CCSPlayerPawn* pVictimPawn, const CTakeDamageInfo* pInfo, const float damage)
 {
 	// bullet & knife only
 	if ((!(pInfo->m_bitsDamageType & DMG_BULLET) && !(pInfo->m_bitsDamageType & DMG_SLASH)) || !pInfo->m_pTrace || !pInfo->m_pTrace->m_pHitbox)
@@ -1997,7 +1995,7 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TERRORIST | NO_DEAD, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 	std::vector<SpawnPoint*> spawns = ZR_GetSpawns();
 
 	if (g_cvarInfectSpawnType.Get() == (int)EZRSpawnType::RESPAWN && !spawns.size())
@@ -2017,10 +2015,10 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 			ZR_Infect(pTarget, pTarget, true);
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as a mother zombie" : "", ZR_PREFIX);
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as a mother zombie" : "", ZR_PREFIX);
 	}
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as mother zombies" : "", ZR_PREFIX);
+		PrintMultiAdminAction(nType, strCommandPlayerName, "infected", g_ZRRoundState == EZRRoundState::ROUND_START ? " as mother zombies" : "", ZR_PREFIX);
 
 	// Note we skip MZ immunity when first infection is manually triggered
 	if (g_ZRRoundState == EZRRoundState::ROUND_START)
@@ -2057,7 +2055,7 @@ CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_COUNTER_TERRORIST, nType))
 		return;
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	for (int i = 0; i < iNumClients; i++)
 	{
@@ -2071,8 +2069,8 @@ CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 		ZR_StripAndGiveKnife(pPawn);
 
 		if (iNumClients == 1)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "revived", "", ZR_PREFIX);
+			PrintSingleAdminAction(strCommandPlayerName, pTarget->GetPlayerName(), "revived", "", ZR_PREFIX);
 	}
 	if (iNumClients > 1)
-		PrintMultiAdminAction(nType, pszCommandPlayerName, "revived", "", ZR_PREFIX);
+		PrintMultiAdminAction(nType, strCommandPlayerName, "revived", "", ZR_PREFIX);
 }

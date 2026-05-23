@@ -222,8 +222,6 @@
     <ClCompile Include="src\utils\hud_manager.cpp" />
     <ClCompile Include="src\utils\utils.cpp" />
     <ClCompile Include="src\cs2_sdk\entity\services.cpp" />
-    <ClCompile Include="src\cs2_sdk\entity\ccsplayerpawn.cpp" />
-    <ClCompile Include="src\cs2_sdk\entity\cbasemodelentity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\buttonwatch.h" />

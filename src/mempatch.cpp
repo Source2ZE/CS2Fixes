@@ -46,7 +46,7 @@ bool CMemPatch::PerformPatch(CGameConfig* gameConfig)
 		Panic("Failed to find patch for %s\n", m_pszName);
 		return false;
 	}
-	m_pPatch = gameConfig->HexToByte(patch, m_iPatchLength);
+	m_pPatch = gameConfig->IDASigToUint8Array(patch, m_iPatchLength);
 	if (!m_pPatch)
 		return false;
 

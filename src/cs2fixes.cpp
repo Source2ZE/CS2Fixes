@@ -88,12 +88,12 @@ KHook::Virtual createWorkshopMapGroupHook(&g_CS2Fixes, &CS2Fixes::Hook_CreateWor
 KHook::Virtual getTouchingListHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_GetTouchingList_Post);
 KHook::Virtual checkMovingGroundHook(&g_CS2Fixes, &CS2Fixes::Hook_CheckMovingGround, nullptr);
 KHook::Virtual dropWeaponHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_DropWeapon_Post);
-KHook::Virtual goToIntermissionHook(&g_CS2Fixes, &CS2Fixes::Hook_GoToIntermission, nullptr);
 KHook::Virtual playerEquipUseHook(&g_CS2Fixes, &CS2Fixes::Hook_PlayerEquipUse, nullptr);
 KHook::Virtual playerEquipPrecacheHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_PlayerEquipPrecache_Post);
 KHook::Virtual triggerGravityPrecacheHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_TriggerGravityPrecache_Post);
 KHook::Virtual triggerGravityEndTouchHook(&g_CS2Fixes, nullptr, &CS2Fixes::Hook_TriggerGravityEndTouch_Post);
 KHook::Virtual onTakeDamageAliveHook(&g_CS2Fixes, &CS2Fixes::Hook_OnTakeDamage_Alive, nullptr);
+KHook::Virtual playerPawnTeleportHook(&g_CS2Fixes, &CS2Fixes::Hook_CCSPlayerPawn_Teleport, nullptr);
 
 CS2Fixes g_CS2Fixes;
 IGameEventSystem* g_gameEventSystem = nullptr;
@@ -108,7 +108,6 @@ CEntitySystem* g_pCEntitySystemVTable = nullptr;
 CVPhys2World* g_pCVPhys2WorldVTable = nullptr;
 CCSPlayer_MovementServices* g_pCCSPlayer_MovementServicesVTable = nullptr;
 CCSPlayer_WeaponServices* g_pCCSPlayer_WeaponServicesVTable = nullptr;
-CCSGameRules* g_pCCSGameRulesVTable = nullptr;
 CGamePlayerEquip* g_pCGamePlayerEquipVTable = nullptr;
 CTriggerGravity* g_pTriggerGravityVTable = nullptr;
 CCSPlayerPawn* g_pCCSPlayerPawnVTable = nullptr;
@@ -160,19 +159,12 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 	Message("Starting plugin.\n");
 
-	CBufferStringGrowable<256> gamedirpath;
-	g_pEngineServer2->GetGameDir(gamedirpath);
-
-	std::string gamedirname = CGameConfig::GetDirectoryName(gamedirpath.Get());
-
-	const char* gamedataPath = "addons/cs2fixes/gamedata/cs2fixes.games.txt";
-	Message("Loading %s for game: %s\n", gamedataPath, gamedirname.c_str());
-
-	g_GameConfig = new CGameConfig(gamedirname, gamedataPath);
+	g_GameConfig = new CGameConfig();
 	char conf_error[255] = "";
-	if (!g_GameConfig->Init(g_pFullFileSystem, conf_error, sizeof(conf_error)))
+
+	if (!g_GameConfig->Init(conf_error, sizeof(conf_error)))
 	{
-		snprintf(error, maxlen, "Could not read %s: %s", g_GameConfig->GetPath().c_str(), conf_error);
+		snprintf(error, maxlen, "%s", conf_error);
 		Panic("%s\n", error);
 		return false;
 	}
@@ -285,23 +277,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	dropWeaponHook.Configure(offset);
 	dropWeaponHook.AddGlobal((CCSPlayer_WeaponServices*)&g_pCCSPlayer_WeaponServicesVTable);
 
-	g_pCCSGameRulesVTable = (CCSGameRules*)modules::server->FindVirtualTable("CCSGameRules");
-	if (!g_pCCSGameRulesVTable)
-	{
-		Panic("Failed to find CCSGameRules vtable\n");
-		bRequiredInitLoaded = false;
-	}
-
-	offset = g_GameConfig->GetOffset("CCSGameRules_GoToIntermission");
-	if (offset == -1)
-	{
-		Panic("Failed to find offset for CCSGameRules_GoToIntermission\n");
-		bRequiredInitLoaded = false;
-	}
-
-	goToIntermissionHook.Configure(offset);
-	goToIntermissionHook.AddGlobal((CCSGameRules*)&g_pCCSGameRulesVTable);
-
 	g_pCGamePlayerEquipVTable = (CGamePlayerEquip*)modules::server->FindVirtualTable("CGamePlayerEquip");
 	if (!g_pCGamePlayerEquipVTable)
 	{
@@ -365,6 +340,16 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 	onTakeDamageAliveHook.Configure(offset);
 	onTakeDamageAliveHook.AddGlobal((CCSPlayerPawn*)&g_pCCSPlayerPawnVTable);
+
+	offset = g_GameConfig->GetOffset("Teleport");
+	if (offset == -1)
+	{
+		Panic("Failed to find offset for Teleport\n");
+		bRequiredInitLoaded = false;
+	}
+
+	playerPawnTeleportHook.Configure(offset);
+	playerPawnTeleportHook.AddGlobal((CCSPlayerPawn*)&g_pCCSPlayerPawnVTable);
 
 	if (!bRequiredInitLoaded)
 	{
@@ -467,12 +452,12 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	getTouchingListHook.RemoveGlobal((CVPhys2World*)&g_pCVPhys2WorldVTable);
 	checkMovingGroundHook.RemoveGlobal((CCSPlayer_MovementServices*)&g_pCCSPlayer_MovementServicesVTable);
 	dropWeaponHook.RemoveGlobal((CCSPlayer_WeaponServices*)&g_pCCSPlayer_WeaponServicesVTable);
-	goToIntermissionHook.RemoveGlobal((CCSGameRules*)&g_pCCSGameRulesVTable);
 	playerEquipUseHook.RemoveGlobal((CGamePlayerEquip*)&g_pCGamePlayerEquipVTable);
 	playerEquipPrecacheHook.RemoveGlobal((CGamePlayerEquip*)&g_pCGamePlayerEquipVTable);
 	triggerGravityPrecacheHook.RemoveGlobal((CTriggerGravity*)&g_pTriggerGravityVTable);
 	triggerGravityEndTouchHook.RemoveGlobal((CTriggerGravity*)&g_pTriggerGravityVTable);
 	onTakeDamageAliveHook.RemoveGlobal((CCSPlayerPawn*)&g_pCCSPlayerPawnVTable);
+	playerPawnTeleportHook.RemoveGlobal((CCSPlayerPawn*)&g_pCCSPlayerPawnVTable);
 
 	ConVar_Unregister();
 
@@ -601,7 +586,7 @@ KHook::Return<void> CS2Fixes::Hook_DispatchConCommand(ICvar* pThis, ConCommandRe
 					continue;
 
 				if (i == iCommandPlayerSlot.Get() || pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC))
-					ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, " \4(%sADMINS) %s:\6 %s", bIsAdmin ? "" : "TO ", pController->GetPlayerName(), pszMessage);
+					ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, " \4(%sADMINS) %s:\6 %s", bIsAdmin ? "" : "TO ", pController->GetPlayerName().c_str(), pszMessage);
 			}
 		}
 
@@ -681,13 +666,13 @@ KHook::Return<void> CS2Fixes::Hook_TriggerGravityPrecache_Post(CTriggerGravity* 
 {
 	const auto kv = param->m_pKeyValues;
 	CTriggerGravityHandler::OnPrecache(pThis, kv);
-	
+
 	return {KHook::Action::Ignore};
 }
 KHook::Return<void> CS2Fixes::Hook_TriggerGravityEndTouch_Post(CTriggerGravity* pThis, CBaseEntity* pOther)
 {
 	CTriggerGravityHandler::OnEndTouch(pThis, pOther);
-	
+
 	return {KHook::Action::Ignore};
 }
 
@@ -701,8 +686,10 @@ KHook::Return<void> CS2Fixes::Hook_GameServerSteamAPIActivated(IServerGameDLL* p
 	return {KHook::Action::Ignore};
 }
 
+CConVar<bool> g_cvarBlockParticleMsgs("cs2f_block_particle_msgs", FCVAR_NONE, "Whether to block CUserMsg_ParticleManager messages to fix lag/crashes, experimental", false);
+
 KHook::Return<void> CS2Fixes::Hook_PostEventAbstract(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
-							  INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType)
+													 INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
 	// Message( "Hook_PostEvent(%d, %d, %d, %lli)\n", nSlot, bLocalOnly, nClientCount, clients );
 	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
@@ -823,6 +810,13 @@ KHook::Return<void> CS2Fixes::Hook_PostEventAbstract(IGameEventSystem* pThis, CS
 			*(uint64*)clients &= ~stopSoundMask;
 			*(uint64*)clients &= ~silenceSoundMask;
 		}
+	}
+	else if (info->m_MessageId == UM_ParticleManager)
+	{
+		// These messages were previously unused, but recently started being used for weapon particles in the AG2 update
+		// Unfortunately, this new system seems extremely unoptimized for 64 players, and was causing severe performance issues & vector overflow client crashes
+		if (g_cvarBlockParticleMsgs.Get())
+			*(uint64*)clients = 0;
 	}
 
 	return {KHook::Action::Ignore};
@@ -978,7 +972,7 @@ KHook::Return<void> CS2Fixes::Hook_GameFrame_Post(IServerGameDLL* pThis, bool si
 }
 
 KHook::Return<void> CS2Fixes::Hook_CheckTransmit_Post(ISource2GameEntities* pThis, CCheckTransmitInfo** ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts,
-								  CBitVec<16384>&, const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities)
+													  CBitVec<16384>&, const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities)
 {
 	if (!g_pEntitySystem || !GetGlobals())
 		return {KHook::Action::Ignore};
@@ -1082,17 +1076,6 @@ KHook::Return<void> CS2Fixes::Hook_CreateWorkshopMapGroup(IGameTypes* pThis, con
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> CS2Fixes::Hook_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch)
-{
-	if (!g_pMapVoteSystem->IsIntermissionAllowed(false) && g_cvarVoteManagerEnable.Get())
-		return {KHook::Action::Supersede};
-
-	if (g_cvarVoteManagerEnable.Get())
-		g_pVoteManager->OnIntermission();
-
-	return {KHook::Action::Ignore};
-}
-
 CConVar<bool> g_cvarDropMapWeapons("cs2f_drop_map_weapons", FCVAR_NONE, "Whether to force drop map-spawned weapons on death", false);
 
 KHook::Return<bool> CS2Fixes::Hook_OnTakeDamage_Alive(CCSPlayerPawn* pPawn, CTakeDamageResult* pDamageResult)
@@ -1100,7 +1083,7 @@ KHook::Return<bool> CS2Fixes::Hook_OnTakeDamage_Alive(CCSPlayerPawn* pPawn, CTak
 	if (g_cvarEnableZR.Get() && ZR_Hook_OnTakeDamage_Alive(pDamageResult->m_pOriginatingInfo, pPawn))
 	{
 		pDamageResult->m_bWasDamageSuppressed = true;
-		pDamageResult->m_nDamageDealt = 0;
+		pDamageResult->m_flDamageDealt = 0.0f;
 		return {KHook::Action::Supersede, false};
 	}
 
@@ -1246,6 +1229,23 @@ KHook::Return<void> CS2Fixes::Hook_Spawn_Post(CEntitySystem* pThis, int nCount, 
 {
 	for (int i = 0; i < nCount; i++)
 		g_pMapMigrations->OnEntitySpawned(pInfo[i].m_pEntity->m_pInstance, pInfo[i].m_pKeyValues);
+
+	return {KHook::Action::Ignore};
+}
+
+KHook::Return<void> CS2Fixes::Hook_CCSPlayerPawn_Teleport(CCSPlayerPawn* pPawn, const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)
+{
+	if (!pAngles)
+		return {KHook::Action::Ignore};
+
+	QAngle* pCastAngles = const_cast<QAngle*>(pAngles);
+
+	// Post-AG2, changing x or z angles on a playermodel will bug out, and never did anything pre-AG2 anyways
+	if (pCastAngles->x != 0.0f)
+		pCastAngles->x = 0.0f;
+
+	if (pCastAngles->z != 0.0f)
+		pCastAngles->z = 0.0f;
 
 	return {KHook::Action::Ignore};
 }

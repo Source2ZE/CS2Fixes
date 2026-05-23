@@ -55,8 +55,8 @@
 #define ADMIN_PREFIX "Admin %s has "
 #define CONSOLE_NAME "\2CONSOLE\1" // color it to indicate that it isnt a regular player using the command
 
-void PrintSingleAdminAction(const char* pszAdminName, const char* pszTargetName, const char* pszAction, const char* pszAction2, const char* prefix);
-void PrintMultiAdminAction(ETargetType nType, const char* pszAdminName, const char* pszAction, const char* pszAction2, const char* prefix);
+void PrintSingleAdminAction(std::string strAdminName, std::string strTargetName, const char* pszAction, const char* pszAction2, const char* prefix);
+void PrintMultiAdminAction(ETargetType nType, std::string strAdminName, const char* pszAction, const char* pszAction2, const char* prefix);
 
 enum GrammarTense
 {

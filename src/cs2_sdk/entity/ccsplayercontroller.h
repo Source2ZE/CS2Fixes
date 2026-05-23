@@ -157,7 +157,7 @@ public:
 		m_szClan = g_pEntitySystem->AllocPooledString(pszClanTag);
 
 		// This name swap trick is necessary to get clients to display the new clan tag
-		std::string strName = GetPlayerName();
+		std::string strName = m_iszPlayerName();
 
 		if (!strName.empty() && strName.back() == ' ')
 			strName.pop_back();

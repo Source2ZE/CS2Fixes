@@ -88,10 +88,10 @@ public: // hooks
 	KHook::Return<bool> Hook_ClientConnect(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason);
 	KHook::Return<void> Hook_ClientCommand(IServerGameClients* pThis, CPlayerSlot nSlot, const CCommand& _cmd);
 	KHook::Return<void> Hook_PostEventAbstract(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
-						INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType);
+											   INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType);
 	KHook::Return<void> Hook_StartupServer_Post(INetworkServerService* pThis, const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
 	KHook::Return<void> Hook_CheckTransmit_Post(ISource2GameEntities* pThis, CCheckTransmitInfo** ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts,
-							CBitVec<16384>&, const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities);
+												CBitVec<16384>&, const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities);
 	KHook::Return<void> Hook_DispatchConCommand(ICvar* pThis, ConCommandRef cmd, const CCommandContext& ctx, const CCommand& args);
 	KHook::Return<int> Hook_LoadEventsFromFile(IGameEventManager2* pThis, const char* filename, bool bSearchAll);
 	KHook::Return<void> Hook_Spawn_Post(CEntitySystem* pThis, int nCount, const EntitySpawnInfo_t* pInfo);
@@ -100,12 +100,12 @@ public: // hooks
 	KHook::Return<void> Hook_GetTouchingList_Post(CVPhys2World* pThis, CUtlVector<TouchLinked_t>* pList, bool unknown);
 	KHook::Return<void> Hook_CheckMovingGround(CCSPlayer_MovementServices* pThis, double frametime);
 	KHook::Return<void> Hook_DropWeapon_Post(CCSPlayer_WeaponServices* pThis, CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity);
-	KHook::Return<void> Hook_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch);
 	KHook::Return<void> Hook_PlayerEquipUse(CGamePlayerEquip* pThis, class InputData_t*);
 	KHook::Return<void> Hook_PlayerEquipPrecache_Post(CGamePlayerEquip* pThis, CEntityPrecacheContext*);
 	KHook::Return<void> Hook_TriggerGravityPrecache_Post(CTriggerGravity* pThis, CEntityPrecacheContext* param);
 	KHook::Return<void> Hook_TriggerGravityEndTouch_Post(CTriggerGravity* pThis, CBaseEntity* pOther);
 	KHook::Return<bool> Hook_OnTakeDamage_Alive(CCSPlayerPawn* pPawn, CTakeDamageResult* pDamageResult);
+	KHook::Return<void> Hook_CCSPlayerPawn_Teleport(CCSPlayerPawn* pPawn, const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity);
 
 public: // MetaMod API
 	void* OnMetamodQuery(const char* iface, int* ret);

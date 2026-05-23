@@ -381,8 +381,8 @@ CON_COMMAND_CHAT_FLAGS(cancelvote, "Cancels the ongoing vote.", ADMFLAG_CHANGEMA
 
 	g_pPanoramaVoteHandler->EndVote(YesNoVoteEndReason::VoteEnd_Cancelled);
 
-	const char* pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Admin %s has cancelled the vote.", pszCommandPlayerName);
+	std::string strCommandPlayerName = player ? player->GetPlayerName() : "Console";
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Admin %s has cancelled the vote.", strCommandPlayerName.c_str());
 }
 
 CON_COMMAND_CHAT(revote, "Change your vote in the ongoing vote.")
