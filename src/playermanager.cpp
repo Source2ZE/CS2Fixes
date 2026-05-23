@@ -36,6 +36,7 @@
 #include "utils/entity.h"
 #include "utlstring.h"
 #include "votemanager.h"
+#include "zombiereborn.h"
 #include <../cs2fixes.h>
 
 #include "tier0/memdbgon.h"
@@ -1775,20 +1776,41 @@ void CPlayerManager::SetPlayerSilenceSound(int slot, bool set)
 	g_pUserPreferencesSystem->SetPreferenceInt(slot, SOUND_STATUS_PREF_KEY_NAME, iStopPreferenceStatus + iSilencePreferenceStatus);
 }
 
-void CPlayerManager::SetPlayerZSounds(int slot, bool set)
+void CPlayerManager::SetPlayerZSounds(int slot, EZSoundsType mode)
 {
-	if (set)
-		m_nUsingZSounds |= ((uint64)1 << slot);
-	else
-		m_nUsingZSounds &= ~((uint64)1 << slot);
+	switch (mode)
+	{
+		case EZSoundsType::ON:
+			m_nUsingZSounds |= ((uint64)1 << slot);
+			m_nUsingZSoundsInfect |= ((uint64)1 << slot);
+			break;
+		case EZSoundsType::INFECT_ONLY:
+			m_nUsingZSounds &= ~((uint64)1 << slot);
+			m_nUsingZSoundsInfect |= ((uint64)1 << slot);
+			break;
+		case EZSoundsType::OFF:
+			m_nUsingZSounds &= ~((uint64)1 << slot);
+			m_nUsingZSoundsInfect &= ~((uint64)1 << slot);
+			break;
+	}
 
 	// Set the user prefs if the player is ingame
 	ZEPlayer* pPlayer = m_vecPlayers[slot];
 	if (!pPlayer) return;
 
-	uint64 iSlotMask = (uint64)1 << slot;
-	int iZSoundsPreferenceStatus = (m_nUsingZSounds & iSlotMask) ? 1 : 0;
+	int iZSoundsPreferenceStatus = (int)mode;
 	g_pUserPreferencesSystem->SetPreferenceInt(slot, ZSOUNDS_PREF_KEY_NAME, iZSoundsPreferenceStatus);
+}
+
+EZSoundsType CPlayerManager::GetPlayerZSoundsMode(int slot)
+{
+	if (m_nUsingZSounds & ((uint64)1 << slot))
+		return EZSoundsType::ON;
+
+	if (m_nUsingZSoundsInfect & ((uint64)1 << slot))
+		return EZSoundsType::INFECT_ONLY;
+
+	return EZSoundsType::OFF;
 }
 
 void CPlayerManager::SetPlayerStopDecals(int slot, bool set)
@@ -1827,7 +1849,7 @@ void CPlayerManager::ResetPlayerFlags(int slot)
 {
 	SetPlayerStopSound(slot, true);
 	SetPlayerSilenceSound(slot, false);
-	SetPlayerZSounds(slot, true);
+	SetPlayerZSounds(slot, EZSoundsType::ON);
 	SetPlayerStopDecals(slot, true);
 	SetPlayerNoShake(slot, false);
 }
