@@ -405,6 +405,7 @@ public:
 		m_nUsingStopSound = -1; // On by default
 		m_nUsingSilenceSound = 0;
 		m_nUsingZSounds = -1;	 // On by default
+		m_nUsingZSoundsInfect = -1; // On by default
 		m_nUsingStopDecals = -1; // On by default
 		m_nUsingNoShake = 0;
 	}
