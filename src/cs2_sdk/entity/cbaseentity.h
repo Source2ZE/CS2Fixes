@@ -171,7 +171,7 @@ public:
 
 	void TakeDamage(CTakeDamageInfo& info)
 	{
-		Detour_CBaseEntity_TakeDamageOld(this, &info, 0);
+		addresses::CBaseEntity_TakeDamageOld(this, &info, 0);
 	}
 
 	void Teleport(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)

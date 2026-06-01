@@ -59,6 +59,7 @@ class CBasePlayerWeapon;
 class CSpawnGroupMgrGameSystem;
 struct EmitSound_t;
 struct StartSoundEventInfo;
+struct CTakeDamageResult;
 
 // Can't be forward-declared, can't include cgamerules.h.. just define it here
 struct CGcBanInformation_t
@@ -106,4 +107,5 @@ namespace addresses
 													   const Vector* vecDamageForce, const Vector* vecDamagePosition, float flDamage, int bitsDamageType, int iCustomDamage, void* a10);
 	inline void(FASTCALL* CCSPlayer_WeaponServices_EquipWeapon)(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
 	inline void(FASTCALL* GetSpawnGroups)(CSpawnGroupMgrGameSystem* pSpawnGroupMgr, CUtlVector<SpawnGroupHandle_t>* pList);
+	inline int64(FASTCALL* CBaseEntity_TakeDamageOld)(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult);
 } // namespace addresses
