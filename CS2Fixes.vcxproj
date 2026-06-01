@@ -73,12 +73,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>cs2fixes</TargetName>
-    <LibraryPath>sdk\lib\public\win64;vendor/funchook/lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>sdk\lib\public\win64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)/package/addons/cs2fixes/bin/win64/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>cs2fixes</TargetName>
-    <LibraryPath>sdk\lib\public\win64;vendor/funchook/lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>sdk\lib\public\win64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)/package/addons/cs2fixes/bin/win64/</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -119,12 +119,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>__STDC_LIMIT_MACROS;X64BITS;WIN32;COMPILER_MSVC;COMPILER_MSVC64;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;_DEBUG;CS2Fixes_EXPORTS;_WINDOWS;_USRDLL;META_IS_SOURCE2;SUBHOOK_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__STDC_LIMIT_MACROS;X64BITS;WIN32;COMPILER_MSVC;COMPILER_MSVC64;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;_DEBUG;CS2Fixes_EXPORTS;_WINDOWS;_USRDLL;META_IS_SOURCE2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>build/cs2fixes.cs2/windows-x86_64;src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;sdk/public/mathlib;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/third_party/khook/include;$(MMSOURCE_DEV)/core;$(MMSOURCE_DEV)/third_party/khook/include;vendor/subhook;vendor/funchook/include;sdk/public/entity2;sdk/public/game/server;sdk/thirdparty/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>build/cs2fixes.cs2/windows-x86_64;src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;sdk/public/mathlib;$(MMSOURCE112)/core;$(MMSOURCE112)/third_party/khook/include;$(MMSOURCE_DEV)/core;$(MMSOURCE_DEV)/third_party/khook/include;sdk/public/entity2;sdk/public/game/server;sdk/thirdparty/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -133,8 +133,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>interfaces.lib;mathlib.lib;tier0.lib;tier1.lib;psapi.lib;funchook.lib;distorm.lib;steam_api64.lib;vendor/protobuf-lib/Debug/libprotobufd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>sdk/lib/public/win64;vendor/funchook/lib/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>interfaces.lib;mathlib.lib;tier0.lib;tier1.lib;psapi.lib;steam_api64.lib;vendor/protobuf-lib/Debug/libprotobufd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>sdk/lib/public/win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ShowProgress>
       </ShowProgress>
     </Link>
@@ -145,12 +145,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>__STDC_LIMIT_MACROS;X64BITS;WIN32;COMPILER_MSVC;COMPILER_MSVC64;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;NDEBUG;_WINDOWS;CS2Fixes_EXPORTS;_USRDLL;META_IS_SOURCE2;SUBHOOK_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__STDC_LIMIT_MACROS;X64BITS;WIN32;COMPILER_MSVC;COMPILER_MSVC64;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;NDEBUG;_WINDOWS;CS2Fixes_EXPORTS;_USRDLL;META_IS_SOURCE2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>Default</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>build/cs2fixes.cs2/windows-x86_64;src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;sdk/public/mathlib;minhook/include;$(MMSOURCE112)/core;$(MMSOURCE112)/third_party/khook/include;$(MMSOURCE_DEV)/core;$(MMSOURCE_DEV)/third_party/khook/include;vendor/subhook;vendor/funchook/include;sdk/public/entity2;sdk/public/game/server;sdk/thirdparty/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>build/cs2fixes.cs2/windows-x86_64;src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;sdk/public/mathlib;$(MMSOURCE112)/core;$(MMSOURCE112)/third_party/khook/include;$(MMSOURCE_DEV)/core;$(MMSOURCE_DEV)/third_party/khook/include;sdk/public/entity2;sdk/public/game/server;sdk/thirdparty/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -161,8 +161,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>interfaces.lib;mathlib.lib;tier0.lib;tier1.lib;psapi.lib;funchook.lib;distorm.lib;steam_api64.lib;vendor/protobuf-lib/Release/libprotobuf.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>sdk/lib/public/win64;vendor/funchook/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>interfaces.lib;mathlib.lib;tier0.lib;tier1.lib;psapi.lib;steam_api64.lib;vendor/protobuf-lib/Release/libprotobuf.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>sdk/lib/public/win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ShowProgress>
       </ShowProgress>
     </Link>
@@ -262,7 +262,6 @@
     <ClInclude Include="src\cs2_sdk\entity\cpointorient.h" />
     <ClInclude Include="src\cs2_sdk\schema.h" />
     <ClInclude Include="src\cs2_sdk\entityio.h" />
-    <ClInclude Include="src\cdetour.h" />
     <ClInclude Include="src\ctimer.h" />
     <ClInclude Include="src\customio.h" />
     <ClInclude Include="src\detours.h" />

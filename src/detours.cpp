@@ -23,7 +23,6 @@
 
 #include "addresses.h"
 #include "buttonwatch.h"
-#include "cdetour.h"
 #include "commands.h"
 #include "common.h"
 #include "ctimer.h"
@@ -56,45 +55,111 @@
 
 #include "tier0/memdbgon.h"
 
-CUtlVector<CDetourBase*> g_vecDetours;
-
-DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
-DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
-DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
-DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
-DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
-DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
-DECLARE_DETOUR(CCSPlayer_WeaponServices_EquipWeapon, Detour_CCSPlayer_WeaponServices_EquipWeapon);
-DECLARE_DETOUR(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput);
-DECLARE_DETOUR(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea);
-DECLARE_DETOUR(ProcessMovement, Detour_ProcessMovement);
-DECLARE_DETOUR(ProcessUsercmds, Detour_ProcessUsercmds);
-DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers);
-DECLARE_DETOUR(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer);
-DECLARE_DETOUR(CTriggerGravity_GravityTouch, Detour_CTriggerGravity_GravityTouch);
-DECLARE_DETOUR(GetFreeClient, Detour_GetFreeClient);
-#ifdef __linux__
-// Inlined by MSVC as of 2025-07-28 CS2 update
-// TODO: Find some alternative that supports Windows
-DECLARE_DETOUR(CCSPlayerPawn_GetMaxSpeed, Detour_CCSPlayerPawn_GetMaxSpeed);
+KHook::Member<CBaseEntity, int64, CTakeDamageInfo*, CTakeDamageResult*> takeDamageOldHook(Detour_CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld_Post);
+KHook::Member<CTriggerPush, void, CBaseEntity*> triggerPushTouchHook(Detour_TriggerPush_Touch, nullptr);
+KHook::Function<bool, void*, int> isHearingClientHook(Detour_IsHearingClient, nullptr);
+KHook::Function<void, IRecipientFilter&, const char*, CCSPlayerController*, uint64> sayTextFilterHook(Detour_UTIL_SayTextFilter, nullptr);
+KHook::Function<void, IRecipientFilter&, CCSPlayerController*, uint64, const char*, const char*, const char*, const char*, const char*> sayText2FilterHook(Detour_UTIL_SayText2Filter, nullptr);
+KHook::Member<CCSPlayer_WeaponServices, bool, CBasePlayerWeapon*> canUseHook(Detour_CCSPlayer_WeaponServices_CanUse, nullptr);
+KHook::Member<CCSPlayer_WeaponServices, void, CBasePlayerWeapon*> equipWeaponHook(Detour_CCSPlayer_WeaponServices_EquipWeapon, nullptr);
+KHook::Member<CEntityIdentity, bool, CUtlSymbolLarge*, CEntityInstance*, CEntityInstance*, variant_t*, int, void*, void*> acceptInputHook(Detour_CEntityIdentity_AcceptInput, nullptr);
+KHook::Member<CNavMesh, void*, float*, unsigned int*, unsigned int, int64_t, float, int64_t> getNearestNavAreaHook(Detour_CNavMesh_GetNearestNavArea, nullptr);
+KHook::Member<CCSPlayer_MovementServices, void, void*> processMovementHook(Detour_ProcessMovement, Detour_ProcessMovement_Post);
+KHook::Member<CCSPlayerController, void*, CUserCmd*, int, bool, float> processUsercmdsHook(Detour_ProcessUsercmds, nullptr);
+KHook::Member<CGamePlayerEquip, void, InputData_t*> inputTriggerForAllPlayersHook(Detour_CGamePlayerEquip_InputTriggerForAllPlayers, nullptr);
+KHook::Member<CGamePlayerEquip, void, InputData_t*> inputTriggerForActivatedPlayerHook(Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer, nullptr);
+KHook::Member<CTriggerGravity, void, CBaseEntity*> gravityTouchHook(Detour_CTriggerGravity_GravityTouch, nullptr);
+KHook::Function<CServerSideClient*, int64_t, const __m128i*, unsigned int, int64_t, char, void*> getFreeClientHook(Detour_GetFreeClient, nullptr);
+KHook::Member<CCSPlayerPawn, float> getMaxSpeedHook(Detour_CCSPlayerPawn_GetMaxSpeed, nullptr);
+KHook::Member<CCSPlayer_UseServices, int64, float> findUseEntityHook(Detour_FindUseEntity, Detour_FindUseEntity_Post);
+KHook::Function<bool, int64*, int*, float*, uint64> traceFuncHook(Detour_TraceFunc, nullptr);
+KHook::Function<bool, int64*, int64, int64, int64, CTraceFilter*, int64> traceShapeHook(Detour_TraceShape, nullptr);
+KHook::Member<CEntityIOOutput, void, CEntityInstance*, CEntityInstance*, const CVariant*, float, void*, void*> fireOutputInternalHook(Detour_CEntityIOOutput_FireOutputInternal, nullptr);
+#ifdef PLATFORM_WINDOWS
+KHook::Member<CBasePlayerPawn, Vector*, Vector*> getEyePositionHook(Detour_CBasePlayerPawn_GetEyePosition, nullptr);
+KHook::Member<CBasePlayerPawn, QAngle*, QAngle*> getEyeAnglesHook(Detour_CBasePlayerPawn_GetEyeAngles, nullptr);
+#else
+KHook::Member<CBasePlayerPawn, Vector> getEyePositionHook(Detour_CBasePlayerPawn_GetEyePosition, nullptr);
+KHook::Member<CBasePlayerPawn, QAngle> getEyeAnglesHook(Detour_CBasePlayerPawn_GetEyeAngles, nullptr);
 #endif
-DECLARE_DETOUR(FindUseEntity, Detour_FindUseEntity);
-DECLARE_DETOUR(TraceFunc, Detour_TraceFunc);
-DECLARE_DETOUR(TraceShape, Detour_TraceShape);
-DECLARE_DETOUR(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition);
-DECLARE_DETOUR(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles);
-DECLARE_DETOUR(CBaseFilter_InputTestActivator, Detour_CBaseFilter_InputTestActivator);
-DECLARE_DETOUR(GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan);
-DECLARE_DETOUR(CCSPlayer_ItemServices_CanAcquire, Detour_CCSPlayer_ItemServices_CanAcquire);
-DECLARE_DETOUR(CS_Script_SetModel, Detour_CS_Script_SetModel);
-DECLARE_DETOUR(CBaseModelEntity_SetModel, Detour_CBaseModelEntity_SetModel);
-DECLARE_DETOUR(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission);
+KHook::Member<CBaseFilter, void, InputData_t&> inputTestActivatorHook(Detour_CBaseFilter_InputTestActivator, nullptr);
+KHook::Function<void> checkSteamBanHook(nullptr, Detour_GameSystem_Think_CheckSteamBan_Post);
+KHook::Member<CCSPlayer_ItemServices, AcquireResult, CEconItemView*, AcquireMethod, uint64_t> canAcquireHook(Detour_CCSPlayer_ItemServices_CanAcquire, nullptr);
+KHook::Function<void, uint64_t> scriptSetModelHook(Detour_CS_Script_SetModel, Detour_CS_Script_SetModel_Post);
+KHook::Member<CBaseModelEntity, void, const char*> setModelHook(Detour_CBaseModelEntity_SetModel, nullptr);
+KHook::Member<CCSGameRules, void, bool> goToIntermissionHook(Detour_CCSGameRules_GoToIntermission, nullptr);
+
+template <typename RETURN, typename... ARGS>
+void SetupDetour(CGameConfig* gameConfig, KHook::Function<RETURN, ARGS...>& hook, const char* name)
+{
+	auto pfnFunc = reinterpret_cast<RETURN (*)(ARGS...)>(gameConfig->ResolveSignature(name));
+
+	if (!pfnFunc)
+	{
+		g_bRequiredInitLoaded = false;
+		return;
+	}
+
+	hook.Configure(pfnFunc);
+	Message("Detoured %s at 0x%p\n", name, pfnFunc);
+}
+
+template <typename CLASS, typename RETURN, typename... ARGS>
+void SetupDetour(CGameConfig* gameConfig, KHook::Member<CLASS, RETURN, ARGS...>& hook, const char* name)
+{
+	void* pfnFunc = gameConfig->ResolveSignature(name);
+
+	if (!pfnFunc)
+	{
+		g_bRequiredInitLoaded = false;
+		return;
+	}
+
+	hook.Configure(pfnFunc);
+	Message("Detoured %s at 0x%p\n", name, pfnFunc);
+}
+
+void InitDetours(CGameConfig* gameConfig)
+{
+	SetupDetour(gameConfig, takeDamageOldHook, "CBaseEntity_TakeDamageOld");
+	SetupDetour(gameConfig, triggerPushTouchHook, "TriggerPush_Touch");
+	SetupDetour(gameConfig, isHearingClientHook, "IsHearingClient");
+	SetupDetour(gameConfig, sayTextFilterHook, "UTIL_SayTextFilter");
+	SetupDetour(gameConfig, sayText2FilterHook, "UTIL_SayText2Filter");
+	SetupDetour(gameConfig, canUseHook, "CCSPlayer_WeaponServices_CanUse");
+	SetupDetour(gameConfig, equipWeaponHook, "CCSPlayer_WeaponServices_EquipWeapon");
+	SetupDetour(gameConfig, acceptInputHook, "CEntityIdentity_AcceptInput");
+	SetupDetour(gameConfig, getNearestNavAreaHook, "CNavMesh_GetNearestNavArea");
+	SetupDetour(gameConfig, processMovementHook, "ProcessMovement");
+	SetupDetour(gameConfig, processUsercmdsHook, "ProcessUsercmds");
+	SetupDetour(gameConfig, inputTriggerForAllPlayersHook, "CGamePlayerEquip_InputTriggerForAllPlayers");
+	SetupDetour(gameConfig, inputTriggerForActivatedPlayerHook, "CGamePlayerEquip_InputTriggerForActivatedPlayer");
+	SetupDetour(gameConfig, gravityTouchHook, "CTriggerGravity_GravityTouch");
+	SetupDetour(gameConfig, getFreeClientHook, "GetFreeClient");
+#ifdef __linux__
+	// Inlined by MSVC as of 2025-07-28 CS2 update
+	// TODO: Find some alternative that supports Windows
+	SetupDetour(gameConfig, getMaxSpeedHook, "CCSPlayerPawn_GetMaxSpeed");
+#endif
+	SetupDetour(gameConfig, findUseEntityHook, "FindUseEntity");
+	SetupDetour(gameConfig, traceFuncHook, "TraceFunc");
+	SetupDetour(gameConfig, traceShapeHook, "TraceShape");
+	SetupDetour(gameConfig, fireOutputInternalHook, "CEntityIOOutput_FireOutputInternal");
+	SetupDetour(gameConfig, getEyePositionHook, "CBasePlayerPawn_GetEyePosition");
+	SetupDetour(gameConfig, getEyeAnglesHook, "CBasePlayerPawn_GetEyeAngles");
+	SetupDetour(gameConfig, inputTestActivatorHook, "CBaseFilter_InputTestActivator");
+	SetupDetour(gameConfig, checkSteamBanHook, "GameSystem_Think_CheckSteamBan");
+	SetupDetour(gameConfig, canAcquireHook, "CCSPlayer_ItemServices_CanAcquire");
+	SetupDetour(gameConfig, scriptSetModelHook, "CS_Script_SetModel");
+	SetupDetour(gameConfig, setModelHook, "CBaseModelEntity_SetModel");
+	SetupDetour(gameConfig, goToIntermissionHook, "CCSGameRules_GoToIntermission");
+}
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
 CConVar<bool> g_cvarFixBlockDamage("cs2f_fix_block_dmg", FCVAR_NONE, "Whether to fix block-damage on players", false);
 
-int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult)
+KHook::Return<int64> Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult)
 {
 	// NOTE valve always return 1 here, since 2025/10/15 update.
 
@@ -117,7 +182,7 @@ int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageI
 
 	// Block all player damage if desired
 	if (g_cvarBlockAllDamage.Get() && pThis->IsPawn())
-		return 1;
+		return {KHook::Action::Supersede, 1};
 
 	CEntityInstance* pInflictor = pInfo->m_hInflictor.Get();
 	const char* pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
@@ -143,11 +208,11 @@ int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageI
 
 	// Prevent molly on self
 	if (g_cvarBlockMolotovSelfDmg.Get() && pInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
-		return 1;
+		return {KHook::Action::Supersede, 1};
 
 	// Fix disconnected players grenades being able to damage teammates
 	if (!V_strcasecmp(pszInflictorClass, "hegrenade_projectile") && pInfo->m_AttackerInfo.m_bIsPawn && pInfo->m_AttackerInfo.m_nTeam == 0)
-		return 1;
+		return {KHook::Action::Supersede, 1};
 
 	// maybe call in flow
 	CTakeDamageResult damageResult(0);
@@ -155,50 +220,47 @@ int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageI
 	if (pResult == nullptr)
 	{
 		damageResult.CopyFrom(pInfo);
-		pResult = &damageResult;
+		return KHook::Recall<int64 (CBaseEntity::*)(CTakeDamageInfo*, CTakeDamageResult*)>(nullptr, {KHook::Action::Ignore}, pThis, pInfo, &damageResult);
 	}
 
-	CBaseEntity_TakeDamageOld(pThis, pInfo, pResult);
+	return {KHook::Action::Ignore};
+}
 
+KHook::Return<int64> Detour_CBaseEntity_TakeDamageOld_Post(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult)
+{
 	if (pResult->m_flDamageDealt > 0.0f && !pResult->m_bWasDamageSuppressed && g_cvarEnableZR.Get() && pThis->IsPawn())
 		ZR_OnPlayerTakeDamage(reinterpret_cast<CCSPlayerPawn*>(pThis), pInfo, pResult->m_flDamageDealt);
 
-	return 1;
+	return {KHook::Action::Ignore};
 }
 
 CConVar<bool> g_cvarUseOldPush("cs2f_use_old_push", FCVAR_NONE, "Whether to use the old CSGO trigger_push behavior", false);
 CConVar<bool> g_cvarLogPushes("cs2f_log_pushes", FCVAR_NONE, "Whether to log pushes (cs2f_use_old_push must be enabled)", false);
 
-void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
+KHook::Return<void> Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 {
 	// This trigger pushes only once (and kills itself) or pushes only on StartTouch, both of which are fine already
 	if (!g_cvarUseOldPush.Get() || pPush->m_spawnflags() & SF_TRIG_PUSH_ONCE || pPush->m_bTriggerOnStartTouch())
-	{
-		TriggerPush_Touch(pPush, pOther);
-		return;
-	}
+		return {KHook::Action::Ignore};
 
 	MoveType_t movetype = pOther->m_nActualMoveType();
 
 	// VPhysics handling doesn't need any changes
 	if (movetype == MOVETYPE_VPHYSICS)
-	{
-		TriggerPush_Touch(pPush, pOther);
-		return;
-	}
+		return {KHook::Action::Ignore};
 
 	if (movetype == MOVETYPE_NONE || movetype == MOVETYPE_PUSH || movetype == MOVETYPE_NOCLIP)
-		return;
+		return {KHook::Action::Supersede};
 
 	CCollisionProperty* collisionProp = pOther->m_pCollision();
 	if (!IsSolid(collisionProp->m_nSolidType(), collisionProp->m_usSolidFlags()))
-		return;
+		return {KHook::Action::Supersede};
 
 	if (!pPush->PassesTriggerFilters(pOther))
-		return;
+		return {KHook::Action::Supersede};
 
 	if (pOther->m_CBodyComponent()->m_pSceneNode()->m_pParent())
-		return;
+		return {KHook::Action::Supersede};
 
 	Vector vecAbsDir;
 	matrix3x4_t matTransform = pPush->m_CBodyComponent()->m_pSceneNode()->EntityToWorldTransform();
@@ -241,23 +303,22 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 
 	flags |= (1 << 23); // TODO: is FL_BASEVELOCITY really gone?
 	pOther->m_fFlags(flags);
+
+	return {KHook::Action::Supersede};
 }
 
-bool FASTCALL Detour_IsHearingClient(void* serverClient, int index)
+KHook::Return<bool> Detour_IsHearingClient(void* serverClient, int index)
 {
 	ZEPlayer* player = g_playerManager->GetPlayer(index);
 	if (player && player->IsMuted())
-		return false;
+		return {KHook::Action::Supersede, false};
 
-	return IsHearingClient(serverClient, index);
+	return {KHook::Action::Ignore};
 }
 
-void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
+KHook::Return<void> SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
 {
 	VPROF("SayChatMessageWithTimer");
-
-	if (!GetGlobals() || !g_pGameRules)
-		return;
 
 	char buf[256];
 
@@ -354,26 +415,26 @@ void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPla
 	else
 		V_snprintf(buf, sizeof(buf), "%s %s", " \7CONSOLE:\4", pText + sizeof("Console:"));
 
-	UTIL_SayTextFilter(filter, buf, pPlayer, eMessageType);
+	return KHook::Recall<void (*)(IRecipientFilter&, const char*, CCSPlayerController*, uint64)>(nullptr, {KHook::Action::Ignore}, filter, buf, pPlayer, eMessageType);
 }
 
 CConVar<bool> g_cvarEnableTriggerTimer("cs2f_trigger_timer_enable", FCVAR_NONE, "Whether to process countdown messages said by Console (e.g. Hold for 10 seconds) and append the round time where the countdown resolves", false);
 
-void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
+KHook::Return<void> Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
 {
 	if (pPlayer)
-		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
+		return {KHook::Action::Ignore};
 
-	if (g_cvarEnableTriggerTimer.Get())
+	if (g_cvarEnableTriggerTimer.Get() && GetGlobals() && g_pGameRules)
 		return SayChatMessageWithTimer(filter, pText, pPlayer, eMessageType);
 
 	char buf[256];
 	V_snprintf(buf, sizeof(buf), "%s %s", " \7CONSOLE:\4", pText + sizeof("Console:"));
 
-	UTIL_SayTextFilter(filter, buf, pPlayer, eMessageType);
+	return KHook::Recall<void (*)(IRecipientFilter&, const char*, CCSPlayerController*, uint64)>(nullptr, {KHook::Action::Ignore}, filter, buf, pPlayer, eMessageType);
 }
 
-void FASTCALL Detour_UTIL_SayText2Filter(
+KHook::Return<void> Detour_UTIL_SayText2Filter(
 	IRecipientFilter& filter,
 	CCSPlayerController* pEntity,
 	uint64 eMessageType,
@@ -391,25 +452,25 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName().c_str(), param2);
 #endif
 
-	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, pEntity->GetPlayerName().c_str(), param2, param3, param4);
+	return KHook::Recall<void (*)(IRecipientFilter&, CCSPlayerController*, uint64, const char*, const char*, const char*, const char*, const char*)>(nullptr, {KHook::Action::Ignore}, filter, pEntity, eMessageType, msg_name, pEntity->GetPlayerName().c_str(), param2, param3, param4);
 }
 
-bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
+KHook::Return<bool> Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
 	if (g_cvarEnableEntWatch.Get() && !EW_Detour_CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon))
-		return false;
+		return {KHook::Action::Supersede, false};
 
-	return CCSPlayer_WeaponServices_CanUse(pWeaponServices, pPlayerWeapon);
+	return {KHook::Action::Ignore};
 }
 
-void FASTCALL Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
+KHook::Return<void> Detour_CCSPlayer_WeaponServices_EquipWeapon(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)
 {
 	if (g_cvarEnableEntWatch.Get())
 		EW_Detour_CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
 
 	g_pMapMigrations->OnEquipWeapon(pPlayerWeapon);
 
-	return CCSPlayer_WeaponServices_EquipWeapon(pWeaponServices, pPlayerWeapon);
+	return {KHook::Action::Ignore};
 }
 
 CConVar<bool> g_cvarDisableSetModel("cs2f_disable_setmodel", FCVAR_NONE, "Whether to disable SetModel usage from maps (custom input, cs_script function)", false);
@@ -430,7 +491,7 @@ bool PrepareMapSetModel(CBaseModelEntity* pModel)
 	return true;
 }
 
-bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID, void* a7, void* a8)
+KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID, void* a7, void* a8)
 {
 	VPROF_SCOPE_BEGIN("Detour_CEntityIdentity_AcceptInput");
 
@@ -439,7 +500,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		bool result = ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
 
 		if (!result)
-			return result;
+			return {KHook::Action::Supersede, result};
 	}
 
 	// Handle KeyValue(s)
@@ -448,10 +509,10 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
 		{
 			// always const char*, even if it's FIELD_STRING (that is bug string from lua 'EntFire')
-			return CustomIO_HandleInput(pThis->m_pInstance, value->m_pszString, pActivator, pCaller);
+			return {KHook::Action::Supersede, CustomIO_HandleInput(pThis->m_pInstance, value->m_pszString, pActivator, pCaller)};
 		}
 		Message("Invalid value type for input %s\n", pInputName->String());
-		return false;
+		return {KHook::Action::Supersede, false};
 	}
 
 	if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
@@ -466,7 +527,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
 		if (pPawn->IsPawn() && IgnitePawn(pPawn, flDuration, pPawn, pPawn))
-			return true;
+			return {KHook::Action::Supersede, true};
 	}
 	else if (!V_strnicmp(pInputName->String(), "AddScore", 8))
 	{
@@ -482,7 +543,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		if (pPawn->IsPawn() && pPawn->GetOriginalController())
 		{
 			pPawn->GetOriginalController()->AddScore(iScore);
-			return true;
+			return {KHook::Action::Supersede, true};
 		}
 	}
 	else if (!V_strcasecmp(pInputName->String(), "SetMessage"))
@@ -491,7 +552,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 		{
 			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
 				pHudHint->m_iszMessage(GameEntitySystem()->AllocPooledString(value->m_pszString));
-			return true;
+			return {KHook::Action::Supersede, true};
 		}
 	}
 	else if (!V_strcasecmp(pInputName->String(), "SetModel"))
@@ -501,69 +562,74 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString && PrepareMapSetModel(pModelEntity))
 				pModelEntity->SetModel(value->m_pszString);
 
-			return true;
+			return {KHook::Action::Supersede, true};
 		}
 	}
 	else if (const auto pGameUI = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsGameUI())
 	{
 		if (!V_strcasecmp(pInputName->String(), "Activate"))
-			return CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator));
+			return {KHook::Action::Supersede, CGameUIHandler::OnActivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator))};
 		if (!V_strcasecmp(pInputName->String(), "Deactivate"))
-			return CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator));
+			return {KHook::Action::Supersede, CGameUIHandler::OnDeactivate(pGameUI, reinterpret_cast<CBaseEntity*>(pActivator))};
 	}
 	else if (const auto pViewControl = reinterpret_cast<CPointViewControl*>(pThis->m_pInstance)->AsPointViewControl())
 	{
 		if (!V_strcasecmp(pInputName->String(), "EnableCamera"))
-			return CPointViewControlHandler::OnEnable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator));
+			return {KHook::Action::Supersede, CPointViewControlHandler::OnEnable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator))};
 		if (!V_strcasecmp(pInputName->String(), "DisableCamera"))
-			return CPointViewControlHandler::OnDisable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator));
+			return {KHook::Action::Supersede, CPointViewControlHandler::OnDisable(pViewControl, reinterpret_cast<CBaseEntity*>(pActivator))};
 		if (!V_strcasecmp(pInputName->String(), "EnableCameraAll"))
-			return CPointViewControlHandler::OnEnableAll(pViewControl);
+			return {KHook::Action::Supersede, CPointViewControlHandler::OnEnableAll(pViewControl)};
 		if (!V_strcasecmp(pInputName->String(), "DisableCameraAll"))
-			return CPointViewControlHandler::OnDisableAll(pViewControl);
+			return {KHook::Action::Supersede, CPointViewControlHandler::OnDisableAll(pViewControl)};
 	}
 
 	VPROF_SCOPE_END();
 
-	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID, a7, a8);
+	return {KHook::Action::Ignore};
 }
 
 CConVar<bool> g_cvarBlockNavLookup("cs2f_block_nav_lookup", FCVAR_NONE, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", false);
 
-void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, float unk6, int64_t unk7)
+KHook::Return<void*> Detour_CNavMesh_GetNearestNavArea(CNavMesh* pNavMesh, float* unk2, unsigned int* unk3, unsigned int unk4, int64_t unk5, float unk6, int64_t unk7)
 {
 	if (g_cvarBlockNavLookup.Get())
-		return nullptr;
+		return {KHook::Action::Supersede, nullptr};
 
-	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7);
+	return {KHook::Action::Ignore};
 }
 
-void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pMove)
+float g_flStoreFrametime = 0.0f;
+
+KHook::Return<void> Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pMove)
 {
 	CCSPlayerPawn* pPawn = pThis->GetPawn();
 
 	if (!pPawn->IsAlive() || !GetGlobals())
-		return ProcessMovement(pThis, pMove);
+		return {KHook::Action::Ignore};
 
 	CCSPlayerController* pController = pPawn->GetOriginalController();
 
 	if (!pController || !pController->IsConnected())
-		return ProcessMovement(pThis, pMove);
+		return {KHook::Action::Ignore};
 
 	float flSpeedMod = pController->GetZEPlayer()->GetSpeedMod();
 
 	if (flSpeedMod == 1.f)
-		return ProcessMovement(pThis, pMove);
+		return {KHook::Action::Ignore};
 
 	// Yes, this is what source1 does to scale player speed
 	// Scale frametime during the entire movement processing step and revert right after
-	float flStoreFrametime = GetGlobals()->frametime;
-
+	g_flStoreFrametime = GetGlobals()->frametime;
 	GetGlobals()->frametime *= flSpeedMod;
 
-	ProcessMovement(pThis, pMove);
+	return {KHook::Action::Ignore};
+}
 
-	GetGlobals()->frametime = flStoreFrametime;
+KHook::Return<void> Detour_ProcessMovement_Post(CCSPlayer_MovementServices* pThis, void* pMove)
+{
+	GetGlobals()->frametime = g_flStoreFrametime;
+	return {KHook::Action::Ignore};
 }
 
 CConVar<bool> g_cvarDisableSubtickMovement("cs2f_disable_subtick_move", FCVAR_NONE, "Whether to disable subtick movement", false);
@@ -580,7 +646,7 @@ public:
 #endif
 };
 
-void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd* cmds, int numcmds, bool paused, float margin)
+KHook::Return<void*> Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd* cmds, int numcmds, bool paused, float margin)
 {
 	VPROF_SCOPE_BEGIN("Detour_ProcessUsercmds");
 
@@ -626,40 +692,42 @@ void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd
 
 	VPROF_SCOPE_END();
 
-	return ProcessUsercmds(pController, cmds, numcmds, paused, margin);
+	return {KHook::Action::Ignore};
 }
 
-void FASTCALL Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
+KHook::Return<void> Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
 {
 	CGamePlayerEquipHandler::TriggerForAllPlayers(pEntity, pInput);
-	CGamePlayerEquip_InputTriggerForAllPlayers(pEntity, pInput);
+	return {KHook::Action::Ignore};
 }
-void FASTCALL Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
+KHook::Return<void> Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
 {
 	if (CGamePlayerEquipHandler::TriggerForActivatedPlayer(pEntity, pInput))
-		CGamePlayerEquip_InputTriggerForActivatedPlayer(pEntity, pInput);
+		return {KHook::Action::Ignore};
+
+	return {KHook::Action::Supersede};
 }
 
-void FASTCALL Detour_CTriggerGravity_GravityTouch(CBaseEntity* pEntity, CBaseEntity* pOther)
+KHook::Return<void> Detour_CTriggerGravity_GravityTouch(CTriggerGravity* pEntity, CBaseEntity* pOther)
 {
 	// no need to call original function here
 	// because original function calls CBaseEntity::SetGravityScale internal
 	// but passes the wrong gravity scale value
 	if (CTriggerGravityHandler::GravityTouching(pEntity, pOther))
-		return;
+		return {KHook::Action::Supersede};
 
-	CTriggerGravity_GravityTouch(pEntity, pOther);
+	return {KHook::Action::Ignore};
 }
 
-CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6)
+KHook::Return<CServerSideClient*> Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6)
 {
 	// Not sure if this function can even be called in this state, but if it is, we can't do shit anyways
 	if (!GetClientList() || !GetGlobals())
-		return nullptr;
+		return {KHook::Action::Supersede, nullptr};
 
 	// Check if there is still unused slots, this should never break so just fall back to original behaviour for ease (we don't have a CServerSideClient constructor)
 	if (GetGlobals()->maxClients != GetClientList()->Count())
-		return GetFreeClient(unk1, unk2, unk3, unk4, unk5, unk6);
+		return {KHook::Action::Ignore};
 
 	// Phantom client fix
 	for (int i = 0; i < GetClientList()->Count(); i++)
@@ -667,49 +735,51 @@ CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* un
 		CServerSideClient* pClient = (*GetClientList())[i];
 
 		if (pClient && pClient->GetSignonState() < SIGNONSTATE_CONNECTED)
-			return pClient;
+			return {KHook::Action::Supersede, pClient};
 	}
 
 	// Server is actually full for real
-	return nullptr;
+	return {KHook::Action::Supersede, nullptr};
 }
 
-#ifdef __linux__
-float FASTCALL Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
+KHook::Return<float> Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
 {
-	auto flMaxSpeed = CCSPlayerPawn_GetMaxSpeed(pPawn);
+	auto flMaxSpeed = getMaxSpeedHook.CallOriginal(pPawn);
 
 	const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
 	if (const auto pPlayer = pController != nullptr ? pController->GetZEPlayer() : nullptr)
 		flMaxSpeed *= pPlayer->GetMaxSpeed();
 
-	return flMaxSpeed;
+	return {KHook::Action::Supersede, flMaxSpeed};
 }
-#endif
 
 CConVar<bool> g_cvarPreventUsingPlayers("cs2f_prevent_using_players", FCVAR_NONE, "Whether to prevent +use from hitting players (0=can use players, 1=cannot use players)", false);
-
 bool g_bFindingUseEntity = false;
-int64 FASTCALL Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float a2)
+
+KHook::Return<int64> Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float a2)
 {
 	g_bFindingUseEntity = true;
-	int64 ent = FindUseEntity(pThis, a2);
-	g_bFindingUseEntity = false;
-	return ent;
+	return {KHook::Action::Ignore};
 }
 
-bool FASTCALL Detour_TraceFunc(int64* a1, int* a2, float* a3, uint64 traceMask)
+KHook::Return<int64> Detour_FindUseEntity_Post(CCSPlayer_UseServices* pThis, float a2)
+{
+	g_bFindingUseEntity = false;
+	return {KHook::Action::Ignore};
+}
+
+KHook::Return<bool> Detour_TraceFunc(int64* a1, int* a2, float* a3, uint64 traceMask)
 {
 	if (g_cvarPreventUsingPlayers.Get() && g_bFindingUseEntity)
 	{
 		uint64 newMask = traceMask & (~(CONTENTS_PLAYER & CONTENTS_NPC));
-		return TraceFunc(a1, a2, a3, newMask);
+		KHook::Recall<void (*)(int64*, int*, float*, uint64)>(nullptr, {KHook::Action::Ignore}, a1, a2, a3, newMask);
 	}
 
-	return TraceFunc(a1, a2, a3, traceMask);
+	return {KHook::Action::Ignore};
 }
 
-bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceFilter* filter, int64 a6)
+KHook::Return<bool> Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceFilter* filter, int64 a6)
 {
 	if (g_cvarPreventUsingPlayers.Get() && g_bFindingUseEntity)
 	{
@@ -717,174 +787,137 @@ bool FASTCALL Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, CTraceF
 		filter->DisableInteractsWithLayer(LAYER_INDEX_CONTENTS_NPC);
 	}
 
-	return TraceShape(a1, a2, a3, a4, filter, a6);
+	return {KHook::Action::Ignore};
 }
 
-CDetour<decltype(Detour_CEntityIOOutput_FireOutputInternal)>* CEntityIOOutput_FireOutputInternal = nullptr;
-std::map<std::string, std::function<void(const CEntityIOOutput*, CEntityInstance*, CEntityInstance*, const CVariant*, float)>> mapIOFunctions{};
-void FASTCALL Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay, void* a6, void* a7)
+KHook::Return<void> Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay, void* a6, void* a7)
 {
-	for (const auto& [name, cb] : mapIOFunctions)
-		cb(pThis, pActivator, pCaller, value, flDelay);
+	if (g_cvarEnableButtonWatch.Get())
+		ButtonWatch(pThis, pActivator, pCaller, value, flDelay);
 
-	(*CEntityIOOutput_FireOutputInternal)(pThis, pActivator, pCaller, value, flDelay, a6, a7);
-}
+	if (g_cvarEnableEntWatch.Get())
+		EW_FireOutput(pThis, pActivator, pCaller, value, flDelay);
 
-// Tries to setup Detour_CEntityIOOutput_FireOutputInternal if it is not already setup. This is not
-// enabled unless a feature needs it, as the detour breaks CS# compatibility
-// Returns true if detour is usable, otherwise false.
-bool SetupFireOutputInternalDetour()
-{
-	if (CEntityIOOutput_FireOutputInternal != nullptr)
-		return true;
-
-	CEntityIOOutput_FireOutputInternal = new CDetour(Detour_CEntityIOOutput_FireOutputInternal, "CEntityIOOutput_FireOutputInternal");
-	if (!CEntityIOOutput_FireOutputInternal->CreateDetour(g_GameConfig))
-	{
-		Panic("Failed to detour CEntityIOOutput_FireOutputInternal\n");
-		delete CEntityIOOutput_FireOutputInternal;
-		CEntityIOOutput_FireOutputInternal = nullptr;
-		return false;
-	}
-	CEntityIOOutput_FireOutputInternal->EnableDetour();
-	return true;
+	return {KHook::Action::Ignore};
 }
 
 #ifdef PLATFORM_WINDOWS
-Vector* FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn, Vector* pRet)
+KHook::Return<Vector*> Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn, Vector* pRet)
 {
 	if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
 	{
 		const auto& origin = pPawn->GetEyePosition();
 		pRet->Init(origin.x, origin.y, origin.z);
-		return pRet;
+		return {KHook::Action::Supersede, pRet};
 	}
 
-	return CBasePlayerPawn_GetEyePosition(pPawn, pRet);
+	return {KHook::Action::Ignore};
 }
-QAngle* FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn, QAngle* pRet)
+KHook::Return<QAngle*> Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn, QAngle* pRet)
 {
 	if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
 	{
 		const auto& angles = pPawn->v_angle();
 		pRet->Init(angles.x, angles.y, angles.z);
-		return pRet;
+		return {KHook::Action::Supersede, pRet};
 	}
 
-	return CBasePlayerPawn_GetEyeAngles(pPawn, pRet);
+	return {KHook::Action::Ignore};
 }
 #else
-Vector FASTCALL Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn)
+KHook::Return<Vector> Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn)
 {
 	if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
 	{
 		const auto& origin = pPawn->GetEyePosition();
-		return origin;
+		return {KHook::Action::Supersede, origin};
 	}
 
-	return CBasePlayerPawn_GetEyePosition(pPawn);
+	return {KHook::Action::Ignore};
 }
-QAngle FASTCALL Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn)
+KHook::Return<QAngle> Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn)
 {
 	if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
 	{
 		const auto& angles = pPawn->v_angle();
-		return angles;
+		return {KHook::Action::Supersede, angles};
 	}
 
-	return CBasePlayerPawn_GetEyeAngles(pPawn);
+	return {KHook::Action::Ignore};
 }
 #endif
 
-void FASTCALL Detour_CBaseFilter_InputTestActivator(CBaseEntity* pThis, InputData_t& inputdata)
+KHook::Return<void> Detour_CBaseFilter_InputTestActivator(CBaseFilter* pThis, InputData_t& inputdata)
 {
 	// If null activator (player disconnected & pawn removed), block the real function from executing and crashing the server
 	if (!inputdata.pActivator)
-		return;
+		return {KHook::Action::Supersede};
 
-	CBaseFilter_InputTestActivator(pThis, inputdata);
+	return {KHook::Action::Ignore};
 }
 
 CConVar<bool> g_cvarFixGameBans("cs2f_fix_game_bans", FCVAR_NONE, "Whether to fix CS2 game bans spreading to all new joining players", false);
 
-void FASTCALL Detour_GameSystem_Think_CheckSteamBan()
+KHook::Return<void> Detour_GameSystem_Think_CheckSteamBan_Post()
 {
 	// Implementation shared by @aiolos1045
-	GameSystem_Think_CheckSteamBan();
-
 	if (!g_cvarFixGameBans.Get())
-		return;
+		return {KHook::Action::Ignore};
 
-	CUtlMap<uint32, CGcBanInformation_t, uint32>* pMap = addresses::sm_mapGcBanInformation;
-	unsigned int count = pMap->Count();
+	auto pMap = addresses::sm_mapGcBanInformation;
 
 	// After player has been kicked, remove any ban entries, to prevent spreading to all new joining players
-	if (count > 0)
+	if (pMap->Count() > 0)
 		pMap->RemoveAll();
+
+	return {KHook::Action::Ignore};
 }
 
-AcquireResult FASTCALL Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices* pItemServices, CEconItemView* pEconItem, AcquireMethod iAcquireMethod, uint64_t unk4)
+KHook::Return<AcquireResult> Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices* pItemServices, CEconItemView* pEconItem, AcquireMethod iAcquireMethod, uint64_t unk4)
 {
 	if (g_cvarEnableZR.Get())
 	{
 		AcquireResult zrResult = ZR_Detour_CCSPlayer_ItemServices_CanAcquire(pItemServices, pEconItem);
 
 		if (zrResult != AcquireResult::Allowed)
-			return zrResult;
+			return {KHook::Action::Supersede, zrResult};
 	}
 
-	return CCSPlayer_ItemServices_CanAcquire(pItemServices, pEconItem, iAcquireMethod, unk4);
+	return {KHook::Action::Ignore};
 }
 
 bool g_bInScriptSetModel = false;
 
-void FASTCALL Detour_CS_Script_SetModel(uint64_t unk1)
+KHook::Return<void> Detour_CS_Script_SetModel(uint64_t unk1)
 {
 	g_bInScriptSetModel = true;
-	CS_Script_SetModel(unk1);
-	g_bInScriptSetModel = false;
+	return {KHook::Action::Ignore};
 }
 
-void FASTCALL Detour_CBaseModelEntity_SetModel(CBaseModelEntity* pModel, const char* pszModel)
+KHook::Return<void> Detour_CS_Script_SetModel_Post(uint64_t unk1)
+{
+	g_bInScriptSetModel = false;
+	return {KHook::Action::Ignore};
+}
+
+KHook::Return<void> Detour_CBaseModelEntity_SetModel(CBaseModelEntity* pModel, const char* pszModel)
 {
 	if (!g_bInScriptSetModel)
-		return CBaseModelEntity_SetModel(pModel, pszModel);
+		return {KHook::Action::Ignore};
 
 	if (PrepareMapSetModel(pModel))
-		return CBaseModelEntity_SetModel(pModel, pszModel);
+		return {KHook::Action::Ignore};
+
+	return {KHook::Action::Supersede};
 }
 
-void FASTCALL Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch)
+KHook::Return<void> Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch)
 {
 	if (!g_pMapVoteSystem->IsIntermissionAllowed(false) && g_cvarVoteManagerEnable.Get())
-		return;
+		return {KHook::Action::Supersede};
 
 	if (g_cvarVoteManagerEnable.Get())
 		g_pVoteManager->OnIntermission();
 
-	return CCSGameRules_GoToIntermission(pThis, bAbortedMatch);
-}
-
-bool InitDetours(CGameConfig* gameConfig)
-{
-	bool success = true;
-
-	FOR_EACH_VEC(g_vecDetours, i)
-	{
-		if (!g_vecDetours[i]->CreateDetour(gameConfig))
-			success = false;
-
-		g_vecDetours[i]->EnableDetour();
-	}
-
-	return success;
-}
-
-void FlushAllDetours()
-{
-	FOR_EACH_VEC_BACK(g_vecDetours, i)
-	{
-		g_vecDetours[i]->FreeDetour();
-		g_vecDetours.FastRemove(i);
-	}
+	return {KHook::Action::Ignore};
 }

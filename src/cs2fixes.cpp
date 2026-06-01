@@ -115,6 +115,7 @@ CCSPlayerPawn* g_pCCSPlayerPawnVTable = nullptr;
 double g_flUniversalTime = 0.0;
 float g_flLastTickedTime = 0.0f;
 bool g_bHasTicked = false;
+bool g_bRequiredInitLoaded = true;
 
 CGameEntitySystem* GameEntitySystem()
 {
@@ -184,25 +185,22 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	checkTransmitHook.Add(g_pSource2GameEntities);
 	dispatchConCommandHook.Add(g_pCVar);
 
-	bool bRequiredInitLoaded = true;
-
 	if (!addresses::Initialize(g_GameConfig))
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 
 	if (!InitPatches(g_GameConfig))
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 
-	if (!InitDetours(g_GameConfig))
-		bRequiredInitLoaded = false;
+	InitDetours(g_GameConfig);
 
 	if (!InitGameSystems())
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 
 	g_pCGameEventManagerVTable = (IGameEventManager2*)modules::server->FindVirtualTable("CGameEventManager");
 	if (!g_pCGameEventManagerVTable)
 	{
 		Panic("Failed to find CGameEventManager vtable\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	loadEventsFromFileHook.AddGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
@@ -211,7 +209,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (!g_pCEntitySystemVTable)
 	{
 		Panic("Failed to find CGameEntitySystem vtable\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	spawnHook.AddGlobal((CEntitySystem*)&g_pCEntitySystemVTable);
@@ -220,7 +218,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (offset == -1)
 	{
 		Panic("Failed to find IGameTypes_CreateWorkshopMapGroup\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	createWorkshopMapGroupHook.Configure(offset);
@@ -230,14 +228,14 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (!g_pCVPhys2WorldVTable)
 	{
 		Panic("Failed to find CVPhys2World vtable\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	offset = g_GameConfig->GetOffset("CVPhys2World::GetTouchingList");
 	if (offset == -1)
 	{
 		Panic("Failed to find offset for CVPhys2World::GetTouchingList\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	getTouchingListHook.Configure(offset);
@@ -247,14 +245,14 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (!g_pCCSPlayer_MovementServicesVTable)
 	{
 		Panic("Failed to find CCSPlayer_MovementServices vtable\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	offset = g_GameConfig->GetOffset("CCSPlayer_MovementServices::CheckMovingGround");
 	if (offset == -1)
 	{
 		Panic("Failed to find offset for CCSPlayer_MovementServices::CheckMovingGround\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	checkMovingGroundHook.Configure(offset);
@@ -264,14 +262,14 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (!g_pCCSPlayer_WeaponServicesVTable)
 	{
 		Panic("Failed to find CCSPlayer_WeaponServices vtable\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	offset = g_GameConfig->GetOffset("CCSPlayer_WeaponServices::DropWeapon");
 	if (offset == -1)
 	{
 		Panic("Failed to find offset for CCSPlayer_WeaponServices::DropWeapon\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	dropWeaponHook.Configure(offset);
@@ -281,14 +279,14 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (!g_pCGamePlayerEquipVTable)
 	{
 		Panic("Failed to find CGamePlayerEquip vtable\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	offset = g_GameConfig->GetOffset("CBaseEntity::Use");
 	if (offset == -1)
 	{
 		Panic("Failed to find offset for CBaseEntity::Use\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	playerEquipUseHook.Configure(offset);
@@ -298,7 +296,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (offset == -1)
 	{
 		Panic("Failed to find offset for CBaseEntity::Precache\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	playerEquipPrecacheHook.Configure(offset);
@@ -308,7 +306,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (!g_pTriggerGravityVTable)
 	{
 		Panic("Failed to find CTriggerGravity vtable\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	triggerGravityPrecacheHook.Configure(offset);
@@ -318,7 +316,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (offset == -1)
 	{
 		Panic("Failed to find offset for CBaseEntity::EndTouch\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	triggerGravityEndTouchHook.Configure(offset);
@@ -328,14 +326,14 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (!g_pCCSPlayerPawnVTable)
 	{
 		Panic("Failed to find CCSPlayerPawn vtable\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	offset = g_GameConfig->GetOffset("CCSPlayerPawn::OnTakeDamage_Alive");
 	if (offset == -1)
 	{
 		Panic("Failed to find offset for CCSPlayerPawn::OnTakeDamage_Alive\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	onTakeDamageAliveHook.Configure(offset);
@@ -345,13 +343,13 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (offset == -1)
 	{
 		Panic("Failed to find offset for Teleport\n");
-		bRequiredInitLoaded = false;
+		g_bRequiredInitLoaded = false;
 	}
 
 	playerPawnTeleportHook.Configure(offset);
 	playerPawnTeleportHook.AddGlobal((CCSPlayerPawn*)&g_pCCSPlayerPawnVTable);
 
-	if (!bRequiredInitLoaded)
+	if (!g_bRequiredInitLoaded)
 	{
 		snprintf(error, maxlen, "One or more address lookups, patches or detours failed, please refer to startup logs for more information");
 		return false;
@@ -463,7 +461,6 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	UnregisterGameSystem();
 	CommandList().clear();
-	FlushAllDetours();
 	UndoPatches();
 	RemoveAllTimers();
 	UnregisterEventListeners();
@@ -564,7 +561,7 @@ KHook::Return<void> CS2Fixes::Hook_DispatchConCommand(ICvar* pThis, ConCommandRe
 
 		if (!bGagged && !bSilent && !bFlooding)
 		{
-			KHook::CallOriginal(&ICvar::DispatchConCommand, pThis, cmdHandle, ctx, args);
+			dispatchConCommandHook.CallOriginal(pThis, cmdHandle, ctx, args);
 		}
 		else if (bFlooding)
 		{
@@ -1071,7 +1068,7 @@ KHook::Return<void> CS2Fixes::Hook_ApplyGameSettings(IServerGameDLL* pThis, KeyV
 KHook::Return<void> CS2Fixes::Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* name, const CUtlStringList& mapList)
 {
 	if (g_cvarVoteManagerEnable.Get() && g_pMapVoteSystem->IsMapListLoaded())
-		KHook::Recall<void (IGameTypes::*)(const char*, const CUtlStringList&)>(nullptr, {KHook::Action::Ignore}, pThis, name, g_pMapVoteSystem->CreateWorkshopMapGroup());
+		return KHook::Recall<void (IGameTypes::*)(const char*, const CUtlStringList&)>(nullptr, {KHook::Action::Ignore}, pThis, name, g_pMapVoteSystem->CreateWorkshopMapGroup());
 
 	return {KHook::Action::Ignore};
 }

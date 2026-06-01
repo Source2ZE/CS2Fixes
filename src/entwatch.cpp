@@ -1049,9 +1049,6 @@ void CEWHandler::UnLoadConfig()
 	if (!m_bConfigLoaded)
 		return;
 
-	if (EW_IsFireOutputHooked())
-		mapIOFunctions.erase("entwatch");
-
 	// Clantags first so scores can be set back properly
 	ResetAllClantags();
 
@@ -1118,15 +1115,6 @@ void CEWHandler::LoadConfig(const char* sFilePath)
 		std::shared_ptr<EWItem> item = std::make_shared<EWItem>(jsonItemData, mapItemConfig.size());
 
 		mapItemConfig[hash_32_fnv1a_const(sHammerid.c_str())] = item;
-	}
-
-	if (mapItemConfig.size() > 0)
-	{
-		// Hook FireOutput
-		if (!SetupFireOutputInternalDetour())
-			mapIOFunctions.erase("entwatch");
-		else if (!EW_IsFireOutputHooked())
-			mapIOFunctions["entwatch"] = EW_FireOutput;
 	}
 
 	m_bConfigLoaded = true;
@@ -2242,14 +2230,9 @@ void EW_PlayerDisconnect(int slot)
 	g_pEWHandler->PlayerDrop(EWDropReason::Disconnect, -1, pController);
 }
 
-bool EW_IsFireOutputHooked()
-{
-	return std::any_of(mapIOFunctions.begin(), mapIOFunctions.end(), [](const auto& p) { return p.first == "entwatch"; });
-}
-
 void EW_FireOutput(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
 {
-	if (!EW_IsFireOutputHooked() || !pCaller)
+	if (!g_pEWHandler->IsConfigLoaded() || !pCaller)
 		return;
 
 	for (int i = 0; i < (g_pEWHandler->vecItems).size(); i++)

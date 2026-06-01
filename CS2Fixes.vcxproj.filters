@@ -253,9 +253,6 @@
     <ClInclude Include="src\commands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cdetour.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ctimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>

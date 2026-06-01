@@ -31,7 +31,7 @@ class CTriggerGravity;
 namespace CTriggerGravityHandler
 {
 	void OnPrecache(CTriggerGravity* pEntity, const CEntityKeyValues* kv);
-	bool GravityTouching(CBaseEntity* pEntity, CBaseEntity* pOther);
+	bool GravityTouching(CTriggerGravity* pEntity, CBaseEntity* pOther);
 	void OnEndTouch(CTriggerGravity* pEntity, CBaseEntity* pOther);
 } // namespace CTriggerGravityHandler
 

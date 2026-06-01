@@ -32,21 +32,11 @@
 #include "entity/clogiccase.h"
 #include "entity/cpointviewcontrol.h"
 
-CConVar<bool> g_cvarEnableButtonWatch(
-	"cs2f_enable_button_watch", FCVAR_NONE, "INCOMPATIBLE WITH CS#. Whether to enable button watch or not.", false,
-	[](CConVar<bool>* cvar, CSplitScreenSlot slot, const bool* new_val, const bool* old_val) {
-		if (!(*new_val) || !SetupFireOutputInternalDetour())
-		{
-			mapIOFunctions.erase("buttonwatch");
-			cvar->Set(false);
-		}
-		else if (!IsButtonWatchEnabled())
-			mapIOFunctions["buttonwatch"] = ButtonWatch;
-	});
+CConVar<bool> g_cvarEnableButtonWatch("cs2f_enable_button_watch", FCVAR_NONE, "Whether to enable button watch or not.", false);
 
 CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
 {
-	if (!IsButtonWatchEnabled())
+	if (!g_cvarEnableButtonWatch.Get())
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Button watch is disabled on this server.");
 		return;
@@ -84,17 +74,10 @@ CON_COMMAND_CHAT_FLAGS(bw, "- Toggle button watch display", ADMFLAG_GENERIC)
 	}
 }
 
-bool IsButtonWatchEnabled()
-{
-	return std::any_of(mapIOFunctions.begin(), mapIOFunctions.end(), [](const auto& p) {
-		return p.first == "buttonwatch";
-	});
-}
-
 std::map<int, bool> mapRecentEnts;
 void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay)
 {
-	if (!IsButtonWatchEnabled() || !GetGlobals() || V_stricmp(pThis->m_pDesc->m_pName, "OnPressed") || !pActivator || !((CBaseEntity*)pActivator)->IsPawn() || !pCaller || mapRecentEnts.contains(pCaller->GetEntityIndex().Get()))
+	if (!GetGlobals() || V_stricmp(pThis->m_pDesc->m_pName, "OnPressed") || !pActivator || !((CBaseEntity*)pActivator)->IsPawn() || !pCaller || mapRecentEnts.contains(pCaller->GetEntityIndex().Get()))
 		return;
 
 	CCSPlayerController* ccsPlayer = CCSPlayerController::FromPawn(static_cast<CCSPlayerPawn*>(pActivator));

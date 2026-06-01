@@ -56,6 +56,7 @@ extern IVEngineServer2* g_pEngineServer2;
 extern CCSGameRules* g_pGameRules;
 extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
 extern double g_flUniversalTime;
+extern bool g_bRequiredInitLoaded;
 extern INetworkGameServer* GetNetworkGameServer();
 extern CGlobalVars* GetGlobals();
 extern CConVar<bool> g_cvarDropMapWeapons;
