@@ -2080,11 +2080,11 @@ CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 		PrintMultiAdminAction(nType, strCommandPlayerName, "revived", "", ZR_PREFIX);
 }
 
-CON_COMMAND_CHAT(motherzombies, "- Print the current motherzombies to chat")
+CON_COMMAND_CHAT(motherzombies, "- Print the current mother zombies to chat")
 {
 	if (g_ZRRoundState == EZRRoundState::ROUND_START || g_MotherZombies.size() == 0)
 	{
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "There are no motherzombies.");
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "There are no mother zombies.");
 		return;
 	}
 
@@ -2114,7 +2114,7 @@ CON_COMMAND_CHAT(motherzombies, "- Print the current motherzombies to chat")
 	}
 
 	if (first)
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "There are no motherzombies.");
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "There are no mother zombies.");
 	else
-		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Motherzombies: %s", names.c_str());
+		ClientPrint(player, HUD_PRINTTALK, ZR_PREFIX "Mother zombies: %s", names.c_str());
 }
