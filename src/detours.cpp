@@ -538,6 +538,8 @@ void* FASTCALL Detour_CNavMesh_GetNearestNavArea(int64_t unk1, float* unk2, unsi
 	return CNavMesh_GetNearestNavArea(unk1, unk2, unk3, unk4, unk5, unk6, unk7);
 }
 
+CConVar<int> g_cvarAllowDuckSpam("cs2f_allow_duck_spam", FCVAR_NONE, "Whether to allow duck spamming by removing the duck slowdown, clients will only partially predict [0 = disabled, 1 = both teams, 2 = T only, 3 = CT only]", 0, true, 0, true, CS_TEAM_CT);
+
 void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pMove)
 {
 	CCSPlayerPawn* pPawn = pThis->GetPawn();
@@ -549,6 +551,11 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pM
 
 	if (!pController || !pController->IsConnected())
 		return ProcessMovement(pThis, pMove);
+
+	int iAllowDuckSpam = g_cvarAllowDuckSpam.Get();
+
+	if ((iAllowDuckSpam == 1 || pPawn->m_iTeamNum() == iAllowDuckSpam) && pThis->m_flDuckSpeed() != 8.0f)
+		pThis->m_flDuckSpeed = 8.0f;
 
 	float flSpeedMod = pController->GetZEPlayer()->GetSpeedMod();
 
