@@ -1261,7 +1261,7 @@ void ZR_InfectMotherZombie(CCSPlayerController* pVictimController, std::vector<S
 
 	ZEPlayerHandle hPlayer = pZEPlayer->GetHandle();
 	CTimer::Create(rand() % (int)g_cvarMoanInterval.Get(), TIMERFLAG_MAP | TIMERFLAG_ROUND, [hPlayer]() { return ZR_MoanTimer(hPlayer); });
-	
+
 	g_MotherZombies.push_back(hPlayer);
 }
 

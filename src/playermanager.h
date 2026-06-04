@@ -376,7 +376,7 @@ private:
 	Color m_colorTracer;
 	Color m_colorGlow;
 	Color m_colorBeacon;
-	CUtlVector<ZEPlayerHandle> m_vecLeaderVotes;
+	std::vector<ZEPlayerHandle> m_vecLeaderVotes;
 	float m_flLeaderVoteTime;
 	CHandle<CBaseModelEntity> m_hGlowModel;
 	float m_flSpeedMod;
@@ -404,9 +404,9 @@ public:
 		V_memset(m_vecPlayers, 0, sizeof(m_vecPlayers));
 		m_nUsingStopSound = -1; // On by default
 		m_nUsingSilenceSound = 0;
-		m_nUsingZSounds = -1;	 // On by default
+		m_nUsingZSounds = -1;		// On by default
 		m_nUsingZSoundsInfect = -1; // On by default
-		m_nUsingStopDecals = -1; // On by default
+		m_nUsingStopDecals = -1;	// On by default
 		m_nUsingNoShake = 0;
 	}
 

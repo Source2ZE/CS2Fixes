@@ -421,36 +421,30 @@ void ZEPlayer::CreateMark(float fDuration, Vector vecOrigin)
 
 int ZEPlayer::GetLeaderVoteCount()
 {
-	int iValidVoteCount = 0;
+	std::erase_if(m_vecLeaderVotes, [](ZEPlayerHandle hPlayer) {
+		return !hPlayer.IsValid();
+	});
 
-	for (int i = m_vecLeaderVotes.Count() - 1; i >= 0; i--)
-		if (m_vecLeaderVotes[i].IsValid())
-			iValidVoteCount++;
-		else
-			m_vecLeaderVotes.Remove(i);
-
-	return iValidVoteCount;
+	return m_vecLeaderVotes.size();
 }
 
 bool ZEPlayer::HasPlayerVotedLeader(ZEPlayer* pPlayer)
 {
-	FOR_EACH_VEC(m_vecLeaderVotes, i)
-	{
-		if (m_vecLeaderVotes[i] == pPlayer)
+	for (ZEPlayerHandle hPlayer : m_vecLeaderVotes)
+		if (hPlayer == pPlayer)
 			return true;
-	}
 
 	return false;
 }
 
 void ZEPlayer::AddLeaderVote(ZEPlayer* pPlayer)
 {
-	m_vecLeaderVotes.AddToTail(pPlayer->GetHandle());
+	m_vecLeaderVotes.push_back(pPlayer->GetHandle());
 }
 
 void ZEPlayer::PurgeLeaderVotes()
 {
-	m_vecLeaderVotes.Purge();
+	m_vecLeaderVotes.clear();
 }
 
 void ZEPlayer::StartGlow(Color color, int duration)
