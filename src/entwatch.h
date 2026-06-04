@@ -218,20 +218,20 @@ class CEWHandler
 public:
 	CEWHandler() :
 		m_bConfigLoaded(false),
-		m_hBaseButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hPhysBoxUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hRotButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hMomentaryRotButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hPhysicalButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hTriggerTeleportStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerTeleportTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerTeleportEndTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceEndTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleEndTouch(this, &CEWHandler::Hook_Touch, nullptr)
+		m_hBaseButtonUse(nullptr, this, &CEWHandler::Hook_Use, nullptr),
+		m_hPhysBoxUse(nullptr, this, &CEWHandler::Hook_Use, nullptr),
+		m_hRotButtonUse(nullptr, this, &CEWHandler::Hook_Use, nullptr),
+		m_hMomentaryRotButtonUse(nullptr, this, &CEWHandler::Hook_Use, nullptr),
+		m_hPhysicalButtonUse(nullptr, this, &CEWHandler::Hook_Use, nullptr),
+		m_hTriggerTeleportStartTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceStartTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleStartTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerTeleportTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerTeleportEndTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceEndTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleEndTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr)
 	{
 		CreateHooks();
 	}
