@@ -22,7 +22,6 @@
 #include "commands.h"
 #include "cs2fixes.h"
 #include "ctimer.h"
-#include "detours.h"
 #include "entity.h"
 #include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayercontroller.h"
