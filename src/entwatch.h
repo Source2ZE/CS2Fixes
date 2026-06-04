@@ -23,6 +23,7 @@
 #include "ctimer.h"
 #include "eventlistener.h"
 #include "gamesystem.h"
+#include "cs2_sdk/entityio.h"
 #include "khook.hpp"
 #include "vendor/nlohmann/json_fwd.hpp"
 
@@ -218,20 +219,20 @@ class CEWHandler
 public:
 	CEWHandler() :
 		m_bConfigLoaded(false),
-		m_hBaseButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hPhysBoxUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hRotButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hMomentaryRotButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hPhysicalButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hTriggerTeleportStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerTeleportTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerTeleportEndTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceEndTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleEndTouch(this, &CEWHandler::Hook_Touch, nullptr)
+		m_hBaseButtonUse(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Use, nullptr)),
+		m_hPhysBoxUse(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Use, nullptr)),
+		m_hRotButtonUse(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Use, nullptr)),
+		m_hMomentaryRotButtonUse(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Use, nullptr)),
+		m_hPhysicalButtonUse(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Use, nullptr)),
+		m_hTriggerTeleportStartTouch(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Touch, nullptr)),
+		m_hTriggerOnceStartTouch(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Touch, nullptr)),
+		m_hTriggerMultipleStartTouch(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Touch, nullptr)),
+		m_hTriggerTeleportTouch(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Touch, nullptr)),
+		m_hTriggerOnceTouch(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Touch, nullptr)),
+		m_hTriggerMultipleTouch(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Touch, nullptr)),
+		m_hTriggerTeleportEndTouch(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Touch, nullptr)),
+		m_hTriggerOnceEndTouch(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Touch, nullptr)),
+		m_hTriggerMultipleEndTouch(new KHook::Virtual(nullptr, this, &CEWHandler::Hook_Touch, nullptr))
 	{
 		CreateHooks();
 	}
@@ -260,7 +261,6 @@ public:
 
 	void RegisterHandler(CBaseEntity* pEnt);
 	bool RegisterTrigger(CBaseEntity* pEnt);
-	KHook::Return<void> Hook_Touch(CBaseEntity* pThis, CBaseEntity* pOther);
 	bool RemoveTrigger(CBaseEntity* pEnt);
 	void RemoveHandler(CBaseEntity* pEnt);
 	void ResetAllClantags();
@@ -272,7 +272,6 @@ public:
 	void Transfer(CCSPlayerController* pCaller, int iItemInstance, CHandle<CCSPlayerController> hReceiver);
 
 	void RemoveUseEntity(CBaseEntity* pEnt);
-	KHook::Return<void> Hook_Use(CBaseEntity* pThis, InputData_t* pInput);
 
 	std::map<uint32, std::shared_ptr<EWItem>> mapItemConfig; /* items defined in the config */
 	std::vector<std::shared_ptr<EWItemInstance>> vecItems;	 /* all items found spawned */
@@ -285,21 +284,25 @@ public:
 
 	std::map<int, std::shared_ptr<ETransferInfo>> mapTransfers;		  // Any etransfers that target multiple items
 	std::vector<std::shared_ptr<EActiveTransfer>> vecActiveTransfers; // Active transfers where only the receiver can pickup the weapon
+public:
+	KHook::Return<void> Hook_Touch(CBaseEntity* pThis, CBaseEntity* pOther);
+	KHook::Return<void> Hook_Use(CBaseEntity* pThis, InputData_t* pInput);
 
-	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hBaseButtonUse;
-	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hPhysBoxUse;
-	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hRotButtonUse;
-	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hMomentaryRotButtonUse;
-	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hPhysicalButtonUse;
-	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerTeleportStartTouch;
-	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerOnceStartTouch;
-	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerMultipleStartTouch;
-	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerTeleportTouch;
-	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerOnceTouch;
-	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerMultipleTouch;
-	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerTeleportEndTouch;
-	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerOnceEndTouch;
-	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerMultipleEndTouch;
+protected:
+	KHook::Virtual<CBaseEntity, void, InputData_t*>* m_hBaseButtonUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*>* m_hPhysBoxUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*>* m_hRotButtonUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*>* m_hMomentaryRotButtonUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*>* m_hPhysicalButtonUse;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*>* m_hTriggerTeleportStartTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*>* m_hTriggerOnceStartTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*>* m_hTriggerMultipleStartTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*>* m_hTriggerTeleportTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*>* m_hTriggerOnceTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*>* m_hTriggerMultipleTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*>* m_hTriggerTeleportEndTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*>* m_hTriggerOnceEndTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*>* m_hTriggerMultipleEndTouch;
 };
 
 extern CEWHandler* g_pEWHandler;

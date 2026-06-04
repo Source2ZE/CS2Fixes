@@ -18,7 +18,7 @@
  */
 
 #pragma once
-#include "detours.h"
+#include "cs2_sdk/entityio.h"
 
 extern CConVar<bool> g_cvarEnableButtonWatch;
 

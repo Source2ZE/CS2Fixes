@@ -21,7 +21,6 @@
 #include "commands.h"
 #include "common.h"
 #include "ctimer.h"
-#include "detours.h"
 #include "entity/ccsplayercontroller.h"
 #include "idlemanager.h"
 #include "playermanager.h"

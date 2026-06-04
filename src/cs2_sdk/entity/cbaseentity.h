@@ -19,8 +19,8 @@
 
 #pragma once
 
+#include "../../addresses.h"
 #include "../../gameconfig.h"
-#include "../detours.h"
 #include "ccollisionproperty.h"
 #include "ctakedamageinfo.h"
 #include "ehandle.h"

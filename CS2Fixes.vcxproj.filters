@@ -65,9 +65,6 @@
     <ClCompile Include="src\ctimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\detours.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\playermanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -85,6 +82,9 @@
     </ClCompile>
     <ClCompile Include="sdk\tier1\convar.cpp">
       <Filter>Source Files\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hookmanager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\httpmanager.cpp">
       <Filter>Source Files</Filter>
@@ -256,9 +256,6 @@
     <ClInclude Include="src\ctimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\detours.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\playermanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -272,6 +269,9 @@
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\eventlistener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hookmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\httpmanager.h">
