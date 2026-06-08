@@ -83,7 +83,7 @@ public: // hooks
 	KHook::Return<void> Hook_ApplyGameSettings(IServerGameDLL* pThis, KeyValues* pKV);
 	KHook::Return<void> Hook_ClientActive_Post(IServerGameClients* pThis, CPlayerSlot slot, bool bLoadGame, const char* pszName, uint64 xuid);
 	KHook::Return<void> Hook_ClientDisconnect_Post(IServerGameClients* pThis, CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID);
-	KHook::Return<void> Hook_ClientPutInServer_Post(IServerGameClients* pThis, CPlayerSlot slot, char const* pszName, int type, uint64 xuid);
+	KHook::Return<void> Hook_ClientPutInServer_Post(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, int type, uint64 xuid);
 	KHook::Return<void> Hook_ClientSettingsChanged(IServerGameClients* pThis, CPlayerSlot slot);
 	KHook::Return<void> Hook_OnClientConnected(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer);
 	KHook::Return<bool> Hook_ClientConnect(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason);
@@ -101,7 +101,7 @@ public: // hooks
 	KHook::Return<void> Hook_GetTouchingList_Post(CVPhys2World* pThis, CUtlVector<TouchLinked_t>* pList, bool unknown);
 	KHook::Return<void> Hook_CheckMovingGround(CCSPlayer_MovementServices* pThis, double frametime);
 	KHook::Return<void> Hook_DropWeapon_Post(CCSPlayer_WeaponServices* pThis, CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity);
-	KHook::Return<void> Hook_PlayerEquipUse(CGamePlayerEquip* pThis, class InputData_t*);
+	KHook::Return<void> Hook_PlayerEquipUse(CGamePlayerEquip* pThis, InputData_t* pInput);
 	KHook::Return<void> Hook_PlayerEquipPrecache_Post(CGamePlayerEquip* pThis, CEntityPrecacheContext*);
 	KHook::Return<void> Hook_TriggerGravityPrecache_Post(CTriggerGravity* pThis, CEntityPrecacheContext* param);
 	KHook::Return<void> Hook_TriggerGravityEndTouch_Post(CTriggerGravity* pThis, CBaseEntity* pOther);

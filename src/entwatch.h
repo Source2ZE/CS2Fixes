@@ -218,20 +218,20 @@ class CEWHandler
 public:
 	CEWHandler() :
 		m_bConfigLoaded(false),
-		m_hBaseButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hPhysBoxUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hRotButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hMomentaryRotButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hPhysicalButtonUse(this, &CEWHandler::Hook_Use, nullptr),
-		m_hTriggerTeleportStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleStartTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerTeleportTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerTeleportEndTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceEndTouch(this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleEndTouch(this, &CEWHandler::Hook_Touch, nullptr)
+		m_hBaseButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hPhysBoxUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hRotButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hMomentaryRotButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hPhysicalButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hTriggerTeleportStartTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceStartTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleStartTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerTeleportTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerTeleportEndTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceEndTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleEndTouch(0U, this, &CEWHandler::Hook_Touch, nullptr)
 	{
 		CreateHooks();
 	}
