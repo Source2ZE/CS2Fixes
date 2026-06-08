@@ -218,20 +218,20 @@ class CEWHandler
 public:
 	CEWHandler() :
 		m_bConfigLoaded(false),
-		m_hBaseButtonUse(nullptr, this, &CEWHandler::Hook_Use, nullptr),
-		m_hPhysBoxUse(nullptr, this, &CEWHandler::Hook_Use, nullptr),
-		m_hRotButtonUse(nullptr, this, &CEWHandler::Hook_Use, nullptr),
-		m_hMomentaryRotButtonUse(nullptr, this, &CEWHandler::Hook_Use, nullptr),
-		m_hPhysicalButtonUse(nullptr, this, &CEWHandler::Hook_Use, nullptr),
-		m_hTriggerTeleportStartTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceStartTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleStartTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerTeleportTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerTeleportEndTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerOnceEndTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr),
-		m_hTriggerMultipleEndTouch(nullptr, this, &CEWHandler::Hook_Touch, nullptr)
+		m_hBaseButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hPhysBoxUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hRotButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hMomentaryRotButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hPhysicalButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hTriggerTeleportStartTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceStartTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleStartTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerTeleportTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerTeleportEndTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceEndTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleEndTouch(0U, this, &CEWHandler::Hook_Touch, nullptr)
 	{
 		CreateHooks();
 	}

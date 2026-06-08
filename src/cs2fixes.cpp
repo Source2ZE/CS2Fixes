@@ -67,78 +67,33 @@
 class GameSessionConfiguration_t
 {};
 
-template<typename CLASS, typename RETURN, typename... ARGS>
-constexpr inline KHook::Virtual<CLASS, RETURN, ARGS...> declareHook(
-	RETURN (CLASS::*function)(ARGS...),
-	::KHook::Return<RETURN> (CS2Fixes::*pre)(CLASS*, ARGS...),
-	::KHook::Return<RETURN> (CS2Fixes::*post)(CLASS*, ARGS...)) {
-	return KHook::Virtual<CLASS, RETURN, ARGS...>(function, &g_CS2Fixes, pre, post);
-}
-
-template<typename CLASS, typename RETURN, typename... ARGS>
-constexpr inline KHook::Virtual<CLASS, RETURN, ARGS...> declareHook(
-	RETURN (CLASS::*function)(ARGS...),
-	std::nullptr_t,
-	::KHook::Return<RETURN> (CS2Fixes::*post)(CLASS*, ARGS...)) {
-	return KHook::Virtual<CLASS, RETURN, ARGS...>(function, &g_CS2Fixes, static_cast<::KHook::Return<RETURN> (CS2Fixes::*)(CLASS*, ARGS...)>(nullptr), post);
-}
-
-template<typename CLASS, typename RETURN, typename... ARGS>
-constexpr inline KHook::Virtual<CLASS, RETURN, ARGS...> declareHook(
-	RETURN (CLASS::*function)(ARGS...),
-	::KHook::Return<RETURN> (CS2Fixes::*pre)(CLASS*, ARGS...),
-	std::nullptr_t) {
-	return KHook::Virtual<CLASS, RETURN, ARGS...>(function, &g_CS2Fixes, pre, static_cast<::KHook::Return<RETURN> (CS2Fixes::*)(CLASS*, ARGS...)>(nullptr));
-}
-
-template<typename CLASS, typename RETURN, typename... ARGS>
-constexpr inline KHook::Virtual<CLASS, RETURN, ARGS...> declareHook(
-	::KHook::Return<RETURN> (CS2Fixes::*pre)(CLASS*, ARGS...),
-	::KHook::Return<RETURN> (CS2Fixes::*post)(CLASS*, ARGS...)) {
-	return KHook::Virtual<CLASS, RETURN, ARGS...>(0U, &g_CS2Fixes, pre, post);
-}
-
-template<typename CLASS, typename RETURN, typename... ARGS>
-constexpr inline KHook::Virtual<CLASS, RETURN, ARGS...> declareHook(
-	std::nullptr_t,
-	::KHook::Return<RETURN> (CS2Fixes::*post)(CLASS*, ARGS...)) {
-	return KHook::Virtual<CLASS, RETURN, ARGS...>(0U, &g_CS2Fixes, static_cast<::KHook::Return<RETURN> (CS2Fixes::*)(CLASS*, ARGS...)>(nullptr), post);
-}
-
-template<typename CLASS, typename RETURN, typename... ARGS>
-constexpr inline KHook::Virtual<CLASS, RETURN, ARGS...> declareHook(
-	::KHook::Return<RETURN> (CS2Fixes::*pre)(CLASS*, ARGS...),
-	std::nullptr_t) {
-	return KHook::Virtual<CLASS, RETURN, ARGS...>(0U, &g_CS2Fixes, pre, static_cast<::KHook::Return<RETURN> (CS2Fixes::*)(CLASS*, ARGS...)>(nullptr));
-}
-
-auto gameFrameHook = declareHook(&IServerGameDLL::GameFrame, static_cast<std::nullptr_t>(nullptr), &CS2Fixes::Hook_GameFrame_Post);
-auto gameServerSteamAPIActivatedHook = declareHook(&IServerGameDLL::GameServerSteamAPIActivated, &CS2Fixes::Hook_GameServerSteamAPIActivated, nullptr);
-auto applyGameSettingsHook = declareHook(&IServerGameDLL::ApplyGameSettings, &CS2Fixes::Hook_ApplyGameSettings, nullptr);
-auto clientActiveHook = declareHook(&IServerGameClients::ClientActive, static_cast<std::nullptr_t>(nullptr), &CS2Fixes::Hook_ClientActive_Post);
-auto clientDisconnectHook = declareHook(&IServerGameClients::ClientDisconnect, static_cast<std::nullptr_t>(nullptr), &CS2Fixes::Hook_ClientDisconnect_Post);
-auto clientPutInServerHook = declareHook(&IServerGameClients::ClientPutInServer, static_cast<std::nullptr_t>(nullptr), &CS2Fixes::Hook_ClientPutInServer_Post);
-auto clientSettingsChangedHook = declareHook(&IServerGameClients::ClientSettingsChanged, &CS2Fixes::Hook_ClientSettingsChanged, static_cast<std::nullptr_t>(nullptr));
-auto onClientConnectedHook = declareHook(&IServerGameClients::OnClientConnected, &CS2Fixes::Hook_OnClientConnected, static_cast<std::nullptr_t>(nullptr));
-auto clientConnectHook = declareHook(&IServerGameClients::ClientConnect, &CS2Fixes::Hook_ClientConnect, static_cast<std::nullptr_t>(nullptr));
-auto clientCommandHook = declareHook(&IServerGameClients::ClientCommand, &CS2Fixes::Hook_ClientCommand, static_cast<std::nullptr_t>(nullptr));
-auto postEventAbstractHook = declareHook(&IGameEventSystem::PostEventAbstract, &CS2Fixes::Hook_PostEventAbstract, static_cast<std::nullptr_t>(nullptr));
-auto startupServerHook = declareHook(&INetworkServerService::StartupServer, static_cast<std::nullptr_t>(nullptr), &CS2Fixes::Hook_StartupServer_Post);
-auto checkTransmitHook = declareHook(&ISource2GameEntities::CheckTransmit, static_cast<std::nullptr_t>(nullptr), &CS2Fixes::Hook_CheckTransmit_Post);
-auto dispatchConCommandHook = declareHook(&ICvar::DispatchConCommand, &CS2Fixes::Hook_DispatchConCommand, static_cast<std::nullptr_t>(nullptr));
-auto loadEventsFromFileHook = declareHook(&IGameEventManager2::LoadEventsFromFile, &CS2Fixes::Hook_LoadEventsFromFile, static_cast<std::nullptr_t>(nullptr));
-auto spawnHook = declareHook(&CEntitySystem::Spawn, static_cast<std::nullptr_t>(nullptr), &CS2Fixes::Hook_Spawn_Post);
-auto setGameSpawnGroupMgrHook = declareHook(&INetworkGameServer::SetGameSpawnGroupMgr, &CS2Fixes::Hook_SetGameSpawnGroupMgr, static_cast<std::nullptr_t>(nullptr));
-auto createWorkshopMapGroupHook = declareHook(&CS2Fixes::Hook_CreateWorkshopMapGroup, nullptr);
-auto getTouchingListHook = declareHook(nullptr, &CS2Fixes::Hook_GetTouchingList_Post);
-auto checkMovingGroundHook = declareHook(&CS2Fixes::Hook_CheckMovingGround, nullptr);
-auto dropWeaponHook = declareHook(nullptr, &CS2Fixes::Hook_DropWeapon_Post);
-auto playerEquipUseHook = declareHook(&CS2Fixes::Hook_PlayerEquipUse, nullptr);
-auto playerEquipPrecacheHook = declareHook(nullptr, &CS2Fixes::Hook_PlayerEquipPrecache_Post);
-auto triggerGravityPrecacheHook = declareHook(nullptr, &CS2Fixes::Hook_TriggerGravityPrecache_Post);
-auto triggerGravityEndTouchHook = declareHook(nullptr, &CS2Fixes::Hook_TriggerGravityEndTouch_Post);
-auto onTakeDamageAliveHook = declareHook(&CS2Fixes::Hook_OnTakeDamage_Alive, nullptr);
-auto playerPawnTeleportHook = declareHook(&CS2Fixes::Hook_CCSPlayerPawn_Teleport, nullptr);
+KHook::Virtual<IServerGameDLL, void, bool, bool, bool> gameFrameHook(&IServerGameDLL::GameFrame, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_GameFrame_Post);
+KHook::Virtual<IServerGameDLL, void> gameServerSteamAPIActivatedHook(&IServerGameDLL::GameServerSteamAPIActivated, &g_CS2Fixes, &CS2Fixes::Hook_GameServerSteamAPIActivated, nullptr);
+KHook::Virtual<IServerGameDLL, void, KeyValues*> applyGameSettingsHook(&IServerGameDLL::ApplyGameSettings, &g_CS2Fixes, &CS2Fixes::Hook_ApplyGameSettings, nullptr);
+KHook::Virtual<IServerGameClients, void, CPlayerSlot, bool, const char*, uint64> clientActiveHook(&IServerGameClients::ClientActive, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_ClientActive_Post);
+KHook::Virtual<IServerGameClients, void, CPlayerSlot, ENetworkDisconnectionReason, const char*, uint64, const char*> clientDisconnectHook(&IServerGameClients::ClientDisconnect, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_ClientDisconnect_Post);
+KHook::Virtual<IServerGameClients, void, CPlayerSlot, const char*, int, uint64> clientPutInServerHook(&IServerGameClients::ClientPutInServer, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_ClientPutInServer_Post);
+KHook::Virtual<IServerGameClients, void, CPlayerSlot> clientSettingsChangedHook(&IServerGameClients::ClientSettingsChanged, &g_CS2Fixes, &CS2Fixes::Hook_ClientSettingsChanged, nullptr);
+KHook::Virtual<IServerGameClients, void, CPlayerSlot, const char*, uint64, const char*, const char*, bool> onClientConnectedHook(&IServerGameClients::OnClientConnected, &g_CS2Fixes, &CS2Fixes::Hook_OnClientConnected, nullptr);
+KHook::Virtual<IServerGameClients, bool, CPlayerSlot, const char*, uint64, const char*, bool, CBufferString*> clientConnectHook(&IServerGameClients::ClientConnect, &g_CS2Fixes, &CS2Fixes::Hook_ClientConnect, nullptr);
+KHook::Virtual<IServerGameClients, void, CPlayerSlot, const CCommand&> clientCommandHook(&IServerGameClients::ClientCommand, &g_CS2Fixes, &CS2Fixes::Hook_ClientCommand, nullptr);
+KHook::Virtual<IGameEventSystem, void, CSplitScreenSlot, bool, int, const uint64*, INetworkMessageInternal*, const CNetMessage*, unsigned long, NetChannelBufType_t> postEventAbstractHook(&IGameEventSystem::PostEventAbstract, &g_CS2Fixes, &CS2Fixes::Hook_PostEventAbstract, nullptr);
+KHook::Virtual<INetworkServerService, void, const GameSessionConfiguration_t&, ISource2WorldSession*, const char*> startupServerHook(&INetworkServerService::StartupServer, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_StartupServer_Post);
+KHook::Virtual<ISource2GameEntities, void, CCheckTransmitInfo**, int, CBitVec<16384>&, CBitVec<16384>&, const Entity2Networkable_t**, const uint16*, int> checkTransmitHook(&ISource2GameEntities::CheckTransmit, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_CheckTransmit_Post);
+KHook::Virtual<ICvar, void, ConCommandRef, const CCommandContext&, const CCommand&> dispatchConCommandHook(&ICvar::DispatchConCommand, &g_CS2Fixes, &CS2Fixes::Hook_DispatchConCommand, nullptr);
+KHook::Virtual<IGameEventManager2, int, const char*, bool> loadEventsFromFileHook(&IGameEventManager2::LoadEventsFromFile, &g_CS2Fixes, &CS2Fixes::Hook_LoadEventsFromFile, nullptr);
+KHook::Virtual<CEntitySystem, void, int, const EntitySpawnInfo_t*> spawnHook(&CEntitySystem::Spawn, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_Spawn_Post);
+KHook::Virtual<INetworkGameServer, void, IGameSpawnGroupMgr*> setGameSpawnGroupMgrHook(&INetworkGameServer::SetGameSpawnGroupMgr, &g_CS2Fixes, &CS2Fixes::Hook_SetGameSpawnGroupMgr, nullptr);
+KHook::Virtual<IGameTypes, void, const char*, const CUtlStringList&> createWorkshopMapGroupHook(0U, &g_CS2Fixes, &CS2Fixes::Hook_CreateWorkshopMapGroup, nullptr);
+KHook::Virtual<CVPhys2World, void, CUtlVector<TouchLinked_t>*, bool> getTouchingListHook(0U, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_GetTouchingList_Post);
+KHook::Virtual<CCSPlayer_MovementServices, void, double> checkMovingGroundHook(0U, &g_CS2Fixes, &CS2Fixes::Hook_CheckMovingGround, nullptr);
+KHook::Virtual<CCSPlayer_WeaponServices, void, CBasePlayerWeapon*, Vector*, Vector*> dropWeaponHook(0U, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_DropWeapon_Post);
+KHook::Virtual<CGamePlayerEquip, void, InputData_t*> playerEquipUseHook(0U, &g_CS2Fixes, &CS2Fixes::Hook_PlayerEquipUse, nullptr);
+KHook::Virtual<CGamePlayerEquip, void, CEntityPrecacheContext*> playerEquipPrecacheHook(0U, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_PlayerEquipPrecache_Post);
+KHook::Virtual<CTriggerGravity, void, CEntityPrecacheContext*> triggerGravityPrecacheHook(0U, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_TriggerGravityPrecache_Post);
+KHook::Virtual<CTriggerGravity, void, CBaseEntity*> triggerGravityEndTouchHook(0U, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_TriggerGravityEndTouch_Post);
+KHook::Virtual<CCSPlayerPawn, bool, CTakeDamageResult*> onTakeDamageAliveHook(0U, &g_CS2Fixes, &CS2Fixes::Hook_OnTakeDamage_Alive, nullptr);
+KHook::Virtual<CCSPlayerPawn, void, const Vector*, const QAngle*, const Vector*> playerPawnTeleportHook(0U, &g_CS2Fixes, &CS2Fixes::Hook_CCSPlayerPawn_Teleport, nullptr);
 
 CS2Fixes g_CS2Fixes;
 IGameEventSystem* g_gameEventSystem = nullptr;
@@ -945,7 +900,7 @@ KHook::Return<bool> CS2Fixes::Hook_ClientConnect(IServerGameClients* pThis, CPla
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> CS2Fixes::Hook_ClientPutInServer_Post(IServerGameClients* pThis, CPlayerSlot slot, char const* pszName, int type, uint64 xuid)
+KHook::Return<void> CS2Fixes::Hook_ClientPutInServer_Post(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, int type, uint64 xuid)
 {
 	Message("Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, type, xuid);
 
