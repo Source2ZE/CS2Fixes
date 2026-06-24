@@ -593,8 +593,7 @@ void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd
 
 	for (int i = 0; i < numcmds; i++)
 	{
-		// Push fix only works properly if subtick movement is also disabled
-		if (g_cvarDisableSubtickMovement.Get() || g_cvarUseOldPush.Get())
+		if (g_cvarDisableSubtickMovement.Get())
 		{
 			auto subtickMoves = cmds[i].cmd.mutable_base()->mutable_subtick_moves();
 			auto iterator = subtickMoves->begin();
