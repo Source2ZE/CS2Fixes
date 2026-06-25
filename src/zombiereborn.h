@@ -50,6 +50,13 @@ enum EZRSpawnType
 	RESPAWN,
 };
 
+enum class EZSoundsType
+{
+	OFF,		 // No zombie sounds heard
+	ON,			 // All zombie sounds heard
+	INFECT_ONLY, // Only the infect scream heard
+};
+
 // model entries in zr classes
 struct ZRModelEntry
 {

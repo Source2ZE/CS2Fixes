@@ -56,13 +56,6 @@
 			"windows": "C8 42 EB ? 4C 8B 77 ? 4D 39 66",
 			"linux": "C8 42 41 C7 85 ? ? ? ? ? ? ? ? 41 C7 85 ? ? ? ? ? ? ? ? E9"
 		},
-		// Called right after "Removed %s(%s)\n"
-		"UTIL_Remove":
-		{
-			"library": "server",
-			"windows": "48 85 C9 74 ? 48 8B D1 48 8B 0D ? ? ? ?",
-			"linux": "48 89 FE 48 85 FF 74 ? 48 8D 05 ? ? ? ? 48"
-		},
 		// "SetPosition" is passed to this
 		"CEntitySystem_AddEntityIOEvent":
 		{

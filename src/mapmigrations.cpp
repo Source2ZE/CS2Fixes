@@ -21,6 +21,7 @@
 #include "cs2fixes.h"
 #include "entity.h"
 #include "entity/cbasemodelentity.h"
+#include "entity/cbasetoggle.h"
 #include "utils.h"
 #include "vprof.h"
 
@@ -133,8 +134,20 @@ void CMapMigrations::Migrations_20260420(CBasePlayerWeapon* pWeapon)
 		if (pParentSceneNode && pParentSceneNode->m_pOwner() == pWeapon)
 		{
 			Vector newOrigin = pTarget->GetAbsOrigin();
+			const char* pszClass = pTarget->GetClassname();
+
 			newOrigin.z -= 40.0f;
 			pTarget->Teleport(&newOrigin, nullptr, nullptr);
+
+			// If child inherits CBaseToggle, there's further bullshit we have to offset
+			// There's also some more obscure entities + all of CBaseTrigger, but these seem unnecessary to fixup
+			if (!V_strcasecmp(pszClass, "func_button") || !V_strcasecmp(pszClass, "func_physical_button") || !V_strcasecmp(pszClass, "func_rot_button") || !V_strcasecmp(pszClass, "momentary_rot_button") || !V_strcasecmp(pszClass, "func_movelinear") || !V_strcasecmp(pszClass, "func_door") || !V_strcasecmp(pszClass, "func_door_rotating"))
+			{
+				CBaseToggle* pToggle = (CBaseToggle*)pTarget;
+
+				pToggle->m_vecPosition1().z -= 40.0f;
+				pToggle->m_vecPosition2().z -= 40.0f;
+			}
 		}
 	}
 }

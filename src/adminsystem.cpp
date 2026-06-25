@@ -1338,74 +1338,6 @@ CAdminSystem::CAdminSystem()
 	m_iDCPlyIndex = 0;
 }
 
-// TODO: Remove this once servers have been given a few months to update cs2fixes
-bool CAdminSystem::ConvertAdminsKVToJSON()
-{
-	KeyValues* pKV = new KeyValues("admins");
-	KeyValues::AutoDelete autoDelete(pKV);
-
-	const char* pszPath = "addons/cs2fixes/configs/admins.cfg";
-
-	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
-	{
-		Warning("Failed to load %s\n", pszPath);
-		return false;
-	}
-
-	ordered_json jAdmins;
-
-	jAdmins["Admins"] = ordered_json(ordered_json::value_t::object);
-
-	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
-	{
-		ordered_json jAdmin;
-
-		if (!pKey->FindKey("steamid"))
-		{
-			Warning("Admin entry %s is missing 'steam' key\n", pKey->GetName());
-			return false;
-		}
-
-		jAdmin["name"] = pKey->GetName();
-
-		if (pKey->FindKey("flags"))
-			jAdmin["flags"] = pKey->GetString("flags", nullptr);
-
-		if (pKey->FindKey("immunity"))
-			jAdmin["immunity"] = pKey->GetInt("immunity", 0);
-
-		jAdmins["Admins"][pKey->GetString("steamid", "")] = jAdmin;
-	}
-
-	const char* pszJsonPath = "addons/cs2fixes/configs/admins.jsonc";
-	const char* pszKVConfigRenamePath = "addons/cs2fixes/configs/admins_old.cfg";
-	char szPath[MAX_PATH];
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
-	std::ofstream jsonFile(szPath);
-
-	if (!jsonFile.is_open())
-	{
-		Panic("Failed to open %s\n", pszJsonPath);
-		return false;
-	}
-
-	jsonFile << std::setfill('\t') << std::setw(1) << jAdmins << std::endl;
-
-	char szKVRenamePath[MAX_PATH];
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszPath);
-	V_snprintf(szKVRenamePath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVConfigRenamePath);
-
-	std::rename(szPath, szKVRenamePath);
-
-	// remove old cfg example if it exists
-	const char* pszKVExamplePath = "addons/cs2fixes/configs/admins.cfg.example";
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVExamplePath);
-	std::remove(szPath);
-
-	Message("Successfully converted KV1 admins.cfg to JSON format at %s\n", pszJsonPath);
-	return true;
-}
-
 bool CAdminSystem::LoadAdmins()
 {
 	m_mapAdmins.clear();
@@ -1418,13 +1350,8 @@ bool CAdminSystem::LoadAdmins()
 
 	if (!jsonFile.is_open())
 	{
-		if (!ConvertAdminsKVToJSON())
-		{
-			Panic("Failed to open %s and convert KV1 admins.cfg to JSON format, admins are not loaded!\n", pszJsonPath);
-			return false;
-		}
-
-		jsonFile.open(szPath);
+		Panic("Failed to open %s, admins are not loaded!\n", pszJsonPath);
+		return false;
 	}
 
 	ordered_json jAdminConfig = ordered_json::parse(jsonFile, nullptr, false, true);

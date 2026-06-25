@@ -494,7 +494,7 @@ namespace CPointViewControlHandler
 {
 	struct ViewControl
 	{
-		CUtlVector<CHandle<CCSPlayerPawn>> m_players;
+		std::vector<CHandle<CCSPlayerPawn>> m_players;
 		std::string m_viewTarget;
 		std::string m_name;
 	};
@@ -590,7 +590,8 @@ namespace CPointViewControlHandler
 
 		for (auto& [vk, vc] : s_repository)
 		{
-			if (const auto index = vc.m_players.Find(handle); index > -1)
+			const auto iterator = std::find(vc.m_players.begin(), vc.m_players.end(), handle);
+			if (iterator != vc.m_players.end())
 			{
 				if (vk == static_cast<uint>(key))
 				{
@@ -598,14 +599,15 @@ namespace CPointViewControlHandler
 					return false;
 				}
 
-				vc.m_players.Remove(index);
+				vc.m_players.erase(iterator);
 				UpdatePlayerState(pPawn, INVALID_HANDLE, false, RESET_FOV);
 				Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pController->GetPlayerName().c_str());
 				break;
 			}
 		}
 
-		return it->second.m_players.AddToTail(handle) >= 0;
+		it->second.m_players.push_back(handle);
+		return true;
 	}
 	bool OnDisable(CPointViewControl* pEntity, CBaseEntity* pActivator)
 	{
@@ -632,7 +634,14 @@ namespace CPointViewControlHandler
 
 		UpdatePlayerState(pPawn, INVALID_HANDLE, false, RESET_FOV);
 
-		return it->second.m_players.FindAndRemove(handle);
+		auto& vecPlayers = it->second.m_players;
+		auto iterator = std::find(vecPlayers.begin(), vecPlayers.end(), handle);
+
+		if (iterator == vecPlayers.end())
+			return false;
+
+		vecPlayers.erase(iterator);
+		return true;
 	}
 	bool OnEnableAll(CPointViewControl* pEntity)
 	{
@@ -655,9 +664,11 @@ namespace CPointViewControlHandler
 
 			for (auto& [vk, vc] : s_repository)
 			{
-				if (const auto index = vc.m_players.Find(handle); index > -1)
+				auto iterator = std::find(vc.m_players.begin(), vc.m_players.end(), handle);
+
+				if (iterator != vc.m_players.end())
 				{
-					vc.m_players.Remove(index);
+					vc.m_players.erase(iterator);
 					if (vk == static_cast<uint>(key))
 						continue;
 					UpdatePlayerState(pPawn, INVALID_HANDLE, false, RESET_FOV);
@@ -665,7 +676,7 @@ namespace CPointViewControlHandler
 				}
 			}
 
-			it->second.m_players.AddToTail(handle);
+			it->second.m_players.push_back(handle);
 		}
 
 		return true;
@@ -677,15 +688,11 @@ namespace CPointViewControlHandler
 		if (it == s_repository.end())
 			return false;
 
-		FOR_EACH_VEC(it->second.m_players, i)
-		{
-			const auto& handle = it->second.m_players.Element(i);
-
-			if (const auto player = handle.Get())
+		for (auto hPawn : it->second.m_players)
+			if (CCSPlayerPawn* player = hPawn.Get())
 				UpdatePlayerState(player, INVALID_HANDLE, false, RESET_FOV);
-		}
 
-		it->second.m_players.Purge();
+		it->second.m_players.clear();
 
 		return true;
 	}
@@ -698,13 +705,9 @@ namespace CPointViewControlHandler
 			const auto entity = CHandle<CPointViewControl>(it->first).Get();
 			if (!entity)
 			{
-				FOR_EACH_VEC(it->second.m_players, i)
-				{
-					const auto& handle = it->second.m_players.Element(i);
-
-					if (const auto player = handle.Get())
+				for (auto hPawn : it->second.m_players)
+					if (CCSPlayerPawn* player = hPawn.Get())
 						UpdatePlayerState(player, INVALID_HANDLE, false, RESET_FOV);
-				}
 
 				it = s_repository.erase(it);
 			}
@@ -725,53 +728,47 @@ namespace CPointViewControlHandler
 				continue;
 			}
 
-			if (vc.m_players.Count() == 0)
+			if (vc.m_players.empty())
 				continue;
 
 			const auto pTarget = entity->GetTargetCameraEntity();
 			if (!pTarget)
 			{
-				FOR_EACH_VEC(vc.m_players, i)
-				{
-					const auto& handle = vc.m_players.Element(i);
-
-					if (const auto player = handle.Get())
+				for (auto hPawn : vc.m_players)
+					if (CCSPlayerPawn* player = hPawn.Get())
 						UpdatePlayerState(player, INVALID_HANDLE, false, RESET_FOV);
-				}
-				vc.m_players.Purge();
+				vc.m_players.clear();
 				continue;
 			}
 
-			FOR_EACH_VEC(vc.m_players, i)
+			for (auto iterator = vc.m_players.begin(); iterator != vc.m_players.end();)
 			{
-				const auto& handle = vc.m_players.Element(i);
-				const auto player = handle.Get();
+				auto hPawn = *iterator;
+				CCSPlayerPawn* player = hPawn.Get();
 				if (!player)
 				{
-					vc.m_players.Remove(i--);
+					iterator = vc.m_players.erase(iterator);
 					continue;
 				}
 				if (!player->IsAlive())
 				{
 					UpdatePlayerState(player, INVALID_HANDLE, false, RESET_FOV);
-					vc.m_players.Remove(i--);
+					iterator = vc.m_players.erase(iterator);
 					continue;
 				}
 
 				UpdatePlayerState(player, pTarget->GetHandle(), entity->HasFrozen(), entity->HasFOV() ? entity->GetFOV() : INVALID_FOV, entity->HasDisarm());
+				iterator++;
 			}
 		}
 	}
 	bool IsViewControl(CCSPlayerPawn* pPawn)
 	{
-		const auto handle = pPawn->GetHandle().ToInt();
 		for (const auto& [vk, vc] : s_repository)
 		{
-			FOR_EACH_VEC(vc.m_players, i)
-			{
-				if (vc.m_players.Element(i).ToInt() == handle)
+			for (auto hPawn : vc.m_players)
+				if (hPawn == pPawn->GetHandle())
 					return true;
-			}
 		}
 		return false;
 	}
@@ -779,14 +776,10 @@ namespace CPointViewControlHandler
 	{
 		for (auto& [vk, vc] : s_repository)
 		{
-			FOR_EACH_VEC(vc.m_players, i)
-			{
-				const auto& handle = vc.m_players.Element(i);
-
-				if (const auto player = handle.Get())
+			for (auto hPawn : vc.m_players)
+				if (CCSPlayerPawn* player = hPawn.Get())
 					UpdatePlayerState(player, INVALID_HANDLE, false, RESET_FOV);
-			}
-			vc.m_players.Purge();
+			vc.m_players.clear();
 		}
 		s_repository.clear();
 	}

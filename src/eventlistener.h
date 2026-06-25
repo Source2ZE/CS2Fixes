@@ -21,11 +21,10 @@
 #include "common.h"
 #include "igameevents.h"
 #include "utlstring.h"
-#include "utlvector.h"
 
 class CGameEventListener;
 
-extern CUtlVector<CGameEventListener*> g_vecEventListeners;
+extern std::vector<CGameEventListener*> g_vecEventListeners;
 extern CConVar<int> g_cvarFreeArmor;
 
 typedef void (*FnEventListenerCallback)(IGameEvent* event);
@@ -36,7 +35,7 @@ public:
 	CGameEventListener(FnEventListenerCallback callback, const char* pszEventName) :
 		m_Callback(callback), m_pszEventName(pszEventName)
 	{
-		g_vecEventListeners.AddToTail(this);
+		g_vecEventListeners.push_back(this);
 	}
 
 	~CGameEventListener() override

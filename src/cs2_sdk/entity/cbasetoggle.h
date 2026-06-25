@@ -24,4 +24,7 @@
 class CBaseToggle : CBaseModelEntity
 {
 	DECLARE_SCHEMA_CLASS(CBaseToggle);
+
+	SCHEMA_FIELD(Vector, m_vecPosition1);
+	SCHEMA_FIELD(Vector, m_vecPosition2);
 };
