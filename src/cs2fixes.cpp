@@ -320,7 +320,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	g_iLoadEventsFromFileId = SH_ADD_DVPHOOK(IGameEventManager2, LoadEventsFromFile, pCGameEventManagerVTable, SH_MEMBER(this, &CS2Fixes::Hook_LoadEventsFromFile), false);
 
 	auto pCEntitySystemVTable = (CEntitySystem*)modules::server->FindVirtualTable("CGameEntitySystem");
-	g_iSpawnId = SH_ADD_DVPHOOK(CEntitySystem, Spawn, pCEntitySystemVTable, SH_MEMBER(this, &CS2Fixes::Hook_SpawnPost), true);
+	g_iSpawnId = SH_ADD_DVPHOOK(CEntitySystem, Spawn, pCEntitySystemVTable, SH_MEMBER(this, &CS2Fixes::Hook_Spawn), false);
 
 	if (!bRequiredInitLoaded)
 	{
@@ -1185,7 +1185,7 @@ void CS2Fixes::Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr)
 	g_pSpawnGroupMgr = (CSpawnGroupMgrGameSystem*)pSpawnGroupMgr;
 }
 
-void CS2Fixes::Hook_SpawnPost(int nCount, const EntitySpawnInfo_t* pInfo)
+void CS2Fixes::Hook_Spawn(int nCount, const EntitySpawnInfo_t* pInfo)
 {
 	for (int i = 0; i < nCount; i++)
 		g_pMapMigrations->OnEntitySpawned(pInfo[i].m_pEntity->m_pInstance, pInfo[i].m_pKeyValues);
