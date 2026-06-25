@@ -1191,7 +1191,7 @@ void CS2Fixes::Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr)
 void CS2Fixes::Hook_Spawn(int nCount, const EntitySpawnInfo_t* pInfo)
 {
 	for (int i = 0; i < nCount; i++)
-		g_pMapMigrations->OnEntitySpawned(pInfo[i].m_pEntity->m_pInstance, pInfo[i].m_pKeyValues);
+		g_pMapMigrations->OnEntitySpawned_Pre(reinterpret_cast<CBaseEntity*>(pInfo[i].m_pEntity->m_pInstance), pInfo[i].m_pKeyValues);
 }
 
 float g_fTeleportXAngle;
