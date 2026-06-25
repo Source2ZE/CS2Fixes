@@ -23,6 +23,7 @@
 #include "cs2fixes.h"
 #include "entities.h"
 #include "entity/cgamerules.h"
+#include "entityclass.h"
 #include "entwatch.h"
 #include "gameconfig.h"
 #include "plat.h"
@@ -49,6 +50,8 @@ void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 
 void CEntityListener::OnEntityCreated(CEntityInstance* pEntity)
 {
+	ExecuteOnce(addresses::UTIL_Remove = pEntity->m_pEntity->m_pClass->m_NameToThinkFunc("CBaseEntitySUB_Remove"));
+
 	if (!V_strcmp("cs_gamerules", pEntity->GetClassname()))
 		g_pGameRules = ((CCSGameRulesProxy*)pEntity)->m_pGameRules;
 }
