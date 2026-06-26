@@ -95,6 +95,7 @@ SH_DECL_MANUALHOOK3_void(DropWeapon, 0, 0, 0, CBasePlayerWeapon*, Vector*, Vecto
 SH_DECL_HOOK1_void(IServer, SetGameSpawnGroupMgr, SH_NOATTRIB, 0, IGameSpawnGroupMgr*);
 SH_DECL_HOOK2_void(CEntitySystem, Spawn, SH_NOATTRIB, 0, int, const EntitySpawnInfo_t*);
 SH_DECL_MANUALHOOK3_void(Teleport, 0, 0, 0, const Vector*, const QAngle*, const Vector*);
+SH_DECL_HOOK1(CServerSideClient, ProcessVoiceData, SH_NOATTRIB, 0, bool, const CCLCMsg_VoiceData_t&);
 
 CS2Fixes g_CS2Fixes;
 IGameEventSystem* g_gameEventSystem = nullptr;
@@ -118,6 +119,7 @@ int g_iSetGameSpawnGroupMgrId = -1;
 int g_iSpawnId = -1;
 int g_iTeleportPreId = -1;
 int g_iTeleportPostId = -1;
+int g_iProcessVoiceDataId = -1;
 
 double g_flUniversalTime = 0.0;
 float g_flLastTickedTime = 0.0f;
@@ -324,6 +326,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	auto pCEntitySystemVTable = (CEntitySystem*)modules::server->FindVirtualTable("CGameEntitySystem");
 	g_iSpawnId = SH_ADD_DVPHOOK(CEntitySystem, Spawn, pCEntitySystemVTable, SH_MEMBER(this, &CS2Fixes::Hook_Spawn), false);
 
+	auto pCServerSideClientVTable = (CServerSideClient*)modules::engine->FindVirtualTable("CServerSideClient");
+	g_iProcessVoiceDataId = SH_ADD_DVPHOOK(CServerSideClient, ProcessVoiceData, pCServerSideClientVTable, SH_MEMBER(this, &CS2Fixes::Hook_ProcessVoiceData), false);
+
 	if (!bRequiredInitLoaded)
 	{
 		snprintf(error, maxlen, "One or more address lookups, patches or detours failed, please refer to startup logs for more information");
@@ -431,6 +436,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	SH_REMOVE_HOOK_ID(g_iSpawnId);
 	SH_REMOVE_HOOK_ID(g_iTeleportPreId);
 	SH_REMOVE_HOOK_ID(g_iTeleportPostId);
+	SH_REMOVE_HOOK_ID(g_iProcessVoiceDataId);
 
 	if (g_iSetGameSpawnGroupMgrId != -1)
 		SH_REMOVE_HOOK_ID(g_iSetGameSpawnGroupMgrId);
@@ -1223,6 +1229,27 @@ void CS2Fixes::Hook_CCSPlayerPawn_Teleport_Post(const Vector* pPosition, const Q
 
 	META_IFACEPTR(CCSPlayerPawn)->SnapViewAngles(pCastAngles);
 	RETURN_META(MRES_HANDLED);
+}
+
+bool CS2Fixes::Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg)
+{
+	CServerSideClient* client = META_IFACEPTR(CServerSideClient);
+
+	if (!client)
+		RETURN_META_VALUE(MRES_IGNORED, true);
+
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(client->GetPlayerSlot());
+
+	if (!pPlayer)
+		RETURN_META_VALUE(MRES_IGNORED, true);
+
+	// logic following sourcemod's implementation of OnClientSpeaking
+	if (auto timer = pPlayer->GetVoiceTimer().lock())
+		timer->Cancel();
+
+	pPlayer->SetVoiceTimer(CTimer::Create(0.3f, TIMERFLAG_NONE, [](){ return -1.0f; }));
+
+	RETURN_META_VALUE(MRES_IGNORED, true);
 }
 
 void* CS2Fixes::OnMetamodQuery(const char* iface, int* ret)

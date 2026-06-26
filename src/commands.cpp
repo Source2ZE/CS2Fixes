@@ -750,6 +750,61 @@ CON_COMMAND_F(cs2f_fullupdate, "- Force a full update for all clients.", FCVAR_L
 	g_playerManager->FullUpdateAllClients();
 }
 
+void VoiceChatPrintCmd(const CCommand& args, CCSPlayerController* player)
+{
+	if (!GetGlobals()) return;
+
+	std::vector<int> vecActivePlayers;
+	for (int i = 0; i < GetGlobals()->maxClients; i++)
+	{
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+
+		if (pPlayer && !pPlayer->GetVoiceTimer().expired())
+			vecActivePlayers.push_back(i);
+	}
+
+	if (vecActivePlayers.empty())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no players currently using voice chat.");
+		return;
+	}
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "List of players using voice chat:");
+	if (player)
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "List of players using voice chat:");
+
+	for (const auto& slot : vecActivePlayers)
+	{
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
+		ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
+
+		bool bSteamIDAuthed = pPlayer->IsAuthenticated();
+		uint64 uSteamID = bSteamIDAuthed ? pPlayer->GetSteamId64() : pPlayer->GetUnauthenticatedSteamId64();
+
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\x04%s \x06[#%hu] \x05[%llu%s\x05]",
+			pController->GetPlayerName().c_str(),
+			g_pEngineServer2->GetPlayerUserId(slot),
+			uSteamID,
+			bSteamIDAuthed ? "" : " \x02(No Auth)");
+		if (!player) continue;
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "%s [#%hu] [%llu%s]",
+			pController->GetPlayerName().c_str(),
+			g_pEngineServer2->GetPlayerUserId(slot),
+			uSteamID,
+			bSteamIDAuthed ? "" : " (No Auth)");
+	}
+}
+
+CON_COMMAND_CHAT(voicechat, "- Display players that are using voice chat")
+{
+	VoiceChatPrintCmd(args, player);
+}
+
+CON_COMMAND_CHAT(vc, "- Display players that are using voice chat")
+{
+	VoiceChatPrintCmd(args, player);
+}
+
 #if _DEBUG
 CON_COMMAND_CHAT(myuid, "- Test")
 {

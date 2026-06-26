@@ -30,6 +30,7 @@
 #include "steam/steamclientpublic.h"
 #include "utlvector.h"
 #include <playerslot.h>
+#include "ctimer.h"
 
 extern CConVar<bool> g_cvarFlashLightTransmitOthers;
 extern CConVar<CUtlString> g_cvarFlashLightAttachment;
@@ -270,6 +271,7 @@ public:
 	void SetEntwatchHudPos(float x, float y);
 	void SetEntwatchHudSize(float flSize);
 	void SetTopDefenderStatus(bool bStatus) { m_bTopDefender = bStatus; }
+	void SetVoiceTimer(std::weak_ptr<CTimer> timer) { m_pVoiceTimer = timer; }
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -320,6 +322,7 @@ public:
 	float GetEntwatchHudY() { return m_flEntwatchHudY; }
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
 	bool GetTopDefenderStatus() { return m_bTopDefender; }
+	std::weak_ptr<CTimer> GetVoiceTimer() { return m_pVoiceTimer; }
 
 	void OnSpawn();
 	void OnAuthenticated();
@@ -394,6 +397,7 @@ private:
 	float m_flEntwatchHudY;
 	float m_flEntwatchHudSize;
 	bool m_bTopDefender;
+	std::weak_ptr<CTimer> m_pVoiceTimer;
 };
 
 class CPlayerManager

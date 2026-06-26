@@ -30,6 +30,7 @@
 #include <iplayerinfo.h>
 #include <iserver.h>
 #include <sh_vector.h>
+#include "cs2_sdk/netmessages.h"
 
 #ifdef AMBUILD
 	#include "version_gen.h"
@@ -107,6 +108,7 @@ public: // hooks
 	void Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity);
 	int Hook_LoadEventsFromFile(const char* filename, bool bSearchAll);
 	void Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr);
+	bool Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg);
 	void Hook_Spawn(int nCount, const EntitySpawnInfo_t* pInfo);
 
 public: // MetaMod API
