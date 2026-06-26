@@ -781,13 +781,13 @@ void VoiceChatPrintCmd(const CCommand& args, CCSPlayerController* player)
 		bool bSteamIDAuthed = pPlayer->IsAuthenticated();
 		uint64 uSteamID = bSteamIDAuthed ? pPlayer->GetSteamId64() : pPlayer->GetUnauthenticatedSteamId64();
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\x04%s \x01[UID: #\x05%hu\x01] [SteamID: $\x06%llu%s\x01]",
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\x04%s \x06[#%hu] \x05[%llu%s\x05]",
 			pController->GetPlayerName().c_str(),
 			g_pEngineServer2->GetPlayerUserId(slot),
 			uSteamID,
 			bSteamIDAuthed ? "" : " \x02(No Auth)");
 		if (!player) continue;
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "%s [UID: #%hu] [SteamID: $%llu%s]",
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "%s [#%hu] [%llu%s]",
 			pController->GetPlayerName().c_str(),
 			g_pEngineServer2->GetPlayerUserId(slot),
 			uSteamID,
