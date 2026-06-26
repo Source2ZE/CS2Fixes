@@ -117,7 +117,8 @@ int g_iPhysicsTouchShuffle = -1;
 int g_iWeaponServiceDropWeaponId = -1;
 int g_iSetGameSpawnGroupMgrId = -1;
 int g_iSpawnId = -1;
-int g_iTeleportId = -1;
+int g_iTeleportPreId = -1;
+int g_iTeleportPostId = -1;
 int g_iProcessVoiceDataId = -1;
 
 double g_flUniversalTime = 0.0;
@@ -285,7 +286,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		bRequiredInitLoaded = false;
 	}
 	SH_MANUALHOOK_RECONFIGURE(Teleport, offset, 0, 0);
-	g_iTeleportId = SH_ADD_MANUALDVPHOOK(Teleport, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_CCSPlayerPawn_Teleport), false);
+	g_iTeleportPreId = SH_ADD_MANUALDVPHOOK(Teleport, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_CCSPlayerPawn_Teleport), false);
+	g_iTeleportPostId = SH_ADD_MANUALDVPHOOK(Teleport, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_CCSPlayerPawn_Teleport_Post), true);
 
 	const auto pCCSPlayer_MovementServicesVTable = modules::server->FindVirtualTable("CCSPlayer_MovementServices");
 	offset = g_GameConfig->GetOffset("CCSPlayer_MovementServices::CheckMovingGround");
@@ -432,7 +434,8 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	SH_REMOVE_HOOK_ID(g_iCTriggerGravityPrecacheId);
 	SH_REMOVE_HOOK_ID(g_iCTriggerGravityEndTouchId);
 	SH_REMOVE_HOOK_ID(g_iSpawnId);
-	SH_REMOVE_HOOK_ID(g_iTeleportId);
+	SH_REMOVE_HOOK_ID(g_iTeleportPreId);
+	SH_REMOVE_HOOK_ID(g_iTeleportPostId);
 	SH_REMOVE_HOOK_ID(g_iProcessVoiceDataId);
 
 	if (g_iSetGameSpawnGroupMgrId != -1)
@@ -1194,23 +1197,37 @@ void CS2Fixes::Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr)
 void CS2Fixes::Hook_Spawn(int nCount, const EntitySpawnInfo_t* pInfo)
 {
 	for (int i = 0; i < nCount; i++)
-		g_pMapMigrations->OnEntitySpawned(pInfo[i].m_pEntity->m_pInstance, pInfo[i].m_pKeyValues);
+		g_pMapMigrations->OnEntitySpawned_Pre(reinterpret_cast<CBaseEntity*>(pInfo[i].m_pEntity->m_pInstance), pInfo[i].m_pKeyValues);
 }
+
+float g_fTeleportXAngle;
 
 void CS2Fixes::Hook_CCSPlayerPawn_Teleport(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)
 {
 	if (!pAngles)
 		RETURN_META(MRES_IGNORED);
 
+	g_fTeleportXAngle = pAngles->x;
+
 	QAngle* pCastAngles = const_cast<QAngle*>(pAngles);
 
-	// Post-AG2, changing x or z angles on a playermodel will bug out, and never did anything pre-AG2 anyways
-	if (pCastAngles->x != 0.0f)
-		pCastAngles->x = 0.0f;
+	// Post-AG2, changing x or z angles via Teleport on a playermodel will bug out, go through SnapViewAngles for x later instead
+	pCastAngles->x = 0.0f;
+	pCastAngles->z = 0.0f;
 
-	if (pCastAngles->z != 0.0f)
-		pCastAngles->z = 0.0f;
+	RETURN_META(MRES_HANDLED);
+}
 
+void CS2Fixes::Hook_CCSPlayerPawn_Teleport_Post(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)
+{
+	if (!pAngles)
+		RETURN_META(MRES_IGNORED);
+
+	// Revert the x edit, z should always be 0
+	QAngle* pCastAngles = const_cast<QAngle*>(pAngles);
+	pCastAngles->x = g_fTeleportXAngle;
+
+	META_IFACEPTR(CCSPlayerPawn)->SnapViewAngles(pCastAngles);
 	RETURN_META(MRES_HANDLED);
 }
 

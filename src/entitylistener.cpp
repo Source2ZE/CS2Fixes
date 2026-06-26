@@ -26,6 +26,7 @@
 #include "entityclass.h"
 #include "entwatch.h"
 #include "gameconfig.h"
+#include "mapmigrations.h"
 #include "plat.h"
 
 CEntityListener* g_pEntityListener = nullptr;
@@ -43,6 +44,7 @@ void CEntityListener::OnEntitySpawned(CEntityInstance* pEntity)
 		reinterpret_cast<CBaseEntity*>(pEntity)->SetCollisionGroup(COLLISION_GROUP_DEBRIS);
 
 	EntityHandler_OnEntitySpawned(reinterpret_cast<CBaseEntity*>(pEntity));
+	g_pMapMigrations->OnEntitySpawned_Post(reinterpret_cast<CBaseEntity*>(pEntity));
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_OnEntitySpawned(pEntity);

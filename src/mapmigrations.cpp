@@ -50,16 +50,17 @@ void CMapMigrations::OnRoundPrestart()
 	m_vecEquippedWeapons.clear();
 }
 
-void CMapMigrations::OnEntitySpawned(CEntityInstance* pEntity, const CEntityKeyValues* pKeyValues)
+void CMapMigrations::OnEntitySpawned_Pre(CBaseEntity* pEntity, const CEntityKeyValues* pKeyValues)
 {
-	CBaseEntity* pBaseEntity = (CBaseEntity*)pEntity;
-
 	// Stupid workaround for CEntityKeyValues being inaccessible after entity spawn
 	// We need access to this in 2026-01-21 rendermode migrations when called from UpdateMapUpdateTime
-	if (pBaseEntity->AsBaseModelEntity() && V_StringToInt32(pKeyValues->GetString("rendermode"), -1, NULL, NULL, PARSING_FLAG_SKIP_WARNING) == -1)
-		m_vecModelEntitiesUsingRendermodeEnum.push_back(pBaseEntity->GetHandle());
+	if (pEntity->AsBaseModelEntity() && V_StringToInt32(pKeyValues->GetString("rendermode"), -1, NULL, NULL, PARSING_FLAG_SKIP_WARNING) == -1)
+		m_vecModelEntitiesUsingRendermodeEnum.push_back(pEntity->GetHandle());
+}
 
-	RunMigrations(pBaseEntity);
+void CMapMigrations::OnEntitySpawned_Post(CBaseEntity* pEntity)
+{
+	RunMigrations(pEntity);
 }
 
 void CMapMigrations::OnEquipWeapon(CBasePlayerWeapon* pWeapon)

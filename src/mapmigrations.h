@@ -54,7 +54,8 @@ class CMapMigrations
 public:
 	void ApplyGameSettings(KeyValues* pKV);
 	void OnRoundPrestart();
-	void OnEntitySpawned(CEntityInstance* pEntity, const CEntityKeyValues* pKeyValues);
+	void OnEntitySpawned_Pre(CBaseEntity* pEntity, const CEntityKeyValues* pKeyValues);
+	void OnEntitySpawned_Post(CBaseEntity* pEntity);
 	void OnEquipWeapon(CBasePlayerWeapon* pWeapon);
 	void RunMigrations(CBaseEntity* pEntity);
 	void Migrations_20260121(CBaseEntity* pEntity);
