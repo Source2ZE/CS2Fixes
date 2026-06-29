@@ -246,8 +246,8 @@ ZRHumanClass::ZRHumanClass(ordered_json jsonKeys, std::string szClassname) :
 ZRZombieClass::ZRZombieClass(ordered_json jsonKeys, std::string szClassname) :
 	ZRClass(jsonKeys, szClassname, CS_TEAM_T),
 	iHealthRegenCount(jsonKeys.value("health_regen_count", 0)),
-	flHealthRegenInterval(jsonKeys.value("health_regen_interval", 0)),
-	flKnockback(jsonKeys.value("knockback", 1.0)){};
+	flHealthRegenInterval(jsonKeys.value("health_regen_interval", 0.0f)),
+	flKnockback(jsonKeys.value("knockback", 1.0f)){};
 
 void ZRZombieClass::Override(ordered_json jsonKeys, std::string szClassname)
 {
