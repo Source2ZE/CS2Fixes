@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "cs2_sdk/netmessages.h"
 #include "engine/igameeventsystem.h"
 #include "entity/cgamerules.h"
 #include "gamesystems/spawngroup_manager.h"
@@ -30,7 +31,6 @@
 #include <iplayerinfo.h>
 #include <iserver.h>
 #include <sh_vector.h>
-#include "cs2_sdk/netmessages.h"
 
 #ifdef AMBUILD
 	#include "version_gen.h"

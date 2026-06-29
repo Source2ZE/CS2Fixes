@@ -1247,7 +1247,7 @@ bool CS2Fixes::Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg)
 	if (auto timer = pPlayer->GetVoiceTimer().lock())
 		timer->Cancel();
 
-	pPlayer->SetVoiceTimer(CTimer::Create(0.3f, TIMERFLAG_NONE, [](){ return -1.0f; }));
+	pPlayer->SetVoiceTimer(CTimer::Create(0.3f, TIMERFLAG_NONE, []() { return -1.0f; }));
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
