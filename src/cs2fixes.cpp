@@ -1235,7 +1235,7 @@ bool CS2Fixes::Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg)
 {
 	CServerSideClient* client = META_IFACEPTR(CServerSideClient);
 
-	if (!client)
+	if (!client || !GetGlobals())
 		RETURN_META_VALUE(MRES_IGNORED, true);
 
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(client->GetPlayerSlot());
@@ -1243,11 +1243,7 @@ bool CS2Fixes::Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg)
 	if (!pPlayer)
 		RETURN_META_VALUE(MRES_IGNORED, true);
 
-	// logic following sourcemod's implementation of OnClientSpeaking
-	if (auto timer = pPlayer->GetVoiceTimer().lock())
-		timer->Cancel();
-
-	pPlayer->SetVoiceTimer(CTimer::Create(0.3f, TIMERFLAG_NONE, []() { return -1.0f; }));
+	pPlayer->SetLastVoiceTime(GetGlobals()->curtime);
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }

@@ -20,7 +20,6 @@
 #pragma once
 #include "bitvec.h"
 #include "common.h"
-#include "ctimer.h"
 #include "entity/cparticlesystem.h"
 #include "entity/cpointorient.h"
 #include "entity/cpointworldtext.h"
@@ -200,6 +199,7 @@ public:
 		m_flEntwatchHudY = -2.0f;
 		m_flEntwatchHudSize = 60.0f;
 		m_bTopDefender = false;
+		m_flLastVoiceTime = -15.0f;
 		m_flBeaconEnabledTime = -2.0f;
 	}
 
@@ -272,7 +272,7 @@ public:
 	void SetEntwatchHudPos(float x, float y);
 	void SetEntwatchHudSize(float flSize);
 	void SetTopDefenderStatus(bool bStatus) { m_bTopDefender = bStatus; }
-	void SetVoiceTimer(std::weak_ptr<CTimer> timer) { m_pVoiceTimer = timer; }
+	void SetLastVoiceTime(float flTime) { m_flLastVoiceTime = flTime; }
 	void SetBeaconEnabledTime(float flTime) { m_flBeaconEnabledTime = flTime; }
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
@@ -324,7 +324,7 @@ public:
 	float GetEntwatchHudY() { return m_flEntwatchHudY; }
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
 	bool GetTopDefenderStatus() { return m_bTopDefender; }
-	std::weak_ptr<CTimer> GetVoiceTimer() { return m_pVoiceTimer; }
+	float GetLastVoiceTime() { return m_flLastVoiceTime; }
 	float GetBeaconEnabledTime() { return m_flBeaconEnabledTime; }
 
 	void OnSpawn();
@@ -400,7 +400,7 @@ private:
 	float m_flEntwatchHudY;
 	float m_flEntwatchHudSize;
 	bool m_bTopDefender;
-	std::weak_ptr<CTimer> m_pVoiceTimer;
+	float m_flLastVoiceTime;
 	float m_flBeaconEnabledTime;
 };
 

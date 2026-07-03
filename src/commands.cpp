@@ -750,48 +750,76 @@ CON_COMMAND_F(cs2f_fullupdate, "- Force a full update for all clients.", FCVAR_L
 	g_playerManager->FullUpdateAllClients();
 }
 
+void VoiceChatPrintPlayer(CCSPlayerController* player, int slot)
+{
+	CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
+
+	bool bSteamIDAuthed = pPlayer->IsAuthenticated();
+	uint64 uSteamID = bSteamIDAuthed ? pPlayer->GetSteamId64() : pPlayer->GetUnauthenticatedSteamId64();
+	std::string strPlayerName = pController->GetPlayerName();
+	CPlayerUserId userId = g_pEngineServer2->GetPlayerUserId(slot);
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\x04%s \x06[#%hu] \x05[%llu%s\x05]", strPlayerName.c_str(), userId, uSteamID, bSteamIDAuthed ? "" : " \x02(No Auth)");
+
+	if (player)
+		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "%s [#%hu] [%llu%s]", strPlayerName.c_str(), userId, uSteamID, bSteamIDAuthed ? "" : " (No Auth)");
+}
+
 void VoiceChatPrintCmd(const CCommand& args, CCSPlayerController* player)
 {
 	if (!GetGlobals()) return;
 
 	std::vector<int> vecActivePlayers;
+	std::vector<std::pair<int, float>> vecRecentPlayers;
+
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 
-		if (pPlayer && !pPlayer->GetVoiceTimer().expired())
+		if (!pPlayer)
+			continue;
+
+		float flLastVoiceTime = pPlayer->GetLastVoiceTime();
+
+		if (flLastVoiceTime + 0.3f > GetGlobals()->curtime)
+		{
 			vecActivePlayers.push_back(i);
+		}
+		else if (flLastVoiceTime + 15.0f > GetGlobals()->curtime)
+		{
+			auto iter = std::lower_bound(vecRecentPlayers.begin(), vecRecentPlayers.end(), flLastVoiceTime, [](const std::pair<int, float>& recentPlayer, float flCompareVoiceTime) {
+				return recentPlayer.second < flCompareVoiceTime;
+			});
+
+			vecRecentPlayers.insert(iter, {i, flLastVoiceTime});
+		}
 	}
 
-	if (vecActivePlayers.empty())
+	if (vecActivePlayers.empty() && vecRecentPlayers.empty())
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "There are no players currently using voice chat.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No players have recently used the voice chat.");
 		return;
 	}
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "List of players using voice chat:");
-	if (player)
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "List of players using voice chat:");
-
-	for (const auto& slot : vecActivePlayers)
+	if (!vecRecentPlayers.empty())
 	{
-		CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
-		ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Players who recently used voice chat:");
+		if (player)
+			ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Players who recently used voice chat:");
 
-		bool bSteamIDAuthed = pPlayer->IsAuthenticated();
-		uint64 uSteamID = bSteamIDAuthed ? pPlayer->GetSteamId64() : pPlayer->GetUnauthenticatedSteamId64();
+		for (const auto& recentPlayer : vecRecentPlayers)
+			VoiceChatPrintPlayer(player, recentPlayer.first);
+	}
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "\x04%s \x06[#%hu] \x05[%llu%s\x05]",
-					pController->GetPlayerName().c_str(),
-					g_pEngineServer2->GetPlayerUserId(slot),
-					uSteamID,
-					bSteamIDAuthed ? "" : " \x02(No Auth)");
-		if (!player) continue;
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "%s [#%hu] [%llu%s]",
-					pController->GetPlayerName().c_str(),
-					g_pEngineServer2->GetPlayerUserId(slot),
-					uSteamID,
-					bSteamIDAuthed ? "" : " (No Auth)");
+	if (!vecActivePlayers.empty())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Players using voice chat:");
+		if (player)
+			ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Players using voice chat:");
+
+		for (int slot : vecActivePlayers)
+			VoiceChatPrintPlayer(player, slot);
 	}
 }
 
