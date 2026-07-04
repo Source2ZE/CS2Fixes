@@ -18,6 +18,7 @@
  */
 
 #include "user_preferences.h"
+#include "bosshud.h"
 #include "commands.h"
 #include "common.h"
 #include "entwatch.h"
@@ -113,6 +114,7 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	bool bNoShake = (bool)GetPreferenceInt(iSlot, NO_SHAKE_PREF_KEY_NAME, 0);
 	int iButtonWatchMode = GetPreferenceInt(iSlot, BUTTON_WATCH_PREF_KEY_NAME, 0);
 	bool bZSounds = (bool)GetPreferenceInt(iSlot, ZSOUNDS_PREF_KEY_NAME, 1);
+	int iBossHudMode = GetPreferenceInt(iSlot, BOSSHUD_PREF, 1);
 
 	// EntWatch
 	int iEntwatchMode = GetPreferenceInt(iSlot, EW_PREF_HUD_MODE, 0);
@@ -129,10 +131,13 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	g_playerManager->SetPlayerStopDecals(iSlot, bHideDecals);
 	g_playerManager->SetPlayerNoShake(iSlot, bNoShake);
 
+
 	ZEPlayer* player = g_playerManager->GetPlayer(CPlayerSlot(iSlot));
 	player->SetHideDistance(iHideDistance);
 	for (int i = 0; i < iButtonWatchMode; i++)
 		player->CycleButtonWatch();
+
+	player->SetBossHudMode(iBossHudMode);
 
 	// Set EntWatch
 	player->SetEntwatchHudMode(iEntwatchMode);

@@ -18,6 +18,7 @@
  */
 
 #include "KeyValues.h"
+#include "bosshud.h"
 #include "commands.h"
 #include "common.h"
 #include "ctimer.h"
@@ -86,6 +87,9 @@ GAME_EVENT_F(round_prestart)
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_RoundPreStart();
+
+	if (g_cvarBossHudEnable.Get())
+		BossHud_RoundPreStart();
 
 	g_pMapMigrations->OnRoundPrestart();
 }

@@ -28,6 +28,7 @@ extern CConVar<bool> g_cvarFixHudFlashing;
 enum class EHudPriority
 {
 	InfectionCountdown = 2,
+	BossHud = 3,
 	AdminHSay = 99
 };
 

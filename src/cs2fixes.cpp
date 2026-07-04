@@ -22,6 +22,7 @@
 
 #include "adminsystem.h"
 #include "appframework/IAppSystem.h"
+#include "bosshud.h"
 #include "commands.h"
 #include "common.h"
 #include "cs_gameevents.pb.h"
@@ -349,6 +350,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	g_pPanoramaVoteHandler = new CPanoramaVoteHandler();
 	g_pEWHandler = new CEWHandler();
 	g_pMapMigrations = new CMapMigrations();
+	g_pBossHudHandler = new CBossHudHandler();
+	g_pSimpleHudHandler = new CSimpleHudHandler();
 
 	RegisterWeaponCommands();
 
@@ -497,6 +500,12 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	if (g_pMapMigrations)
 		delete g_pMapMigrations;
+
+	if (g_pBossHudHandler)
+		delete g_pBossHudHandler;
+
+	if (g_pSimpleHudHandler)
+		delete g_pSimpleHudHandler;
 
 	return true;
 }
@@ -1301,6 +1310,9 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_OnLevelInit(pMapName);
+
+	if (g_cvarBossHudEnable.Get())
+		BossHud_OnLevelInit(pMapName);
 
 	StartFlashingFixTimer();
 }

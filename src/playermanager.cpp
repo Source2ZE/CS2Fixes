@@ -19,6 +19,7 @@
 
 #include "playermanager.h"
 #include "adminsystem.h"
+#include "bosshud.h"
 #include "commands.h"
 #include "ctime"
 #include "ctimer.h"
@@ -764,6 +765,19 @@ void ZEPlayer::SetEntwatchHudSize(float flSize)
 		pText->m_flFontSize = m_flEntwatchHudSize;
 }
 
+int ZEPlayer::GetBossHudMode()
+{
+	if (IsFakeClient())
+		return 0;
+	return m_iBossHudMode;
+}
+
+void ZEPlayer::SetBossHudMode(int iMode)
+{
+	m_iBossHudMode = iMode;
+	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), BOSSHUD_PREF, m_iBossHudMode);
+}
+
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)
 {
 	m_vecPlayers[slot.Get()] = new ZEPlayer(slot, true);
@@ -823,6 +837,9 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_PlayerDisconnect(slot.Get());
+
+	if (g_cvarBossHudEnable.Get())
+		BossHud_PlayerDisconnect(slot.Get());
 
 	delete m_vecPlayers[slot.Get()];
 	m_vecPlayers[slot.Get()] = nullptr;
