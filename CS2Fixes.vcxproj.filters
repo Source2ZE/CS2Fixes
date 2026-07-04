@@ -197,6 +197,12 @@
     <ClCompile Include="src\mapmigrations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mapmigrations.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bosshud.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -424,7 +430,7 @@
     <ClInclude Include="src\topdefender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mapmigrations.h">
+    <ClInclude Include="src\bosshud.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
