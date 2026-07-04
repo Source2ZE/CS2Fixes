@@ -168,6 +168,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\bosshud.cpp" />
     <ClCompile Include="src\buttonwatch.cpp" />
     <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\cs_usercmd.pb.cc" />
     <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\networkbasetypes.pb.cc" />
@@ -224,6 +225,7 @@
     <ClCompile Include="src\cs2_sdk\entity\services.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\bosshud.h" />
     <ClInclude Include="src\buttonwatch.h" />
     <ClInclude Include="src\adminsystem.h" />
     <ClInclude Include="src\commands.h" />

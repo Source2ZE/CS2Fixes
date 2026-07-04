@@ -112,6 +112,7 @@ for task in MMSPlugin.binaries:
   cfg_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'cfg', MMSPlugin.metadata['name']))
   mapcfg_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'cfg', MMSPlugin.metadata['name'], 'maps'))
   gamedata_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'addons', MMSPlugin.metadata['name'], 'gamedata'))
+  bosshud_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'addons', MMSPlugin.metadata['name'], 'configs', 'bosshud'))
   builder.AddCopy(os.path.join('configs', 'admins.jsonc.example'), configs_folder)
   builder.AddCopy(os.path.join('configs', 'discordbots.cfg.example'), configs_folder)
   builder.AddCopy(os.path.join('configs', 'maplist.jsonc.example'), configs_folder)
@@ -122,6 +123,7 @@ for task in MMSPlugin.binaries:
   builder.AddCopy(os.path.join('configs', 'zr', 'hitgroups.cfg.example'), zr_folder)
   builder.AddCopy(os.path.join('configs', 'entwatch', 'maps', 'template.jsonc'), ew_maps_folder)
   builder.AddCopy(os.path.join('gamedata', 'cs2fixes.jsonc'), gamedata_folder)
+  builder.AddCopy(os.path.join('configs', 'bosshud', 'template.jsonc'), bosshud_folder)
 
   particles_cs2f_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'particles', MMSPlugin.metadata['name']))
   builder.AddCopy(os.path.join('assets', 'particles', MMSPlugin.metadata['name'], 'admin_beacon.vpcf_c'), particles_cs2f_folder)

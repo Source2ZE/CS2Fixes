@@ -62,6 +62,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/discord.cpp',
     'src/map_votes.cpp',
     'src/entwatch.cpp',
+	'src/bosshud.cpp',
     'src/user_preferences.cpp',
     'src/zombiereborn.cpp',
     'src/customio.cpp',

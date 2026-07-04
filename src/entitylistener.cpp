@@ -18,6 +18,7 @@
  */
 
 #include "entitylistener.h"
+#include "bosshud.h"
 #include "common.h"
 #include "cs2_sdk/entity/cbaseentity.h"
 #include "cs2fixes.h"
@@ -56,6 +57,9 @@ void CEntityListener::OnEntityCreated(CEntityInstance* pEntity)
 void CEntityListener::OnEntityDeleted(CEntityInstance* pEntity)
 {
 	EW_OnEntityDeleted(pEntity);
+
+	if (g_cvarBossHudEnable.Get())
+		BossHud_OnEntityDeleted(pEntity);
 }
 
 void CEntityListener::OnEntityParentChanged(CEntityInstance* pEntity, CEntityInstance* pNewParent)

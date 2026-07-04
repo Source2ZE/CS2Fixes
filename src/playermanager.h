@@ -198,6 +198,7 @@ public:
 		m_flEntwatchHudY = -2.0f;
 		m_flEntwatchHudSize = 60.0f;
 		m_bTopDefender = false;
+		m_iBossHudMode = 1;
 	}
 
 	~ZEPlayer()
@@ -269,6 +270,7 @@ public:
 	void SetEntwatchHudPos(float x, float y);
 	void SetEntwatchHudSize(float flSize);
 	void SetTopDefenderStatus(bool bStatus) { m_bTopDefender = bStatus; }
+	void SetBossHudMode(int iMode);
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -319,6 +321,7 @@ public:
 	float GetEntwatchHudY() { return m_flEntwatchHudY; }
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
 	bool GetTopDefenderStatus() { return m_bTopDefender; }
+	int GetBossHudMode();
 
 	void OnSpawn();
 	void OnAuthenticated();
@@ -393,6 +396,7 @@ private:
 	float m_flEntwatchHudY;
 	float m_flEntwatchHudSize;
 	bool m_bTopDefender;
+	int m_iBossHudMode;
 };
 
 class CPlayerManager
