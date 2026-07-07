@@ -47,7 +47,7 @@ CConVar<int> g_cvarAdminImmunityTargetting("cs2f_admin_immunity", FCVAR_NONE, "M
 CConVar<bool> g_cvarEnableMapSteamIds("cs2f_map_steamids_enable", FCVAR_NONE, "Whether to make Steam ID's available to maps", false);
 
 ZEPlayerHandle::ZEPlayerHandle() :
-	m_Index(INVALID_ZEPLAYERHANDLE_INDEX){};
+	m_Index(INVALID_ZEPLAYERHANDLE_INDEX) {};
 
 ZEPlayerHandle::ZEPlayerHandle(CPlayerSlot slot)
 {
@@ -94,6 +94,51 @@ ZEPlayer* ZEPlayerHandle::Get() const
 		return nullptr;
 
 	return pZEPlayer;
+}
+
+std::vector<int16_t> ZEPlayer::GetVoiceChat()
+{
+	int error = 0;
+	OpusDecoder* decoder = opus_decoder_create(VOICECHAT_SAMPLERATE, VOICECHAT_CHANNELS, &error);
+	if (error != OPUS_OK || decoder == nullptr || m_dequeVoicechat.empty())
+		return std::vector<int16_t>();
+
+	std::vector<int16_t> pcm;
+	// maximum packet duration (120ms; 5760 for 48kHz),
+	const int frameBufLen = VOICECHAT_SAMPLERATE * 120 / 1000;
+	std::vector<int16_t> frameBuf(frameBufLen * VOICECHAT_CHANNELS);
+
+	for (const auto& [_, packet] : m_dequeVoicechat)
+	{
+		const unsigned char* data =
+			reinterpret_cast<const unsigned char*>(packet.data());
+		int dataLen = static_cast<int>(packet.size());
+
+		int samples = opus_decode(
+			decoder,
+			data,
+			dataLen,
+			frameBuf.data(),
+			frameBufLen,
+			0);
+
+		if (samples < 0)
+		{
+			Panic("ZEPlayer::GetVoiceChat(): failed to parse opus: %s\n", opus_strerror(samples));
+
+			break;
+		}
+		else
+		{
+			pcm.insert(
+				pcm.end(),
+				frameBuf.begin(),
+				frameBuf.begin() + samples * VOICECHAT_CHANNELS);
+		}
+	}
+
+	opus_decoder_destroy(decoder);
+	return pcm;
 }
 
 void ZEPlayer::OnSpawn()
@@ -757,6 +802,46 @@ void ZEPlayer::SetEntwatchHudSize(float flSize)
 	CPointWorldText* pText = GetEntwatchHud();
 	if (pText)
 		pText->m_flFontSize = m_flEntwatchHudSize;
+}
+
+void ZEPlayer::OnVoiceFrame(const CMsgVoiceAudio& msg)
+{
+	// Message("OnVoiceFrame(...) "
+	// 		"slot=%d "
+	// 		"time=%f "
+	// 		"format=%d "
+	// 		"voice_data_size=%zu "
+	// 		"sequence_bytes=%d "
+	// 		"section_number=%u "
+	// 		"sample_rate=%u "
+	// 		"uncompressed_sample_offset=%u "
+	// 		"num_packets=%u "
+	// 		"voice_level=%f\n",
+	// 		m_slot,
+	// 		GetGlobals()->curtime,
+	// 		static_cast<int>(msg.format()),
+	// 		msg.voice_data().size(),
+	// 		msg.sequence_bytes(),
+	// 		msg.section_number(),
+	// 		msg.sample_rate(),
+	// 		msg.uncompressed_sample_offset(),
+	// 		msg.num_packets(),
+	// 		msg.voice_level());
+
+	// assume some things about the incoming voice chat
+	// - all data is somewhat realtime: packets can be out of order, causing corruption; allow it
+	// - the client controls the voice_level and sequence_bytes fields
+	if ((msg.format() != VOICEDATA_FORMAT_OPUS) || (msg.num_packets() > UINT8_MAX) || (msg.voice_data().size() > UINT8_MAX))
+		return;
+
+	// make a owned copy
+	std::string voice_data = msg.voice_data();
+	float time = GetGlobals()->curtime;
+	m_dequeVoicechat.push_back(std::make_pair(time, voice_data));
+	while ((!m_dequeVoicechat.empty()) && (m_dequeVoicechat.front().first < (time - VOICECHAT_SECONDS)))
+		m_dequeVoicechat.pop_front();
+
+	return;
 }
 
 void CPlayerManager::OnBotConnected(CPlayerSlot slot)

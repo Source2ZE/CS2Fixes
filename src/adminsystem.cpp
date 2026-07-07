@@ -1295,6 +1295,38 @@ CON_COMMAND_CHAT_FLAGS(setteam, "<name> <team (0-3)> - Set a player's team", ADM
 	if (iNumClients > 1)
 		PrintMultiAdminAction(nType, strCommandPlayerName, "moved", szAction);
 }
+
+CON_COMMAND_CHAT_FLAGS(savevc, "<name> save voicechat as PCM audio for test", ADMFLAG_CHEATS)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !savevc <name>");
+		return;
+	}
+
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+	ETargetType nType;
+	ZEPlayer* pTargetPlayer = nullptr;
+	bool bIsAdmin = !player || player->GetZEPlayer()->IsAdminFlagSet(ADMFLAG_GENERIC);
+	std::string strTarget = (!bIsAdmin || args.ArgC() == 1) ? "@me" : args[1];
+
+	if (!g_playerManager->CanTargetPlayers(player, strTarget.c_str(), iNumClients, pSlots, NO_RANDOM | NO_MULTIPLE | NO_BOT, nType))
+		return;
+
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[0]);
+	pTargetPlayer = pTarget->GetZEPlayer();
+
+	std::vector<int16_t> audio = pTargetPlayer->GetVoiceChat();
+
+	std::ofstream file(
+		"audio.pcm",
+		std::ios::binary);
+
+	file.write(
+		reinterpret_cast<const char*>(audio.data()),
+		audio.size() * sizeof(int16_t));
+}
 #endif
 
 void CAdmin::SetFlags(uint64 iFlags)
