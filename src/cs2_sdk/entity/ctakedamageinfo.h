@@ -153,6 +153,7 @@ public:
 	int32_t m_nHealthBefore;
 	float m_flDamageDealt;
 	float m_flPreModifiedDamage;
+	VectorWS m_vDamagePosition;
 	int32_t m_nTotalledHealthLost;
 	float m_flTotalledDamageDealt;
 	float m_flTotalledPreModifiedDamage;
@@ -192,4 +193,4 @@ public:
 	{
 	}
 };
-static_assert(sizeof(CTakeDamageResult) == 80);
+static_assert(sizeof(CTakeDamageResult) == 96);
