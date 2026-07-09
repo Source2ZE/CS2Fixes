@@ -657,8 +657,6 @@ void FASTCALL Detour_CTriggerGravity_GravityTouch(CBaseEntity* pEntity, CBaseEnt
 	CTriggerGravity_GravityTouch(pEntity, pOther);
 }
 
-// todo: did these args change? or just linux decompile shit
-// also which os did we even grab these from initially
 CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6)
 {
 	// Not sure if this function can even be called in this state, but if it is, we can't do shit anyways
