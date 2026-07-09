@@ -85,7 +85,7 @@ namespace addresses
 	inline void(FASTCALL* UTIL_Remove)(CEntityInstance*);
 
 	inline void(FASTCALL* CEntitySystem_AddEntityIOEvent)(CEntitySystem* pEntitySystem, CEntityInstance* pTarget, const char* pszInput,
-														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, int outputID, void*, void*);
+														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, void*, void*);
 	inline void(FASTCALL* CEntityInstance_AcceptInput)(CEntityInstance* pThis, const char* pInputName,
 													   CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value);
 
