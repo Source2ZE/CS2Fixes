@@ -215,7 +215,7 @@ public:
 class CGlowProperty
 {
 public:
-	DECLARE_SCHEMA_CLASS_INLINE(CGlowProperty)
+	DECLARE_SCHEMA_CLASS_BASE(CGlowProperty, 4)
 
 	SCHEMA_FIELD(Vector, m_fGlowColor)
 	SCHEMA_FIELD(int, m_iGlowType)
