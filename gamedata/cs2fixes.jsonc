@@ -451,28 +451,28 @@
 		},
 		"CCSPlayerController_Respawn":
 		{
-			"windows": 273,
-			"linux": 275
+			"windows": 270,
+			"linux": 272
 		},
 		// CBaseTrigger
 		"PassesTriggerFilters":
 		{
-			"windows": 273,
-			"linux": 274
+			"windows": 269,
+			"linux": 270
 		},
 		// Actually a bit of a wrapper function now? Eventually calls a long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
 		"CCSPlayerPawn::OnTakeDamage_Alive":
 		{
-			"windows": 256,
-			"linux": 257
+			"windows": 252,
+			"linux": 253
 		},
 		// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
 		// return (*(*v9 + 2976LL))(v9, v27, 0LL);
 		// 2976 (372 * 8) is the offset
 		"CBasePlayerPawn_CommitSuicide":
 		{
-			"windows": 390,
-			"linux": 390
+			"windows": 384,
+			"linux": 384
 		},
 		"GameEntitySystem":
 		{
@@ -494,8 +494,8 @@
 		// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) ), note that this is a CUtlVector
 		"CNetworkGameServer_ClientList":
 		{
-			"windows": 74,
-			"linux": 74
+			"windows": 73,
+			"linux": 73
 		},
 		// Right above "mapgroup workshop;" string there is a virtual call to this on g_pGameTypes using "workshop" string
 		"IGameTypes_CreateWorkshopMapGroup":
@@ -506,18 +506,18 @@
 		// There's no easy way to find this, but it's a function that checks entity flags (0x370) and ends by calling RemoveFlag with 0x800000 (FL_BASEVELOCITY)
 		"CCSPlayer_MovementServices::CheckMovingGround":
 		{
-			"windows": 41,
-			"linux": 42
+			"windows": 44,
+			"linux": 45
 		},
 		"CCSPlayer_WeaponServices::DropWeapon":
 		{
-			"windows": 25,
-			"linux": 26
+			"windows": 28,
+			"linux": 29
 		},
 		"CCSPlayer_WeaponServices::SelectItem":
 		{
-			"windows": 27,
-			"linux": 28
+			"windows": 30,
+			"linux": 31
 		},
 		// server.dll -> xref 'sv_phys_stop_at_collision' first __fastcall
 		"CVPhys2World::GetTouchingList":
