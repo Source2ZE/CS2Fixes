@@ -430,13 +430,13 @@ bool PrepareMapSetModel(CBaseModelEntity* pModel)
 	return true;
 }
 
-bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID, void* a7, void* a8)
+bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, void* a6, void* a7)
 {
 	VPROF_SCOPE_BEGIN("Detour_CEntityIdentity_AcceptInput");
 
 	if (g_cvarEnableZR.Get())
 	{
-		bool result = ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID);
+		bool result = ZR_Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value);
 
 		if (!result)
 			return result;
@@ -525,7 +525,7 @@ bool FASTCALL Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSym
 
 	VPROF_SCOPE_END();
 
-	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, nOutputID, a7, a8);
+	return CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value, a6, a7);
 }
 
 CConVar<bool> g_cvarBlockNavLookup("cs2f_block_nav_lookup", FCVAR_NONE, "Whether to block navigation mesh lookup, improves server performance but breaks bot navigation", false);
@@ -657,6 +657,8 @@ void FASTCALL Detour_CTriggerGravity_GravityTouch(CBaseEntity* pEntity, CBaseEnt
 	CTriggerGravity_GravityTouch(pEntity, pOther);
 }
 
+// todo: did these args change? or just linux decompile shit
+// also which os did we even grab these from initially
 CServerSideClient* FASTCALL Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6)
 {
 	// Not sure if this function can even be called in this state, but if it is, we can't do shit anyways

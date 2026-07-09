@@ -1485,7 +1485,7 @@ AcquireResult ZR_Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices
 	return AcquireResult::Allowed;
 }
 
-bool ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID)
+bool ZR_Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value)
 {
 	const char* inputName = pInputName->String();
 

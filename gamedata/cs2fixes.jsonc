@@ -19,13 +19,13 @@
 		{
 			"library": "engine",
 			"windows": "40 53 48 83 EC ? 48 8B D9 3B 51",
-			"linux": "55 48 89 E5 41 56 41 55 41 54 53 48 89 FB 39 77"
+			"linux": "55 48 89 E5 41 55 41 54 53 48 89 FB 48 83 EC ? 39 77"
 		},
 		// idk a good way to find this again, i just brute forced the vtable. offset is 136 on CTriggerPush
 		"TriggerPush_Touch":
 		{
 			"library": "server",
-			"windows": "40 55 53 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 02 48 8B F9",
+			"windows": "40 55 53 57 48 8B EC 48 81 EC ? ? ? ? 48 8B 02",
 			"linux": "55 48 89 E5 41 57 41 56 41 55 49 89 F5 41 54 53 48 89 FB 48 83 EC ? E8 ? ? ? ? 84 C0"
 		},
 		// this is called in CTriggerPush::Touch, using IDA pseudocode look in an `if ( ( v & 0x80 ) != 0 )` and then `if ( v > 0.0 ) SetGroundEntity()`
@@ -68,14 +68,14 @@
 		{
 			"library": "server",
 			"windows": "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 49 8B F0 48 8B D9 48 8B 0D",
-			"linux": "55 48 89 F0 48 89 E5 41 57 49 89 FF 41 56 48 8D 7D"
+			"linux": "55 48 89 E5 41 56 49 89 FE 41 55 48 8D 7D"
 		},
 		// Called by CEntityInstance_AcceptInput
 		"CEntityIdentity_AcceptInput":
 		{
 			"library": "server",
-			"windows": "48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 02",
-			"linux": "55 49 89 D3 48 89 E5 41 57 45 89 CF 41 56"
+			"windows": "48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 02",
+			"linux": "55 48 89 E5 41 57 41 56 4C 8D BD ? ? ? ? 4D 89 CE"
 		},
 		// func_pushable inside CTriggerBrush::Use calls CEntityIOOutput::FireOutputInternal
 		// Windows - https://imgur.com/a/A3zcxQm
@@ -106,13 +106,13 @@
 		{
 			"library": "server",
 			"windows": "40 55 53 56 57 41 54 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4D 8B E0",
-			"linux": "55 48 89 E5 41 57 41 56 41 55 49 89 FD 31 FF"
+			"linux": "55 66 0F EF C0 48 89 E5 41 57 41 56 41 55 49 89 FD 31 FF"
 		},
 		// Should be xref'd right above "flGravity", takes a float arg
 		"CBaseEntity::SetGravityScale":
 		{
 			"library": "server",
-			"windows": "48 89 5C 24 ? 57 48 83 EC ? F3 0F 10 81 ? ? ? ? 48 8B F9 0F 29 74 24 ? 0F 28 F1 0F 2E C6 7A ? 74",
+			"windows": "48 89 5C 24 ? 57 48 83 EC ? F3 0F 10 81 ? ? ? ? 48 8B F9 0F 29 74 24 ? 0F 28 F1 0F 2E C6 7A ? 74 ? BA ? ? ? ? 41 B8 ? ? ? ? 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8B CF F3 0F 11 B7 ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? 0F 28 74 24 ? 48 83 C4 ? 5F C3 CC CC CC CC CC 48 89 5C 24",
 			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 81 EC ? ? ? ? 0F 2E 87 ? ? ? ? 7A ? 75 ? 48 81 C4 ? ? ? ? 5B 41 5C 41 5D 41 5E 41 5F 5D C3 0F 1F 40 ? 31 C9 BE ? ? ? ? 66 0F EF C9 F3 0F 11 85 ? ? ? ? 48 8D BD ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 0F 29 8D ? ? ? ? 4C 8D A5 ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? C7 85 ? ? ? ? ? ? ? ? 66 89 8D ? ? ? ? E8 ? ? ? ? 48 8B 85 ? ? ? ? 48 8D 15 ? ? ? ? 83 85 ? ? ? ? ? F3 0F 10 85 ? ? ? ? C7 00 ? ? ? ? 48 8B 03 48 8B 80 ? ? ? ? 48 39 D0 0F 85 ? ? ? ? 8B 95 ? ? ? ? 4C 8D 7B ? 85 D2 0F 85 ? ? ? ? 80 BB ? ? ? ? ? 75"
 		},
 		// "Game System %s is defined twice!\n"
@@ -150,8 +150,8 @@
 		"CNavMesh_GetNearestNavArea":
 		{
 			"library": "server",
-			"windows": "48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 4C 8B 2D",
-			"linux": "55 48 89 E5 41 57 49 89 D7 41 56 41 55 49 89 FD 41 54 4D 89 C4"
+			"windows": "48 89 5C 24 ? 44 89 4C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24",
+			"linux": "55 48 89 E5 41 57 49 89 FF 41 56 41 89 CE"
 		},
 		// Has "SetModel" string, but is also referenced by cs_script registration function using the same string
 		"CS_Script_SetModel":
@@ -168,16 +168,17 @@
 			"windows": "40 53 48 83 EC ? 48 8B D9 4C 8B C2 48 8B 0D ? ? ? ? 48 8D 54 24 ? 48 8B 01 FF 50 ? 48 8B 54 24 ? 48 8B CB E8 ? ? ? ? 48 83 C4 ? 5B C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24",
 			"linux": "55 48 89 E5 53 48 89 FB 48 83 EC ? 48 8D 05 ? ? ? ? 48 8B 38 48 8B 07 FF 50 ? 48 89 DF 48 8B 5D ? C9 48 89 C6 E9 ? ? ? ? CC CC CC CC 55"
 		},
+		// "TerminateRound"
 		"CGameRules_TerminateRound":
 		{
 			"library": "server",
-			"windows": "48 8B C4 4C 89 48 ? 48 89 48 ? 55 56 41 56",
-			"linux": "55 48 89 E5 41 57 49 89 FF 41 56 41 55 41 54 53 48 81 EC ? ? ? ? 48 8D 05 ? ? ? ? F3 0F 11 85"
+			"windows": "48 8B C4 4C 89 48 ? 48 89 48 ? 55 41 54",
+			"linux": "55 48 89 E5 41 57 41 89 F7 41 56 48 8D 35"
 		},
 		"CCSPlayer_WeaponServices_CanUse":
 		{
 			"library": "server",
-			"windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 48 8B 01 48 8B FA",
+			"windows": "48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 54 41 56 41 57 48 83 EC ? 48 8B 01 48 8B FA",
 			"linux": "55 48 8D 15 ? ? ? ? 48 89 E5 41 55 41 54 49 89 FC 53 48 89 F3 48 83 EC ? 48 8B 07 48 8B 80"
 		},
 		"CCSPlayer_WeaponServices_EquipWeapon":
@@ -267,8 +268,8 @@
 		"CGamePlayerEquip_InputTriggerForAllPlayers":
 		{
 			"library": "server",
-			"windows": "40 55 53 41 54 41 56 48 8B EC 48 83 EC ? 4C 8B F1",
-			"linux": "55 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 53 48 83 EC ? E8 ? ? ? ? C7 45"
+			"windows": "48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8B EC 48 83 EC ? 4C 8B F1",
+			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC 53 48 83 EC ? E8 ? ? ? ? C7 45 ? ? ? ? ? 89 C7 66 89 45 ? 66 83 F8 ? 75 ? 48 C7 45 ? ? ? ? ? 66 83 FF ? 0F 84 ? ? ? ? 0F B7 7D ? E8 ? ? ? ? 66 89 45 ? 66 83 F8 ? 0F 84 ? ? ? ? 89 C7 E8 ? ? ? ? 0F B7 7D ? 48 89 C3 48 85 C0 74 ? 48 89 C7 E8 ? ? ? ? 48 8D 7D ? 48 89 C6 E8 ? ? ? ? 0F B7 7D ? 84 C0 0F 85 ? ? ? ? EB ? 66 0F 1F 44 00 ? E8 ? ? ? ? 48 89 C3 48 85 C0 0F 84 ? ? ? ? 48 89 C7 E8 ? ? ? ? 48 8D 7D ? 48 89 C6 E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 0F B7 7D ? 48 89 5D ? 66 83 FF"
 		},
 		"CGamePlayerEquip_InputTriggerForActivatedPlayer":
 		{
@@ -281,7 +282,7 @@
 		{
 			"library": "engine",
 			"windows": "48 89 54 24 ? 53 56 57 41 56 48 83 EC",
-			"linux": "55 48 89 E5 41 57 41 56 49 89 FE 41 55 41 54 49 89 F4 53 48 81 EC ? ? ? ? 41 C6 01"
+			"linux": "55 48 89 E5 41 57 41 56 49 89 FE 41 55 41 54 53 48 83 EC ? 8B 87"
 		},
 		// The only function with "weapon_shield" and does fminf with 260.0 earlier
 		"CCSPlayerPawn_GetMaxSpeed":
@@ -296,7 +297,7 @@
 		{
 			"library": "server",
 			"windows": "4C 89 44 24 ? F3 0F 11 4C 24 ? 55 53 56",
-			"linux": "55 48 89 E5 41 57 49 89 FF 41 56 48 8D 3D ? ? ? ? 41 55 41 54 53 48 81 EC"
+			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC 53 48 8D 3D ? ? ? ? 48 81 EC ? ? ? ? 48 89 B5 ? ? ? ? BE ? ? ? ? F3 0F 11 85"
 		},
 		"TraceFunc":
 		{
@@ -308,20 +309,20 @@
 		"TraceShape":
 		{
 			"library": "server",
-			"windows": "48 89 5C 24 ? 48 89 4C 24 ? 55 57",
-			"linux": "55 48 89 E5 41 57 49 89 CF 41 56 49 89 F6 41 55 4D 89 C5"
+			"windows": "48 89 54 24 ? 48 89 4C 24 ? 55 53 56 57 41 56 41 57 48 8D AC 24 ? ? ? ? B8",
+			"linux": "55 48 89 E5 41 57 49 89 CF 41 56 49 89 F6 41 55 4D 89 C5 41 54 49 89 D4"
 		},
 		"CBasePlayerPawn_GetEyePosition":
 		{
 			"library": "server",
-			"windows": "48 89 74 24 ? 57 48 83 EC ? 48 8B F1 48 8B FA 48 8B 89 ? ? ? ? 48 85 C9 74 ? 48 8B 01",
+			"windows": "48 89 5C 24 ? 57 48 83 EC ? 48 8B F9 48 8B DA 48 8B 89 ? ? ? ? 48 85 C9 74 ? 48 8B 01",
 			"linux": "55 48 89 E5 53 48 89 FB 48 83 EC ? 48 8B BF ? ? ? ? 48 85 FF 0F 84"
 		},
 		"CBasePlayerPawn_GetEyeAngles":
 		{
 			"library": "server",
 			"windows": "48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B F9 48 8B DA 48 8B 89 ? ? ? ? 48 85 C9",
-			"linux": "55 48 89 E5 41 54 53 48 89 FB 48 83 EC ? 48 8B BF ? ? ? ? 48 85 FF 0F 84 ? ? ? ? 48 8B 07 48 8D 15"
+			"linux": "55 48 89 E5 41 54 53 48 89 FB 48 83 C4 ? 48 8B BF ? ? ? ? 48 85 FF"
 		},
 		// Only ever referenced right next to string "TestActivator"
 		"CBaseFilter_InputTestActivator":
@@ -335,15 +336,15 @@
 		{
 			"library": "server",
 			"windows": "41 54 48 81 EC ? ? ? ? BA ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 85 C0",
-			"linux": "55 48 8D 3D ? ? ? ? BE ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC ? ? ? ? E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 8B 00"
+			"linux": "55 48 8D 3D ? ? ? ? BE ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 54 53 48 83 EC"
 		},
 		// Location to CUtlMap unk that is referenced on Windows by function with "Notification about user penalty: %u/%u (%u sec)\n" string
 		// On Linux, a qword appears twice in GameSystem_Think_CheckSteamBan, and thrice in a sub-function of the function used for Windows (1 top, 2 bottom), the only other reference to this qword is some convar registration function with two unks above, sm_mapGcBanInformation is the unk further away
 		"CCSGameRules__sm_mapGcBanInformation":
 		{
 			"library": "server",
-			"windows": "48 8D 0D ? ? ? ? 48 89 45 ? 0F 11 45",
-			"linux": "48 8D 0D ? ? ? ? 48 63 51 ? 83 FA ? 0F 84 ? ? ? ? F7 41 ? ? ? ? ? 74"
+			"windows": "48 8D 0D ? ? ? ? 0F 11 44 24 ? 0F 11 44 24 ? E8",
+			"linux": "48 8D 35 ? ? ? ? 89 C2 48 63 46"
 		},
 		// Called right before "%d spawn groups:\n"
 		"GetSpawnGroups":
@@ -371,21 +372,21 @@
 		{
 			"library": "server",
 			"windows": "75 ? 48 8B 03 48 8B CB FF 90 ? ? ? ? 84 C0 74 ? 48 8D 05",
-			"linux": "75 ? 48 8B 03 48 8D 15 ? ? ? ? 48 8B 80 ? ? ? ? 48 39 D0 75 ? 48 83 C4"
+			"linux": "75 ? 48 8B 03 48 89 DF FF 90 ? ? ? ? 84 C0 74 ? 48 8D 05"
 		},
 		// "Going to intermission...\n"
 		"CCSGameRules_GoToIntermission":
 		{
 			"library": "server",
 			"windows": "48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 4C 8B E9",
-			"linux": "55 31 C0 48 89 E5 41 57 41 56 41 55 41 54 41 89 F4"
+			"linux": "55 31 C0 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 48 8D 3D"
 		},
 		// Called in return by function with "Usage:  setang_exact pitch yaw <roll optional> <prediction sync ticks optional>" string
 		"CBasePlayerPawn_SnapViewAngles":
 		{
 			"library": "server",
 			"windows": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B DA 48 8B F1 48 8D 55",
-			"linux": "55 48 89 E5 41 57 49 89 FF 48 89 F7 41 56 41 55 41 54 53 48 81 EC"
+			"linux": "55 48 89 E5 41 57 49 89 FF 48 89 F7 41 56 41 55 41 54 53 48 81 EC ? ? ? ? E8"
 		}
 	},
 	"Offsets":
