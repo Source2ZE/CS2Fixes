@@ -25,10 +25,13 @@
 #include "entity/cpointworldtext.h"
 #include "entity/lights.h"
 #include "gamesystem.h"
+#include "netmessages.h"
 #include "steam/isteamuser.h"
 #include "steam/steam_api_common.h"
 #include "steam/steamclientpublic.h"
 #include "utlvector.h"
+#include <deque>
+#include <opus/opus.h>
 #include <playerslot.h>
 
 extern CConVar<bool> g_cvarFlashLightTransmitOthers;
@@ -55,6 +58,10 @@ extern CConVar<CUtlString> g_cvarFlashLightAttachment;
 #define BUTTON_WATCH_PREF_KEY_NAME "button_watch"
 #define ZSOUNDS_PREF_KEY_NAME "zsounds"
 #define INVALID_ZEPLAYERHANDLE_INDEX 0u
+
+#define VOICECHAT_SAMPLERATE 48000
+#define VOICECHAT_CHANNELS 1
+#define VOICECHAT_SECONDS 60.0
 
 static uint32 iZEPlayerHandleSerial = 0u; // this should actually be 3 bytes large, but no way enough players join in servers lifespan for this to be an issue
 
@@ -273,6 +280,7 @@ public:
 	void SetEntwatchHudSize(float flSize);
 	void SetTopDefenderStatus(bool bStatus) { m_bTopDefender = bStatus; }
 	void SetLastVoiceTime(float flTime) { m_flLastVoiceTime = flTime; }
+	void OnVoiceFrame(const CMsgVoiceAudio& msg);
 	void SetBeaconEnabledTime(float flTime) { m_flBeaconEnabledTime = flTime; }
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
@@ -325,6 +333,7 @@ public:
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
 	bool GetTopDefenderStatus() { return m_bTopDefender; }
 	float GetLastVoiceTime() { return m_flLastVoiceTime; }
+	std::vector<int16_t> GetVoiceChat();
 	float GetBeaconEnabledTime() { return m_flBeaconEnabledTime; }
 
 	void OnSpawn();
@@ -401,6 +410,7 @@ private:
 	float m_flEntwatchHudSize;
 	bool m_bTopDefender;
 	float m_flLastVoiceTime;
+	std::deque<std::pair<float, std::string>> m_dequeVoicechat;
 	float m_flBeaconEnabledTime;
 };
 

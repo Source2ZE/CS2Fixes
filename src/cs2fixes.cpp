@@ -1244,6 +1244,7 @@ bool CS2Fixes::Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg)
 		RETURN_META_VALUE(MRES_IGNORED, true);
 
 	pPlayer->SetLastVoiceTime(GetGlobals()->curtime);
+	pPlayer->OnVoiceFrame(msg.audio());
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
