@@ -93,6 +93,7 @@ DECLARE_DETOUR(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermissi
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
 CConVar<bool> g_cvarFixBlockDamage("cs2f_fix_block_dmg", FCVAR_NONE, "Whether to fix block-damage on players", false);
+CConVar<float> g_cvarPropDamageScale("cs2f_prop_dmg_scale", FCVAR_NONE, "Multiplier on prop damage", 1.0f, true, 0.0f, false, 0.0f);
 
 int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult)
 {
@@ -148,6 +149,12 @@ int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageI
 	// Fix disconnected players grenades being able to damage teammates
 	if (!V_strcasecmp(pszInflictorClass, "hegrenade_projectile") && pInfo->m_AttackerInfo.m_bIsPawn && pInfo->m_AttackerInfo.m_nTeam == 0)
 		return 1;
+
+	if (!V_strncasecmp(pszInflictorClass, "prop_physics", 12))
+	{
+		pInfo->m_flDamage *= g_cvarPropDamageScale.Get();
+		pInfo->m_flTotalledDamage *= g_cvarPropDamageScale.Get();
+	}
 
 	// maybe call in flow
 	CTakeDamageResult damageResult(0);
