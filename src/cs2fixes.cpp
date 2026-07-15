@@ -1235,7 +1235,7 @@ bool CS2Fixes::Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg)
 {
 	CServerSideClient* client = META_IFACEPTR(CServerSideClient);
 
-	if (!client || !GetGlobals())
+	if (!client)
 		RETURN_META_VALUE(MRES_IGNORED, true);
 
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(client->GetPlayerSlot());
@@ -1243,7 +1243,11 @@ bool CS2Fixes::Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg)
 	if (!pPlayer)
 		RETURN_META_VALUE(MRES_IGNORED, true);
 
-	pPlayer->SetLastVoiceTime(GetGlobals()->curtime);
+	if (pPlayer->IsMuted())
+		RETURN_META_VALUE(MRES_SUPERCEDE, true);
+
+	if (GetGlobals())
+		pPlayer->SetLastVoiceTime(GetGlobals()->curtime);
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }

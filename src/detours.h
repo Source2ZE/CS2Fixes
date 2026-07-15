@@ -86,7 +86,6 @@ bool SetupFireOutputInternalDetour();
 
 void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter&, const char*, CCSPlayerController*, uint64);
 void FASTCALL Detour_UTIL_SayText2Filter(IRecipientFilter&, CCSPlayerController*, uint64, const char*, const char*, const char*, const char*, const char*);
-bool FASTCALL Detour_IsHearingClient(void*, int);
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther);
 int64 FASTCALL Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult);
 bool FASTCALL Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices*, CBasePlayerWeapon*);

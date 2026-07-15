@@ -15,12 +15,6 @@
 			"windows": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 45 0F B6 F0",
 			"linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 56 41 89 D6 31 D2"
 		},
-		"IsHearingClient":
-		{
-			"library": "engine",
-			"windows": "40 53 48 83 EC ? 48 8B D9 3B 51",
-			"linux": "55 48 89 E5 41 55 41 54 53 48 89 FB 48 83 EC ? 39 77"
-		},
 		// idk a good way to find this again, i just brute forced the vtable. offset is 136 on CTriggerPush
 		"TriggerPush_Touch":
 		{

@@ -60,7 +60,6 @@ CUtlVector<CDetourBase*> g_vecDetours;
 
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
-DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 DECLARE_DETOUR(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse);
@@ -248,15 +247,6 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther)
 
 	flags |= (1 << 23); // TODO: is FL_BASEVELOCITY really gone?
 	pOther->m_fFlags(flags);
-}
-
-bool FASTCALL Detour_IsHearingClient(void* serverClient, int index)
-{
-	ZEPlayer* player = g_playerManager->GetPlayer(index);
-	if (player && player->IsMuted())
-		return false;
-
-	return IsHearingClient(serverClient, index);
 }
 
 void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
