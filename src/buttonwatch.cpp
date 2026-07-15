@@ -99,6 +99,10 @@ void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEnt
 
 	CCSPlayerController* ccsPlayer = CCSPlayerController::FromPawn(static_cast<CCSPlayerPawn*>(pActivator));
 	std::string strPlayerName = ccsPlayer->GetPlayerName();
+	const char* pszButtonName = ((CBaseEntity*)pCaller)->GetName();
+
+	if (!V_strcasecmp("game_playerdie", pszButtonName) || !V_strcasecmp("game_playerkill", pszButtonName) || !V_strcasecmp("game_playerjoin", pszButtonName) || !V_strcasecmp("game_playerspawn", pszButtonName) || !V_strcasecmp("game_playerleave", pszButtonName))
+		return;
 
 	ZEPlayer* zpPlayer = ccsPlayer->GetZEPlayer();
 	std::string strPlayerID = "";
@@ -108,7 +112,7 @@ void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEnt
 		strPlayerID = "(" + strPlayerID + ")";
 	}
 
-	std::string strButton = std::to_string(pCaller->GetEntityIndex().Get()) + " " + std::string(((CBaseEntity*)pCaller)->GetName());
+	std::string strButton = std::to_string(pCaller->GetEntityIndex().Get()) + " " + std::string(pszButtonName);
 
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
