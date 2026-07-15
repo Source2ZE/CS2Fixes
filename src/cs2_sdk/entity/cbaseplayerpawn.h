@@ -96,5 +96,10 @@ public:
 		CALL_VIRTUAL(void, offset, this, bExplode, bForce);
 	}
 
+	void SnapViewAngles(QAngle* pAngles)
+	{
+		addresses::CBasePlayerPawn_SnapViewAngles(this, pAngles);
+	}
+
 	CBasePlayerController* GetController() { return m_hController.Get(); }
 };

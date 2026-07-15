@@ -246,33 +246,34 @@ void CMapVoteSystem::StartVote()
 
 	m_iVoteSize = std::min((int)vecPossibleMaps.size(), g_cvarVoteMaxMaps.Get());
 	bool bAbort = false;
+	std::shared_ptr<CMap> pAlternativeMap;
 
 	if (GetForcedNextMap())
 	{
-		CTimer::Create(6.0f, TIMERFLAG_MAP, []() {
-			g_pMapVoteSystem->FinishVote();
-			return -1.0f;
-		});
-
+		pAlternativeMap = GetForcedNextMap();
 		bAbort = true;
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "The vote was overriden. \x06%s\x01 will be the next map!\n", GetForcedNextMap()->GetName());
+		Message("The vote was overriden. \x06%s\x01 will be the next map!\n", GetForcedNextMap()->GetName());
 	}
 	else if (m_iVoteSize < 2)
 	{
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Not enough maps available for map vote, aborting! Please have an admin loosen map limits.");
-		Message("Not enough maps available for map vote, aborting!\n");
-		m_bIsVoteOngoing = false;
-		bAbort = true;
-
 		// Reload the current map as a fallback
 		// Previously we fell back to game behaviour which could choose a random map in mapgroup, but a crash bug with default map changes was introduced in 2025-05-07 CS2 update
-		CTimer::Create(6.0f, TIMERFLAG_MAP, []() {
-			g_pMapVoteSystem->GetCurrentMap()->Load();
-			return -1.0f;
-		});
+		pAlternativeMap = GetCurrentMap();
+		bAbort = true;
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Not enough maps available for map vote, aborting! Please have an admin loosen map limits.");
+		Message("Not enough maps available for map vote, aborting!\n");
 	}
 
 	if (bAbort)
 	{
+		CTimer::Create(6.0f, TIMERFLAG_MAP, [pAlternativeMap]() {
+			if (pAlternativeMap)
+				pAlternativeMap->Load();
+
+			return -1.0f;
+		});
+
 		// Disable the map vote
 		for (int i = 0; i < 10; i++)
 		{
@@ -283,6 +284,7 @@ void CMapVoteSystem::StartVote()
 			g_pGameRules->m_nEndMatchMapGroupVoteOptions.NetworkStateChanged();
 		}
 
+		m_bIsVoteOngoing = false;
 		return;
 	}
 
@@ -383,28 +385,18 @@ void CMapVoteSystem::FinishVote()
 	bool bIsNextMapVoted = UpdateWinningMap();
 	int iNextMapVoteIndex = WinningMapIndex();
 	char buffer[256];
-	std::shared_ptr<CMap> pNextMap;
 
-	if (GetForcedNextMap())
+	if (iNextMapVoteIndex == -1)
 	{
-		pNextMap = GetForcedNextMap();
+		Panic("Failed to count map votes, file a bug\n");
+		iNextMapVoteIndex = 0;
 	}
-	else
-	{
-		if (iNextMapVoteIndex == -1)
-		{
-			Panic("Failed to count map votes, file a bug\n");
-			iNextMapVoteIndex = 0;
-		}
 
-		g_pGameRules->m_nEndMatchMapVoteWinner = iNextMapVoteIndex;
-		pNextMap = GetMapByIndex(g_pGameRules->m_nEndMatchMapGroupVoteOptions[iNextMapVoteIndex]);
-	}
+	std::shared_ptr<CMap> pNextMap = GetMapByIndex(g_pGameRules->m_nEndMatchMapGroupVoteOptions[iNextMapVoteIndex]);
+	g_pGameRules->m_nEndMatchMapVoteWinner = iNextMapVoteIndex;
 
 	// Print out the map we're changing to
-	if (GetForcedNextMap())
-		V_snprintf(buffer, sizeof(buffer), "The vote was overriden. \x06%s\x01 will be the next map!\n", pNextMap->GetName());
-	else if (bIsNextMapVoted)
+	if (bIsNextMapVoted)
 		V_snprintf(buffer, sizeof(buffer), "The vote has ended. \x06%s\x01 will be the next map!\n", pNextMap->GetName());
 	else
 		V_snprintf(buffer, sizeof(buffer), "No map was chosen. \x06%s\x01 will be the next map!\n", pNextMap->GetName());
@@ -413,7 +405,7 @@ void CMapVoteSystem::FinishVote()
 	Message(buffer);
 
 	// Print vote result information: how many votes did each map get?
-	if (!GetForcedNextMap() && GetGlobals())
+	if (GetGlobals())
 	{
 		int arrMapVotes[10] = {0};
 		Message("Map vote result --- total votes per map:\n");
@@ -837,6 +829,12 @@ void CMapVoteSystem::PrintMapList(CCSPlayerController* pController)
 
 void CMapVoteSystem::ForceNextMap(CCSPlayerController* pController, const char* pszMapSubstring)
 {
+	if (m_bIntermissionStarted)
+	{
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Cannot force next map because the map vote has already started!");
+		return;
+	}
+
 	if (pszMapSubstring[0] == '\0')
 	{
 		if (!GetForcedNextMap())

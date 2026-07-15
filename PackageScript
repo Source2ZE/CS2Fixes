@@ -113,7 +113,7 @@ for task in MMSPlugin.binaries:
   mapcfg_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'cfg', MMSPlugin.metadata['name'], 'maps'))
   gamedata_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'addons', MMSPlugin.metadata['name'], 'gamedata'))
   builder.AddCopy(os.path.join('configs', 'admins.jsonc.example'), configs_folder)
-  builder.AddCopy(os.path.join('configs', 'discordbots.cfg.example'), configs_folder)
+  builder.AddCopy(os.path.join('configs', 'discordbots.jsonc.example'), configs_folder)
   builder.AddCopy(os.path.join('configs', 'maplist.jsonc.example'), configs_folder)
   builder.AddCopy(os.path.join('cfg', MMSPlugin.metadata['name'], 'cs2fixes.cfg'), cfg_folder)
   builder.AddCopy(os.path.join('cfg', MMSPlugin.metadata['name'], 'maps', 'de_somemap.cfg'), mapcfg_folder)

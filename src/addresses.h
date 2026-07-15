@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2026 Source2ZE
@@ -44,6 +44,7 @@ class CEntityInstance;
 class CEntityIdentity;
 class CBasePlayerController;
 class CCSPlayerController;
+class CBasePlayerPawn;
 class CCSPlayerPawn;
 class CBaseModelEntity;
 class CBaseEntity;
@@ -85,9 +86,9 @@ namespace addresses
 	inline void(FASTCALL* UTIL_Remove)(CEntityInstance*);
 
 	inline void(FASTCALL* CEntitySystem_AddEntityIOEvent)(CEntitySystem* pEntitySystem, CEntityInstance* pTarget, const char* pszInput,
-														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, int outputID, void*, void*);
+														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, void*, void*);
 	inline void(FASTCALL* CEntityInstance_AcceptInput)(CEntityInstance* pThis, const char* pInputName,
-													   CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, int nOutputID, void*);
+													   CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value);
 
 	inline CBaseEntity*(FASTCALL* CGameEntitySystem_FindEntityByClassName)(CEntitySystem* pEntitySystem, CEntityInstance* pStartEntity, const char* szName);
 
@@ -107,5 +108,6 @@ namespace addresses
 													   const Vector* vecDamageForce, const Vector* vecDamagePosition, float flDamage, int bitsDamageType, int iCustomDamage, void* a10);
 	inline void(FASTCALL* CCSPlayer_WeaponServices_EquipWeapon)(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
 	inline void(FASTCALL* GetSpawnGroups)(CSpawnGroupMgrGameSystem* pSpawnGroupMgr, CUtlVector<SpawnGroupHandle_t>* pList);
+	inline void(FASTCALL* CBasePlayerPawn_SnapViewAngles)(CBasePlayerPawn* pPawn, QAngle* pAngles);
 	inline int64(FASTCALL* CBaseEntity_TakeDamageOld)(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult);
 } // namespace addresses

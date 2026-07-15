@@ -31,4 +31,5 @@ public:
 
 	SCHEMA_FIELD(Vector, m_vecPushDirEntitySpace)
 	SCHEMA_FIELD(bool, m_bTriggerOnStartTouch)
+	SCHEMA_FIELD(float, m_flSpeed)
 };

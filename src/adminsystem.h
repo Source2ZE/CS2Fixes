@@ -189,9 +189,6 @@ public:
 	void AddDisconnectedPlayer(const char* pszName, uint64 xuid, const char* pszIP);
 	void ShowDisconnectedPlayers(CCSPlayerController* const pAdmin);
 
-	// TODO: Remove this once servers have been given a few months to update cs2fixes
-	bool ConvertAdminsKVToJSON();
-
 private:
 	std::map<std::string, CAdminBase> m_mapAdminGroups;
 	std::map<uint64, CAdmin> m_mapAdmins;

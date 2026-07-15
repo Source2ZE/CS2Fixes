@@ -86,6 +86,9 @@ class CPlayerPawnComponent
 	virtual void unk_17() = 0;
 	virtual void unk_18() = 0;
 	virtual void unk_19() = 0;
+	virtual void unk_20() = 0;
+	virtual void unk_21() = 0;
+	virtual void unk_22() = 0;
 
 public:
 	DECLARE_SCHEMA_CLASS(CPlayerPawnComponent);

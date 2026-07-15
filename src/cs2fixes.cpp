@@ -82,7 +82,8 @@ KHook::Virtual<INetworkServerService, void, const GameSessionConfiguration_t&, I
 KHook::Virtual<ISource2GameEntities, void, CCheckTransmitInfo**, int, CBitVec<16384>&, CBitVec<16384>&, const Entity2Networkable_t**, const uint16*, int> checkTransmitHook(&ISource2GameEntities::CheckTransmit, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_CheckTransmit_Post);
 KHook::Virtual<ICvar, void, ConCommandRef, const CCommandContext&, const CCommand&> dispatchConCommandHook(&ICvar::DispatchConCommand, &g_CS2Fixes, &CS2Fixes::Hook_DispatchConCommand, nullptr);
 KHook::Virtual<IGameEventManager2, int, const char*, bool> loadEventsFromFileHook(&IGameEventManager2::LoadEventsFromFile, &g_CS2Fixes, &CS2Fixes::Hook_LoadEventsFromFile, nullptr);
-KHook::Virtual<CEntitySystem, void, int, const EntitySpawnInfo_t*> spawnHook(&CEntitySystem::Spawn, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_Spawn_Post);
+KHook::Virtual<CEntitySystem, void, int, const EntitySpawnInfo_t*> spawnHook(&CEntitySystem::Spawn, &g_CS2Fixes, &CS2Fixes::Hook_Spawn, nullptr);
+KHook::Virtual<CServerSideClient, bool, const CCLCMsg_VoiceData_t&> processVoiceDataHook(&CServerSideClient::ProcessVoiceData, &g_CS2Fixes, &CS2Fixes::Hook_ProcessVoiceData, nullptr);
 KHook::Virtual<INetworkGameServer, void, IGameSpawnGroupMgr*> setGameSpawnGroupMgrHook(&INetworkGameServer::SetGameSpawnGroupMgr, &g_CS2Fixes, &CS2Fixes::Hook_SetGameSpawnGroupMgr, nullptr);
 KHook::Virtual<IGameTypes, void, const char*, const CUtlStringList&> createWorkshopMapGroupHook(0U, &g_CS2Fixes, &CS2Fixes::Hook_CreateWorkshopMapGroup, nullptr);
 KHook::Virtual<CVPhys2World, void, CUtlVector<TouchLinked_t>*, bool> getTouchingListHook(0U, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_GetTouchingList_Post);
@@ -93,7 +94,7 @@ KHook::Virtual<CGamePlayerEquip, void, CEntityPrecacheContext*> playerEquipPreca
 KHook::Virtual<CTriggerGravity, void, CEntityPrecacheContext*> triggerGravityPrecacheHook(0U, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_TriggerGravityPrecache_Post);
 KHook::Virtual<CTriggerGravity, void, CBaseEntity*> triggerGravityEndTouchHook(0U, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_TriggerGravityEndTouch_Post);
 KHook::Virtual<CCSPlayerPawn, bool, CTakeDamageResult*> onTakeDamageAliveHook(0U, &g_CS2Fixes, &CS2Fixes::Hook_OnTakeDamage_Alive, nullptr);
-KHook::Virtual<CCSPlayerPawn, void, const Vector*, const QAngle*, const Vector*> playerPawnTeleportHook(0U, &g_CS2Fixes, &CS2Fixes::Hook_CCSPlayerPawn_Teleport, nullptr);
+KHook::Virtual<CCSPlayerPawn, void, const Vector*, const QAngle*, const Vector*> playerPawnTeleportHook(0U, &g_CS2Fixes, &CS2Fixes::Hook_CCSPlayerPawn_Teleport, &CS2Fixes::Hook_CCSPlayerPawn_Teleport_Post);
 
 CS2Fixes g_CS2Fixes;
 IGameEventSystem* g_gameEventSystem = nullptr;
@@ -111,6 +112,7 @@ CCSPlayer_WeaponServices* g_pCCSPlayer_WeaponServicesVTable = nullptr;
 CGamePlayerEquip* g_pCGamePlayerEquipVTable = nullptr;
 CTriggerGravity* g_pTriggerGravityVTable = nullptr;
 CCSPlayerPawn* g_pCCSPlayerPawnVTable = nullptr;
+CServerSideClient* g_pCServerSideClientVTable = nullptr;
 
 double g_flUniversalTime = 0.0;
 float g_flLastTickedTime = 0.0f;
@@ -213,6 +215,15 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	spawnHook.AddGlobal((CEntitySystem*)&g_pCEntitySystemVTable);
+
+	g_pCServerSideClientVTable = (CServerSideClient*)modules::server->FindVirtualTable("CServerSideClient");
+	if (!g_pCServerSideClientVTable)
+	{
+		Panic("Failed to find CServerSideClient vtable\n");
+		g_bRequiredInitLoaded = false;
+	}
+
+	processVoiceDataHook.AddGlobal((CServerSideClient*)&g_pCServerSideClientVTable);
 
 	int offset = g_GameConfig->GetOffset("IGameTypes_CreateWorkshopMapGroup");
 	if (offset == -1)
@@ -445,6 +456,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	dispatchConCommandHook.Remove(g_pCVar);
 	loadEventsFromFileHook.RemoveGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
 	spawnHook.RemoveGlobal((CEntitySystem*)&g_pCEntitySystemVTable);
+	processVoiceDataHook.RemoveGlobal((CServerSideClient*)&g_pCServerSideClientVTable);
 	setGameSpawnGroupMgrHook.Remove(GetNetworkGameServer());
 	createWorkshopMapGroupHook.Remove(g_pGameTypes);
 	getTouchingListHook.RemoveGlobal((CVPhys2World*)&g_pCVPhys2WorldVTable);
@@ -1222,27 +1234,53 @@ KHook::Return<void> CS2Fixes::Hook_SetGameSpawnGroupMgr(INetworkGameServer* pThi
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> CS2Fixes::Hook_Spawn_Post(CEntitySystem* pThis, int nCount, const EntitySpawnInfo_t* pInfo)
+KHook::Return<void> CS2Fixes::Hook_Spawn(CEntitySystem* pThis, int nCount, const EntitySpawnInfo_t* pInfo)
 {
 	for (int i = 0; i < nCount; i++)
-		g_pMapMigrations->OnEntitySpawned(pInfo[i].m_pEntity->m_pInstance, pInfo[i].m_pKeyValues);
+		g_pMapMigrations->OnEntitySpawned_Pre(reinterpret_cast<CBaseEntity*>(pInfo[i].m_pEntity->m_pInstance), pInfo[i].m_pKeyValues);
 
 	return {KHook::Action::Ignore};
 }
+
+float g_fTeleportXAngle;
 
 KHook::Return<void> CS2Fixes::Hook_CCSPlayerPawn_Teleport(CCSPlayerPawn* pPawn, const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)
 {
 	if (!pAngles)
 		return {KHook::Action::Ignore};
 
+	g_fTeleportXAngle = pAngles->x;
+
 	QAngle* pCastAngles = const_cast<QAngle*>(pAngles);
 
-	// Post-AG2, changing x or z angles on a playermodel will bug out, and never did anything pre-AG2 anyways
-	if (pCastAngles->x != 0.0f)
-		pCastAngles->x = 0.0f;
+	// Post-AG2, changing x or z angles via Teleport on a playermodel will bug out, go through SnapViewAngles for x later instead
+	pCastAngles->x = 0.0f;
+	pCastAngles->z = 0.0f;
 
-	if (pCastAngles->z != 0.0f)
-		pCastAngles->z = 0.0f;
+	return {KHook::Action::Ignore};
+}
+
+KHook::Return<void> CS2Fixes::Hook_CCSPlayerPawn_Teleport_Post(CCSPlayerPawn* pPawn, const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)
+{
+	if (!pAngles)
+		return {KHook::Action::Ignore};
+
+	// Revert the x edit, z should always be 0
+	QAngle* pCastAngles = const_cast<QAngle*>(pAngles);
+	pCastAngles->x = g_fTeleportXAngle;
+
+	pPawn->SnapViewAngles(pCastAngles);
+	return {KHook::Action::Ignore};
+}
+
+KHook::Return<bool> CS2Fixes::Hook_ProcessVoiceData(CServerSideClient* pClient, const CCLCMsg_VoiceData_t& msg)
+{
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(pClient->GetPlayerSlot());
+
+	if (!pPlayer || !GetGlobals())
+		return {KHook::Action::Ignore};
+
+	pPlayer->SetLastVoiceTime(GetGlobals()->curtime);
 
 	return {KHook::Action::Ignore};
 }

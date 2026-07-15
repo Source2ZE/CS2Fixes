@@ -21,6 +21,7 @@
 #include "cs2fixes.h"
 #include "entity.h"
 #include "entity/cbasemodelentity.h"
+#include "entity/cbasetoggle.h"
 #include "utils.h"
 #include "vprof.h"
 
@@ -49,16 +50,17 @@ void CMapMigrations::OnRoundPrestart()
 	m_vecEquippedWeapons.clear();
 }
 
-void CMapMigrations::OnEntitySpawned(CEntityInstance* pEntity, const CEntityKeyValues* pKeyValues)
+void CMapMigrations::OnEntitySpawned_Pre(CBaseEntity* pEntity, const CEntityKeyValues* pKeyValues)
 {
-	CBaseEntity* pBaseEntity = (CBaseEntity*)pEntity;
-
 	// Stupid workaround for CEntityKeyValues being inaccessible after entity spawn
 	// We need access to this in 2026-01-21 rendermode migrations when called from UpdateMapUpdateTime
-	if (pBaseEntity->AsBaseModelEntity() && V_StringToInt32(pKeyValues->GetString("rendermode"), -1, NULL, NULL, PARSING_FLAG_SKIP_WARNING) == -1)
-		m_vecModelEntitiesUsingRendermodeEnum.push_back(pBaseEntity->GetHandle());
+	if (pEntity->AsBaseModelEntity() && V_StringToInt32(pKeyValues->GetString("rendermode"), -1, NULL, NULL, PARSING_FLAG_SKIP_WARNING) == -1)
+		m_vecModelEntitiesUsingRendermodeEnum.push_back(pEntity->GetHandle());
+}
 
-	RunMigrations(pBaseEntity);
+void CMapMigrations::OnEntitySpawned_Post(CBaseEntity* pEntity)
+{
+	RunMigrations(pEntity);
 }
 
 void CMapMigrations::OnEquipWeapon(CBasePlayerWeapon* pWeapon)
@@ -133,8 +135,20 @@ void CMapMigrations::Migrations_20260420(CBasePlayerWeapon* pWeapon)
 		if (pParentSceneNode && pParentSceneNode->m_pOwner() == pWeapon)
 		{
 			Vector newOrigin = pTarget->GetAbsOrigin();
+			const char* pszClass = pTarget->GetClassname();
+
 			newOrigin.z -= 40.0f;
 			pTarget->Teleport(&newOrigin, nullptr, nullptr);
+
+			// If child inherits CBaseToggle, there's further bullshit we have to offset
+			// There's also some more obscure entities + all of CBaseTrigger, but these seem unnecessary to fixup
+			if (!V_strcasecmp(pszClass, "func_button") || !V_strcasecmp(pszClass, "func_physical_button") || !V_strcasecmp(pszClass, "func_rot_button") || !V_strcasecmp(pszClass, "momentary_rot_button") || !V_strcasecmp(pszClass, "func_movelinear") || !V_strcasecmp(pszClass, "func_door") || !V_strcasecmp(pszClass, "func_door_rotating"))
+			{
+				CBaseToggle* pToggle = (CBaseToggle*)pTarget;
+
+				pToggle->m_vecPosition1().z -= 40.0f;
+				pToggle->m_vecPosition2().z -= 40.0f;
+			}
 		}
 	}
 }

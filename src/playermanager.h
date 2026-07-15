@@ -110,6 +110,7 @@ enum class ETargetError
 class ZEPlayer;
 struct ZRClass;
 struct ZRModelEntry;
+enum class EZSoundsType;
 
 class ZEPlayerHandle
 {
@@ -198,6 +199,8 @@ public:
 		m_flEntwatchHudY = -2.0f;
 		m_flEntwatchHudSize = 60.0f;
 		m_bTopDefender = false;
+		m_flLastVoiceTime = -15.0f;
+		m_flBeaconEnabledTime = -2.0f;
 	}
 
 	~ZEPlayer()
@@ -269,6 +272,8 @@ public:
 	void SetEntwatchHudPos(float x, float y);
 	void SetEntwatchHudSize(float flSize);
 	void SetTopDefenderStatus(bool bStatus) { m_bTopDefender = bStatus; }
+	void SetLastVoiceTime(float flTime) { m_flLastVoiceTime = flTime; }
+	void SetBeaconEnabledTime(float flTime) { m_flBeaconEnabledTime = flTime; }
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -319,6 +324,8 @@ public:
 	float GetEntwatchHudY() { return m_flEntwatchHudY; }
 	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
 	bool GetTopDefenderStatus() { return m_bTopDefender; }
+	float GetLastVoiceTime() { return m_flLastVoiceTime; }
+	float GetBeaconEnabledTime() { return m_flBeaconEnabledTime; }
 
 	void OnSpawn();
 	void OnAuthenticated();
@@ -375,7 +382,7 @@ private:
 	Color m_colorTracer;
 	Color m_colorGlow;
 	Color m_colorBeacon;
-	CUtlVector<ZEPlayerHandle> m_vecLeaderVotes;
+	std::vector<ZEPlayerHandle> m_vecLeaderVotes;
 	float m_flLeaderVoteTime;
 	CHandle<CBaseModelEntity> m_hGlowModel;
 	float m_flSpeedMod;
@@ -393,6 +400,8 @@ private:
 	float m_flEntwatchHudY;
 	float m_flEntwatchHudSize;
 	bool m_bTopDefender;
+	float m_flLastVoiceTime;
+	float m_flBeaconEnabledTime;
 };
 
 class CPlayerManager
@@ -403,8 +412,9 @@ public:
 		V_memset(m_vecPlayers, 0, sizeof(m_vecPlayers));
 		m_nUsingStopSound = -1; // On by default
 		m_nUsingSilenceSound = 0;
-		m_nUsingZSounds = -1;	 // On by default
-		m_nUsingStopDecals = -1; // On by default
+		m_nUsingZSounds = -1;		// On by default
+		m_nUsingZSoundsInfect = -1; // On by default
+		m_nUsingStopDecals = -1;	// On by default
 		m_nUsingNoShake = 0;
 	}
 
@@ -432,12 +442,13 @@ public:
 	uint64 GetStopSoundMask() { return m_nUsingStopSound; }
 	uint64 GetSilenceSoundMask() { return m_nUsingSilenceSound; }
 	uint64 GetZSoundsMask() { return m_nUsingZSounds; }
+	uint64 GetZSoundsInfectMask() { return m_nUsingZSoundsInfect; }
 	uint64 GetStopDecalsMask() { return m_nUsingStopDecals; }
 	uint64 GetNoShakeMask() { return m_nUsingNoShake; }
 
 	void SetPlayerStopSound(int slot, bool set);
 	void SetPlayerSilenceSound(int slot, bool set);
-	void SetPlayerZSounds(int slot, bool set);
+	void SetPlayerZSounds(int slot, EZSoundsType mode);
 	void SetPlayerStopDecals(int slot, bool set);
 	void SetPlayerNoShake(int slot, bool set);
 
@@ -445,7 +456,7 @@ public:
 
 	bool IsPlayerUsingStopSound(int slot) { return m_nUsingStopSound & ((uint64)1 << slot); }
 	bool IsPlayerUsingSilenceSound(int slot) { return m_nUsingSilenceSound & ((uint64)1 << slot); }
-	bool IsPlayerUsingZSounds(int slot) { return m_nUsingZSounds & ((uint64)1 << slot); }
+	EZSoundsType GetPlayerZSoundsMode(int slot);
 	bool IsPlayerUsingStopDecals(int slot) { return m_nUsingStopDecals & ((uint64)1 << slot); }
 	bool IsPlayerUsingNoShake(int slot) { return m_nUsingNoShake & ((uint64)1 << slot); }
 
@@ -461,6 +472,7 @@ private:
 	uint64 m_nUsingStopSound;
 	uint64 m_nUsingSilenceSound;
 	uint64 m_nUsingZSounds;
+	uint64 m_nUsingZSoundsInfect;
 	uint64 m_nUsingStopDecals;
 	uint64 m_nUsingNoShake;
 };

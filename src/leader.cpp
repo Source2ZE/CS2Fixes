@@ -785,7 +785,7 @@ CON_COMMAND_CHAT_LEADER(beacon, "[name] [color] - Toggle beacon on a player")
 	if (args.ArgC() >= 2 && (bIsAdmin || g_cvarLeaderCanTargetPlayers.Get()))
 		pszTarget = args[1];
 
-	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, iTargetFlags, nType))
+	if (!g_playerManager->CanTargetPlayers(player, pszTarget, iNumClients, pSlots, iTargetFlags, nType) || !GetGlobals())
 		return;
 
 	for (int i = 0; i < iNumClients; i++)
@@ -802,8 +802,15 @@ CON_COMMAND_CHAT_LEADER(beacon, "[name] [color] - Toggle beacon on a player")
 				return;
 			}
 
+			if (pPlayerTarget->GetBeaconEnabledTime() + 2.0f > GetGlobals()->curtime)
+			{
+				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait before you can enable beacon again.");
+				return;
+			}
+
 			Color color = Leader_GetColor(args.ArgC() < 3 ? "" : args[2], pPlayer, pTarget);
 			pPlayerTarget->StartBeacon(color, pPlayer ? pPlayer->GetHandle() : 0);
+			pPlayerTarget->SetBeaconEnabledTime(GetGlobals()->curtime);
 		}
 		else
 			pPlayerTarget->EndBeacon();
@@ -886,7 +893,7 @@ CON_COMMAND_CHAT(leaderhelp, "- List leader commands in chat")
 
 CON_COMMAND_CHAT(leadercolor, "[color] - List leader colors in chat or change your leader color")
 {
-	if (!g_cvarEnableLeader.Get())
+	if (!g_cvarEnableLeader.Get() || !GetGlobals())
 		return;
 
 	ZEPlayer* zpPlayer = player ? player->GetZEPlayer() : nullptr;
@@ -896,6 +903,12 @@ CON_COMMAND_CHAT(leadercolor, "[color] - List leader colors in chat or change yo
 		std::transform(strColor.begin(), strColor.end(), strColor.begin(), [](unsigned char c) { return std::tolower(c); });
 		if (strColor.length() > 0 && mapColorPresets.contains(strColor))
 		{
+			if (zpPlayer->GetBeaconEnabledTime() + 2.0f > GetGlobals()->curtime)
+			{
+				ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Wait before you can change leader color again.");
+				return;
+			}
+
 			auto const& colorPreset = mapColorPresets.at(strColor);
 			Color color = colorPreset.color;
 			zpPlayer->SetLeaderColor(color);
@@ -914,6 +927,7 @@ CON_COMMAND_CHAT(leadercolor, "[color] - List leader colors in chat or change yo
 			{
 				zpPlayer->EndBeacon();
 				zpPlayer->StartBeacon(color, zpPlayer ? zpPlayer->GetHandle() : 0);
+				zpPlayer->SetBeaconEnabledTime(GetGlobals()->curtime);
 			}
 
 			CCSPlayerPawn* pawnPlayer = (CCSPlayerPawn*)player->GetPawn();
