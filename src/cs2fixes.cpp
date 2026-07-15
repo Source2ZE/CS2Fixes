@@ -216,7 +216,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 	spawnHook.AddGlobal((CEntitySystem*)&g_pCEntitySystemVTable);
 
-	g_pCServerSideClientVTable = (CServerSideClient*)modules::server->FindVirtualTable("CServerSideClient");
+	g_pCServerSideClientVTable = (CServerSideClient*)modules::engine->FindVirtualTable("CServerSideClient");
 	if (!g_pCServerSideClientVTable)
 	{
 		Panic("Failed to find CServerSideClient vtable\n");
