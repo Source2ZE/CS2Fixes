@@ -109,7 +109,7 @@ bool UnregisterGameSystem()
 
 	if (!pDispatcher || !pGameSystems)
 	{
-		Panic("Gamesystems and/or dispatchers is null, server is probably shutting down\n");
+		Message("Gamesystems and/or dispatchers is null, server is probably shutting down\n");
 		return false;
 	}
 
