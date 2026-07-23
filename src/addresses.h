@@ -75,7 +75,7 @@ namespace addresses
 	bool Initialize(CGameConfig* g_GameConfig);
 	bool InitializeBanMap(CGameConfig* g_GameConfig);
 
-	inline CUtlMap<uint32, CGcBanInformation_t, uint32>* sm_mapGcBanInformation;
+	inline CUtlOrderedMap<uint32, CGcBanInformation_t, uint32>* sm_mapGcBanInformation;
 
 	inline void(FASTCALL* SetGroundEntity)(CBaseEntity* ent, CBaseEntity* ground, CBaseEntity* unk3);
 	inline void(FASTCALL* SetGravityScale)(CBaseEntity*, float);

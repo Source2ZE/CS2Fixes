@@ -22,6 +22,7 @@
 #include "usercmd.pb.h"
 
 #include "addresses.h"
+#include "bspflags.h"
 #include "buttonwatch.h"
 #include "cdetour.h"
 #include "commands.h"
@@ -818,7 +819,7 @@ void FASTCALL Detour_GameSystem_Think_CheckSteamBan()
 	if (!g_cvarFixGameBans.Get())
 		return;
 
-	CUtlMap<uint32, CGcBanInformation_t, uint32>* pMap = addresses::sm_mapGcBanInformation;
+	auto pMap = addresses::sm_mapGcBanInformation;
 	unsigned int count = pMap->Count();
 
 	// After player has been kicked, remove any ban entries, to prevent spreading to all new joining players
