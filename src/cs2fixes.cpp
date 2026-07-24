@@ -26,6 +26,7 @@
 #include "common.h"
 #include "cs_gameevents.pb.h"
 #include "ctimer.h"
+#include "cvarwhitelist.h"
 #include "detours.h"
 #include "discord.h"
 #include "entities.h"
@@ -355,6 +356,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	g_pIdleSystem = new CIdleSystem();
 	g_pPanoramaVoteHandler = new CPanoramaVoteHandler();
 	g_pEWHandler = new CEWHandler();
+	g_pConvarWhitelist = new CConVarWhitelist();
 	g_pMapMigrations = new CMapMigrations();
 
 	RegisterWeaponCommands();
@@ -503,6 +505,9 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 		g_pEWHandler->RemoveAllTriggers();
 		delete g_pEWHandler;
 	}
+
+	if (g_pConvarWhitelist)
+		delete g_pConvarWhitelist;
 
 	if (g_pMapMigrations)
 		delete g_pMapMigrations;

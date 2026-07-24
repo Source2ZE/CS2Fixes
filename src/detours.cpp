@@ -29,6 +29,7 @@
 #include "common.h"
 #include "ctimer.h"
 #include "customio.h"
+#include "cvarwhitelist.h"
 #include "detours.h"
 #include "entities.h"
 #include "entity/cbasemodelentity.h"
@@ -92,6 +93,7 @@ DECLARE_DETOUR(CBaseModelEntity_SetModel, Detour_CBaseModelEntity_SetModel);
 DECLARE_DETOUR(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission);
 DECLARE_DETOUR(SetBeamOrigin, Detour_SetBeamOrigin);
 DECLARE_DETOUR(SetBeamEndPos, Detour_SetBeamEndPos);
+DECLARE_DETOUR(IsCommandWhitelisted, Detour_IsCommandWhitelisted);
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
@@ -890,6 +892,14 @@ void FASTCALL Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecPosition)
 
 	// If no parent, then game code would hit infinite loop, just reimplement this simple path ourselves
 	pThis->m_vecEndPos = *(VectorWS*)(pVecPosition);
+}
+
+bool FASTCALL Detour_IsCommandWhitelisted(void* pAddonManager, const char* pszCommandName)
+{
+	if (!g_cvarConVarWhitelistEnable.Get() || !g_pConvarWhitelist->IsConfigLoaded())
+		return IsCommandWhitelisted(pAddonManager, pszCommandName);
+
+	return g_pConvarWhitelist->IsWhitelisted(pszCommandName);
 }
 
 bool InitDetours(CGameConfig* gameConfig)
