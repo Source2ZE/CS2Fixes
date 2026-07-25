@@ -71,6 +71,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/topdefender.cpp',
     'src/idlemanager.cpp',
     'src/cvarwhitelist.cpp',
+    'src/cfgparser.cpp',
     'src/mapmigrations.cpp',
     'sdk/entity2/entitysystem.cpp',
     'sdk/entity2/entityidentity.cpp',

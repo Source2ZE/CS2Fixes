@@ -1136,23 +1136,10 @@ void CMapVoteSystem::ClearInvalidNominations()
 	}
 }
 
-void CMapVoteSystem::ApplyGameSettings(KeyValues* pKV)
+void CMapVoteSystem::ApplyGameSettings(const char* pszMapName, uint64 iWorkshopId)
 {
 	if (!g_cvarVoteManagerEnable.Get())
 		return;
-
-	const char* pszMapName;
-	uint64 iWorkshopId;
-
-	if (pKV->FindKey("launchoptions") && pKV->FindKey("launchoptions")->FindKey("levelname"))
-		pszMapName = pKV->FindKey("launchoptions")->GetString("levelname");
-	else
-		pszMapName = "";
-
-	if (pKV->FindKey("launchoptions") && pKV->FindKey("launchoptions")->FindKey("customgamemode"))
-		iWorkshopId = pKV->FindKey("launchoptions")->GetUint64("customgamemode");
-	else
-		iWorkshopId = 0;
 
 	auto pair = GetMapInfoByIdentifiers(pszMapName, iWorkshopId);
 

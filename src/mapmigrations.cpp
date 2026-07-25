@@ -33,15 +33,13 @@ const time_t g_time20260420 = 1776725888;
 CConVar<int> g_cvarMapMigrations20260121("cs2f_mapmigrations_20260121", FCVAR_NONE, "Current mode for 2026-01-21 CS2 update map migrations. [0 = Force disabled, 1 = Force enabled, 2 = Automatically enabled for maps updated before 2026-01-21 & disabled if updated after]", 2);
 CConVar<int> g_cvarMapMigrations20260420("cs2f_mapmigrations_20260420", FCVAR_NONE, "Current mode for 2026-04-20 CS2 update map migrations. [0 = Force disabled, 1 = Force enabled, 2 = Automatically enabled for maps updated before 2026-04-20 & disabled if updated after]", 2);
 
-void CMapMigrations::ApplyGameSettings(KeyValues* pKV)
+void CMapMigrations::ApplyGameSettings(uint64 iWorkshopId)
 {
 	m_timeMapUpdated = std::numeric_limits<time_t>::max();
 
 	// Don't run on default maps
-	if (!pKV->FindKey("launchoptions") || !pKV->FindKey("launchoptions")->FindKey("customgamemode"))
-		return;
-
-	CMapMigrationWorkshopDetailsQuery::Create(pKV->FindKey("launchoptions")->GetUint64("customgamemode"));
+	if (iWorkshopId != 0)
+		CMapMigrationWorkshopDetailsQuery::Create(iWorkshopId);
 }
 
 void CMapMigrations::OnRoundPrestart()

@@ -182,6 +182,9 @@
     <ClCompile Include="src\cvarwhitelist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cfgparser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\utils\weapon.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
@@ -398,6 +401,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cvarwhitelist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cfgparser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cpointworldtext.h">

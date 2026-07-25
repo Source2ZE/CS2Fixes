@@ -22,6 +22,7 @@
 
 #include "adminsystem.h"
 #include "appframework/IAppSystem.h"
+#include "cfgparser.h"
 #include "commands.h"
 #include "common.h"
 #include "cs_gameevents.pb.h"
@@ -357,6 +358,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	g_pPanoramaVoteHandler = new CPanoramaVoteHandler();
 	g_pEWHandler = new CEWHandler();
 	g_pConvarWhitelist = new CConVarWhitelist();
+	g_pCfgParser = new CCfgParser();
 	g_pMapMigrations = new CMapMigrations();
 
 	RegisterWeaponCommands();
@@ -380,7 +382,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	});
 
 	// run our cfg
-	g_pEngineServer2->ServerCommand("exec cs2fixes/cs2fixes");
+	g_pCfgParser->ParseCfg("cs2fixes/cs2fixes");
 
 	srand(time(0));
 
@@ -508,6 +510,9 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 
 	if (g_pConvarWhitelist)
 		delete g_pConvarWhitelist;
+
+	if (g_pCfgParser)
+		delete g_pCfgParser;
 
 	if (g_pMapMigrations)
 		delete g_pMapMigrations;
@@ -1036,8 +1041,22 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 
 void CS2Fixes::Hook_ApplyGameSettings(KeyValues* pKV)
 {
-	g_pMapVoteSystem->ApplyGameSettings(pKV);
-	g_pMapMigrations->ApplyGameSettings(pKV);
+	const char* pszMapName;
+	uint64 iWorkshopId;
+
+	if (pKV->FindKey("launchoptions") && pKV->FindKey("launchoptions")->FindKey("levelname"))
+		pszMapName = pKV->FindKey("launchoptions")->GetString("levelname");
+	else
+		pszMapName = "";
+
+	if (pKV->FindKey("launchoptions") && pKV->FindKey("launchoptions")->FindKey("customgamemode"))
+		iWorkshopId = pKV->FindKey("launchoptions")->GetUint64("customgamemode");
+	else
+		iWorkshopId = 0;
+
+	g_pCfgParser->ApplyGameSettings(pszMapName);
+	g_pMapVoteSystem->ApplyGameSettings(pszMapName, iWorkshopId);
+	g_pMapMigrations->ApplyGameSettings(iWorkshopId);
 }
 
 void CS2Fixes::Hook_CreateWorkshopMapGroup(const char* name, const CUtlStringList& mapList)
@@ -1325,14 +1344,6 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 						   bool background)
 {
 	Message("OnLevelInit(%s)\n", pMapName);
-
-	// run our cfg
-	g_pEngineServer2->ServerCommand("exec cs2fixes/cs2fixes");
-
-	// Run map cfg (if present)
-	char cmd[MAX_PATH];
-	V_snprintf(cmd, sizeof(cmd), "exec cs2fixes/maps/%s", pMapName);
-	g_pEngineServer2->ServerCommand(cmd);
 
 	// Only patch BotNavIgnore while a map is loaded, else adding bots will crash
 	if (V_strcmp(pMapName, "error"))
