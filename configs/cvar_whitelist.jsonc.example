@@ -171,7 +171,7 @@
 	"ff_damage_reduction_grenade_self": true,
 	"ff_damage_reduction_other": true,
 	"fps_max": true,
-	"game_alias": false, // Server setting, should not be controlled by maps
+	"game_alias": false, // Server command, should not be controlled by maps
 	"game_mode": false, // Server setting, should not be controlled by maps
 	"game_type": false, // Server setting, should not be controlled by maps
 	"give": true,
@@ -191,9 +191,9 @@
 	"inferno_child_spawn_max_depth": true,
 	"inferno_max_flames": true,
 	"inferno_max_range": true,
-	"log_color": false, // Server setting, should not be controlled by maps
-	"log_flags": false, // Server setting, should not be controlled by maps
-	"log_verbosity": false, // Server setting, should not be controlled by maps
+	"log_color": false, // Server command, should not be controlled by maps
+	"log_flags": false, // Server command, should not be controlled by maps
+	"log_verbosity": false, // Server command, should not be controlled by maps
 	"map_workshop": false, // Server command, should not be executed by maps
 	"molotov_throw_detonate_time": true,
 	"mp_afterroundmoney": true,
@@ -482,7 +482,7 @@
 	"sv_maxvelocity": true,
 	"sv_minimum_desired_chicken_count": true,
 	"sv_outofammo_indicator": true,
-	"sv_pure": false, // Server setting, should not be controlled by maps
+	"sv_pure": false, // Server command, should not be controlled by maps
 	"sv_pure_kick_clients": false, // Server setting, should not be controlled by maps
 	"sv_radio_throttle_window": false, // Server setting, should not be controlled by maps
 	"sv_regeneration_force_on": true,

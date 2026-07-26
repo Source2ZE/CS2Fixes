@@ -115,17 +115,8 @@ bool CConVarWhitelist::IsWhitelisted(std::string strName)
 
 	// If a map override is present, it takes priority
 	if (mapIt != mapVector.end())
-	{
-		if (mapIt->bEnabled)
-			return true;
-		else
-			return false;
-	}
+		return mapIt->bEnabled;
 
 	// Or fall back to global whitelist
-	if (globalIt != m_vecGlobalWhitelist.end() && globalIt->bEnabled)
-		return true;
-
-	// Not whitelisted
-	return false;
+	return globalIt != m_vecGlobalWhitelist.end() && globalIt->bEnabled;
 }
