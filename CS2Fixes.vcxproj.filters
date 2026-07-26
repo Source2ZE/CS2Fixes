@@ -244,6 +244,9 @@
     <ClInclude Include="src\cs2_sdk\entity\cbasemodelentity.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\cbeam.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
     <ClInclude Include="src\cs2fixes.h">
       <Filter>Header Files</Filter>
     </ClInclude>

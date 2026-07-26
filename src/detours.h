@@ -53,6 +53,7 @@ class Vector;
 class QAngle;
 class CEconItemView;
 class CCSGameRules;
+class CBeam;
 struct CTakeDamageResult;
 
 // Add callback functions to this map that wish to hook into Detour_CEntityIOOutput_FireOutputInternal
@@ -116,3 +117,5 @@ AcquireResult FASTCALL Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemSe
 void FASTCALL Detour_CS_Script_SetModel(uint64_t unk1);
 void FASTCALL Detour_CBaseModelEntity_SetModel(CBaseModelEntity* pModel, const char* pszModel);
 void FASTCALL Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch);
+void FASTCALL Detour_SetBeamOrigin(CBeam* pThis, const Vector* pVecWorldPosition);
+void FASTCALL Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecWorldPosition);

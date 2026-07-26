@@ -32,6 +32,7 @@
 #include "detours.h"
 #include "entities.h"
 #include "entity/cbasemodelentity.h"
+#include "entity/cbeam.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/ccsweaponbase.h"
@@ -89,6 +90,8 @@ DECLARE_DETOUR(CCSPlayer_ItemServices_CanAcquire, Detour_CCSPlayer_ItemServices_
 DECLARE_DETOUR(CS_Script_SetModel, Detour_CS_Script_SetModel);
 DECLARE_DETOUR(CBaseModelEntity_SetModel, Detour_CBaseModelEntity_SetModel);
 DECLARE_DETOUR(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission);
+DECLARE_DETOUR(SetBeamOrigin, Detour_SetBeamOrigin);
+DECLARE_DETOUR(SetBeamEndPos, Detour_SetBeamEndPos);
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
 CConVar<bool> g_cvarBlockAllDamage("cs2f_block_all_dmg", FCVAR_NONE, "Whether to block all damage to players", false);
@@ -867,6 +870,26 @@ void FASTCALL Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bool bAb
 		g_pVoteManager->OnIntermission();
 
 	return CCSGameRules_GoToIntermission(pThis, bAbortedMatch);
+}
+
+void FASTCALL Detour_SetBeamOrigin(CBeam* pThis, const Vector* pVecPosition)
+{
+	// Game code still works for parented beams/lasers
+	if (pThis->m_CBodyComponent()->m_pSceneNode()->m_pParent())
+		SetBeamOrigin(pThis, pVecPosition);
+
+	// If no parent, then game code would hit infinite loop, just reimplement this simple path ourselves
+	pThis->SetAbsOrigin(*pVecPosition);
+}
+
+void FASTCALL Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecPosition)
+{
+	// Game code still works for parented beams/lasers
+	if (pThis->m_CBodyComponent()->m_pSceneNode()->m_pParent())
+		SetBeamEndPos(pThis, pVecPosition);
+
+	// If no parent, then game code would hit infinite loop, just reimplement this simple path ourselves
+	pThis->m_vecEndPos = *(VectorWS*)(pVecPosition);
 }
 
 bool InitDetours(CGameConfig* gameConfig)
