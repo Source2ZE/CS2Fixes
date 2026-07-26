@@ -232,6 +232,7 @@
     <ClInclude Include="src\cs2_sdk\entity\cbasebutton.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbaseentity.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbasemodelentity.h" />
+    <ClInclude Include="src\cs2_sdk\entity\cbeam.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbaseplayercontroller.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbaseplayerpawn.h" />
     <ClInclude Include="src\cs2_sdk\entity\cbasetoggle.h" />
