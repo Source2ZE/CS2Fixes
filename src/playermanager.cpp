@@ -1850,10 +1850,19 @@ void CPlayerManager::ResetPlayerFlags(int slot)
 
 int CPlayerManager::GetOnlinePlayerCount(bool bCountBots)
 {
-	int iOnlinePlayers = 0;
+	// Minimal caching, sometimes we call this function a lot of times
+	static int iOnlinePlayers = 0;
+	static bool bBotsCached = bCountBots;
+	static float flLastUpdateTime = -1.0f;
 
-	if (!GetClientList())
+	if ((GetGlobals() && GetGlobals()->curtime == flLastUpdateTime && bBotsCached == bCountBots) || !GetClientList())
 		return iOnlinePlayers;
+
+	iOnlinePlayers = 0;
+	bBotsCached = bCountBots;
+
+	if (GetGlobals())
+		flLastUpdateTime = GetGlobals()->curtime;
 
 	for (int i = 0; i < GetClientList()->Count(); i++)
 	{
