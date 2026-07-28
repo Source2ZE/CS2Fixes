@@ -119,3 +119,4 @@ void FASTCALL Detour_CBaseModelEntity_SetModel(CBaseModelEntity* pModel, const c
 void FASTCALL Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch);
 void FASTCALL Detour_SetBeamOrigin(CBeam* pThis, const Vector* pVecWorldPosition);
 void FASTCALL Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecWorldPosition);
+bool FASTCALL Detour_IsCommandWhitelisted(void* pAddonManager, const char* pszCommandName);

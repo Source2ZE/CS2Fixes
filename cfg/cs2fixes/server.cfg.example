@@ -1,0 +1,3 @@
+// This config is executed every map start like cfg/server.cfg, but fixes a bug for properly bypassing the ConVar whitelist
+// Like exec, use exec_custom to execute another cfg through this custom cfg parser:
+// exec_custom gamemode_casual_custom

@@ -210,7 +210,7 @@ public:
 	std::shared_ptr<CMap> GetForcedNextMap() { return m_pForcedNextMap; }
 	void SetForcedNextMap(std::shared_ptr<CMap> pForcedNextMap) { m_pForcedNextMap = pForcedNextMap; }
 	std::unordered_map<int, int> GetNominatedMaps();
-	void ApplyGameSettings(KeyValues* pKV);
+	void ApplyGameSettings(const char* pszMapName, uint64 iWorkshopId);
 	void OnLevelShutdown();
 	std::vector<std::shared_ptr<CCooldown>> GetMapCooldowns() { return m_vecCooldowns; }
 	std::string ConvertFloatToString(float fValue, int precision);
