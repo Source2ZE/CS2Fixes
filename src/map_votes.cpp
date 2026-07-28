@@ -1123,8 +1123,8 @@ void CMapVoteSystem::ClearInvalidNominations()
 
 		auto pMap = GetMapByIndex(iNominatedMapIndex);
 
-		// Check if nominated index still meets criteria for nomination
-		if (!pMap->IsEnabled())
+		// Check if nominated map still meets criteria for nomination
+		if (!pMap->IsAvailable())
 		{
 			ClearPlayerInfo(i);
 			CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(i);
