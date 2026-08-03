@@ -64,7 +64,14 @@ HTTPManager::TrackedRequest::~TrackedRequest()
 
 void HTTPManager::TrackedRequest::OnHTTPRequestCompleted(HTTPRequestCompleted_t* arg, bool bFailed)
 {
-	if (bFailed || (!m_callbackError && (arg->m_eStatusCode < 200 || arg->m_eStatusCode > 299)))
+	bool bTransportError = bFailed || !arg->m_bRequestSuccessful;
+	bool bHTTPError = arg->m_eStatusCode < 200 || arg->m_eStatusCode > 299;
+
+	if (bTransportError && m_callbackError)
+	{
+		m_callbackError(arg->m_hRequest, k_EHTTPStatusCodeInvalid, json());
+	}
+	else if (bTransportError || (bHTTPError && !m_callbackError))
 	{
 		Message("HTTP request to %s failed with status code %i\n", m_strUrl.c_str(), arg->m_eStatusCode);
 	}
@@ -88,9 +95,9 @@ void HTTPManager::TrackedRequest::OnHTTPRequestCompleted(HTTPRequestCompleted_t*
 				Message("Failed parsing JSON from HTTP response: %s\n", (char*)response);
 		}
 
-		if (!jsonResponse.is_discarded() && (arg->m_eStatusCode < 200 || arg->m_eStatusCode > 299))
+		if (!jsonResponse.is_discarded() && bHTTPError)
 			m_callbackError(arg->m_hRequest, arg->m_eStatusCode, jsonResponse);
-		else if (arg->m_eStatusCode < 200 || arg->m_eStatusCode > 299)
+		else if (bHTTPError)
 		{
 			// Allow error callback even if invalid json, since error code can provide useful info
 			m_callbackError(arg->m_hRequest, arg->m_eStatusCode, json());
@@ -143,7 +150,7 @@ void HTTPManager::GenerateRequest(EHTTPMethod method, std::string strUrl, std::s
 {
 	if (!GetSteamHTTP())
 	{
-		Panic("A web request was attempted on null ISteamHTTP, returning early.\n");
+		Panic("A web request for %s was attempted on null ISteamHTTP, returning early.\n", strUrl.c_str());
 		return;
 	}
 
@@ -152,6 +159,11 @@ void HTTPManager::GenerateRequest(EHTTPMethod method, std::string strUrl, std::s
 #endif
 
 	HTTPRequestHandle hReq = GetSteamHTTP()->CreateHTTPRequest(method, strUrl.c_str());
+	if (hReq == INVALID_HTTPREQUEST_HANDLE)
+	{
+		Panic("Failed to CreateHTTPRequest for %s\n", strUrl.c_str());
+		return;
+	}
 
 	bool shouldHaveBody = method == k_EHTTPMethodPOST
 						  || method == k_EHTTPMethodPATCH
@@ -159,14 +171,32 @@ void HTTPManager::GenerateRequest(EHTTPMethod method, std::string strUrl, std::s
 						  || method == k_EHTTPMethodDELETE;
 
 	if (shouldHaveBody && !GetSteamHTTP()->SetHTTPRequestRawPostBody(hReq, "application/json", (uint8*)(strText.c_str()), strText.length()))
+	{
+		Panic("Failed to SetHTTPRequestRawPostBody for %s\n", strUrl.c_str());
+		GetSteamHTTP()->ReleaseHTTPRequest(hReq);
 		return;
+	}
 
 	if (headers != nullptr)
+	{
 		for (HTTPHeader header : *headers)
-			GetSteamHTTP()->SetHTTPRequestHeaderValue(hReq, header.GetName(), header.GetValue());
+		{
+			if (!GetSteamHTTP()->SetHTTPRequestHeaderValue(hReq, header.GetName(), header.GetValue()))
+			{
+				Panic("Failed to SetHTTPRequestHeaderValue for %s\n", strUrl.c_str());
+				GetSteamHTTP()->ReleaseHTTPRequest(hReq);
+				return;
+			}
+		}
+	}
 
 	SteamAPICall_t hCall;
-	GetSteamHTTP()->SendHTTPRequest(hReq, &hCall);
+	if (!GetSteamHTTP()->SendHTTPRequest(hReq, &hCall))
+	{
+		Panic("Failed to SendHTTPRequest for %s\n", strUrl.c_str());
+		GetSteamHTTP()->ReleaseHTTPRequest(hReq);
+		return;
+	}
 
 	new TrackedRequest(hReq, hCall, strUrl, strText, callbackCompleted, callbackError);
 }
