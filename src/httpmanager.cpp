@@ -115,38 +115,41 @@ void HTTPManager::TrackedRequest::OnHTTPRequestCompleted(HTTPRequestCompleted_t*
 }
 
 void HTTPManager::Get(std::string strUrl, CompletedCallback callbackCompleted,
-					  ErrorCallback callbackError, std::vector<HTTPHeader>* headers)
+					  ErrorCallback callbackError, std::vector<HTTPHeader>* headers,
+					  int absoluteTimeoutMs)
 {
-	GenerateRequest(k_EHTTPMethodGET, strUrl, "", callbackCompleted, callbackError, headers);
+	GenerateRequest(k_EHTTPMethodGET, strUrl, "", callbackCompleted, callbackError, headers, absoluteTimeoutMs);
 }
 
 void HTTPManager::Post(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
-					   ErrorCallback callbackError, std::vector<HTTPHeader>* headers)
+					   ErrorCallback callbackError, std::vector<HTTPHeader>* headers,
+					   int absoluteTimeoutMs)
 {
-	GenerateRequest(k_EHTTPMethodPOST, strUrl, strText, callbackCompleted, callbackError, headers);
+	GenerateRequest(k_EHTTPMethodPOST, strUrl, strText, callbackCompleted, callbackError, headers, absoluteTimeoutMs);
 }
 
 void HTTPManager::Put(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
-					  ErrorCallback callbackError, std::vector<HTTPHeader>* headers)
+					  ErrorCallback callbackError, std::vector<HTTPHeader>* headers,
+					  int absoluteTimeoutMs)
 {
-	GenerateRequest(k_EHTTPMethodPUT, strUrl, strText, callbackCompleted, callbackError, headers);
+	GenerateRequest(k_EHTTPMethodPUT, strUrl, strText, callbackCompleted, callbackError, headers, absoluteTimeoutMs);
 }
 
 void HTTPManager::Patch(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
-						ErrorCallback callbackError, std::vector<HTTPHeader>* headers)
+						ErrorCallback callbackError, std::vector<HTTPHeader>* headers, int absoluteTimeoutMs)
 {
-	GenerateRequest(k_EHTTPMethodPATCH, strUrl, strText, callbackCompleted, callbackError, headers);
+	GenerateRequest(k_EHTTPMethodPATCH, strUrl, strText, callbackCompleted, callbackError, headers, absoluteTimeoutMs);
 }
 
 void HTTPManager::Delete(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
-						 ErrorCallback callbackError, std::vector<HTTPHeader>* headers)
+						 ErrorCallback callbackError, std::vector<HTTPHeader>* headers, int absoluteTimeoutMs)
 {
-	GenerateRequest(k_EHTTPMethodDELETE, strUrl, strText, callbackCompleted, callbackError, headers);
+	GenerateRequest(k_EHTTPMethodDELETE, strUrl, strText, callbackCompleted, callbackError, headers, absoluteTimeoutMs);
 }
 
 void HTTPManager::GenerateRequest(EHTTPMethod method, std::string strUrl, std::string strText,
 								  CompletedCallback callbackCompleted, ErrorCallback callbackError,
-								  std::vector<HTTPHeader>* headers)
+								  std::vector<HTTPHeader>* headers, int absoluteTimeoutMs)
 {
 	if (!GetSteamHTTP())
 	{
@@ -188,6 +191,13 @@ void HTTPManager::GenerateRequest(EHTTPMethod method, std::string strUrl, std::s
 				return;
 			}
 		}
+	}
+
+	if (absoluteTimeoutMs != 0 && !GetSteamHTTP()->SetHTTPRequestAbsoluteTimeoutMS(hReq, static_cast<uint32_t>(absoluteTimeoutMs)))
+	{
+		Panic("Failed to SetHTTPRequestAbsoluteTimeoutMS for %s\n", strUrl.c_str());
+		GetSteamHTTP()->ReleaseHTTPRequest(hReq);
+		return;
 	}
 
 	SteamAPICall_t hCall;
