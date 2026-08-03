@@ -22,6 +22,7 @@
 
 #include "adminsystem.h"
 #include "appframework/IAppSystem.h"
+#include "cchecktransmitinfo.h"
 #include "cfgparser.h"
 #include "commands.h"
 #include "common.h"
@@ -962,19 +963,13 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 
 	for (int i = 0; i < infoCount; i++)
 	{
-		auto& pInfo = ppInfoList[i];
-
-		// the offset happens to have a player index here,
-		// though this is probably part of the client class that contains the CCheckTransmitInfo
-		static int offset = g_GameConfig->GetOffset("CheckTransmitPlayerSlot");
-		int iPlayerSlot = (int)*((uint8*)pInfo + offset);
-
-		CCSPlayerController* pSelfController = CCSPlayerController::FromSlot(iPlayerSlot);
+		auto& pInfo = (CCheckTransmitInfoExtended*&)(ppInfoList[i]);
+		CCSPlayerController* pSelfController = CCSPlayerController::FromSlot(pInfo->m_nPlayerSlot);
 
 		if (!pSelfController || !pSelfController->IsConnected())
 			continue;
 
-		auto pSelfZEPlayer = g_playerManager->GetPlayer(iPlayerSlot);
+		auto pSelfZEPlayer = g_playerManager->GetPlayer(pInfo->m_nPlayerSlot);
 
 		if (!pSelfZEPlayer)
 			continue;
@@ -983,7 +978,7 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 		{
 			CCSPlayerController* pController = CCSPlayerController::FromSlot(j);
 			// Always transmit to themselves
-			if (!pController || pController->m_bIsHLTV || j == iPlayerSlot)
+			if (!pController || pController->m_bIsHLTV || j == pInfo->m_nPlayerSlot.Get())
 				continue;
 
 			// Don't transmit other players' flashlights

@@ -500,11 +500,6 @@
 			"windows": 26,
 			"linux": 27
 		},
-		"CheckTransmitPlayerSlot":
-		{
-			"windows": 576,
-			"linux": 576
-		},
 		// engine
 		// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) ), note that this is a CUtlVector
 		"CNetworkGameServer_ClientList":
