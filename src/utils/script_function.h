@@ -78,7 +78,7 @@ public:
 			return nullptr;
 #endif
 
-		return m_pFunction;
+		return reinterpret_cast<void*>(m_pFunction);
 	}
 
 	inline int GetOffset() const
