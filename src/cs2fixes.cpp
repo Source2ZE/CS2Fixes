@@ -388,6 +388,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		g_pEntitySystem = GameEntitySystem();
 		g_pEntitySystem->AddListenerEntity(g_pEntityListener);
 
+		if (!addresses::InitializeScriptFunctions())
+			Panic("Failed to resolve one or more script functions");
+
 		g_playerManager->OnLateLoad();
 
 		g_pPanoramaVoteHandler->Reset();
@@ -613,6 +616,9 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	Message("Hook_StartupServer: %s\n", pszMapName);
 
 	RegisterEventListeners();
+
+	if (!addresses::InitializeScriptFunctions())
+		Panic("Failed to resolve one or more script functions");
 
 	if (g_bHasTicked)
 		RemoveTimers(TIMERFLAG_MAP);

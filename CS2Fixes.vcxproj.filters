@@ -217,6 +217,9 @@
     <ClInclude Include="src\utils\virtual.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\script_function.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\cs2_sdk\schema.h">
       <Filter>Header Files\cs2_sdk</Filter>
     </ClInclude>

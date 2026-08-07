@@ -294,6 +294,7 @@
     <ClInclude Include="src\utils\entity.h" />
     <ClInclude Include="src\utils\module.h" />
     <ClInclude Include="src\utils\plat.h" />
+    <ClInclude Include="src\utils\script_function.h" />
     <ClInclude Include="src\utils\virtual.h" />
     <ClInclude Include="src\cs2_sdk\netmessages.h" />
     <ClInclude Include="src\utils\weapon.h" />

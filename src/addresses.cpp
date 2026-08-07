@@ -29,6 +29,14 @@
 		return false;                                                  \
 	Message("Found %s at 0x%p\n", name, variable);
 
+#define RESOLVE_SF(className, funcName, variable)                                                \
+	if (!variable.Initialize(GetScriptFunction(className, funcName)))                            \
+		return false;                                                                            \
+	if (variable.IsVirtual())                                                                    \
+		Message("Found %s::%s at vtable index %i\n", className, funcName, variable.GetOffset()); \
+	else                                                                                         \
+		Message("Found %s::%s at 0x%p\n", className, funcName, variable.GetPtr());
+
 bool addresses::Initialize(CGameConfig* g_GameConfig)
 {
 	modules::engine = new CModule(ROOTBIN, "engine2");
@@ -51,7 +59,6 @@ bool addresses::Initialize(CGameConfig* g_GameConfig)
 #endif
 
 	RESOLVE_SIG(g_GameConfig, "SetGroundEntity", addresses::SetGroundEntity);
-	RESOLVE_SIG(g_GameConfig, "CBaseEntity::SetGravityScale", addresses::SetGravityScale);
 	RESOLVE_SIG(g_GameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
 	RESOLVE_SIG(g_GameConfig, "CBasePlayerController_SetPawn", addresses::CBasePlayerController_SetPawn);
 	RESOLVE_SIG(g_GameConfig, "CBaseModelEntity_SetModel", addresses::CBaseModelEntity_SetModel);
@@ -62,8 +69,6 @@ bool addresses::Initialize(CGameConfig* g_GameConfig)
 	RESOLVE_SIG(g_GameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
 	RESOLVE_SIG(g_GameConfig, "CreateEntityByName", addresses::CreateEntityByName);
 	RESOLVE_SIG(g_GameConfig, "DispatchSpawn", addresses::DispatchSpawn);
-	RESOLVE_SIG(g_GameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
-	RESOLVE_SIG(g_GameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
 	RESOLVE_SIG(g_GameConfig, "DispatchParticleEffect", addresses::DispatchParticleEffect);
 	RESOLVE_SIG(g_GameConfig, "CBaseEntity_EmitSoundFilter", addresses::CBaseEntity_EmitSoundFilter);
 	RESOLVE_SIG(g_GameConfig, "CBaseEntity_SetMoveType", addresses::CBaseEntity_SetMoveType);
@@ -99,5 +104,20 @@ bool addresses::InitializeBanMap(CGameConfig* g_GameConfig)
 		return false;
 
 	Message("Found %s at 0x%p\n", "CCSGameRules__sm_mapGcBanInformation", addresses::sm_mapGcBanInformation);
+	return true;
+}
+
+bool addresses::InitializeScriptFunctions()
+{
+	ExecuteOnce
+	(
+		RESOLVE_SF("CBaseEntity", "SetGravity", SetGravityScale);
+		RESOLVE_SF("CBaseEntity", "SetEntityName", ScriptSetEntityName);
+		RESOLVE_SF("CBaseEntity", "EmitSoundParams", ScriptEmitSoundParams);
+		RESOLVE_SF("CBaseEntity", "SetTeam", ChangeTeam);
+		RESOLVE_SF("CBaseEntity", "IsPlayerPawn", IsPlayerPawn);
+		RESOLVE_SF("CBaseEntity", "IsPlayerController", IsPlayerController);
+	)
+
 	return true;
 }
