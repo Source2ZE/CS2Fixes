@@ -1011,22 +1011,6 @@ void CS2Fixes::Hook_CheckTransmit(CCheckTransmitInfo** ppInfoList, int infoCount
 			{
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
 				pInfo->m_pTransmitNonPlayers->Set(pPawn->entindex());
-
-				if (g_cvarHideWeapons.Get())
-				{
-					auto pVecWeapons = pPawn->m_pWeaponServices->m_hMyWeapons();
-
-					FOR_EACH_VEC(*pVecWeapons, i)
-					{
-						auto pWeapon = (*pVecWeapons)[i].Get();
-
-						if (pWeapon)
-						{
-							pInfo->m_pTransmitEntity->Clear(pWeapon->entindex());
-							pInfo->m_pTransmitNonPlayers->Set(pWeapon->entindex());
-						}
-					}
-				}
 			}
 		}
 
