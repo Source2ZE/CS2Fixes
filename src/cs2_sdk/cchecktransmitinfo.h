@@ -18,10 +18,10 @@ COMPILE_TIME_ASSERT(sizeof(vis_info_t_extended) == 520);
 class CCheckTransmitInfoExtended
 {
 public:
-	CBitVec<MAX_EDICTS>* m_pTransmitEntity; // entities visible/sent to client
+	CBitVec<MAX_EDICTS>* m_pTransmitEntity;		// entities visible/sent to client
 	CBitVec<MAX_EDICTS>* m_pTransmitNonPlayers; // non-player entities needing deletion deltas
-	CBitVec<MAX_EDICTS>* m_pTransmitOutOfPVS; // entities that left PVS but still need delta update
-	CBitVec<MAX_EDICTS>* m_pTransmitAlways; // entity n is always sent even if not in PVS (HLTV and Replay only)
+	CBitVec<MAX_EDICTS>* m_pTransmitOutOfPVS;	// entities that left PVS but still need delta update
+	CBitVec<MAX_EDICTS>* m_pTransmitAlways;		// entity n is always sent even if not in PVS (HLTV and Replay only)
 	CUtlVector<CPlayerSlot> m_vecTargetSlots;
 	vis_info_t_extended m_VisInfo;
 	CPlayerSlot m_nPlayerSlot;

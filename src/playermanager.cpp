@@ -794,12 +794,12 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid, const char
 		return false;
 	}
 
+	pPlayer->SetConnected();
+	m_vecPlayers[slot.Get()] = pPlayer;
+
 	// Sometimes clients can be already auth'd at this point
 	if (g_pEngineServer2->IsClientFullyAuthenticated(slot))
 		pPlayer->OnAuthenticated();
-
-	pPlayer->SetConnected();
-	m_vecPlayers[slot.Get()] = pPlayer;
 
 	ResetPlayerFlags(slot.Get());
 
