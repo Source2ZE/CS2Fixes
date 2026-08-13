@@ -121,11 +121,6 @@ bool addresses::InitializeVScriptFunctions()
 
 	// GetScriptDesc ignores this, so the vtable pointer is sufficient here.
 	ScriptClassDesc_t* pCBaseEntityScriptDesc = reinterpret_cast<ScriptClassDesc_t*>(reinterpret_cast<CEntityInstance*>(&pCBaseEntityVTable)->GetScriptDesc());
-	if (!pCBaseEntityScriptDesc)
-	{
-		Message("Failed to find CBaseEntity script description\n");
-		return false;
-	}
 
 	RESOLVE_SF(pCBaseEntityScriptDesc, "SetGravity", SetGravityScale);
 	RESOLVE_SF(pCBaseEntityScriptDesc, "SetEntityName", ScriptSetEntityName);

@@ -23,9 +23,6 @@
 
 void* GetScriptFunction(ScriptClassDesc_t* pScriptDesc, const char* pszFuncName)
 {
-	if (!pScriptDesc)
-		return nullptr;
-
 	// https://github.com/Wend4r/sourcesdk/blob/758e43823f02fcd40498d33a42cd93243258fe1e/public/vscript/ivscript.h#L280
 	struct ScriptFunctionBindingCurrent_t
 	{
@@ -40,7 +37,7 @@ void* GetScriptFunction(ScriptClassDesc_t* pScriptDesc, const char* pszFuncName)
 	FOR_EACH_VEC(functionBindings, i)
 	{
 		auto& functionBinding = functionBindings.Element(i);
-		if (!functionBinding.m_desc.m_pszScriptName || V_strcmp(functionBinding.m_desc.m_pszScriptName, pszFuncName) != 0)
+		if (V_strcmp(functionBinding.m_desc.m_pszScriptName, pszFuncName) != 0)
 			continue;
 
 		return functionBinding.m_pFunction;
