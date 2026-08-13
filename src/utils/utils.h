@@ -37,5 +37,3 @@ std::string StringToLower(std::string strValue);
 
 ISteamUGC* GetSteamUGC();
 ISteamHTTP* GetSteamHTTP();
-
-void* GetScriptFunction(const char* pszClassName, const char* pszFuncName);

@@ -75,7 +75,7 @@ namespace addresses
 {
 	bool Initialize(CGameConfig* g_GameConfig);
 	bool InitializeBanMap(CGameConfig* g_GameConfig);
-	bool InitializeScriptFunctions();
+	bool InitializeVScriptFunctions();
 
 	inline CUtlMap<uint32, CGcBanInformation_t, uint32>* sm_mapGcBanInformation;
 
@@ -108,10 +108,11 @@ namespace addresses
 	inline void(FASTCALL* GetSpawnGroups)(CSpawnGroupMgrGameSystem* pSpawnGroupMgr, CUtlVector<SpawnGroupHandle_t>* pList);
 	inline void(FASTCALL* CBasePlayerPawn_SnapViewAngles)(CBasePlayerPawn* pPawn, QAngle* pAngles);
 
-	inline CScriptFunction<void, CBaseEntity, float> SetGravityScale;
-	inline CScriptFunction<void, CBaseEntity, const char*> ScriptSetEntityName;
-	inline CScriptFunction<void, CBaseEntity, const char*, int, float, float> ScriptEmitSoundParams;
-	inline CScriptFunction<void, CBaseEntity, int> ChangeTeam;
-	inline CScriptFunction<bool, CBaseEntity> IsPlayerPawn;
-	inline CScriptFunction<bool, CBaseEntity> IsPlayerController;
+	inline CVScriptFunction<void, CBaseEntity, float> SetGravityScale;
+	inline CVScriptFunction<void, CBaseEntity, const char*> ScriptSetEntityName;
+	inline CVScriptFunction<void, CBaseEntity, const char*, int, float, float> ScriptEmitSoundParams;
+	inline CVScriptFunction<void, CBaseEntity, int> ChangeTeam;
+	inline CVScriptFunction<bool, CBaseEntity> IsPlayerPawn;
+	inline CVScriptFunction<bool, CBaseEntity> IsPlayerController;
+	inline CVScriptTeleportFunction Teleport;
 } // namespace addresses

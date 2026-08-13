@@ -21,6 +21,9 @@
 #include "gameconfig.h"
 #include "utils/module.h"
 
+#include "entityinstance.h"
+#include "tier1/strtools.h"
+#include "vscript/ivscript.h"
 #include "tier0/memdbgon.h"
 
 #define RESOLVE_SIG(gameConfig, name, variable)                        \
@@ -29,13 +32,13 @@
 		return false;                                                  \
 	Message("Found %s at 0x%p\n", name, variable);
 
-#define RESOLVE_SF(className, funcName, variable)                                                \
-	if (!variable.Initialize(GetScriptFunction(className, funcName)))                            \
-		return false;                                                                            \
-	if (variable.IsVirtual())                                                                    \
-		Message("Found %s::%s at vtable index %i\n", className, funcName, variable.GetOffset()); \
-	else                                                                                         \
-		Message("Found %s::%s at 0x%p\n", className, funcName, variable.GetPtr());
+#define RESOLVE_SF(scriptDesc, funcName, variable)                                                                \
+	if (!variable.Initialize(GetScriptFunction(scriptDesc, funcName)))                                            \
+		return false;                                                                                             \
+	if (variable.IsVirtual())                                                                                     \
+		Message("Found %s::%s at vtable index %i\n", scriptDesc->m_pszClassname, funcName, variable.GetOffset()); \
+	else                                                                                                          \
+		Message("Found %s::%s at 0x%p\n", scriptDesc->m_pszClassname, funcName, variable.GetPtr());
 
 bool addresses::Initialize(CGameConfig* g_GameConfig)
 {
@@ -107,17 +110,33 @@ bool addresses::InitializeBanMap(CGameConfig* g_GameConfig)
 	return true;
 }
 
-bool addresses::InitializeScriptFunctions()
+bool addresses::InitializeVScriptFunctions()
 {
-	ExecuteOnce
-	(
-		RESOLVE_SF("CBaseEntity", "SetGravity", SetGravityScale);
-		RESOLVE_SF("CBaseEntity", "SetEntityName", ScriptSetEntityName);
-		RESOLVE_SF("CBaseEntity", "EmitSoundParams", ScriptEmitSoundParams);
-		RESOLVE_SF("CBaseEntity", "SetTeam", ChangeTeam);
-		RESOLVE_SF("CBaseEntity", "IsPlayerPawn", IsPlayerPawn);
-		RESOLVE_SF("CBaseEntity", "IsPlayerController", IsPlayerController);
-	)
+	void* pCBaseEntityVTable = modules::server->FindVirtualTable("CBaseEntity");
+	if (!pCBaseEntityVTable)
+	{
+		Message("Failed to find CBaseEntity vtable\n");
+		return false;
+	}
+
+	// GetScriptDesc ignores this, so the vtable pointer is sufficient here.
+	ScriptClassDesc_t* pCBaseEntityScriptDesc = reinterpret_cast<ScriptClassDesc_t*>(reinterpret_cast<CEntityInstance*>(&pCBaseEntityVTable)->GetScriptDesc());
+	if (!pCBaseEntityScriptDesc)
+	{
+		Message("Failed to find CBaseEntity script description\n");
+		return false;
+	}
+
+	RESOLVE_SF(pCBaseEntityScriptDesc, "SetGravity", SetGravityScale);
+	RESOLVE_SF(pCBaseEntityScriptDesc, "SetEntityName", ScriptSetEntityName);
+	RESOLVE_SF(pCBaseEntityScriptDesc, "EmitSoundParams", ScriptEmitSoundParams);
+	RESOLVE_SF(pCBaseEntityScriptDesc, "SetTeam", ChangeTeam);
+	RESOLVE_SF(pCBaseEntityScriptDesc, "IsPlayerPawn", IsPlayerPawn);
+	RESOLVE_SF(pCBaseEntityScriptDesc, "IsPlayerController", IsPlayerController);
+
+	if (!Teleport.Initialize(GetScriptFunction(pCBaseEntityScriptDesc, "SetOrigin")))
+		return false;
+	Message("Found %s::Teleport through SetOrigin at vtable index %i\n", pCBaseEntityScriptDesc->m_pszClassname, Teleport.GetOffset());
 
 	return true;
 }

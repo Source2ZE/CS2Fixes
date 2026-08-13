@@ -221,6 +221,7 @@
     <ClCompile Include="src\utils\weapon.cpp" />
     <ClCompile Include="src\utils\hud_manager.cpp" />
     <ClCompile Include="src\utils\utils.cpp" />
+    <ClCompile Include="src\utils\script_function.cpp" />
     <ClCompile Include="src\cs2_sdk\entity\services.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,7 @@
 
 #pragma once
 #include "platform.h"
+#include "tier0/dbg.h"
 
 #define CALL_VIRTUAL(retType, idx, ...) \
 	vmt::CallVirtual<retType>(idx, __VA_ARGS__)

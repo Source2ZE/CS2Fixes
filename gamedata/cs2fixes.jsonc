@@ -397,11 +397,6 @@
 			"windows": 150,
 			"linux": 149
 		},
-		"Teleport":
-		{
-			"windows": 163,
-			"linux": 162
-		},
 		"CollisionRulesChanged":
 		{
 			"windows": 186,

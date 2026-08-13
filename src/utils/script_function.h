@@ -22,10 +22,20 @@
 #include "platform.h"
 #include "virtual.h"
 
+struct ScriptClassDesc_t;
+class CBaseEntity;
+class Vector;
+class QAngle;
+
+void* GetScriptFunction(ScriptClassDesc_t* pScriptDesc, const char* pszFuncName);
+
 template <typename Ret, class Class, typename... Args>
-class CScriptFunction
+class CVScriptFunction
 {
 public:
+	CVScriptFunction() :
+		m_pFunction(nullptr), m_bVirtual(false) { }
+
 	inline bool Initialize(void* pFunction)
 	{
 		if (!pFunction)
@@ -50,57 +60,49 @@ public:
 
 	inline Ret operator()(Class* pThis, Args... args)
 	{
-#ifdef PLATFORM_LINUX
 		if (m_bVirtual)
 		{
 			auto pFunction = vmt::GetVMethod<Ret(FASTCALL*)(Class*, Args...)>(m_iOffset, pThis);
 
 			return pFunction(pThis, args...);
 		}
-#endif
 
 		return m_pFunction(pThis, args...);
 	}
 
 	inline bool IsVirtual() const
 	{
-#ifdef PLATFORM_LINUX
 		return m_bVirtual;
-#endif
-
-		return false;
 	}
 
 	inline void* GetPtr() const
 	{
-#ifdef PLATFORM_LINUX
 		if (IsVirtual())
 			return nullptr;
-#endif
 
 		return reinterpret_cast<void*>(m_pFunction);
 	}
 
 	inline int GetOffset() const
 	{
-#ifdef PLATFORM_LINUX
 		if (IsVirtual())
 			return m_iOffset;
-#endif
 
 		return -1;
 	}
 
-private:
+protected:
 	union
 	{
 		Ret(FASTCALL* m_pFunction)(Class*, Args...);
-#ifdef PLATFORM_LINUX
 		int m_iOffset;
-#endif
 	};
 
-#ifdef PLATFORM_LINUX
-	bool m_bVirtual = false;
-#endif
+	bool m_bVirtual;
+};
+
+class CVScriptTeleportFunction final : public CVScriptFunction<void, CBaseEntity, const Vector*, const QAngle*, const Vector*>
+{
+public:
+	bool Initialize(void* pSetOrigin);
 };

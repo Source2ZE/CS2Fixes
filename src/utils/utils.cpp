@@ -20,8 +20,6 @@
 #include "utils.h"
 #include "../cs2fixes.h"
 #include "../gameconfig.h"
-#include "entitysystem.h"
-#include "entityclass.h"
 
 void Message(const char* msg, ...)
 {
@@ -95,34 +93,4 @@ ISteamHTTP* GetSteamHTTP()
 		return SteamGameServerHTTP();
 	else
 		return SteamHTTP();
-}
-
-void* GetScriptFunction(const char* pszClassName, const char* pszFuncName)
-{
-	auto& entClassesByCPPClassname = g_pEntitySystem->m_entClassesByCPPClassname;
-	auto nIndex = entClassesByCPPClassname.Find(pszClassName);
-	if (nIndex != entClassesByCPPClassname.InvalidIndex())
-	{
-		// https://github.com/Wend4r/sourcesdk/blob/758e43823f02fcd40498d33a42cd93243258fe1e/public/vscript/ivscript.h#L280
-		struct ScriptFunctionBindingCurrent_t
-		{
-			ScriptFuncDescriptor_t m_desc;
-			ScriptClassDesc_t* m_pClassDesc;
-			ScriptBindingFunc_t m_pfnBinding;
-			void* m_pFunction;
-			ScriptFuncBindingFlags_t m_flags;
-		};
-
-		const auto& functionBindings = *reinterpret_cast<CUtlVector<ScriptFunctionBindingCurrent_t>*>(&(reinterpret_cast<ScriptClassDesc_t*>(entClassesByCPPClassname.Element(nIndex)->m_pScriptDesc)->m_FunctionBindings));
-		FOR_EACH_VEC(functionBindings, i)
-		{
-			auto& functionBinding = functionBindings.Element(i);
-			if (V_strcmp(functionBinding.m_desc.m_pszScriptName, pszFuncName) != 0)
-				continue;
-
-			return functionBinding.m_pFunction;
-		}
-	}
-
-	return nullptr;
 }

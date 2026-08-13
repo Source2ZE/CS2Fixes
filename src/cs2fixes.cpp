@@ -204,6 +204,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (!addresses::Initialize(g_GameConfig))
 		bRequiredInitLoaded = false;
 
+	if (!addresses::InitializeVScriptFunctions())
+		bRequiredInitLoaded = false;
+
 	if (!InitPatches(g_GameConfig))
 		bRequiredInitLoaded = false;
 
@@ -279,7 +282,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	SH_MANUALHOOK_RECONFIGURE(OnTakeDamage_Alive, offset, 0, 0);
 	g_iOnTakeDamageAliveId = SH_ADD_MANUALDVPHOOK(OnTakeDamage_Alive, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_OnTakeDamage_Alive), false);
 
-	offset = g_GameConfig->GetOffset("Teleport");
+	offset = addresses::Teleport.GetOffset();
 	if (offset == -1)
 	{
 		snprintf(error, maxlen, "Failed to find Teleport\n");
@@ -387,9 +390,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		RegisterEventListeners();
 		g_pEntitySystem = GameEntitySystem();
 		g_pEntitySystem->AddListenerEntity(g_pEntityListener);
-
-		if (!addresses::InitializeScriptFunctions())
-			Panic("Failed to resolve one or more script functions");
 
 		g_playerManager->OnLateLoad();
 
@@ -616,9 +616,6 @@ void CS2Fixes::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	Message("Hook_StartupServer: %s\n", pszMapName);
 
 	RegisterEventListeners();
-
-	if (!addresses::InitializeScriptFunctions())
-		Panic("Failed to resolve one or more script functions");
 
 	if (g_bHasTicked)
 		RemoveTimers(TIMERFLAG_MAP);
