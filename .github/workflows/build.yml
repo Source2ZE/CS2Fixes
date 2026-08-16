@@ -22,7 +22,7 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: ${{ matrix.name }} Build
     runs-on: ${{ matrix.os }}
     env:
         HL2SDKCS2: ${{ github.workspace }}/CS2Fixes/sdk
@@ -30,11 +30,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
         include:
           - os: windows-latest
+            name: Windows
           - os: ubuntu-latest
-            container: registry.gitlab.steamos.cloud/steamrt/sniper/sdk
+            name: SteamRT3
+            container: ghcr.io/source2ze/build-containers:steamrt3
+          - os: ubuntu-latest
+            name: SteamRT4
+            container: ghcr.io/source2ze/build-containers:steamrt4
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -52,27 +56,15 @@ jobs:
           submodules: recursive
 
       - name: Checkout AMBuild
+        if: matrix.os == 'windows-latest'
         uses: actions/checkout@v7
         with:
           repository: alliedmodders/ambuild
           path: ambuild
 
       - name: Install AMBuild
-        shell: bash
-        run: |
-          if [ "$RUNNER_OS" == "Windows" ]; then
-            pip install setuptools
-          fi
-          cd ambuild && python setup.py install && cd ..
-
-      - name: Install Clang 21
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          echo "deb http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list.d/llvm.list
-          echo "deb-src http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list.d/llvm.list
-          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          apt update && apt install -y clang-21
-          ln -sf /usr/bin/clang-21 /usr/bin/clang && ln -sf /usr/bin/clang++-21 /usr/bin/clang++
+        if: matrix.os == 'windows-latest'
+        run: pip install setuptools && cd ambuild && python setup.py install && cd ..
 
       - name: Build
         working-directory: CS2Fixes
@@ -85,7 +77,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ runner.os }}
+          name: ${{ matrix.name }}
           path: CS2Fixes/build/package/cs2
 
   release:
@@ -102,9 +94,14 @@ jobs:
         run: |
           version=`echo $GITHUB_REF | sed "s/refs\/tags\///"`
           ls -Rall
-          if [ -d "./Linux/" ]; then
-            cd ./Linux/
-            tar -czf ../${{ github.event.repository.name }}-${version}-linux.tar.gz *
+          if [ -d "./SteamRT3/" ]; then
+            cd ./SteamRT3/
+            tar -czf ../${{ github.event.repository.name }}-${version}-steamrt3.tar.gz *
+            cd -
+          fi
+          if [ -d "./SteamRT4/" ]; then
+            cd ./SteamRT4/
+            tar -czf ../${{ github.event.repository.name }}-${version}-steamrt4.tar.gz *
             cd -
           fi
           if [ -d "./Windows/" ]; then
