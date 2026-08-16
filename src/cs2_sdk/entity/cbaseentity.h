@@ -175,7 +175,8 @@ public:
 
 	void Teleport(const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity)
 	{
-		addresses::Teleport(this, pPosition, pAngles, pVelocity);
+		static int offset = g_GameConfig->GetOffset("Teleport");
+		CALL_VIRTUAL(void, offset, this, pPosition, pAngles, pVelocity);
 	}
 
 	void SetCollisionGroup(StandardCollisionGroups_t nCollisionGroup)

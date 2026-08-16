@@ -24,6 +24,7 @@
 #include "entityinstance.h"
 #include "tier1/strtools.h"
 #include "vscript/ivscript.h"
+
 #include "tier0/memdbgon.h"
 
 #define RESOLVE_SIG(gameConfig, name, variable)                        \
@@ -33,7 +34,7 @@
 	Message("Found %s at 0x%p\n", name, variable);
 
 #define RESOLVE_SF(scriptDesc, funcName, variable)                                                                \
-	if (!variable.Initialize(GetScriptFunction(scriptDesc, funcName)))                                            \
+	if (!variable.Initialize(GetVScriptFunction(scriptDesc, funcName)))                                           \
 		return false;                                                                                             \
 	if (variable.IsVirtual())                                                                                     \
 		Message("Found %s::%s at vtable index %i\n", scriptDesc->m_pszClassname, funcName, variable.GetOffset()); \
@@ -128,10 +129,6 @@ bool addresses::InitializeVScriptFunctions()
 	RESOLVE_SF(pCBaseEntityScriptDesc, "SetTeam", ChangeTeam);
 	RESOLVE_SF(pCBaseEntityScriptDesc, "IsPlayerPawn", IsPlayerPawn);
 	RESOLVE_SF(pCBaseEntityScriptDesc, "IsPlayerController", IsPlayerController);
-
-	if (!Teleport.Initialize(GetScriptFunction(pCBaseEntityScriptDesc, "SetOrigin")))
-		return false;
-	Message("Found %s::Teleport through SetOrigin at vtable index %i\n", pCBaseEntityScriptDesc->m_pszClassname, Teleport.GetOffset());
 
 	return true;
 }

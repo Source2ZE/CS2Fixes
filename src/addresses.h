@@ -21,7 +21,7 @@
 #include "platform.h"
 #include "stdint.h"
 #include "utils/module.h"
-#include "utils/script_function.h"
+#include "utils/vscript_function.h"
 #include "utlstring.h"
 #include "variant.h"
 
@@ -114,5 +114,4 @@ namespace addresses
 	inline CVScriptFunction<void, CBaseEntity, int> ChangeTeam;
 	inline CVScriptFunction<bool, CBaseEntity> IsPlayerPawn;
 	inline CVScriptFunction<bool, CBaseEntity> IsPlayerController;
-	inline CVScriptTeleportFunction Teleport;
 } // namespace addresses

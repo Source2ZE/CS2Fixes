@@ -188,7 +188,7 @@
     <ClCompile Include="src\utils\utils.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\script_function.cpp">
+    <ClCompile Include="src\utils\vscript_function.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="src\cs2_sdk\entity\services.cpp">
@@ -220,7 +220,7 @@
     <ClInclude Include="src\utils\virtual.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\script_function.h">
+    <ClInclude Include="src\utils\vscript_function.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\schema.h">

@@ -282,7 +282,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	SH_MANUALHOOK_RECONFIGURE(OnTakeDamage_Alive, offset, 0, 0);
 	g_iOnTakeDamageAliveId = SH_ADD_MANUALDVPHOOK(OnTakeDamage_Alive, pCCSPlayerPawnVTable, SH_MEMBER(this, &CS2Fixes::Hook_OnTakeDamage_Alive), false);
 
-	offset = addresses::Teleport.GetOffset();
+	offset = g_GameConfig->GetOffset("Teleport");
 	if (offset == -1)
 	{
 		snprintf(error, maxlen, "Failed to find Teleport\n");

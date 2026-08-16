@@ -27,14 +27,14 @@ class CBaseEntity;
 class Vector;
 class QAngle;
 
-void* GetScriptFunction(ScriptClassDesc_t* pScriptDesc, const char* pszFuncName);
+void* GetVScriptFunction(ScriptClassDesc_t* pScriptDesc, const char* pszFuncName);
 
 template <typename Ret, class Class, typename... Args>
 class CVScriptFunction
 {
 public:
 	CVScriptFunction() :
-		m_pFunction(nullptr), m_bVirtual(false) { }
+		m_pFunction(nullptr), m_bVirtual(false) {}
 
 	inline bool Initialize(void* pFunction)
 	{
@@ -99,10 +99,4 @@ protected:
 	};
 
 	bool m_bVirtual;
-};
-
-class CVScriptTeleportFunction final : public CVScriptFunction<void, CBaseEntity, const Vector*, const QAngle*, const Vector*>
-{
-public:
-	bool Initialize(void* pSetOrigin);
 };
