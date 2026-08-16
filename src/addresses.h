@@ -21,6 +21,7 @@
 #include "platform.h"
 #include "stdint.h"
 #include "utils/module.h"
+#include "utils/vscript_function.h"
 #include "utlstring.h"
 #include "variant.h"
 
@@ -74,11 +75,11 @@ namespace addresses
 {
 	bool Initialize(CGameConfig* g_GameConfig);
 	bool InitializeBanMap(CGameConfig* g_GameConfig);
+	bool InitializeVScriptFunctions();
 
 	inline CUtlOrderedMap<uint32, CGcBanInformation_t, uint32>* sm_mapGcBanInformation;
 
 	inline void(FASTCALL* SetGroundEntity)(CBaseEntity* ent, CBaseEntity* ground, CBaseEntity* unk3);
-	inline void(FASTCALL* SetGravityScale)(CBaseEntity*, float);
 	inline void(FASTCALL* CCSPlayerController_SwitchTeam)(CCSPlayerController* pController, uint32 team);
 	inline void(FASTCALL* CBasePlayerController_SetPawn)(CBasePlayerController* pController, CCSPlayerPawn* pPawn, bool a3, bool a4, bool a5, bool a6);
 	inline void(FASTCALL* CBaseModelEntity_SetModel)(CBaseModelEntity* pModel, const char* pszModel);
@@ -97,8 +98,6 @@ namespace addresses
 	inline void(FASTCALL* CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4);
 	inline CBaseEntity*(FASTCALL* CreateEntityByName)(const char* className, int iForceEdictIndex);
 	inline void(FASTCALL* DispatchSpawn)(CBaseEntity* pEntity, CEntityKeyValues* pEntityKeyValues);
-	inline void(FASTCALL* CEntityIdentity_SetEntityName)(CEntityIdentity* pEntity, const char* pName);
-	inline void(FASTCALL* CBaseEntity_EmitSoundParams)(CBaseEntity* pEntity, const char* pszSound, int nPitch, float flVolume, float flDelay);
 	inline int(FASTCALL* DispatchParticleEffect)(const char* pszParticleName, int iAttachType, CBaseEntity* pEntity,
 												 char iAttachmentPoint, CUtlSymbolLarge iAttachmentName, bool bResetAllParticlesOnEntity, int nSplitScreenPlayerSlot, IRecipientFilter* a7, byte* a8);
 	inline StartSoundEventInfo(FASTCALL* CBaseEntity_EmitSoundFilter)(IRecipientFilter& filter, CEntityIndex ent, const EmitSound_t& params);
@@ -108,4 +107,11 @@ namespace addresses
 	inline void(FASTCALL* CCSPlayer_WeaponServices_EquipWeapon)(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
 	inline void(FASTCALL* GetSpawnGroups)(CSpawnGroupMgrGameSystem* pSpawnGroupMgr, CUtlVector<SpawnGroupHandle_t>* pList);
 	inline void(FASTCALL* CBasePlayerPawn_SnapViewAngles)(CBasePlayerPawn* pPawn, QAngle* pAngles);
+
+	inline CVScriptFunction<void, CBaseEntity, float> SetGravityScale;
+	inline CVScriptFunction<void, CBaseEntity, const char*> ScriptSetEntityName;
+	inline CVScriptFunction<void, CBaseEntity, const char*, int, float, float> ScriptEmitSoundParams;
+	inline CVScriptFunction<void, CBaseEntity, int> ChangeTeam;
+	inline CVScriptFunction<bool, CBaseEntity> IsPlayerPawn;
+	inline CVScriptFunction<bool, CBaseEntity> IsPlayerController;
 } // namespace addresses

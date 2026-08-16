@@ -84,8 +84,7 @@ public:
 
 	void ChangeTeam(int iTeam)
 	{
-		static int offset = g_GameConfig->GetOffset("CCSPlayerController_ChangeTeam");
-		CALL_VIRTUAL(void, offset, this, iTeam);
+		addresses::ChangeTeam(this, iTeam);
 	}
 
 	void SwitchTeam(int iTeam)

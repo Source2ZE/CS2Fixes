@@ -21,6 +21,10 @@
 #include "gameconfig.h"
 #include "utils/module.h"
 
+#include "entityinstance.h"
+#include "tier1/strtools.h"
+#include "vscript/ivscript.h"
+
 #include "tier0/memdbgon.h"
 
 #define RESOLVE_SIG(gameConfig, name, variable)                        \
@@ -28,6 +32,14 @@
 	if (!variable)                                                     \
 		return false;                                                  \
 	Message("Found %s at 0x%p\n", name, variable);
+
+#define RESOLVE_SF(scriptDesc, funcName, variable)                                                                \
+	if (!variable.Initialize(GetVScriptFunction(scriptDesc, funcName)))                                           \
+		return false;                                                                                             \
+	if (variable.IsVirtual())                                                                                     \
+		Message("Found %s::%s at vtable index %i\n", scriptDesc->m_pszClassname, funcName, variable.GetOffset()); \
+	else                                                                                                          \
+		Message("Found %s::%s at 0x%p\n", scriptDesc->m_pszClassname, funcName, variable.GetPtr());
 
 bool addresses::Initialize(CGameConfig* g_GameConfig)
 {
@@ -51,7 +63,6 @@ bool addresses::Initialize(CGameConfig* g_GameConfig)
 #endif
 
 	RESOLVE_SIG(g_GameConfig, "SetGroundEntity", addresses::SetGroundEntity);
-	RESOLVE_SIG(g_GameConfig, "CBaseEntity::SetGravityScale", addresses::SetGravityScale);
 	RESOLVE_SIG(g_GameConfig, "CCSPlayerController_SwitchTeam", addresses::CCSPlayerController_SwitchTeam);
 	RESOLVE_SIG(g_GameConfig, "CBasePlayerController_SetPawn", addresses::CBasePlayerController_SetPawn);
 	RESOLVE_SIG(g_GameConfig, "CBaseModelEntity_SetModel", addresses::CBaseModelEntity_SetModel);
@@ -62,8 +73,6 @@ bool addresses::Initialize(CGameConfig* g_GameConfig)
 	RESOLVE_SIG(g_GameConfig, "CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
 	RESOLVE_SIG(g_GameConfig, "CreateEntityByName", addresses::CreateEntityByName);
 	RESOLVE_SIG(g_GameConfig, "DispatchSpawn", addresses::DispatchSpawn);
-	RESOLVE_SIG(g_GameConfig, "CEntityIdentity_SetEntityName", addresses::CEntityIdentity_SetEntityName);
-	RESOLVE_SIG(g_GameConfig, "CBaseEntity_EmitSoundParams", addresses::CBaseEntity_EmitSoundParams);
 	RESOLVE_SIG(g_GameConfig, "DispatchParticleEffect", addresses::DispatchParticleEffect);
 	RESOLVE_SIG(g_GameConfig, "CBaseEntity_EmitSoundFilter", addresses::CBaseEntity_EmitSoundFilter);
 	RESOLVE_SIG(g_GameConfig, "CBaseEntity_SetMoveType", addresses::CBaseEntity_SetMoveType);
@@ -99,5 +108,27 @@ bool addresses::InitializeBanMap(CGameConfig* g_GameConfig)
 		return false;
 
 	Message("Found %s at 0x%p\n", "CCSGameRules__sm_mapGcBanInformation", addresses::sm_mapGcBanInformation);
+	return true;
+}
+
+bool addresses::InitializeVScriptFunctions()
+{
+	void* pCBaseEntityVTable = modules::server->FindVirtualTable("CBaseEntity");
+	if (!pCBaseEntityVTable)
+	{
+		Message("Failed to find CBaseEntity vtable\n");
+		return false;
+	}
+
+	// GetScriptDesc ignores this, so the vtable pointer is sufficient here.
+	ScriptClassDesc_t* pCBaseEntityScriptDesc = reinterpret_cast<ScriptClassDesc_t*>(reinterpret_cast<CEntityInstance*>(&pCBaseEntityVTable)->GetScriptDesc());
+
+	RESOLVE_SF(pCBaseEntityScriptDesc, "SetGravity", SetGravityScale);
+	RESOLVE_SF(pCBaseEntityScriptDesc, "SetEntityName", ScriptSetEntityName);
+	RESOLVE_SF(pCBaseEntityScriptDesc, "EmitSoundParams", ScriptEmitSoundParams);
+	RESOLVE_SF(pCBaseEntityScriptDesc, "SetTeam", ChangeTeam);
+	RESOLVE_SF(pCBaseEntityScriptDesc, "IsPlayerPawn", IsPlayerPawn);
+	RESOLVE_SF(pCBaseEntityScriptDesc, "IsPlayerController", IsPlayerController);
+
 	return true;
 }

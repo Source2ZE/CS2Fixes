@@ -207,6 +207,9 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	if (!addresses::Initialize(g_GameConfig))
 		bRequiredInitLoaded = false;
 
+	if (!addresses::InitializeVScriptFunctions())
+		bRequiredInitLoaded = false;
+
 	if (!InitPatches(g_GameConfig))
 		bRequiredInitLoaded = false;
 
