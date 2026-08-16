@@ -50,6 +50,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/utils/weapon.cpp',
     'src/utils/hud_manager.cpp',
     'src/utils/utils.cpp',
+    'src/utils/vscript_function.cpp',
     'src/cs2_sdk/entity/services.cpp',
     'src/cs2_sdk/schema.cpp',
     'src/ctimer.cpp',
