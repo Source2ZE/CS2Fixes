@@ -845,6 +845,13 @@ void CS2Fixes::Hook_ClientCommand(CPlayerSlot slot, const CCommand& args)
 
 	if (g_cvarEnableZR.Get() && slot != -1 && !V_strncmp(args.Arg(0), "jointeam", 8))
 	{
+		// Bots use jointeam to finish connecting. SUPERCEDE is evaluated here,
+		// so an early return in ZR_Hook_ClientCommand_JoinTeam still blocks it
+		// and leaves fill's new bots stuck in challenging (status id 65535).
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
+		if (pController && pController->IsBot())
+			RETURN_META(MRES_IGNORED);
+
 		ZR_Hook_ClientCommand_JoinTeam(slot, args);
 		RETURN_META(MRES_SUPERCEDE);
 	}

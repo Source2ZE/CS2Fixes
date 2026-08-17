@@ -1587,6 +1587,10 @@ void ZR_Hook_ClientCommand_JoinTeam(CPlayerSlot slot, const CCommand& args)
 	if (!pController)
 		return;
 
+	// Engine jointeam is how bots finish connecting after bot_kick / quota refill.
+	if (pController->IsBot())
+		return;
+
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pController->GetPawn();
 	if (pPawn && pPawn->IsAlive())
 		pPawn->CommitSuicide(false, true);
