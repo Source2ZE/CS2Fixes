@@ -536,15 +536,24 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 	if (!g_cvarEnableCommands.Get())
 		RETURN_META(MRES_IGNORED);
 
-	bool bSay = !V_strcmp(args.Arg(0), "say");
-	bool bTeamSay = !V_strcmp(args.Arg(0), "say_team");
+	bool bSay = !V_stricmp(args.Arg(0), "say");
+	bool bTeamSay = !V_stricmp(args.Arg(0), "say_team");
 
 	if (iCommandPlayerSlot != -1 && (bSay || bTeamSay))
 	{
-		auto pController = CCSPlayerController::FromSlot(iCommandPlayerSlot);
-		bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
-		bool bFlooding = pController && pController->GetZEPlayer()->IsFlooding();
-		bool bIsAdmin = pController && pController->GetZEPlayer()->IsAdminFlagSet(ADMFLAG_GENERIC);
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(iCommandPlayerSlot);
+		ZEPlayer* pPlayer = pController ? pController->GetZEPlayer() : nullptr;
+
+		// Block chat messages from players not fully ingame, can be interpreted as console messages
+		if (!pPlayer || !pPlayer->IsInGame())
+		{
+			Message("Blocked chat message from user ID %i not fully in game\n", g_pEngineServer2->GetPlayerUserId(iCommandPlayerSlot).Get());
+			RETURN_META(MRES_SUPERCEDE);
+		}
+
+		bool bGagged = pPlayer->IsGagged();
+		bool bFlooding = pPlayer->IsFlooding();
+		bool bIsAdmin = pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC);
 		bool bAdminChat = bTeamSay && *args[1] == '@';
 		bool bSilent = *args[1] == '/' || bAdminChat;
 		bool bCommand = *args[1] == '!' || *args[1] == '/';
@@ -857,7 +866,7 @@ void CS2Fixes::Hook_ClientCommand(CPlayerSlot slot, const CCommand& args)
 			RETURN_META(MRES_SUPERCEDE);
 	}
 
-	if (g_cvarEnableZR.Get() && slot != -1 && !V_strncmp(args.Arg(0), "jointeam", 8))
+	if (g_cvarEnableZR.Get() && slot != -1 && !V_strnicmp(args.Arg(0), "jointeam", 8))
 	{
 		ZR_Hook_ClientCommand_JoinTeam(slot, args);
 		RETURN_META(MRES_SUPERCEDE);
