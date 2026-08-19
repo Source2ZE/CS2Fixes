@@ -89,7 +89,7 @@ public:
 	std::vector<std::string> GetGroups() { return m_vecGroups; };
 	bool HasGroup(std::string strGroup) { return std::find(m_vecGroups.begin(), m_vecGroups.end(), strGroup) != m_vecGroups.end(); };
 
-	bool IsAvailable();
+	bool IsAvailable(int iOnlinePlayers = -1);
 	bool Load();
 	std::shared_ptr<CCooldown> GetCooldown();
 	std::string GetCooldownText(bool bPlural);
@@ -206,7 +206,7 @@ public:
 	std::shared_ptr<CMap> GetCurrentMap() { return m_pCurrentMap; }
 	void SetCurrentMap(std::shared_ptr<CMap> pCurrentMap) { m_pCurrentMap = pCurrentMap; }
 	int GetDownloadQueueSize() { return m_DownloadQueue.size(); }
-	void ClearInvalidNominations();
+	void OnPlayerCountChange();
 	std::shared_ptr<CMap> GetForcedNextMap() { return m_pForcedNextMap; }
 	void SetForcedNextMap(std::shared_ptr<CMap> pForcedNextMap) { m_pForcedNextMap = pForcedNextMap; }
 	std::unordered_map<int, int> GetNominatedMaps();
@@ -247,6 +247,7 @@ private:
 	std::weak_ptr<CTimer> m_pDownloadProgressTimer;
 	std::weak_ptr<CTimer> m_pRateLimitedDownloadTimer;
 	std::vector<std::shared_ptr<CMapSystemWorkshopDetailsQuery>> m_vecWorkshopDetailsQueries;
+	int m_iSessionMaxPlayerCount = 0;
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;

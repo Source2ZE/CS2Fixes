@@ -43,6 +43,7 @@ CConVar<float> g_cvarVoteMapsCooldown("cs2f_vote_maps_cooldown", FCVAR_NONE, "De
 CConVar<float> g_cvarVoteMapsCooldownRng("cs2f_vote_maps_cooldown_rng", FCVAR_NONE, "Randomness range in both directions to apply to map cooldowns", 0.0f);
 CConVar<int> g_cvarVoteMaxNominations("cs2f_vote_max_nominations", FCVAR_NONE, "Number of nominations to include per vote, out of a maximum of 10", 10, true, 0, true, 10);
 CConVar<int> g_cvarVoteMaxMaps("cs2f_vote_max_maps", FCVAR_NONE, "Number of total maps to include per vote, including nominations, out of a maximum of 10", 10, true, 2, true, 10);
+CConVar<int> g_cvarVoteLowPopMaxCount("cs2f_vote_lowpop_max_count", FCVAR_NONE, "Maximum amount of players required to enable low population features in map vote system", 10, true, 0, false, 0);
 
 CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current map on completion", ADMFLAG_ROOT)
 {
@@ -168,11 +169,13 @@ CON_COMMAND_CHAT(maplist, "- List the maps in the server")
 	g_pMapVoteSystem->PrintMapList(player);
 }
 
-bool CMap::IsAvailable()
+bool CMap::IsAvailable(int iOnlinePlayers)
 {
 	auto pThis = shared_from_this();
+	if (iOnlinePlayers == -1)
+		iOnlinePlayers = g_playerManager->GetOnlinePlayerCount(false);
 
-	if (GetCooldown()->IsOnCooldown())
+	if (GetCooldown()->IsOnCooldown() && iOnlinePlayers > g_cvarVoteLowPopMaxCount.Get())
 		return false;
 
 	if (*g_pMapVoteSystem->GetCurrentMap() == *pThis)
@@ -181,7 +184,6 @@ bool CMap::IsAvailable()
 	if (!IsEnabled())
 		return false;
 
-	int iOnlinePlayers = g_playerManager->GetOnlinePlayerCount(false);
 	bool bMeetsMaxPlayers = iOnlinePlayers <= GetMaxPlayers();
 	bool bMeetsMinPlayers = iOnlinePlayers >= GetMinPlayers();
 	return bMeetsMaxPlayers && bMeetsMinPlayers;
@@ -759,7 +761,7 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 			return;
 		}
 
-		if (pMap->GetCooldown()->IsOnCooldown())
+		if (pMap->GetCooldown()->IsOnCooldown() && iPlayerCount > g_cvarVoteLowPopMaxCount.Get())
 		{
 			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Cannot nominate \x06%s\x01 because it's on a %s cooldown.", pMap->GetName(), pMap->GetCooldownText(false).c_str());
 			return;
@@ -1108,10 +1110,15 @@ bool CMapVoteSystem::WriteMapCooldownsToFile()
 	return true;
 }
 
-void CMapVoteSystem::ClearInvalidNominations()
+void CMapVoteSystem::OnPlayerCountChange()
 {
 	if (!g_cvarVoteManagerEnable.Get() || m_bIsVoteOngoing || !GetGlobals())
 		return;
+
+	int iOnlinePlayers = g_playerManager->GetOnlinePlayerCount(false);
+
+	if (iOnlinePlayers > m_iSessionMaxPlayerCount)
+		m_iSessionMaxPlayerCount = iOnlinePlayers;
 
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
@@ -1124,7 +1131,7 @@ void CMapVoteSystem::ClearInvalidNominations()
 		auto pMap = GetMapByIndex(iNominatedMapIndex);
 
 		// Check if nominated map still meets criteria for nomination
-		if (!pMap->IsAvailable())
+		if (!pMap->IsAvailable(iOnlinePlayers))
 		{
 			ClearPlayerInfo(i);
 			CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(i);
@@ -1153,16 +1160,19 @@ void CMapVoteSystem::ApplyGameSettings(const char* pszMapName, uint64 iWorkshopI
 
 void CMapVoteSystem::OnLevelShutdown()
 {
-	// Put the map on cooldown as we transition to the next map
-	PutMapOnCooldown(GetCurrentMap()->GetName());
-
-	// Fully apply pending group cooldowns
-	for (std::shared_ptr<CCooldown> pCooldown : m_vecCooldowns)
+	if (m_iSessionMaxPlayerCount > g_cvarVoteLowPopMaxCount.Get())
 	{
-		if (pCooldown->GetPendingCooldown() > 0.0f)
+		// Put the map on cooldown as we transition to the next map
+		PutMapOnCooldown(GetCurrentMap()->GetName());
+
+		// Fully apply pending group cooldowns
+		for (std::shared_ptr<CCooldown> pCooldown : m_vecCooldowns)
 		{
-			PutMapOnCooldown(pCooldown->GetMapName(), pCooldown->GetPendingCooldown());
-			pCooldown->SetPendingCooldown(0.0f);
+			if (pCooldown->GetPendingCooldown() > 0.0f)
+			{
+				PutMapOnCooldown(pCooldown->GetMapName(), pCooldown->GetPendingCooldown());
+				pCooldown->SetPendingCooldown(0.0f);
+			}
 		}
 	}
 
@@ -1177,6 +1187,8 @@ void CMapVoteSystem::OnLevelShutdown()
 		if (m_timeMapListModified != std::filesystem::last_write_time(szPath))
 			ReloadMapList(false);
 	}
+
+	m_iSessionMaxPlayerCount = 0;
 }
 
 std::string CMapVoteSystem::ConvertFloatToString(float fValue, int precision)
