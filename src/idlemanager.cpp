@@ -78,6 +78,8 @@ void CIdleSystem::CheckForIdleClients()
 	}
 }
 
+const uint64 ACTIVE_BUTTONS = IN_ATTACK + IN_JUMP + IN_DUCK + IN_FORWARD + IN_BACK + IN_MOVELEFT + IN_MOVERIGHT;
+
 // Logged inputs and time for the logged inputs are updated every time this function is run.
 void CIdleSystem::UpdateIdleTimes()
 {
@@ -106,7 +108,9 @@ void CIdleSystem::UpdateIdleTimes()
 		if (pMovement)
 		{
 			const auto buttonStates = pMovement->m_nButtons().m_pButtonStates();
-			iCurrentMovement = buttonStates[0];
+
+			// Only count certain inputs for resetting idle state
+			iCurrentMovement = buttonStates[0] & ACTIVE_BUTTONS;
 		}
 		const auto buttonsChanged = pPlayer->GetLastInputs() ^ iCurrentMovement;
 
