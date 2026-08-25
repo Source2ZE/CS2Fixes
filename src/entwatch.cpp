@@ -1486,19 +1486,12 @@ void CEWHandler::ResetAllClantags()
 	if (!GetGlobals())
 		return;
 
-	// Reset everyone's scores and tags for insurance
+	// Reset everyone's tags
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 		if (!pController)
 			continue;
-
-		// Bring score down below entwatch_score so new item holders show above
-		if (pController->m_iScore >= g_cvarItemHolderScore.Get())
-		{
-			int score = pController->m_iScore % g_cvarItemHolderScore.Get();
-			pController->m_iScore = score;
-		}
 
 		pController->SetClanTag("");
 	}
