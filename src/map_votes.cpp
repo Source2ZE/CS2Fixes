@@ -1159,19 +1159,23 @@ void CMapVoteSystem::ApplyGameSettings(const char* pszMapName, uint64 iWorkshopI
 
 void CMapVoteSystem::OnLevelShutdown()
 {
-	if (m_iSessionMaxPlayerCount > g_cvarVoteBypassCooldownMaxCount.Get())
+	bool bApplyCooldowns = m_iSessionMaxPlayerCount > g_cvarVoteBypassCooldownMaxCount.Get();
+
+	if (bApplyCooldowns)
 	{
 		// Put the map on cooldown as we transition to the next map
 		PutMapOnCooldown(GetCurrentMap()->GetName());
+	}
 
-		// Fully apply pending group cooldowns
-		for (std::shared_ptr<CCooldown> pCooldown : m_vecCooldowns)
+	// Fully apply or discard pending group cooldowns
+	for (std::shared_ptr<CCooldown> pCooldown : m_vecCooldowns)
+	{
+		if (pCooldown->GetPendingCooldown() > 0.0f)
 		{
-			if (pCooldown->GetPendingCooldown() > 0.0f)
-			{
+			if (bApplyCooldowns)
 				PutMapOnCooldown(pCooldown->GetMapName(), pCooldown->GetPendingCooldown());
-				pCooldown->SetPendingCooldown(0.0f);
-			}
+
+			pCooldown->SetPendingCooldown(0.0f);
 		}
 	}
 
