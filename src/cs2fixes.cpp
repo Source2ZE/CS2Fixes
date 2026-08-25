@@ -577,6 +577,10 @@ void CS2Fixes::Hook_DispatchConCommand(ConCommandRef cmdHandle, const CCommandCo
 		{
 			SH_CALL(g_pCVar, &ICvar::DispatchConCommand)
 			(cmdHandle, ctx, args);
+
+			// Reset idle time if message is sent to chat
+			if (g_cvarIdleKickTime.Get() > 0.0f)
+				pPlayer->UpdateLastInputTime();
 		}
 		else if (bFlooding)
 		{
@@ -850,12 +854,20 @@ void CS2Fixes::Hook_ClientCommand(CPlayerSlot slot, const CCommand& args)
 	Message("Hook_ClientCommand(%d, \"%s\")\n", slot, args.GetCommandString());
 #endif
 
+	ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
+
 	if (g_cvarIdleKickTime.Get() > 0.0f)
 	{
-		ZEPlayer* pPlayer = g_playerManager->GetPlayer(slot);
-
-		if (pPlayer)
-			pPlayer->UpdateLastInputTime();
+		CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
+		if (pPlayer && pController)
+		{
+			// Only spectators doing spectator commands reset idle timer
+			if (pController->m_iTeamNum() == CS_TEAM_SPECTATOR && 
+				(!V_stricmp(args[0], "spec_mode") || 
+				!V_stricmp(args[0], "spec_prev") || 
+				!V_stricmp(args[0], "spec_next")))
+				pPlayer->UpdateLastInputTime();
+		}
 	}
 
 	if (g_cvarVoteManagerEnable.Get() && V_stricmp(args[0], "endmatch_votenextmap") == 0 && args.ArgC() == 2)
