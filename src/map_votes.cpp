@@ -43,7 +43,7 @@ CConVar<float> g_cvarVoteMapsCooldown("cs2f_vote_maps_cooldown", FCVAR_NONE, "De
 CConVar<float> g_cvarVoteMapsCooldownRng("cs2f_vote_maps_cooldown_rng", FCVAR_NONE, "Randomness range in both directions to apply to map cooldowns", 0.0f);
 CConVar<int> g_cvarVoteMaxNominations("cs2f_vote_max_nominations", FCVAR_NONE, "Number of nominations to include per vote, out of a maximum of 10", 10, true, 0, true, 10);
 CConVar<int> g_cvarVoteMaxMaps("cs2f_vote_max_maps", FCVAR_NONE, "Number of total maps to include per vote, including nominations, out of a maximum of 10", 10, true, 2, true, 10);
-CConVar<int> g_cvarVoteLowPopMaxCount("cs2f_vote_lowpop_max_count", FCVAR_NONE, "Maximum amount of players required to enable low population features in map vote system", 10, true, 0, false, 0);
+CConVar<int> g_cvarVoteBypassCooldownMaxCount("cs2f_vote_bypass_cd_max_count", FCVAR_NONE, "Maximum amount of players allowed to enable bypassing map cooldowns", 0, true, 0, false, 0);
 
 CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current map on completion", ADMFLAG_ROOT)
 {
@@ -169,13 +169,11 @@ CON_COMMAND_CHAT(maplist, "- List the maps in the server")
 	g_pMapVoteSystem->PrintMapList(player);
 }
 
-bool CMap::IsAvailable(int iOnlinePlayers)
+bool CMap::IsAvailable()
 {
 	auto pThis = shared_from_this();
-	if (iOnlinePlayers == -1)
-		iOnlinePlayers = g_playerManager->GetOnlinePlayerCount(false);
 
-	if (GetCooldown()->IsOnCooldown() && iOnlinePlayers > g_cvarVoteLowPopMaxCount.Get())
+	if (GetCooldown()->IsOnCooldown())
 		return false;
 
 	if (*g_pMapVoteSystem->GetCurrentMap() == *pThis)
@@ -184,6 +182,7 @@ bool CMap::IsAvailable(int iOnlinePlayers)
 	if (!IsEnabled())
 		return false;
 
+	int iOnlinePlayers = g_playerManager->GetOnlinePlayerCount(false);
 	bool bMeetsMaxPlayers = iOnlinePlayers <= GetMaxPlayers();
 	bool bMeetsMinPlayers = iOnlinePlayers >= GetMinPlayers();
 	return bMeetsMaxPlayers && bMeetsMinPlayers;
@@ -761,7 +760,7 @@ void CMapVoteSystem::AttemptNomination(CCSPlayerController* pController, const c
 			return;
 		}
 
-		if (pMap->GetCooldown()->IsOnCooldown() && iPlayerCount > g_cvarVoteLowPopMaxCount.Get())
+		if (pMap->GetCooldown()->IsOnCooldown())
 		{
 			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Cannot nominate \x06%s\x01 because it's on a %s cooldown.", pMap->GetName(), pMap->GetCooldownText(false).c_str());
 			return;
@@ -1131,7 +1130,7 @@ void CMapVoteSystem::OnPlayerCountChange()
 		auto pMap = GetMapByIndex(iNominatedMapIndex);
 
 		// Check if nominated map still meets criteria for nomination
-		if (!pMap->IsAvailable(iOnlinePlayers))
+		if (!pMap->IsAvailable())
 		{
 			ClearPlayerInfo(i);
 			CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(i);
@@ -1160,7 +1159,7 @@ void CMapVoteSystem::ApplyGameSettings(const char* pszMapName, uint64 iWorkshopI
 
 void CMapVoteSystem::OnLevelShutdown()
 {
-	if (m_iSessionMaxPlayerCount > g_cvarVoteLowPopMaxCount.Get())
+	if (m_iSessionMaxPlayerCount > g_cvarVoteBypassCooldownMaxCount.Get())
 	{
 		// Put the map on cooldown as we transition to the next map
 		PutMapOnCooldown(GetCurrentMap()->GetName());
@@ -1326,6 +1325,11 @@ std::shared_ptr<CCooldown> CMapVoteSystem::GetMapCooldown(const char* pszMapName
 	m_vecCooldowns.push_back(pCooldown);
 
 	return pCooldown;
+}
+
+bool CCooldown::IsOnCooldown()
+{
+	return GetCurrentCooldown() > 0.0f && g_playerManager->GetOnlinePlayerCount(false) > g_cvarVoteBypassCooldownMaxCount.Get();
 }
 
 float CCooldown::GetCurrentCooldown()

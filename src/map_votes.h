@@ -50,8 +50,8 @@ public:
 	void SetTimeCooldown(time_t timeCooldown) { m_timeCooldown = timeCooldown; };
 	float GetPendingCooldown() { return m_fPendingCooldown; };
 	void SetPendingCooldown(float fPendingCooldown) { m_fPendingCooldown = fPendingCooldown; };
-	bool IsOnCooldown() { return GetCurrentCooldown() > 0.0f; }
 	bool IsPending() { return m_fPendingCooldown > 0.0f && m_fPendingCooldown == GetCurrentCooldown(); };
+	bool IsOnCooldown();
 	float GetCurrentCooldown();
 
 private:
@@ -89,7 +89,7 @@ public:
 	std::vector<std::string> GetGroups() { return m_vecGroups; };
 	bool HasGroup(std::string strGroup) { return std::find(m_vecGroups.begin(), m_vecGroups.end(), strGroup) != m_vecGroups.end(); };
 
-	bool IsAvailable(int iOnlinePlayers = -1);
+	bool IsAvailable();
 	bool Load();
 	std::shared_ptr<CCooldown> GetCooldown();
 	std::string GetCooldownText(bool bPlural);
