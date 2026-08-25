@@ -862,10 +862,7 @@ void CS2Fixes::Hook_ClientCommand(CPlayerSlot slot, const CCommand& args)
 		if (pPlayer && pController)
 		{
 			// Only spectators doing spectator commands reset idle timer
-			if (pController->m_iTeamNum() == CS_TEAM_SPECTATOR && 
-				(!V_stricmp(args[0], "spec_mode") || 
-				!V_stricmp(args[0], "spec_prev") || 
-				!V_stricmp(args[0], "spec_next")))
+			if (pController->m_iTeamNum() == CS_TEAM_SPECTATOR && (!V_stricmp(args[0], "spec_mode") || !V_stricmp(args[0], "spec_prev") || !V_stricmp(args[0], "spec_next")))
 				pPlayer->UpdateLastInputTime();
 		}
 	}
