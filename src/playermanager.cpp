@@ -804,7 +804,7 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid, const char
 	ResetPlayerFlags(slot.Get());
 
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
-	g_pMapVoteSystem->ClearInvalidNominations();
+	g_pMapVoteSystem->OnPlayerCountChange();
 
 	return true;
 }
@@ -829,7 +829,7 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	// One tick delay, to ensure player count decrements
 	CTimer::Create(0.01f, TIMERFLAG_MAP, []() {
 		g_pVoteManager->CheckRTVStatus();
-		g_pMapVoteSystem->ClearInvalidNominations();
+		g_pMapVoteSystem->OnPlayerCountChange();
 		return -1.0f;
 	});
 
