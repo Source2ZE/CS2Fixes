@@ -108,6 +108,7 @@ public: // hooks
 	int Hook_LoadEventsFromFile(const char* filename, bool bSearchAll);
 	void Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr);
 	bool Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg);
+	void Hook_ClientSvcUserMessage(CPlayerSlot slot, int um_type, uint32 size, const void* buf);
 	void Hook_Spawn(int nCount, const EntitySpawnInfo_t* pInfo);
 
 public: // MetaMod API

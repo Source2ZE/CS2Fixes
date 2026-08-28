@@ -206,6 +206,9 @@
     <ClCompile Include="src\mapmigrations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mapmigrations.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -448,8 +451,8 @@
     <ClInclude Include="src\topdefender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mapmigrations.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\cs2_sdk\entity\customhudlayout.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

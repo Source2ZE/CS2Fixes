@@ -61,6 +61,7 @@
 #include "tier0/vprof.h"
 #include "user_preferences.h"
 #include "usermessages.pb.h"
+#include "cstrike15_usermessages.pb.h"
 #include "votemanager.h"
 #include "zombiereborn.h"
 #include <entity.h>
@@ -99,6 +100,7 @@ SH_DECL_HOOK1_void(IServer, SetGameSpawnGroupMgr, SH_NOATTRIB, 0, IGameSpawnGrou
 SH_DECL_HOOK2_void(CEntitySystem, Spawn, SH_NOATTRIB, 0, int, const EntitySpawnInfo_t*);
 SH_DECL_MANUALHOOK3_void(Teleport, 0, 0, 0, const Vector*, const QAngle*, const Vector*);
 SH_DECL_HOOK1(CServerSideClient, ProcessVoiceData, SH_NOATTRIB, 0, bool, const CCLCMsg_VoiceData_t&);
+SH_DECL_HOOK4_void(IServerGameClients, ClientSvcUserMessage, SH_NOATTRIB, 0, CPlayerSlot, int, uint32, const void*);
 
 CS2Fixes g_CS2Fixes;
 IGameEventSystem* g_gameEventSystem = nullptr;
@@ -198,6 +200,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	SH_ADD_HOOK(INetworkServerService, StartupServer, g_pNetworkServerService, SH_MEMBER(this, &CS2Fixes::Hook_StartupServer), true);
 	SH_ADD_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_ADD_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
+	SH_ADD_HOOK(IServerGameClients, ClientSvcUserMessage, g_pSource2GameClients, SH_MEMBER(this, &CS2Fixes::Hook_ClientSvcUserMessage), false);
 	g_iCreateWorkshopMapGroupId = SH_ADD_MANUALVPHOOK(CreateWorkshopMapGroup, g_pGameTypes, SH_MEMBER(this, &CS2Fixes::Hook_CreateWorkshopMapGroup), false);
 
 	META_CONPRINTF("All hooks started!\n");
@@ -1278,6 +1281,31 @@ bool CS2Fixes::Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg)
 		pPlayer->SetLastVoiceTime(GetGlobals()->curtime);
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
+}
+
+void CS2Fixes::Hook_ClientSvcUserMessage(CPlayerSlot slot, int um_type, uint32 size, const void* buf)
+{
+	if (um_type != CS_UM_CustomHudClicked)
+		RETURN_META(MRES_IGNORED);
+
+	CCSUsrMsg_CustomHudClicked message;
+
+	if (!message.ParseFromArray(buf, size))
+		return;
+
+	auto* pPlayer = CCSPlayerController::FromSlot(slot);
+
+	if (!pPlayer)
+		return;
+
+	auto handle = CBaseHandle::FromPackedInt(message.custom_hud_layout());
+
+	if (!handle.Get())
+		return;
+
+	Message("%s clicked %s on %s\n", pPlayer->GetPlayerName().c_str(), message.button_id().c_str(), handle.Get()->m_pEntity->m_name.String());
+
+	RETURN_META(MRES_IGNORED);
 }
 
 void* CS2Fixes::OnMetamodQuery(const char* iface, int* ret)
