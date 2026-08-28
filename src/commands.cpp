@@ -31,6 +31,7 @@
 #include "entity/ccsweaponbase.h"
 #include "entity/cparticlesystem.h"
 #include "entity/lights.h"
+#include "entity/customhudlayout.h"
 #include "httpmanager.h"
 #include "leader.h"
 #include "networksystem/inetworkmessages.h"
@@ -1160,5 +1161,34 @@ CON_COMMAND_CHAT(discordbot, "<bot> <message> - Send a message to a discord webh
 	}
 
 	g_pDiscordBotManager->PostDiscordMessage(args[1], args[2]);
+}
+
+CON_COMMAND_CHAT(uitest, "<xml path> (<text>) - Spawn UI panel", ADMFLAG_ROOT)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !uitest <xml path> (<text>)");
+		return;
+	}
+
+	static CHandle<CCSCustomHudLayout> hLayout = nullptr;
+
+	if (hLayout.Get())
+		hLayout->Remove();
+
+	hLayout = CreateEntityByName<CCSCustomHudLayout>("custom_hud_layout");
+
+	CEntityKeyValues* pKV = new CEntityKeyValues();
+	pKV->SetString("layout", args[1]);
+	pKV->SetString("targetname", "plugin_custom_hud");
+
+	hLayout->SetHasClass("dialog", "Dismissed", false, player);
+
+	if (args.ArgC() > 2)
+		hLayout->SetDialogVariableString("dialog", "CustomText", args[2], player);
+
+	hLayout->SetInputCaptureEnabled(true, player);
+
+	hLayout->DispatchSpawn(pKV);
 }
 #endif // _DEBUG
