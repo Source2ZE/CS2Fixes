@@ -27,12 +27,14 @@
 #include "commands.h"
 #include "common.h"
 #include "cs_gameevents.pb.h"
+#include "cstrike15_usermessages.pb.h"
 #include "ctimer.h"
 #include "cvarwhitelist.h"
 #include "detours.h"
 #include "discord.h"
 #include "entities.h"
 #include "entity/ccsplayercontroller.h"
+#include "entity/customhudlayout.h"
 #include "entity/services.h"
 #include "entitylistener.h"
 #include "entitysystem.h"
@@ -61,7 +63,6 @@
 #include "tier0/vprof.h"
 #include "user_preferences.h"
 #include "usermessages.pb.h"
-#include "cstrike15_usermessages.pb.h"
 #include "votemanager.h"
 #include "zombiereborn.h"
 #include <entity.h>
@@ -1285,25 +1286,18 @@ bool CS2Fixes::Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg)
 
 void CS2Fixes::Hook_ClientSvcUserMessage(CPlayerSlot slot, int um_type, uint32 size, const void* buf)
 {
-	if (um_type != CS_UM_CustomHudClicked)
+	auto pController = CCSPlayerController::FromSlot(slot);
+
+	if (!pController)
 		RETURN_META(MRES_IGNORED);
 
-	CCSUsrMsg_CustomHudClicked message;
+	if (um_type == CS_UM_CustomHudClicked)
+	{
+		CCSUsrMsg_CustomHudClicked message;
 
-	if (!message.ParseFromArray(buf, size))
-		return;
-
-	auto* pPlayer = CCSPlayerController::FromSlot(slot);
-
-	if (!pPlayer)
-		return;
-
-	auto handle = CBaseHandle::FromPackedInt(message.custom_hud_layout());
-
-	if (!handle.Get())
-		return;
-
-	Message("%s clicked %s on %s\n", pPlayer->GetPlayerName().c_str(), message.button_id().c_str(), handle.Get()->m_pEntity->m_name.String());
+		if (message.ParseFromArray(buf, size))
+			CCSCustomHudLayout::HandleClickCallback(pController, message);
+	}
 
 	RETURN_META(MRES_IGNORED);
 }
