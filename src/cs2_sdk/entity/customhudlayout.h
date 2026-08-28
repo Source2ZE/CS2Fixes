@@ -20,6 +20,11 @@
 #pragma once
 
 #include "ccsplayercontroller.h"
+#include "cstrike15_usermessages.pb.h"
+
+class CCSCustomHudLayout;
+
+using CustomHudClickCallback_t = std::function<void(CCSPlayerController*, CCSCustomHudLayout*, std::string)>;
 
 enum EHudPanelClassStatus_t : int
 {
@@ -94,70 +99,13 @@ public:
 	SCHEMA_FIELD_POINTER(CUtlVector<CUtlString>, m_vecClassNames);
 	SCHEMA_FIELD_POINTER(CUtlVector<CUtlString>, m_vecDialogVariableNames);
 
-	CCSCustomHudLayoutState& GetLayoutState(CCSPlayerController* pController = nullptr)
-	{
-		return pController ? m_vecPlayerLayoutStates->Element(pController->GetPlayerSlot()) : *m_globalLayoutState;
-	}
+	static CCSCustomHudLayout* Create(std::string sLayout, std::string sTargetName = "");
+	static void HandleClickCallback(CCSPlayerController* pController, CCSUsrMsg_CustomHudClicked message);
 
-	void SetHasClass(std::string sPanelId, std::string sClassName, bool bHasClass, CCSPlayerController* pController = nullptr)
-	{
-		auto panelIndex = m_vecPanelIds->Find(sPanelId.c_str());
-
-		if (panelIndex == -1)
-			panelIndex = m_vecPanelIds->AddToTail(sPanelId.c_str());
-
-		auto classIndex = m_vecClassNames->Find(sClassName.c_str());
-
-		if (classIndex == -1)
-			classIndex = m_vecClassNames->AddToTail(sClassName.c_str());
-
-		auto& layoutState = GetLayoutState(pController);
-
-		HUDPanelHasClass_t hasClass(panelIndex, classIndex, bHasClass);
-
-		auto hasClassIndex = layoutState.m_vecHasClasses->Find(hasClass);
-
-		if (hasClassIndex == -1)
-			layoutState.m_vecHasClasses->AddToTail(hasClass);
-		else
-			layoutState.m_vecHasClasses->Element(hasClassIndex).m_eClassStatus = hasClass.m_eClassStatus;
-
-		layoutState.m_vecHasClasses.NetworkStateChanged();
-	}
-
-	void SetDialogVariableString(std::string sPanelId, std::string sVariableName, std::string sValue, CCSPlayerController* pController = nullptr)
-	{
-		auto panelIndex = m_vecPanelIds->Find(sPanelId.c_str());
-
-		if (panelIndex == -1)
-			panelIndex = m_vecPanelIds->AddToTail(sPanelId.c_str());
-
-		auto variableIndex = m_vecDialogVariableNames->Find(sVariableName.c_str());
-
-		if (variableIndex == -1)
-			variableIndex = m_vecDialogVariableNames->AddToTail(sVariableName.c_str());
-
-		auto& layoutState = GetLayoutState(pController);
-
-		HUDPanelDialogVariableString_t dialogVariable(panelIndex, variableIndex, sValue.c_str(), true);
-
-		auto dialogVariableIndex = layoutState.m_vecDialogVariableStrings->Find(dialogVariable);
-
-		if (dialogVariableIndex == -1)
-			layoutState.m_vecDialogVariableStrings->AddToTail(dialogVariable);
-		else
-			layoutState.m_vecDialogVariableStrings->Element(dialogVariableIndex).m_sValue = sValue.c_str();
-
-		layoutState.m_vecDialogVariableStrings.NetworkStateChanged();
-	}
-
-	void SetInputCaptureEnabled(bool bEnable, CCSPlayerController* pController)
-	{
-		GetLayoutState(pController).m_bInputCaptureEnabled = bEnable;
-	}
-
-	bool IsInputCaptureEnabled(CCSPlayerController* pController)
-	{
-		return GetLayoutState(pController).m_bInputCaptureEnabled;
-	}
+	CCSCustomHudLayoutState& GetLayoutState(CCSPlayerController* pController = nullptr);
+	void SetHasClass(std::string sPanelId, std::string sClassName, bool bHasClass, CCSPlayerController* pController = nullptr);
+	void SetDialogVariableString(std::string sPanelId, std::string sVariableName, std::string sValue, CCSPlayerController* pController = nullptr);
+	void SetInputCaptureEnabled(bool bEnable, CCSPlayerController* pController);
+	bool IsInputCaptureEnabled(CCSPlayerController* pController);
+	void AddClickCallback(CustomHudClickCallback_t callback);
 };
