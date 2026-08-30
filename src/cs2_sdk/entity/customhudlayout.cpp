@@ -30,7 +30,8 @@ CCSCustomHudLayout* CCSCustomHudLayout::Create(std::string sLayout, std::string 
 		return nullptr;
 
 	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
-	pKeyValues->SetString("layout", sLayout.c_str());
+	std::string sLayoutPath = "panorama/layout/custom_game/" + std::string(sLayout) + ".vxml_c";
+	pKeyValues->SetString("layout", sLayoutPath.c_str());
 
 	if (!sTargetName.empty())
 		pKeyValues->SetString("targetname", sTargetName.c_str());

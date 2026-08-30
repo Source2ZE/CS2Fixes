@@ -26,6 +26,8 @@ class CCSCustomHudLayout;
 
 using CustomHudClickCallback_t = std::function<void(CCSPlayerController*, CCSCustomHudLayout*, std::string)>;
 
+extern std::map<CHandle<CCSCustomHudLayout>, CustomHudClickCallback_t> g_mapClickCallbacks;
+
 enum EHudPanelClassStatus_t : int
 {
 	k_eHudPanelClassStatus_Undefined = -1,
