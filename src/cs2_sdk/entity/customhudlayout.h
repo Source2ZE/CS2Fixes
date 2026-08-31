@@ -24,9 +24,7 @@
 
 class CCSCustomHudLayout;
 
-using CustomHudClickCallback_t = std::function<void(CCSPlayerController*, CCSCustomHudLayout*, std::string)>;
-
-extern std::map<CHandle<CCSCustomHudLayout>, CustomHudClickCallback_t> g_mapClickCallbacks;
+using CustomHudClickCallback_t = std::function<void(CCSPlayerController*, CCSCustomHudLayout*, const std::string&)>;
 
 enum EHudPanelClassStatus_t : int
 {
@@ -105,12 +103,18 @@ public:
 	SCHEMA_FIELD_POINTER(CUtlVector<CUtlString>, m_vecDialogVariableNames);
 
 	static CCSCustomHudLayout* Create(std::string sLayout, std::string sTargetName = "");
-	static void HandleClickCallback(CCSPlayerController* pController, CCSUsrMsg_CustomHudClicked message);
+	static void ClearClickCallbacks();
 
 	CCSCustomHudLayoutState& GetLayoutState(CCSPlayerController* pController = nullptr);
+
 	void SetHasClass(std::string sPanelId, std::string sClassName, bool bHasClass, CCSPlayerController* pController = nullptr);
 	void SetDialogVariableString(std::string sPanelId, std::string sVariableName, std::string sValue, CCSPlayerController* pController = nullptr);
 	void SetInputCaptureEnabled(bool bEnable, CCSPlayerController* pController);
+
 	bool IsInputCaptureEnabled(CCSPlayerController* pController);
+
 	void AddClickCallback(CustomHudClickCallback_t callback);
+	void OnClick(CCSPlayerController* pController, const std::string& sButtonId);
+
+	void OnEntityDeleted();
 };

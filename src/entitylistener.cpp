@@ -20,6 +20,7 @@
 #include "entitylistener.h"
 #include "common.h"
 #include "cs2_sdk/entity/cbaseentity.h"
+#include "cs2_sdk/entity/customhudlayout.h"
 #include "cs2fixes.h"
 #include "entities.h"
 #include "entity/cgamerules.h"
@@ -55,12 +56,15 @@ void CEntityListener::OnEntityCreated(CEntityInstance* pEntity)
 	ExecuteOnce(addresses::UTIL_Remove = pEntity->m_pEntity->m_pClass->m_NameToThinkFunc("CBaseEntitySUB_Remove"));
 
 	if (!V_strcmp("cs_gamerules", pEntity->GetClassname()))
-		g_pGameRules = ((CCSGameRulesProxy*)pEntity)->m_pGameRules;
+		g_pGameRules = reinterpret_cast<CCSGameRulesProxy*>(pEntity)->m_pGameRules;
 }
 
 void CEntityListener::OnEntityDeleted(CEntityInstance* pEntity)
 {
 	EW_OnEntityDeleted(pEntity);
+
+	if (!V_strcmp("custom_hud_layout", pEntity->GetClassname()))
+		reinterpret_cast<CCSCustomHudLayout*>(pEntity)->OnEntityDeleted();
 }
 
 void CEntityListener::OnEntityParentChanged(CEntityInstance* pEntity, CEntityInstance* pNewParent)

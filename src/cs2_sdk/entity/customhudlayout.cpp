@@ -20,7 +20,7 @@
 #include "customhudlayout.h"
 #include "entity.h"
 
-std::map<CHandle<CCSCustomHudLayout>, CustomHudClickCallback_t> g_mapClickCallbacks;
+std::unordered_map<int, CustomHudClickCallback_t> g_mapClickCallbacks;
 
 CCSCustomHudLayout* CCSCustomHudLayout::Create(std::string sLayout, std::string sTargetName)
 {
@@ -40,33 +40,20 @@ CCSCustomHudLayout* CCSCustomHudLayout::Create(std::string sLayout, std::string 
 	return pLayout;
 }
 
-void CCSCustomHudLayout::HandleClickCallback(CCSPlayerController* pController, CCSUsrMsg_CustomHudClicked message)
+void CCSCustomHudLayout::ClearClickCallbacks()
 {
-	CHandle<CCSCustomHudLayout> handle = CBaseHandle::FromPackedInt(message.custom_hud_layout());
+	g_mapClickCallbacks.clear();
+}
 
-	if (!handle.Get())
-		return;
+void CCSCustomHudLayout::OnClick(CCSPlayerController* pController, const std::string& sButtonId)
+{
+	if (auto it = g_mapClickCallbacks.find(GetHandle().ToInt()); it != g_mapClickCallbacks.end())
+		it->second(pController, this, sButtonId);
+}
 
-	auto iterator = g_mapClickCallbacks.begin();
-
-	while (iterator != g_mapClickCallbacks.end())
-	{
-		// Clean up stale callbacks while we're at it
-		if (!iterator->first.Get())
-		{
-			iterator = g_mapClickCallbacks.erase(iterator);
-		}
-		else
-		{
-			if (iterator->first == handle)
-			{
-				iterator->second(pController, handle.Get(), message.button_id());
-				break;
-			}
-
-			iterator++;
-		}
-	}
+void CCSCustomHudLayout::OnEntityDeleted()
+{
+	g_mapClickCallbacks.erase(GetHandle().ToInt());
 }
 
 CCSCustomHudLayoutState& CCSCustomHudLayout::GetLayoutState(CCSPlayerController* pController)
@@ -141,5 +128,5 @@ bool CCSCustomHudLayout::IsInputCaptureEnabled(CCSPlayerController* pController)
 
 void CCSCustomHudLayout::AddClickCallback(CustomHudClickCallback_t callback)
 {
-	g_mapClickCallbacks.insert({GetHandle(), callback});
+	g_mapClickCallbacks.insert({GetHandle().ToInt(), callback});
 }

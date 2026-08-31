@@ -1296,7 +1296,12 @@ void CS2Fixes::Hook_ClientSvcUserMessage(CPlayerSlot slot, int um_type, uint32 s
 		CCSUsrMsg_CustomHudClicked message;
 
 		if (message.ParseFromArray(buf, size))
-			CCSCustomHudLayout::HandleClickCallback(pController, message);
+		{
+			CHandle<CCSCustomHudLayout> hLayout = CBaseHandle::FromPackedInt(message.custom_hud_layout());
+
+			if (hLayout.Get())
+				hLayout->OnClick(pController, message.button_id());
+		}
 	}
 
 	RETURN_META(MRES_IGNORED);
@@ -1401,7 +1406,7 @@ void CS2Fixes::OnLevelShutdown()
 	if (g_cvarVoteManagerEnable.Get())
 		g_pMapVoteSystem->OnLevelShutdown();
 
-	g_mapClickCallbacks.clear();
+	CCSCustomHudLayout::ClearClickCallbacks();
 }
 
 bool CS2Fixes::Pause(char* error, size_t maxlen)
