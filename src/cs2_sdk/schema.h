@@ -41,6 +41,7 @@ struct SchemaKey
 {
 	int32 offset;
 	bool networked;
+	SchemaCollectionManipulatorFn_t manipulator = nullptr;
 };
 
 class CNetworkVarChainer
@@ -192,6 +193,11 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint6
 				else                                                                                                \
 					::NetworkVarStateChanged(pThisClass, m_key.offset + extra_offset, m_networkStateChangedOffset); \
 			}                                                                                                       \
+		}                                                                                                           \
+		SchemaCollectionManipulatorFn_t GetManipulator()                                                            \
+		{                                                                                                           \
+			static const auto m_key = schema::GetOffset(m_className, m_classNameHash, #varName, m_varNameHash);     \
+			return m_key.manipulator;                                                                               \
 		}                                                                                                           \
 		operator type*()                                                                                            \
 		{                                                                                                           \

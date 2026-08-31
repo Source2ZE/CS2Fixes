@@ -95,7 +95,10 @@ public:
 	DECLARE_SCHEMA_CLASS(CCSCustomHudLayout)
 
 	SCHEMA_FIELD(CUtlSymbolLarge, m_strLayout);
+
+	// Is actually a CUtlVectorEmbeddedNetworkVar with a different structure from a normal CUtlVector, get elements using the manipulator function
 	SCHEMA_FIELD_POINTER(CUtlVector<CCSCustomHudLayoutState>, m_vecPlayerLayoutStates);
+
 	SCHEMA_FIELD_POINTER(CCSCustomHudLayoutState, m_globalLayoutState);
 	SCHEMA_FIELD_POINTER(CUtlVector<CUtlString>, m_vecPanelIds);
 	SCHEMA_FIELD_POINTER(CUtlVector<CUtlString>, m_vecClassNames);

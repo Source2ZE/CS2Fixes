@@ -71,7 +71,10 @@ void CCSCustomHudLayout::HandleClickCallback(CCSPlayerController* pController, C
 
 CCSCustomHudLayoutState& CCSCustomHudLayout::GetLayoutState(CCSPlayerController* pController)
 {
-	return pController ? m_vecPlayerLayoutStates->Element(pController->GetPlayerSlot()) : *m_globalLayoutState;
+	if (!pController)
+		return *m_globalLayoutState;
+
+	return *(CCSCustomHudLayoutState*)m_vecPlayerLayoutStates.GetManipulator()(SCHEMA_COLLECTION_MANIPULATOR_ACTION_GET_ELEMENT, m_vecPlayerLayoutStates, pController->GetPlayerSlot(), 0);
 }
 
 void CCSCustomHudLayout::SetHasClass(std::string sPanelId, std::string sClassName, bool bHasClass, CCSPlayerController* pController)
