@@ -109,12 +109,7 @@ static void InitSchemaKeyValueMap(SchemaClassInfoData_t* pClassInfo, SchemaKeyVa
 
 static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap, const char* className, uint32_t classKey)
 {
-	CSchemaSystemTypeScope* pType = g_pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
-
-	if (!pType)
-		return false;
-
-	SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className).Get();
+	SchemaClassInfoData_t* pClassInfo = schema::GetSchemaClassInfo(className);
 
 	if (!pClassInfo)
 	{
@@ -160,6 +155,16 @@ SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char
 	}
 
 	return tableMap[memberKey];
+}
+
+SchemaClassInfoData_t* schema::GetSchemaClassInfo(const char* className)
+{
+	static CSchemaSystemTypeScope* pType = g_pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
+
+	if (!pType)
+		return nullptr;
+
+	return pType->FindDeclaredClass(className).Get();
 }
 
 void NetworkVarStateChanged(uintptr_t pNetworkVar, uint32_t nOffset, uint32 nNetworkStateChangedOffset)

@@ -67,6 +67,7 @@ namespace schema
 {
 	int16_t FindChainOffset(const char* className, uint32_t classNameHash);
 	SchemaKey GetOffset(const char* className, uint32_t classKey, const char* memberName, uint32_t memberKey);
+	SchemaClassInfoData_t* GetSchemaClassInfo(const char* className);
 } // namespace schema
 
 constexpr uint32_t val_32_const = 0x811c9dc5;
@@ -227,14 +228,27 @@ inline constexpr uint64_t hash_64_fnv1a_const(const char* const str, const uint6
 	SCHEMA_FIELD_POINTER_OFFSET(type, varName, 0)
 
 // If the class needs a specific offset for its NetworkStateChanged (like CEconItemView), use this and provide the offset
-#define DECLARE_SCHEMA_CLASS_BASE(ClassName, offset)                             \
-private:                                                                         \
-	typedef ClassName ThisClass;                                                 \
-	static constexpr const char* m_className = #ClassName;                       \
-	static constexpr uint32_t m_classNameHash = hash_32_fnv1a_const(#ClassName); \
-	static constexpr int m_networkStateChangedOffset = offset;                   \
-                                                                                 \
-public:
+#define DECLARE_SCHEMA_CLASS_BASE(ClassName, offset)                                                      \
+private:                                                                                                  \
+	typedef ClassName ThisClass;                                                                          \
+	static constexpr const char* m_className = #ClassName;                                                \
+	static constexpr uint32_t m_classNameHash = hash_32_fnv1a_const(#ClassName);                          \
+	static constexpr int m_networkStateChangedOffset = offset;                                            \
+                                                                                                          \
+public:                                                                                                   \
+	static ThisClass* Create()                                                                            \
+	{                                                                                                     \
+		static auto pClassInfo = schema::GetSchemaClassInfo(m_className);                                 \
+		static auto pfnManipulator = pClassInfo->m_pfnManipulator;                                        \
+		ThisClass* pThis = (ThisClass*)pfnManipulator(SCHEMA_CLASS_MANIPULATOR_ACTION_ALLOCATE, nullptr); \
+		return pThis;                                                                                     \
+	}                                                                                                     \
+	void Construct()                                                                                      \
+	{                                                                                                     \
+		static auto pClassInfo = schema::GetSchemaClassInfo(m_className);                                 \
+		static auto pfnManipulator = pClassInfo->m_pfnManipulator;                                        \
+		pfnManipulator(SCHEMA_CLASS_MANIPULATOR_ACTION_CONSTRUCT_IN_PLACE, this);                         \
+	}
 
 #define DECLARE_SCHEMA_CLASS(className) DECLARE_SCHEMA_CLASS_BASE(className, 0)
 
