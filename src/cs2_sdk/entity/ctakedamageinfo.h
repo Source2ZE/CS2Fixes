@@ -89,28 +89,35 @@ private:
 	[[maybe_unused]] uint8_t __pad0000[0x8];
 
 public:
+	DECLARE_SCHEMA_CLASS(CTakeDamageInfo)
+
 	CTakeDamageInfo()
 	{
-		addresses::CTakeDamageInfo_Constructor(this, nullptr, nullptr, nullptr, &vec3_origin, &vec3_origin, 0.f, 0, 0, nullptr);
+		Construct();
 	}
 
 	CTakeDamageInfo(CBaseEntity* pInflictor, CBaseEntity* pAttacker, CBaseEntity* pAbility, float flDamage, DamageTypes_t bitsDamageType)
 	{
-		addresses::CTakeDamageInfo_Constructor(this, pInflictor, pAttacker, pAbility, &vec3_origin, &vec3_origin, flDamage, bitsDamageType, 0, nullptr);
+		Construct();
+		m_hInflictor = pInflictor;
+		m_hAttacker = pAttacker;
+		m_hAbility = pAbility;
+		m_flDamage = flDamage;
+		m_bitsDamageType = bitsDamageType;
 	}
 
-	Vector m_vecDamageForce;	  // 0x8  |  8
-	Vector m_vecDamagePosition;	  // 0x14 | 20
-	Vector m_vecReportedPosition; // 0x20 | 32
-	Vector m_vecDamageDirection;  // 0x2c | 44
-	CBaseHandle m_hInflictor;	  // 0x38 | 56
-	CBaseHandle m_hAttacker;	  // 0x3c | 60
-	CBaseHandle m_hAbility;		  // 0x40 | 64
-	float m_flDamage;			  // 0x44 | 68
-	float m_flTotalledDamage;	  // 0x48 | 72
-	int32_t m_bitsDamageType;	  // 0x4c | 76
-	int32_t m_iDamageCustom;	  // 0x50 | 80
-	int8_t m_iAmmoType;			  // 0x54 | 84
+	Vector m_vecDamageForce;			// 0x8  |  8
+	Vector m_vecDamagePosition;			// 0x14 | 20
+	Vector m_vecReportedPosition;		// 0x20 | 32
+	Vector m_vecDamageDirection;		// 0x2c | 44
+	CHandle<CBaseEntity> m_hInflictor;	// 0x38 | 56
+	CHandle<CBaseEntity> m_hAttacker;	// 0x3c | 60
+	CHandle<CBaseEntity> m_hAbility;	// 0x40 | 64
+	float m_flDamage;					// 0x44 | 68
+	float m_flTotalledDamage;			// 0x48 | 72
+	int32_t m_bitsDamageType;			// 0x4c | 76
+	int32_t m_iDamageCustom;			// 0x50 | 80
+	int8_t m_iAmmoType;					// 0x54 | 84
 
 private:
 	[[maybe_unused]] uint8_t m_nUnknown0[0xb]; // 0x55 | 85
