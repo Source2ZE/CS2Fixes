@@ -1741,8 +1741,11 @@ CON_COMMAND_F(zm_mine_kill, "<victim_userid> <owner_userid> - Kill a player, att
 	if (!pVictimPawn || !pVictimPawn->IsAlive())
 		return;
 
-	// Default to the world if the owner has disconnected or isn't alive
-	CBaseEntity* pAttacker = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(0));
+	// World entity - used as the inflictor so the kill feed weapon icon isn't the owner's
+	// currently held weapon. The owner is still credited as the attacker (kill feed name,
+	// scoreboard, on-kill rewards) regardless of what the inflictor is.
+	CBaseEntity* pWorld = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(0));
+	CBaseEntity* pAttacker = pWorld;
 
 	CCSPlayerController* pOwner = CCSPlayerController::FromSlot(g_playerManager->GetSlotFromUserId(V_StringToUint16(args[2], 0)).Get());
 	CCSPlayerPawn* pOwnerPawn = pOwner ? pOwner->GetPlayerPawn() : nullptr;
@@ -1750,7 +1753,7 @@ CON_COMMAND_F(zm_mine_kill, "<victim_userid> <owner_userid> - Kill a player, att
 	if (pOwnerPawn && pOwnerPawn->IsAlive())
 		pAttacker = pOwnerPawn;
 
-	CTakeDamageInfo info(pAttacker, pAttacker, nullptr, 99999.0f, DMG_GENERIC);
+	CTakeDamageInfo info(pWorld, pAttacker, nullptr, 99999.0f, DMG_GENERIC);
 	pVictimPawn->TakeDamage(info);
 }
 
