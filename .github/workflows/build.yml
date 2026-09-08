@@ -51,7 +51,13 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: alliedmodders/metamod-source
-          ref: master
+          # Pinned instead of tracking master: the 2026-09-08 commit a12f3cd5 ("Provide an
+          # alternative to SourceHook") made ISmmPlugin.h require khook.hpp unconditionally
+          # (replacing sourcehook.h), which this project's build isn't set up to provide,
+          # breaking every build (Windows/SteamRT3/SteamRT4) with "fatal error C1083: Cannot
+          # open include file: 'khook.hpp'". This is a12f3cd5's direct parent, i.e. the last
+          # commit before that change. Bump deliberately once CS2Fixes' build is updated for it.
+          ref: 7ec0f16948ab3a0910a98b4ac10e1c0e360d5339
           path: mmsource-2.0
           submodules: recursive
 
