@@ -1380,7 +1380,18 @@ void ZM_DecoyExploded(IGameEvent* pEvent)
 
 				CBaseModelEntity* pIceCube = hIceCube.Get();
 				if (pIceCube)
-					pIceCube->Remove();
+				{
+					// Shatter into the model's own fracture pieces instead of just vanishing
+					pIceCube->AcceptInput("Break");
+
+					CTimer::Create(0.3f, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hIceCube]() {
+						CBaseModelEntity* pIceCube = hIceCube.Get();
+						if (pIceCube)
+							pIceCube->Remove();
+
+						return -1.0f;
+					});
+				}
 
 				return -1.0f;
 			});
