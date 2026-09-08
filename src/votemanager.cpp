@@ -508,39 +508,6 @@ CON_COMMAND_CHAT(extendsleft, "- Display amount of extends left for the current 
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "The map has %i/%i extends left.", g_cvarMaxExtends.Get() - g_pVoteManager->GetExtends(), g_cvarMaxExtends.Get());
 }
 
-CON_COMMAND_CHAT(timeleft, "- Display time left to end of current map.")
-{
-	if (!GetGlobals() || !g_pGameRules)
-		return;
-
-	static ConVarRefAbstract mp_timelimit("mp_timelimit");
-
-	float flTimelimit = mp_timelimit.GetFloat();
-
-	if (flTimelimit == 0.0f)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "No time limit");
-		return;
-	}
-
-	int iTimeleft = (int)((g_pGameRules->m_flGameStartTime + flTimelimit * 60.0f) - GetGlobals()->curtime);
-
-	if (iTimeleft < 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Last round!");
-		return;
-	}
-
-	div_t div = std::div(iTimeleft, 60);
-	int iMinutesLeft = div.quot;
-	int iSecondsLeft = div.rem;
-
-	if (iMinutesLeft > 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Timeleft: %i minutes %i seconds", iMinutesLeft, iSecondsLeft);
-	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Timeleft: %i seconds", iSecondsLeft);
-}
-
 void CVoteManager::ExtendMap(int iMinutes, bool bIncrementiExtends, bool bAllowExtraTime)
 {
 	if (!GetGlobals() || !g_pGameRules)
