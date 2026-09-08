@@ -95,6 +95,7 @@ SH_DECL_MANUALHOOK2_void(CreateWorkshopMapGroup, 0, 0, 0, const char*, const CUt
 SH_DECL_MANUALHOOK1(OnTakeDamage_Alive, 0, 0, 0, bool, CTakeDamageResult*);
 SH_DECL_MANUALHOOK1_void(CheckMovingGround, 0, 0, 0, double);
 SH_DECL_HOOK2(IGameEventManager2, LoadEventsFromFile, SH_NOATTRIB, 0, int, const char*, bool);
+SH_DECL_HOOK2(IGameEventManager2, FireEvent, SH_NOATTRIB, 0, bool, IGameEvent*, bool);
 SH_DECL_MANUALHOOK2_void(PhysicsTouchShuffle, 0, 0, 0, CUtlVector<TouchLinked_t>*, bool);
 SH_DECL_MANUALHOOK3_void(DropWeapon, 0, 0, 0, CBasePlayerWeapon*, Vector*, Vector*);
 SH_DECL_HOOK1_void(IServer, SetGameSpawnGroupMgr, SH_NOATTRIB, 0, IGameSpawnGroupMgr*);
@@ -119,6 +120,7 @@ int g_iCreateWorkshopMapGroupId = -1;
 int g_iOnTakeDamageAliveId = -1;
 int g_iCheckMovingGroundId = -1;
 int g_iLoadEventsFromFileId = -1;
+int g_iFireEventId = -1;
 int g_iPhysicsTouchShuffle = -1;
 int g_iWeaponServiceDropWeaponId = -1;
 int g_iSetGameSpawnGroupMgrId = -1;
@@ -332,6 +334,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 
 	auto pCGameEventManagerVTable = (IGameEventManager2*)modules::server->FindVirtualTable("CGameEventManager");
 	g_iLoadEventsFromFileId = SH_ADD_DVPHOOK(IGameEventManager2, LoadEventsFromFile, pCGameEventManagerVTable, SH_MEMBER(this, &CS2Fixes::Hook_LoadEventsFromFile), false);
+	g_iFireEventId = SH_ADD_DVPHOOK(IGameEventManager2, FireEvent, pCGameEventManagerVTable, SH_MEMBER(this, &CS2Fixes::Hook_FireEvent), false);
 
 	auto pCEntitySystemVTable = (CEntitySystem*)modules::server->FindVirtualTable("CGameEntitySystem");
 	g_iSpawnId = SH_ADD_DVPHOOK(CEntitySystem, Spawn, pCEntitySystemVTable, SH_MEMBER(this, &CS2Fixes::Hook_Spawn), false);
@@ -436,6 +439,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	SH_REMOVE_HOOK(ISource2GameEntities, CheckTransmit, g_pSource2GameEntities, SH_MEMBER(this, &CS2Fixes::Hook_CheckTransmit), true);
 	SH_REMOVE_HOOK(ICvar, DispatchConCommand, g_pCVar, SH_MEMBER(this, &CS2Fixes::Hook_DispatchConCommand), false);
 	SH_REMOVE_HOOK_ID(g_iLoadEventsFromFileId);
+	SH_REMOVE_HOOK_ID(g_iFireEventId);
 	SH_REMOVE_HOOK_ID(g_iCreateWorkshopMapGroupId);
 	SH_REMOVE_HOOK_ID(g_iOnTakeDamageAliveId);
 	SH_REMOVE_HOOK_ID(g_iCheckMovingGroundId);
@@ -1218,6 +1222,18 @@ int CS2Fixes::Hook_LoadEventsFromFile(const char* filename, bool bSearchAll)
 	ExecuteOnce(g_gameEventManager = META_IFACEPTR(IGameEventManager2));
 
 	RETURN_META_VALUE(MRES_IGNORED, 0);
+}
+
+bool CS2Fixes::Hook_FireEvent(IGameEvent* pEvent, bool bDontBroadcast)
+{
+	// Make player_connect obey cs2f_map_steamids_enable as well
+	if (!g_cvarEnableMapSteamIds.Get() && !V_stricmp(pEvent->GetName(), "player_connect"))
+	{
+		pEvent->SetString("networkid", "");
+		pEvent->SetUint64("xuid", 0);
+	}
+
+	RETURN_META_VALUE(MRES_IGNORED, true);
 }
 
 void CS2Fixes::Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr)
