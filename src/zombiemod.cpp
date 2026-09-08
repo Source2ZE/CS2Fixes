@@ -1809,6 +1809,28 @@ CON_COMMAND_F(zm_mine_kill, "<victim_userid> <owner_userid> - Kill a player, att
 		pInferno->Remove();
 }
 
+// Hides an entity by setting its render mode directly (a plain data write, not a native function
+// call like SetModel - CS2Fixes has no safe SetModel-on-existing-entity, but this simple field
+// write is already used elsewhere in this codebase, e.g. mapmigrations.cpp/playermanager.cpp).
+// Lets external plugins (EconomyShopPlugin's FreezeGrenade) hide a native entity (e.g. the real
+// decoy_projectile) so a cosmetic replacement model can be shown in its place instead. Server
+// console only, same reasoning as zm_mine_kill above.
+CON_COMMAND_F(zm_hide_entity, "<entity_index> - Hide an entity (render mode none)", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+		return;
+
+	int iIndex = V_StringToInt32(args[1], -1);
+	if (iIndex < 0)
+		return;
+
+	CBaseModelEntity* pEnt = (CBaseModelEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(iIndex));
+	if (!pEnt)
+		return;
+
+	pEnt->m_nRenderMode = kRenderNone;
+}
+
 void ZMMotherZombiesCommand(CCSPlayerController* player)
 {
 	if (g_ZRRoundState == EZRRoundState::ROUND_START || g_MotherZombies.size() == 0)
