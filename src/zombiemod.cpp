@@ -1753,7 +1753,9 @@ CON_COMMAND_F(zm_mine_kill, "<victim_userid> <owner_userid> - Kill a player, att
 	if (pOwnerPawn && pOwnerPawn->IsAlive())
 		pAttacker = pOwnerPawn;
 
-	CTakeDamageInfo info(pWorld, pAttacker, nullptr, 99999.0f, DMG_GENERIC);
+	// DMG_FALL is what fall-damage deaths use, which is what shows the skull icon with no
+	// weapon in the kill feed - DMG_GENERIC with a world inflictor showed no icon at all.
+	CTakeDamageInfo info(pWorld, pAttacker, nullptr, 99999.0f, DMG_FALL);
 	pVictimPawn->TakeDamage(info);
 }
 
