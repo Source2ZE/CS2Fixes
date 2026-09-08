@@ -818,17 +818,29 @@ CConVar<bool> g_cvarFixGameBans("cs2f_fix_game_bans", FCVAR_NONE, "Whether to fi
 
 void FASTCALL Detour_GameSystem_Think_CheckSteamBan()
 {
-	// Implementation shared by @aiolos1045
+	auto pMap = addresses::sm_mapGcBanInformation;
+	static ConVarRefAbstract sv_kick_players_with_cooldown("sv_kick_players_with_cooldown");
+
+	// Fix competitive cooldowns still being applied without sv_kick_players_with_cooldown 2
+	if (sv_kick_players_with_cooldown.GetInt() < 2)
+	{
+		for (int i = pMap->FirstInorder(); i != pMap->InvalidIndex();)
+		{
+			int next = pMap->NextInorder(i);
+			uint32_t reason = pMap->Element(i).m_uiReason;
+
+			if (reason == 20 || reason == 22 || reason == 23)
+				pMap->RemoveAt(i);
+
+			i = next;
+		}
+	}
+	
 	GameSystem_Think_CheckSteamBan();
 
-	if (!g_cvarFixGameBans.Get())
-		return;
-
-	auto pMap = addresses::sm_mapGcBanInformation;
-	unsigned int count = pMap->Count();
-
 	// After player has been kicked, remove any ban entries, to prevent spreading to all new joining players
-	if (count > 0)
+	// Implementation shared by @aiolos1045
+	if (g_cvarFixGameBans.Get() && pMap->Count() > 0)
 		pMap->RemoveAll();
 }
 
