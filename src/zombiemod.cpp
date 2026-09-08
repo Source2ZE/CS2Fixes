@@ -1725,6 +1725,35 @@ CON_COMMAND_CHAT_FLAGS(zmrevive, "- Revive a player", ADMFLAG_GENERIC)
 		PrintMultiAdminAction(nType, strCommandPlayerName, "revived", "", ZM_PREFIX);
 }
 
+// Lets external plugins (e.g. EconomyShopPlugin's LaserMine) kill a player via real attacker
+// damage instead of CommitSuicide(), so the kill goes through the normal damage/death pipeline
+// with proper attacker attribution (kill feed, scoreboard, on-kill rewards). Server console only
+// (no FCVAR_CLIENT_CAN_EXECUTE) so a player can't invoke it against someone else from their own
+// client console.
+CON_COMMAND_F(zm_mine_kill, "<victim_userid> <owner_userid> - Kill a player, attributing the kill to another player", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 3)
+		return;
+
+	CCSPlayerController* pVictim = CCSPlayerController::FromSlot(g_playerManager->GetSlotFromUserId(V_StringToUint16(args[1], 0)).Get());
+	CCSPlayerPawn* pVictimPawn = pVictim ? pVictim->GetPlayerPawn() : nullptr;
+
+	if (!pVictimPawn || !pVictimPawn->IsAlive())
+		return;
+
+	// Default to the world if the owner has disconnected or isn't alive
+	CBaseEntity* pAttacker = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(0));
+
+	CCSPlayerController* pOwner = CCSPlayerController::FromSlot(g_playerManager->GetSlotFromUserId(V_StringToUint16(args[2], 0)).Get());
+	CCSPlayerPawn* pOwnerPawn = pOwner ? pOwner->GetPlayerPawn() : nullptr;
+
+	if (pOwnerPawn && pOwnerPawn->IsAlive())
+		pAttacker = pOwnerPawn;
+
+	CTakeDamageInfo info(pAttacker, pAttacker, nullptr, 99999.0f, DMG_GENERIC);
+	pVictimPawn->TakeDamage(info);
+}
+
 void ZMMotherZombiesCommand(CCSPlayerController* player)
 {
 	if (g_ZRRoundState == EZRRoundState::ROUND_START || g_MotherZombies.size() == 0)
