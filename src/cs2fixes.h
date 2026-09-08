@@ -106,6 +106,7 @@ public: // hooks
 	void Hook_CheckMovingGround(double frametime);
 	void Hook_DropWeaponPost(CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity);
 	int Hook_LoadEventsFromFile(const char* filename, bool bSearchAll);
+	bool Hook_FireEvent(IGameEvent* pEvent, bool bDontBroadcast);
 	void Hook_SetGameSpawnGroupMgr(IGameSpawnGroupMgr* pSpawnGroupMgr);
 	bool Hook_ProcessVoiceData(const CCLCMsg_VoiceData_t& msg);
 	void Hook_ClientSvcUserMessage(CPlayerSlot slot, int um_type, uint32 size, const void* buf);
