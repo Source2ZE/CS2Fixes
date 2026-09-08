@@ -121,6 +121,12 @@ void ZM_Precache(IEntityResourceManifest* pResourceManifest)
 
 	// ZMBIO ASSETS freeze grenade ice cube, shown on frozen zombies (see ZM_DecoyExploded)
 	pResourceManifest->AddResource("weapons/models/net4all/freeze_grenade/ice_cube/ice_cube.vmdl");
+
+	// Freeze grenade replacement model for weapon_decoy, set on the thrown decoy_projectile via
+	// zm_set_entity_model (EconomyShopPlugin). Already referenced by weapons.vdata's
+	// m_szWorldModel too, but precache explicitly here in case that alone isn't enough for a
+	// SetModel call on an already-live entity at throw time.
+	pResourceManifest->AddResource("weapons/models/freeze_grenade/freeze_grenade.vmdl");
 }
 
 void ZM_OnLevelInit()
@@ -1841,6 +1847,39 @@ CON_COMMAND_F(zm_hide_entity, "<entity_index> - Hide an entity (render mode none
 	ConMsg("zm_hide_entity: hiding entity %d (classname '%s'), old render mode %d\n", iIndex, pRawEnt->GetClassname(), (int)pEnt->m_nRenderMode());
 	pEnt->m_nRenderMode = kRenderNone;
 	ConMsg("zm_hide_entity: new render mode %d\n", (int)pEnt->m_nRenderMode());
+}
+
+// Changes an existing entity's model. SetModel on an already-spawned entity is a real native call
+// (not a plain data write), and calling it from C# (EconomyShopPlugin) crashed the live server
+// twice - see feedback_cssharp_native_entity_crash_risk memory. But CS2Fixes itself already calls
+// CBaseModelEntity::SetModel on live player pawns all the time to reskin them into zombie models
+// (zombiereborn.cpp's ApplyBaseClassVisuals, leader.cpp) with no issue, so doing it from here
+// natively instead of from C# should carry the same low risk as that established, working code.
+CON_COMMAND_F(zm_set_entity_model, "<entity_index> <model_path> - Change an entity's model", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 3)
+	{
+		ConMsg("zm_set_entity_model: usage: zm_set_entity_model <entity_index> <model_path>\n");
+		return;
+	}
+
+	int iIndex = V_StringToInt32(args[1], -1);
+	if (iIndex < 0)
+	{
+		ConMsg("zm_set_entity_model: invalid entity_index '%s'\n", args[1]);
+		return;
+	}
+
+	CBaseEntity* pRawEnt = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(iIndex));
+	if (!pRawEnt)
+	{
+		ConMsg("zm_set_entity_model: no entity at index %d\n", iIndex);
+		return;
+	}
+
+	CBaseModelEntity* pEnt = (CBaseModelEntity*)pRawEnt;
+	ConMsg("zm_set_entity_model: setting entity %d (classname '%s') model to '%s'\n", iIndex, pRawEnt->GetClassname(), args[2]);
+	pEnt->SetModel(args[2]);
 }
 
 void ZMMotherZombiesCommand(CCSPlayerController* player)
