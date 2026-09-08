@@ -118,6 +118,9 @@ void ZM_Precache(IEntityResourceManifest* pResourceManifest)
 	pResourceManifest->AddResource(g_cvarZMZombieWinOverlayParticle.Get().String());
 
 	pResourceManifest->AddResource("soundevents/soundevents_zr.vsndevts");
+
+	// ZMBIO ASSETS freeze grenade ice cube, shown on frozen zombies (see ZM_DecoyExploded)
+	pResourceManifest->AddResource("weapons/models/net4all/freeze_grenade/ice_cube/ice_cube.vmdl");
 }
 
 void ZM_OnLevelInit()
@@ -1328,6 +1331,13 @@ void ZM_DecoyExploded(IGameEvent* pEvent)
 		ZM_DrawLaserBetween(sphereEntity.CircleInnerPoints(), sphereEntity.CircleOuterPoints(), g_cvarZMFreezeTime.Get());
 
 	auto decoy = g_pEntitySystem->GetEntityInstance(pEvent->GetEntityIndex("entityid"));
+
+	// ZMBIO ASSETS workshop addon's own sound event - guessed from its "zmbio.mine.*" naming
+	// convention already used by LaserMine, since we can't compile new sound events ourselves.
+	// Worst case if the name is wrong: silently no sound, nothing breaks.
+	if (decoy)
+		((CBaseEntity*)decoy)->EmitSound("zmbio.freeze");
+
 	addresses::UTIL_Remove(decoy);
 
 
@@ -1352,12 +1362,28 @@ void ZM_DecoyExploded(IGameEvent* pEvent)
 		{
 			pPlayer->SetFrozen(true);
 
-			CTimer::Create(g_cvarZMFreezeTime.Get(), TIMERFLAG_MAP | TIMERFLAG_ROUND, [pPlayer, pController]() {
+			// Visual: encase the frozen zombie in the ZMBIO ice cube prop (follows them while
+			// frozen), removed again the moment they thaw out.
+			CBaseModelEntity* pIceCube = CreateEntityByName<CBaseModelEntity>("prop_dynamic");
+			CEntityKeyValues* pIceCubeKeyValues = new CEntityKeyValues();
+			pIceCubeKeyValues->SetString("model", "weapons/models/net4all/freeze_grenade/ice_cube/ice_cube.vmdl");
+			pIceCube->DispatchSpawn(pIceCubeKeyValues);
+			pIceCube->Teleport(&origin, nullptr, nullptr);
+			pIceCube->AcceptInput("FollowEntity", "!activator", pPawn);
+
+			CHandle<CBaseModelEntity> hIceCube(pIceCube);
+
+			CTimer::Create(g_cvarZMFreezeTime.Get(), TIMERFLAG_MAP | TIMERFLAG_ROUND, [pPlayer, pController, hIceCube]() {
 				if (pPlayer && pController)
 				{
 					pPlayer->SetFrozen(false);
 					ZM_FreezePlayer(pPlayer, pController, false);
 				}
+
+				CBaseModelEntity* pIceCube = hIceCube.Get();
+				if (pIceCube)
+					pIceCube->Remove();
+
 				return -1.0f;
 			});
 		}
