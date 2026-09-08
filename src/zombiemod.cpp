@@ -1818,17 +1818,29 @@ CON_COMMAND_F(zm_mine_kill, "<victim_userid> <owner_userid> - Kill a player, att
 CON_COMMAND_F(zm_hide_entity, "<entity_index> - Hide an entity (render mode none)", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
 	if (args.ArgC() < 2)
+	{
+		ConMsg("zm_hide_entity: missing <entity_index> argument\n");
 		return;
+	}
 
 	int iIndex = V_StringToInt32(args[1], -1);
 	if (iIndex < 0)
+	{
+		ConMsg("zm_hide_entity: invalid entity_index '%s'\n", args[1]);
 		return;
+	}
 
-	CBaseModelEntity* pEnt = (CBaseModelEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(iIndex));
-	if (!pEnt)
+	CBaseEntity* pRawEnt = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(iIndex));
+	if (!pRawEnt)
+	{
+		ConMsg("zm_hide_entity: no entity at index %d\n", iIndex);
 		return;
+	}
 
+	CBaseModelEntity* pEnt = (CBaseModelEntity*)pRawEnt;
+	ConMsg("zm_hide_entity: hiding entity %d (classname '%s'), old render mode %d\n", iIndex, pRawEnt->GetClassname(), (int)pEnt->m_nRenderMode());
 	pEnt->m_nRenderMode = kRenderNone;
+	ConMsg("zm_hide_entity: new render mode %d\n", (int)pEnt->m_nRenderMode());
 }
 
 void ZMMotherZombiesCommand(CCSPlayerController* player)
