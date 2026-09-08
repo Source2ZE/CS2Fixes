@@ -1753,10 +1753,25 @@ CON_COMMAND_F(zm_mine_kill, "<victim_userid> <owner_userid> - Kill a player, att
 	if (pOwnerPawn && pOwnerPawn->IsAlive())
 		pAttacker = pOwnerPawn;
 
-	// DMG_FALL is what fall-damage deaths use, which is what shows the skull icon with no
-	// weapon in the kill feed - DMG_GENERIC with a world inflictor showed no icon at all.
-	CTakeDamageInfo info(pWorld, pAttacker, nullptr, 99999.0f, DMG_FALL);
+	// Spawn a real "inferno" entity so the kill feed shows the fire/molotov icon - the icon is
+	// resolved from the inflictor's classname (same check this file already does for molotov
+	// knockback: V_strncmp(pszInflictorClass, "inferno", 7)). It's used for a single hit and
+	// removed again immediately below, before returning control to the engine, so it never gets
+	// a chance to Think() and actually spread fire or damage anyone on its own.
+	CBaseEntity* pInferno = CreateEntityByName("inferno");
+	CBaseEntity* pInflictor = pWorld;
+
+	if (pInferno)
+	{
+		pInferno->DispatchSpawn();
+		pInflictor = pInferno;
+	}
+
+	CTakeDamageInfo info(pInflictor, pAttacker, nullptr, 99999.0f, DMG_BURN);
 	pVictimPawn->TakeDamage(info);
+
+	if (pInferno)
+		pInferno->Remove();
 }
 
 void ZMMotherZombiesCommand(CCSPlayerController* player)
