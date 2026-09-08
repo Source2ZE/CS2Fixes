@@ -1332,19 +1332,9 @@ void ZM_DecoyExploded(IGameEvent* pEvent)
 
 	auto decoy = g_pEntitySystem->GetEntityInstance(pEvent->GetEntityIndex("entityid"));
 
-	// ZMBIO ASSETS workshop addon's own sound events - we can't compile new sound events
-	// ourselves, so these are guessed from its "zmbio.mine.deploy" naming convention (which maps
-	// to file "mine_deploy.vsnd") already confirmed working for LaserMine. Trying a few likely
-	// candidates for freeze_nade.vsnd/freeze.vsnd at once - an unregistered event name is
-	// silently ignored, so any wrong guesses here are harmless.
-	if (decoy)
-	{
-		CBaseEntity* pDecoyEnt = (CBaseEntity*)decoy;
-		pDecoyEnt->EmitSound("zmbio.freeze.nade");
-		pDecoyEnt->EmitSound("zmbio.freeze_nade");
-		pDecoyEnt->EmitSound("zmbio.biohazard.freeze");
-		pDecoyEnt->EmitSound("zmbio.biohazard.freeze_nade");
-	}
+	// The ZMBIO freeze sound is handled from EconomyShopPlugin (EventDecoyStarted) instead of
+	// here - guessing at the ZMBIO addon's compiled sound event name is much faster to iterate
+	// on from C# (just rebuild the plugin) than from here (full CS2Fixes rebuild + redeploy).
 
 	addresses::UTIL_Remove(decoy);
 
