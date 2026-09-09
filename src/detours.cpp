@@ -242,7 +242,7 @@ KHook::Return<int64> Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeD
 
 KHook::Return<int64> Detour_CBaseEntity_TakeDamageOld_Post(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult)
 {
-	if (pResult->m_flDamageDealt > 0.0f && !pResult->m_bWasDamageSuppressed && g_cvarEnableZR.Get() && pThis->IsPawn())
+	if (!KHook::WasOriginalFunctionSkipped() && pResult->m_flDamageDealt > 0.0f && !pResult->m_bWasDamageSuppressed && g_cvarEnableZR.Get() && pThis->IsPawn())
 		ZR_OnPlayerTakeDamage(reinterpret_cast<CCSPlayerPawn*>(pThis), pInfo, pResult->m_flDamageDealt);
 
 	return {KHook::Action::Ignore};
@@ -639,7 +639,12 @@ KHook::Return<void> Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, vo
 
 KHook::Return<void> Detour_ProcessMovement_Post(CCSPlayer_MovementServices* pThis, void* pMove)
 {
-	GetGlobals()->frametime = g_flStoreFrametime;
+	if (g_flStoreFrametime != 0.0f)
+	{
+		GetGlobals()->frametime = g_flStoreFrametime;
+		g_flStoreFrametime = 0.0f;
+	}
+
 	return {KHook::Action::Ignore};
 }
 

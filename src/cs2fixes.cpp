@@ -1309,7 +1309,7 @@ KHook::Return<bool> CS2Fixes::Hook_ProcessVoiceData(CServerSideClient* pClient, 
 		return {KHook::Action::Ignore};
 
 	if (pPlayer->IsMuted())
-		return {KHook::Action::Supersede};
+		return {KHook::Action::Supersede, true};
 
 	if (GetGlobals())
 		pPlayer->SetLastVoiceTime(GetGlobals()->curtime);
