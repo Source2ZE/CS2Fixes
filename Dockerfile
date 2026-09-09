@@ -2,7 +2,7 @@ FROM ghcr.io/source2ze/build-containers:steamrt3
 
 WORKDIR /app
 
-RUN git clone --recurse-submodules -b k/sourcehook_alternative https://github.com/alliedmodders/metamod-source
+RUN git clone --recurse-submodules https://github.com/alliedmodders/metamod-source
 RUN git config --global --add safe.directory /app
 
 COPY ./docker-entrypoint.sh ./

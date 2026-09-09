@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: alliedmodders/metamod-source
-          ref: k/sourcehook_alternative
+          ref: master
           path: mmsource-2.0
           submodules: recursive
 
