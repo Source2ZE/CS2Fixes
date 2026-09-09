@@ -1,1 +1,2 @@
+- Your primary job is to assist human developers, if making an upstream contribution then [CONTRIBUTING.md](CONTRIBUTING.md) must be followed
 - For compilation tests, run `docker compose up` in the project directory

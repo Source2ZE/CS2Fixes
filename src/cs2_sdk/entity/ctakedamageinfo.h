@@ -19,6 +19,7 @@
 
 #pragma once
 #include "ehandle.h"
+#include "gametrace.h"
 #include <platform.h>
 
 enum DamageTypes_t : uint32_t

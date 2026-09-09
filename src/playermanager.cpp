@@ -794,17 +794,17 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot, uint64 xuid, const char
 		return false;
 	}
 
+	pPlayer->SetConnected();
+	m_vecPlayers[slot.Get()] = pPlayer;
+
 	// Sometimes clients can be already auth'd at this point
 	if (g_pEngineServer2->IsClientFullyAuthenticated(slot))
 		pPlayer->OnAuthenticated();
 
-	pPlayer->SetConnected();
-	m_vecPlayers[slot.Get()] = pPlayer;
-
 	ResetPlayerFlags(slot.Get());
 
 	g_pMapVoteSystem->ClearPlayerInfo(slot.Get());
-	g_pMapVoteSystem->ClearInvalidNominations();
+	g_pMapVoteSystem->OnPlayerCountChange();
 
 	return true;
 }
@@ -829,7 +829,7 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 	// One tick delay, to ensure player count decrements
 	CTimer::Create(0.01f, TIMERFLAG_MAP, []() {
 		g_pVoteManager->CheckRTVStatus();
-		g_pMapVoteSystem->ClearInvalidNominations();
+		g_pMapVoteSystem->OnPlayerCountChange();
 		return -1.0f;
 	});
 
@@ -1850,10 +1850,19 @@ void CPlayerManager::ResetPlayerFlags(int slot)
 
 int CPlayerManager::GetOnlinePlayerCount(bool bCountBots)
 {
-	int iOnlinePlayers = 0;
+	// Minimal caching, sometimes we call this function a lot of times
+	static int iOnlinePlayers = 0;
+	static bool bBotsCached = bCountBots;
+	static float flLastUpdateTime = -1.0f;
 
-	if (!GetClientList())
+	if ((GetGlobals() && GetGlobals()->curtime == flLastUpdateTime && bBotsCached == bCountBots) || !GetClientList())
 		return iOnlinePlayers;
+
+	iOnlinePlayers = 0;
+	bBotsCached = bCountBots;
+
+	if (GetGlobals())
+		flLastUpdateTime = GetGlobals()->curtime;
 
 	for (int i = 0; i < GetClientList()->Count(); i++)
 	{

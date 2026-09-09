@@ -65,6 +65,8 @@ CBaseEntity* g_pCTriggerMultipleVTable = nullptr;
 CConVar<bool> g_cvarEnableEntWatch("entwatch_enable", FCVAR_NONE, "INCOMPATIBLE WITH CS#. Whether to enable EntWatch features", false);
 CConVar<bool> g_cvarEnableFiltering("entwatch_auto_filter", FCVAR_NONE, "Whether to automatically block non-item holders from triggering uses", true);
 CConVar<bool> g_cvarUseEntwatchClantag("entwatch_clantag", FCVAR_NONE, "Whether to set item holder's clantag and set score", true);
+CConVar<int> g_cvarClantagColourMode("entwatch_clantag_colour_mode", FCVAR_NONE, "Whether to set item clantag colours (0=No colour, 1=Use item colour, 2=Use entwatch_clantag_colour value)", 1, true, 0, true, 2);
+CConVar<CUtlString> g_cvarClantagColour("entwatch_clantag_colour", FCVAR_NONE, "Hex colour (RRGGBB) to use if entwatch_clantag_colour_mode 2", "FFFFFF");
 CConVar<int> g_cvarItemHolderScore("entwatch_score", FCVAR_NONE, "Score to give item holders (0 = dont change score at all) Requires entwatch_clantag 1", 9999, true, 0, false, 0);
 CConVar<bool> g_cvarEnableEntwatchHud("entwatch_hud", FCVAR_NONE, "Whether to enable the EntWatch hud and related commands", true);
 
@@ -1490,19 +1492,12 @@ void CEWHandler::ResetAllClantags()
 	if (!GetGlobals())
 		return;
 
-	// Reset everyone's scores and tags for insurance
+	// Reset everyone's tags
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 		if (!pController)
 			continue;
-
-		// Bring score down below entwatch_score so new item holders show above
-		if (pController->m_iScore >= g_cvarItemHolderScore.Get())
-		{
-			int score = pController->m_iScore % g_cvarItemHolderScore.Get();
-			pController->m_iScore = score;
-		}
 
 		pController->SetClanTag("");
 	}
@@ -1910,7 +1905,21 @@ float EW_UpdateHud()
 
 		if (g_cvarUseEntwatchClantag.Get())
 		{
-			V_snprintf(pItem->sClantag, sizeof(EWItemInstance::sClantag), "[%s]%s:", sItemText.c_str(), pItem->szShortName.c_str());
+			switch (g_cvarClantagColourMode.Get())
+			{
+				case 0:
+					V_snprintf(pItem->sClantag, sizeof(EWItemInstance::sClantag), "[%s]%s:",
+							   sItemText.c_str(), pItem->szShortName.c_str());
+					break;
+				case 1:
+					V_snprintf(pItem->sClantag, sizeof(EWItemInstance::sClantag), "<span color='#%02X%02X%02X'>[%s]%s</span>",
+							   pItem->colorGlow.r(), pItem->colorGlow.g(), pItem->colorGlow.b(), sItemText.c_str(), pItem->szShortName.c_str());
+					break;
+				case 2:
+					V_snprintf(pItem->sClantag, sizeof(EWItemInstance::sClantag), "<span color='#%s'>[%s]%s</span>",
+							   g_cvarClantagColour.Get().String(), sItemText.c_str(), pItem->szShortName.c_str());
+					break;
+			}
 			if (pItem->bHasThisClantag)
 				pOwner->SetClanTag(pItem->sClantag);
 		}

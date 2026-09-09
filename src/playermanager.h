@@ -25,6 +25,7 @@
 #include "entity/cpointworldtext.h"
 #include "entity/lights.h"
 #include "gamesystem.h"
+#include "in_buttons.h"
 #include "steam/isteamuser.h"
 #include "steam/steam_api_common.h"
 #include "steam/steamclientpublic.h"

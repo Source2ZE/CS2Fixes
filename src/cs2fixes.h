@@ -29,7 +29,6 @@
 #include "public/ics2fixes.h"
 #include "steam/isteamhttp.h"
 #include <ISmmPlugin.h>
-#include <iplayerinfo.h>
 #include <iserver.h>
 
 #ifdef AMBUILD

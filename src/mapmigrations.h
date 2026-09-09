@@ -52,7 +52,7 @@ private:
 class CMapMigrations
 {
 public:
-	void ApplyGameSettings(KeyValues* pKV);
+	void ApplyGameSettings(uint64 iWorkshopId);
 	void OnRoundPrestart();
 	void OnEntitySpawned_Pre(CBaseEntity* pEntity, const CEntityKeyValues* pKeyValues);
 	void OnEntitySpawned_Post(CBaseEntity* pEntity);

@@ -15,12 +15,6 @@
 			"windows": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 45 0F B6 F0",
 			"linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 56 41 89 D6 31 D2"
 		},
-		"IsHearingClient":
-		{
-			"library": "engine",
-			"windows": "40 53 48 83 EC ? 48 8B D9 3B 51",
-			"linux": "55 48 89 E5 41 55 41 54 53 48 89 FB 48 83 EC ? 39 77"
-		},
 		// idk a good way to find this again, i just brute forced the vtable. offset is 136 on CTriggerPush
 		"TriggerPush_Touch":
 		{
@@ -108,13 +102,6 @@
 			"windows": "40 55 53 56 57 41 54 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4D 8B E0",
 			"linux": "55 66 0F EF C0 48 89 E5 41 57 41 56 41 55 49 89 FD 31 FF"
 		},
-		// Should be xref'd right above "flGravity", takes a float arg
-		"CBaseEntity::SetGravityScale":
-		{
-			"library": "server",
-			"windows": "48 89 5C 24 ? 57 48 83 EC ? F3 0F 10 81 ? ? ? ? 48 8B F9 0F 29 74 24 ? 0F 28 F1 0F 2E C6 7A ? 74 ? BA ? ? ? ? 41 B8 ? ? ? ? 48 81 C1 ? ? ? ? E8 ? ? ? ? 48 8B CF F3 0F 11 B7 ? ? ? ? E8 ? ? ? ? 48 8B 5C 24 ? 0F 28 74 24 ? 48 83 C4 ? 5F C3 CC CC CC CC CC 48 89 5C 24",
-			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 81 EC ? ? ? ? 0F 2E 87 ? ? ? ? 7A ? 75 ? 48 81 C4 ? ? ? ? 5B 41 5C 41 5D 41 5E 41 5F 5D C3 0F 1F 40 ? 31 C9 BE ? ? ? ? 66 0F EF C9 F3 0F 11 85 ? ? ? ? 48 8D BD ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 0F 29 8D ? ? ? ? 4C 8D A5 ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? 48 C7 85 ? ? ? ? ? ? ? ? C7 85 ? ? ? ? ? ? ? ? 66 89 8D ? ? ? ? E8 ? ? ? ? 48 8B 85 ? ? ? ? 48 8D 15 ? ? ? ? 83 85 ? ? ? ? ? F3 0F 10 85 ? ? ? ? C7 00 ? ? ? ? 48 8B 03 48 8B 80 ? ? ? ? 48 39 D0 0F 85 ? ? ? ? 8B 95 ? ? ? ? 4C 8D 7B ? 85 D2 0F 85 ? ? ? ? 80 BB ? ? ? ? ? 75"
-		},
 		// "Game System %s is defined twice!\n"
 		// Note that this signature points to the instruction with sm_pFirst which is the first qword referenced in the function.
 		"IGameSystem_InitAllSystems_pFirst":
@@ -173,7 +160,7 @@
 		{
 			"library": "server",
 			"windows": "48 8B C4 4C 89 48 ? 48 89 48 ? 55 41 54",
-			"linux": "55 48 89 E5 41 57 41 89 F7 41 56 48 8D 35"
+			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 41 89 F4 53 48 8D 35 ? ? ? ? 48 89 FB"
 		},
 		"CCSPlayer_WeaponServices_CanUse":
 		{
@@ -199,29 +186,12 @@
 			"windows": "48 89 5C 24 10 57 48 83 EC 30 48 8B DA 48 8B F9 48 85 C9",
 			"linux": "48 85 FF 74 ? 55 48 89 E5 41 55 41 54 49 89 FC"
 		},
-		// Look for "SetEntityName", that will be the vscript binding definition
-		// Scroll a bit down and you'll find something like this (note the offset): *(_QWORD *)(v453 + 64) = sub_1807B0350;
-		// that function is just a jump to the one we want
-		"CEntityIdentity_SetEntityName":
-		{
-			"library": "server",
-			"windows": "48 89 5C 24 10 57 48 83 EC 20 48 8B D9 4C 8B C2",
-			"linux": "55 48 89 F2 48 89 E5 41 55 41 54 53"
-		},
 		// "Error - cannot add bots after game is over."
 		"BotNavIgnore":
 		{
 			"library": "server",
 			"windows": "0F 84 ? ? ? ? 80 B8 ? ? ? ? 00 0F 84 ? ? ? ? 80 3D ? ? ? ? 00 74 15",
 			"linux": "0F 84 ? ? ? ? 44 0F B6 B8 ? ? ? ? 45 84 FF 0F 84"
-		},
-		// next to "soundname", in windows it's the last referenced sub while in linux it's right after
-		// this is a vscript binding though so it may be removed in the future?
-		"CBaseEntity_EmitSoundParams":
-		{
-			"library": "server",
-			"windows": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 48 8B EC 48 81 EC ? ? ? ? 33 C0",
-			"linux": "48 B8 ? ? ? ? ? ? ? ? 55 0F 28 D0"
 		},
 		// "ParticleEffect", found in a function with 9 arguments
 		"DispatchParticleEffect":
@@ -374,12 +344,12 @@
 			"windows": "75 ? 48 8B 03 48 8B CB FF 90 ? ? ? ? 84 C0 74 ? 48 8D 05",
 			"linux": "75 ? 48 8B 03 48 89 DF FF 90 ? ? ? ? 84 C0 74 ? 48 8D 05"
 		},
-		// "Going to intermission...\n"
+		// "Going to intermission..."
 		"CCSGameRules_GoToIntermission":
 		{
 			"library": "server",
 			"windows": "48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 4C 8B E9",
-			"linux": "55 31 C0 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 48 8D 3D"
+			"linux": "55 31 C0 48 89 E5 41 57 41 56 41 55 41 54 41 89 F4"
 		},
 		// Called in return by function with "Usage:  setang_exact pitch yaw <roll optional> <prediction sync ticks optional>" string
 		"CBasePlayerPawn_SnapViewAngles":
@@ -387,6 +357,27 @@
 			"library": "server",
 			"windows": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B DA 48 8B F1 48 8D 55",
 			"linux": "55 48 89 E5 41 57 49 89 FF 48 89 F7 41 56 41 55 41 54 53 48 81 EC ? ? ? ? E8"
+		},
+		// These two functions are called by CEnvBeam & CEnvLaser member functions, one of those functions has "env_beams cannot have the end entity be the beam itself" string
+		// In both call locations, SetBeamOrigin is called first, then SetBeamEndPos
+		"SetBeamOrigin":
+		{
+			"library": "server",
+			"windows": "48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B FA 48 8B D9 E8 ? ? ? ? 48 8B CB",
+			"linux": "55 48 89 E5 41 54 49 89 F4 53 48 89 FB 48 83 EC ? 0F 1F 80"
+		},
+		"SetBeamEndPos":
+		{
+			"library": "server",
+			"windows": "48 8B C4 48 89 58 ? 57 48 81 EC ? ? ? ? 0F 29 70 ? 48 8B FA 0F 29 78 ? 48 8B D9",
+			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 66 0F 1F 44 00"
+		},
+		// Only called in an if statement by function with "DISALLOWED WORKSHOP CONVAR: %s" string
+		"IsCommandWhitelisted":
+		{
+			"library": "server",
+			"windows": "48 83 EC ? 4C 8B C2 48 8D 0D ? ? ? ? 48 8D 54 24 ? FF",
+			"linux": "55 48 89 F2 48 8D 35 ? ? ? ? 48 89 E5 48 83 EC"
 		}
 	},
 	"Offsets":
@@ -400,12 +391,6 @@
 		{
 			"windows": 53,
 			"linux": 52
-		},
-		// String: "%s<%i><%s><%s>" ChangeTeam() CTMDBG..."
-		"CCSPlayerController_ChangeTeam":
-		{
-			"windows": 103,
-			"linux": 102
 		},
 		"CBaseEntity::Use":
 		{
@@ -431,18 +416,6 @@
 		{
 			"windows": 163,
 			"linux": 162
-		},
-		// For these two, look for the names, you'll find vscript bindings
-		// Scroll down to where the var + 64 gets set to a function, that calls the offset we want
-		"IsPlayerPawn":
-		{
-			"windows": 169,
-			"linux": 168
-		},
-		"IsPlayerController":
-		{
-			"windows": 170,
-			"linux": 169
 		},
 		"CollisionRulesChanged":
 		{
@@ -484,11 +457,6 @@
 		{
 			"windows": 26,
 			"linux": 27
-		},
-		"CheckTransmitPlayerSlot":
-		{
-			"windows": 576,
-			"linux": 576
 		},
 		// engine
 		// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) ), note that this is a CUtlVector

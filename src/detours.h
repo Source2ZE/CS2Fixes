@@ -56,6 +56,7 @@ class Vector;
 class QAngle;
 class CEconItemView;
 class CCSGameRules;
+class CBeam;
 struct CTakeDamageResult;
 
 enum class AcquireMethod
@@ -84,7 +85,6 @@ void InitDetours(CGameConfig* gameConfig);
 KHook::Return<int64> Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult);
 KHook::Return<int64> Detour_CBaseEntity_TakeDamageOld_Post(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult);
 KHook::Return<void> Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther);
-KHook::Return<bool> Detour_IsHearingClient(void*, int);
 KHook::Return<void> Detour_UTIL_SayTextFilter(IRecipientFilter&, const char*, CCSPlayerController*, uint64);
 KHook::Return<void> Detour_UTIL_SayText2Filter(IRecipientFilter&, CCSPlayerController*, uint64, const char*, const char*, const char*, const char*, const char*);
 KHook::Return<bool> Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices*, CBasePlayerWeapon*);
@@ -118,3 +118,6 @@ KHook::Return<void> Detour_CS_Script_SetModel(uint64_t unk1);
 KHook::Return<void> Detour_CS_Script_SetModel_Post(uint64_t unk1);
 KHook::Return<void> Detour_CBaseModelEntity_SetModel(CBaseModelEntity* pModel, const char* pszModel);
 KHook::Return<void> Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch);
+KHook::Return<void> Detour_SetBeamOrigin(CBeam* pThis, const Vector* pVecWorldPosition);
+KHook::Return<void> Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecWorldPosition);
+KHook::Return<bool> Detour_IsCommandWhitelisted(void* pAddonManager, const char* pszCommandName);

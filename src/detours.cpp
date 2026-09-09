@@ -22,14 +22,17 @@
 #include "usercmd.pb.h"
 
 #include "addresses.h"
+#include "bspflags.h"
 #include "buttonwatch.h"
 #include "commands.h"
 #include "common.h"
 #include "ctimer.h"
 #include "customio.h"
+#include "cvarwhitelist.h"
 #include "detours.h"
 #include "entities.h"
 #include "entity/cbasemodelentity.h"
+#include "entity/cbeam.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/ccsweaponbase.h"
@@ -57,7 +60,6 @@
 
 KHook::Member<CBaseEntity, int64, CTakeDamageInfo*, CTakeDamageResult*> takeDamageOldHook(Detour_CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld_Post);
 KHook::Member<CTriggerPush, void, CBaseEntity*> triggerPushTouchHook(Detour_TriggerPush_Touch, nullptr);
-KHook::Function<bool, void*, int> isHearingClientHook(Detour_IsHearingClient, nullptr);
 KHook::Function<void, IRecipientFilter&, const char*, CCSPlayerController*, uint64> sayTextFilterHook(Detour_UTIL_SayTextFilter, nullptr);
 KHook::Function<void, IRecipientFilter&, CCSPlayerController*, uint64, const char*, const char*, const char*, const char*, const char*> sayText2FilterHook(Detour_UTIL_SayText2Filter, nullptr);
 KHook::Member<CCSPlayer_WeaponServices, bool, CBasePlayerWeapon*> canUseHook(Detour_CCSPlayer_WeaponServices_CanUse, nullptr);
@@ -88,6 +90,9 @@ KHook::Member<CCSPlayer_ItemServices, AcquireResult, CEconItemView*, AcquireMeth
 KHook::Function<void, uint64_t> scriptSetModelHook(Detour_CS_Script_SetModel, Detour_CS_Script_SetModel_Post);
 KHook::Member<CBaseModelEntity, void, const char*> setModelHook(Detour_CBaseModelEntity_SetModel, nullptr);
 KHook::Member<CCSGameRules, void, bool> goToIntermissionHook(Detour_CCSGameRules_GoToIntermission, nullptr);
+KHook::Member<CBeam, void, const Vector*> setBeamOriginHook(Detour_SetBeamOrigin, nullptr);
+KHook::Member<CBeam, void, const Vector*> setBeamEndPosHook(Detour_SetBeamEndPos, nullptr);
+KHook::Function<bool, void*, const char*> isCommandWhitelistedHook(Detour_IsCommandWhitelisted, nullptr);
 
 template <typename RETURN, typename... ARGS>
 void SetupDetour(CGameConfig* gameConfig, KHook::Function<RETURN, ARGS...>& hook, const char* name)
@@ -123,7 +128,6 @@ void InitDetours(CGameConfig* gameConfig)
 {
 	SetupDetour(gameConfig, takeDamageOldHook, "CBaseEntity_TakeDamageOld");
 	SetupDetour(gameConfig, triggerPushTouchHook, "TriggerPush_Touch");
-	SetupDetour(gameConfig, isHearingClientHook, "IsHearingClient");
 	SetupDetour(gameConfig, sayTextFilterHook, "UTIL_SayTextFilter");
 	SetupDetour(gameConfig, sayText2FilterHook, "UTIL_SayText2Filter");
 	SetupDetour(gameConfig, canUseHook, "CCSPlayer_WeaponServices_CanUse");
@@ -153,6 +157,9 @@ void InitDetours(CGameConfig* gameConfig)
 	SetupDetour(gameConfig, scriptSetModelHook, "CS_Script_SetModel");
 	SetupDetour(gameConfig, setModelHook, "CBaseModelEntity_SetModel");
 	SetupDetour(gameConfig, goToIntermissionHook, "CCSGameRules_GoToIntermission");
+	SetupDetour(gameConfig, setBeamOriginHook, "SetBeamOrigin");
+	SetupDetour(gameConfig, setBeamEndPosHook, "SetBeamEndPos");
+	SetupDetour(gameConfig, isCommandWhitelistedHook, "IsCommandWhitelisted");
 }
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
@@ -312,15 +319,6 @@ KHook::Return<void> Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* p
 	pOther->m_fFlags(flags);
 
 	return {KHook::Action::Supersede};
-}
-
-KHook::Return<bool> Detour_IsHearingClient(void* serverClient, int index)
-{
-	ZEPlayer* player = g_playerManager->GetPlayer(index);
-	if (player && player->IsMuted())
-		return {KHook::Action::Supersede, false};
-
-	return {KHook::Action::Ignore};
 }
 
 KHook::Return<void> SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
@@ -932,4 +930,34 @@ KHook::Return<void> Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bo
 		g_pVoteManager->OnIntermission();
 
 	return {KHook::Action::Ignore};
+}
+
+KHook::Return<void> Detour_SetBeamOrigin(CBeam* pThis, const Vector* pVecPosition)
+{
+	// Game code still works for parented beams/lasers
+	if (pThis->m_CBodyComponent()->m_pSceneNode()->m_pParent())
+		return {KHook::Action::Ignore};
+
+	// If no parent, then game code would hit infinite loop, just reimplement this simple path ourselves
+	pThis->SetAbsOrigin(*pVecPosition);
+	return {KHook::Action::Supersede};
+}
+
+KHook::Return<void> Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecPosition)
+{
+	// Game code still works for parented beams/lasers
+	if (pThis->m_CBodyComponent()->m_pSceneNode()->m_pParent())
+		return {KHook::Action::Ignore};
+
+	// If no parent, then game code would hit infinite loop, just reimplement this simple path ourselves
+	pThis->m_vecEndPos = *(VectorWS*)(pVecPosition);
+	return {KHook::Action::Supersede};
+}
+
+KHook::Return<bool> Detour_IsCommandWhitelisted(void* pAddonManager, const char* pszCommandName)
+{
+	if (!g_cvarConVarWhitelistEnable.Get() || !g_pConvarWhitelist->IsConfigLoaded())
+		return {KHook::Action::Ignore};
+
+	return {KHook::Action::Supersede, g_pConvarWhitelist->IsWhitelisted(pszCommandName)};
 }

@@ -43,6 +43,7 @@ CConVar<float> g_cvarVoteMapsCooldown("cs2f_vote_maps_cooldown", FCVAR_NONE, "De
 CConVar<float> g_cvarVoteMapsCooldownRng("cs2f_vote_maps_cooldown_rng", FCVAR_NONE, "Randomness range in both directions to apply to map cooldowns", 0.0f);
 CConVar<int> g_cvarVoteMaxNominations("cs2f_vote_max_nominations", FCVAR_NONE, "Number of nominations to include per vote, out of a maximum of 10", 10, true, 0, true, 10);
 CConVar<int> g_cvarVoteMaxMaps("cs2f_vote_max_maps", FCVAR_NONE, "Number of total maps to include per vote, including nominations, out of a maximum of 10", 10, true, 2, true, 10);
+CConVar<int> g_cvarVoteBypassCooldownMaxCount("cs2f_vote_bypass_cd_max_count", FCVAR_NONE, "Maximum amount of players allowed to enable bypassing map cooldowns", 0, true, 0, false, 0);
 
 CON_COMMAND_CHAT_FLAGS(reload_map_list, "- Reload map list, also reloads current map on completion", ADMFLAG_ROOT)
 {
@@ -1108,10 +1109,15 @@ bool CMapVoteSystem::WriteMapCooldownsToFile()
 	return true;
 }
 
-void CMapVoteSystem::ClearInvalidNominations()
+void CMapVoteSystem::OnPlayerCountChange()
 {
 	if (!g_cvarVoteManagerEnable.Get() || m_bIsVoteOngoing || !GetGlobals())
 		return;
+
+	int iOnlinePlayers = g_playerManager->GetOnlinePlayerCount(false);
+
+	if (iOnlinePlayers > m_iSessionMaxPlayerCount)
+		m_iSessionMaxPlayerCount = iOnlinePlayers;
 
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
@@ -1123,8 +1129,8 @@ void CMapVoteSystem::ClearInvalidNominations()
 
 		auto pMap = GetMapByIndex(iNominatedMapIndex);
 
-		// Check if nominated index still meets criteria for nomination
-		if (!pMap->IsEnabled())
+		// Check if nominated map still meets criteria for nomination
+		if (!pMap->IsAvailable())
 		{
 			ClearPlayerInfo(i);
 			CCSPlayerController* pPlayer = CCSPlayerController::FromSlot(i);
@@ -1136,23 +1142,10 @@ void CMapVoteSystem::ClearInvalidNominations()
 	}
 }
 
-void CMapVoteSystem::ApplyGameSettings(KeyValues* pKV)
+void CMapVoteSystem::ApplyGameSettings(const char* pszMapName, uint64 iWorkshopId)
 {
 	if (!g_cvarVoteManagerEnable.Get())
 		return;
-
-	const char* pszMapName;
-	uint64 iWorkshopId;
-
-	if (pKV->FindKey("launchoptions") && pKV->FindKey("launchoptions")->FindKey("levelname"))
-		pszMapName = pKV->FindKey("launchoptions")->GetString("levelname");
-	else
-		pszMapName = "";
-
-	if (pKV->FindKey("launchoptions") && pKV->FindKey("launchoptions")->FindKey("customgamemode"))
-		iWorkshopId = pKV->FindKey("launchoptions")->GetUint64("customgamemode");
-	else
-		iWorkshopId = 0;
 
 	auto pair = GetMapInfoByIdentifiers(pszMapName, iWorkshopId);
 
@@ -1166,15 +1159,22 @@ void CMapVoteSystem::ApplyGameSettings(KeyValues* pKV)
 
 void CMapVoteSystem::OnLevelShutdown()
 {
-	// Put the map on cooldown as we transition to the next map
-	PutMapOnCooldown(GetCurrentMap()->GetName());
+	bool bApplyCooldowns = m_iSessionMaxPlayerCount > g_cvarVoteBypassCooldownMaxCount.Get();
 
-	// Fully apply pending group cooldowns
+	if (bApplyCooldowns)
+	{
+		// Put the map on cooldown as we transition to the next map
+		PutMapOnCooldown(GetCurrentMap()->GetName());
+	}
+
+	// Fully apply or discard pending group cooldowns
 	for (std::shared_ptr<CCooldown> pCooldown : m_vecCooldowns)
 	{
 		if (pCooldown->GetPendingCooldown() > 0.0f)
 		{
-			PutMapOnCooldown(pCooldown->GetMapName(), pCooldown->GetPendingCooldown());
+			if (bApplyCooldowns)
+				PutMapOnCooldown(pCooldown->GetMapName(), pCooldown->GetPendingCooldown());
+
 			pCooldown->SetPendingCooldown(0.0f);
 		}
 	}
@@ -1190,6 +1190,8 @@ void CMapVoteSystem::OnLevelShutdown()
 		if (m_timeMapListModified != std::filesystem::last_write_time(szPath))
 			ReloadMapList(false);
 	}
+
+	m_iSessionMaxPlayerCount = 0;
 }
 
 std::string CMapVoteSystem::ConvertFloatToString(float fValue, int precision)
@@ -1327,6 +1329,11 @@ std::shared_ptr<CCooldown> CMapVoteSystem::GetMapCooldown(const char* pszMapName
 	m_vecCooldowns.push_back(pCooldown);
 
 	return pCooldown;
+}
+
+bool CCooldown::IsOnCooldown()
+{
+	return GetCurrentCooldown() > 0.0f && g_playerManager->GetOnlinePlayerCount(false) > g_cvarVoteBypassCooldownMaxCount.Get();
 }
 
 float CCooldown::GetCurrentCooldown()

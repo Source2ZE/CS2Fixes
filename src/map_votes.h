@@ -50,8 +50,8 @@ public:
 	void SetTimeCooldown(time_t timeCooldown) { m_timeCooldown = timeCooldown; };
 	float GetPendingCooldown() { return m_fPendingCooldown; };
 	void SetPendingCooldown(float fPendingCooldown) { m_fPendingCooldown = fPendingCooldown; };
-	bool IsOnCooldown() { return GetCurrentCooldown() > 0.0f; }
 	bool IsPending() { return m_fPendingCooldown > 0.0f && m_fPendingCooldown == GetCurrentCooldown(); };
+	bool IsOnCooldown();
 	float GetCurrentCooldown();
 
 private:
@@ -206,11 +206,11 @@ public:
 	std::shared_ptr<CMap> GetCurrentMap() { return m_pCurrentMap; }
 	void SetCurrentMap(std::shared_ptr<CMap> pCurrentMap) { m_pCurrentMap = pCurrentMap; }
 	int GetDownloadQueueSize() { return m_DownloadQueue.size(); }
-	void ClearInvalidNominations();
+	void OnPlayerCountChange();
 	std::shared_ptr<CMap> GetForcedNextMap() { return m_pForcedNextMap; }
 	void SetForcedNextMap(std::shared_ptr<CMap> pForcedNextMap) { m_pForcedNextMap = pForcedNextMap; }
 	std::unordered_map<int, int> GetNominatedMaps();
-	void ApplyGameSettings(KeyValues* pKV);
+	void ApplyGameSettings(const char* pszMapName, uint64 iWorkshopId);
 	void OnLevelShutdown();
 	std::vector<std::shared_ptr<CCooldown>> GetMapCooldowns() { return m_vecCooldowns; }
 	std::string ConvertFloatToString(float fValue, int precision);
@@ -247,6 +247,7 @@ private:
 	std::weak_ptr<CTimer> m_pDownloadProgressTimer;
 	std::weak_ptr<CTimer> m_pRateLimitedDownloadTimer;
 	std::vector<std::shared_ptr<CMapSystemWorkshopDetailsQuery>> m_vecWorkshopDetailsQueries;
+	int m_iSessionMaxPlayerCount = 0;
 };
 
 extern CMapVoteSystem* g_pMapVoteSystem;

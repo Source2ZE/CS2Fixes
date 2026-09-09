@@ -60,15 +60,20 @@ class HTTPManager
 {
 public:
 	void Get(std::string strUrl, CompletedCallback callbackCompleted,
-			 ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr);
+			 ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr,
+			 int absoluteTimeoutMs = 0);
 	void Post(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
-			  ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr);
+			  ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr,
+			  int absoluteTimeoutMs = 0);
 	void Put(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
-			 ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr);
+			 ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr,
+			 int absoluteTimeoutMs = 0);
 	void Patch(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
-			   ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr);
+			   ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr,
+			   int absoluteTimeoutMs = 0);
 	void Delete(std::string strUrl, std::string strText, CompletedCallback callbackCompleted,
-				ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr);
+				ErrorCallback callbackError = nullptr, std::vector<HTTPHeader>* headers = nullptr,
+				int absoluteTimeoutMs = 0);
 	bool HasAnyPendingRequests() const { return m_PendingRequests.size() > 0; }
 
 private:
@@ -96,7 +101,7 @@ private:
 	std::vector<HTTPManager::TrackedRequest*> m_PendingRequests;
 	void GenerateRequest(EHTTPMethod method, std::string strUrl, std::string strText,
 						 CompletedCallback callbackCompleted, ErrorCallback callbackError,
-						 std::vector<HTTPHeader>* headers);
+						 std::vector<HTTPHeader>* headers, int absoluteTimeoutMs = 0);
 };
 
 extern HTTPManager g_HTTPManager;
