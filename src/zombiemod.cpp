@@ -136,6 +136,10 @@ void ZM_Precache(IEntityResourceManifest* pResourceManifest)
 	// already references explosion_freeze_distort/flakes/trails.vpcf as children, so only the
 	// core one needs precaching here.
 	pResourceManifest->AddResource("particles/liroy_particles/explosion_freeze_core.vpcf");
+
+	// Spitter zombie class ability's acid spit hit effect (EconomyShopPlugin, via
+	// zm_spawn_particle).
+	pResourceManifest->AddResource("particles/zmbio/spitter_acid.vpcf");
 }
 
 void ZM_OnLevelInit()
