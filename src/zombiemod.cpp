@@ -106,6 +106,10 @@ CConVar<int> g_cvarZMFreezeRadius("zm_freeze_radius", FCVAR_NONE, "When freeze g
 CConVar<float> g_cvarZMFreezeTime("zm_freeze_time", FCVAR_NONE, "When freeze grenades are enabled, how long to freeze them.", 4.0f, true, 1.0f, true, 60.0f);
 CConVar<bool> g_cvarZMFreezeLaser("zm_freeze_laser_radius", FCVAR_NONE, "When freeze grenades are enabled, whether or not to show the laser around the radius.", true);
 CConVar<bool> g_cvarZMInfectCountdown("zm_infect_countdown", FCVAR_NONE, "When enabled, displays a message every 5 sections showing remaining time before initial infection.", true);
+// Read-only signal for other plugins (e.g. EconomyShopPlugin's countdown sounds): seconds
+// remaining until first infection this round, updated once per second by ZM_StartInitialCountdown,
+// -1 once infection has happened or no countdown is currently running.
+CConVar<int> g_cvarZMInfectCountdownSeconds("zm_infect_countdown_seconds", FCVAR_NONE, "Internal: seconds remaining until first infection this round, -1 if not counting down.", -1);
 
 CConVar<int> g_cvarZMInfectSpawnMinCountReq("zm_infect_min_count_req", FCVAR_NONE, "Minimum amount of Players required to spawn Mother Zombies at round start", 2, true, 0, false, 0);
 
@@ -741,8 +745,11 @@ void ZM_StartInitialCountdown()
 		int g_iInfectionCountDown = g_cvarZMInfectSpawnTimeMin.Get() + (iRand % (g_cvarZMInfectSpawnTimeMax.Get() - g_cvarZMInfectSpawnTimeMin.Get() + 1));
 		g_iInfectionCountDown -= *iSecondsElapsed;
 
+		g_cvarZMInfectCountdownSeconds.Set(g_iInfectionCountDown);
+
 		if (g_iInfectionCountDown <= 0)
 		{
+			g_cvarZMInfectCountdownSeconds.Set(-1);
 			ZM_InitialInfection();
 			return -1.0f;
 		}
