@@ -127,6 +127,11 @@ void ZM_Precache(IEntityResourceManifest* pResourceManifest)
 	// m_szWorldModel too, but precache explicitly here in case that alone isn't enough for a
 	// SetModel call on an already-live entity at throw time.
 	pResourceManifest->AddResource("weapons/models/freeze_grenade/freeze_grenade.vmdl");
+
+	// Freeze grenade explosion effect (see ZM_TriggerFreezeExplosion) - the compiled particle
+	// already references explosion_freeze_distort/flakes/trails.vpcf as children, so only the
+	// core one needs precaching here.
+	pResourceManifest->AddResource("particles/liroy_particles/explosion_freeze_core.vpcf");
 }
 
 void ZM_OnLevelInit()
@@ -1320,30 +1325,19 @@ void ZM_FreezePlayer(ZEPlayer* pPlayer, CCSPlayerController* pController, bool f
 	}
 }
 
-void ZM_DecoyExploded(IGameEvent* pEvent)
+// Radius freeze effect shared by both a natural decoy detonation (ZM_DecoyExploded, fired from
+// the native "decoy_started" game event) and an immediate manual detonation on player touch
+// (zm_detonate_freeze_grenade, called from EconomyShopPlugin so the grenade doesn't sit there
+// bouncing off the player until its native fuse timer runs out).
+static void ZM_TriggerFreezeExplosion(const Vector& vec)
 {
-	
 	if (!g_cvarZMFreezeGrenades.Get() || g_cvarZMFreezeTime.Get() < 1 || g_cvarZMFreezeRadius.Get() < 1)
 		return;
 
-	float x = pEvent->GetFloat("x");
-	float y = pEvent->GetFloat("y");
-	float z = pEvent->GetFloat("z");
-
-	Vector vec(x, y, z);
 	SphereEntity sphereEntity(vec, g_cvarZMFreezeRadius.Get());
 
 	if (g_cvarZMFreezeLaser.Get())
 		ZM_DrawLaserBetween(sphereEntity.CircleInnerPoints(), sphereEntity.CircleOuterPoints(), g_cvarZMFreezeTime.Get());
-
-	auto decoy = g_pEntitySystem->GetEntityInstance(pEvent->GetEntityIndex("entityid"));
-
-	// The ZMBIO freeze sound is handled from EconomyShopPlugin (EventDecoyStarted) instead of
-	// here - guessing at the ZMBIO addon's compiled sound event name is much faster to iterate
-	// on from C# (just rebuild the plugin) than from here (full CS2Fixes rebuild + redeploy).
-
-	addresses::UTIL_Remove(decoy);
-
 
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
 	{
@@ -1404,6 +1398,72 @@ void ZM_DecoyExploded(IGameEvent* pEvent)
 		}
 
 	}
+}
+
+void ZM_DecoyExploded(IGameEvent* pEvent)
+{
+	if (!g_cvarZMFreezeGrenades.Get() || g_cvarZMFreezeTime.Get() < 1 || g_cvarZMFreezeRadius.Get() < 1)
+		return;
+
+	float x = pEvent->GetFloat("x");
+	float y = pEvent->GetFloat("y");
+	float z = pEvent->GetFloat("z");
+
+	Vector vec(x, y, z);
+
+	auto decoy = g_pEntitySystem->GetEntityInstance(pEvent->GetEntityIndex("entityid"));
+
+	CBaseEntity* pDecoyEnt = (CBaseEntity*)decoy;
+	if (pDecoyEnt)
+	{
+		CRecipientFilter filter;
+		filter.AddAllPlayers();
+		pDecoyEnt->DispatchParticle("particles/liroy_particles/explosion_freeze_core.vpcf", &filter, PATTACH_ABSORIGIN);
+	}
+
+	// The ZMBIO freeze sound is handled from EconomyShopPlugin (EventDecoyStarted) instead of
+	// here - guessing at the ZMBIO addon's compiled sound event name is much faster to iterate
+	// on from C# (just rebuild the plugin) than from here (full CS2Fixes rebuild + redeploy).
+
+	addresses::UTIL_Remove(decoy);
+
+	ZM_TriggerFreezeExplosion(vec);
+}
+
+// Immediately detonates a freeze grenade projectile in place, doing the same particle + freeze
+// effect as a natural detonation (ZM_DecoyExploded) - used by EconomyShopPlugin to detonate on
+// player touch instead of letting the grenade keep bouncing until its native fuse timer runs out.
+CON_COMMAND_F(zm_detonate_freeze_grenade, "<entity_index> - Immediately detonate a freeze grenade projectile", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 2)
+	{
+		ConMsg("zm_detonate_freeze_grenade: usage: zm_detonate_freeze_grenade <entity_index>\n");
+		return;
+	}
+
+	int iIndex = V_StringToInt32(args[1], -1);
+	if (iIndex < 0)
+	{
+		ConMsg("zm_detonate_freeze_grenade: invalid entity_index '%s'\n", args[1]);
+		return;
+	}
+
+	CBaseEntity* pDecoyEnt = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(iIndex));
+	if (!pDecoyEnt)
+	{
+		ConMsg("zm_detonate_freeze_grenade: no entity at index %d\n", iIndex);
+		return;
+	}
+
+	Vector vec = pDecoyEnt->GetAbsOrigin();
+
+	CRecipientFilter filter;
+	filter.AddAllPlayers();
+	pDecoyEnt->DispatchParticle("particles/liroy_particles/explosion_freeze_core.vpcf", &filter, PATTACH_ABSORIGIN);
+
+	addresses::UTIL_Remove(pDecoyEnt);
+
+	ZM_TriggerFreezeExplosion(vec);
 }
 
 CON_COMMAND_CHAT(zmsounds, "- Toggle zombie sounds")
