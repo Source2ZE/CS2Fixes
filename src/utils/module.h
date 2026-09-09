@@ -46,7 +46,7 @@ public:
 		for (size_t i = 0; i < m_iSize; i++)
 		{
 			size_t Matches = 0;
-			while (*(m_pCurrent + i + Matches) == m_pSignature[Matches] || (allowWildcard && m_pSignature[Matches] == '\x2A'))
+			while (*(m_pCurrent + i + Matches) == m_pSignature[Matches] || (allowWildcard && m_pSignature[Matches] == '?'))
 			{
 				Matches++;
 				if (Matches == m_iSigLength)

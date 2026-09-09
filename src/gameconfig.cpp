@@ -220,12 +220,12 @@ void* CGameConfig::ResolveSignature(const char* name)
 			return nullptr;
 		}
 
-		std::string fixedSignature = IDASigToDoubleWildcardIDASig(signature);
+		std::vector<uint8_t> bytes;
 
-		if (fixedSignature.empty())
+		if (!IsValidIDASignature(signature, bytes))
 			return nullptr;
 
-		address = KHook::LookupSignature((*module)->m_base, (*module)->m_size, fixedSignature.c_str());
+		address = KHook::LookupSignature((*module)->m_base, (*module)->m_size, signature);
 	}
 
 	if (!address)
@@ -264,7 +264,7 @@ bool CGameConfig::ParsePatternBytes(const char* pattern, std::vector<uint8_t>& b
 
 		if (*cursor == '?')
 		{
-			bytes.push_back('\x2A');
+			bytes.push_back('?');
 			cursor++;
 			if (*cursor == '?')
 				cursor++;
@@ -314,25 +314,4 @@ byte* CGameConfig::IDASigToUint8Array(const char* signature, size_t& length)
 		dest[i] = bytes[i];
 
 	return (byte*)dest;
-}
-
-std::string CGameConfig::IDASigToDoubleWildcardIDASig(const char* signature)
-{
-	std::string result;
-	std::vector<uint8_t> bytes;
-
-	if (!IsValidIDASignature(signature, bytes))
-		return result;
-
-	while (*signature)
-	{
-		if (*signature == '?')
-			result += "??";
-		else
-			result += *signature;
-
-		signature++;
-	}
-
-	return result;
 }
