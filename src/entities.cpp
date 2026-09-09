@@ -122,7 +122,7 @@ namespace CTriggerGravityHandler
 {
 	static std::unordered_map<uint32_t, float> s_gravityMap;
 
-	void OnPrecache(CBaseEntity* pEntity, const CEntityKeyValues* kv)
+	void OnPrecache(CTriggerGravity* pEntity, const CEntityKeyValues* kv)
 	{
 		const auto pGravity = kv->GetKeyValue("gravity");
 		const auto pHammerId = kv->GetKeyValue("hammerUniqueId");
@@ -135,9 +135,9 @@ namespace CTriggerGravityHandler
 		s_gravityMap[hEntity] = flGravity;
 	}
 
-	bool GravityTouching(CBaseEntity* pEntity, CBaseEntity* pOther)
+	bool GravityTouching(CTriggerGravity* pEntity, CBaseEntity* pOther)
 	{
-		const auto hEntity = GetEntityUnique(pEntity);
+		const auto hEntity = GetEntityUnique((CBaseEntity*)pEntity);
 		if (hEntity == ENTITY_UNIQUE_INVALID)
 			return false;
 
@@ -151,7 +151,7 @@ namespace CTriggerGravityHandler
 		return true;
 	}
 
-	void OnEndTouch(CBaseEntity* pEntity, CBaseEntity* pOther)
+	void OnEndTouch(CTriggerGravity* pEntity, CBaseEntity* pOther)
 	{
 		if (pOther->IsPawn())
 			pOther->SetGravityScale(1);

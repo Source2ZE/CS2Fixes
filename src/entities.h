@@ -26,12 +26,13 @@ class CGameUI;
 class CPointViewControl;
 class CCSPlayerPawn;
 class CEntityKeyValues;
+class CTriggerGravity;
 
 namespace CTriggerGravityHandler
 {
-	void OnPrecache(CBaseEntity* pEntity, const CEntityKeyValues* kv);
-	bool GravityTouching(CBaseEntity* pEntity, CBaseEntity* pOther);
-	void OnEndTouch(CBaseEntity* pEntity, CBaseEntity* pOther);
+	void OnPrecache(CTriggerGravity* pEntity, const CEntityKeyValues* kv);
+	bool GravityTouching(CTriggerGravity* pEntity, CBaseEntity* pOther);
+	void OnEndTouch(CTriggerGravity* pEntity, CBaseEntity* pOther);
 } // namespace CTriggerGravityHandler
 
 namespace CGamePlayerEquipHandler
