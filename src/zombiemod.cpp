@@ -1920,6 +1920,41 @@ CON_COMMAND_F(zm_deal_damage, "<victim_userid> <attacker_userid> <amount> - Deal
 	pVictimPawn->TakeDamage(info);
 }
 
+// For EconomyShopPlugin's zombie class abilities (e.g. Spitter's acid spit) that want a visible
+// effect at a specific world position instead of attached to a player. There's already a
+// !particle admin command (commands.cpp) but it's chat-triggered (same FCVAR_LINKED_CONCOMMAND
+// issue as c_zmclass - see zm_set_zombie_class above) and, more importantly, never cleans itself
+// up - fine for one-off admin debugging, not for something fired repeatedly during a round. This
+// one takes an explicit position and removes itself after durationSeconds, same
+// CHandle+CTimer-based cleanup pattern as the freeze grenade's ice cube.
+CON_COMMAND_F(zm_spawn_particle, "<x> <y> <z> <effect_name> <duration> - Spawn a temporary particle at a position", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 6)
+		return;
+
+	Vector origin(V_StringToFloat32(args[1], 0.0f), V_StringToFloat32(args[2], 0.0f), V_StringToFloat32(args[3], 0.0f));
+
+	CParticleSystem* particle = CreateEntityByName<CParticleSystem>("info_particle_system");
+	if (!particle)
+		return;
+
+	particle->m_bStartActive(true);
+	particle->m_iszEffectName(args[4]);
+	particle->Teleport(&origin, nullptr, nullptr);
+	particle->DispatchSpawn();
+
+	float flDuration = V_StringToFloat32(args[5], 2.0f);
+	CHandle<CParticleSystem> hParticle = particle->GetHandle();
+
+	CTimer::Create(flDuration, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hParticle]() {
+		CParticleSystem* pParticle = hParticle.Get();
+		if (pParticle)
+			pParticle->Remove();
+
+		return -1.0f;
+	});
+}
+
 // Hides an entity by setting its render mode directly (a plain data write, not a native function
 // call like SetModel - CS2Fixes has no safe SetModel-on-existing-entity, but this simple field
 // write is already used elsewhere in this codebase, e.g. mapmigrations.cpp/playermanager.cpp).
