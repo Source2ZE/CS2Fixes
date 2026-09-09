@@ -60,8 +60,8 @@
 
 KHook::Member<CBaseEntity, int64, CTakeDamageInfo*, CTakeDamageResult*> takeDamageOldHook(Detour_CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld_Post);
 KHook::Member<CTriggerPush, void, CBaseEntity*> triggerPushTouchHook(Detour_TriggerPush_Touch, nullptr);
-KHook::Function<void, IRecipientFilter&, const char*, CCSPlayerController*, uint64> sayTextFilterHook(Detour_UTIL_SayTextFilter, nullptr);
-KHook::Function<void, IRecipientFilter&, CCSPlayerController*, uint64, const char*, const char*, const char*, const char*, const char*> sayText2FilterHook(Detour_UTIL_SayText2Filter, nullptr);
+KHook::Function<void, IRecipientFilter&, const char*, CCSPlayerController*, int> sayTextFilterHook(Detour_UTIL_SayTextFilter, nullptr);
+KHook::Function<void, IRecipientFilter&, CCSPlayerController*, int, const char*, const char*, const char*, const char*, const char*> sayText2FilterHook(Detour_UTIL_SayText2Filter, nullptr);
 KHook::Member<CCSPlayer_WeaponServices, bool, CBasePlayerWeapon*> canUseHook(Detour_CCSPlayer_WeaponServices_CanUse, nullptr);
 KHook::Member<CCSPlayer_WeaponServices, void, CBasePlayerWeapon*> equipWeaponHook(Detour_CCSPlayer_WeaponServices_EquipWeapon, nullptr);
 KHook::Member<CEntityIdentity, bool, CUtlSymbolLarge*, CEntityInstance*, CEntityInstance*, variant_t*, void*, void*> acceptInputHook(Detour_CEntityIdentity_AcceptInput, nullptr);
@@ -425,7 +425,7 @@ KHook::Return<void> SayChatMessageWithTimer(IRecipientFilter& filter, const char
 
 CConVar<bool> g_cvarEnableTriggerTimer("cs2f_trigger_timer_enable", FCVAR_NONE, "Whether to process countdown messages said by Console (e.g. Hold for 10 seconds) and append the round time where the countdown resolves", false);
 
-KHook::Return<void> Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
+KHook::Return<void> Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, int eMessageType)
 {
 	if (pPlayer)
 		return {KHook::Action::Ignore};
@@ -442,7 +442,7 @@ KHook::Return<void> Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const ch
 KHook::Return<void> Detour_UTIL_SayText2Filter(
 	IRecipientFilter& filter,
 	CCSPlayerController* pEntity,
-	uint64 eMessageType,
+	int eMessageType,
 	const char* msg_name,
 	const char* param1,
 	const char* param2,
