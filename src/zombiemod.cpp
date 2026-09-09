@@ -1959,6 +1959,36 @@ CON_COMMAND_F(zm_spawn_particle, "<x> <y> <z> <effect_name> <duration> - Spawn a
 	});
 }
 
+// For EconomyShopPlugin's Spitter zombie class ability (acid spit stuns the human it hits). The
+// existing SetFrozen/ZM_FreezePlayer machinery (see ZM_CheckFrozenPlayers/ZM_TriggerFreezeExplosion
+// above) does something similar but is hardcoded to CS_TEAM_T (zombies only, for the freeze
+// grenade) - this is the same idea (MOVETYPE_NONE for a duration, same CHandle+CTimer restore
+// pattern) but works on either team.
+CON_COMMAND_F(zm_stun_player, "<userid> <duration> - Briefly disable a player's movement", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 3)
+		return;
+
+	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(g_playerManager->GetSlotFromUserId(V_StringToUint16(args[1], 0)).Get());
+	CCSPlayerPawn* pPawn = pTarget ? pTarget->GetPlayerPawn() : nullptr;
+
+	if (!pPawn || !pPawn->IsAlive())
+		return;
+
+	pPawn->SetMoveType(MoveType_t::MOVETYPE_NONE);
+
+	float flDuration = V_StringToFloat32(args[2], 2.0f);
+	CHandle<CCSPlayerPawn> hPawn(pPawn);
+
+	CTimer::Create(flDuration, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hPawn]() {
+		CCSPlayerPawn* pPawn = hPawn.Get();
+		if (pPawn)
+			pPawn->SetMoveType(MoveType_t::MOVETYPE_WALK);
+
+		return -1.0f;
+	});
+}
+
 // Hides an entity by setting its render mode directly (a plain data write, not a native function
 // call like SetModel - CS2Fixes has no safe SetModel-on-existing-entity, but this simple field
 // write is already used elsewhere in this codebase, e.g. mapmigrations.cpp/playermanager.cpp).
