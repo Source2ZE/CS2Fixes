@@ -1888,6 +1888,38 @@ CON_COMMAND_F(zm_mine_kill, "<victim_userid> <owner_userid> - Kill a player, att
 		pInferno->Remove();
 }
 
+// Same attacker-attribution pattern as zm_mine_kill above, but for a specific (non-lethal) damage
+// amount - used by EconomyShopPlugin's zombie class abilities (e.g. Spitter's acid spit) so hits
+// go through the real CTakeDamageInfo/TakeDamage path (kill feed, on-kill rewards if it finishes
+// them off) instead of a plugin-side health edit.
+CON_COMMAND_F(zm_deal_damage, "<victim_userid> <attacker_userid> <amount> - Deal damage to a player, attributing it to another player", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 4)
+		return;
+
+	CCSPlayerController* pVictim = CCSPlayerController::FromSlot(g_playerManager->GetSlotFromUserId(V_StringToUint16(args[1], 0)).Get());
+	CCSPlayerPawn* pVictimPawn = pVictim ? pVictim->GetPlayerPawn() : nullptr;
+
+	if (!pVictimPawn || !pVictimPawn->IsAlive())
+		return;
+
+	CBaseEntity* pWorld = (CBaseEntity*)g_pEntitySystem->GetEntityInstance(CEntityIndex(0));
+	CBaseEntity* pAttacker = pWorld;
+
+	CCSPlayerController* pOwner = CCSPlayerController::FromSlot(g_playerManager->GetSlotFromUserId(V_StringToUint16(args[2], 0)).Get());
+	CCSPlayerPawn* pOwnerPawn = pOwner ? pOwner->GetPlayerPawn() : nullptr;
+
+	if (pOwnerPawn && pOwnerPawn->IsAlive())
+		pAttacker = pOwnerPawn;
+
+	float flDamage = V_StringToFloat32(args[3], 0.0f);
+	if (flDamage <= 0.0f)
+		return;
+
+	CTakeDamageInfo info(pWorld, pAttacker, nullptr, flDamage, DMG_ACID);
+	pVictimPawn->TakeDamage(info);
+}
+
 // Hides an entity by setting its render mode directly (a plain data write, not a native function
 // call like SetModel - CS2Fixes has no safe SetModel-on-existing-entity, but this simple field
 // write is already used elsewhere in this codebase, e.g. mapmigrations.cpp/playermanager.cpp).
