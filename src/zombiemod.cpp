@@ -260,6 +260,12 @@ void ZM_SetupCTeams()
 
 void ZM_OnRoundStart(IGameEvent* pEvent)
 {
+	// Reset here (not just letting it sit at whatever it was left at) so a stale value from a
+	// prior round/plugin reload can't be misread as an already-in-progress countdown by anything
+	// polling this cvar (e.g. EconomyShopPlugin's countdown sounds) during the freeze time window,
+	// before ZM_StartInitialCountdown (called from ZM_OnRoundFreezeEnd) starts writing real values.
+	g_cvarZMInfectCountdownSeconds.Set(-1);
+
 	ZM_SetupRespawnToggler();
 	ClientPrintAll(HUD_PRINTTALK, ZM_PREFIX "The game is \x05Humans vs. Zombies\x01, the goal for zombies is to infect all humans by knifing them.");
 
