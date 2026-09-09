@@ -1955,6 +1955,44 @@ CON_COMMAND_F(zm_set_entity_model, "<entity_index> <model_path> - Change an enti
 	pEnt->SetModel(args[2]);
 }
 
+// EconomyShopPlugin's !zmenu needs to set a player's zombie class from a menu click, but the
+// native c_zmclass command (see CON_COMMAND_CHAT_FLAGS in commands.h) has FCVAR_LINKED_CONCOMMAND,
+// which the engine refuses to run via a CS# player.ExecuteClientCommand-simulated client command
+// ("[InputService] Cannot execute concommand 'c_zmclass', missing required FCVAR flag"). This is a
+// separate, plain server-console command (called via Server.ExecuteCommand instead, same pattern
+// as zm_set_entity_model/zm_detonate_freeze_grenade above) that does the same preference update
+// zmclass_callback does, without going through the client-command path at all.
+CON_COMMAND_F(zm_set_zombie_class, "<player_slot> <class_name> - Set a player's preferred zombie class", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 3)
+	{
+		ConMsg("zm_set_zombie_class: usage: zm_set_zombie_class <player_slot> <class_name>\n");
+		return;
+	}
+
+	int iSlot = V_StringToInt32(args[1], -1);
+	if (iSlot < 0 || iSlot >= MAXPLAYERS)
+	{
+		ConMsg("zm_set_zombie_class: invalid player_slot '%s'\n", args[1]);
+		return;
+	}
+
+	std::vector<std::shared_ptr<ZRClass>> vecClasses;
+	g_pZRPlayerClassManager->GetZRClassList(CS_TEAM_T, vecClasses, nullptr);
+
+	for (const std::shared_ptr<ZRClass>& pClass : vecClasses)
+	{
+		if (!V_stricmp(pClass->szClassName.c_str(), args[2]))
+		{
+			g_pUserPreferencesSystem->SetPreference(iSlot, ZOMBIE_CLASS_KEY_NAME, args[2]);
+			ConMsg("zm_set_zombie_class: set slot %d's zombie class to '%s'\n", iSlot, args[2]);
+			return;
+		}
+	}
+
+	ConMsg("zm_set_zombie_class: no zombie class named '%s'\n", args[2]);
+}
+
 void ZMMotherZombiesCommand(CCSPlayerController* player)
 {
 	if (g_ZRRoundState == EZRRoundState::ROUND_START || g_MotherZombies.size() == 0)
