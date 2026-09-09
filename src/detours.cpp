@@ -85,7 +85,7 @@ KHook::Member<CBasePlayerPawn, Vector> getEyePositionHook(Detour_CBasePlayerPawn
 KHook::Member<CBasePlayerPawn, QAngle> getEyeAnglesHook(Detour_CBasePlayerPawn_GetEyeAngles, nullptr);
 #endif
 KHook::Member<CBaseFilter, void, InputData_t&> inputTestActivatorHook(Detour_CBaseFilter_InputTestActivator, nullptr);
-KHook::Function<void> checkSteamBanHook(nullptr, Detour_GameSystem_Think_CheckSteamBan_Post);
+KHook::Function<void> checkSteamBanHook(Detour_GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan_Post);
 KHook::Member<CCSPlayer_ItemServices, AcquireResult, CEconItemView*, AcquireMethod, uint64_t> canAcquireHook(Detour_CCSPlayer_ItemServices_CanAcquire, nullptr);
 KHook::Function<void, uint64_t> scriptSetModelHook(Detour_CS_Script_SetModel, Detour_CS_Script_SetModel_Post);
 KHook::Member<CBaseModelEntity, void, const char*> setModelHook(Detour_CBaseModelEntity_SetModel, nullptr);
@@ -873,16 +873,36 @@ KHook::Return<void> Detour_CBaseFilter_InputTestActivator(CBaseFilter* pThis, In
 
 CConVar<bool> g_cvarFixGameBans("cs2f_fix_game_bans", FCVAR_NONE, "Whether to fix CS2 game bans spreading to all new joining players", false);
 
+KHook::Return<void> Detour_GameSystem_Think_CheckSteamBan()
+{
+	auto pMap = addresses::sm_mapGcBanInformation;
+	static ConVarRefAbstract sv_kick_players_with_cooldown("sv_kick_players_with_cooldown");
+
+	// Fix competitive cooldowns still being applied without sv_kick_players_with_cooldown 2
+	if (sv_kick_players_with_cooldown.GetInt() < 2)
+	{
+		for (int i = pMap->FirstInorder(); i != pMap->InvalidIndex();)
+		{
+			int next = pMap->NextInorder(i);
+			uint32_t reason = pMap->Element(i).m_uiReason;
+
+			if (reason == 20 || reason == 22 || reason == 23)
+				pMap->RemoveAt(i);
+
+			i = next;
+		}
+	}
+
+	return {KHook::Action::Ignore};
+}
+
 KHook::Return<void> Detour_GameSystem_Think_CheckSteamBan_Post()
 {
-	// Implementation shared by @aiolos1045
-	if (!g_cvarFixGameBans.Get())
-		return {KHook::Action::Ignore};
-
 	auto pMap = addresses::sm_mapGcBanInformation;
 
 	// After player has been kicked, remove any ban entries, to prevent spreading to all new joining players
-	if (pMap->Count() > 0)
+	// Implementation shared by @aiolos1045
+	if (g_cvarFixGameBans.Get() && pMap->Count() > 0)
 		pMap->RemoveAll();
 
 	return {KHook::Action::Ignore};

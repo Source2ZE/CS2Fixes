@@ -27,12 +27,14 @@
 #include "commands.h"
 #include "common.h"
 #include "cs_gameevents.pb.h"
+#include "cstrike15_usermessages.pb.h"
 #include "ctimer.h"
 #include "cvarwhitelist.h"
 #include "detours.h"
 #include "discord.h"
 #include "entities.h"
 #include "entity/ccsplayercontroller.h"
+#include "entity/customhudlayout.h"
 #include "entity/services.h"
 #include "entitylistener.h"
 #include "entitysystem.h"
@@ -80,11 +82,13 @@ KHook::Virtual<IServerGameClients, void, CPlayerSlot> clientSettingsChangedHook(
 KHook::Virtual<IServerGameClients, void, CPlayerSlot, const char*, uint64, const char*, const char*, bool> onClientConnectedHook(&IServerGameClients::OnClientConnected, &g_CS2Fixes, &CS2Fixes::Hook_OnClientConnected, nullptr);
 KHook::Virtual<IServerGameClients, bool, CPlayerSlot, const char*, uint64, const char*, bool, CBufferString*> clientConnectHook(&IServerGameClients::ClientConnect, &g_CS2Fixes, &CS2Fixes::Hook_ClientConnect, nullptr);
 KHook::Virtual<IServerGameClients, void, CPlayerSlot, const CCommand&> clientCommandHook(&IServerGameClients::ClientCommand, &g_CS2Fixes, &CS2Fixes::Hook_ClientCommand, nullptr);
+KHook::Virtual<IServerGameClients, void, CPlayerSlot, int, uint32, const void*> clientSvcUserMessageHook(&IServerGameClients::ClientSvcUserMessage, &g_CS2Fixes, &CS2Fixes::Hook_ClientSvcUserMessage, nullptr);
 KHook::Virtual<IGameEventSystem, void, CSplitScreenSlot, bool, int, const uint64*, INetworkMessageInternal*, const CNetMessage*, unsigned long, NetChannelBufType_t> postEventAbstractHook(&IGameEventSystem::PostEventAbstract, &g_CS2Fixes, &CS2Fixes::Hook_PostEventAbstract, nullptr);
 KHook::Virtual<INetworkServerService, void, const GameSessionConfiguration_t&, ISource2WorldSession*, const char*> startupServerHook(&INetworkServerService::StartupServer, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_StartupServer_Post);
 KHook::Virtual<ISource2GameEntities, void, CCheckTransmitInfo**, int, CBitVec<16384>&, CBitVec<16384>&, const Entity2Networkable_t**, const uint16*, int> checkTransmitHook(&ISource2GameEntities::CheckTransmit, &g_CS2Fixes, nullptr, &CS2Fixes::Hook_CheckTransmit_Post);
 KHook::Virtual<ICvar, void, ConCommandRef, const CCommandContext&, const CCommand&> dispatchConCommandHook(&ICvar::DispatchConCommand, &g_CS2Fixes, &CS2Fixes::Hook_DispatchConCommand, nullptr);
 KHook::Virtual<IGameEventManager2, int, const char*, bool> loadEventsFromFileHook(&IGameEventManager2::LoadEventsFromFile, &g_CS2Fixes, &CS2Fixes::Hook_LoadEventsFromFile, nullptr);
+KHook::Virtual<IGameEventManager2, bool, IGameEvent*, bool> fireEventHook(&IGameEventManager2::FireEvent, &g_CS2Fixes, &CS2Fixes::Hook_FireEvent, nullptr);
 KHook::Virtual<CEntitySystem, void, int, const EntitySpawnInfo_t*> spawnHook(&CEntitySystem::Spawn, &g_CS2Fixes, &CS2Fixes::Hook_Spawn, nullptr);
 KHook::Virtual<CServerSideClient, bool, const CCLCMsg_VoiceData_t&> processVoiceDataHook(&CServerSideClient::ProcessVoiceData, &g_CS2Fixes, &CS2Fixes::Hook_ProcessVoiceData, nullptr);
 KHook::Virtual<INetworkGameServer, void, IGameSpawnGroupMgr*> setGameSpawnGroupMgrHook(&INetworkGameServer::SetGameSpawnGroupMgr, &g_CS2Fixes, &CS2Fixes::Hook_SetGameSpawnGroupMgr, nullptr);
@@ -185,6 +189,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	onClientConnectedHook.Add(g_pSource2GameClients);
 	clientConnectHook.Add(g_pSource2GameClients);
 	clientCommandHook.Add(g_pSource2GameClients);
+	clientSvcUserMessageHook.Add(g_pSource2GameClients);
 	postEventAbstractHook.Add(g_gameEventSystem);
 	startupServerHook.Add(g_pNetworkServerService);
 	checkTransmitHook.Add(g_pSource2GameEntities);
@@ -212,6 +217,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	}
 
 	loadEventsFromFileHook.AddGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
+	fireEventHook.AddGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
 
 	g_pCEntitySystemVTable = (CEntitySystem*)modules::server->FindVirtualTable("CGameEntitySystem");
 	if (!g_pCEntitySystemVTable)
@@ -458,11 +464,13 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	onClientConnectedHook.Remove(g_pSource2GameClients);
 	clientConnectHook.Remove(g_pSource2GameClients);
 	clientCommandHook.Remove(g_pSource2GameClients);
+	clientSvcUserMessageHook.Remove(g_pSource2GameClients);
 	postEventAbstractHook.Remove(g_gameEventSystem);
 	startupServerHook.Remove(g_pNetworkServerService);
 	checkTransmitHook.Remove(g_pSource2GameEntities);
 	dispatchConCommandHook.Remove(g_pCVar);
 	loadEventsFromFileHook.RemoveGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
+	fireEventHook.RemoveGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
 	spawnHook.RemoveGlobal((CEntitySystem*)&g_pCEntitySystemVTable);
 	processVoiceDataHook.RemoveGlobal((CServerSideClient*)&g_pCServerSideClientVTable);
 	setGameSpawnGroupMgrHook.Remove(GetNetworkGameServer());
@@ -1254,6 +1262,18 @@ KHook::Return<int> CS2Fixes::Hook_LoadEventsFromFile(IGameEventManager2* pThis, 
 	return {KHook::Action::Ignore};
 }
 
+KHook::Return<bool> CS2Fixes::Hook_FireEvent(IGameEventManager2* pThis, IGameEvent* pEvent, bool bDontBroadcast)
+{
+	// Make player_connect obey cs2f_map_steamids_enable as well
+	if (!g_cvarEnableMapSteamIds.Get() && !V_stricmp(pEvent->GetName(), "player_connect"))
+	{
+		pEvent->SetString("networkid", "");
+		pEvent->SetUint64("xuid", 0);
+	}
+
+	return {KHook::Action::Ignore};
+}
+
 KHook::Return<void> CS2Fixes::Hook_SetGameSpawnGroupMgr(INetworkGameServer* pThis, IGameSpawnGroupMgr* pSpawnGroupMgr)
 {
 	// This also resets our stored pointer on deletion, since null gets passed into this function, nice!
@@ -1313,6 +1333,29 @@ KHook::Return<bool> CS2Fixes::Hook_ProcessVoiceData(CServerSideClient* pClient, 
 
 	if (GetGlobals())
 		pPlayer->SetLastVoiceTime(GetGlobals()->curtime);
+
+	return {KHook::Action::Ignore};
+}
+
+KHook::Return<void> CS2Fixes::Hook_ClientSvcUserMessage(IServerGameClients* pThis, CPlayerSlot slot, int um_type, uint32 size, const void* buf)
+{
+	auto pController = CCSPlayerController::FromSlot(slot);
+
+	if (!pController)
+		return {KHook::Action::Ignore};
+
+	if (um_type == CS_UM_CustomHudClicked)
+	{
+		CCSUsrMsg_CustomHudClicked message;
+
+		if (message.ParseFromArray(buf, size))
+		{
+			CHandle<CCSCustomHudLayout> hLayout = CBaseHandle::FromPackedInt(message.custom_hud_layout());
+
+			if (hLayout.Get())
+				hLayout->OnClick(pController, message.button_id());
+		}
+	}
 
 	return {KHook::Action::Ignore};
 }
@@ -1415,6 +1458,8 @@ void CS2Fixes::OnLevelShutdown()
 
 	if (g_cvarVoteManagerEnable.Get())
 		g_pMapVoteSystem->OnLevelShutdown();
+
+	CCSCustomHudLayout::ClearClickCallbacks();
 }
 
 bool CS2Fixes::Pause(char* error, size_t maxlen)

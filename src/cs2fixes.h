@@ -88,6 +88,7 @@ public: // hooks
 	KHook::Return<void> Hook_OnClientConnected(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer);
 	KHook::Return<bool> Hook_ClientConnect(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason);
 	KHook::Return<void> Hook_ClientCommand(IServerGameClients* pThis, CPlayerSlot nSlot, const CCommand& _cmd);
+	KHook::Return<void> Hook_ClientSvcUserMessage(IServerGameClients* pThis, CPlayerSlot slot, int um_type, uint32 size, const void* buf);
 	KHook::Return<void> Hook_PostEventAbstract(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
 											   INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType);
 	KHook::Return<void> Hook_StartupServer_Post(INetworkServerService* pThis, const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
@@ -95,6 +96,7 @@ public: // hooks
 												CBitVec<16384>&, const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities);
 	KHook::Return<void> Hook_DispatchConCommand(ICvar* pThis, ConCommandRef cmd, const CCommandContext& ctx, const CCommand& args);
 	KHook::Return<int> Hook_LoadEventsFromFile(IGameEventManager2* pThis, const char* filename, bool bSearchAll);
+	KHook::Return<bool> Hook_FireEvent(IGameEventManager2* pThis, IGameEvent* pEvent, bool bDontBroadcast);
 	KHook::Return<void> Hook_Spawn(CEntitySystem* pThis, int nCount, const EntitySpawnInfo_t* pInfo);
 	KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CCLCMsg_VoiceData_t& msg);
 	KHook::Return<void> Hook_SetGameSpawnGroupMgr(INetworkGameServer* pThis, IGameSpawnGroupMgr* pSpawnGroupMgr);

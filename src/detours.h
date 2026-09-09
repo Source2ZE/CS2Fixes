@@ -112,6 +112,7 @@ KHook::Return<Vector> Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn*);
 KHook::Return<QAngle> Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*);
 #endif
 KHook::Return<void> Detour_CBaseFilter_InputTestActivator(CBaseFilter* pThis, InputData_t& inputdata);
+KHook::Return<void> Detour_GameSystem_Think_CheckSteamBan();
 KHook::Return<void> Detour_GameSystem_Think_CheckSteamBan_Post();
 KHook::Return<AcquireResult> Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices* pItemServices, CEconItemView* pEconItem, AcquireMethod iAcquireMethod, uint64_t unk4);
 KHook::Return<void> Detour_CS_Script_SetModel(uint64_t unk1);

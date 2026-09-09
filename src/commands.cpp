@@ -30,6 +30,7 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/ccsweaponbase.h"
 #include "entity/cparticlesystem.h"
+#include "entity/customhudlayout.h"
 #include "entity/lights.h"
 #include "httpmanager.h"
 #include "leader.h"
@@ -1160,5 +1161,36 @@ CON_COMMAND_CHAT(discordbot, "<bot> <message> - Send a message to a discord webh
 	}
 
 	g_pDiscordBotManager->PostDiscordMessage(args[1], args[2]);
+}
+
+CON_COMMAND_CHAT(uitest, "<xml path> (<text>) - Spawn UI panel")
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !uitest <xml path> (<text>)");
+		return;
+	}
+
+	static CHandle<CCSCustomHudLayout> hLayout = nullptr;
+
+	if (hLayout.Get())
+		hLayout->Remove();
+
+	hLayout = CCSCustomHudLayout::Create(args[1], "plugin_custom_hud");
+	hLayout->SetHasClass("dialog", "Dismissed", false, player);
+	hLayout->SetInputCaptureEnabled(true, player);
+
+	if (args.ArgC() > 2)
+		hLayout->SetDialogVariableString("MyLabel", "CustomText", args[2], player);
+
+	hLayout->AddClickCallback([](CCSPlayerController* pController, CCSCustomHudLayout* pHud, std::string sButtonId) {
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s clicked %s on %s\n", pController->GetPlayerName().c_str(), sButtonId.c_str(), pHud->GetName());
+
+		if (sButtonId == "dismiss_button")
+		{
+			pHud->SetHasClass("dialog", "Dismissed", true, pController);
+			pHud->SetInputCaptureEnabled(false, pController);
+		}
+	});
 }
 #endif // _DEBUG

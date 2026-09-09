@@ -225,6 +225,7 @@
     <ClCompile Include="src\utils\utils.cpp" />
     <ClCompile Include="src\utils\vscript_function.cpp" />
     <ClCompile Include="src\cs2_sdk\entity\services.cpp" />
+    <ClCompile Include="src\cs2_sdk\entity\customhudlayout.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\buttonwatch.h" />
@@ -258,6 +259,7 @@
     <ClInclude Include="src\cs2_sdk\entity\cteam.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctriggerpush.h" />
     <ClInclude Include="src\cs2_sdk\entity\ctriggerteleport.h" />
+    <ClInclude Include="src\cs2_sdk\entity\customhudlayout.h" />
     <ClInclude Include="src\cs2_sdk\entity\cvotecontroller.h" />
     <ClInclude Include="src\cs2_sdk\entity\globaltypes.h" />
     <ClInclude Include="src\cs2_sdk\entity\lights.h" />
