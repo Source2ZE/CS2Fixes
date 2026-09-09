@@ -144,6 +144,10 @@ void ZM_Precache(IEntityResourceManifest* pResourceManifest)
 	pResourceManifest->AddResource("particles/zmbio/spitter_acid.vpcf");
 	pResourceManifest->AddResource("particles/kolka/part10_acid2.vpcf");
 	pResourceManifest->AddResource("particles/kolka/part10_acid2_burst.vpcf");
+
+	// IgnitePawn's burning particle (customio.cpp) - not precached anywhere already, extending it
+	// to molotovs below (previously HE-grenade-only) means it's about to get used a lot more.
+	pResourceManifest->AddResource(g_cvarBurnParticle.Get().String());
 }
 
 void ZM_OnLevelInit()
@@ -847,7 +851,13 @@ bool ZM_Hook_OnTakeDamage_Alive(CTakeDamageInfo* pInfo, CCSPlayerPawn* pVictimPa
 			bool bGrenade = V_strncmp(pszInflictorClass, "hegrenade", 9) == 0;
 			bool bInferno = V_strncmp(pszInflictorClass, "inferno", 7) == 0;
 
-			if (g_cvarZMNapalmGrenades.Get() && bGrenade)
+			// Molotov/incendiary (classname "inferno") already deals its own native burn damage
+			// while a zombie stands in the fire, but didn't ignite them the same lasting way an HE
+			// grenade does (IgnitePawn's attached particle + duration, which keeps burning even
+			// after they've run out of the flames) - added here too, called repeatedly like the HE
+			// case as long as they're taking inferno damage (IgnitePawn already no-ops/just extends
+			// the duration if already burning, so repeated calls are fine and expected).
+			if (g_cvarZMNapalmGrenades.Get() && (bGrenade || bInferno))
 			{
 				// Scale burn duration by damage, so nades from farther away burn zombies for less time
 				float flDuration = (pInfo->m_flDamage / g_cvarZMNapalmFullDamage.Get()) * g_cvarZMNapalmDuration.Get();
