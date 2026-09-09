@@ -27,6 +27,7 @@ public:
 	void* ResolveSignature(const char* name);
 	int ParseHexNibble(char c);
 	bool ParsePatternBytes(const char* pattern, std::vector<uint8_t>& bytes);
+	bool IsValidIDASignature(const char* signature, std::vector<uint8_t>& bytes);
 	byte* IDASigToUint8Array(const char* signature, size_t& length);
 
 private:

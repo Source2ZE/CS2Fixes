@@ -1,5 +1,6 @@
 #include "gameconfig.h"
 #include "addresses.h"
+#include "khook.hpp"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
 
@@ -219,17 +220,12 @@ void* CGameConfig::ResolveSignature(const char* name)
 			return nullptr;
 		}
 
-		size_t iLength = 0;
-		byte* pSignature = IDASigToUint8Array(signature, iLength);
-		if (!pSignature)
+		std::vector<uint8_t> bytes;
+
+		if (!IsValidIDASignature(signature, bytes))
 			return nullptr;
 
-		int error;
-
-		address = (*module)->FindSignature(pSignature, iLength, error);
-
-		if (error == SIG_FOUND_MULTIPLE)
-			Panic("!!!!!!!!!! Signature for %s occurs multiple times! Using first match but this might end up crashing!\n", name);
+		address = KHook::LookupSignature((*module)->m_base, (*module)->m_size, signature);
 	}
 
 	if (!address)
@@ -268,7 +264,7 @@ bool CGameConfig::ParsePatternBytes(const char* pattern, std::vector<uint8_t>& b
 
 		if (*cursor == '?')
 		{
-			bytes.push_back('\x2A');
+			bytes.push_back('?');
 			cursor++;
 			if (*cursor == '?')
 				cursor++;
@@ -287,20 +283,29 @@ bool CGameConfig::ParsePatternBytes(const char* pattern, std::vector<uint8_t>& b
 	return !bytes.empty();
 }
 
-byte* CGameConfig::IDASigToUint8Array(const char* signature, size_t& length)
+bool CGameConfig::IsValidIDASignature(const char* signature, std::vector<uint8_t>& bytes)
 {
 	if (!signature || strlen(signature) <= 0)
 	{
 		Panic("Invalid IDA signature string\n");
-		return nullptr;
+		return false;
 	}
 
-	std::vector<uint8_t> bytes;
 	if (!ParsePatternBytes(signature, bytes))
 	{
 		Panic("Invalid IDA signature format \"%s\"\n", signature);
-		return nullptr;
+		return false;
 	}
+
+	return true;
+}
+
+byte* CGameConfig::IDASigToUint8Array(const char* signature, size_t& length)
+{
+	std::vector<uint8_t> bytes;
+
+	if (!IsValidIDASignature(signature, bytes))
+		return nullptr;
 
 	length = bytes.size();
 	uint8_t* dest = new uint8_t[length];
