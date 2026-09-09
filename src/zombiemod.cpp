@@ -137,9 +137,13 @@ void ZM_Precache(IEntityResourceManifest* pResourceManifest)
 	// core one needs precaching here.
 	pResourceManifest->AddResource("particles/liroy_particles/explosion_freeze_core.vpcf");
 
-	// Spitter zombie class ability's acid spit hit effect (EconomyShopPlugin, via
-	// zm_spawn_particle).
+	// Spitter zombie class ability's acid spit effects (EconomyShopPlugin, via zm_spawn_particle) -
+	// spitter_acid is the original hit effect, no longer used directly but left precached in case
+	// it comes back; part10_acid2/part10_acid2_burst are the travel-trail + impact-burst pair
+	// currently used.
 	pResourceManifest->AddResource("particles/zmbio/spitter_acid.vpcf");
+	pResourceManifest->AddResource("particles/kolka/part10_acid2.vpcf");
+	pResourceManifest->AddResource("particles/kolka/part10_acid2_burst.vpcf");
 }
 
 void ZM_OnLevelInit()
