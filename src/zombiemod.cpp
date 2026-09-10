@@ -1977,6 +1977,37 @@ CON_COMMAND_F(zm_spawn_particle, "<x> <y> <z> <effect_name> <duration> - Spawn a
 	});
 }
 
+// For EconomyShopPlugin's Pulse Rifle orb, which has no real entity to call EmitSound on (it's a
+// plugin-side simulated projectile, not a spawned game entity) - spawns an invisible info_target
+// at the position just to anchor a positioned EmitSound call, same short-lived CHandle+CTimer
+// cleanup pattern as zm_spawn_particle above.
+CON_COMMAND_F(zm_play_sound_at, "<x> <y> <z> <sound_event> [cleanup_delay] - Play a sound event at a position", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 5)
+		return;
+
+	Vector origin(V_StringToFloat32(args[1], 0.0f), V_StringToFloat32(args[2], 0.0f), V_StringToFloat32(args[3], 0.0f));
+
+	CBaseEntity* pAnchor = CreateEntityByName<CBaseEntity>("info_target");
+	if (!pAnchor)
+		return;
+
+	pAnchor->Teleport(&origin, nullptr, nullptr);
+	pAnchor->DispatchSpawn();
+	pAnchor->EmitSound(args[4]);
+
+	float flCleanupDelay = args.ArgC() > 5 ? V_StringToFloat32(args[5], 3.0f) : 3.0f;
+	CHandle<CBaseEntity> hAnchor = pAnchor->GetHandle();
+
+	CTimer::Create(flCleanupDelay, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hAnchor]() {
+		CBaseEntity* pAnchor = hAnchor.Get();
+		if (pAnchor)
+			pAnchor->Remove();
+
+		return -1.0f;
+	});
+}
+
 // Same purpose as zm_spawn_particle above, but for a visible model instead of a particle effect -
 // used by EconomyShopPlugin's Rocket Launcher to show the actual rpg_rocket.vmdl traveling along
 // the shot's path (spawned repeatedly along each step, same short-lived CHandle+CTimer cleanup
