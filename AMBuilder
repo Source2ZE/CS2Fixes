@@ -37,6 +37,7 @@ for sdk_target in MMSPlugin.sdk_targets:
     'src/commands.cpp',
     'src/addresses.cpp',
     'src/detours.cpp',
+    'src/virtual_hooks.cpp',
     'src/entities.cpp',
     'src/events.cpp',
     'src/utils/entity.cpp',
