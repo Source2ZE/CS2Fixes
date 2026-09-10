@@ -1977,6 +1977,40 @@ CON_COMMAND_F(zm_spawn_particle, "<x> <y> <z> <effect_name> <duration> - Spawn a
 	});
 }
 
+// Same purpose as zm_spawn_particle above, but for a visible model instead of a particle effect -
+// used by EconomyShopPlugin's Rocket Launcher to show the actual rpg_rocket.vmdl traveling along
+// the shot's path (spawned repeatedly along each step, same short-lived CHandle+CTimer cleanup
+// pattern as above, and the same CEntityKeyValues model-spawn approach already proven for the
+// freeze grenade's ice cube prop_dynamic further down in this file).
+CON_COMMAND_F(zm_spawn_prop, "<x> <y> <z> <pitch> <yaw> <roll> <model_path> <duration> - Spawn a temporary model prop at a position", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 9)
+		return;
+
+	Vector origin(V_StringToFloat32(args[1], 0.0f), V_StringToFloat32(args[2], 0.0f), V_StringToFloat32(args[3], 0.0f));
+	QAngle angles(V_StringToFloat32(args[4], 0.0f), V_StringToFloat32(args[5], 0.0f), V_StringToFloat32(args[6], 0.0f));
+
+	CBaseModelEntity* pProp = CreateEntityByName<CBaseModelEntity>("prop_dynamic");
+	if (!pProp)
+		return;
+
+	CEntityKeyValues* pPropKeyValues = new CEntityKeyValues();
+	pPropKeyValues->SetString("model", args[7]);
+	pProp->DispatchSpawn(pPropKeyValues);
+	pProp->Teleport(&origin, &angles, nullptr);
+
+	float flDuration = V_StringToFloat32(args[8], 2.0f);
+	CHandle<CBaseModelEntity> hProp = pProp->GetHandle();
+
+	CTimer::Create(flDuration, TIMERFLAG_MAP | TIMERFLAG_ROUND, [hProp]() {
+		CBaseModelEntity* pProp = hProp.Get();
+		if (pProp)
+			pProp->Remove();
+
+		return -1.0f;
+	});
+}
+
 // For EconomyShopPlugin's Spitter zombie class ability (acid spit stuns the human it hits). The
 // existing SetFrozen/ZM_FreezePlayer machinery (see ZM_CheckFrozenPlayers/ZM_TriggerFreezeExplosion
 // above) does something similar but is hardcoded to CS_TEAM_T (zombies only, for the freeze
