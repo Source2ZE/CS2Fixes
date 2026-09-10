@@ -677,7 +677,7 @@ void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd
 		}
 	}
 
-	int iSlot = pController->GetPlayerSlot().Get();
+	int iSlot = pController->GetPlayerSlot();
 	if (iSlot >= 0 && iSlot <= MAXPLAYERS && g_bRocketLauncherActive[iSlot])
 	{
 		for (int i = 0; i < numcmds; i++)
