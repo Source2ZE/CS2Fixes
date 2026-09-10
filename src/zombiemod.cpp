@@ -291,7 +291,11 @@ void ZM_OnRoundStart(IGameEvent* pEvent)
 	{
 		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
 
-		if (!pController)
+		// IsConnected() guards against a slot that's mid-disconnect/reconnect (e.g. a mass
+		// bot kick+rejoin during a match restart) still holding a stale/reused controller
+		// pointer here - a plain null check alone doesn't catch that, same pattern already
+		// used elsewhere in this file (e.g. ZM_OnPlayerHurt, ZM_ClientCommand_JoinTeam).
+		if (!pController || !pController->IsConnected())
 			continue;
 
 		ZEPlayer* pPlayer = pController->GetZEPlayer();
