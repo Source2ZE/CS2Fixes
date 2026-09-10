@@ -2030,6 +2030,12 @@ CON_COMMAND_F(zm_spawn_prop, "<x> <y> <z> <pitch> <yaw> <roll> <model_path> <dur
 	pProp->DispatchSpawn(pPropKeyValues);
 	pProp->Teleport(&origin, &angles, nullptr);
 
+	// Purely cosmetic (e.g. EconomyShopPlugin's traveling Rocket Launcher visual) - without this,
+	// a model with its own baked-in collision hull would be solid, and a fast-moving trace-based
+	// projectile spawning one of these every tick would end up colliding with its own previous
+	// tick's prop a moment later, detonating instantly instead of actually traveling.
+	pProp->SetCollisionGroup(COLLISION_GROUP_DEBRIS);
+
 	float flDuration = V_StringToFloat32(args[8], 2.0f);
 	CHandle<CBaseModelEntity> hProp = pProp->GetHandle();
 
