@@ -371,7 +371,7 @@ void SayChatMessageWithTimer(IRecipientFilter& filter, const char* pText, CCSPla
 
 CConVar<bool> g_cvarEnableTriggerTimer("cs2f_trigger_timer_enable", FCVAR_NONE, "Whether to process countdown messages said by Console (e.g. Hold for 10 seconds) and append the round time where the countdown resolves", false);
 
-void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, uint64 eMessageType)
+void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const char* pText, CCSPlayerController* pPlayer, int eMessageType)
 {
 	if (pPlayer)
 		return UTIL_SayTextFilter(filter, pText, pPlayer, eMessageType);
@@ -388,7 +388,7 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter& filter, const char* pT
 void FASTCALL Detour_UTIL_SayText2Filter(
 	IRecipientFilter& filter,
 	CCSPlayerController* pEntity,
-	uint64 eMessageType,
+	int eMessageType,
 	const char* msg_name,
 	const char* param1,
 	const char* param2,
