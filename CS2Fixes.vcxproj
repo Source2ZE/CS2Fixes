@@ -194,6 +194,7 @@
     <ClCompile Include="src\customio.cpp" />
     <ClCompile Include="src\cvars.cpp" />
     <ClCompile Include="src\detours.cpp" />
+    <ClCompile Include="src\virtual_hooks.cpp" />
     <ClCompile Include="src\discord.cpp" />
     <ClCompile Include="src\entities.cpp" />
     <ClCompile Include="src\entwatch.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="src\ctimer.h" />
     <ClInclude Include="src\customio.h" />
     <ClInclude Include="src\detours.h" />
+    <ClInclude Include="src\virtual_hooks.h" />
     <ClInclude Include="src\discord.h" />
     <ClInclude Include="src\entities.h" />
     <ClInclude Include="src\entwatch.h" />
