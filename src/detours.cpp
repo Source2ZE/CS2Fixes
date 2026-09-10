@@ -600,6 +600,29 @@ void FASTCALL Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pM
 CConVar<bool> g_cvarDisableSubtickMovement("cs2f_disable_subtick_move", FCVAR_NONE, "Whether to disable subtick movement", false);
 CConVar<bool> g_cvarDisableSubtickShooting("cs2f_disable_subtick_shooting", FCVAR_NONE, "Whether to disable subtick shooting, experimental (WARNING: add \"log_flags Shooting + DoNotEcho\" to your cfg to prevent console spam on every shot fired)", false);
 
+// EconomyShopPlugin's Rocket Launcher repurposes a real weapon_aug entity so it behaves like a
+// normal held/dropped/picked-up weapon, but needs its NATIVE fire to be completely inert - only
+// the skeleton/reload/holster animations are wanted, actual rockets are simulated separately.
+// Jamming schema fields like NextPrimaryAttackTick from C# every ~0.05s left a race: the engine
+// re-evaluates/resets that field on its own every game tick (128/s), far more often than the
+// plugin's timer corrects it, so a real bullet could still slip through in the gap. Stripping the
+// subtick attack markers here - the same technique cs2f_disable_subtick_shooting already uses
+// above, just scoped to one marked player instead of the whole server - runs at the right point on
+// every single tick, before the engine ever sees the attack input, so there's no gap to race.
+static bool g_bRocketLauncherActive[MAXPLAYERS + 1] = {};
+
+CON_COMMAND_F(zm_set_rocket_launcher_active, "<slot> <0|1> - Mark a player's native weapon fire as inert (EconomyShopPlugin Rocket Launcher)", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+{
+	if (args.ArgC() < 3)
+		return;
+
+	int iSlot = V_StringToInt32(args[1], -1);
+	if (iSlot < 0 || iSlot > MAXPLAYERS)
+		return;
+
+	g_bRocketLauncherActive[iSlot] = V_StringToInt32(args[2], 0) != 0;
+}
+
 class CUserCmd
 {
 public:
@@ -647,6 +670,17 @@ void* FASTCALL Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd
 		}
 
 		if (g_cvarDisableSubtickShooting.Get())
+		{
+			cmds[i].cmd.set_attack1_start_history_index(-1);
+			cmds[i].cmd.set_attack2_start_history_index(-1);
+			cmds[i].cmd.mutable_input_history()->Clear();
+		}
+	}
+
+	int iSlot = pController->GetPlayerSlot().Get();
+	if (iSlot >= 0 && iSlot <= MAXPLAYERS && g_bRocketLauncherActive[iSlot])
+	{
+		for (int i = 0; i < numcmds; i++)
 		{
 			cmds[i].cmd.set_attack1_start_history_index(-1);
 			cmds[i].cmd.set_attack2_start_history_index(-1);
