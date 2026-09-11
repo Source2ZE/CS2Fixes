@@ -130,7 +130,7 @@ void ZM_Precache(IEntityResourceManifest* pResourceManifest)
 	// zm_set_entity_model (EconomyShopPlugin). Already referenced by weapons.vdata's
 	// m_szWorldModel too, but precache explicitly here in case that alone isn't enough for a
 	// SetModel call on an already-live entity at throw time.
-	pResourceManifest->AddResource("models/weapons/freeze_grenade/freeze_grenade.vmdl");
+	pResourceManifest->AddResource("weapons/models/freeze_grenade/freeze_grenade.vmdl");
 
 	// Freeze grenade explosion effect (see ZM_TriggerFreezeExplosion) - the compiled particle
 	// already references explosion_freeze_distort/flakes/trails.vpcf as children, so only the
