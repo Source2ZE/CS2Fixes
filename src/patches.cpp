@@ -40,18 +40,18 @@ CConVar<bool> cs2f_movement_unlocker_enable("cs2f_movement_unlocker_enable", FCV
 											[](CConVar<bool>* cvar, CSplitScreenSlot slot, const bool* new_val, const bool* old_val) {
 												// Movement unlocker is always the first patch
 												if (*new_val)
-													g_CommonPatches[0].PerformPatch(g_GameConfig);
+													g_CommonPatches[0].PerformPatch();
 												else
 													g_CommonPatches[0].UndoPatch();
 											});
 
-bool InitPatches(CGameConfig* g_GameConfig)
+bool InitPatches()
 {
 	bool success = true;
 
 	// Skip first two patches (movement unlocker & bot nav ignore), they are patched elsewhere
 	for (int i = 2; i < sizeof(g_CommonPatches) / sizeof(*g_CommonPatches); i++)
-		if (!g_CommonPatches[i].PerformPatch(g_GameConfig))
+		if (!g_CommonPatches[i].PerformPatch())
 			success = false;
 
 	return success;

@@ -22,10 +22,11 @@
 #include "tier0/dbg.h"
 #include "tier1/strtools.h"
 #include "utils/module.h"
+#include "khook.hpp"
 
 #include "tier0/memdbgon.h"
 
-bool CMemPatch::PerformPatch(CGameConfig* gameConfig)
+bool CMemPatch::PerformPatch()
 {
 	// We're patched already
 	if (m_pOriginalBytes)
@@ -34,25 +35,25 @@ bool CMemPatch::PerformPatch(CGameConfig* gameConfig)
 	// If we already have an address, no need to look for it again
 	if (!m_pPatchAddress)
 	{
-		m_pPatchAddress = (uintptr_t)gameConfig->ResolveSignature(m_pSignatureName);
+		m_pPatchAddress = (uintptr_t)g_GameConfig->ResolveSignature(m_pSignatureName);
 
 		if (!m_pPatchAddress)
 			return false;
 	}
 
-	const char* patch = gameConfig->GetPatch(m_pszName);
+	const char* patch = g_GameConfig->GetPatch(m_pszName);
 	if (!patch)
 	{
 		Panic("Failed to find patch for %s\n", m_pszName);
 		return false;
 	}
-	m_pPatch = gameConfig->IDASigToUint8Array(patch, m_iPatchLength);
+	m_pPatch = g_GameConfig->IDASigToUint8Array(patch, m_iPatchLength);
 	if (!m_pPatch)
 		return false;
 
 	if (V_strcmp(m_pOffsetName, ""))
 	{
-		m_iOffset = gameConfig->GetOffset(m_pOffsetName);
+		m_iOffset = g_GameConfig->GetOffset(m_pOffsetName);
 		if (m_iOffset == -1)
 		{
 			Panic("Failed to find offset %s for patch %s\n", m_pOffsetName, m_pszName);

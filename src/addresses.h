@@ -74,8 +74,8 @@ struct CGcBanInformation_t
 
 namespace addresses
 {
-	bool Initialize(CGameConfig* g_GameConfig);
-	bool InitializeBanMap(CGameConfig* g_GameConfig);
+	bool Initialize();
+	bool InitializeBanMap();
 	bool InitializeVScriptFunctions();
 
 	inline CUtlOrderedMap<uint32, CGcBanInformation_t, uint32>* sm_mapGcBanInformation;

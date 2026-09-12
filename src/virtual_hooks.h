@@ -37,7 +37,7 @@ class CVPhys2World;
 class CTriggerGravity;
 class CGameConfig;
 
-void InitVirtualHooks(CGameConfig* gameConfig);
+void InitVirtualHooks();
 void RemoveVirtualHooks();
 
 KHook::Return<void> Hook_GameFrame_Post(IServerGameDLL* pThis, bool simulating, bool bFirstTick, bool bLastTick);
