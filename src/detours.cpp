@@ -30,6 +30,7 @@
 #include "customio.h"
 #include "cvarwhitelist.h"
 #include "detours.h"
+#include "utils/sighook.h"
 #include "entities.h"
 #include "entity/cbasemodelentity.h"
 #include "entity/cbeam.h"
@@ -58,108 +59,50 @@
 
 #include "tier0/memdbgon.h"
 
-KHook::Member<CBaseEntity, int64, CTakeDamageInfo*, CTakeDamageResult*> takeDamageOldHook(Detour_CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld_Post);
-KHook::Member<CTriggerPush, void, CBaseEntity*> triggerPushTouchHook(Detour_TriggerPush_Touch, nullptr);
-KHook::Function<void, IRecipientFilter&, const char*, CCSPlayerController*, int> sayTextFilterHook(Detour_UTIL_SayTextFilter, nullptr);
-KHook::Function<void, IRecipientFilter&, CCSPlayerController*, int, const char*, const char*, const char*, const char*, const char*> sayText2FilterHook(Detour_UTIL_SayText2Filter, nullptr);
-KHook::Member<CCSPlayer_WeaponServices, bool, CBasePlayerWeapon*> canUseHook(Detour_CCSPlayer_WeaponServices_CanUse, nullptr);
-KHook::Member<CCSPlayer_WeaponServices, void, CBasePlayerWeapon*> equipWeaponHook(Detour_CCSPlayer_WeaponServices_EquipWeapon, nullptr);
-KHook::Member<CEntityIdentity, bool, CUtlSymbolLarge*, CEntityInstance*, CEntityInstance*, variant_t*, void*, void*> acceptInputHook(Detour_CEntityIdentity_AcceptInput, nullptr);
-KHook::Member<CNavMesh, void*, float*, unsigned int*, unsigned int, int64_t, float, int64_t> getNearestNavAreaHook(Detour_CNavMesh_GetNearestNavArea, nullptr);
-KHook::Member<CCSPlayer_MovementServices, void, void*> processMovementHook(Detour_ProcessMovement, Detour_ProcessMovement_Post);
-KHook::Member<CCSPlayerController, void*, CUserCmd*, int, bool, float> processUsercmdsHook(Detour_ProcessUsercmds, nullptr);
-KHook::Member<CGamePlayerEquip, void, InputData_t*> inputTriggerForAllPlayersHook(Detour_CGamePlayerEquip_InputTriggerForAllPlayers, nullptr);
-KHook::Member<CGamePlayerEquip, void, InputData_t*> inputTriggerForActivatedPlayerHook(Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer, nullptr);
-KHook::Member<CTriggerGravity, void, CBaseEntity*> gravityTouchHook(Detour_CTriggerGravity_GravityTouch, nullptr);
-KHook::Function<CServerSideClient*, int64_t, const __m128i*, unsigned int, int64_t, char, void*> getFreeClientHook(Detour_GetFreeClient, nullptr);
-KHook::Member<CCSPlayerPawn, float> getMaxSpeedHook(Detour_CCSPlayerPawn_GetMaxSpeed, nullptr);
-KHook::Member<CCSPlayer_UseServices, int64, float> findUseEntityHook(Detour_FindUseEntity, Detour_FindUseEntity_Post);
-KHook::Function<bool, int64*, int*, float*, uint64> traceFuncHook(Detour_TraceFunc, nullptr);
-KHook::Function<bool, int64*, int64, int64, int64, CTraceFilter*, int64> traceShapeHook(Detour_TraceShape, nullptr);
-KHook::Member<CEntityIOOutput, void, CEntityInstance*, CEntityInstance*, const CVariant*, float, void*, void*> fireOutputInternalHook(Detour_CEntityIOOutput_FireOutputInternal, nullptr);
-#ifdef PLATFORM_WINDOWS
-KHook::Member<CBasePlayerPawn, Vector*, Vector*> getEyePositionHook(Detour_CBasePlayerPawn_GetEyePosition, nullptr);
-KHook::Member<CBasePlayerPawn, QAngle*, QAngle*> getEyeAnglesHook(Detour_CBasePlayerPawn_GetEyeAngles, nullptr);
-#else
-KHook::Member<CBasePlayerPawn, Vector> getEyePositionHook(Detour_CBasePlayerPawn_GetEyePosition, nullptr);
-KHook::Member<CBasePlayerPawn, QAngle> getEyeAnglesHook(Detour_CBasePlayerPawn_GetEyeAngles, nullptr);
-#endif
-KHook::Member<CBaseFilter, void, InputData_t&> inputTestActivatorHook(Detour_CBaseFilter_InputTestActivator, nullptr);
-KHook::Function<void> checkSteamBanHook(Detour_GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan_Post);
-KHook::Member<CCSPlayer_ItemServices, AcquireResult, CEconItemView*, AcquireMethod, uint64_t> canAcquireHook(Detour_CCSPlayer_ItemServices_CanAcquire, nullptr);
-KHook::Function<void, uint64_t> scriptSetModelHook(Detour_CS_Script_SetModel, Detour_CS_Script_SetModel_Post);
-KHook::Member<CBaseModelEntity, void, const char*> setModelHook(Detour_CBaseModelEntity_SetModel, nullptr);
-KHook::Member<CCSGameRules, void, bool> goToIntermissionHook(Detour_CCSGameRules_GoToIntermission, nullptr);
-KHook::Member<CBeam, void, const Vector*> setBeamOriginHook(Detour_SetBeamOrigin, nullptr);
-KHook::Member<CBeam, void, const Vector*> setBeamEndPosHook(Detour_SetBeamEndPos, nullptr);
-KHook::Function<bool, void*, const char*> isCommandWhitelistedHook(Detour_IsCommandWhitelisted, nullptr);
-
-template <typename RETURN, typename... ARGS>
-void SetupDetour(CGameConfig* gameConfig, KHook::Function<RETURN, ARGS...>& hook, const char* name)
-{
-	auto pfnFunc = reinterpret_cast<RETURN (*)(ARGS...)>(gameConfig->ResolveSignature(name));
-
-	if (!pfnFunc)
-	{
-		g_bRequiredInitLoaded = false;
-		return;
-	}
-
-	hook.Configure(pfnFunc);
-	Message("Detoured %s at 0x%p\n", name, pfnFunc);
-}
-
-template <typename CLASS, typename RETURN, typename... ARGS>
-void SetupDetour(CGameConfig* gameConfig, KHook::Member<CLASS, RETURN, ARGS...>& hook, const char* name)
-{
-	void* pfnFunc = gameConfig->ResolveSignature(name);
-
-	if (!pfnFunc)
-	{
-		g_bRequiredInitLoaded = false;
-		return;
-	}
-
-	hook.Configure(pfnFunc);
-	Message("Detoured %s at 0x%p\n", name, pfnFunc);
-}
-
-void InitDetours(CGameConfig* gameConfig)
-{
-	SetupDetour(gameConfig, takeDamageOldHook, "CBaseEntity_TakeDamageOld");
-	SetupDetour(gameConfig, triggerPushTouchHook, "TriggerPush_Touch");
-	SetupDetour(gameConfig, sayTextFilterHook, "UTIL_SayTextFilter");
-	SetupDetour(gameConfig, sayText2FilterHook, "UTIL_SayText2Filter");
-	SetupDetour(gameConfig, canUseHook, "CCSPlayer_WeaponServices_CanUse");
-	SetupDetour(gameConfig, equipWeaponHook, "CCSPlayer_WeaponServices_EquipWeapon");
-	SetupDetour(gameConfig, acceptInputHook, "CEntityIdentity_AcceptInput");
-	SetupDetour(gameConfig, getNearestNavAreaHook, "CNavMesh_GetNearestNavArea");
-	SetupDetour(gameConfig, processMovementHook, "ProcessMovement");
-	SetupDetour(gameConfig, processUsercmdsHook, "ProcessUsercmds");
-	SetupDetour(gameConfig, inputTriggerForAllPlayersHook, "CGamePlayerEquip_InputTriggerForAllPlayers");
-	SetupDetour(gameConfig, inputTriggerForActivatedPlayerHook, "CGamePlayerEquip_InputTriggerForActivatedPlayer");
-	SetupDetour(gameConfig, gravityTouchHook, "CTriggerGravity_GravityTouch");
-	SetupDetour(gameConfig, getFreeClientHook, "GetFreeClient");
+SIG_HOOK_FUNCTION(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter, nullptr);
+SIG_HOOK_FUNCTION(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter, nullptr);
+SIG_HOOK_MEMBER(TriggerPush_Touch, Detour_TriggerPush_Touch, nullptr);
+SIG_HOOK_MEMBER(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld_Post);
+SIG_HOOK_MEMBER(CCSPlayer_WeaponServices_CanUse, Detour_CCSPlayer_WeaponServices_CanUse, nullptr);
+SIG_HOOK_MEMBER(CCSPlayer_WeaponServices_EquipWeapon, Detour_CCSPlayer_WeaponServices_EquipWeapon, nullptr);
+SIG_HOOK_MEMBER(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput, nullptr);
+SIG_HOOK_MEMBER(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea, nullptr);
+SIG_HOOK_MEMBER(ProcessMovement, Detour_ProcessMovement, Detour_ProcessMovement_Post);
+SIG_HOOK_MEMBER(ProcessUsercmds, Detour_ProcessUsercmds, nullptr);
+SIG_HOOK_MEMBER(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers, nullptr);
+SIG_HOOK_MEMBER(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer, nullptr);
+SIG_HOOK_MEMBER(CTriggerGravity_GravityTouch, Detour_CTriggerGravity_GravityTouch, nullptr);
+SIG_HOOK_FUNCTION(GetFreeClient, Detour_GetFreeClient, nullptr);
 #ifdef __linux__
-	// Inlined by MSVC as of 2025-07-28 CS2 update
-	// TODO: Find some alternative that supports Windows
-	SetupDetour(gameConfig, getMaxSpeedHook, "CCSPlayerPawn_GetMaxSpeed");
+// Inlined by MSVC as of 2025-07-28 CS2 update
+// TODO: Find some alternative that supports Windows
+SIG_HOOK_MEMBER(CCSPlayerPawn_GetMaxSpeed, Detour_CCSPlayerPawn_GetMaxSpeed, nullptr);
 #endif
-	SetupDetour(gameConfig, findUseEntityHook, "FindUseEntity");
-	SetupDetour(gameConfig, traceFuncHook, "TraceFunc");
-	SetupDetour(gameConfig, traceShapeHook, "TraceShape");
-	SetupDetour(gameConfig, fireOutputInternalHook, "CEntityIOOutput_FireOutputInternal");
-	SetupDetour(gameConfig, getEyePositionHook, "CBasePlayerPawn_GetEyePosition");
-	SetupDetour(gameConfig, getEyeAnglesHook, "CBasePlayerPawn_GetEyeAngles");
-	SetupDetour(gameConfig, inputTestActivatorHook, "CBaseFilter_InputTestActivator");
-	SetupDetour(gameConfig, checkSteamBanHook, "GameSystem_Think_CheckSteamBan");
-	SetupDetour(gameConfig, canAcquireHook, "CCSPlayer_ItemServices_CanAcquire");
-	SetupDetour(gameConfig, scriptSetModelHook, "CS_Script_SetModel");
-	SetupDetour(gameConfig, setModelHook, "CBaseModelEntity_SetModel");
-	SetupDetour(gameConfig, goToIntermissionHook, "CCSGameRules_GoToIntermission");
-	SetupDetour(gameConfig, setBeamOriginHook, "SetBeamOrigin");
-	SetupDetour(gameConfig, setBeamEndPosHook, "SetBeamEndPos");
-	SetupDetour(gameConfig, isCommandWhitelistedHook, "IsCommandWhitelisted");
+SIG_HOOK_MEMBER(FindUseEntity, Detour_FindUseEntity, Detour_FindUseEntity_Post);
+SIG_HOOK_FUNCTION(TraceFunc, Detour_TraceFunc, nullptr);
+SIG_HOOK_FUNCTION(TraceShape, Detour_TraceShape, nullptr);
+SIG_HOOK_MEMBER(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition, nullptr);
+SIG_HOOK_MEMBER(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles, nullptr);
+SIG_HOOK_MEMBER(CBaseFilter_InputTestActivator, Detour_CBaseFilter_InputTestActivator, nullptr);
+SIG_HOOK_FUNCTION(GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan_Post);
+SIG_HOOK_MEMBER(CCSPlayer_ItemServices_CanAcquire, Detour_CCSPlayer_ItemServices_CanAcquire, nullptr);
+SIG_HOOK_FUNCTION(CS_Script_SetModel, Detour_CS_Script_SetModel, Detour_CS_Script_SetModel_Post);
+SIG_HOOK_MEMBER(CBaseModelEntity_SetModel, Detour_CBaseModelEntity_SetModel, nullptr);
+SIG_HOOK_MEMBER(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission, nullptr);
+SIG_HOOK_MEMBER(SetBeamOrigin, Detour_SetBeamOrigin, nullptr);
+SIG_HOOK_MEMBER(SetBeamEndPos, Detour_SetBeamEndPos, nullptr);
+SIG_HOOK_FUNCTION(IsCommandWhitelisted, Detour_IsCommandWhitelisted, nullptr);
+
+std::vector<CSigHookBase*>& GetSigHookList()
+{
+	static std::vector<CSigHookBase*> s_vecSigHooks;
+	return s_vecSigHooks;
+}
+
+void InitSigHooks()
+{
+	for (auto hook : GetSigHookList())
+		hook->Configure();
 }
 
 CConVar<bool> g_cvarBlockMolotovSelfDmg("cs2f_block_molotov_self_dmg", FCVAR_NONE, "Whether to block self-damage from molotovs", false);
@@ -757,9 +700,10 @@ KHook::Return<CServerSideClient*> Detour_GetFreeClient(int64_t unk1, const __m12
 	return {KHook::Action::Supersede, nullptr};
 }
 
+#ifdef __linux__
 KHook::Return<float> Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
 {
-	auto flMaxSpeed = getMaxSpeedHook.CallOriginal(pPawn);
+	auto flMaxSpeed = hookCCSPlayerPawn_GetMaxSpeed->CallOriginal(pPawn);
 
 	const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
 	if (const auto pPlayer = pController != nullptr ? pController->GetZEPlayer() : nullptr)
@@ -767,6 +711,7 @@ KHook::Return<float> Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
 
 	return {KHook::Action::Supersede, flMaxSpeed};
 }
+#endif
 
 CConVar<bool> g_cvarPreventUsingPlayers("cs2f_prevent_using_players", FCVAR_NONE, "Whether to prevent +use from hitting players (0=can use players, 1=cannot use players)", false);
 bool g_bFindingUseEntity = false;

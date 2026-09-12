@@ -27,7 +27,7 @@
 #include "common.h"
 #include "ctimer.h"
 #include "cvarwhitelist.h"
-#include "detours.h"
+#include "utils/sighook.h"
 #include "discord.h"
 #include "entities.h"
 #include "entity/customhudlayout.h"
@@ -128,7 +128,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		g_bRequiredInitLoaded = false;
 
 	InitVirtualHooks(g_GameConfig);
-	InitDetours(g_GameConfig);
+	InitSigHooks();
 
 	if (!InitPatches(g_GameConfig))
 		g_bRequiredInitLoaded = false;

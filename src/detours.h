@@ -80,8 +80,6 @@ enum class AcquireResult
 	NotAllowedByProhibition,
 };
 
-void InitDetours(CGameConfig* gameConfig);
-
 KHook::Return<int64> Detour_CBaseEntity_TakeDamageOld(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult);
 KHook::Return<int64> Detour_CBaseEntity_TakeDamageOld_Post(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult);
 KHook::Return<void> Detour_TriggerPush_Touch(CTriggerPush* pPush, CBaseEntity* pOther);
