@@ -38,7 +38,7 @@ public:
 		m_iOffset = 0;
 	}
 
-	bool PerformPatch(CGameConfig* gameConfig);
+	bool PerformPatch();
 	void UndoPatch();
 
 	uintptr_t GetPatchAddress() { return m_pPatchAddress; }

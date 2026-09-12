@@ -121,16 +121,16 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 		return false;
 	}
 
-	if (!addresses::Initialize(g_GameConfig))
+	if (!addresses::Initialize())
 		g_bRequiredInitLoaded = false;
 
 	if (!addresses::InitializeVScriptFunctions())
 		g_bRequiredInitLoaded = false;
 
-	InitVirtualHooks(g_GameConfig);
+	InitVirtualHooks();
 	InitSigHooks();
 
-	if (!InitPatches(g_GameConfig))
+	if (!InitPatches())
 		g_bRequiredInitLoaded = false;
 
 	if (!InitGameSystems())
@@ -367,7 +367,7 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 
 	// Only patch BotNavIgnore while a map is loaded, else adding bots will crash
 	if (V_strcmp(pMapName, "error"))
-		g_CommonPatches[1].PerformPatch(g_GameConfig);
+		g_CommonPatches[1].PerformPatch();
 
 	g_playerManager->SetupInfiniteAmmo();
 	g_pMapVoteSystem->OnLevelInit(pMapName);

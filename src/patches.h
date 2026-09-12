@@ -5,5 +5,5 @@
 
 extern CMemPatch g_CommonPatches[];
 
-bool InitPatches(CGameConfig* gameConfig);
+bool InitPatches();
 void UndoPatches();

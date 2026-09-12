@@ -100,9 +100,9 @@ CCSPlayerPawn* g_pCCSPlayerPawnVTable = nullptr;
 CServerSideClient* g_pCServerSideClientVTable = nullptr;
 
 template <typename CLASS, typename RETURN, typename... ARGS>
-bool SetupVirtualHook(CGameConfig* gameConfig, KHook::Virtual<CLASS, RETURN, ARGS...>& hook, const char* name, CLASS* pInstance = nullptr)
+bool SetupVirtualHook(KHook::Virtual<CLASS, RETURN, ARGS...>& hook, const char* name, CLASS* pInstance = nullptr)
 {
-	int offset = gameConfig->GetOffset(name);
+	int offset = g_GameConfig->GetOffset(name);
 	if (offset == -1)
 	{
 		Panic("Failed to find offset for %s\n", name);
@@ -119,7 +119,7 @@ bool SetupVirtualHook(CGameConfig* gameConfig, KHook::Virtual<CLASS, RETURN, ARG
 }
 
 template <typename CLASS, typename RETURN, typename... ARGS>
-void SetupGlobalVirtualHook(CGameConfig* gameConfig, KHook::Virtual<CLASS, RETURN, ARGS...>& hook, CLASS*& pVTable, CModule* module, const char* className, const char* offsetName = nullptr)
+void SetupGlobalVirtualHook(KHook::Virtual<CLASS, RETURN, ARGS...>& hook, CLASS*& pVTable, CModule* module, const char* className, const char* offsetName = nullptr)
 {
 	if (!pVTable)
 		pVTable = (CLASS*)module->FindVirtualTable(className);
@@ -131,13 +131,13 @@ void SetupGlobalVirtualHook(CGameConfig* gameConfig, KHook::Virtual<CLASS, RETUR
 		return;
 	}
 
-	if (offsetName && !SetupVirtualHook(gameConfig, hook, offsetName))
+	if (offsetName && !SetupVirtualHook(hook, offsetName))
 		return;
 
 	hook.AddGlobal((CLASS*)&pVTable);
 }
 
-void InitVirtualHooks(CGameConfig* gameConfig)
+void InitVirtualHooks()
 {
 	gameFrameHook.Add(g_pSource2Server);
 	gameServerSteamAPIActivatedHook.Add(g_pSource2Server);
@@ -155,21 +155,21 @@ void InitVirtualHooks(CGameConfig* gameConfig)
 	checkTransmitHook.Add(g_pSource2GameEntities);
 	dispatchConCommandHook.Add(g_pCVar);
 
-	SetupVirtualHook(gameConfig, createWorkshopMapGroupHook, "IGameTypes_CreateWorkshopMapGroup", g_pGameTypes);
+	SetupVirtualHook(createWorkshopMapGroupHook, "IGameTypes_CreateWorkshopMapGroup", g_pGameTypes);
 
-	SetupGlobalVirtualHook(gameConfig, loadEventsFromFileHook, g_pCGameEventManagerVTable, modules::server, "CGameEventManager");
-	SetupGlobalVirtualHook(gameConfig, fireEventHook, g_pCGameEventManagerVTable, modules::server, "CGameEventManager");
-	SetupGlobalVirtualHook(gameConfig, spawnHook, g_pCEntitySystemVTable, modules::server, "CGameEntitySystem");
-	SetupGlobalVirtualHook(gameConfig, processVoiceDataHook, g_pCServerSideClientVTable, modules::engine, "CServerSideClient");
-	SetupGlobalVirtualHook(gameConfig, getTouchingListHook, g_pCVPhys2WorldVTable, modules::vphysics2, "CVPhys2World", "CVPhys2World::GetTouchingList");
-	SetupGlobalVirtualHook(gameConfig, checkMovingGroundHook, g_pCCSPlayer_MovementServicesVTable, modules::server, "CCSPlayer_MovementServices", "CCSPlayer_MovementServices::CheckMovingGround");
-	SetupGlobalVirtualHook(gameConfig, dropWeaponHook, g_pCCSPlayer_WeaponServicesVTable, modules::server, "CCSPlayer_WeaponServices", "CCSPlayer_WeaponServices::DropWeapon");
-	SetupGlobalVirtualHook(gameConfig, playerEquipUseHook, g_pCGamePlayerEquipVTable, modules::server, "CGamePlayerEquip", "CBaseEntity::Use");
-	SetupGlobalVirtualHook(gameConfig, playerEquipPrecacheHook, g_pCGamePlayerEquipVTable, modules::server, "CGamePlayerEquip", "CBaseEntity::Precache");
-	SetupGlobalVirtualHook(gameConfig, triggerGravityPrecacheHook, g_pTriggerGravityVTable, modules::server, "CTriggerGravity", "CBaseEntity::Precache");
-	SetupGlobalVirtualHook(gameConfig, triggerGravityEndTouchHook, g_pTriggerGravityVTable, modules::server, "CTriggerGravity", "CBaseEntity::EndTouch");
-	SetupGlobalVirtualHook(gameConfig, onTakeDamageAliveHook, g_pCCSPlayerPawnVTable, modules::server, "CCSPlayerPawn", "CCSPlayerPawn::OnTakeDamage_Alive");
-	SetupGlobalVirtualHook(gameConfig, playerPawnTeleportHook, g_pCCSPlayerPawnVTable, modules::server, "CCSPlayerPawn", "Teleport");
+	SetupGlobalVirtualHook(loadEventsFromFileHook, g_pCGameEventManagerVTable, modules::server, "CGameEventManager");
+	SetupGlobalVirtualHook(fireEventHook, g_pCGameEventManagerVTable, modules::server, "CGameEventManager");
+	SetupGlobalVirtualHook(spawnHook, g_pCEntitySystemVTable, modules::server, "CGameEntitySystem");
+	SetupGlobalVirtualHook(processVoiceDataHook, g_pCServerSideClientVTable, modules::engine, "CServerSideClient");
+	SetupGlobalVirtualHook(getTouchingListHook, g_pCVPhys2WorldVTable, modules::vphysics2, "CVPhys2World", "CVPhys2World::GetTouchingList");
+	SetupGlobalVirtualHook(checkMovingGroundHook, g_pCCSPlayer_MovementServicesVTable, modules::server, "CCSPlayer_MovementServices", "CCSPlayer_MovementServices::CheckMovingGround");
+	SetupGlobalVirtualHook(dropWeaponHook, g_pCCSPlayer_WeaponServicesVTable, modules::server, "CCSPlayer_WeaponServices", "CCSPlayer_WeaponServices::DropWeapon");
+	SetupGlobalVirtualHook(playerEquipUseHook, g_pCGamePlayerEquipVTable, modules::server, "CGamePlayerEquip", "CBaseEntity::Use");
+	SetupGlobalVirtualHook(playerEquipPrecacheHook, g_pCGamePlayerEquipVTable, modules::server, "CGamePlayerEquip", "CBaseEntity::Precache");
+	SetupGlobalVirtualHook(triggerGravityPrecacheHook, g_pTriggerGravityVTable, modules::server, "CTriggerGravity", "CBaseEntity::Precache");
+	SetupGlobalVirtualHook(triggerGravityEndTouchHook, g_pTriggerGravityVTable, modules::server, "CTriggerGravity", "CBaseEntity::EndTouch");
+	SetupGlobalVirtualHook(onTakeDamageAliveHook, g_pCCSPlayerPawnVTable, modules::server, "CCSPlayerPawn", "CCSPlayerPawn::OnTakeDamage_Alive");
+	SetupGlobalVirtualHook(playerPawnTeleportHook, g_pCCSPlayerPawnVTable, modules::server, "CCSPlayerPawn", "Teleport");
 }
 
 void RemoveVirtualHooks()
