@@ -72,13 +72,13 @@ private:
 };
 
 template <typename RETURN, typename... ARGS>
-auto MakeSigHookFunction(const char* pSignature, KHook::Return<RETURN> (*cbPre)(ARGS...), nullptr_t cbPost)
+auto MakeSigHookFunction(const char* pSignature, KHook::Return<RETURN> (*cbPre)(ARGS...), std::nullptr_t cbPost)
 {
 	return std::make_unique<CSigHookFunction<RETURN, ARGS...>>(pSignature, cbPre, nullptr);
 }
 
 template <typename RETURN, typename... ARGS>
-auto MakeSigHookFunction(const char* pSignature, nullptr_t cbPre, KHook::Return<RETURN> (*cbPost)(ARGS...))
+auto MakeSigHookFunction(const char* pSignature, std::nullptr_t cbPre, KHook::Return<RETURN> (*cbPost)(ARGS...))
 {
 	return std::make_unique<CSigHookFunction<RETURN, ARGS...>>(pSignature, nullptr, cbPost);
 }
@@ -126,13 +126,13 @@ private:
 };
 
 template <typename CLASS, typename RETURN, typename... ARGS>
-auto MakeSigHookMember(const char* pSignature, KHook::Return<RETURN> (*cbPre)(CLASS*, ARGS...), nullptr_t cbPost)
+auto MakeSigHookMember(const char* pSignature, KHook::Return<RETURN> (*cbPre)(CLASS*, ARGS...), std::nullptr_t cbPost)
 {
 	return std::make_unique<CSigHookMember<CLASS, RETURN, ARGS...>>(pSignature, cbPre, nullptr);
 }
 
 template <typename CLASS, typename RETURN, typename... ARGS>
-auto MakeSigHookMember(const char* pSignature, nullptr_t cbPre, KHook::Return<RETURN> (*cbPost)(CLASS*, ARGS...))
+auto MakeSigHookMember(const char* pSignature, std::nullptr_t cbPre, KHook::Return<RETURN> (*cbPost)(CLASS*, ARGS...))
 {
 	return std::make_unique<CSigHookMember<CLASS, RETURN, ARGS...>>(pSignature, nullptr, cbPost);
 }

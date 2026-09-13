@@ -448,6 +448,9 @@
     <ClInclude Include="src\utils\utils.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\sighook.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cpointorient.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
