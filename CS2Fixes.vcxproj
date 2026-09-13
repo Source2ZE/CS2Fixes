@@ -311,6 +311,7 @@
     <ClInclude Include="src\utils\version_gen_placeholder.h" />
     <ClInclude Include="src\utils\hud_manager.h" />
     <ClInclude Include="src\utils\utils.h" />
+    <ClInclude Include="src\utils\sighook.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
