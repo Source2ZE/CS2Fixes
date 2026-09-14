@@ -97,8 +97,8 @@ KHook::Return<void> Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGame
 KHook::Return<void> Detour_CTriggerGravity_GravityTouch(CTriggerGravity* pEntity, CBaseEntity* pOther);
 KHook::Return<CServerSideClient*> Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6);
 KHook::Return<float> Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn*);
-KHook::Return<int64> Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float a2);
-KHook::Return<int64> Detour_FindUseEntity_Post(CCSPlayer_UseServices* pThis, float a2);
+KHook::Return<CBaseEntity*> Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float unk2, int64_t unk3);
+KHook::Return<CBaseEntity*> Detour_FindUseEntity_Post(CCSPlayer_UseServices* pThis, float unk2, int64_t unk3);
 KHook::Return<bool> Detour_TraceFunc(int64*, int*, float*, uint64);
 KHook::Return<bool> Detour_TraceShape(int64*, int64, int64, int64, CTraceFilter*, int64);
 KHook::Return<void> Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay, void*, void*);
