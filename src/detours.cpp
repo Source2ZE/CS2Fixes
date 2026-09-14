@@ -716,13 +716,13 @@ KHook::Return<float> Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn* pPawn)
 CConVar<bool> g_cvarPreventUsingPlayers("cs2f_prevent_using_players", FCVAR_NONE, "Whether to prevent +use from hitting players (0=can use players, 1=cannot use players)", false);
 bool g_bFindingUseEntity = false;
 
-KHook::Return<int64> Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float a2)
+KHook::Return<CBaseEntity*> Detour_FindUseEntity(CCSPlayer_UseServices* pThis, float unk2, int64_t unk3)
 {
 	g_bFindingUseEntity = true;
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<int64> Detour_FindUseEntity_Post(CCSPlayer_UseServices* pThis, float a2)
+KHook::Return<CBaseEntity*> Detour_FindUseEntity_Post(CCSPlayer_UseServices* pThis, float unk2, int64_t unk3)
 {
 	g_bFindingUseEntity = false;
 	return {KHook::Action::Ignore};
