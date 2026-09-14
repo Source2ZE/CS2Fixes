@@ -770,7 +770,7 @@ KHook::Return<int> Hook_LoadEventsFromFile(IGameEventManager2* pThis, const char
 KHook::Return<bool> Hook_FireEvent(IGameEventManager2* pThis, IGameEvent* pEvent, bool bDontBroadcast)
 {
 	// Make player_connect obey cs2f_map_steamids_enable as well
-	if (!g_cvarEnableMapSteamIds.Get() && !V_stricmp(pEvent->GetName(), "player_connect"))
+	if (!g_cvarEnableMapSteamIds.Get() && pEvent && !V_stricmp(pEvent->GetName(), "player_connect"))
 	{
 		pEvent->SetString("networkid", "");
 		pEvent->SetUint64("xuid", 0);
