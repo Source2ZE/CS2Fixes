@@ -27,10 +27,10 @@
 
 #include "tier0/memdbgon.h"
 
-#define RESOLVE_SIG(name, variable)										 \
+#define RESOLVE_SIG(name, variable)                                      \
 	variable = (decltype(variable))g_GameConfig->ResolveSignature(name); \
-	if (!variable)														 \
-		return false;													 \
+	if (!variable)                                                       \
+		return false;                                                    \
 	Message("Found %s at 0x%p\n", name, variable);
 
 #define RESOLVE_SF(scriptDesc, funcName, variable)                                                                \

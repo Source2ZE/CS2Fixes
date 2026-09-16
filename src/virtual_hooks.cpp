@@ -40,11 +40,11 @@
 #include "icvar.h"
 #include "idlemanager.h"
 #include "iserver.h"
+#include "khook_helpers.h"
 #include "leader.h"
 #include "map_votes.h"
 #include "mapmigrations.h"
 #include "module.h"
-#include "khook_helpers.h"
 #include "networkstringtabledefs.h"
 #include "panoramavote.h"
 #include "playermanager.h"
@@ -264,6 +264,7 @@ KHook::Return<void> Hook_ClientDisconnect_Post(IServerGameClients* pThis, CPlaye
 	if (reason != NETWORK_DISCONNECT_LOOPSHUTDOWN && reason != NETWORK_DISCONNECT_SHUTDOWN)
 		g_pAdminSystem->AddDisconnectedPlayer(pszName, xuid, pPlayer ? pPlayer->GetIpAddress() : "");
 
+	CCSCustomHudLayout::OnClientDisconnect(slot.Get());
 	g_playerManager->OnClientDisconnect(slot);
 
 	return {KHook::Action::Ignore};

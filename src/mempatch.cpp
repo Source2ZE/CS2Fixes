@@ -19,10 +19,10 @@
 
 #include "mempatch.h"
 #include "common.h"
+#include "khook.hpp"
 #include "tier0/dbg.h"
 #include "tier1/strtools.h"
 #include "utils/module.h"
-#include "khook.hpp"
 
 #include "tier0/memdbgon.h"
 
