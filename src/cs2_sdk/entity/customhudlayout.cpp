@@ -55,17 +55,20 @@ void CCSCustomHudLayout::OnClick(CCSPlayerController* pController, const std::st
 
 void CCSCustomHudLayout::OnClientDisconnect(int slot)
 {
-	for (auto& info : sm_mapCustomLayoutCallbacks)
+	auto iterator = sm_mapCustomLayoutCallbacks.begin();
+
+	while (iterator != sm_mapCustomLayoutCallbacks.end())
 	{
-		auto pLayout = CHandle<CCSCustomHudLayout>(info.first).Get();
+		auto pLayout = CHandle<CCSCustomHudLayout>(iterator->first).Get();
 
 		if (!pLayout)
 		{
-			sm_mapCustomLayoutCallbacks.erase(info.first);
+			iterator = sm_mapCustomLayoutCallbacks.erase(iterator);
 			continue;
 		}
 
-		info.second.m_OnDisconnect(pLayout, slot);
+		iterator->second.m_OnDisconnect(pLayout, slot);
+		iterator++;
 	}
 }
 
@@ -142,9 +145,14 @@ void CCSCustomHudLayout::SetDialogVariableString(std::string sPanelId, std::stri
 	auto dialogVariableIndex = layoutState.m_vecDialogVariableStrings->Find(dialogVariable);
 
 	if (dialogVariableIndex == -1)
+	{
 		layoutState.m_vecDialogVariableStrings->AddToTail(dialogVariable);
+	}
 	else
+	{
 		layoutState.m_vecDialogVariableStrings->Element(dialogVariableIndex).m_sValue = sValue.c_str();
+		layoutState.m_vecDialogVariableStrings->Element(dialogVariableIndex).m_bIsSet = true;
+	}
 }
 
 void CCSCustomHudLayout::SetDialogVariableString(std::string sPanelId, std::string sVariableName, std::string sValue, CCSPlayerController* pController)
@@ -155,17 +163,30 @@ void CCSCustomHudLayout::SetDialogVariableString(std::string sPanelId, std::stri
 void CCSCustomHudLayout::ClearClasses(int nSlot)
 {
 	auto& layoutState = GetLayoutState(nSlot);
-	static auto pfnManipulator = layoutState.m_vecHasClasses.GetManipulator();
-	auto pVecHasClasses = layoutState.m_vecHasClasses();
-	pfnManipulator(SCHEMA_COLLECTION_MANIPULATOR_ACTION_REMOVE_MULTIPLE, pVecHasClasses, 0, pVecHasClasses->Count());
+
+	for (int i = 0; i < layoutState.m_vecHasClasses->Count(); i++)
+	{
+		if (layoutState.m_vecHasClasses->Element(i).m_eClassStatus == k_eHudPanelClassStatus_Undefined)
+			continue;
+
+		auto pClass = (HUDPanelHasClass_t*)layoutState.m_vecHasClasses.GetManipulator()(SCHEMA_COLLECTION_MANIPULATOR_ACTION_GET_ELEMENT, layoutState.m_vecHasClasses, i, 0);
+		pClass->m_eClassStatus = k_eHudPanelClassStatus_Undefined;
+	}
 }
 
 void CCSCustomHudLayout::ClearDialogVariables(int nSlot)
 {
 	auto& layoutState = GetLayoutState(nSlot);
-	static auto pfnManipulator = layoutState.m_vecDialogVariableStrings.GetManipulator();
-	auto pVecDialogVariableStrings = layoutState.m_vecDialogVariableStrings();
-	pfnManipulator(SCHEMA_COLLECTION_MANIPULATOR_ACTION_REMOVE_MULTIPLE, pVecDialogVariableStrings, 0, pVecDialogVariableStrings->Count());
+
+	for (int i = 0; i < layoutState.m_vecDialogVariableStrings->Count(); i++)
+	{
+		if (!layoutState.m_vecDialogVariableStrings->Element(i).m_bIsSet)
+			continue;
+
+		auto pString = (HUDPanelDialogVariableString_t*)layoutState.m_vecDialogVariableStrings.GetManipulator()(SCHEMA_COLLECTION_MANIPULATOR_ACTION_GET_ELEMENT, layoutState.m_vecDialogVariableStrings, i, 0);
+		pString->m_bIsSet = false;
+		pString->m_sValue = "";
+	}
 }
 
 void CCSCustomHudLayout::SetInputCaptureEnabled(bool bEnable, int nSlot)

@@ -156,7 +156,7 @@ public:
 	{
 		GetKHookList().push_back(this);
 	}
-	
+
 	~CKHookVirtual()
 	{
 		if (m_hook.IsActive())
@@ -170,7 +170,7 @@ public:
 			g_bRequiredInitLoaded = false;
 			return;
 		}
-		
+
 		m_hook.Add(m_pInstance);
 	}
 
