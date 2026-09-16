@@ -25,6 +25,13 @@
 class CCSCustomHudLayout;
 
 using CustomHudClickCallback_t = std::function<void(CCSPlayerController*, CCSCustomHudLayout*, const std::string&)>;
+using CustomHudDisconnectCallback_t = std::function<void(CCSCustomHudLayout*, int)>;
+
+struct CustomHudLayoutCallbacks_t
+{
+	CustomHudClickCallback_t m_OnClick = nullptr;
+	CustomHudDisconnectCallback_t m_OnDisconnect = nullptr;
+};
 
 enum EHudPanelClassStatus_t : int
 {
@@ -103,18 +110,39 @@ public:
 	SCHEMA_FIELD_POINTER(CUtlVector<CUtlString>, m_vecDialogVariableNames);
 
 	static CCSCustomHudLayout* Create(std::string sLayout, std::string sTargetName = "");
-	static void ClearClickCallbacks();
+	static void ClearCallbacks();
 
+	CCSCustomHudLayoutState& GetLayoutState(int nSlot);
 	CCSCustomHudLayoutState& GetLayoutState(CCSPlayerController* pController = nullptr);
 
+	void SetHasClass(std::string sPanelId, std::string sClassName, bool bHasClass, int nSlot);
 	void SetHasClass(std::string sPanelId, std::string sClassName, bool bHasClass, CCSPlayerController* pController = nullptr);
+
+	void SetDialogVariableString(std::string sPanelId, std::string sVariableName, std::string sValue, int nSlot);
 	void SetDialogVariableString(std::string sPanelId, std::string sVariableName, std::string sValue, CCSPlayerController* pController = nullptr);
+
+	// NOTE: These will not apply any visible changes to ingame clients, despite them seeing empty vectors.
+	// They are only applicable for cleanup after clients disconnect.
+	void ClearClasses(int nSlot = -1);
+	void ClearDialogVariables(int nSlot = -1);
+
+	void SetInputCaptureEnabled(bool bEnable, int nSlot);
 	void SetInputCaptureEnabled(bool bEnable, CCSPlayerController* pController);
 
-	bool IsInputCaptureEnabled(CCSPlayerController* pController);
+	bool IsInputCaptureEnabled(int nSlot);
+	bool IsInputCaptureEnabled(CCSPlayerController* pController = nullptr);
 
-	void AddClickCallback(CustomHudClickCallback_t callback);
+	void SetClickCallback(CustomHudClickCallback_t callback);
 	void OnClick(CCSPlayerController* pController, const std::string& sButtonId);
 
+	// All layouts spawned with Create will by default have DefaultOnDisconnect as their disconnect callback
+	// which clears all classes and variables for a slot, so only use this if you want custom logic
+	void SetDisconnectCallback(CustomHudDisconnectCallback_t callback);
+	static void OnClientDisconnect(int nSlot);
+	static void DefaultOnDisconnect(CCSCustomHudLayout* pLayout, int nSlot);
+
 	void OnEntityDeleted();
+
+private:
+	static std::unordered_map<int, CustomHudLayoutCallbacks_t> sm_mapCustomLayoutCallbacks;
 };

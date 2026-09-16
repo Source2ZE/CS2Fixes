@@ -395,7 +395,7 @@ void CS2Fixes::OnLevelShutdown()
 	if (g_cvarVoteManagerEnable.Get())
 		g_pMapVoteSystem->OnLevelShutdown();
 
-	CCSCustomHudLayout::ClearClickCallbacks();
+	CCSCustomHudLayout::ClearCallbacks();
 }
 
 bool CS2Fixes::Pause(char* error, size_t maxlen)

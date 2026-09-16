@@ -1183,7 +1183,12 @@ CON_COMMAND_CHAT(uitest, "<xml path> (<text>) - Spawn UI panel")
 	if (args.ArgC() > 2)
 		hLayout->SetDialogVariableString("MyLabel", "CustomText", args[2], player);
 
-	hLayout->AddClickCallback([](CCSPlayerController* pController, CCSCustomHudLayout* pHud, std::string sButtonId) {
+	hLayout->SetDisconnectCallback([](CCSCustomHudLayout* pHud, int slot) {
+		CCSCustomHudLayout::DefaultOnDisconnect(pHud, slot);
+		Message("Custom disconnect callback called\n");
+	});
+
+	hLayout->SetClickCallback([](CCSPlayerController* pController, CCSCustomHudLayout* pHud, std::string sButtonId) {
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s clicked %s on %s\n", pController->GetPlayerName().c_str(), sButtonId.c_str(), pHud->GetName());
 
 		if (sButtonId == "dismiss_button")

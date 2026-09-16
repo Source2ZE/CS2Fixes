@@ -20,7 +20,7 @@
 #include "customhudlayout.h"
 #include "entity.h"
 
-std::unordered_map<int, CustomHudClickCallback_t> g_mapClickCallbacks;
+std::unordered_map<int, CustomHudLayoutCallbacks_t> CCSCustomHudLayout::sm_mapCustomLayoutCallbacks;
 
 CCSCustomHudLayout* CCSCustomHudLayout::Create(std::string sLayout, std::string sTargetName)
 {
@@ -37,34 +37,64 @@ CCSCustomHudLayout* CCSCustomHudLayout::Create(std::string sLayout, std::string 
 		pKeyValues->SetString("targetname", sTargetName.c_str());
 
 	pLayout->DispatchSpawn(pKeyValues);
+	pLayout->SetDisconnectCallback(&DefaultOnDisconnect);
+
 	return pLayout;
 }
 
-void CCSCustomHudLayout::ClearClickCallbacks()
+void CCSCustomHudLayout::ClearCallbacks()
 {
-	g_mapClickCallbacks.clear();
+	sm_mapCustomLayoutCallbacks.clear();
 }
 
 void CCSCustomHudLayout::OnClick(CCSPlayerController* pController, const std::string& sButtonId)
 {
-	if (auto it = g_mapClickCallbacks.find(GetHandle().ToInt()); it != g_mapClickCallbacks.end())
-		it->second(pController, this, sButtonId);
+	if (auto it = sm_mapCustomLayoutCallbacks.find(GetHandle().ToInt()); it != sm_mapCustomLayoutCallbacks.end())
+		it->second.m_OnClick(pController, this, sButtonId);
+}
+
+void CCSCustomHudLayout::OnClientDisconnect(int slot)
+{
+	for (auto& info : sm_mapCustomLayoutCallbacks)
+	{
+		auto pLayout = CHandle<CCSCustomHudLayout>(info.first).Get();
+
+		if (!pLayout)
+		{
+			sm_mapCustomLayoutCallbacks.erase(info.first);
+			continue;
+		}
+
+		info.second.m_OnDisconnect(pLayout, slot);
+	}
+}
+
+void CCSCustomHudLayout::DefaultOnDisconnect(CCSCustomHudLayout* pLayout, int slot)
+{
+	pLayout->ClearClasses(slot);
+	pLayout->ClearDialogVariables(slot);
+	pLayout->SetInputCaptureEnabled(false, slot);
 }
 
 void CCSCustomHudLayout::OnEntityDeleted()
 {
-	g_mapClickCallbacks.erase(GetHandle().ToInt());
+	sm_mapCustomLayoutCallbacks.erase(GetHandle().ToInt());
+}
+
+CCSCustomHudLayoutState& CCSCustomHudLayout::GetLayoutState(int nSlot)
+{
+	if (nSlot < 0 || nSlot >= 64)
+		return *m_globalLayoutState;
+
+	return *(CCSCustomHudLayoutState*)m_vecPlayerLayoutStates.GetManipulator()(SCHEMA_COLLECTION_MANIPULATOR_ACTION_GET_ELEMENT, m_vecPlayerLayoutStates, nSlot, 0);
 }
 
 CCSCustomHudLayoutState& CCSCustomHudLayout::GetLayoutState(CCSPlayerController* pController)
 {
-	if (!pController)
-		return *m_globalLayoutState;
-
-	return *(CCSCustomHudLayoutState*)m_vecPlayerLayoutStates.GetManipulator()(SCHEMA_COLLECTION_MANIPULATOR_ACTION_GET_ELEMENT, m_vecPlayerLayoutStates, pController->GetPlayerSlot(), 0);
+	return pController ? GetLayoutState(pController->GetPlayerSlot()) : *m_globalLayoutState;
 }
 
-void CCSCustomHudLayout::SetHasClass(std::string sPanelId, std::string sClassName, bool bHasClass, CCSPlayerController* pController)
+void CCSCustomHudLayout::SetHasClass(std::string sPanelId, std::string sClassName, bool bHasClass, int nSlot)
 {
 	auto panelIndex = m_vecPanelIds->Find(sPanelId.c_str());
 
@@ -76,7 +106,7 @@ void CCSCustomHudLayout::SetHasClass(std::string sPanelId, std::string sClassNam
 	if (classIndex == -1)
 		classIndex = m_vecClassNames->AddToTail(sClassName.c_str());
 
-	auto& layoutState = GetLayoutState(pController);
+	auto& layoutState = GetLayoutState(nSlot);
 
 	HUDPanelHasClass_t hasClass(panelIndex, classIndex, bHasClass);
 
@@ -86,11 +116,14 @@ void CCSCustomHudLayout::SetHasClass(std::string sPanelId, std::string sClassNam
 		layoutState.m_vecHasClasses->AddToTail(hasClass);
 	else
 		layoutState.m_vecHasClasses->Element(hasClassIndex).m_eClassStatus = hasClass.m_eClassStatus;
-
-	layoutState.m_vecHasClasses.NetworkStateChanged();
 }
 
-void CCSCustomHudLayout::SetDialogVariableString(std::string sPanelId, std::string sVariableName, std::string sValue, CCSPlayerController* pController)
+void CCSCustomHudLayout::SetHasClass(std::string sPanelId, std::string sClassName, bool bHasClass, CCSPlayerController* pController)
+{
+	SetHasClass(sPanelId, sClassName, bHasClass, pController ? pController->GetPlayerSlot() : -1);
+}
+
+void CCSCustomHudLayout::SetDialogVariableString(std::string sPanelId, std::string sVariableName, std::string sValue, int nSlot)
 {
 	auto panelIndex = m_vecPanelIds->Find(sPanelId.c_str());
 
@@ -102,7 +135,7 @@ void CCSCustomHudLayout::SetDialogVariableString(std::string sPanelId, std::stri
 	if (variableIndex == -1)
 		variableIndex = m_vecDialogVariableNames->AddToTail(sVariableName.c_str());
 
-	auto& layoutState = GetLayoutState(pController);
+	auto& layoutState = GetLayoutState(nSlot);
 
 	HUDPanelDialogVariableString_t dialogVariable(panelIndex, variableIndex, sValue.c_str(), true);
 
@@ -112,13 +145,42 @@ void CCSCustomHudLayout::SetDialogVariableString(std::string sPanelId, std::stri
 		layoutState.m_vecDialogVariableStrings->AddToTail(dialogVariable);
 	else
 		layoutState.m_vecDialogVariableStrings->Element(dialogVariableIndex).m_sValue = sValue.c_str();
+}
 
-	layoutState.m_vecDialogVariableStrings.NetworkStateChanged();
+void CCSCustomHudLayout::SetDialogVariableString(std::string sPanelId, std::string sVariableName, std::string sValue, CCSPlayerController* pController)
+{
+	SetDialogVariableString(sPanelId, sVariableName, sValue, pController ? pController->GetPlayerSlot() : -1);
+}
+
+void CCSCustomHudLayout::ClearClasses(int nSlot)
+{
+	auto& layoutState = GetLayoutState(nSlot);
+	static auto pfnManipulator = layoutState.m_vecHasClasses.GetManipulator();
+	auto pVecHasClasses = layoutState.m_vecHasClasses();
+	pfnManipulator(SCHEMA_COLLECTION_MANIPULATOR_ACTION_REMOVE_MULTIPLE, pVecHasClasses, 0, pVecHasClasses->Count());
+}
+
+void CCSCustomHudLayout::ClearDialogVariables(int nSlot)
+{
+	auto& layoutState = GetLayoutState(nSlot);
+	static auto pfnManipulator = layoutState.m_vecDialogVariableStrings.GetManipulator();
+	auto pVecDialogVariableStrings = layoutState.m_vecDialogVariableStrings();
+	pfnManipulator(SCHEMA_COLLECTION_MANIPULATOR_ACTION_REMOVE_MULTIPLE, pVecDialogVariableStrings, 0, pVecDialogVariableStrings->Count());
+}
+
+void CCSCustomHudLayout::SetInputCaptureEnabled(bool bEnable, int nSlot)
+{
+	GetLayoutState(nSlot).m_bInputCaptureEnabled = bEnable;
 }
 
 void CCSCustomHudLayout::SetInputCaptureEnabled(bool bEnable, CCSPlayerController* pController)
 {
-	GetLayoutState(pController).m_bInputCaptureEnabled = bEnable;
+	SetInputCaptureEnabled(bEnable, pController ? pController->GetPlayerSlot() : -1);
+}
+
+bool CCSCustomHudLayout::IsInputCaptureEnabled(int nSlot)
+{
+	return GetLayoutState(nSlot).m_bInputCaptureEnabled;
 }
 
 bool CCSCustomHudLayout::IsInputCaptureEnabled(CCSPlayerController* pController)
@@ -126,7 +188,12 @@ bool CCSCustomHudLayout::IsInputCaptureEnabled(CCSPlayerController* pController)
 	return GetLayoutState(pController).m_bInputCaptureEnabled;
 }
 
-void CCSCustomHudLayout::AddClickCallback(CustomHudClickCallback_t callback)
+void CCSCustomHudLayout::SetClickCallback(CustomHudClickCallback_t callback)
 {
-	g_mapClickCallbacks.insert({GetHandle().ToInt(), callback});
+	sm_mapCustomLayoutCallbacks[GetHandle().ToInt()].m_OnClick = callback;
+}
+
+void CCSCustomHudLayout::SetDisconnectCallback(CustomHudDisconnectCallback_t callback)
+{
+	sm_mapCustomLayoutCallbacks[GetHandle().ToInt()].m_OnDisconnect = callback;
 }
