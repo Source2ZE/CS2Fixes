@@ -161,6 +161,8 @@ CModule** CGameConfig::GetModule(const char* name)
 		return &modules::networksystem;
 	else if (strcmp(library, "matchmaking") == 0)
 		return &modules::matchmaking;
+	else if (strcmp(library, "worldrenderer") == 0)
+		return &modules::worldrenderer;
 #ifdef _WIN32
 	else if (strcmp(library, "hammer") == 0)
 		return &modules::hammer;

@@ -36,6 +36,7 @@ namespace modules
 	inline CModule* networksystem;
 	inline CModule* vphysics2;
 	inline CModule* matchmaking;
+	inline CModule* worldrenderer;
 #ifdef _WIN32
 	inline CModule* hammer;
 #endif

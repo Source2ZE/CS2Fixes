@@ -270,6 +270,7 @@
     <ClInclude Include="src\cs2_sdk\schema.h" />
     <ClInclude Include="src\cs2_sdk\entityio.h" />
     <ClInclude Include="src\cs2_sdk\cchecktransmitinfo.h" />
+    <ClInclude Include="src\cs2_sdk\map.h" />
     <ClInclude Include="src\ctimer.h" />
     <ClInclude Include="src\customio.h" />
     <ClInclude Include="src\detours.h" />
