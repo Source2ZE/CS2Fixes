@@ -131,7 +131,6 @@ private:
 	float m_fCooldown;
 };
 
-// Implementation is a bit hardcoded for HandlePlayerMapLookup use
 class CMapSystemWorkshopDetailsQuery : public std::enable_shared_from_this<CMapSystemWorkshopDetailsQuery>
 {
 public:
@@ -149,7 +148,8 @@ public:
 		}
 	}
 
-	static std::shared_ptr<CMapSystemWorkshopDetailsQuery> Create(uint64 iWorkshopId, CCSPlayerController* pController, QueryCallback_t callbackSuccess);
+	static std::shared_ptr<CMapSystemWorkshopDetailsQuery> Create(uint64 iWorkshopId, CCSPlayerController* pController = nullptr, QueryCallback_t callbackSuccess = nullptr);
+	static void ReportCreateFailure(uint64 iWorkshopId, CCSPlayerController* pController, QueryCallback_t callbackSuccess);
 
 private:
 	void OnQueryCompleted(SteamUGCQueryCompleted_t* pCompletedQuery, bool bFailed);

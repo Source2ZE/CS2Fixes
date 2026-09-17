@@ -412,6 +412,9 @@
     <ClInclude Include="src\cs2_sdk\cchecktransmitinfo.h">
       <Filter>Header Files\cs2_sdk</Filter>
     </ClInclude>
+    <ClInclude Include="src\cs2_sdk\map.h">
+      <Filter>Header Files\cs2_sdk</Filter>
+    </ClInclude>
     <ClInclude Include="src\entwatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>

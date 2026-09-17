@@ -92,6 +92,7 @@ KHOOK_MEMBER(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission
 KHOOK_MEMBER(SetBeamOrigin, Detour_SetBeamOrigin, nullptr);
 KHOOK_MEMBER(SetBeamEndPos, Detour_SetBeamEndPos, nullptr);
 KHOOK_FUNCTION(IsCommandWhitelisted, Detour_IsCommandWhitelisted, nullptr);
+KHOOK_MEMBER(CWorldRendererMgr_CreateWorld_Internal, nullptr, Detour_CWorldRendererMgr_CreateWorld_Internal_Post);
 
 std::vector<CKHookBase*>& GetKHookList()
 {
@@ -930,4 +931,25 @@ KHook::Return<bool> Detour_IsCommandWhitelisted(void* pAddonManager, const char*
 		return {KHook::Action::Ignore};
 
 	return {KHook::Action::Supersede, g_pConvarWhitelist->IsWhitelisted(pszCommandName)};
+}
+
+KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Post(IWorldRendererMgr* pThis, CSingleWorldRep* singleWorld)
+{
+	// The world can fail to be created and the function will return nullptr.
+	if (!KHook::GetOriginalReturn<CSingleWorldRep*>())
+		return {KHook::Action::Ignore};
+
+	auto pWorld = singleWorld->m_pCWorld;
+	auto vecLumpData = (CUtlVector<void*>*)((uint8_t*)pWorld + 0x1E0);
+
+	FOR_EACH_VEC(*vecLumpData, i)
+	{
+		auto& lump = (*vecLumpData)[i];
+		auto lumpData = *(LumpData**)lump;
+		auto vecEntityKeyValues = (CUtlVector<CEntityKeyValues*>*)((uint8_t*)lumpData + 0x1220);
+
+		g_pMapMigrations->RunMigrations(vecEntityKeyValues);
+	}
+
+	return {KHook::Action::Ignore};
 }

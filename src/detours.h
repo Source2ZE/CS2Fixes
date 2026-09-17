@@ -20,6 +20,7 @@
 #pragma once
 #include "cs2_sdk/entityio.h"
 #include "khook.hpp"
+#include "map.h"
 #include <utlsymbollarge.h>
 
 class CCheckTransmitInfo;
@@ -120,3 +121,4 @@ KHook::Return<void> Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bo
 KHook::Return<void> Detour_SetBeamOrigin(CBeam* pThis, const Vector* pVecWorldPosition);
 KHook::Return<void> Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecWorldPosition);
 KHook::Return<bool> Detour_IsCommandWhitelisted(void* pAddonManager, const char* pszCommandName);
+KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Post(IWorldRendererMgr* pThis, CSingleWorldRep* pSingleWorld);

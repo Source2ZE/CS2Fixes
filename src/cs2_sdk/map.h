@@ -19,13 +19,22 @@
 
 #pragma once
 
-class CCfgParser
+#include "utlstring.h"
+
+class CSingleWorldRep
 {
+private:
+	void* vtable;
+
 public:
-	void PreLevelLoad(const char* pszMapName);
-	void ApplyGameSettings(const char* pszMapName);
-	void ExecuteConfigs(const char* pszMapName);
-	void ParseCfg(const char* pszCfgPath);
+	CUtlString m_name;
+	char pad[0x20];
+	void* m_pCWorld;
 };
 
-extern CCfgParser* g_pCfgParser;
+struct LumpData
+{
+	CUtlString m_name;
+	char pad[0x18];
+	CKV3Arena* m_allocatorContext;
+};

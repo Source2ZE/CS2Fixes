@@ -24,18 +24,19 @@
 
 CCfgParser* g_pCfgParser = nullptr;
 
-CON_COMMAND_F(exec_custom, "<cfgpath> - Execute a cfg through the custom cfg parser", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
+void CCfgParser::PreLevelLoad(const char* pszMapName)
 {
-	if (args.ArgC() < 2)
-	{
-		Message("Usage: exec_custom <cfgpath>\n");
-		return;
-	}
-
-	g_pCfgParser->ParseCfg(args[1]);
+	// Make sure convars are set before map load, currently used by map migrations
+	ExecuteConfigs(pszMapName);
 }
 
 void CCfgParser::ApplyGameSettings(const char* pszMapName)
+{
+	// Execute again for good measure, because this is when configs would normally execute
+	ExecuteConfigs(pszMapName);
+}
+
+void CCfgParser::ExecuteConfigs(const char* pszMapName)
 {
 	// Run plugin cfg
 	g_pCfgParser->ParseCfg("cs2fixes/cs2fixes");
@@ -47,10 +48,9 @@ void CCfgParser::ApplyGameSettings(const char* pszMapName)
 		return;
 
 	// Run map cfg (if present)
-	// We call ParseCfg indirectly through exec_custom, so any commands within the map cfg will be added to the command buffer after nested executes in previous configs
-	char cmd[MAX_PATH];
-	V_snprintf(cmd, sizeof(cmd), "exec_custom cs2fixes/maps/%s", pszMapName);
-	g_pEngineServer2->ServerCommand(cmd);
+	char szCfgPath[MAX_PATH];
+	V_snprintf(szCfgPath, sizeof(szCfgPath), "cs2fixes/maps/%s", pszMapName);
+	ParseCfg(szCfgPath);
 }
 
 void CCfgParser::ParseCfg(const char* pszCfgPath)
@@ -71,10 +71,39 @@ void CCfgParser::ParseCfg(const char* pszCfgPath)
 
 	while (std::getline(cfgFile, strCommand))
 	{
-		if (!strCommand.empty() && strCommand.back() == '\r')
-			strCommand.pop_back();
+		CCommand args;
 
-		if (!strCommand.empty())
-			g_pEngineServer2->ServerCommand(strCommand.c_str());
+		if (!args.Tokenize(strCommand.c_str()) || !args.ArgC())
+			continue;
+
+		if (!V_strcasecmp(args[0], "exec_custom"))
+		{
+			if (args.ArgC() < 2)
+				Message("Usage: exec_custom <cfgpath>\n");
+			else
+				ParseCfg(args[1]);
+
+			continue;
+		}
+
+		ConCommandRef command(args[0], true);
+		ConVarRefAbstract convar(args[0], true);
+
+		if (command.IsValidRef())
+		{
+			CCommandContext context(CT_FIRST_SPLITSCREEN_CLIENT, -1);
+			command.Dispatch(context, args);
+			continue;
+		}
+
+		if (convar.IsValidRef())
+		{
+			if (args.ArgC() > 1 && !convar.SetString(args[1]))
+				Message("Failed to execute \"%s %s\"\n", args[0], args[1]);
+
+			continue;
+		}
+
+		Message("Unknown command \"%s\"\n", args[0]);
 	}
 }

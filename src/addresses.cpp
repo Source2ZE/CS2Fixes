@@ -51,6 +51,7 @@ bool addresses::Initialize()
 	modules::networksystem = new CModule(ROOTBIN, "networksystem");
 	modules::vphysics2 = new CModule(ROOTBIN, "vphysics2");
 	modules::matchmaking = new CModule(GAMEBIN, "matchmaking");
+	modules::worldrenderer = new CModule(ROOTBIN, "worldrenderer");
 	modules::client = nullptr;
 
 	if (!CommandLine()->HasParm("-dedicated"))
