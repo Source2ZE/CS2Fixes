@@ -37,6 +37,7 @@ public:
 	void OnRoundPrestart();
 	void OnEquipWeapon(CBasePlayerWeapon* pWeapon);
 	void RunMigrations(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues);
+	void Migrations_Rendermode(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues);
 	void Migrations_20260121(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues);
 	void Migrations_20260420(CBasePlayerWeapon* pWeapon);
 	bool Migrations20260420Enabled();
