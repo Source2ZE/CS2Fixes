@@ -41,17 +41,17 @@ void CMapMigrations::PreLevelLoad(uint64 iWorkshopId)
 	if (iWorkshopId != 0)
 	{
 		if (m_mapUpdateTimes.contains(iWorkshopId))
-		{
 			m_timeMapUpdated = m_mapUpdateTimes[iWorkshopId];
-		}
 		else
-		{
 			Message("Skipping pre-load map migrations for %llu, update time is not available\n", iWorkshopId);
-
-			// Try to get the update time anyways, for later migrations
-			CMapSystemWorkshopDetailsQuery::Create(iWorkshopId);
-		}
 	}
+}
+
+void CMapMigrations::ApplyGameSettings(uint64 iWorkshopId)
+{
+	// If map update time wasn't available before map load, try to get the update time anyways, for later migrations
+	if (iWorkshopId != 0 && !m_mapUpdateTimes.contains(iWorkshopId))
+		CMapSystemWorkshopDetailsQuery::Create(iWorkshopId);
 }
 
 void CMapMigrations::OnRoundPrestart()
@@ -166,7 +166,7 @@ void CMapMigrations::UpdateMapUpdateTime(uint64 iWorkshopId, time_t timeMapUpdat
 {
 	m_mapUpdateTimes[iWorkshopId] = timeMapUpdated;
 
-	// If we get triggered through PreLevelLoad
+	// If we get triggered through ApplyGameSettings
 	if (g_pMapVoteSystem->GetCurrentMap() && g_pMapVoteSystem->GetCurrentMap()->GetWorkshopId() == iWorkshopId)
 		m_timeMapUpdated = timeMapUpdated;
 }

@@ -34,6 +34,7 @@ class CMapMigrations
 {
 public:
 	void PreLevelLoad(uint64 iWorkshopId);
+	void ApplyGameSettings(uint64 iWorkshopId);
 	void OnRoundPrestart();
 	void OnEquipWeapon(CBasePlayerWeapon* pWeapon);
 	void RunMigrations(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues);
