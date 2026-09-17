@@ -67,21 +67,18 @@ void CMapMigrations::OnEquipWeapon(CBasePlayerWeapon* pWeapon)
 
 void CMapMigrations::RunMigrations(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues)
 {
+	if (g_cvarMapMigrations20260121.Get() > 0)
+		Migrations_Rendermode(pVecEntityKeyValues);
+
 	if (g_cvarMapMigrations20260121.Get() == 1 || (g_cvarMapMigrations20260121.Get() == 2 && m_timeMapUpdated < g_time20260121))
 		Migrations_20260121(pVecEntityKeyValues);
 }
 
-void CMapMigrations::Migrations_20260121(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues)
+void CMapMigrations::Migrations_Rendermode(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues)
 {
 	FOR_EACH_VEC(*pVecEntityKeyValues, i)
 	{
 		auto pKeyValues = (*pVecEntityKeyValues)[i];
-
-		if (!V_strcasecmp(pKeyValues->GetString("classname"), "func_door_rotating") && pKeyValues->HasValue("spawnflags"))
-		{
-			uint32 spawnFlags = pKeyValues->GetUint("spawnflags");
-			pKeyValues->SetUint("spawnflags", spawnFlags | SF_DOOR_ONEWAY);
-		}
 
 		if (!pKeyValues->HasValue("rendermode"))
 			continue;
@@ -99,6 +96,20 @@ void CMapMigrations::Migrations_20260121(CUtlVector<CEntityKeyValues*>* pVecEnti
 		// All other removed render modes, fall back to normal
 		else if (renderMode > kRenderNormal)
 			pKeyValues->SetString("rendermode", "kRenderNormal");
+	}
+}
+
+void CMapMigrations::Migrations_20260121(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues)
+{
+	FOR_EACH_VEC(*pVecEntityKeyValues, i)
+	{
+		auto pKeyValues = (*pVecEntityKeyValues)[i];
+
+		if (!V_strcasecmp(pKeyValues->GetString("classname"), "func_door_rotating") && pKeyValues->HasValue("spawnflags"))
+		{
+			uint32 spawnFlags = pKeyValues->GetUint("spawnflags");
+			pKeyValues->SetUint("spawnflags", spawnFlags | SF_DOOR_ONEWAY);
+		}
 	}
 }
 
