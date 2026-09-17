@@ -228,6 +228,7 @@ KHook::Return<void> Hook_ApplyGameSettings(IServerGameDLL* pThis, KeyValues* pKV
 
 	g_pCfgParser->ApplyGameSettings(pszMapName);
 	g_pMapVoteSystem->ApplyGameSettings(pszMapName, iWorkshopId);
+	g_pMapMigrations->ApplyGameSettings(iWorkshopId);
 
 	return {KHook::Action::Ignore};
 }
