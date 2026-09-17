@@ -36,7 +36,7 @@ public:
 	using fnCallback = KHook::Return<RETURN> (*)(ARGS...);
 
 	CKHookFunction(const char* pSignature, fnCallback cbPre, fnCallback cbPost) :
-		m_pSignatureName(pSignature), m_hook(cbPre, cbPost)
+		m_hook(cbPre, cbPost), m_pSignatureName(pSignature)
 	{
 		GetKHookList().push_back(this);
 	}
@@ -94,7 +94,7 @@ public:
 	using fnCallback = KHook::Return<RETURN> (*)(CLASS*, ARGS...);
 
 	CKHookMember(const char* pSignature, fnCallback cbPre, fnCallback cbPost) :
-		m_pSignatureName(pSignature), m_hook(cbPre, cbPost)
+		m_hook(cbPre, cbPost), m_pSignatureName(pSignature)
 	{
 		GetKHookList().push_back(this);
 	}
