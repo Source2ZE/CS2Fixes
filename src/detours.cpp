@@ -81,6 +81,7 @@ KHOOK_MEMBER(CCSPlayerPawn_GetMaxSpeed, Detour_CCSPlayerPawn_GetMaxSpeed, nullpt
 KHOOK_MEMBER(FindUseEntity, Detour_FindUseEntity, Detour_FindUseEntity_Post);
 KHOOK_FUNCTION(TraceFunc, Detour_TraceFunc, nullptr);
 KHOOK_FUNCTION(TraceShape, Detour_TraceShape, nullptr);
+KHOOK_MEMBER(CEntityIOOutput_FireOutputInternal, Detour_CEntityIOOutput_FireOutputInternal, nullptr);
 KHOOK_MEMBER(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition, nullptr);
 KHOOK_MEMBER(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles, nullptr);
 KHOOK_MEMBER(CBaseFilter_InputTestActivator, Detour_CBaseFilter_InputTestActivator, nullptr);
@@ -751,7 +752,7 @@ KHook::Return<bool> Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, C
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay, void* a6, void* a7)
+KHook::Return<void> Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay, void* a6, void* a7)
 {
 	if (g_cvarEnableButtonWatch.Get())
 		ButtonWatch(pThis, pActivator, pCaller, value, flDelay);
