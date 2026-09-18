@@ -900,30 +900,24 @@ void CMapVoteSystem::PrintDownloadProgress()
 
 void CMapVoteSystem::OnMapDownloaded(DownloadItemResult_t* pResult)
 {
-	if (std::find(m_DownloadQueue.begin(), m_DownloadQueue.end(), pResult->m_nPublishedFileId) == m_DownloadQueue.end() || !GetSteamUGC())
+	if (m_DownloadQueue.empty() || m_DownloadQueue.front() != pResult->m_nPublishedFileId)
 		return;
 
-	// Some weird rate limiting that's been observed? Back off for a while then retry download
+	// This result is also used for some kind of rate limiting, back off for a while then retry download
 	if (pResult->m_eResult == k_EResultNoConnection)
 	{
-		PublishedFileId_t workshopID = m_DownloadQueue.front();
-		Message("Addon %llu download failed with status code 3, retrying in 2 minutes\n", workshopID);
-
-		m_pRateLimitedDownloadTimer = CTimer::Create(120.0f, TIMERFLAG_NONE, [workshopID]() {
-			GetSteamUGC()->DownloadItem(workshopID, false);
-
-			return -1.0f;
-		});
-
+		Message("Addon %llu download failed with status code 3, retrying in 5 minutes\n", m_DownloadQueue.front());
+		StartMapDownload(300.0f);
 		return;
 	}
 
+	if (pResult->m_eResult != k_EResultOK)
+		Message("Addon %llu download failed with status code %i, skipping\n", pResult->m_nPublishedFileId, pResult->m_eResult);
+
 	m_DownloadQueue.pop_front();
 
-	if (GetDownloadQueueSize() == 0)
-		return;
-
-	GetSteamUGC()->DownloadItem(m_DownloadQueue.front(), false);
+	// Go slowly, try to avoid the rate limit because it can break required on-demand downloads elsewhere
+	StartMapDownload(30.0f);
 }
 
 void CMapVoteSystem::QueueMapDownload(PublishedFileId_t iWorkshopId)
@@ -934,7 +928,28 @@ void CMapVoteSystem::QueueMapDownload(PublishedFileId_t iWorkshopId)
 	m_DownloadQueue.push_back(iWorkshopId);
 
 	if (m_DownloadQueue.front() == iWorkshopId)
-		GetSteamUGC()->DownloadItem(iWorkshopId, false);
+		StartMapDownload();
+}
+
+void CMapVoteSystem::StartMapDownload(float flDelay)
+{
+	if (auto pTimer = m_pDownloadTimer.lock())
+		pTimer->Cancel();
+
+	if (m_DownloadQueue.empty())
+		return;
+
+	PublishedFileId_t workshopID = m_DownloadQueue.front();
+
+	m_pDownloadTimer = CTimer::Create(flDelay, TIMERFLAG_NONE, [workshopID]() {
+		if (!GetSteamUGC() || !GetSteamUGC()->DownloadItem(workshopID, false))
+		{
+			Message("Addon %llu download failed to start, retrying\n", workshopID);
+			return 30.0f;
+		}
+
+		return -1.0f;
+	});
 }
 
 bool CMapVoteSystem::LoadMapList()
@@ -1376,8 +1391,8 @@ bool CMapVoteSystem::ReloadMapList(bool bReloadMap)
 		if (!m_pDownloadProgressTimer.expired())
 			m_pDownloadProgressTimer.lock()->Cancel();
 
-		if (!m_pRateLimitedDownloadTimer.expired())
-			m_pRateLimitedDownloadTimer.lock()->Cancel();
+		if (!m_pDownloadTimer.expired())
+			m_pDownloadTimer.lock()->Cancel();
 	}
 
 	if (!g_pMapVoteSystem->LoadMapList())
