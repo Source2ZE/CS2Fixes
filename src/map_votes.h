@@ -202,6 +202,7 @@ public:
 	bool IsMapListLoaded() { return m_bMapListLoaded; }
 	CUtlStringList CreateWorkshopMapGroup();
 	void QueueMapDownload(PublishedFileId_t iWorkshopId);
+	void StartMapDownload(float flDelay = 0.0f);
 	void PrintDownloadProgress();
 	std::shared_ptr<CMap> GetCurrentMap() { return m_pCurrentMap; }
 	void SetCurrentMap(std::shared_ptr<CMap> pCurrentMap) { m_pCurrentMap = pCurrentMap; }
@@ -245,7 +246,7 @@ private:
 	bool g_bDisableCooldowns = false;
 	std::filesystem::file_time_type m_timeMapListModified = std::filesystem::file_time_type::min();
 	std::weak_ptr<CTimer> m_pDownloadProgressTimer;
-	std::weak_ptr<CTimer> m_pRateLimitedDownloadTimer;
+	std::weak_ptr<CTimer> m_pDownloadTimer;
 	std::vector<std::shared_ptr<CMapSystemWorkshopDetailsQuery>> m_vecWorkshopDetailsQueries;
 	int m_iSessionMaxPlayerCount = 0;
 };
