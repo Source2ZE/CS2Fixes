@@ -102,7 +102,7 @@ KHook::Return<CBaseEntity*> Detour_FindUseEntity(CCSPlayer_UseServices* pThis, f
 KHook::Return<CBaseEntity*> Detour_FindUseEntity_Post(CCSPlayer_UseServices* pThis, float unk2, int64_t unk3);
 KHook::Return<bool> Detour_TraceFunc(int64*, int*, float*, uint64);
 KHook::Return<bool> Detour_TraceShape(int64*, int64, int64, int64, CTraceFilter*, int64);
-KHook::Return<void> Detour_CEntityIOOutput_FireOutputInternal(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay, void*, void*);
+KHook::Return<void> Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay, void*, void*);
 #ifdef PLATFORM_WINDOWS
 KHook::Return<Vector*> Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn*, Vector*);
 KHook::Return<QAngle*> Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*, QAngle*);
