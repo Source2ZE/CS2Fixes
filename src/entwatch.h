@@ -23,6 +23,7 @@
 #include "ctimer.h"
 #include "eventlistener.h"
 #include "gamesystem.h"
+#include "khook.hpp"
 #include "vendor/nlohmann/json_fwd.hpp"
 
 using ordered_json = nlohmann::ordered_json;
@@ -215,26 +216,35 @@ struct EActiveTransfer
 class CEWHandler
 {
 public:
-	CEWHandler()
+	CEWHandler() :
+		m_bConfigLoaded(false),
+		m_hBaseButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hPhysBoxUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hRotButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hMomentaryRotButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hPhysicalButtonUse(0U, this, &CEWHandler::Hook_Use, nullptr),
+		m_hTriggerTeleportStartTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceStartTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleStartTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerTeleportTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerTeleportEndTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerOnceEndTouch(0U, this, &CEWHandler::Hook_Touch, nullptr),
+		m_hTriggerMultipleEndTouch(0U, this, &CEWHandler::Hook_Touch, nullptr)
 	{
-		bConfigLoaded = false;
-
-		iBaseBtnUseHookId = -1;
-		iPhysboxUseHookId = -1;
-		iPhysicalBtnUseHookId = -1;
-		iRotBtnUseHookId = -1;
-		iMomRotBtnUseHookId = -1;
-
-		for (int i = 0; i < 3; i++)
-		{
-			iTriggerTeleportTouchHooks[i] = -1;
-			iTriggerMultipleTouchHooks[i] = -1;
-			iTriggerOnceTouchHooks[i] = -1;
-		}
+		CreateHooks();
 	}
 
-	bool bConfigLoaded;
-	bool IsConfigLoaded() { return bConfigLoaded; }
+	~CEWHandler()
+	{
+		RemoveHooks();
+	}
+
+	void CreateHooks();
+	void RemoveHooks();
+
+	bool IsConfigLoaded() { return m_bConfigLoaded; }
 
 	void UnLoadConfig();
 	void LoadMapConfig(const char* sMapName);
@@ -250,10 +260,8 @@ public:
 
 	void RegisterHandler(CBaseEntity* pEnt);
 	bool RegisterTrigger(CBaseEntity* pEnt);
-	void AddTouchHook(CBaseEntity* pEnt);
-	void Hook_Touch(CBaseEntity* pOther);
+	KHook::Return<void> Hook_Touch(CBaseEntity* pThis, CBaseEntity* pOther);
 	bool RemoveTrigger(CBaseEntity* pEnt);
-	void RemoveAllTriggers();
 	void RemoveHandler(CBaseEntity* pEnt);
 	void ResetAllClantags();
 
@@ -263,30 +271,35 @@ public:
 	void PlayerDrop(EWDropReason reason, int iItemInstance, CCSPlayerController* pController);
 	void Transfer(CCSPlayerController* pCaller, int iItemInstance, CHandle<CCSPlayerController> hReceiver);
 
-	void AddUseHook(CBaseEntity* pEnt);
-	void RemoveUseHook(CBaseEntity* pEnt);
-	void RemoveAllUseHooks();
-	void Hook_Use(InputData_t* pInput);
+	void RemoveUseEntity(CBaseEntity* pEnt);
+	KHook::Return<void> Hook_Use(CBaseEntity* pThis, InputData_t* pInput);
 
 	std::map<uint32, std::shared_ptr<EWItem>> mapItemConfig; /* items defined in the config */
 	std::vector<std::shared_ptr<EWItemInstance>> vecItems;	 /* all items found spawned */
 
 	std::vector<CHandle<CBaseEntity>> vecHookedTriggers;
-	int iTriggerTeleportTouchHooks[3];
-	int iTriggerMultipleTouchHooks[3];
-	int iTriggerOnceTouchHooks[3];
-
 	std::vector<CHandle<CBaseEntity>> vecUseHookedEntities;
-	int iBaseBtnUseHookId;
-	int iPhysboxUseHookId;
-	int iPhysicalBtnUseHookId;
-	int iRotBtnUseHookId;
-	int iMomRotBtnUseHookId;
 
 	std::weak_ptr<CTimer> m_pHudTimer;
+	bool m_bConfigLoaded;
 
 	std::map<int, std::shared_ptr<ETransferInfo>> mapTransfers;		  // Any etransfers that target multiple items
 	std::vector<std::shared_ptr<EActiveTransfer>> vecActiveTransfers; // Active transfers where only the receiver can pickup the weapon
+
+	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hBaseButtonUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hPhysBoxUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hRotButtonUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hMomentaryRotButtonUse;
+	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hPhysicalButtonUse;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerTeleportStartTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerOnceStartTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerMultipleStartTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerTeleportTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerOnceTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerMultipleTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerTeleportEndTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerOnceEndTouch;
+	KHook::Virtual<CBaseEntity, void, CBaseEntity*> m_hTriggerMultipleEndTouch;
 };
 
 extern CEWHandler* g_pEWHandler;
@@ -302,7 +315,6 @@ void EW_DropWeapon(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon*
 void EW_PlayerDeath(IGameEvent* pEvent);
 void EW_PlayerDeathPre(CCSPlayerController* pController);
 void EW_PlayerDisconnect(int slot);
-bool EW_IsFireOutputHooked();
 void EW_FireOutput(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay);
 int GetTemplateSuffixNumber(const char* szName);
 float EW_UpdateHud();

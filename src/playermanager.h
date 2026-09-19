@@ -34,6 +34,7 @@
 
 extern CConVar<bool> g_cvarFlashLightTransmitOthers;
 extern CConVar<CUtlString> g_cvarFlashLightAttachment;
+extern CConVar<bool> g_cvarEnableMapSteamIds;
 
 #define NO_TARGET_BLOCKS (0)
 #define NO_RANDOM (1 << 1)

@@ -24,6 +24,7 @@
 #include "entity/cgamerules.h"
 #include "eventlistener.h"
 #include "iserver.h"
+#include "mapmigrations.h"
 #include "playermanager.h"
 #include "steam/steam_gameserver.h"
 #include "strtools.h"
@@ -72,6 +73,10 @@ CON_COMMAND_CHAT_FLAGS(map, "<name/id> - Change map", ADMFLAG_CHANGEMAP)
 			pMap->Load();
 			return -1.0f;
 		});
+
+		// Map migrations need map info ahead of time
+		if (pMap->GetWorkshopId() != 0)
+			CMapSystemWorkshopDetailsQuery::Create(pMap->GetWorkshopId());
 
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "Changing map to \x06%s\x01...", pMap->GetName());
 	});
@@ -340,7 +345,13 @@ void CMapVoteSystem::StartVote()
 	for (int i = 0; i < m_iVoteSize; i++)
 	{
 		int iMapIndex = g_pGameRules->m_nEndMatchMapGroupVoteOptions[i];
+		uint64 iWorkshopId = GetMapByIndex(iMapIndex)->GetWorkshopId();
+
 		Message("The %d-th chosen map index %d is %s\n", i, iMapIndex, GetMapName(iMapIndex));
+
+		// Map migrations need map info ahead of time
+		if (iWorkshopId != 0)
+			CMapSystemWorkshopDetailsQuery::Create(iWorkshopId);
 	}
 
 	static ConVarRefAbstract mp_endmatch_votenextleveltime("mp_endmatch_votenextleveltime");
@@ -858,7 +869,10 @@ void CMapVoteSystem::ForceNextMap(CCSPlayerController* pController, const char* 
 			return;
 		}
 
-		// When found, print the map and store the forced map
+		// Map migrations need map info ahead of time
+		if (pMap->GetWorkshopId() != 0)
+			CMapSystemWorkshopDetailsQuery::Create(pMap->GetWorkshopId());
+
 		g_pMapVoteSystem->SetForcedNextMap(pMap);
 		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "\x06%s \x01has been forced as the next map.\n", g_pMapVoteSystem->GetForcedNextMap()->GetName());
 	});
@@ -886,30 +900,24 @@ void CMapVoteSystem::PrintDownloadProgress()
 
 void CMapVoteSystem::OnMapDownloaded(DownloadItemResult_t* pResult)
 {
-	if (std::find(m_DownloadQueue.begin(), m_DownloadQueue.end(), pResult->m_nPublishedFileId) == m_DownloadQueue.end() || !GetSteamUGC())
+	if (m_DownloadQueue.empty() || m_DownloadQueue.front() != pResult->m_nPublishedFileId)
 		return;
 
-	// Some weird rate limiting that's been observed? Back off for a while then retry download
+	// This result is also used for some kind of rate limiting, back off for a while then retry download
 	if (pResult->m_eResult == k_EResultNoConnection)
 	{
-		PublishedFileId_t workshopID = m_DownloadQueue.front();
-		Message("Addon %llu download failed with status code 3, retrying in 2 minutes\n", workshopID);
-
-		m_pRateLimitedDownloadTimer = CTimer::Create(120.0f, TIMERFLAG_NONE, [workshopID]() {
-			GetSteamUGC()->DownloadItem(workshopID, false);
-
-			return -1.0f;
-		});
-
+		Message("Addon %llu download failed with status code 3, retrying in 5 minutes\n", m_DownloadQueue.front());
+		StartMapDownload(300.0f);
 		return;
 	}
 
+	if (pResult->m_eResult != k_EResultOK)
+		Message("Addon %llu download failed with status code %i, skipping\n", pResult->m_nPublishedFileId, pResult->m_eResult);
+
 	m_DownloadQueue.pop_front();
 
-	if (GetDownloadQueueSize() == 0)
-		return;
-
-	GetSteamUGC()->DownloadItem(m_DownloadQueue.front(), false);
+	// Go slowly, try to avoid the rate limit because it can break required on-demand downloads elsewhere
+	StartMapDownload(30.0f);
 }
 
 void CMapVoteSystem::QueueMapDownload(PublishedFileId_t iWorkshopId)
@@ -920,7 +928,28 @@ void CMapVoteSystem::QueueMapDownload(PublishedFileId_t iWorkshopId)
 	m_DownloadQueue.push_back(iWorkshopId);
 
 	if (m_DownloadQueue.front() == iWorkshopId)
-		GetSteamUGC()->DownloadItem(iWorkshopId, false);
+		StartMapDownload();
+}
+
+void CMapVoteSystem::StartMapDownload(float flDelay)
+{
+	if (auto pTimer = m_pDownloadTimer.lock())
+		pTimer->Cancel();
+
+	if (m_DownloadQueue.empty())
+		return;
+
+	PublishedFileId_t workshopID = m_DownloadQueue.front();
+
+	m_pDownloadTimer = CTimer::Create(flDelay, TIMERFLAG_NONE, [workshopID]() {
+		if (!GetSteamUGC() || !GetSteamUGC()->DownloadItem(workshopID, false))
+		{
+			Message("Addon %llu download failed to start, retrying\n", workshopID);
+			return 30.0f;
+		}
+
+		return -1.0f;
+	});
 }
 
 bool CMapVoteSystem::LoadMapList()
@@ -1144,15 +1173,15 @@ void CMapVoteSystem::OnPlayerCountChange()
 
 void CMapVoteSystem::ApplyGameSettings(const char* pszMapName, uint64 iWorkshopId)
 {
-	if (!g_cvarVoteManagerEnable.Get())
-		return;
-
 	auto pair = GetMapInfoByIdentifiers(pszMapName, iWorkshopId);
 
 	if (pair.first != -1)
 		SetCurrentMap(pair.second);
 	else
 		SetCurrentMap(std::make_shared<CMap>(pszMapName, iWorkshopId, pszMapName[0] == '\0' && iWorkshopId == 0));
+
+	if (!g_cvarVoteManagerEnable.Get())
+		return;
 
 	ProcessGroupCooldowns();
 }
@@ -1362,8 +1391,8 @@ bool CMapVoteSystem::ReloadMapList(bool bReloadMap)
 		if (!m_pDownloadProgressTimer.expired())
 			m_pDownloadProgressTimer.lock()->Cancel();
 
-		if (!m_pRateLimitedDownloadTimer.expired())
-			m_pRateLimitedDownloadTimer.lock()->Cancel();
+		if (!m_pDownloadTimer.expired())
+			m_pDownloadTimer.lock()->Cancel();
 	}
 
 	if (!g_pMapVoteSystem->LoadMapList())
@@ -1396,8 +1425,7 @@ std::shared_ptr<CMapSystemWorkshopDetailsQuery> CMapSystemWorkshopDetailsQuery::
 {
 	if (!GetSteamUGC())
 	{
-		Panic("A workshop map query was attempted on null ISteamUGC, returning early.\n");
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to query workshop map information for ID \x06%llu\x01.", iWorkshopId);
+		ReportCreateFailure(iWorkshopId, pController, callbackSuccess);
 		return nullptr;
 	}
 
@@ -1406,12 +1434,19 @@ std::shared_ptr<CMapSystemWorkshopDetailsQuery> CMapSystemWorkshopDetailsQuery::
 
 	if (hQuery == k_UGCQueryHandleInvalid)
 	{
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to query workshop map information for ID \x06%llu\x01.", iWorkshopId);
+		ReportCreateFailure(iWorkshopId, pController, callbackSuccess);
 		return nullptr;
 	}
 
 	GetSteamUGC()->SetAllowCachedResponse(hQuery, 0);
 	SteamAPICall_t hCall = GetSteamUGC()->SendQueryUGCRequest(hQuery);
+
+	if (hCall == k_uAPICallInvalid)
+	{
+		GetSteamUGC()->ReleaseQueryUGCRequest(hQuery);
+		ReportCreateFailure(iWorkshopId, pController, callbackSuccess);
+		return nullptr;
+	}
 
 	auto pQuery = std::make_shared<CMapSystemWorkshopDetailsQuery>(hQuery, iWorkshopId, pController, callbackSuccess);
 	g_pMapVoteSystem->AddWorkshopDetailsQuery(pQuery);
@@ -1420,23 +1455,40 @@ std::shared_ptr<CMapSystemWorkshopDetailsQuery> CMapSystemWorkshopDetailsQuery::
 	return pQuery;
 }
 
+void CMapSystemWorkshopDetailsQuery::ReportCreateFailure(uint64 iWorkshopId, CCSPlayerController* pController, QueryCallback_t callbackSuccess)
+{
+	Message("Failed to query workshop map information for ID %llu\n", iWorkshopId);
+
+	if (callbackSuccess)
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to query workshop map information for ID \x06%llu\x01.", iWorkshopId);
+}
+
 void CMapSystemWorkshopDetailsQuery::OnQueryCompleted(SteamUGCQueryCompleted_t* pCompletedQuery, bool bFailed)
 {
 	CCSPlayerController* pController = m_hController.Get();
 	SteamUGCDetails_t details;
 
-	// Only allow null controller if controller was originally null (console)
-	if (m_bConsole || pController)
+	// Is this a player map lookup? Only allow null controller if controller was originally null (console)
+	bool bMapLookupActive = m_callbackSuccess && (m_bConsole || pController);
+
+	if (bFailed || pCompletedQuery->m_eResult != k_EResultOK || pCompletedQuery->m_unNumResultsReturned < 1 || !GetSteamUGC()->GetQueryUGCResult(pCompletedQuery->m_handle, 0, &details) || details.m_eResult != k_EResultOK)
 	{
-		if (bFailed || pCompletedQuery->m_eResult != k_EResultOK || pCompletedQuery->m_unNumResultsReturned < 1 || !GetSteamUGC()->GetQueryUGCResult(pCompletedQuery->m_handle, 0, &details) || details.m_eResult != k_EResultOK)
-		{
+		if (bMapLookupActive)
 			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Failed to query workshop map information for ID \x06%llu\x01.", m_iWorkshopId);
-		}
-		else if (details.m_nConsumerAppID != 730 || details.m_eFileType != k_EWorkshopFileTypeCommunity)
-		{
-			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "The ID \x06%llu\x01 is not a valid CS2 workshop map.", m_iWorkshopId);
-		}
 		else
+			Message("Failed to query workshop map information for ID %llu\n", m_iWorkshopId);
+	}
+	else if (details.m_nConsumerAppID != 730 || details.m_eFileType != k_EWorkshopFileTypeCommunity)
+	{
+		if (bMapLookupActive)
+			ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "The ID \x06%llu\x01 is not a valid CS2 workshop map.", m_iWorkshopId);
+	}
+	else
+	{
+		// Map migrations also need to know when maps were updated
+		g_pMapMigrations->UpdateMapUpdateTime(m_iWorkshopId, details.m_rtimeUpdated);
+
+		if (bMapLookupActive)
 		{
 			// Try to get a head start on downloading the map if needed
 			GetSteamUGC()->DownloadItem(m_iWorkshopId, false);

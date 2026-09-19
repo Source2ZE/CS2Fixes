@@ -20,8 +20,8 @@
 #include "mapmigrations.h"
 #include "cs2fixes.h"
 #include "entity.h"
-#include "entity/cbasemodelentity.h"
 #include "entity/cbasetoggle.h"
+#include "map_votes.h"
 #include "utils.h"
 #include "vprof.h"
 
@@ -33,32 +33,30 @@ const time_t g_time20260420 = 1776725888;
 CConVar<int> g_cvarMapMigrations20260121("cs2f_mapmigrations_20260121", FCVAR_NONE, "Current mode for 2026-01-21 CS2 update map migrations. [0 = Force disabled, 1 = Force enabled, 2 = Automatically enabled for maps updated before 2026-01-21 & disabled if updated after]", 2);
 CConVar<int> g_cvarMapMigrations20260420("cs2f_mapmigrations_20260420", FCVAR_NONE, "Current mode for 2026-04-20 CS2 update map migrations. [0 = Force disabled, 1 = Force enabled, 2 = Automatically enabled for maps updated before 2026-04-20 & disabled if updated after]", 2);
 
-void CMapMigrations::ApplyGameSettings(uint64 iWorkshopId)
+void CMapMigrations::PreLevelLoad(uint64 iWorkshopId)
 {
 	m_timeMapUpdated = std::numeric_limits<time_t>::max();
 
 	// Don't run on default maps
 	if (iWorkshopId != 0)
-		CMapMigrationWorkshopDetailsQuery::Create(iWorkshopId);
+	{
+		if (m_mapUpdateTimes.contains(iWorkshopId))
+			m_timeMapUpdated = m_mapUpdateTimes[iWorkshopId];
+		else
+			Message("Skipping pre-load map migrations for %llu, update time is not available\n", iWorkshopId);
+	}
+}
+
+void CMapMigrations::ApplyGameSettings(uint64 iWorkshopId)
+{
+	// If map update time wasn't available before map load, try to get the update time anyways, for later migrations
+	if (iWorkshopId != 0 && !m_mapUpdateTimes.contains(iWorkshopId))
+		CMapSystemWorkshopDetailsQuery::Create(iWorkshopId);
 }
 
 void CMapMigrations::OnRoundPrestart()
 {
-	m_vecModelEntitiesUsingRendermodeEnum.clear();
 	m_vecEquippedWeapons.clear();
-}
-
-void CMapMigrations::OnEntitySpawned_Pre(CBaseEntity* pEntity, const CEntityKeyValues* pKeyValues)
-{
-	// Stupid workaround for CEntityKeyValues being inaccessible after entity spawn
-	// We need access to this in 2026-01-21 rendermode migrations when called from UpdateMapUpdateTime
-	if (pEntity->AsBaseModelEntity() && V_StringToInt32(pKeyValues->GetString("rendermode"), -1, NULL, NULL, PARSING_FLAG_SKIP_WARNING) == -1)
-		m_vecModelEntitiesUsingRendermodeEnum.push_back(pEntity->GetHandle());
-}
-
-void CMapMigrations::OnEntitySpawned_Post(CBaseEntity* pEntity)
-{
-	RunMigrations(pEntity);
 }
 
 void CMapMigrations::OnEquipWeapon(CBasePlayerWeapon* pWeapon)
@@ -67,43 +65,51 @@ void CMapMigrations::OnEquipWeapon(CBasePlayerWeapon* pWeapon)
 		Migrations_20260420(pWeapon);
 }
 
-void CMapMigrations::RunMigrations(CBaseEntity* pEntity)
+void CMapMigrations::RunMigrations(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues)
 {
+	if (g_cvarMapMigrations20260121.Get() > 0)
+		Migrations_Rendermode(pVecEntityKeyValues);
+
 	if (g_cvarMapMigrations20260121.Get() == 1 || (g_cvarMapMigrations20260121.Get() == 2 && m_timeMapUpdated < g_time20260121))
-		Migrations_20260121(pEntity);
+		Migrations_20260121(pVecEntityKeyValues);
 }
 
-void CMapMigrations::Migrations_20260121(CBaseEntity* pEntity)
+void CMapMigrations::Migrations_Rendermode(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues)
 {
-	if (!V_strcasecmp(pEntity->GetClassname(), "func_door_rotating"))
+	FOR_EACH_VEC(*pVecEntityKeyValues, i)
 	{
-		uint32 spawnFlags = pEntity->m_spawnflags();
+		auto pKeyValues = (*pVecEntityKeyValues)[i];
 
-		if (!(spawnFlags & SF_DOOR_ONEWAY))
-			pEntity->m_spawnflags = spawnFlags + SF_DOOR_ONEWAY;
-	}
+		if (!pKeyValues->HasValue("rendermode"))
+			continue;
 
-	CBaseModelEntity* pModelEntity = pEntity->AsBaseModelEntity();
+		int renderMode = V_StringToInt32(pKeyValues->GetString("rendermode"), -1, NULL, NULL, PARSING_FLAG_SKIP_WARNING);
 
-	if (pModelEntity)
-	{
-		// Also need to make sure the entity is using index-based rendermodes, and not enum-based ones (which will already automatically migrate correctly)
-		// This differentiation is lost after entity spawn, so we had to check the original keyvalue earlier instead
-		for (int i = 0; i < m_vecModelEntitiesUsingRendermodeEnum.size(); i++)
-			if (m_vecModelEntitiesUsingRendermodeEnum[i] == pModelEntity->GetHandle())
-				return;
+		// Enum-named render modes already migrate correctly
+		if (renderMode == -1)
+			continue;
 
-		RenderMode_t renderMode = pModelEntity->m_nRenderMode();
-
-		// Legacy kRenderTransAlpha
 		if (renderMode == 4)
-			pModelEntity->m_nRenderMode = kRenderTransAlpha;
-		// Legacy kRenderNone
+			pKeyValues->SetString("rendermode", "kRenderTransAlpha");
 		else if (renderMode == 10)
-			pModelEntity->m_nRenderMode = kRenderNone;
+			pKeyValues->SetString("rendermode", "kRenderNone");
 		// All other removed render modes, fall back to normal
 		else if (renderMode > kRenderNormal)
-			pModelEntity->m_nRenderMode = kRenderNormal;
+			pKeyValues->SetString("rendermode", "kRenderNormal");
+	}
+}
+
+void CMapMigrations::Migrations_20260121(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues)
+{
+	FOR_EACH_VEC(*pVecEntityKeyValues, i)
+	{
+		auto pKeyValues = (*pVecEntityKeyValues)[i];
+
+		if (!V_strcasecmp(pKeyValues->GetString("classname"), "func_door_rotating") && pKeyValues->HasValue("spawnflags"))
+		{
+			uint32 spawnFlags = pKeyValues->GetUint("spawnflags");
+			pKeyValues->SetUint("spawnflags", spawnFlags | SF_DOOR_ONEWAY);
+		}
 	}
 }
 
@@ -156,55 +162,11 @@ bool CMapMigrations::Migrations20260420Enabled()
 	return g_cvarMapMigrations20260420.Get() == 1 || (g_cvarMapMigrations20260420.Get() == 2 && m_timeMapUpdated < g_time20260420);
 }
 
-void CMapMigrations::UpdateMapUpdateTime(time_t timeMapUpdated)
+void CMapMigrations::UpdateMapUpdateTime(uint64 iWorkshopId, time_t timeMapUpdated)
 {
-	m_timeMapUpdated = timeMapUpdated;
+	m_mapUpdateTimes[iWorkshopId] = timeMapUpdated;
 
-	CBaseEntity* pTarget = nullptr;
-
-	// May be called late, so also check any existing entities first
-	while ((pTarget = UTIL_FindEntityByClassname(pTarget, "*")))
-		RunMigrations(pTarget);
-}
-
-std::shared_ptr<CMapMigrationWorkshopDetailsQuery> CMapMigrationWorkshopDetailsQuery::Create(uint64 iWorkshopId)
-{
-	if (!GetSteamUGC())
-	{
-		Panic("Map migrations failed to find current map update time: null ISteamUGC\n");
-		return nullptr;
-	}
-
-	uint64 iWorkshopIDArray[1] = {iWorkshopId};
-	UGCQueryHandle_t hQuery = GetSteamUGC()->CreateQueryUGCDetailsRequest(iWorkshopIDArray, 1);
-
-	if (hQuery == k_UGCQueryHandleInvalid)
-	{
-		Panic("Map migrations failed to find current map update time: failed to query workshop map information for ID %llu\n", iWorkshopId);
-		return nullptr;
-	}
-
-	GetSteamUGC()->SetAllowCachedResponse(hQuery, 0);
-	SteamAPICall_t hCall = GetSteamUGC()->SendQueryUGCRequest(hQuery);
-
-	auto pQuery = std::make_shared<CMapMigrationWorkshopDetailsQuery>(hQuery, iWorkshopId);
-	g_pMapMigrations->AddWorkshopDetailsQuery(pQuery);
-	pQuery->m_CallResult.Set(hCall, pQuery.get(), &CMapMigrationWorkshopDetailsQuery::OnQueryCompleted);
-
-	return pQuery;
-}
-
-void CMapMigrationWorkshopDetailsQuery::OnQueryCompleted(SteamUGCQueryCompleted_t* pCompletedQuery, bool bFailed)
-{
-	SteamUGCDetails_t details;
-
-	if (bFailed || pCompletedQuery->m_eResult != k_EResultOK || pCompletedQuery->m_unNumResultsReturned < 1 || !GetSteamUGC()->GetQueryUGCResult(pCompletedQuery->m_handle, 0, &details) || details.m_eResult != k_EResultOK)
-		Panic("Map migrations failed to find current map update time: failed to query workshop map information for ID %llu\n", m_iWorkshopId);
-	else
-		g_pMapMigrations->UpdateMapUpdateTime(details.m_rtimeUpdated);
-
-	if (GetSteamUGC())
-		GetSteamUGC()->ReleaseQueryUGCRequest(m_hQuery);
-
-	g_pMapMigrations->RemoveWorkshopDetailsQuery(shared_from_this());
+	// If we get triggered through ApplyGameSettings
+	if (g_pMapVoteSystem->GetCurrentMap() && g_pMapVoteSystem->GetCurrentMap()->GetWorkshopId() == iWorkshopId)
+		m_timeMapUpdated = timeMapUpdated;
 }

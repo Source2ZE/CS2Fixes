@@ -22,7 +22,9 @@
 class CCfgParser
 {
 public:
+	void PreLevelLoad(const char* pszMapName);
 	void ApplyGameSettings(const char* pszMapName);
+	void ExecuteConfigs(const char* pszMapName);
 	void ParseCfg(const char* pszCfgPath);
 };
 

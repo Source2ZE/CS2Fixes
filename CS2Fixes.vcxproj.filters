@@ -68,6 +68,9 @@
     <ClCompile Include="src\detours.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\virtual_hooks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\playermanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -200,6 +203,9 @@
     <ClCompile Include="src\cs2_sdk\entity\services.cpp">
       <Filter>Source Files\cs2_sdk\entity</Filter>
     </ClCompile>
+    <ClCompile Include="src\cs2_sdk\entity\customhudlayout.cpp">
+      <Filter>Source Files\cs2_sdk\entity</Filter>
+    </ClCompile>
     <ClCompile Include="src\topdefender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -268,13 +274,13 @@
     <ClInclude Include="src\commands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cdetour.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ctimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\detours.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\virtual_hooks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\playermanager.h">
@@ -406,6 +412,9 @@
     <ClInclude Include="src\cs2_sdk\cchecktransmitinfo.h">
       <Filter>Header Files\cs2_sdk</Filter>
     </ClInclude>
+    <ClInclude Include="src\cs2_sdk\map.h">
+      <Filter>Header Files\cs2_sdk</Filter>
+    </ClInclude>
     <ClInclude Include="src\entwatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -442,6 +451,9 @@
     <ClInclude Include="src\utils\utils.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\khook_helpers.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\cpointorient.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
@@ -450,6 +462,9 @@
     </ClInclude>
     <ClInclude Include="src\mapmigrations.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\customhudlayout.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
