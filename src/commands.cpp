@@ -833,7 +833,22 @@ CON_COMMAND_CHAT(vc, "- Display players that are using voice chat")
 	VoiceChatPrintCmd(args, player);
 }
 
-#if _DEBUG
+CConVar<bool> g_cvarThirdPersonEnable("cs2f_thirdperson_enable", FCVAR_NONE, "Whether to enable thirdperson", false);
+
+CON_COMMAND_CHAT(tp, "- Thirdperson")
+{
+	if (!g_cvarThirdPersonEnable.Get() || !player)
+		return;
+
+	ZEPlayer* pPlayer = player->GetZEPlayer();
+
+	if (!pPlayer)
+		return;
+
+	pPlayer->ToggleThirdPerson();
+}
+
+#if 1
 CON_COMMAND_CHAT(myuid, "- Test")
 {
 	if (!player)

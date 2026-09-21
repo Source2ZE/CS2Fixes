@@ -466,5 +466,8 @@
     <ClInclude Include="src\cs2_sdk\entity\customhudlayout.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
     </ClInclude>
+    <ClInclude Include="src\cs2_sdk\entity\customplayercamera.h">
+      <Filter>Header Files\cs2_sdk\entity</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
