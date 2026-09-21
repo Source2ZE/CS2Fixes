@@ -23,6 +23,7 @@
 #include "entity/cparticlesystem.h"
 #include "entity/cpointorient.h"
 #include "entity/cpointworldtext.h"
+#include "entity/customplayercamera.h"
 #include "entity/lights.h"
 #include "gamesystem.h"
 #include "in_buttons.h"
@@ -344,6 +345,7 @@ public:
 	void SetSteamIdAttribute();
 	void CreateEntwatchHud();
 	void CreatePointOrient();
+	void ToggleThirdPerson(float flDistance = -65.f);
 
 private:
 	bool m_bAuthenticated;
@@ -396,6 +398,7 @@ private:
 	int m_iButtonWatchMode;
 	CHandle<CPointOrient> m_hPointOrient;
 	CHandle<CPointWorldText> m_hEntwatchHud;
+	CHandle<CCSCustomPlayerCamera> m_hCustomCamera;
 	int m_iEntwatchHudMode;
 	Color m_colorEntwatchHud;
 	float m_flEntwatchHudX;
