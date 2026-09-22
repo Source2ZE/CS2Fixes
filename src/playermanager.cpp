@@ -666,7 +666,7 @@ void ZEPlayer::ToggleThirdPerson(float flDistance)
 		pCamera->m_nCameraMode = CUSTOM_CAMERA_MODE_DISABLED;
 		pCameraService->m_hViewEntity = nullptr;
 
-		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Thirdperson off");
+		ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "You have disabled thirdperson.");
 
 		return;
 	}
@@ -675,7 +675,7 @@ void ZEPlayer::ToggleThirdPerson(float flDistance)
 		// Try to find the player's camera if the map spawned it
 		CCSCustomPlayerCamera* pEnt = nullptr;
 		
-		while (pEnt = (CCSCustomPlayerCamera*)UTIL_FindEntityByClassname(pEnt, "custom_player_camera"))
+		while ((pEnt = (CCSCustomPlayerCamera*)UTIL_FindEntityByClassname(pEnt, "custom_player_camera")))
 		{
 			if (pEnt->m_hPawn.Get() == pPawn)
 			{
@@ -710,7 +710,7 @@ void ZEPlayer::ToggleThirdPerson(float flDistance)
 
 	pCameraService->m_hViewEntity = pCamera;
 
-	ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Thirdperson on");
+	ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "You have enabled thirdperson.");
 }
 
 void ZEPlayer::CreateEntwatchHud()
