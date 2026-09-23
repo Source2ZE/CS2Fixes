@@ -752,7 +752,7 @@ KHook::Return<bool> Detour_TraceShape(int64* a1, int64 a2, int64 a3, int64 a4, C
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay, void* a6, void* a7)
+KHook::Return<void> Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, void* pParameterContainer, float flDelay, void* a6, const CVariant* value)
 {
 	if (g_cvarEnableButtonWatch.Get())
 		ButtonWatch(pThis, pActivator, pCaller, value, flDelay);
