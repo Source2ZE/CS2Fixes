@@ -98,7 +98,10 @@ void CCfgParser::ParseCfg(const char* pszCfgPath)
 
 		if (convar.IsValidRef())
 		{
-			if (args.ArgC() > 1 && !convar.SetString(args[1]))
+			// Hold on to ConVarRefAbstract's so they don't get destroyed on next iteration loop, this could cause memory issues with deferred FCVAR_PERFORMING_CALLBACKS cvar's
+			ConVarRefAbstract& cachedConvar = m_mapConVars.insert_or_assign(convar.GetAccessIndex(), convar).first->second;
+
+			if (args.ArgC() > 1 && !cachedConvar.SetString(args[1]))
 				Message("Failed to execute \"%s %s\"\n", args[0], args[1]);
 
 			continue;
