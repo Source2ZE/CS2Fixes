@@ -60,6 +60,8 @@ class CTakeDamageInfo;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
 class CSpawnGroupMgrGameSystem;
+struct CPulseArgumentPack;
+struct CPulseInputParamMap;
 struct EmitSound_t;
 struct StartSoundEventInfo;
 struct CTakeDamageResult;
@@ -88,7 +90,7 @@ namespace addresses
 	inline void(FASTCALL* UTIL_Remove)(CEntityInstance*);
 
 	inline void(FASTCALL* CEntitySystem_AddEntityIOEvent)(CEntitySystem* pEntitySystem, CEntityInstance* pTarget, const char* pszInput,
-														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, void*, void*);
+														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, CPulseArgumentPack* pArgumentPack, CPulseInputParamMap* pParamMap);
 	inline void(FASTCALL* CEntityInstance_AcceptInput)(CEntityInstance* pThis, const char* pInputName,
 													   CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value);
 
