@@ -166,7 +166,7 @@
 		{
 			"library": "server",
 			"windows": "48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 54 41 56 41 57 48 83 EC ? 48 8B 01 48 8B FA",
-			"linux": "48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 54 41 56 41 57 48 83 EC ? 48 8B 01 48 8B FA"
+			"linux": "55 48 8D 15 ? ? ? ? 48 89 E5 41 55 41 54 49 89 F4 53 48 89 FB 48 83 EC ? 48 8B 07 48 8B 80 ? ? ? ? 48 39 D0 0F 85 ? ? ? ? 80 BF"
 		},
 		"CCSPlayer_WeaponServices_EquipWeapon":
 		{
@@ -391,63 +391,63 @@
 		},
 		"CBaseEntity::SetOwner":
 		{
-			"windows": 53,
-			"linux": 52
+			"windows": 54,
+			"linux": 53
 		},
 		"CBaseEntity::Use":
 		{
-			"windows": 145,
-			"linux": 144
+			"windows": 147,
+			"linux": 146
 		},
 		"CBaseEntity::StartTouch":
-		{
-			"windows": 148,
-			"linux": 147
-		},
-		"CBaseEntity::Touch":
-		{
-			"windows": 149,
-			"linux": 148
-		},
-		"CBaseEntity::EndTouch":
 		{
 			"windows": 150,
 			"linux": 149
 		},
+		"CBaseEntity::Touch":
+		{
+			"windows": 151,
+			"linux": 150
+		},
+		"CBaseEntity::EndTouch":
+		{
+			"windows": 152,
+			"linux": 151
+		},
 		"Teleport":
 		{
-			"windows": 163,
-			"linux": 162
+			"windows": 165,
+			"linux": 164
 		},
 		"CollisionRulesChanged":
 		{
-			"windows": 186,
-			"linux": 185
+			"windows": 188,
+			"linux": 187
 		},
 		"CCSPlayerController_Respawn":
 		{
-			"windows": 270,
-			"linux": 272
+			"windows": 274,
+			"linux": 276
 		},
 		// CBaseTrigger
 		"PassesTriggerFilters":
 		{
-			"windows": 269,
-			"linux": 270
+			"windows": 271,
+			"linux": 272
 		},
 		// Actually a bit of a wrapper function now? Eventually calls a long function with "player_hurt" in the middle and then inserts userid, health, priority, attacker strings
 		"CCSPlayerPawn::OnTakeDamage_Alive":
 		{
-			"windows": 252,
-			"linux": 253
+			"windows": 255,
+			"linux": 256
 		},
 		// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
-		// return (*(*v9 + 2976LL))(v9, v27, 0LL);
-		// 2976 (372 * 8) is the offset
+		// return (*(*v9 + 3096LL))(v9, v27, 0LL);
+		// 3096 (387 * 8) is the offset
 		"CBasePlayerPawn_CommitSuicide":
 		{
-			"windows": 384,
-			"linux": 384
+			"windows": 387,
+			"linux": 387
 		},
 		"GameEntitySystem":
 		{
@@ -457,15 +457,15 @@
 		// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 		"CGameRules_FindPickerEntity":
 		{
-			"windows": 26,
-			"linux": 27
+			"windows": 25,
+			"linux": 26
 		},
 		// engine
-		// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 632) ), note that this is a CUtlVector
+		// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 616) ), note that this is a CUtlVector
 		"CNetworkGameServer_ClientList":
 		{
-			"windows": 73,
-			"linux": 73
+			"windows": 77,
+			"linux": 77
 		},
 		// Right above "mapgroup workshop;" string there is a virtual call to this on g_pGameTypes using "workshop" string
 		"IGameTypes_CreateWorkshopMapGroup":
@@ -476,8 +476,8 @@
 		// There's no easy way to find this, but it's a function that checks entity flags (0x370) and ends by calling RemoveFlag with 0x800000 (FL_BASEVELOCITY)
 		"CCSPlayer_MovementServices::CheckMovingGround":
 		{
-			"windows": 44,
-			"linux": 45
+			"windows": 45,
+			"linux": 46
 		},
 		"CCSPlayer_WeaponServices::DropWeapon":
 		{
@@ -492,8 +492,8 @@
 		// server.dll -> xref 'sv_phys_stop_at_collision' first __fastcall
 		"CVPhys2World::GetTouchingList":
 		{
-			"windows": 121,
-			"linux": 121
+			"windows": 122,
+			"linux": 122
 		}
 	},
 	"Patches":
