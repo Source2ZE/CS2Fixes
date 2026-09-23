@@ -941,7 +941,7 @@ KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Po
 		return {KHook::Action::Ignore};
 
 	auto pWorld = singleWorld->m_pCWorld;
-	auto vecLumpData = (CUtlVector<void*>*)((uint8_t*)pWorld + 0x1E0);
+	auto vecLumpData = (CUtlVector<void*>*)((uint8_t*)pWorld + 0x298);
 
 	FOR_EACH_VEC(*vecLumpData, i)
 	{
