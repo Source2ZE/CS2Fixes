@@ -29,9 +29,11 @@ CMapMigrations* g_pMapMigrations = nullptr;
 
 const time_t g_time20260121 = 1769036239;
 const time_t g_time20260420 = 1776725888;
+const time_t g_time20260922 = 1790120204;
 
 CConVar<int> g_cvarMapMigrations20260121("cs2f_mapmigrations_20260121", FCVAR_NONE, "Current mode for 2026-01-21 CS2 update map migrations. [0 = Force disabled, 1 = Force enabled, 2 = Automatically enabled for maps updated before 2026-01-21 & disabled if updated after]", 2);
 CConVar<int> g_cvarMapMigrations20260420("cs2f_mapmigrations_20260420", FCVAR_NONE, "Current mode for 2026-04-20 CS2 update map migrations. [0 = Force disabled, 1 = Force enabled, 2 = Automatically enabled for maps updated before 2026-04-20 & disabled if updated after]", 2);
+CConVar<int> g_cvarMapMigrations20260922("cs2f_mapmigrations_20260922", FCVAR_NONE, "Current mode for 2026-09-22 CS2 update map migrations. [0 = Force disabled, 1 = Force enabled, 2 = Automatically enabled for maps updated before 2026-09-22 & disabled if updated after]", 2);
 
 void CMapMigrations::PreLevelLoad(uint64 iWorkshopId)
 {
@@ -63,6 +65,14 @@ void CMapMigrations::OnEquipWeapon(CBasePlayerWeapon* pWeapon)
 {
 	if (Migrations20260420Enabled())
 		Migrations_20260420(pWeapon);
+}
+
+bool CMapMigrations::Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value)
+{
+	if (g_cvarMapMigrations20260922.Get() == 1 || (g_cvarMapMigrations20260922.Get() == 2 && m_timeMapUpdated < g_time20260922))
+		return Migrations_20260922(pThis, pInputName, pActivator, pCaller, value);
+
+	return false;
 }
 
 void CMapMigrations::RunMigrations(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues)
@@ -155,6 +165,22 @@ void CMapMigrations::Migrations_20260420(CBasePlayerWeapon* pWeapon)
 			}
 		}
 	}
+}
+
+bool CMapMigrations::Migrations_20260922(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value)
+{
+	// Fix stringified Pulse argument packs formatting float decimals breaking logic_case matching post 2026-09-22 CS2 update
+	if (value->m_type == FIELD_FLOAT32 && !V_strcasecmp(pInputName->String(), "InValue") && !V_strcasecmp(pThis->GetClassname(), "logic_case"))
+	{
+		char szValue[32];
+		V_snprintf(szValue, sizeof(szValue), "%g", value->m_float32);
+
+		// Back up through CEntityInstance_AcceptInput so we can just worry about variant_t
+		((CBaseEntity*)pThis->m_pInstance)->AcceptInput(pInputName->String(), szValue, pActivator, pCaller);
+		return true;
+	}
+
+	return false;
 }
 
 bool CMapMigrations::Migrations20260420Enabled()

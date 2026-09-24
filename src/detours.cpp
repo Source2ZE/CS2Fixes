@@ -534,6 +534,9 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 			return {KHook::Action::Supersede, CPointViewControlHandler::OnDisableAll(pViewControl)};
 	}
 
+	if (g_pMapMigrations->Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value))
+		return {KHook::Action::Supersede, true};
+
 	VPROF_SCOPE_END();
 
 	return {KHook::Action::Ignore};

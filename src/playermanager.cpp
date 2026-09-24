@@ -674,7 +674,7 @@ void ZEPlayer::ToggleThirdPerson(float flDistance)
 	{
 		// Try to find the player's camera if the map spawned it
 		CCSCustomPlayerCamera* pEnt = nullptr;
-		
+
 		while ((pEnt = (CCSCustomPlayerCamera*)UTIL_FindEntityByClassname(pEnt, "custom_player_camera")))
 		{
 			if (pEnt->m_hPawn.Get() == pPawn)
