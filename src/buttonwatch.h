@@ -22,4 +22,4 @@
 
 extern CConVar<bool> g_cvarEnableButtonWatch;
 
-void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay);
+void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, float flDelay);
