@@ -37,10 +37,12 @@ public:
 	void ApplyGameSettings(uint64 iWorkshopId);
 	void OnRoundPrestart();
 	void OnEquipWeapon(CBasePlayerWeapon* pWeapon);
+	bool Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value);
 	void RunMigrations(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues);
 	void Migrations_Rendermode(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues);
 	void Migrations_20260121(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues);
 	void Migrations_20260420(CBasePlayerWeapon* pWeapon);
+	bool Migrations_20260922(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value);
 	bool Migrations20260420Enabled();
 	void UpdateMapUpdateTime(uint64 iWorkshopId, time_t timeMapUpdated);
 
