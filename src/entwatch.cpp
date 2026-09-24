@@ -1903,7 +1903,7 @@ float EW_UpdateHud()
 
 		if (g_cvarUseEntwatchClantag.Get())
 		{
-			V_snprintf(pItem->sClantag, sizeof(EWItemInstance::sClantag), "[%s]%s:", sItemText.c_str(), pItem->szShortName.c_str());
+			V_snprintf(pItem->sClantag, sizeof(EWItemInstance::sClantag), "%s: %s", sItemText.c_str(), pItem->szShortName.c_str());
 			if (pItem->bHasThisClantag)
 				pOwner->SetClanTag(pItem->sClantag);
 		}
