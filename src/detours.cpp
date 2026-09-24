@@ -84,7 +84,11 @@ KHOOK_FUNCTION(TraceShape, Detour_TraceShape, nullptr);
 KHOOK_MEMBER(CEntityIOOutput_FireOutputInternal, Detour_CEntityIOOutput_FireOutputInternal, nullptr);
 KHOOK_MEMBER(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition, nullptr);
 KHOOK_MEMBER(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles, nullptr);
+#ifdef __linux__
+// Inlined by MSVC as of 2026-09-22 CS2 update
+// TODO: Find some alternative that supports Windows
 KHOOK_MEMBER(CBaseFilter_InputTestActivator, Detour_CBaseFilter_InputTestActivator, nullptr);
+#endif
 KHOOK_FUNCTION(GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan_Post);
 KHOOK_MEMBER(CCSPlayer_ItemServices_CanAcquire, Detour_CCSPlayer_ItemServices_CanAcquire, nullptr);
 KHOOK_FUNCTION(CS_Script_SetModel, Detour_CS_Script_SetModel, Detour_CS_Script_SetModel_Post);
