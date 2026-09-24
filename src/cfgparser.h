@@ -19,11 +19,19 @@
 
 #pragma once
 
+#include "convar.h"
+#include <map>
+
 class CCfgParser
 {
 public:
+	void PreLevelLoad(const char* pszMapName);
 	void ApplyGameSettings(const char* pszMapName);
+	void ExecuteConfigs(const char* pszMapName);
 	void ParseCfg(const char* pszCfgPath);
+
+private:
+	std::map<uint16, ConVarRefAbstract> m_mapConVars;
 };
 
 extern CCfgParser* g_pCfgParser;

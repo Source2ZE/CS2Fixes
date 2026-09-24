@@ -41,7 +41,7 @@ CConVar<bool> g_cvarTopDefenderPrint("cs2f_topdefender_print", FCVAR_NONE, "Whet
 CConVar<float> g_cvarTopDefenderRate("cs2f_topdefender_rate", FCVAR_NONE, "How often TopDefender stats get updated", 1.0f, true, 0.1f, false, 0.0f);
 CConVar<int> g_cvarTopDefenderThreshold("cs2f_topdefender_threshold", FCVAR_NONE, "Damage threshold for Top Defenders to be shown on round end", 1000, true, 0, false, 0);
 CConVar<int> g_cvarTopDefenderScore("cs2f_topdefender_score", FCVAR_NONE, "Score given to the top defender", 5000, true, 0, false, 0);
-CConVar<CUtlString> g_cvarTopDefenderClanTag("cs2f_topdefender_clantag", FCVAR_NONE, "Clan tag given to the top defender", "[Top Defender]");
+CConVar<CUtlString> g_cvarTopDefenderClanTag("cs2f_topdefender_clantag", FCVAR_NONE, "Clan tag given to the top defender", "Top Defender");
 
 // Array sorting function
 bool SortTD(ZEPlayerHandle a, ZEPlayerHandle b)

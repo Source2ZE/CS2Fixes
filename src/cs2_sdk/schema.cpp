@@ -96,6 +96,9 @@ static void InitSchemaKeyValueMap(SchemaClassInfoData_t* pClassInfo, SchemaKeyVa
 		keyValuePair.second.offset = field.m_nSingleInheritanceOffset;
 		keyValuePair.second.networked = IsFieldNetworked(pClassInfo->m_pszName, field);
 
+		if (field.m_pType->m_eTypeCategory == SCHEMA_TYPE_ATOMIC && field.m_pType->m_eAtomicCategory == SCHEMA_ATOMIC_COLLECTION_OF_T)
+			keyValuePair.second.manipulator = static_cast<CSchemaType_Atomic_CollectionOfT*>(field.m_pType)->m_pfnManipulator;
+
 		keyValueMap.insert(keyValuePair);
 	}
 
@@ -106,12 +109,7 @@ static void InitSchemaKeyValueMap(SchemaClassInfoData_t* pClassInfo, SchemaKeyVa
 
 static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap, const char* className, uint32_t classKey)
 {
-	CSchemaSystemTypeScope* pType = g_pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
-
-	if (!pType)
-		return false;
-
-	SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className).Get();
+	SchemaClassInfoData_t* pClassInfo = schema::GetSchemaClassInfo(className);
 
 	if (!pClassInfo)
 	{
@@ -157,6 +155,16 @@ SchemaKey schema::GetOffset(const char* className, uint32_t classKey, const char
 	}
 
 	return tableMap[memberKey];
+}
+
+SchemaClassInfoData_t* schema::GetSchemaClassInfo(const char* className)
+{
+	static CSchemaSystemTypeScope* pType = g_pSchemaSystem->FindTypeScopeForModule(MODULE_PREFIX "server" MODULE_EXT);
+
+	if (!pType)
+		return nullptr;
+
+	return pType->FindDeclaredClass(className).Get();
 }
 
 void NetworkVarStateChanged(uintptr_t pNetworkVar, uint32_t nOffset, uint32 nNetworkStateChangedOffset)

@@ -23,6 +23,7 @@
 #include "entity/cparticlesystem.h"
 #include "entity/cpointorient.h"
 #include "entity/cpointworldtext.h"
+#include "entity/customplayercamera.h"
 #include "entity/lights.h"
 #include "gamesystem.h"
 #include "in_buttons.h"
@@ -34,6 +35,7 @@
 
 extern CConVar<bool> g_cvarFlashLightTransmitOthers;
 extern CConVar<CUtlString> g_cvarFlashLightAttachment;
+extern CConVar<bool> g_cvarEnableMapSteamIds;
 
 #define NO_TARGET_BLOCKS (0)
 #define NO_RANDOM (1 << 1)
@@ -343,6 +345,7 @@ public:
 	void SetSteamIdAttribute();
 	void CreateEntwatchHud();
 	void CreatePointOrient();
+	void ToggleThirdPerson(float flDistance = -65.f);
 
 private:
 	bool m_bAuthenticated;
@@ -395,6 +398,7 @@ private:
 	int m_iButtonWatchMode;
 	CHandle<CPointOrient> m_hPointOrient;
 	CHandle<CPointWorldText> m_hEntwatchHud;
+	CHandle<CCSCustomPlayerCamera> m_hCustomCamera;
 	int m_iEntwatchHudMode;
 	Color m_colorEntwatchHud;
 	float m_flEntwatchHudX;

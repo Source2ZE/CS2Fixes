@@ -19,39 +19,27 @@
 
 #pragma once
 
-#include "gameconfig.h"
-#include "platform.h"
-#include "utils/module.h"
+#include "entity/ccsplayerpawn.h"
 
-class CMemPatch
+enum CustomCameraMode_t : uint8_t
+{
+	CUSTOM_CAMERA_MODE_DISABLED = 0,
+	CUSTOM_CAMERA_MODE_CONTROLLED = 1,
+	CUSTOM_CAMERA_MODE_CONTROLLED_POSITION = 2,
+	CUSTOM_CAMERA_MODE_FOLLOW_POSITION = 3,
+};
+
+class CCSCustomPlayerCamera : public CBaseEntity
 {
 public:
-	CMemPatch(const char* pSignatureName, const char* pszName, const char* pOffsetName = "") :
-		m_pSignatureName(pSignatureName), m_pszName(pszName), m_pOffsetName(pOffsetName)
-	{
-		m_pModule = nullptr;
-		m_pPatchAddress = 0x00;
-		m_pOriginalBytes = nullptr;
-		m_pSignature = nullptr;
-		m_pPatch = nullptr;
-		m_iPatchLength = 0;
-		m_iOffset = 0;
-	}
+	DECLARE_SCHEMA_CLASS(CCSCustomPlayerCamera)
 
-	bool PerformPatch();
-	void UndoPatch();
-
-	uintptr_t GetPatchAddress() { return m_pPatchAddress; }
-
-private:
-	CModule** m_pModule;
-	const byte* m_pSignature;
-	const byte* m_pPatch;
-	byte* m_pOriginalBytes;
-	const char* m_pSignatureName;
-	const char* m_pszName;
-	const char* m_pOffsetName;
-	int m_iOffset;
-	size_t m_iPatchLength;
-	uintptr_t m_pPatchAddress;
+	SCHEMA_FIELD(CHandle<CCSPlayerPawnBase>, m_hPawn)
+	SCHEMA_FIELD(CustomCameraMode_t, m_nCameraMode)
+	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hFollowEntity)
+	SCHEMA_FIELD(bool, m_bFollowEyes)
+	SCHEMA_FIELD(Vector, m_vecFollowOffset)
+	SCHEMA_FIELD(Vector, m_vecCameraOffset)
+	SCHEMA_FIELD(bool, m_bClipCameraOffset)
+	SCHEMA_FIELD(float32, m_flCameraOffsetReturnStrength)
 };

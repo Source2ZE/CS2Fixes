@@ -20,5 +20,6 @@
 #pragma once
 #include "detours.h"
 
-bool IsButtonWatchEnabled();
-void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, const CVariant* value, float flDelay);
+extern CConVar<bool> g_cvarEnableButtonWatch;
+
+void ButtonWatch(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, float flDelay);

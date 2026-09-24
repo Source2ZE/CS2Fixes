@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =============================================================================
  * CS2Fixes
  * Copyright (C) 2023-2026 Source2ZE
@@ -36,6 +36,7 @@ namespace modules
 	inline CModule* networksystem;
 	inline CModule* vphysics2;
 	inline CModule* matchmaking;
+	inline CModule* worldrenderer;
 #ifdef _WIN32
 	inline CModule* hammer;
 #endif
@@ -59,8 +60,11 @@ class CTakeDamageInfo;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
 class CSpawnGroupMgrGameSystem;
+struct CPulseArgumentPack;
+struct CPulseInputParamMap;
 struct EmitSound_t;
 struct StartSoundEventInfo;
+struct CTakeDamageResult;
 
 // Can't be forward-declared, can't include cgamerules.h.. just define it here
 struct CGcBanInformation_t
@@ -73,8 +77,8 @@ struct CGcBanInformation_t
 
 namespace addresses
 {
-	bool Initialize(CGameConfig* g_GameConfig);
-	bool InitializeBanMap(CGameConfig* g_GameConfig);
+	bool Initialize();
+	bool InitializeBanMap();
 	bool InitializeVScriptFunctions();
 
 	inline CUtlOrderedMap<uint32, CGcBanInformation_t, uint32>* sm_mapGcBanInformation;
@@ -86,7 +90,7 @@ namespace addresses
 	inline void(FASTCALL* UTIL_Remove)(CEntityInstance*);
 
 	inline void(FASTCALL* CEntitySystem_AddEntityIOEvent)(CEntitySystem* pEntitySystem, CEntityInstance* pTarget, const char* pszInput,
-														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, void*, void*);
+														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, CPulseArgumentPack* pArgumentPack, CPulseInputParamMap* pParamMap);
 	inline void(FASTCALL* CEntityInstance_AcceptInput)(CEntityInstance* pThis, const char* pInputName,
 													   CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value);
 
@@ -102,11 +106,10 @@ namespace addresses
 												 char iAttachmentPoint, CUtlSymbolLarge iAttachmentName, bool bResetAllParticlesOnEntity, int nSplitScreenPlayerSlot, IRecipientFilter* a7, byte* a8);
 	inline StartSoundEventInfo(FASTCALL* CBaseEntity_EmitSoundFilter)(IRecipientFilter& filter, CEntityIndex ent, const EmitSound_t& params);
 	inline void(FASTCALL* CBaseEntity_SetMoveType)(CBaseEntity* pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
-	inline void(FASTCALL* CTakeDamageInfo_Constructor)(CTakeDamageInfo* pThis, CBaseEntity* pInflictor, CBaseEntity* pAttacker, CBaseEntity* pAbility,
-													   const Vector* vecDamageForce, const Vector* vecDamagePosition, float flDamage, int bitsDamageType, int iCustomDamage, void* a10);
 	inline void(FASTCALL* CCSPlayer_WeaponServices_EquipWeapon)(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
 	inline void(FASTCALL* GetSpawnGroups)(CSpawnGroupMgrGameSystem* pSpawnGroupMgr, CUtlVector<SpawnGroupHandle_t>* pList);
 	inline void(FASTCALL* CBasePlayerPawn_SnapViewAngles)(CBasePlayerPawn* pPawn, QAngle* pAngles);
+	inline int64(FASTCALL* CBaseEntity_TakeDamageOld)(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult);
 
 	inline CVScriptFunction<void, CBaseEntity, float> SetGravityScale;
 	inline CVScriptFunction<void, CBaseEntity, const char*> ScriptSetEntityName;
