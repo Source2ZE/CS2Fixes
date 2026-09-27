@@ -27,7 +27,6 @@ class CCheckTransmitInfo;
 class IRecipientFilter;
 class ISoundEmitterSystemBase;
 class CBaseEntity;
-class CBaseFilter;
 class CCSPlayerController;
 class CEntityIndex;
 class CCommand;
@@ -110,7 +109,6 @@ KHook::Return<QAngle*> Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*, QAn
 KHook::Return<Vector> Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn*);
 KHook::Return<QAngle> Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn*);
 #endif
-KHook::Return<void> Detour_CBaseFilter_InputTestActivator(CBaseFilter* pThis, InputData_t& inputdata);
 KHook::Return<void> Detour_GameSystem_Think_CheckSteamBan();
 KHook::Return<void> Detour_GameSystem_Think_CheckSteamBan_Post();
 KHook::Return<AcquireResult> Detour_CCSPlayer_ItemServices_CanAcquire(CCSPlayer_ItemServices* pItemServices, CEconItemView* pEconItem, AcquireMethod iAcquireMethod, uint64_t unk4);

@@ -84,7 +84,6 @@ KHOOK_FUNCTION(TraceShape, Detour_TraceShape, nullptr);
 KHOOK_MEMBER(CEntityIOOutput_FireOutputInternal, Detour_CEntityIOOutput_FireOutputInternal, nullptr);
 KHOOK_MEMBER(CBasePlayerPawn_GetEyePosition, Detour_CBasePlayerPawn_GetEyePosition, nullptr);
 KHOOK_MEMBER(CBasePlayerPawn_GetEyeAngles, Detour_CBasePlayerPawn_GetEyeAngles, nullptr);
-KHOOK_MEMBER(CBaseFilter_InputTestActivator, Detour_CBaseFilter_InputTestActivator, nullptr);
 KHOOK_FUNCTION(GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan, Detour_GameSystem_Think_CheckSteamBan_Post);
 KHOOK_MEMBER(CCSPlayer_ItemServices_CanAcquire, Detour_CCSPlayer_ItemServices_CanAcquire, nullptr);
 KHOOK_FUNCTION(CS_Script_SetModel, Detour_CS_Script_SetModel, Detour_CS_Script_SetModel_Post);
@@ -537,6 +536,10 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	if (g_pMapMigrations->Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value))
 		return {KHook::Action::Supersede, true};
 
+	// If null activator (player disconnected & pawn removed), block the real TestActivator function from executing and crashing the server
+	if (!V_strnicmp(pThis->GetClassname(), "filter_", 7) && !V_strcasecmp(pInputName->String(), "TestActivator") && !pActivator)
+		return {KHook::Action::Supersede, true};
+
 	VPROF_SCOPE_END();
 
 	return {KHook::Action::Ignore};
@@ -811,15 +814,6 @@ KHook::Return<QAngle> Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPawn
 	return {KHook::Action::Ignore};
 }
 #endif
-
-KHook::Return<void> Detour_CBaseFilter_InputTestActivator(CBaseFilter* pThis, InputData_t& inputdata)
-{
-	// If null activator (player disconnected & pawn removed), block the real function from executing and crashing the server
-	if (!inputdata.pActivator)
-		return {KHook::Action::Supersede};
-
-	return {KHook::Action::Ignore};
-}
 
 CConVar<bool> g_cvarFixGameBans("cs2f_fix_game_bans", FCVAR_NONE, "Whether to fix CS2 game bans spreading to all new joining players", false);
 
