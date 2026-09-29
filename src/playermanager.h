@@ -346,7 +346,7 @@ public:
 	void SetSteamIdAttribute();
 	void CreateEntwatchHud();
 	void CreatePointOrient();
-	void ToggleThirdPerson(float flDistance = -65.f);
+	void ToggleThirdPerson(float flDistance = -65.f, bool bForce = false);
 
 private:
 	bool m_bAuthenticated;

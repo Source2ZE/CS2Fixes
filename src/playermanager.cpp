@@ -655,7 +655,7 @@ void ZEPlayer::CreatePointOrient()
 	pOrient->AcceptInput("SetTarget", "!activator", pPawn);
 }
 
-void ZEPlayer::ToggleThirdPerson(float flDistance)
+void ZEPlayer::ToggleThirdPerson(float flDistance, bool bForce)
 {
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
 
@@ -680,7 +680,14 @@ void ZEPlayer::ToggleThirdPerson(float flDistance)
 		if (pCamera->AsPointViewControl() || !CloseEnough(pCamera->m_vecFollowOffset().z, THIRD_PERSON_CAMERA_MARKER))
 			return;
 
-		// Camera is ours, disable it
+		// Edit current camera offset if distance is different
+		if (!CloseEnough(pCamera->m_vecCameraOffset().x, flDistance) && !bForce)
+		{
+			pCamera->m_vecCameraOffset = Vector(flDistance, pPawn->m_bLeftHanded ? 15.f : -15.f, 0.f);
+			return;
+		}
+
+		// Camera matches ours, disable it
 		pCamera->m_nCameraMode = CUSTOM_CAMERA_MODE_DISABLED;
 		pCameraService->m_hViewEntity = nullptr;
 
