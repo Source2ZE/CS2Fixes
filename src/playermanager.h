@@ -205,6 +205,7 @@ public:
 		m_bTopDefender = false;
 		m_flLastVoiceTime = -15.0f;
 		m_flBeaconEnabledTime = -2.0f;
+		m_bOriginalClanTagSaved = false;
 	}
 
 	~ZEPlayer()
@@ -278,6 +279,11 @@ public:
 	void SetTopDefenderStatus(bool bStatus) { m_bTopDefender = bStatus; }
 	void SetLastVoiceTime(float flTime) { m_flLastVoiceTime = flTime; }
 	void SetBeaconEnabledTime(float flTime) { m_flBeaconEnabledTime = flTime; }
+	void SetOriginalClanTag(std::string strClanTag)
+	{
+		m_strOriginalClanTag = strClanTag;
+		m_bOriginalClanTagSaved = true;
+	}
 
 	uint64 GetAdminFlags() { return m_iAdminFlags; }
 	int GetAdminImmunity() { return m_iAdminImmunity; }
@@ -330,6 +336,8 @@ public:
 	bool GetTopDefenderStatus() { return m_bTopDefender; }
 	float GetLastVoiceTime() { return m_flLastVoiceTime; }
 	float GetBeaconEnabledTime() { return m_flBeaconEnabledTime; }
+	std::string GetOriginalClanTag() { return m_strOriginalClanTag; }
+	bool IsOriginalClanTagSaved() { return m_bOriginalClanTagSaved; }
 
 	void OnSpawn();
 	void OnAuthenticated();
@@ -408,6 +416,8 @@ private:
 	bool m_bTopDefender;
 	float m_flLastVoiceTime;
 	float m_flBeaconEnabledTime;
+	std::string m_strOriginalClanTag;
+	bool m_bOriginalClanTagSaved;
 };
 
 class CPlayerManager

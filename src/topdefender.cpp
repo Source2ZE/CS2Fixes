@@ -212,7 +212,7 @@ void TD_OnRoundEnd(IGameEvent* pEvent)
 			{
 				pPlayer->SetTopDefenderStatus(false);
 				pController->m_iScore() = pController->m_iScore() - g_cvarTopDefenderScore.Get();
-				pController->SetClanTag("");
+				pController->ResetClanTag();
 			}
 		}
 	}
