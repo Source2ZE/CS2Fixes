@@ -149,10 +149,23 @@ public:
 
 	void SetClanTag(const char* pszClanTag)
 	{
-		// Skip if clan tag is unchanged
-		if (!V_strcmp(m_szClan().String(), pszClanTag))
+		const char* pszCurrentClanTag = m_szClan().String();
+		ZEPlayer* pPlayer = GetZEPlayer();
+
+		if (!V_strcmp(pszCurrentClanTag, pszClanTag) || !pPlayer)
 			return;
 
+		if (!pPlayer->IsOriginalClanTagSaved())
+			pPlayer->SetOriginalClanTag(pszCurrentClanTag);
+
 		m_szClan = g_pEntitySystem->AllocPooledString(pszClanTag);
+	}
+
+	void ResetClanTag()
+	{
+		ZEPlayer* pPlayer = GetZEPlayer();
+
+		if (pPlayer && pPlayer->IsOriginalClanTagSaved())
+			SetClanTag(pPlayer->GetOriginalClanTag().c_str());
 	}
 };

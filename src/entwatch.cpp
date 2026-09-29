@@ -847,7 +847,7 @@ void EWItemInstance::Drop(EWDropReason reason, CCSPlayerController* pController)
 		}
 
 		if (!bSetAnotherClantag)
-			pController->SetClanTag("");
+			pController->ResetClanTag();
 	}
 
 	char sPlayerInfo[64];
@@ -1497,7 +1497,7 @@ void CEWHandler::ResetAllClantags()
 		if (!pController)
 			continue;
 
-		pController->SetClanTag("");
+		pController->ResetClanTag();
 	}
 }
 
