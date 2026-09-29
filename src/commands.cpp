@@ -834,18 +834,38 @@ CON_COMMAND_CHAT(vc, "- Display players that are using voice chat")
 }
 
 CConVar<bool> g_cvarThirdPersonEnable("cs2f_thirdperson_enable", FCVAR_NONE, "Whether to enable thirdperson", false);
+CConVar<float> g_cvarThirdPersonDistanceDefault("cs2f_thirdperson_distance_default", FCVAR_NONE, "Default distance for thirdperson", 65.0f, true, 1.0f, false, 0.0f);
+CConVar<float> g_cvarThirdPersonDistanceMin("cs2f_thirdperson_distance_min", FCVAR_NONE, "Minimum distance allowed for thirdperson", 15.0f, true, 1.0f, false, 0.0f);
+CConVar<float> g_cvarThirdPersonDistanceMax("cs2f_thirdperson_distance_max", FCVAR_NONE, "Maximum distance allowed for thirdperson", 150.0f, true, 1.0f, false, 0.0f);
 
-CON_COMMAND_CHAT(tp, "- Toggle thirdperson")
+CON_COMMAND_CHAT(tp, "[distance] - Toggle thirdperson")
 {
 	if (!g_cvarThirdPersonEnable.Get() || !player)
 		return;
 
 	ZEPlayer* pPlayer = player->GetZEPlayer();
+	float distance = g_cvarThirdPersonDistanceDefault.Get();
 
 	if (!pPlayer)
 		return;
 
-	pPlayer->ToggleThirdPerson();
+	if (args.ArgC() >= 2)
+	{
+		distance = V_StringToFloat32(args[1], -1);
+
+		if (distance == -1)
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid distance value \x06%s\x01.", args[1]);
+		else if (distance < g_cvarThirdPersonDistanceMin.Get())
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Minimum allowed thirdperson distance is \x06%g\x01.", g_cvarThirdPersonDistanceMin.Get());
+		else if (distance > g_cvarThirdPersonDistanceMax.Get())
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Maximum allowed thirdperson distance is \x06%g\x01.", g_cvarThirdPersonDistanceMax.Get());
+		else
+			pPlayer->ToggleThirdPerson(distance * -1);
+	}
+	else
+	{
+		pPlayer->ToggleThirdPerson(distance * -1, true);
+	}
 }
 
 #if _DEBUG
