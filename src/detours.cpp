@@ -772,7 +772,9 @@ KHook::Return<void> Detour_CEntityIOOutput_FireOutputInternal(CEntityIOOutput* p
 #ifdef PLATFORM_WINDOWS
 KHook::Return<Vector*> Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn, Vector* pRet)
 {
-	if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+	auto pCSPawn = reinterpret_cast<CCSPlayerPawn*>(pPawn);
+
+	if (pPawn->IsAlive() && (g_playerManager->IsUsingThirdPerson(pCSPawn) || CPointViewControlHandler::IsViewControl(pCSPawn)))
 	{
 		const auto& origin = pPawn->GetEyePosition();
 		pRet->Init(origin.x, origin.y, origin.z);
@@ -795,7 +797,9 @@ KHook::Return<QAngle*> Detour_CBasePlayerPawn_GetEyeAngles(CBasePlayerPawn* pPaw
 #else
 KHook::Return<Vector> Detour_CBasePlayerPawn_GetEyePosition(CBasePlayerPawn* pPawn)
 {
-	if (pPawn->IsAlive() && CPointViewControlHandler::IsViewControl(reinterpret_cast<CCSPlayerPawn*>(pPawn)))
+	auto pCSPawn = reinterpret_cast<CCSPlayerPawn*>(pPawn);
+
+	if (pPawn->IsAlive() && (g_playerManager->IsUsingThirdPerson(pCSPawn) || CPointViewControlHandler::IsViewControl(pCSPawn)))
 	{
 		const auto& origin = pPawn->GetEyePosition();
 		return {KHook::Action::Supersede, origin};

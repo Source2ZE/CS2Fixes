@@ -677,7 +677,7 @@ void ZEPlayer::ToggleThirdPerson(float flDistance)
 	if (pCamera)
 	{
 		// Map is taking control of the camera, let it be
-		if (pCamera->AsPointViewControl() || !CloseEnough(pCamera->m_vecFollowOffset().z, 0.001337))
+		if (pCamera->AsPointViewControl() || !CloseEnough(pCamera->m_vecFollowOffset().z, THIRD_PERSON_CAMERA_MARKER))
 			return;
 
 		// Camera is ours, disable it
@@ -721,7 +721,7 @@ void ZEPlayer::ToggleThirdPerson(float flDistance)
 	pCamera->m_hFollowEntity = pPawn;
 	pCamera->m_nCameraMode = CUSTOM_CAMERA_MODE_FOLLOW_POSITION;
 	pCamera->m_bFollowEyes = true;
-	pCamera->m_vecFollowOffset = Vector(0.f, 0.f, 0.001337f); // HACK: Random tiny value to mark this as our camera
+	pCamera->m_vecFollowOffset = Vector(0.f, 0.f, THIRD_PERSON_CAMERA_MARKER); // HACK: Random tiny value to mark this as our camera
 	pCamera->m_vecCameraOffset = Vector(flDistance, pPawn->m_bLeftHanded ? 15.f : -15.f, 0.f);
 	pCamera->m_bClipCameraOffset = true;
 	pCamera->m_flCameraOffsetReturnStrength = 1.f;
@@ -1023,6 +1023,21 @@ void CPlayerManager::OnValidateAuthTicket(ValidateAuthTicketResponse_t* pRespons
 			}
 		}
 	}
+}
+
+bool CPlayerManager::IsUsingThirdPerson(CCSPlayerPawn* pPawn)
+{
+	CPlayer_CameraServices* pCameraService = pPawn->GetCameraService();
+
+	if (!pCameraService)
+		return false;
+
+	CCSCustomPlayerCamera* pCamera = (CCSCustomPlayerCamera*)pCameraService->m_hViewEntity().Get();
+
+	if (!pCamera)
+		return false;
+
+	return !pCamera->AsPointViewControl() && CloseEnough(pCamera->m_vecFollowOffset().z, THIRD_PERSON_CAMERA_MARKER);
 }
 
 void CPlayerManager::CheckInfractions()
