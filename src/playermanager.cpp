@@ -134,7 +134,7 @@ void ZEPlayer::OnAuthenticated()
 	if (!pEvent)
 		return;
 
-	pEvent->SetString("name", pController->GetPlayerName().c_str());
+	pEvent->SetString("name", pController->GetPlayerName());
 	pEvent->SetPlayer("userid", GetPlayerSlot());
 	pEvent->SetBool("bot", false);
 	// Needs a custom name, because CS2 strips keys like xuid/networkid etc from logic_eventlistener output
@@ -1173,7 +1173,7 @@ void CPlayerManager::UpdatePlayerStates()
 		if (iCurrentPlayerState != iPreviousPlayerState)
 		{
 #ifdef _DEBUG
-			Message("Player %s changed states from %s to %s\n", pController->GetPlayerName().c_str(), g_szPlayerStates[iPreviousPlayerState], g_szPlayerStates[iCurrentPlayerState]);
+			Message("Player %s changed states from %s to %s\n", pController->GetPlayerName(), g_szPlayerStates[iPreviousPlayerState], g_szPlayerStates[iCurrentPlayerState]);
 #endif
 
 			pPlayer->SetPlayerState(iCurrentPlayerState);
@@ -1710,7 +1710,7 @@ ETargetError CPlayerManager::GetPlayersFromString(CCSPlayerController* pPlayer, 
 			if (!pTarget || !pTarget->IsController() || !pTarget->IsConnected() || pTarget->m_bIsHLTV)
 				continue;
 
-			if ((!bExactName && V_stristr(pTarget->GetPlayerName().c_str(), pszTarget)) || !V_strcmp(pTarget->GetPlayerName().c_str(), pszTarget))
+			if ((!bExactName && V_stristr(pTarget->GetPlayerName(), pszTarget)) || !V_strcmp(pTarget->GetPlayerName(), pszTarget))
 			{
 				nType = ETargetType::PLAYER;
 				if (iNumClients == 1)

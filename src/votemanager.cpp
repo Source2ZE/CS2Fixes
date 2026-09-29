@@ -199,7 +199,7 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 	// Something has to really go wrong for this to happen
 	if (!pPlayer)
 	{
-		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName().c_str());
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
 		return;
 	}
 
@@ -236,7 +236,7 @@ CON_COMMAND_CHAT(rtv, "- Vote to end the current map sooner")
 	pPlayer->SetRTVVoteTime(GetGlobals()->curtime);
 
 	if (!g_pVoteManager->CheckRTVStatus())
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i needed).", player->GetPlayerName().c_str(), g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to rock the vote (%i voted, %i needed).", player->GetPlayerName(), g_pVoteManager->GetCurrentRTVCount(), g_pVoteManager->GetNeededRTVCount());
 }
 
 CON_COMMAND_CHAT(unrtv, "- Remove your vote to end the current map sooner")
@@ -257,7 +257,7 @@ CON_COMMAND_CHAT(unrtv, "- Remove your vote to end the current map sooner")
 	// Something has to really go wrong for this to happen
 	if (!pPlayer)
 	{
-		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName().c_str());
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
 		return;
 	}
 
@@ -331,7 +331,7 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 	// Something has to really go wrong for this to happen
 	if (!pPlayer)
 	{
-		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName().c_str());
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
 		return;
 	}
 
@@ -388,7 +388,7 @@ CON_COMMAND_CHAT(ve, "- Vote to extend current map")
 
 	pPlayer->SetExtendVote(true);
 	pPlayer->SetExtendVoteTime(GetGlobals()->curtime);
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to extend the map (%i voted, %i needed).", player->GetPlayerName().c_str(), iCurrentExtendCount + 1, iNeededExtendCount);
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s wants to extend the map (%i voted, %i needed).", player->GetPlayerName(), iCurrentExtendCount + 1, iNeededExtendCount);
 }
 
 CON_COMMAND_CHAT(unve, "- Remove your vote to extend current map")
@@ -415,7 +415,7 @@ CON_COMMAND_CHAT(unve, "- Remove your vote to extend current map")
 	// Something has to really go wrong for this to happen
 	if (!pPlayer)
 	{
-		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName().c_str());
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
 		return;
 	}
 

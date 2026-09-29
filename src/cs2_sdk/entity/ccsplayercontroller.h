@@ -149,21 +149,10 @@ public:
 
 	void SetClanTag(const char* pszClanTag)
 	{
-		// Skip if clan tag is unchanged, since name swap trick has a bit of overhead
+		// Skip if clan tag is unchanged
 		if (!V_strcmp(m_szClan().String(), pszClanTag))
 			return;
 
 		m_szClan = g_pEntitySystem->AllocPooledString(pszClanTag);
-
-		// This name swap trick is necessary to get clients to display the new clan tag
-		std::string strName = m_iszPlayerName();
-
-		if (!strName.empty() && strName.back() == ' ')
-			strName.pop_back();
-		else
-			strName.push_back(' ');
-
-		V_strncpy(m_iszPlayerName, strName.c_str(), 128);
-		m_iszPlayerName.NetworkStateChanged();
 	}
 };
