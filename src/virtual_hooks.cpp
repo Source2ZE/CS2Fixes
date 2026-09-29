@@ -79,7 +79,6 @@ KHOOK_VIRTUAL(SwitchToLoop, &IEngineServiceMgr::SwitchToLoop, g_pEngineServiceMg
 
 KHook::Virtual<IGameTypes, void, const char*, const CUtlStringList&> createWorkshopMapGroupHook(0U, Hook_CreateWorkshopMapGroup, nullptr);
 KHook::Virtual<IGameEventManager2, int, const char*, bool> loadEventsFromFileHook(&IGameEventManager2::LoadEventsFromFile, Hook_LoadEventsFromFile, nullptr);
-KHook::Virtual<IGameEventManager2, bool, IGameEvent*, bool> fireEventHook(&IGameEventManager2::FireEvent, Hook_FireEvent, nullptr);
 KHook::Virtual<CServerSideClient, bool, const CCLCMsg_VoiceData_t&> processVoiceDataHook(&CServerSideClient::ProcessVoiceData, Hook_ProcessVoiceData, nullptr);
 KHook::Virtual<INetworkGameServer, void, IGameSpawnGroupMgr*> setGameSpawnGroupMgrHook(&INetworkGameServer::SetGameSpawnGroupMgr, Hook_SetGameSpawnGroupMgr, nullptr);
 KHook::Virtual<CVPhys2World, void, CUtlVector<TouchLinked_t>*, bool> getTouchingListHook(0U, nullptr, Hook_GetTouchingList_Post);
@@ -144,7 +143,6 @@ void InitVirtualHooks()
 	SetupVirtualHook(createWorkshopMapGroupHook, "IGameTypes_CreateWorkshopMapGroup", g_pGameTypes);
 
 	SetupGlobalVirtualHook(loadEventsFromFileHook, g_pCGameEventManagerVTable, modules::server, "CGameEventManager");
-	SetupGlobalVirtualHook(fireEventHook, g_pCGameEventManagerVTable, modules::server, "CGameEventManager");
 	SetupGlobalVirtualHook(processVoiceDataHook, g_pCServerSideClientVTable, modules::engine, "CServerSideClient");
 	SetupGlobalVirtualHook(getTouchingListHook, g_pCVPhys2WorldVTable, modules::vphysics2, "CVPhys2World", "CVPhys2World::GetTouchingList");
 	SetupGlobalVirtualHook(checkMovingGroundHook, g_pCCSPlayer_MovementServicesVTable, modules::server, "CCSPlayer_MovementServices", "CCSPlayer_MovementServices::CheckMovingGround");
@@ -160,7 +158,6 @@ void InitVirtualHooks()
 void RemoveVirtualHooks()
 {
 	loadEventsFromFileHook.RemoveGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
-	fireEventHook.RemoveGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
 	processVoiceDataHook.RemoveGlobal((CServerSideClient*)&g_pCServerSideClientVTable);
 	setGameSpawnGroupMgrHook.Remove(GetNetworkGameServer());
 	createWorkshopMapGroupHook.Remove(g_pGameTypes);
@@ -744,18 +741,6 @@ KHook::Return<void> Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* n
 KHook::Return<int> Hook_LoadEventsFromFile(IGameEventManager2* pThis, const char* filename, bool bSearchAll)
 {
 	ExecuteOnce(g_gameEventManager = pThis);
-
-	return {KHook::Action::Ignore};
-}
-
-KHook::Return<bool> Hook_FireEvent(IGameEventManager2* pThis, IGameEvent* pEvent, bool bDontBroadcast)
-{
-	// Make player_connect obey cs2f_map_steamids_enable as well
-	if (!g_cvarEnableMapSteamIds.Get() && pEvent && !V_stricmp(pEvent->GetName(), "player_connect"))
-	{
-		pEvent->SetString("networkid", "");
-		pEvent->SetUint64("xuid", 0);
-	}
 
 	return {KHook::Action::Ignore};
 }

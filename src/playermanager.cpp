@@ -123,6 +123,24 @@ void ZEPlayer::OnAuthenticated()
 	g_pUserPreferencesSystem->PullPreferences(GetPlayerSlot().Get());
 
 	SetSteamIdAttribute();
+
+	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
+
+	if (!g_cvarEnableMapSteamIds.Get() || !pController)
+		return;
+
+	IGameEvent* pEvent = g_gameEventManager->CreateEvent("player_connect");
+
+	if (!pEvent)
+		return;
+
+	pEvent->SetString("name", pController->GetPlayerName().c_str());
+	pEvent->SetPlayer("userid", GetPlayerSlot());
+	pEvent->SetBool("bot", false);
+	// Needs a custom name, because CS2 strips keys like xuid/networkid etc from logic_eventlistener output
+	pEvent->SetUint64("steam_id", GetSteamId64());
+
+	g_gameEventManager->FireEvent(pEvent, true);
 }
 
 void ZEPlayer::CheckInfractions()
