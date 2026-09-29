@@ -2128,7 +2128,7 @@ void MotherZombiesCommand(CCSPlayerController* player)
 		}
 		else
 		{
-			names += ", " + pMZ->GetPlayerName();
+			names += ", " + std::string(pMZ->GetPlayerName());
 		}
 	}
 

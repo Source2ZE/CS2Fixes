@@ -398,10 +398,10 @@ KHook::Return<void> Detour_UTIL_SayText2Filter(
 	CCSPlayerController* target = CCSPlayerController::FromSlot(slot);
 
 	if (target)
-		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName().c_str(), param2);
+		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName(), param2);
 #endif
 
-	return KHook::Recall<void (*)(IRecipientFilter&, CCSPlayerController*, uint64, const char*, const char*, const char*, const char*, const char*)>(nullptr, {KHook::Action::Ignore}, filter, pEntity, eMessageType, msg_name, pEntity->GetPlayerName().c_str(), param2, param3, param4);
+	return KHook::Recall<void (*)(IRecipientFilter&, CCSPlayerController*, uint64, const char*, const char*, const char*, const char*, const char*)>(nullptr, {KHook::Action::Ignore}, filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
 }
 
 KHook::Return<bool> Detour_CCSPlayer_WeaponServices_CanUse(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon)

@@ -445,7 +445,7 @@ namespace CGameUIHandler
 		s_repository[key] = CGameUIState(pPlayer, GetButtons(pMovement) & ~IN_USE);
 
 #ifdef ENTITY_HANDLER_ASSERTION
-		Message("Activate Entity %d<%u> -> %s\n", pEntity->entindex(), key, pPlayer->GetController()->GetPlayerName().c_str());
+		Message("Activate Entity %d<%u> -> %s\n", pEntity->entindex(), key, pPlayer->GetController()->GetPlayerName());
 #endif
 
 		return true;
@@ -473,7 +473,7 @@ namespace CGameUIHandler
 			DelayInput(pEntity, pPlayer, "InValue", "PlayerOff");
 
 #ifdef ENTITY_HANDLER_ASSERTION
-			Message("Deactivate Entity %d -> %s\n", pEntity->entindex(), pPlayer->GetController()->GetPlayerName().c_str());
+			Message("Deactivate Entity %d -> %s\n", pEntity->entindex(), pPlayer->GetController()->GetPlayerName());
 #endif
 		}
 		else
@@ -582,7 +582,7 @@ namespace CPointViewControlHandler
 
 		if (pController->IsBot() || pController->m_bIsHLTV())
 		{
-			Warning("PointViewControl %s try enable for bot or HLTV: %s\n", it->second.m_name.c_str(), pController->GetPlayerName().c_str());
+			Warning("PointViewControl %s try enable for bot or HLTV: %s\n", it->second.m_name.c_str(), pController->GetPlayerName());
 			return false;
 		}
 
@@ -595,13 +595,13 @@ namespace CPointViewControlHandler
 			{
 				if (vk == static_cast<uint>(key))
 				{
-					Warning("PointViewControl %s was enabled twice in a row! player: %s\n", vc.m_name.c_str(), pController->GetPlayerName().c_str());
+					Warning("PointViewControl %s was enabled twice in a row! player: %s\n", vc.m_name.c_str(), pController->GetPlayerName());
 					return false;
 				}
 
 				vc.m_players.erase(iterator);
 				UpdatePlayerState(pPawn, INVALID_HANDLE, false, RESET_FOV);
-				Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pController->GetPlayerName().c_str());
+				Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pController->GetPlayerName());
 				break;
 			}
 		}
@@ -626,7 +626,7 @@ namespace CPointViewControlHandler
 
 		if (pController->IsBot() || pController->m_bIsHLTV())
 		{
-			Warning("PointViewControl %s try disable for bot or HLTV: %s\n", it->second.m_name.c_str(), pController->GetPlayerName().c_str());
+			Warning("PointViewControl %s try disable for bot or HLTV: %s\n", it->second.m_name.c_str(), pController->GetPlayerName());
 			return false;
 		}
 
@@ -672,7 +672,7 @@ namespace CPointViewControlHandler
 					if (vk == static_cast<uint>(key))
 						continue;
 					UpdatePlayerState(pPawn, INVALID_HANDLE, false, RESET_FOV);
-					Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pController->GetPlayerName().c_str());
+					Warning("PointViewControl %s already enabled for %s\n", vc.m_name.c_str(), pController->GetPlayerName());
 				}
 			}
 

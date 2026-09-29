@@ -452,7 +452,7 @@ CON_COMMAND_CHAT(hide, "<distance> - Hide nearby players")
 	// Something has to really go wrong for this to happen
 	if (!pZEPlayer)
 	{
-		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName().c_str());
+		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
 		return;
 	}
 
@@ -657,7 +657,7 @@ CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 		pObserverServices->m_iObserverMode = OBS_MODE_IN_EYE;
 		pObserverServices->m_iObserverLastMode = OBS_MODE_ROAMING;
 		pObserverServices->m_hObserverTarget = pTargetPlayer->GetPawn();
-		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "Spectating player %s.", pTargetPlayer->GetPlayerName().c_str());
+		ClientPrint(pPlayer, HUD_PRINTTALK, CHAT_PREFIX "Spectating player %s.", pTargetPlayer->GetPlayerName());
 		return -1.0f;
 	});
 }
@@ -697,7 +697,7 @@ CON_COMMAND_CHAT(info, "<name> - Get a player's information")
 		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 		ZEPlayer* zpTarget = pTarget->GetZEPlayer();
 
-		ClientPrint(player, HUD_PRINTCONSOLE, "%s", pTarget->GetPlayerName().c_str());
+		ClientPrint(player, HUD_PRINTCONSOLE, "%s", pTarget->GetPlayerName());
 		ClientPrint(player, HUD_PRINTCONSOLE, "\tUser ID: %i", g_pEngineServer2->GetPlayerUserId(pTarget->GetPlayerSlot()).Get());
 
 		if (zpTarget->IsAuthenticated())
@@ -731,16 +731,16 @@ CON_COMMAND_CHAT(showteam, "<name> - Get a player's current team")
 	switch (pTarget->m_iTeamNum())
 	{
 		case CS_TEAM_SPECTATOR:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is a\x08 spectator\x01.", pTarget->GetPlayerName().c_str());
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is a\x08 spectator\x01.", pTarget->GetPlayerName());
 			break;
 		case CS_TEAM_T:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is a\x09 terrorist\x01.", pTarget->GetPlayerName().c_str());
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is a\x09 terrorist\x01.", pTarget->GetPlayerName());
 			break;
 		case CS_TEAM_CT:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is a\x0B counter-terrorist\x01.", pTarget->GetPlayerName().c_str());
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is a\x0B counter-terrorist\x01.", pTarget->GetPlayerName());
 			break;
 		default:
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not on a team.", pTarget->GetPlayerName().c_str());
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s is not on a team.", pTarget->GetPlayerName());
 	}
 }
 
@@ -983,8 +983,8 @@ CON_COMMAND_CHAT(test_target, "<name> [blocked flag] [...] - Test string targett
 	for (int i = 0; i < iNumClients; i++)
 	{
 		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Targeting %s", pTarget->GetPlayerName().c_str());
-		Message("Targeting %s\n", pTarget->GetPlayerName().c_str());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Targeting %s", pTarget->GetPlayerName());
+		Message("Targeting %s\n", pTarget->GetPlayerName());
 	}
 }
 
@@ -1108,7 +1108,7 @@ CON_COMMAND_CHAT(setcollisiongroup, "<group> - Set a player's collision group")
 		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nCollisionGroup = group;
 		pTarget->GetPawn()->CollisionRulesChanged();
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting collision group on %s from %d to %d.", pTarget->GetPlayerName().c_str(), oldgroup, group);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting collision group on %s from %d to %d.", pTarget->GetPlayerName(), oldgroup, group);
 	}
 }
 
@@ -1130,7 +1130,7 @@ CON_COMMAND_CHAT(setsolidtype, "<solidtype> - Set a player's solid type")
 		pTarget->m_hPawn->m_pCollision->m_nSolidType = (SolidType_t)type;
 		pTarget->GetPawn()->CollisionRulesChanged();
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting solid type on %s from %d to %d.", pTarget->GetPlayerName().c_str(), oldtype, type);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting solid type on %s from %d to %d.", pTarget->GetPlayerName(), oldtype, type);
 	}
 }
 
@@ -1153,7 +1153,7 @@ CON_COMMAND_CHAT(setinteraction, "<flags> - Set a player's interaction flags")
 		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nInteractsExclude = newInteract;
 		pTarget->GetPawn()->CollisionRulesChanged();
 
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting interaction flags on %s from %llx to %llx.", pTarget->GetPlayerName().c_str(), oldInteractAs, newInteract);
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting interaction flags on %s from %llx to %llx.", pTarget->GetPlayerName(), oldInteractAs, newInteract);
 	}
 }
 
@@ -1224,7 +1224,7 @@ CON_COMMAND_CHAT(uitest, "<xml path> (<text>) - Spawn UI panel")
 	});
 
 	hLayout->SetClickCallback([](CCSPlayerController* pController, CCSCustomHudLayout* pHud, std::string sButtonId) {
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s clicked %s on %s\n", pController->GetPlayerName().c_str(), sButtonId.c_str(), pHud->GetName());
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX "%s clicked %s on %s\n", pController->GetPlayerName(), sButtonId.c_str(), pHud->GetName());
 
 		if (sButtonId == "dismiss_button")
 		{

@@ -728,12 +728,12 @@ CON_COMMAND_CHAT_FLAGS(pm, "<name> <message> - Private message a player. This wi
 			continue;
 
 		if (pPlayer->IsAdminFlagSet(ADMFLAG_GENERIC) && CCSPlayerController::FromSlot(i) != player)
-			ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, "\x0A[PM to %s]\x0C %s\1: \x0B%s", pTarget->GetPlayerName().c_str(), strPlayerName.c_str(), strMessage.c_str());
+			ClientPrint(CCSPlayerController::FromSlot(i), HUD_PRINTTALK, "\x0A[PM to %s]\x0C %s\1: \x0B%s", pTarget->GetPlayerName(), strPlayerName.c_str(), strMessage.c_str());
 	}
 
-	ClientPrint(player, HUD_PRINTTALK, "\x0A[PM to %s]\x0C %s\1: \x0B%s", pTarget->GetPlayerName().c_str(), strPlayerName.c_str(), strMessage.c_str());
+	ClientPrint(player, HUD_PRINTTALK, "\x0A[PM to %s]\x0C %s\1: \x0B%s", pTarget->GetPlayerName(), strPlayerName.c_str(), strMessage.c_str());
 	ClientPrint(pTarget, HUD_PRINTTALK, "\x0A[PM]\x0C %s\1: \x0B%s", strPlayerName.c_str(), strMessage.c_str());
-	Message("[PM to %s] %s: %s\n", pTarget->GetPlayerName().c_str(), strPlayerName.c_str(), strMessage.c_str());
+	Message("[PM to %s] %s: %s\n", pTarget->GetPlayerName(), strPlayerName.c_str(), strMessage.c_str());
 }
 
 size_t CountCharacters(const std::string& str)
@@ -949,7 +949,7 @@ CON_COMMAND_CHAT(status, "<name> - Checks a player's active punishments. Non-adm
 		if (pTarget == player)
 			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have no active punishments.");
 		else
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s has no active punishments.", pTarget->GetPlayerName().c_str());
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s has no active punishments.", pTarget->GetPlayerName());
 		return;
 	}
 
@@ -962,7 +962,7 @@ CON_COMMAND_CHAT(status, "<name> - Checks a player's active punishments. Non-adm
 		strPunishment = "\2gagged\1";
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "%s %s.",
-				pTarget == player ? "You are" : (pTarget->GetPlayerName() + " is").c_str(), strPunishment.c_str());
+				pTarget == player ? "You are" : (std::string(pTarget->GetPlayerName()) + " is").c_str(), strPunishment.c_str());
 }
 
 CON_COMMAND_CHAT_FLAGS(listdc, "- List recently disconnected players and their Steam64 IDs", ADMFLAG_GENERIC)
