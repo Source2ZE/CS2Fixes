@@ -60,6 +60,7 @@ extern CConVar<bool> g_cvarEnableMapSteamIds;
 #define INVALID_ZEPLAYERHANDLE_INDEX 0u
 
 static uint32 iZEPlayerHandleSerial = 0u; // this should actually be 3 bytes large, but no way enough players join in servers lifespan for this to be an issue
+static constexpr float THIRD_PERSON_CAMERA_MARKER = 0.001337f;
 
 enum class ETargetType
 {
@@ -429,6 +430,7 @@ public:
 	void OnClientPutInServer(CPlayerSlot slot);
 	void OnLateLoad();
 	void OnSteamAPIActivated();
+	bool IsUsingThirdPerson(CCSPlayerPawn* pPawn);
 	void CheckInfractions();
 	void FlashLightThink();
 	void CheckHideDistances();
