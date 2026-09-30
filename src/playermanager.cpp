@@ -137,8 +137,8 @@ void ZEPlayer::OnAuthenticated()
 	pEvent->SetString("name", pController->GetPlayerName());
 	pEvent->SetPlayer("userid", GetPlayerSlot());
 	pEvent->SetBool("bot", false);
-	// Needs a custom name, because CS2 strips keys like xuid/networkid etc from logic_eventlistener output
-	pEvent->SetUint64("steam_id", GetSteamId64());
+	// Needs a custom name, because CS2 strips keys like xuid/networkid etc from logic_eventlistener output, and can't use uint64 because JS can't parse it..
+	pEvent->SetString("steam_id", std::to_string(GetSteamId64()).c_str());
 
 	g_gameEventManager->FireEvent(pEvent, true);
 }
