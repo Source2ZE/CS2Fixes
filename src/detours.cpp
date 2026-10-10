@@ -37,6 +37,7 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/ccsweaponbase.h"
 #include "entity/cenvhudhint.h"
+#include "entity/cgameplayerequip.h"
 #include "entity/cgamerules.h"
 #include "entity/cpointviewcontrol.h"
 #include "entity/ctakedamageinfo.h"
@@ -69,8 +70,6 @@ KHOOK_MEMBER(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput, nu
 KHOOK_MEMBER(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea, nullptr);
 KHOOK_MEMBER(ProcessMovement, Detour_ProcessMovement, Detour_ProcessMovement_Post);
 KHOOK_MEMBER(ProcessUsercmds, Detour_ProcessUsercmds, nullptr);
-KHOOK_MEMBER(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers, nullptr);
-KHOOK_MEMBER(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer, nullptr);
 KHOOK_MEMBER(CTriggerGravity_GravityTouch, Detour_CTriggerGravity_GravityTouch, nullptr);
 KHOOK_FUNCTION(GetFreeClient, Detour_GetFreeClient, nullptr);
 #ifdef __linux__
@@ -532,6 +531,13 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 		if (!V_strcasecmp(pInputName->String(), "DisableCameraAll"))
 			return {KHook::Action::Supersede, CPointViewControlHandler::OnDisableAll(pViewControl)};
 	}
+	else if (const auto pGamePlayerEquip = reinterpret_cast<CGamePlayerEquip*>(pThis->m_pInstance)->AsGamePlayerEquip())
+	{
+		if (!V_strcasecmp(pInputName->String(), "TriggerForActivatedPlayer") && !CGamePlayerEquipHandler::TriggerForActivatedPlayer(pGamePlayerEquip, reinterpret_cast<CBaseEntity*>(pActivator), value))
+			return {KHook::Action::Supersede, true};
+		if (!V_strcasecmp(pInputName->String(), "TriggerForAllPlayers"))
+			CGamePlayerEquipHandler::TriggerForAllPlayers(pGamePlayerEquip);
+	}
 
 	if (g_pMapMigrations->Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value))
 		return {KHook::Action::Supersede, true};
@@ -659,19 +665,6 @@ KHook::Return<void*> Detour_ProcessUsercmds(CCSPlayerController* pController, CU
 	VPROF_SCOPE_END();
 
 	return {KHook::Action::Ignore};
-}
-
-KHook::Return<void> Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
-{
-	CGamePlayerEquipHandler::TriggerForAllPlayers(pEntity, pInput);
-	return {KHook::Action::Ignore};
-}
-KHook::Return<void> Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
-{
-	if (CGamePlayerEquipHandler::TriggerForActivatedPlayer(pEntity, pInput))
-		return {KHook::Action::Ignore};
-
-	return {KHook::Action::Supersede};
 }
 
 KHook::Return<void> Detour_CTriggerGravity_GravityTouch(CTriggerGravity* pEntity, CBaseEntity* pOther)

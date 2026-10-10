@@ -229,18 +229,6 @@
 			"windows": "48 8B C4 44 88 48 20 44 89 40 18 48 89 50 10 53",
 			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 83 EC ? 89 4D"
 		},
-		"CGamePlayerEquip_InputTriggerForAllPlayers":
-		{
-			"library": "server",
-			"windows": "48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8B EC 48 83 EC ? 4C 8B F1",
-			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC 53 48 83 EC ? E8 ? ? ? ? C7 45 ? ? ? ? ? 89 C7 66 89 45 ? 66 83 F8 ? 75 ? 48 C7 45 ? ? ? ? ? 66 83 FF ? 0F 84 ? ? ? ? 0F B7 7D ? E8 ? ? ? ? 66 89 45 ? 66 83 F8 ? 0F 84 ? ? ? ? 89 C7 E8 ? ? ? ? 0F B7 7D ? 48 89 C3 48 85 C0 74 ? 48 89 C7 E8 ? ? ? ? 48 8D 7D ? 48 89 C6 E8 ? ? ? ? 0F B7 7D ? 84 C0 0F 85 ? ? ? ? EB ? 66 0F 1F 44 00 ? E8 ? ? ? ? 48 89 C3 48 85 C0 0F 84 ? ? ? ? 48 89 C7 E8 ? ? ? ? 48 8D 7D ? 48 89 C6 E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 0F B7 7D ? 48 89 5D ? 66 83 FF"
-		},
-		"CGamePlayerEquip_InputTriggerForActivatedPlayer":
-		{
-			"library": "server",
-			"windows": "48 89 5C 24 ? 56 48 83 EC ? 48 8B 1A",
-			"linux": "55 48 89 E5 41 56 41 55 41 54 53 48 8B 1E 48 85 DB 74"
-		},
 		// Return value of this function is used to determine whether "NETWORK_DISCONNECT_REJECT_SERVERFULL to %s: Cannot get free client\n" gets printed
 		"GetFreeClient":
 		{
