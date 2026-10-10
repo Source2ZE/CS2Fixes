@@ -45,8 +45,6 @@ class CServerSideClient;
 class INetChannel;
 class CBasePlayerPawn;
 class CUserCmd;
-class CGamePlayerEquip;
-class InputData_t;
 class CCSPlayerPawn;
 class CCSPlayer_UseServices;
 class CTraceFilter;
@@ -92,8 +90,6 @@ KHook::Return<void*> Detour_CNavMesh_GetNearestNavArea(CNavMesh* pNavMesh, float
 KHook::Return<void> Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pMove);
 KHook::Return<void> Detour_ProcessMovement_Post(CCSPlayer_MovementServices* pThis, void* pMove);
 KHook::Return<void*> Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd* cmds, int numcmds, bool paused, float margin);
-KHook::Return<void> Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip*, InputData_t*);
-KHook::Return<void> Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip*, InputData_t*);
 KHook::Return<void> Detour_CTriggerGravity_GravityTouch(CTriggerGravity* pEntity, CBaseEntity* pOther);
 KHook::Return<CServerSideClient*> Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6);
 KHook::Return<float> Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn*);

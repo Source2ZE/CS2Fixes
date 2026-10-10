@@ -34,6 +34,7 @@ class CGameUI;
 class CEnvHudHint;
 class CPointViewControl;
 class CBasePlayerWeapon;
+class CGamePlayerEquip;
 
 class CGameSceneNode
 {
@@ -328,6 +329,14 @@ public:
 	{
 		if (V_StringHasPrefixCaseSensitive(GetClassname(), "weapon_"))
 			return reinterpret_cast<CBasePlayerWeapon*>(this);
+		return nullptr;
+	}
+
+	[[nodiscard]] CGamePlayerEquip* AsGamePlayerEquip()
+	{
+		if (V_strcasecmp(GetClassname(), "game_player_equip") == 0)
+			return reinterpret_cast<CGamePlayerEquip*>(this);
+
 		return nullptr;
 	}
 
