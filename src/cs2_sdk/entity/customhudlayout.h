@@ -139,7 +139,6 @@ public:
 	// which clears all classes and variables for a slot, so only use this if you want custom logic
 	void SetDisconnectCallback(CustomHudDisconnectCallback_t callback);
 	static void OnClientDisconnect(int nSlot);
-	static void DefaultOnDisconnect(CCSCustomHudLayout* pLayout, int nSlot);
 
 	void OnEntityDeleted();
 
