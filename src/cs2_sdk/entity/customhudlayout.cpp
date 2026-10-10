@@ -37,7 +37,6 @@ CCSCustomHudLayout* CCSCustomHudLayout::Create(std::string sLayout, std::string 
 		pKeyValues->SetString("targetname", sTargetName.c_str());
 
 	pLayout->DispatchSpawn(pKeyValues);
-	pLayout->SetDisconnectCallback(&DefaultOnDisconnect);
 
 	return pLayout;
 }
@@ -67,16 +66,11 @@ void CCSCustomHudLayout::OnClientDisconnect(int slot)
 			continue;
 		}
 
-		iterator->second.m_OnDisconnect(pLayout, slot);
+		if (iterator->second.m_OnDisconnect)
+			iterator->second.m_OnDisconnect(pLayout, slot);
+
 		iterator++;
 	}
-}
-
-void CCSCustomHudLayout::DefaultOnDisconnect(CCSCustomHudLayout* pLayout, int slot)
-{
-	pLayout->ClearClasses(slot);
-	pLayout->ClearDialogVariables(slot);
-	pLayout->SetInputCaptureEnabled(false, slot);
 }
 
 void CCSCustomHudLayout::OnEntityDeleted()

@@ -1219,7 +1219,6 @@ CON_COMMAND_CHAT(uitest, "<xml path> (<text>) - Spawn UI panel")
 		hLayout->SetDialogVariableString("MyLabel", "CustomText", args[2], player);
 
 	hLayout->SetDisconnectCallback([](CCSCustomHudLayout* pHud, int slot) {
-		CCSCustomHudLayout::DefaultOnDisconnect(pHud, slot);
 		Message("Custom disconnect callback called\n");
 	});
 
