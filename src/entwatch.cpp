@@ -18,6 +18,7 @@
  */
 
 #include "entwatch.h"
+#include "entwatch_hud.h"
 #include "commands.h"
 #include "cs2fixes.h"
 #include "ctimer.h"
@@ -1957,18 +1958,7 @@ float EW_UpdateHud()
 		if (!zpPlayer)
 			continue;
 
-		EWHudMode mode = (EWHudMode)(zpPlayer->GetEntwatchHudMode());
-
-		CPointWorldText* pText = zpPlayer->GetEntwatchHud();
-		if (!pText)
-			continue;
-
-		if (mode == EWHudMode::Hud_On)
-			pText->AcceptInput("SetMessage", sHudText.c_str());
-		else if (mode == EWHudMode::Hud_ItemOnly)
-			pText->AcceptInput("SetMessage", sHudTextNoPlayerNames.c_str());
-		else
-			pText->AcceptInput("SetMessage", "");
+		EW_RenderWorldText(zpPlayer, sHudText, sHudTextNoPlayerNames);
 	}
 
 	return EW_HUD_TICKRATE;

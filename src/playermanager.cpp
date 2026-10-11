@@ -740,73 +740,7 @@ void ZEPlayer::ToggleThirdPerson(float flDistance, bool bForce)
 
 void ZEPlayer::CreateEntwatchHud()
 {
-	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
-	if (!pController)
-		return;
-
-	CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
-	if (!pPawn)
-		return;
-
-	CPointOrient* pOrient = GetPointOrient();
-	if (!pOrient)
-		return;
-
-	CPointWorldText* pText = GetEntwatchHud();
-	if (pText)
-	{
-		pText->Remove();
-		pText = nullptr;
-	}
-
-	pText = CreateEntityByName<CPointWorldText>("point_worldtext");
-	pText->m_bEnabled(true);
-	pText->m_bFullbright(true);
-	pText->m_flFontSize(GetEntwatchHudSize());
-
-	Color col;
-	int a = m_colorEntwatchHud.a();
-	if (a == 255) // 254 allows it to be visible through some items
-		col.SetColor(m_colorEntwatchHud.r(), m_colorEntwatchHud.g(), m_colorEntwatchHud.b(), 254);
-	else
-		col.SetColor(m_colorEntwatchHud.r(), m_colorEntwatchHud.g(), m_colorEntwatchHud.b(), a);
-
-	pText->m_Color = col;
-
-	pText->m_flWorldUnitsPerPx(0.005f);
-	pText->m_nJustifyVertical(PointWorldTextJustifyVertical_t::POINT_WORLD_TEXT_JUSTIFY_VERTICAL_TOP);
-
-	V_strncpy(pText->m_FontName, "Verdana Bold", 64);
-
-	pText->SetMessage("");
-
-	pText->DispatchSpawn();
-	SetEntwatchHud(pText);
-
-	pText->AcceptInput("SetParent", "!activator", pOrient);
-
-	Vector origin = pOrient->GetAbsOrigin();
-	QAngle vmangles = pOrient->GetAbsRotation();
-
-	Vector forward;
-	Vector right;
-	Vector up;
-	AngleVectors(vmangles, &forward, &right, &up);
-
-	origin += (forward * 7.0f);
-
-	// -x = move left,  +x = move right
-	origin += (right * GetEntwatchHudX());
-
-	// -y = move up,   +y = move down
-	origin -= (up * GetEntwatchHudY());
-
-	QAngle angles;
-	angles.x = 0.0f;
-	angles.y = AngleNormalize(vmangles.y - 90.0f);
-	angles.z = AngleNormalize(-vmangles.x + 90.0f);
-
-	pText->Teleport(&origin, &angles, nullptr);
+	CreateEntwatchWorldHud();
 }
 
 int ZEPlayer::GetEntwatchHudMode()

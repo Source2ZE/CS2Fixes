@@ -271,6 +271,7 @@ public:
 	void SetActiveZRClass(std::shared_ptr<ZRClass> pZRModel) { m_pActiveZRClass = pZRModel; }
 	void SetActiveZRModel(std::shared_ptr<ZRModelEntry> pZRClass) { m_pActiveZRModel = pZRClass; }
 	void SetEntwatchHudMode(int iMode);
+	void CreateEntwatchWorldHud();
 	void SetPointOrient(CPointOrient* pOrient) { m_hPointOrient.Set(pOrient); }
 	void SetEntwatchHud(CPointWorldText* pWorldText) { m_hEntwatchHud.Set(pWorldText); }
 	void SetEntwatchHudColor(Color colorHud);
