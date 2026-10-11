@@ -105,6 +105,12 @@ for task in MMSPlugin.binaries:
     packages[sdk_name].addBinary(task.debug)
 
   # Add custom stuff here
+  panorama_root = os.path.join(builder.sourcePath, 'assets', 'panorama')
+  for resource in glob.glob(os.path.join(panorama_root, '**', '*_c'), recursive = True):
+    relative_path = os.path.relpath(resource, panorama_root)
+    destination = os.path.join(packages[sdk_name].sdk_name, 'panorama', relative_path)
+    builder.AddFolder(os.path.dirname(destination))
+    builder.AddCopy(resource, destination)
   builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'addons', MMSPlugin.metadata['name'], 'data'))
   configs_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'addons', MMSPlugin.metadata['name'], 'configs'))
   zr_folder = builder.AddFolder(os.path.join(packages[sdk_name].sdk_name, 'addons', MMSPlugin.metadata['name'], 'configs', 'zr'))

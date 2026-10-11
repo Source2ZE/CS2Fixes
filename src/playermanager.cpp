@@ -25,6 +25,7 @@
 #include "engine/igameeventsystem.h"
 #include "entity/ccsplayercontroller.h"
 #include "entwatch.h"
+#include "entwatch_hud.h"
 #include "leader.h"
 #include "map_votes.h"
 #include "networksystem/inetworkmessages.h"
@@ -740,7 +741,21 @@ void ZEPlayer::ToggleThirdPerson(float flDistance, bool bForce)
 
 void ZEPlayer::CreateEntwatchHud()
 {
-	CreateEntwatchWorldHud();
+	if (GetEntwatchHudStyle() == 0)
+		CreateEntwatchWorldHud();
+	else
+	{
+		if (auto text = GetEntwatchHud())
+		{
+			text->Remove();
+			SetEntwatchHud(nullptr);
+		}
+	}
+}
+
+int ZEPlayer::GetEntwatchHudStyle()
+{
+	return EW_DefaultHudStyle();
 }
 
 int ZEPlayer::GetEntwatchHudMode()
@@ -850,6 +865,7 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 
 	g_pUserPreferencesSystem->PushPreferences(slot.Get());
 	g_pUserPreferencesSystem->ClearPreferences(slot.Get());
+	EW_ForgetHudPlayer(slot.Get());
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_PlayerDisconnect(slot.Get());

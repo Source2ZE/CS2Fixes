@@ -34,6 +34,7 @@
 #include "entitylistener.h"
 #include "entitysystem.h"
 #include "entwatch.h"
+#include "entwatch_hud.h"
 #include "eventlistener.h"
 #include "gameconfig.h"
 #include "gamesystem.h"
@@ -226,6 +227,7 @@ bool CS2Fixes::Unload(char* error, size_t maxlen)
 	CommandList().clear();
 	UndoPatches();
 	RemoveAllTimers();
+	EW_DestroyHud();
 	UnregisterEventListeners();
 
 	if (g_GameConfig)

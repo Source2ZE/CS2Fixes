@@ -18,7 +18,6 @@
  */
 
 #include "entwatch.h"
-#include "entwatch_hud.h"
 #include "commands.h"
 #include "cs2fixes.h"
 #include "ctimer.h"
@@ -33,6 +32,7 @@
 #include "entity/cpointworldtext.h"
 #include "entity/cteam.h"
 #include "entity/services.h"
+#include "entwatch_hud.h"
 #include "eventlistener.h"
 #include "gameevents.pb.h"
 #include "leader.h"
@@ -927,7 +927,7 @@ std::string EWItemInstance::GetHandlerStateText()
 	bool first = true;
 	for (int i = 0; i < (vecHandlers).size(); i++)
 	{
-		if (!vecHandlers[i]->bShowHud || (int)(vecHandlers[i]->mode) >= EWMode_Last)
+		if (!vecHandlers[i] || !vecHandlers[i]->bShowHud || (int)(vecHandlers[i]->mode) >= EWMode_Last)
 			continue;
 
 		vecHandlers[i]->UpdateHudText();
@@ -1064,6 +1064,7 @@ void CEWHandler::UnLoadConfig()
 	vecHookedTriggers.clear();
 
 	m_bConfigLoaded = false;
+	EW_UpdateHud();
 }
 
 /*
@@ -1876,91 +1877,58 @@ KHook::Return<void> CEWHandler::Hook_Use(CBaseEntity* pThis, InputData_t* pInput
 // Update cd and uses of all held items
 float EW_UpdateHud()
 {
-	if (!GetGlobals())
+	if (!GetGlobals() || !g_pEWHandler || !g_playerManager)
 		return EW_HUD_TICKRATE;
 
-	std::string sHudText = "";
-	std::string sHudTextNoPlayerNames = "";
-	static bool bWasEmptyPreviously = false;
-
-	bool bFirst = true;
-	for (int i = 0; i < (g_pEWHandler->vecItems).size(); i++)
+	std::vector<EntwatchHudRow> rows;
+	for (const auto& item : g_pEWHandler->vecItems)
 	{
-		std::shared_ptr<EWItemInstance> pItem = g_pEWHandler->vecItems[i];
-		if (!pItem)
+		if (!item || item->iOwnerSlot < 0 || item->iOwnerSlot >= MAXPLAYERS || item->iWeaponEnt == -1 || !item->bShowHud)
 			continue;
-
-		if (pItem->iOwnerSlot == -1 || pItem->iWeaponEnt == -1)
-			continue;
-
-		if (!pItem->bShowHud)
-			continue;
-
-		CCSPlayerController* pOwner = CCSPlayerController::FromSlot(CPlayerSlot(pItem->iOwnerSlot));
-		if (!pOwner)
-			continue;
-
-		std::string sItemText = pItem->GetHandlerStateText();
-
+		auto owner = CCSPlayerController::FromSlot(CPlayerSlot(item->iOwnerSlot));
+		if (!owner || !owner->IsConnected()) continue;
+		EntwatchHudRow row;
+		row.name = item->szShortName;
+		row.owner = owner->GetPlayerName();
+		row.state = item->GetHandlerStateText();
+		for (const auto& handler : item->vecHandlers)
+		{
+			if (!handler || !handler->bShowHud || handler->mode < Cooldown || handler->mode >= EWMode_Last)
+				continue;
+			// Use the same countdown rounding as the legacy handler text.
+			const int seconds = handler->flLastUsed == -1.0f ? 0 :
+															   static_cast<int>(handler->flCooldown - (GetGlobals()->curtime - (handler->flLastUsed + 1)));
+			if (handler->mode != CounterValue && seconds > 0)
+			{
+				if (!row.cooldown.empty()) row.cooldown += " | ";
+				row.cooldown += std::to_string(seconds) + "s";
+			}
+			std::string ammo;
+			if (handler->mode == MaxUses || handler->mode == CooldownAfterUses)
+				ammo = std::to_string(std::max(0, handler->iMaxUses - handler->iCurrentUses)) + "/" + std::to_string(handler->iMaxUses);
+			else if (handler->mode == CounterValue)
+				ammo = std::to_string(std::max(0, static_cast<int>(std::round(handler->flCounterValue)))) + "/" + std::to_string(static_cast<int>(std::round(handler->flCounterMax)));
+			if (!ammo.empty())
+			{
+				if (!row.ammo.empty()) row.ammo += " | ";
+				row.ammo += ammo;
+			}
+		}
 		if (g_cvarUseEntwatchClantag.Get())
 		{
-			V_snprintf(pItem->sClantag, sizeof(EWItemInstance::sClantag), "%s: %s", sItemText.c_str(), pItem->szShortName.c_str());
-			if (pItem->bHasThisClantag)
-				pOwner->SetClanTag(pItem->sClantag);
+			V_snprintf(item->sClantag, sizeof(EWItemInstance::sClantag), "%s: %s", row.state.c_str(), item->szShortName.c_str());
+			if (item->bHasThisClantag) owner->SetClanTag(item->sClantag);
 		}
-
-		if (!g_cvarEnableEntwatchHud.Get())
-			continue;
-
-		// std::format not supported in clang16 by default (steamrt3)
-		if (!bFirst)
-		{
-			sHudText.append("\n");
-			sHudTextNoPlayerNames.append("\n");
-		}
-		else
-			bFirst = false;
-
-		sHudText.append("[");
-		sHudText.append(sItemText);
-		sHudText.append("]");
-		sHudText.append(pItem->szShortName);
-		sHudText.append(": ");
-		sHudText.append(pOwner->GetPlayerName());
-
-		// sHudTextNoPlayerNames.append(std::format("\n[{}]{}", sItemText, pItem->szShortName));
-		sHudTextNoPlayerNames.append("[");
-		sHudTextNoPlayerNames.append(sItemText);
-		sHudTextNoPlayerNames.append("]");
-		sHudTextNoPlayerNames.append(pItem->szShortName);
+		rows.push_back(std::move(row));
 	}
-
-	if (sHudText != "")
+	// Always render empty lists too: drops, round resets and disabled HUDs must hide immediately.
+	for (int slot = 0; slot < std::min(GetGlobals()->maxClients, MAXPLAYERS); ++slot)
 	{
-		bWasEmptyPreviously = false;
+		auto controller = CCSPlayerController::FromSlot(slot);
+		auto player = g_playerManager->GetPlayer(CPlayerSlot(slot));
+		if (controller && controller->IsConnected() && player && !player->IsFakeClient())
+			EW_RenderHud(player, rows);
 	}
-	else
-	{
-		if (bWasEmptyPreviously)
-			return EW_HUD_TICKRATE;
-		bWasEmptyPreviously = true;
-	}
-
-	for (int i = 0; i < GetGlobals()->maxClients; i++)
-	{
-		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
-		if (!pController)
-			continue;
-		auto pPawn = pController->GetPawn();
-		if (!pPawn)
-			continue;
-		ZEPlayer* zpPlayer = g_playerManager->GetPlayer(CPlayerSlot(i));
-		if (!zpPlayer)
-			continue;
-
-		EW_RenderWorldText(zpPlayer, sHudText, sHudTextNoPlayerNames);
-	}
-
 	return EW_HUD_TICKRATE;
 }
 
@@ -1977,6 +1945,7 @@ void EW_RoundPreStart()
 
 	g_pEWHandler->ResetAllClantags();
 	g_pEWHandler->ClearItems();
+	EW_UpdateHud();
 }
 
 void EW_OnEntitySpawned(CEntityInstance* pEntity)
@@ -2589,6 +2558,7 @@ CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
 		mode = EWHudMode::Hud_None;
 
 	zpPlayer->SetEntwatchHudMode((int)mode);
+	EW_UpdateHud();
 
 	if (mode == EWHudMode::Hud_None)
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "EntWatch HUD\x07 disabled.");

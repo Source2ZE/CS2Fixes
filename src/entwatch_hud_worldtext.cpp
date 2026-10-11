@@ -17,14 +17,40 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "entity/ccsplayercontroller.h"
+#include "commands.h"
 #include "entwatch.h"
 #include "entwatch_hud.h"
 #include "playermanager.h"
 #include "utils/entity.h"
 
+extern CConVar<bool> g_cvarEntwatchPanoramaDebug;
+
+void EW_RenderWorldText(ZEPlayer* player, const std::vector<EntwatchHudRow>& rows, bool visible)
+{
+	if (!player)
+		return;
+	auto text = player->GetEntwatchHud();
+	if (!text && visible)
+	{
+		player->CreateEntwatchWorldHud();
+		text = player->GetEntwatchHud();
+	}
+	if (!text)
+		return;
+	std::string message;
+	if (visible)
+		for (const auto& row : rows)
+		{
+			if (!message.empty()) message += "\n";
+			message += "[" + row.state + "]" + row.name;
+			if (player->GetEntwatchHudMode() == Hud_On) message += ": " + row.owner;
+		}
+	text->AcceptInput("SetMessage", message.c_str());
+}
+
 void ZEPlayer::CreateEntwatchWorldHud()
 {
+	const bool bDebug = g_cvarEntwatchPanoramaDebug.Get();
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
 	if (!pController)
 		return;
@@ -41,10 +67,21 @@ void ZEPlayer::CreateEntwatchWorldHud()
 	if (pText)
 	{
 		pText->Remove();
+		SetEntwatchHud(nullptr);
 		pText = nullptr;
 	}
 
 	pText = CreateEntityByName<CPointWorldText>("point_worldtext");
+	if (!pText)
+	{
+		static double flNextWarning = 0.0;
+		if (g_flUniversalTime >= flNextWarning)
+		{
+			Warning("[EntWatch HUD] Failed to create point_worldtext for slot %d.\n", GetPlayerSlot().Get());
+			flNextWarning = g_flUniversalTime + 30.0;
+		}
+		return;
+	}
 	pText->m_bEnabled(true);
 	pText->m_bFullbright(true);
 	pText->m_flFontSize(GetEntwatchHudSize());
@@ -67,6 +104,8 @@ void ZEPlayer::CreateEntwatchWorldHud()
 
 	pText->DispatchSpawn();
 	SetEntwatchHud(pText);
+	if (bDebug)
+		Message("[EntWatch HUD] Created world-text HUD for slot %d.\n", GetPlayerSlot().Get());
 
 	pText->AcceptInput("SetParent", "!activator", pOrient);
 
@@ -92,17 +131,4 @@ void ZEPlayer::CreateEntwatchWorldHud()
 	angles.z = AngleNormalize(-vmangles.x + 90.0f);
 
 	pText->Teleport(&origin, &angles, nullptr);
-}
-
-void EW_RenderWorldText(ZEPlayer* pPlayer, const std::string& sHudText, const std::string& sHudTextNoPlayerNames)
-{
-	CPointWorldText* pText = pPlayer->GetEntwatchHud();
-	if (!pText) return;
-	EWHudMode mode = (EWHudMode)pPlayer->GetEntwatchHudMode();
-	if (mode == EWHudMode::Hud_On)
-		pText->AcceptInput("SetMessage", sHudText.c_str());
-	else if (mode == EWHudMode::Hud_ItemOnly)
-		pText->AcceptInput("SetMessage", sHudTextNoPlayerNames.c_str());
-	else
-		pText->AcceptInput("SetMessage", "");
 }

@@ -20,6 +20,26 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 class ZEPlayer;
-void EW_RenderWorldText(ZEPlayer* pPlayer, const std::string& sHudText, const std::string& sHudTextNoPlayerNames);
+class CCSPlayerController;
+class CCommand;
+
+struct EntwatchHudRow
+{
+	std::string name;
+	std::string owner;
+	std::string state;
+	std::string cooldown;
+	std::string ammo;
+
+	bool operator==(const EntwatchHudRow&) const = default;
+};
+
+// Keep the item model independent of either HUD entity implementation.
+void EW_RenderHud(ZEPlayer* player, const std::vector<EntwatchHudRow>& rows);
+void EW_RenderWorldText(ZEPlayer* player, const std::vector<EntwatchHudRow>& rows, bool visible);
+void EW_ForgetHudPlayer(int slot);
+void EW_DestroyHud();
+int EW_DefaultHudStyle();

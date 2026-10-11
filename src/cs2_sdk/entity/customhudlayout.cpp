@@ -25,7 +25,6 @@ std::unordered_map<int, CustomHudLayoutCallbacks_t> CCSCustomHudLayout::sm_mapCu
 CCSCustomHudLayout* CCSCustomHudLayout::Create(std::string sLayout, std::string sTargetName)
 {
 	CCSCustomHudLayout* pLayout = CreateEntityByName<CCSCustomHudLayout>("custom_hud_layout");
-
 	if (!pLayout)
 		return nullptr;
 
@@ -49,12 +48,14 @@ void CCSCustomHudLayout::ClearCallbacks()
 
 void CCSCustomHudLayout::OnClick(CCSPlayerController* pController, const std::string& sButtonId)
 {
-	if (auto it = sm_mapCustomLayoutCallbacks.find(GetHandle().ToInt()); it != sm_mapCustomLayoutCallbacks.end())
+	if (auto it = sm_mapCustomLayoutCallbacks.find(GetHandle().ToInt()); it != sm_mapCustomLayoutCallbacks.end() && it->second.m_OnClick)
 		it->second.m_OnClick(pController, this, sButtonId);
 }
 
 void CCSCustomHudLayout::OnClientDisconnect(int slot)
 {
+	if (slot < 0 || slot >= MAXPLAYERS)
+		return;
 	auto iterator = sm_mapCustomLayoutCallbacks.begin();
 
 	while (iterator != sm_mapCustomLayoutCallbacks.end())
@@ -67,7 +68,8 @@ void CCSCustomHudLayout::OnClientDisconnect(int slot)
 			continue;
 		}
 
-		iterator->second.m_OnDisconnect(pLayout, slot);
+		if (iterator->second.m_OnDisconnect)
+			iterator->second.m_OnDisconnect(pLayout, slot);
 		iterator++;
 	}
 }

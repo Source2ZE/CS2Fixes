@@ -1,0 +1,712 @@
+<root>
+  <styles><include src="file://{resources}/styles/entwatch/hud.css" /></styles>
+  <Panel class="Root" hittest="false">
+    <Panel id="entwatch" class="EntWatch Hidden" hittest="false">
+      <Panel id="item_0" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_1" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_2" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_3" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_4" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_5" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_6" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_7" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_8" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_9" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_10" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_11" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_12" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_13" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_14" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_15" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_16" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_17" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_18" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_19" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_20" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_21" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_22" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_23" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_24" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_25" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_26" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_27" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_28" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_29" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_30" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_31" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_32" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_33" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_34" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_35" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_36" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_37" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_38" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_39" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_40" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_41" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_42" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_43" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_44" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_45" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_46" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_47" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_48" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_49" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_50" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_51" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_52" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_53" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_54" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_55" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_56" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_57" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_58" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_59" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_60" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_61" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_62" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Panel id="item_63" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>
+      <Label id="overflow" class="Overflow Hidden" text="+{s:count} more items" hittest="false" />
+    </Panel>
+  </Panel>
+</root>
