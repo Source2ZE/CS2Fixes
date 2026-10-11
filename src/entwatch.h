@@ -37,6 +37,10 @@ extern CConVar<bool> g_cvarEnableEntwatchHud;
 #define EW_PREFIX " \4[EntWatch]\1 "
 
 #define EW_PREF_HUD_MODE "entwatch_hud"
+#define EW_PREF_HUD_STYLE "entwatch_hud_style"
+#define EW_PREF_PANORAMA_X "entwatch_panorama_hudpos_x"
+#define EW_PREF_PANORAMA_Y "entwatch_panorama_hudpos_y"
+#define EW_PREF_PANORAMA_SIZE "entwatch_panorama_hudsize"
 #define EW_PREF_HUDPOS_X "entwatch_hudpos_x"
 #define EW_PREF_HUDPOS_Y "entwatch_hudpos_y"
 #define EW_PREF_HUDCOLOR "entwatch_hudcolor"

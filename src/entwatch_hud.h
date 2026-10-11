@@ -26,6 +26,12 @@ class ZEPlayer;
 class CCSPlayerController;
 class CCommand;
 
+constexpr int EW_PANORAMA_X_DEFAULT = 2;
+constexpr int EW_PANORAMA_Y_DEFAULT = 15;
+constexpr int EW_PANORAMA_SIZE_DEFAULT = 100;
+constexpr int EW_PANORAMA_SIZE_MIN = 50;
+constexpr int EW_PANORAMA_SIZE_MAX = 200;
+
 struct EntwatchHudRow
 {
 	std::string name;
@@ -43,3 +49,6 @@ void EW_RenderWorldText(ZEPlayer* player, const std::vector<EntwatchHudRow>& row
 void EW_ForgetHudPlayer(int slot);
 void EW_DestroyHud();
 int EW_DefaultHudStyle();
+bool EW_ParseHudFloat(const char* pszValue, float& flValue);
+void EW_ConfigurePanoramaHudPos(CCSPlayerController* player, const CCommand& args);
+void EW_ConfigurePanoramaHudSize(CCSPlayerController* player, const CCommand& args);

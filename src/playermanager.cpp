@@ -39,6 +39,7 @@
 #include "votemanager.h"
 #include "zombiereborn.h"
 #include <../cs2fixes.h>
+#include <cmath>
 
 #include "tier0/memdbgon.h"
 
@@ -755,7 +756,14 @@ void ZEPlayer::CreateEntwatchHud()
 
 int ZEPlayer::GetEntwatchHudStyle()
 {
-	return EW_DefaultHudStyle();
+	return m_iEntwatchHudStyle < 0 ? EW_DefaultHudStyle() : m_iEntwatchHudStyle;
+}
+
+void ZEPlayer::SetEntwatchHudStyle(int style)
+{
+	m_iEntwatchHudStyle = style >= -1 && style <= 1 ? style : -1;
+	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_HUD_STYLE, m_iEntwatchHudStyle);
+	CreateEntwatchHud();
 }
 
 int ZEPlayer::GetEntwatchHudMode()
@@ -767,7 +775,7 @@ int ZEPlayer::GetEntwatchHudMode()
 
 void ZEPlayer::SetEntwatchHudMode(int iMode)
 {
-	m_iEntwatchHudMode = iMode;
+	m_iEntwatchHudMode = iMode >= Hud_None && iMode <= Hud_ItemOnly ? iMode : Hud_None;
 	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_HUD_MODE, m_iEntwatchHudMode);
 }
 
@@ -791,8 +799,8 @@ void ZEPlayer::SetEntwatchHudColor(Color colorHud)
 
 void ZEPlayer::SetEntwatchHudPos(float x, float y)
 {
-	m_flEntwatchHudX = x;
-	m_flEntwatchHudY = y;
+	m_flEntwatchHudX = std::isfinite(x) && std::abs(x) <= 1000.0f ? x : EW_HUDPOS_X_DEFAULT;
+	m_flEntwatchHudY = std::isfinite(y) && std::abs(y) <= 1000.0f ? y : EW_HUDPOS_Y_DEFAULT;
 	g_pUserPreferencesSystem->SetPreferenceFloat(m_slot.Get(), EW_PREF_HUDPOS_X, m_flEntwatchHudX);
 	g_pUserPreferencesSystem->SetPreferenceFloat(m_slot.Get(), EW_PREF_HUDPOS_Y, m_flEntwatchHudY);
 
@@ -801,7 +809,7 @@ void ZEPlayer::SetEntwatchHudPos(float x, float y)
 
 void ZEPlayer::SetEntwatchHudSize(float flSize)
 {
-	m_flEntwatchHudSize = flSize;
+	m_flEntwatchHudSize = std::isfinite(flSize) ? std::clamp(flSize, 20.0f, 255.0f) : EW_HUDSIZE_DEFAULT;
 	g_pUserPreferencesSystem->SetPreferenceFloat(m_slot.Get(), EW_PREF_HUDSIZE, m_flEntwatchHudSize);
 
 	CPointWorldText* pText = GetEntwatchHud();

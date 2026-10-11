@@ -2568,7 +2568,7 @@ CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "EntWatch HUD\x04 enabled\x10 (Item names only).");
 }
 
-CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
+CON_COMMAND_CHAT(hudpos, "[x y|reset] - Position the active EntWatch HUD style")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
@@ -2592,15 +2592,30 @@ CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
 		return;
 	}
 
-	if (args.ArgC() < 3)
+	if (zpPlayer->GetEntwatchHudStyle() == 1)
+	{
+		EW_ConfigurePanoramaHudPos(player, args);
+		return;
+	}
+	if (args.ArgC() == 2 && !V_stricmp(args[1], "reset"))
+	{
+		zpPlayer->SetEntwatchHudPos(EW_HUDPOS_X_DEFAULT, EW_HUDPOS_Y_DEFAULT);
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "World-text HUD position reset.");
+		return;
+	}
+	if (args.ArgC() != 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudpos <x> <y>");
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Current hudpos: %.1fx %.1fy", zpPlayer->GetEntwatchHudX(), zpPlayer->GetEntwatchHudY());
 		return;
 	}
 
-	float x = std::atof(args[1]);
-	float y = std::atof(args[2]);
+	float x, y;
+	if (!EW_ParseHudFloat(args[1], x) || !EW_ParseHudFloat(args[2], y) || std::abs(x) > 1000.0f || std::abs(y) > 1000.0f)
+	{
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "World-text position must contain two numbers between -1000 and 1000.");
+		return;
+	}
 
 	zpPlayer->SetEntwatchHudPos(x, y);
 	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Set hudpos to: %.1fx %.1fy", x, y);
@@ -2658,7 +2673,7 @@ CON_COMMAND_CHAT(hudcolor, "<r> <g> <b> [a] - Set color (and transparency) of th
 	zpPlayer->SetEntwatchHudColor(newColor);
 }
 
-CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
+CON_COMMAND_CHAT(hudsize, "[size|reset] - Size the active HUD: world-text font size or Panorama percentage")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
@@ -2682,7 +2697,18 @@ CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
 		return;
 	}
 
-	if (args.ArgC() < 2)
+	if (zpPlayer->GetEntwatchHudStyle() == 1)
+	{
+		EW_ConfigurePanoramaHudSize(player, args);
+		return;
+	}
+	if (args.ArgC() == 2 && !V_stricmp(args[1], "reset"))
+	{
+		zpPlayer->SetEntwatchHudSize(EW_HUDSIZE_DEFAULT);
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "World-text HUD font size reset.");
+		return;
+	}
+	if (args.ArgC() != 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudsize <size>");
 		float flSize = zpPlayer->GetEntwatchHudSize();
@@ -2690,7 +2716,12 @@ CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
 		return;
 	}
 
-	float size = std::atof(args[1]);
+	float size;
+	if (!EW_ParseHudFloat(args[1], size))
+	{
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "HUD size must be a finite number.");
+		return;
+	}
 	if (size < 20.0f) // size 20 with 0.005 units per pixel is small
 		size = 20.0f;
 	else if (size > 255.0f) // game has a max of 255

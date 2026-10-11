@@ -21,6 +21,7 @@
 #include "commands.h"
 #include "common.h"
 #include "entwatch.h"
+#include "entwatch_hud.h"
 #include "httpmanager.h"
 #include "playermanager.h"
 #include "strtools.h"
@@ -137,9 +138,13 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 
 	// Set EntWatch
 	player->SetEntwatchHudMode(iEntwatchMode);
+	player->SetEntwatchHudStyle(GetPreferenceInt(iSlot, EW_PREF_HUD_STYLE, -1));
 	player->SetEntwatchHudPos(flEntwatchHudposX, flEntwatchHudposY);
+	player->SetEntwatchPanoramaHudPos(GetPreferenceInt(iSlot, EW_PREF_PANORAMA_X, EW_PANORAMA_X_DEFAULT), GetPreferenceInt(iSlot, EW_PREF_PANORAMA_Y, EW_PANORAMA_Y_DEFAULT));
+	player->SetEntwatchPanoramaHudSize(GetPreferenceInt(iSlot, EW_PREF_PANORAMA_SIZE, EW_PANORAMA_SIZE_DEFAULT));
 	player->SetEntwatchHudColor(ewHudColor);
 	player->SetEntwatchHudSize(flEntwatchHudSize);
+	EW_UpdateHud();
 }
 
 void CUserPreferencesSystem::PullPreferences(int iSlot)
