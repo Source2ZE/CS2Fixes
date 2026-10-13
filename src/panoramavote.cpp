@@ -23,13 +23,13 @@
 #include "common.h"
 #include "cs2fixes.h"
 #include "ctimer.h"
-#include "engine/igameeventsystem.h"
+#include "engine2/igameeventsystem.h"
 #include "entity/cvotecontroller.h"
 #include "networksystem/inetworkmessages.h"
 #include "panoramavote.h"
 #include "recipientfilters.h"
 #include "utils/entity.h"
-#include "utlstring.h"
+#include "tier0/utlstring.h"
 
 #include "tier0/memdbgon.h"
 
@@ -97,7 +97,7 @@ bool CPanoramaVoteHandler::IsPlayerInVotePool(int iSlot)
 	if (!m_bIsVoteInProgress)
 		return false;
 
-	if (iSlot < 0 || iSlot > MAXPLAYERS)
+	if (iSlot < 0 || iSlot > MAX_PLAYERS)
 		return false;
 
 	for (int i = 0; i < m_iVoterCount; i++)
@@ -228,7 +228,7 @@ void CPanoramaVoteHandler::InitVoters(CRecipientFilter* pFilter)
 {
 	// Clear any old info
 	m_iVoterCount = 0;
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		m_iVoters[i] = -1;
 		hVoteController->m_nVotesCast[i] = VOTE_UNCAST;
@@ -240,7 +240,7 @@ void CPanoramaVoteHandler::InitVoters(CRecipientFilter* pFilter)
 	m_iVoterCount = pFilter->GetRecipientCount();
 
 	const uint64 x = *reinterpret_cast<const uint64*>(&pFilter->GetRecipients());
-	for (int i = 0, j = 0; i < MAXPLAYERS; i++)
+	for (int i = 0, j = 0; i < MAX_PLAYERS; i++)
 		if (x & (static_cast<unsigned long long>(1u) << i))
 			m_iVoters[j] = i;
 }
@@ -309,7 +309,7 @@ void CPanoramaVoteHandler::EndVote(YesNoVoteEndReason reason)
 	info.no_votes = hVoteController->m_nVoteOptionCount[VOTE_OPTION2];
 	info.num_votes = info.yes_votes + info.no_votes;
 
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		if (i < m_iVoterCount)
 		{

@@ -181,7 +181,7 @@ void EntityNetworkStateChanged(uintptr_t pEntity, uint nOffset)
 
 void ChainNetworkStateChanged(uintptr_t pNetworkVarChainer, uint nLocalOffset)
 {
-	CEntityInstance* pEntity = reinterpret_cast<CNetworkVarChainer*>(pNetworkVarChainer)->m_pEntity;
+	CEntityInstance* pEntity = reinterpret_cast<CNetworkVarChainer*>(pNetworkVarChainer)->GetObject();
 
 	if (pEntity)
 		pEntity->NetworkStateChanged(NetworkStateChangedData(nLocalOffset, -1, reinterpret_cast<CNetworkVarChainer*>(pNetworkVarChainer)->m_PathIndex));

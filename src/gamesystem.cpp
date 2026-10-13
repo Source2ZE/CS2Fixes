@@ -205,9 +205,9 @@ GS_EVENT_MEMBER(CGameSystem, PostSpawnGroupLoad)
 	{
 		auto pClient = (*pClients)[i];
 
-		if (!pClient || pClient->m_vecLoadedSpawnGroups.Count() == vecActualSpawnGroups.Count())
+		if (!pClient || pClient->m_LoadedSpawnGroups.Count() == vecActualSpawnGroups.Count())
 			continue;
 
-		pClient->m_vecLoadedSpawnGroups = vecActualSpawnGroups;
+		pClient->m_LoadedSpawnGroups = vecActualSpawnGroups;
 	}
 }

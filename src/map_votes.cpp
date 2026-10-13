@@ -23,13 +23,14 @@
 #include "ctimer.h"
 #include "entity/cgamerules.h"
 #include "eventlistener.h"
-#include "iserver.h"
+#include "engine2/inetworkgameserver.h"
+#include "engine2/ivengineserver2.h"
 #include "mapmigrations.h"
 #include "playermanager.h"
 #include "steam/steam_gameserver.h"
-#include "strtools.h"
-#include "utlstring.h"
-#include "utlvector.h"
+#include "tier0/tier0_strtools.h"
+#include "tier0/utlstring.h"
+#include "tier0/utlvector.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
 #include "votemanager.h"
@@ -225,7 +226,7 @@ void CMapVoteSystem::OnLevelInit(const char* pszMapName)
 	m_bIntermissionStarted = false;
 	m_pForcedNextMap = nullptr;
 
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < MAX_PLAYERS; i++)
 		ClearPlayerInfo(i);
 
 	// Delay one tick to override any .cfg's
@@ -295,7 +296,7 @@ void CMapVoteSystem::StartVote()
 	}
 
 	// Reset the player vote counts as the vote just started
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < MAX_PLAYERS; i++)
 		m_arrPlayerVotes[i] = -1;
 
 	// Print all available maps out to console

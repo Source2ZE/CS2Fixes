@@ -61,7 +61,7 @@ public:
 
 	SCHEMA_FIELD(CNetworkVarChainer, __m_pChainEntity)
 
-	CCSPlayerController* GetController() { return reinterpret_cast<CCSPlayerController*>(__m_pChainEntity().m_pEntity); }
+	CCSPlayerController* GetController() { return reinterpret_cast<CCSPlayerController*>(__m_pChainEntity().GetObject()); }
 };
 
 class CPlayerPawnComponent
@@ -95,7 +95,7 @@ public:
 
 	SCHEMA_FIELD(CNetworkVarChainer, __m_pChainEntity)
 
-	CCSPlayerPawn* GetPawn() { return reinterpret_cast<CCSPlayerPawn*>(__m_pChainEntity().m_pEntity); }
+	CCSPlayerPawn* GetPawn() { return reinterpret_cast<CCSPlayerPawn*>(__m_pChainEntity().GetObject()); }
 };
 
 class CPlayer_MovementServices : public CPlayerPawnComponent
@@ -303,9 +303,10 @@ class CPlayer_ObserverServices : public CPlayerPawnComponent
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_ObserverServices)
 
-	SCHEMA_FIELD(ObserverMode_t, m_iObserverMode)
+	// ObserverMode_t values are stored as bytes in these schema fields.
+	SCHEMA_FIELD(uint8, m_iObserverMode)
 	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hObserverTarget)
-	SCHEMA_FIELD(ObserverMode_t, m_iObserverLastMode)
+	SCHEMA_FIELD(uint8, m_iObserverLastMode)
 	SCHEMA_FIELD(bool, m_bForcedObserverMode)
 };
 

@@ -21,7 +21,7 @@
 #include "cs2_sdk/entityio.h"
 #include "khook.hpp"
 #include "map.h"
-#include <utlsymbollarge.h>
+#include <tier0/utlsymboltablelarge.h>
 
 class CCheckTransmitInfo;
 class IRecipientFilter;
@@ -55,6 +55,8 @@ class QAngle;
 class CEconItemView;
 class CCSGameRules;
 class CBeam;
+class IWorldRendererMgr;
+struct CPulseArgumentPack;
 struct CTakeDamageResult;
 
 enum class AcquireMethod

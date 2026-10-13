@@ -53,7 +53,7 @@
 #include "module.h"
 #include "networksystem/inetworkserializer.h"
 #include "playermanager.h"
-#include "serversideclient.h"
+#include "engine2/serversideclient.h"
 #include "tier0/vprof.h"
 #include "votemanager.h"
 #include "zombiereborn.h"

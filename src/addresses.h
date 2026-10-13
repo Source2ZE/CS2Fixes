@@ -22,8 +22,9 @@
 #include "stdint.h"
 #include "utils/module.h"
 #include "utils/vscript_function.h"
-#include "utlstring.h"
-#include "variant.h"
+#include "tier0/utlstring.h"
+#include "tier0/utlmap.h"
+#include "entity2/variant.h"
 
 namespace modules
 {

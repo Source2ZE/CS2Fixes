@@ -32,6 +32,8 @@
 
 #include "../addresses.h"
 #include "const.h"
+#include "schemasystem/schemasystem.h"
+#include "networksystem/networkvar.h"
 #include "stdint.h"
 #include "tier0/dbg.h"
 #include "virtual.h"
@@ -42,21 +44,6 @@ struct SchemaKey
 	int32 offset;
 	bool networked;
 	SchemaCollectionManipulatorFn_t manipulator = nullptr;
-};
-
-class CNetworkVarChainer
-{
-public:
-	CEntityInstance* m_pEntity;
-
-private:
-	uint8 pad_0000[24];
-
-public:
-	ChangeAccessorFieldPathIndex_t m_PathIndex;
-
-private:
-	uint8 pad_0024[4];
 };
 
 void EntityNetworkStateChanged(uintptr_t pEntity, uint nOffset);

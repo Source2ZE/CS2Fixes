@@ -23,7 +23,7 @@
 #include "entwatch.h"
 #include "httpmanager.h"
 #include "playermanager.h"
-#include "strtools.h"
+#include "tier0/tier0_strtools.h"
 #include "zombiereborn.h"
 #include <string>
 #undef snprintf

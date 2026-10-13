@@ -28,7 +28,7 @@
 #include "globaltypes.h"
 #include "mathlib/vector.h"
 #include "schema.h"
-#include "tier1/utlstringtoken.h"
+#include "tier0/utlstringtoken.h"
 
 class CGameUI;
 class CEnvHudHint;

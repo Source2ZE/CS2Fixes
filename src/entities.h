@@ -20,7 +20,7 @@
 #pragma once
 
 #include <cstddef>
-#include "variant.h"
+#include "entity2/variant.h"
 
 class InputData_t;
 class CGamePlayerEquip;

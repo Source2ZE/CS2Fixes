@@ -216,7 +216,7 @@ namespace CGamePlayerEquipHandler
 
 	bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, CBaseEntity* pActivator, variant_t* value)
 	{
-		const auto pszWeapon = ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString) ? value->m_pszString : nullptr;
+		const auto pszWeapon = (value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) ? value->ToString() : nullptr;
 
 		if (!pActivator || !pActivator->IsPawn())
 			return true;

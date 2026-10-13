@@ -19,7 +19,6 @@
 
 #include "virtual_hooks.h"
 #include "adminsystem.h"
-#include "cchecktransmitinfo.h"
 #include "cfgparser.h"
 #include "commands.h"
 #include "common.h"
@@ -27,7 +26,7 @@
 #include "cs_gameevents.pb.h"
 #include "cstrike15_usermessages.pb.h"
 #include "ctimer.h"
-#include "engine/IEngineService.h"
+#include "engine2/iengineservicemgr.h"
 #include "entities.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/customhudlayout.h"
@@ -38,9 +37,9 @@
 #include "eventlistener.h"
 #include "gameconfig.h"
 #include "gameevents.pb.h"
-#include "icvar.h"
+#include "tier0/icvar.h"
 #include "idlemanager.h"
-#include "iserver.h"
+#include "engine2/inetworkgameserver.h"
 #include "khook_helpers.h"
 #include "leader.h"
 #include "map_votes.h"
@@ -49,7 +48,7 @@
 #include "networkstringtabledefs.h"
 #include "panoramavote.h"
 #include "playermanager.h"
-#include "serversideclient.h"
+#include "engine2/serversideclient.h"
 #include "tier0/vprof.h"
 #include "usermessages.pb.h"
 #include "votemanager.h"
@@ -79,7 +78,7 @@ KHOOK_VIRTUAL(SwitchToLoop, &IEngineServiceMgr::SwitchToLoop, g_pEngineServiceMg
 
 KHook::Virtual<IGameTypes, void, const char*, const CUtlStringList&> createWorkshopMapGroupHook(0U, Hook_CreateWorkshopMapGroup, nullptr);
 KHook::Virtual<IGameEventManager2, int, const char*, bool> loadEventsFromFileHook(&IGameEventManager2::LoadEventsFromFile, Hook_LoadEventsFromFile, nullptr);
-KHook::Virtual<CServerSideClient, bool, const CCLCMsg_VoiceData_t&> processVoiceDataHook(&CServerSideClient::ProcessVoiceData, Hook_ProcessVoiceData, nullptr);
+KHook::Virtual<CServerSideClient, bool, const CNetMessagePB<CCLCMsg_VoiceData>&> processVoiceDataHook(&CServerSideClient::ProcessVoiceData, Hook_ProcessVoiceData, nullptr);
 KHook::Virtual<INetworkGameServer, void, IGameSpawnGroupMgr*> setGameSpawnGroupMgrHook(&INetworkGameServer::SetGameSpawnGroupMgr, Hook_SetGameSpawnGroupMgr, nullptr);
 KHook::Virtual<CVPhys2World, void, CUtlVector<TouchLinked_t>*, bool> getTouchingListHook(0U, nullptr, Hook_GetTouchingList_Post);
 KHook::Virtual<CCSPlayer_MovementServices, void, double> checkMovingGroundHook(0U, Hook_CheckMovingGround, nullptr);
@@ -556,7 +555,7 @@ KHook::Return<void> Hook_CheckTransmit_Post(ISource2GameEntities* pThis, CCheckT
 
 	for (int i = 0; i < infoCount; i++)
 	{
-		auto& pInfo = (CCheckTransmitInfoExtended*&)(ppInfoList[i]);
+		CCheckTransmitInfo* pInfo = ppInfoList[i];
 		CCSPlayerController* pSelfController = CCSPlayerController::FromSlot(pInfo->m_nPlayerSlot);
 
 		if (!pSelfController || !pSelfController->IsConnected())
@@ -745,7 +744,7 @@ KHook::Return<int> Hook_LoadEventsFromFile(IGameEventManager2* pThis, const char
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CCLCMsg_VoiceData_t& msg)
+KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CNetMessagePB<CCLCMsg_VoiceData>& msg)
 {
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(pClient->GetPlayerSlot());
 
@@ -855,7 +854,7 @@ KHook::Return<void> Hook_CheckMovingGround(CCSPlayer_MovementServices* pThis, do
 
 	int iSlot = pController->GetPlayerSlot();
 
-	static int aPlayerTicks[MAXPLAYERS] = {0};
+	static int aPlayerTicks[MAX_PLAYERS] = {0};
 
 	// The point of doing this is to avoid running the function (and applying/resetting basevelocity) multiple times per tick
 	// This can happen when the client or server lags

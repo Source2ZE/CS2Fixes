@@ -21,7 +21,7 @@
 #include "commands.h"
 #include "ctimer.h"
 #include "entity/cgamerules.h"
-#include "icvar.h"
+#include "tier0/icvar.h"
 #include "playermanager.h"
 
 #include "tier0/memdbgon.h"
@@ -563,7 +563,7 @@ void CVoteManager::ExtendMap(int iMinutes, bool bIncrementiExtends, bool bAllowE
 	{
 		m_iExtends++;
 
-		for (int i = 0; i < MAXPLAYERS; i++)
+		for (int i = 0; i < MAX_PLAYERS; i++)
 		{
 			ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
 			if (pPlayer)

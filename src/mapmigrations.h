@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include "KeyValues.h"
-#include "convar.h"
+#include "tier0/keyvalues.h"
+#include "tier0/convar.h"
 #include "cs2_sdk/entity/ccsweaponbase.h"
 #include "ehandle.h"
 #include <vector>

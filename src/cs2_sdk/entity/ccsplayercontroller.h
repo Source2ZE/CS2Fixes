@@ -20,7 +20,7 @@
 #pragma once
 
 #include "../playermanager.h"
-#include "../serversideclient.h"
+#include "engine2/serversideclient.h"
 #include "cbaseplayercontroller.h"
 #include "services.h"
 

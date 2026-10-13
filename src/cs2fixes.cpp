@@ -18,10 +18,10 @@
  */
 
 #include "cs2fixes.h"
-#include "iserver.h"
+#include "engine2/inetworkgameserver.h"
 
 #include "adminsystem.h"
-#include "appframework/IAppSystem.h"
+#include "appframework/iappsystem.h"
 #include "cfgparser.h"
 #include "commands.h"
 #include "common.h"
@@ -38,7 +38,7 @@
 #include "gameconfig.h"
 #include "gamesystem.h"
 #include "hud_manager.h"
-#include "icvar.h"
+#include "tier0/icvar.h"
 #include "idlemanager.h"
 #include "khook_helpers.h"
 #include "map_votes.h"

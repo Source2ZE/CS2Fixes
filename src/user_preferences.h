@@ -19,7 +19,7 @@
 
 #pragma once
 #include "common.h"
-#include "utlstring.h"
+#include "tier0/utlstring.h"
 #include <functional>
 #undef snprintf
 #include "vendor/nlohmann/json_fwd.hpp"
@@ -75,7 +75,7 @@ class CUserPreferencesSystem
 public:
 	CUserPreferencesSystem()
 	{
-		for (int i = 0; i < MAXPLAYERS; i++)
+		for (int i = 0; i < MAX_PLAYERS; i++)
 		{
 			m_mUserSteamIds[i] = 0;
 			m_mPreferencesLoaded[i] = false;
@@ -96,9 +96,9 @@ public:
 	void PushPreferences(int iSlot);
 
 private:
-	UserPrefsMap_t m_mPreferencesMaps[MAXPLAYERS];
-	uint64 m_mUserSteamIds[MAXPLAYERS];
-	bool m_mPreferencesLoaded[MAXPLAYERS];
+	UserPrefsMap_t m_mPreferencesMaps[MAX_PLAYERS];
+	uint64 m_mUserSteamIds[MAX_PLAYERS];
+	bool m_mPreferencesLoaded[MAX_PLAYERS];
 };
 
 extern CUserPreferencesSystem* g_pUserPreferencesSystem;

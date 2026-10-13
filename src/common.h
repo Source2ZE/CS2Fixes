@@ -20,21 +20,10 @@
 #pragma once
 
 #include "platform.h"
+#include "shareddefs.h"
 #include "utils.h"
 
 #define VPROF_LEVEL 1
-
-#define CS_TEAM_NONE 0
-#define CS_TEAM_SPECTATOR 1
-#define CS_TEAM_T 2
-#define CS_TEAM_CT 3
-
-#define HUD_PRINTNOTIFY 1
-#define HUD_PRINTCONSOLE 2
-#define HUD_PRINTTALK 3
-#define HUD_PRINTCENTER 4
-
-#define MAXPLAYERS 64
 
 #ifdef _WIN32
 	#define ROOTBIN "/bin/win64/"

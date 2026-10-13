@@ -18,7 +18,7 @@
  */
 
 #pragma once
-#include "bitvec.h"
+#include "tier0/bitvec.h"
 #include "common.h"
 #include "entity/cparticlesystem.h"
 #include "entity/cpointorient.h"
@@ -30,7 +30,7 @@
 #include "steam/isteamuser.h"
 #include "steam/steam_api_common.h"
 #include "steam/steamclientpublic.h"
-#include "utlvector.h"
+#include "tier0/utlvector.h"
 #include <playerslot.h>
 
 extern CConVar<bool> g_cvarFlashLightTransmitOthers;
@@ -369,7 +369,7 @@ private:
 	uint64 m_iAdminFlags;
 	int m_iAdminImmunity;
 	int m_iHideDistance;
-	CBitVec<MAXPLAYERS> m_shouldTransmit;
+	CBitVec<MAX_PLAYERS> m_shouldTransmit;
 	int m_iTotalDamage;
 	int m_iTotalHits;
 	int m_iTotalHeadshots;
@@ -484,7 +484,7 @@ public:
 	STEAM_GAMESERVER_CALLBACK_MANUAL(CPlayerManager, OnValidateAuthTicket, ValidateAuthTicketResponse_t, m_CallbackValidateAuthTicketResponse);
 
 private:
-	ZEPlayer* m_vecPlayers[MAXPLAYERS];
+	ZEPlayer* m_vecPlayers[MAX_PLAYERS];
 
 	uint64 m_nUsingStopSound;
 	uint64 m_nUsingSilenceSound;

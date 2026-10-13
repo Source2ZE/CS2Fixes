@@ -22,7 +22,7 @@
 #include "commands.h"
 #include "ctime"
 #include "ctimer.h"
-#include "engine/igameeventsystem.h"
+#include "engine2/igameeventsystem.h"
 #include "entity/ccsplayercontroller.h"
 #include "entwatch.h"
 #include "leader.h"
@@ -30,11 +30,11 @@
 #include "networksystem/inetworkmessages.h"
 #include "panoramavote.h"
 #include "recipientfilters.h"
-#include "serversideclient.h"
+#include "engine2/serversideclient.h"
 #include "tier0/vprof.h"
 #include "user_preferences.h"
 #include "utils/entity.h"
-#include "utlstring.h"
+#include "tier0/utlstring.h"
 #include "votemanager.h"
 #include "zombiereborn.h"
 #include <../cs2fixes.h>
@@ -951,8 +951,8 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot)
 
 	CServerSideClient* pClient = GetClientBySlot(slot);
 
-	if (pClient && pClient->m_vecLoadedSpawnGroups.Count() != vecActualSpawnGroups.Count())
-		pClient->m_vecLoadedSpawnGroups = vecActualSpawnGroups;
+	if (pClient && pClient->m_LoadedSpawnGroups.Count() != vecActualSpawnGroups.Count())
+		pClient->m_LoadedSpawnGroups = vecActualSpawnGroups;
 }
 
 void CPlayerManager::OnLateLoad()
@@ -1821,7 +1821,7 @@ bool CPlayerManager::CanTargetPlayers(CCSPlayerController* pPlayer, const char* 
 
 ZEPlayer* CPlayerManager::GetPlayer(CPlayerSlot slot)
 {
-	if (slot.Get() < 0 || slot.Get() >= MAXPLAYERS)
+	if (slot.Get() < 0 || slot.Get() >= MAX_PLAYERS)
 		return nullptr;
 
 	return m_vecPlayers[slot.Get()];
@@ -1837,7 +1837,7 @@ ZEPlayer* CPlayerManager::GetPlayerFromUserId(uint16 userid)
 {
 	uint8 index = userid & 0xFF;
 
-	if (index >= MAXPLAYERS)
+	if (index >= MAX_PLAYERS)
 		return nullptr;
 
 	return m_vecPlayers[index];
@@ -1999,5 +1999,5 @@ void CPlayerManager::FullUpdateAllClients()
 		return;
 
 	FOR_EACH_VEC(*pClients, i)
-	(*pClients)[i]->ForceFullUpdate();
+	(*pClients)[i]->m_nDeltaTick = -1;
 }

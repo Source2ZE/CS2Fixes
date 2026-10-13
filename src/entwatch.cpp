@@ -23,7 +23,7 @@
 #include "ctimer.h"
 #include "customio.h"
 #include "detours.h"
-#include "engine/igameeventsystem.h"
+#include "engine2/igameeventsystem.h"
 #include "entity/cbasebutton.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
@@ -39,7 +39,7 @@
 #include "networksystem/inetworkmessages.h"
 #include "playermanager.h"
 #include "recipientfilters.h"
-#include "serversideclient.h"
+#include "engine2/serversideclient.h"
 #include "tier0/vprof.h"
 #include "user_preferences.h"
 #include "usermessages.pb.h"
@@ -2365,7 +2365,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 	}
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 
 	// Find receiver
 	if (!g_playerManager->CanTargetPlayers(player, args[2], iNumClients, pSlots, NO_MULTIPLE | NO_SPECTATOR | NO_DEAD))

@@ -20,6 +20,8 @@
 #pragma once
 #include "schema.h"
 #include "soundflags.h"
+#include "shareddefs.h"
+#include "networktransmitcomponent.h"
 #include <platform.h>
 
 enum EInButtonState : uint32_t
@@ -55,17 +57,6 @@ enum ParticleAttachment_t : uint32_t
 	PATTACH_CUSTOM_GAME_STATE_1 = 0xe,
 	PATTACH_HEALTHBAR = 0xf,
 	MAX_PATTACH_TYPES = 0x10,
-};
-
-enum ObserverMode_t : uint8_t
-{
-	OBS_MODE_NONE = 0x0,
-	OBS_MODE_FIXED = 0x1,
-	OBS_MODE_IN_EYE = 0x2,
-	OBS_MODE_CHASE = 0x3,
-	OBS_MODE_ROAMING = 0x4,
-	OBS_MODE_DIRECTED = 0x5,
-	NUM_OBSERVER_MODES = 0x6,
 };
 
 typedef uint32 SoundEventGuid_t;
@@ -109,41 +100,6 @@ enum gender_t : uint8
 	GENDER_HOSPITAL_PATIENT = 0x12,
 	GENDER_BRIDE = 0x13,
 	GENDER_LAST = 0x14,
-};
-
-struct EmitSound_t
-{
-	EmitSound_t() :
-		m_pSoundName(0),
-		m_vecSoundOrigin(),
-		m_flVolume(VOL_NORM),
-		m_flSoundTime(0.0f),
-		m_nForceGuid(0),
-		m_nPitch(PITCH_NORM),
-		m_nFlags(0)
-	{
-	}
-	const char* m_pSoundName; // 0x0
-	Vector m_vecSoundOrigin;  // 0x8
-	float m_flVolume;		  // 0x14
-	float m_flSoundTime;	  // 0x18
-private:
-	uint8_t pad_1c[0x4];
-
-public:
-	uint32_t m_nForceGuid; // 0x20
-private:
-	uint8_t pad_24[0x4];
-
-public:
-	int16_t m_nPitch; // 0x28
-	uint8_t m_nFlags; // 0x2a
-}; // Size: 0x2b
-
-class CNetworkTransmitComponent
-{
-public:
-	DECLARE_SCHEMA_CLASS_INLINE(CNetworkTransmitComponent)
 };
 
 class CNetworkVelocityVector

@@ -17,7 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "KeyValues.h"
+#include "tier0/keyvalues.h"
+#include "tier0/utlstringlist.h"
 #include "common.h"
 #include "entity/ccsplayercontroller.h"
 #include "steam/isteamugc.h"
@@ -168,7 +169,7 @@ public:
 	CMapVoteSystem()
 	{
 		// Initialize the nomination / vote arrays to -1
-		for (int i = 0; i < MAXPLAYERS; i++)
+		for (int i = 0; i < MAX_PLAYERS; i++)
 		{
 			m_arrPlayerNominations[i] = -1;
 			m_arrPlayerVotes[i] = -1;
@@ -234,10 +235,10 @@ private:
 	std::vector<std::shared_ptr<CMap>> m_vecMapList;
 	std::vector<std::shared_ptr<CGroup>> m_vecGroups;
 	std::vector<std::shared_ptr<CCooldown>> m_vecCooldowns;
-	int m_arrPlayerNominations[MAXPLAYERS];
+	int m_arrPlayerNominations[MAX_PLAYERS];
 	std::shared_ptr<CMap> m_pForcedNextMap;
 	int m_iRandomWinnerShift = 0;
-	int m_arrPlayerVotes[MAXPLAYERS];
+	int m_arrPlayerVotes[MAX_PLAYERS];
 	bool m_bIsVoteOngoing = false;
 	bool m_bMapListLoaded = false;
 	bool m_bIntermissionStarted = false;

@@ -23,7 +23,7 @@
 #include "entity/cbasemodelentity.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
-#include "icvar.h"
+#include "tier0/icvar.h"
 #include "irecipientfilter.h"
 
 #include "tier0/memdbgon.h"

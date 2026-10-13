@@ -86,7 +86,7 @@
     <ClCompile Include="src\gameconfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\tier1\convar.cpp">
+    <ClCompile Include="sdk\tier0_perproject\convar.cpp">
       <Filter>Source Files\sdk</Filter>
     </ClCompile>
     <ClCompile Include="src\httpmanager.cpp">
@@ -125,7 +125,7 @@
     <ClCompile Include="src\leader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\tier1\keyvalues3.cpp">
+    <ClCompile Include="sdk\tier0_perproject\keyvalues3.cpp">
       <Filter>Source Files\sdk</Filter>
     </ClCompile>
     <ClCompile Include="sdk\entity2\entitykeyvalues.cpp">
@@ -376,12 +376,6 @@
     <ClInclude Include="src\patches.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cs2_sdk\serversideclient.h">
-      <Filter>Header Files\cs2_sdk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cs2_sdk\clientframe.h">
-      <Filter>Header Files\cs2_sdk</Filter>
-    </ClInclude>
     <ClInclude Include="src\entities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -405,12 +399,6 @@
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\entity\ctriggerteleport.h">
       <Filter>Header Files\cs2_sdk\entity</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cs2_sdk\netmessages.h">
-      <Filter>Header Files\cs2_sdk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cs2_sdk\cchecktransmitinfo.h">
-      <Filter>Header Files\cs2_sdk</Filter>
     </ClInclude>
     <ClInclude Include="src\cs2_sdk\map.h">
       <Filter>Header Files\cs2_sdk</Filter>
