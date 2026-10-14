@@ -288,7 +288,7 @@
 		"CCSGameRules__sm_mapGcBanInformation":
 		{
 			"library": "server",
-			"windows": "48 8D 0D ? ? ? ? 0F 11 44 24 ? 0F 11 44 24 ? E8",
+			"windows": "48 8D 0D ? ? ? ? 45 33 C0 4C 89 74 24 ? 0F 11 44 24",
 			"linux": "48 8D 35 ? ? ? ? 89 C2 48 63 46"
 		},
 		// Called right before "%d spawn groups:\n"
