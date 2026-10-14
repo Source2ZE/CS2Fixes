@@ -302,10 +302,9 @@ class CPlayer_ObserverServices : public CPlayerPawnComponent
 public:
 	DECLARE_SCHEMA_CLASS(CPlayer_ObserverServices)
 
-	// ObserverMode_t values are stored as bytes in these schema fields.
 	SCHEMA_FIELD(uint8, m_iObserverMode)
 	SCHEMA_FIELD(CHandle<CBaseEntity>, m_hObserverTarget)
-	SCHEMA_FIELD(uint8, m_iObserverLastMode)
+	SCHEMA_FIELD(ObserverMode_t, m_iObserverLastMode)
 	SCHEMA_FIELD(bool, m_bForcedObserverMode)
 };
 
