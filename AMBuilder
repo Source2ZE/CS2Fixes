@@ -1,12 +1,13 @@
-# vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
+# vim: set sts=2 ts=8 sw=2 tw=99 et ft=python: 
 import os
-import subprocess
+
+project = builder.LibraryProject(MMSPlugin.metadata["name"])
 
 for sdk_target in MMSPlugin.sdk_targets:
   sdk = sdk_target.sdk
   cxx = sdk_target.cxx
 
-  binary = MMSPlugin.HL2Library(builder, cxx, f'{MMSPlugin.metadata["name"]}.{sdk["name"]}', sdk)
+  binary = MMSPlugin.HL2Library(builder, cxx, project, sdk)
 
   binary.compiler.cxxincludes += [
     os.path.join(builder.sourcePath, 'src', 'cs2_sdk'),
@@ -100,5 +101,4 @@ for sdk_target in MMSPlugin.sdk_targets:
 
   binary.custom = [protoc_builder]
 
-  nodes = builder.Add(binary)
-  MMSPlugin.binaries += [nodes]
+MMSPlugin.tasks += builder.Add(project)
