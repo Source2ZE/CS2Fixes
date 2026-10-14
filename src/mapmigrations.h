@@ -23,7 +23,6 @@
 #include "ehandle.h"
 #include "tier0/convar.h"
 #include <vector>
-#undef max
 
 extern CConVar<int> g_cvarMapMigrations20260121;
 

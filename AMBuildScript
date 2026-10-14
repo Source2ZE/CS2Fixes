@@ -422,7 +422,7 @@ const char *PLUGIN_FULL_VERSION   = \"{version}\";
         cxx.linkflags += ['-lgcc_eh']
       cxx.linkflags += ['-static-libstdc++']
     elif cxx.target.platform == 'windows':
-      cxx.defines += ['WIN32', '_WINDOWS']
+      cxx.defines += ['WIN32', '_WINDOWS', 'NOMINMAX']
 
   def Library(self, cxx, name):
     binary = cxx.Library(name)
