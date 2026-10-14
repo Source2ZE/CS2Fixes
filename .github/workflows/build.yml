@@ -50,8 +50,8 @@ jobs:
       - name: Checkout Metamod
         uses: actions/checkout@v7
         with:
-          repository: FUNPLAY-pro-CS2/metamod-source
-          ref: s2sdk-engine2-headers
+          repository: alliedmodders/metamod-source
+          ref: master
           path: mmsource-2.0
           submodules: recursive
 

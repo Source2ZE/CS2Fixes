@@ -18,7 +18,6 @@
  */
 
 #pragma once
-#include "tier0/bitvec.h"
 #include "common.h"
 #include "entity/cparticlesystem.h"
 #include "entity/cpointorient.h"
@@ -30,6 +29,7 @@
 #include "steam/isteamuser.h"
 #include "steam/steam_api_common.h"
 #include "steam/steamclientpublic.h"
+#include "tier0/bitvec.h"
 #include "tier0/utlvector.h"
 #include <playerslot.h>
 

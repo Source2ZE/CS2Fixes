@@ -18,10 +18,10 @@
  */
 
 #pragma once
-#include "schema.h"
-#include "soundflags.h"
-#include "shareddefs.h"
 #include "networktransmitcomponent.h"
+#include "schema.h"
+#include "shareddefs.h"
+#include "soundflags.h"
 #include <platform.h>
 
 enum EInButtonState : uint32_t

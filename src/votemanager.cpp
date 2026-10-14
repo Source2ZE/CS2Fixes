@@ -21,8 +21,8 @@
 #include "commands.h"
 #include "ctimer.h"
 #include "entity/cgamerules.h"
-#include "tier0/icvar.h"
 #include "playermanager.h"
+#include "tier0/icvar.h"
 
 #include "tier0/memdbgon.h"
 

@@ -18,13 +18,14 @@
  */
 
 #pragma once
+#include "entity2/entityclass.h"
+#include "entity2/variant.h"
 #include "platform.h"
 #include "stdint.h"
+#include "tier0/utlmap.h"
+#include "tier0/utlstring.h"
 #include "utils/module.h"
 #include "utils/vscript_function.h"
-#include "tier0/utlstring.h"
-#include "tier0/utlmap.h"
-#include "entity2/variant.h"
 
 namespace modules
 {
@@ -88,7 +89,7 @@ namespace addresses
 	inline void(FASTCALL* CCSPlayerController_SwitchTeam)(CCSPlayerController* pController, uint32 team);
 	inline void(FASTCALL* CBasePlayerController_SetPawn)(CBasePlayerController* pController, CCSPlayerPawn* pPawn, bool a3, bool a4, bool a5, bool a6);
 	inline void(FASTCALL* CBaseModelEntity_SetModel)(CBaseModelEntity* pModel, const char* pszModel);
-	inline void(FASTCALL* UTIL_Remove)(CEntityInstance*);
+	inline BASEPTR UTIL_Remove;
 
 	inline void(FASTCALL* CEntitySystem_AddEntityIOEvent)(CEntitySystem* pEntitySystem, CEntityInstance* pTarget, const char* pszInput,
 														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, CPulseArgumentPack* pArgumentPack, CPulseInputParamMap* pParamMap);

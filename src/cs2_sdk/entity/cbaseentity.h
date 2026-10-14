@@ -261,7 +261,7 @@ public:
 
 	void Remove()
 	{
-		addresses::UTIL_Remove(this);
+		(this->*addresses::UTIL_Remove)();
 	}
 
 	void SetMoveType(MoveType_t nMoveType)

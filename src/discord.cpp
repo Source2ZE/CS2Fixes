@@ -18,10 +18,10 @@
  */
 
 #include "discord.h"
-#include "tier0/keyvalues.h"
 #include "common.h"
 #include "httpmanager.h"
 #include "interfaces/interfaces.h"
+#include "tier0/keyvalues.h"
 #include "tier0/utlstring.h"
 #include <fstream>
 

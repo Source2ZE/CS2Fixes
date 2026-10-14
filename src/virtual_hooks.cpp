@@ -27,6 +27,9 @@
 #include "cstrike15_usermessages.pb.h"
 #include "ctimer.h"
 #include "engine2/iengineservicemgr.h"
+#include "engine2/inetworkgameserver.h"
+#include "engine2/ivengineserver2.h"
+#include "engine2/serversideclient.h"
 #include "entities.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/customhudlayout.h"
@@ -37,9 +40,7 @@
 #include "eventlistener.h"
 #include "gameconfig.h"
 #include "gameevents.pb.h"
-#include "tier0/icvar.h"
 #include "idlemanager.h"
-#include "engine2/inetworkgameserver.h"
 #include "khook_helpers.h"
 #include "leader.h"
 #include "map_votes.h"
@@ -48,7 +49,7 @@
 #include "networkstringtabledefs.h"
 #include "panoramavote.h"
 #include "playermanager.h"
-#include "engine2/serversideclient.h"
+#include "tier0/icvar.h"
 #include "tier0/vprof.h"
 #include "usermessages.pb.h"
 #include "votemanager.h"
@@ -602,7 +603,7 @@ KHook::Return<void> Hook_CheckTransmit_Post(ISource2GameEntities* pThis, CCheckT
 			if (pSelfZEPlayer->ShouldBlockTransmit(j) && pOtherZEPlayer && !pOtherZEPlayer->IsLeader() && g_pEWHandler->FindItemInstanceByOwner(j, false, 0) == -1)
 			{
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
-				pInfo->m_pTransmitNonPlayers->Set(pPawn->entindex());
+				pInfo->m_pNonTransmitEntity->Set(pPawn->entindex());
 			}
 		}
 
@@ -732,7 +733,11 @@ KHook::Return<void> Hook_SwitchToLoop(IEngineServiceMgr* pThis, const char* pszL
 KHook::Return<void> Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* name, const CUtlStringList& mapList)
 {
 	if (g_cvarVoteManagerEnable.Get() && g_pMapVoteSystem->IsMapListLoaded())
-		return KHook::Recall<void (IGameTypes::*)(const char*, const CUtlStringList&)>(nullptr, {KHook::Action::Ignore}, pThis, name, g_pMapVoteSystem->CreateWorkshopMapGroup());
+	{
+		CUtlStringList workshopMapList;
+		g_pMapVoteSystem->CreateWorkshopMapGroup(workshopMapList);
+		return KHook::Recall<void (IGameTypes::*)(const char*, const CUtlStringList&)>(nullptr, {KHook::Action::Ignore}, pThis, name, workshopMapList);
+	}
 
 	return {KHook::Action::Ignore};
 }

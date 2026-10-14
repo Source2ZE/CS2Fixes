@@ -21,9 +21,9 @@
 
 #include "../addresses.h"
 #include "datamap.h"
+#include "entity2/variant.h"
 #include "platform.h"
 #include "string_t.h"
-#include "entity2/variant.h"
 
 class CEntityInstance;
 class CBaseEntity;

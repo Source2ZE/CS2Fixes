@@ -32,8 +32,8 @@
 
 #include "../addresses.h"
 #include "const.h"
-#include "schemasystem/schemasystem.h"
 #include "networksystem/networkvar.h"
+#include "schemasystem/schemasystem.h"
 #include "stdint.h"
 #include "tier0/dbg.h"
 #include "virtual.h"

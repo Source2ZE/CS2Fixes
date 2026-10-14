@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include <cstddef>
 #include "entity2/variant.h"
+#include <cstddef>
 
 class InputData_t;
 class CGamePlayerEquip;

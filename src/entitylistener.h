@@ -18,7 +18,7 @@
  */
 
 #pragma once
-#include "entitysystem.h"
+#include "gameentitysystem.h"
 
 class CEntityListener : public IEntityListener
 {

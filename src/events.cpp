@@ -17,7 +17,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tier0/keyvalues.h"
 #include "commands.h"
 #include "common.h"
 #include "ctimer.h"
@@ -34,6 +33,7 @@
 #include "mapmigrations.h"
 #include "panoramavote.h"
 #include "recipientfilters.h"
+#include "tier0/keyvalues.h"
 #include "topdefender.h"
 #include "votemanager.h"
 #include "zombiereborn.h"

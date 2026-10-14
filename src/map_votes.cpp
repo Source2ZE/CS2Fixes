@@ -21,10 +21,10 @@
 #include "commands.h"
 #include "common.h"
 #include "ctimer.h"
-#include "entity/cgamerules.h"
-#include "eventlistener.h"
 #include "engine2/inetworkgameserver.h"
 #include "engine2/ivengineserver2.h"
+#include "entity/cgamerules.h"
+#include "eventlistener.h"
 #include "mapmigrations.h"
 #include "playermanager.h"
 #include "steam/steam_gameserver.h"
@@ -1105,14 +1105,10 @@ bool CMapVoteSystem::IsIntermissionAllowed(bool bCheckOnly)
 	return true;
 }
 
-CUtlStringList CMapVoteSystem::CreateWorkshopMapGroup()
+void CMapVoteSystem::CreateWorkshopMapGroup(CUtlStringList& mapList)
 {
-	CUtlStringList mapList;
-
 	for (auto pMap : m_vecMapList)
 		mapList.CopyAndAddToTail(pMap->GetDisplayName());
-
-	return mapList;
 }
 
 bool CMapVoteSystem::WriteMapCooldownsToFile()

@@ -17,12 +17,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tier0/keyvalues.h"
-#include "tier0/utlstringlist.h"
 #include "common.h"
 #include "entity/ccsplayercontroller.h"
 #include "steam/isteamugc.h"
 #include "steam/steam_api_common.h"
+#include "tier0/keyvalues.h"
+#include "tier0/utlstringlist.h"
 #undef snprintf
 #include "vendor/nlohmann/json_fwd.hpp"
 #include <deque>
@@ -201,7 +201,7 @@ public:
 	bool IsVoteOngoing() { return m_bIsVoteOngoing; }
 	bool IsIntermissionAllowed(bool bCheckOnly = true);
 	bool IsMapListLoaded() { return m_bMapListLoaded; }
-	CUtlStringList CreateWorkshopMapGroup();
+	void CreateWorkshopMapGroup(CUtlStringList& mapList);
 	void QueueMapDownload(PublishedFileId_t iWorkshopId);
 	void StartMapDownload(float flDelay = 0.0f);
 	void PrintDownloadProgress();

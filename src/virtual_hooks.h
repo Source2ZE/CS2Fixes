@@ -19,13 +19,16 @@
 
 #pragma once
 
-#include <netmessages.pb.h>
-#include <networksystem/inetworkmessages.h>
 #include "engine2/igameeventsystem.h"
+#include "engine2/inetworkgameserver.h"
+#include "engine2/inetworkserverservice.h"
+#include "engine2/isource2server.h"
 #include "entity/cgamerules.h"
 #include "igameevents.h"
-#include "engine2/inetworkgameserver.h"
 #include "khook.hpp"
+#include "netmessages.pb.h"
+#include "networksystem/inetworkmessages.h"
+#include "tier0/utlstringlist.h"
 
 class CCSPlayer_MovementServices;
 class CServerSideClient;

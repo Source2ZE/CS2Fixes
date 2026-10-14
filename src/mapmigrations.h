@@ -19,10 +19,10 @@
 
 #pragma once
 
-#include "tier0/keyvalues.h"
-#include "tier0/convar.h"
 #include "cs2_sdk/entity/ccsweaponbase.h"
 #include "ehandle.h"
+#include "tier0/convar.h"
+#include "tier0/keyvalues.h"
 #include <vector>
 #undef max
 

@@ -20,6 +20,7 @@
 #include "utils.h"
 #include "../cs2fixes.h"
 #include "../gameconfig.h"
+#include "engine2/ivengineserver2.h"
 
 void Message(const char* msg, ...)
 {

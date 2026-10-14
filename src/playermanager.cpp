@@ -23,6 +23,8 @@
 #include "ctime"
 #include "ctimer.h"
 #include "engine2/igameeventsystem.h"
+#include "engine2/ivengineserver2.h"
+#include "engine2/serversideclient.h"
 #include "entity/ccsplayercontroller.h"
 #include "entwatch.h"
 #include "leader.h"
@@ -30,11 +32,10 @@
 #include "networksystem/inetworkmessages.h"
 #include "panoramavote.h"
 #include "recipientfilters.h"
-#include "engine2/serversideclient.h"
+#include "tier0/utlstring.h"
 #include "tier0/vprof.h"
 #include "user_preferences.h"
 #include "utils/entity.h"
-#include "tier0/utlstring.h"
 #include "votemanager.h"
 #include "zombiereborn.h"
 #include <../cs2fixes.h>
@@ -363,7 +364,7 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
 
 		if (pPlayer->m_iTeamNum < CS_TEAM_T || !pPlayer->m_hPlayerPawn->IsAlive() || pPlayer->m_iTeamNum != iTeamNum)
 		{
-			addresses::UTIL_Remove(pParticle);
+			pParticle->Remove();
 			return -1.0f;
 		}
 
@@ -389,7 +390,7 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
 		// Remove beacon granted by leader if his leader was stripped
 		if (!pBeaconGiver->IsLeader())
 		{
-			addresses::UTIL_Remove(pParticle);
+			pParticle->Remove();
 			return -1.0f;
 		}
 
@@ -404,7 +405,7 @@ void ZEPlayer::EndBeacon()
 	CParticleSystem* pParticle = m_hBeaconParticle.Get();
 
 	if (pParticle)
-		addresses::UTIL_Remove(pParticle);
+		pParticle->Remove();
 }
 
 // Kills off currently active mark (if exists) and makes a new one.
@@ -519,7 +520,7 @@ void ZEPlayer::StartGlow(Color color, int duration)
 			CBaseModelEntity* pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
 
 			if (pModelParent)
-				addresses::UTIL_Remove(pModelParent);
+				pModelParent->Remove();
 
 			return -1.0f;
 		}
@@ -545,7 +546,7 @@ void ZEPlayer::StartGlow(Color color, int duration)
 		CBaseModelEntity* pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
 
 		if (pModelParent)
-			addresses::UTIL_Remove(pModelParent);
+			pModelParent->Remove();
 
 		return -1.0f;
 	});
@@ -568,7 +569,7 @@ void ZEPlayer::EndGlow()
 	CBaseModelEntity* pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
 
 	if (pModelParent)
-		addresses::UTIL_Remove(pModelParent);
+		pModelParent->Remove();
 }
 
 void ZEPlayer::CycleButtonWatch()

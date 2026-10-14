@@ -19,12 +19,12 @@
 
 #pragma once
 
-#include <netmessages.pb.h>
-#include <networksystem/inetworkmessages.h>
 #include "engine2/igameeventsystem.h"
-#include "entity/cgamerules.h"
 #include "engine2/isource2engine.h"
+#include "entity/cgamerules.h"
 #include "igameevents.h"
+#include "netmessages.pb.h"
+#include "networksystem/inetworkmessages.h"
 #include "networksystem/inetworkserializer.h"
 #include "public/ics2fixes.h"
 #include "steam/isteamhttp.h"

@@ -20,8 +20,8 @@
 #pragma once
 
 #include "../playermanager.h"
-#include "engine2/serversideclient.h"
 #include "cbaseplayercontroller.h"
+#include "engine2/serversideclient.h"
 #include "services.h"
 
 class CCSPlayerController : public CBasePlayerController

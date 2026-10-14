@@ -170,10 +170,10 @@ void CMapMigrations::Migrations_20260420(CBasePlayerWeapon* pWeapon)
 bool CMapMigrations::Migrations_20260922(CEntityIdentity* pThis, CUtlSymbolLarge* pInputName, CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value)
 {
 	// Fix stringified Pulse argument packs formatting float decimals breaking logic_case matching post 2026-09-22 CS2 update
-	if (value->m_type == FIELD_FLOAT32 && !V_strcasecmp(pInputName->String(), "InValue") && !V_strcasecmp(pThis->GetClassname(), "logic_case"))
+	if (value->GetType() == FIELD_FLOAT32 && !V_strcasecmp(pInputName->String(), "InValue") && !V_strcasecmp(pThis->GetClassname(), "logic_case"))
 	{
 		char szValue[32];
-		V_snprintf(szValue, sizeof(szValue), "%g", value->m_float32);
+		V_snprintf(szValue, sizeof(szValue), "%g", value->Get<float>());
 
 		// Back up through CEntityInstance_AcceptInput so we can just worry about variant_t
 		((CBaseEntity*)pThis->m_pInstance)->AcceptInput(pInputName->String(), szValue, pActivator, pCaller);
