@@ -21,7 +21,6 @@
 #include "ctimer.h"
 #include "entity.h"
 
-#include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cgameplayerequip.h"

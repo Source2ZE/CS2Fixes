@@ -28,7 +28,6 @@
 #include "networksystem/inetworkmessages.h"
 #include "panoramavote.h"
 #include "recipientfilters.h"
-#include "tier0/utlstring.h"
 #include "utils/entity.h"
 
 #include "tier0/memdbgon.h"

@@ -19,7 +19,6 @@
 
 #pragma once
 #include "common.h"
-#include "tier0/utlstring.h"
 #include <functional>
 #undef snprintf
 #include "vendor/nlohmann/json_fwd.hpp"

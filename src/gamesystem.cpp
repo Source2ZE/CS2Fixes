@@ -19,7 +19,6 @@
 
 #include "gamesystem.h"
 #include "addresses.h"
-#include "adminsystem.h"
 #include "common.h"
 #include "customio.h"
 #include "entities.h"

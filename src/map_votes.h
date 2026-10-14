@@ -21,7 +21,6 @@
 #include "entity/ccsplayercontroller.h"
 #include "steam/isteamugc.h"
 #include "steam/steam_api_common.h"
-#include "tier0/keyvalues.h"
 #include "tier0/utlstringlist.h"
 #undef snprintf
 #include "vendor/nlohmann/json_fwd.hpp"

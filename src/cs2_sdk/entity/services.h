@@ -23,7 +23,6 @@
 
 #include <entity/ccsweaponbase.h>
 #include <platform.h>
-#include <unordered_map>
 
 extern bool g_bAwsChangingTeam;
 

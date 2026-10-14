@@ -29,7 +29,6 @@
 #include "playermanager.h"
 #include "steam/steam_gameserver.h"
 #include "tier0/tier0_strtools.h"
-#include "tier0/utlstring.h"
 #include "tier0/utlvector.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"

@@ -18,13 +18,7 @@
  */
 
 #include "patches.h"
-#include "addresses.h"
-#include "common.h"
-#include "entity/cbasemodelentity.h"
-#include "entity/ccsplayercontroller.h"
-#include "entity/ccsplayerpawn.h"
-#include "irecipientfilter.h"
-#include "tier0/icvar.h"
+#include "tier0/convar.h"
 
 #include "tier0/memdbgon.h"
 

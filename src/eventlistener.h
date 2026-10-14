@@ -20,7 +20,6 @@
 #pragma once
 #include "common.h"
 #include "igameevents.h"
-#include "tier0/utlstring.h"
 
 class CGameEventListener;
 

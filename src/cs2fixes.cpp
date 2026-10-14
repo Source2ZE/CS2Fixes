@@ -24,7 +24,6 @@
 #include "engine2/networkgameserverbase.h"
 
 #include "adminsystem.h"
-#include "appframework/iappsystem.h"
 #include "cfgparser.h"
 #include "commands.h"
 #include "common.h"

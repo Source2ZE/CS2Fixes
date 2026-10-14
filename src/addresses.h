@@ -23,7 +23,6 @@
 #include "platform.h"
 #include "stdint.h"
 #include "tier0/utlmap.h"
-#include "tier0/utlstring.h"
 #include "utils/module.h"
 #include "utils/vscript_function.h"
 
