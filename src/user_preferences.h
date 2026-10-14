@@ -55,6 +55,7 @@ private:
 class CUserPreferencesStorage
 {
 public:
+	virtual ~CUserPreferencesStorage() = default;
 	virtual void LoadPreferences(uint64 iSteamId, StorageCallback_t cb) = 0;
 	virtual void StorePreferences(uint64 iSteamId, UserPrefsMap_t& preferences, StorageCallback_t cb) = 0;
 };

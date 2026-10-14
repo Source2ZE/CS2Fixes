@@ -363,8 +363,6 @@ const char *PLUGIN_REVISION_COUNT = \"{revision_count}\";
       '-Wno-non-virtual-dtor',
       '-Wno-overloaded-virtual',
       '-Wno-invalid-offsetof',
-      '-Wno-delete-non-virtual-dtor',
-      '-Wno-implicit-int-float-conversion',
     ]
 
     if builder.options.asan == '1':

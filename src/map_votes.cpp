@@ -1293,7 +1293,7 @@ void CMapVoteSystem::PutMapOnCooldown(const char* pszMapName, float fCooldown)
 		// Add randomness if applicable
 		if (g_cvarVoteMapsCooldown.Get() != 0.0f)
 		{
-			float flRandomValue = ((float)rand() / RAND_MAX) * g_cvarVoteMapsCooldownRng.Get();
+			float flRandomValue = ((float)rand() / (float)RAND_MAX) * g_cvarVoteMapsCooldownRng.Get();
 
 			if (rand() % 2)
 				fCooldown += flRandomValue;

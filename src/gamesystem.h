@@ -32,7 +32,7 @@ bool InitGameSystems();
 bool UnregisterGameSystem();
 
 template <class T, class U = T>
-class CGameSystemStaticCustomFactory : public CGameSystemStaticFactory<T, U>
+class CGameSystemStaticCustomFactory final : public CGameSystemStaticFactory<T, U>
 {
 public:
 	CGameSystemStaticCustomFactory(const char* pName, T* pActualGlobal, U** ppGlobalPointer = nullptr) :
@@ -52,7 +52,7 @@ public:
 					*CBaseGameSystemFactory::sm_pFirst = pFactoryCurrent->m_pNext;
 				else
 					pFactoryPrevious->m_pNext = pFactoryCurrent->m_pNext;
-				delete pFactoryCurrent;
+				delete this;
 				return;
 			}
 			pFactoryPrevious = pFactoryCurrent;
