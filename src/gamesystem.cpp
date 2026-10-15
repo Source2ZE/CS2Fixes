@@ -200,10 +200,8 @@ GS_EVENT_MEMBER(CGameSystem, PostSpawnGroupLoad)
 
 	// Ensure clients have no leaked spawngroups every time a new one loads
 	// Due to a timing problem for leaked spawngroups with this callback, clients may have one lingering, this is fine since it'll still be taken care of next time a spawngroup loads
-	FOR_EACH_VEC(*pClients, i)
+	for (auto pClient : *pClients)
 	{
-		auto pClient = (*pClients)[i];
-
 		if (!pClient || pClient->m_LoadedSpawnGroups.Count() == vecActualSpawnGroups.Count())
 			continue;
 

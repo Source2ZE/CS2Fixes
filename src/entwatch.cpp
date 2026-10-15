@@ -1685,9 +1685,9 @@ void CEWHandler::Transfer(CCSPlayerController* pCaller, int iItemInstance, CHand
 		}
 
 		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pOwnerPawn->m_pWeaponServices()->m_hMyWeapons();
-		FOR_EACH_VEC(*weapons, i)
+		for (const auto& hWeapon : *weapons)
 		{
-			CBasePlayerWeapon* pWeapon = (*weapons)[i].Get();
+			CBasePlayerWeapon* pWeapon = hWeapon.Get();
 
 			if (!pWeapon)
 				continue;
@@ -1702,9 +1702,9 @@ void CEWHandler::Transfer(CCSPlayerController* pCaller, int iItemInstance, CHand
 
 	// Make receiver drop the weapon in the item slot
 	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pReceiverPawn->m_pWeaponServices()->m_hMyWeapons();
-	FOR_EACH_VEC(*weapons, i)
+	for (const auto& hWeapon : *weapons)
 	{
-		CBasePlayerWeapon* pWeapon = (*weapons)[i].Get();
+		CBasePlayerWeapon* pWeapon = hWeapon.Get();
 
 		if (!pWeapon)
 			continue;

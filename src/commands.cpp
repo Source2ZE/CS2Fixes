@@ -171,9 +171,8 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 	CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
 	bool found = false;
-	FOR_EACH_VEC(*weaponPurchases, i)
+	for (WeaponPurchaseCount_t& purchase : *weaponPurchases)
 	{
-		WeaponPurchaseCount_t& purchase = (*weaponPurchases)[i];
 		if (purchase.m_nItemDefIndex == pWeaponInfo->m_iItemDefinitionIndex)
 		{
 			// Note ammo_grenade_limit_total is not followed here, only for checking inventory space
@@ -198,9 +197,9 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 	{
 		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
-		FOR_EACH_VEC(*weapons, i)
+		for (const auto& hWeapon : *weapons)
 		{
-			CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+			CBasePlayerWeapon* weapon = hWeapon.Get();
 
 			if (!weapon)
 				continue;

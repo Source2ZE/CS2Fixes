@@ -686,10 +686,8 @@ KHook::Return<CServerSideClient*> Detour_GetFreeClient(int64_t unk1, const __m12
 		return {KHook::Action::Ignore};
 
 	// Phantom client fix
-	for (int i = 0; i < GetClientList()->Count(); i++)
+	for (CServerSideClient* pClient : *GetClientList())
 	{
-		CServerSideClient* pClient = (*GetClientList())[i];
-
 		if (pClient && pClient->GetSignonState() < SIGNONSTATE_CONNECTED)
 			return {KHook::Action::Supersede, pClient};
 	}
@@ -934,9 +932,8 @@ KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Po
 	auto pWorld = singleWorld->m_pCWorld;
 	auto vecLumpData = (CUtlVector<void*>*)((uint8_t*)pWorld + 0x298);
 
-	FOR_EACH_VEC(*vecLumpData, i)
+	for (auto& lump : *vecLumpData)
 	{
-		auto& lump = (*vecLumpData)[i];
 		auto lumpData = *(LumpData**)lump;
 		auto vecEntityKeyValues = (CUtlVector<CEntityKeyValues*>*)((uint8_t*)lumpData + 0x1220);
 

@@ -86,10 +86,8 @@ void CMapMigrations::RunMigrations(CUtlVector<CEntityKeyValues*>* pVecEntityKeyV
 
 void CMapMigrations::Migrations_Rendermode(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues)
 {
-	FOR_EACH_VEC(*pVecEntityKeyValues, i)
+	for (auto pKeyValues : *pVecEntityKeyValues)
 	{
-		auto pKeyValues = (*pVecEntityKeyValues)[i];
-
 		if (!pKeyValues->HasValue("rendermode"))
 			continue;
 
@@ -111,10 +109,8 @@ void CMapMigrations::Migrations_Rendermode(CUtlVector<CEntityKeyValues*>* pVecEn
 
 void CMapMigrations::Migrations_20260121(CUtlVector<CEntityKeyValues*>* pVecEntityKeyValues)
 {
-	FOR_EACH_VEC(*pVecEntityKeyValues, i)
+	for (auto pKeyValues : *pVecEntityKeyValues)
 	{
-		auto pKeyValues = (*pVecEntityKeyValues)[i];
-
 		if (!V_strcasecmp(pKeyValues->GetString("classname"), "func_door_rotating") && pKeyValues->HasValue("spawnflags"))
 		{
 			uint32 spawnFlags = pKeyValues->GetUint("spawnflags");

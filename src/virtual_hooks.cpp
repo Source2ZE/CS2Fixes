@@ -817,9 +817,8 @@ KHook::Return<void> Hook_GetTouchingList_Post(CVPhys2World* pThis, CUtlVector<To
 	std::vector<TouchLinked_t> touchingLinks;
 	std::vector<TouchLinked_t> unTouchLinks;
 
-	FOR_EACH_VEC(*pList, i)
+	for (const auto& link : *pList)
 	{
-		const auto& link = pList->Element(i);
 		if (link.IsUnTouching())
 			unTouchLinks.push_back(link);
 		else

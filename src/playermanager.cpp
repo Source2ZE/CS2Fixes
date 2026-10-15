@@ -1227,9 +1227,9 @@ void CPlayerManager::SetupInfiniteAmmo()
 
 			CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
-			FOR_EACH_VEC(*weapons, i)
+			for (const auto& hWeapon : *weapons)
 			{
-				CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+				CBasePlayerWeapon* weapon = hWeapon.Get();
 
 				if (!weapon)
 					continue;
@@ -1981,10 +1981,8 @@ int CPlayerManager::GetOnlinePlayerCount(bool bCountBots)
 	if (GetGlobals())
 		flLastUpdateTime = GetGlobals()->curtime;
 
-	for (int i = 0; i < GetClientList()->Count(); i++)
+	for (CServerSideClient* pClient : *GetClientList())
 	{
-		CServerSideClient* pClient = (*GetClientList())[i];
-
 		if (pClient && pClient->GetSignonState() >= SIGNONSTATE_CONNECTED && (bCountBots || !pClient->IsFakeClient()))
 			iOnlinePlayers++;
 	}
@@ -1999,6 +1997,6 @@ void CPlayerManager::FullUpdateAllClients()
 	if (!pClients)
 		return;
 
-	FOR_EACH_VEC(*pClients, i)
-	(*pClients)[i]->m_nDeltaTick = -1;
+	for (auto pClient : *pClients)
+		pClient->m_nDeltaTick = -1;
 }

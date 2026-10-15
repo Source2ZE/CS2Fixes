@@ -115,10 +115,8 @@ CON_COMMAND_CHAT_FLAGS(debugclientlist, "- Debug client list", ADMFLAG_ROOT)
 		return;
 	}
 
-	for (int i = 0; i < GetClientList()->Count(); i++)
+	for (CServerSideClient* pClient : *GetClientList())
 	{
-		CServerSideClient* pClient = (*GetClientList())[i];
-
 		if (!pClient)
 			continue;
 
@@ -1194,9 +1192,9 @@ CON_COMMAND_CHAT_FLAGS(give, "<name> <weapon> - Give a weapon/item to a player",
 		{
 			CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
-			FOR_EACH_VEC(*weapons, i)
+			for (const auto& hWeapon : *weapons)
 			{
-				CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+				CBasePlayerWeapon* weapon = hWeapon.Get();
 
 				if (!weapon)
 					continue;

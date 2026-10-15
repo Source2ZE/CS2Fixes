@@ -66,9 +66,9 @@ static void StripPlayer(CCSPlayerPawn* pPawn, const std::unordered_set<uint32_t>
 	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponService->m_hMyWeapons();
 	std::vector<CBasePlayerWeapon*> vecWeaponsToRemove;
 
-	FOR_EACH_VEC(*weapons, i)
+	for (const auto& hWeapon : *weapons)
 	{
-		CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+		CBasePlayerWeapon* weapon = hWeapon.Get();
 
 		if (!weapon)
 			continue;
