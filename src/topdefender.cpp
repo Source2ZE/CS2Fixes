@@ -135,7 +135,7 @@ void TD_OnRoundStart(IGameEvent* pEvent)
 			// If player is top defender, we set their score and clan tag
 			if (g_cvarTopDefenderScore.Get() > 0 && pPlayer->GetTopDefenderStatus())
 			{
-				pController->m_iScore() = pController->m_iScore() + g_cvarTopDefenderScore.Get();
+				pController->m_iScore = pController->m_iScore() + g_cvarTopDefenderScore.Get();
 				pController->SetClanTag(g_cvarTopDefenderClanTag.Get().String());
 			}
 		}
@@ -210,7 +210,7 @@ void TD_OnRoundEnd(IGameEvent* pEvent)
 			if (pController)
 			{
 				pPlayer->SetTopDefenderStatus(false);
-				pController->m_iScore() = pController->m_iScore() - g_cvarTopDefenderScore.Get();
+				pController->m_iScore = pController->m_iScore() - g_cvarTopDefenderScore.Get();
 				pController->ResetClanTag();
 			}
 		}
