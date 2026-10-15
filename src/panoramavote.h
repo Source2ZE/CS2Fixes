@@ -56,12 +56,12 @@ enum YesNoVoteAction
 #define VOTEINFO_CLIENT_ITEM 1
 struct YesNoVoteInfo
 {
-	int num_votes;				   // Number of votes tallied in total
-	int yes_votes;				   // Number of votes for yes
-	int no_votes;				   // Number of votes for no
-	int num_clients;			   // Number of clients who could vote
-	int clientInfo[MAXPLAYERS][2]; // Client voting info, user VOTEINFO_CLIENT_ defines
-								   //     Anything >= [num_clients] is VOTE_NOTINCLUDED, VOTE_UNCAST = client didn't vote
+	int num_votes;					// Number of votes tallied in total
+	int yes_votes;					// Number of votes for yes
+	int no_votes;					// Number of votes for no
+	int num_clients;				// Number of clients who could vote
+	int clientInfo[MAX_PLAYERS][2]; // Client voting info, user VOTEINFO_CLIENT_ defines
+									//     Anything >= [num_clients] is VOTE_NOTINCLUDED, VOTE_UNCAST = client didn't vote
 };
 
 // Used to handle events relating to the vote menu
@@ -135,7 +135,7 @@ private:
 	YesNoVoteHandler m_VoteHandler;
 	YesNoVoteResult m_VoteResult;
 	int m_iVoterCount;
-	int m_iVoters[MAXPLAYERS];
+	int m_iVoters[MAX_PLAYERS];
 
 	int m_iCurrentVoteCaller;
 	char m_szCurrentVoteTitle[256];

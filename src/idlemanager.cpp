@@ -20,6 +20,7 @@
 #include "idlemanager.h"
 #include "commands.h"
 #include "cs2fixes.h"
+#include "engine2/ivengineserver2.h"
 #include <vprof.h>
 
 CIdleSystem* g_pIdleSystem = nullptr;

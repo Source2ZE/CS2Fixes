@@ -19,12 +19,16 @@
 
 #pragma once
 
-#include "cs2_sdk/netmessages.h"
-#include "engine/igameeventsystem.h"
+#include "engine2/igameeventsystem.h"
+#include "engine2/inetworkgameserver.h"
+#include "engine2/inetworkserverservice.h"
+#include "engine2/isource2server.h"
 #include "entity/cgamerules.h"
 #include "igameevents.h"
-#include "iserver.h"
 #include "khook.hpp"
+#include "netmessages.pb.h"
+#include "networksystem/inetworkmessages.h"
+#include "tier0/utlstringlist.h"
 
 class CCSPlayer_MovementServices;
 class CServerSideClient;
@@ -61,7 +65,7 @@ KHook::Return<void> Hook_DispatchConCommand(ICvar* pThis, ConCommandRef cmd, con
 KHook::Return<void> Hook_SwitchToLoop(IEngineServiceMgr* pThis, const char* pszLoopModeName, KeyValues* pKV, uint32 nId, const char* pszAddonName, bool bUnk);
 KHook::Return<void> Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* name, const CUtlStringList& mapList);
 KHook::Return<int> Hook_LoadEventsFromFile(IGameEventManager2* pThis, const char* filename, bool bSearchAll);
-KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CCLCMsg_VoiceData_t& msg);
+KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CNetMessagePB<CCLCMsg_VoiceData>& msg);
 KHook::Return<void> Hook_SetGameSpawnGroupMgr(INetworkGameServer* pThis, IGameSpawnGroupMgr* pSpawnGroupMgr);
 KHook::Return<void> Hook_GetTouchingList_Post(CVPhys2World* pThis, CUtlVector<TouchLinked_t>* pList, bool unknown);
 KHook::Return<void> Hook_CheckMovingGround(CCSPlayer_MovementServices* pThis, double frametime);

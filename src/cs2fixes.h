@@ -19,16 +19,17 @@
 
 #pragma once
 
-#include "cs2_sdk/netmessages.h"
-#include "engine/igameeventsystem.h"
+#include "engine2/igameeventsystem.h"
+#include "engine2/isource2engine.h"
 #include "entity/cgamerules.h"
-#include "gamesystems/spawngroup_manager.h"
 #include "igameevents.h"
+#include "netmessages.pb.h"
+#include "networksystem/inetworkmessages.h"
 #include "networksystem/inetworkserializer.h"
 #include "public/ics2fixes.h"
 #include "steam/isteamhttp.h"
 #include <ISmmPlugin.h>
-#include <iserver.h>
+#include <engine2/inetworkgameserver.h>
 
 #ifdef AMBUILD
 	#include "version_gen.h"

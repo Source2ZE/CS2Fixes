@@ -40,6 +40,7 @@ protected:
 	void SetLastExecute(float flLastExecute) { m_flLastExecute = flLastExecute; }
 
 public:
+	virtual ~CTimerBase() = default;
 	virtual bool Execute(bool bAutomaticExecute = false) = 0;
 	virtual void Cancel() = 0;
 

@@ -22,15 +22,8 @@
 #include "commands.h"
 #include "cs2fixes.h"
 #include "ctimer.h"
-#include "detours.h"
-#include "entity.h"
-#include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
-#include "entity/cgameplayerequip.h"
-#include "entity/cgamerules.h"
-#include "entity/clogiccase.h"
-#include "entity/cpointviewcontrol.h"
 
 CConVar<bool> g_cvarEnableButtonWatch("cs2f_enable_button_watch", FCVAR_NONE, "Whether to enable button watch or not.", false);
 

@@ -21,7 +21,6 @@
 #include "commands.h"
 #include "common.h"
 #include "ctimer.h"
-#include "detours.h"
 #include "entity/ccsplayercontroller.h"
 #include "idlemanager.h"
 #include "playermanager.h"
@@ -323,7 +322,7 @@ void TopDefenderSearch(CCSPlayerController* player, const CCommand& args)
 		if (iRank <= 0 || iRank > sortedPlayers.size())
 		{
 			int iNumClients = 0;
-			int pSlots[MAXPLAYERS];
+			int pSlots[MAX_PLAYERS];
 
 			if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_MULTIPLE))
 				return;

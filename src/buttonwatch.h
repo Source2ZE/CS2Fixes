@@ -19,6 +19,7 @@
 
 #pragma once
 #include "detours.h"
+#include "tier0/convar.h"
 
 extern CConVar<bool> g_cvarEnableButtonWatch;
 

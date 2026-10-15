@@ -18,7 +18,9 @@
  */
 
 #pragma once
+#include "networktransmitcomponent.h"
 #include "schema.h"
+#include "shareddefs.h"
 #include "soundflags.h"
 #include <platform.h>
 
@@ -57,17 +59,6 @@ enum ParticleAttachment_t : uint32_t
 	MAX_PATTACH_TYPES = 0x10,
 };
 
-enum ObserverMode_t : uint8_t
-{
-	OBS_MODE_NONE = 0x0,
-	OBS_MODE_FIXED = 0x1,
-	OBS_MODE_IN_EYE = 0x2,
-	OBS_MODE_CHASE = 0x3,
-	OBS_MODE_ROAMING = 0x4,
-	OBS_MODE_DIRECTED = 0x5,
-	NUM_OBSERVER_MODES = 0x6,
-};
-
 typedef uint32 SoundEventGuid_t;
 struct SndOpEventGuid_t
 {
@@ -84,67 +75,6 @@ struct StartSoundEventInfo
 };
 #pragma pack(pop)
 static_assert(sizeof(StartSoundEventInfo) == 20); // Ensure alignment change works
-
-// used with EmitSound_t
-enum gender_t : uint8
-{
-	GENDER_NONE = 0x0,
-	GENDER_MALE = 0x1,
-	GENDER_FEMALE = 0x2,
-	GENDER_NAMVET = 0x3,
-	GENDER_TEENGIRL = 0x4,
-	GENDER_BIKER = 0x5,
-	GENDER_MANAGER = 0x6,
-	GENDER_GAMBLER = 0x7,
-	GENDER_PRODUCER = 0x8,
-	GENDER_COACH = 0x9,
-	GENDER_MECHANIC = 0xA,
-	GENDER_CEDA = 0xB,
-	GENDER_CRAWLER = 0xC,
-	GENDER_UNDISTRACTABLE = 0xD,
-	GENDER_FALLEN = 0xE,
-	GENDER_RIOT_CONTROL = 0xF,
-	GENDER_CLOWN = 0x10,
-	GENDER_JIMMY = 0x11,
-	GENDER_HOSPITAL_PATIENT = 0x12,
-	GENDER_BRIDE = 0x13,
-	GENDER_LAST = 0x14,
-};
-
-struct EmitSound_t
-{
-	EmitSound_t() :
-		m_pSoundName(0),
-		m_vecSoundOrigin(),
-		m_flVolume(VOL_NORM),
-		m_flSoundTime(0.0f),
-		m_nForceGuid(0),
-		m_nPitch(PITCH_NORM),
-		m_nFlags(0)
-	{
-	}
-	const char* m_pSoundName; // 0x0
-	Vector m_vecSoundOrigin;  // 0x8
-	float m_flVolume;		  // 0x14
-	float m_flSoundTime;	  // 0x18
-private:
-	uint8_t pad_1c[0x4];
-
-public:
-	uint32_t m_nForceGuid; // 0x20
-private:
-	uint8_t pad_24[0x4];
-
-public:
-	int16_t m_nPitch; // 0x28
-	uint8_t m_nFlags; // 0x2a
-}; // Size: 0x2b
-
-class CNetworkTransmitComponent
-{
-public:
-	DECLARE_SCHEMA_CLASS_INLINE(CNetworkTransmitComponent)
-};
 
 class CNetworkVelocityVector
 {

@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "utlstring.h"
+#include "tier0/utlstring.h"
 
 class CSingleWorldRep
 {

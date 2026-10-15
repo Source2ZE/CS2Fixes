@@ -18,11 +18,10 @@
  */
 
 #include "discord.h"
-#include "KeyValues.h"
 #include "common.h"
 #include "httpmanager.h"
 #include "interfaces/interfaces.h"
-#include "utlstring.h"
+#include "tier0/keyvalues.h"
 #include <fstream>
 
 #include "vendor/nlohmann/json.hpp"

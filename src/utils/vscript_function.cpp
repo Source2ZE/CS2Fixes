@@ -34,9 +34,8 @@ void* GetVScriptFunction(ScriptClassDesc_t* pScriptDesc, const char* pszFuncName
 	};
 
 	const auto& functionBindings = *reinterpret_cast<CUtlVector<ScriptFunctionBindingCurrent_t>*>(&pScriptDesc->m_FunctionBindings);
-	FOR_EACH_VEC(functionBindings, i)
+	for (auto& functionBinding : functionBindings)
 	{
-		auto& functionBinding = functionBindings.Element(i);
 		if (V_strcmp(functionBinding.m_desc.m_pszScriptName, pszFuncName) != 0)
 			continue;
 

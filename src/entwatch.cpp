@@ -21,33 +21,22 @@
 #include "commands.h"
 #include "cs2fixes.h"
 #include "ctimer.h"
-#include "customio.h"
 #include "detours.h"
-#include "engine/igameeventsystem.h"
 #include "entity/cbasebutton.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
-#include "entity/cgamerules.h"
 #include "entity/cmathcounter.h"
 #include "entity/cpointworldtext.h"
-#include "entity/cteam.h"
 #include "entity/services.h"
 #include "eventlistener.h"
-#include "gameevents.pb.h"
 #include "leader.h"
 #include "map_votes.h"
-#include "networksystem/inetworkmessages.h"
 #include "playermanager.h"
-#include "recipientfilters.h"
-#include "serversideclient.h"
-#include "tier0/vprof.h"
 #include "user_preferences.h"
-#include "usermessages.pb.h"
 #include "utils/entity.h"
 #include "vendor/nlohmann/json.hpp"
 #include "zombiereborn.h"
 #include <fstream>
-#include <sstream>
 
 #include "tier0/memdbgon.h"
 
@@ -1696,9 +1685,9 @@ void CEWHandler::Transfer(CCSPlayerController* pCaller, int iItemInstance, CHand
 		}
 
 		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pOwnerPawn->m_pWeaponServices()->m_hMyWeapons();
-		FOR_EACH_VEC(*weapons, i)
+		for (const auto& hWeapon : *weapons)
 		{
-			CBasePlayerWeapon* pWeapon = (*weapons)[i].Get();
+			CBasePlayerWeapon* pWeapon = hWeapon.Get();
 
 			if (!pWeapon)
 				continue;
@@ -1713,9 +1702,9 @@ void CEWHandler::Transfer(CCSPlayerController* pCaller, int iItemInstance, CHand
 
 	// Make receiver drop the weapon in the item slot
 	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pReceiverPawn->m_pWeaponServices()->m_hMyWeapons();
-	FOR_EACH_VEC(*weapons, i)
+	for (const auto& hWeapon : *weapons)
 	{
-		CBasePlayerWeapon* pWeapon = (*weapons)[i].Get();
+		CBasePlayerWeapon* pWeapon = hWeapon.Get();
 
 		if (!pWeapon)
 			continue;
@@ -2365,7 +2354,7 @@ CON_COMMAND_CHAT_FLAGS(etransfer, "<owner/$itemname> <receiver> - Transfer an En
 	}
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 
 	// Find receiver
 	if (!g_playerManager->CanTargetPlayers(player, args[2], iNumClients, pSlots, NO_MULTIPLE | NO_SPECTATOR | NO_DEAD))

@@ -21,11 +21,10 @@
 #include "adminsystem.h"
 #include "common.h"
 #include "ctimer.h"
-#include "detours.h"
 #include "discord.h"
-#include "engine/igameeventsystem.h"
+#include "engine2/igameeventsystem.h"
+#include "engine2/ivengineserver2.h"
 #include "entity/cbaseentity.h"
-#include "entity/cbasemodelentity.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/ccsweaponbase.h"
@@ -40,7 +39,6 @@
 #include "tier0/vprof.h"
 #include "usermessages.pb.h"
 #include "utils/entity.h"
-#include "utlstring.h"
 #include "zombiereborn.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
@@ -173,9 +171,8 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 
 	CUtlVector<WeaponPurchaseCount_t>* weaponPurchases = pPawn->m_pActionTrackingServices->m_weaponPurchasesThisRound().m_weaponPurchases;
 	bool found = false;
-	FOR_EACH_VEC(*weaponPurchases, i)
+	for (WeaponPurchaseCount_t& purchase : *weaponPurchases)
 	{
-		WeaponPurchaseCount_t& purchase = (*weaponPurchases)[i];
 		if (purchase.m_nItemDefIndex == pWeaponInfo->m_iItemDefinitionIndex)
 		{
 			// Note ammo_grenade_limit_total is not followed here, only for checking inventory space
@@ -200,9 +197,9 @@ void ParseWeaponCommand(const CCommand& args, CCSPlayerController* player)
 	{
 		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
-		FOR_EACH_VEC(*weapons, i)
+		for (const auto& hWeapon : *weapons)
 		{
-			CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+			CBasePlayerWeapon* weapon = hWeapon.Get();
 
 			if (!weapon)
 				continue;
@@ -625,7 +622,7 @@ CON_COMMAND_CHAT(spec, "[name] - Spectate another player or join spectators")
 
 	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
-	int pSlot[MAXPLAYERS];
+	int pSlot[MAX_PLAYERS];
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlot, NO_MULTIPLE | NO_SELF | NO_DEAD | NO_SPECTATOR | NO_IMMUNITY))
 		return;
@@ -683,7 +680,7 @@ CON_COMMAND_CHAT(info, "<name> - Get a player's information")
 	}
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_BOT | NO_IMMUNITY, nType))
@@ -721,7 +718,7 @@ CON_COMMAND_CHAT(showteam, "<name> - Get a player's current team")
 	}
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_MULTIPLE | NO_IMMUNITY))
 		return;
@@ -975,7 +972,7 @@ CON_COMMAND_CHAT(test_target, "<name> [blocked flag] [...] - Test string targett
 			iBlockedFlags |= NO_IMMUNITY;
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, iBlockedFlags))
 		return;
@@ -1093,7 +1090,7 @@ CON_COMMAND_CHAT(setkills, "- Set your kills")
 CON_COMMAND_CHAT(setcollisiongroup, "<group> - Set a player's collision group")
 {
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS))
 		return;
@@ -1115,7 +1112,7 @@ CON_COMMAND_CHAT(setcollisiongroup, "<group> - Set a player's collision group")
 CON_COMMAND_CHAT(setsolidtype, "<solidtype> - Set a player's solid type")
 {
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS))
 		return;
@@ -1137,7 +1134,7 @@ CON_COMMAND_CHAT(setsolidtype, "<solidtype> - Set a player's solid type")
 CON_COMMAND_CHAT(setinteraction, "<flags> - Set a player's interaction flags")
 {
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TARGET_BLOCKS))
 		return;

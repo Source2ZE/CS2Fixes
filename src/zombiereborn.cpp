@@ -22,9 +22,10 @@
 #include "commands.h"
 #include "ctimer.h"
 #include "customio.h"
-#include "engine/igameeventsystem.h"
+#include "engine2/igameeventsystem.h"
+#include "engine2/ivengineserver2.h"
+#include "engine2/serversideclient.h"
 #include "entity/cgamerules.h"
-#include "entity/cparticlesystem.h"
 #include "entity/cteam.h"
 #include "entity/services.h"
 #include "eventlistener.h"
@@ -33,8 +34,6 @@
 #include "networksystem/inetworkmessages.h"
 #include "playermanager.h"
 #include "recipientfilters.h"
-#include "serversideclient.h"
-#include "tier0/vprof.h"
 #include "user_preferences.h"
 #include "utils/entity.h"
 #include "vendor/nlohmann/json.hpp"
@@ -1082,9 +1081,9 @@ void ZR_StripAndGiveKnife(CCSPlayerPawn* pPawn)
 
 	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
-	FOR_EACH_VEC(*weapons, i)
+	for (const auto& hWeapon : *weapons)
 	{
-		CBasePlayerWeapon* pWeapon = (*weapons)[i].Get();
+		CBasePlayerWeapon* pWeapon = hWeapon.Get();
 
 		if (pWeapon && pWeapon->GetWeaponVData()->m_GearSlot() == GEAR_SLOT_KNIFE)
 		{
@@ -1164,17 +1163,17 @@ std::vector<SpawnPoint*> ZR_GetSpawns()
 	auto ctSpawns = g_pGameRules->m_CTSpawnPoints();
 	auto tSpawns = g_pGameRules->m_TerroristSpawnPoints();
 
-	FOR_EACH_VEC(*ctSpawns, i)
+	for (const auto& hSpawn : *ctSpawns)
 	{
-		SpawnPoint* pSpawn = (*ctSpawns)[i].Get();
+		SpawnPoint* pSpawn = hSpawn.Get();
 
 		if (pSpawn)
 			spawns.push_back(pSpawn);
 	}
 
-	FOR_EACH_VEC(*tSpawns, i)
+	for (const auto& hSpawn : *tSpawns)
 	{
-		SpawnPoint* pSpawn = (*tSpawns)[i].Get();
+		SpawnPoint* pSpawn = hSpawn.Get();
 
 		if (pSpawn)
 			spawns.push_back(pSpawn);
@@ -1295,7 +1294,7 @@ void ZR_InitialInfection()
 	// the num of mz to infect
 	int iMZToInfect = vecCandidateControllers.size() / g_cvarInfectSpawnMZRatio.Get();
 	iMZToInfect = g_cvarInfectSpawnMinCount.Get() > iMZToInfect ? g_cvarInfectSpawnMinCount.Get() : iMZToInfect;
-	bool vecIsMZ[MAXPLAYERS] = {false};
+	bool vecIsMZ[MAX_PLAYERS] = {false};
 
 	if (vecCandidateControllers.size() < g_cvarInfectSpawnMinCountReq.Get())
 		iMZToInfect = 0;
@@ -2013,7 +2012,7 @@ CON_COMMAND_CHAT_FLAGS(infect, "- Infect a player", ADMFLAG_GENERIC)
 	}
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_TERRORIST | NO_DEAD, nType))
@@ -2073,7 +2072,7 @@ CON_COMMAND_CHAT_FLAGS(revive, "- Revive a player", ADMFLAG_GENERIC)
 	}
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_DEAD | NO_COUNTER_TERRORIST, nType))

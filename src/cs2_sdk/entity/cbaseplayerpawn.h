@@ -47,9 +47,9 @@ public:
 		CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = m_pWeaponServices()->m_hMyWeapons();
 		std::vector<CBasePlayerWeapon*> vecWeaponsToDrop;
 
-		FOR_EACH_VEC(*weapons, i)
+		for (const auto& hWeapon : *weapons)
 		{
-			CBasePlayerWeapon* pWeapon = (*weapons)[i].Get();
+			CBasePlayerWeapon* pWeapon = hWeapon.Get();
 
 			if (!pWeapon)
 				continue;

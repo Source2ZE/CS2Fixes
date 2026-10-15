@@ -231,7 +231,7 @@ private:
 	// These exist so we can iterate the class maps in insertion order
 	std::vector<uint32> m_ZombieClassKeys;
 	std::vector<uint32> m_HumanClassKeys;
-	std::weak_ptr<CTimer> m_vecRegenTimers[MAXPLAYERS];
+	std::weak_ptr<CTimer> m_vecRegenTimers[MAX_PLAYERS];
 };
 
 extern CZRPlayerClassManager* g_pZRPlayerClassManager;

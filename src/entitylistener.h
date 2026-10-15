@@ -18,9 +18,9 @@
  */
 
 #pragma once
-#include "entitysystem.h"
+#include "gameentitysystem.h"
 
-class CEntityListener : public IEntityListener
+class CEntityListener final : public IEntityListener
 {
 	void OnEntitySpawned(CEntityInstance* pEntity) override;
 	void OnEntityCreated(CEntityInstance* pEntity) override;

@@ -534,7 +534,7 @@ CON_COMMAND_CHAT_LEADER(glow, "[name] [color] - Toggle glow highlight on a playe
 	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 	ETargetType nType;
 	uint64 iTargetFlags = NO_DEAD;
 	if (!bIsAdmin)
@@ -638,7 +638,7 @@ CON_COMMAND_CHAT(vl, "<name> - Vote for a player to become a leader")
 	}
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_MULTIPLE | NO_SELF | NO_BOT | NO_IMMUNITY))
 		return;
@@ -689,7 +689,7 @@ CON_COMMAND_CHAT_LEADER(defend, "[name|duration] [duration] - Place a defend mar
 	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 	ETargetType nType;
 	const char* pszTarget = "@me";
 	if ((args.ArgC() > 2 || (args.ArgC() == 2 && iDuration == -1)) && (bIsAdmin || g_cvarLeaderCanTargetPlayers.Get()))
@@ -720,7 +720,7 @@ CON_COMMAND_CHAT_LEADER(tracer, "[name] [color] - Toggle projectile tracers on a
 	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 	ETargetType nType;
 	const char* pszTarget = "@me";
 	if (args.ArgC() >= 2 && (bIsAdmin || g_cvarLeaderCanTargetPlayers.Get()))
@@ -776,7 +776,7 @@ CON_COMMAND_CHAT_LEADER(beacon, "[name] [color] - Toggle beacon on a player")
 	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 	ETargetType nType;
 	uint64 iTargetFlags = NO_DEAD;
 	if (!bIsAdmin)
@@ -964,7 +964,7 @@ CON_COMMAND_CHAT_LEADER(leader, "[name] [color] - Force leader status on a playe
 	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 	ETargetType nType;
 	const char* pszTarget = "@me";
 	if (args.ArgC() >= 2)
@@ -998,7 +998,7 @@ CON_COMMAND_CHAT_FLAGS(removeleader, "[name] - Remove leader status from a playe
 	std::string strCommandPlayerName = player ? player->GetPlayerName() : CONSOLE_NAME;
 
 	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+	int pSlots[MAX_PLAYERS];
 	ETargetType nType;
 
 	if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_MULTIPLE | NO_BOT, nType))
