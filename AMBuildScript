@@ -1,6 +1,7 @@
 # vim: set sts=2 ts=8 sw=2 tw=99 et ft=python:
-import os, json, re, subprocess
+import os, json, re, subprocess, shutil, sys
 from ambuild2.frontend.v2_2.cpp.builders import TargetSuffix
+from ambuild2.util import ConsoleRed, ConsoleNormal
 
 # Edit the functions below for the extra functionality, the return should be
 # a list of path's to wanted locations
@@ -22,6 +23,12 @@ def additionalIncludes(context, binary, sdk):
     # os.path.join(sdk['path'], 'public', 'entity2'),
     # 'D:/absolute/path/to/include/folder/'
   ]
+
+def hasLLDLinker():
+  result = shutil.which('lld')
+  if not result:
+    result = shutil.which('ld.lld')
+  return result != None
 
 def getGitHeadPath():
   curr_source = builder.currentSourcePath
@@ -47,7 +54,7 @@ def runAndReturn(argv):
   output, ignored = p.communicate()
   rval = p.poll()
   if rval:
-    raise subprocess.CalledProcessError(rval, argv)
+    return None
   text = output.decode('utf8')
   return text.strip()
 
@@ -77,8 +84,6 @@ def resolveMMSRoot():
       prenormalized_path = resolveEnvPath('MMSOURCE_DEV', 'metamod-source')
     if not prenormalized_path:
       prenormalized_path = resolveEnvPath('MMSOURCE_DEV', 'mmsource-central')
-    if not prenormalized_path: # Legacy fallback to avoid breakages, even though 1.12 is not supported, many old dev setups are likely using this env variable
-      prenormalized_path = resolveEnvPath('MMSOURCE112', 'mmsource-1.12')
   if not prenormalized_path or not os.path.isdir(prenormalized_path):
     raise Exception('Could not find a source copy of Metamod:Source')
   
@@ -108,7 +113,7 @@ class MMSPluginConfig(object):
     self.sdk_manifests = []
     self.sdks = {}
     self.sdk_targets = []
-    self.binaries = []
+    self.tasks = []
     self.mms_root = mms_root
     self.version_header_deps = []
     self.versionlib_deps = dict()
@@ -116,15 +121,15 @@ class MMSPluginConfig(object):
     self.target_archs = set()
 
     self.metadata = {
-      'name': 'cs2fixes',
-      'alias': 'cs2fixes',
-      'display_name': 'CS2Fixes',
-      'description': 'A Metamod plugin with fixes and features aimed but not limited to zombie escape',
-      'author': 'xen, Poggu, Vauff, Ice, lonefang, Kxnrl, tilgep, EasterLee and various contributors',
-      'url': 'https://github.com/Source2ZE/CS2Fixes',
-      'log_tag': 'CS2Fixes',
-      'license': 'GPL v3 License',
-      'version': '{{parsed-version}}',
+      'name': 'sample_mm',
+      'alias': 'sample',
+      'display_name': 'Sample Plugin',
+      'description': 'Sample basic plugin',
+      'author': 'AlliedModders LLC',
+      'url': 'http://www.sourcemm.net/',
+      'log_tag': 'SAMPLE',
+      'license': 'Public Domain',
+      'version': '1.0.0.{{git-shorthash}}',
     }
 
     if builder.options.targets:
@@ -167,10 +172,6 @@ class MMSPluginConfig(object):
     self.sdks = SdkHelpers.sdks
     self.sdk_manifests = SdkHelpers.sdk_manifests
     self.sdk_targets = SdkHelpers.sdk_targets
-
-    for sdk_target in self.sdk_targets:
-      if not sdk_target.sdk['source2']:
-        raise Exception('Only Source2 games are supported by this script.')
   
   def addVersioning(self, cxx):
     cxx.includes += [
@@ -209,6 +210,9 @@ class MMSPluginConfig(object):
 #define PLUGIN_LICENSE        \"{self.metadata['license']}\"
 
 extern const char* PLUGIN_FULL_VERSION;
+extern const char* PLUGIN_REVISION_SHORT;
+extern const char* PLUGIN_REVISION_LONG;
+extern const char* PLUGIN_REVISION_COUNT;
 
 #endif /* _PLUGIN_METADATA_INFORMATION_H_ */
       """.encode('utf-8'))
@@ -220,30 +224,47 @@ extern const char* PLUGIN_FULL_VERSION;
     version = self.metadata['version']
 
     direct_head, git_head_path = getGitHeadPath()
-    parsed_version = 'DEV-untracked'
+    shorthash = longhash = revision_count = '0'
     if direct_head and git_head_path:
       # Force track head changes to trigger recompilation
       builder.AddConfigureFile(git_head_path)
       builder.AddConfigureFile(direct_head)
 
-      try:
-        parsed_version = runAndReturn(['git', 'describe', '--tags', '--long'])
-      except subprocess.SubprocessError as e:
-        print("git describe failed to find any tags")
-        try:
-          parsed_version = runAndReturn(['git', 'log', '--pretty=format:%h:%H', '-n', '1'])
-          parsed_version = parsed_version.split(':')[0]
-        except subprocess.SubprocessError as e:
-          print("git log failed to find any commit hash, falling back to placeholder version")
+      tag = runAndReturn(['git', 'describe', '--tags']) or 'MISSING_TAG'
+      commits_after_tag = '0'
 
-    if '{{parsed-version}}' in version:
-      version = version.replace('{{parsed-version}}', parsed_version)
+      tag_match = re.match(r'(.+?)\-(\d+)\-g[a-f\d]+$', tag, re.MULTILINE)
+      if tag_match is not None:
+        tag = tag_match.group(1)
+        commits_after_tag = tag_match.group(2)
+
+      revision_count = runAndReturn(['git', 'rev-list', '--count', 'HEAD']) or 'MISSING_COUNT'
+      revision_hash = runAndReturn(['git', 'log', '--pretty=format:%h:%H', '-n', '1']) or 'MISSING_SHORTHASH:MISSING_LONGHASH'
+      shorthash, longhash = revision_hash.split(':')
+
+    if '{{git-shorthash}}' in version:
+      version = version.replace('{{git-shorthash}}', shorthash)
+
+    if '{{git-longhash}}' in version:
+      version = version.replace('{{git-longhash}}', longhash)
+
+    if '{{git-count}}' in version:
+      version = version.replace('{{git-count}}', revision_count)
+
+    if '{{git-tag}}' in version:
+      version = version.replace('{{git-tag}}', tag)
+
+    if '{{git-commits-after-tag}}' in version:
+      version = version.replace('{{git-commits-after-tag}}', commits_after_tag)
 
     # For the version strings and git hashes compile that to a static library instead,
     # to prevent a full recompilation on version/git changes which would only trigger this cpp
     # and linking to be performed
     versionlib_cpp = builder.AddOutputFile(os.path.join('versioning', 'versionlib.cpp'), f"""
 const char *PLUGIN_FULL_VERSION   = \"{version}\";
+const char *PLUGIN_REVISION_SHORT = \"{shorthash}\";
+const char *PLUGIN_REVISION_LONG  = \"{longhash}\";
+const char *PLUGIN_REVISION_COUNT = \"{revision_count}\";
     """.encode('utf-8'))
 
     for cxx in self.all_targets:
@@ -290,128 +311,9 @@ const char *PLUGIN_FULL_VERSION   = \"{version}\";
 
   def configureCXX(self, cxx):
     if cxx.behavior == 'gcc':
-      cxx.defines += [
-        'stricmp=strcasecmp',
-        '_stricmp=strcasecmp',
-        '_snprintf=snprintf',
-        '_vsnprintf=vsnprintf',
-        'HAVE_STDINT_H',
-        'GNUC',
-      ]
-      cxx.cflags += [
-        '-pipe',
-        '-fno-strict-aliasing',
-        '-Wall',
-        '-Wno-sign-compare',
-        '-Wno-uninitialized',
-        '-Wno-unused',
-        '-Wno-switch',
-        '-msse',
-        '-fPIC',
-      ]
-
-      cxx.cxxflags += ['-std=c++20']
-      if (builder.options.asan != '1') and ((cxx.version >= 'gcc-4.0') or cxx.family == 'clang'):
-        cxx.cflags += ['-fvisibility=hidden']
-        cxx.cxxflags += ['-fvisibility-inlines-hidden']
-      cxx.cxxflags += [
-        '-fno-exceptions',
-        '-fno-threadsafe-statics',
-        '-Wno-non-virtual-dtor',
-        '-Wno-overloaded-virtual',
-        '-Wno-register',
-        '-Wno-invalid-offsetof',
-      ]
-      if (builder.options.asan == '1'):
-        cxx.cxxflags += [
-          '-fsanitize=address',
-          '-fsanitize-address-use-after-scope',
-          '-fno-omit-frame-pointer',
-          '-g',
-        ]
-        cxx.linkflags += [
-          '-fsanitize=address',
-          '-fsanitize-address-use-after-scope',
-        ]
-      if (cxx.version >= 'gcc-4.7' or cxx.family == 'clang'):
-        cxx.cxxflags += ['-Wno-delete-non-virtual-dtor']
-      if cxx.family == 'gcc':
-        cxx.cflags += ['-mfpmath=sse']
-      if cxx.family == 'clang':
-        cxx.cxxflags += ['-Wno-implicit-exception-spec-mismatch']
-        if cxx.version >= 'clang-3.9':
-          cxx.cxxflags += ['-Wno-expansion-to-defined']
-        if cxx.version >= 'clang-3.6':
-          cxx.cxxflags += ['-Wno-inconsistent-missing-override']
-        if cxx.version >= 'clang-3.4':
-          cxx.cxxflags += ['-Wno-deprecated-register']
-        else:
-          cxx.cxxflags += ['-Wno-deprecated']
-      
-      # Work around SDK warnings.
-      if cxx.version >= 'clang-10.0':
-        cxx.cflags += [
-          '-Wno-implicit-int-float-conversion',
-          '-Wno-tautological-overlap-compare',
-        ]
-
+      self.configureGCC(cxx)
     elif cxx.like('msvc'):
-      if builder.options.debug == '1':
-        cxx.cflags += ['/MTd']
-        cxx.linkflags += ['/NODEFAULTLIB:libcmt']
-      else:
-        cxx.cflags += ['/MT']
-      cxx.defines += [
-        '_CRT_SECURE_NO_DEPRECATE',
-        '_CRT_SECURE_NO_WARNINGS',
-        '_CRT_NONSTDC_NO_DEPRECATE',
-      ]
-      cxx.cflags += [
-        '/W3',
-        '/Zi',
-        '/std:c++20',
-      ]
-      cxx.cxxflags += ['/TP']
-      
-      cxx.linkflags += [
-        '/SUBSYSTEM:WINDOWS',
-        'kernel32.lib',
-        'user32.lib',
-        'gdi32.lib',
-        'winspool.lib',
-        'comdlg32.lib',
-        'advapi32.lib',
-        'shell32.lib',
-        'ole32.lib',
-        'oleaut32.lib',
-        'uuid.lib',
-        'odbc32.lib',
-        'odbccp32.lib',
-      ]
-
-    # Optimization
-    if builder.options.opt == '1':
-      cxx.defines += ['NDEBUG']
-      if cxx.behavior == 'gcc':
-        cxx.cflags += ['-O3']
-      elif cxx.behavior == 'msvc':
-        cxx.cflags += ['/Ox', '/Zo']
-        cxx.linkflags += ['/OPT:ICF', '/OPT:REF']
-
-    # Debugging
-    if builder.options.debug == '1':
-      cxx.defines += ['DEBUG', '_DEBUG']
-      if cxx.behavior == 'gcc':
-        cxx.cflags += ['-g3']
-      elif cxx.behavior == 'msvc':
-        cxx.cflags += ['/Od', '/RTC1']
-
-    # Don't omit the frame pointer.
-    # This needs to be after our optimization flags which could otherwise disable it.
-    if cxx.behavior == 'gcc':
-      cxx.cflags += ['-fno-omit-frame-pointer']
-    elif cxx.behavior == 'msvc':
-      cxx.cflags += ['/Oy-']
+      self.configureMSVC(cxx)
 
     # Platform-specifics
     if cxx.target.platform == 'linux':
@@ -421,24 +323,140 @@ const char *PLUGIN_FULL_VERSION   = \"{version}\";
       elif cxx.family == 'clang':
         cxx.linkflags += ['-lgcc_eh']
       cxx.linkflags += ['-static-libstdc++']
+      
+      if hasLLDLinker():
+        # This prevents STB_GNU_UNIQUE symbols from appearing in resulting binary
+        # as these cause it to not unload on dlclose which metamod relies on to unload its plugins
+        # as a result this messes with static/global variable destruction & causes other various effects
+        # like server crashes on server exit
+        cxx.linkflags += ['-fuse-ld=lld', '-Wl,--no-gnu-unique']
+      
     elif cxx.target.platform == 'windows':
-      cxx.defines += ['WIN32', '_WINDOWS']
+      cxx.defines += ['WIN32', '_WINDOWS', 'NOMINMAX']
 
-  def Library(self, cxx, name):
-    binary = cxx.Library(name)
-    return binary
+  def configureGCC(self, cxx):
+    cxx.defines += [
+      'stricmp=strcasecmp',
+      '_stricmp=strcasecmp',
+      '_snprintf=snprintf',
+      '_vsnprintf=vsnprintf',
+      'HAVE_STDINT_H',
+      'GNUC',
+    ]
+
+    cxx.cflags += [
+      '-pipe',
+      '-fno-strict-aliasing',
+      '-Wall',
+      '-Werror',
+      '-Wno-sign-compare',
+      '-Wno-unused',
+      '-Wno-switch',
+      '-Wno-unknown-pragmas',
+      '-Wno-dangling-else',
+      '-msse',
+      '-fPIC',
+    ]
+    
+    cxx.cxxflags += [
+      '-std=c++20',
+      '-Wno-non-virtual-dtor',
+      '-Wno-overloaded-virtual',
+      '-Wno-invalid-offsetof',
+    ]
+
+    if builder.options.asan == '1':
+      cxx.cxxflags += [
+        '-fsanitize=address',
+        '-fsanitize-address-use-after-scope',
+        '-fno-omit-frame-pointer',
+        '-g',
+      ]
+      cxx.linkflags += [
+        '-fsanitize=address',
+        '-fsanitize-address-use-after-scope',
+      ]
+    else:
+      cxx.cflags += ['-fvisibility=hidden']
+      cxx.cxxflags += ['-fvisibility-inlines-hidden']
+
+    # Clang only flags
+    if cxx.family == 'clang':
+      cxx.cxxflags += [
+        '-Wno-implicit-exception-spec-mismatch',
+        '-Wno-expansion-to-defined',
+        '-Wno-inconsistent-missing-override'
+      ]
+
+    # Optimization
+    if builder.options.opt == '1':
+      cxx.defines += ['NDEBUG']
+      cxx.cflags += ['-O3']
+    # Debugging
+    elif builder.options.debug == '1':
+      cxx.defines += ['DEBUG', '_DEBUG']
+      cxx.cflags += ['-g3']
+
+    # Don't omit the frame pointer.
+    # This needs to be after our optimization flags which could otherwise disable it.
+    cxx.cflags += ['-fno-omit-frame-pointer']
+
+  def configureMSVC(self, cxx):
+    cxx.defines += [
+      '_CRT_SECURE_NO_DEPRECATE',
+      '_CRT_SECURE_NO_WARNINGS',
+      '_CRT_NONSTDC_NO_DEPRECATE',
+    ]
+    cxx.cflags += [
+      '/W3',
+      '/Zi',
+      '/std:c++20',
+    ]
+    cxx.cxxflags += ['/TP']
+    cxx.linkflags += [
+      '/SUBSYSTEM:WINDOWS',
+      'kernel32.lib',
+      'user32.lib',
+      'gdi32.lib',
+      'winspool.lib',
+      'comdlg32.lib',
+      'advapi32.lib',
+      'shell32.lib',
+      'ole32.lib',
+      'oleaut32.lib',
+      'uuid.lib',
+      'odbc32.lib',
+      'odbccp32.lib',
+    ]
+
+    # Optimization
+    if builder.options.opt == '1':
+      cxx.defines += ['NDEBUG']
+      cxx.cflags += ['/Ox', '/Zo']
+      cxx.linkflags += ['/OPT:ICF', '/OPT:REF']
+    
+    # Debugging
+    if builder.options.debug == '1':
+      cxx.defines += ['DEBUG', '_DEBUG']
+      cxx.cflags += ['/Od', '/RTC1', '/MTd']
+      cxx.linkflags += ['/NODEFAULTLIB:libcmt']
+    else:
+      cxx.cflags += ['/MT']
+
+    # Don't omit the frame pointer.
+    # This needs to be after our optimization flags which could otherwise disable it.
+    cxx.cflags += ['/Oy-']
   
-  def HL2Library(self, context, compiler, name, sdk):
-    binary = self.Library(compiler, name)
-    mms_core_path = os.path.join(self.mms_root, 'core')
+  def HL2Library(self, context, compiler, project, sdk):
+    binary = project.Configure(compiler, '{0}.{1}'.format(project.name, sdk['extension']), '{0} {1}'.format(sdk['name'], compiler.target.arch))
     cxx = binary.compiler
     
     self.addVersioning(cxx)
 
     cxx.cxxincludes += [
       os.path.join(context.currentSourcePath),
-      os.path.join(mms_core_path),
-      os.path.join(self.mms_root, 'third_party', 'khook', 'include'),
+      os.path.join(self.mms_root, 'core'),
+      os.path.join(self.mms_root, 'third_party', 'khook', 'include')
     ]
 
     for other_sdk in self.sdk_manifests:
@@ -448,7 +466,7 @@ const char *PLUGIN_FULL_VERSION   = \"{version}\";
       cxx.defines += ['META_IS_SOURCE2']
       binary.sources += [
         os.path.join(sdk['path'], 'public', 'tier0', 'memoverride.cpp'),
-        os.path.join(sdk['path'], 'tier1', 'convar.cpp'),
+        os.path.join(sdk['path'], 'tier0_perproject', 'convar.cpp'),
       ]
 
     SdkHelpers.configureCxx(context, binary, sdk)
@@ -461,9 +479,16 @@ const char *PLUGIN_FULL_VERSION   = \"{version}\";
     return binary
 
 MMSPlugin = MMSPluginConfig()
-MMSPlugin.detectSDKs()
 MMSPlugin.configurePluginMetadata()
 MMSPlugin.configure()
+MMSPlugin.detectSDKs()
+
+if os.name == 'posix' and not hasLLDLinker():
+  ConsoleRed(sys.stdout)
+  print('[!] LLD linker not found, using systems default.')
+  print('[!] This might result in a binary that is not unloadable at runtime and will potentially cause issues/crashes!')
+  print('[!] Please do install LLD linker for better binary stability. (apt install lld)')
+  ConsoleNormal(sys.stdout)
 
 BuildScripts = [
   'AMBuilder',

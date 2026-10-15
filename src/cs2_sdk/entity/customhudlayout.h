@@ -20,7 +20,6 @@
 #pragma once
 
 #include "ccsplayercontroller.h"
-#include "cstrike15_usermessages.pb.h"
 
 class CCSCustomHudLayout;
 

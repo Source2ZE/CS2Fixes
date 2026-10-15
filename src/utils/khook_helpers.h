@@ -23,6 +23,7 @@
 class CKHookBase
 {
 public:
+	virtual ~CKHookBase() = default;
 	virtual void Configure() = 0;
 };
 

@@ -21,15 +21,15 @@
 #include "commands.h"
 #include "common.h"
 #include "ctimer.h"
+#include "engine2/inetworkgameserver.h"
+#include "engine2/ivengineserver2.h"
 #include "entity/cgamerules.h"
 #include "eventlistener.h"
-#include "iserver.h"
 #include "mapmigrations.h"
 #include "playermanager.h"
 #include "steam/steam_gameserver.h"
-#include "strtools.h"
-#include "utlstring.h"
-#include "utlvector.h"
+#include "tier0/tier0_strtools.h"
+#include "tier0/utlvector.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
 #include "votemanager.h"
@@ -225,7 +225,7 @@ void CMapVoteSystem::OnLevelInit(const char* pszMapName)
 	m_bIntermissionStarted = false;
 	m_pForcedNextMap = nullptr;
 
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < MAX_PLAYERS; i++)
 		ClearPlayerInfo(i);
 
 	// Delay one tick to override any .cfg's
@@ -295,7 +295,7 @@ void CMapVoteSystem::StartVote()
 	}
 
 	// Reset the player vote counts as the vote just started
-	for (int i = 0; i < MAXPLAYERS; i++)
+	for (int i = 0; i < MAX_PLAYERS; i++)
 		m_arrPlayerVotes[i] = -1;
 
 	// Print all available maps out to console
@@ -1104,14 +1104,10 @@ bool CMapVoteSystem::IsIntermissionAllowed(bool bCheckOnly)
 	return true;
 }
 
-CUtlStringList CMapVoteSystem::CreateWorkshopMapGroup()
+void CMapVoteSystem::CreateWorkshopMapGroup(CUtlStringList& mapList)
 {
-	CUtlStringList mapList;
-
 	for (auto pMap : m_vecMapList)
 		mapList.CopyAndAddToTail(pMap->GetDisplayName());
-
-	return mapList;
 }
 
 bool CMapVoteSystem::WriteMapCooldownsToFile()
@@ -1297,7 +1293,7 @@ void CMapVoteSystem::PutMapOnCooldown(const char* pszMapName, float fCooldown)
 		// Add randomness if applicable
 		if (g_cvarVoteMapsCooldown.Get() != 0.0f)
 		{
-			float flRandomValue = ((float)rand() / RAND_MAX) * g_cvarVoteMapsCooldownRng.Get();
+			float flRandomValue = ((float)rand() / (float)RAND_MAX) * g_cvarVoteMapsCooldownRng.Get();
 
 			if (rand() % 2)
 				fCooldown += flRandomValue;

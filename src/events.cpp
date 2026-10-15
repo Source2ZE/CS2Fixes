@@ -17,12 +17,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "KeyValues.h"
 #include "commands.h"
 #include "common.h"
 #include "ctimer.h"
+#include "engine2/ivengineserver2.h"
 #include "entities.h"
-#include "entity/cbaseplayercontroller.h"
 #include "entity/cgamerules.h"
 #include "entwatch.h"
 #include "eventlistener.h"
@@ -32,7 +31,6 @@
 #include "map_votes.h"
 #include "mapmigrations.h"
 #include "panoramavote.h"
-#include "recipientfilters.h"
 #include "topdefender.h"
 #include "votemanager.h"
 #include "zombiereborn.h"

@@ -18,10 +18,12 @@
  */
 
 #include "cs2fixes.h"
-#include "iserver.h"
+#include "engine2/inetworkgameserver.h"
+#include "engine2/inetworkserverservice.h"
+#include "engine2/ivengineserver2.h"
+#include "engine2/networkgameserverbase.h"
 
 #include "adminsystem.h"
-#include "appframework/IAppSystem.h"
 #include "cfgparser.h"
 #include "commands.h"
 #include "common.h"
@@ -38,7 +40,6 @@
 #include "gameconfig.h"
 #include "gamesystem.h"
 #include "hud_manager.h"
-#include "icvar.h"
 #include "idlemanager.h"
 #include "khook_helpers.h"
 #include "map_votes.h"
@@ -48,6 +49,7 @@
 #include "patches.h"
 #include "playermanager.h"
 #include "schemasystem/schemasystem.h"
+#include "tier0/icvar.h"
 #include "user_preferences.h"
 #include "virtual_hooks.h"
 #include "votemanager.h"
@@ -67,12 +69,6 @@ double g_flUniversalTime = 0.0;
 float g_flLastTickedTime = 0.0f;
 bool g_bHasTicked = false;
 bool g_bRequiredInitLoaded = true;
-
-CGameEntitySystem* GameEntitySystem()
-{
-	static int offset = g_GameConfig->GetOffset("GameEntitySystem");
-	return *reinterpret_cast<CGameEntitySystem**>((uintptr_t)(g_pGameResourceServiceServer) + offset);
-}
 
 // Will return null between map end & new map startup, null check if necessary!
 INetworkGameServer* GetNetworkGameServer()

@@ -26,10 +26,10 @@
 #include "buttonwatch.h"
 #include "commands.h"
 #include "common.h"
-#include "ctimer.h"
 #include "customio.h"
 #include "cvarwhitelist.h"
 #include "detours.h"
+#include "engine2/serversideclient.h"
 #include "entities.h"
 #include "entity/cbasemodelentity.h"
 #include "entity/cbeam.h"
@@ -44,16 +44,13 @@
 #include "entity/ctriggerpush.h"
 #include "entity/services.h"
 #include "entwatch.h"
-#include "gameconfig.h"
 #include "igameevents.h"
 #include "irecipientfilter.h"
 #include "khook_helpers.h"
 #include "map_votes.h"
 #include "mapmigrations.h"
-#include "module.h"
-#include "networksystem/inetworkserializer.h"
 #include "playermanager.h"
-#include "serversideclient.h"
+#include "tier0/splitstring.h"
 #include "tier0/vprof.h"
 #include "votemanager.h"
 #include "zombiereborn.h"
@@ -454,10 +451,12 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	// Handle KeyValue(s)
 	if (!V_strnicmp(pInputName->String(), "KeyValue", 8))
 	{
-		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+		const char* pszValue = value->ToString();
+
+		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
 		{
 			// always const char*, even if it's FIELD_STRING (that is bug string from lua 'EntFire')
-			return {KHook::Action::Supersede, CustomIO_HandleInput(pThis->m_pInstance, value->m_pszString, pActivator, pCaller)};
+			return {KHook::Action::Supersede, CustomIO_HandleInput(pThis->m_pInstance, pszValue, pActivator, pCaller)};
 		}
 		Message("Invalid value type for input %s\n", pInputName->String());
 		return {KHook::Action::Supersede, false};
@@ -466,11 +465,12 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
 	{
 		float flDuration = 0.f;
+		const char* pszValue = value->ToString();
 
-		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
-			flDuration = V_StringToFloat32(value->m_pszString, 0.f);
+		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
+			flDuration = V_StringToFloat32(pszValue, 0.f);
 		else
-			flDuration = value->m_float32;
+			flDuration = value->Get<float>();
 
 		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
@@ -480,11 +480,12 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	else if (!V_strnicmp(pInputName->String(), "AddScore", 8))
 	{
 		int iScore = 0;
+		const char* pszValue = value->ToString();
 
-		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
-			iScore = V_StringToInt32(value->m_pszString, 0);
+		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
+			iScore = V_StringToInt32(pszValue, 0);
 		else
-			iScore = value->m_int32;
+			iScore = value->Get<int>();
 
 		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
@@ -498,8 +499,10 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	{
 		if (const auto pHudHint = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsHudHint())
 		{
-			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
-				pHudHint->m_iszMessage(GameEntitySystem()->AllocPooledString(value->m_pszString));
+			const char* pszValue = value->ToString();
+
+			if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
+				pHudHint->m_iszMessage(GameEntitySystem()->AllocPooledString(pszValue));
 			return {KHook::Action::Supersede, true};
 		}
 	}
@@ -507,8 +510,10 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	{
 		if (const auto pModelEntity = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsBaseModelEntity())
 		{
-			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString && PrepareMapSetModel(pModelEntity))
-				pModelEntity->SetModel(value->m_pszString);
+			const char* pszValue = value->ToString();
+
+			if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue && PrepareMapSetModel(pModelEntity))
+				pModelEntity->SetModel(pszValue);
 
 			return {KHook::Action::Supersede, true};
 		}
@@ -689,10 +694,8 @@ KHook::Return<CServerSideClient*> Detour_GetFreeClient(int64_t unk1, const __m12
 		return {KHook::Action::Ignore};
 
 	// Phantom client fix
-	for (int i = 0; i < GetClientList()->Count(); i++)
+	for (CServerSideClient* pClient : *GetClientList())
 	{
-		CServerSideClient* pClient = (*GetClientList())[i];
-
 		if (pClient && pClient->GetSignonState() < SIGNONSTATE_CONNECTED)
 			return {KHook::Action::Supersede, pClient};
 	}
@@ -937,9 +940,8 @@ KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Po
 	auto pWorld = singleWorld->m_pCWorld;
 	auto vecLumpData = (CUtlVector<void*>*)((uint8_t*)pWorld + 0x298);
 
-	FOR_EACH_VEC(*vecLumpData, i)
+	for (auto& lump : *vecLumpData)
 	{
-		auto& lump = (*vecLumpData)[i];
 		auto lumpData = *(LumpData**)lump;
 		auto vecEntityKeyValues = (CUtlVector<CEntityKeyValues*>*)((uint8_t*)lumpData + 0x1220);
 

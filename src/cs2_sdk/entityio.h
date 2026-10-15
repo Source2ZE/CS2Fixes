@@ -19,47 +19,11 @@
 
 #pragma once
 
-// Bandaid needed for #include "string_t.h" to compile...
-#ifndef NULL
-	#define NULL 0
-#endif
+#include <entity2/entitycomponent.h>
+#include <entity2/ientity2_entityio.h>
+#include <variant.h>
 
-#include <entityhandle.h>
-#include <entityinstance.h>
-#include <entitysystem.h>
-#include <string_t.h>
-
-struct EntityIOConnectionDesc_t
-{
-	string_t m_targetDesc;
-	string_t m_targetInput;
-	string_t m_valueOverride;
-	CEntityHandle m_hTarget;
-	EntityIOTargetType_t m_nTargetType;
-	int32 m_nTimesToFire;
-	float m_flDelay;
-};
-
-struct EntityIOConnection_t : EntityIOConnectionDesc_t
-{
-	bool m_bMarkedForRemoval;
-	EntityIOConnection_t* m_pNext;
-};
-
-struct EntityIOOutputDesc_t
-{
-	const char* m_pName;
-	uint32 m_nFlags;
-	uint32 m_nOutputOffset;
-};
-
-class CEntityIOOutput
-{
-public:
-	void* vtable;
-	EntityIOConnection_t* m_pConnections;
-	EntityIOOutputDesc_t* m_pDesc;
-};
+class CBaseEntity;
 
 class InputData_t
 {

@@ -21,7 +21,7 @@
 #include "../cs2fixes.h"
 #include "../ctimer.h"
 #include "../recipientfilters.h"
-#include "engine/igameeventsystem.h"
+#include "engine2/igameeventsystem.h"
 #include "entity/cgamerules.h"
 #include "gameevents.pb.h"
 #include "networksystem/inetworkmessages.h"

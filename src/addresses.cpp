@@ -22,7 +22,7 @@
 #include "utils/module.h"
 
 #include "entityinstance.h"
-#include "tier1/strtools.h"
+#include "tier0/tier0_strtools.h"
 #include "vscript/ivscript.h"
 
 #include "tier0/memdbgon.h"

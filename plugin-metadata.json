@@ -7,5 +7,5 @@
 	"url": "https://github.com/Source2ZE/CS2Fixes",
 	"log_tag": "CS2Fixes",
 	"license": "GPL v3 License",
-	"version": "{{parsed-version}}"
+	"version": "{{git-tag}}-{{git-commits-after-tag}}-{{git-shorthash}}"
 }

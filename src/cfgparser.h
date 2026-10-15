@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "convar.h"
+#include "tier0/convar.h"
 #include <map>
 
 class CCfgParser

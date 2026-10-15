@@ -77,6 +77,7 @@ public:
 		else
 			m_iTimestamp = duration;
 	}
+	virtual ~CInfractionBase() = default;
 	enum EInfractionType
 	{
 		Ban,

@@ -21,7 +21,6 @@
 #include "ctimer.h"
 #include "entity.h"
 
-#include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cgameplayerequip.h"
@@ -67,9 +66,9 @@ static void StripPlayer(CCSPlayerPawn* pPawn, const std::unordered_set<uint32_t>
 	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponService->m_hMyWeapons();
 	std::vector<CBasePlayerWeapon*> vecWeaponsToRemove;
 
-	FOR_EACH_VEC(*weapons, i)
+	for (const auto& hWeapon : *weapons)
 	{
-		CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+		CBasePlayerWeapon* weapon = hWeapon.Get();
 
 		if (!weapon)
 			continue;
@@ -216,7 +215,7 @@ namespace CGamePlayerEquipHandler
 
 	bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, CBaseEntity* pActivator, variant_t* value)
 	{
-		const auto pszWeapon = ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString) ? value->m_pszString : nullptr;
+		const auto pszWeapon = (value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) ? value->ToString() : nullptr;
 
 		if (!pActivator || !pActivator->IsPawn())
 			return true;
@@ -241,7 +240,7 @@ namespace CGamePlayerEquipHandler
 		if (!pItemServices)
 			return true;
 
-		if (pszWeapon && V_strcmp(pszWeapon, "(null)"))
+		if (pszWeapon && *pszWeapon && V_strcmp(pszWeapon, "(null)"))
 		{
 			pItemServices->GiveNamedItemAws(pszWeapon);
 			// Don't execute game function (we fixed string param)
