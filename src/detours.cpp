@@ -451,10 +451,12 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	// Handle KeyValue(s)
 	if (!V_strnicmp(pInputName->String(), "KeyValue", 8))
 	{
-		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && value->ToString())
+		const char* pszValue = value->ToString();
+
+		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
 		{
 			// always const char*, even if it's FIELD_STRING (that is bug string from lua 'EntFire')
-			return {KHook::Action::Supersede, CustomIO_HandleInput(pThis->m_pInstance, value->ToString(), pActivator, pCaller)};
+			return {KHook::Action::Supersede, CustomIO_HandleInput(pThis->m_pInstance, pszValue, pActivator, pCaller)};
 		}
 		Message("Invalid value type for input %s\n", pInputName->String());
 		return {KHook::Action::Supersede, false};
@@ -463,10 +465,11 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
 	{
 		float flDuration = 0.f;
+		const char* pszValue = value->ToString();
 
-		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && value->ToString())
-			flDuration = V_StringToFloat32(value->ToString(), 0.f);
-		else if (value->GetType() == FIELD_FLOAT32)
+		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
+			flDuration = V_StringToFloat32(pszValue, 0.f);
+		else
 			flDuration = value->Get<float>();
 
 		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
@@ -477,10 +480,11 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	else if (!V_strnicmp(pInputName->String(), "AddScore", 8))
 	{
 		int iScore = 0;
+		const char* pszValue = value->ToString();
 
-		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && value->ToString())
-			iScore = V_StringToInt32(value->ToString(), 0);
-		else if (value->GetType() == FIELD_INT32)
+		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
+			iScore = V_StringToInt32(pszValue, 0);
+		else
 			iScore = value->Get<int>();
 
 		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
@@ -495,8 +499,10 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	{
 		if (const auto pHudHint = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsHudHint())
 		{
-			if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && value->ToString())
-				pHudHint->m_iszMessage(GameEntitySystem()->AllocPooledString(value->ToString()));
+			const char* pszValue = value->ToString();
+
+			if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
+				pHudHint->m_iszMessage(GameEntitySystem()->AllocPooledString(pszValue));
 			return {KHook::Action::Supersede, true};
 		}
 	}
@@ -504,8 +510,10 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	{
 		if (const auto pModelEntity = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsBaseModelEntity())
 		{
-			if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && value->ToString() && PrepareMapSetModel(pModelEntity))
-				pModelEntity->SetModel(value->ToString());
+			const char* pszValue = value->ToString();
+
+			if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue && PrepareMapSetModel(pModelEntity))
+				pModelEntity->SetModel(pszValue);
 
 			return {KHook::Action::Supersede, true};
 		}
