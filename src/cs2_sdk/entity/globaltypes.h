@@ -76,32 +76,6 @@ struct StartSoundEventInfo
 #pragma pack(pop)
 static_assert(sizeof(StartSoundEventInfo) == 20); // Ensure alignment change works
 
-// used with EmitSound_t
-enum gender_t : uint8
-{
-	GENDER_NONE = 0x0,
-	GENDER_MALE = 0x1,
-	GENDER_FEMALE = 0x2,
-	GENDER_NAMVET = 0x3,
-	GENDER_TEENGIRL = 0x4,
-	GENDER_BIKER = 0x5,
-	GENDER_MANAGER = 0x6,
-	GENDER_GAMBLER = 0x7,
-	GENDER_PRODUCER = 0x8,
-	GENDER_COACH = 0x9,
-	GENDER_MECHANIC = 0xA,
-	GENDER_CEDA = 0xB,
-	GENDER_CRAWLER = 0xC,
-	GENDER_UNDISTRACTABLE = 0xD,
-	GENDER_FALLEN = 0xE,
-	GENDER_RIOT_CONTROL = 0xF,
-	GENDER_CLOWN = 0x10,
-	GENDER_JIMMY = 0x11,
-	GENDER_HOSPITAL_PATIENT = 0x12,
-	GENDER_BRIDE = 0x13,
-	GENDER_LAST = 0x14,
-};
-
 class CNetworkVelocityVector
 {
 public:
