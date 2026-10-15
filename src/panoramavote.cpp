@@ -96,7 +96,7 @@ bool CPanoramaVoteHandler::IsPlayerInVotePool(int iSlot)
 	if (!m_bIsVoteInProgress)
 		return false;
 
-	if (iSlot < 0 || iSlot > MAX_PLAYERS)
+	if (iSlot < 0 || iSlot >= MAX_PLAYERS)
 		return false;
 
 	for (int i = 0; i < m_iVoterCount; i++)
@@ -241,7 +241,7 @@ void CPanoramaVoteHandler::InitVoters(CRecipientFilter* pFilter)
 	const uint64 x = *reinterpret_cast<const uint64*>(&pFilter->GetRecipients());
 	for (int i = 0, j = 0; i < MAX_PLAYERS; i++)
 		if (x & (static_cast<unsigned long long>(1u) << i))
-			m_iVoters[j] = i;
+			m_iVoters[j++] = i;
 }
 
 void CPanoramaVoteHandler::CheckForEarlyVoteClose()
