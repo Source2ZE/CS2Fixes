@@ -144,7 +144,7 @@ public:
 
 	void AddScore(int iScore)
 	{
-		m_iScore() = m_iScore() + iScore;
+		m_iScore = m_iScore() + iScore;
 	}
 
 	void SetClanTag(const char* pszClanTag)

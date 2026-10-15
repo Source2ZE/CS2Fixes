@@ -195,7 +195,7 @@ static bool Leader_SetNewLeader(ZEPlayer* zpLeader, std::string strColor = "")
 	if (zpLeader->IsLeader())
 		return false;
 
-	pLeader->m_iScore() = pLeader->m_iScore() + g_cvarLeaderExtraScore.Get();
+	pLeader->m_iScore = pLeader->m_iScore() + g_cvarLeaderExtraScore.Get();
 	zpLeader->SetLeader(true);
 	Color color = Color(0, 0, 0, 0);
 
@@ -295,7 +295,7 @@ static void RemoveLeader(CCSPlayerController* ccsLeader)
 	if (!zpLeader || !zpLeader->IsLeader())
 		return;
 
-	ccsLeader->m_iScore() = ccsLeader->m_iScore() - g_cvarLeaderExtraScore.Get();
+	ccsLeader->m_iScore = ccsLeader->m_iScore() - g_cvarLeaderExtraScore.Get();
 	zpLeader->SetLeader(false);
 	zpLeader->SetLeaderColor(Color(0, 0, 0, 0));
 	zpLeader->SetTracerColor(Color(0, 0, 0, 0));
