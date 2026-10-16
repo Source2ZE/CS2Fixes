@@ -58,6 +58,7 @@ class CGameRules;
 class CEntityKeyValues;
 class IRecipientFilter;
 class CTakeDamageInfo;
+class CUtlSymbolTable;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
 class CSpawnGroupMgrGameSystem;
@@ -79,10 +80,12 @@ struct CGcBanInformation_t
 namespace addresses
 {
 	bool Initialize();
-	bool InitializeBanMap();
+	bool InitializeRipRelativeAddresses();
 	bool InitializeVScriptFunctions();
+	void* ResolveRipRelative(const char* pszName, int nOpcodeSize = 3);
 
 	inline CUtlOrderedMap<uint32, CGcBanInformation_t, uint32>* sm_mapGcBanInformation;
+	inline CUtlSymbolTable* CCSAddonManager_CommandWhitelist;
 
 	inline void(FASTCALL* SetGroundEntity)(CBaseEntity* ent, CBaseEntity* ground, CBaseEntity* unk3);
 	inline void(FASTCALL* CCSPlayerController_SwitchTeam)(CCSPlayerController* pController, uint32 team);

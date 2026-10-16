@@ -18,11 +18,13 @@
  */
 
 #include "cvarwhitelist.h"
+#include "addresses.h"
 #include "commands.h"
 #include "utils.h"
 #undef snprintf
 #include "vendor/nlohmann/json.hpp"
 #include <fstream>
+#include <set>
 
 CConVarWhitelist* g_pConvarWhitelist = nullptr;
 
@@ -33,10 +35,15 @@ CON_COMMAND_CHAT_FLAGS(cvarwhitelist_reload, "- Reload the ConVar whitelist conf
 	if (!g_cvarConVarWhitelistEnable.Get())
 		return;
 
-	if (g_pConvarWhitelist->LoadConfig())
+	if (g_pConvarWhitelist->LoadConfig() && GetGlobals())
+	{
+		g_pConvarWhitelist->ApplyToGameTable(GetGlobals()->mapname.ToCStr());
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "ConVar whitelist config reloaded!");
+	}
 	else
+	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Failed to reload ConVar whitelist config!");
+	}
 }
 
 bool CConVarWhitelist::LoadConfig()
@@ -98,25 +105,35 @@ bool CConVarWhitelist::LoadConfig()
 	return true;
 }
 
-bool CConVarWhitelist::IsWhitelisted(std::string strName)
+void CConVarWhitelist::ApplyToGameTable(const char* pszMapName)
 {
-	auto globalIt = std::find_if(m_vecGlobalWhitelist.begin(), m_vecGlobalWhitelist.end(), [strName](const auto& wv) {
-		return wv.strConVar == StringToLower(strName);
-	});
+	if (!g_cvarConVarWhitelistEnable.Get() || !IsConfigLoaded())
+		return;
 
-	// Cannot load map overrides, only check global whitelist
-	if (!GetGlobals())
-		return globalIt != m_vecGlobalWhitelist.end() && globalIt->bEnabled;
+	std::set<std::string> setWhitelist;
 
-	auto mapVector = m_mapOverrides[GetGlobals()->mapname.ToCStr()];
-	auto mapIt = std::find_if(mapVector.begin(), mapVector.end(), [strName](const auto& wv) {
-		return wv.strConVar == StringToLower(strName);
-	});
+	for (const auto& wv : m_vecGlobalWhitelist)
+		if (wv.bEnabled)
+			setWhitelist.insert(wv.strConVar);
+
+	auto it = m_mapOverrides.find(pszMapName);
 
 	// If a map override is present, it takes priority
-	if (mapIt != mapVector.end())
-		return mapIt->bEnabled;
+	if (it != m_mapOverrides.end())
+	{
+		for (const auto& wv : it->second)
+			if (wv.bEnabled)
+				setWhitelist.insert(wv.strConVar);
+			else
+				setWhitelist.erase(wv.strConVar);
+	}
 
-	// Or fall back to global whitelist
-	return globalIt != m_vecGlobalWhitelist.end() && globalIt->bEnabled;
+	CUtlSymbolTable* pWhitelistTable = addresses::CCSAddonManager_CommandWhitelist;
+	pWhitelistTable->RemoveAll();
+
+	// Modify the games table to be case-insensitive before we add our entries
+	static_cast<CUtlSymbolTableAccessor*>(pWhitelistTable)->SetInsensitive(true);
+
+	for (const auto& strConVar : setWhitelist)
+		pWhitelistTable->AddString(strConVar.c_str());
 }

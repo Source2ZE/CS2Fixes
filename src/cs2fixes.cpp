@@ -368,6 +368,7 @@ void CS2Fixes::OnLevelInit(char const* pMapName,
 
 	g_playerManager->SetupInfiniteAmmo();
 	g_pMapVoteSystem->OnLevelInit(pMapName);
+	g_pConvarWhitelist->ApplyToGameTable(pMapName);
 
 	if (g_cvarEnableZR.Get())
 		ZR_OnLevelInit();

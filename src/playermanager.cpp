@@ -1982,10 +1982,8 @@ int CPlayerManager::GetOnlinePlayerCount(bool bCountBots)
 		flLastUpdateTime = GetGlobals()->curtime;
 
 	for (CServerSideClient* pClient : *GetClientList())
-	{
 		if (pClient && pClient->GetSignonState() >= SIGNONSTATE_CONNECTED && (bCountBots || !pClient->IsFakeClient()))
 			iOnlinePlayers++;
-	}
 
 	return iOnlinePlayers;
 }

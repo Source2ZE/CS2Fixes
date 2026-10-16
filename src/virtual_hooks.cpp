@@ -818,12 +818,10 @@ KHook::Return<void> Hook_GetTouchingList_Post(CVPhys2World* pThis, CUtlVector<To
 	std::vector<TouchLinked_t> unTouchLinks;
 
 	for (const auto& link : *pList)
-	{
 		if (link.IsUnTouching())
 			unTouchLinks.push_back(link);
 		else
 			touchingLinks.push_back(link);
-	}
 
 	if (touchingLinks.size() <= 1)
 		return {KHook::Action::Ignore};
