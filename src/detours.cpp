@@ -27,7 +27,6 @@
 #include "commands.h"
 #include "common.h"
 #include "customio.h"
-#include "cvarwhitelist.h"
 #include "detours.h"
 #include "engine2/serversideclient.h"
 #include "entities.h"
@@ -87,7 +86,6 @@ KHOOK_MEMBER(CBaseModelEntity_SetModel, Detour_CBaseModelEntity_SetModel, nullpt
 KHOOK_MEMBER(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission, nullptr);
 KHOOK_MEMBER(SetBeamOrigin, Detour_SetBeamOrigin, nullptr);
 KHOOK_MEMBER(SetBeamEndPos, Detour_SetBeamEndPos, nullptr);
-KHOOK_FUNCTION(IsCommandWhitelisted, Detour_IsCommandWhitelisted, nullptr);
 KHOOK_MEMBER(CWorldRendererMgr_CreateWorld_Internal, nullptr, Detour_CWorldRendererMgr_CreateWorld_Internal_Post);
 
 std::vector<CKHookBase*>& GetKHookList()
@@ -695,10 +693,8 @@ KHook::Return<CServerSideClient*> Detour_GetFreeClient(int64_t unk1, const __m12
 
 	// Phantom client fix
 	for (CServerSideClient* pClient : *GetClientList())
-	{
 		if (pClient && pClient->GetSignonState() < SIGNONSTATE_CONNECTED)
 			return {KHook::Action::Supersede, pClient};
-	}
 
 	// Server is actually full for real
 	return {KHook::Action::Supersede, nullptr};
@@ -921,14 +917,6 @@ KHook::Return<void> Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecPositio
 	// If no parent, then game code would hit infinite loop, just reimplement this simple path ourselves
 	pThis->m_vecEndPos = *(VectorWS*)(pVecPosition);
 	return {KHook::Action::Supersede};
-}
-
-KHook::Return<bool> Detour_IsCommandWhitelisted(void* pAddonManager, const char* pszCommandName)
-{
-	if (!g_cvarConVarWhitelistEnable.Get() || !g_pConvarWhitelist->IsConfigLoaded())
-		return {KHook::Action::Ignore};
-
-	return {KHook::Action::Supersede, g_pConvarWhitelist->IsWhitelisted(pszCommandName)};
 }
 
 KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Post(IWorldRendererMgr* pThis, CSingleWorldRep* singleWorld)

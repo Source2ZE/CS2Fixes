@@ -116,5 +116,4 @@ KHook::Return<void> Detour_CBaseModelEntity_SetModel(CBaseModelEntity* pModel, c
 KHook::Return<void> Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch);
 KHook::Return<void> Detour_SetBeamOrigin(CBeam* pThis, const Vector* pVecWorldPosition);
 KHook::Return<void> Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecWorldPosition);
-KHook::Return<bool> Detour_IsCommandWhitelisted(void* pAddonManager, const char* pszCommandName);
 KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Post(IWorldRendererMgr* pThis, CSingleWorldRep* pSingleWorld);
