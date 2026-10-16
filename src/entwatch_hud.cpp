@@ -26,6 +26,7 @@
 #include "playermanager.h"
 #include "user_preferences.h"
 #include "utils/entity.h"
+#include <algorithm>
 #include <array>
 #include <cerrno>
 #include <cmath>
@@ -38,7 +39,19 @@ namespace
 {
 	constexpr size_t MaxRows = 64;
 	CHandle<CCSCustomHudLayout> s_layout;
-	std::array<std::string, 64> s_previous;
+	struct PanoramaState
+	{
+		bool visible = false;
+		int mode = 0;
+		int x = 0;
+		int y = 0;
+		int size = 0;
+		size_t totalRows = 0;
+
+		bool operator==(const PanoramaState&) const = default;
+	};
+
+	std::array<PanoramaState, MAXPLAYERS> s_previous;
 	std::array<bool, 64> s_initialized{};
 	std::array<int, 64> s_positionX{};
 	std::array<int, 64> s_positionY{};
@@ -53,16 +66,17 @@ namespace
 			return s_layout.Get();
 		if (g_flUniversalTime < s_flNextCreateAttempt)
 			return nullptr;
-		s_flNextCreateAttempt = g_flUniversalTime + 30.0;
 		if (!g_pFullFileSystem || !g_pFullFileSystem->FileExists("panorama/layout/custom_game/hud.vxml_c", "GAME") || !g_pFullFileSystem->FileExists("panorama/styles/entwatch/hud.vcss_c", "GAME"))
 		{
 			Warning("[EntWatch HUD] Missing compiled Panorama resources; using world text. Install the packaged panorama directory on server and clients. Retrying in 30 seconds.\n");
+			s_flNextCreateAttempt = g_flUniversalTime + 30.0;
 			return nullptr;
 		}
 		auto layout = CCSCustomHudLayout::Create("hud", "entwatchHud");
 		if (!layout)
 		{
 			Warning("[EntWatch HUD] Failed to create custom_hud_layout; using world text. Retrying in 30 seconds.\n");
+			s_flNextCreateAttempt = g_flUniversalTime + 30.0;
 			return nullptr;
 		}
 		s_layout = layout->GetHandle();
@@ -82,20 +96,14 @@ namespace
 			return !visible;
 		const int slot = player->GetPlayerSlot().Get();
 		if (slot < 0 || slot >= MAXPLAYERS) return false;
-		std::string signature = visible ? "on" : "off";
-		signature += std::to_string(player->GetEntwatchHudMode());
 		const int x = player->GetEntwatchPanoramaHudX();
 		const int y = player->GetEntwatchPanoramaHudY();
 		const int size = player->GetEntwatchPanoramaHudSize();
-		signature += ":" + std::to_string(x) + ":" + std::to_string(y) + ":" + std::to_string(size) + ":";
-		if (visible)
-		{
-			signature += std::to_string(rows.size()) + ":";
-			for (size_t i = 0; i < std::min(rows.size(), MaxRows); ++i)
-				for (const auto& value : {rows[i].name, rows[i].owner, rows[i].state, rows[i].cooldown, rows[i].ammo})
-					signature += std::to_string(value.size()) + ":" + value;
-		}
-		if (s_initialized[slot] && s_previous[slot] == signature) return true;
+		const PanoramaState state{visible, player->GetEntwatchHudMode(), x, y, size, visible ? rows.size() : 0};
+		const size_t visibleRows = visible ? std::min(rows.size(), MaxRows) : 0;
+		// Compare against the last rendered state directly instead of building a signature string per player per tick.
+		if (s_initialized[slot] && s_previous[slot] == state && s_rows[slot].size() == visibleRows && std::equal(rows.begin(), rows.begin() + visibleRows, s_rows[slot].begin()))
+			return true;
 		// Remove the previous per-player position before applying the new CSS classes.
 		if (s_initialized[slot])
 		{
@@ -116,7 +124,7 @@ namespace
 		s_positionY[slot] = y;
 		s_size[slot] = size;
 		s_initialized[slot] = true;
-		s_previous[slot] = signature;
+		s_previous[slot] = state;
 		layout->SetHasClass("entwatch", "Hidden", !visible, slot);
 		for (size_t i = 0; i < MaxRows; ++i)
 		{
@@ -157,10 +165,12 @@ bool EW_ParseHudFloat(const char* pszValue, float& flValue)
 	return pszEnd != pszValue && !*pszEnd && errno != ERANGE && std::isfinite(flValue);
 }
 
-void ZEPlayer::SetEntwatchPanoramaHudPos(int x, int y)
+void ZEPlayer::SetEntwatchPanoramaHudPos(int x, int y, bool bSave)
 {
-	m_iEntwatchPanoramaX = x >= 0 && x <= 100 ? x : EW_PANORAMA_X_DEFAULT;
-	m_iEntwatchPanoramaY = y >= 0 && y <= 100 ? y : EW_PANORAMA_Y_DEFAULT;
+	m_iEntwatchPanoramaX = x >= 0 && x <= EW_PANORAMA_POS_MAX ? x : EW_PANORAMA_X_DEFAULT;
+	m_iEntwatchPanoramaY = y >= 0 && y <= EW_PANORAMA_POS_MAX ? y : EW_PANORAMA_Y_DEFAULT;
+	if (!bSave)
+		return;
 	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_PANORAMA_X, m_iEntwatchPanoramaX);
 	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_PANORAMA_Y, m_iEntwatchPanoramaY);
 }
@@ -183,9 +193,9 @@ void EW_ConfigurePanoramaHudPos(CCSPlayerController* player, const CCommand& arg
 		char* endY;
 		const long parsedX = std::strtol(args[1], &endX, 10);
 		const long parsedY = std::strtol(args[2], &endY, 10);
-		if (!*args[1] || !*args[2] || *endX || *endY || parsedX < 0 || parsedX > 100 || parsedY < 0 || parsedY > 100)
+		if (!*args[1] || !*args[2] || *endX || *endY || parsedX < 0 || parsedX > EW_PANORAMA_POS_MAX || parsedY < 0 || parsedY > EW_PANORAMA_POS_MAX)
 		{
-			ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Use whole screen percentages from 0 to 100: !hudpos <x> <y>");
+			ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Use whole screen percentages from 0 to %d: !hudpos <x> <y>", EW_PANORAMA_POS_MAX);
 			return;
 		}
 		x = static_cast<int>(parsedX);
@@ -204,15 +214,11 @@ void EW_ConfigurePanoramaHudPos(CCSPlayerController* player, const CCommand& arg
 	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Panorama HUD position: %d%% from left, %d%% from top.", x, y);
 }
 
-CON_COMMAND_CHAT(hudpos2, "[x y|reset] - Alias to configure Panorama position regardless of active style")
-{
-	EW_ConfigurePanoramaHudPos(player, args);
-}
-
-void ZEPlayer::SetEntwatchPanoramaHudSize(int size)
+void ZEPlayer::SetEntwatchPanoramaHudSize(int size, bool bSave)
 {
 	m_iEntwatchPanoramaSize = size >= EW_PANORAMA_SIZE_MIN && size <= EW_PANORAMA_SIZE_MAX ? size : EW_PANORAMA_SIZE_DEFAULT;
-	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_PANORAMA_SIZE, m_iEntwatchPanoramaSize);
+	if (bSave)
+		g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_PANORAMA_SIZE, m_iEntwatchPanoramaSize);
 }
 
 void EW_ConfigurePanoramaHudSize(CCSPlayerController* player, const CCommand& args)
@@ -253,16 +259,19 @@ void EW_DestroyHud()
 	s_layout = nullptr;
 	s_flNextCreateAttempt = 0.0;
 	s_initialized.fill(false);
-	for (auto& previous : s_previous) previous.clear();
+	for (auto& previous : s_previous)
+		previous = {};
+	s_mode.fill(0);
 	for (auto& vecRows : s_rows) vecRows.clear();
 }
 
 void EW_ForgetHudPlayer(int slot)
 {
-	if (slot >= 0 && slot < 64)
+	if (slot >= 0 && slot < MAXPLAYERS)
 	{
 		s_initialized[slot] = false;
-		s_previous[slot].clear();
+		s_previous[slot] = {};
+		s_mode[slot] = 0;
 		s_rows[slot].clear();
 		auto pPlayer = g_playerManager ? g_playerManager->GetPlayer(CPlayerSlot(slot)) : nullptr;
 		if (pPlayer)
@@ -281,11 +290,29 @@ void EW_RenderHud(ZEPlayer* player, const std::vector<EntwatchHudRow>& rows)
 	const bool visible = g_cvarEnableEntWatch.Get() && g_cvarEnableEntwatchHud.Get() && player->GetEntwatchHudMode() != Hud_None && !rows.empty();
 	const bool panorama = player->GetEntwatchHudStyle() == 1;
 	const bool bPanoramaReady = RenderPanorama(player, rows, visible && panorama);
+	if (panorama && bPanoramaReady)
+	{
+		// Remove a world-text entity left over from before this player (or the server default) switched to Panorama.
+		if (auto text = player->GetEntwatchHud())
+		{
+			text->Remove();
+			player->SetEntwatchHud(nullptr);
+		}
+	}
 	EW_RenderWorldText(player, rows, visible && (!panorama || !bPanoramaReady));
 }
 
 CON_COMMAND_CHAT(hudstyle, "[old|new|default] - Switch EntWatch world-text/Panorama renderer")
 {
+	if (!g_cvarEnableEntWatch.Get())
+		return;
+
+	if (!g_cvarEnableEntwatchHud.Get())
+	{
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "The EntWatch hud is currently disabled.");
+		return;
+	}
+
 	if (!player)
 	{
 		ClientPrint(player, HUD_PRINTCONSOLE, "Use entwatch_hud_style 0/1 for the server default.");

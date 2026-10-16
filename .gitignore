@@ -18,5 +18,4 @@ bld/
 /dockerbuild
 .idea/*
 
-# Compiled Panorama resources; regenerate with scripts/compile-panorama.ps1.
-/assets/panorama/**/*_c
+__pycache__/

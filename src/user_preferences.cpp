@@ -138,10 +138,10 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 
 	// Set EntWatch
 	player->SetEntwatchHudMode(iEntwatchMode);
-	player->SetEntwatchHudStyle(GetPreferenceInt(iSlot, EW_PREF_HUD_STYLE, -1));
+	player->SetEntwatchHudStyle(GetPreferenceInt(iSlot, EW_PREF_HUD_STYLE, -1), false);
 	player->SetEntwatchHudPos(flEntwatchHudposX, flEntwatchHudposY);
-	player->SetEntwatchPanoramaHudPos(GetPreferenceInt(iSlot, EW_PREF_PANORAMA_X, EW_PANORAMA_X_DEFAULT), GetPreferenceInt(iSlot, EW_PREF_PANORAMA_Y, EW_PANORAMA_Y_DEFAULT));
-	player->SetEntwatchPanoramaHudSize(GetPreferenceInt(iSlot, EW_PREF_PANORAMA_SIZE, EW_PANORAMA_SIZE_DEFAULT));
+	player->SetEntwatchPanoramaHudPos(GetPreferenceInt(iSlot, EW_PREF_PANORAMA_X, EW_PANORAMA_X_DEFAULT), GetPreferenceInt(iSlot, EW_PREF_PANORAMA_Y, EW_PANORAMA_Y_DEFAULT), false);
+	player->SetEntwatchPanoramaHudSize(GetPreferenceInt(iSlot, EW_PREF_PANORAMA_SIZE, EW_PANORAMA_SIZE_DEFAULT), false);
 	player->SetEntwatchHudColor(ewHudColor);
 	player->SetEntwatchHudSize(flEntwatchHudSize);
 	EW_UpdateHud();

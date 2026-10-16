@@ -28,6 +28,7 @@ class CCommand;
 
 constexpr int EW_PANORAMA_X_DEFAULT = 2;
 constexpr int EW_PANORAMA_Y_DEFAULT = 15;
+constexpr int EW_PANORAMA_POS_MAX = 95;
 constexpr int EW_PANORAMA_SIZE_DEFAULT = 100;
 constexpr int EW_PANORAMA_SIZE_MIN = 50;
 constexpr int EW_PANORAMA_SIZE_MAX = 200;

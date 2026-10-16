@@ -759,10 +759,11 @@ int ZEPlayer::GetEntwatchHudStyle()
 	return m_iEntwatchHudStyle < 0 ? EW_DefaultHudStyle() : m_iEntwatchHudStyle;
 }
 
-void ZEPlayer::SetEntwatchHudStyle(int style)
+void ZEPlayer::SetEntwatchHudStyle(int style, bool bSave)
 {
 	m_iEntwatchHudStyle = style >= -1 && style <= 1 ? style : -1;
-	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_HUD_STYLE, m_iEntwatchHudStyle);
+	if (bSave)
+		g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_HUD_STYLE, m_iEntwatchHudStyle);
 	CreateEntwatchHud();
 }
 

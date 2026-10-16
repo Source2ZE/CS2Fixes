@@ -22,8 +22,20 @@
 #include "entwatch_hud.h"
 #include "playermanager.h"
 #include "utils/entity.h"
+#include <array>
 
 extern CConVar<bool> g_cvarEntwatchPanoramaDebug;
+
+namespace
+{
+	// Last message sent to each player's world-text entity, so unchanged text isn't re-sent every tick.
+	struct WorldTextCache
+	{
+		int handle = -1;
+		std::string message;
+	};
+	std::array<WorldTextCache, MAXPLAYERS> s_cache;
+} // namespace
 
 void EW_RenderWorldText(ZEPlayer* player, const std::vector<EntwatchHudRow>& rows, bool visible)
 {
@@ -45,6 +57,16 @@ void EW_RenderWorldText(ZEPlayer* player, const std::vector<EntwatchHudRow>& row
 			message += "[" + row.state + "]" + row.name;
 			if (player->GetEntwatchHudMode() == Hud_On) message += ": " + row.owner;
 		}
+	const int slot = player->GetPlayerSlot().Get();
+	if (slot >= 0 && slot < MAXPLAYERS)
+	{
+		auto& cache = s_cache[slot];
+		const int handle = text->GetHandle().ToInt();
+		if (cache.handle == handle && cache.message == message)
+			return;
+		cache.handle = handle;
+		cache.message = message;
+	}
 	text->AcceptInput("SetMessage", message.c_str());
 }
 

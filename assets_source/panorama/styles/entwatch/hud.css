@@ -213,16 +213,6 @@
 .EntWatch.PosY94 { margin-top: 94%; }
 .EntWatch.PosX95 { margin-left: 95%; }
 .EntWatch.PosY95 { margin-top: 95%; }
-.EntWatch.PosX96 { margin-left: 96%; }
-.EntWatch.PosY96 { margin-top: 96%; }
-.EntWatch.PosX97 { margin-left: 97%; }
-.EntWatch.PosY97 { margin-top: 97%; }
-.EntWatch.PosX98 { margin-left: 98%; }
-.EntWatch.PosY98 { margin-top: 98%; }
-.EntWatch.PosX99 { margin-left: 99%; }
-.EntWatch.PosY99 { margin-top: 99%; }
-.EntWatch.PosX100 { margin-left: 100%; }
-.EntWatch.PosY100 { margin-top: 100%; }
 
 .ReloadIcon { width: 22px; height: 22px; margin-left: 5px; margin-right: 0px; text-align: center; vertical-align: center; }
 .Reloading .ReloadIcon { animation-name: ReloadSpin; animation-duration: 1s; animation-timing-function: linear; animation-iteration-count: infinite; }

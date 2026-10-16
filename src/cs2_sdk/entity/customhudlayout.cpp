@@ -25,6 +25,7 @@ std::unordered_map<int, CustomHudLayoutCallbacks_t> CCSCustomHudLayout::sm_mapCu
 CCSCustomHudLayout* CCSCustomHudLayout::Create(std::string sLayout, std::string sTargetName)
 {
 	CCSCustomHudLayout* pLayout = CreateEntityByName<CCSCustomHudLayout>("custom_hud_layout");
+
 	if (!pLayout)
 		return nullptr;
 

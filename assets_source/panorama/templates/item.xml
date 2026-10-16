@@ -1,0 +1,11 @@
+      <Panel id="item_@INDEX@" class="Item Hidden" hittest="false">
+        <Panel class="Heading" hittest="false">
+          <Label class="ItemName" text="{s:item}" hittest="false" />
+          <Label class="Owner" text="{s:owner}" hittest="false" />
+        </Panel>
+        <Panel class="Status" hittest="false">
+          <Panel class="Ammo" hittest="false"><Label class="Icon" text="▰" hittest="false" /><Label text="{s:ammo}" hittest="false" /></Panel>
+          <Panel class="Cooldown" hittest="false"><Label text="{s:cooldown}" hittest="false" /><Label class="Icon ReloadIcon" text="↻" hittest="false" /></Panel>
+          <Label class="Ready" text="{s:state}" hittest="false" />
+        </Panel>
+      </Panel>

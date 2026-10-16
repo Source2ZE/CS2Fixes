@@ -1,12 +1,19 @@
-The HUD sources are `layout/custom_game/hud.xml` and `styles/entwatch/hud.css`.
+`layout/custom_game/hud.xml` and `styles/entwatch/hud.css` are **generated**; do not edit them by hand. Edit the files in `templates/` (`hud.base.css`, `hud.base.xml`, `item.xml`) or the base item geometry in `scripts/generate-panorama.py`, then regenerate. The row count (`MaxRows`), position cap (`EW_PANORAMA_POS_MAX`) and size range (`EW_PANORAMA_SIZE_MIN/MAX`) are read from `src/entwatch_hud.cpp` and `src/entwatch_hud.h`, so changing them there and regenerating keeps the classes in sync.
 
-With CS2 Workshop Tools installed, regenerate the compiled assets from the repository root:
+```
+python scripts/generate-panorama.py          # regenerate hud.xml / hud.css
+python scripts/generate-panorama.py --check  # fail if they are out of date
+```
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/compile-panorama.ps1 -Cs2Root "F:\steamgames\steamapps\common\Counter-Strike Global Offensive"
+With CS2 Workshop Tools installed, regenerate and compile from the repository root (any OS the tools run on; `--cs2-root` can also be given as the `CS2_ROOT` environment variable):
+
+```
+python scripts/compile-panorama.py --cs2-root "F:\steamgames\steamapps\common\Counter-Strike Global Offensive"
 ```
 
 The script stages a local `cs2fixes_hud` addon and copies its compiled VXML/CSS into `assets/panorama`. AMBuild packages those resources under `package/cs2/panorama`, alongside the existing sounds and particles. Rebuild CS2Fixes after compiling.
+
+The compiled `assets/panorama/**/*_c` files are checked in, so ordinary and release builds do not need Workshop Tools. After changing anything under `assets_source/panorama`, recompile with the script above and commit the updated resources. `--destination` optionally selects an alternate output directory for the compiler script.
 
 Install the package into `game/csgo`. Clients must also have these resources installed or mounted through an addon; installing a server plugin does not distribute files to clients. The staged local addon is available for Workshop Tools testing.
 
@@ -16,7 +23,7 @@ The item HUD uses one shared `custom_hud_layout` with per-player classes and dia
 
 The green reload icon represents the item's EntWatch ability cooldown. The orange ammo icon represents remaining configured uses or a math-counter value, not the weapon's bullet magazine. Multiple visible handlers are separated with `|`. Items without these handlers show their normal ready state.
 
-`!hudpos [x y|reset]` configures the active style: world-space coordinates for old HUD, whole screen percentages (0-100) for Panorama. Panorama defaults to 2% left / 15% top; keep enough space to the right and below for the item list. `!hudpos2` remains an explicit Panorama-only alias.
+`!hudpos [x y|reset]` configures the active style: world-space coordinates for old HUD, whole screen percentages (0-95) for Panorama. Panorama defaults to 2% left / 15% top; keep enough space to the right and below for the item list.
 
 `!hudsize [size|reset]` configures the active style: old HUD font size (20-255, default 60), or Panorama size as a whole percentage (50-200, default 100). Panorama scales the rows, padding, fonts and icons together while keeping its screen anchor. Bare commands report the active style's values. Client console equivalents are `c_hudpos` and `c_hudsize`.
 
