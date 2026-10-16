@@ -20,8 +20,8 @@
 #pragma once
 
 #include "../playermanager.h"
-#include "../serversideclient.h"
 #include "cbaseplayercontroller.h"
+#include "engine2/serversideclient.h"
 #include "services.h"
 
 class CCSPlayerController : public CBasePlayerController
@@ -144,7 +144,7 @@ public:
 
 	void AddScore(int iScore)
 	{
-		m_iScore() = m_iScore() + iScore;
+		m_iScore = m_iScore() + iScore;
 	}
 
 	void SetClanTag(const char* pszClanTag)

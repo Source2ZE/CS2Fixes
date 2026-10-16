@@ -21,7 +21,6 @@
 #include "commands.h"
 #include "common.h"
 #include "ctimer.h"
-#include "detours.h"
 #include "entity/ccsplayercontroller.h"
 #include "idlemanager.h"
 #include "playermanager.h"
@@ -136,7 +135,7 @@ void TD_OnRoundStart(IGameEvent* pEvent)
 			// If player is top defender, we set their score and clan tag
 			if (g_cvarTopDefenderScore.Get() > 0 && pPlayer->GetTopDefenderStatus())
 			{
-				pController->m_iScore() = pController->m_iScore() + g_cvarTopDefenderScore.Get();
+				pController->m_iScore = pController->m_iScore() + g_cvarTopDefenderScore.Get();
 				pController->SetClanTag(g_cvarTopDefenderClanTag.Get().String());
 			}
 		}
@@ -211,7 +210,7 @@ void TD_OnRoundEnd(IGameEvent* pEvent)
 			if (pController)
 			{
 				pPlayer->SetTopDefenderStatus(false);
-				pController->m_iScore() = pController->m_iScore() - g_cvarTopDefenderScore.Get();
+				pController->m_iScore = pController->m_iScore() - g_cvarTopDefenderScore.Get();
 				pController->ResetClanTag();
 			}
 		}
@@ -323,7 +322,7 @@ void TopDefenderSearch(CCSPlayerController* player, const CCommand& args)
 		if (iRank <= 0 || iRank > sortedPlayers.size())
 		{
 			int iNumClients = 0;
-			int pSlots[MAXPLAYERS];
+			int pSlots[MAX_PLAYERS];
 
 			if (!g_playerManager->CanTargetPlayers(player, args[1], iNumClients, pSlots, NO_MULTIPLE))
 				return;

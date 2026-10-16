@@ -21,7 +21,7 @@
 
 #include "playerslot.h"
 #include "steam/isteamugc.h"
-#include "utlvector.h"
+#include "tier0/utlvector.h"
 #include <string>
 
 class CServerSideClient;

@@ -18,7 +18,7 @@
  */
 
 #pragma once
-#include "convar.h"
+#include "tier0/convar.h"
 
 extern CConVar<float> g_cvarIdleKickTime;
 

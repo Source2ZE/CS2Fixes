@@ -26,8 +26,6 @@
 #include "entity/cgamerules.h"
 #include "entityclass.h"
 #include "entwatch.h"
-#include "gameconfig.h"
-#include "plat.h"
 
 CEntityListener* g_pEntityListener = nullptr;
 

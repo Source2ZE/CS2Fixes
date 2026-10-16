@@ -1,6 +1,5 @@
 #pragma once
 
-#include "gameconfig.h"
 #include "mempatch.h"
 
 extern CMemPatch g_CommonPatches[];

@@ -26,10 +26,9 @@
 #include "buttonwatch.h"
 #include "commands.h"
 #include "common.h"
-#include "ctimer.h"
 #include "customio.h"
-#include "cvarwhitelist.h"
 #include "detours.h"
+#include "engine2/serversideclient.h"
 #include "entities.h"
 #include "entity/cbasemodelentity.h"
 #include "entity/cbeam.h"
@@ -37,22 +36,20 @@
 #include "entity/ccsplayerpawn.h"
 #include "entity/ccsweaponbase.h"
 #include "entity/cenvhudhint.h"
+#include "entity/cgameplayerequip.h"
 #include "entity/cgamerules.h"
 #include "entity/cpointviewcontrol.h"
 #include "entity/ctakedamageinfo.h"
 #include "entity/ctriggerpush.h"
 #include "entity/services.h"
 #include "entwatch.h"
-#include "gameconfig.h"
 #include "igameevents.h"
 #include "irecipientfilter.h"
 #include "khook_helpers.h"
 #include "map_votes.h"
 #include "mapmigrations.h"
-#include "module.h"
-#include "networksystem/inetworkserializer.h"
 #include "playermanager.h"
-#include "serversideclient.h"
+#include "tier0/splitstring.h"
 #include "tier0/vprof.h"
 #include "votemanager.h"
 #include "zombiereborn.h"
@@ -69,8 +66,6 @@ KHOOK_MEMBER(CEntityIdentity_AcceptInput, Detour_CEntityIdentity_AcceptInput, nu
 KHOOK_MEMBER(CNavMesh_GetNearestNavArea, Detour_CNavMesh_GetNearestNavArea, nullptr);
 KHOOK_MEMBER(ProcessMovement, Detour_ProcessMovement, Detour_ProcessMovement_Post);
 KHOOK_MEMBER(ProcessUsercmds, Detour_ProcessUsercmds, nullptr);
-KHOOK_MEMBER(CGamePlayerEquip_InputTriggerForAllPlayers, Detour_CGamePlayerEquip_InputTriggerForAllPlayers, nullptr);
-KHOOK_MEMBER(CGamePlayerEquip_InputTriggerForActivatedPlayer, Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer, nullptr);
 KHOOK_MEMBER(CTriggerGravity_GravityTouch, Detour_CTriggerGravity_GravityTouch, nullptr);
 KHOOK_FUNCTION(GetFreeClient, Detour_GetFreeClient, nullptr);
 #ifdef __linux__
@@ -91,7 +86,6 @@ KHOOK_MEMBER(CBaseModelEntity_SetModel, Detour_CBaseModelEntity_SetModel, nullpt
 KHOOK_MEMBER(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission, nullptr);
 KHOOK_MEMBER(SetBeamOrigin, Detour_SetBeamOrigin, nullptr);
 KHOOK_MEMBER(SetBeamEndPos, Detour_SetBeamEndPos, nullptr);
-KHOOK_FUNCTION(IsCommandWhitelisted, Detour_IsCommandWhitelisted, nullptr);
 KHOOK_MEMBER(CWorldRendererMgr_CreateWorld_Internal, nullptr, Detour_CWorldRendererMgr_CreateWorld_Internal_Post);
 
 std::vector<CKHookBase*>& GetKHookList()
@@ -455,10 +449,12 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	// Handle KeyValue(s)
 	if (!V_strnicmp(pInputName->String(), "KeyValue", 8))
 	{
-		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
+		const char* pszValue = value->ToString();
+
+		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
 		{
 			// always const char*, even if it's FIELD_STRING (that is bug string from lua 'EntFire')
-			return {KHook::Action::Supersede, CustomIO_HandleInput(pThis->m_pInstance, value->m_pszString, pActivator, pCaller)};
+			return {KHook::Action::Supersede, CustomIO_HandleInput(pThis->m_pInstance, pszValue, pActivator, pCaller)};
 		}
 		Message("Invalid value type for input %s\n", pInputName->String());
 		return {KHook::Action::Supersede, false};
@@ -467,11 +463,12 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	if (!V_strnicmp(pInputName->String(), "IgniteL", 7)) // Override IgniteLifetime
 	{
 		float flDuration = 0.f;
+		const char* pszValue = value->ToString();
 
-		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
-			flDuration = V_StringToFloat32(value->m_pszString, 0.f);
+		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
+			flDuration = V_StringToFloat32(pszValue, 0.f);
 		else
-			flDuration = value->m_float32;
+			flDuration = value->Get<float>();
 
 		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
@@ -481,11 +478,12 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	else if (!V_strnicmp(pInputName->String(), "AddScore", 8))
 	{
 		int iScore = 0;
+		const char* pszValue = value->ToString();
 
-		if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
-			iScore = V_StringToInt32(value->m_pszString, 0);
+		if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
+			iScore = V_StringToInt32(pszValue, 0);
 		else
-			iScore = value->m_int32;
+			iScore = value->Get<int>();
 
 		CCSPlayerPawn* pPawn = reinterpret_cast<CCSPlayerPawn*>(pThis->m_pInstance);
 
@@ -499,8 +497,10 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	{
 		if (const auto pHudHint = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsHudHint())
 		{
-			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString)
-				pHudHint->m_iszMessage(GameEntitySystem()->AllocPooledString(value->m_pszString));
+			const char* pszValue = value->ToString();
+
+			if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue)
+				pHudHint->m_iszMessage(GameEntitySystem()->AllocPooledString(pszValue));
 			return {KHook::Action::Supersede, true};
 		}
 	}
@@ -508,8 +508,10 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 	{
 		if (const auto pModelEntity = reinterpret_cast<CBaseEntity*>(pThis->m_pInstance)->AsBaseModelEntity())
 		{
-			if ((value->m_type == FIELD_CSTRING || value->m_type == FIELD_STRING) && value->m_pszString && PrepareMapSetModel(pModelEntity))
-				pModelEntity->SetModel(value->m_pszString);
+			const char* pszValue = value->ToString();
+
+			if ((value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) && pszValue && *pszValue && PrepareMapSetModel(pModelEntity))
+				pModelEntity->SetModel(pszValue);
 
 			return {KHook::Action::Supersede, true};
 		}
@@ -531,6 +533,13 @@ KHook::Return<bool> Detour_CEntityIdentity_AcceptInput(CEntityIdentity* pThis, C
 			return {KHook::Action::Supersede, CPointViewControlHandler::OnEnableAll(pViewControl)};
 		if (!V_strcasecmp(pInputName->String(), "DisableCameraAll"))
 			return {KHook::Action::Supersede, CPointViewControlHandler::OnDisableAll(pViewControl)};
+	}
+	else if (const auto pGamePlayerEquip = reinterpret_cast<CGamePlayerEquip*>(pThis->m_pInstance)->AsGamePlayerEquip())
+	{
+		if (!V_strcasecmp(pInputName->String(), "TriggerForActivatedPlayer") && !CGamePlayerEquipHandler::TriggerForActivatedPlayer(pGamePlayerEquip, reinterpret_cast<CBaseEntity*>(pActivator), value))
+			return {KHook::Action::Supersede, true};
+		if (!V_strcasecmp(pInputName->String(), "TriggerForAllPlayers"))
+			CGamePlayerEquipHandler::TriggerForAllPlayers(pGamePlayerEquip);
 	}
 
 	if (g_pMapMigrations->Detour_CEntityIdentity_AcceptInput(pThis, pInputName, pActivator, pCaller, value))
@@ -661,19 +670,6 @@ KHook::Return<void*> Detour_ProcessUsercmds(CCSPlayerController* pController, CU
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
-{
-	CGamePlayerEquipHandler::TriggerForAllPlayers(pEntity, pInput);
-	return {KHook::Action::Ignore};
-}
-KHook::Return<void> Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
-{
-	if (CGamePlayerEquipHandler::TriggerForActivatedPlayer(pEntity, pInput))
-		return {KHook::Action::Ignore};
-
-	return {KHook::Action::Supersede};
-}
-
 KHook::Return<void> Detour_CTriggerGravity_GravityTouch(CTriggerGravity* pEntity, CBaseEntity* pOther)
 {
 	// no need to call original function here
@@ -696,13 +692,9 @@ KHook::Return<CServerSideClient*> Detour_GetFreeClient(int64_t unk1, const __m12
 		return {KHook::Action::Ignore};
 
 	// Phantom client fix
-	for (int i = 0; i < GetClientList()->Count(); i++)
-	{
-		CServerSideClient* pClient = (*GetClientList())[i];
-
+	for (CServerSideClient* pClient : *GetClientList())
 		if (pClient && pClient->GetSignonState() < SIGNONSTATE_CONNECTED)
 			return {KHook::Action::Supersede, pClient};
-	}
 
 	// Server is actually full for real
 	return {KHook::Action::Supersede, nullptr};
@@ -927,14 +919,6 @@ KHook::Return<void> Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecPositio
 	return {KHook::Action::Supersede};
 }
 
-KHook::Return<bool> Detour_IsCommandWhitelisted(void* pAddonManager, const char* pszCommandName)
-{
-	if (!g_cvarConVarWhitelistEnable.Get() || !g_pConvarWhitelist->IsConfigLoaded())
-		return {KHook::Action::Ignore};
-
-	return {KHook::Action::Supersede, g_pConvarWhitelist->IsWhitelisted(pszCommandName)};
-}
-
 KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Post(IWorldRendererMgr* pThis, CSingleWorldRep* singleWorld)
 {
 	// The world can fail to be created and the function will return nullptr.
@@ -944,9 +928,8 @@ KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Po
 	auto pWorld = singleWorld->m_pCWorld;
 	auto vecLumpData = (CUtlVector<void*>*)((uint8_t*)pWorld + 0x298);
 
-	FOR_EACH_VEC(*vecLumpData, i)
+	for (auto& lump : *vecLumpData)
 	{
-		auto& lump = (*vecLumpData)[i];
 		auto lumpData = *(LumpData**)lump;
 		auto vecEntityKeyValues = (CUtlVector<CEntityKeyValues*>*)((uint8_t*)lumpData + 0x1220);
 

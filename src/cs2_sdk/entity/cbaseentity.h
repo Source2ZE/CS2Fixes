@@ -28,12 +28,13 @@
 #include "globaltypes.h"
 #include "mathlib/vector.h"
 #include "schema.h"
-#include "tier1/utlstringtoken.h"
+#include "tier0/utlstringtoken.h"
 
 class CGameUI;
 class CEnvHudHint;
 class CPointViewControl;
 class CBasePlayerWeapon;
+class CGamePlayerEquip;
 
 class CGameSceneNode
 {
@@ -260,7 +261,7 @@ public:
 
 	void Remove()
 	{
-		addresses::UTIL_Remove(this);
+		(this->*addresses::UTIL_Remove)();
 	}
 
 	void SetMoveType(MoveType_t nMoveType)
@@ -328,6 +329,14 @@ public:
 	{
 		if (V_StringHasPrefixCaseSensitive(GetClassname(), "weapon_"))
 			return reinterpret_cast<CBasePlayerWeapon*>(this);
+		return nullptr;
+	}
+
+	[[nodiscard]] CGamePlayerEquip* AsGamePlayerEquip()
+	{
+		if (V_strcasecmp(GetClassname(), "game_player_equip") == 0)
+			return reinterpret_cast<CGamePlayerEquip*>(this);
+
 		return nullptr;
 	}
 

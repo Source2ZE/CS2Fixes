@@ -19,12 +19,10 @@
 
 #include "gamesystem.h"
 #include "addresses.h"
-#include "adminsystem.h"
 #include "common.h"
 #include "customio.h"
 #include "entities.h"
 #include "entity/cgamerules.h"
-#include "gameconfig.h"
 #include "idlemanager.h"
 #include "leader.h"
 #include "playermanager.h"
@@ -40,26 +38,13 @@ CGameSystemStaticCustomFactory<CGameSystem>* CGameSystem::sm_Factory = nullptr;
 // This mess is needed to get the pointer to sm_pFirst so we can insert game systems
 bool InitGameSystems()
 {
-	// This signature directly points to the instruction referencing sm_pFirst
-	uintptr_t pAddr = (uintptr_t)g_GameConfig->ResolveSignature("IGameSystem_InitAllSystems_pFirst");
+	CBaseGameSystemFactory::sm_pFirst = (CBaseGameSystemFactory**)addresses::ResolveRipRelative("IGameSystem_InitAllSystems_pFirst");
 
-	if (!pAddr)
+	if (!CBaseGameSystemFactory::sm_pFirst)
 	{
 		Panic("Failed to InitGameSystems, see warnings above.\n");
 		return false;
 	}
-
-	// the opcode is 3 bytes so we skip those
-	pAddr += 3;
-
-	// Grab the offset as 4 bytes
-	uint32 offset = *(uint32*)pAddr;
-
-	// Go to the next instruction, which is the starting point of the relative jump
-	pAddr += 4;
-
-	// Now grab our pointer
-	CBaseGameSystemFactory::sm_pFirst = (CBaseGameSystemFactory**)(pAddr + offset);
 
 	// And insert the game system(s)
 	CGameSystem::sm_Factory = new CGameSystemStaticCustomFactory<CGameSystem>("CS2Fixes_GameSystem", &g_GameSystem);
@@ -69,41 +54,22 @@ bool InitGameSystems()
 
 bool UnregisterGameSystem()
 {
-	// This signature directly points to the instruction referencing sm_pEventDispatcher
-	uintptr_t pAddr = (uintptr_t)g_GameConfig->ResolveSignature("IGameSystem_LoopPostInitAllSystems_pEventDispatcher");
+	CGameSystemEventDispatcher** ppDispatchers = (CGameSystemEventDispatcher**)addresses::ResolveRipRelative("IGameSystem_LoopPostInitAllSystems_pEventDispatcher");
 
-	if (!pAddr)
-	{
-		Panic("Failed to UnregisterGameSystem, see warnings above.\n");
-		return false;
-	}
-
-	// the opcode is 3 bytes so we skip those
-	pAddr += 3;
-
-	uint32 offset = *(uint32*)pAddr;
-
-	// Go to the next instruction, which is the starting point of the relative jump
-	pAddr += 4;
-
-	CGameSystemEventDispatcher** ppDispatchers = (CGameSystemEventDispatcher**)(pAddr + offset);
-
-	pAddr = (uintptr_t)g_GameConfig->ResolveSignature("IGameSystem_LoopDestroyAllSystems_s_GameSystems");
-
-	if (!pAddr)
+	if (!ppDispatchers)
 	{
 		Panic("Failed to UnregisterGameSystem, see warnings above.\n");
 		return false;
 	}
 
 	// Here the opcode is 2 bytes as it's moving a dword, not a qword, but that's the start of a vector object
-	pAddr += 2;
+	CUtlVector<AddedGameSystem_t>* pGameSystems = (CUtlVector<AddedGameSystem_t>*)addresses::ResolveRipRelative("IGameSystem_LoopDestroyAllSystems_s_GameSystems", 2);
 
-	offset = *(uint32*)pAddr;
-
-	pAddr += 4;
-
-	CUtlVector<AddedGameSystem_t>* pGameSystems = (CUtlVector<AddedGameSystem_t>*)(pAddr + offset);
+	if (!pGameSystems)
+	{
+		Panic("Failed to UnregisterGameSystem, see warnings above.\n");
+		return false;
+	}
 
 	auto* pDispatcher = *ppDispatchers;
 
@@ -201,13 +167,11 @@ GS_EVENT_MEMBER(CGameSystem, PostSpawnGroupLoad)
 
 	// Ensure clients have no leaked spawngroups every time a new one loads
 	// Due to a timing problem for leaked spawngroups with this callback, clients may have one lingering, this is fine since it'll still be taken care of next time a spawngroup loads
-	FOR_EACH_VEC(*pClients, i)
+	for (auto pClient : *pClients)
 	{
-		auto pClient = (*pClients)[i];
-
-		if (!pClient || pClient->m_vecLoadedSpawnGroups.Count() == vecActualSpawnGroups.Count())
+		if (!pClient || pClient->m_LoadedSpawnGroups.Count() == vecActualSpawnGroups.Count())
 			continue;
 
-		pClient->m_vecLoadedSpawnGroups = vecActualSpawnGroups;
+		pClient->m_LoadedSpawnGroups = vecActualSpawnGroups;
 	}
 }

@@ -21,7 +21,7 @@
 #include "cs2_sdk/entityio.h"
 #include "khook.hpp"
 #include "map.h"
-#include <utlsymbollarge.h>
+#include <tier0/utlsymboltablelarge.h>
 
 class CCheckTransmitInfo;
 class IRecipientFilter;
@@ -45,8 +45,6 @@ class CServerSideClient;
 class INetChannel;
 class CBasePlayerPawn;
 class CUserCmd;
-class CGamePlayerEquip;
-class InputData_t;
 class CCSPlayerPawn;
 class CCSPlayer_UseServices;
 class CTraceFilter;
@@ -57,6 +55,8 @@ class QAngle;
 class CEconItemView;
 class CCSGameRules;
 class CBeam;
+class IWorldRendererMgr;
+struct CPulseArgumentPack;
 struct CTakeDamageResult;
 
 enum class AcquireMethod
@@ -92,8 +92,6 @@ KHook::Return<void*> Detour_CNavMesh_GetNearestNavArea(CNavMesh* pNavMesh, float
 KHook::Return<void> Detour_ProcessMovement(CCSPlayer_MovementServices* pThis, void* pMove);
 KHook::Return<void> Detour_ProcessMovement_Post(CCSPlayer_MovementServices* pThis, void* pMove);
 KHook::Return<void*> Detour_ProcessUsercmds(CCSPlayerController* pController, CUserCmd* cmds, int numcmds, bool paused, float margin);
-KHook::Return<void> Detour_CGamePlayerEquip_InputTriggerForAllPlayers(CGamePlayerEquip*, InputData_t*);
-KHook::Return<void> Detour_CGamePlayerEquip_InputTriggerForActivatedPlayer(CGamePlayerEquip*, InputData_t*);
 KHook::Return<void> Detour_CTriggerGravity_GravityTouch(CTriggerGravity* pEntity, CBaseEntity* pOther);
 KHook::Return<CServerSideClient*> Detour_GetFreeClient(int64_t unk1, const __m128i* unk2, unsigned int unk3, int64_t unk4, char unk5, void* unk6);
 KHook::Return<float> Detour_CCSPlayerPawn_GetMaxSpeed(CCSPlayerPawn*);
@@ -118,5 +116,4 @@ KHook::Return<void> Detour_CBaseModelEntity_SetModel(CBaseModelEntity* pModel, c
 KHook::Return<void> Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bool bAbortedMatch);
 KHook::Return<void> Detour_SetBeamOrigin(CBeam* pThis, const Vector* pVecWorldPosition);
 KHook::Return<void> Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecWorldPosition);
-KHook::Return<bool> Detour_IsCommandWhitelisted(void* pAddonManager, const char* pszCommandName);
 KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Post(IWorldRendererMgr* pThis, CSingleWorldRep* pSingleWorld);

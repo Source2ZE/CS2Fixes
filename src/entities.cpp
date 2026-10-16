@@ -21,7 +21,6 @@
 #include "ctimer.h"
 #include "entity.h"
 
-#include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cgameplayerequip.h"
@@ -67,9 +66,9 @@ static void StripPlayer(CCSPlayerPawn* pPawn, const std::unordered_set<uint32_t>
 	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponService->m_hMyWeapons();
 	std::vector<CBasePlayerWeapon*> vecWeaponsToRemove;
 
-	FOR_EACH_VEC(*weapons, i)
+	for (const auto& hWeapon : *weapons)
 	{
-		CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+		CBasePlayerWeapon* weapon = hWeapon.Get();
 
 		if (!weapon)
 			continue;
@@ -190,7 +189,7 @@ namespace CGamePlayerEquipHandler
 		}
 	}
 
-	void TriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
+	void TriggerForAllPlayers(CGamePlayerEquip* pEntity)
 	{
 		const auto flags = pEntity->m_spawnflags();
 
@@ -214,15 +213,14 @@ namespace CGamePlayerEquipHandler
 		}
 	}
 
-	bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
+	bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, CBaseEntity* pActivator, variant_t* value)
 	{
-		const auto pCaller = pInput->pActivator;
-		const auto pszWeapon = ((pInput->value.m_type == FIELD_CSTRING || pInput->value.m_type == FIELD_STRING) && pInput->value.m_pszString) ? pInput->value.m_pszString : nullptr;
+		const auto pszWeapon = (value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) ? value->ToString() : nullptr;
 
-		if (!pCaller || !pCaller->IsPawn())
+		if (!pActivator || !pActivator->IsPawn())
 			return true;
 
-		const auto pPawn = reinterpret_cast<CCSPlayerPawn*>(pCaller);
+		const auto pPawn = reinterpret_cast<CCSPlayerPawn*>(pActivator);
 		const auto flags = pEntity->m_spawnflags();
 
 		if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_STRIPFIRST)
@@ -242,7 +240,7 @@ namespace CGamePlayerEquipHandler
 		if (!pItemServices)
 			return true;
 
-		if (pszWeapon && V_strcmp(pszWeapon, "(null)"))
+		if (pszWeapon && *pszWeapon && V_strcmp(pszWeapon, "(null)"))
 		{
 			pItemServices->GiveNamedItemAws(pszWeapon);
 			// Don't execute game function (we fixed string param)

@@ -49,7 +49,7 @@ public:
 	{
 		m_Recipients.ClearAll();
 
-		for (int i = 0; i < MAXPLAYERS; i++)
+		for (int i = 0; i < MAX_PLAYERS; i++)
 		{
 			if (!g_playerManager->GetPlayer(i))
 				continue;

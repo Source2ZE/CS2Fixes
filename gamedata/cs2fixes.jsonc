@@ -229,18 +229,6 @@
 			"windows": "48 8B C4 44 88 48 20 44 89 40 18 48 89 50 10 53",
 			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 83 EC ? 89 4D"
 		},
-		"CGamePlayerEquip_InputTriggerForAllPlayers":
-		{
-			"library": "server",
-			"windows": "48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8B EC 48 83 EC ? 4C 8B F1",
-			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC 53 48 83 EC ? E8 ? ? ? ? C7 45 ? ? ? ? ? 89 C7 66 89 45 ? 66 83 F8 ? 75 ? 48 C7 45 ? ? ? ? ? 66 83 FF ? 0F 84 ? ? ? ? 0F B7 7D ? E8 ? ? ? ? 66 89 45 ? 66 83 F8 ? 0F 84 ? ? ? ? 89 C7 E8 ? ? ? ? 0F B7 7D ? 48 89 C3 48 85 C0 74 ? 48 89 C7 E8 ? ? ? ? 48 8D 7D ? 48 89 C6 E8 ? ? ? ? 0F B7 7D ? 84 C0 0F 85 ? ? ? ? EB ? 66 0F 1F 44 00 ? E8 ? ? ? ? 48 89 C3 48 85 C0 0F 84 ? ? ? ? 48 89 C7 E8 ? ? ? ? 48 8D 7D ? 48 89 C6 E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 0F B7 7D ? 48 89 5D ? 66 83 FF"
-		},
-		"CGamePlayerEquip_InputTriggerForActivatedPlayer":
-		{
-			"library": "server",
-			"windows": "48 89 5C 24 ? 56 48 83 EC ? 48 8B 1A",
-			"linux": "55 48 89 E5 41 56 41 55 41 54 53 48 8B 1E 48 85 DB 74"
-		},
 		// Return value of this function is used to determine whether "NETWORK_DISCONNECT_REJECT_SERVERFULL to %s: Cannot get free client\n" gets printed
 		"GetFreeClient":
 		{
@@ -300,7 +288,7 @@
 		"CCSGameRules__sm_mapGcBanInformation":
 		{
 			"library": "server",
-			"windows": "48 8D 0D ? ? ? ? 0F 11 44 24 ? 0F 11 44 24 ? E8",
+			"windows": "48 8D 0D ? ? ? ? 45 33 C0 4C 89 74 24 ? 0F 11 44 24",
 			"linux": "48 8D 35 ? ? ? ? 89 C2 48 63 46"
 		},
 		// Called right before "%d spawn groups:\n"
@@ -359,12 +347,12 @@
 			"windows": "48 8B C4 48 89 58 ? 57 48 81 EC ? ? ? ? 0F 29 70 ? 48 8B FA 0F 29 78 ? 48 8B D9",
 			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 66 0F 1F 44 00"
 		},
-		// Only called in an if statement by function with "DISALLOWED WORKSHOP CONVAR: %s" string
-		"IsCommandWhitelisted":
+		// CUtlSymbolTable filled from "whitelist_cvars", passed to CUtlSymbolTable::Find in function with "DISALLOWED WORKSHOP CONVAR: %s" string
+		"CCSAddonManager__CommandWhitelist":
 		{
 			"library": "server",
-			"windows": "48 83 EC ? 4C 8B C2 48 8D 0D ? ? ? ? 48 8D 54 24 ? FF",
-			"linux": "55 48 89 F2 48 8D 35 ? ? ? ? 48 89 E5 48 83 EC"
+			"windows": "48 8D 0D ? ? ? ? FF 15 ? ? ? ? B9 ? ? ? ? 66 39 08 0F 85",
+			"linux": "48 8D 35 ? ? ? ? 48 89 DF E8 ? ? ? ? 66 83 BD"
 		},
 		// "CWorldRendererMgr::CreateWorld_Internal( %s ):  Blocking load because marked for deletion during load"
 		"CWorldRendererMgr_CreateWorld_Internal":
@@ -440,11 +428,6 @@
 		{
 			"windows": 387,
 			"linux": 387
-		},
-		"GameEntitySystem":
-		{
-			"windows": 88,
-			"linux": 80
 		},
 		// In the function with "[%03d] Found: %s, firing\n", you'll find a call into a pointer offset just a bit higher, that's the offset * 8
 		"CGameRules_FindPickerEntity":

@@ -18,7 +18,7 @@
  */
 
 #include "common.h"
-#include "icvar.h"
+#include "tier0/icvar.h"
 
 #include "tier0/memdbgon.h"
 
