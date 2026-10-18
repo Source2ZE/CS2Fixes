@@ -32,7 +32,7 @@
 #include <cmath>
 #include <cstdlib>
 
-CConVar<int> g_cvarEntwatchHudStyle("entwatch_hud_style", FCVAR_NONE, "Default HUD renderer: 0 = world text, 1 = Panorama", 1, true, 0, true, 1);
+CConVar<int> g_cvarEntwatchHudStyle("entwatch_hud_style", FCVAR_NONE, "Default HUD renderer: 0 = world text, 1 = Panorama", 0, true, 0, true, 1);
 CConVar<bool> g_cvarEntwatchPanoramaDebug("cs2f_entwatch_panorama_debug", FCVAR_NONE, "Log EntWatch HUD creation and Panorama resource diagnostics", false);
 
 namespace
