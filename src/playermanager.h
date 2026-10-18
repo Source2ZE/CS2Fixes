@@ -25,6 +25,7 @@
 #include "entity/cpointworldtext.h"
 #include "entity/customplayercamera.h"
 #include "entity/lights.h"
+#include "entwatch_hud.h"
 #include "gamesystem.h"
 #include "in_buttons.h"
 #include "steam/isteamuser.h"
@@ -198,6 +199,10 @@ public:
 		m_pActiveZRModel = nullptr;
 		m_iButtonWatchMode = 0;
 		m_iEntwatchHudMode = 0;
+		m_iEntwatchHudStyle = -1;
+		m_iEntwatchPanoramaX = EW_PANORAMA_X_DEFAULT;
+		m_iEntwatchPanoramaY = EW_PANORAMA_Y_DEFAULT;
+		m_iEntwatchPanoramaSize = EW_PANORAMA_SIZE_DEFAULT;
 		m_colorEntwatchHud = Color(255, 255, 255, 255);
 		m_flEntwatchHudX = -7.5f;
 		m_flEntwatchHudY = -2.0f;
@@ -271,10 +276,18 @@ public:
 	void SetActiveZRClass(std::shared_ptr<ZRClass> pZRModel) { m_pActiveZRClass = pZRModel; }
 	void SetActiveZRModel(std::shared_ptr<ZRModelEntry> pZRClass) { m_pActiveZRModel = pZRClass; }
 	void SetEntwatchHudMode(int iMode);
+	void SetEntwatchHudStyle(int style, bool bSave = true);
+	int GetEntwatchHudStyle();
+	void CreateEntwatchWorldHud();
 	void SetPointOrient(CPointOrient* pOrient) { m_hPointOrient.Set(pOrient); }
 	void SetEntwatchHud(CPointWorldText* pWorldText) { m_hEntwatchHud.Set(pWorldText); }
 	void SetEntwatchHudColor(Color colorHud);
 	void SetEntwatchHudPos(float x, float y);
+	void SetEntwatchPanoramaHudPos(int x, int y, bool bSave = true);
+	int GetEntwatchPanoramaHudX() const { return m_iEntwatchPanoramaX; }
+	int GetEntwatchPanoramaHudY() const { return m_iEntwatchPanoramaY; }
+	void SetEntwatchPanoramaHudSize(int size, bool bSave = true);
+	int GetEntwatchPanoramaHudSize() const { return m_iEntwatchPanoramaSize; }
 	void SetEntwatchHudSize(float flSize);
 	void SetTopDefenderStatus(bool bStatus) { m_bTopDefender = bStatus; }
 	void SetLastVoiceTime(float flTime) { m_flLastVoiceTime = flTime; }
@@ -409,6 +422,10 @@ private:
 	CHandle<CPointWorldText> m_hEntwatchHud;
 	CHandle<CCSCustomPlayerCamera> m_hCustomCamera;
 	int m_iEntwatchHudMode;
+	int m_iEntwatchHudStyle;
+	int m_iEntwatchPanoramaX;
+	int m_iEntwatchPanoramaY;
+	int m_iEntwatchPanoramaSize;
 	Color m_colorEntwatchHud;
 	float m_flEntwatchHudX;
 	float m_flEntwatchHudY;

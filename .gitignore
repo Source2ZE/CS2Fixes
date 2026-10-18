@@ -17,3 +17,5 @@ bld/
 .vscode
 /dockerbuild
 .idea/*
+
+__pycache__/

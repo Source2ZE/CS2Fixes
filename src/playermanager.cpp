@@ -25,6 +25,7 @@
 #include "engine/igameeventsystem.h"
 #include "entity/ccsplayercontroller.h"
 #include "entwatch.h"
+#include "entwatch_hud.h"
 #include "leader.h"
 #include "map_votes.h"
 #include "networksystem/inetworkmessages.h"
@@ -38,6 +39,7 @@
 #include "votemanager.h"
 #include "zombiereborn.h"
 #include <../cs2fixes.h>
+#include <cmath>
 
 #include "tier0/memdbgon.h"
 
@@ -740,73 +742,29 @@ void ZEPlayer::ToggleThirdPerson(float flDistance, bool bForce)
 
 void ZEPlayer::CreateEntwatchHud()
 {
-	CCSPlayerController* pController = CCSPlayerController::FromSlot(GetPlayerSlot());
-	if (!pController)
-		return;
-
-	CCSPlayerPawn* pPawn = pController->GetPlayerPawn();
-	if (!pPawn)
-		return;
-
-	CPointOrient* pOrient = GetPointOrient();
-	if (!pOrient)
-		return;
-
-	CPointWorldText* pText = GetEntwatchHud();
-	if (pText)
-	{
-		pText->Remove();
-		pText = nullptr;
-	}
-
-	pText = CreateEntityByName<CPointWorldText>("point_worldtext");
-	pText->m_bEnabled(true);
-	pText->m_bFullbright(true);
-	pText->m_flFontSize(GetEntwatchHudSize());
-
-	Color col;
-	int a = m_colorEntwatchHud.a();
-	if (a == 255) // 254 allows it to be visible through some items
-		col.SetColor(m_colorEntwatchHud.r(), m_colorEntwatchHud.g(), m_colorEntwatchHud.b(), 254);
+	if (GetEntwatchHudStyle() == 0)
+		CreateEntwatchWorldHud();
 	else
-		col.SetColor(m_colorEntwatchHud.r(), m_colorEntwatchHud.g(), m_colorEntwatchHud.b(), a);
+	{
+		if (auto text = GetEntwatchHud())
+		{
+			text->Remove();
+			SetEntwatchHud(nullptr);
+		}
+	}
+}
 
-	pText->m_Color = col;
+int ZEPlayer::GetEntwatchHudStyle()
+{
+	return m_iEntwatchHudStyle < 0 ? EW_DefaultHudStyle() : m_iEntwatchHudStyle;
+}
 
-	pText->m_flWorldUnitsPerPx(0.005f);
-	pText->m_nJustifyVertical(PointWorldTextJustifyVertical_t::POINT_WORLD_TEXT_JUSTIFY_VERTICAL_TOP);
-
-	V_strncpy(pText->m_FontName, "Verdana Bold", 64);
-
-	pText->SetMessage("");
-
-	pText->DispatchSpawn();
-	SetEntwatchHud(pText);
-
-	pText->AcceptInput("SetParent", "!activator", pOrient);
-
-	Vector origin = pOrient->GetAbsOrigin();
-	QAngle vmangles = pOrient->GetAbsRotation();
-
-	Vector forward;
-	Vector right;
-	Vector up;
-	AngleVectors(vmangles, &forward, &right, &up);
-
-	origin += (forward * 7.0f);
-
-	// -x = move left,  +x = move right
-	origin += (right * GetEntwatchHudX());
-
-	// -y = move up,   +y = move down
-	origin -= (up * GetEntwatchHudY());
-
-	QAngle angles;
-	angles.x = 0.0f;
-	angles.y = AngleNormalize(vmangles.y - 90.0f);
-	angles.z = AngleNormalize(-vmangles.x + 90.0f);
-
-	pText->Teleport(&origin, &angles, nullptr);
+void ZEPlayer::SetEntwatchHudStyle(int style, bool bSave)
+{
+	m_iEntwatchHudStyle = style >= -1 && style <= 1 ? style : -1;
+	if (bSave)
+		g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_HUD_STYLE, m_iEntwatchHudStyle);
+	CreateEntwatchHud();
 }
 
 int ZEPlayer::GetEntwatchHudMode()
@@ -818,7 +776,7 @@ int ZEPlayer::GetEntwatchHudMode()
 
 void ZEPlayer::SetEntwatchHudMode(int iMode)
 {
-	m_iEntwatchHudMode = iMode;
+	m_iEntwatchHudMode = iMode >= Hud_None && iMode <= Hud_ItemOnly ? iMode : Hud_None;
 	g_pUserPreferencesSystem->SetPreferenceInt(m_slot.Get(), EW_PREF_HUD_MODE, m_iEntwatchHudMode);
 }
 
@@ -842,8 +800,8 @@ void ZEPlayer::SetEntwatchHudColor(Color colorHud)
 
 void ZEPlayer::SetEntwatchHudPos(float x, float y)
 {
-	m_flEntwatchHudX = x;
-	m_flEntwatchHudY = y;
+	m_flEntwatchHudX = std::isfinite(x) && std::abs(x) <= 1000.0f ? x : EW_HUDPOS_X_DEFAULT;
+	m_flEntwatchHudY = std::isfinite(y) && std::abs(y) <= 1000.0f ? y : EW_HUDPOS_Y_DEFAULT;
 	g_pUserPreferencesSystem->SetPreferenceFloat(m_slot.Get(), EW_PREF_HUDPOS_X, m_flEntwatchHudX);
 	g_pUserPreferencesSystem->SetPreferenceFloat(m_slot.Get(), EW_PREF_HUDPOS_Y, m_flEntwatchHudY);
 
@@ -852,7 +810,7 @@ void ZEPlayer::SetEntwatchHudPos(float x, float y)
 
 void ZEPlayer::SetEntwatchHudSize(float flSize)
 {
-	m_flEntwatchHudSize = flSize;
+	m_flEntwatchHudSize = std::isfinite(flSize) ? std::clamp(flSize, 20.0f, 255.0f) : EW_HUDSIZE_DEFAULT;
 	g_pUserPreferencesSystem->SetPreferenceFloat(m_slot.Get(), EW_PREF_HUDSIZE, m_flEntwatchHudSize);
 
 	CPointWorldText* pText = GetEntwatchHud();
@@ -916,6 +874,7 @@ void CPlayerManager::OnClientDisconnect(CPlayerSlot slot)
 
 	g_pUserPreferencesSystem->PushPreferences(slot.Get());
 	g_pUserPreferencesSystem->ClearPreferences(slot.Get());
+	EW_ForgetHudPlayer(slot.Get());
 
 	if (g_cvarEnableEntWatch.Get())
 		EW_PlayerDisconnect(slot.Get());

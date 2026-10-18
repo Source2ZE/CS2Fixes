@@ -1,0 +1,9 @@
+<root>
+  <styles><include src="file://{resources}/styles/entwatch/hud.css" /></styles>
+  <Panel class="Root" hittest="false">
+    <Panel id="entwatch" class="EntWatch Hidden" hittest="false">
+      <!-- @generate: items -->
+      <Label id="overflow" class="Overflow Hidden" text="+{s:count} more items" hittest="false" />
+    </Panel>
+  </Panel>
+</root>
