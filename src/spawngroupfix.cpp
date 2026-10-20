@@ -23,7 +23,7 @@
 // owner gains one manifest per ForceSpawn and every later ForceSpawn gets slower (measured 0.53 ms
 // -> 1.47 ms per call after 65k calls, nothing left alive).
 //
-// With cs2f_spawngroup_release_manifests enabled, the manifests a merge hands to the owner are
+// With cs2f_fix_forcespawn_slowdown enabled, the manifests a merge hands to the owner are
 // destroyed right away, the same way the spawn group destructor destroys them. ForceSpawn cost then
 // stays flat (0.49 ms per call after 141k calls). Resources that are only referenced by those
 // manifests may be unloaded, so this is opt-in.
@@ -39,7 +39,7 @@
 
 #include "tier0/memdbgon.h"
 
-CConVar<bool> g_cvarSpawnGroupReleaseManifests("cs2f_spawngroup_release_manifests", FCVAR_NONE, "Whether to destroy the resource manifests a point_template ForceSpawn hands to the map spawn group, stops ForceSpawn getting slower over the map, experimental", false);
+CConVar<bool> g_cvarFixForceSpawnSlowdown("cs2f_fix_forcespawn_slowdown", FCVAR_NONE, "Whether to fix point_template ForceSpawn getting slower over the course of a map by releasing the resource manifests each spawn leaves on the map spawn group, experimental", false);
 
 namespace
 {
@@ -85,7 +85,7 @@ namespace
 	{
 		int nCount = -1;
 
-		if (pChild && pOwner && !g_bDisabled && g_cvarSpawnGroupReleaseManifests.Get())
+		if (pChild && pOwner && !g_bDisabled && g_cvarFixForceSpawnSlowdown.Get())
 		{
 			ManifestVector* pManifests = GetManifests(pOwner);
 
@@ -155,7 +155,7 @@ namespace
 
 			if (g_iManifestsOffset < 0 || g_iResourceServiceOffset < 0 || g_iDestroyManifestIndex < 0)
 			{
-				Warning("[SpawnGroup] Missing spawn group offsets, cs2f_spawngroup_release_manifests is unavailable\n");
+				Warning("[SpawnGroup] Missing spawn group offsets, cs2f_fix_forcespawn_slowdown is unavailable\n");
 				return;
 			}
 
@@ -163,7 +163,7 @@ namespace
 
 			if (!address)
 			{
-				Warning("[SpawnGroup] Failed to find CBaseSpawnGroup_MergeIntoOwner, cs2f_spawngroup_release_manifests is unavailable\n");
+				Warning("[SpawnGroup] Failed to find CBaseSpawnGroup_MergeIntoOwner, cs2f_fix_forcespawn_slowdown is unavailable\n");
 				return;
 			}
 
