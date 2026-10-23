@@ -229,6 +229,13 @@
 			"windows": "48 8B C4 44 88 48 20 44 89 40 18 48 89 50 10 53",
 			"linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 83 EC ? 89 4D"
 		},
+		// CBaseSpawnGroup vfunc that merges a spawn group into its owner, the function with "%s: Transfering creation sequence %d to owner spawn group %s"
+		"CBaseSpawnGroup_MergeIntoOwner":
+		{
+			"library": "engine",
+			"windows": "48 89 5C 24 18 55 56 57 41 54 41 55 41 56 41 57 48 83 EC 30 33 ED 4C 8B F2 89 6C 24 70 4C 8B F9 F6 81 68 02 00 00 01",
+			"linux": "55 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 53 48 89 F3 48 83 EC ? F6 87 68 02 00 00 01"
+		},
 		// Return value of this function is used to determine whether "NETWORK_DISCONNECT_REJECT_SERVERFULL to %s: Cannot get free client\n" gets printed
 		"GetFreeClient":
 		{
@@ -447,6 +454,23 @@
 		{
 			"windows": 37,
 			"linux": 38
+		},
+		// Byte offset of the resource manifest CUtlVector, the first vector CBaseSpawnGroup_MergeIntoOwner appends from the child to the owner
+		"CBaseSpawnGroup_ResourceManifests":
+		{
+			"windows": 552,
+			"linux": 552
+		},
+		// Byte offset of the IGameResourceService pointer, the CBaseSpawnGroup destructor calls IGameResourceService_DestroyManifest on it for each resource manifest
+		"CBaseSpawnGroup_ResourceService":
+		{
+			"windows": 544,
+			"linux": 544
+		},
+		"IGameResourceService_DestroyManifest":
+		{
+			"windows": 31,
+			"linux": 31
 		},
 		// There's no easy way to find this, but it's a function that checks entity flags (0x370) and ends by calling RemoveFlag with 0x800000 (FL_BASEVELOCITY)
 		"CCSPlayer_MovementServices::CheckMovingGround":
