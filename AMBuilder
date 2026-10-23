@@ -13,20 +13,12 @@ for sdk_target in MMSPlugin.sdk_targets:
     os.path.join(builder.sourcePath, 'src', 'cs2_sdk'),
     os.path.join(builder.sourcePath, 'src', 'utils'),
     os.path.join(builder.sourcePath, 'public'),
-    os.path.join(builder.sourcePath, 'sdk', 'thirdparty', 'protobuf-3.21.8', 'src'),
   ]
 
   if binary.compiler.target.platform == 'linux':
-    binary.compiler.postlink += [
-      os.path.join(builder.sourcePath, 'sdk', 'lib', 'linux64', 'release', 'libprotobuf.a'),
-    ]
     binary.sources += ['src/utils/plat_unix.cpp']
   elif binary.compiler.target.platform == 'windows':
-    binary.compiler.postlink += [
-      os.path.join('psapi.lib'),
-      os.path.join(builder.sourcePath, 'sdk', 'lib' ,'public', 'win64', '2015', 'libprotobuf.lib'),
-      os.path.join(builder.sourcePath, 'sdk', 'lib', 'public', 'win64', 'steam_api64.lib')
-    ]
+    binary.compiler.postlink += ['psapi.lib']
     binary.sources += ['src/utils/plat_win.cpp']
 
   binary.sources += [

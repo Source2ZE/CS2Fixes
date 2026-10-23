@@ -226,14 +226,14 @@ public:                                                                         
 	static ThisClass* Create()                                                                            \
 	{                                                                                                     \
 		static auto pClassInfo = schema::GetSchemaClassInfo(m_className);                                 \
-		static auto pfnManipulator = pClassInfo->m_pfnManipulator;                                        \
+		static auto pfnManipulator = pClassInfo->m_pClassOpsFn;                                           \
 		ThisClass* pThis = (ThisClass*)pfnManipulator(SCHEMA_CLASS_MANIPULATOR_ACTION_ALLOCATE, nullptr); \
 		return pThis;                                                                                     \
 	}                                                                                                     \
 	void Construct()                                                                                      \
 	{                                                                                                     \
 		static auto pClassInfo = schema::GetSchemaClassInfo(m_className);                                 \
-		static auto pfnManipulator = pClassInfo->m_pfnManipulator;                                        \
+		static auto pfnManipulator = pClassInfo->m_pClassOpsFn;                                           \
 		pfnManipulator(SCHEMA_CLASS_MANIPULATOR_ACTION_CONSTRUCT_IN_PLACE, this);                         \
 	}
 
