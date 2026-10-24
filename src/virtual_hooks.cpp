@@ -32,6 +32,7 @@
 #include "engine2/serversideclient.h"
 #include "entities.h"
 #include "entity/ccsplayercontroller.h"
+#include "entity/cgameplayerequip.h"
 #include "entity/customhudlayout.h"
 #include "entity/services.h"
 #include "entitylistener.h"
@@ -85,7 +86,7 @@ KHook::Virtual<CVPhys2World, void, CUtlVector<TouchLinked_t>*, bool> getTouching
 KHook::Virtual<CCSPlayer_MovementServices, void, double> checkMovingGroundHook(0U, Hook_CheckMovingGround, nullptr);
 KHook::Virtual<CCSPlayer_WeaponServices, void, CBasePlayerWeapon*, Vector*, Vector*> dropWeaponHook(0U, nullptr, Hook_DropWeapon_Post);
 KHook::Virtual<CGamePlayerEquip, void, InputData_t*> playerEquipUseHook(0U, Hook_PlayerEquipUse, nullptr);
-KHook::Virtual<CGamePlayerEquip, void, CEntityPrecacheContext*> playerEquipPrecacheHook(0U, nullptr, Hook_PlayerEquipPrecache_Post);
+KHook::Virtual<CGamePlayerEquip, void, CEntityPrecacheContext*> playerEquipPrecacheHook(0U, Hook_PlayerEquipPrecache, nullptr);
 KHook::Virtual<CTriggerGravity, void, CEntityPrecacheContext*> triggerGravityPrecacheHook(0U, nullptr, Hook_TriggerGravityPrecache_Post);
 KHook::Virtual<CTriggerGravity, void, CBaseEntity*> triggerGravityEndTouchHook(0U, nullptr, Hook_TriggerGravityEndTouch_Post);
 KHook::Virtual<CCSPlayerPawn, bool, CTakeDamageResult*> onTakeDamageAliveHook(0U, Hook_OnTakeDamage_Alive, nullptr);
@@ -883,12 +884,16 @@ KHook::Return<void> Hook_PlayerEquipUse(CGamePlayerEquip* pThis, InputData_t* pI
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> Hook_PlayerEquipPrecache_Post(CGamePlayerEquip* pThis, CEntityPrecacheContext* param)
+KHook::Return<void> Hook_PlayerEquipPrecache(CGamePlayerEquip* pThis, CEntityPrecacheContext* param)
 {
-	const auto kv = param->m_pKeyValues;
-	CGamePlayerEquipHandler::OnPrecache(pThis, kv);
+	CEntityKeyValues filteredKV;
 
-	return {KHook::Action::Ignore};
+	if (!CGamePlayerEquipHandler::OnPrecache(pThis, param->m_pKeyValues, &filteredKV))
+		return {KHook::Action::Ignore};
+
+	CEntityPrecacheContext context = *param;
+	context.m_pKeyValues = &filteredKV;
+	return KHook::Recall<void (CGamePlayerEquip::*)(CEntityPrecacheContext*)>(nullptr, {KHook::Action::Ignore}, pThis, &context);
 }
 
 KHook::Return<void> Hook_TriggerGravityPrecache_Post(CTriggerGravity* pThis, CEntityPrecacheContext* param)

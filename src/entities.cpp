@@ -250,20 +250,29 @@ namespace CGamePlayerEquipHandler
 		return true;
 	}
 
-	void OnPrecache(CGamePlayerEquip* pEntity, const CEntityKeyValues* kv)
+	// Returns true if item_* classes were left out of pFilteredKV
+	bool OnPrecache(CGamePlayerEquip* pEntity, const CEntityKeyValues* kv, CEntityKeyValues* pFilteredKV)
 	{
 		const auto pHammerId = kv->GetKeyValue("hammerUniqueId");
-		if (!pHammerId)
-			return;
-
 		auto list = std::unordered_set<uint32_t>();
+		bool bFiltered = false;
 
 		for (auto i = 0; i < CGamePlayerEquip::MAX_EQUIPMENTS_SIZE; i++)
 		{
 			char key[32];
 			snprintf(key, sizeof(key), "weapon%d", i);
 			const auto val = kv->GetString(key);
-			if (val && strlen(val) > 1)
+
+			if (!val || !*val)
+				continue;
+
+			// Precaching item_* classes crashes since the 2026-10-22 CS2 update
+			if (!V_strnicmp(val, "item_", 5))
+				bFiltered = true;
+			else
+				pFilteredKV->SetString(key, val);
+
+			if (strlen(val) > 1)
 			{
 				const auto slot = CCSPlayer_ItemServices::GetItemGearSlot(val);
 				if (slot != GEAR_SLOT_INVALID && slot != GEAR_SLOT_UTILITY)
@@ -271,11 +280,13 @@ namespace CGamePlayerEquipHandler
 			}
 		}
 
-		if (!list.empty())
+		if (pHammerId && !list.empty())
 		{
 			const auto hEntity = MurmurHash2LowerCase(pHammerId->GetString(), ENTITY_MURMURHASH_SEED);
 			s_PlayerEquipMap[hEntity] = list;
 		}
+
+		return bFiltered;
 	}
 
 	static void Shutdown()
