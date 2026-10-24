@@ -62,8 +62,7 @@ IGameEventSystem* g_gameEventSystem = nullptr;
 IGameEventManager2* g_gameEventManager = nullptr;
 CGameEntitySystem* g_pEntitySystem = nullptr;
 IVEngineServer2* g_pEngineServer2 = nullptr;
-CCSGameRules* g_pGameRules = nullptr;				  // Will be null between map end & new map startup, null check if necessary!
-CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr = nullptr; // Will be null between map end & new map startup, null check if necessary!
+CCSGameRules* g_pGameRules = nullptr; // Will be null between map end & new map startup, null check if necessary!
 
 double g_flUniversalTime = 0.0;
 float g_flLastTickedTime = 0.0f;

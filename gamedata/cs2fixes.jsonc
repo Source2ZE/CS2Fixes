@@ -291,13 +291,6 @@
 			"windows": "48 8D 0D ? ? ? ? 45 33 C0 4C 89 74 24 ? 0F 11 44 24",
 			"linux": "48 8D 35 ? ? ? ? 89 C2 48 63 46"
 		},
-		// Called right before "%d spawn groups:\n"
-		"GetSpawnGroups":
-		{
-			"library": "server",
-			"windows": "40 56 48 83 EC ? 48 89 5C 24 ? 48 8D B1",
-			"linux": "55 49 89 F1 BE ? ? ? ? 48 89 E5 41 57 41 56 4C 8D BF"
-		},
 		// Only has "weapon_incgrenade" and "weapon_incgrenade" strings
 		// May need to look into custom way of acquiring this function address, normal sig sees frequent breakage in the CS# project
 		"CCSPlayer_ItemServices_CanAcquire":

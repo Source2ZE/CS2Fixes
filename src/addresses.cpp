@@ -78,7 +78,6 @@ bool addresses::Initialize()
 	RESOLVE_SIG("CBaseEntity_EmitSoundFilter", addresses::CBaseEntity_EmitSoundFilter);
 	RESOLVE_SIG("CBaseEntity_SetMoveType", addresses::CBaseEntity_SetMoveType);
 	RESOLVE_SIG("CCSPlayer_WeaponServices_EquipWeapon", addresses::CCSPlayer_WeaponServices_EquipWeapon);
-	RESOLVE_SIG("GetSpawnGroups", addresses::GetSpawnGroups);
 	RESOLVE_SIG("CBasePlayerPawn_SnapViewAngles", addresses::CBasePlayerPawn_SnapViewAngles);
 	RESOLVE_SIG("CBaseEntity_TakeDamageOld", addresses::CBaseEntity_TakeDamageOld);
 
