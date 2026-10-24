@@ -435,13 +435,6 @@
 			"windows": 25,
 			"linux": 26
 		},
-		// engine
-		// "tried to sprint to a non-client", there will be a check above like this: if ( a2 >= *(v5 + 616) ), note that this is a CUtlVector
-		"CNetworkGameServer_ClientList":
-		{
-			"windows": 77,
-			"linux": 77
-		},
 		// Right above "mapgroup workshop;" string there is a virtual call to this on g_pGameTypes using "workshop" string
 		"IGameTypes_CreateWorkshopMapGroup":
 		{

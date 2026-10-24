@@ -71,7 +71,7 @@ bool g_bHasTicked = false;
 bool g_bRequiredInitLoaded = true;
 
 // Will return null between map end & new map startup, null check if necessary!
-INetworkGameServer* GetNetworkGameServer()
+CNetworkGameServerBase* GetNetworkGameServer()
 {
 	return g_pNetworkServerService->GetIGameServer();
 }
