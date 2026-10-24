@@ -42,7 +42,6 @@ extern IGameEventManager2* g_gameEventManager;
 extern CGameEntitySystem* g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern CCSGameRules* g_pGameRules;
-extern CSpawnGroupMgrGameSystem* g_pSpawnGroupMgr;
 extern double g_flUniversalTime;
 extern float g_flLastTickedTime;
 extern bool g_bHasTicked;

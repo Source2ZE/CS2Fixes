@@ -78,7 +78,6 @@ KHOOK_VIRTUAL(SwitchToLoop, &IEngineServiceMgr::SwitchToLoop, g_pEngineServiceMg
 KHook::Virtual<IGameTypes, void, const char*, const CUtlStringList&> createWorkshopMapGroupHook(0U, Hook_CreateWorkshopMapGroup, nullptr);
 KHook::Virtual<IGameEventManager2, int, const char*, bool> loadEventsFromFileHook(&IGameEventManager2::LoadEventsFromFile, Hook_LoadEventsFromFile, nullptr);
 KHook::Virtual<CServerSideClient, bool, const CNetMessagePB<CCLCMsg_VoiceData>&> processVoiceDataHook(&CServerSideClient::ProcessVoiceData, Hook_ProcessVoiceData, nullptr);
-KHook::Virtual<INetworkGameServer, void, IGameSpawnGroupMgr*> setGameSpawnGroupMgrHook(&INetworkGameServer::SetGameSpawnGroupMgr, Hook_SetGameSpawnGroupMgr, nullptr);
 KHook::Virtual<CVPhys2World, void, CUtlVector<TouchLinked_t>*, bool> getTouchingListHook(0U, nullptr, Hook_GetTouchingList_Post);
 KHook::Virtual<CCSPlayer_MovementServices, void, double> checkMovingGroundHook(0U, Hook_CheckMovingGround, nullptr);
 KHook::Virtual<CCSPlayer_WeaponServices, void, CBasePlayerWeapon*, Vector*, Vector*> dropWeaponHook(0U, nullptr, Hook_DropWeapon_Post);
@@ -157,7 +156,6 @@ void RemoveVirtualHooks()
 {
 	loadEventsFromFileHook.RemoveGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
 	processVoiceDataHook.RemoveGlobal((CServerSideClient*)&g_pCServerSideClientVTable);
-	setGameSpawnGroupMgrHook.Remove(GetNetworkGameServer());
 	createWorkshopMapGroupHook.Remove(g_pGameTypes);
 	getTouchingListHook.RemoveGlobal((CVPhys2World*)&g_pCVPhys2WorldVTable);
 	checkMovingGroundHook.RemoveGlobal((CCSPlayer_MovementServices*)&g_pCCSPlayer_MovementServicesVTable);
@@ -514,9 +512,6 @@ KHook::Return<void> Hook_StartupServer_Post(INetworkServerService* pThis, const 
 	g_pEntitySystem = GameEntitySystem();
 	g_pEntitySystem->AddListenerEntity(g_pEntityListener);
 
-	if (GetNetworkGameServer())
-		setGameSpawnGroupMgrHook.Add(GetNetworkGameServer());
-
 	Message("Hook_StartupServer: %s\n", pszMapName);
 
 	RegisterEventListeners();
@@ -759,14 +754,6 @@ KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CNet
 
 	if (GetGlobals())
 		pPlayer->SetLastVoiceTime(GetGlobals()->curtime);
-
-	return {KHook::Action::Ignore};
-}
-
-KHook::Return<void> Hook_SetGameSpawnGroupMgr(INetworkGameServer* pThis, IGameSpawnGroupMgr* pSpawnGroupMgr)
-{
-	// This also resets our stored pointer on deletion, since null gets passed into this function, nice!
-	g_pSpawnGroupMgr = (CSpawnGroupMgrGameSystem*)pSpawnGroupMgr;
 
 	return {KHook::Action::Ignore};
 }

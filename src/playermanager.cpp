@@ -944,16 +944,19 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot)
 
 	pPlayer->SetInGame(true);
 
-	if (!g_pSpawnGroupMgr)
+	if (!GetNetworkGameServer())
 		return;
 
-	CUtlVector<SpawnGroupHandle_t> vecActualSpawnGroups;
-	addresses::GetSpawnGroups(g_pSpawnGroupMgr, &vecActualSpawnGroups);
-
+	auto& spawnGroups = GetNetworkGameServer()->m_SpawnGroups;
 	CServerSideClient* pClient = GetClientBySlot(slot);
 
-	if (pClient && pClient->m_LoadedSpawnGroups.Count() != vecActualSpawnGroups.Count())
-		pClient->m_LoadedSpawnGroups = vecActualSpawnGroups;
+	if (pClient && pClient->m_LoadedSpawnGroups.Count() != spawnGroups.Count())
+	{
+		pClient->m_LoadedSpawnGroups.RemoveAll();
+
+		for (const auto& spawnGroup : spawnGroups)
+			pClient->m_LoadedSpawnGroups.AddToTail(spawnGroup.key);
+	}
 }
 
 void CPlayerManager::OnLateLoad()
