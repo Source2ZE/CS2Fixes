@@ -22,7 +22,9 @@
 #include "commands.h"
 #include "ctime"
 #include "ctimer.h"
-#include "engine/igameeventsystem.h"
+#include "engine2/igameeventsystem.h"
+#include "engine2/ivengineserver2.h"
+#include "engine2/serversideclient.h"
 #include "entity/ccsplayercontroller.h"
 #include "entwatch.h"
 #include "leader.h"
@@ -30,11 +32,10 @@
 #include "networksystem/inetworkmessages.h"
 #include "panoramavote.h"
 #include "recipientfilters.h"
-#include "serversideclient.h"
+#include "tier0/utlstring.h"
 #include "tier0/vprof.h"
 #include "user_preferences.h"
 #include "utils/entity.h"
-#include "utlstring.h"
 #include "votemanager.h"
 #include "zombiereborn.h"
 #include <../cs2fixes.h>
@@ -363,7 +364,7 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
 
 		if (pPlayer->m_iTeamNum < CS_TEAM_T || !pPlayer->m_hPlayerPawn->IsAlive() || pPlayer->m_iTeamNum != iTeamNum)
 		{
-			addresses::UTIL_Remove(pParticle);
+			pParticle->Remove();
 			return -1.0f;
 		}
 
@@ -389,7 +390,7 @@ void ZEPlayer::StartBeacon(Color color, ZEPlayerHandle hGiver /* = 0*/)
 		// Remove beacon granted by leader if his leader was stripped
 		if (!pBeaconGiver->IsLeader())
 		{
-			addresses::UTIL_Remove(pParticle);
+			pParticle->Remove();
 			return -1.0f;
 		}
 
@@ -404,7 +405,7 @@ void ZEPlayer::EndBeacon()
 	CParticleSystem* pParticle = m_hBeaconParticle.Get();
 
 	if (pParticle)
-		addresses::UTIL_Remove(pParticle);
+		pParticle->Remove();
 }
 
 // Kills off currently active mark (if exists) and makes a new one.
@@ -519,7 +520,7 @@ void ZEPlayer::StartGlow(Color color, int duration)
 			CBaseModelEntity* pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
 
 			if (pModelParent)
-				addresses::UTIL_Remove(pModelParent);
+				pModelParent->Remove();
 
 			return -1.0f;
 		}
@@ -545,7 +546,7 @@ void ZEPlayer::StartGlow(Color color, int duration)
 		CBaseModelEntity* pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
 
 		if (pModelParent)
-			addresses::UTIL_Remove(pModelParent);
+			pModelParent->Remove();
 
 		return -1.0f;
 	});
@@ -568,7 +569,7 @@ void ZEPlayer::EndGlow()
 	CBaseModelEntity* pModelParent = (CBaseModelEntity*)pParentSceneNode->m_pOwner();
 
 	if (pModelParent)
-		addresses::UTIL_Remove(pModelParent);
+		pModelParent->Remove();
 }
 
 void ZEPlayer::CycleButtonWatch()
@@ -943,16 +944,19 @@ void CPlayerManager::OnClientPutInServer(CPlayerSlot slot)
 
 	pPlayer->SetInGame(true);
 
-	if (!g_pSpawnGroupMgr)
+	if (!GetNetworkGameServer())
 		return;
 
-	CUtlVector<SpawnGroupHandle_t> vecActualSpawnGroups;
-	addresses::GetSpawnGroups(g_pSpawnGroupMgr, &vecActualSpawnGroups);
-
+	auto& spawnGroups = GetNetworkGameServer()->m_SpawnGroups;
 	CServerSideClient* pClient = GetClientBySlot(slot);
 
-	if (pClient && pClient->m_vecLoadedSpawnGroups.Count() != vecActualSpawnGroups.Count())
-		pClient->m_vecLoadedSpawnGroups = vecActualSpawnGroups;
+	if (pClient && pClient->m_LoadedSpawnGroups.Count() != spawnGroups.Count())
+	{
+		pClient->m_LoadedSpawnGroups.RemoveAll();
+
+		for (const auto& spawnGroup : spawnGroups)
+			pClient->m_LoadedSpawnGroups.AddToTail(spawnGroup.key);
+	}
 }
 
 void CPlayerManager::OnLateLoad()
@@ -1226,9 +1230,9 @@ void CPlayerManager::SetupInfiniteAmmo()
 
 			CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponServices->m_hMyWeapons();
 
-			FOR_EACH_VEC(*weapons, i)
+			for (const auto& hWeapon : *weapons)
 			{
-				CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+				CBasePlayerWeapon* weapon = hWeapon.Get();
 
 				if (!weapon)
 					continue;
@@ -1821,7 +1825,7 @@ bool CPlayerManager::CanTargetPlayers(CCSPlayerController* pPlayer, const char* 
 
 ZEPlayer* CPlayerManager::GetPlayer(CPlayerSlot slot)
 {
-	if (slot.Get() < 0 || slot.Get() >= MAXPLAYERS)
+	if (slot.Get() < 0 || slot.Get() >= MAX_PLAYERS)
 		return nullptr;
 
 	return m_vecPlayers[slot.Get()];
@@ -1837,7 +1841,7 @@ ZEPlayer* CPlayerManager::GetPlayerFromUserId(uint16 userid)
 {
 	uint8 index = userid & 0xFF;
 
-	if (index >= MAXPLAYERS)
+	if (index >= MAX_PLAYERS)
 		return nullptr;
 
 	return m_vecPlayers[index];
@@ -1980,13 +1984,9 @@ int CPlayerManager::GetOnlinePlayerCount(bool bCountBots)
 	if (GetGlobals())
 		flLastUpdateTime = GetGlobals()->curtime;
 
-	for (int i = 0; i < GetClientList()->Count(); i++)
-	{
-		CServerSideClient* pClient = (*GetClientList())[i];
-
+	for (CServerSideClient* pClient : *GetClientList())
 		if (pClient && pClient->GetSignonState() >= SIGNONSTATE_CONNECTED && (bCountBots || !pClient->IsFakeClient()))
 			iOnlinePlayers++;
-	}
 
 	return iOnlinePlayers;
 }
@@ -1998,6 +1998,6 @@ void CPlayerManager::FullUpdateAllClients()
 	if (!pClients)
 		return;
 
-	FOR_EACH_VEC(*pClients, i)
-	(*pClients)[i]->ForceFullUpdate();
+	for (auto pClient : *pClients)
+		pClient->m_nDeltaTick = -1;
 }

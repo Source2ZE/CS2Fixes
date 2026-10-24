@@ -18,12 +18,13 @@
  */
 
 #pragma once
+#include "entity2/entityclass.h"
+#include "entity2/variant.h"
 #include "platform.h"
 #include "stdint.h"
+#include "tier0/utlmap.h"
 #include "utils/module.h"
 #include "utils/vscript_function.h"
-#include "utlstring.h"
-#include "variant.h"
 
 namespace modules
 {
@@ -57,9 +58,9 @@ class CGameRules;
 class CEntityKeyValues;
 class IRecipientFilter;
 class CTakeDamageInfo;
+class CUtlSymbolTable;
 class CCSPlayer_WeaponServices;
 class CBasePlayerWeapon;
-class CSpawnGroupMgrGameSystem;
 struct CPulseArgumentPack;
 struct CPulseInputParamMap;
 struct EmitSound_t;
@@ -78,16 +79,18 @@ struct CGcBanInformation_t
 namespace addresses
 {
 	bool Initialize();
-	bool InitializeBanMap();
+	bool InitializeRipRelativeAddresses();
 	bool InitializeVScriptFunctions();
+	void* ResolveRipRelative(const char* pszName, int nOpcodeSize = 3);
 
 	inline CUtlOrderedMap<uint32, CGcBanInformation_t, uint32>* sm_mapGcBanInformation;
+	inline CUtlSymbolTable* CCSAddonManager_CommandWhitelist;
 
 	inline void(FASTCALL* SetGroundEntity)(CBaseEntity* ent, CBaseEntity* ground, CBaseEntity* unk3);
 	inline void(FASTCALL* CCSPlayerController_SwitchTeam)(CCSPlayerController* pController, uint32 team);
 	inline void(FASTCALL* CBasePlayerController_SetPawn)(CBasePlayerController* pController, CCSPlayerPawn* pPawn, bool a3, bool a4, bool a5, bool a6);
 	inline void(FASTCALL* CBaseModelEntity_SetModel)(CBaseModelEntity* pModel, const char* pszModel);
-	inline void(FASTCALL* UTIL_Remove)(CEntityInstance*);
+	inline BASEPTR UTIL_Remove;
 
 	inline void(FASTCALL* CEntitySystem_AddEntityIOEvent)(CEntitySystem* pEntitySystem, CEntityInstance* pTarget, const char* pszInput,
 														  CEntityInstance* pActivator, CEntityInstance* pCaller, variant_t* value, float flDelay, CPulseArgumentPack* pArgumentPack, CPulseInputParamMap* pParamMap);
@@ -107,7 +110,6 @@ namespace addresses
 	inline StartSoundEventInfo(FASTCALL* CBaseEntity_EmitSoundFilter)(IRecipientFilter& filter, CEntityIndex ent, const EmitSound_t& params);
 	inline void(FASTCALL* CBaseEntity_SetMoveType)(CBaseEntity* pThis, MoveType_t nMoveType, MoveCollide_t nMoveCollide);
 	inline void(FASTCALL* CCSPlayer_WeaponServices_EquipWeapon)(CCSPlayer_WeaponServices* pWeaponServices, CBasePlayerWeapon* pPlayerWeapon);
-	inline void(FASTCALL* GetSpawnGroups)(CSpawnGroupMgrGameSystem* pSpawnGroupMgr, CUtlVector<SpawnGroupHandle_t>* pList);
 	inline void(FASTCALL* CBasePlayerPawn_SnapViewAngles)(CBasePlayerPawn* pPawn, QAngle* pAngles);
 	inline int64(FASTCALL* CBaseEntity_TakeDamageOld)(CBaseEntity* pThis, CTakeDamageInfo* pInfo, CTakeDamageResult* pResult);
 

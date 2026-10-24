@@ -19,9 +19,9 @@
 
 #pragma once
 #include "adminsystem.h"
-#include "convar.h"
 #include "entity/ccsplayercontroller.h"
 #include "leader.h"
+#include "tier0/convar.h"
 #include <vector>
 
 class CChatCommand;

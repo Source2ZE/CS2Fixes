@@ -19,12 +19,16 @@
 
 #pragma once
 
-#include "cs2_sdk/netmessages.h"
-#include "engine/igameeventsystem.h"
+#include "engine2/igameeventsystem.h"
+#include "engine2/inetworkgameserver.h"
+#include "engine2/inetworkserverservice.h"
+#include "engine2/isource2server.h"
 #include "entity/cgamerules.h"
 #include "igameevents.h"
-#include "iserver.h"
 #include "khook.hpp"
+#include "netmessages.pb.h"
+#include "networksystem/inetworkmessages.h"
+#include "tier0/utlstringlist.h"
 
 class CCSPlayer_MovementServices;
 class CServerSideClient;
@@ -61,13 +65,12 @@ KHook::Return<void> Hook_DispatchConCommand(ICvar* pThis, ConCommandRef cmd, con
 KHook::Return<void> Hook_SwitchToLoop(IEngineServiceMgr* pThis, const char* pszLoopModeName, KeyValues* pKV, uint32 nId, const char* pszAddonName, bool bUnk);
 KHook::Return<void> Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* name, const CUtlStringList& mapList);
 KHook::Return<int> Hook_LoadEventsFromFile(IGameEventManager2* pThis, const char* filename, bool bSearchAll);
-KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CCLCMsg_VoiceData_t& msg);
-KHook::Return<void> Hook_SetGameSpawnGroupMgr(INetworkGameServer* pThis, IGameSpawnGroupMgr* pSpawnGroupMgr);
+KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CNetMessagePB<CCLCMsg_VoiceData>& msg);
 KHook::Return<void> Hook_GetTouchingList_Post(CVPhys2World* pThis, CUtlVector<TouchLinked_t>* pList, bool unknown);
 KHook::Return<void> Hook_CheckMovingGround(CCSPlayer_MovementServices* pThis, double frametime);
 KHook::Return<void> Hook_DropWeapon_Post(CCSPlayer_WeaponServices* pThis, CBasePlayerWeapon* pWeapon, Vector* pVecTarget, Vector* pVelocity);
 KHook::Return<void> Hook_PlayerEquipUse(CGamePlayerEquip* pThis, InputData_t* pInput);
-KHook::Return<void> Hook_PlayerEquipPrecache_Post(CGamePlayerEquip* pThis, CEntityPrecacheContext*);
+KHook::Return<void> Hook_PlayerEquipPrecache(CGamePlayerEquip* pThis, CEntityPrecacheContext*);
 KHook::Return<void> Hook_TriggerGravityPrecache_Post(CTriggerGravity* pThis, CEntityPrecacheContext* param);
 KHook::Return<void> Hook_TriggerGravityEndTouch_Post(CTriggerGravity* pThis, CBaseEntity* pOther);
 KHook::Return<bool> Hook_OnTakeDamage_Alive(CCSPlayerPawn* pPawn, CTakeDamageResult* pDamageResult);

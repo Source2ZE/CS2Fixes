@@ -22,7 +22,7 @@
 #include "dbg.h"
 #include "interface.h"
 #include "plat.h"
-#include "strtools.h"
+#include "tier0/tier0_strtools.h"
 
 #include <string>
 #include <vector>

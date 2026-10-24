@@ -19,6 +19,9 @@
 
 #pragma once
 
+#include "entity2/variant.h"
+#include <cstddef>
+
 class InputData_t;
 class CGamePlayerEquip;
 class CBaseEntity;
@@ -38,9 +41,9 @@ namespace CTriggerGravityHandler
 namespace CGamePlayerEquipHandler
 {
 	void Use(CGamePlayerEquip* pEntity, InputData_t* pInput);
-	void TriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput);
-	bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput);
-	void OnPrecache(CGamePlayerEquip* pEntity, const CEntityKeyValues* kv);
+	void TriggerForAllPlayers(CGamePlayerEquip* pEntity);
+	bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, CBaseEntity* pActivator, variant_t* value);
+	bool OnPrecache(CGamePlayerEquip* pEntity, const CEntityKeyValues* kv, CEntityKeyValues* pFilteredKV);
 } // namespace CGamePlayerEquipHandler
 
 namespace CGameUIHandler

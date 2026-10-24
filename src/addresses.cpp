@@ -22,7 +22,7 @@
 #include "utils/module.h"
 
 #include "entityinstance.h"
-#include "tier1/strtools.h"
+#include "tier0/tier0_strtools.h"
 #include "vscript/ivscript.h"
 
 #include "tier0/memdbgon.h"
@@ -78,37 +78,24 @@ bool addresses::Initialize()
 	RESOLVE_SIG("CBaseEntity_EmitSoundFilter", addresses::CBaseEntity_EmitSoundFilter);
 	RESOLVE_SIG("CBaseEntity_SetMoveType", addresses::CBaseEntity_SetMoveType);
 	RESOLVE_SIG("CCSPlayer_WeaponServices_EquipWeapon", addresses::CCSPlayer_WeaponServices_EquipWeapon);
-	RESOLVE_SIG("GetSpawnGroups", addresses::GetSpawnGroups);
 	RESOLVE_SIG("CBasePlayerPawn_SnapViewAngles", addresses::CBasePlayerPawn_SnapViewAngles);
 	RESOLVE_SIG("CBaseEntity_TakeDamageOld", addresses::CBaseEntity_TakeDamageOld);
 
-	return InitializeBanMap();
+	return InitializeRipRelativeAddresses();
 }
 
-bool addresses::InitializeBanMap()
+bool addresses::InitializeRipRelativeAddresses()
 {
-	// This signature directly points to the instruction referencing sm_mapGcBanInformation
-	uintptr_t pAddr = (uintptr_t)g_GameConfig->ResolveSignature("CCSGameRules__sm_mapGcBanInformation");
-
-	if (!pAddr)
-		return false;
-
-	// the opcode is 3 bytes so we skip those
-	pAddr += 3;
-
-	// Grab the offset as 4 bytes
-	uint32 offset = *(uint32*)pAddr;
-
-	// Go to the next instruction, which is what the relative address is based off
-	pAddr += 4;
-
-	// Get the real address
-	addresses::sm_mapGcBanInformation = (decltype(addresses::sm_mapGcBanInformation))(pAddr + offset);
+	addresses::sm_mapGcBanInformation = (decltype(addresses::sm_mapGcBanInformation))ResolveRipRelative("CCSGameRules__sm_mapGcBanInformation");
 
 	if (!addresses::sm_mapGcBanInformation)
 		return false;
 
-	Message("Found %s at 0x%p\n", "CCSGameRules__sm_mapGcBanInformation", addresses::sm_mapGcBanInformation);
+	addresses::CCSAddonManager_CommandWhitelist = (CUtlSymbolTable*)ResolveRipRelative("CCSAddonManager__CommandWhitelist");
+
+	if (!addresses::CCSAddonManager_CommandWhitelist)
+		return false;
+
 	return true;
 }
 
@@ -132,4 +119,27 @@ bool addresses::InitializeVScriptFunctions()
 	RESOLVE_SF(pCBaseEntityScriptDesc, "IsPlayerController", IsPlayerController);
 
 	return true;
+}
+
+void* addresses::ResolveRipRelative(const char* pszName, int nOpcodeSize)
+{
+	uintptr_t pAddr = (uintptr_t)g_GameConfig->ResolveSignature(pszName);
+
+	if (!pAddr)
+		return nullptr;
+
+	// Skip the opcode, usually 3 bytes for 64-bit operands
+	pAddr += nOpcodeSize;
+
+	// Grab the offset as 4 bytes
+	int32 offset = *(int32*)pAddr;
+
+	// Go to the next instruction, which is what the relative address is based off
+	pAddr += 4;
+
+	// Get the real address
+	void* pResult = (void*)(pAddr + offset);
+
+	Message("Found %s at 0x%p\n", pszName, pResult);
+	return pResult;
 }

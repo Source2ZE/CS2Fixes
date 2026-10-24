@@ -39,24 +39,21 @@ void CCfgParser::ApplyGameSettings(const char* pszMapName)
 void CCfgParser::ExecuteConfigs(const char* pszMapName)
 {
 	// Run plugin cfg
-	g_pCfgParser->ParseCfg("cs2fixes/cs2fixes");
-
-	// Run custom server cfg
-	g_pCfgParser->ParseCfg("cs2fixes/server");
+	g_pCfgParser->ParseCfg("cs2fixes");
 
 	if (!V_strcmp(pszMapName, ""))
 		return;
 
 	// Run map cfg (if present)
 	char szCfgPath[MAX_PATH];
-	V_snprintf(szCfgPath, sizeof(szCfgPath), "cs2fixes/maps/%s", pszMapName);
+	V_snprintf(szCfgPath, sizeof(szCfgPath), "maps/%s", pszMapName);
 	ParseCfg(szCfgPath);
 }
 
 void CCfgParser::ParseCfg(const char* pszCfgPath)
 {
 	char szPath[MAX_PATH];
-	V_snprintf(szPath, sizeof(szPath), "%s/csgo/cfg/%s.cfg", Plat_GetGameDirectory(), pszCfgPath);
+	V_snprintf(szPath, sizeof(szPath), "%s/csgo/addons/cs2fixes/cfg/%s.cfg", Plat_GetGameDirectory(), pszCfgPath);
 	std::ifstream cfgFile(szPath);
 
 	if (!cfgFile.is_open())
@@ -75,16 +72,6 @@ void CCfgParser::ParseCfg(const char* pszCfgPath)
 
 		if (!args.Tokenize(strCommand.c_str()) || !args.ArgC())
 			continue;
-
-		if (!V_strcasecmp(args[0], "exec_custom"))
-		{
-			if (args.ArgC() < 2)
-				Message("Usage: exec_custom <cfgpath>\n");
-			else
-				ParseCfg(args[1]);
-
-			continue;
-		}
 
 		ConCommandRef command(args[0], true);
 		ConVarRefAbstract convar(args[0], true);

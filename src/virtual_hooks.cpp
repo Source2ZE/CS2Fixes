@@ -19,7 +19,6 @@
 
 #include "virtual_hooks.h"
 #include "adminsystem.h"
-#include "cchecktransmitinfo.h"
 #include "cfgparser.h"
 #include "commands.h"
 #include "common.h"
@@ -27,9 +26,13 @@
 #include "cs_gameevents.pb.h"
 #include "cstrike15_usermessages.pb.h"
 #include "ctimer.h"
-#include "engine/IEngineService.h"
+#include "engine2/iengineservicemgr.h"
+#include "engine2/inetworkgameserver.h"
+#include "engine2/ivengineserver2.h"
+#include "engine2/serversideclient.h"
 #include "entities.h"
 #include "entity/ccsplayercontroller.h"
+#include "entity/cgameplayerequip.h"
 #include "entity/customhudlayout.h"
 #include "entity/services.h"
 #include "entitylistener.h"
@@ -38,9 +41,7 @@
 #include "eventlistener.h"
 #include "gameconfig.h"
 #include "gameevents.pb.h"
-#include "icvar.h"
 #include "idlemanager.h"
-#include "iserver.h"
 #include "khook_helpers.h"
 #include "leader.h"
 #include "map_votes.h"
@@ -49,16 +50,13 @@
 #include "networkstringtabledefs.h"
 #include "panoramavote.h"
 #include "playermanager.h"
-#include "serversideclient.h"
+#include "tier0/icvar.h"
 #include "tier0/vprof.h"
 #include "usermessages.pb.h"
 #include "votemanager.h"
 #include "zombiereborn.h"
 
 #include "tier0/memdbgon.h"
-
-class GameSessionConfiguration_t
-{};
 
 KHOOK_VIRTUAL(GameFrame, &IServerGameDLL::GameFrame, g_pSource2Server, nullptr, Hook_GameFrame_Post);
 KHOOK_VIRTUAL(GameServerSteamAPIActivated, &IServerGameDLL::GameServerSteamAPIActivated, g_pSource2Server, Hook_GameServerSteamAPIActivated, nullptr);
@@ -79,13 +77,12 @@ KHOOK_VIRTUAL(SwitchToLoop, &IEngineServiceMgr::SwitchToLoop, g_pEngineServiceMg
 
 KHook::Virtual<IGameTypes, void, const char*, const CUtlStringList&> createWorkshopMapGroupHook(0U, Hook_CreateWorkshopMapGroup, nullptr);
 KHook::Virtual<IGameEventManager2, int, const char*, bool> loadEventsFromFileHook(&IGameEventManager2::LoadEventsFromFile, Hook_LoadEventsFromFile, nullptr);
-KHook::Virtual<CServerSideClient, bool, const CCLCMsg_VoiceData_t&> processVoiceDataHook(&CServerSideClient::ProcessVoiceData, Hook_ProcessVoiceData, nullptr);
-KHook::Virtual<INetworkGameServer, void, IGameSpawnGroupMgr*> setGameSpawnGroupMgrHook(&INetworkGameServer::SetGameSpawnGroupMgr, Hook_SetGameSpawnGroupMgr, nullptr);
+KHook::Virtual<CServerSideClient, bool, const CNetMessagePB<CCLCMsg_VoiceData>&> processVoiceDataHook(&CServerSideClient::ProcessVoiceData, Hook_ProcessVoiceData, nullptr);
 KHook::Virtual<CVPhys2World, void, CUtlVector<TouchLinked_t>*, bool> getTouchingListHook(0U, nullptr, Hook_GetTouchingList_Post);
 KHook::Virtual<CCSPlayer_MovementServices, void, double> checkMovingGroundHook(0U, Hook_CheckMovingGround, nullptr);
 KHook::Virtual<CCSPlayer_WeaponServices, void, CBasePlayerWeapon*, Vector*, Vector*> dropWeaponHook(0U, nullptr, Hook_DropWeapon_Post);
 KHook::Virtual<CGamePlayerEquip, void, InputData_t*> playerEquipUseHook(0U, Hook_PlayerEquipUse, nullptr);
-KHook::Virtual<CGamePlayerEquip, void, CEntityPrecacheContext*> playerEquipPrecacheHook(0U, nullptr, Hook_PlayerEquipPrecache_Post);
+KHook::Virtual<CGamePlayerEquip, void, CEntityPrecacheContext*> playerEquipPrecacheHook(0U, Hook_PlayerEquipPrecache, nullptr);
 KHook::Virtual<CTriggerGravity, void, CEntityPrecacheContext*> triggerGravityPrecacheHook(0U, nullptr, Hook_TriggerGravityPrecache_Post);
 KHook::Virtual<CTriggerGravity, void, CBaseEntity*> triggerGravityEndTouchHook(0U, nullptr, Hook_TriggerGravityEndTouch_Post);
 KHook::Virtual<CCSPlayerPawn, bool, CTakeDamageResult*> onTakeDamageAliveHook(0U, Hook_OnTakeDamage_Alive, nullptr);
@@ -159,7 +156,6 @@ void RemoveVirtualHooks()
 {
 	loadEventsFromFileHook.RemoveGlobal((IGameEventManager2*)&g_pCGameEventManagerVTable);
 	processVoiceDataHook.RemoveGlobal((CServerSideClient*)&g_pCServerSideClientVTable);
-	setGameSpawnGroupMgrHook.Remove(GetNetworkGameServer());
 	createWorkshopMapGroupHook.Remove(g_pGameTypes);
 	getTouchingListHook.RemoveGlobal((CVPhys2World*)&g_pCVPhys2WorldVTable);
 	checkMovingGroundHook.RemoveGlobal((CCSPlayer_MovementServices*)&g_pCCSPlayer_MovementServicesVTable);
@@ -516,9 +512,6 @@ KHook::Return<void> Hook_StartupServer_Post(INetworkServerService* pThis, const 
 	g_pEntitySystem = GameEntitySystem();
 	g_pEntitySystem->AddListenerEntity(g_pEntityListener);
 
-	if (GetNetworkGameServer())
-		setGameSpawnGroupMgrHook.Add(GetNetworkGameServer());
-
 	Message("Hook_StartupServer: %s\n", pszMapName);
 
 	RegisterEventListeners();
@@ -556,7 +549,7 @@ KHook::Return<void> Hook_CheckTransmit_Post(ISource2GameEntities* pThis, CCheckT
 
 	for (int i = 0; i < infoCount; i++)
 	{
-		auto& pInfo = (CCheckTransmitInfoExtended*&)(ppInfoList[i]);
+		CCheckTransmitInfo* pInfo = ppInfoList[i];
 		CCSPlayerController* pSelfController = CCSPlayerController::FromSlot(pInfo->m_nPlayerSlot);
 
 		if (!pSelfController || !pSelfController->IsConnected())
@@ -603,7 +596,7 @@ KHook::Return<void> Hook_CheckTransmit_Post(ISource2GameEntities* pThis, CCheckT
 			if (pSelfZEPlayer->ShouldBlockTransmit(j) && pOtherZEPlayer && !pOtherZEPlayer->IsLeader() && g_pEWHandler->FindItemInstanceByOwner(j, false, 0) == -1)
 			{
 				pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
-				pInfo->m_pTransmitNonPlayers->Set(pPawn->entindex());
+				pInfo->m_pNonTransmitEntity->Set(pPawn->entindex());
 			}
 		}
 
@@ -733,7 +726,11 @@ KHook::Return<void> Hook_SwitchToLoop(IEngineServiceMgr* pThis, const char* pszL
 KHook::Return<void> Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* name, const CUtlStringList& mapList)
 {
 	if (g_cvarVoteManagerEnable.Get() && g_pMapVoteSystem->IsMapListLoaded())
-		return KHook::Recall<void (IGameTypes::*)(const char*, const CUtlStringList&)>(nullptr, {KHook::Action::Ignore}, pThis, name, g_pMapVoteSystem->CreateWorkshopMapGroup());
+	{
+		CUtlStringList workshopMapList;
+		g_pMapVoteSystem->CreateWorkshopMapGroup(workshopMapList);
+		return KHook::Recall<void (IGameTypes::*)(const char*, const CUtlStringList&)>(nullptr, {KHook::Action::Ignore}, pThis, name, workshopMapList);
+	}
 
 	return {KHook::Action::Ignore};
 }
@@ -745,7 +742,7 @@ KHook::Return<int> Hook_LoadEventsFromFile(IGameEventManager2* pThis, const char
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CCLCMsg_VoiceData_t& msg)
+KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CNetMessagePB<CCLCMsg_VoiceData>& msg)
 {
 	ZEPlayer* pPlayer = g_playerManager->GetPlayer(pClient->GetPlayerSlot());
 
@@ -757,14 +754,6 @@ KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CCLC
 
 	if (GetGlobals())
 		pPlayer->SetLastVoiceTime(GetGlobals()->curtime);
-
-	return {KHook::Action::Ignore};
-}
-
-KHook::Return<void> Hook_SetGameSpawnGroupMgr(INetworkGameServer* pThis, IGameSpawnGroupMgr* pSpawnGroupMgr)
-{
-	// This also resets our stored pointer on deletion, since null gets passed into this function, nice!
-	g_pSpawnGroupMgr = (CSpawnGroupMgrGameSystem*)pSpawnGroupMgr;
 
 	return {KHook::Action::Ignore};
 }
@@ -813,14 +802,11 @@ KHook::Return<void> Hook_GetTouchingList_Post(CVPhys2World* pThis, CUtlVector<To
 	std::vector<TouchLinked_t> touchingLinks;
 	std::vector<TouchLinked_t> unTouchLinks;
 
-	FOR_EACH_VEC(*pList, i)
-	{
-		const auto& link = pList->Element(i);
+	for (const auto& link : *pList)
 		if (link.IsUnTouching())
 			unTouchLinks.push_back(link);
 		else
 			touchingLinks.push_back(link);
-	}
 
 	if (touchingLinks.size() <= 1)
 		return {KHook::Action::Ignore};
@@ -855,7 +841,7 @@ KHook::Return<void> Hook_CheckMovingGround(CCSPlayer_MovementServices* pThis, do
 
 	int iSlot = pController->GetPlayerSlot();
 
-	static int aPlayerTicks[MAXPLAYERS] = {0};
+	static int aPlayerTicks[MAX_PLAYERS] = {0};
 
 	// The point of doing this is to avoid running the function (and applying/resetting basevelocity) multiple times per tick
 	// This can happen when the client or server lags
@@ -882,12 +868,16 @@ KHook::Return<void> Hook_PlayerEquipUse(CGamePlayerEquip* pThis, InputData_t* pI
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> Hook_PlayerEquipPrecache_Post(CGamePlayerEquip* pThis, CEntityPrecacheContext* param)
+KHook::Return<void> Hook_PlayerEquipPrecache(CGamePlayerEquip* pThis, CEntityPrecacheContext* param)
 {
-	const auto kv = param->m_pKeyValues;
-	CGamePlayerEquipHandler::OnPrecache(pThis, kv);
+	CEntityKeyValues filteredKV;
 
-	return {KHook::Action::Ignore};
+	if (!CGamePlayerEquipHandler::OnPrecache(pThis, param->m_pKeyValues, &filteredKV))
+		return {KHook::Action::Ignore};
+
+	CEntityPrecacheContext context = *param;
+	context.m_pKeyValues = &filteredKV;
+	return KHook::Recall<void (CGamePlayerEquip::*)(CEntityPrecacheContext*)>(nullptr, {KHook::Action::Ignore}, pThis, &context);
 }
 
 KHook::Return<void> Hook_TriggerGravityPrecache_Post(CTriggerGravity* pThis, CEntityPrecacheContext* param)

@@ -21,7 +21,6 @@
 #include "ctimer.h"
 #include "entity.h"
 
-#include "entity/cbaseplayercontroller.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cgameplayerequip.h"
@@ -67,9 +66,9 @@ static void StripPlayer(CCSPlayerPawn* pPawn, const std::unordered_set<uint32_t>
 	CUtlVector<CHandle<CBasePlayerWeapon>>* weapons = pWeaponService->m_hMyWeapons();
 	std::vector<CBasePlayerWeapon*> vecWeaponsToRemove;
 
-	FOR_EACH_VEC(*weapons, i)
+	for (const auto& hWeapon : *weapons)
 	{
-		CBasePlayerWeapon* weapon = (*weapons)[i].Get();
+		CBasePlayerWeapon* weapon = hWeapon.Get();
 
 		if (!weapon)
 			continue;
@@ -190,7 +189,7 @@ namespace CGamePlayerEquipHandler
 		}
 	}
 
-	void TriggerForAllPlayers(CGamePlayerEquip* pEntity, InputData_t* pInput)
+	void TriggerForAllPlayers(CGamePlayerEquip* pEntity)
 	{
 		const auto flags = pEntity->m_spawnflags();
 
@@ -214,15 +213,14 @@ namespace CGamePlayerEquipHandler
 		}
 	}
 
-	bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, InputData_t* pInput)
+	bool TriggerForActivatedPlayer(CGamePlayerEquip* pEntity, CBaseEntity* pActivator, variant_t* value)
 	{
-		const auto pCaller = pInput->pActivator;
-		const auto pszWeapon = ((pInput->value.m_type == FIELD_CSTRING || pInput->value.m_type == FIELD_STRING) && pInput->value.m_pszString) ? pInput->value.m_pszString : nullptr;
+		const auto pszWeapon = (value->GetType() == FIELD_CSTRING || value->GetType() == FIELD_STRING) ? value->ToString() : nullptr;
 
-		if (!pCaller || !pCaller->IsPawn())
+		if (!pActivator || !pActivator->IsPawn())
 			return true;
 
-		const auto pPawn = reinterpret_cast<CCSPlayerPawn*>(pCaller);
+		const auto pPawn = reinterpret_cast<CCSPlayerPawn*>(pActivator);
 		const auto flags = pEntity->m_spawnflags();
 
 		if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_STRIPFIRST)
@@ -242,7 +240,7 @@ namespace CGamePlayerEquipHandler
 		if (!pItemServices)
 			return true;
 
-		if (pszWeapon && V_strcmp(pszWeapon, "(null)"))
+		if (pszWeapon && *pszWeapon && V_strcmp(pszWeapon, "(null)"))
 		{
 			pItemServices->GiveNamedItemAws(pszWeapon);
 			// Don't execute game function (we fixed string param)
@@ -252,20 +250,29 @@ namespace CGamePlayerEquipHandler
 		return true;
 	}
 
-	void OnPrecache(CGamePlayerEquip* pEntity, const CEntityKeyValues* kv)
+	// Returns true if item_* classes were left out of pFilteredKV
+	bool OnPrecache(CGamePlayerEquip* pEntity, const CEntityKeyValues* kv, CEntityKeyValues* pFilteredKV)
 	{
 		const auto pHammerId = kv->GetKeyValue("hammerUniqueId");
-		if (!pHammerId)
-			return;
-
 		auto list = std::unordered_set<uint32_t>();
+		bool bFiltered = false;
 
 		for (auto i = 0; i < CGamePlayerEquip::MAX_EQUIPMENTS_SIZE; i++)
 		{
 			char key[32];
 			snprintf(key, sizeof(key), "weapon%d", i);
 			const auto val = kv->GetString(key);
-			if (val && strlen(val) > 1)
+
+			if (!val || !*val)
+				continue;
+
+			// Precaching item_* classes crashes since the 2026-10-22 CS2 update
+			if (!V_strnicmp(val, "item_", 5))
+				bFiltered = true;
+			else
+				pFilteredKV->SetString(key, val);
+
+			if (strlen(val) > 1)
 			{
 				const auto slot = CCSPlayer_ItemServices::GetItemGearSlot(val);
 				if (slot != GEAR_SLOT_INVALID && slot != GEAR_SLOT_UTILITY)
@@ -273,11 +280,13 @@ namespace CGamePlayerEquipHandler
 			}
 		}
 
-		if (!list.empty())
+		if (pHammerId && !list.empty())
 		{
 			const auto hEntity = MurmurHash2LowerCase(pHammerId->GetString(), ENTITY_MURMURHASH_SEED);
 			s_PlayerEquipMap[hEntity] = list;
 		}
+
+		return bFiltered;
 	}
 
 	static void Shutdown()

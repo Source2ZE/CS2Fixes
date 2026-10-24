@@ -19,7 +19,8 @@
 
 #pragma once
 
-#include "convar.h"
+#include "tier0/convar.h"
+#include "tier0/utlsymboltable.h"
 #undef snprintf
 #include "vendor/nlohmann/json_fwd.hpp"
 
@@ -33,6 +34,13 @@ struct WhitelistValue
 	bool bEnabled;
 };
 
+// Workaround to access CUtlSymbolTable::m_bInsensitive, which is protected
+class CUtlSymbolTableAccessor : public CUtlSymbolTable
+{
+public:
+	void SetInsensitive(bool bInsensitive) { m_bInsensitive = bInsensitive; }
+};
+
 class CConVarWhitelist
 {
 public:
@@ -42,7 +50,7 @@ public:
 	}
 
 	bool LoadConfig();
-	bool IsWhitelisted(std::string strName);
+	void ApplyToGameTable(const char* pszMapName);
 	bool IsConfigLoaded() { return m_bConfigLoaded; };
 
 private:

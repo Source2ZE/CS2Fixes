@@ -4,6 +4,6 @@
 
 **Disclosure Requirements:** Substantial use of AI tools must be disclosed in pull request descriptions.
 
-**No Autonomous Agents:** AI tools are barred from autonomously opening pull requests, pushing commits, and making comments.
+**No Autonomous Agents:** AI tools are barred from autonomously opening pull requests and making comments.
 
 **Quality Over Volume:** Maintainers have explicit permission to close low-evidence or generic AI dumps without deep review.
