@@ -184,7 +184,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI* ismm, char* error, size_t maxlen, bool
 	});
 
 	// run our cfg
-	g_pCfgParser->ParseCfg("cs2fixes/cs2fixes");
+	g_pCfgParser->ParseCfg("cs2fixes");
 
 	srand(time(0));
 
