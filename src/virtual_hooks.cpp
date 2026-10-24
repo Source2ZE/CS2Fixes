@@ -58,9 +58,6 @@
 
 #include "tier0/memdbgon.h"
 
-class GameSessionConfiguration_t
-{};
-
 KHOOK_VIRTUAL(GameFrame, &IServerGameDLL::GameFrame, g_pSource2Server, nullptr, Hook_GameFrame_Post);
 KHOOK_VIRTUAL(GameServerSteamAPIActivated, &IServerGameDLL::GameServerSteamAPIActivated, g_pSource2Server, Hook_GameServerSteamAPIActivated, nullptr);
 KHOOK_VIRTUAL(ApplyGameSettings, &IServerGameDLL::ApplyGameSettings, g_pSource2Server, Hook_ApplyGameSettings, nullptr);

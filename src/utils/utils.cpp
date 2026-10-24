@@ -53,8 +53,7 @@ CUtlVector<CServerSideClient*>* GetClientList()
 	if (!GetNetworkGameServer())
 		return nullptr;
 
-	static int offset = g_GameConfig->GetOffset("CNetworkGameServer_ClientList");
-	return (CUtlVector<CServerSideClient*>*)(&GetNetworkGameServer()[offset]);
+	return (CUtlVector<CServerSideClient*>*)&GetNetworkGameServer()->m_Clients;
 }
 
 CServerSideClient* GetClientBySlot(CPlayerSlot slot)
