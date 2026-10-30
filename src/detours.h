@@ -19,9 +19,11 @@
 
 #pragma once
 #include "cs2_sdk/entityio.h"
+#include "engine2/isource2engine.h"
 #include "khook.hpp"
 #include "map.h"
-#include <tier0/utlsymboltablelarge.h>
+
+#include <set>
 
 class CCheckTransmitInfo;
 class IRecipientFilter;
@@ -54,10 +56,13 @@ class Vector;
 class QAngle;
 class CEconItemView;
 class CCSGameRules;
+class CGameEntitySystem;
 class CBeam;
 class IWorldRendererMgr;
 struct CPulseArgumentPack;
 struct CTakeDamageResult;
+
+extern std::set<SpawnGroupHandle_t> g_setUnloadingSpawnGroups;
 
 enum class AcquireMethod
 {
@@ -117,3 +122,4 @@ KHook::Return<void> Detour_CCSGameRules_GoToIntermission(CCSGameRules* pThis, bo
 KHook::Return<void> Detour_SetBeamOrigin(CBeam* pThis, const Vector* pVecWorldPosition);
 KHook::Return<void> Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecWorldPosition);
 KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Post(IWorldRendererMgr* pThis, CSingleWorldRep* pSingleWorld);
+KHook::Return<ILoadingSpawnGroup*> Detour_CGameEntitySystem_CreateEntities(CGameEntitySystem* pThis, SpawnGroupHandle_t hSpawnGroup, const CUtlVector<const CEntityKeyValues*>* pKeyValues, const matrix3x4a_t* pSpawnOffset, const char* pszFilter, CreateSpawnGroupType_t createType, const void* pNameFixup, CUtlVector<CEntityHandle>* pOutEntities, bool bUnk);

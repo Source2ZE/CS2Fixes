@@ -87,6 +87,7 @@ KHOOK_MEMBER(CCSGameRules_GoToIntermission, Detour_CCSGameRules_GoToIntermission
 KHOOK_MEMBER(SetBeamOrigin, Detour_SetBeamOrigin, nullptr);
 KHOOK_MEMBER(SetBeamEndPos, Detour_SetBeamEndPos, nullptr);
 KHOOK_MEMBER(CWorldRendererMgr_CreateWorld_Internal, nullptr, Detour_CWorldRendererMgr_CreateWorld_Internal_Post);
+KHOOK_MEMBER(CGameEntitySystem_CreateEntities, Detour_CGameEntitySystem_CreateEntities, nullptr);
 
 std::vector<CKHookBase*>& GetKHookList()
 {
@@ -937,4 +938,15 @@ KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Po
 	}
 
 	return {KHook::Action::Ignore};
+}
+
+std::set<SpawnGroupHandle_t> g_setUnloadingSpawnGroups;
+
+KHook::Return<ILoadingSpawnGroup*> Detour_CGameEntitySystem_CreateEntities(CGameEntitySystem* pThis, SpawnGroupHandle_t hSpawnGroup, const CUtlVector<const CEntityKeyValues*>* pKeyValues, const matrix3x4a_t* pSpawnOffset, const char* pszFilter, CreateSpawnGroupType_t createType, const void* pNameFixup, CUtlVector<CEntityHandle>* pOutEntities, bool bUnk)
+{
+	if (!pszFilter || V_strcmp(pszFilter, "cs_respawn") || !g_setUnloadingSpawnGroups.contains(hSpawnGroup))
+		return {KHook::Action::Ignore};
+
+	// CCSGameRules::CleanUpMap respawns the default entity lump of every spawngroup that hasn't finished unloading, so don't spawn into ones pending unload
+	return {KHook::Action::Supersede, nullptr};
 }

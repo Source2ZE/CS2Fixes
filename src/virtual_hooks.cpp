@@ -26,6 +26,7 @@
 #include "cs_gameevents.pb.h"
 #include "cstrike15_usermessages.pb.h"
 #include "ctimer.h"
+#include "detours.h"
 #include "engine2/iengineservicemgr.h"
 #include "engine2/inetworkgameserver.h"
 #include "engine2/ivengineserver2.h"
@@ -74,6 +75,7 @@ KHOOK_VIRTUAL(StartupServer, &INetworkServerService::StartupServer, g_pNetworkSe
 KHOOK_VIRTUAL(CheckTransmit, &ISource2GameEntities::CheckTransmit, g_pSource2GameEntities, nullptr, Hook_CheckTransmit_Post);
 KHOOK_VIRTUAL(DispatchConCommand, &ICvar::DispatchConCommand, g_pCVar, Hook_DispatchConCommand, nullptr);
 KHOOK_VIRTUAL(SwitchToLoop, &IEngineServiceMgr::SwitchToLoop, g_pEngineServiceMgr, Hook_SwitchToLoop, nullptr);
+KHOOK_VIRTUAL(UnloadSpawnGroup, &IVEngineServer2::UnloadSpawnGroup, g_pEngineServer2, Hook_UnloadSpawnGroup, nullptr);
 
 KHook::Virtual<IGameTypes, void, const char*, const CUtlStringList&> createWorkshopMapGroupHook(0U, Hook_CreateWorkshopMapGroup, nullptr);
 KHook::Virtual<IGameEventManager2, int, const char*, bool> loadEventsFromFileHook(&IGameEventManager2::LoadEventsFromFile, Hook_LoadEventsFromFile, nullptr);
@@ -524,6 +526,7 @@ KHook::Return<void> Hook_StartupServer_Post(INetworkServerService* pThis, const 
 	g_pPanoramaVoteHandler->Reset();
 	g_pVoteManager->VoteManager_Init();
 	g_pIdleSystem->Reset();
+	g_setUnloadingSpawnGroups.clear();
 
 	INetworkStringTable* pInfoPanelTable = g_pNetworkStringTableServer->FindTable("InfoPanel");
 
@@ -719,6 +722,13 @@ KHook::Return<void> Hook_SwitchToLoop(IEngineServiceMgr* pThis, const char* pszL
 		g_pCfgParser->PreLevelLoad(pKV->GetString("levelname", ""));
 		g_pMapMigrations->PreLevelLoad(pKV->GetUint64("customgamemode", 0));
 	}
+
+	return {KHook::Action::Ignore};
+}
+
+KHook::Return<void> Hook_UnloadSpawnGroup(IVEngineServer2* pThis, SpawnGroupHandle_t hSpawnGroup, int unloadOption)
+{
+	g_setUnloadingSpawnGroups.insert(hSpawnGroup);
 
 	return {KHook::Action::Ignore};
 }
