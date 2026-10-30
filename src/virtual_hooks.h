@@ -41,6 +41,7 @@ class CVPhys2World;
 class CTriggerGravity;
 class CGameConfig;
 class IEngineServiceMgr;
+class IVEngineServer2;
 
 void InitVirtualHooks();
 void RemoveVirtualHooks();
@@ -63,6 +64,7 @@ KHook::Return<void> Hook_CheckTransmit_Post(ISource2GameEntities* pThis, CCheckT
 											CBitVec<16384>&, const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities);
 KHook::Return<void> Hook_DispatchConCommand(ICvar* pThis, ConCommandRef cmd, const CCommandContext& ctx, const CCommand& args);
 KHook::Return<void> Hook_SwitchToLoop(IEngineServiceMgr* pThis, const char* pszLoopModeName, KeyValues* pKV, uint32 nId, const char* pszAddonName, bool bUnk);
+KHook::Return<void> Hook_UnloadSpawnGroup(IVEngineServer2* pThis, SpawnGroupHandle_t hSpawnGroup, int unloadOption);
 KHook::Return<void> Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* name, const CUtlStringList& mapList);
 KHook::Return<int> Hook_LoadEventsFromFile(IGameEventManager2* pThis, const char* filename, bool bSearchAll);
 KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CNetMessagePB<CCLCMsg_VoiceData>& msg);
