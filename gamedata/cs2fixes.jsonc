@@ -1,20 +1,6 @@
 {
 	"Signatures":
 	{
-		// Called from Host_Say
-		"UTIL_SayTextFilter":
-		{
-			"library": "server",
-			"windows": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 49 8B D8",
-			"linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 56 4C 8D 75 ? 41 55 41 89 CD"
-		},
-		// Called from Host_Say
-		"UTIL_SayText2Filter":
-		{
-			"library": "server",
-			"windows": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 41 8B D8",
-			"linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 89 D7 31 D2"
-		},
 		// idk a good way to find this again, i just brute forced the vtable. offset is 136 on CTriggerPush
 		"TriggerPush_Touch":
 		{
