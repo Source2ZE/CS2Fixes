@@ -124,7 +124,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>build/cs2fixes.cs2/windows-x86_64;src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;sdk/public/mathlib;$(MMSOURCE112)/core;$(MMSOURCE112)/third_party/khook/include;$(MMSOURCE_DEV)/core;$(MMSOURCE_DEV)/third_party/khook/include;sdk/public/entity2;sdk/public/game/server;sdk/thirdparty/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(MMSOURCE_DEV)/core;$(MMSOURCE_DEV)/third_party/khook/include;sdk/thirdparty/protobuf-3.21.8/src;sdk/public;sdk/public/engine2;sdk/public/mathlib;sdk/public/tier0;sdk/public/entity2;sdk/game/shared;sdk/common;src/cs2_sdk;src/utils;public;build/cs2fixes.2.cs2/windows-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -150,7 +150,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>build/cs2fixes.cs2/windows-x86_64;src/utils;src/cs2_sdk;sdk/public;sdk/public/tier0;sdk/game/shared;sdk/game/server;sdk/public/tier1;sdk/public/mathlib;$(MMSOURCE112)/core;$(MMSOURCE112)/third_party/khook/include;$(MMSOURCE_DEV)/core;$(MMSOURCE_DEV)/third_party/khook/include;sdk/public/entity2;sdk/public/game/server;sdk/thirdparty/protobuf-3.21.8/src;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(MMSOURCE_DEV)/core;$(MMSOURCE_DEV)/third_party/khook/include;sdk/thirdparty/protobuf-3.21.8/src;sdk/public;sdk/public/engine2;sdk/public/mathlib;sdk/public/tier0;sdk/public/entity2;sdk/game/shared;sdk/common;src/cs2_sdk;src/utils;public;build/cs2fixes.2.cs2/windows-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -169,17 +169,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\buttonwatch.cpp" />
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\cs_usercmd.pb.cc" />
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\networkbasetypes.pb.cc" />
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\network_connection.pb.cc" />
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\usercmd.pb.cc" />
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\usermessages.pb.cc" />
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\cstrike15_gcmessages.pb.cc" />
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\cstrike15_usermessages.pb.cc" />
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\gcsdk_gcmessages.pb.cc" />
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\engine_gcmessages.pb.cc" />
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\netmessages.pb.cc" />
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\steammessages.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\cs_usercmd.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\networkbasetypes.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\network_connection.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\usercmd.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\usermessages.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\cstrike15_gcmessages.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\cstrike15_usermessages.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\gcsdk_gcmessages.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\engine_gcmessages.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\netmessages.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\steammessages.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\valveextensions.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\gameevents.pb.cc" />
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\cs_gameevents.pb.cc" />
     <ClCompile Include="sdk\entity2\entityidentity.cpp" />
     <ClCompile Include="sdk\entity2\entitykeyvalues.cpp" />
     <ClCompile Include="sdk\entity2\entitysystem.cpp" />

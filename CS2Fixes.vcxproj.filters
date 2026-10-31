@@ -140,37 +140,46 @@
     <ClCompile Include="src\panoramavote.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\usermessages.pb.cc">
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\usermessages.pb.cc">
       <Filter>Source Files\protobuf</Filter>
     </ClCompile>
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\cs_usercmd.pb.cc">
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\cs_usercmd.pb.cc">
       <Filter>Source Files\protobuf</Filter>
     </ClCompile>
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\cstrike15_gcmessages.pb.cc">
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\cstrike15_gcmessages.pb.cc">
       <Filter>Source Files\protobuf</Filter>
     </ClCompile>
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\cstrike15_usermessages.pb.cc">
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\cstrike15_usermessages.pb.cc">
       <Filter>Source Files\protobuf</Filter>
     </ClCompile>
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\engine_gcmessages.pb.cc">
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\engine_gcmessages.pb.cc">
       <Filter>Source Files\protobuf</Filter>
     </ClCompile>
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\gcsdk_gcmessages.pb.cc">
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\gcsdk_gcmessages.pb.cc">
       <Filter>Source Files\protobuf</Filter>
     </ClCompile>
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\netmessages.pb.cc">
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\netmessages.pb.cc">
       <Filter>Source Files\protobuf</Filter>
     </ClCompile>
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\network_connection.pb.cc">
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\network_connection.pb.cc">
       <Filter>Source Files\protobuf</Filter>
     </ClCompile>
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\networkbasetypes.pb.cc">
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\networkbasetypes.pb.cc">
       <Filter>Source Files\protobuf</Filter>
     </ClCompile>
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\steammessages.pb.cc">
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\steammessages.pb.cc">
       <Filter>Source Files\protobuf</Filter>
     </ClCompile>
-    <ClCompile Include="build\cs2fixes.cs2\windows-x86_64\usercmd.pb.cc">
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\usercmd.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\valveextensions.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\gameevents.pb.cc">
+      <Filter>Source Files\protobuf</Filter>
+    </ClCompile>
+    <ClCompile Include="build\cs2fixes.2.cs2\windows-x86_64\cs_gameevents.pb.cc">
       <Filter>Source Files\protobuf</Filter>
     </ClCompile>
     <ClCompile Include="sdk\public\tier0\memoverride.cpp">
