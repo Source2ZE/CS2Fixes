@@ -20,8 +20,6 @@
 #include "discord.h"
 #include "common.h"
 #include "httpmanager.h"
-#include "interfaces/interfaces.h"
-#include "tier0/keyvalues.h"
 #include <fstream>
 
 #include "vendor/nlohmann/json.hpp"
@@ -82,13 +80,8 @@ bool CDiscordBotManager::LoadDiscordBotsConfig()
 
 	if (!jsonFile.is_open())
 	{
-		if (!ConvertDiscordBotsKVToJSON())
-		{
-			Panic("Failed to open %s and convert KV1 discordbots.cfg to JSON format, discord bots are not loaded!\n", pszJsonPath);
-			return false;
-		}
-
-		jsonFile.open(szPath);
+		Panic("Failed to open %s, discord bots are not loaded!\n", pszJsonPath);
+		return false;
 	}
 
 	ordered_json jDiscordBots = ordered_json::parse(jsonFile, nullptr, false, true);
@@ -121,69 +114,5 @@ bool CDiscordBotManager::LoadDiscordBotsConfig()
 		m_vecDiscordBots.push_back(pBot);
 	}
 
-	return true;
-}
-
-// TODO: Remove this once servers have been given a few months to update cs2fixes
-bool CDiscordBotManager::ConvertDiscordBotsKVToJSON()
-{
-	KeyValues* pKV = new KeyValues("discordbots");
-	KeyValues::AutoDelete autoDelete(pKV);
-
-	const char* pszPath = "addons/cs2fixes/configs/discordbots.cfg";
-	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
-	{
-		Panic("Failed to load %s\n", pszPath);
-		return false;
-	}
-
-	ordered_json jDiscordBots;
-
-	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
-	{
-		const char* pszWebhookUrl = pKey->GetString("webhook", nullptr);
-
-		if (!pszWebhookUrl)
-		{
-			Panic("Discord bot entry %s is missing 'webhook' key\n", pKey->GetName());
-			return false;
-		}
-
-		ordered_json jDiscordBot;
-		jDiscordBot["webhook"] = pszWebhookUrl;
-
-		if (pKey->FindKey("avatar"))
-			jDiscordBot["avatar"] = pKey->GetString("avatar", "");
-
-		jDiscordBot["override_name"] = pKey->GetBool("override_name", false);
-		jDiscordBots[pKey->GetName()] = jDiscordBot;
-	}
-
-	const char* pszJsonPath = "addons/cs2fixes/configs/discordbots.jsonc";
-	const char* pszKVConfigRenamePath = "addons/cs2fixes/configs/discordbots_old.cfg";
-	char szPath[MAX_PATH];
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
-	std::ofstream jsonFile(szPath);
-
-	if (!jsonFile.is_open())
-	{
-		Panic("Failed to open %s\n", pszJsonPath);
-		return false;
-	}
-
-	jsonFile << std::setfill('\t') << std::setw(1) << jDiscordBots << std::endl;
-
-	char szKVRenamePath[MAX_PATH];
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszPath);
-	V_snprintf(szKVRenamePath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVConfigRenamePath);
-
-	std::rename(szPath, szKVRenamePath);
-
-	// remove old cfg example if it exists
-	const char* pszKVExamplePath = "addons/cs2fixes/configs/discordbots.cfg.example";
-	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVExamplePath);
-	std::remove(szPath);
-
-	Message("Successfully converted KV1 discordbots.cfg to JSON format at %s\n", pszJsonPath);
 	return true;
 }
