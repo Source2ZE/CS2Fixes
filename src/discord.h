@@ -53,9 +53,6 @@ public:
 	void PostDiscordMessage(const char* pszDiscordBotName, const char* pszMessage);
 	bool LoadDiscordBotsConfig();
 
-	// TODO: Remove this once servers have been given a few months to update cs2fixes
-	bool ConvertDiscordBotsKVToJSON();
-
 private:
 	std::vector<std::shared_ptr<CDiscordBot>> m_vecDiscordBots;
 };
