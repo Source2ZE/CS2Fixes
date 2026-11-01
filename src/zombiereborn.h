@@ -252,6 +252,9 @@ public:
 	void LoadWeaponConfig();
 	std::shared_ptr<ZRWeapon> FindWeapon(const char* pszWeaponName);
 
+	// TODO: Remove this once servers have been given a few months to update cs2fixes
+	bool ConvertWeaponsKVToJSON();
+
 private:
 	std::map<uint32, std::shared_ptr<ZRWeapon>> m_WeaponMap;
 };
@@ -263,6 +266,9 @@ class ZRHitgroupConfig
 public:
 	void LoadHitgroupConfig();
 	std::shared_ptr<ZRHitgroup> FindHitgroupIndex(int iIndex);
+
+	// TODO: Remove this once servers have been given a few months to update cs2fixes
+	bool ConvertHitgroupsKVToJSON();
 
 private:
 	std::map<uint32, std::shared_ptr<ZRHitgroup>> m_HitgroupMap;

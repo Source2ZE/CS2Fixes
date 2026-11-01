@@ -736,6 +736,52 @@ void ZR_OnLevelInit()
 void ZRWeaponConfig::LoadWeaponConfig()
 {
 	m_WeaponMap.clear();
+
+	const char* pszJsonPath = "addons/cs2fixes/configs/zr/weapons.jsonc";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
+	std::ifstream jsonFile(szPath);
+
+	if (!jsonFile.is_open())
+	{
+		if (!ConvertWeaponsKVToJSON())
+		{
+			Panic("Failed to open %s and convert KV1 weapons.cfg to JSON format, weapons are not loaded!\n", pszJsonPath);
+			return;
+		}
+
+		jsonFile.open(szPath);
+	}
+
+	ordered_json jsonWeapons = ordered_json::parse(jsonFile, nullptr, false, true);
+
+	if (jsonWeapons.is_discarded())
+	{
+		Panic("Failed parsing JSON from %s, weapons are not loaded!\n", pszJsonPath);
+		return;
+	}
+
+	for (auto& [szWeaponName, jsonWeapon] : jsonWeapons.items())
+	{
+		bool bEnabled = jsonWeapon.value("enabled", false);
+		float flKnockback = jsonWeapon.value("knockback", 1.0f);
+		Message("%s knockback: %f\n", szWeaponName.c_str(), flKnockback);
+		std::shared_ptr<ZRWeapon> weapon = std::make_shared<ZRWeapon>();
+
+		if (!bEnabled)
+			continue;
+
+		weapon->flKnockback = flKnockback;
+
+		m_WeaponMap.insert(std::make_pair(hash_32_fnv1a_const(szWeaponName.c_str()), weapon));
+	}
+
+	return;
+}
+
+// TODO: Remove this once servers have been given a few months to update cs2fixes
+bool ZRWeaponConfig::ConvertWeaponsKVToJSON()
+{
 	KeyValues* pKV = new KeyValues("Weapons");
 	KeyValues::AutoDelete autoDelete(pKV);
 
@@ -743,25 +789,51 @@ void ZRWeaponConfig::LoadWeaponConfig()
 
 	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
 	{
-		Warning("Failed to load %s\n", pszPath);
-		return;
+		Panic("Failed to load %s\n", pszPath);
+		return false;
 	}
+
+	ordered_json jsonWeapons;
+
 	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
 	{
-		const char* pszWeaponName = pKey->GetName();
-		bool bEnabled = pKey->GetBool("enabled", false);
-		float flKnockback = pKey->GetFloat("knockback", 1.0f);
-		Message("%s knockback: %f\n", pszWeaponName, flKnockback);
-		std::shared_ptr<ZRWeapon> weapon = std::make_shared<ZRWeapon>();
-		if (!bEnabled)
-			continue;
+		ordered_json jsonWeapon;
 
-		weapon->flKnockback = flKnockback;
+		// combating float imprecision when writing to .jsonc
+		if (pKey->FindKey("knockback"))
+			jsonWeapon["knockback"] = std::strtod(pKey->GetString("knockback"), nullptr);
 
-		m_WeaponMap.insert(std::make_pair(hash_32_fnv1a_const(pszWeaponName), weapon));
+		jsonWeapon["enabled"] = pKey->GetBool("enabled", false);
+		jsonWeapons[pKey->GetName()] = jsonWeapon;
 	}
 
-	return;
+	const char* pszJsonPath = "addons/cs2fixes/configs/zr/weapons.jsonc";
+	const char* pszKVConfigRenamePath = "addons/cs2fixes/configs/zr/weapons_old.cfg";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
+	std::ofstream jsonFile(szPath);
+
+	if (!jsonFile.is_open())
+	{
+		Panic("Failed to open %s\n", pszJsonPath);
+		return false;
+	}
+
+	jsonFile << std::setfill('\t') << std::setw(1) << jsonWeapons << std::endl;
+
+	char szKVRenamePath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszPath);
+	V_snprintf(szKVRenamePath, sizeof(szKVRenamePath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVConfigRenamePath);
+
+	std::rename(szPath, szKVRenamePath);
+
+	// remove old cfg example if it exists
+	const char* pszKVExamplePath = "addons/cs2fixes/configs/zr/weapons.cfg.example";
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVExamplePath);
+	std::remove(szPath);
+
+	Message("Successfully converted KV1 weapons.cfg to JSON format at %s\n", pszJsonPath);
+	return true;
 }
 
 std::shared_ptr<ZRWeapon> ZRWeaponConfig::FindWeapon(const char* pszWeaponName)
@@ -782,20 +854,35 @@ std::shared_ptr<ZRWeapon> ZRWeaponConfig::FindWeapon(const char* pszWeaponName)
 void ZRHitgroupConfig::LoadHitgroupConfig()
 {
 	m_HitgroupMap.clear();
-	KeyValues* pKV = new KeyValues("Hitgroups");
-	KeyValues::AutoDelete autoDelete(pKV);
 
-	const char* pszPath = "addons/cs2fixes/configs/zr/hitgroups.cfg";
+	const char* pszJsonPath = "addons/cs2fixes/configs/zr/hitgroups.jsonc";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
+	std::ifstream jsonFile(szPath);
 
-	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
+	if (!jsonFile.is_open())
 	{
-		Warning("Failed to load %s\n", pszPath);
+		if (!ConvertHitgroupsKVToJSON())
+		{
+			Panic("Failed to open %s and convert KV1 hitgroups.cfg to JSON format, hitgroups are not loaded!\n", pszJsonPath);
+			return;
+		}
+
+		jsonFile.open(szPath);
+	}
+
+	ordered_json jsonHitgroups = ordered_json::parse(jsonFile, nullptr, false, true);
+
+	if (jsonHitgroups.is_discarded())
+	{
+		Panic("Failed parsing JSON from %s, hitgroups are not loaded!\n", pszJsonPath);
 		return;
 	}
-	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+
+	for (auto& [szHitgroupName, jsonHitgroup] : jsonHitgroups.items())
 	{
-		const char* pszHitgroupName = pKey->GetName();
-		float flKnockback = pKey->GetFloat("knockback", 1.0f);
+		const char* pszHitgroupName = szHitgroupName.c_str();
+		float flKnockback = jsonHitgroup.value("knockback", 1.0f);
 		int iIndex = -1;
 
 		if (!V_strcasecmp(pszHitgroupName, "Generic"))
@@ -821,7 +908,7 @@ void ZRHitgroupConfig::LoadHitgroupConfig()
 
 		if (iIndex == -1)
 		{
-			Panic("Failed to load hitgroup %s, invalid name!", pszHitgroupName);
+			Panic("Failed to load hitgroup %s, invalid name!\n", pszHitgroupName);
 			continue;
 		}
 
@@ -833,6 +920,60 @@ void ZRHitgroupConfig::LoadHitgroupConfig()
 	}
 
 	return;
+}
+
+// TODO: Remove this once servers have been given a few months to update cs2fixes
+bool ZRHitgroupConfig::ConvertHitgroupsKVToJSON()
+{
+	KeyValues* pKV = new KeyValues("Hitgroups");
+	KeyValues::AutoDelete autoDelete(pKV);
+
+	const char* pszPath = "addons/cs2fixes/configs/zr/hitgroups.cfg";
+
+	if (!pKV->LoadFromFile(g_pFullFileSystem, pszPath))
+	{
+		Panic("Failed to load %s\n", pszPath);
+		return false;
+	}
+
+	ordered_json jsonHitgroups;
+
+	for (KeyValues* pKey = pKV->GetFirstSubKey(); pKey; pKey = pKey->GetNextKey())
+	{
+		ordered_json jsonHitgroup;
+
+		// combating float imprecision when writing to .jsonc
+		jsonHitgroup["knockback"] = std::strtod(pKey->GetString("knockback", "1.0"), nullptr);
+		jsonHitgroups[pKey->GetName()] = jsonHitgroup;
+	}
+
+	const char* pszJsonPath = "addons/cs2fixes/configs/zr/hitgroups.jsonc";
+	const char* pszKVConfigRenamePath = "addons/cs2fixes/configs/zr/hitgroups_old.cfg";
+	char szPath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszJsonPath);
+	std::ofstream jsonFile(szPath);
+
+	if (!jsonFile.is_open())
+	{
+		Panic("Failed to open %s\n", pszJsonPath);
+		return false;
+	}
+
+	jsonFile << std::setfill('\t') << std::setw(1) << jsonHitgroups << std::endl;
+
+	char szKVRenamePath[MAX_PATH];
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszPath);
+	V_snprintf(szKVRenamePath, sizeof(szKVRenamePath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVConfigRenamePath);
+
+	std::rename(szPath, szKVRenamePath);
+
+	// remove old cfg example if it exists
+	const char* pszKVExamplePath = "addons/cs2fixes/configs/zr/hitgroups.cfg.example";
+	V_snprintf(szPath, sizeof(szPath), "%s%s%s", Plat_GetGameDirectory(), "/csgo/", pszKVExamplePath);
+	std::remove(szPath);
+
+	Message("Successfully converted KV1 hitgroups.cfg to JSON format at %s\n", pszJsonPath);
+	return true;
 }
 
 std::shared_ptr<ZRHitgroup> ZRHitgroupConfig::FindHitgroupIndex(int iIndex)

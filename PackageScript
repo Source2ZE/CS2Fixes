@@ -119,8 +119,8 @@ for task in MMSPlugin.tasks:
   builder.AddCopy(os.path.join('cfg', 'cs2fixes.cfg'), cfg_folder)
   builder.AddCopy(os.path.join('cfg', 'maps', 'de_somemap.cfg'), mapcfg_folder)
   builder.AddCopy(os.path.join('configs', 'zr', 'playerclass.jsonc.example'), zr_folder)
-  builder.AddCopy(os.path.join('configs', 'zr', 'weapons.cfg.example'), zr_folder)
-  builder.AddCopy(os.path.join('configs', 'zr', 'hitgroups.cfg.example'), zr_folder)
+  builder.AddCopy(os.path.join('configs', 'zr', 'weapons.jsonc.example'), zr_folder)
+  builder.AddCopy(os.path.join('configs', 'zr', 'hitgroups.jsonc.example'), zr_folder)
   builder.AddCopy(os.path.join('configs', 'entwatch', 'maps', 'template.jsonc'), ew_maps_folder)
   builder.AddCopy(os.path.join('gamedata', 'cs2fixes.jsonc'), gamedata_folder)
 

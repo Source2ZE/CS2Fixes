@@ -1,0 +1,42 @@
+{
+	"Generic":
+	{
+		"knockback": 1.0 // The knockback multiplier for this hitgroup
+	},
+	"Head":
+	{
+		"knockback": 1.0
+	},
+	"Chest":
+	{
+		"knockback": 1.0
+	},
+	"Stomach":
+	{
+		"knockback": 1.0
+	},
+	"LeftArm":
+	{
+		"knockback": 1.0
+	},
+	"RightArm":
+	{
+		"knockback": 1.0
+	},
+	"LeftLeg":
+	{
+		"knockback": 1.0
+	},
+	"RightLeg":
+	{
+		"knockback": 1.0
+	},
+	"Neck":
+	{
+		"knockback": 1.0
+	},
+	"Gear":
+	{
+		"knockback": 1.0
+	}
+}

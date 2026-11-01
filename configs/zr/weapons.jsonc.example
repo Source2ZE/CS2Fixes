@@ -1,0 +1,271 @@
+{
+	// "weapon classname w/o weapon_":
+	// {
+	//	"enabled": false, // whether this weapon can be used by humans
+	//	"knockback": 0.0 // knockback scale for when humans shoot a zombie using this weapon
+	// },
+
+	// Gear
+	"c4":
+	{
+		"enabled": true
+	},
+	"knife":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"taser":
+	{
+		"enabled": false
+	},
+	"shield":
+	{
+		"enabled": false
+	},
+	"bumpmine":
+	{
+		"enabled": false
+	},
+	"breachcharge":
+	{
+		"enabled": false
+	},
+	"kevlar":
+	{
+		"enabled": true
+	},
+	"assaultsuit":
+	{
+		"enabled": false
+	},
+	"defuser":
+	{
+		"enabled": false
+	},
+
+	// Grenade
+	"decoy":
+	{
+		"enabled": false
+	},
+	"flashbang":
+	{
+		"enabled": false
+	},
+	"healthshot":
+	{
+		"enabled": false
+	},
+	"hegrenade":
+	{
+		"enabled": true,
+		"knockback": 3.0
+	},
+	"hegrenade_projectile": // hegrenade explosion knockback
+	{
+		"enabled": true,
+		"knockback": 3.0
+	},
+	"inferno": // incgrenade and molotov flames knockback
+	{
+		"enabled": true,
+		"knockback": 5.0
+	},
+	"incgrenade":
+	{
+		"enabled": true,
+		"knockback": 5.0
+	},
+	"molotov":
+	{
+		"enabled": true,
+		"knockback": 5.0
+	},
+	"smokegrenade":
+	{
+		"enabled": false
+	},
+	"tagrenade":
+	{
+		"enabled": false
+	},
+
+	// Heavy
+	"m249":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"mag7":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"negev":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"nova":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"sawedoff":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"xm1014":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+
+	// Pistol
+	"cz75a":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"deagle":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"elite":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"fiveseven":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"glock":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"hkp2000":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"p250":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"revolver":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"tec9":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"usp_silencer":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+
+	// Rifle
+	"ak47":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"aug":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"awp":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"famas":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"g3sg1":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"galilar":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"m4a1":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"m4a1_silencer":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"scar20":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"sg556":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"ssg08":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+
+	// SMG
+	"bizon":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"mac10":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"mp5sd":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"mp7":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"mp9":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"p90":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	},
+	"ump45":
+	{
+		"enabled": true,
+		"knockback": 1.0
+	}
+}
