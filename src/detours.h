@@ -50,6 +50,7 @@ class CUserCmd;
 class CCSPlayerPawn;
 class CCSPlayer_UseServices;
 class CTraceFilter;
+class CPhysicsPushedEntities;
 class CNavMesh;
 class CBaseModelEntity;
 class Vector;
@@ -121,3 +122,8 @@ KHook::Return<void> Detour_SetBeamOrigin(CBeam* pThis, const Vector* pVecWorldPo
 KHook::Return<void> Detour_SetBeamEndPos(CBeam* pThis, const Vector* pVecWorldPosition);
 KHook::Return<CSingleWorldRep*> Detour_CWorldRendererMgr_CreateWorld_Internal_Post(IWorldRendererMgr* pThis, CSingleWorldRep* pSingleWorld);
 KHook::Return<ILoadingSpawnGroup*> Detour_CGameEntitySystem_CreateEntities(CGameEntitySystem* pThis, SpawnGroupHandle_t hSpawnGroup, const CUtlVector<const CEntityKeyValues*>* pKeyValues, const matrix3x4a_t* pSpawnOffset, const char* pszFilter, CreateSpawnGroupType_t createType, const void* pNameFixup, CUtlVector<CEntityHandle>* pOutEntities, bool bUnk);
+KHook::Return<void> Detour_UnlinkPusherList(CPhysicsPushedEntities* pThis);
+KHook::Return<void> Detour_RelinkPusherList(CPhysicsPushedEntities* pThis);
+KHook::Return<bool> Detour_SpeculativelyCheckPush(CPhysicsPushedEntities* pThis, void* pPushedInfo, const Vector* pVecAbsPush, bool bRotationalPush, int64_t unk5);
+
+bool IsNonSolidPusher(CEntityInstance* pEntity, bool bPushFinalTrace);

@@ -39,6 +39,7 @@ class CGamePlayerEquip;
 class CCSPlayerPawn;
 class CVPhys2World;
 class CTriggerGravity;
+class CTraceFilter;
 class CGameConfig;
 class IEngineServiceMgr;
 class IVEngineServer2;
@@ -78,3 +79,5 @@ KHook::Return<void> Hook_TriggerGravityEndTouch_Post(CTriggerGravity* pThis, CBa
 KHook::Return<bool> Hook_OnTakeDamage_Alive(CCSPlayerPawn* pPawn, CTakeDamageResult* pDamageResult);
 KHook::Return<void> Hook_CCSPlayerPawn_Teleport(CCSPlayerPawn* pPawn, const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity);
 KHook::Return<void> Hook_CCSPlayerPawn_Teleport_Post(CCSPlayerPawn* pPawn, const Vector* pPosition, const QAngle* pAngles, const Vector* pVelocity);
+KHook::Return<bool> Hook_TraceFilterPushMove_ShouldHitEntity(CTraceFilter* pThis, CEntityInstance* pEntity);
+KHook::Return<bool> Hook_TraceFilterPushFinal_ShouldHitEntity(CTraceFilter* pThis, CEntityInstance* pEntity);

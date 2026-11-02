@@ -49,6 +49,7 @@
 #include "map_votes.h"
 #include "mapmigrations.h"
 #include "playermanager.h"
+#include "pushentity.h"
 #include "tier0/vprof.h"
 #include "votemanager.h"
 #include "zombiereborn.h"
@@ -85,6 +86,9 @@ KHOOK_MEMBER(SetBeamOrigin, Detour_SetBeamOrigin, nullptr);
 KHOOK_MEMBER(SetBeamEndPos, Detour_SetBeamEndPos, nullptr);
 KHOOK_MEMBER(CWorldRendererMgr_CreateWorld_Internal, nullptr, Detour_CWorldRendererMgr_CreateWorld_Internal_Post);
 KHOOK_MEMBER(CGameEntitySystem_CreateEntities, Detour_CGameEntitySystem_CreateEntities, nullptr);
+KHOOK_MEMBER(UnlinkPusherList, Detour_UnlinkPusherList, nullptr);
+KHOOK_MEMBER(RelinkPusherList, Detour_RelinkPusherList, nullptr);
+KHOOK_MEMBER(SpeculativelyCheckPush, Detour_SpeculativelyCheckPush, nullptr);
 
 std::vector<CKHookBase*>& GetKHookList()
 {
@@ -807,4 +811,74 @@ KHook::Return<ILoadingSpawnGroup*> Detour_CGameEntitySystem_CreateEntities(CGame
 
 	// CCSGameRules::CleanUpMap respawns the default entity lump of every spawngroup that hasn't finished unloading, so don't spawn into ones pending unload
 	return {KHook::Action::Supersede, nullptr};
+}
+
+// For every entity a mover pushes, the game toggles the collision of the mover and all its children off and back on around the push trace, which is very expensive with many riders. Instead, leave the pushers solid and filter them out of the traces.
+CConVar<bool> g_cvarFixPusherSolidToggle("cs2f_fix_pusher_solid_toggle", FCVAR_NONE, "Whether to filter movers out of push traces, fixes lag with many players on moving entities", false);
+
+CPhysicsPushedEntities* g_pCurrentPushedEntities = nullptr;
+int g_iCurrentPusherCount = 0;
+int g_iSpeculativePushDepth = 0;
+
+bool IsNonSolidPusher(CEntityInstance* pEntity, bool bPushFinalTrace)
+{
+	// SpeculativelyCheckPush only traces with PushFinal after relinking, where the pushers must be solid
+	if (!g_pCurrentPushedEntities || (bPushFinalTrace && g_iSpeculativePushDepth > 0))
+		return false;
+
+	// Base() as the count is 0 inside SpeculativelyCheckPush
+	for (int i = 0; i < g_iCurrentPusherCount; i++)
+		if (g_pCurrentPushedEntities->m_rgPusher.Base()[i].m_pEntity == pEntity)
+			return true;
+
+	return false;
+}
+
+KHook::Return<void> Detour_UnlinkPusherList(CPhysicsPushedEntities* pThis)
+{
+	// SpeculativelyCheckPush calls this on Linux, it's handled there instead
+	if (g_iSpeculativePushDepth > 0 || !g_cvarFixPusherSolidToggle.Get())
+		return {KHook::Action::Ignore};
+
+	// Makes RelinkPusherList a no-op
+	for (auto& pusher : pThis->m_rgPusher)
+		pusher.m_bCollisionCleared = false;
+
+	g_pCurrentPushedEntities = pThis;
+	g_iCurrentPusherCount = pThis->m_rgPusher.Count();
+	return {KHook::Action::Supersede};
+}
+
+KHook::Return<void> Detour_RelinkPusherList(CPhysicsPushedEntities* pThis)
+{
+	if (g_iSpeculativePushDepth == 0 && g_pCurrentPushedEntities == pThis)
+		g_pCurrentPushedEntities = nullptr;
+
+	return {KHook::Action::Ignore};
+}
+
+// MSVC inlines UnlinkPusherList here, so empty m_rgPusher instead, which also skips the inlined relink loop.
+KHook::Return<bool> Detour_SpeculativelyCheckPush(CPhysicsPushedEntities* pThis, void* pPushedInfo, const Vector* pVecAbsPush, bool bRotationalPush, int64_t unk5)
+{
+	if (!g_cvarFixPusherSolidToggle.Get())
+		return {KHook::Action::Ignore};
+
+	auto pPrevPushedEntities = g_pCurrentPushedEntities;
+	int iPrevCount = g_iCurrentPusherCount;
+	int iCount = pThis->m_rgPusher.Count();
+	auto pPushers = static_cast<CUtlVectorAccessor<PhysicsPusherInfo_t>*>(&pThis->m_rgPusher);
+
+	g_pCurrentPushedEntities = pThis;
+	g_iCurrentPusherCount = iCount;
+	pPushers->SetCountUnsafe(0);
+	g_iSpeculativePushDepth++;
+
+	bool bResult = hookSpeculativelyCheckPush->CallOriginal(pThis, pPushedInfo, pVecAbsPush, bRotationalPush, unk5);
+
+	g_iSpeculativePushDepth--;
+	pPushers->SetCountUnsafe(iCount);
+	g_pCurrentPushedEntities = pPrevPushedEntities;
+	g_iCurrentPusherCount = iPrevCount;
+
+	return {KHook::Action::Supersede, bResult};
 }
