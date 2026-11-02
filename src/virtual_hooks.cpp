@@ -43,6 +43,7 @@
 #include "eventlistener.h"
 #include "gameconfig.h"
 #include "gameevents.pb.h"
+#include "gametrace.h"
 #include "idlemanager.h"
 #include "khook_helpers.h"
 #include "leader.h"
@@ -91,6 +92,8 @@ KHook::Virtual<CTriggerGravity, void, CEntityPrecacheContext*> triggerGravityPre
 KHook::Virtual<CTriggerGravity, void, CBaseEntity*> triggerGravityEndTouchHook(0U, nullptr, Hook_TriggerGravityEndTouch_Post);
 KHook::Virtual<CCSPlayerPawn, bool, CTakeDamageResult*> onTakeDamageAliveHook(0U, Hook_OnTakeDamage_Alive, nullptr);
 KHook::Virtual<CCSPlayerPawn, void, const Vector*, const QAngle*, const Vector*> playerPawnTeleportHook(0U, Hook_CCSPlayerPawn_Teleport, Hook_CCSPlayerPawn_Teleport_Post);
+KHook::Virtual<CTraceFilter, bool, CEntityInstance*> pushMoveShouldHitEntityHook(&CTraceFilter::ShouldHitEntity, Hook_TraceFilterPushMove_ShouldHitEntity, nullptr);
+KHook::Virtual<CTraceFilter, bool, CEntityInstance*> pushFinalShouldHitEntityHook(&CTraceFilter::ShouldHitEntity, Hook_TraceFilterPushFinal_ShouldHitEntity, nullptr);
 
 IGameEventManager2* g_pCGameEventManagerVTable = nullptr;
 CVPhys2World* g_pCVPhys2WorldVTable = nullptr;
@@ -100,6 +103,8 @@ CGamePlayerEquip* g_pCGamePlayerEquipVTable = nullptr;
 CTriggerGravity* g_pTriggerGravityVTable = nullptr;
 CCSPlayerPawn* g_pCCSPlayerPawnVTable = nullptr;
 CServerSideClient* g_pCServerSideClientVTable = nullptr;
+CTraceFilter* g_pCTraceFilterPushMoveVTable = nullptr;
+CTraceFilter* g_pCTraceFilterPushFinalVTable = nullptr;
 
 template <typename CLASS, typename RETURN, typename... ARGS>
 bool SetupVirtualHook(KHook::Virtual<CLASS, RETURN, ARGS...>& hook, const char* name, CLASS* pInstance = nullptr)
@@ -154,6 +159,8 @@ void InitVirtualHooks()
 	SetupGlobalVirtualHook(triggerGravityEndTouchHook, g_pTriggerGravityVTable, modules::server, "CTriggerGravity", "CBaseEntity::EndTouch");
 	SetupGlobalVirtualHook(onTakeDamageAliveHook, g_pCCSPlayerPawnVTable, modules::server, "CCSPlayerPawn", "CCSPlayerPawn::OnTakeDamage_Alive");
 	SetupGlobalVirtualHook(playerPawnTeleportHook, g_pCCSPlayerPawnVTable, modules::server, "CCSPlayerPawn", "Teleport");
+	SetupGlobalVirtualHook(pushMoveShouldHitEntityHook, g_pCTraceFilterPushMoveVTable, modules::server, "CTraceFilterPushMove");
+	SetupGlobalVirtualHook(pushFinalShouldHitEntityHook, g_pCTraceFilterPushFinalVTable, modules::server, "CTraceFilterPushFinal");
 }
 
 void RemoveVirtualHooks()
@@ -170,6 +177,8 @@ void RemoveVirtualHooks()
 	triggerGravityEndTouchHook.RemoveGlobal((CTriggerGravity*)&g_pTriggerGravityVTable);
 	onTakeDamageAliveHook.RemoveGlobal((CCSPlayerPawn*)&g_pCCSPlayerPawnVTable);
 	playerPawnTeleportHook.RemoveGlobal((CCSPlayerPawn*)&g_pCCSPlayerPawnVTable);
+	pushMoveShouldHitEntityHook.RemoveGlobal((CTraceFilter*)&g_pCTraceFilterPushMoveVTable);
+	pushFinalShouldHitEntityHook.RemoveGlobal((CTraceFilter*)&g_pCTraceFilterPushFinalVTable);
 }
 
 KHook::Return<void> Hook_GameFrame_Post(IServerGameDLL* pThis, bool simulating, bool bFirstTick, bool bLastTick)
@@ -1085,5 +1094,23 @@ KHook::Return<void> Hook_CCSPlayerPawn_Teleport_Post(CCSPlayerPawn* pPawn, const
 	pCastAngles->x = g_fTeleportXAngle;
 
 	pPawn->SnapViewAngles(pCastAngles);
+	return {KHook::Action::Ignore};
+}
+
+KHook::Return<bool> Hook_TraceFilterPushMove_ShouldHitEntity(CTraceFilter* pThis, CEntityInstance* pEntity)
+{
+	// Pushers are left solid by solid toggle fix, filter them out of push traces instead
+	if (IsNonSolidPusher(pEntity, false))
+		return {KHook::Action::Supersede, false};
+
+	return {KHook::Action::Ignore};
+}
+
+KHook::Return<bool> Hook_TraceFilterPushFinal_ShouldHitEntity(CTraceFilter* pThis, CEntityInstance* pEntity)
+{
+	// Pushers are left solid by solid toggle fix, filter them out of push traces instead
+	if (IsNonSolidPusher(pEntity, true))
+		return {KHook::Action::Supersede, false};
+
 	return {KHook::Action::Ignore};
 }
