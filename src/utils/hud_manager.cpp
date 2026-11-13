@@ -64,7 +64,7 @@ void CreateHudMessage(std::shared_ptr<CHudMessage> pHudMessage)
 	pEvent->SetInt("duration", pHudMessage->GetDuration() + g_cvarHudDurationLeeway.Get());
 	pEvent->SetInt("userid", -1);
 
-	INetworkMessageInternal* pMsg = g_pNetworkMessages->FindNetworkMessageById(GE_Source1LegacyGameEvent);
+	NetMessageInfo_t* pMsg = g_pNetworkMessages->FindNetworkMessageById(GE_Source1LegacyGameEvent);
 
 	if (!pMsg)
 		return;

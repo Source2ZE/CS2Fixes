@@ -41,7 +41,7 @@ class CCSPlayer_WeaponServices;
 class CCSPlayer_MovementServices;
 class CCSPlayer_ItemServices;
 class CBasePlayerWeapon;
-class INetworkMessageInternal;
+struct NetMessageInfo_t;
 class IEngineServiceMgr;
 class CServerSideClient;
 class INetChannel;

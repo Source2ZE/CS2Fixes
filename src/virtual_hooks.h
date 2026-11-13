@@ -52,20 +52,20 @@ KHook::Return<void> Hook_GameServerSteamAPIActivated(IServerGameDLL* pThis);
 KHook::Return<void> Hook_ApplyGameSettings(IServerGameDLL* pThis, KeyValues* pKV);
 KHook::Return<void> Hook_ClientActive_Post(IServerGameClients* pThis, CPlayerSlot slot, bool bLoadGame, const char* pszName, uint64 xuid);
 KHook::Return<void> Hook_ClientDisconnect_Post(IServerGameClients* pThis, CPlayerSlot slot, ENetworkDisconnectionReason reason, const char* pszName, uint64 xuid, const char* pszNetworkID);
-KHook::Return<void> Hook_ClientPutInServer_Post(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, int type, uint64 xuid);
+KHook::Return<void> Hook_ClientPutInServer_Post(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, ClientPutInServerType_t type, uint64 xuid);
 KHook::Return<void> Hook_ClientSettingsChanged(IServerGameClients* pThis, CPlayerSlot slot);
 KHook::Return<void> Hook_OnClientConnected(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, const char* pszAddress, bool bFakePlayer);
 KHook::Return<bool> Hook_ClientConnect(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, uint64 xuid, const char* pszNetworkID, bool unk1, CBufferString* pRejectReason);
 KHook::Return<void> Hook_ClientCommand(IServerGameClients* pThis, CPlayerSlot nSlot, const CCommand& _cmd);
 KHook::Return<void> Hook_ClientSvcUserMessage(IServerGameClients* pThis, CPlayerSlot slot, int um_type, uint32 size, const void* buf);
 KHook::Return<void> Hook_PostEventAbstract(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
-										   INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType);
+										   NetMessageInfo_t* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType);
 KHook::Return<void> Hook_StartupServer_Post(INetworkServerService* pThis, const GameSessionConfiguration_t& config, ISource2WorldSession*, const char*);
 KHook::Return<void> Hook_CheckTransmit_Post(ISource2GameEntities* pThis, CCheckTransmitInfo** ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts,
 											CBitVec<16384>&, const Entity2Networkable_t** pNetworkables, const uint16* pEntityIndicies, int nEntities);
 KHook::Return<void> Hook_DispatchConCommand(ICvar* pThis, ConCommandRef cmd, const CCommandContext& ctx, const CCommand& args);
 KHook::Return<void> Hook_SwitchToLoop(IEngineServiceMgr* pThis, const char* pszLoopModeName, KeyValues* pKV, uint32 nId, const char* pszAddonName, bool bUnk);
-KHook::Return<void> Hook_UnloadSpawnGroup(IVEngineServer2* pThis, SpawnGroupHandle_t hSpawnGroup, int unloadOption);
+KHook::Return<void> Hook_UnloadSpawnGroup(IVEngineServer2* pThis, SpawnGroupHandle_t hSpawnGroup, ESpawnGroupUnloadOption eUnloadOption);
 KHook::Return<void> Hook_CreateWorkshopMapGroup(IGameTypes* pThis, const char* name, const CUtlStringList& mapList);
 KHook::Return<int> Hook_LoadEventsFromFile(IGameEventManager2* pThis, const char* filename, bool bSearchAll);
 KHook::Return<bool> Hook_ProcessVoiceData(CServerSideClient* pClient, const CNetMessagePB<CCLCMsg_VoiceData>& msg);

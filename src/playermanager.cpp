@@ -612,7 +612,7 @@ void ZEPlayer::SetSteamIdAttribute()
 
 void ZEPlayer::ReplicateConVar(const char* pszName, const char* pszValue)
 {
-	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("SetConVar");
+	NetMessageInfo_t* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("SetConVar");
 	auto data = pNetMsg->AllocateMessage()->ToPB<CNETMsg_SetConVar>();
 
 	CMsg_CVars_CVar* cvarMsg = data->mutable_convars()->add_cvars();

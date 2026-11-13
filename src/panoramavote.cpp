@@ -208,7 +208,7 @@ bool CPanoramaVoteHandler::SendYesNoVoteToAll(float flDuration, int iCaller, con
 
 void CPanoramaVoteHandler::SendVoteStartUM(IRecipientFilter* pFilter)
 {
-	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteStart");
+	NetMessageInfo_t* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteStart");
 	auto data = pNetMsg->AllocateMessage()->ToPB<CCSUsrMsg_VoteStart>();
 
 	data->set_team(-1);
@@ -332,7 +332,7 @@ void CPanoramaVoteHandler::EndVote(YesNoVoteEndReason reason)
 
 void CPanoramaVoteHandler::SendVoteFailed()
 {
-	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteFailed");
+	NetMessageInfo_t* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VoteFailed");
 
 	auto data = pNetMsg->AllocateMessage()->ToPB<CCSUsrMsg_VoteFailed>();
 
@@ -348,7 +348,7 @@ void CPanoramaVoteHandler::SendVoteFailed()
 
 void CPanoramaVoteHandler::SendVotePassed()
 {
-	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VotePass");
+	NetMessageInfo_t* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("VotePass");
 
 	auto data = pNetMsg->AllocateMessage()->ToPB<CCSUsrMsg_VotePass>();
 

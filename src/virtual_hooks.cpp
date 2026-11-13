@@ -274,7 +274,7 @@ KHook::Return<void> Hook_ClientDisconnect_Post(IServerGameClients* pThis, CPlaye
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> Hook_ClientPutInServer_Post(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, int type, uint64 xuid)
+KHook::Return<void> Hook_ClientPutInServer_Post(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, ClientPutInServerType_t type, uint64 xuid)
 {
 	Message("Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, type, xuid);
 
@@ -489,12 +489,11 @@ CConVar<bool> g_cvarEnableTriggerTimer("cs2f_trigger_timer_enable", FCVAR_NONE, 
 CConVar<bool> g_cvarBlockParticleMsgs("cs2f_block_particle_msgs", FCVAR_NONE, "Whether to block CUserMsg_ParticleManager messages to fix lag/crashes, experimental", false);
 
 KHook::Return<void> Hook_PostEventAbstract(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
-										   INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType)
+										   NetMessageInfo_t* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
 	// Message( "Hook_PostEvent(%d, %d, %d, %lli)\n", nSlot, bLocalOnly, nClientCount, clients );
-	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
 
-	if (g_cvarEnableStopSound.Get() && info->m_MessageId == GE_FireBulletsId)
+	if (g_cvarEnableStopSound.Get() && pEvent->m_MessageId == GE_FireBulletsId)
 	{
 		if (g_playerManager->GetSilenceSoundMask())
 		{
@@ -525,16 +524,16 @@ KHook::Return<void> Hook_PostEventAbstract(IGameEventSystem* pThis, CSplitScreen
 		*(uint64*)clients &= ~g_playerManager->GetStopSoundMask();
 		*(uint64*)clients &= ~g_playerManager->GetSilenceSoundMask();
 	}
-	else if (info->m_MessageId == GE_PlaceDecalEvent)
+	else if (pEvent->m_MessageId == GE_PlaceDecalEvent)
 	{
 		*(uint64*)clients &= ~g_playerManager->GetStopDecalsMask();
 	}
-	else if (info->m_MessageId == GE_Source1LegacyGameEvent)
+	else if (pEvent->m_MessageId == GE_Source1LegacyGameEvent)
 	{
 		if (g_cvarEnableLeader.Get())
 			Leader_PostEventAbstract_Source1LegacyGameEvent(clients, pData);
 	}
-	else if (info->m_MessageId == UM_Shake)
+	else if (pEvent->m_MessageId == UM_Shake)
 	{
 		auto pPBData = const_cast<CNetMessage*>(pData)->ToPB<CUserMessageShake>();
 		if (g_cvarMaxShakeAmp.Get() >= 0 && pPBData->amplitude() > g_cvarMaxShakeAmp.Get())
@@ -544,7 +543,7 @@ KHook::Return<void> Hook_PostEventAbstract(IGameEventSystem* pThis, CSplitScreen
 		if (g_cvarEnableNoShake.Get())
 			*(uint64*)clients &= ~g_playerManager->GetNoShakeMask();
 	}
-	else if (info->m_MessageId == GE_SosStartSoundEvent)
+	else if (pEvent->m_MessageId == GE_SosStartSoundEvent)
 	{
 		auto msg = const_cast<CNetMessage*>(pData)->ToPB<CMsgSosStartSoundEvent>();
 
@@ -611,7 +610,7 @@ KHook::Return<void> Hook_PostEventAbstract(IGameEventSystem* pThis, CSplitScreen
 			*(uint64*)clients &= ~silenceSoundMask;
 		}
 	}
-	else if (info->m_MessageId == UM_SayText)
+	else if (pEvent->m_MessageId == UM_SayText)
 	{
 		auto msg = const_cast<CNetMessage*>(pData)->ToPB<CUserMessageSayText>();
 
@@ -629,7 +628,7 @@ KHook::Return<void> Hook_PostEventAbstract(IGameEventSystem* pThis, CSplitScreen
 			msg->set_text(buf);
 		}
 	}
-	else if (info->m_MessageId == UM_ParticleManager)
+	else if (pEvent->m_MessageId == UM_ParticleManager)
 	{
 		// These messages were previously unused, but recently started being used for weapon particles in the AG2 update
 		// Unfortunately, this new system seems extremely unoptimized for 64 players, and was causing severe performance issues & vector overflow client crashes
@@ -859,7 +858,7 @@ KHook::Return<void> Hook_SwitchToLoop(IEngineServiceMgr* pThis, const char* pszL
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> Hook_UnloadSpawnGroup(IVEngineServer2* pThis, SpawnGroupHandle_t hSpawnGroup, int unloadOption)
+KHook::Return<void> Hook_UnloadSpawnGroup(IVEngineServer2* pThis, SpawnGroupHandle_t hSpawnGroup, ESpawnGroupUnloadOption eUnloadOption)
 {
 	g_setUnloadingSpawnGroups.insert(hSpawnGroup);
 
