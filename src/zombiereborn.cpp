@@ -1138,7 +1138,7 @@ void ZR_InfectShake(CCSPlayerController* pController)
 	if (!pController || !pController->IsConnected() || pController->IsBot() || !g_cvarInfectShake.Get())
 		return;
 
-	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
+	NetMessageInfo_t* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("Shake");
 
 	auto data = pNetMsg->AllocateMessage()->ToPB<CUserMessageShake>();
 

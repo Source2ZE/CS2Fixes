@@ -323,7 +323,7 @@ void ClientPrintAll(int hud_dest, const char* msg, ...)
 
 	va_end(args);
 
-	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
+	NetMessageInfo_t* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
 	auto data = pNetMsg->AllocateMessage()->ToPB<CUserMessageTextMsg>();
 
 	data->set_dest(hud_dest);
@@ -355,7 +355,7 @@ void ClientPrint(CCSPlayerController* player, int hud_dest, const char* msg, ...
 		return;
 	}
 
-	INetworkMessageInternal* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
+	NetMessageInfo_t* pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("TextMsg");
 	auto data = pNetMsg->AllocateMessage()->ToPB<CUserMessageTextMsg>();
 
 	data->set_dest(hud_dest);

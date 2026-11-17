@@ -261,7 +261,7 @@ KHook::Return<void> Hook_ClientDisconnect_Post(IServerGameClients* pThis, CPlaye
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> Hook_ClientPutInServer_Post(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, int type, uint64 xuid)
+KHook::Return<void> Hook_ClientPutInServer_Post(IServerGameClients* pThis, CPlayerSlot slot, const char* pszName, ClientPutInServerType_t type, uint64 xuid)
 {
 	Message("Hook_ClientPutInServer(%d, \"%s\", %d, %d, %lli)\n", slot, pszName, type, xuid);
 
@@ -372,10 +372,10 @@ KHook::Return<void> Hook_ClientSvcUserMessage(IServerGameClients* pThis, CPlayer
 CConVar<bool> g_cvarBlockParticleMsgs("cs2f_block_particle_msgs", FCVAR_NONE, "Whether to block CUserMsg_ParticleManager messages to fix lag/crashes, experimental", false);
 
 KHook::Return<void> Hook_PostEventAbstract(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64* clients,
-										   INetworkMessageInternal* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType)
+										   NetMessageInfo_t* pEvent, const CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
 	// Message( "Hook_PostEvent(%d, %d, %d, %lli)\n", nSlot, bLocalOnly, nClientCount, clients );
-	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
+	NetMessageInfo_t* info = pEvent;
 
 	if (g_cvarEnableStopSound.Get() && info->m_MessageId == GE_FireBulletsId)
 	{
