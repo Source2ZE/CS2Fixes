@@ -62,6 +62,7 @@ ZRWeaponConfig* g_pZRWeaponConfig = nullptr;
 ZRHitgroupConfig* g_pZRHitgroupConfig = nullptr;
 
 CConVar<bool> g_cvarEnableZR("zr_enable", FCVAR_NONE, "Whether to enable ZR features", false);
+CConVar<bool> g_cvarClassModelOverride("zr_class_model_override", FCVAR_NONE, "Whether ZR classes replace player models and skins", true);
 CConVar<float> g_cvarMaxZteleDistance("zr_ztele_max_distance", FCVAR_NONE, "Maximum distance players are allowed to move after starting ztele", 150.0f, true, 0.0f, false, 0.0f);
 CConVar<bool> g_cvarZteleHuman("zr_ztele_allow_humans", FCVAR_NONE, "Whether to allow humans to use ztele", false);
 CConVar<float> g_cvarKnockbackScale("zr_knockback_scale", FCVAR_NONE, "Global knockback scale", 5.0f);
@@ -497,9 +498,11 @@ void CZRPlayerClassManager::ApplyBaseClassVisuals(std::shared_ptr<ZRClass> pClas
 	Color clrRender;
 	V_StringToColor(pModelEntry->szColor.c_str(), clrRender);
 
-	pPawn->SetModel(pModelEntry->szModelPath.c_str());
+	if (g_cvarClassModelOverride.Get())
+		pPawn->SetModel(pModelEntry->szModelPath.c_str());
 	pPawn->m_clrRender = clrRender;
-	pPawn->AcceptInput("Skin", pModelEntry->GetRandomSkin());
+	if (g_cvarClassModelOverride.Get())
+		pPawn->AcceptInput("Skin", pModelEntry->GetRandomSkin());
 
 	const auto pController = reinterpret_cast<CCSPlayerController*>(pPawn->GetController());
 	if (const auto pPlayer = pController != nullptr ? pController->GetZEPlayer() : nullptr)
