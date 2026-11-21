@@ -103,8 +103,6 @@ namespace addresses
 																	  CEntityInstance* pSearchingEntity, CEntityInstance* pActivator, CEntityInstance* pCaller,
 																	  IEntityFindFilter* pFilter);
 	inline void(FASTCALL* CGameRules_TerminateRound)(CGameRules* pGameRules, float delay, unsigned int reason, int64 a4);
-	inline CBaseEntity*(FASTCALL* CreateEntityByName)(const char* className, int iForceEdictIndex);
-	inline void(FASTCALL* DispatchSpawn)(CBaseEntity* pEntity, CEntityKeyValues* pEntityKeyValues);
 	inline int(FASTCALL* DispatchParticleEffect)(const char* pszParticleName, int iAttachType, CBaseEntity* pEntity,
 												 char iAttachmentPoint, CUtlSymbolLarge iAttachmentName, bool bResetAllParticlesOnEntity, int nSplitScreenPlayerSlot, IRecipientFilter* a7, byte* a8);
 	inline StartSoundEventInfo(FASTCALL* CBaseEntity_EmitSoundFilter)(IRecipientFilter& filter, CEntityIndex ent, const EmitSound_t& params);

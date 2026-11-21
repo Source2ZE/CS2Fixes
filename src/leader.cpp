@@ -336,20 +336,20 @@ static bool Leader_CreateDefendMarker(ZEPlayer* pPlayer, Color clrTint, int iDur
 		return -1.0f;
 	});
 
-	CParticleSystem* pMarker = CreateEntityByName<CParticleSystem>("info_particle_system");
-
 	Vector vecOrigin = pPawn->GetAbsOrigin();
 	vecOrigin.z += 10;
 
-	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
+	CEntityKeyValues* pKeyValues = g_pEntitySystem->CreateEntityKeyValues(nullptr, &vecOrigin);
 
 	pKeyValues->SetString("effect_name", g_cvarDefendParticlePath.Get().String());
 	pKeyValues->SetInt("tint_cp", 1);
 	pKeyValues->SetColor("tint_cp_color", clrTint);
-	pKeyValues->SetVector("origin", vecOrigin);
 	pKeyValues->SetBool("start_active", true);
 
-	pMarker->DispatchSpawn(pKeyValues);
+	CParticleSystem* pMarker = g_pEntitySystem->SpawnEntityByClassname<CParticleSystem>("info_particle_system", pKeyValues);
+
+	if (!pMarker)
+		return false;
 
 	UTIL_AddEntityIOEvent(pMarker, "DestroyImmediately", nullptr, nullptr, "", iDuration);
 	UTIL_AddEntityIOEvent(pMarker, "Kill", nullptr, nullptr, "", iDuration + 0.02f);
@@ -493,14 +493,7 @@ void Leader_BulletImpact(IGameEvent* pEvent)
 
 	CCSPlayerPawn* pPawn = (CCSPlayerPawn*)pEvent->GetPlayerPawn("userid");
 	CBasePlayerWeapon* pWeapon = pPawn->m_pWeaponServices->m_hActiveWeapon.Get();
-
-	CParticleSystem* particle = CreateEntityByName<CParticleSystem>("info_particle_system");
-
-	// Teleport particle to muzzle_flash attachment of player's weapon
-	particle->AcceptInput("SetParent", "!activator", pWeapon, nullptr);
-	particle->AcceptInput("SetParentAttachment", "muzzle_flash");
-
-	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
+	CEntityKeyValues* pKeyValues = g_pEntitySystem->CreateEntityKeyValues();
 
 	// Event contains other end of the particle
 	Vector vecData = Vector(pEvent->GetFloat("x"), pEvent->GetFloat("y"), pEvent->GetFloat("z"));
@@ -510,9 +503,17 @@ void Leader_BulletImpact(IGameEvent* pEvent)
 	pKeyValues->SetVector("data_cp_value", vecData);
 	pKeyValues->SetInt("tint_cp", 2);
 	pKeyValues->SetColor("tint_cp_color", pPlayer->GetTracerColor());
-	pKeyValues->SetBool("start_active", true);
+	pKeyValues->SetBool("start_active", false);
 
-	particle->DispatchSpawn(pKeyValues);
+	CParticleSystem* particle = g_pEntitySystem->SpawnEntityByClassname<CParticleSystem>("info_particle_system", pKeyValues);
+
+	if (!particle)
+		return;
+
+	// Teleport particle to muzzle_flash attachment of player's weapon
+	particle->AcceptInput("SetParent", "!activator", pWeapon, nullptr);
+	particle->AcceptInput("SetParentAttachment", "muzzle_flash");
+	particle->AcceptInput("Start");
 
 	UTIL_AddEntityIOEvent(particle, "DestroyImmediately", nullptr, nullptr, "", 0.1f);
 	UTIL_AddEntityIOEvent(particle, "Kill", nullptr, nullptr, "", 0.12f);

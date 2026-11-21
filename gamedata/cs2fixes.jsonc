@@ -160,18 +160,6 @@
 			"windows": "48 89 5C 24 ? 57 48 83 EC ? 48 83 79 ? ? 48 8B FA 48 8B D9 75 ? E8 ? ? ? ? 48 8B 53",
 			"linux": "55 48 89 E5 41 55 41 54 49 89 FC 53 48 89 F3 48 83 EC ? 48 8B 77"
 		},
-		"CreateEntityByName":
-		{
-			"library": "server",
-			"windows": "48 83 EC 48 C6 44 24 30 00",
-			"linux": "48 8D 05 ? ? ? ? 55 48 89 FA"
-		},
-		"DispatchSpawn":
-		{
-			"library": "server",
-			"windows": "48 89 5C 24 10 57 48 83 EC 30 48 8B DA 48 8B F9 48 85 C9",
-			"linux": "48 85 FF 74 ? 55 48 89 E5 41 55 41 54 49 89 FC"
-		},
 		// "Error - cannot add bots after game is over."
 		"BotNavIgnore":
 		{

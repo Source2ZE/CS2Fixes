@@ -65,9 +65,4 @@ public:
 	SCHEMA_FIELD(PointWorldTextJustifyHorizontal_t, m_nJustifyHorizontal)
 	SCHEMA_FIELD(PointWorldTextJustifyVertical_t, m_nJustifyVertical)
 	SCHEMA_FIELD(PointWorldTextReorientMode_t, m_nReorientMode)
-
-	void SetMessage(const char* sMessage)
-	{
-		V_strncpy(m_messageText, sMessage, 512);
-	}
 };

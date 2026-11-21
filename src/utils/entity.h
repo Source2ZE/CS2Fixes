@@ -34,12 +34,6 @@ CBaseEntity* UTIL_FindEntityByName(CEntityInstance* pStartEntity, const char* sz
 								   CEntityInstance* pSearchingEntity = nullptr, CEntityInstance* pActivator = nullptr,
 								   CEntityInstance* pCaller = nullptr, IEntityFindFilter* pFilter = nullptr);
 
-template <typename T = CBaseEntity>
-T* CreateEntityByName(const char* className)
-{
-	return reinterpret_cast<T*>(addresses::CreateEntityByName(className, -1));
-}
-
 // Add an entity IO event to the event queue, just like a map would
 // The queue is processed after all entities are simulated every frame
 void UTIL_AddEntityIOEvent(CEntityInstance* pTarget, const char* pszInput,

@@ -24,21 +24,15 @@ std::unordered_map<int, CustomHudLayoutCallbacks_t> CCSCustomHudLayout::sm_mapCu
 
 CCSCustomHudLayout* CCSCustomHudLayout::Create(std::string sLayout, std::string sTargetName)
 {
-	CCSCustomHudLayout* pLayout = CreateEntityByName<CCSCustomHudLayout>("custom_hud_layout");
-
-	if (!pLayout)
-		return nullptr;
-
-	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
+	CEntityKeyValues* pKeyValues = g_pEntitySystem->CreateEntityKeyValues();
 	std::string sLayoutPath = "panorama/layout/custom_game/" + std::string(sLayout) + ".vxml_c";
+
 	pKeyValues->SetString("layout", sLayoutPath.c_str());
 
 	if (!sTargetName.empty())
 		pKeyValues->SetString("targetname", sTargetName.c_str());
 
-	pLayout->DispatchSpawn(pKeyValues);
-
-	return pLayout;
+	return g_pEntitySystem->SpawnEntityByClassname<CCSCustomHudLayout>("custom_hud_layout", pKeyValues);
 }
 
 void CCSCustomHudLayout::ClearCallbacks()
