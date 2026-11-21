@@ -1058,12 +1058,13 @@ void ZR_OnRoundPrestart(IGameEvent* pEvent)
 
 void SetupRespawnToggler()
 {
-	CBaseEntity* relay = CreateEntityByName("logic_relay");
-	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
-
+	CEntityKeyValues* pKeyValues = g_pEntitySystem->CreateEntityKeyValues();
 	pKeyValues->SetString("targetname", "zr_toggle_respawn");
-	relay->DispatchSpawn(pKeyValues);
-	g_hRespawnToggler = relay->GetHandle();
+
+	CBaseEntity* relay = g_pEntitySystem->SpawnEntityByClassname<CBaseEntity>("logic_relay", pKeyValues);
+
+	if (relay)
+		g_hRespawnToggler = relay->GetHandle();
 }
 
 void SetupCTeams()

@@ -903,26 +903,25 @@ CON_COMMAND_CHAT(fl, "- Flashlight")
 	origin.z += 64.0f;
 	origin += forward * 54.0f; // The minimum distance such that an awp wouldn't block the light
 
-	CBarnLight* pLight = CreateEntityByName<CBarnLight>("light_barn");
+	CEntityKeyValues* pKeyValues = g_pEntitySystem->CreateEntityKeyValues(nullptr, &origin, &pPawn->m_angEyeAngles());
 
-	pLight->m_bEnabled = true;
-	pLight->m_Color->SetColor(255, 255, 255, 255);
-	pLight->m_flBrightness = 1.0f;
-	pLight->m_flRange = 2048.0f;
-	pLight->m_flSoftX = 1.0f;
-	pLight->m_flSoftY = 1.0f;
-	pLight->m_flSkirt = 0.5f;
-	pLight->m_flSkirtNear = 1.0f;
-	pLight->m_vSizeParams->Init(45.0f, 45.0f, 0.03f);
-	pLight->m_nCastShadows = 1;
-	pLight->m_nDirectLight = 3;
-	pLight->Teleport(&origin, &pPawn->m_angEyeAngles(), nullptr);
-
-	// Have to use keyvalues for this since the schema prop is a resource handle
-	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
+	pKeyValues->SetBool("enabled", true);
+	pKeyValues->SetColor("color", Color(255, 255, 255, 255));
+	pKeyValues->SetFloat("brightness", 1.0f);
+	pKeyValues->SetFloat("range", 2048.0f);
+	pKeyValues->SetFloat("soft_x", 1.0f);
+	pKeyValues->SetFloat("soft_y", 1.0f);
+	pKeyValues->SetFloat("skirt", 0.5f);
+	pKeyValues->SetFloat("skirt_near", 1.0f);
+	pKeyValues->SetVector("size_params", Vector(45.0f, 45.0f, 0.03f));
+	pKeyValues->SetInt("castshadows", 1);
+	pKeyValues->SetInt("directlight", 3);
 	pKeyValues->SetString("lightcookie", "materials/effects/lightcookies/flashlight.vtex");
 
-	pLight->DispatchSpawn(pKeyValues);
+	CBarnLight* pLight = g_pEntitySystem->SpawnEntityByClassname<CBarnLight>("light_barn", pKeyValues);
+
+	if (!pLight)
+		return;
 
 	pLight->SetParent(pPawn);
 	pLight->AcceptInput("SetParentAttachmentMaintainOffset", g_cvarFlashLightAttachment.Get().String());
@@ -993,38 +992,17 @@ CON_COMMAND_CHAT(particle, "- Spawn a particle")
 	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
 	vecAbsOrigin.z += 64.0f;
 
-	CParticleSystem* particle = CreateEntityByName<CParticleSystem>("info_particle_system");
+	CEntityKeyValues* pKeyValues = g_pEntitySystem->CreateEntityKeyValues(nullptr, &vecAbsOrigin);
+	pKeyValues->SetString("effect_name", args[1]);
+	pKeyValues->SetBool("start_active", true);
 
-	particle->m_bStartActive(true);
-	particle->m_iszEffectName(args[1]);
-	particle->Teleport(&vecAbsOrigin, nullptr, nullptr);
+	CParticleSystem* particle = g_pEntitySystem->SpawnEntityByClassname<CParticleSystem>("info_particle_system", pKeyValues);
 
-	particle->DispatchSpawn();
+	if (!particle)
+		return;
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have spawned a particle with effect name: %s", particle->m_iszEffectName().String());
 	Message("You have spawned a particle with effect name: %s\n", particle->m_iszEffectName().String());
-}
-
-CON_COMMAND_CHAT(particle_kv, "- Spawn a particle but using keyvalues to spawn")
-{
-	if (!player)
-		return;
-
-	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
-	vecAbsOrigin.z += 64.0f;
-
-	CParticleSystem* particle = CreateEntityByName<CParticleSystem>("info_particle_system");
-
-	CEntityKeyValues* pKeyValues = new CEntityKeyValues();
-
-	pKeyValues->SetString("effect_name", args[1]);
-	pKeyValues->SetBool("start_active", true);
-	pKeyValues->SetVector("origin", vecAbsOrigin);
-
-	particle->DispatchSpawn(pKeyValues);
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have spawned a particle using keyvalues with effect name: %s", particle->m_iszEffectName().String());
-	Message("You have spawned a particle using keyvalues with effect name: %s\n", particle->m_iszEffectName().String());
 }
 
 CON_COMMAND_CHAT(dispatch_particle, "- Test")

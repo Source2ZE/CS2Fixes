@@ -515,18 +515,20 @@ bool IgnitePawn(CCSPlayerPawn* pPawn, float flDuration, CBaseEntity* pInflictor,
 	}
 
 	const auto vecOrigin = pPawn->GetAbsOrigin();
+	CEntityKeyValues* pKeyValues = g_pEntitySystem->CreateEntityKeyValues(nullptr, &vecOrigin);
 
-	pParticleEnt = CreateEntityByName<CParticleSystem>("info_particle_system");
+	pKeyValues->SetString("effect_name", g_cvarBurnParticle.Get().String());
+	pKeyValues->SetBool("start_active", false);
+	pParticleEnt = g_pEntitySystem->SpawnEntityByClassname<CParticleSystem>("info_particle_system", pKeyValues);
 
-	pParticleEnt->m_bStartActive(true);
-	pParticleEnt->m_iszEffectName(g_cvarBurnParticle.Get().String());
+	if (!pParticleEnt)
+		return false;
+
 	pParticleEnt->m_hControlPointEnts[0] = pPawn;
 	pParticleEnt->m_flDissolveStartTime = GetGlobals()->curtime + flDuration; // Store the end time in the particle itself so we can increment if needed
-	pParticleEnt->Teleport(&vecOrigin, nullptr, nullptr);
-
-	pParticleEnt->DispatchSpawn();
 
 	pParticleEnt->SetParent(pPawn);
+	pParticleEnt->AcceptInput("Start");
 
 	pPawn->m_hEffectEntity = pParticleEnt;
 

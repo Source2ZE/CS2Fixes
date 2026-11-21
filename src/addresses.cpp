@@ -72,8 +72,6 @@ bool addresses::Initialize()
 	RESOLVE_SIG("CGameEntitySystem_FindEntityByClassName", addresses::CGameEntitySystem_FindEntityByClassName);
 	RESOLVE_SIG("CGameEntitySystem_FindEntityByName", addresses::CGameEntitySystem_FindEntityByName);
 	RESOLVE_SIG("CGameRules_TerminateRound", addresses::CGameRules_TerminateRound);
-	RESOLVE_SIG("CreateEntityByName", addresses::CreateEntityByName);
-	RESOLVE_SIG("DispatchSpawn", addresses::DispatchSpawn);
 	RESOLVE_SIG("DispatchParticleEffect", addresses::DispatchParticleEffect);
 	RESOLVE_SIG("CBaseEntity_EmitSoundFilter", addresses::CBaseEntity_EmitSoundFilter);
 	RESOLVE_SIG("CBaseEntity_SetMoveType", addresses::CBaseEntity_SetMoveType);
