@@ -116,12 +116,12 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 	int iZSounds = GetPreferenceInt(iSlot, ZSOUNDS_PREF_KEY_NAME, (int)EZSoundsType::ON);
 
 	// EntWatch
-	int iEntwatchMode = GetPreferenceInt(iSlot, EW_PREF_HUD_MODE, 0);
-	float flEntwatchHudposX = GetPreferenceFloat(iSlot, EW_PREF_HUDPOS_X, EW_HUDPOS_X_DEFAULT);
-	float flEntwatchHudposY = GetPreferenceFloat(iSlot, EW_PREF_HUDPOS_Y, EW_HUDPOS_Y_DEFAULT);
-	Color ewHudColor;
-	V_StringToColor(g_pUserPreferencesSystem->GetPreference(iSlot, EW_PREF_HUDCOLOR, "255 255 255 255"), ewHudColor);
-	float flEntwatchHudSize = GetPreferenceFloat(iSlot, EW_PREF_HUDSIZE, EW_HUDSIZE_DEFAULT);
+	bool bEntwatchEnabled = (bool)GetPreferenceInt(iSlot, EW_PREF_HUD_MODE, 0);
+	bool bEntwatchPlayerNames = (bool)GetPreferenceInt(iSlot, EW_PREF_HUD_PLAYERNAMES, 1);
+	int iEntwatchHudposX = GetPreferenceInt(iSlot, EW_PREF_HUDPOS_X, EW_HUDPOS_X_DEFAULT);
+	int iEntwatchHudposY = GetPreferenceInt(iSlot, EW_PREF_HUDPOS_Y, EW_HUDPOS_Y_DEFAULT);
+	int iEntwatchColor = GetPreferenceInt(iSlot, EW_PREF_HUDCOLOR, EW_HUDCOLOR_DEFAULT);
+	int iEntwatchSize = GetPreferenceInt(iSlot, EW_PREF_HUDSIZE, EW_HUDSIZE_DEFAULT);
 
 	// Set the values that we just loaded --- the player is guaranteed available
 	g_playerManager->SetPlayerStopSound(iSlot, bStopSound);
@@ -136,10 +136,11 @@ void CUserPreferencesSystem::OnPutPreferences(int iSlot)
 		player->CycleButtonWatch();
 
 	// Set EntWatch
-	player->SetEntwatchHudMode(iEntwatchMode);
-	player->SetEntwatchHudPos(flEntwatchHudposX, flEntwatchHudposY);
-	player->SetEntwatchHudColor(ewHudColor);
-	player->SetEntwatchHudSize(flEntwatchHudSize);
+	player->SetEntwatchHudEnabled(bEntwatchEnabled);
+	player->SetEntwatchPlayerNames(bEntwatchPlayerNames);
+	player->SetEntwatchHudPos(iEntwatchHudposX, iEntwatchHudposY);
+	player->SetEntwatchHudColor(iEntwatchColor);
+	player->SetEntwatchHudSize(iEntwatchSize);
 }
 
 void CUserPreferencesSystem::PullPreferences(int iSlot)

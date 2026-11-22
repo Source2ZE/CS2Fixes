@@ -1,0 +1,291 @@
+@import url("file://{resources}/styles/custom_game/cs2fixes/entwatch_common.css");
+@define row-height: 30px;
+
+.Root {
+	width: 100%;
+	height: 100%;
+}
+.HudTextPanel {
+    opacity: 1;
+    flow-children: right;
+    width:fit-children;
+    overflow: noclip noclip;
+}
+.HudTextPanel.Hidden {
+    opacity: 0;
+}
+.ItemStateColumn {
+    font-size: 32px;
+    width: 20px;
+    margin-right: 10px;
+    flow-children:down;
+    overflow: noclip noclip;
+}
+.ItemNamesColumn {
+    width:fit-children;
+    flow-children:down;
+}
+.Item {
+    flow-children:right;
+    visibility: visible;
+}
+.Item.Hidden {
+    visibility: collapse;
+}
+Label {
+    color: #ffffff;
+    font-size: 28px;
+}
+.ItemState {
+    font-family: 'Stratum2 bold monodigit', 'Arial Unicode MS';
+    horizontal-align:right;
+    text-align: right;
+    height:row-height;
+    color: #000;
+    visibility: visible;
+    overflow: noclip noclip;
+    text-overflow: noclip;
+}
+.ItemState.Hidden {
+    visibility: collapse;
+}
+.ItemName {
+    font-family: 'Stratum2 bold monodigit', 'Arial Unicode MS';
+    height:row-height;
+    margin-right: 11px;
+    text-shadow: 0px 0px 3px 2.0 #000000ff;
+    overflow: noclip noclip;
+    text-overflow: noclip;
+}
+.ItemPlayer {
+    font-family: 'Stratum2', 'Arial Unicode MS';
+    height:row-height;
+    text-shadow: 0px 0px 3px 2.0 #000000ff;
+    visibility: visible;
+    overflow: noclip noclip;
+    text-overflow: noclip;
+}
+.ItemPlayer.Hidden {
+    visibility: collapse;
+}
+
+/* Item State Text Shadow Colours */
+.HudColourShadow-1 { text-shadow: 0px 0px 3px 2.0 #ffffff; }
+.HudColourShadow-2 { text-shadow: 0px 0px 3px 2.0 #e60000; }
+.HudColourShadow-3 { text-shadow: 0px 0px 3px 2.0 #b882f2; }
+.HudColourShadow-4 { text-shadow: 0px 0px 3px 2.0 #1eff1e; }
+.HudColourShadow-5 { text-shadow: 0px 0px 3px 2.0 #b2ff91; }
+.HudColourShadow-6 { text-shadow: 0px 0px 3px 2.0 #b8dc3f; }
+.HudColourShadow-7 { text-shadow: 0px 0px 3px 2.0 #ff4141; }
+.HudColourShadow-8 { text-shadow: 0px 0px 3px 2.0 #afb4b4; }
+.HudColourShadow-9 { text-shadow: 0px 0px 3px 2.0 #fafa19; }
+.HudColourShadow-10 { text-shadow: 0px 0px 3px 2.0 #a5b4d2; }
+.HudColourShadow-11 { text-shadow: 0px 0px 3px 2.0 #72bcff; }
+.HudColourShadow-12 { text-shadow: 0px 0px 3px 2.0 #3755ff; }
+/* 13 is a duplicate of 10 */
+.HudColourShadow-14 { text-shadow: 0px 0px 3px 2.0 #d22be5; }
+.HudColourShadow-15 { text-shadow: 0px 0px 3px 2.0 #e67878; }
+.HudColourShadow-16 { text-shadow: 0px 0px 3px 2.0 #eb912e; }
+
+/* Hud Position */
+.HudPosX0 { x: 0%;}
+.HudPosX1 { x: 1%;}
+.HudPosX2 { x: 2%;}
+.HudPosX3 { x: 3%;}
+.HudPosX4 { x: 4%;}
+.HudPosX5 { x: 5%;}
+.HudPosX6 { x: 6%;}
+.HudPosX7 { x: 7%;}
+.HudPosX8 { x: 8%;}
+.HudPosX9 { x: 9%;}
+.HudPosX10 { x: 10%;}
+.HudPosX11 { x: 11%;}
+.HudPosX12 { x: 12%;}
+.HudPosX13 { x: 13%;}
+.HudPosX14 { x: 14%;}
+.HudPosX15 { x: 15%;}
+.HudPosX16 { x: 16%;}
+.HudPosX17 { x: 17%;}
+.HudPosX18 { x: 18%;}
+.HudPosX19 { x: 19%;}
+.HudPosX20 { x: 20%;}
+.HudPosX21 { x: 21%;}
+.HudPosX22 { x: 22%;}
+.HudPosX23 { x: 23%;}
+.HudPosX24 { x: 24%;}
+.HudPosX25 { x: 25%;}
+.HudPosX26 { x: 26%;}
+.HudPosX27 { x: 27%;}
+.HudPosX28 { x: 28%;}
+.HudPosX29 { x: 29%;}
+.HudPosX30 { x: 30%;}
+.HudPosX31 { x: 31%;}
+.HudPosX32 { x: 32%;}
+.HudPosX33 { x: 33%;}
+.HudPosX34 { x: 34%;}
+.HudPosX35 { x: 35%;}
+.HudPosX36 { x: 36%;}
+.HudPosX37 { x: 37%;}
+.HudPosX38 { x: 38%;}
+.HudPosX39 { x: 39%;}
+.HudPosX40 { x: 40%;}
+.HudPosX41 { x: 41%;}
+.HudPosX42 { x: 42%;}
+.HudPosX43 { x: 43%;}
+.HudPosX44 { x: 44%;}
+.HudPosX45 { x: 45%;}
+.HudPosX46 { x: 46%;}
+.HudPosX47 { x: 47%;}
+.HudPosX48 { x: 48%;}
+.HudPosX49 { x: 49%;}
+.HudPosX50 { x: 50%;}
+.HudPosX51 { x: 51%;}
+.HudPosX52 { x: 52%;}
+.HudPosX53 { x: 53%;}
+.HudPosX54 { x: 54%;}
+.HudPosX55 { x: 55%;}
+.HudPosX56 { x: 56%;}
+.HudPosX57 { x: 57%;}
+.HudPosX58 { x: 58%;}
+.HudPosX59 { x: 59%;}
+.HudPosX60 { x: 60%;}
+.HudPosX61 { x: 61%;}
+.HudPosX62 { x: 62%;}
+.HudPosX63 { x: 63%;}
+.HudPosX64 { x: 64%;}
+.HudPosX65 { x: 65%;}
+.HudPosX66 { x: 66%;}
+.HudPosX67 { x: 67%;}
+.HudPosX68 { x: 68%;}
+.HudPosX69 { x: 69%;}
+.HudPosX70 { x: 70%;}
+.HudPosX71 { x: 71%;}
+.HudPosX72 { x: 72%;}
+.HudPosX73 { x: 73%;}
+.HudPosX74 { x: 74%;}
+.HudPosX75 { x: 75%;}
+.HudPosX76 { x: 76%;}
+.HudPosX77 { x: 77%;}
+.HudPosX78 { x: 78%;}
+.HudPosX79 { x: 79%;}
+.HudPosX80 { x: 80%;}
+.HudPosX81 { x: 81%;}
+.HudPosX82 { x: 82%;}
+.HudPosX83 { x: 83%;}
+.HudPosX84 { x: 84%;}
+.HudPosX85 { x: 85%;}
+.HudPosX86 { x: 86%;}
+.HudPosX87 { x: 87%;}
+.HudPosX88 { x: 88%;}
+.HudPosX89 { x: 89%;}
+.HudPosX90 { x: 90%;}
+.HudPosX91 { x: 91%;}
+.HudPosX92 { x: 92%;}
+.HudPosX93 { x: 93%;}
+.HudPosX94 { x: 94%;}
+.HudPosX95 { x: 95%;}
+.HudPosX96 { x: 96%;}
+.HudPosX97 { x: 97%;}
+.HudPosX98 { x: 98%;}
+.HudPosX99 { x: 99%;}
+
+.HudPosY0 { y: 0%;}
+.HudPosY1 { y: 1%;}
+.HudPosY2 { y: 2%;}
+.HudPosY3 { y: 3%;}
+.HudPosY4 { y: 4%;}
+.HudPosY5 { y: 5%;}
+.HudPosY6 { y: 6%;}
+.HudPosY7 { y: 7%;}
+.HudPosY8 { y: 8%;}
+.HudPosY9 { y: 9%;}
+.HudPosY10 { y: 10%;}
+.HudPosY11 { y: 11%;}
+.HudPosY12 { y: 12%;}
+.HudPosY13 { y: 13%;}
+.HudPosY14 { y: 14%;}
+.HudPosY15 { y: 15%;}
+.HudPosY16 { y: 16%;}
+.HudPosY17 { y: 17%;}
+.HudPosY18 { y: 18%;}
+.HudPosY19 { y: 19%;}
+.HudPosY20 { y: 20%;}
+.HudPosY21 { y: 21%;}
+.HudPosY22 { y: 22%;}
+.HudPosY23 { y: 23%;}
+.HudPosY24 { y: 24%;}
+.HudPosY25 { y: 25%;}
+.HudPosY26 { y: 26%;}
+.HudPosY27 { y: 27%;}
+.HudPosY28 { y: 28%;}
+.HudPosY29 { y: 29%;}
+.HudPosY30 { y: 30%;}
+.HudPosY31 { y: 31%;}
+.HudPosY32 { y: 32%;}
+.HudPosY33 { y: 33%;}
+.HudPosY34 { y: 34%;}
+.HudPosY35 { y: 35%;}
+.HudPosY36 { y: 36%;}
+.HudPosY37 { y: 37%;}
+.HudPosY38 { y: 38%;}
+.HudPosY39 { y: 39%;}
+.HudPosY40 { y: 40%;}
+.HudPosY41 { y: 41%;}
+.HudPosY42 { y: 42%;}
+.HudPosY43 { y: 43%;}
+.HudPosY44 { y: 44%;}
+.HudPosY45 { y: 45%;}
+.HudPosY46 { y: 46%;}
+.HudPosY47 { y: 47%;}
+.HudPosY48 { y: 48%;}
+.HudPosY49 { y: 49%;}
+.HudPosY50 { y: 50%;}
+.HudPosY51 { y: 51%;}
+.HudPosY52 { y: 52%;}
+.HudPosY53 { y: 53%;}
+.HudPosY54 { y: 54%;}
+.HudPosY55 { y: 55%;}
+.HudPosY56 { y: 56%;}
+.HudPosY57 { y: 57%;}
+.HudPosY58 { y: 58%;}
+.HudPosY59 { y: 59%;}
+.HudPosY60 { y: 60%;}
+.HudPosY61 { y: 61%;}
+.HudPosY62 { y: 62%;}
+.HudPosY63 { y: 63%;}
+.HudPosY64 { y: 64%;}
+.HudPosY65 { y: 65%;}
+.HudPosY66 { y: 66%;}
+.HudPosY67 { y: 67%;}
+.HudPosY68 { y: 68%;}
+.HudPosY69 { y: 69%;}
+.HudPosY70 { y: 70%;}
+.HudPosY71 { y: 71%;}
+.HudPosY72 { y: 72%;}
+.HudPosY73 { y: 73%;}
+.HudPosY74 { y: 74%;}
+.HudPosY75 { y: 75%;}
+.HudPosY76 { y: 76%;}
+.HudPosY77 { y: 77%;}
+.HudPosY78 { y: 78%;}
+.HudPosY79 { y: 79%;}
+.HudPosY80 { y: 80%;}
+.HudPosY81 { y: 81%;}
+.HudPosY82 { y: 82%;}
+.HudPosY83 { y: 83%;}
+.HudPosY84 { y: 84%;}
+.HudPosY85 { y: 85%;}
+.HudPosY86 { y: 86%;}
+.HudPosY87 { y: 87%;}
+.HudPosY88 { y: 88%;}
+.HudPosY89 { y: 89%;}
+.HudPosY90 { y: 90%;}
+.HudPosY91 { y: 91%;}
+.HudPosY92 { y: 92%;}
+.HudPosY93 { y: 93%;}
+.HudPosY94 { y: 94%;}
+.HudPosY95 { y: 95%;}
+.HudPosY96 { y: 96%;}
+.HudPosY97 { y: 97%;}
+.HudPosY98 { y: 98%;}
+.HudPosY99 { y: 99%;}

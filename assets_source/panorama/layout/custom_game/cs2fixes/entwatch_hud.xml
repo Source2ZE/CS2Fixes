@@ -1,0 +1,333 @@
+<root>
+    <styles>
+		<include src="file://{resources}/styles/custom_game/cs2fixes/entwatch_hud.css" />
+	</styles>
+    <Panel class="Root" hittest="false">
+        <Panel id="HudTextPanel" class="HudTextPanel Hidden">
+            <Panel id="ItemStateColumn" class="ItemStateColumn">
+                <Label id="ItemState-0" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-1" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-2" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-3" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-4" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-5" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-6" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-7" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-8" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-9" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-10" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-11" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-12" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-13" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-14" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-15" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-16" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-17" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-18" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-19" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-20" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-21" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-22" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-23" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-24" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-25" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-26" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-27" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-28" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-29" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-30" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-31" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-32" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-33" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-34" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-35" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-36" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-37" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-38" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-39" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-40" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-41" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-42" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-43" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-44" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-45" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-46" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-47" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-48" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-49" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-50" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-51" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-52" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-53" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-54" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-55" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-56" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-57" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-58" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-59" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-60" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-61" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-62" class="ItemState Hidden" text="{s:State}" />
+                <Label id="ItemState-63" class="ItemState Hidden" text="{s:State}" />
+            </Panel>
+            <Panel id="ItemNamesColumn" class="ItemNamesColumn">
+                <Panel id="Item-0" class="Item Hidden">
+                    <Label id="ItemName-0" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-0" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-1" class="Item Hidden">
+                    <Label id="ItemName-1" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-1" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-2" class="Item Hidden">
+                    <Label id="ItemName-2" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-2" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-3" class="Item Hidden">
+                    <Label id="ItemName-3" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-3" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-4" class="Item Hidden">
+                    <Label id="ItemName-4" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-4" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-5" class="Item Hidden">
+                    <Label id="ItemName-5" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-5" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-6" class="Item Hidden">
+                    <Label id="ItemName-6" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-6" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-7" class="Item Hidden">
+                    <Label id="ItemName-7" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-7" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-8" class="Item Hidden">
+                    <Label id="ItemName-8" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-8" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-9" class="Item Hidden">
+                    <Label id="ItemName-9" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-9" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-10" class="Item Hidden">
+                    <Label id="ItemName-10" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-10" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-11" class="Item Hidden">
+                    <Label id="ItemName-11" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-11" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-12" class="Item Hidden">
+                    <Label id="ItemName-12" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-12" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-13" class="Item Hidden">
+                    <Label id="ItemName-13" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-13" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-14" class="Item Hidden">
+                    <Label id="ItemName-14" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-14" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-15" class="Item Hidden">
+                    <Label id="ItemName-15" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-15" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-16" class="Item Hidden">
+                    <Label id="ItemName-16" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-16" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-17" class="Item Hidden">
+                    <Label id="ItemName-17" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-17" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-18" class="Item Hidden">
+                    <Label id="ItemName-18" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-18" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-19" class="Item Hidden">
+                    <Label id="ItemName-19" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-19" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-20" class="Item Hidden">
+                    <Label id="ItemName-20" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-20" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-21" class="Item Hidden">
+                    <Label id="ItemName-21" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-21" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-22" class="Item Hidden">
+                    <Label id="ItemName-22" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-22" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-23" class="Item Hidden">
+                    <Label id="ItemName-23" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-23" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-24" class="Item Hidden">
+                    <Label id="ItemName-24" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-24" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-25" class="Item Hidden">
+                    <Label id="ItemName-25" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-25" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-26" class="Item Hidden">
+                    <Label id="ItemName-26" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-26" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-27" class="Item Hidden">
+                    <Label id="ItemName-27" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-27" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-28" class="Item Hidden">
+                    <Label id="ItemName-28" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-28" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-29" class="Item Hidden">
+                    <Label id="ItemName-29" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-29" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-30" class="Item Hidden">
+                    <Label id="ItemName-30" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-30" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-31" class="Item Hidden">
+                    <Label id="ItemName-31" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-31" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-32" class="Item Hidden">
+                    <Label id="ItemName-32" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-32" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-33" class="Item Hidden">
+                    <Label id="ItemName-33" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-33" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-34" class="Item Hidden">
+                    <Label id="ItemName-34" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-34" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-35" class="Item Hidden">
+                    <Label id="ItemName-35" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-35" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-36" class="Item Hidden">
+                    <Label id="ItemName-36" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-36" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-37" class="Item Hidden">
+                    <Label id="ItemName-37" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-37" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-38" class="Item Hidden">
+                    <Label id="ItemName-38" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-38" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-39" class="Item Hidden">
+                    <Label id="ItemName-39" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-39" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-40" class="Item Hidden">
+                    <Label id="ItemName-40" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-40" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-41" class="Item Hidden">
+                    <Label id="ItemName-41" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-41" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-42" class="Item Hidden">
+                    <Label id="ItemName-42" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-42" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-43" class="Item Hidden">
+                    <Label id="ItemName-43" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-43" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-44" class="Item Hidden">
+                    <Label id="ItemName-44" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-44" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-45" class="Item Hidden">
+                    <Label id="ItemName-45" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-45" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-46" class="Item Hidden">
+                    <Label id="ItemName-46" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-46" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-47" class="Item Hidden">
+                    <Label id="ItemName-47" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-47" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-48" class="Item Hidden">
+                    <Label id="ItemName-48" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-48" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-49" class="Item Hidden">
+                    <Label id="ItemName-49" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-49" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-50" class="Item Hidden">
+                    <Label id="ItemName-50" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-50" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-51" class="Item Hidden">
+                    <Label id="ItemName-51" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-51" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-52" class="Item Hidden">
+                    <Label id="ItemName-52" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-52" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-53" class="Item Hidden">
+                    <Label id="ItemName-53" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-53" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-54" class="Item Hidden">
+                    <Label id="ItemName-54" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-54" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-55" class="Item Hidden">
+                    <Label id="ItemName-55" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-55" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-56" class="Item Hidden">
+                    <Label id="ItemName-56" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-56" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-57" class="Item Hidden">
+                    <Label id="ItemName-57" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-57" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-58" class="Item Hidden">
+                    <Label id="ItemName-58" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-58" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-59" class="Item Hidden">
+                    <Label id="ItemName-59" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-59" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-60" class="Item Hidden">
+                    <Label id="ItemName-60" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-60" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-61" class="Item Hidden">
+                    <Label id="ItemName-61" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-61" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-62" class="Item Hidden">
+                    <Label id="ItemName-62" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-62" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+                <Panel id="Item-63" class="Item Hidden">
+                    <Label id="ItemName-63" class="ItemName" text="{s:Name}" />
+                    <Label id="ItemPlayer-63" class="ItemPlayer" text="{s:Player}" />
+                </Panel>
+            </Panel>
+        </Panel>
+    </Panel>
+</root>

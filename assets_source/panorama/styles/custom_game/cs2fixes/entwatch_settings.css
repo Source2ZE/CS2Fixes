@@ -1,0 +1,310 @@
+@import url("file://{resources}/styles/custom_game/cs2fixes/entwatch_common.css");
+
+.Root {
+    width: 100%;
+    height: 100%;
+}
+
+.SettingsPanel {
+    min-width: 720px;
+    width:38%;
+    min-height: 440px;
+    height: width-percentage(62%);
+    horizontal-align: center;
+    vertical-align: center;
+    flow-children: right;
+    padding: 24px;
+    background-color: #000000F0;
+    background-img-opacity: 0.015;
+    background-size: 360px 360px;
+    background-image: url("s2r://panorama/images/backgrounds/bluedots_large_png.vtex");
+    background-blur: gaussian(3);
+    border: 2px solid rgb(206, 206, 206);
+    border-radius: 4px;
+    font-family: Stratum2;
+    color: #f2f2f2;
+    opacity: 1;
+}
+.SettingsPanel.Hidden {
+    visibility: collapse;
+}
+
+.SettingsColumn {
+    width: 330px;
+    height: 100%;
+    flow-children: down;
+    margin-right: 28px;
+}
+
+.ColorColumn {
+    width: fill-parent-flow(1.0);
+    height: 100%;
+    flow-children: down;
+}
+
+.TogglePanel {
+    width:349px;
+    flow-children: down;
+    margin-right: 16px;
+}
+.SettingRow {
+    width: fit-children;
+    height: 48px;
+    flow-children: right;
+    margin-bottom: 8px;
+    horizontal-align: right;
+}
+
+.SettingName {
+    width: fit-children;
+    vertical-align: center;
+    text-align: right;
+    font-size: 22px;
+    margin-right: 18px;
+}
+
+.ToggleButton {
+    width: 94px;
+    height: 42px;
+    vertical-align: center;
+    padding: 5px;
+    border: 3px solid #d5d9dd;
+    border-radius: 11px;
+    background-color: #080c10;
+    transition-property: background-color, border-color;
+    transition-duration: 0.22s, 0.12s;
+}
+
+.ToggleButton:hover {
+    border-color: white;
+    sound: "UIPanorama.mainmenu_rollover";
+}
+
+.ToggleKnob {
+    width: 26px;
+    height: 26px;
+    vertical-align: center;
+    border-radius: 50%;
+    background-color: #858b91;
+    horizontal-align: left;
+    transition-property: position, background-color;
+    transition-duration: 0.22s;
+}
+
+.ToggleButton.Selected,
+.ToggleButton.On {
+    background-color: #3076a8;
+}
+
+.ToggleButton.Selected .ToggleKnob,
+.ToggleButton.On .ToggleKnob {
+    horizontal-align: right;
+    background-color: white;
+}
+
+.PositionControls {
+    width: 100%;
+    flow-children: down;
+    margin-top: 6px;
+    horizontal-align: right;
+}
+
+.SectionTitle {
+    width: 100%;
+    text-align: center;
+    font-size: 21px;
+    color: #f2f2f2;
+    margin-bottom: 7px;
+}
+
+.AdjustmentRow {
+    width: fit-children;
+    height: 58px;
+    horizontal-align:center;
+    flow-children: right;
+    margin-bottom: 8px;
+}
+.AdjustmentRow:last-child {
+    margin-right: 0px;
+}
+
+.AdjustmentButton {
+    width: 55px;
+    height: 55px;
+    margin-right: 8px;
+    border: 3px solid #d5d9dd;
+    background-color: #080c10;
+    transition-property: background-color, border-color;
+    transition-duration: 0.1s;
+}
+#PositionXPlus10 {
+    margin-right: 0px;
+}
+#PositionYPlus10 {
+    margin-right: 0px;
+}
+
+.AdjustmentButton:hover {
+    background-color: #29343e;
+    border-color: white;
+    sound: "UIPanorama.mainmenu_rollover";
+}
+
+.AdjustmentButton:active {
+    background-color: #3a4b59;
+}
+
+.AdjustmentButton Label {
+    horizontal-align: center;
+    vertical-align: center;
+    text-align: center;
+    font-size: 20px;
+    color: #f2f2f2;
+}
+
+.HudPosLabel {
+    height:55px;
+    width: 42px;
+    margin-right: 8px;
+    flow-children: down;
+}
+.AxisLabelText {
+    vertical-align: center;
+    horizontal-align:center;
+    text-align: center;
+    font-size: 20px;
+    color:white;
+}
+.AxisLabel {
+    vertical-align: top;
+    horizontal-align:center;
+    margin-top: -8px;
+    text-align: center;
+    font-size: 30px;
+    color: white;
+}
+
+.HudSizeControls {
+    width: 100%;
+    flow-children: down;
+    margin-top: 1px;
+}
+
+.SizeRow {
+    horizontal-align: center;
+    height: 58px;
+    flow-children: right;
+}
+
+.SizeButton {
+    margin-right: 0px;
+}
+
+.SizeValue {
+    width: 70px;
+    vertical-align: center;
+    text-align: center;
+    font-size: 20px;
+    color: #f2f2f2;
+}
+
+.ColorHeader {
+    width: 100%;
+    height: 31px;
+}
+
+.ColorTitle {
+    horizontal-align: center;
+    vertical-align: center;
+    margin-bottom: 0px;
+}
+
+.CloseButton {
+    ignore-parent-flow: true;
+    width: 29px;
+    height: 29px;
+    horizontal-align: right;
+    vertical-align: top;
+    margin-top: -16px;
+    margin-right: -16px;
+    border: 1px solid #9099a1;
+    border-radius: 4px;
+    background-color: transparent;
+    transition-property: background-color, border-color;
+    transition-duration: 0.1s;
+}
+
+.CloseButton:hover {
+    border-color: white;
+    background-color: #888888;
+    sound: "UIPanorama.mainmenu_rollover";
+}
+
+.CloseButton Label {
+    horizontal-align: center;
+    vertical-align: center;
+    text-align: center;
+    font-size: 19px;
+    color: #f2f2f2;
+}
+
+.ColorList {
+    width: 100%;
+    height: 100%;
+    flow-children:down;
+    overflow: squish scroll;
+    horizontal-align: center;
+    border: 3px solid #d5d9dd;
+}
+
+.ColorPanel {
+    border-width: 2px;
+    border-style: solid;
+    border-color: #00000000;
+    border-radius: 3px;
+    flow-children: right;
+    height: 30px;
+    width:90%;
+    font-size: 24px;
+    background-color: transparent;
+    margin-top: 8px;
+    horizontal-align: center;
+    transition-property: border-color;
+    transition-duration: 0.2s;
+}
+.ColorPanel:hover {
+    border-color: #a2a2a2;
+    sound: "UIPanorama.mainmenu_rollover";
+}
+.ColorPanel.Selected {
+    border-color: #fff;
+    border-width: 3px;
+}
+.ColorPanel .ColorSquare {
+    margin-right: 8px;
+}
+.ColorPanel .ColorLabel {
+    margin-right: 8px;
+}
+.ColorPanel .ColorSquareEnd {
+    margin-right: 0px;
+}
+
+.ColorSquare {
+    height: 100%;
+    width: height-percentage( 100% );
+    background-color: #ffffff;
+}
+.ColorSquareEnd {
+    height: 100%;
+    width: fill-parent-flow(1.0);
+    background-color: #ffffff;
+}
+
+.ColorLabel {
+    text-align: center;
+    vertical-align: center;
+    width: fill-parent-flow(0.6);
+    text-shadow: 2px 2px 8px 3.0 #333333b0;
+    color:#ffffff;
+}

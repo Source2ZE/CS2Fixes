@@ -1,0 +1,64 @@
+@define hud-color-0: #ffffffff; /* White */
+@define hud-color-1: #808080ff; /* Gray */
+@define hud-color-2: #ff0000ff; /* Red */
+@define hud-color-3: #ff8060ff; /* Coral */
+@define hud-color-4: #ff8000ff; /* Orange */
+@define hud-color-5: #ffff00ff; /* Yellow */
+@define hud-color-6: #80D000ff; /* Olive */
+@define hud-color-7: #00ff00ff; /* Lime */
+@define hud-color-8: #00ff80ff; /* Emerald */
+@define hud-color-9: #80ffc0ff; /* Mint */
+@define hud-color-10: #00ffffff; /* Cyan */
+@define hud-color-11: #80c0ffff; /* Sky */
+@define hud-color-12: #0080ffff; /* Blue */
+@define hud-color-13: #0000ffff; /* Navy */
+@define hud-color-14: #8000ffff; /* Purple */
+@define hud-color-15: #c080ffff; /* Lavender */
+@define hud-color-16: #ff00ffff; /* Magenta */
+@define hud-color-17: #ff0080ff; /* Rose */
+@define hud-color-18: #ff80c0ff; /* Pink */
+@define hud-color-19: #804000ff; /* Brown */
+
+
+.HudColour-0 { wash-color: hud-color-0; }
+.HudColour-1 { wash-color: hud-color-1; }
+.HudColour-2 { wash-color: hud-color-2; }
+.HudColour-3 { wash-color: hud-color-3; }
+.HudColour-4 { wash-color: hud-color-4; }
+.HudColour-5 { wash-color: hud-color-5; }
+.HudColour-6 { wash-color: hud-color-6; }
+.HudColour-7 { wash-color: hud-color-7; }
+.HudColour-8 { wash-color: hud-color-8; }
+.HudColour-9 { wash-color: hud-color-9; }
+.HudColour-10 { wash-color: hud-color-10; }
+.HudColour-11 { wash-color: hud-color-11; }
+.HudColour-12 { wash-color: hud-color-12; }
+.HudColour-13 { wash-color: hud-color-13; }
+.HudColour-14 { wash-color: hud-color-14; }
+.HudColour-15 { wash-color: hud-color-15; }
+.HudColour-16 { wash-color: hud-color-16; }
+.HudColour-17 { wash-color: hud-color-17; }
+.HudColour-18 { wash-color: hud-color-18; }
+.HudColour-19 { wash-color: hud-color-19; }
+
+.Scale-50 {ui-scale:50%;}
+.Scale-55 {ui-scale:55%;}
+.Scale-60 {ui-scale:60%;}
+.Scale-65 {ui-scale:65%;}
+.Scale-70 {ui-scale:70%;}
+.Scale-75 {ui-scale:75%;}
+.Scale-80 {ui-scale:80%;}
+.Scale-85 {ui-scale:85%;}
+.Scale-90 {ui-scale:90%;}
+.Scale-95 {ui-scale:95%;}
+.Scale-100 {ui-scale:100%;}
+.Scale-105 {ui-scale:105%;}
+.Scale-110 {ui-scale:110%;}
+.Scale-115 {ui-scale:115%;}
+.Scale-120 {ui-scale:120%;}
+.Scale-125 {ui-scale:125%;}
+.Scale-130 {ui-scale:130%;}
+.Scale-135 {ui-scale:135%;}
+.Scale-140 {ui-scale:140%;}
+.Scale-145 {ui-scale:145%;}
+.Scale-150 {ui-scale:150%;}

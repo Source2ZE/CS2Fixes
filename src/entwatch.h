@@ -30,24 +30,44 @@ using ordered_json = nlohmann::ordered_json;
 
 class CCSPlayerController;
 class CCSPlayerPawn;
+class CCSCustomHudLayout;
+class ZEPlayer;
 
 extern CConVar<bool> g_cvarEnableEntWatch;
 extern CConVar<bool> g_cvarEnableEntwatchHud;
 
 #define EW_PREFIX " \4[EntWatch]\1 "
 
-#define EW_PREF_HUD_MODE "entwatch_hud"
-#define EW_PREF_HUDPOS_X "entwatch_hudpos_x"
-#define EW_PREF_HUDPOS_Y "entwatch_hudpos_y"
-#define EW_PREF_HUDCOLOR "entwatch_hudcolor"
-#define EW_PREF_HUDSIZE "entwatch_hudfontsize"
+#define EW_PREF_HUD_MODE "entwatch_pano_hud"
+#define EW_PREF_HUD_PLAYERNAMES "entwatch_pano_hud_playernames"
+#define EW_PREF_HUDPOS_X "entwatch_pano_hudpos_x"
+#define EW_PREF_HUDPOS_Y "entwatch_pano_hudpos_y"
+#define EW_PREF_HUDCOLOR "entwatch_pano_hudcolor"
+#define EW_PREF_HUDSIZE "entwatch_pano_hudsize"
 
-#define EW_HUDPOS_X_DEFAULT -7.5f
-#define EW_HUDPOS_Y_DEFAULT -2.0f
+#define EW_HUDPOS_X_CLASS "HudPosX"
+#define EW_HUDPOS_Y_CLASS "HudPosY"
+#define EW_HUDPOS_X_DEFAULT 6
+#define EW_HUDPOS_Y_DEFAULT 35
+#define EW_HUDPOS_MIN 0
+#define EW_HUDPOS_MAX 99
 
-#define EW_HUDSIZE_DEFAULT 60.0f
+#define EW_HUDSIZE_CLASS "Scale-"
+#define EW_HUDSIZE_DEFAULT 100
+#define EW_HUDSIZE_MIN 50
+#define EW_HUDSIZE_MAX 150
+
+#define EW_MAX_HUDCOLORS 20
+#define EW_HUDCOLOR_CLASS "HudColour-"
+#define EW_HUDCOLOR_DEFAULT 0
 
 #define EW_HUD_TICKRATE 0.5f
+
+#define EW_HUD_MAXITEMS 64 // Number of items defined in entwatch_hud.xml
+#define EW_HUD_STATE_ID "ItemState-"
+#define EW_HUD_NAME_ID "ItemName-"
+#define EW_HUD_PLAYER_ID "ItemPlayer-"
+#define EW_HUDCOLOR_SHADOW "HudColourShadow-"
 
 enum EWHandlerType
 {
@@ -76,13 +96,6 @@ enum EWDropReason
 	Death,
 	Disconnect,
 	Deleted
-};
-
-enum EWHudMode
-{
-	Hud_None,
-	Hud_On,
-	Hud_ItemOnly,
 };
 
 enum EWAutoConfigOption
@@ -142,6 +155,7 @@ struct EWItem
 	std::string szHammerid;	 /* Hammerid of the weapon */
 	char sChatColor[2];
 	Color colorGlow;
+	int iHudColor;											 /* Color for hud css class */
 	bool bShowPickup;										 /* Whether to show pickup/drop messages in chat */
 	bool bShowHud;											 /* Whether to show this item on hud/scoreboard */
 	EWAutoConfigOption transfer;							 /* Can this item be transferred */
@@ -253,6 +267,7 @@ public:
 	void PrintLoadedConfig(CCSPlayerController* pController);
 
 	void ClearItems();
+	void ClearHud();
 
 	int FindItemInstanceByWeapon(int iWeaponEnt);
 	int FindItemInstanceByOwner(int iOwnerSlot, bool bOnlyTransferrable, int iStartItem);
@@ -274,6 +289,9 @@ public:
 	void RemoveUseEntity(CBaseEntity* pEnt);
 	KHook::Return<void> Hook_Use(CBaseEntity* pThis, InputData_t* pInput);
 
+	void ShowHudMenu(CCSPlayerController* pController, ZEPlayer* zpPlayer);
+	float UpdateHud();
+
 	std::map<uint32, std::shared_ptr<EWItem>> mapItemConfig; /* items defined in the config */
 	std::vector<std::shared_ptr<EWItemInstance>> vecItems;	 /* all items found spawned */
 
@@ -285,6 +303,13 @@ public:
 
 	std::map<int, std::shared_ptr<ETransferInfo>> mapTransfers;		  // Any etransfers that target multiple items
 	std::vector<std::shared_ptr<EActiveTransfer>> vecActiveTransfers; // Active transfers where only the receiver can pickup the weapon
+
+	CHandle<CCSCustomHudLayout> hHud;
+	CHandle<CCSCustomHudLayout> hHudSettings;
+	int iItemsOnHudLastTick = 0;
+	int iItemColors[EW_HUD_MAXITEMS] = {};
+	bool bPlayerNames[MAX_PLAYERS] = {true};
+	bool bClientHudInitialized[MAX_PLAYERS] = {};
 
 	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hBaseButtonUse;
 	KHook::Virtual<CBaseEntity, void, InputData_t*> m_hPhysBoxUse;
@@ -317,4 +342,3 @@ void EW_PlayerDeathPre(CCSPlayerController* pController);
 void EW_PlayerDisconnect(int slot);
 void EW_FireOutput(const CEntityIOOutput* pThis, CEntityInstance* pActivator, CEntityInstance* pCaller, float flDelay);
 int GetTemplateSuffixNumber(const char* szName);
-float EW_UpdateHud();

@@ -708,14 +708,6 @@ KHook::Return<void> Hook_CheckTransmit_Post(ISource2GameEntities* pThis, CCheckT
 			if (!g_cvarFlashLightTransmitOthers.Get() && pFlashLight)
 				pInfo->m_pTransmitEntity->Clear(pFlashLight->entindex());
 
-			if (g_cvarEnableEntWatch.Get() && g_pEWHandler->IsConfigLoaded())
-			{
-				// Don't transmit other players' entwatch hud
-				CPointWorldText* pHud = pController->IsConnected() ? g_playerManager->GetPlayer(j)->GetEntwatchHud() : nullptr;
-				if (pHud)
-					pInfo->m_pTransmitEntity->Clear(pHud->entindex());
-			}
-
 			// Always transmit other players if spectating
 			if (!g_cvarEnableHide.Get() || pSelfController->GetPawnState() == STATE_OBSERVER_MODE)
 				continue;
