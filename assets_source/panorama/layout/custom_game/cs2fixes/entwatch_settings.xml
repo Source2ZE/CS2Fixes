@@ -1,0 +1,191 @@
+<root>
+    <styles>
+		<include src="file://{resources}/styles/custom_game/cs2fixes/entwatch_settings.css" />
+	</styles>
+    <Panel class="Root" hittest="false">
+        <Panel id="SettingsPanel" class="SettingsPanel Hidden" hittest="false">
+            <Panel class="SettingsColumn" hittest="false">
+                <Panel class="TogglePanel" hittest="false">
+                    <Panel class="SettingRow ToggleRow" hittest="false">
+                        <Label class="SettingName" text="EntWatch HUD" hittest="false" />
+                        <Button id="ToggleEntWatchHud" class="ToggleButton">
+                            <Panel hittest="false" class="ToggleKnob" />
+                        </Button>
+                    </Panel>
+
+                    <Panel class="SettingRow ToggleRow" hittest="false">
+                        <Label hittest="false" class="SettingName" text="Player Names" />
+                        <Button id="TogglePlayerNames" class="ToggleButton Selected">
+                            <Panel hittest="false" class="ToggleKnob" />
+                        </Button>
+                    </Panel>
+                </Panel>
+                <Panel class="PositionControls" hittest="false">
+                    <Label hittest="false" class="SectionTitle" text="Position" />
+
+                    <Panel class="AdjustmentRow" hittest="false">
+                        <Button id="PositionXMinus10" class="AdjustmentButton">
+                            <Label hittest="false" text="-10" />
+                        </Button>
+                        <Button id="PositionXMinus1" class="AdjustmentButton">
+                            <Label hittest="false" text="-1" />
+                        </Button>
+                        <Panel hittest="false" class="HudPosLabel">
+                            <Label hittest="false" class="AxisLabelText" id="HudPosXValue" text="{s:HudPosX}" />
+                            <Label hittest="false" class="AxisLabel" text="&#x2194;" />
+                        </Panel>
+                        <Button id="PositionXPlus1" class="AdjustmentButton">
+                            <Label hittest="false" text="+1" />
+                        </Button>
+                        <Button id="PositionXPlus10" class="AdjustmentButton">
+                            <Label hittest="false" text="+10" />
+                        </Button>
+                    </Panel>
+
+                    <Panel class="AdjustmentRow" hittest="false">
+                        <Button id="PositionYMinus10" class="AdjustmentButton">
+                            <Label hittest="false" text="-10" />
+                        </Button>
+                        <Button id="PositionYMinus1" class="AdjustmentButton">
+                            <Label hittest="false" text="-1" />
+                        </Button>
+                        <Panel hittest="false" class="HudPosLabel">
+                            <Label hittest="false" class="AxisLabelText" id="HudPosYValue" text="{s:HudPosY}" />
+                            <Label hittest="false" class="AxisLabel" text="&#x2195;" />
+                        </Panel>
+                        <Button id="PositionYPlus1" class="AdjustmentButton">
+                            <Label hittest="false" text="+1" />
+                        </Button>
+                        <Button id="PositionYPlus10" class="AdjustmentButton">
+                            <Label hittest="false" text="+10" />
+                        </Button>
+                    </Panel>
+                </Panel>
+
+                <Panel class="HudSizeControls" hittest="false">
+                    <Label hittest="false" class="SectionTitle" text="Hud Size" />
+                    <Panel class="SizeRow">
+                        <Button id="HudSizeMinus" class="AdjustmentButton SizeButton">
+                            <Label hittest="false" text="-" />
+                        </Button>
+                        <Label hittest="false" id="HudSizeValue" class="SizeValue" text="{s:Scale}%" />
+                        <Button id="HudSizePlus" class="AdjustmentButton SizeButton">
+                            <Label hittest="false" text="+" />
+                        </Button>
+                    </Panel>
+                </Panel>
+            </Panel>
+
+            <Panel class="ColorColumn" hittest="false">
+                <Panel class="ColorHeader" hittest="false">
+                    <Label hittest="false" class="SectionTitle ColorTitle" text="Color" />
+                </Panel>
+                <Panel class="ColorList" >
+                    <Button id="ColorPanel-0" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-0" />
+                        <Label hittest="false" id="ColorLabel-0" class="ColorLabel HudColour-0" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-0" />
+                    </Button>
+                    <Button id="ColorPanel-1" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-1" />
+                        <Label hittest="false" id="ColorLabel-1" class="ColorLabel HudColour-1" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-1" />
+                    </Button>
+                    <Button id="ColorPanel-2" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-2" />
+                        <Label hittest="false" id="ColorLabel-2" class="ColorLabel HudColour-2" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-2" />
+                    </Button>
+                    <Button id="ColorPanel-3" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-3" />
+                        <Label hittest="false" id="ColorLabel-3" class="ColorLabel HudColour-3" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-3" />
+                    </Button>
+                    <Button id="ColorPanel-4" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-4" />
+                        <Label hittest="false" id="ColorLabel-4" class="ColorLabel HudColour-4" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-4" />
+                    </Button>
+                    <Button id="ColorPanel-5" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-5" />
+                        <Label hittest="false" id="ColorLabel-5" class="ColorLabel HudColour-5" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-5" />
+                    </Button>
+                    <Button id="ColorPanel-6" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-6" />
+                        <Label hittest="false" id="ColorLabel-6" class="ColorLabel HudColour-6" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-6" />
+                    </Button>
+                    <Button id="ColorPanel-7" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-7" />
+                        <Label hittest="false" id="ColorLabel-7" class="ColorLabel HudColour-7" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-7" />
+                    </Button>
+                    <Button id="ColorPanel-8" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-8" />
+                        <Label hittest="false" id="ColorLabel-8" class="ColorLabel HudColour-8" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-8" />
+                    </Button>
+                    <Button id="ColorPanel-9" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-9" />
+                        <Label hittest="false" id="ColorLabel-9" class="ColorLabel HudColour-9" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-9" />
+                    </Button>
+                    <Button id="ColorPanel-10" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-10" />
+                        <Label hittest="false" id="ColorLabel-10" class="ColorLabel HudColour-10" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-10" />
+                    </Button>
+                    <Button id="ColorPanel-11" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-11" />
+                        <Label hittest="false" id="ColorLabel-11" class="ColorLabel HudColour-11" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-11" />
+                    </Button>
+                    <Button id="ColorPanel-12" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-12" />
+                        <Label hittest="false" id="ColorLabel-12" class="ColorLabel HudColour-12" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-12" />
+                    </Button>
+                    <Button id="ColorPanel-13" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-13" />
+                        <Label hittest="false" id="ColorLabel-13" class="ColorLabel HudColour-13" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-13" />
+                    </Button>
+                    <Button id="ColorPanel-14" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-14" />
+                        <Label hittest="false" id="ColorLabel-14" class="ColorLabel HudColour-14" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-14" />
+                    </Button>
+                    <Button id="ColorPanel-15" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-15" />
+                        <Label hittest="false" id="ColorLabel-15" class="ColorLabel HudColour-15" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-15" />
+                    </Button>
+                    <Button id="ColorPanel-16" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-16" />
+                        <Label hittest="false" id="ColorLabel-16" class="ColorLabel HudColour-16" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-16" />
+                    </Button>
+                    <Button id="ColorPanel-17" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-17" />
+                        <Label hittest="false" id="ColorLabel-17" class="ColorLabel HudColour-17" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-17" />
+                    </Button>
+                    <Button id="ColorPanel-18" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-18" />
+                        <Label hittest="false" id="ColorLabel-18" class="ColorLabel HudColour-18" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-18" />
+                    </Button>
+                    <Button id="ColorPanel-19" class="ColorPanel">
+                        <Panel hittest="false" class="ColorSquare HudColour-19" />
+                        <Label hittest="false" id="ColorLabel-19" class="ColorLabel HudColour-19" text="{s:ColorName}" />
+                        <Panel hittest="false" class="ColorSquareEnd HudColour-19" />
+                    </Button>
+                </Panel>
+            </Panel>
+            <Button id="CloseButton" class="CloseButton">
+                <Label hittest="false" text="X" />
+            </Button>
+        </Panel>
+    </Panel>
+</root>

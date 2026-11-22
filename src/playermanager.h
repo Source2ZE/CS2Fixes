@@ -20,8 +20,6 @@
 #pragma once
 #include "common.h"
 #include "entity/cparticlesystem.h"
-#include "entity/cpointorient.h"
-#include "entity/cpointworldtext.h"
 #include "entity/customplayercamera.h"
 #include "entity/lights.h"
 #include "gamesystem.h"
@@ -197,11 +195,12 @@ public:
 		m_pActiveZRClass = nullptr;
 		m_pActiveZRModel = nullptr;
 		m_iButtonWatchMode = 0;
-		m_iEntwatchHudMode = 0;
-		m_colorEntwatchHud = Color(255, 255, 255, 255);
-		m_flEntwatchHudX = -7.5f;
-		m_flEntwatchHudY = -2.0f;
-		m_flEntwatchHudSize = 60.0f;
+		m_bEntwatchHud = false;
+		m_bEntwatchPlayerNames = true;
+		m_iEntwatchColor = 0;
+		m_iEntwatchHudX = 6;
+		m_iEntwatchHudY = 35;
+		m_iEntwatchHudSize = 100;
 		m_bTopDefender = false;
 		m_flLastVoiceTime = -15.0f;
 		m_flBeaconEnabledTime = -2.0f;
@@ -270,12 +269,11 @@ public:
 	void ReplicateConVar(const char* pszName, const char* pszValue);
 	void SetActiveZRClass(std::shared_ptr<ZRClass> pZRModel) { m_pActiveZRClass = pZRModel; }
 	void SetActiveZRModel(std::shared_ptr<ZRModelEntry> pZRClass) { m_pActiveZRModel = pZRClass; }
-	void SetEntwatchHudMode(int iMode);
-	void SetPointOrient(CPointOrient* pOrient) { m_hPointOrient.Set(pOrient); }
-	void SetEntwatchHud(CPointWorldText* pWorldText) { m_hEntwatchHud.Set(pWorldText); }
-	void SetEntwatchHudColor(Color colorHud);
-	void SetEntwatchHudPos(float x, float y);
-	void SetEntwatchHudSize(float flSize);
+	void SetEntwatchHudEnabled(bool bEnabled);
+	void SetEntwatchPlayerNames(bool bEnabled);
+	void SetEntwatchHudColor(int iColorIndex);
+	void SetEntwatchHudPos(int x, int y);
+	void SetEntwatchHudSize(int iSize);
 	void SetTopDefenderStatus(bool bStatus) { m_bTopDefender = bStatus; }
 	void SetLastVoiceTime(float flTime) { m_flLastVoiceTime = flTime; }
 	void SetBeaconEnabledTime(float flTime) { m_flBeaconEnabledTime = flTime; }
@@ -326,13 +324,12 @@ public:
 	std::shared_ptr<ZRClass> GetActiveZRClass() { return m_pActiveZRClass; }
 	std::shared_ptr<ZRModelEntry> GetActiveZRModel() { return m_pActiveZRModel; }
 	int GetButtonWatchMode();
-	int GetEntwatchHudMode();
-	CPointOrient* GetPointOrient() { return m_hPointOrient.Get(); }
-	CPointWorldText* GetEntwatchHud() { return m_hEntwatchHud.Get(); }
-	Color GetEntwatchHudColor() { return m_colorEntwatchHud; }
-	float GetEntwatchHudX() { return m_flEntwatchHudX; }
-	float GetEntwatchHudY() { return m_flEntwatchHudY; }
-	float GetEntwatchHudSize() { return m_flEntwatchHudSize; }
+	bool GetEntwatchHudEnabled() { return m_bEntwatchHud; }
+	bool GetEntwatchPlayerNames() { return m_bEntwatchPlayerNames; }
+	int GetEntwatchHudColor() { return m_iEntwatchColor; }
+	int GetEntwatchHudX() { return m_iEntwatchHudX; }
+	int GetEntwatchHudY() { return m_iEntwatchHudY; }
+	int GetEntwatchHudSize() { return m_iEntwatchHudSize; }
 	bool GetTopDefenderStatus() { return m_bTopDefender; }
 	float GetLastVoiceTime() { return m_flLastVoiceTime; }
 	float GetBeaconEnabledTime() { return m_flBeaconEnabledTime; }
@@ -352,8 +349,6 @@ public:
 	void StartGlow(Color color, int duration);
 	void EndGlow();
 	void SetSteamIdAttribute();
-	void CreateEntwatchHud();
-	void CreatePointOrient();
 	void ToggleThirdPerson(float flDistance = -65.f, bool bForce = false);
 
 private:
@@ -405,14 +400,13 @@ private:
 	std::shared_ptr<ZRClass> m_pActiveZRClass;
 	std::shared_ptr<ZRModelEntry> m_pActiveZRModel;
 	int m_iButtonWatchMode;
-	CHandle<CPointOrient> m_hPointOrient;
-	CHandle<CPointWorldText> m_hEntwatchHud;
 	CHandle<CCSCustomPlayerCamera> m_hCustomCamera;
-	int m_iEntwatchHudMode;
-	Color m_colorEntwatchHud;
-	float m_flEntwatchHudX;
-	float m_flEntwatchHudY;
-	float m_flEntwatchHudSize;
+	bool m_bEntwatchHud;
+	bool m_bEntwatchPlayerNames;
+	int m_iEntwatchColor;
+	int m_iEntwatchHudX;
+	int m_iEntwatchHudY;
+	int m_iEntwatchHudSize;
 	bool m_bTopDefender;
 	float m_flLastVoiceTime;
 	float m_flBeaconEnabledTime;

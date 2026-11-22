@@ -93,6 +93,27 @@ GAME_EVENT_F(player_team)
 		pEvent->SetBool("silent", true);
 }
 
+GAME_EVENT_F(player_connect_full)
+{
+	CCSPlayerController* pController = (CCSPlayerController*)pEvent->GetPlayerController("userid");
+	if (!pController)
+		return;
+
+	CHandle<CCSPlayerController> hController = pController->GetHandle();
+
+	// custom_hud_layout entities clear the new controller's slot during this event.
+	CTimer::Create(0.0f, TIMERFLAG_MAP, [hController]() {
+		CCSPlayerController* pController = hController.Get();
+		if (!pController)
+			return -1.0f;
+
+		if (g_pEWHandler)
+			g_pEWHandler->bClientHudInitialized[pController->GetPlayerSlot()] = false;
+
+		return -1.0f;
+	});
+}
+
 CConVar<bool> g_cvarNoblock("cs2f_noblock_enable", FCVAR_NONE, "Whether to use player noblock, which sets debris collision on every player", false);
 CConVar<int> g_cvarFreeArmor("cs2f_free_armor", FCVAR_NONE, "Whether kevlar (1+) and/or helmet (2) are given automatically", 0, true, 0, true, 2);
 

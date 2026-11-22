@@ -26,7 +26,7 @@
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cmathcounter.h"
-#include "entity/cpointworldtext.h"
+#include "entity/customhudlayout.h"
 #include "entity/services.h"
 #include "eventlistener.h"
 #include "leader.h"
@@ -56,6 +56,29 @@ CConVar<bool> g_cvarEnableFiltering("entwatch_auto_filter", FCVAR_NONE, "Whether
 CConVar<bool> g_cvarUseEntwatchClantag("entwatch_clantag", FCVAR_NONE, "Whether to set item holder's clantag and set score", true);
 CConVar<int> g_cvarItemHolderScore("entwatch_score", FCVAR_NONE, "Score to give item holders (0 = dont change score at all) Requires entwatch_clantag 1", 9999, true, 0, false, 0);
 CConVar<bool> g_cvarEnableEntwatchHud("entwatch_hud", FCVAR_NONE, "Whether to enable the EntWatch hud and related commands", true);
+
+// Colour names to show on the !hud menu, change the hex in entwatch_common.css
+std::string g_HudColors[EW_MAX_HUDCOLORS] = {
+	"white",
+	"gray",
+	"red",
+	"coral",
+	"orange",
+	"yellow",
+	"olive",
+	"lime",
+	"emerald",
+	"mint",
+	"cyan",
+	"sky",
+	"blue",
+	"navy",
+	"purple",
+	"lavender",
+	"magenta",
+	"rose",
+	"pink",
+	"brown"};
 
 void ItemGlowDistanceChanged(CConVar<int>* ref, CSplitScreenSlot nSlot, const int* pNewValue, const int* pOldValue)
 {
@@ -467,6 +490,7 @@ void EWItem::SetDefaultValues()
 	/* no default hammerid */
 	V_strcpy(sChatColor, "\x01");
 	colorGlow = Color(255, 255, 255, 255);
+	iHudColor = 0;
 	bShowPickup = true;
 	bShowHud = true;
 	transfer = EWCfg_Auto;
@@ -481,77 +505,92 @@ void EWItem::ParseColor(std::string value)
 	{
 		V_strcpy(sChatColor, "\x01");
 		colorGlow = Color(255, 255, 255, 255);
+		iHudColor = 1;
 	}
 	else if (value == "darkred")
 	{
 		V_strcpy(sChatColor, "\x02");
 		colorGlow = Color(220, 0, 0, 255);
+		iHudColor = 2;
 	}
 	else if (value == "team")
 	{
 		V_strcpy(sChatColor, "\x03");
 		colorGlow = Color(184, 130, 242, 255);
+		iHudColor = 3;
 	}
 	else if (value == "green")
 	{
 		V_strcpy(sChatColor, "\x04");
 		colorGlow = Color(30, 255, 30, 255);
+		iHudColor = 4;
 	}
 	else if (value == "lightgreen")
 	{
 		V_strcpy(sChatColor, "\x05");
 		colorGlow = Color(178, 255, 145, 255);
+		iHudColor = 5;
 	}
 	else if (value == "olive")
 	{
 		V_strcpy(sChatColor, "\x06");
 		colorGlow = Color(184, 220, 63, 255);
+		iHudColor = 6;
 	}
 	else if (value == "red")
 	{
 		V_strcpy(sChatColor, "\x07");
 		colorGlow = Color(255, 65, 65, 255);
+		iHudColor = 7;
 	}
 	else if (value == "gray" || value == "grey")
 	{
 		V_strcpy(sChatColor, "\x08");
 		colorGlow = Color(175, 180, 180, 255);
+		iHudColor = 8;
 	}
 	else if (value == "yellow")
 	{
 		V_strcpy(sChatColor, "\x09");
 		colorGlow = Color(250, 250, 25, 255);
+		iHudColor = 9;
 	}
 	else if (value == "silver")
 	{
 		V_strcpy(sChatColor, "\x0A");
 		colorGlow = Color(165, 180, 210, 255);
+		iHudColor = 10;
 	}
 	else if (value == "blue")
 	{
 		V_strcpy(sChatColor, "\x0B");
 		colorGlow = Color(114, 188, 255, 255);
+		iHudColor = 11;
 	}
 	else if (value == "darkblue")
 	{
 		V_strcpy(sChatColor, "\x0C");
 		colorGlow = Color(45, 75, 255, 255);
+		iHudColor = 12;
 	}
 	// \x0D is the same as \x0A
 	else if (value == "purple" || value == "pink")
 	{
 		V_strcpy(sChatColor, "\x0E");
 		colorGlow = Color(210, 43, 229, 255);
+		iHudColor = 14;
 	}
 	else if (value == "red2")
 	{
 		V_strcpy(sChatColor, "\x0F");
 		colorGlow = Color(230, 120, 120, 255);
+		iHudColor = 15;
 	}
 	else if (value == "orange" || value == "gold")
 	{
 		V_strcpy(sChatColor, "\x10");
 		colorGlow = Color(235, 145, 46, 255);
+		iHudColor = 16;
 	}
 }
 
@@ -563,6 +602,7 @@ EWItem::EWItem(std::shared_ptr<EWItem> pItem)
 	szHammerid = pItem->szHammerid;
 	V_strcpy(sChatColor, pItem->sChatColor);
 	colorGlow = pItem->colorGlow;
+	iHudColor = pItem->iHudColor;
 	bShowPickup = pItem->bShowPickup;
 	bShowHud = pItem->bShowHud;
 	transfer = pItem->transfer;
@@ -1181,6 +1221,33 @@ void CEWHandler::ClearItems()
 	vecItems.clear();
 }
 
+void CEWHandler::ClearHud()
+{
+	if (!hHud.Get())
+		return;
+
+	std::string stateId;
+	std::string itemId;
+	std::string nameId;
+	std::string playerId;
+
+	for (int i = 0; i < EW_HUD_MAXITEMS; i++)
+	{
+		const std::string index = std::to_string(i);
+
+		stateId = EW_HUD_STATE_ID + index;
+		itemId = "Item-" + index;
+		nameId = EW_HUD_NAME_ID + index;
+		playerId = EW_HUD_PLAYER_ID + index;
+
+		hHud->SetDialogVariableString(stateId, "State", "");
+		hHud->SetHasClass(stateId, "Hidden", true);
+		hHud->SetHasClass(itemId, "Hidden", true);
+		hHud->SetDialogVariableString(nameId, "Name", "");
+		hHud->SetDialogVariableString(playerId, "Player", "");
+	}
+}
+
 /*
  *	Finds the index of an item instance with a given entity index
  *  Returns index into vecItems or -1 if not found
@@ -1598,7 +1665,7 @@ void CEWHandler::PlayerPickup(CCSPlayerPawn* pPawn, int iItemInstance)
 
 	if (m_pHudTimer.expired())
 		m_pHudTimer = CTimer::Create(EW_HUD_TICKRATE, TIMERFLAG_MAP | TIMERFLAG_ROUND, [] {
-			return EW_UpdateHud();
+			return g_pEWHandler->UpdateHud();
 		});
 }
 
@@ -1861,20 +1928,163 @@ KHook::Return<void> CEWHandler::Hook_Use(CBaseEntity* pThis, InputData_t* pInput
 	return {KHook::Action::Ignore};
 }
 
+void CEWHandler::ShowHudMenu(CCSPlayerController* pController, ZEPlayer* zpPlayer)
+{
+	if (!hHudSettings.Get())
+	{
+		hHudSettings = CCSCustomHudLayout::Create("cs2fixes/entwatch_settings");
+		for (int i = 0; i < EW_MAX_HUDCOLORS; i++)
+		{
+			std::string labelId = "ColorLabel-" + std::to_string(i);
+			std::string strPrettyName = g_HudColors[i];
+			strPrettyName[0] = toupper(strPrettyName[0]);
+			hHudSettings->SetDialogVariableString(labelId, "ColorName", strPrettyName);
+		}
+
+		hHudSettings->SetClickCallback([](CCSPlayerController* pController, CCSCustomHudLayout* pHud, std::string sButtonId) {
+			if (sButtonId == "CloseButton")
+			{
+				pHud->SetHasClass("SettingsPanel", "Hidden", true, pController);
+				pHud->SetInputCaptureEnabled(false, pController);
+			}
+			else if (sButtonId == "ToggleEntWatchHud")
+			{
+				ZEPlayer* zpPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+				if (zpPlayer)
+					zpPlayer->SetEntwatchHudEnabled(!zpPlayer->GetEntwatchHudEnabled());
+			}
+			else if (sButtonId == "TogglePlayerNames")
+			{
+				ZEPlayer* zpPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+				if (zpPlayer)
+					zpPlayer->SetEntwatchPlayerNames(!zpPlayer->GetEntwatchPlayerNames());
+			}
+			else if (sButtonId == "HudSizeMinus")
+			{
+				ZEPlayer* zpPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+				if (zpPlayer)
+				{
+					int size = zpPlayer->GetEntwatchHudSize();
+					size -= 5;
+					if (size < EW_HUDSIZE_MIN)
+						size = EW_HUDSIZE_MIN;
+					if (size != zpPlayer->GetEntwatchHudSize())
+						zpPlayer->SetEntwatchHudSize(size);
+				}
+			}
+			else if (sButtonId == "HudSizePlus")
+			{
+				ZEPlayer* zpPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+				if (zpPlayer)
+				{
+					int size = zpPlayer->GetEntwatchHudSize();
+					size += 5;
+					if (size > EW_HUDSIZE_MAX)
+						size = EW_HUDSIZE_MAX;
+					if (size != zpPlayer->GetEntwatchHudSize())
+						zpPlayer->SetEntwatchHudSize(size);
+				}
+			}
+			else if (sButtonId.starts_with("PositionX"))
+			{
+				ZEPlayer* zpPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+				if (zpPlayer)
+				{
+					int x = zpPlayer->GetEntwatchHudX();
+					if (sButtonId == "PositionXMinus10")
+						x -= 10;
+					else if (sButtonId == "PositionXMinus1")
+						x -= 1;
+					else if (sButtonId == "PositionXPlus1")
+						x += 1;
+					else if (sButtonId == "PositionXPlus10")
+						x += 10;
+
+					if (x < EW_HUDPOS_MIN)
+						x = EW_HUDPOS_MIN;
+					else if (x > EW_HUDPOS_MAX)
+						x = EW_HUDPOS_MAX;
+
+					if (x != zpPlayer->GetEntwatchHudX())
+						zpPlayer->SetEntwatchHudPos(x, zpPlayer->GetEntwatchHudY());
+				}
+			}
+			else if (sButtonId.starts_with("PositionY"))
+			{
+				ZEPlayer* zpPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+				if (zpPlayer)
+				{
+					int y = zpPlayer->GetEntwatchHudY();
+					if (sButtonId == "PositionYMinus10")
+						y -= 10;
+					else if (sButtonId == "PositionYMinus1")
+						y -= 1;
+					else if (sButtonId == "PositionYPlus1")
+						y += 1;
+					else if (sButtonId == "PositionYPlus10")
+						y += 10;
+
+					if (y < EW_HUDPOS_MIN)
+						y = EW_HUDPOS_MIN;
+					else if (y > EW_HUDPOS_MAX)
+						y = EW_HUDPOS_MAX;
+
+					if (y != zpPlayer->GetEntwatchHudY())
+						zpPlayer->SetEntwatchHudPos(zpPlayer->GetEntwatchHudX(), y);
+				}
+			}
+			else if (sButtonId.starts_with("ColorPanel-"))
+			{
+				std::string strColorIndex = sButtonId.substr(11);
+				int i = V_StringToInt32(strColorIndex.c_str(), -1);
+				if (i >= 0 && i < EW_MAX_HUDCOLORS)
+				{
+					ZEPlayer* zpPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
+					if (zpPlayer)
+						zpPlayer->SetEntwatchHudColor(i);
+				}
+			}
+		});
+	}
+
+	hHudSettings->SetHasClass("ToggleEntWatchHud", "Selected", zpPlayer->GetEntwatchHudEnabled(), pController);
+	hHudSettings->SetHasClass("TogglePlayerNames", "Selected", zpPlayer->GetEntwatchPlayerNames(), pController);
+
+	std::string text = std::to_string(zpPlayer->GetEntwatchHudSize());
+	hHudSettings->SetDialogVariableString("HudSizeValue", "Scale", text, pController);
+
+	text = std::to_string(zpPlayer->GetEntwatchHudX());
+	hHudSettings->SetDialogVariableString("HudPosXValue", "HudPosX", text, pController);
+
+	text = std::to_string(zpPlayer->GetEntwatchHudY());
+	hHudSettings->SetDialogVariableString("HudPosYValue", "HudPosY", text, pController);
+
+	text = "ColorPanel-" + std::to_string(zpPlayer->GetEntwatchHudColor());
+	hHudSettings->SetHasClass(text, "Selected", true, pController);
+
+	hHudSettings->SetHasClass("SettingsPanel", "Hidden", false, pController);
+	hHudSettings->SetInputCaptureEnabled(true, pController);
+}
+
 // Update cd and uses of all held items
-float EW_UpdateHud()
+float CEWHandler::UpdateHud()
 {
 	if (!GetGlobals())
 		return EW_HUD_TICKRATE;
 
-	std::string sHudText = "";
-	std::string sHudTextNoPlayerNames = "";
-	static bool bWasEmptyPreviously = false;
+	if (g_cvarEnableEntwatchHud.Get() && !hHud.Get())
+	{
+		hHud = CCSCustomHudLayout::Create("cs2fixes/entwatch_hud");
+		for (int i = 0; i < MAX_PLAYERS; i++)
+			bClientHudInitialized[i] = false;
+	}
+
+	int iItemsOnHud = 0;
 
 	bool bFirst = true;
-	for (int i = 0; i < (g_pEWHandler->vecItems).size(); i++)
+	for (int i = 0; i < (vecItems).size(); i++)
 	{
-		std::shared_ptr<EWItemInstance> pItem = g_pEWHandler->vecItems[i];
+		std::shared_ptr<EWItemInstance> pItem = vecItems[i];
 		if (!pItem)
 			continue;
 
@@ -1897,41 +2107,60 @@ float EW_UpdateHud()
 				pOwner->SetClanTag(pItem->sClantag);
 		}
 
-		if (!g_cvarEnableEntwatchHud.Get())
+		if (!g_cvarEnableEntwatchHud.Get() || iItemsOnHud >= EW_HUD_MAXITEMS)
 			continue;
 
-		// std::format not supported in clang16 by default (steamrt3)
-		if (!bFirst)
+		const std::string sIndex = std::to_string(iItemsOnHud);
+		std::string panelid = EW_HUD_STATE_ID + sIndex;
+		hHud->SetDialogVariableString(panelid, "State", sItemText);
+		hHud->SetHasClass(panelid, "Hidden", false);
+
+		if (pItem->iHudColor != iItemColors[iItemsOnHud])
 		{
-			sHudText.append("\n");
-			sHudTextNoPlayerNames.append("\n");
+			std::string colorclass = EW_HUDCOLOR_SHADOW + std::to_string(iItemColors[iItemsOnHud]);
+			hHud->SetHasClass(panelid, colorclass, false);
+
+			colorclass = EW_HUDCOLOR_SHADOW + std::to_string(pItem->iHudColor);
+			hHud->SetHasClass(panelid, colorclass, true);
+
+			iItemColors[iItemsOnHud] = pItem->iHudColor;
 		}
-		else
-			bFirst = false;
 
-		sHudText.append("[");
-		sHudText.append(sItemText);
-		sHudText.append("]");
-		sHudText.append(pItem->szShortName);
-		sHudText.append(": ");
-		sHudText.append(pOwner->GetPlayerName());
+		panelid = "Item-" + sIndex;
+		hHud->SetHasClass(panelid, "Hidden", false);
 
-		// sHudTextNoPlayerNames.append(std::format("\n[{}]{}", sItemText, pItem->szShortName));
-		sHudTextNoPlayerNames.append("[");
-		sHudTextNoPlayerNames.append(sItemText);
-		sHudTextNoPlayerNames.append("]");
-		sHudTextNoPlayerNames.append(pItem->szShortName);
+		panelid = EW_HUD_NAME_ID + sIndex;
+		hHud->SetDialogVariableString(panelid, "Name", pItem->szShortName);
+
+		panelid = EW_HUD_PLAYER_ID + sIndex;
+		hHud->SetDialogVariableString(panelid, "Player", pOwner->GetPlayerName());
+
+		iItemsOnHud++;
 	}
 
-	if (sHudText != "")
+	if (iItemsOnHud == 0 && iItemsOnHudLastTick == 0)
+		return EW_HUD_TICKRATE;
+
+	// Clear any that weren't overridden
+	if (iItemsOnHudLastTick > iItemsOnHud)
 	{
-		bWasEmptyPreviously = false;
-	}
-	else
-	{
-		if (bWasEmptyPreviously)
-			return EW_HUD_TICKRATE;
-		bWasEmptyPreviously = true;
+		for (int i = iItemsOnHud; i < iItemsOnHudLastTick; i++)
+		{
+			const std::string sIndex = std::to_string(i);
+
+			std::string panelid = "ItemState-" + sIndex;
+			hHud->SetDialogVariableString(panelid, "State", "");
+			hHud->SetHasClass(panelid, "Hidden", true);
+
+			panelid = "Item-" + sIndex;
+			hHud->SetHasClass(panelid, "Hidden", true);
+
+			panelid = EW_HUD_NAME_ID + sIndex;
+			hHud->SetDialogVariableString(panelid, "Name", "");
+
+			panelid = EW_HUD_PLAYER_ID + sIndex;
+			hHud->SetDialogVariableString(panelid, "Player", "");
+		}
 	}
 
 	for (int i = 0; i < GetGlobals()->maxClients; i++)
@@ -1943,23 +2172,44 @@ float EW_UpdateHud()
 		if (!pPawn)
 			continue;
 		ZEPlayer* zpPlayer = g_playerManager->GetPlayer(CPlayerSlot(i));
-		if (!zpPlayer)
+		if (!zpPlayer || zpPlayer->IsFakeClient())
 			continue;
 
-		EWHudMode mode = (EWHudMode)(zpPlayer->GetEntwatchHudMode());
+		// Clients joining an existing HUD still need their saved preferences applied.
+		if (!bClientHudInitialized[i])
+		{
+			// Initialising classes so don't need to remove any
+			// Default is HUD disabled, player names enabled
+			hHud->SetHasClass("HudTextPanel", "Hidden", !zpPlayer->GetEntwatchHudEnabled(), pController);
 
-		CPointWorldText* pText = zpPlayer->GetEntwatchHud();
-		if (!pText)
-			continue;
+			std::string text = EW_HUDPOS_X_CLASS + std::to_string(zpPlayer->GetEntwatchHudX());
+			hHud->SetHasClass("HudTextPanel", text, true, pController);
 
-		if (mode == EWHudMode::Hud_On)
-			pText->AcceptInput("SetMessage", sHudText.c_str());
-		else if (mode == EWHudMode::Hud_ItemOnly)
-			pText->AcceptInput("SetMessage", sHudTextNoPlayerNames.c_str());
-		else
-			pText->AcceptInput("SetMessage", "");
+			text = EW_HUDPOS_Y_CLASS + std::to_string(zpPlayer->GetEntwatchHudY());
+			hHud->SetHasClass("HudTextPanel", text, true, pController);
+
+			text = EW_HUDSIZE_CLASS + std::to_string(zpPlayer->GetEntwatchHudSize());
+			hHud->SetHasClass("HudTextPanel", text, true, pController);
+
+			text = EW_HUDCOLOR_CLASS + std::to_string(zpPlayer->GetEntwatchHudColor());
+			hHud->SetHasClass("ItemNamesColumn", text, true, pController);
+		}
+
+		// Initialise player names too, then update changes while the HUD is enabled.
+		if (!bClientHudInitialized[i] || (zpPlayer->GetEntwatchHudEnabled() && bPlayerNames[i] != zpPlayer->GetEntwatchPlayerNames()))
+		{
+			for (int j = 0; j < EW_HUD_MAXITEMS; j++)
+			{
+				const std::string sIndex = std::to_string(j);
+				const std::string sPanelId = "ItemPlayer-" + sIndex;
+				hHud->SetHasClass(sPanelId, "Hidden", !zpPlayer->GetEntwatchPlayerNames(), pController);
+			}
+			bPlayerNames[i] = zpPlayer->GetEntwatchPlayerNames();
+		}
+		bClientHudInitialized[i] = true;
 	}
 
+	iItemsOnHudLastTick = iItemsOnHud;
 	return EW_HUD_TICKRATE;
 }
 
@@ -1967,6 +2217,13 @@ void EW_OnLevelInit(const char* sMapName)
 {
 	g_pEWHandler->UnLoadConfig();
 	g_pEWHandler->LoadMapConfig(sMapName);
+	g_pEWHandler->iItemsOnHudLastTick = 0;
+
+	for (int i = 0; i < EW_HUD_MAXITEMS; i++)
+		g_pEWHandler->iItemColors[i] = 0;
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+		g_pEWHandler->bPlayerNames[i] = true;
 }
 
 void EW_RoundPreStart()
@@ -1976,6 +2233,7 @@ void EW_RoundPreStart()
 
 	g_pEWHandler->ResetAllClantags();
 	g_pEWHandler->ClearItems();
+	g_pEWHandler->ClearHud();
 }
 
 void EW_OnEntitySpawned(CEntityInstance* pEntity)
@@ -2192,17 +2450,12 @@ void EW_PlayerDeathPre(CCSPlayerController* pController)
 
 void EW_PlayerDisconnect(int slot)
 {
-	ZEPlayer* pPlayer = g_playerManager->GetPlayer(CPlayerSlot(slot));
-	if (pPlayer)
-	{
-		CPointWorldText* pText = pPlayer->GetEntwatchHud();
-		if (pText)
-			pText->Remove();
-	}
-
 	auto i = g_pEWHandler->mapTransfers.find(slot);
 	if (i != g_pEWHandler->mapTransfers.end())
 		g_pEWHandler->mapTransfers.erase(slot);
+
+	g_pEWHandler->bPlayerNames[slot] = true;
+	g_pEWHandler->bClientHudInitialized[slot] = false;
 
 	CCSPlayerController* pController = CCSPlayerController::FromSlot(slot);
 	if (!pController)
@@ -2555,7 +2808,7 @@ CON_COMMAND_CHAT(ew_dump, "- Prints the currently loaded config to console")
 	g_pEWHandler->PrintLoadedConfig(player);
 }
 
-CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
+CON_COMMAND_CHAT(hud, "- Open EntWatch HUD Settings Menu")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
@@ -2579,22 +2832,7 @@ CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
 		return;
 	}
 
-	EWHudMode mode = (EWHudMode)(zpPlayer->GetEntwatchHudMode());
-	if (mode == EWHudMode::Hud_None)
-		mode = EWHudMode::Hud_On;
-	else if (mode == EWHudMode::Hud_On)
-		mode = EWHudMode::Hud_ItemOnly;
-	else
-		mode = EWHudMode::Hud_None;
-
-	zpPlayer->SetEntwatchHudMode((int)mode);
-
-	if (mode == EWHudMode::Hud_None)
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "EntWatch HUD\x07 disabled.");
-	else if (mode == EWHudMode::Hud_On)
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "EntWatch HUD\x04 enabled.");
-	else
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "EntWatch HUD\x04 enabled\x10 (Item names only).");
+	g_pEWHandler->ShowHudMenu(player, zpPlayer);
 }
 
 CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
@@ -2624,18 +2862,23 @@ CON_COMMAND_CHAT(hudpos, "<x> <y> - Sets the position of the EntWatch hud.")
 	if (args.ArgC() < 3)
 	{
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudpos <x> <y>");
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Current hudpos: %.1fx %.1fy", zpPlayer->GetEntwatchHudX(), zpPlayer->GetEntwatchHudY());
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Current hudpos: %dx %dy", zpPlayer->GetEntwatchHudX(), zpPlayer->GetEntwatchHudY());
 		return;
 	}
 
-	float x = std::atof(args[1]);
-	float y = std::atof(args[2]);
+	int x = std::atoi(args[1]);
+	int y = std::atoi(args[2]);
+	if (x < 0 || x > 99 || y < 0 || y > 99)
+	{
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "X and Y values must be between 0 and 99!");
+		return;
+	}
 
 	zpPlayer->SetEntwatchHudPos(x, y);
-	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Set hudpos to: %.1fx %.1fy", x, y);
+	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Set hudpos to: %dx %dy", x, y);
 }
 
-CON_COMMAND_CHAT(hudcolor, "<r> <g> <b> [a] - Set color (and transparency) of the Entwatch hud")
+CON_COMMAND_CHAT(hudcolor, "[color] - Set color of the Entwatch hud")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
@@ -2659,35 +2902,30 @@ CON_COMMAND_CHAT(hudcolor, "<r> <g> <b> [a] - Set color (and transparency) of th
 		return;
 	}
 
-	Color clrCur = zpPlayer->GetEntwatchHudColor();
-	if (args.ArgC() < 4)
+	if (args.ArgC() < 2)
 	{
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudcolor <r> <g> <b> [Optional: alpha]");
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Current hudcolor:\x07 %d\x04 %d\x0C %d\x01 %d", clrCur.r(), clrCur.g(), clrCur.b(), clrCur.a());
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudcolor [color]");
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Current hudcolor:\x04 %s", g_HudColors[zpPlayer->GetEntwatchHudColor()].c_str());
 		return;
 	}
 
-	int r = std::atoi(args[1]);
-	int g = std::atoi(args[2]);
-	int b = std::atoi(args[3]);
-	int a = clrCur.a();
-	Color newColor;
-	if (args.ArgC() > 4)
+	std::string colour = args[1];
+	colour = StringToLower(colour);
+	for (int i = 0; i < EW_MAX_HUDCOLORS; i++)
 	{
-		a = std::atoi(args[4]);
-		newColor.SetColor(r, g, b, a);
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Set hudcolor to:\x07 %d\x04 %d\x0C %d\x01 %d", newColor.r(), newColor.g(), newColor.b(), newColor.a());
-	}
-	else
-	{
-		newColor.SetColor(r, g, b, a);
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Set hudcolor to:\x07 %d\x04 %d\x0C %d", newColor.r(), newColor.g(), newColor.b());
+		if (colour == g_HudColors[i])
+		{
+			zpPlayer->SetEntwatchHudColor(i);
+			ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Hud color set to:\x04 %s", g_HudColors[i].c_str());
+			return;
+		}
 	}
 
-	zpPlayer->SetEntwatchHudColor(newColor);
+	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Invalid hud color entered! Color names are on the \x04!hud \x01menu.");
+	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudcolor <color>");
 }
 
-CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
+CON_COMMAND_CHAT(hudsize, "<size> - Set size of the EntWatch hud")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
@@ -2714,17 +2952,18 @@ CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
 	if (args.ArgC() < 2)
 	{
 		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudsize <size>");
-		float flSize = zpPlayer->GetEntwatchHudSize();
-		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Current hud size:\x04 %.2f", flSize);
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Current hud size:\x04 %d%%", zpPlayer->GetEntwatchHudSize());
 		return;
 	}
 
-	float size = std::atof(args[1]);
-	if (size < 20.0f) // size 20 with 0.005 units per pixel is small
-		size = 20.0f;
-	else if (size > 255.0f) // game has a max of 255
-		size = 255.0f;
+	int size = std::atoi(args[1]);
+	if (size < EW_HUDSIZE_MIN || size > EW_HUDSIZE_MAX || size % 5 != 0)
+	{
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Hud size must be a multiple of 5 between \x04%d - %d", EW_HUDSIZE_MIN, EW_HUDSIZE_MAX);
+		ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudsize <size>");
+		return;
+	}
 
-	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Hud font size set to:\x04 %.2f", size);
+	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Hud size set to:\x04 %d%%", size);
 	zpPlayer->SetEntwatchHudSize(size);
 }
