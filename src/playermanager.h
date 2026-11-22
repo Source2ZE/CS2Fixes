@@ -349,8 +349,6 @@ public:
 	void StartGlow(Color color, int duration);
 	void EndGlow();
 	void SetSteamIdAttribute();
-	void CreateEntwatchHud();
-	void CreatePointOrient();
 	void ToggleThirdPerson(float flDistance = -65.f, bool bForce = false);
 
 private:

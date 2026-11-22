@@ -2808,7 +2808,7 @@ CON_COMMAND_CHAT(ew_dump, "- Prints the currently loaded config to console")
 	g_pEWHandler->PrintLoadedConfig(player);
 }
 
-CON_COMMAND_CHAT(hud, "- Toggle EntWatch HUD")
+CON_COMMAND_CHAT(hud, "- Open EntWatch HUD Settings Menu")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
@@ -2925,7 +2925,7 @@ CON_COMMAND_CHAT(hudcolor, "[color] - Set color of the Entwatch hud")
 	ClientPrint(player, HUD_PRINTTALK, EW_PREFIX "Usage: !hudcolor <color>");
 }
 
-CON_COMMAND_CHAT(hudsize, "<size> - Set font size of the EntWatch hud")
+CON_COMMAND_CHAT(hudsize, "<size> - Set size of the EntWatch hud")
 {
 	if (!g_cvarEnableEntWatch.Get())
 		return;
